@@ -44,17 +44,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMaximumLength_FromDefault()
     {
-      Assert.IsFalse (_attribute.HasMaximumLength);
-      Assert.IsNull (_lengthConstraint.MaximumLength);
+      Assert.That (_attribute.HasMaximumLength, Is.False);
+      Assert.That (_lengthConstraint.MaximumLength, Is.Null);
     }
 
     [Test]
     public void GetMaximumLength_FromExplicitValue()
     {
       _attribute.MaximumLength = 100;
-      Assert.IsTrue (_attribute.HasMaximumLength);
-      Assert.AreEqual (100, _attribute.MaximumLength);
-      Assert.AreEqual (100, _lengthConstraint.MaximumLength);
+      Assert.That (_attribute.HasMaximumLength, Is.True);
+      Assert.That (_attribute.MaximumLength, Is.EqualTo (100));
+      Assert.That (_lengthConstraint.MaximumLength, Is.EqualTo (100));
     }
 
     [Test]

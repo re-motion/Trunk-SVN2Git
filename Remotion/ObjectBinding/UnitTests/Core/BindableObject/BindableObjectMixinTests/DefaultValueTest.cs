@@ -42,8 +42,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
       ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> (ParamList.Empty);
       IBusinessObject instanceAsIBusinessObject = (IBusinessObject) instance;
 
-      Assert.IsNotNull (instanceAsIBusinessObject.GetProperty ("Scalar"));
-      Assert.AreEqual (instance.Scalar, instanceAsIBusinessObject.GetProperty ("Scalar"));
+      Assert.That (instanceAsIBusinessObject.GetProperty ("Scalar"), Is.Not.Null);
+      Assert.That (instanceAsIBusinessObject.GetProperty ("Scalar"), Is.EqualTo (instance.Scalar));
     }
 
     [Test]
@@ -61,8 +61,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
       ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> (ParamList.Empty);
       IBusinessObject instanceAsIBusinessObject = (IBusinessObject) instance;
 
-      Assert.IsNotNull (instanceAsIBusinessObject.GetProperty ("List"));
-      Assert.AreEqual (instance.List, instanceAsIBusinessObject.GetProperty ("List"));
+      Assert.That (instanceAsIBusinessObject.GetProperty ("List"), Is.Not.Null);
+      Assert.That (instanceAsIBusinessObject.GetProperty ("List"), Is.EqualTo (instance.List));
     }
   }
 }

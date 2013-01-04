@@ -30,7 +30,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     {
       TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (object), typeof (object));
       var log = Validator.Validate (bc);
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinCannotMixItself", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinCannotMixItself", log), Is.True);
     }
 
     [Test]
@@ -38,7 +38,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     {
       TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (object), typeof (NullMixin));
       var log = Validator.Validate (bc);
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinCannotMixItsBase", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinCannotMixItsBase", log), Is.True);
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (IBT1Mixin1));
       var log = Validator.Validate (definition.Mixins[typeof (IBT1Mixin1)]);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinCannotBeInterface", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinCannotBeInterface", log), Is.True);
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin2));
       var log = Validator.Validate (definition.Mixins[typeof (BT5Mixin2)]);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log), Is.True);
     }
 
     [Test]
@@ -74,7 +74,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (InternalNester.PublicNested));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log), Is.True);
     }
 
     [Test]
@@ -83,7 +83,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (PublicNester.InternalNested));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log), Is.True);
     }
 
     [Test]
@@ -92,7 +92,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (InternalNester.InternalNested));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log), Is.True);
     }
 
     [Test]
@@ -102,8 +102,8 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           typeof (MixinWithPrivateCtorAndVirtualMethod));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinWithOverriddenMembersMustHavePublicOrProtectedDefaultCtor",
-          log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinWithOverriddenMembersMustHavePublicOrProtectedDefaultCtor",
+                               log), Is.True);
     }
 
     [Test]
@@ -113,8 +113,8 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           typeof (MixinWithProtectedOverriderWithoutMixinBase));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinNeedingDerivedTypeMustBeDerivedFromMixinBase",
-          log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinNeedingDerivedTypeMustBeDerivedFromMixinBase",
+                               log), Is.True);
     }
 
     [Test]

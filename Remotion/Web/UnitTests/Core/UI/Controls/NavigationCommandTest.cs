@@ -149,8 +149,8 @@ public class NavigationCommandTest
     command.WxeFunctionCommand.Parameters = _wxeFunctionParameters;
     string url = command.GetWxeFunctionPermanentUrl ();
 
-    Assert.IsNotNull (url);
-    Assert.AreEqual (expectedUrl, url);
+    Assert.That (url, Is.Not.Null);
+    Assert.That (url, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -172,8 +172,8 @@ public class NavigationCommandTest
     command.WxeFunctionCommand.Parameters = "\"" + parameter1 + "\"";
     string url = command.GetWxeFunctionPermanentUrl ();
 
-    Assert.IsNotNull (url);
-    Assert.AreEqual (expectedUrl, url);
+    Assert.That (url, Is.Not.Null);
+    Assert.That (url, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -196,8 +196,8 @@ public class NavigationCommandTest
     command.WxeFunctionCommand.Parameters = "\"" + parameter1 + "\"";
     string url = command.GetWxeFunctionPermanentUrl ();
 
-    Assert.IsNotNull (url);
-    Assert.AreEqual (expectedUrl, url);
+    Assert.That (url, Is.Not.Null);
+    Assert.That (url, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -242,8 +242,8 @@ public class NavigationCommandTest
     command.WxeFunctionCommand.Parameters = _wxeFunctionParameters;
     string url = command.GetWxeFunctionPermanentUrl (additionalUrlParameters);
 
-    Assert.IsNotNull (url);
-    Assert.AreEqual (expectedUrl, url);
+    Assert.That (url, Is.Not.Null);
+    Assert.That (url, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -269,8 +269,8 @@ public class NavigationCommandTest
     command.WxeFunctionCommand.Parameters = "\"" + parameter1 + "\"";
     string url = command.GetWxeFunctionPermanentUrl (additionalUrlParameters);
 
-    Assert.IsNotNull (url);
-    Assert.AreEqual (expectedUrl, url);
+    Assert.That (url, Is.Not.Null);
+    Assert.That (url, Is.EqualTo (expectedUrl));
   }
 
   [Test]

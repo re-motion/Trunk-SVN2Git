@@ -86,8 +86,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         Assert.AreEqual (0, _importer.AccessTypes.Count, "Access type count");
 
         SecurableClassDefinition actualClass1 = _importer.Classes[new Guid ("00000000-0000-0000-0001-000000000000")];
-        Assert.AreEqual (0, actualClass1.Index);
-        Assert.AreEqual ("Remotion.Security.UnitTests.TestDomain.File", actualClass1.Name);
+        Assert.That (actualClass1.Index, Is.EqualTo (0));
+        Assert.That (actualClass1.Name, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.File"));
       }
     }
 
@@ -117,12 +117,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         Assert.AreEqual (0, _importer.AccessTypes.Count, "Access type count");
 
         SecurableClassDefinition actualClass1 = _importer.Classes[new Guid ("00000000-0000-0000-0001-000000000000")];
-        Assert.AreEqual (0, actualClass1.Index);
-        Assert.AreEqual ("Remotion.Security.UnitTests.TestDomain.File", actualClass1.Name);
+        Assert.That (actualClass1.Index, Is.EqualTo (0));
+        Assert.That (actualClass1.Name, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.File"));
 
         SecurableClassDefinition actualClass2 = _importer.Classes[new Guid ("00000000-0000-0000-0002-000000000000")];
-        Assert.AreEqual (1, actualClass2.Index);
-        Assert.AreEqual ("Remotion.Security.UnitTests.TestDomain.Directory", actualClass2.Name);
+        Assert.That (actualClass2.Index, Is.EqualTo (1));
+        Assert.That (actualClass2.Name, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.Directory"));
       }
     }
 
@@ -273,12 +273,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinition baseClass = _importer.Classes[new Guid ("00000000-0000-0000-0001-000000000000")];
         SecurableClassDefinition derivedClass = _importer.Classes[new Guid ("00000000-0000-0000-0002-000000000000")];
 
-        Assert.AreEqual (1, baseClass.DerivedClasses.Count);
-        Assert.AreSame (derivedClass, baseClass.DerivedClasses[0]);
-        Assert.IsNull (baseClass.BaseClass);
+        Assert.That (baseClass.DerivedClasses.Count, Is.EqualTo (1));
+        Assert.That (baseClass.DerivedClasses[0], Is.SameAs (derivedClass));
+        Assert.That (baseClass.BaseClass, Is.Null);
 
-        Assert.AreEqual (0, derivedClass.DerivedClasses.Count);
-        Assert.AreSame (baseClass, derivedClass.BaseClass);
+        Assert.That (derivedClass.DerivedClasses.Count, Is.EqualTo (0));
+        Assert.That (derivedClass.BaseClass, Is.SameAs (baseClass));
       }
     }
 
@@ -327,7 +327,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         StatePropertyDefinition property2 = _importer.StateProperties[new Guid ("00000000-0000-0000-0001-000000000001")];
 
         Assert.AreEqual (1, classDefinition.StateProperties.Count, "State property count");
-        Assert.AreSame (property2, classDefinition.StateProperties[0]);
+        Assert.That (classDefinition.StateProperties[0], Is.SameAs (property2));
       }
     }
 
@@ -374,7 +374,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         AccessTypeDefinition accessType = _importer.AccessTypes[new Guid ("62dfcd92-a480-4d57-95f1-28c0f5996b3a")];
 
         Assert.AreEqual (1, classDefinition.AccessTypes.Count, "Access type count");
-        Assert.AreSame (accessType, classDefinition.AccessTypes[0]);
+        Assert.That (classDefinition.AccessTypes[0], Is.SameAs (accessType));
       }
     }
 

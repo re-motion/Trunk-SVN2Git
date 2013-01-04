@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void ObjectIDIsSerializable ()
     {
       ObjectID id = Serializer.SerializeAndDeserialize (DomainObjectIDs.Order1);
-      Assert.AreEqual (DomainObjectIDs.Order1, id);
+      Assert.That (id, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
@@ -37,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       ObjectID id = DomainObjectIDs.Order1;
       ObjectID deserializedID = Serializer.SerializeAndDeserialize (id);
-     
-      Assert.AreEqual (id.Value, deserializedID.Value);
+
+      Assert.That (deserializedID.Value, Is.EqualTo (id.Value));
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ObjectID id = DomainObjectIDs.Order1;
       ObjectID deserializedID = Serializer.SerializeAndDeserialize (id);
 
-      Assert.AreEqual (id.ClassDefinition, deserializedID.ClassDefinition);
+      Assert.That (deserializedID.ClassDefinition, Is.EqualTo (id.ClassDefinition));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ObjectID id = DomainObjectIDs.Order1;
       ObjectID deserializedID = Serializer.SerializeAndDeserialize (id);
 
-      Assert.AreEqual (id.GetHashCode(), deserializedID.GetHashCode());
+      Assert.That (deserializedID.GetHashCode(), Is.EqualTo (id.GetHashCode()));
     }
   }
 }

@@ -28,9 +28,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     {
       ClassOverridingMixinMembers com = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers));
       var comAsIAbstractMixin = com as IMixinWithAbstractMembers;
-      Assert.IsNotNull (comAsIAbstractMixin);
-      Assert.AreEqual ("MixinWithAbstractMembers.ImplementedMethod-ClassOverridingMixinMembers.AbstractMethod-25",
-          comAsIAbstractMixin.ImplementedMethod ());
+      Assert.That (comAsIAbstractMixin, Is.Not.Null);
+      Assert.That (comAsIAbstractMixin.ImplementedMethod (), Is.EqualTo ("MixinWithAbstractMembers.ImplementedMethod-ClassOverridingMixinMembers.AbstractMethod-25"));
     }
 
     [Test]
@@ -38,9 +37,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     {
       ClassOverridingMixinMembers com = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers));
       var comAsIAbstractMixin = com as IMixinWithAbstractMembers;
-      Assert.IsNotNull (comAsIAbstractMixin);
-      Assert.AreEqual ("MixinWithAbstractMembers.ImplementedProperty-ClassOverridingMixinMembers.AbstractProperty",
-          comAsIAbstractMixin.ImplementedProperty ());
+      Assert.That (comAsIAbstractMixin, Is.Not.Null);
+      Assert.That (comAsIAbstractMixin.ImplementedProperty (), Is.EqualTo ("MixinWithAbstractMembers.ImplementedProperty-ClassOverridingMixinMembers.AbstractProperty"));
     }
 
     [Test]
@@ -48,8 +46,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     {
       ClassOverridingMixinMembers com = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers));
       var comAsIAbstractMixin = com as IMixinWithAbstractMembers;
-      Assert.IsNotNull (comAsIAbstractMixin);
-      Assert.AreEqual ("MixinWithAbstractMembers.ImplementedEvent", comAsIAbstractMixin.ImplementedEvent ());
+      Assert.That (comAsIAbstractMixin, Is.Not.Null);
+      Assert.That (comAsIAbstractMixin.ImplementedEvent (), Is.EqualTo ("MixinWithAbstractMembers.ImplementedEvent"));
     }
 
     [Test]
@@ -57,9 +55,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     {
       ClassOverridingSingleMixinMethod com = CreateMixedObject<ClassOverridingSingleMixinMethod> (typeof (MixinOverridingClassMethod));
       var comAsIAbstractMixin = com as IMixinOverridingClassMethod;
-      Assert.IsNotNull (comAsIAbstractMixin);
-      Assert.AreEqual ("ClassOverridingSingleMixinMethod.AbstractMethod-25", comAsIAbstractMixin.AbstractMethod (25));
-      Assert.AreEqual ("MixinOverridingClassMethod.OverridableMethod-13", com.OverridableMethod (13));
+      Assert.That (comAsIAbstractMixin, Is.Not.Null);
+      Assert.That (comAsIAbstractMixin.AbstractMethod (25), Is.EqualTo ("ClassOverridingSingleMixinMethod.AbstractMethod-25"));
+      Assert.That (com.OverridableMethod (13), Is.EqualTo ("MixinOverridingClassMethod.OverridableMethod-13"));
     }
 
     [Test]
@@ -67,10 +65,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     {
       ClassOverridingInheritedMixinMethod coimm = ObjectFactory.Create<ClassOverridingInheritedMixinMethod> (ParamList.Empty);
       var mixin = Mixin.Get<MixinWithInheritedMethod> (coimm);
-      Assert.AreEqual ("ClassOverridingInheritedMixinMethod.ProtectedInheritedMethod-"
-          + "ClassOverridingInheritedMixinMethod.ProtectedInternalInheritedMethod-"
-          + "ClassOverridingInheritedMixinMethod.PublicInheritedMethod",
-          mixin.InvokeInheritedMethods ());
+      Assert.That (mixin.InvokeInheritedMethods (), Is.EqualTo ("ClassOverridingInheritedMixinMethod.ProtectedInheritedMethod-"
+                                                                + "ClassOverridingInheritedMixinMethod.ProtectedInternalInheritedMethod-"
+                                                                + "ClassOverridingInheritedMixinMethod.PublicInheritedMethod"));
     }
 
     [Test]
@@ -79,12 +76,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
       ClassOverridingMixinMembersProtected com = CreateMixedObject<ClassOverridingMixinMembersProtected> (typeof (MixinWithAbstractMembers));
       var comAsIAbstractMixin = com as IMixinWithAbstractMembers;
 
-      Assert.IsNotNull (comAsIAbstractMixin);
-      Assert.AreEqual ("MixinWithAbstractMembers.ImplementedMethod-ClassOverridingMixinMembersProtected.AbstractMethod-25",
-          comAsIAbstractMixin.ImplementedMethod ());
-      Assert.AreEqual ("MixinWithAbstractMembers.ImplementedProperty-ClassOverridingMixinMembersProtected.AbstractProperty",
-          comAsIAbstractMixin.ImplementedProperty ());
-      Assert.AreEqual ("MixinWithAbstractMembers.ImplementedEvent", comAsIAbstractMixin.ImplementedEvent ());
+      Assert.That (comAsIAbstractMixin, Is.Not.Null);
+      Assert.That (comAsIAbstractMixin.ImplementedMethod (), Is.EqualTo ("MixinWithAbstractMembers.ImplementedMethod-ClassOverridingMixinMembersProtected.AbstractMethod-25"));
+      Assert.That (comAsIAbstractMixin.ImplementedProperty (), Is.EqualTo ("MixinWithAbstractMembers.ImplementedProperty-ClassOverridingMixinMembersProtected.AbstractProperty"));
+      Assert.That (comAsIAbstractMixin.ImplementedEvent (), Is.EqualTo ("MixinWithAbstractMembers.ImplementedEvent"));
     }
   }
 }

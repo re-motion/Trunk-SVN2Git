@@ -43,7 +43,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
       bool hasAccess = command.HasAccess (null);
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]

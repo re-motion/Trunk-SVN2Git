@@ -33,8 +33,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       string[] localizationFileNames = nameStrategy.GetLocalizationFileNames (metadataFileName);
 
-      Assert.IsNotNull (localizationFileNames);
-      Assert.AreEqual (0, localizationFileNames.Length);
+      Assert.That (localizationFileNames, Is.Not.Null);
+      Assert.That (localizationFileNames.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -45,9 +45,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       string[] localizationFileNames = nameStrategy.GetLocalizationFileNames (metadataFileName);
 
-      Assert.IsNotNull (localizationFileNames);
-      Assert.AreEqual (1, localizationFileNames.Length);
-      Assert.Contains (@"Core\Metadata\LocalizationFiles\OneLocalizationFile.Localization.de.xml", localizationFileNames);
+      Assert.That (localizationFileNames, Is.Not.Null);
+      Assert.That (localizationFileNames.Length, Is.EqualTo (1));
+      Assert.That (localizationFileNames, Has.Member (@"Core\Metadata\LocalizationFiles\OneLocalizationFile.Localization.de.xml"));
     }
 
     [Test]
@@ -58,10 +58,10 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       string[] localizationFileNames = nameStrategy.GetLocalizationFileNames (metadataFileName);
 
-      Assert.IsNotNull (localizationFileNames);
-      Assert.AreEqual (2, localizationFileNames.Length);
-      Assert.Contains (@"Core\Metadata\LocalizationFiles\TwoLocalizationFiles.Localization.de.xml", localizationFileNames);
-      Assert.Contains (@"Core\Metadata\LocalizationFiles\TwoLocalizationFiles.Localization.en.xml", localizationFileNames);
+      Assert.That (localizationFileNames, Is.Not.Null);
+      Assert.That (localizationFileNames.Length, Is.EqualTo (2));
+      Assert.That (localizationFileNames, Has.Member (@"Core\Metadata\LocalizationFiles\TwoLocalizationFiles.Localization.de.xml"));
+      Assert.That (localizationFileNames, Has.Member (@"Core\Metadata\LocalizationFiles\TwoLocalizationFiles.Localization.en.xml"));
     }
 
     [Test]
@@ -72,10 +72,10 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       string[] localizationFileNames = nameStrategy.GetLocalizationFileNames (metadataFileName);
 
-      Assert.IsNotNull (localizationFileNames);
-      Assert.AreEqual (2, localizationFileNames.Length);
-      Assert.Contains (@"Core\Metadata\LocalizationFiles\TwoLocalizationFilesIncludingInvariantCulture.Localization.de.xml", localizationFileNames);
-      Assert.Contains (@"Core\Metadata\LocalizationFiles\TwoLocalizationFilesIncludingInvariantCulture.Localization.xml", localizationFileNames);
+      Assert.That (localizationFileNames, Is.Not.Null);
+      Assert.That (localizationFileNames.Length, Is.EqualTo (2));
+      Assert.That (localizationFileNames, Has.Member (@"Core\Metadata\LocalizationFiles\TwoLocalizationFilesIncludingInvariantCulture.Localization.de.xml"));
+      Assert.That (localizationFileNames, Has.Member (@"Core\Metadata\LocalizationFiles\TwoLocalizationFilesIncludingInvariantCulture.Localization.xml"));
     }
 
     [Test]
@@ -90,10 +90,10 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       Directory.SetCurrentDirectory (wd);
 
-      Assert.IsNotNull (localizationFileNames);
-      Assert.AreEqual (2, localizationFileNames.Length);
-      Assert.Contains (@".\TwoLocalizationFilesIncludingInvariantCulture.Localization.de.xml", localizationFileNames);
-      Assert.Contains (@".\TwoLocalizationFilesIncludingInvariantCulture.Localization.xml", localizationFileNames);
+      Assert.That (localizationFileNames, Is.Not.Null);
+      Assert.That (localizationFileNames.Length, Is.EqualTo (2));
+      Assert.That (localizationFileNames, Has.Member (@".\TwoLocalizationFilesIncludingInvariantCulture.Localization.de.xml"));
+      Assert.That (localizationFileNames, Has.Member (@".\TwoLocalizationFilesIncludingInvariantCulture.Localization.xml"));
     }
 
     [Test]
@@ -104,7 +104,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       string localizationFilename = nameStrategy.GetLocalizationFileName (filename, new CultureInfo ("de"));
 
-      Assert.AreEqual ("metadata.Localization.de.xml", localizationFilename);
+      Assert.That (localizationFilename, Is.EqualTo ("metadata.Localization.de.xml"));
     }
 
     [Test]
@@ -115,7 +115,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       string localizationFilename = nameStrategy.GetLocalizationFileName (filename, CultureInfo.InvariantCulture);
 
-      Assert.AreEqual ("metadata.Localization.xml", localizationFilename);
+      Assert.That (localizationFilename, Is.EqualTo ("metadata.Localization.xml"));
     }
   }
 }

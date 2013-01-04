@@ -32,10 +32,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       ISecurableObject group = CreateGroup();
 
       IObjectSecurityStrategy objectSecurityStrategy = group.GetSecurityStrategy();
-      Assert.IsNotNull (objectSecurityStrategy);
+      Assert.That (objectSecurityStrategy, Is.Not.Null);
       Assert.IsInstanceOf (typeof (DomainObjectSecurityStrategy), objectSecurityStrategy);
       DomainObjectSecurityStrategy domainObjectSecurityStrategy = (DomainObjectSecurityStrategy) objectSecurityStrategy;
-      Assert.AreEqual (RequiredSecurityForStates.None, domainObjectSecurityStrategy.RequiredSecurityForStates);
+      Assert.That (domainObjectSecurityStrategy.RequiredSecurityForStates, Is.EqualTo (RequiredSecurityForStates.None));
     }
 
     [Test]
@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     {
       ISecurableObject group = CreateGroup();
 
-      Assert.AreSame (group.GetSecurityStrategy(), group.GetSecurityStrategy());
+      Assert.That (@group.GetSecurityStrategy(), Is.SameAs (@group.GetSecurityStrategy()));
     }
 
     [Test]
@@ -51,7 +51,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     {
       ISecurableObject group = CreateGroup();
 
-      Assert.AreSame (typeof (Group), group.GetSecurableType());
+      Assert.That (@group.GetSecurableType(), Is.SameAs (typeof (Group)));
     }
 
     [Test]
@@ -60,13 +60,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group group = CreateGroup();
       IDomainObjectSecurityContextFactory factory = group;
 
-      Assert.IsFalse (factory.IsInvalid);
-      Assert.IsTrue (factory.IsNew);
-      Assert.IsFalse (factory.IsDeleted);
+      Assert.That (factory.IsInvalid, Is.False);
+      Assert.That (factory.IsNew, Is.True);
+      Assert.That (factory.IsDeleted, Is.False);
 
       group.Delete();
 
-      Assert.IsTrue (factory.IsInvalid);
+      Assert.That (factory.IsInvalid, Is.True);
     }
 
     [Test]
@@ -75,12 +75,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group group = CreateGroup();
 
       ISecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext();
-      Assert.AreEqual (group.GetPublicDomainObjectType(), Type.GetType (securityContext.Class));
-      Assert.IsNull (securityContext.Owner);
-      Assert.AreEqual (group.UniqueIdentifier, securityContext.OwnerGroup);
-      Assert.AreEqual (group.Tenant.UniqueIdentifier, securityContext.OwnerTenant);
+      Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (@group.GetPublicDomainObjectType()));
+      Assert.That (securityContext.Owner, Is.Null);
+      Assert.That (securityContext.OwnerGroup, Is.EqualTo (@group.UniqueIdentifier));
+      Assert.That (securityContext.OwnerTenant, Is.EqualTo (@group.Tenant.UniqueIdentifier));
       Assert.That (securityContext.AbstractRoles, Is.Empty);
-      Assert.IsFalse (securityContext.IsStateless);
+      Assert.That (securityContext.IsStateless, Is.False);
     }
 
     [Test]
@@ -90,12 +90,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       group.Tenant = null;
 
       ISecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext();
-      Assert.AreEqual (group.GetPublicDomainObjectType(), Type.GetType (securityContext.Class));
-      Assert.IsNull (securityContext.Owner);
-      Assert.AreEqual (group.UniqueIdentifier, securityContext.OwnerGroup);
-      Assert.IsNull (securityContext.OwnerTenant);
+      Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (@group.GetPublicDomainObjectType()));
+      Assert.That (securityContext.Owner, Is.Null);
+      Assert.That (securityContext.OwnerGroup, Is.EqualTo (@group.UniqueIdentifier));
+      Assert.That (securityContext.OwnerTenant, Is.Null);
       Assert.That (securityContext.AbstractRoles, Is.Empty);
-      Assert.IsFalse (securityContext.IsStateless);
+      Assert.That (securityContext.IsStateless, Is.False);
     }
   }
 }

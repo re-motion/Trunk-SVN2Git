@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       {
         XmlExportStrategy.Instance.Export (stream, items);
         string actualString = Encoding.UTF8.GetString (stream.ToArray());
-        Assert.AreEqual (XmlSerializationStrings.XmlForOrder1Order2, actualString);
+        Assert.That (actualString, Is.EqualTo (XmlSerializationStrings.XmlForOrder1Order2));
       }
     }
 

@@ -59,7 +59,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     public void Initialize ()
     {
       Assert.IsInstanceOf (typeof (IStatePropertyReflector), _statePropertyReflector);
-      Assert.AreSame (_enumeratedTypeReflectorMock, _statePropertyReflector.EnumerationTypeReflector);
+      Assert.That (_statePropertyReflector.EnumerationTypeReflector, Is.SameAs (_enumeratedTypeReflectorMock));
     }
 
     [Test]
@@ -77,15 +77,15 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       _mocks.VerifyAll ();
 
-      Assert.IsNotNull (info);
-      Assert.AreEqual ("Confidentiality", info.Name);
-      Assert.AreEqual ("00000000-0000-0000-0001-000000000001", info.ID);
-      
-      Assert.IsNotNull (info.Values);
-      Assert.AreEqual (3, info.Values.Count);
-      Assert.Contains (PropertyStates.ConfidentialityNormal, info.Values);
-      Assert.Contains (PropertyStates.ConfidentialityPrivate, info.Values);
-      Assert.Contains (PropertyStates.ConfidentialityConfidential, info.Values);
+      Assert.That (info, Is.Not.Null);
+      Assert.That (info.Name, Is.EqualTo ("Confidentiality"));
+      Assert.That (info.ID, Is.EqualTo ("00000000-0000-0000-0001-000000000001"));
+
+      Assert.That (info.Values, Is.Not.Null);
+      Assert.That (info.Values.Count, Is.EqualTo (3));
+      Assert.That (info.Values, Has.Member (PropertyStates.ConfidentialityNormal));
+      Assert.That (info.Values, Has.Member (PropertyStates.ConfidentialityPrivate));
+      Assert.That (info.Values, Has.Member (PropertyStates.ConfidentialityConfidential));
     }
 
     [Test]
@@ -96,9 +96,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       reflector.GetMetadata (typeof (File).GetProperty ("Confidentiality"), _cache);
 
       StatePropertyInfo paperFileConfidentialityInfo = _cache.GetStatePropertyInfo (typeof (PaperFile).GetProperty ("Confidentiality"));
-      Assert.IsNotNull (paperFileConfidentialityInfo);
-      Assert.AreEqual ("Confidentiality", paperFileConfidentialityInfo.Name);
-      Assert.AreSame (paperFileConfidentialityInfo, _cache.GetStatePropertyInfo (typeof (File).GetProperty ("Confidentiality")));
+      Assert.That (paperFileConfidentialityInfo, Is.Not.Null);
+      Assert.That (paperFileConfidentialityInfo.Name, Is.EqualTo ("Confidentiality"));
+      Assert.That (_cache.GetStatePropertyInfo (typeof (File).GetProperty ("Confidentiality")), Is.SameAs (paperFileConfidentialityInfo));
     }
 
     [Test]

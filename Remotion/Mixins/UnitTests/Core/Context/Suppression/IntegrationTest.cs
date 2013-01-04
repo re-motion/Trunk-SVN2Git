@@ -67,7 +67,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
           .AddType (typeof (MixinSuppressingOpenGenericMixin))
           .BuildConfiguration ();
       ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins));
-      Assert.IsFalse (classContext.Mixins.ContainsKey (typeof (GenericMixinWithSpecialization<List<int>, IList<int>>)));
+      Assert.That (classContext.Mixins.ContainsKey (typeof (GenericMixinWithSpecialization<List<int>, IList<int>>)), Is.False);
     }
 
     [Test]
@@ -78,7 +78,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
           .AddType (typeof (MixinSuppressingOpenGenericMixin))
           .BuildConfiguration ();
       ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins));
-      Assert.IsFalse (classContext.Mixins.ContainsKey (typeof (GenericMixinWithoutSpecialization<,>)));
+      Assert.That (classContext.Mixins.ContainsKey (typeof (GenericMixinWithoutSpecialization<,>)), Is.False);
     }
 
     [Test]
@@ -88,7 +88,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
           .AddType (typeof (GenericMixinWithSpecialization<,>))
           .AddType (typeof (MixinSuppressingClosedGenericMixin)).BuildConfiguration ();
       ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins));
-      Assert.IsFalse (classContext.Mixins.ContainsKey (typeof (GenericMixinWithSpecialization<List<int>, IList<int>>)));
+      Assert.That (classContext.Mixins.ContainsKey (typeof (GenericMixinWithSpecialization<List<int>, IList<int>>)), Is.False);
     }
 
     [Test]
@@ -98,7 +98,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
           .AddType (typeof (GenericMixinWithSpecialization<,>))
           .AddType (typeof (MixinSuppressingGenericMixinWithWrongTypeParameters)).BuildConfiguration ();
       ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (GenericMixinWithSpecialization<List<int>, IList<int>>)));
+      Assert.That (classContext.Mixins.ContainsKey (typeof (GenericMixinWithSpecialization<List<int>, IList<int>>)), Is.True);
     }
   }
 }

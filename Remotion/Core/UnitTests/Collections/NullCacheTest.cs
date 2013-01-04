@@ -36,14 +36,14 @@ namespace Remotion.UnitTests.Collections
     public void TryGetValue ()
     {
       object actual;
-      Assert.IsFalse (_cache.TryGetValue ("anyKey", out actual));
+      Assert.That (_cache.TryGetValue ("anyKey", out actual), Is.False);
     }
 
     [Test]
     public void GetOrCreateValue ()
     {
       object exptected = new object();
-      Assert.AreSame (exptected, _cache.GetOrCreateValue ("anyKey", delegate { return exptected; }));
+      Assert.That (_cache.GetOrCreateValue ("anyKey", delegate { return exptected; }), Is.SameAs (exptected));
     }
 
     [Test]
@@ -51,8 +51,8 @@ namespace Remotion.UnitTests.Collections
     {
       _cache.GetOrCreateValue ("key1", delegate { return new object(); });
       object actual;
-      Assert.IsFalse (_cache.TryGetValue ("key1", out actual));
-      Assert.IsNull (actual);
+      Assert.That (_cache.TryGetValue ("key1", out actual), Is.False);
+      Assert.That (actual, Is.Null);
     }
 
     [Test]
@@ -65,15 +65,15 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void GetIsNull()
     {
-      Assert.IsTrue (_cache.IsNull);
+      Assert.That (_cache.IsNull, Is.True);
     }
 
     [Test]
     public void Serialization ()
     {
       ICache<string, object> deserializedCache = Serializer.SerializeAndDeserialize (_cache);
-      Assert.IsTrue (deserializedCache is NullCache<string, object>);
-      Assert.AreNotSame (_cache, deserializedCache);
+      Assert.That (deserializedCache is NullCache<string, object>, Is.True);
+      Assert.That (deserializedCache, Is.Not.SameAs (_cache));
     }
   }
 }

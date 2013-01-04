@@ -46,29 +46,29 @@ namespace Remotion.Security.UnitTests.Core
 
       ExtendedProviderBase provider = new ThreadPrincipalProvider ("Provider", config);
 
-      Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreEqual ("The Description", provider.Description);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
+      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
 
     [Test]
     public void GetUser ()
     {
       Thread.CurrentPrincipal = new GenericPrincipal (new GenericIdentity ("user"), new string[0]);
-      Assert.AreEqual ("user", _principalProvider.GetPrincipal().User);
+      Assert.That (_principalProvider.GetPrincipal().User, Is.EqualTo ("user"));
     }
 
     [Test]
     public void GetUser_NotAuthenticated ()
     {
       Thread.CurrentPrincipal = new GenericPrincipal (new GenericIdentity (string.Empty), new string[0]);
-      Assert.IsFalse (Thread.CurrentPrincipal.Identity.IsAuthenticated);
-      Assert.IsTrue (_principalProvider.GetPrincipal ().IsNull);
+      Assert.That (Thread.CurrentPrincipal.Identity.IsAuthenticated, Is.False);
+      Assert.That (_principalProvider.GetPrincipal ().IsNull, Is.True);
     }
 
     [Test]
     public void GetIsNull ()
     {
-      Assert.IsFalse (_principalProvider.IsNull);
+      Assert.That (_principalProvider.IsNull, Is.False);
     }
   }
 }

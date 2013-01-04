@@ -34,12 +34,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
-      Assert.AreSame (typeof (bool), actual.PropertyType);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (false, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (bool)));
+      Assert.That (actual.IsNullable, Is.False);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (false));
     }
 
     [Test]
@@ -49,12 +48,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.NaBooleanProperty", actual.PropertyName);
-      Assert.AreSame (typeof (bool?), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.IsNull (actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.NaBooleanProperty"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (bool?)));
+      Assert.That (actual.IsNullable, Is.True);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.Null);
     }
 
     [Test]
@@ -64,12 +62,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.EnumProperty", actual.PropertyName);
-      Assert.AreSame (typeof (ClassWithAllDataTypes.EnumType), actual.PropertyType);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (ClassWithAllDataTypes.EnumType.Value0, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.EnumProperty"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (ClassWithAllDataTypes.EnumType)));
+      Assert.That (actual.IsNullable, Is.False);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (ClassWithAllDataTypes.EnumType.Value0));
     }
 
     [Test]
@@ -84,13 +81,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.ExtensibleEnumProperty",
-          actual.PropertyName);
-      Assert.AreSame (typeof (Color), actual.PropertyType);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (Color.Values.Blue(), actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.ExtensibleEnumProperty"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (Color)));
+      Assert.That (actual.IsNullable, Is.False);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (Color.Values.Blue()));
     }
 
     [Test]
@@ -101,13 +96,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithGuidKey.ClassWithValidRelationsOptional",
-          actual.PropertyName);
-      Assert.AreSame (typeof (ObjectID), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (null, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithGuidKey.ClassWithValidRelationsOptional"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (ObjectID)));
+      Assert.That (actual.IsNullable, Is.True);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (null));
     }
 
     public object ObjectProperty

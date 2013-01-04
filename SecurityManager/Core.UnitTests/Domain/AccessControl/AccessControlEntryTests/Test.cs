@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessTypeDefinition[] accessTypes = ace.GetAllowedAccessTypes();
 
-      Assert.AreEqual (0, accessTypes.Length);
+      Assert.That (accessTypes.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -78,8 +78,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       ace.AllowAccess (accessType);
 
       AccessTypeDefinition[] allowedAccessTypes = ace.GetAllowedAccessTypes();
-      Assert.AreEqual (1, allowedAccessTypes.Length);
-      Assert.Contains (accessType, allowedAccessTypes);
+      Assert.That (allowedAccessTypes.Length, Is.EqualTo (1));
+      Assert.That (allowedAccessTypes, Has.Member (accessType));
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       ace.RemoveAccess (accessType);
 
       AccessTypeDefinition[] allowedAccessTypes = ace.GetAllowedAccessTypes();
-      Assert.AreEqual (0, allowedAccessTypes.Length);
+      Assert.That (allowedAccessTypes.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -129,8 +129,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       ace.AddAccessType (accessType);
 
-      Assert.AreEqual (1, ace.GetPermissions().Count);
-      Assert.AreSame (accessType, ace.GetPermissions()[0].AccessType);
+      Assert.That (ace.GetPermissions().Count, Is.EqualTo (1));
+      Assert.That (ace.GetPermissions()[0].AccessType, Is.SameAs (accessType));
     }
 
     [Test]
@@ -165,9 +165,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       ace.RemoveAccessType (accessType1);
 
       var permissions = ace.GetPermissions();
-      Assert.AreEqual (2, permissions.Count);
-      Assert.AreSame (accessType0, permissions[0].AccessType);
-      Assert.AreSame (accessType2, permissions[1].AccessType);
+      Assert.That (permissions.Count, Is.EqualTo (2));
+      Assert.That (permissions[0].AccessType, Is.SameAs (accessType0));
+      Assert.That (permissions[1].AccessType, Is.SameAs (accessType2));
     }
 
     [Test]
@@ -209,7 +209,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
 
-      Assert.AreEqual (StateType.New, ace.State);
+      Assert.That (ace.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -218,7 +218,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       AccessControlEntry ace = AccessControlEntry.NewObject();
 
       ace.Index = 1;
-      Assert.AreEqual (1, ace.Index);
+      Assert.That (ace.Index, Is.EqualTo (1));
     }
   }
 }

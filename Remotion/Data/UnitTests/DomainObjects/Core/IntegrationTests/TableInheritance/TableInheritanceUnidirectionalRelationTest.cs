@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
         TIClassWithUnidirectionalRelation reloadedObject =
             TIClassWithUnidirectionalRelation.GetObject (DomainObjectIDs.ClassWithUnidirectionalRelation);
 
-        Assert.IsNull (reloadedObject.DomainBase);
+        Assert.That (reloadedObject.DomainBase, Is.Null);
       }
     }
   }

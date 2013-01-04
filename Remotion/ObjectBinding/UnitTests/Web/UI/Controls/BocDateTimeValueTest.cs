@@ -60,8 +60,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
       _bocDateTimeValue.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
     [Test]
@@ -71,8 +71,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.DateTextBoxStyle.AutoPostBack = true;
       _bocDateTimeValue.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
     [Test]
@@ -82,10 +82,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.ValueType = BocDateTimeValueType.DateTime;
       _bocDateTimeValue.EvaluateWaiConformity();
 
-      Assert.IsTrue (WcagHelperMock.HasError);
-      Assert.AreEqual (2, WcagHelperMock.Priority);
-      Assert.AreSame (_bocDateTimeValue, WcagHelperMock.Control);
-      Assert.AreEqual ("ActualValueType", WcagHelperMock.Property);
+      Assert.That (WcagHelperMock.HasError, Is.True);
+      Assert.That (WcagHelperMock.Priority, Is.EqualTo (2));
+      Assert.That (WcagHelperMock.Control, Is.SameAs (_bocDateTimeValue));
+      Assert.That (WcagHelperMock.Property, Is.EqualTo ("ActualValueType"));
     }
 
     [Test]
@@ -95,10 +95,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.DateTimeTextBoxStyle.AutoPostBack = true;
       _bocDateTimeValue.EvaluateWaiConformity();
 
-      Assert.IsTrue (WcagHelperMock.HasWarning);
-      Assert.AreEqual (1, WcagHelperMock.Priority);
-      Assert.AreSame (_bocDateTimeValue, WcagHelperMock.Control);
-      Assert.AreEqual ("DateTimeTextBoxStyle.AutoPostBack", WcagHelperMock.Property);
+      Assert.That (WcagHelperMock.HasWarning, Is.True);
+      Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+      Assert.That (WcagHelperMock.Control, Is.SameAs (_bocDateTimeValue));
+      Assert.That (WcagHelperMock.Property, Is.EqualTo ("DateTimeTextBoxStyle.AutoPostBack"));
     }
 
 
@@ -109,10 +109,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.DateTextBoxStyle.AutoPostBack = true;
       _bocDateTimeValue.EvaluateWaiConformity();
 
-      Assert.IsTrue (WcagHelperMock.HasWarning);
-      Assert.AreEqual (1, WcagHelperMock.Priority);
-      Assert.AreSame (_bocDateTimeValue, WcagHelperMock.Control);
-      Assert.AreEqual ("DateTextBoxStyle.AutoPostBack", WcagHelperMock.Property);
+      Assert.That (WcagHelperMock.HasWarning, Is.True);
+      Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+      Assert.That (WcagHelperMock.Control, Is.SameAs (_bocDateTimeValue));
+      Assert.That (WcagHelperMock.Property, Is.EqualTo ("DateTextBoxStyle.AutoPostBack"));
     }
 
     [Test]
@@ -122,10 +122,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.TimeTextBoxStyle.AutoPostBack = true;
       _bocDateTimeValue.EvaluateWaiConformity();
 
-      Assert.IsTrue (WcagHelperMock.HasWarning);
-      Assert.AreEqual (1, WcagHelperMock.Priority);
-      Assert.AreSame (_bocDateTimeValue, WcagHelperMock.Control);
-      Assert.AreEqual ("TimeTextBoxStyle.AutoPostBack", WcagHelperMock.Property);
+      Assert.That (WcagHelperMock.HasWarning, Is.True);
+      Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+      Assert.That (WcagHelperMock.Control, Is.SameAs (_bocDateTimeValue));
+      Assert.That (WcagHelperMock.Property, Is.EqualTo ("TimeTextBoxStyle.AutoPostBack"));
     }
 
     [Test]
@@ -133,8 +133,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocDateTimeValue.ReadOnly = true;
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (0, actual.Length);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -143,10 +143,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.ReadOnly = false;
       _bocDateTimeValue.ValueType = BocDateTimeValueType.DateTime;
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (2, actual.Length);
-      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientID(), actual[0]);
-      Assert.AreEqual (_bocDateTimeValue.GetTimeTextboxClientID(), actual[1]);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (2));
+      Assert.That (actual[0], Is.EqualTo (_bocDateTimeValue.GetDateTextboxClientID()));
+      Assert.That (actual[1], Is.EqualTo (_bocDateTimeValue.GetTimeTextboxClientID()));
     }
 
     [Test]
@@ -155,9 +155,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.ReadOnly = false;
       _bocDateTimeValue.ValueType = BocDateTimeValueType.Date;
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientID(), actual[0]);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (1));
+      Assert.That (actual[0], Is.EqualTo (_bocDateTimeValue.GetDateTextboxClientID()));
     }
 
     [Test]
@@ -166,10 +166,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.ReadOnly = false;
       _bocDateTimeValue.ValueType = BocDateTimeValueType.Undefined;
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (2, actual.Length);
-      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientID(), actual[0]);
-      Assert.AreEqual (_bocDateTimeValue.GetTimeTextboxClientID(), actual[1]);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (2));
+      Assert.That (actual[0], Is.EqualTo (_bocDateTimeValue.GetDateTextboxClientID()));
+      Assert.That (actual[1], Is.EqualTo (_bocDateTimeValue.GetTimeTextboxClientID()));
     }
 
 
@@ -179,8 +179,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       DateTime dateTime = new DateTime (2006, 1, 1, 1, 1, 1);
       _bocDateTimeValue.IsDirty = false;
       _bocDateTimeValue.Value = dateTime;
-      Assert.AreEqual (dateTime, _bocDateTimeValue.Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (dateTime));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -188,8 +188,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocDateTimeValue.IsDirty = false;
       _bocDateTimeValue.Value = null;
-      Assert.AreEqual (null, _bocDateTimeValue.Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (null));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -198,8 +198,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       DateTime? dateTime = new DateTime (2006, 1, 1, 1, 1, 1);
       _bocDateTimeValue.IsDirty = false;
       _bocDateTimeValue.Value = dateTime;
-      Assert.AreEqual (dateTime, _bocDateTimeValue.Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (dateTime));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -207,8 +207,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocDateTimeValue.IsDirty = false;
       _bocDateTimeValue.Value = null;
-      Assert.AreEqual (null, _bocDateTimeValue.Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (null));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
 
@@ -218,8 +218,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       DateTime dateTime = new DateTime (2006, 1, 1, 1, 1, 1);
       _bocDateTimeValue.IsDirty = false;
       ((IBusinessObjectBoundControl) _bocDateTimeValue).Value = dateTime;
-      Assert.AreEqual (dateTime, ((IBusinessObjectBoundControl) _bocDateTimeValue).Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (((IBusinessObjectBoundControl) _bocDateTimeValue).Value, Is.EqualTo (dateTime));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -227,8 +227,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocDateTimeValue.IsDirty = false;
       ((IBusinessObjectBoundControl) _bocDateTimeValue).Value = null;
-      Assert.AreEqual (null, ((IBusinessObjectBoundControl) _bocDateTimeValue).Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (((IBusinessObjectBoundControl) _bocDateTimeValue).Value, Is.EqualTo (null));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -237,8 +237,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       DateTime? dateTime = new DateTime (2006, 1, 1, 1, 1, 1);
       _bocDateTimeValue.IsDirty = false;
       ((IBusinessObjectBoundControl) _bocDateTimeValue).Value = dateTime;
-      Assert.AreEqual (dateTime, ((IBusinessObjectBoundControl) _bocDateTimeValue).Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (((IBusinessObjectBoundControl) _bocDateTimeValue).Value, Is.EqualTo (dateTime));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -246,8 +246,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocDateTimeValue.IsDirty = false;
       ((IBusinessObjectBoundControl) _bocDateTimeValue).Value = null;
-      Assert.AreEqual (null, ((IBusinessObjectBoundControl) _bocDateTimeValue).Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (((IBusinessObjectBoundControl) _bocDateTimeValue).Value, Is.EqualTo (null));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
 
@@ -255,14 +255,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     public void HasValue_ValueIsSet_ReturnsTrue ()
     {
       _bocDateTimeValue.Value = DateTime.Now;
-      Assert.IsTrue (_bocDateTimeValue.HasValue);
+      Assert.That (_bocDateTimeValue.HasValue, Is.True);
     }
 
     [Test]
     public void HasValue_ValueIsNull_ReturnsFalse ()
     {
       _bocDateTimeValue.Value = null;
-      Assert.IsFalse (_bocDateTimeValue.HasValue);
+      Assert.That (_bocDateTimeValue.HasValue, Is.False);
     }
 
 
@@ -276,8 +276,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadValue (true);
-      Assert.AreEqual (null, _bocDateTimeValue.Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (null));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -290,8 +290,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadValue (false);
-      Assert.AreEqual (_businessObject.DateTimeValue, _bocDateTimeValue.Value);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (_businessObject.DateTimeValue));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -304,8 +304,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadValue (false);
-      Assert.AreEqual (_businessObject.NullableDateTimeValue, _bocDateTimeValue.Value);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (_businessObject.NullableDateTimeValue));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -318,8 +318,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadValue (false);
-      Assert.AreEqual (_businessObject.NullableDateTimeValue, _bocDateTimeValue.Value);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (_businessObject.NullableDateTimeValue));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -331,8 +331,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadValue (false);
-      Assert.AreEqual (new DateTime (2000, 1, 1), _bocDateTimeValue.Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (new DateTime (2000, 1, 1)));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -344,8 +344,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadValue (false);
-      Assert.AreEqual (new DateTime (2000, 1, 1), _bocDateTimeValue.Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (new DateTime (2000, 1, 1)));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -358,8 +358,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadValue (false);
-      Assert.AreEqual (null, _bocDateTimeValue.Value);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (null));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -370,8 +370,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadUnboundValue (value, true);
-      Assert.AreEqual (null, _bocDateTimeValue.Value);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (null));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -382,8 +382,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocDateTimeValue.Value);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (value));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -394,8 +394,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocDateTimeValue.Value);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (value));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -406,8 +406,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocDateTimeValue.Value);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (value));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -418,8 +418,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocDateTimeValue.Value);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+      Assert.That (_bocDateTimeValue.Value, Is.EqualTo (value));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
 
 
@@ -433,8 +433,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.SaveValue (true);
-      Assert.AreEqual (new DateTime (2000, 1, 1), _businessObject.DateTimeValue);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+      Assert.That (_businessObject.DateTimeValue, Is.EqualTo (new DateTime (2000, 1, 1)));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -447,8 +447,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = true;
 
       _bocDateTimeValue.SaveValue (false);
-      Assert.AreEqual (new DateTime (2011, 5, 5), _businessObject.DateTimeValue);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+      Assert.That (_businessObject.DateTimeValue, Is.EqualTo (new DateTime (2011, 5, 5)));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -461,8 +461,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.IsDirty = false;
 
       _bocDateTimeValue.SaveValue (false);
-      Assert.AreEqual (new DateTime (2000, 1, 1), _businessObject.DateTimeValue);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+      Assert.That (_businessObject.DateTimeValue, Is.EqualTo (new DateTime (2000, 1, 1)));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
   }
 }

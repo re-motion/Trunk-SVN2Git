@@ -46,7 +46,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "Save", MemberAffiliation.Instance);
 
-      Assert.AreSame (methodInformation, _resolver.GetMethodInformation (typeof (SecurableObject), "Save", MemberAffiliation.Instance));
+      Assert.That (_resolver.GetMethodInformation (typeof (SecurableObject), "Save", MemberAffiliation.Instance), Is.SameAs (methodInformation));
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "Load", MemberAffiliation.Instance);
       var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Load",new Type[] {}));
 
-      Assert.IsNotNull (methodInformation);
+      Assert.That (methodInformation, Is.Not.Null);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
     }
 
@@ -73,7 +73,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "Delete", MemberAffiliation.Instance);
       var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Delete", new [] {typeof(int)}));
 
-      Assert.IsNotNull (methodInformation);
+      Assert.That (methodInformation, Is.Not.Null);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
     }
 
@@ -83,7 +83,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
       var methodInformation = _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "Show", MemberAffiliation.Instance);
       var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Show"));
 
-      Assert.IsNotNull (methodInformation);
+      Assert.That (methodInformation, Is.Not.Null);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
     }
 
@@ -93,7 +93,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
       var methodInformation = _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "Record", MemberAffiliation.Instance);
       var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Record"));
 
-      Assert.IsNotNull (methodInformation);
+      Assert.That (methodInformation, Is.Not.Null);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
     }
 

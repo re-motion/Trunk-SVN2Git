@@ -32,15 +32,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void DomainObjectsCanBeMixed ()
     {
       var domainObject = TargetClassForBehavioralMixin.NewObject ();
-      Assert.IsNotNull (Mixin.Get<NullMixin> (domainObject));
+      Assert.That (Mixin.Get<NullMixin> (domainObject), Is.Not.Null);
     }
 
     [Test]
     public void MixinCanAddInterface ()
     {
       var domainObject = TargetClassForBehavioralMixin.NewObject ();
-      Assert.IsTrue (domainObject is IInterfaceAddedByMixin);
-      Assert.AreEqual ("Hello, my ID is " + domainObject.ID, ((IInterfaceAddedByMixin) domainObject).GetGreetings ());
+      Assert.That (domainObject is IInterfaceAddedByMixin, Is.True);
+      Assert.That (((IInterfaceAddedByMixin) domainObject).GetGreetings (), Is.EqualTo ("Hello, my ID is " + domainObject.ID));
     }
 
     [Test]
@@ -48,8 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     {
       var instance = TargetClassForBehavioralMixin.NewObject();
       instance.Property = "Text";
-      Assert.AreEqual ("Text-MixinSetter-MixinGetter", instance.Property);
-      Assert.AreEqual ("Something-MixinMethod", instance.GetSomething ());
+      Assert.That (instance.Property, Is.EqualTo ("Text-MixinSetter-MixinGetter"));
+      Assert.That (instance.GetSomething (), Is.EqualTo ("Something-MixinMethod"));
     }
 
     [DBTable]
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void NestedDomainObjects_CanBeMixed ()
     {
       DomainObject domainObject = NestedDomainObject.NewObject ();
-      Assert.IsNotNull (Mixin.Get<NullMixin> (domainObject));
+      Assert.That (Mixin.Get<NullMixin> (domainObject), Is.Not.Null);
     }
   }
 }

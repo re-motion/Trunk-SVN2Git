@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void ContainsNullForKeyNotInCollection ()
     {
-      Assert.IsFalse (_collection.BaseContains ("invalidKey", null));
+      Assert.That (_collection.BaseContains ("invalidKey", null), Is.False);
     }
   }
 }

@@ -25,31 +25,31 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     [Test]
     public void BaseClass_HasMixins ()
     {
-      Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoringMixin), typeof (NullMixin)));
-      Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoringMixin), typeof (DerivedNullMixin)));
-      Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoringMixin), typeof (DerivedDerivedNullMixin)));
-      Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod<>)));
-      Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod2<object>)));
+      Assert.That (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoringMixin), typeof (NullMixin)), Is.True);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoringMixin), typeof (DerivedNullMixin)), Is.True);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoringMixin), typeof (DerivedDerivedNullMixin)), Is.True);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod<>)), Is.True);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod2<object>)), Is.True);
     }
 
     [Test]
     public void DerivedClass_ExcludesMixins ()
     {
-      Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (NullMixin)));
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (DerivedNullMixin)));
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (DerivedDerivedNullMixin)));
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod<>)));
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod2<object>)));
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (NullMixin)), Is.True);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (DerivedNullMixin)), Is.False);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (DerivedDerivedNullMixin)), Is.False);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod<>)), Is.False);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod2<object>)), Is.False);
     }
 
     [Test]
     public void DerivedDerivedClass_ExcludesMixins ()
     {
-      Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (NullMixin)));
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (DerivedNullMixin)));
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (DerivedDerivedNullMixin)));
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod<>)));
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod2<object>)));
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (NullMixin)), Is.True);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (DerivedNullMixin)), Is.False);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (DerivedDerivedNullMixin)), Is.False);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod<>)), Is.False);
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoringMixin), typeof (GenericMixinWithVirtualMethod2<object>)), Is.False);
     }
   }
 }

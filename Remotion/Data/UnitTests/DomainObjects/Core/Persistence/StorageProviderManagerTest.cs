@@ -47,9 +47,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       StorageProvider provider = _storageProviderManager[c_testDomainProviderID];
 
-      Assert.IsNotNull (provider);
-      Assert.AreEqual (typeof (RdbmsProvider), provider.GetType ());
-      Assert.AreEqual (c_testDomainProviderID, provider.StorageProviderDefinition.Name);
+      Assert.That (provider, Is.Not.Null);
+      Assert.That (provider.GetType (), Is.EqualTo (typeof (RdbmsProvider)));
+      Assert.That (provider.StorageProviderDefinition.Name, Is.EqualTo (c_testDomainProviderID));
     }
 
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       StorageProvider provider1 = _storageProviderManager[c_testDomainProviderID];
       StorageProvider provider2 = _storageProviderManager[c_testDomainProviderID];
 
-      Assert.AreSame (provider1, provider2);
+      Assert.That (provider2, Is.SameAs (provider1));
     }
 
     [Test]
@@ -71,10 +71,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
         provider = (RdbmsProvider) _storageProviderManager[c_testDomainProviderID];
         provider.LoadDataContainer (DomainObjectIDs.Order1);
 
-        Assert.IsTrue (provider.IsConnected);
+        Assert.That (provider.IsConnected, Is.True);
       }
 
-      Assert.IsFalse (provider.IsConnected);
+      Assert.That (provider.IsConnected, Is.False);
     }
   }
 }

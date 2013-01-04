@@ -36,7 +36,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void FlattenTypeName ()
     {
-      Assert.AreEqual ("Namespace.Parent/Nested", CustomClassEmitter.FlattenTypeName ("Namespace.Parent+Nested"));
+      Assert.That (CustomClassEmitter.FlattenTypeName ("Namespace.Parent+Nested"), Is.EqualTo ("Namespace.Parent/Nested"));
     }
 
     [Test]
@@ -46,20 +46,20 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           TypeAttributes.Public | TypeAttributes.Class, false);
       Type builtType = classEmitter.BuildType ();
 
-      Assert.AreEqual ("SimpleClass", builtType.FullName);
-      Assert.AreEqual (typeof (ClassEmitterTest), builtType.BaseType);
-      Assert.IsTrue (typeof (IMarkerInterface).IsAssignableFrom (builtType));
-      Assert.IsTrue (builtType.IsClass);
-      Assert.IsTrue (builtType.IsPublic);
+      Assert.That (builtType.FullName, Is.EqualTo ("SimpleClass"));
+      Assert.That (builtType.BaseType, Is.EqualTo (typeof (ClassEmitterTest)));
+      Assert.That (typeof (IMarkerInterface).IsAssignableFrom (builtType), Is.True);
+      Assert.That (builtType.IsClass, Is.True);
+      Assert.That (builtType.IsPublic, Is.True);
     }
 
     [Test]
     public void HasBeenBuilt ()
     {
       var classEmitter = new CustomClassEmitter (Scope, "HasBeenBuilt", typeof (ClassEmitterTest));
-      Assert.IsFalse (classEmitter.HasBeenBuilt);
+      Assert.That (classEmitter.HasBeenBuilt, Is.False);
       classEmitter.BuildType();
-      Assert.IsTrue (classEmitter.HasBeenBuilt);
+      Assert.That (classEmitter.HasBeenBuilt, Is.True);
     }
 
     [Test]
@@ -99,7 +99,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           .AddStatement (new ReturnStatement());
 
       object instance = Activator.CreateInstance (classEmitter.BuildType (), "bla", 0);
-      Assert.AreEqual ("bla", instance.GetType ().GetField ("_test").GetValue (instance));
+      Assert.That (instance.GetType ().GetField ("_test").GetValue (instance), Is.EqualTo ("bla"));
     }
 
     [Test]
@@ -109,7 +109,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       classEmitter.CreateField ("_test", typeof (string), FieldAttributes.Private);
 
       Type t = classEmitter.BuildType ();
-      Assert.AreEqual (FieldAttributes.Private, t.GetField ("_test", BindingFlags.NonPublic | BindingFlags.Instance).Attributes);
+      Assert.That (t.GetField ("_test", BindingFlags.NonPublic | BindingFlags.Instance).Attributes, Is.EqualTo (FieldAttributes.Private));
     }
 
     [Test]
@@ -119,7 +119,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       classEmitter.CreateStaticField ("_test", typeof (string), FieldAttributes.Private);
 
       Type t = classEmitter.BuildType ();
-      Assert.AreEqual (FieldAttributes.Static | FieldAttributes.Private, t.GetField ("_test", BindingFlags.NonPublic | BindingFlags.Static).Attributes);
+      Assert.That (t.GetField ("_test", BindingFlags.NonPublic | BindingFlags.Static).Attributes, Is.EqualTo (FieldAttributes.Static | FieldAttributes.Private));
     }
 
     [Test]
@@ -139,7 +139,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           .AddStatement (new AssignStatement (field, (new ConstReference ("Yay").ToExpression ())))
           .AddStatement (new ReturnStatement ());
       Type t = classEmitter.BuildType ();
-      Assert.AreEqual ("Yay", t.GetField ("s_test").GetValue (null));
+      Assert.That (t.GetField ("s_test").GetValue (null), Is.EqualTo ("Yay"));
     }
 
     [Test]
@@ -150,7 +150,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       method.AddStatement (new ReturnStatement (new ConstReference ("ret")));
       
       object instance = Activator.CreateInstance (classEmitter.BuildType ());
-      Assert.AreEqual ("ret", instance.GetType().GetMethod ("Check").Invoke (instance, null));
+      Assert.That (instance.GetType().GetMethod ("Check").Invoke (instance, null), Is.EqualTo ("ret"));
     }
 
     [Test]
@@ -166,10 +166,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type t = classEmitter.BuildType();
       MethodInfo builtMethod = t.GetMethod ("SimpleClone");
 
-      Assert.AreEqual (typeof (bool), builtMethod.ReturnType);
+      Assert.That (builtMethod.ReturnType, Is.EqualTo (typeof (bool)));
       ParameterInfo[] parameters = builtMethod.GetParameters ();
-      Assert.AreEqual (1, parameters.Length);
-      Assert.AreEqual (typeof (object), parameters[0].ParameterType);
+      Assert.That (parameters.Length, Is.EqualTo (1));
+      Assert.That (parameters[0].ParameterType, Is.EqualTo (typeof (object)));
     }
 
     [Test]
@@ -185,31 +185,30 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type t = classEmitter.BuildType();
       MethodInfo builtMethod = t.GetMethod ("SimpleClone");
 
-      Assert.AreEqual (typeof (string), builtMethod.ReturnType);
+      Assert.That (builtMethod.ReturnType, Is.EqualTo (typeof (string)));
       ParameterInfo[] parameters = builtMethod.GetParameters ();
-      Assert.AreEqual (3, parameters.Length);
-      
-      Assert.IsTrue (parameters[0].ParameterType.IsGenericParameter);
-      Assert.AreEqual(builtMethod, parameters[0].ParameterType.DeclaringMethod);
-      Assert.AreEqual (GenericParameterAttributes.None, parameters[0].ParameterType.GenericParameterAttributes);
+      Assert.That (parameters.Length, Is.EqualTo (3));
+
+      Assert.That (parameters[0].ParameterType.IsGenericParameter, Is.True);
+      Assert.That (parameters[0].ParameterType.DeclaringMethod, Is.EqualTo (builtMethod));
+      Assert.That (parameters[0].ParameterType.GenericParameterAttributes, Is.EqualTo (GenericParameterAttributes.None));
       Type[] constraints = parameters[0].ParameterType.GetGenericParameterConstraints();
-      Assert.AreEqual (1, constraints.Length);
-      Assert.AreEqual (typeof (IConvertible), constraints[0]);
+      Assert.That (constraints.Length, Is.EqualTo (1));
+      Assert.That (constraints[0], Is.EqualTo (typeof (IConvertible)));
 
-      Assert.IsTrue (parameters[1].ParameterType.IsGenericParameter);
-      Assert.AreEqual (builtMethod, parameters[1].ParameterType.DeclaringMethod);
-      Assert.AreEqual (GenericParameterAttributes.NotNullableValueTypeConstraint | GenericParameterAttributes.DefaultConstructorConstraint,
-          parameters[1].ParameterType.GenericParameterAttributes);
+      Assert.That (parameters[1].ParameterType.IsGenericParameter, Is.True);
+      Assert.That (parameters[1].ParameterType.DeclaringMethod, Is.EqualTo (builtMethod));
+      Assert.That (parameters[1].ParameterType.GenericParameterAttributes, Is.EqualTo (GenericParameterAttributes.NotNullableValueTypeConstraint | GenericParameterAttributes.DefaultConstructorConstraint));
       constraints = parameters[1].ParameterType.GetGenericParameterConstraints ();
-      Assert.AreEqual (1, constraints.Length);
-      Assert.AreEqual (typeof (ValueType), constraints[0]);
+      Assert.That (constraints.Length, Is.EqualTo (1));
+      Assert.That (constraints[0], Is.EqualTo (typeof (ValueType)));
 
-      Assert.IsTrue (parameters[2].ParameterType.IsGenericParameter);
-      Assert.AreEqual (builtMethod, parameters[2].ParameterType.DeclaringMethod);
-      Assert.AreEqual (GenericParameterAttributes.None, parameters[2].ParameterType.GenericParameterAttributes);
+      Assert.That (parameters[2].ParameterType.IsGenericParameter, Is.True);
+      Assert.That (parameters[2].ParameterType.DeclaringMethod, Is.EqualTo (builtMethod));
+      Assert.That (parameters[2].ParameterType.GenericParameterAttributes, Is.EqualTo (GenericParameterAttributes.None));
       constraints = parameters[2].ParameterType.GetGenericParameterConstraints ();
-      Assert.AreEqual (1, constraints.Length);
-      Assert.AreEqual (parameters[0].ParameterType, constraints[0]);
+      Assert.That (constraints.Length, Is.EqualTo (1));
+      Assert.That (constraints[0], Is.EqualTo (parameters[0].ParameterType));
     }
 
     [Test]
@@ -226,23 +225,23 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       object instance = Activator.CreateInstance (classEmitter.BuildType());
       MethodInfo builtMethod = instance.GetType().GetMethod ("MethodWithOutRef");
 
-      Assert.AreEqual (typeof (void), builtMethod.ReturnType);
+      Assert.That (builtMethod.ReturnType, Is.EqualTo (typeof (void)));
       ParameterInfo[] parameters = builtMethod.GetParameters ();
-      Assert.AreEqual (2, parameters.Length);
-      Assert.AreEqual (typeof (string).MakeByRefType(), parameters[0].ParameterType);
-      Assert.IsTrue (parameters[0].ParameterType.IsByRef);
-      Assert.IsTrue (parameters[0].IsOut);
-      Assert.IsFalse (parameters[0].IsIn);
+      Assert.That (parameters.Length, Is.EqualTo (2));
+      Assert.That (parameters[0].ParameterType, Is.EqualTo (typeof (string).MakeByRefType()));
+      Assert.That (parameters[0].ParameterType.IsByRef, Is.True);
+      Assert.That (parameters[0].IsOut, Is.True);
+      Assert.That (parameters[0].IsIn, Is.False);
 
-      Assert.AreEqual (typeof (int).MakeByRefType (), parameters[1].ParameterType);
-      Assert.IsTrue (parameters[1].ParameterType.IsByRef);
-      Assert.IsFalse (parameters[1].IsOut);
-      Assert.IsFalse (parameters[1].IsIn);
+      Assert.That (parameters[1].ParameterType, Is.EqualTo (typeof (int).MakeByRefType ()));
+      Assert.That (parameters[1].ParameterType.IsByRef, Is.True);
+      Assert.That (parameters[1].IsOut, Is.False);
+      Assert.That (parameters[1].IsIn, Is.False);
 
       var arguments = new object[] { "foo", 5 };
       builtMethod.Invoke (instance, arguments);
-      Assert.AreEqual (null, arguments[0]);
-      Assert.AreEqual (5, arguments[1]);
+      Assert.That (arguments[0], Is.EqualTo (null));
+      Assert.That (arguments[1], Is.EqualTo (5));
     }
 
     [Test]
@@ -253,7 +252,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       method.AddStatement (new ReturnStatement (new ConstReference ("stat")));
 
       Type t = classEmitter.BuildType ();
-      Assert.AreEqual ("stat", t.GetMethod ("Check").Invoke (null, null));
+      Assert.That (t.GetMethod ("Check").Invoke (null, null), Is.EqualTo ("stat"));
     }
 
     [Test]
@@ -264,7 +263,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       property.CreateGetMethod ().AddStatement (new ReturnStatement (new ConstReference ("4711")));
 
       object instance = Activator.CreateInstance (classEmitter.BuildType ());
-      Assert.AreEqual ("4711", instance.GetType ().GetProperty ("Check").GetValue (instance, null));
+      Assert.That (instance.GetType ().GetProperty ("Check").GetValue (instance, null), Is.EqualTo ("4711"));
     }
 
     [Test]
@@ -276,7 +275,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       eventEmitter.RemoveMethod.AddStatement (new ReturnStatement ());
 
       object instance = Activator.CreateInstance (classEmitter.BuildType ());
-      Assert.IsNotNull (instance.GetType ().GetEvent ("Eve"));
+      Assert.That (instance.GetType ().GetEvent ("Eve"), Is.Not.Null);
     }
 
     [Test]
@@ -291,10 +290,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
       MethodInfo method =
           builtType.GetMethod ("ToString", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-      Assert.IsNotNull (method);
-      Assert.IsTrue (method.IsPublic);
+      Assert.That (method, Is.Not.Null);
+      Assert.That (method.IsPublic, Is.True);
       object instance = Activator.CreateInstance (builtType);
-      Assert.AreEqual ("P0wned!", instance.ToString());
+      Assert.That (instance.ToString(), Is.EqualTo ("P0wned!"));
     }
 
     [Test]
@@ -309,15 +308,15 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
       MethodInfo method = builtType.GetMethod ("ToString",
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-      Assert.IsNull (method);
+      Assert.That (method, Is.Null);
       method = builtType.GetMethod ("System.Object.ToString",
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-      Assert.IsNotNull (method);
-      Assert.IsTrue (method.IsPublic);
-      Assert.IsTrue (method.IsVirtual);
-      Assert.IsTrue (method.IsFinal);
+      Assert.That (method, Is.Not.Null);
+      Assert.That (method.IsPublic, Is.True);
+      Assert.That (method.IsVirtual, Is.True);
+      Assert.That (method.IsFinal, Is.True);
       object instance = Activator.CreateInstance (builtType);
-      Assert.AreEqual ("P0wned!", instance.ToString ());
+      Assert.That (instance.ToString (), Is.EqualTo ("P0wned!"));
     }
 
     [Test]
@@ -333,16 +332,16 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
       MethodInfo method = builtType.GetMethod ("GetSecret",
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-      Assert.IsNull (method);
+      Assert.That (method, Is.Null);
       method = builtType.GetMethod (typeof (ClassWithProtectedVirtualMethod).FullName + ".GetSecret",
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-      Assert.IsNotNull (method);
-      Assert.IsTrue (method.IsFamily);
-      Assert.IsTrue (method.IsVirtual);
-      Assert.IsTrue (method.IsFinal);
-      
+      Assert.That (method, Is.Not.Null);
+      Assert.That (method.IsFamily, Is.True);
+      Assert.That (method.IsVirtual, Is.True);
+      Assert.That (method.IsFinal, Is.True);
+
       var instance = (ClassWithProtectedVirtualMethod) Activator.CreateInstance (builtType);
-      Assert.AreEqual ("P0wned!", method.Invoke (instance, null));
+      Assert.That (method.Invoke (instance, null), Is.EqualTo ("P0wned!"));
     }
 
     [Test]
@@ -363,27 +362,27 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
 
       MethodInfo overriddenToString = builtType.GetMethod ("ToString", _declaredInstanceBindingFlags);
-      Assert.AreEqual ("ToString", overriddenToString.Name);
-      Assert.IsTrue (overriddenToString.IsPublic);
-      Assert.IsFalse (overriddenToString.IsFinal);
-      Assert.IsFalse (overriddenToString.IsStatic);
-      Assert.IsFalse (overriddenToString.IsSpecialName);
-      Assert.AreEqual (MethodAttributes.ReuseSlot, overriddenToString.Attributes & MethodAttributes.ReuseSlot);
+      Assert.That (overriddenToString.Name, Is.EqualTo ("ToString"));
+      Assert.That (overriddenToString.IsPublic, Is.True);
+      Assert.That (overriddenToString.IsFinal, Is.False);
+      Assert.That (overriddenToString.IsStatic, Is.False);
+      Assert.That (overriddenToString.IsSpecialName, Is.False);
+      Assert.That (overriddenToString.Attributes & MethodAttributes.ReuseSlot, Is.EqualTo (MethodAttributes.ReuseSlot));
 
       MethodInfo overriddenFinalize = builtType.GetMethod ("Finalize", _declaredInstanceBindingFlags);
-      Assert.AreEqual ("Finalize", overriddenFinalize.Name);
-      Assert.IsFalse (overriddenFinalize.IsPublic);
-      Assert.IsTrue (overriddenFinalize.IsFamily);
-      Assert.IsFalse (overriddenFinalize.IsStatic);
-      Assert.IsFalse (overriddenFinalize.IsSpecialName);
-      Assert.AreEqual (MethodAttributes.ReuseSlot, overriddenToString.Attributes & MethodAttributes.ReuseSlot);
+      Assert.That (overriddenFinalize.Name, Is.EqualTo ("Finalize"));
+      Assert.That (overriddenFinalize.IsPublic, Is.False);
+      Assert.That (overriddenFinalize.IsFamily, Is.True);
+      Assert.That (overriddenFinalize.IsStatic, Is.False);
+      Assert.That (overriddenFinalize.IsSpecialName, Is.False);
+      Assert.That (overriddenToString.Attributes & MethodAttributes.ReuseSlot, Is.EqualTo (MethodAttributes.ReuseSlot));
 
       MethodInfo overriddenGetter = builtType.GetMethod ("get_Property", _declaredInstanceBindingFlags);
-      Assert.AreEqual ("get_Property", overriddenGetter.Name);
-      Assert.IsTrue (overriddenGetter.IsPublic);
-      Assert.IsFalse (overriddenGetter.IsStatic);
-      Assert.IsTrue (overriddenGetter.IsSpecialName);
-      Assert.AreEqual (MethodAttributes.ReuseSlot, overriddenGetter.Attributes & MethodAttributes.ReuseSlot);
+      Assert.That (overriddenGetter.Name, Is.EqualTo ("get_Property"));
+      Assert.That (overriddenGetter.IsPublic, Is.True);
+      Assert.That (overriddenGetter.IsStatic, Is.False);
+      Assert.That (overriddenGetter.IsSpecialName, Is.True);
+      Assert.That (overriddenGetter.Attributes & MethodAttributes.ReuseSlot, Is.EqualTo (MethodAttributes.ReuseSlot));
     }
 
     [Test]
@@ -397,7 +396,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Type builtType = classEmitter.BuildType ();
       object instance = Activator.CreateInstance (builtType);
-      Assert.AreEqual ("P0wned!", ((ICloneable)instance).Clone ());
+      Assert.That (((ICloneable)instance).Clone (), Is.EqualTo ("P0wned!"));
     }
 
     [Test]
@@ -413,13 +412,13 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
 
       MethodInfo implementedMethod = builtType.GetMethod ("System.ICloneable.Clone", _declaredInstanceBindingFlags);
-      Assert.AreEqual ("System.ICloneable.Clone", implementedMethod.Name);
-      Assert.IsFalse (implementedMethod.IsPublic);
-      Assert.IsTrue (implementedMethod.IsPrivate);
-      Assert.IsTrue (implementedMethod.IsFinal);
-      Assert.IsFalse (implementedMethod.IsStatic);
-      Assert.IsFalse (implementedMethod.IsSpecialName);
-      Assert.AreEqual (MethodAttributes.NewSlot, implementedMethod.Attributes & MethodAttributes.NewSlot);
+      Assert.That (implementedMethod.Name, Is.EqualTo ("System.ICloneable.Clone"));
+      Assert.That (implementedMethod.IsPublic, Is.False);
+      Assert.That (implementedMethod.IsPrivate, Is.True);
+      Assert.That (implementedMethod.IsFinal, Is.True);
+      Assert.That (implementedMethod.IsStatic, Is.False);
+      Assert.That (implementedMethod.IsSpecialName, Is.False);
+      Assert.That (implementedMethod.Attributes & MethodAttributes.NewSlot, Is.EqualTo (MethodAttributes.NewSlot));
     }
 
     [Test]
@@ -433,7 +432,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Type builtType = classEmitter.BuildType ();
       object instance = Activator.CreateInstance (builtType);
-      Assert.AreEqual ("P0wned!", ((ICloneable) instance).Clone ());
+      Assert.That (((ICloneable) instance).Clone (), Is.EqualTo ("P0wned!"));
     }
 
     [Test]
@@ -449,10 +448,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
 
       MethodInfo implementedMethod = builtType.GetMethod ("Clone", _declaredInstanceBindingFlags);
-      Assert.AreEqual ("Clone", implementedMethod.Name);
-      Assert.IsTrue (implementedMethod.IsPublic);
-      Assert.IsFalse (implementedMethod.IsFinal);
-      Assert.AreEqual (MethodAttributes.NewSlot, implementedMethod.Attributes & MethodAttributes.NewSlot);
+      Assert.That (implementedMethod.Name, Is.EqualTo ("Clone"));
+      Assert.That (implementedMethod.IsPublic, Is.True);
+      Assert.That (implementedMethod.IsFinal, Is.False);
+      Assert.That (implementedMethod.Attributes & MethodAttributes.NewSlot, Is.EqualTo (MethodAttributes.NewSlot));
     }
 
     [Test]
@@ -464,8 +463,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomPropertyEmitter property =
           classEmitter.CreatePropertyOverride (typeof (ClassWithAllKindsOfMembers).GetProperty ("Property", _declaredInstanceBindingFlags));
 
-      Assert.IsNull (property.GetMethod);
-      Assert.IsNull (property.SetMethod);
+      Assert.That (property.GetMethod, Is.Null);
+      Assert.That (property.SetMethod, Is.Null);
 
       // only override getter, not setter
       property.GetMethod =
@@ -475,7 +474,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
       var instance = (ClassWithAllKindsOfMembers) Activator.CreateInstance (builtType);
 
-      Assert.AreEqual (17, instance.Property); // overridden
+      Assert.That (instance.Property, Is.EqualTo (17));
       instance.Property = 7; // inherited, not overridden
     }
 
@@ -494,7 +493,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
       var instance = (ClassWithAllKindsOfMembers) Activator.CreateInstance (builtType);
 
-      Assert.AreEqual ("17", instance[17]);
+      Assert.That (instance[17], Is.EqualTo ("17"));
       instance[18] = "foo";
     }
 
@@ -507,7 +506,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomPropertyEmitter property =
           classEmitter.CreatePropertyOverride (typeof (ClassWithAllKindsOfMembers).GetProperty ("Property", _declaredInstanceBindingFlags));
 
-      Assert.AreEqual ("Property", property.PropertyBuilder.Name);
+      Assert.That (property.PropertyBuilder.Name, Is.EqualTo ("Property"));
 
       classEmitter.BuildType ();
     }
@@ -526,8 +525,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomPropertyEmitter property = classEmitter.CreateInterfacePropertyImplementation (
           typeof (IInterfaceWithProperty).GetProperty ("Property", _declaredInstanceBindingFlags));
 
-      Assert.IsNull (property.GetMethod);
-      Assert.IsNull (property.SetMethod);
+      Assert.That (property.GetMethod, Is.Null);
+      Assert.That (property.SetMethod, Is.Null);
 
       property.SetMethod = classEmitter.CreateInterfaceMethodImplementation (
           typeof (IInterfaceWithProperty).GetMethod ("set_Property", _declaredInstanceBindingFlags));
@@ -548,8 +547,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomPropertyEmitter property = classEmitter.CreatePublicInterfacePropertyImplementation (
           typeof (IInterfaceWithProperty).GetProperty ("Property", _declaredInstanceBindingFlags));
 
-      Assert.IsNull (property.GetMethod);
-      Assert.IsNull (property.SetMethod);
+      Assert.That (property.GetMethod, Is.Null);
+      Assert.That (property.SetMethod, Is.Null);
 
       property.SetMethod = classEmitter.CreateInterfaceMethodImplementation (
           typeof (IInterfaceWithProperty).GetMethod ("set_Property", _declaredInstanceBindingFlags));
@@ -570,8 +569,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomPropertyEmitter property = classEmitter.CreateInterfacePropertyImplementation (
           typeof (IInterfaceWithProperty).GetProperty ("Property", _declaredInstanceBindingFlags));
 
-      Assert.AreNotEqual ("Property", property.PropertyBuilder.Name);
-      Assert.AreEqual (typeof (IInterfaceWithProperty).FullName + ".Property", property.PropertyBuilder.Name);
+      Assert.That (property.PropertyBuilder.Name, Is.Not.EqualTo ("Property"));
+      Assert.That (property.PropertyBuilder.Name, Is.EqualTo (typeof (IInterfaceWithProperty).FullName + ".Property"));
 
       property.SetMethod = classEmitter.CreateInterfaceMethodImplementation (
           typeof (IInterfaceWithProperty).GetMethod ("set_Property", _declaredInstanceBindingFlags));
@@ -589,7 +588,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomPropertyEmitter property = classEmitter.CreatePublicInterfacePropertyImplementation (
           typeof (IInterfaceWithProperty).GetProperty ("Property", _declaredInstanceBindingFlags));
 
-      Assert.AreEqual ("Property", property.PropertyBuilder.Name);
+      Assert.That (property.PropertyBuilder.Name, Is.EqualTo ("Property"));
 
       property.SetMethod = classEmitter.CreateInterfaceMethodImplementation (
           typeof (IInterfaceWithProperty).GetMethod ("set_Property", _declaredInstanceBindingFlags));
@@ -642,7 +641,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Type builtType = classEmitter.BuildType ();
 
-      Assert.IsNotNull (builtType.GetEvent ("Event", _declaredInstanceBindingFlags));
+      Assert.That (builtType.GetEvent ("Event", _declaredInstanceBindingFlags), Is.Not.Null);
     }
 
     public interface IInterfaceWithEvent
@@ -719,8 +718,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Type builtType = classEmitter.BuildType ();
 
-      Assert.IsNull (builtType.GetEvent ("Event"));
-      Assert.IsNotNull (builtType.GetEvent (typeof (IInterfaceWithEvent).FullName + ".Event", _declaredInstanceBindingFlags));
+      Assert.That (builtType.GetEvent ("Event"), Is.Null);
+      Assert.That (builtType.GetEvent (typeof (IInterfaceWithEvent).FullName + ".Event", _declaredInstanceBindingFlags), Is.Not.Null);
     }
 
     [Test]
@@ -742,7 +741,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Type builtType = classEmitter.BuildType ();
 
-      Assert.IsNotNull (builtType.GetEvent ("Event", _declaredInstanceBindingFlags));
+      Assert.That (builtType.GetEvent ("Event", _declaredInstanceBindingFlags), Is.Not.Null);
     }
 
     [Test]
@@ -755,8 +754,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
 
       var attributes = (SimpleAttribute[]) builtType.GetCustomAttributes (typeof (SimpleAttribute), false);
-      Assert.AreEqual (1, attributes.Length);
-      Assert.AreEqual ("value", attributes[0].S);
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0].S, Is.EqualTo ("value"));
     }
 
     [Test]
@@ -790,9 +789,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       object instance = Activator.CreateInstance (classEmitter.BuildType ());
       MethodInfo publicWrapper = instance.GetType().GetMethod ("__wrap__GetSecret");
-      Assert.IsNotNull (publicWrapper);
-      Assert.AreEqual ("The secret is to be more provocative and interesting than anything else in [the] environment.", 
-          publicWrapper.Invoke (instance, null));
+      Assert.That (publicWrapper, Is.Not.Null);
+      Assert.That (publicWrapper.Invoke (instance, null), Is.EqualTo ("The secret is to be more provocative and interesting than anything else in [the] environment."));
     }
 
     [Test]
@@ -803,11 +801,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           classEmitter.GetPublicMethodWrapper (typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags));
       MethodInfo emitter2 =
           classEmitter.GetPublicMethodWrapper (typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags));
-      Assert.AreSame (emitter1, emitter2);
+      Assert.That (emitter2, Is.SameAs (emitter1));
 
       MethodInfo emitter3 =
       classEmitter.GetPublicMethodWrapper (typeof (object).GetMethod ("Finalize", _declaredInstanceBindingFlags));
-      Assert.AreNotSame (emitter1, emitter3);
+      Assert.That (emitter3, Is.Not.SameAs (emitter1));
 
       classEmitter.BuildType ();
     }
@@ -848,7 +846,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       var classEmitter = new CustomClassEmitter (Scope, "ForceUnsignedTrue", typeof (object), Type.EmptyTypes, TypeAttributes.Public, true);
       Type t = classEmitter.BuildType ();
-      Assert.IsFalse (StrongNameUtil.IsAssemblySigned (t.Assembly));
+      Assert.That (StrongNameUtil.IsAssemblySigned (t.Assembly), Is.False);
     }
 
     [Test]
@@ -856,7 +854,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       var classEmitter = new CustomClassEmitter (Scope, "ForceUnsignedFalse", typeof (object), Type.EmptyTypes, TypeAttributes.Public, false);
       Type t = classEmitter.BuildType ();
-      Assert.IsTrue (StrongNameUtil.IsAssemblySigned (t.Assembly));
+      Assert.That (StrongNameUtil.IsAssemblySigned (t.Assembly), Is.True);
     }
 
     [Test]

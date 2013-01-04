@@ -74,18 +74,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       eventReceiver.Check (expectedChangeStates);
 
-      Assert.AreEqual (StateType.Changed, _customer.State);
-      Assert.AreEqual (StateType.Changed, _oldCustomerOfNewOrder.State);
-      Assert.AreEqual (StateType.Changed, _oldOrder.State);
-      Assert.AreEqual (StateType.Changed, _newOrder.State);
+      Assert.That (_customer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_oldCustomerOfNewOrder.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_oldOrder.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_newOrder.State, Is.EqualTo (StateType.Changed));
 
-      Assert.AreSame (_newOrder, _customer.Orders[replaceIndex]);
-      Assert.AreSame (_customer, _newOrder.Customer);
+      Assert.That (_customer.Orders[replaceIndex], Is.SameAs (_newOrder));
+      Assert.That (_newOrder.Customer, Is.SameAs (_customer));
 
-      Assert.IsFalse (_customer.Orders.ContainsObject (_oldOrder));
-      Assert.IsNull (_oldOrder.Customer);
+      Assert.That (_customer.Orders.ContainsObject (_oldOrder), Is.False);
+      Assert.That (_oldOrder.Customer, Is.Null);
 
-      Assert.IsFalse (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder));
+      Assert.That (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder), Is.False);
     }
 
     [Test]
@@ -116,17 +116,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       eventReceiver.Check (expectedChangeStates);
 
-      Assert.AreEqual (StateType.Changed, _customer.State);
-      Assert.AreEqual (StateType.Unchanged, _oldCustomerOfNewOrder.State);
-      Assert.AreEqual (StateType.Changed, _oldOrder.State);
-      Assert.AreEqual (StateType.New, newOrder.State);
-      Assert.AreEqual (_customer.ID, newOrder.Properties[typeof (Order), "Customer"].GetRelatedObjectID ());
+      Assert.That (_customer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_oldCustomerOfNewOrder.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_oldOrder.State, Is.EqualTo (StateType.Changed));
+      Assert.That (newOrder.State, Is.EqualTo (StateType.New));
+      Assert.That (newOrder.Properties[typeof (Order), "Customer"].GetRelatedObjectID (), Is.EqualTo (_customer.ID));
 
-      Assert.AreSame (newOrder, _customer.Orders[replaceIndex]);
-      Assert.AreSame (_customer, newOrder.Customer);
+      Assert.That (_customer.Orders[replaceIndex], Is.SameAs (newOrder));
+      Assert.That (newOrder.Customer, Is.SameAs (_customer));
 
-      Assert.IsFalse (_customer.Orders.ContainsObject (_oldOrder));
-      Assert.IsNull (_oldOrder.Customer);
+      Assert.That (_customer.Orders.ContainsObject (_oldOrder), Is.False);
+      Assert.That (_oldOrder.Customer, Is.Null);
     }
 
     [Test]
@@ -152,16 +152,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _customer.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomerOfNewOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _oldOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _newOrder.State);
+        Assert.That (_customer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomerOfNewOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newOrder.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldOrder, _customer.Orders[replaceIndex]);
-        Assert.AreSame (_customer, _oldOrder.Customer);
+        Assert.That (_customer.Orders[replaceIndex], Is.SameAs (_oldOrder));
+        Assert.That (_oldOrder.Customer, Is.SameAs (_customer));
 
-        Assert.IsTrue (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder));
-        Assert.AreSame (_oldCustomerOfNewOrder, _newOrder.Customer);
+        Assert.That (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder), Is.True);
+        Assert.That (_newOrder.Customer, Is.SameAs (_oldCustomerOfNewOrder));
       }
     }
 
@@ -191,16 +191,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _customer.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomerOfNewOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _oldOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _newOrder.State);
+        Assert.That (_customer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomerOfNewOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newOrder.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldOrder, _customer.Orders[replaceIndex]);
-        Assert.AreSame (_customer, _oldOrder.Customer);
+        Assert.That (_customer.Orders[replaceIndex], Is.SameAs (_oldOrder));
+        Assert.That (_oldOrder.Customer, Is.SameAs (_customer));
 
-        Assert.IsTrue (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder));
-        Assert.AreSame (_oldCustomerOfNewOrder, _newOrder.Customer);
+        Assert.That (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder), Is.True);
+        Assert.That (_newOrder.Customer, Is.SameAs (_oldCustomerOfNewOrder));
       }
     }
 
@@ -231,16 +231,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _customer.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomerOfNewOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _oldOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _newOrder.State);
+        Assert.That (_customer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomerOfNewOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newOrder.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldOrder, _customer.Orders[replaceIndex]);
-        Assert.AreSame (_customer, _oldOrder.Customer);
+        Assert.That (_customer.Orders[replaceIndex], Is.SameAs (_oldOrder));
+        Assert.That (_oldOrder.Customer, Is.SameAs (_customer));
 
-        Assert.IsTrue (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder));
-        Assert.AreSame (_oldCustomerOfNewOrder, _newOrder.Customer);
+        Assert.That (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder), Is.True);
+        Assert.That (_newOrder.Customer, Is.SameAs (_oldCustomerOfNewOrder));
       }
     }
 
@@ -272,16 +272,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _customer.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomerOfNewOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _oldOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _newOrder.State);
+        Assert.That (_customer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomerOfNewOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newOrder.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldOrder, _customer.Orders[replaceIndex]);
-        Assert.AreSame (_customer, _oldOrder.Customer);
+        Assert.That (_customer.Orders[replaceIndex], Is.SameAs (_oldOrder));
+        Assert.That (_oldOrder.Customer, Is.SameAs (_customer));
 
-        Assert.IsTrue (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder));
-        Assert.AreSame (_oldCustomerOfNewOrder, _newOrder.Customer);
+        Assert.That (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder), Is.True);
+        Assert.That (_newOrder.Customer, Is.SameAs (_oldCustomerOfNewOrder));
       }
     }
 
@@ -314,16 +314,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _customer.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomerOfNewOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _oldOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _newOrder.State);
+        Assert.That (_customer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomerOfNewOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newOrder.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldOrder, _customer.Orders[replaceIndex]);
-        Assert.AreSame (_customer, _oldOrder.Customer);
+        Assert.That (_customer.Orders[replaceIndex], Is.SameAs (_oldOrder));
+        Assert.That (_oldOrder.Customer, Is.SameAs (_customer));
 
-        Assert.IsTrue (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder));
-        Assert.AreSame (_oldCustomerOfNewOrder, _newOrder.Customer);
+        Assert.That (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder), Is.True);
+        Assert.That (_newOrder.Customer, Is.SameAs (_oldCustomerOfNewOrder));
       }
     }
 
@@ -357,16 +357,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _customer.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomerOfNewOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _oldOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _newOrder.State);
+        Assert.That (_customer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomerOfNewOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newOrder.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldOrder, _customer.Orders[replaceIndex]);
-        Assert.AreSame (_customer, _oldOrder.Customer);
+        Assert.That (_customer.Orders[replaceIndex], Is.SameAs (_oldOrder));
+        Assert.That (_oldOrder.Customer, Is.SameAs (_customer));
 
-        Assert.IsTrue (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder));
-        Assert.AreSame (_oldCustomerOfNewOrder, _newOrder.Customer);
+        Assert.That (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder), Is.True);
+        Assert.That (_newOrder.Customer, Is.SameAs (_oldCustomerOfNewOrder));
       }
     }
 
@@ -401,16 +401,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _customer.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomerOfNewOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _oldOrder.State);
-        Assert.AreEqual (StateType.Unchanged, _newOrder.State);
+        Assert.That (_customer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomerOfNewOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newOrder.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldOrder, _customer.Orders[replaceIndex]);
-        Assert.AreSame (_customer, _oldOrder.Customer);
+        Assert.That (_customer.Orders[replaceIndex], Is.SameAs (_oldOrder));
+        Assert.That (_oldOrder.Customer, Is.SameAs (_customer));
 
-        Assert.IsTrue (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder));
-        Assert.AreSame (_oldCustomerOfNewOrder, _newOrder.Customer);
+        Assert.That (_oldCustomerOfNewOrder.Orders.ContainsObject (_newOrder), Is.True);
+        Assert.That (_newOrder.Customer, Is.SameAs (_oldCustomerOfNewOrder));
       }
     }
 
@@ -440,7 +440,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       catch (InvalidOperationException e)
       {
         string expectedMessage = string.Format ("The collection already contains an object with ID '{0}'.", _customer.Orders[1].ID);
-        Assert.AreEqual (expectedMessage, e.Message);
+        Assert.That (e.Message, Is.EqualTo (expectedMessage));
       }
     }
 
@@ -456,12 +456,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       int replaceIndex = _customer.Orders.IndexOf (_oldOrder);
       _customer.Orders[replaceIndex] = newOrder;
 
-      Assert.AreSame (_customer, newOrder.Customer);
-      Assert.IsTrue (_customer.Orders.ContainsObject (newOrder));
+      Assert.That (newOrder.Customer, Is.SameAs (_customer));
+      Assert.That (_customer.Orders.ContainsObject (newOrder), Is.True);
 
       Customer oldCustomerOfNewOrder = Customer.GetObject (DomainObjectIDs.Customer4);
 
-      Assert.IsFalse (oldCustomerOfNewOrder.Orders.ContainsObject (newOrder));
+      Assert.That (oldCustomerOfNewOrder.Orders.ContainsObject (newOrder), Is.False);
 
       ChangeState[] expectedStates = new ChangeState[]
     {

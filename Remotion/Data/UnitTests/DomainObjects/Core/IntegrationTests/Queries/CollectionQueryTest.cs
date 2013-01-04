@@ -88,10 +88,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
 
       var customers = QueryManager.GetCollection (query);
 
-      Assert.IsNotNull (customers);
-      Assert.AreEqual (1, customers.Count);
-      Assert.AreEqual (DomainObjectIDs.Customer1, customers.ToArray ()[0].ID);
-      Assert.AreEqual (typeof (Customer), customers.ToArray ()[0].GetPublicDomainObjectType ());
+      Assert.That (customers, Is.Not.Null);
+      Assert.That (customers.Count, Is.EqualTo (1));
+      Assert.That (customers.ToArray ()[0].ID, Is.EqualTo (DomainObjectIDs.Customer1));
+      Assert.That (customers.ToArray ()[0].GetPublicDomainObjectType (), Is.EqualTo (typeof (Customer)));
     }
 
     [Test]
@@ -101,10 +101,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
       var customers = QueryManager.GetCollection<Customer> (query).ToObjectList ();
-      Assert.IsNotNull (customers);
-      Assert.AreEqual (1, customers.Count);
-      Assert.AreEqual (DomainObjectIDs.Customer1, customers[0].ID);
-      Assert.IsTrue (query.CollectionType.IsAssignableFrom (customers.GetType ()));
+      Assert.That (customers, Is.Not.Null);
+      Assert.That (customers.Count, Is.EqualTo (1));
+      Assert.That (customers[0].ID, Is.EqualTo (DomainObjectIDs.Customer1));
+      Assert.That (query.CollectionType.IsAssignableFrom (customers.GetType ()), Is.True);
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       query.Parameters.Add ("@officialID", DomainObjectIDs.Official1);
 
       var orders = QueryManager.GetCollection<Order> (query).ToCustomCollection ();
-      Assert.AreEqual (5, orders.Count);
+      Assert.That (orders.Count, Is.EqualTo (5));
       Assert.That (orders, Is.EquivalentTo (new object[]
       {
         Order.GetObject (DomainObjectIDs.Order1),
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
         Order.GetObject (DomainObjectIDs.Order3),
         Order.GetObject (DomainObjectIDs.Order4),
       }));
-      Assert.IsTrue (query.CollectionType.IsAssignableFrom (orders.GetType ()));
+      Assert.That (query.CollectionType.IsAssignableFrom (orders.GetType ()), Is.True);
     }
 
     [Test]
@@ -181,11 +181,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       Assert.AreEqual (2, orders.Count, "Order count");
 
       foreach (Order order in orders)
-        Assert.IsTrue (TestableClientTransaction.IsEnlisted (order));
+        Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
 
       int orderNumberSum = orders.Sum (order => order.OrderNumber);
 
-      Assert.AreEqual (Order.GetObject (DomainObjectIDs.Order1).OrderNumber + Order.GetObject (DomainObjectIDs.Order2).OrderNumber, orderNumberSum);
+      Assert.That (orderNumberSum, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1).OrderNumber + Order.GetObject (DomainObjectIDs.Order2).OrderNumber));
     }
 
     [Test]

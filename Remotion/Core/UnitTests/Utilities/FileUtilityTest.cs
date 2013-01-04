@@ -58,23 +58,23 @@ namespace Remotion.UnitTests.Utilities
     [Test]
     public void MoveAndWaitForCompletionWithSameFileName ()
     {
-      Assert.IsTrue (File.Exists (c_testFileName));
+      Assert.That (File.Exists (c_testFileName), Is.True);
 
       FileUtility.MoveAndWaitForCompletion (c_testFileName, c_testFileName);
 
-      Assert.IsTrue (File.Exists (c_testFileName));
+      Assert.That (File.Exists (c_testFileName), Is.True);
     }
 
     [Test]
     public void MoveAndWaitForCompletionWithSameFile ()
     {
-      Assert.IsTrue (File.Exists (c_testFileName));
-      Assert.IsTrue (File.Exists (Path.GetFullPath (c_testFileName)));
+      Assert.That (File.Exists (c_testFileName), Is.True);
+      Assert.That (File.Exists (Path.GetFullPath (c_testFileName)), Is.True);
 
       FileUtility.MoveAndWaitForCompletion (c_testFileName, Path.GetFullPath (c_testFileName));
 
-      Assert.IsTrue (File.Exists (c_testFileName));
-      Assert.IsTrue (File.Exists (Path.GetFullPath (c_testFileName)));
+      Assert.That (File.Exists (c_testFileName), Is.True);
+      Assert.That (File.Exists (Path.GetFullPath (c_testFileName)), Is.True);
     }
 
     [Test]

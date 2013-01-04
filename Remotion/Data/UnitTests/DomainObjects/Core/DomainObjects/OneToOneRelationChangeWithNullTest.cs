@@ -63,10 +63,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee1);
       computerWithoutEmployee.Employee = employee;
 
-      Assert.AreEqual (employee.ID, computerWithoutEmployee.Properties[typeof (Computer), "Employee"].GetRelatedObjectID ());
+      Assert.That (computerWithoutEmployee.Properties[typeof (Computer), "Employee"].GetRelatedObjectID (), Is.EqualTo (employee.ID));
 
-      Assert.AreSame (employee, computerWithoutEmployee.Employee);
-      Assert.AreSame (computerWithoutEmployee, employee.Computer);
+      Assert.That (computerWithoutEmployee.Employee, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.SameAs (computerWithoutEmployee));
     }
 
     [Test]
@@ -76,10 +76,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
       employeeWithoutComputer.Computer = computer;
 
-      Assert.AreEqual (employeeWithoutComputer.ID, computer.Properties[typeof (Computer), "Employee"].GetRelatedObjectID ());
+      Assert.That (computer.Properties[typeof (Computer), "Employee"].GetRelatedObjectID (), Is.EqualTo (employeeWithoutComputer.ID));
 
-      Assert.AreSame (computer, employeeWithoutComputer.Computer);
-      Assert.AreSame (employeeWithoutComputer, computer.Employee);
+      Assert.That (employeeWithoutComputer.Computer, Is.SameAs (computer));
+      Assert.That (computer.Employee, Is.SameAs (employeeWithoutComputer));
     }
 
     [Test]
@@ -89,10 +89,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Computer computer = employee.Computer;
       computer.Employee = null;
 
-      Assert.IsNull (computer.Properties[typeof (Computer), "Employee"].GetRelatedObjectID ());
+      Assert.That (computer.Properties[typeof (Computer), "Employee"].GetRelatedObjectID (), Is.Null);
 
-      Assert.IsNull (computer.Employee);
-      Assert.IsNull (employee.Computer);
+      Assert.That (computer.Employee, Is.Null);
+      Assert.That (employee.Computer, Is.Null);
     }
 
     [Test]
@@ -102,10 +102,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Computer computer = employee.Computer;
       employee.Computer = null;
 
-			Assert.IsNull (computer.Properties[typeof (Computer), "Employee"].GetRelatedObjectID());
+      Assert.That (computer.Properties[typeof (Computer), "Employee"].GetRelatedObjectID(), Is.Null);
 
-      Assert.IsNull (employee.Computer);
-      Assert.IsNull (computer.Employee);
+      Assert.That (employee.Computer, Is.Null);
+      Assert.That (computer.Employee, Is.Null);
     }
 
     [Test]

@@ -38,11 +38,11 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       // "this \"special\", value", "true", "2004-03-25 12:00", var1
       string args = @"""this \""special\"", value"", ""true"", ""2004-03-25 12:00"", var1";
       object[] result = WxeVariablesContainer.ParseActualParameters (s_parameters, args, CultureInfo.InvariantCulture);
-      Assert.AreEqual (4, result.Length);
-      Assert.AreEqual ("this \"special\", value", result[0]);
-      Assert.AreEqual (true, result[1]);
-      Assert.AreEqual (new DateTime (2004, 3, 25, 12, 0, 0), result[2]);
-      Assert.AreEqual (new WxeVariableReference ("var1"), result[3]);
+      Assert.That (result.Length, Is.EqualTo (4));
+      Assert.That (result[0], Is.EqualTo ("this \"special\", value"));
+      Assert.That (result[1], Is.EqualTo (true));
+      Assert.That (result[2], Is.EqualTo (new DateTime (2004, 3, 25, 12, 0, 0)));
+      Assert.That (result[3], Is.EqualTo (new WxeVariableReference ("var1")));
     }
 
     [Test]
@@ -51,11 +51,11 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       // "value", true, 2004-03-25 12:00, var1
       string args = @"""value"", true, 2004-03-25 12:00, var1";
       object[] result = WxeVariablesContainer.ParseActualParameters (s_parameters, args, CultureInfo.InvariantCulture);
-      Assert.AreEqual (4, result.Length);
-      Assert.AreEqual ("value", result[0]);
-      Assert.AreEqual (true, result[1]);
-      Assert.AreEqual (new DateTime (2004, 3, 25, 12, 0, 0), result[2]);
-      Assert.AreEqual (new WxeVariableReference ("var1"), result[3]);
+      Assert.That (result.Length, Is.EqualTo (4));
+      Assert.That (result[0], Is.EqualTo ("value"));
+      Assert.That (result[1], Is.EqualTo (true));
+      Assert.That (result[2], Is.EqualTo (new DateTime (2004, 3, 25, 12, 0, 0)));
+      Assert.That (result[3], Is.EqualTo (new WxeVariableReference ("var1")));
     }
 
     [Test]

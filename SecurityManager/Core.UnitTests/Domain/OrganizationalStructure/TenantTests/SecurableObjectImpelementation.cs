@@ -32,10 +32,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       ISecurableObject tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
 
       IObjectSecurityStrategy objectSecurityStrategy = tenant.GetSecurityStrategy();
-      Assert.IsNotNull (objectSecurityStrategy);
+      Assert.That (objectSecurityStrategy, Is.Not.Null);
       Assert.IsInstanceOf (typeof (DomainObjectSecurityStrategy), objectSecurityStrategy);
       DomainObjectSecurityStrategy domainObjectSecurityStrategy = (DomainObjectSecurityStrategy) objectSecurityStrategy;
-      Assert.AreEqual (RequiredSecurityForStates.None, domainObjectSecurityStrategy.RequiredSecurityForStates);
+      Assert.That (domainObjectSecurityStrategy.RequiredSecurityForStates, Is.EqualTo (RequiredSecurityForStates.None));
     }
 
     [Test]
@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     {
       ISecurableObject tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
 
-      Assert.AreSame (tenant.GetSecurityStrategy(), tenant.GetSecurityStrategy());
+      Assert.That (tenant.GetSecurityStrategy(), Is.SameAs (tenant.GetSecurityStrategy()));
     }
 
     [Test]
@@ -51,7 +51,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     {
       ISecurableObject tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
 
-      Assert.AreSame (typeof (Tenant), tenant.GetSecurableType());
+      Assert.That (tenant.GetSecurableType(), Is.SameAs (typeof (Tenant)));
     }
 
     [Test]
@@ -60,13 +60,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
       IDomainObjectSecurityContextFactory factory = tenant;
 
-      Assert.IsFalse (factory.IsInvalid);
-      Assert.IsTrue (factory.IsNew);
-      Assert.IsFalse (factory.IsDeleted);
+      Assert.That (factory.IsInvalid, Is.False);
+      Assert.That (factory.IsNew, Is.True);
+      Assert.That (factory.IsDeleted, Is.False);
 
       tenant.Delete();
 
-      Assert.IsTrue (factory.IsInvalid);
+      Assert.That (factory.IsInvalid, Is.True);
     }
 
     [Test]
@@ -75,12 +75,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
 
       ISecurityContext securityContext = ((ISecurityContextFactory) tenant).CreateSecurityContext();
-      Assert.AreEqual (tenant.GetPublicDomainObjectType(), Type.GetType (securityContext.Class));
-      Assert.IsNull (securityContext.Owner);
-      Assert.IsNull (securityContext.OwnerGroup);
-      Assert.AreEqual (tenant.UniqueIdentifier, securityContext.OwnerTenant);
+      Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (tenant.GetPublicDomainObjectType()));
+      Assert.That (securityContext.Owner, Is.Null);
+      Assert.That (securityContext.OwnerGroup, Is.Null);
+      Assert.That (securityContext.OwnerTenant, Is.EqualTo (tenant.UniqueIdentifier));
       Assert.That (securityContext.AbstractRoles, Is.Empty);
-      Assert.IsFalse (securityContext.IsStateless);
+      Assert.That (securityContext.IsStateless, Is.False);
     }
   }
 }

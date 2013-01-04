@@ -324,16 +324,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
       PropertyAccessor property = CreateAccessor (sector, "Name");
-      Assert.IsFalse (property.HasChanged);
+      Assert.That (property.HasChanged, Is.False);
       var originalValue = property.GetValue<string>();
-      Assert.IsNotNull (originalValue);
-      Assert.AreEqual (originalValue, property.GetOriginalValue<string> ());
+      Assert.That (originalValue, Is.Not.Null);
+      Assert.That (property.GetOriginalValue<string> (), Is.EqualTo (originalValue));
 
       property.SetValue ("Foo");
-      Assert.IsTrue (property.HasChanged);
-      Assert.AreEqual ("Foo", property.GetValue<string>());
-      Assert.AreNotEqual (property.GetValue<string>(), property.GetOriginalValue<string> ());
-      Assert.AreEqual (originalValue, property.GetOriginalValue<string> ());
+      Assert.That (property.HasChanged, Is.True);
+      Assert.That (property.GetValue<string>(), Is.EqualTo ("Foo"));
+      Assert.That (property.GetOriginalValue<string> (), Is.Not.EqualTo (property.GetValue<string>()));
+      Assert.That (property.GetOriginalValue<string> (), Is.EqualTo (originalValue));
     }
 
     [Test]
@@ -341,19 +341,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       PropertyAccessor property = CreateAccessor (computer, "Employee");
-      Assert.IsFalse (property.HasChanged);
+      Assert.That (property.HasChanged, Is.False);
       var originalValue = property.GetOriginalValue<Employee>();
 
       property.GetValue<Employee> ().Name = "FooBarBazFred";
-      Assert.IsFalse (property.HasChanged);
+      Assert.That (property.HasChanged, Is.False);
 
       Employee newValue = Employee.NewObject ();
       property.SetValue (newValue);
-      Assert.IsTrue (property.HasChanged);
-      Assert.AreEqual (newValue, property.GetValue<Employee> ());
-      Assert.AreNotEqual (property.GetValue<Employee> (), property.GetOriginalValue<Employee> ());
-      Assert.AreEqual (originalValue, property.GetOriginalValue<Employee> ());
-
+      Assert.That (property.HasChanged, Is.True);
+      Assert.That (property.GetValue<Employee> (), Is.EqualTo (newValue));
+      Assert.That (property.GetOriginalValue<Employee> (), Is.Not.EqualTo (property.GetValue<Employee> ()));
+      Assert.That (property.GetOriginalValue<Employee> (), Is.EqualTo (originalValue));
     }
 
     [Test]
@@ -362,19 +361,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
       PropertyAccessor property = CreateAccessor (sector, "Companies");
 
-      Assert.IsFalse (property.HasChanged);
+      Assert.That (property.HasChanged, Is.False);
       var originalValue = property.GetValue<ObjectList<Company>> ();
       int originalCount = originalValue.Count;
-      Assert.IsNotNull (originalValue);
-      Assert.AreEqual (originalValue, property.GetOriginalValue<ObjectList<Company>> ());
+      Assert.That (originalValue, Is.Not.Null);
+      Assert.That (property.GetOriginalValue<ObjectList<Company>> (), Is.EqualTo (originalValue));
 
       property.GetValue<ObjectList<Company>> ().Add (Company.NewObject ());
-      Assert.AreNotEqual (originalCount, property.GetValue<ObjectList<Company>> ().Count);
-      Assert.IsTrue (property.HasChanged);
+      Assert.That (property.GetValue<ObjectList<Company>> ().Count, Is.Not.EqualTo (originalCount));
+      Assert.That (property.HasChanged, Is.True);
 
-      Assert.AreSame (originalValue, property.GetValue<ObjectList<Company>> ()); // !!
-      Assert.AreNotSame (property.GetValue<ObjectList<Company>> (), property.GetOriginalValue<ObjectList<Company>> ());
-      Assert.AreEqual (originalCount, property.GetOriginalValue<ObjectList<Company>>().Count);
+      Assert.That (property.GetValue<ObjectList<Company>> (), Is.SameAs (originalValue));
+      Assert.That (property.GetOriginalValue<ObjectList<Company>> (), Is.Not.SameAs (property.GetValue<ObjectList<Company>> ()));
+      Assert.That (property.GetOriginalValue<ObjectList<Company>>().Count, Is.EqualTo (originalCount));
     }
 
     [Test]
@@ -391,9 +390,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
       PropertyAccessor property = CreateAccessor (sector, "Name");
 
-      Assert.IsFalse (property.HasBeenTouched);
+      Assert.That (property.HasBeenTouched, Is.False);
       property.SetValueWithoutTypeCheck (property.GetValueWithoutTypeCheck ());
-      Assert.IsTrue (property.HasBeenTouched);
+      Assert.That (property.HasBeenTouched, Is.True);
     }
 
     [Test]
@@ -402,9 +401,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       PropertyAccessor property = CreateAccessor (computer, "Employee");
 
-      Assert.IsFalse (property.HasBeenTouched);
+      Assert.That (property.HasBeenTouched, Is.False);
       property.SetValueWithoutTypeCheck (property.GetValueWithoutTypeCheck ());
-      Assert.IsTrue (property.HasBeenTouched);
+      Assert.That (property.HasBeenTouched, Is.True);
     }
 
     [Test]
@@ -413,75 +412,75 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
       PropertyAccessor property = CreateAccessor (sector, "Companies");
 
-      Assert.IsFalse (property.HasBeenTouched);
+      Assert.That (property.HasBeenTouched, Is.False);
       ((DomainObjectCollection) property.GetValueWithoutTypeCheck ())[0] = ((DomainObjectCollection) property.GetValueWithoutTypeCheck ())[0];
-      Assert.IsTrue (property.HasBeenTouched);
+      Assert.That (property.HasBeenTouched, Is.True);
     }
 
     [Test]
     public void IsNullPropertyValue ()
     {
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.NewObject ();
-      Assert.IsTrue (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].IsNull);
-      Assert.IsFalse (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"].IsNull);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].IsNull, Is.True);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"].IsNull, Is.False);
 
       cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].SetValue<bool?> (true);
-      Assert.IsFalse (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].IsNull);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].IsNull, Is.False);
 
       cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].SetValue<bool?> (null);
-      Assert.IsTrue (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].IsNull);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].IsNull, Is.True);
 
       cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].SetValue<bool?> (null);
-      Assert.IsTrue (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].IsNull);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"].IsNull, Is.True);
 
-      Assert.IsTrue (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"].IsNull);
-      Assert.IsFalse (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringProperty"].IsNull);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"].IsNull, Is.True);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringProperty"].IsNull, Is.False);
 
       cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"].SetValue ("");
-      Assert.IsFalse (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"].IsNull);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"].IsNull, Is.False);
 
       cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"].SetValue<string> (null);
-      Assert.IsTrue (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"].IsNull);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"].IsNull, Is.True);
 
-      Assert.IsTrue (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].IsNull);
-      Assert.IsFalse (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"].IsNull);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].IsNull, Is.True);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"].IsNull, Is.False);
 
       cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].SetValue (Color.Values.Green());
-      Assert.IsFalse (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].IsNull);
-      
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].IsNull, Is.False);
+
       cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].SetValue<Color> (null);
-      Assert.IsTrue (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].IsNull);
+      Assert.That (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].IsNull, Is.True);
     }
 
     [Test]
     public void IsNullRelatedObjectCollection ()
     {
       Order newOrder = Order.NewObject ();
-      Assert.IsFalse (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].IsNull);
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].IsNull, Is.False);
     }
 
     [Test]
     public void IsNullRelatedObjectNonVirtualEndPoint ()
     {
       Order newOrder = Order.NewObject ();
-      Assert.IsTrue (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull);
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull, Is.True);
 
       newOrder.Customer = Customer.NewObject ();
-      Assert.IsFalse (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull);
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull, Is.False);
 
       newOrder.Customer = null;
-      Assert.IsTrue (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull);
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull, Is.True);
 
       var eventReceiver = new ClientTransactionEventReceiver (ClientTransactionScope.CurrentTransaction);
       Order existingOrder = Order.GetObject (DomainObjectIDs.Order1);
 
       eventReceiver.Clear ();
-      Assert.AreEqual (0, eventReceiver.LoadedDomainObjectLists.Count);
+      Assert.That (eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
 
-      Assert.IsFalse (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull);
+      Assert.That (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull, Is.False);
       Assert.AreEqual (0, eventReceiver.LoadedDomainObjectLists.Count, "The IsNull check did not cause the object to be loaded.");
 
-      Assert.IsFalse (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetValue<Customer> () == null);
+      Assert.That (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetValue<Customer> () == null, Is.False);
       Assert.AreEqual (1, eventReceiver.LoadedDomainObjectLists.Count, "An ordinary check does cause the object to be loaded.");
     }
 
@@ -489,24 +488,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void IsNullRelatedObjectVirtualEndPoint ()
     {
       Order newOrder = Order.NewObject ();
-      Assert.IsTrue (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].IsNull);
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].IsNull, Is.True);
 
       newOrder.OrderTicket = OrderTicket.NewObject ();
-      Assert.IsFalse (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].IsNull);
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].IsNull, Is.False);
 
       newOrder.OrderTicket = null;
-      Assert.IsTrue (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].IsNull);
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].IsNull, Is.True);
 
       var eventReceiver = new ClientTransactionEventReceiver (ClientTransactionScope.CurrentTransaction);
       Order existingOrder = Order.GetObject (DomainObjectIDs.Order1);
 
       eventReceiver.Clear ();
-      Assert.AreEqual (0, eventReceiver.LoadedDomainObjectLists.Count);
+      Assert.That (eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
 
-      Assert.IsFalse (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].IsNull);
+      Assert.That (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].IsNull, Is.False);
       Assert.AreEqual (1, eventReceiver.LoadedDomainObjectLists.Count, "For virtual end points, the IsNull unfortunately does cause a load.");
 
-      Assert.IsFalse (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetValue<OrderTicket> () == null);
+      Assert.That (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetValue<OrderTicket> () == null, Is.False);
       Assert.AreEqual (1, eventReceiver.LoadedDomainObjectLists.Count, "An ordinary check does cause the object to be loaded.");
     }
 
@@ -516,15 +515,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order newOrder = Order.NewObject ();
 
       object ticket = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetValueWithoutTypeCheck();
-      Assert.AreSame (ticket, newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetValue<OrderTicket>());
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetValue<OrderTicket>(), Is.SameAs (ticket));
 
       object items = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].GetValueWithoutTypeCheck ();
-      Assert.AreSame (items,
-          newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].GetValue<ObjectList<OrderItem>> ());
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].GetValue<ObjectList<OrderItem>> (), Is.SameAs (items));
 
       object number = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].GetValueWithoutTypeCheck ();
-      Assert.AreEqual (number,
-          newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].GetValue<int> ());
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].GetValue<int> (), Is.EqualTo (number));
     }
 
     [Test]
@@ -535,19 +532,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       newOrder.OrderTicket = OrderTicket.NewObject ();
 
       object ticket = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetOriginalValueWithoutTypeCheck ();
-      Assert.AreSame (ticket, newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetOriginalValue<OrderTicket> ());
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetOriginalValue<OrderTicket> (), Is.SameAs (ticket));
 
       newOrder.OrderItems.Add (OrderItem.NewObject ());
 
       object items = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].GetOriginalValueWithoutTypeCheck ();
-      Assert.AreEqual (items,
-          newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].GetOriginalValue<ObjectList<OrderItem>> ());
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].GetOriginalValue<ObjectList<OrderItem>> (), Is.EqualTo (items));
 
       ++newOrder.OrderNumber;
 
       object number = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].GetOriginalValueWithoutTypeCheck ();
-      Assert.AreEqual (number,
-          newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].GetOriginalValue<int> ());
+      Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].GetOriginalValue<int> (), Is.EqualTo (number));
     }
 
     [Test]
@@ -555,11 +550,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.NewObject ();
       newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].SetValueWithoutTypeCheck (7);
-      Assert.AreEqual (7, newOrder.OrderNumber);
+      Assert.That (newOrder.OrderNumber, Is.EqualTo (7));
 
       OrderTicket orderTicket = OrderTicket.NewObject ();
       newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].SetValueWithoutTypeCheck (orderTicket);
-      Assert.AreSame (orderTicket, newOrder.OrderTicket);
+      Assert.That (newOrder.OrderTicket, Is.SameAs (orderTicket));
     }
 
     [Test]
@@ -583,7 +578,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetRelatedObjectIDRelatedRealEndPoint ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.AreEqual (order.Customer.ID, order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetRelatedObjectID ());
+      Assert.That (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetRelatedObjectID (), Is.EqualTo (order.Customer.ID));
     }
 
     [Test]
@@ -617,8 +612,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var order = Order.GetObject (DomainObjectIDs.Order1);
       ObjectID originalID = order.Customer.ID;
       order.Customer = Customer.NewObject ();
-      Assert.AreNotEqual (order.Customer.ID, order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetOriginalRelatedObjectID ());
-      Assert.AreEqual (originalID, order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetOriginalRelatedObjectID ());
+      Assert.That (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetOriginalRelatedObjectID (), Is.Not.EqualTo (order.Customer.ID));
+      Assert.That (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetOriginalRelatedObjectID (), Is.EqualTo (originalID));
     }
 
     [Test]

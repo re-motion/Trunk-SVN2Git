@@ -31,12 +31,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
       customer.Name = "Arthur Dent";
 
-      Assert.AreEqual (StateType.Changed, customer.State);
+      Assert.That (customer.State, Is.EqualTo (StateType.Changed));
 
       TestableClientTransaction.Rollback ();
 
-      Assert.AreEqual (StateType.Unchanged, customer.State);
-      Assert.AreEqual ("Kunde 1", customer.Name);
+      Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (customer.Name, Is.EqualTo ("Kunde 1"));
     }
 
     [Test]
@@ -52,10 +52,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       TestableClientTransaction.Rollback ();
 
-      Assert.AreSame (oldOrderTicket, order.OrderTicket);
-      Assert.AreSame (order, oldOrderTicket.Order);
-      Assert.AreSame (newOrderTicket, oldOrderOfNewOrderTicket.OrderTicket);
-      Assert.AreSame (oldOrderOfNewOrderTicket, newOrderTicket.Order);
+      Assert.That (order.OrderTicket, Is.SameAs (oldOrderTicket));
+      Assert.That (oldOrderTicket.Order, Is.SameAs (order));
+      Assert.That (oldOrderOfNewOrderTicket.OrderTicket, Is.SameAs (newOrderTicket));
+      Assert.That (newOrderTicket.Order, Is.SameAs (oldOrderOfNewOrderTicket));
     }
 
     [Test]
@@ -70,12 +70,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       TestableClientTransaction.Rollback ();
 
-      Assert.IsNotNull (customer1.Orders[order.ID]);
-      Assert.IsNull (customer2.Orders[order.ID]);
-      Assert.AreSame (customer1, order.Customer);
+      Assert.That (customer1.Orders[order.ID], Is.Not.Null);
+      Assert.That (customer2.Orders[order.ID], Is.Null);
+      Assert.That (order.Customer, Is.SameAs (customer1));
 
-      Assert.AreEqual (2, customer1.Orders.Count);
-      Assert.AreEqual (0, customer2.Orders.Count);
+      Assert.That (customer1.Orders.Count, Is.EqualTo (2));
+      Assert.That (customer2.Orders.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -87,8 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       TestableClientTransaction.Rollback ();
 
       Computer computerAfterRollback = Computer.GetObject (DomainObjectIDs.Computer4);
-      Assert.AreSame (computer, computerAfterRollback);
-      Assert.AreEqual (StateType.Unchanged, computer.State);
+      Assert.That (computerAfterRollback, Is.SameAs (computer));
+      Assert.That (computer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -97,15 +97,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
       computer.SerialNumber = "1111111111111";
 
-      Assert.AreEqual ("63457-kol-34", computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].GetOriginalValue<string>());
-      Assert.AreEqual ("1111111111111", computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].GetValue<string>());
+      Assert.That (computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].GetOriginalValue<string>(), Is.EqualTo ("63457-kol-34"));
+      Assert.That (computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].GetValue<string>(), Is.EqualTo ("1111111111111"));
 
       computer.Delete ();
       TestableClientTransaction.Rollback ();
 
-      Assert.AreEqual ("63457-kol-34", computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].GetOriginalValue<string>());
-      Assert.AreEqual ("63457-kol-34", computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].GetValue<string>());
-      Assert.IsFalse (computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].HasChanged);
+      Assert.That (computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].GetOriginalValue<string>(), Is.EqualTo ("63457-kol-34"));
+      Assert.That (computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].GetValue<string>(), Is.EqualTo ("63457-kol-34"));
+      Assert.That (computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].HasChanged, Is.False);
     }
 
     [Test]
@@ -120,19 +120,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       order.Delete ();
 
-      Assert.IsNull (order.OrderTicket);
-      Assert.AreEqual (0, order.OrderItems.Count);
-      Assert.IsNull (order.Customer);
-      Assert.IsNull (order.Official);
+      Assert.That (order.OrderTicket, Is.Null);
+      Assert.That (order.OrderItems.Count, Is.EqualTo (0));
+      Assert.That (order.Customer, Is.Null);
+      Assert.That (order.Official, Is.Null);
 
       TestableClientTransaction.Rollback ();
 
-      Assert.AreSame (oldOrderTicket, order.OrderTicket);
-      Assert.AreEqual (oldOrderItems.Count, order.OrderItems.Count);
-      Assert.AreSame (oldOrderItems[DomainObjectIDs.OrderItem1], order.OrderItems[DomainObjectIDs.OrderItem1]);
-      Assert.AreSame (oldOrderItems[DomainObjectIDs.OrderItem2], order.OrderItems[DomainObjectIDs.OrderItem2]);
-      Assert.AreSame (oldCustomer, order.Customer);
-      Assert.AreSame (oldOfficial, order.Official);
+      Assert.That (order.OrderTicket, Is.SameAs (oldOrderTicket));
+      Assert.That (order.OrderItems.Count, Is.EqualTo (oldOrderItems.Count));
+      Assert.That (order.OrderItems[DomainObjectIDs.OrderItem1], Is.SameAs (oldOrderItems[DomainObjectIDs.OrderItem1]));
+      Assert.That (order.OrderItems[DomainObjectIDs.OrderItem2], Is.SameAs (oldOrderItems[DomainObjectIDs.OrderItem2]));
+      Assert.That (order.Customer, Is.SameAs (oldCustomer));
+      Assert.That (order.Official, Is.SameAs (oldOfficial));
     }
 
     [Test]
@@ -163,10 +163,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       TestableClientTransaction.Rollback ();
 
-      Assert.AreEqual (StateType.Unchanged, order1.State);
-      Assert.AreSame (orderTicket1, order1.OrderTicket);
-      Assert.IsFalse (customer.Orders.Contains (newOrderID));
-      Assert.AreSame (order1, orderItem1.Order);
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
+      Assert.That (customer.Orders.Contains (newOrderID), Is.False);
+      Assert.That (orderItem1.Order, Is.SameAs (order1));
     }
 
     [Test]
@@ -176,17 +176,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       OrderItem orderItem = OrderItem.NewObject (order);
       ObjectID orderItemID = orderItem.ID;
 
-      Assert.AreSame (order, orderItem.Order);
-      Assert.IsTrue (order.OrderItems.Contains (orderItemID));
+      Assert.That (orderItem.Order, Is.SameAs (order));
+      Assert.That (order.OrderItems.Contains (orderItemID), Is.True);
 
       TestableClientTransaction.Rollback ();
 
-      Assert.IsFalse (order.OrderItems.Contains (orderItemID));
+      Assert.That (order.OrderItems.Contains (orderItemID), Is.False);
 
       orderItem = OrderItem.NewObject (order);
 
-      Assert.AreSame (order, orderItem.Order);
-      Assert.IsTrue (order.OrderItems.ContainsObject (orderItem));
+      Assert.That (orderItem.Order, Is.SameAs (order));
+      Assert.That (order.OrderItems.ContainsObject (orderItem), Is.True);
     }
 
     [Test]
@@ -198,8 +198,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       TestableClientTransaction.Rollback ();
 
-      Assert.AreSame (orderItems, order.OrderItems);
-      Assert.IsFalse (order.OrderItems.IsReadOnly);
+      Assert.That (order.OrderItems, Is.SameAs (orderItems));
+      Assert.That (order.OrderItems.IsReadOnly, Is.False);
     }
   }
 }

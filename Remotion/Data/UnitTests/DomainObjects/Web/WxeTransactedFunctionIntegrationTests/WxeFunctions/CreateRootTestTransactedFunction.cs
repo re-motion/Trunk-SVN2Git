@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
     private void Step1 ()
     {
-      Assert.AreNotSame (PreviousClientTransactionScope, ClientTransactionScope.ActiveScope);
+      Assert.That (ClientTransactionScope.ActiveScope, Is.Not.SameAs (PreviousClientTransactionScope));
     }
   }
 }

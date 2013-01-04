@@ -69,14 +69,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 
         Tuple<T, ClientTransaction> deserializedTuple = Serializer.SerializeAndDeserialize (Tuple.Create (instance, ClientTransaction.Current));
         T deserializedT = deserializedTuple.Item1;
-        Assert.IsNotNull (deserializedT);
+        Assert.That (deserializedT, Is.Not.Null);
 
         IBusinessObject bindableOriginal = (IBusinessObject) instance;
         IBusinessObject bindableDeserialized = (IBusinessObject) deserializedT;
 
         foreach (IBusinessObjectProperty property in bindableOriginal.BusinessObjectClass.GetPropertyDefinitions())
         {
-          Assert.IsNotNull (bindableDeserialized.BusinessObjectClass.GetPropertyDefinition (property.Identifier));
+          Assert.That (bindableDeserialized.BusinessObjectClass.GetPropertyDefinition (property.Identifier), Is.Not.Null);
 
           object value = null;
           bool propertyCanBeRetrieved;
@@ -98,9 +98,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain
               newValue = bindableDeserialized.GetProperty (property);
             }
             if (value != null && ReflectionUtility.IsDomainObject (property.PropertyType))
-              Assert.AreEqual (((DomainObject) value).ID, ((DomainObject) newValue).ID);
+              Assert.That (((DomainObject) newValue).ID, Is.EqualTo (((DomainObject) value).ID));
             else
-              Assert.AreEqual (value, newValue);
+              Assert.That (newValue, Is.EqualTo (value));
           }
         }
       }

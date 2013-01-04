@@ -33,7 +33,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     {
       SecurableClassValidationResult result = new SecurableClassValidationResult();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
         result.AddDuplicateStateCombination (stateCombination);
 
-        Assert.IsFalse (result.IsValid);
+        Assert.That (result.IsValid, Is.False);
       }
     }
 
@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     {
       SecurableClassValidationResult result = new SecurableClassValidationResult();
 
-      Assert.AreEqual (0, result.DuplicateStateCombinations.Count);
+      Assert.That (result.DuplicateStateCombinations.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -74,8 +74,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
         result.AddDuplicateStateCombination (stateCombination);
 
-        Assert.AreEqual (1, result.DuplicateStateCombinations.Count);
-        Assert.Contains (stateCombination, result.DuplicateStateCombinations);
+        Assert.That (result.DuplicateStateCombinations.Count, Is.EqualTo (1));
+        Assert.That (result.DuplicateStateCombinations, Has.Member (stateCombination));
       }
     }
 
@@ -96,9 +96,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         result.AddDuplicateStateCombination (statelessCombination);
         result.AddDuplicateStateCombination (paidStateCombination);
 
-        Assert.AreEqual (2, result.DuplicateStateCombinations.Count);
-        Assert.Contains (statelessCombination, result.DuplicateStateCombinations);
-        Assert.Contains (paidStateCombination, result.DuplicateStateCombinations);
+        Assert.That (result.DuplicateStateCombinations.Count, Is.EqualTo (2));
+        Assert.That (result.DuplicateStateCombinations, Has.Member (statelessCombination));
+        Assert.That (result.DuplicateStateCombinations, Has.Member (paidStateCombination));
       }
     }
 
@@ -116,7 +116,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
         result.AddInvalidStateCombination (stateCombination);
 
-        Assert.IsFalse (result.IsValid);
+        Assert.That (result.IsValid, Is.False);
       }
     }
 
@@ -125,7 +125,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     {
       SecurableClassValidationResult result = new SecurableClassValidationResult();
 
-      Assert.AreEqual (0, result.InvalidStateCombinations.Count);
+      Assert.That (result.InvalidStateCombinations.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -141,8 +141,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
         result.AddInvalidStateCombination (stateCombination);
 
-        Assert.AreEqual (1, result.InvalidStateCombinations.Count);
-        Assert.Contains (stateCombination, result.InvalidStateCombinations);
+        Assert.That (result.InvalidStateCombinations.Count, Is.EqualTo (1));
+        Assert.That (result.InvalidStateCombinations, Has.Member (stateCombination));
       }
     }
 
@@ -163,9 +163,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         result.AddInvalidStateCombination (statelessCombination);
         result.AddInvalidStateCombination (paidStateCombination);
 
-        Assert.AreEqual (2, result.InvalidStateCombinations.Count);
-        Assert.Contains (statelessCombination, result.InvalidStateCombinations);
-        Assert.Contains (paidStateCombination, result.InvalidStateCombinations);
+        Assert.That (result.InvalidStateCombinations.Count, Is.EqualTo (2));
+        Assert.That (result.InvalidStateCombinations, Has.Member (statelessCombination));
+        Assert.That (result.InvalidStateCombinations, Has.Member (paidStateCombination));
       }
     }
   }

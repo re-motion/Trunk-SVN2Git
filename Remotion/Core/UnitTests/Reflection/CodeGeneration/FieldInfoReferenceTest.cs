@@ -46,9 +46,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           .AddStatement (new AssignStatement (fieldReference, new ConstReference ("Replacement").ToExpression ()))
           .AddStatement (new ReturnStatement (local));
 
-      Assert.AreEqual ("InitialStatic", ClassWithPublicFields.StaticReferenceTypeField);
-      Assert.AreEqual ("InitialStatic", InvokeMethod ());
-      Assert.AreEqual ("Replacement", ClassWithPublicFields.StaticReferenceTypeField);
+      Assert.That (ClassWithPublicFields.StaticReferenceTypeField, Is.EqualTo ("InitialStatic"));
+      Assert.That (InvokeMethod (), Is.EqualTo ("InitialStatic"));
+      Assert.That (ClassWithPublicFields.StaticReferenceTypeField, Is.EqualTo ("Replacement"));
     }
 
     [Test]
@@ -65,9 +65,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           .AddStatement (new ReturnStatement (local));
 
       ClassWithPublicFields parameter = new ClassWithPublicFields ();
-      Assert.AreEqual ("Initial", parameter.ReferenceTypeField);
-      Assert.AreEqual ("Initial", InvokeMethod (parameter));
-      Assert.AreEqual ("Replacement", parameter.ReferenceTypeField);
+      Assert.That (parameter.ReferenceTypeField, Is.EqualTo ("Initial"));
+      Assert.That (InvokeMethod (parameter), Is.EqualTo ("Initial"));
+      Assert.That (parameter.ReferenceTypeField, Is.EqualTo ("Replacement"));
     }
 
     [Test]
@@ -88,9 +88,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           .AddStatement (new AssignStatement (indirectReference, new ConstReference ("Replacement").ToExpression ()))
           .AddStatement (new ReturnStatement (local));
 
-      Assert.AreEqual ("InitialStatic", ClassWithPublicFields.StaticReferenceTypeField);
-      Assert.AreEqual ("InitialStatic", InvokeMethod());
-      Assert.AreEqual ("Replacement", ClassWithPublicFields.StaticReferenceTypeField);
+      Assert.That (ClassWithPublicFields.StaticReferenceTypeField, Is.EqualTo ("InitialStatic"));
+      Assert.That (InvokeMethod(), Is.EqualTo ("InitialStatic"));
+      Assert.That (ClassWithPublicFields.StaticReferenceTypeField, Is.EqualTo ("Replacement"));
     }
 
     [Test]
@@ -112,9 +112,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           .AddStatement (new ReturnStatement (local));
 
       ClassWithPublicFields parameter = new ClassWithPublicFields ();
-      Assert.AreEqual ("Initial", parameter.ReferenceTypeField);
-      Assert.AreEqual ("Initial", InvokeMethod (parameter));
-      Assert.AreEqual ("Replacement", parameter.ReferenceTypeField);
+      Assert.That (parameter.ReferenceTypeField, Is.EqualTo ("Initial"));
+      Assert.That (InvokeMethod (parameter), Is.EqualTo ("Initial"));
+      Assert.That (parameter.ReferenceTypeField, Is.EqualTo ("Replacement"));
     }
   }
 }

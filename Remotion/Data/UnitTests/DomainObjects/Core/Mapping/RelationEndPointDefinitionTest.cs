@@ -63,13 +63,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection { propertyDefinition });
       var endPoint = new RelationEndPointDefinition (propertyDefinition, true);
 
-      Assert.AreSame (propertyDefinition.PropertyInfo, endPoint.PropertyInfo);
+      Assert.That (endPoint.PropertyInfo, Is.SameAs (propertyDefinition.PropertyInfo));
     }
 
     [Test]
     public void IsAnonymous ()
     {
-      Assert.IsFalse (_orderEndPoint.IsAnonymous);
+      Assert.That (_orderEndPoint.IsAnonymous, Is.False);
     }
 
     [Test]
@@ -80,13 +80,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var definition = new RelationEndPointDefinition (propertyDefinition, true);
 
-      Assert.IsNull (definition.RelationDefinition);
+      Assert.That (definition.RelationDefinition, Is.Null);
     }
 
     [Test]
     public void RelationDefinitionNotNull ()
     {
-      Assert.IsNotNull (_orderEndPoint.RelationDefinition);
+      Assert.That (_orderEndPoint.RelationDefinition, Is.Not.Null);
     }
   }
 }

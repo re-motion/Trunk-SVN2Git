@@ -54,8 +54,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       IBusinessObjectReferenceDataSource dataSource = _factory.Create (_value);
 
-      Assert.IsNotNull (dataSource);
-      Assert.AreSame (_value, dataSource.BusinessObject);
+      Assert.That (dataSource, Is.Not.Null);
+      Assert.That (dataSource.BusinessObject, Is.SameAs (_value));
     }
   }
 }

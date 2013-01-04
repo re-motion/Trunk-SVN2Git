@@ -55,7 +55,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           typeof (TestFunctionWithThisObjectAsSecondParameter),
           _attribute);
 
-      Assert.AreSame (typeof (SecurableObject), helper.GetTypeOfSecurableObject ());
+      Assert.That (helper.GetTypeOfSecurableObject (), Is.SameAs (typeof (SecurableObject)));
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           typeof (TestFunctionWithThisObject),
           _attribute);
 
-      Assert.AreSame (typeof (SecurableObject), helper.GetTypeOfSecurableObject ());
+      Assert.That (helper.GetTypeOfSecurableObject (), Is.SameAs (typeof (SecurableObject)));
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           typeof (TestFunctionWithThisObject),
           attribute);
 
-      Assert.AreSame (typeof (DerivedSecurableObject), helper.GetTypeOfSecurableObject ());
+      Assert.That (helper.GetTypeOfSecurableObject (), Is.SameAs (typeof (DerivedSecurableObject)));
     }
 
     [Test]

@@ -38,13 +38,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void Initialize ()
     {
       Assert.IsInstanceOf<IRelationEndPointDefinition> (_definition);
-      Assert.AreSame (_clientDefinition, _definition.ClassDefinition);
-      Assert.AreEqual (CardinalityType.Many, _definition.Cardinality);
-      Assert.AreEqual (false, _definition.IsMandatory);
-      Assert.AreEqual (true, _definition.IsVirtual);
-      Assert.IsNull (_definition.PropertyName);
-      Assert.IsNull (_definition.PropertyInfo);
-      Assert.IsTrue (_definition.IsAnonymous);
+      Assert.That (_definition.ClassDefinition, Is.SameAs (_clientDefinition));
+      Assert.That (_definition.Cardinality, Is.EqualTo (CardinalityType.Many));
+      Assert.That (_definition.IsMandatory, Is.EqualTo (false));
+      Assert.That (_definition.IsVirtual, Is.EqualTo (true));
+      Assert.That (_definition.PropertyName, Is.Null);
+      Assert.That (_definition.PropertyInfo, Is.Null);
+      Assert.That (_definition.IsAnonymous, Is.True);
     }
 
     [Test]
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       AnonymousRelationEndPointDefinition definition = new AnonymousRelationEndPointDefinition (MappingConfiguration.Current.GetTypeDefinition (typeof (Client)));
 
-      Assert.IsNull (definition.RelationDefinition);
+      Assert.That (definition.RelationDefinition, Is.Null);
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _definition.SetRelationDefinition (relationDefinition);
 
-      Assert.IsNotNull (_definition.RelationDefinition);
+      Assert.That (_definition.RelationDefinition, Is.Not.Null);
     }
   }
 }

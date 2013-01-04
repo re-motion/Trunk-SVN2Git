@@ -253,7 +253,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       Type concreteType = CreateGeneratedTypeWithoutMixins (typeof (ClassWithCopyCustomAttributes));
       Assert.That (concreteType, Is.Not.SameAs (typeof (ClassWithCopyCustomAttributes)));
-      Assert.IsEmpty (concreteType.GetCustomAttributes (typeof (SampleCopyTemplateAttribute), true));
+      Assert.That (concreteType.GetCustomAttributes (typeof (SampleCopyTemplateAttribute), true), Is.Empty);
     }
 
     [Test]

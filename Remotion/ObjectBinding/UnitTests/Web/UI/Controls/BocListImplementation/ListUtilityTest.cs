@@ -62,15 +62,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       var rows = ListUtility.IndicesOf (_list, _values).ToArray();
 
-      Assert.IsNotNull (rows);
-      Assert.AreEqual (3, rows.Length);
-      Assert.AreEqual (1, rows[0].Index);
-      Assert.AreEqual (3, rows[1].Index);
-      Assert.AreEqual (0, rows[2].Index);
+      Assert.That (rows, Is.Not.Null);
+      Assert.That (rows.Length, Is.EqualTo (3));
+      Assert.That (rows[0].Index, Is.EqualTo (1));
+      Assert.That (rows[1].Index, Is.EqualTo (3));
+      Assert.That (rows[2].Index, Is.EqualTo (0));
 
-      Assert.AreEqual (_objB, rows[0].BusinessObject);
-      Assert.AreEqual (_objD, rows[1].BusinessObject);
-      Assert.AreEqual (_objA, rows[2].BusinessObject);
+      Assert.That (rows[0].BusinessObject, Is.EqualTo (_objB));
+      Assert.That (rows[1].BusinessObject, Is.EqualTo (_objD));
+      Assert.That (rows[2].BusinessObject, Is.EqualTo (_objA));
     }
 
     private IBusinessObject CreateObject (string value)

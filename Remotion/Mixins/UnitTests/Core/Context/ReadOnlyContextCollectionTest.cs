@@ -41,7 +41,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void NewCollection ()
     {
-      Assert.AreEqual (3, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (3));
     }
 
     [Test]
@@ -72,11 +72,11 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void Contains_Key ()
     {
-      Assert.IsTrue (_collection.ContainsKey ("1"));
-      Assert.IsTrue (_collection.ContainsKey ("2"));
-      Assert.IsTrue (_collection.ContainsKey ("3"));
-      Assert.IsFalse (_collection.ContainsKey ("4"));
-      Assert.IsFalse (_collection.ContainsKey ("§"));
+      Assert.That (_collection.ContainsKey ("1"), Is.True);
+      Assert.That (_collection.ContainsKey ("2"), Is.True);
+      Assert.That (_collection.ContainsKey ("3"), Is.True);
+      Assert.That (_collection.ContainsKey ("4"), Is.False);
+      Assert.That (_collection.ContainsKey ("§"), Is.False);
     }
 
     [Test]
@@ -91,20 +91,20 @@ namespace Remotion.Mixins.UnitTests.Core.Context
               return i.ToString ();
           }, new int[] { 1, 2, 3 });
 
-      Assert.IsTrue (collection.Contains (1));
-      Assert.IsTrue (collection.Contains (2));
-      Assert.IsTrue (collection.Contains (3));
-      Assert.IsFalse (collection.Contains (4));
+      Assert.That (collection.Contains (1), Is.True);
+      Assert.That (collection.Contains (2), Is.True);
+      Assert.That (collection.Contains (3), Is.True);
+      Assert.That (collection.Contains (4), Is.False);
     }
 
     [Test]
     public void Get ()
     {
-      Assert.AreEqual (1, _collection["1"]);
-      Assert.AreEqual (2, _collection["2"]);
-      Assert.AreEqual (3, _collection["3"]);
-      Assert.AreEqual (0, _collection["4"]);
-      Assert.AreEqual (0, _collection["soigfusolh"]);
+      Assert.That (_collection["1"], Is.EqualTo (1));
+      Assert.That (_collection["2"], Is.EqualTo (2));
+      Assert.That (_collection["3"], Is.EqualTo (3));
+      Assert.That (_collection["4"], Is.EqualTo (0));
+      Assert.That (_collection["soigfusolh"], Is.EqualTo (0));
     }
 
     [Test]
@@ -153,7 +153,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void IsReadOnly ()
     {
-      Assert.IsTrue (((ICollection<int>) _collection).IsReadOnly);
+      Assert.That (((ICollection<int>) _collection).IsReadOnly, Is.True);
     }
 
     [Test]
@@ -167,13 +167,13 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void IsSynchronized ()
     {
-      Assert.IsFalse (((ICollection) _collection).IsSynchronized);
+      Assert.That (((ICollection) _collection).IsSynchronized, Is.False);
     }
 
     [Test]
     public void SyncRoot ()
     {
-      Assert.IsNotNull (((ICollection) _collection).SyncRoot);
+      Assert.That (((ICollection) _collection).SyncRoot, Is.Not.Null);
     }
   }
 }

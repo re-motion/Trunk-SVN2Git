@@ -71,7 +71,7 @@ namespace Remotion.UnitTests.Logging
     [Test]
     public void Test_ListenerName ()
     {
-      Assert.AreEqual (_filterListener.Name, "FilterListener");
+      Assert.That ("FilterListener", Is.EqualTo (_filterListener.Name));
     }
 
     [Test]
@@ -80,9 +80,9 @@ namespace Remotion.UnitTests.Logging
       _listener.Write ("The message.");
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Debug, events[0].Level);
-      Assert.AreEqual ("The message.", events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Debug));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo ("The message."));
     }
 
     [Test]
@@ -91,9 +91,9 @@ namespace Remotion.UnitTests.Logging
       _listener.WriteLine ("The message.");
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Debug, events[0].Level);
-      Assert.AreEqual ("The message.", events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Debug));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo ("The message."));
     }
 
 #if TRACE
@@ -105,9 +105,9 @@ namespace Remotion.UnitTests.Logging
       Trace.Listeners.Remove (_listener);
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Debug, events[0].Level);
-      Assert.AreEqual ("The message.", events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Debug));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo ("The message."));
     }
 #endif
 
@@ -120,9 +120,9 @@ namespace Remotion.UnitTests.Logging
       Debug.Listeners.Remove (_listener);
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Debug, events[0].Level);
-      Assert.AreEqual ("The message.", events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Debug));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo ("The message."));
     }
 #endif
 
@@ -137,9 +137,9 @@ namespace Remotion.UnitTests.Logging
       traceSource.Listeners.Remove (_listener);
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Info, events[0].Level);
-      Assert.AreEqual ("The message.", events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo ("The message."));
     }
 
 
@@ -149,9 +149,9 @@ namespace Remotion.UnitTests.Logging
       _listener.TraceEvent (null, "Test", TraceEventType.Information, 1);
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Info, events[0].Level);
-      Assert.IsEmpty (events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
+      Assert.That (events[0].MessageObject.ToString (), Is.Empty);
     }
 
     [Test]
@@ -160,9 +160,9 @@ namespace Remotion.UnitTests.Logging
       _listener.TraceEvent (null, "Test", TraceEventType.Information, 1, "The message.");
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Info, events[0].Level);
-      Assert.AreEqual ("The message.", events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo ("The message."));
     }
 
     [Test]
@@ -171,9 +171,9 @@ namespace Remotion.UnitTests.Logging
       _listener.TraceEvent (null, "Test", TraceEventType.Information, 1, "{0} {1}", "The", "message.");
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Info, events[0].Level);
-      Assert.AreEqual ("The message.", events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo ("The message."));
     }
 
     [Test]
@@ -188,9 +188,9 @@ namespace Remotion.UnitTests.Logging
 
       _mocks.VerifyAll();
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Info, events[0].Level);
-      Assert.AreEqual ("The message.", events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo ("The message."));
     }
 
     [Test]
@@ -204,7 +204,7 @@ namespace Remotion.UnitTests.Logging
       _filterListener.TraceEvent (_traceEventCache, "Test", TraceEventType.Information, 1, "{0} {1}", "The", "message.");
 
       _mocks.VerifyAll ();
-      Assert.IsEmpty (_memoryAppender.GetEvents ());
+      Assert.That (_memoryAppender.GetEvents (), Is.Empty);
     }
 
     [Test]
@@ -215,9 +215,9 @@ namespace Remotion.UnitTests.Logging
       _listener.TraceData (null, "Test", TraceEventType.Information, 1, exception);
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Info, events[0].Level);
-      Assert.AreEqual (exception.ToString(), events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo (exception.ToString()));
     } 
 
     [Test]
@@ -230,9 +230,9 @@ namespace Remotion.UnitTests.Logging
       _listener.TraceData (null, "Test", TraceEventType.Information, 1, data);
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Info, events[0].Level);
-      Assert.AreEqual (data[0] + ", " + data[1], events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo (data[0] + ", " + data[1]));
     }
 
     [Test]
@@ -250,9 +250,9 @@ namespace Remotion.UnitTests.Logging
 
       _mocks.VerifyAll ();
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Info, events[0].Level);
-      Assert.AreEqual (data[0] + ", " + data[1], events[0].MessageObject.ToString ());
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo (data[0] + ", " + data[1]));
     }
 
     [Test]
@@ -269,7 +269,7 @@ namespace Remotion.UnitTests.Logging
       _filterListener.TraceData (_traceEventCache, "Test", TraceEventType.Information, 1, data);
 
       _mocks.VerifyAll ();
-      Assert.IsEmpty (_memoryAppender.GetEvents ());
+      Assert.That (_memoryAppender.GetEvents (), Is.Empty);
     }
 
     [Test]
@@ -280,10 +280,10 @@ namespace Remotion.UnitTests.Logging
       _listener.TraceTransfer (null, "Test", 1, "The message.", relatedActivityId);
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Info, events[0].Level);
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
       string expected = "The message., relatedActivityId=" + relatedActivityId;
-      Assert.AreEqual (expected, events[0].MessageObject.ToString ());
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo (expected));
     }
 
 
@@ -295,41 +295,41 @@ namespace Remotion.UnitTests.Logging
       _listener.TraceTransfer (null, "Test", 1, null, relatedActivityId);
 
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Info, events[0].Level);
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
       string expected = ", relatedActivityId=" + relatedActivityId;
-      Assert.AreEqual (expected, events[0].MessageObject.ToString ()); 
+      Assert.That (events[0].MessageObject.ToString (), Is.EqualTo (expected));
     }
 
 
     [Test]
     public void Test_ConvertVerbose ()
     {
-      Assert.AreEqual (LogLevel.Debug, Log4NetTraceListener.Convert (TraceEventType.Verbose));
+      Assert.That (Log4NetTraceListener.Convert (TraceEventType.Verbose), Is.EqualTo (LogLevel.Debug));
     }
 
     [Test]
     public void Test_ConvertInformation ()
     {
-      Assert.AreEqual (LogLevel.Info, Log4NetTraceListener.Convert (TraceEventType.Information));
+      Assert.That (Log4NetTraceListener.Convert (TraceEventType.Information), Is.EqualTo (LogLevel.Info));
     }
 
     [Test]
     public void Test_ConvertWarning ()
     {
-      Assert.AreEqual (LogLevel.Warn, Log4NetTraceListener.Convert (TraceEventType.Warning));
+      Assert.That (Log4NetTraceListener.Convert (TraceEventType.Warning), Is.EqualTo (LogLevel.Warn));
     }
 
     [Test]
     public void Test_ConvertError ()
     {
-      Assert.AreEqual (LogLevel.Error, Log4NetTraceListener.Convert (TraceEventType.Error));
+      Assert.That (Log4NetTraceListener.Convert (TraceEventType.Error), Is.EqualTo (LogLevel.Error));
     }
 
     [Test]
     public void Test_ConvertCritical ()
     {
-      Assert.AreEqual (LogLevel.Fatal, Log4NetTraceListener.Convert (TraceEventType.Critical));
+      Assert.That (Log4NetTraceListener.Convert (TraceEventType.Critical), Is.EqualTo (LogLevel.Fatal));
     }
 
     [Test]

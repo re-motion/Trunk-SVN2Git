@@ -40,8 +40,8 @@ namespace Remotion.Security.UnitTests.Core
 
       ExtendedProviderBase provider = new NullPrincipalProvider ("Provider", config);
 
-      Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreEqual ("The Description", provider.Description);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
+      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
     
     [Test]
@@ -53,7 +53,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void GetIsNull()
     {
-      Assert.IsTrue (_provider.IsNull);
+      Assert.That (_provider.IsNull, Is.True);
     }
   }
 }

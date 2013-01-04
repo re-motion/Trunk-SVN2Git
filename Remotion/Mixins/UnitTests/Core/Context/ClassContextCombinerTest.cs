@@ -68,7 +68,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void GetCombinedContexts_Null ()
     {
-      Assert.IsNull (_combiner.GetCombinedContexts(typeof (int)));
+      Assert.That (_combiner.GetCombinedContexts(typeof (int)), Is.Null);
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     {
       _combiner.AddIfNotNull (_context1);
       ClassContext result = _combiner.GetCombinedContexts (typeof (int));
-      Assert.AreEqual (typeof (int), result.Type);
+      Assert.That (result.Type, Is.EqualTo (typeof (int)));
       Assert.That (result.CompleteInterfaces, Is.EquivalentTo (_context1.CompleteInterfaces));
     }
 
@@ -87,8 +87,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       _combiner.AddIfNotNull (_context2);
 
       ClassContext result = _combiner.GetCombinedContexts (typeof (int));
-      Assert.AreEqual (typeof (int), result.Type);
-      
+      Assert.That (result.Type, Is.EqualTo (typeof (int)));
+
       Set<Type> expectedInterfaces = new Set<Type> (_context1.CompleteInterfaces);
       expectedInterfaces.AddRange (_context2.CompleteInterfaces);
       Assert.That (result.CompleteInterfaces, Is.EquivalentTo (expectedInterfaces));

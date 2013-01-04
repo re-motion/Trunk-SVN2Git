@@ -108,8 +108,8 @@ namespace Remotion.SecurityManager.UnitTests
 
       SecurityService provider = new SecurityService ("Provider", config);
 
-      Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreEqual ("The Description", provider.Description);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
+      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
 
     [Test]
@@ -127,7 +127,7 @@ namespace Remotion.SecurityManager.UnitTests
       AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principalStub);
 
       _mocks.VerifyAll ();
-      Assert.AreEqual (0, accessTypes.Length);
+      Assert.That (accessTypes.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -147,8 +147,8 @@ namespace Remotion.SecurityManager.UnitTests
       AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principalStub);
 
       _mocks.VerifyAll ();
-      Assert.AreEqual (1, accessTypes.Length);
-      Assert.Contains (AccessType.Get (EnumWrapper.Get ("Read|MyTypeName")), accessTypes);
+      Assert.That (accessTypes.Length, Is.EqualTo (1));
+      Assert.That (accessTypes, Has.Member (AccessType.Get (EnumWrapper.Get ("Read|MyTypeName"))));
     }
 
     [Test]
@@ -173,8 +173,8 @@ namespace Remotion.SecurityManager.UnitTests
       AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principalStub);
 
       _mocks.VerifyAll ();
-      Assert.AreEqual (1, accessTypes.Length);
-      Assert.Contains (AccessType.Get (EnumWrapper.Get ("Read|MyTypeName")), accessTypes);
+      Assert.That (accessTypes.Length, Is.EqualTo (1));
+      Assert.That (accessTypes, Has.Member (AccessType.Get (EnumWrapper.Get ("Read|MyTypeName"))));
     }
 
     [Test]
@@ -190,11 +190,11 @@ namespace Remotion.SecurityManager.UnitTests
       AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principalStub);
 
       _mocks.VerifyAll ();
-      Assert.AreEqual (0, accessTypes.Length);
+      Assert.That (accessTypes.Length, Is.EqualTo (0));
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreSame (expectedException, events[0].ExceptionObject);
-      Assert.AreEqual (Level.Error, events[0].Level);
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].ExceptionObject, Is.SameAs (expectedException));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Error));
     }
 
     [Test]
@@ -211,11 +211,11 @@ namespace Remotion.SecurityManager.UnitTests
       AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principalStub);
 
       _mocks.VerifyAll ();
-      Assert.AreEqual (0, accessTypes.Length);
+      Assert.That (accessTypes.Length, Is.EqualTo (0));
       LoggingEvent[] events = _memoryAppender.GetEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreSame (expectedException, events[0].ExceptionObject);
-      Assert.AreEqual (Level.Error, events[0].Level);
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].ExceptionObject, Is.SameAs (expectedException));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Error));
     }
 
     [Test]
@@ -263,15 +263,15 @@ namespace Remotion.SecurityManager.UnitTests
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
       dbFixtures.CreateEmptyDomain ();
 
-      Assert.AreEqual (0, _service.GetRevision ());
+      Assert.That (_service.GetRevision (), Is.EqualTo (0));
     }
 
     [Test]
     public void GetIsNull ()
     {
-      Assert.IsFalse (((IRevisionBasedSecurityProvider) _service).IsNull);
+      Assert.That (((IRevisionBasedSecurityProvider) _service).IsNull, Is.False);
     }
-    
+
     private AccessControlList CreateAcl (AccessControlEntry ace)
     {
       AccessControlList acl = StatefulAccessControlList.NewObject ();

@@ -31,9 +31,9 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.AreEqual (2, Configuration.GlobalAccessTypeCacheProviders.Count);
+      Assert.That (Configuration.GlobalAccessTypeCacheProviders.Count, Is.EqualTo (2));
       Assert.IsInstanceOf (typeof (NullGlobalAccessTypeCacheProvider), Configuration.GlobalAccessTypeCacheProvider);
-      Assert.AreSame (Configuration.GlobalAccessTypeCacheProvider, Configuration.GlobalAccessTypeCacheProviders["None"]);
+      Assert.That (Configuration.GlobalAccessTypeCacheProviders["None"], Is.SameAs (Configuration.GlobalAccessTypeCacheProvider));
     }
 
     [Test]
@@ -41,7 +41,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.AreSame (Configuration.GlobalAccessTypeCacheProvider, Configuration.GlobalAccessTypeCacheProvider);
+      Assert.That (Configuration.GlobalAccessTypeCacheProvider, Is.SameAs (Configuration.GlobalAccessTypeCacheProvider));
     }
 
     [Test]
@@ -75,7 +75,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
       Assert.IsInstanceOf (typeof (GlobalAccessTypeCacheProviderMock), Configuration.GlobalAccessTypeCacheProvider);
-      Assert.AreSame (Configuration.GlobalAccessTypeCacheProvider, Configuration.GlobalAccessTypeCacheProviders["Custom"]);
+      Assert.That (Configuration.GlobalAccessTypeCacheProviders["Custom"], Is.SameAs (Configuration.GlobalAccessTypeCacheProvider));
     }
 
     [Test]
@@ -91,10 +91,10 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.AreEqual (3, Configuration.GlobalAccessTypeCacheProviders.Count);
+      Assert.That (Configuration.GlobalAccessTypeCacheProviders.Count, Is.EqualTo (3));
       Assert.IsInstanceOf (typeof (GlobalAccessTypeCacheProviderMock), Configuration.GlobalAccessTypeCacheProviders["Custom"]);
       Assert.IsInstanceOf (typeof (NullGlobalAccessTypeCacheProvider), Configuration.GlobalAccessTypeCacheProvider);
-      Assert.AreSame (Configuration.GlobalAccessTypeCacheProvider, Configuration.GlobalAccessTypeCacheProviders["None"]);
+      Assert.That (Configuration.GlobalAccessTypeCacheProviders["None"], Is.SameAs (Configuration.GlobalAccessTypeCacheProvider));
     }
 
     [Test]

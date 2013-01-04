@@ -103,7 +103,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
 
       var positions = _searchService.Search (null, _positionProperty, CreateSearchArguments (null));
 
-      Assert.AreEqual (3, positions.Length);
+      Assert.That (positions.Length, Is.EqualTo (3));
     }
 
     [Test]
@@ -115,7 +115,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
 
        var positions = _searchService.Search (null, _positionProperty, CreateSearchArguments (parentGroup));
 
-      Assert.AreEqual (2, positions.Length);
+      Assert.That (positions.Length, Is.EqualTo (2));
       foreach (string positionName in new[] { "Official", "Manager" })
       {
         Assert.IsTrue (
@@ -136,7 +136,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
 
        var positions = _searchService.Search (null, _positionProperty, CreateSearchArguments (rootGroup));
 
-      Assert.AreEqual (3, positions.Length);
+      Assert.That (positions.Length, Is.EqualTo (3));
     }
 
     [Test]
@@ -153,7 +153,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       var positions = _searchService.Search (null, _positionProperty, CreateSearchArguments (rootGroup));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (2, positions.Length);
+      Assert.That (positions.Length, Is.EqualTo (2));
       foreach (string positionName in new[] { "Official", "Global" })
       {
         Assert.IsTrue (
@@ -179,8 +179,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       var positions = _searchService.Search (null, _positionProperty, CreateSearchArguments (parentGroup));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (1, positions.Length);
-      Assert.AreEqual ("Official", ((Position) positions[0]).Name);
+      Assert.That (positions.Length, Is.EqualTo (1));
+      Assert.That (((Position) positions[0]).Name, Is.EqualTo ("Official"));
     }
 
     [Test]
@@ -203,8 +203,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
 
       ClientTransaction.Current.Extensions.Remove (new SecurityClientTransactionExtension().Key);
 
-      Assert.AreEqual (1, positions.Length);
-      Assert.AreEqual ("Official", ((Position) positions[0]).Name);
+      Assert.That (positions.Length, Is.EqualTo (1));
+      Assert.That (((Position) positions[0]).Name, Is.EqualTo ("Official"));
     }
 
     private void SetupResultSecurityProviderGetAccessForPosition (Delegation delegation, ISecurityPrincipal principal, params Enum[] returnedAccessTypeEnums)

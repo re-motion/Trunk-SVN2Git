@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Xml.XmlSerializationUtilityTests
     public void WithXmlTypeAttribute()
     {
       Type type = CreateType ("SampleType", CreateXmlTypeAttributeBuilder ("http://type-namespace"));
-      Assert.AreEqual ("http://type-namespace", XmlSerializationUtility.GetNamespace (type));
+      Assert.That (XmlSerializationUtility.GetNamespace (type), Is.EqualTo ("http://type-namespace"));
     }
 
     [Test]
@@ -48,7 +48,7 @@ namespace Remotion.UnitTests.Xml.XmlSerializationUtilityTests
     public void WithXmlRootAttribute()
     {
       Type type = CreateType ("SampleType", CreateXmlRootAttributeBuilder ("http://root-namespace"));
-      Assert.AreEqual ("http://root-namespace", XmlSerializationUtility.GetNamespace (type));
+      Assert.That (XmlSerializationUtility.GetNamespace (type), Is.EqualTo ("http://root-namespace"));
     }
 
     [Test]
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Xml.XmlSerializationUtilityTests
           "SampleType",
           CreateXmlTypeAttributeBuilder ("http://type-namespace"),
           CreateXmlRootAttributeBuilder ("http://root-namespace"));
-      Assert.AreEqual ("http://root-namespace", XmlSerializationUtility.GetNamespace (type));
+      Assert.That (XmlSerializationUtility.GetNamespace (type), Is.EqualTo ("http://root-namespace"));
     }
 
     [Test]

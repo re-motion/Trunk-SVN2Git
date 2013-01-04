@@ -51,9 +51,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (GenericClass<>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.AreEqual (1, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (1));
     }
 
     [Test]
@@ -61,9 +61,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (GenericClass<string>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.AreEqual (1, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (1));
     }
 
     [Test]
@@ -71,10 +71,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (GenericClass<int>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)));
-      Assert.AreEqual (2, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
     }
 
     [Test]
@@ -82,10 +82,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (DerivedGenericClassFromOpen<>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)));
-      Assert.AreEqual (2, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
     }
 
     [Test]
@@ -93,10 +93,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (DerivedGenericClassFromOpen<string>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)));
-      Assert.AreEqual (2, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
     }
 
     [Test]
@@ -104,12 +104,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (DerivedGenericClassFromOpen<int>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForDerivedClosedGeneric)));
-      Assert.AreEqual (4, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForDerivedClosedGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (4));
     }
 
     [Test]
@@ -117,10 +117,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (DerivedGenericClassFromClosed<>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)));
-      Assert.AreEqual (2, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
     }
 
     [Test]
@@ -128,10 +128,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (DerivedGenericClassFromClosed<int>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)));
-      Assert.AreEqual (2, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
     }
 
     [Test]
@@ -139,10 +139,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (DerivedDerivedGenericClassFromOpen<>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)));
-      Assert.AreEqual (2, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
     }
 
     [Test]
@@ -150,10 +150,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (DerivedDerivedGenericClassFromOpen<string>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)));
-      Assert.AreEqual (2, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
     }
 
     [Test]
@@ -161,14 +161,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (DerivedDerivedGenericClassFromOpen<int>));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForDerivedClosedGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForDerivedDerivedClosedGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForDerivedDerivedClosedGeneric)));
-      Assert.AreEqual (5, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForDerivedOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForDerivedClosedGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForDerivedDerivedClosedGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForDerivedDerivedClosedGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (5));
     }
 
     [Test]
@@ -176,10 +176,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
       ClassContext classContext = configuration.GetContext (typeof (DerivedClassFromClosed));
-      Assert.IsNotNull (classContext);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)));
-      Assert.AreEqual (2, classContext.Mixins.Count);
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForOpenGeneric)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinForClosedGeneric)), Is.True);
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
     }
   }
 }

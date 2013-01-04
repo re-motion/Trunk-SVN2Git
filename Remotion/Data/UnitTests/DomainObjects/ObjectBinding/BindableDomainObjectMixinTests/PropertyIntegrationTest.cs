@@ -31,36 +31,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       SampleBindableMixinDomainObject instance = SampleBindableMixinDomainObject.NewObject();
       var instanceAsIBusinessObject = (IBusinessObject) instance;
 
-      Assert.IsNull (instanceAsIBusinessObject.GetProperty ("Int32"));
+      Assert.That (instanceAsIBusinessObject.GetProperty ("Int32"), Is.Null);
 
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.AreEqual (0, instance.Int32);
-        Assert.AreEqual (0, instanceAsIBusinessObject.GetProperty ("Int32"));
+        Assert.That (instance.Int32, Is.EqualTo (0));
+        Assert.That (instanceAsIBusinessObject.GetProperty ("Int32"), Is.EqualTo (0));
       }
 
       instanceAsIBusinessObject.SetProperty ("Int32", 1);
-      Assert.AreEqual (1, instance.Int32);
+      Assert.That (instance.Int32, Is.EqualTo (1));
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.AreEqual (1, instance.Int32);
-        Assert.AreEqual (1, instanceAsIBusinessObject.GetProperty ("Int32"));
+        Assert.That (instance.Int32, Is.EqualTo (1));
+        Assert.That (instanceAsIBusinessObject.GetProperty ("Int32"), Is.EqualTo (1));
       }
 
       instance.Int32 = 2;
-      Assert.AreEqual (2, instanceAsIBusinessObject.GetProperty ("Int32"));
-      Assert.AreEqual ("2", instanceAsIBusinessObject.GetPropertyString ("Int32"));
+      Assert.That (instanceAsIBusinessObject.GetProperty ("Int32"), Is.EqualTo (2));
+      Assert.That (instanceAsIBusinessObject.GetPropertyString ("Int32"), Is.EqualTo ("2"));
 
       instance.Int32 = 1;
-      Assert.AreEqual (1, instanceAsIBusinessObject.GetProperty ("Int32"));
+      Assert.That (instanceAsIBusinessObject.GetProperty ("Int32"), Is.EqualTo (1));
 
       instance.Int32 = 0;
-      Assert.AreEqual (0, instanceAsIBusinessObject.GetProperty ("Int32"));
+      Assert.That (instanceAsIBusinessObject.GetProperty ("Int32"), Is.EqualTo (0));
 
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.AreEqual (0, instance.Int32);
-        Assert.AreEqual (0, instanceAsIBusinessObject.GetProperty ("Int32"));
+        Assert.That (instance.Int32, Is.EqualTo (0));
+        Assert.That (instanceAsIBusinessObject.GetProperty ("Int32"), Is.EqualTo (0));
       }
     }
 

@@ -26,59 +26,59 @@ namespace Remotion.UnitTests.Utilities
     [Test]
     public void IsNullableType_ValueType ()
     {
-      Assert.IsFalse (NullableTypeUtility.IsNullableType (typeof (int)));
-      Assert.IsFalse (NullableTypeUtility.IsNullableType (typeof (DateTime)));
+      Assert.That (NullableTypeUtility.IsNullableType (typeof (int)), Is.False);
+      Assert.That (NullableTypeUtility.IsNullableType (typeof (DateTime)), Is.False);
     }
 
     [Test]
     public void IsNullableType_NullableValueType ()
     {
-      Assert.IsTrue (NullableTypeUtility.IsNullableType (typeof (int?)));
-      Assert.IsTrue (NullableTypeUtility.IsNullableType (typeof (DateTime?)));
+      Assert.That (NullableTypeUtility.IsNullableType (typeof (int?)), Is.True);
+      Assert.That (NullableTypeUtility.IsNullableType (typeof (DateTime?)), Is.True);
     }
 
     [Test]
     public void IsNullableType_ReferenceType ()
     {
-      Assert.IsTrue (NullableTypeUtility.IsNullableType (typeof (object)));
-      Assert.IsTrue (NullableTypeUtility.IsNullableType (typeof (string)));
+      Assert.That (NullableTypeUtility.IsNullableType (typeof (object)), Is.True);
+      Assert.That (NullableTypeUtility.IsNullableType (typeof (string)), Is.True);
     }
 
     [Test]
     public void GetNullableType_ValueType ()
     {
-      Assert.AreEqual (typeof (int?), NullableTypeUtility.GetNullableType (typeof (int)));
+      Assert.That (NullableTypeUtility.GetNullableType (typeof (int)), Is.EqualTo (typeof (int?)));
     }
 
     [Test]
     public void GetNullableType_NullableValueType ()
     {
-      Assert.AreEqual (typeof (int?), NullableTypeUtility.GetNullableType (typeof (int?)));
+      Assert.That (NullableTypeUtility.GetNullableType (typeof (int?)), Is.EqualTo (typeof (int?)));
     }
 
     [Test]
     public void GetNullableType_ReferenceType ()
     {
-      Assert.AreEqual (typeof (string), NullableTypeUtility.GetNullableType (typeof (string)));
+      Assert.That (NullableTypeUtility.GetNullableType (typeof (string)), Is.EqualTo (typeof (string)));
     }
 
     [Test]
     public void GetBasicType_ValueType ()
     {
-      Assert.AreEqual (typeof (int), NullableTypeUtility.GetBasicType (typeof (int)));
+      Assert.That (NullableTypeUtility.GetBasicType (typeof (int)), Is.EqualTo (typeof (int)));
     }
 
     [Test]
     public void GetBasicType_NullableValueType ()
     {
-      Assert.AreEqual (typeof (int), NullableTypeUtility.GetBasicType (typeof (int?)));
+      Assert.That (NullableTypeUtility.GetBasicType (typeof (int?)), Is.EqualTo (typeof (int)));
     }
 
 
     [Test]
     public void GetBasicType_ReferenceType ()
     {
-      Assert.AreEqual (typeof (string), NullableTypeUtility.GetBasicType (typeof (string)));
-      }
+      Assert.That (NullableTypeUtility.GetBasicType (typeof (string)), Is.EqualTo (typeof (string)));
+    }
   }
 }

@@ -83,19 +83,19 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       CustomPropertyEmitter property = _classEmitter.CreateProperty ("SimpleProperty", PropertyKind.Instance, typeof (int));
 
-      Assert.AreEqual ("SimpleProperty", property.Name);
-      Assert.AreEqual (typeof (int), property.PropertyType);
-      Assert.AreEqual (PropertyKind.Instance, property.PropertyKind);
-      Assert.IsEmpty (property.IndexParameters);
+      Assert.That (property.Name, Is.EqualTo ("SimpleProperty"));
+      Assert.That (property.PropertyType, Is.EqualTo (typeof (int)));
+      Assert.That (property.PropertyKind, Is.EqualTo (PropertyKind.Instance));
+      Assert.That (property.IndexParameters, Is.Empty);
 
       property.CreateGetMethod();
       property.CreateSetMethod();
       property.ImplementWithBackingField ();
 
       object instance = BuildInstance ();
-      Assert.AreEqual (0, GetPropertyValue (instance, property));
+      Assert.That (GetPropertyValue (instance, property), Is.EqualTo (0));
       SetPropertyValue (17, instance, property);
-      Assert.AreEqual (17, GetPropertyValue (instance, property));
+      Assert.That (GetPropertyValue (instance, property), Is.EqualTo (17));
     }
 
     [Test]
@@ -103,19 +103,19 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       CustomPropertyEmitter property = _classEmitter.CreateProperty ("StaticProperty", PropertyKind.Static, typeof (string));
 
-      Assert.AreEqual ("StaticProperty", property.Name);
-      Assert.AreEqual (typeof (string), property.PropertyType);
-      Assert.AreEqual (PropertyKind.Static, property.PropertyKind);
-      Assert.IsEmpty (property.IndexParameters);
+      Assert.That (property.Name, Is.EqualTo ("StaticProperty"));
+      Assert.That (property.PropertyType, Is.EqualTo (typeof (string)));
+      Assert.That (property.PropertyKind, Is.EqualTo (PropertyKind.Static));
+      Assert.That (property.IndexParameters, Is.Empty);
 
       property.CreateGetMethod();
       property.CreateSetMethod();
       property.ImplementWithBackingField ();
 
       Type type = _classEmitter.BuildType ();
-      Assert.AreEqual (null, GetPropertyValue (type, property));
+      Assert.That (GetPropertyValue (type, property), Is.EqualTo (null));
       SetPropertyValue ("bla", type, property);
-      Assert.AreEqual ("bla", GetPropertyValue (type, property));
+      Assert.That (GetPropertyValue (type, property), Is.EqualTo ("bla"));
     }
 
     [Test]
@@ -133,27 +133,27 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Type type = _classEmitter.BuildType ();
 
-      Assert.AreEqual (null, GetPropertyValue (type, property, 2, 2.0));
+      Assert.That (GetPropertyValue (type, property, 2, 2.0), Is.EqualTo (null));
       SetPropertyValue ("whatever", type, property, 2, 2.0);
-      Assert.AreEqual ("whatever", GetPropertyValue (type, property, 2, 2.0));
+      Assert.That (GetPropertyValue (type, property, 2, 2.0), Is.EqualTo ("whatever"));
     }
 
     [Test]
     public void NoGetMethod ()
     {
       CustomPropertyEmitter property = _classEmitter.CreateProperty ("NoGetMethod", PropertyKind.Static, typeof (string));
-      Assert.IsNull (property.GetMethod);
+      Assert.That (property.GetMethod, Is.Null);
       Type type = _classEmitter.BuildType ();
-      Assert.IsNull (GetProperty (type, property).GetGetMethod ());
+      Assert.That (GetProperty (type, property).GetGetMethod (), Is.Null);
     }
 
     [Test]
     public void NoSetMethod ()
     {
       CustomPropertyEmitter property = _classEmitter.CreateProperty ("NoSetMethod", PropertyKind.Static, typeof (string));
-      Assert.IsNull (property.SetMethod);
+      Assert.That (property.SetMethod, Is.Null);
       Type type = _classEmitter.BuildType ();
-      Assert.IsNull (GetProperty (type, property).GetSetMethod ());
+      Assert.That (GetProperty (type, property).GetSetMethod (), Is.Null);
     }
 
     [Test]
@@ -162,7 +162,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomPropertyEmitter property = _classEmitter.CreateProperty ("SpecificGetMethod", PropertyKind.Static, typeof (string));
       property.CreateGetMethod ().ImplementByReturning (new ConstReference ("You are my shunsine").ToExpression ());
       Type type = _classEmitter.BuildType ();
-      Assert.AreEqual ("You are my shunsine", GetPropertyValue (type, property));
+      Assert.That (GetPropertyValue (type, property), Is.EqualTo ("You are my shunsine"));
     }
 
     [Test]
@@ -177,8 +177,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       }
       catch (TargetInvocationException ex)
       {
-        Assert.IsTrue (ex.InnerException.GetType () == typeof (Exception));
-        Assert.AreEqual ("My only shunsine", ex.InnerException.Message);
+        Assert.That (ex.InnerException.GetType () == typeof (Exception), Is.True);
+        Assert.That (ex.InnerException.Message, Is.EqualTo ("My only shunsine"));
       }
     }
 
@@ -214,15 +214,15 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type type = _classEmitter.BuildType ();
 
       FieldInfo backingField = type.GetField ("_fieldForStaticProperty");
-      Assert.IsNotNull (backingField);
-      Assert.IsTrue (backingField.IsStatic);
+      Assert.That (backingField, Is.Not.Null);
+      Assert.That (backingField.IsStatic, Is.True);
 
       SetPropertyValue ("test", type, property);
-      Assert.AreEqual ("test", backingField.GetValue (null));
+      Assert.That (backingField.GetValue (null), Is.EqualTo ("test"));
 
       backingField.SetValue (null, "yup");
 
-      Assert.AreEqual ("yup", GetPropertyValue (type, property));
+      Assert.That (GetPropertyValue (type, property), Is.EqualTo ("yup"));
     }
 
     [Test]
@@ -238,15 +238,15 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type type = instance.GetType();
 
       FieldInfo backingField = type.GetField ("_fieldForInstanceProperty");
-      Assert.IsNotNull (backingField);
-      Assert.IsFalse (backingField.IsStatic);
+      Assert.That (backingField, Is.Not.Null);
+      Assert.That (backingField.IsStatic, Is.False);
 
       SetPropertyValue ("what you see", instance, property);
-      Assert.AreEqual ("what you see", backingField.GetValue (instance));
+      Assert.That (backingField.GetValue (instance), Is.EqualTo ("what you see"));
 
       backingField.SetValue (instance, "is what you get");
 
-      Assert.AreEqual ("is what you get", GetPropertyValue (instance, property));
+      Assert.That (GetPropertyValue (instance, property), Is.EqualTo ("is what you get"));
     }
 
     [Test]
@@ -254,13 +254,13 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       CustomPropertyEmitter property = _classEmitter.CreateProperty ("PropertyWithoutAccessors", PropertyKind.Instance, typeof (string));
 
-      Assert.IsNull (property.GetMethod);
-      Assert.IsNull (property.SetMethod);
+      Assert.That (property.GetMethod, Is.Null);
+      Assert.That (property.SetMethod, Is.Null);
 
       property.ImplementWithBackingField ();
 
-      Assert.IsNull (property.GetMethod);
-      Assert.IsNull (property.SetMethod);
+      Assert.That (property.GetMethod, Is.Null);
+      Assert.That (property.SetMethod, Is.Null);
     }
 
     [Test]
@@ -270,11 +270,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           _classEmitter.CreateProperty (
               "CreateGetMethodStatic", PropertyKind.Static, typeof (string), new Type[] {typeof (int)}, PropertyAttributes.None);
 
-      Assert.IsNull (property.GetMethod);
+      Assert.That (property.GetMethod, Is.Null);
       var method = property.CreateGetMethod ();
-      Assert.IsTrue (method.MethodBuilder.IsStatic);
+      Assert.That (method.MethodBuilder.IsStatic, Is.True);
       Assert.That (method.ParameterTypes, Is.EqualTo (new Type[] { typeof (int) }));
-      Assert.AreEqual (typeof (string), method.ReturnType);
+      Assert.That (method.ReturnType, Is.EqualTo (typeof (string)));
     }
 
     [Test]
@@ -284,11 +284,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           _classEmitter.CreateProperty (
               "CreateGetMethodStatic", PropertyKind.Instance, typeof (string), new Type[] { typeof (int) }, PropertyAttributes.None);
 
-      Assert.IsNull (property.GetMethod);
+      Assert.That (property.GetMethod, Is.Null);
       var method = property.CreateGetMethod ();
-      Assert.IsFalse (method.MethodBuilder.IsStatic);
+      Assert.That (method.MethodBuilder.IsStatic, Is.False);
       Assert.That (method.ParameterTypes, Is.EqualTo (new Type[] { typeof (int) }));
-      Assert.AreEqual (typeof (string), method.ReturnType);
+      Assert.That (method.ReturnType, Is.EqualTo (typeof (string)));
     }
 
     [Test]
@@ -309,11 +309,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           _classEmitter.CreateProperty (
               "CreateSetMethodStatic", PropertyKind.Static, typeof (string), new Type[] { typeof (int) }, PropertyAttributes.None);
 
-      Assert.IsNull (property.SetMethod);
+      Assert.That (property.SetMethod, Is.Null);
       var method = property.CreateSetMethod ();
-      Assert.IsTrue (method.MethodBuilder.IsStatic);
+      Assert.That (method.MethodBuilder.IsStatic, Is.True);
       Assert.That (method.ParameterTypes, Is.EqualTo (new Type[] { typeof (int), typeof (string) }));
-      Assert.AreEqual (typeof (void), method.ReturnType);
+      Assert.That (method.ReturnType, Is.EqualTo (typeof (void)));
     }
 
     [Test]
@@ -323,11 +323,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           _classEmitter.CreateProperty (
               "CreateSetMethodStatic", PropertyKind.Instance, typeof (string), new Type[] { typeof (int) }, PropertyAttributes.None);
 
-      Assert.IsNull (property.SetMethod);
+      Assert.That (property.SetMethod, Is.Null);
       var method = property.CreateSetMethod ();
-      Assert.IsFalse (method.MethodBuilder.IsStatic);
+      Assert.That (method.MethodBuilder.IsStatic, Is.False);
       Assert.That (method.ParameterTypes, Is.EqualTo (new Type[] { typeof (int), typeof (string) }));
-      Assert.AreEqual (typeof (void), method.ReturnType);
+      Assert.That (method.ReturnType, Is.EqualTo (typeof (void)));
     }
 
     [Test]
@@ -348,9 +348,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       property.AddCustomAttribute (new CustomAttributeBuilder (typeof (SimpleAttribute).GetConstructor (Type.EmptyTypes), new object[0]));
 
       Type type = _classEmitter.BuildType ();
-      Assert.IsTrue (GetProperty (type, property).IsDefined (typeof (SimpleAttribute), false));
-      Assert.AreEqual (1, GetProperty (type, property).GetCustomAttributes (false).Length);
-      Assert.AreEqual (new SimpleAttribute(), GetProperty (type, property).GetCustomAttributes (false)[0]);
+      Assert.That (GetProperty (type, property).IsDefined (typeof (SimpleAttribute), false), Is.True);
+      Assert.That (GetProperty (type, property).GetCustomAttributes (false).Length, Is.EqualTo (1));
+      Assert.That (GetProperty (type, property).GetCustomAttributes (false)[0], Is.EqualTo (new SimpleAttribute()));
     }
   }
 }

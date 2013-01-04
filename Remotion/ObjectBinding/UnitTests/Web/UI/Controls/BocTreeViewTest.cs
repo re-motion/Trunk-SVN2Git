@@ -55,8 +55,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
       _bocTreeView.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
     [Test]
@@ -65,8 +65,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
       _bocTreeView.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
 
@@ -76,10 +76,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
       _bocTreeView.EvaluateWaiConformity();
 
-      Assert.IsTrue (WcagHelperMock.HasError);
-      Assert.AreEqual (1, WcagHelperMock.Priority);
-      Assert.AreSame (_bocTreeView, WcagHelperMock.Control);
-      Assert.IsNull (WcagHelperMock.Property);
+      Assert.That (WcagHelperMock.HasError, Is.True);
+      Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+      Assert.That (WcagHelperMock.Control, Is.SameAs (_bocTreeView));
+      Assert.That (WcagHelperMock.Property, Is.Null);
     }
 
 
@@ -88,14 +88,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       TypeWithReference[] list = new[] { TypeWithReference.Create() };
       _bocTreeView.Value = list;
-      Assert.AreEqual (list, _bocTreeView.Value);
+      Assert.That (_bocTreeView.Value, Is.EqualTo (list));
     }
 
     [Test]
     public void SetValueToNull ()
     {
       _bocTreeView.Value = null;
-      Assert.AreEqual (null, _bocTreeView.Value);
+      Assert.That (_bocTreeView.Value, Is.EqualTo (null));
     }
 
 
@@ -103,14 +103,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     public void HasValue_ValueIsSet_ReturnsTrue ()
     {
       _bocTreeView.Value = new IBusinessObjectWithIdentity[0];
-      Assert.IsTrue (_bocTreeView.HasValue);
+      Assert.That (_bocTreeView.HasValue, Is.True);
     }
 
     [Test]
     public void HasValue_ValueIsNull_ReturnsFalse ()
     {
       _bocTreeView.Value = null;
-      Assert.IsFalse (_bocTreeView.HasValue);
+      Assert.That (_bocTreeView.HasValue, Is.False);
     }
 
 
@@ -122,9 +122,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       _bocTreeView.LoadValue (true);
       IList actual = _bocTreeView.Value;
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, actual.Count);
-      Assert.AreEqual (_businessObject, actual[0]);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Count, Is.EqualTo (1));
+      Assert.That (actual[0], Is.EqualTo (_businessObject));
     }
 
     [Test]
@@ -135,9 +135,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       _bocTreeView.LoadValue (false);
       IList actual = _bocTreeView.Value;
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, actual.Count);
-      Assert.AreEqual (_businessObject, actual[0]);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Count, Is.EqualTo (1));
+      Assert.That (actual[0], Is.EqualTo (_businessObject));
     }
     
 
@@ -149,7 +149,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocTreeView.Value = value;
 
       _bocTreeView.LoadValue (false);
-      Assert.AreEqual (value, _bocTreeView.Value);
+      Assert.That (_bocTreeView.Value, Is.EqualTo (value));
     }
 
     [Test]
@@ -160,7 +160,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocTreeView.Value = new[] { TypeWithReference.Create () };
 
       _bocTreeView.LoadValue (false);
-      Assert.AreEqual (null, _bocTreeView.Value);
+      Assert.That (_bocTreeView.Value, Is.EqualTo (null));
     }
 
 
@@ -171,7 +171,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocTreeView.Value = null;
 
       _bocTreeView.LoadUnboundValue (value, true);
-      Assert.AreEqual (value, _bocTreeView.Value);
+      Assert.That (_bocTreeView.Value, Is.EqualTo (value));
     }
 
     [Test]
@@ -181,7 +181,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocTreeView.Value = new TypeWithReference[0];
 
       _bocTreeView.LoadUnboundValue (value, true);
-      Assert.AreEqual (value, _bocTreeView.Value);
+      Assert.That (_bocTreeView.Value, Is.EqualTo (value));
     }
 
     [Test]
@@ -191,7 +191,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocTreeView.Value = null;
 
       _bocTreeView.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocTreeView.Value);
+      Assert.That (_bocTreeView.Value, Is.EqualTo (value));
     }
 
     [Test]
@@ -201,7 +201,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocTreeView.Value = new TypeWithReference[0];
 
       _bocTreeView.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocTreeView.Value);
+      Assert.That (_bocTreeView.Value, Is.EqualTo (value));
     }
   }
 }

@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       if (ClientTransactionScope.ActiveScope != null)
       {
-        Assert.AreSame (_outermostScope, ClientTransactionScope.ActiveScope);
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (_outermostScope));
         _outermostScope.Leave();
       }
       base.TearDown();
@@ -52,12 +52,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void ScopeSetsAndResetsCurrentTransaction ()
     {
       ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction();
-      Assert.AreNotSame (clientTransaction, ClientTransactionScope.CurrentTransaction);
+      Assert.That (ClientTransactionScope.CurrentTransaction, Is.Not.SameAs (clientTransaction));
       using (clientTransaction.EnterNonDiscardingScope())
       {
-        Assert.AreSame (clientTransaction, ClientTransactionScope.CurrentTransaction);
+        Assert.That (ClientTransactionScope.CurrentTransaction, Is.SameAs (clientTransaction));
       }
-      Assert.AreNotSame (clientTransaction, ClientTransactionScope.CurrentTransaction);
+      Assert.That (ClientTransactionScope.CurrentTransaction, Is.Not.SameAs (clientTransaction));
     }
 
     [Test]
@@ -65,12 +65,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        Assert.IsTrue (ClientTransactionScope.HasCurrentTransaction);
+        Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.True);
         using (ClientTransactionScope.EnterNullScope())
         {
-          Assert.IsFalse (ClientTransactionScope.HasCurrentTransaction);
+          Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.False);
         }
-        Assert.IsTrue (ClientTransactionScope.HasCurrentTransaction);
+        Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.True);
       }
     }
 
@@ -78,11 +78,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void ActiveScope ()
     {
       _outermostScope.Leave();
-      Assert.IsNull (ClientTransactionScope.ActiveScope);
+      Assert.That (ClientTransactionScope.ActiveScope, Is.Null);
       using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        Assert.IsNotNull (ClientTransactionScope.ActiveScope);
-        Assert.AreSame (scope, ClientTransactionScope.ActiveScope);
+        Assert.That (ClientTransactionScope.ActiveScope, Is.Not.Null);
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (scope));
       }
     }
 
@@ -94,25 +94,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
       ClientTransaction original = ClientTransactionScope.CurrentTransaction;
 
-      Assert.AreNotSame (clientTransaction1, original);
-      Assert.AreNotSame (clientTransaction2, original);
-      Assert.IsNotNull (original);
+      Assert.That (original, Is.Not.SameAs (clientTransaction1));
+      Assert.That (original, Is.Not.SameAs (clientTransaction2));
+      Assert.That (original, Is.Not.Null);
 
       using (ClientTransactionScope scope1 = clientTransaction1.EnterNonDiscardingScope())
       {
-        Assert.AreSame (clientTransaction1, ClientTransactionScope.CurrentTransaction);
-        Assert.AreSame (scope1, ClientTransactionScope.ActiveScope);
+        Assert.That (ClientTransactionScope.CurrentTransaction, Is.SameAs (clientTransaction1));
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (scope1));
 
         using (ClientTransactionScope scope2 = clientTransaction2.EnterNonDiscardingScope())
         {
-          Assert.AreSame (scope2, ClientTransactionScope.ActiveScope);
-          Assert.AreSame (clientTransaction2, ClientTransactionScope.CurrentTransaction);
+          Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (scope2));
+          Assert.That (ClientTransactionScope.CurrentTransaction, Is.SameAs (clientTransaction2));
         }
-        Assert.AreSame (scope1, ClientTransactionScope.ActiveScope);
-        Assert.AreSame (clientTransaction1, ClientTransactionScope.CurrentTransaction);
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (scope1));
+        Assert.That (ClientTransactionScope.CurrentTransaction, Is.SameAs (clientTransaction1));
       }
-      Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
-      Assert.AreSame (original, ClientTransactionScope.CurrentTransaction);
+      Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (originalScope));
+      Assert.That (ClientTransactionScope.CurrentTransaction, Is.SameAs (original));
     }
 
     [Test]
@@ -120,12 +120,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (ClientTransactionScope.EnterNullScope())
       {
-        Assert.IsFalse (ClientTransactionScope.HasCurrentTransaction);
+        Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.False);
         using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
         {
-          Assert.IsTrue (ClientTransactionScope.HasCurrentTransaction);
+          Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.True);
         }
-        Assert.IsFalse (ClientTransactionScope.HasCurrentTransaction);
+        Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.False);
       }
     }
 
@@ -135,10 +135,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ClientTransaction original = ClientTransactionScope.CurrentTransaction;
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        Assert.IsNotNull (ClientTransactionScope.CurrentTransaction);
-        Assert.AreNotSame (original, ClientTransactionScope.CurrentTransaction);
+        Assert.That (ClientTransactionScope.CurrentTransaction, Is.Not.Null);
+        Assert.That (ClientTransactionScope.CurrentTransaction, Is.Not.SameAs (original));
       }
-      Assert.AreSame (original, ClientTransactionScope.CurrentTransaction);
+      Assert.That (ClientTransactionScope.CurrentTransaction, Is.SameAs (original));
     }
 
     [Test]
@@ -150,8 +150,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         using (ClientTransactionScope inner = innerTransaction.EnterNonDiscardingScope())
         {
-          Assert.AreSame (innerTransaction, inner.ScopedTransaction);
-          Assert.AreSame (outerTransaction, outer.ScopedTransaction);
+          Assert.That (inner.ScopedTransaction, Is.SameAs (innerTransaction));
+          Assert.That (outer.ScopedTransaction, Is.SameAs (outerTransaction));
         }
       }
     }
@@ -165,8 +165,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         using (ClientTransactionScope inner = innerTransaction.EnterNonDiscardingScope())
         {
-          Assert.AreSame (innerTransaction, ((ITransactionScope) inner).ScopedTransaction.To<ClientTransaction>());
-          Assert.AreSame (outerTransaction, ((ITransactionScope) outer).ScopedTransaction.To<ClientTransaction> ());
+          Assert.That (((ITransactionScope) inner).ScopedTransaction.To<ClientTransaction>(), Is.SameAs (innerTransaction));
+          Assert.That (((ITransactionScope) outer).ScopedTransaction.To<ClientTransaction> (), Is.SameAs (outerTransaction));
         }
       }
     }
@@ -176,24 +176,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        Assert.AreEqual (AutoRollbackBehavior.Discard, scope.AutoRollbackBehavior);
+        Assert.That (scope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.Discard));
         scope.AutoRollbackBehavior = AutoRollbackBehavior.None;
-        Assert.AreEqual (AutoRollbackBehavior.None, scope.AutoRollbackBehavior);
+        Assert.That (scope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.None));
       }
 
       using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        Assert.AreEqual (AutoRollbackBehavior.Discard, scope.AutoRollbackBehavior);
+        Assert.That (scope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.Discard));
       }
 
       using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterScope (AutoRollbackBehavior.None))
       {
-        Assert.AreEqual (AutoRollbackBehavior.None, scope.AutoRollbackBehavior);
+        Assert.That (scope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.None));
       }
 
       using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterScope (AutoRollbackBehavior.Rollback))
       {
-        Assert.AreEqual (AutoRollbackBehavior.Rollback, scope.AutoRollbackBehavior);
+        Assert.That (scope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.Rollback));
       }
     }
 
@@ -233,13 +233,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order.OrderItems.Add (OrderItem.NewObject());
       }
 
-      Assert.AreEqual (0, eventCounter.Rollbacks);
+      Assert.That (eventCounter.Rollbacks, Is.EqualTo (0));
 
       using (mock.EnterScope (AutoRollbackBehavior.None))
       {
       }
 
-      Assert.AreEqual (0, eventCounter.Rollbacks);
+      Assert.That (eventCounter.Rollbacks, Is.EqualTo (0));
 
       using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.None))
       {
@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         scope.ScopedTransaction.Rollback();
       }
 
-      Assert.AreEqual (1, eventCounter.Rollbacks);
+      Assert.That (eventCounter.Rollbacks, Is.EqualTo (1));
     }
 
     [Test]
@@ -264,7 +264,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order.OrderNumber = 0xbadf00d;
       }
 
-      Assert.AreEqual (1, eventCounter.Rollbacks);
+      Assert.That (eventCounter.Rollbacks, Is.EqualTo (1));
       eventCounter.Rollbacks = 0;
 
       using (mock.EnterScope (AutoRollbackBehavior.Rollback))
@@ -273,7 +273,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order.OrderTicket = OrderTicket.NewObject();
       }
 
-      Assert.AreEqual (1, eventCounter.Rollbacks);
+      Assert.That (eventCounter.Rollbacks, Is.EqualTo (1));
       eventCounter.Rollbacks = 0;
 
       using (mock.EnterScope (AutoRollbackBehavior.Rollback))
@@ -282,14 +282,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order.OrderItems.Add (OrderItem.NewObject());
       }
 
-      Assert.AreEqual (1, eventCounter.Rollbacks);
+      Assert.That (eventCounter.Rollbacks, Is.EqualTo (1));
       eventCounter.Rollbacks = 0;
 
       using (mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
       }
 
-      Assert.AreEqual (0, eventCounter.Rollbacks);
+      Assert.That (eventCounter.Rollbacks, Is.EqualTo (0));
 
       using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         scope.ScopedTransaction.Rollback();
       }
 
-      Assert.AreEqual (1, eventCounter.Rollbacks);
+      Assert.That (eventCounter.Rollbacks, Is.EqualTo (1));
       eventCounter.Rollbacks = 0;
 
       using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.Rollback))
@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order.OrderNumber = 0xbadf00d;
       }
 
-      Assert.AreEqual (2, eventCounter.Rollbacks);
+      Assert.That (eventCounter.Rollbacks, Is.EqualTo (2));
     }
 
     [Test]
@@ -320,28 +320,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var eventCounter = new TransactionEventCounter (transaction);
       using (ClientTransactionScope scope = transaction.EnterNonDiscardingScope())
       {
-        Assert.AreEqual (0, eventCounter.Commits);
-        Assert.AreEqual (0, eventCounter.Rollbacks);
+        Assert.That (eventCounter.Commits, Is.EqualTo (0));
+        Assert.That (eventCounter.Rollbacks, Is.EqualTo (0));
 
         scope.Commit();
 
-        Assert.AreEqual (1, eventCounter.Commits);
-        Assert.AreEqual (0, eventCounter.Rollbacks);
+        Assert.That (eventCounter.Commits, Is.EqualTo (1));
+        Assert.That (eventCounter.Rollbacks, Is.EqualTo (0));
 
         scope.Rollback();
 
-        Assert.AreEqual (1, eventCounter.Commits);
-        Assert.AreEqual (1, eventCounter.Rollbacks);
+        Assert.That (eventCounter.Commits, Is.EqualTo (1));
+        Assert.That (eventCounter.Rollbacks, Is.EqualTo (1));
 
         transaction.Commit();
 
-        Assert.AreEqual (2, eventCounter.Commits);
-        Assert.AreEqual (1, eventCounter.Rollbacks);
+        Assert.That (eventCounter.Commits, Is.EqualTo (2));
+        Assert.That (eventCounter.Rollbacks, Is.EqualTo (1));
 
         transaction.Rollback();
 
-        Assert.AreEqual (2, eventCounter.Commits);
-        Assert.AreEqual (2, eventCounter.Rollbacks);
+        Assert.That (eventCounter.Commits, Is.EqualTo (2));
+        Assert.That (eventCounter.Rollbacks, Is.EqualTo (2));
       }
     }
 
@@ -368,10 +368,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void NoAutoEnlisting ()
     {
       Order order = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1);
-      Assert.IsTrue (ClientTransaction.Current.IsEnlisted (order));
+      Assert.That (ClientTransaction.Current.IsEnlisted (order), Is.True);
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        Assert.IsFalse (ClientTransaction.Current.IsEnlisted (order));
+        Assert.That (ClientTransaction.Current.IsEnlisted (order), Is.False);
       }
     }
 
@@ -379,11 +379,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void ResetScope ()
     {
       ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
-      Assert.IsNotNull (ClientTransactionScope.ActiveScope);
-      Assert.IsTrue (ClientTransactionScope.HasCurrentTransaction);
+      Assert.That (ClientTransactionScope.ActiveScope, Is.Not.Null);
+      Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.True);
       ClientTransactionScope.ResetActiveScope();
-      Assert.IsNull (ClientTransactionScope.ActiveScope);
-      Assert.IsFalse (ClientTransactionScope.HasCurrentTransaction);
+      Assert.That (ClientTransactionScope.ActiveScope, Is.Null);
+      Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.False);
     }
 
     [Test]

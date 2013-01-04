@@ -53,7 +53,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       bool hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo);
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -67,7 +67,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       bool hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo);
 
       _testHelper.VerifyAll ();
-      Assert.IsFalse (hasAccess);
+      Assert.That (hasAccess, Is.False);
     }
 
 
@@ -85,7 +85,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       }
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]

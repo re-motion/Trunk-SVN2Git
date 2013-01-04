@@ -46,8 +46,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (_basePropertyWithSingleAttribute, true);
 
-      Assert.AreEqual (1, attributes.Length);
-      Assert.IsNotNull (attributes[0]);
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0], Is.Not.Null);
     }
 
     [Test]
@@ -55,8 +55,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       object[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (InheritedAttribute), true);
 
-      Assert.AreEqual (1, attributes.Length);
-      Assert.IsNotNull (attributes[0]);
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0], Is.Not.Null);
       Assert.IsInstanceOf (typeof (InheritedAttribute), attributes[0]);
     }
 
@@ -65,8 +65,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (_basePropertyWithSingleAttribute, true);
 
-      Assert.AreEqual (1, attributes.Length);
-      Assert.IsNotNull (attributes[0]);
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0], Is.Not.Null);
     }
 
     [Test]
@@ -74,8 +74,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       object[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (ICustomAttribute), true);
 
-      Assert.AreEqual (1, attributes.Length);
-      Assert.IsNotNull (attributes[0]);
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0], Is.Not.Null);
       Assert.IsInstanceOf (typeof (ICustomAttribute), attributes[0]);
     }
 
@@ -100,8 +100,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (_derivedPropertyWithSingleAttribute, true);
 
-      Assert.AreEqual (1, attributes.Length);
-      Assert.IsNotNull (attributes[0]);
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0], Is.Not.Null);
     }
 
     [Test]
@@ -110,8 +110,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (_derivedProtectedProperty, true);
 
-      Assert.AreEqual (1, attributes.Length);
-      Assert.IsNotNull (attributes[0]);
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0], Is.Not.Null);
     }
 
     [Test]
@@ -119,8 +119,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (_derivedPropertyWithSingleAttribute, true);
 
-      Assert.AreEqual (1, attributes.Length);
-      Assert.IsNotNull (attributes[0]);
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0], Is.Not.Null);
     }
 
     [Test]
@@ -128,9 +128,9 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       MultipleAttribute[] attributes = AttributeUtility.GetCustomAttributes<MultipleAttribute> (_derivedPropertyWithMultipleAttribute, true);
 
-      Assert.AreEqual (2, attributes.Length);
-      Assert.IsNotNull (attributes[0]);
-      Assert.IsNotNull (attributes[1]);
+      Assert.That (attributes.Length, Is.EqualTo (2));
+      Assert.That (attributes[0], Is.Not.Null);
+      Assert.That (attributes[1], Is.Not.Null);
     }
 
     [Test]
@@ -138,9 +138,9 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (_derivedPropertyWithMultipleAttribute, true);
 
-      Assert.AreEqual (2, attributes.Length);
-      Assert.IsNotNull (attributes[0]);
-      Assert.IsNotNull (attributes[1]);
+      Assert.That (attributes.Length, Is.EqualTo (2));
+      Assert.That (attributes[0], Is.Not.Null);
+      Assert.That (attributes[1], Is.Not.Null);
     }
 
     [Test]
@@ -148,7 +148,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (_derivedPropertyWithSingleAttribute, false);
 
-      Assert.IsEmpty (attributes);
+      Assert.That (attributes, Is.Empty);
     }
 
     [Test]
@@ -156,7 +156,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (_derivedPropertyWithSingleAttribute, false);
 
-      Assert.IsEmpty (attributes);
+      Assert.That (attributes, Is.Empty);
     }
 
     [Test]

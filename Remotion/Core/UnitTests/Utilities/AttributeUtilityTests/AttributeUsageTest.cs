@@ -28,59 +28,59 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void GetAttributeUsage ()
     {
       AttributeUsageAttribute attribute = AttributeUtility.GetAttributeUsage (typeof (MultipleAttribute));
-      Assert.AreEqual (typeof (MultipleAttribute).GetCustomAttributes (typeof (AttributeUsageAttribute), true)[0], attribute);
+      Assert.That (attribute, Is.EqualTo (typeof (MultipleAttribute).GetCustomAttributes (typeof (AttributeUsageAttribute), true)[0]));
     }
 
     [Test]
     public void GetAttributeUsageNeverNull ()
     {
       AttributeUsageAttribute attribute = AttributeUtility.GetAttributeUsage (typeof (ImplicitUsageAttribute));
-      Assert.IsNotNull (attribute);
-      Assert.AreEqual (new AttributeUsageAttribute(AttributeTargets.All), attribute);
+      Assert.That (attribute, Is.Not.Null);
+      Assert.That (attribute, Is.EqualTo (new AttributeUsageAttribute(AttributeTargets.All)));
     }
 
     [Test]
     public void GetAttributeUsageWithNoAttribute ()
     {
       AttributeUsageAttribute attribute = AttributeUtility.GetAttributeUsage (typeof (object));
-      Assert.IsNotNull (attribute);
-      Assert.AreEqual (new AttributeUsageAttribute(AttributeTargets.All), attribute);
+      Assert.That (attribute, Is.Not.Null);
+      Assert.That (attribute, Is.EqualTo (new AttributeUsageAttribute(AttributeTargets.All)));
     }
 
     [Test]
     public void AllowMultipleTrue ()
     {
-      Assert.IsTrue (AttributeUtility.IsAttributeAllowMultiple (typeof (MultipleAttribute)));
+      Assert.That (AttributeUtility.IsAttributeAllowMultiple (typeof (MultipleAttribute)), Is.True);
     }
 
     [Test]
     public void AllowMultipleFalse ()
     {
-      Assert.IsFalse (AttributeUtility.IsAttributeAllowMultiple (typeof (NotInheritedNotMultipleAttribute)));
+      Assert.That (AttributeUtility.IsAttributeAllowMultiple (typeof (NotInheritedNotMultipleAttribute)), Is.False);
     }
 
     [Test]
     public void DefaultAllowMultiple ()
     {
-      Assert.IsFalse (AttributeUtility.IsAttributeAllowMultiple (typeof (ImplicitUsageAttribute)));
+      Assert.That (AttributeUtility.IsAttributeAllowMultiple (typeof (ImplicitUsageAttribute)), Is.False);
     }
 
     [Test]
     public void InheritedTrue ()
     {
-      Assert.IsTrue (AttributeUtility.IsAttributeInherited(typeof (InheritedAttribute)));
+      Assert.That (AttributeUtility.IsAttributeInherited(typeof (InheritedAttribute)), Is.True);
     }
 
     [Test]
     public void InheritedFalse ()
     {
-      Assert.IsFalse (AttributeUtility.IsAttributeInherited (typeof (NotInheritedNotMultipleAttribute)));
+      Assert.That (AttributeUtility.IsAttributeInherited (typeof (NotInheritedNotMultipleAttribute)), Is.False);
     }
 
     [Test]
     public void DefaultInherited ()
     {
-      Assert.IsTrue (AttributeUtility.IsAttributeInherited (typeof (ImplicitUsageAttribute)));
+      Assert.That (AttributeUtility.IsAttributeInherited (typeof (ImplicitUsageAttribute)), Is.True);
     }
   }
 }

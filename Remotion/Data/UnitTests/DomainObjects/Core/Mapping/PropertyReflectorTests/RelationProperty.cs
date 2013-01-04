@@ -34,13 +34,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute",
-          actual.PropertyName);
-      Assert.AreSame (typeof (ObjectID), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (null, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (ObjectID)));
+      Assert.That (actual.IsNullable, Is.True);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (null));
     }
 
     [Test]
@@ -50,13 +48,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NotNullable",
-          actual.PropertyName);
-      Assert.AreSame (typeof (ObjectID), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (null, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NotNullable"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (ObjectID)));
+      Assert.That (actual.IsNullable, Is.True);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (null));
     }
 
     [Mandatory]

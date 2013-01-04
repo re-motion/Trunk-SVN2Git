@@ -57,14 +57,14 @@ public class WxeParameterConverterTest
   {
     string value = "Hello World!";
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredStringInParameter);
-    Assert.AreEqual (value, converter.ConvertObjectToString (value));
+    Assert.That (converter.ConvertObjectToString (value), Is.EqualTo (value));
   }
 
   [Test]
   public void ConvertObjectToStringRequiredStringInParameterWithNull()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredStringInParameter);
-    Assert.AreEqual (string.Empty, converter.ConvertObjectToString (null));
+    Assert.That (converter.ConvertObjectToString (null), Is.EqualTo (string.Empty));
   }
 
   [Test]
@@ -72,14 +72,14 @@ public class WxeParameterConverterTest
   {
     string value = "Hello World!";
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_stringInParameter);
-    Assert.AreEqual (value, converter.ConvertObjectToString (value));
+    Assert.That (converter.ConvertObjectToString (value), Is.EqualTo (value));
   }
 
   [Test]
   public void ConvertObjectToStringStringInParameterWithNullValue()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_stringInParameter);
-    Assert.AreEqual (null, converter.ConvertObjectToString (null));
+    Assert.That (converter.ConvertObjectToString (null), Is.EqualTo (null));
   }
 
   [Test]
@@ -87,14 +87,14 @@ public class WxeParameterConverterTest
   {
     int value = 1;
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredInt32InParameter);
-    Assert.AreEqual (value.ToString(), converter.ConvertObjectToString (value));
+    Assert.That (converter.ConvertObjectToString (value), Is.EqualTo (value.ToString()));
   }
 
   [Test]
   public void ConvertObjectToStringRequiredInt32InParameterWithNull()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredInt32InParameter);
-    Assert.AreEqual (string.Empty, converter.ConvertObjectToString (null));
+    Assert.That (converter.ConvertObjectToString (null), Is.EqualTo (string.Empty));
   }
 
   [Test]
@@ -102,35 +102,35 @@ public class WxeParameterConverterTest
   {
     int? value = 1;
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredNaInt32InParameter);
-    Assert.AreEqual (value.ToString(), converter.ConvertObjectToString (value));
+    Assert.That (converter.ConvertObjectToString (value), Is.EqualTo (value.ToString()));
   }
 
   [Test]
   public void ConvertObjectToStringRequiredNaInt32InParameterWithNaInt32Null()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredNaInt32InParameter);
-    Assert.AreEqual (string.Empty, converter.ConvertObjectToString (null));
+    Assert.That (converter.ConvertObjectToString (null), Is.EqualTo (string.Empty));
   }
 
   [Test]
   public void ConvertObjectToStringRequiredNaInt32InParameterWithNull()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredNaInt32InParameter);
-    Assert.AreEqual (string.Empty, converter.ConvertObjectToString (null));
+    Assert.That (converter.ConvertObjectToString (null), Is.EqualTo (string.Empty));
   }
 
   [Test]
   public void ConvertObjectToStringInt32InParameter()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_int32InParameter);
-    Assert.AreEqual (1.ToString(), converter.ConvertObjectToString (1));
+    Assert.That (converter.ConvertObjectToString (1), Is.EqualTo (1.ToString()));
   }
 
   [Test]
   public void ConvertObjectToStringInt32InParameterWithNullValue()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_int32InParameter);
-    Assert.AreEqual (null, converter.ConvertObjectToString (null));
+    Assert.That (converter.ConvertObjectToString (null), Is.EqualTo (null));
   }
 
   [Test]
@@ -140,7 +140,7 @@ public class WxeParameterConverterTest
     WxeVariableReference varRef = new WxeVariableReference (c_param);
     _callerParameters.Add (c_param, value);
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredInt32InParameter);
-    Assert.AreEqual (value.ToString(), converter.ConvertVarRefToString (varRef, _callerParameters));
+    Assert.That (converter.ConvertVarRefToString (varRef, _callerParameters), Is.EqualTo (value.ToString()));
   }
 
   [Test]
@@ -170,7 +170,7 @@ public class WxeParameterConverterTest
     WxeVariableReference varRef = new WxeVariableReference (c_param);
     _callerParameters.Add (c_param, value);
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_int32InParameter);
-    Assert.AreEqual (value.ToString(), converter.ConvertVarRefToString (varRef, _callerParameters));
+    Assert.That (converter.ConvertVarRefToString (varRef, _callerParameters), Is.EqualTo (value.ToString()));
   }
 
   [Test]
@@ -178,7 +178,7 @@ public class WxeParameterConverterTest
   {
     WxeVariableReference varRef = new WxeVariableReference (c_param);
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_int32InParameter);
-    Assert.IsNull (converter.ConvertVarRefToString (varRef, null));
+    Assert.That (converter.ConvertVarRefToString (varRef, null), Is.Null);
   }
 
   [Test]
@@ -188,7 +188,7 @@ public class WxeParameterConverterTest
     WxeVariableReference varRef = new WxeVariableReference (c_param);
     _callerParameters.Add (c_param, value);
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_int32InParameter);
-    Assert.IsNull (converter.ConvertVarRefToString (varRef, _callerParameters));    
+    Assert.That (converter.ConvertVarRefToString (varRef, _callerParameters), Is.Null);
   }
 
   
@@ -206,7 +206,7 @@ public class WxeParameterConverterTest
   {
     string value = "Hello World!";
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredStringInParameter);
-    Assert.AreEqual (value, converter.TryConvertObjectToString (value));
+    Assert.That (converter.TryConvertObjectToString (value), Is.EqualTo (value));
   }
 
   [Test]
@@ -215,7 +215,7 @@ public class WxeParameterConverterTest
     string value = string.Empty;
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredStringInParameter);
     converter.TryConvertObjectToString (value);
-    Assert.AreEqual (value, converter.TryConvertObjectToString (value));
+    Assert.That (converter.TryConvertObjectToString (value), Is.EqualTo (value));
   }
 
   [Test]
@@ -223,55 +223,55 @@ public class WxeParameterConverterTest
   {
     string value = string.Empty;
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_stringInParameter);
-    Assert.AreEqual (value, converter.TryConvertObjectToString (value));
+    Assert.That (converter.TryConvertObjectToString (value), Is.EqualTo (value));
   }
 
   [Test]
   public void TryConvertObjectToStringRequiredInt32InParameter()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredInt32InParameter);
-    Assert.AreEqual (1.ToString(), converter.TryConvertObjectToString (1));
+    Assert.That (converter.TryConvertObjectToString (1), Is.EqualTo (1.ToString()));
   }
 
   [Test]
   public void TryConvertObjectToStringRequiredInt32InParameterWithNull()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredInt32InParameter);
-    Assert.AreEqual (string.Empty, converter.ConvertObjectToString (null));
+    Assert.That (converter.ConvertObjectToString (null), Is.EqualTo (string.Empty));
   }
 
   [Test]
   public void TryConvertObjectToStringInt32InParameter()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredInt32InParameter);
-    Assert.AreEqual (1.ToString(), converter.TryConvertObjectToString (1));
+    Assert.That (converter.TryConvertObjectToString (1), Is.EqualTo (1.ToString()));
   }
 
   [Test]
   public void TryConvertObjectToStringInt32InParameterWithNull()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_int32InParameter);
-    Assert.AreEqual (string.Empty, converter.TryConvertObjectToString (null));
+    Assert.That (converter.TryConvertObjectToString (null), Is.EqualTo (string.Empty));
   }
   [Test]
   public void TryConvertObjectToStringRequiredNaInt32InParameter()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredNaInt32InParameter);
-    Assert.AreEqual (1.ToString(), converter.TryConvertObjectToString (1));
+    Assert.That (converter.TryConvertObjectToString (1), Is.EqualTo (1.ToString()));
   }
 
   [Test]
   public void TryConvertObjectToStringRequiredNaInt32InParameterWithNaInt32Null()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredNaInt32InParameter);
-    Assert.AreEqual (string.Empty, converter.TryConvertObjectToString (null));
+    Assert.That (converter.TryConvertObjectToString (null), Is.EqualTo (string.Empty));
   }
 
   [Test]
   public void TryConvertObjectToStringRequiredNaInt32InParameterWithNull()
   {
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredNaInt32InParameter);
-    Assert.AreEqual (string.Empty, converter.TryConvertObjectToString (null));
+    Assert.That (converter.TryConvertObjectToString (null), Is.EqualTo (string.Empty));
   }
 
   [Test]
@@ -279,7 +279,7 @@ public class WxeParameterConverterTest
   {
     object value = new object();
     WxeParameterConverterMock converter = new WxeParameterConverterMock (_requiredObjectInParameter);
-    Assert.AreEqual (value, converter.TryConvertObjectToString (value));
+    Assert.That (converter.TryConvertObjectToString (value), Is.EqualTo (value));
   }
 
 }

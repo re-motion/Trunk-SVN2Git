@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Schemas
     [Test]
     public void Initialize ()
     {
-      Assert.AreEqual ("http://www.re-motion.org/Data/DomainObjects/Types", TypesSchemaLoader.Instance.SchemaUri);
+      Assert.That (TypesSchemaLoader.Instance.SchemaUri, Is.EqualTo ("http://www.re-motion.org/Data/DomainObjects/Types"));
     }
 
     [Test]
@@ -36,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Schemas
     {
       XmlSchemaSet schemaSet = TypesSchemaLoader.Instance.LoadSchemaSet ();
 
-      Assert.IsNotNull (schemaSet);
-      Assert.AreEqual (1, schemaSet.Count);
-      Assert.IsTrue (schemaSet.Contains ("http://www.re-motion.org/Data/DomainObjects/Types"));
+      Assert.That (schemaSet, Is.Not.Null);
+      Assert.That (schemaSet.Count, Is.EqualTo (1));
+      Assert.That (schemaSet.Contains ("http://www.re-motion.org/Data/DomainObjects/Types"), Is.True);
     }
   }
 }

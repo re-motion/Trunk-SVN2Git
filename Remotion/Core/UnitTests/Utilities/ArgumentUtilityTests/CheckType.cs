@@ -41,21 +41,21 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 		public void Succeed_Null ()
 		{
 			string result = ArgumentUtility.CheckType<string> ("arg", null);
-			Assert.AreEqual (null, result);
+      Assert.That (result, Is.EqualTo (null));
 		}
 
 		[Test]
 		public void Succeed_String ()
 		{
 			string result = ArgumentUtility.CheckType<string> ("arg", "test");
-			Assert.AreEqual ("test", result);
+		  Assert.That (result, Is.EqualTo ("test"));
 		}
 
     [Test]
     public void Succeed_BaseType ()
     {
       string result = (string) ArgumentUtility.CheckType<object> ("arg", "test");
-      Assert.AreEqual ("test", result);
+      Assert.That (result, Is.EqualTo ("test"));
     }
   }
 }

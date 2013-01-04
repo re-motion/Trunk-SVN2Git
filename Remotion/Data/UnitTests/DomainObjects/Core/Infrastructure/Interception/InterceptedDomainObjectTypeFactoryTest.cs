@@ -59,14 +59,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     public void GetConcreteDomainObjectTypeReturnsAssignableType ()
     {
       Type concreteType = Factory.GetConcreteDomainObjectType (typeof (Order));
-      Assert.IsTrue (typeof (Order).IsAssignableFrom (concreteType));
+      Assert.That (typeof (Order).IsAssignableFrom (concreteType), Is.True);
     }
 
     [Test]
     public void GetConcreteDomainObjectTypeReturnsDifferentType ()
     {
       Type concreteType = Factory.GetConcreteDomainObjectType (typeof (Order));
-      Assert.AreNotEqual (typeof (Order), concreteType);
+      Assert.That (concreteType, Is.Not.EqualTo (typeof (Order)));
     }
 
     [Test]
@@ -74,8 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (DerivedDO));
       Type concreteType = Factory.GetConcreteDomainObjectType (classDefinition, typeof (SpecificDerivedDO));
-      Assert.AreNotEqual (typeof (DerivedDO), concreteType.BaseType);
-      Assert.AreEqual (typeof (SpecificDerivedDO), concreteType.BaseType);
+      Assert.That (concreteType.BaseType, Is.Not.EqualTo (typeof (DerivedDO)));
+      Assert.That (concreteType.BaseType, Is.EqualTo (typeof (SpecificDerivedDO)));
     }
 
     [Test]
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       Type concreteType1 = Factory.GetConcreteDomainObjectType (typeof (Order));
       Type concreteType2 = Factory.GetConcreteDomainObjectType (typeof (Order));
-      Assert.AreSame (concreteType1, concreteType2);
+      Assert.That (concreteType2, Is.SameAs (concreteType1));
     }
 
     [Test]
@@ -101,9 +101,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       Factory.GetConcreteDomainObjectType (typeof (Order));
       string[] paths = Factory.SaveGeneratedAssemblies();
-      Assert.AreEqual (1, paths.Length);
-      Assert.AreEqual (Path.Combine (AssemblyDirectory, "Remotion.Data.DomainObjects.Generated.Signed.dll"), paths[0]);
-      Assert.IsTrue (File.Exists (paths[0]));
+      Assert.That (paths.Length, Is.EqualTo (1));
+      Assert.That (paths[0], Is.EqualTo (Path.Combine (AssemblyDirectory, "Remotion.Data.DomainObjects.Generated.Signed.dll")));
+      Assert.That (File.Exists (paths[0]), Is.True);
     }
 
     [Test]
@@ -187,8 +187,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void WasCreatedByFactory ()
     {
-      Assert.IsTrue (Factory.WasCreatedByFactory (Factory.GetConcreteDomainObjectType (typeof (Order))));
-      Assert.IsFalse (Factory.WasCreatedByFactory (typeof (Order)));
+      Assert.That (Factory.WasCreatedByFactory (Factory.GetConcreteDomainObjectType (typeof (Order))), Is.True);
+      Assert.That (Factory.WasCreatedByFactory (typeof (Order)), Is.False);
     }
 
     [Test]

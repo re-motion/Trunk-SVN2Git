@@ -31,7 +31,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinImplementingIMixinTarget));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultInterfaceIntroductionRules.IMixinTargetCannotBeIntroduced", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultInterfaceIntroductionRules.IMixinTargetCannotBeIntroduced", log), Is.True);
     }
 
     [Test]
@@ -40,7 +40,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType2), typeof (MixinIntroducingInternalInterface));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultInterfaceIntroductionRules.IntroducedInterfaceMustBePublic", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultInterfaceIntroductionRules.IntroducedInterfaceMustBePublic", log), Is.True);
     }
   }
 }

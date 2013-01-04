@@ -112,7 +112,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       EnumWrapper wrapper = EnumWrapper.Get("Name", "Namespace.TypeName, Assembly");
 
-      Assert.AreEqual ("Name|Namespace.TypeName, Assembly", wrapper.ToString ());
+      Assert.That (wrapper.ToString (), Is.EqualTo ("Name|Namespace.TypeName, Assembly"));
     }
 
     [Test]
@@ -120,7 +120,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       EnumWrapper wrapper = EnumWrapper.Get("bla", "ble");
       EnumWrapper deserializedWrapper = Serializer.SerializeAndDeserialize (wrapper);
-      Assert.AreEqual (wrapper, deserializedWrapper);
+      Assert.That (deserializedWrapper, Is.EqualTo (wrapper));
     }
   }
 }

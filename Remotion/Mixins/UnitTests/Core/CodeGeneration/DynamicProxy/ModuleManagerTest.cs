@@ -117,8 +117,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
 
       ITypeGenerator generator = _savedTypeBuildersModuleManager.CreateTypeGenerator (bt1, new GuidNameProvider(), ConcreteTypeBuilder.Current);
-      Assert.IsNotNull (generator);
-      Assert.IsTrue (bt1.Type.IsAssignableFrom (generator.GetBuiltType()));
+      Assert.That (generator, Is.Not.Null);
+      Assert.That (bt1.Type.IsAssignableFrom (generator.GetBuiltType()), Is.True);
     }
 
     [Test]
@@ -140,8 +140,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       var identifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
 
       var generator = _savedTypeBuildersModuleManager.CreateMixinTypeGenerator (identifier, new GuidNameProvider());
-      Assert.IsNotNull (generator);
-      Assert.IsTrue (identifier.MixinType.IsAssignableFrom (generator.GetBuiltType ().GeneratedType));
+      Assert.That (generator, Is.Not.Null);
+      Assert.That (identifier.MixinType.IsAssignableFrom (generator.GetBuiltType ().GeneratedType), Is.True);
     }
 
     [Test]
@@ -176,22 +176,22 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     [Test]
     public void SaveAssemblies ()
     {
-      Assert.AreEqual (2, _savedModulePaths.Length);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, c_signedAssemblyFileName), _savedModulePaths[0]);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, c_unsignedAssemblyFileName), _savedModulePaths[1]);
+      Assert.That (_savedModulePaths.Length, Is.EqualTo (2));
+      Assert.That (_savedModulePaths[0], Is.EqualTo (Path.Combine (Environment.CurrentDirectory, c_signedAssemblyFileName)));
+      Assert.That (_savedModulePaths[1], Is.EqualTo (Path.Combine (Environment.CurrentDirectory, c_unsignedAssemblyFileName)));
 
-      Assert.IsTrue (File.Exists (_savedModulePaths[0]));
-      Assert.IsTrue (File.Exists (_savedModulePaths[1]));
+      Assert.That (File.Exists (_savedModulePaths[0]), Is.True);
+      Assert.That (File.Exists (_savedModulePaths[1]), Is.True);
     }
 
     [Test]
     public void SavedAssemblyNameAndPath ()
     {
       AssemblyName signedName = AssemblyName.GetAssemblyName (_signedSavedModulePath);
-      Assert.AreEqual (Path.GetFileNameWithoutExtension (c_signedAssemblyFileName), signedName.Name);
+      Assert.That (signedName.Name, Is.EqualTo (Path.GetFileNameWithoutExtension (c_signedAssemblyFileName)));
 
       AssemblyName unsignedName = AssemblyName.GetAssemblyName (_unsignedSavedModulePath);
-      Assert.AreEqual (Path.GetFileNameWithoutExtension (c_unsignedAssemblyFileName), unsignedName.Name);
+      Assert.That (unsignedName.Name, Is.EqualTo (Path.GetFileNameWithoutExtension (c_unsignedAssemblyFileName)));
     }
 
     [Test]
@@ -245,14 +245,14 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     public void SavedSignedAssemblyHasStrongName ()
     {
       AssemblyName assemblyName = AssemblyName.GetAssemblyName (_signedSavedModulePath);
-      Assert.IsTrue (ReflectionUtility.IsAssemblySigned (assemblyName));
+      Assert.That (ReflectionUtility.IsAssemblySigned (assemblyName), Is.True);
     }
 
     [Test]
     public void SavedUnsignedAssemblyHasWeakName ()
     {
       AssemblyName assemblyName = AssemblyName.GetAssemblyName (_unsignedSavedModulePath);
-      Assert.IsFalse (ReflectionUtility.IsAssemblySigned (assemblyName));
+      Assert.That (ReflectionUtility.IsAssemblySigned (assemblyName), Is.False);
     }
 
     [Test]
@@ -264,7 +264,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
             foreach (Tuple<string, string> assemblyAndTypeName in args)
             {
               Assembly loadedAssembly = Assembly.LoadFile (assemblyAndTypeName.Item1);
-              Assert.IsNotNull (loadedAssembly.GetType (assemblyAndTypeName.Item2));
+              Assert.That (loadedAssembly.GetType (assemblyAndTypeName.Item2), Is.Not.Null);
               Assert.That (loadedAssembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
             }
           },
@@ -282,8 +282,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     [Test]
     public void GeneratedAssemblies_NonApplicationAssemblyAttribute ()
     {
-      Assert.IsTrue (_signedSavedType.Assembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
-      Assert.IsTrue (_unsignedSavedType.Assembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
+      Assert.That (_signedSavedType.Assembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false), Is.True);
+      Assert.That (_unsignedSavedType.Assembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false), Is.True);
     }
 
     [Test]

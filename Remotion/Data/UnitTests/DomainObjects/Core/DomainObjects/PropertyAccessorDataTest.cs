@@ -117,13 +117,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       PropertyAccessorData accessor = CreateAccessorData (typeof (IndustrialSector), "Companies");
 
-      Assert.AreSame (MappingConfiguration.Current.GetTypeDefinition (typeof (IndustrialSector)), accessor.ClassDefinition);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies", accessor.PropertyIdentifier);
-      Assert.IsNull (accessor.PropertyDefinition);
-      Assert.IsNotNull (accessor.RelationEndPointDefinition);
-      Assert.AreSame (MappingConfiguration.Current.GetTypeDefinition (typeof (IndustrialSector))
-          .GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies"),
-          accessor.RelationEndPointDefinition);
+      Assert.That (accessor.ClassDefinition, Is.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (IndustrialSector))));
+      Assert.That (accessor.PropertyIdentifier, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies"));
+      Assert.That (accessor.PropertyDefinition, Is.Null);
+      Assert.That (accessor.RelationEndPointDefinition, Is.Not.Null);
+      Assert.That (accessor.RelationEndPointDefinition, Is.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (IndustrialSector))
+                                                                                       .GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies")));
     }
 
     [Test]
@@ -131,11 +130,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       PropertyAccessorData accessor = CreateAccessorData (typeof (IndustrialSector), "Name");
 
-      Assert.IsNotNull (accessor.PropertyDefinition);
-      Assert.AreSame (MappingConfiguration.Current.GetTypeDefinition (typeof (IndustrialSector))
-                          .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"),
-                      accessor.PropertyDefinition);
-      Assert.IsNull (accessor.RelationEndPointDefinition);
+      Assert.That (accessor.PropertyDefinition, Is.Not.Null);
+      Assert.That (accessor.PropertyDefinition, Is.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (IndustrialSector))
+                                                                               .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name")));
+      Assert.That (accessor.RelationEndPointDefinition, Is.Null);
     }
 
     [Test]
@@ -143,15 +141,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       PropertyAccessorData accessor = CreateAccessorData (typeof (Computer), "Employee");
 
-      Assert.IsNotNull (accessor.PropertyDefinition);
-      Assert.AreSame (MappingConfiguration.Current.GetTypeDefinition (typeof (Computer))
-          .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"),
-          accessor.PropertyDefinition);
+      Assert.That (accessor.PropertyDefinition, Is.Not.Null);
+      Assert.That (accessor.PropertyDefinition, Is.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Computer))
+                                                                               .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee")));
 
-      Assert.IsNotNull (accessor.RelationEndPointDefinition);
-      Assert.AreSame (MappingConfiguration.Current.GetTypeDefinition (typeof (Computer))
-          .GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"),
-          accessor.RelationEndPointDefinition);
+      Assert.That (accessor.RelationEndPointDefinition, Is.Not.Null);
+      Assert.That (accessor.RelationEndPointDefinition, Is.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Computer))
+                                                                                       .GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee")));
     }
 
     [Test]

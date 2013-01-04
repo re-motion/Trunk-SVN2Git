@@ -30,16 +30,16 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain
     protected override void OnInitialized ()
     {
       OnInitializedCalled = true;
-      Assert.IsNotNull (Target);
-      Assert.IsNotNull (Next);
+      Assert.That (Target, Is.Not.Null);
+      Assert.That (Next, Is.Not.Null);
       base.OnInitialized ();
     }
 
     protected override void OnDeserialized ()
     {
       OnDeserializedCalled = true;
-      Assert.IsNotNull (Target);
-      Assert.IsNotNull (Next);
+      Assert.That (Target, Is.Not.Null);
+      Assert.That (Next, Is.Not.Null);
       base.OnDeserialized ();
     }
   }

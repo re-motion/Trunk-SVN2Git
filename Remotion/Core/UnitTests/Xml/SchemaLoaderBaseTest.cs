@@ -43,8 +43,8 @@ namespace Remotion.UnitTests.Xml
     {
       SchemaLoaderBaseMock schemaBaseMock = new SchemaLoaderBaseMock ("http://www.re-motion.org/Core/Test/Xml/SchemaLoaderBaseMock");
       XmlSchema xmlSchema = schemaBaseMock.LoadSchema ("SchemaLoaderBaseMock.xsd");
-      Assert.IsNotNull (xmlSchema);
-      Assert.AreEqual ("http://www.re-motion.org/Core/Test/Xml/SchemaLoaderBaseMock", xmlSchema.TargetNamespace);
+      Assert.That (xmlSchema, Is.Not.Null);
+      Assert.That (xmlSchema.TargetNamespace, Is.EqualTo ("http://www.re-motion.org/Core/Test/Xml/SchemaLoaderBaseMock"));
     }
 
     [Test]
@@ -62,7 +62,7 @@ namespace Remotion.UnitTests.Xml
         string expectedMessage = string.Format (
             "Error loading schema resource 'invalidSchemaFileName.xsd' from assembly '{0}'.", typeof (SchemaLoaderBaseMock).Assembly.FullName);
 
-        Assert.AreEqual (expectedMessage, ex.Message);
+        Assert.That (ex.Message, Is.EqualTo (expectedMessage));
       }
     }
 
@@ -71,8 +71,8 @@ namespace Remotion.UnitTests.Xml
     {
       SchemaLoaderBase schemaBaseMock = new SchemaLoaderBaseMock ("http://www.re-motion.org/Core/Test/Xml/SchemaLoaderBaseMock");
       XmlSchemaSet xmlSchemaSet = schemaBaseMock.LoadSchemaSet ();
-      Assert.AreEqual (1, xmlSchemaSet.Count);
-      Assert.IsTrue (xmlSchemaSet.Contains ("http://www.re-motion.org/Core/Test/Xml/SchemaLoaderBaseMock"));
+      Assert.That (xmlSchemaSet.Count, Is.EqualTo (1));
+      Assert.That (xmlSchemaSet.Contains ("http://www.re-motion.org/Core/Test/Xml/SchemaLoaderBaseMock"), Is.True);
     }
   }
 }

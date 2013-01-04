@@ -58,8 +58,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
       _bocDropDownMenu.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
     [Test]
@@ -68,8 +68,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
       _bocDropDownMenu.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
 
@@ -79,10 +79,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
       _bocDropDownMenu.EvaluateWaiConformity();
 
-      Assert.IsTrue (WcagHelperMock.HasError);
-      Assert.AreEqual (1, WcagHelperMock.Priority);
-      Assert.AreSame (_bocDropDownMenu, WcagHelperMock.Control);
-      Assert.IsNull (WcagHelperMock.Property);
+      Assert.That (WcagHelperMock.HasError, Is.True);
+      Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+      Assert.That (WcagHelperMock.Control, Is.SameAs (_bocDropDownMenu));
+      Assert.That (WcagHelperMock.Property, Is.Null);
     }
 
 
@@ -91,14 +91,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       IBusinessObject referencedObject = (IBusinessObject) TypeWithReference.Create();
       _bocDropDownMenu.Value = referencedObject;
-      Assert.AreEqual (referencedObject, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (referencedObject));
     }
 
     [Test]
     public void SetValueToNull ()
     {
       _bocDropDownMenu.Value = null;
-      Assert.AreEqual (null, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (null));
     }
 
 
@@ -106,14 +106,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     public void HasValue_ValueIsSet_ReturnsTrue ()
     {
       _bocDropDownMenu.Value = (IBusinessObject) TypeWithReference.Create();
-      Assert.IsTrue (_bocDropDownMenu.HasValue);
+      Assert.That (_bocDropDownMenu.HasValue, Is.True);
     }
 
     [Test]
     public void HasValue_ValueIsNull_ReturnsFalse ()
     {
       _bocDropDownMenu.Value = null;
-      Assert.IsFalse (_bocDropDownMenu.HasValue);
+      Assert.That (_bocDropDownMenu.HasValue, Is.False);
     }
 
 
@@ -126,7 +126,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = null;
 
       _bocDropDownMenu.LoadValue (true);
-      Assert.AreEqual (_businessObject.ReferenceValue, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (_businessObject.ReferenceValue));
     }
 
     [Test]
@@ -136,7 +136,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = null;
 
       _bocDropDownMenu.LoadValue (true);
-      Assert.AreEqual (_businessObject, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (_businessObject));
     }
 
     [Test]
@@ -148,7 +148,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = (IBusinessObject) TypeWithReference.Create();
 
       _bocDropDownMenu.LoadValue (true);
-      Assert.AreEqual (_businessObject.ReferenceValue, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (_businessObject.ReferenceValue));
     }
 
     [Test]
@@ -160,7 +160,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = null;
 
       _bocDropDownMenu.LoadValue (false);
-      Assert.AreEqual (_businessObject.ReferenceValue, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (_businessObject.ReferenceValue));
     }
 
 
@@ -171,7 +171,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = null;
 
       _bocDropDownMenu.LoadValue (false);
-      Assert.AreEqual (_businessObject, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (_businessObject));
     }
 
     [Test]
@@ -183,7 +183,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = (IBusinessObject) TypeWithReference.Create();
 
       _bocDropDownMenu.LoadValue (false);
-      Assert.AreEqual (_businessObject.ReferenceValue, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (_businessObject.ReferenceValue));
     }
 
     [Test]
@@ -195,7 +195,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = value;
 
       _bocDropDownMenu.LoadValue (false);
-      Assert.AreEqual (value, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (value));
     }
 
     [Test]
@@ -207,7 +207,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
 
       _bocDropDownMenu.LoadValue (false);
-      Assert.AreEqual (null, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (null));
     }
 
 
@@ -218,7 +218,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = null;
 
       _bocDropDownMenu.LoadUnboundValue (value, true);
-      Assert.AreEqual (value, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (value));
     }
 
     [Test]
@@ -228,7 +228,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = (IBusinessObject) TypeWithReference.Create();
 
       _bocDropDownMenu.LoadUnboundValue (value, true);
-      Assert.AreEqual (value, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (value));
     }
 
     [Test]
@@ -238,7 +238,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = null;
 
       _bocDropDownMenu.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (value));
     }
 
     [Test]
@@ -248,7 +248,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDropDownMenu.Value = (IBusinessObject) TypeWithReference.Create();
 
       _bocDropDownMenu.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocDropDownMenu.Value);
+      Assert.That (_bocDropDownMenu.Value, Is.EqualTo (value));
     }
   }
 }

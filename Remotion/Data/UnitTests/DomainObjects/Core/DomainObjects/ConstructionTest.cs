@@ -56,13 +56,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void ConstructorSelection ()
     {
       DomainObjectWithSpecialConstructor d1 = DomainObjectWithSpecialConstructor.NewObject ("string");
-      Assert.AreEqual ("string", d1.S);
-      Assert.IsNull (d1.O);
+      Assert.That (d1.S, Is.EqualTo ("string"));
+      Assert.That (d1.O, Is.Null);
 
       object obj = new object ();
       DomainObjectWithSpecialConstructor d2 = DomainObjectWithSpecialConstructor.NewObject (obj);
-      Assert.IsNull (d2.S);
-      Assert.AreSame (obj, d2.O);
+      Assert.That (d2.S, Is.Null);
+      Assert.That (d2.O, Is.SameAs (obj));
     }
 
     [Test]

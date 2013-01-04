@@ -47,8 +47,8 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
 			ResourceManagerResolverUtility.SetCurrent (_resolverUtilityMock);
 			Expect.Call (_resolverUtilityMock.GetResourceText (MixedMultiLingualResources.Resolver, typeof (DateTime), "Foo")).Return ("Bar");
 			_mockRepository.ReplayAll ();
-			Assert.AreEqual ("Bar", MixedMultiLingualResources.GetResourceText (typeof (DateTime), "Foo"));
-			_mockRepository.VerifyAll ();
+		  Assert.That (MixedMultiLingualResources.GetResourceText (typeof (DateTime), "Foo"), Is.EqualTo ("Bar"));
+		  _mockRepository.VerifyAll ();
 		}
 
 		[Test]
@@ -57,8 +57,8 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
 			ResourceManagerResolverUtility.SetCurrent (_resolverUtilityMock);
 			Expect.Call (_resolverUtilityMock.ExistsResourceText (MixedMultiLingualResources.Resolver, typeof (DateTime), "Foo")).Return (true);
 			_mockRepository.ReplayAll ();
-			Assert.IsTrue (MixedMultiLingualResources.ExistsResourceText (typeof (DateTime), "Foo"));
-			_mockRepository.VerifyAll ();
+		  Assert.That (MixedMultiLingualResources.ExistsResourceText (typeof (DateTime), "Foo"), Is.True);
+		  _mockRepository.VerifyAll ();
 		}
 
 		[Test]
@@ -67,8 +67,8 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
 			ResourceManagerResolverUtility.SetCurrent (_resolverUtilityMock);
 			Expect.Call (_resolverUtilityMock.ExistsResource (MixedMultiLingualResources.Resolver, typeof (DateTime))).Return (true);
 			_mockRepository.ReplayAll ();
-			Assert.IsTrue (MixedMultiLingualResources.ExistsResource (typeof (DateTime)));
-			_mockRepository.VerifyAll ();
+		  Assert.That (MixedMultiLingualResources.ExistsResource (typeof (DateTime)), Is.True);
+		  _mockRepository.VerifyAll ();
 		}
 	}
 }

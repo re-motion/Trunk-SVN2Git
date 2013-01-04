@@ -47,8 +47,8 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
       ResourceManagerSet resourceManager =
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithMultiLingualResourcesAttributes), false);
 
-      Assert.AreEqual (1, resourceManager.Count);
-      Assert.AreEqual ("OnTarget", resourceManager[0].Name);
+      Assert.That (resourceManager.Count, Is.EqualTo (1));
+      Assert.That (resourceManager[0].Name, Is.EqualTo ("OnTarget"));
     }
 
     [Test]
@@ -57,8 +57,8 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
       ResourceManagerSet resourceManager =
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false);
 
-      Assert.AreEqual (1, resourceManager.Count);
-      Assert.AreEqual ("OnTarget", resourceManager[0].Name);
+      Assert.That (resourceManager.Count, Is.EqualTo (1));
+      Assert.That (resourceManager[0].Name, Is.EqualTo ("OnTarget"));
     }
 
 		[Test]
@@ -67,8 +67,8 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
 			ResourceManagerSet resourceManager =
 					(ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes));
 
-			Assert.AreEqual (1, resourceManager.Count);
-			Assert.AreEqual ("OnInherited", resourceManager[0].Name);
+		  Assert.That (resourceManager.Count, Is.EqualTo (1));
+		  Assert.That (resourceManager[0].Name, Is.EqualTo ("OnInherited"));
 		}
 
     [Test]
@@ -77,8 +77,8 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
       ResourceManagerSet resourceManager =
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
 
-      Assert.AreEqual (1, resourceManager.Count);
-      Assert.AreEqual ("OnInherited", resourceManager[0].Name);
+      Assert.That (resourceManager.Count, Is.EqualTo (1));
+      Assert.That (resourceManager[0].Name, Is.EqualTo ("OnInherited"));
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
       ResourceManagerSet resourceManager =
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true);
 
-      Assert.AreEqual (2, resourceManager.Count);
+      Assert.That (resourceManager.Count, Is.EqualTo (2));
       Set<string> names = new Set<string> (resourceManager[0].Name, resourceManager[1].Name);
       Assert.That (names, Is.EquivalentTo (new string[] {"OnTarget", "OnInherited"}));
     }
@@ -101,8 +101,8 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), false);
 
-        Assert.AreEqual (1, resourceManager.Count);
-        Assert.AreEqual ("OnMixin1", resourceManager[0].Name);
+        Assert.That (resourceManager.Count, Is.EqualTo (1));
+        Assert.That (resourceManager[0].Name, Is.EqualTo ("OnMixin1"));
       }
     }
 
@@ -115,8 +115,8 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), true);
 
-        Assert.AreEqual (1, resourceManager.Count);
-        Assert.AreEqual ("OnMixin1", resourceManager[0].Name);
+        Assert.That (resourceManager.Count, Is.EqualTo (1));
+        Assert.That (resourceManager[0].Name, Is.EqualTo ("OnMixin1"));
       }
     }
 
@@ -132,7 +132,7 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), false);
 
-        Assert.AreEqual (3, resourceManager.Count);
+        Assert.That (resourceManager.Count, Is.EqualTo (3));
         string[] names = new string[] { resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name };
         Assert.That (names, Is.EquivalentTo (new object[] {"OnMixin1", "OnMixin2a", "OnMixin2b"}));
       }
@@ -150,8 +150,8 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
 
-        Assert.AreEqual (4, resourceManager.Count);
-				Set<string> names = new Set<string> (resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name, resourceManager[3].Name,
+        Assert.That (resourceManager.Count, Is.EqualTo (4));
+        Set<string> names = new Set<string> (resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name, resourceManager[3].Name,
 						resourceManager[3].Name);
 				Assert.That (names, Is.EquivalentTo (new string[] { "OnInherited", "OnMixin1", "OnMixin2a", "OnMixin2b" }));
       }
@@ -169,7 +169,7 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true);
 
-        Assert.AreEqual (5, resourceManager.Count);
+        Assert.That (resourceManager.Count, Is.EqualTo (5));
         Set<string> names = new Set<string> (resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name, resourceManager[3].Name,
             resourceManager[4].Name);
         Assert.That (names, Is.EquivalentTo (new string[] { "OnTarget", "OnInherited", "OnMixin1", "OnMixin2a", "OnMixin2b" }));
@@ -204,13 +204,13 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
         set5 = MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true);
       }
 
-      Assert.AreSame (set1, set4);
-      Assert.AreSame (set2, set3);
-      Assert.AreSame (set2, set5);
-      Assert.AreNotSame (set1, set2);
+      Assert.That (set4, Is.SameAs (set1));
+      Assert.That (set3, Is.SameAs (set2));
+      Assert.That (set5, Is.SameAs (set2));
+      Assert.That (set2, Is.Not.SameAs (set1));
 
-      Assert.AreEqual (2, ((ResourceManagerSet) set1).Count);
-      Assert.AreEqual (5, ((ResourceManagerSet) set2).Count);
+      Assert.That (((ResourceManagerSet) set1).Count, Is.EqualTo (2));
+      Assert.That (((ResourceManagerSet) set2).Count, Is.EqualTo (5));
     }
   }
 }

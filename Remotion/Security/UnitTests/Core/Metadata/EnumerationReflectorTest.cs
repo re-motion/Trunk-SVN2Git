@@ -61,16 +61,16 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     {
       Dictionary<Enum, EnumValueInfo> values = _enumerationReflector.GetValues (typeof (DomainAccessTypes), _cache);
 
-      Assert.IsNotNull (values);
-      Assert.AreEqual (2, values.Count);
+      Assert.That (values, Is.Not.Null);
+      Assert.That (values.Count, Is.EqualTo (2));
 
-      Assert.AreEqual (0, values[DomainAccessTypes.Journalize].Value);
-      Assert.AreEqual ("Journalize", values[DomainAccessTypes.Journalize].Name);
-      Assert.AreEqual ("00000002-0001-0000-0000-000000000000", values[DomainAccessTypes.Journalize].ID);
-      
-      Assert.AreEqual (1, values[DomainAccessTypes.Archive].Value);
-      Assert.AreEqual ("Archive", values[DomainAccessTypes.Archive].Name);
-      Assert.AreEqual ("00000002-0002-0000-0000-000000000000", values[DomainAccessTypes.Archive].ID);
+      Assert.That (values[DomainAccessTypes.Journalize].Value, Is.EqualTo (0));
+      Assert.That (values[DomainAccessTypes.Journalize].Name, Is.EqualTo ("Journalize"));
+      Assert.That (values[DomainAccessTypes.Journalize].ID, Is.EqualTo ("00000002-0001-0000-0000-000000000000"));
+
+      Assert.That (values[DomainAccessTypes.Archive].Value, Is.EqualTo (1));
+      Assert.That (values[DomainAccessTypes.Archive].Name, Is.EqualTo ("Archive"));
+      Assert.That (values[DomainAccessTypes.Archive].ID, Is.EqualTo ("00000002-0002-0000-0000-000000000000"));
     }
 
     [Test]
@@ -78,11 +78,11 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     {
       EnumValueInfo value = _enumerationReflector.GetValue (DomainAccessTypes.Journalize, _cache);
 
-      Assert.IsNotNull (value);
+      Assert.That (value, Is.Not.Null);
 
-      Assert.AreEqual (0, value.Value);
-      Assert.AreEqual ("Journalize", value.Name);
-      Assert.AreEqual ("00000002-0001-0000-0000-000000000000", value.ID);
+      Assert.That (value.Value, Is.EqualTo (0));
+      Assert.That (value.Name, Is.EqualTo ("Journalize"));
+      Assert.That (value.ID, Is.EqualTo ("00000002-0001-0000-0000-000000000000"));
     }
 
     [Test]
@@ -90,8 +90,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     {
       Dictionary<Enum, EnumValueInfo> values = _enumerationReflector.GetValues (typeof (DomainAccessTypes), _cache);
 
-      Assert.AreSame (values[DomainAccessTypes.Journalize], _cache.GetEnumValueInfo (DomainAccessTypes.Journalize));
-      Assert.AreSame (values[DomainAccessTypes.Archive], _cache.GetEnumValueInfo (DomainAccessTypes.Archive));
+      Assert.That (_cache.GetEnumValueInfo (DomainAccessTypes.Journalize), Is.SameAs (values[DomainAccessTypes.Journalize]));
+      Assert.That (_cache.GetEnumValueInfo (DomainAccessTypes.Archive), Is.SameAs (values[DomainAccessTypes.Archive]));
     }
 
     [Test]

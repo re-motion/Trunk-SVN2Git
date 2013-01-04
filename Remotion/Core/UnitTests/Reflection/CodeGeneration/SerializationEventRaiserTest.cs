@@ -36,19 +36,19 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       SerializationEventRaiser eventRaiser = new SerializationEventRaiser();
 
       ClassWithDeserializationEvents instance = new ClassWithDeserializationEvents ();
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
 
       eventRaiser.InvokeAttributedMethod (instance, typeof (OnDeserializedAttribute), new StreamingContext ());
 
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsTrue (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsTrue (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.True);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.True);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
     }
 
     [Test]
@@ -57,19 +57,19 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       SerializationEventRaiser eventRaiser = new SerializationEventRaiser ();
 
       ClassWithDeserializationEvents instance = new ClassWithDeserializationEvents ();
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
 
       eventRaiser.InvokeAttributedMethod (instance, typeof (OnDeserializingAttribute), new StreamingContext ());
 
-      Assert.IsTrue (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsTrue (instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.True);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.True);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
     }
 
     [Test]
@@ -100,10 +100,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       SerializationEventRaiser eventRaiser = new SerializationEventRaiser();
       List<MethodInfo> methods = (List<MethodInfo>) PrivateInvoke.InvokeNonPublicMethod (
           eventRaiser, "FindDeserializationMethodsWithCache", typeof (ClassWithDeserializationEvents), typeof (OnDeserializedAttribute));
-      Assert.IsNotNull (methods);
+      Assert.That (methods, Is.Not.Null);
       List<MethodInfo> methods2 = (List<MethodInfo>) PrivateInvoke.InvokeNonPublicMethod (
           eventRaiser, "FindDeserializationMethodsWithCache", typeof (ClassWithDeserializationEvents), typeof (OnDeserializedAttribute));
-      Assert.AreSame (methods, methods2);
+      Assert.That (methods2, Is.SameAs (methods));
     }
 
     [Test]
@@ -112,19 +112,19 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       SerializationEventRaiser eventRaiser = new SerializationEventRaiser ();
 
       ClassWithDeserializationEvents instance = new ClassWithDeserializationEvents ();
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
 
       eventRaiser.RaiseDeserializationEvent (instance, null);
 
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsTrue (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.True);
     }
   }
 }

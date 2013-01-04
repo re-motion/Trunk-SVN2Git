@@ -101,11 +101,11 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       _logger.Repository.Threshold = Level.Info;
 
       _log.Log (LogLevel.Info, 1, (object) "The message.");
-      Assert.AreEqual (1, _testEventLog.Entries.Count);
+      Assert.That (_testEventLog.Entries.Count, Is.EqualTo (1));
       EventLogEntry eventLogEntry = _testEventLog.Entries[0];
-      Assert.AreEqual (EventLogEntryType.Information, eventLogEntry.EntryType);
-      Assert.AreEqual ("The message.\r\n\r\n", eventLogEntry.Message);
-      Assert.AreEqual (1, eventLogEntry.InstanceId);
+      Assert.That (eventLogEntry.EntryType, Is.EqualTo (EventLogEntryType.Information));
+      Assert.That (eventLogEntry.Message, Is.EqualTo ("The message.\r\n\r\n"));
+      Assert.That (eventLogEntry.InstanceId, Is.EqualTo (1));
     }
 
     [Test]
@@ -120,11 +120,11 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       }
       catch (Exception)
       {
-        Assert.AreEqual (1, _testEventLog.Entries.Count);
+        Assert.That (_testEventLog.Entries.Count, Is.EqualTo (1));
         EventLogEntry eventLogEntry = _testEventLog.Entries[0];
-        Assert.AreEqual (EventLogEntryType.Error, eventLogEntry.EntryType);
-        Assert.AreEqual ("Failure during logging of message:\r\nThe message.\r\nEvent ID: 65536\r\n\r\n", eventLogEntry.Message);
-        Assert.AreEqual (0xFFFF, eventLogEntry.InstanceId);
+        Assert.That (eventLogEntry.EntryType, Is.EqualTo (EventLogEntryType.Error));
+        Assert.That (eventLogEntry.Message, Is.EqualTo ("Failure during logging of message:\r\nThe message.\r\nEvent ID: 65536\r\n\r\n"));
+        Assert.That (eventLogEntry.InstanceId, Is.EqualTo (0xFFFF));
 
         throw;
       }
@@ -142,11 +142,11 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       }
       catch (Exception)
       {
-        Assert.AreEqual (1, _testEventLog.Entries.Count);
+        Assert.That (_testEventLog.Entries.Count, Is.EqualTo (1));
         EventLogEntry eventLogEntry = _testEventLog.Entries[0];
-        Assert.AreEqual (EventLogEntryType.Error, eventLogEntry.EntryType);
-        Assert.AreEqual ("Failure during logging of message:\r\nThe message.\r\nEvent ID: -1\r\n\r\n", eventLogEntry.Message);
-        Assert.AreEqual (0x0, eventLogEntry.InstanceId);
+        Assert.That (eventLogEntry.EntryType, Is.EqualTo (EventLogEntryType.Error));
+        Assert.That (eventLogEntry.Message, Is.EqualTo ("Failure during logging of message:\r\nThe message.\r\nEvent ID: -1\r\n\r\n"));
+        Assert.That (eventLogEntry.InstanceId, Is.EqualTo (0x0));
 
         throw;
       }

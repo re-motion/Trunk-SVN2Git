@@ -54,7 +54,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
       bool isEnabled = menuItem.EvaluateEnabled ();
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (isEnabled);
+      Assert.That (isEnabled, Is.True);
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
       bool isEnabled = menuItem.EvaluateEnabled ();
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (isEnabled);
+      Assert.That (isEnabled, Is.False);
     }
 
 
@@ -80,7 +80,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
       menuItem.IsDisabled = false;
 
       bool isEnabled = menuItem.EvaluateEnabled ();
-      Assert.IsTrue (isEnabled);
+      Assert.That (isEnabled, Is.True);
     }
 
     [Test]
@@ -90,7 +90,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
       menuItem.IsDisabled = true;
 
       bool isEnabled = menuItem.EvaluateEnabled ();
-      Assert.IsFalse (isEnabled);
+      Assert.That (isEnabled, Is.False);
     }
 
 
@@ -105,7 +105,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
       bool isEnabled = menuItem.EvaluateEnabled ();
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (isEnabled);
+      Assert.That (isEnabled, Is.True);
     }
 
     [Test]
@@ -119,7 +119,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
       bool isEnabled = menuItem.EvaluateEnabled ();
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (isEnabled);
+      Assert.That (isEnabled, Is.False);
     }
 
 
@@ -133,7 +133,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
       bool isEnabled = menuItem.EvaluateEnabled ();
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (isEnabled);
+      Assert.That (isEnabled, Is.False);
     }
 
     private WebMenuItem CreateWebMenuItem ()

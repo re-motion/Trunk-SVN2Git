@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       PropertyDefinition intDefinition = CreateIntPropertyDefinition ("test");
       var propertyValue1 = new PropertyValue (intDefinition, 5);
-      Assert.IsFalse (propertyValue1.IsRelationProperty);
+      Assert.That (propertyValue1.IsRelationProperty, Is.False);
     }
 
     [Test]
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       PropertyDefinition propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID();
       var propertyValue1 = new PropertyValue (propertyDefinition, null);
-      Assert.IsTrue (propertyValue1.IsRelationProperty);
+      Assert.That (propertyValue1.IsRelationProperty, Is.True);
     }
 
     [Test]
@@ -286,7 +286,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (byte[]), true);
       var propertyValue = new PropertyValue (definition, null);
-      Assert.IsNull (propertyValue.Value);
+      Assert.That (propertyValue.Value, Is.Null);
     }
 
     [Test]
@@ -332,7 +332,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (Color), true);
 
       var propertyValue = new PropertyValue (definition, null);
-      Assert.IsNull (propertyValue.Value);
+      Assert.That (propertyValue.Value, Is.Null);
     }
 
     [Test]
@@ -341,7 +341,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (Color), false);
 
       var propertyValue = new PropertyValue (definition, ExtensibleEnum<Color>.Values.Red());
-      Assert.AreEqual (ExtensibleEnum<Color>.Values.Red(), propertyValue.Value);
+      Assert.That (propertyValue.Value, Is.EqualTo (ExtensibleEnum<Color>.Values.Red()));
     }
 
     [Test]
@@ -479,17 +479,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       PropertyValue propertyValue = CreateIntPropertyValue ("testProperty", 0);
       propertyValue.Value = 5;
-      Assert.AreEqual (0, propertyValue.OriginalValue);
-      Assert.AreEqual (5, propertyValue.Value);
-      Assert.IsTrue (propertyValue.HasChanged);
-      Assert.IsTrue (propertyValue.HasBeenTouched);
+      Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
+      Assert.That (propertyValue.Value, Is.EqualTo (5));
+      Assert.That (propertyValue.HasChanged, Is.True);
+      Assert.That (propertyValue.HasBeenTouched, Is.True);
 
       propertyValue.CommitState();
 
-      Assert.AreEqual (5, propertyValue.OriginalValue);
-      Assert.AreEqual (5, propertyValue.Value);
-      Assert.IsFalse (propertyValue.HasChanged);
-      Assert.IsFalse (propertyValue.HasBeenTouched);
+      Assert.That (propertyValue.OriginalValue, Is.EqualTo (5));
+      Assert.That (propertyValue.Value, Is.EqualTo (5));
+      Assert.That (propertyValue.HasChanged, Is.False);
+      Assert.That (propertyValue.HasBeenTouched, Is.False);
     }
 
     [Test]
@@ -497,17 +497,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       PropertyValue propertyValue = CreateIntPropertyValue ("testProperty", 0);
       propertyValue.Value = 5;
-      Assert.AreEqual (0, propertyValue.OriginalValue);
-      Assert.AreEqual (5, propertyValue.Value);
-      Assert.IsTrue (propertyValue.HasChanged);
-      Assert.IsTrue (propertyValue.HasBeenTouched);
+      Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
+      Assert.That (propertyValue.Value, Is.EqualTo (5));
+      Assert.That (propertyValue.HasChanged, Is.True);
+      Assert.That (propertyValue.HasBeenTouched, Is.True);
 
       propertyValue.RollbackState();
 
-      Assert.AreEqual (0, propertyValue.OriginalValue);
-      Assert.AreEqual (0, propertyValue.Value);
-      Assert.IsFalse (propertyValue.HasChanged);
-      Assert.IsFalse (propertyValue.HasBeenTouched);
+      Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
+      Assert.That (propertyValue.Value, Is.EqualTo (0));
+      Assert.That (propertyValue.HasChanged, Is.False);
+      Assert.That (propertyValue.HasBeenTouched, Is.False);
     }
 
     [Test]

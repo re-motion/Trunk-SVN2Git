@@ -43,8 +43,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee1);
 
-      Assert.IsNotNull (employee);
-      Assert.AreEqual (DomainObjectIDs.Employee1, employee.ID);
+      Assert.That (employee, Is.Not.Null);
+      Assert.That (employee.ID, Is.EqualTo (DomainObjectIDs.Employee1));
     }
 
     [Test]
@@ -53,10 +53,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee1);
       DomainObjectCollection subordinates = employee.Subordinates;
 
-      Assert.IsNotNull (subordinates);
-      Assert.AreEqual (2, subordinates.Count);
-      Assert.IsNotNull (subordinates[DomainObjectIDs.Employee4]);
-      Assert.IsNotNull (subordinates[DomainObjectIDs.Employee5]);
+      Assert.That (subordinates, Is.Not.Null);
+      Assert.That (subordinates.Count, Is.EqualTo (2));
+      Assert.That (subordinates[DomainObjectIDs.Employee4], Is.Not.Null);
+      Assert.That (subordinates[DomainObjectIDs.Employee5], Is.Not.Null);
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee1);
       DomainObjectCollection subordinates = employee.Subordinates;
 
-      Assert.IsTrue (ReferenceEquals (subordinates, employee.Subordinates));
+      Assert.That (ReferenceEquals (subordinates, employee.Subordinates), Is.True);
     }
 
     [Test]
@@ -74,8 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee4);
       Employee supervisor = employee.Supervisor;
 
-      Assert.IsNotNull (supervisor);
-      Assert.AreEqual (DomainObjectIDs.Employee1, supervisor.ID);
+      Assert.That (supervisor, Is.Not.Null);
+      Assert.That (supervisor.ID, Is.EqualTo (DomainObjectIDs.Employee1));
     }
 
     [Test]
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee employee1 = Employee.GetObject (DomainObjectIDs.Employee4);
       Employee employee2 = Employee.GetObject (DomainObjectIDs.Employee5);
 
-      Assert.IsTrue (ReferenceEquals (employee1.Supervisor, employee2.Supervisor));
+      Assert.That (ReferenceEquals (employee1.Supervisor, employee2.Supervisor), Is.True);
     }
   }
 }

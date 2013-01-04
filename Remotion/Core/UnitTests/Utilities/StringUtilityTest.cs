@@ -70,100 +70,100 @@ public class StringUtilityTest
   [Test]
 	public void NullToEmpty()
 	{
-    Assert.AreEqual (string.Empty, StringUtility.NullToEmpty (null));
-    Assert.AreEqual ("1", StringUtility.NullToEmpty ("1"));
+    Assert.That (StringUtility.NullToEmpty (null), Is.EqualTo (string.Empty));
+    Assert.That (StringUtility.NullToEmpty ("1"), Is.EqualTo ("1"));
 	}
 
   [Test]
   public void IsNullOrEmpty()
   {
-    Assert.AreEqual (true, StringUtility.IsNullOrEmpty (null));
-    Assert.AreEqual (true, StringUtility.IsNullOrEmpty (string.Empty));
-    Assert.AreEqual (false, StringUtility.IsNullOrEmpty (" "));
+    Assert.That (StringUtility.IsNullOrEmpty (null), Is.EqualTo (true));
+    Assert.That (StringUtility.IsNullOrEmpty (string.Empty), Is.EqualTo (true));
+    Assert.That (StringUtility.IsNullOrEmpty (" "), Is.EqualTo (false));
   }
 
   [Test]
   public void AreEqual()
   {
-    Assert.AreEqual (true, StringUtility.AreEqual ("test1", "test1", false));
-    Assert.AreEqual (true, StringUtility.AreEqual ("test1", "test1", true));
-    Assert.AreEqual (false, StringUtility.AreEqual ("test1", "TEST1", false));
-    Assert.AreEqual (true, StringUtility.AreEqual ("test1", "TEST1", true));
-    Assert.AreEqual (false, StringUtility.AreEqual ("täst1", "TÄST1", false));
-    Assert.AreEqual (true, StringUtility.AreEqual ("täst1", "TÄST1", true));
+    Assert.That (StringUtility.AreEqual ("test1", "test1", false), Is.EqualTo (true));
+    Assert.That (StringUtility.AreEqual ("test1", "test1", true), Is.EqualTo (true));
+    Assert.That (StringUtility.AreEqual ("test1", "TEST1", false), Is.EqualTo (false));
+    Assert.That (StringUtility.AreEqual ("test1", "TEST1", true), Is.EqualTo (true));
+    Assert.That (StringUtility.AreEqual ("täst1", "TÄST1", false), Is.EqualTo (false));
+    Assert.That (StringUtility.AreEqual ("täst1", "TÄST1", true), Is.EqualTo (true));
   }
 
   [Test]
   public void CanParseInt32()
   {
-    Assert.IsTrue (StringUtility.CanParse (_int32));
+    Assert.That (StringUtility.CanParse (_int32), Is.True);
   }
 
   [Test]
   public void CanParseNullableInt32 ()
   {
-    Assert.IsTrue (StringUtility.CanParse (_nullableInt32));
+    Assert.That (StringUtility.CanParse (_nullableInt32), Is.True);
   }
 
   [Test]
   public void CanParseEnum ()
   {
-    Assert.IsTrue (StringUtility.CanParse (_enum));
+    Assert.That (StringUtility.CanParse (_enum), Is.True);
   }
 
   [Test]
   public void CanParseNullableEnum ()
   {
-    Assert.IsTrue (StringUtility.CanParse (_nullableEnum));
+    Assert.That (StringUtility.CanParse (_nullableEnum), Is.True);
   }
 
   [Test]
   public void GetParseMethodForInt32()
   {
     MethodInfo parseMethod = StubStringUtility.GetParseMethod (_int32, true);
-    Assert.IsNotNull (parseMethod);
-    Assert.AreEqual ("Parse", parseMethod.Name);
-    Assert.AreEqual (2, parseMethod.GetParameters().Length);
-    Assert.AreEqual (typeof (string), parseMethod.GetParameters()[0].ParameterType);
-    Assert.AreEqual (typeof (IFormatProvider), parseMethod.GetParameters()[1].ParameterType);
-    Assert.AreEqual (typeof (int), parseMethod.ReturnType);
-    Assert.IsTrue (parseMethod.IsPublic);
-    Assert.IsTrue (parseMethod.IsStatic);
+    Assert.That (parseMethod, Is.Not.Null);
+    Assert.That (parseMethod.Name, Is.EqualTo ("Parse"));
+    Assert.That (parseMethod.GetParameters().Length, Is.EqualTo (2));
+    Assert.That (parseMethod.GetParameters()[0].ParameterType, Is.EqualTo (typeof (string)));
+    Assert.That (parseMethod.GetParameters()[1].ParameterType, Is.EqualTo (typeof (IFormatProvider)));
+    Assert.That (parseMethod.ReturnType, Is.EqualTo (typeof (int)));
+    Assert.That (parseMethod.IsPublic, Is.True);
+    Assert.That (parseMethod.IsStatic, Is.True);
   }
 
   [Test]
   public void GetParseMethodFromTypeForInt32()
   {
     MethodInfo parseMethod = StubStringUtility.GetParseMethodFromType (_int32);
-    Assert.IsNotNull (parseMethod);
-    Assert.AreEqual ("Parse", parseMethod.Name);
-    Assert.AreEqual (1, parseMethod.GetParameters().Length);
-    Assert.AreEqual (typeof (string), parseMethod.GetParameters()[0].ParameterType);
-    Assert.AreEqual (typeof (int), parseMethod.ReturnType);
-    Assert.IsTrue (parseMethod.IsPublic);
-    Assert.IsTrue (parseMethod.IsStatic);
+    Assert.That (parseMethod, Is.Not.Null);
+    Assert.That (parseMethod.Name, Is.EqualTo ("Parse"));
+    Assert.That (parseMethod.GetParameters().Length, Is.EqualTo (1));
+    Assert.That (parseMethod.GetParameters()[0].ParameterType, Is.EqualTo (typeof (string)));
+    Assert.That (parseMethod.ReturnType, Is.EqualTo (typeof (int)));
+    Assert.That (parseMethod.IsPublic, Is.True);
+    Assert.That (parseMethod.IsStatic, Is.True);
   }
 
   [Test]
   public void GetParseMethodWithFormatProviderFromTypeForInt32()
   {
     MethodInfo parseMethod = StubStringUtility.GetParseMethodWithFormatProviderFromType (_int32);
-    Assert.IsNotNull (parseMethod);
-    Assert.AreEqual ("Parse", parseMethod.Name);
-    Assert.AreEqual (2, parseMethod.GetParameters().Length);
-    Assert.AreEqual (typeof (string), parseMethod.GetParameters()[0].ParameterType);
-    Assert.AreEqual (typeof (IFormatProvider), parseMethod.GetParameters()[1].ParameterType);
-    Assert.AreEqual (typeof (int), parseMethod.ReturnType);
-    Assert.IsTrue (parseMethod.IsPublic);
-    Assert.IsTrue (parseMethod.IsStatic);
+    Assert.That (parseMethod, Is.Not.Null);
+    Assert.That (parseMethod.Name, Is.EqualTo ("Parse"));
+    Assert.That (parseMethod.GetParameters().Length, Is.EqualTo (2));
+    Assert.That (parseMethod.GetParameters()[0].ParameterType, Is.EqualTo (typeof (string)));
+    Assert.That (parseMethod.GetParameters()[1].ParameterType, Is.EqualTo (typeof (IFormatProvider)));
+    Assert.That (parseMethod.ReturnType, Is.EqualTo (typeof (int)));
+    Assert.That (parseMethod.IsPublic, Is.True);
+    Assert.That (parseMethod.IsStatic, Is.True);
   }
 
   [Test]
   public void CanParseObject()
   {
-    Assert.IsFalse (StringUtility.CanParse (_object));
+    Assert.That (StringUtility.CanParse (_object), Is.False);
   }
-  
+
   [Test]
   [ExpectedException (typeof (ParseException))]
   public void GetParseMethodForObjectWithException()
@@ -174,28 +174,28 @@ public class StringUtilityTest
   [Test]
   public void GetParseMethodForObjectWithoutException()
   {
-    Assert.IsNull (StubStringUtility.GetParseMethod (_object, false));
+    Assert.That (StubStringUtility.GetParseMethod (_object, false), Is.Null);
   }
 
   [Test]
   public void GetParseMethodFromTypeForObject()
   {
-    Assert.IsNull (StubStringUtility.GetParseMethodFromType (_object));
+    Assert.That (StubStringUtility.GetParseMethodFromType (_object), Is.Null);
   }
 
   [Test]
   public void GetParseMethodWithFormatProviderFromTypeForObject()
   {
-    Assert.IsNull (StubStringUtility.GetParseMethodWithFormatProviderFromType (_object));
+    Assert.That (StubStringUtility.GetParseMethodWithFormatProviderFromType (_object), Is.Null);
   }
 
   [Test]
   public void ParseInt32 ()
   {
     object value = StringUtility.Parse (_int32, "1", CultureInfo.InvariantCulture);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_int32, value.GetType ());
-    Assert.AreEqual (1, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType (), Is.EqualTo (_int32));
+    Assert.That (value, Is.EqualTo (1));
   }
 
   [Test]
@@ -216,30 +216,30 @@ public class StringUtilityTest
   public void ParseNullableInt32 ()
   {
     object value = StringUtility.Parse (_nullableInt32, "1", CultureInfo.InvariantCulture);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_int32, value.GetType ());
-    Assert.AreEqual (1, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType (), Is.EqualTo (_int32));
+    Assert.That (value, Is.EqualTo (1));
   }
 
   [Test]
   public void ParseNullableInt32WithEmpty ()
   {
-    Assert.IsNull (StringUtility.Parse (_nullableInt32, string.Empty, CultureInfo.InvariantCulture));
+    Assert.That (StringUtility.Parse (_nullableInt32, string.Empty, CultureInfo.InvariantCulture), Is.Null);
   }
 
   [Test]
   public void ParseNullableInt32WithNull ()
   {
-    Assert.IsNull (StringUtility.Parse (_nullableInt32, null, CultureInfo.InvariantCulture));
+    Assert.That (StringUtility.Parse (_nullableInt32, null, CultureInfo.InvariantCulture), Is.Null);
   }
 
   [Test]
   public void ParseEnum ()
   {
     object value = StringUtility.Parse (_enum, "Value1", CultureInfo.InvariantCulture);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_enum, value.GetType ());
-    Assert.AreEqual (TestEnum.Value1, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType (), Is.EqualTo (_enum));
+    Assert.That (value, Is.EqualTo (TestEnum.Value1));
   }
 
   [Test]
@@ -260,21 +260,21 @@ public class StringUtilityTest
   public void ParseNullableEnum ()
   {
     object value = StringUtility.Parse (_nullableEnum, "Value1", CultureInfo.InvariantCulture);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_enum, value.GetType ());
-    Assert.AreEqual (TestEnum.Value1, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType (), Is.EqualTo (_enum));
+    Assert.That (value, Is.EqualTo (TestEnum.Value1));
   }
 
   [Test]
   public void ParseNullableEnumWithEmpty ()
   {
-    Assert.IsNull (StringUtility.Parse (_nullableEnum, string.Empty, CultureInfo.InvariantCulture));
+    Assert.That (StringUtility.Parse (_nullableEnum, string.Empty, CultureInfo.InvariantCulture), Is.Null);
   }
 
   [Test]
   public void ParseNullableEnumWithNull ()
   {
-    Assert.IsNull (StringUtility.Parse (_nullableEnum, null, CultureInfo.InvariantCulture));
+    Assert.That (StringUtility.Parse (_nullableEnum, null, CultureInfo.InvariantCulture), Is.Null);
   }
 
   [Test]
@@ -282,9 +282,9 @@ public class StringUtilityTest
   {
     Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_double, "4,321.123", CultureInfo.InvariantCulture);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_double, value.GetType());
-    Assert.AreEqual (4321.123, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_double));
+    Assert.That (value, Is.EqualTo (4321.123));
   }
 
   [Test]
@@ -292,9 +292,9 @@ public class StringUtilityTest
   {
     Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_double, "4,321.123", _cultureEnUs);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_double, value.GetType());
-    Assert.AreEqual (4321.123, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_double));
+    Assert.That (value, Is.EqualTo (4321.123));
   }
 
   [Test]
@@ -310,9 +310,9 @@ public class StringUtilityTest
   {
     Thread.CurrentThread.CurrentCulture = _cultureEnUs;
     object value = StringUtility.Parse (_double, "4.321,123", _cultureDeDe);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_double, value.GetType());
-    Assert.AreEqual (4321.123, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_double));
+    Assert.That (value, Is.EqualTo (4321.123));
   }
 
   [Test]
@@ -329,13 +329,13 @@ public class StringUtilityTest
   {
     Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_doubleArray, @"6\,543.123,5\,432.123,4\,321.123", CultureInfo.InvariantCulture);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_doubleArray, value.GetType());
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_doubleArray));
     double[] values = (double[]) value;
-    Assert.AreEqual (3, values.Length);
-    Assert.AreEqual (6543.123, values[0]);
-    Assert.AreEqual (5432.123, values[1]);
-    Assert.AreEqual (4321.123, values[2]);
+    Assert.That (values.Length, Is.EqualTo (3));
+    Assert.That (values[0], Is.EqualTo (6543.123));
+    Assert.That (values[1], Is.EqualTo (5432.123));
+    Assert.That (values[2], Is.EqualTo (4321.123));
   }
 
   [Test]
@@ -343,13 +343,13 @@ public class StringUtilityTest
   {
     Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_doubleArray, @"6543.123,5432.123,4321.123", CultureInfo.InvariantCulture);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_doubleArray, value.GetType());
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_doubleArray));
     double[] values = (double[]) value;
-    Assert.AreEqual (3, values.Length);
-    Assert.AreEqual (6543.123, values[0]);
-    Assert.AreEqual (5432.123, values[1]);
-    Assert.AreEqual (4321.123, values[2]);
+    Assert.That (values.Length, Is.EqualTo (3));
+    Assert.That (values[0], Is.EqualTo (6543.123));
+    Assert.That (values[1], Is.EqualTo (5432.123));
+    Assert.That (values[2], Is.EqualTo (4321.123));
   }
 
   [Test]
@@ -358,13 +358,13 @@ public class StringUtilityTest
   {
     Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_doubleArray, @"6\,543.123,5\,432.123,4\,321.123", _cultureEnUs);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_doubleArray, value.GetType());
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_doubleArray));
     double[] values = (double[]) value;
-    Assert.AreEqual (3, values.Length);
-    Assert.AreEqual (6543.123, values[0]);
-    Assert.AreEqual (5432.123, values[1]);
-    Assert.AreEqual (4321.123, values[2]);
+    Assert.That (values.Length, Is.EqualTo (3));
+    Assert.That (values[0], Is.EqualTo (6543.123));
+    Assert.That (values[1], Is.EqualTo (5432.123));
+    Assert.That (values[2], Is.EqualTo (4321.123));
   }
 
   [Test]
@@ -372,13 +372,13 @@ public class StringUtilityTest
   {
     Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_doubleArray, @"6543.123,5432.123,4321.123", _cultureEnUs);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_doubleArray, value.GetType());
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_doubleArray));
     double[] values = (double[]) value;
-    Assert.AreEqual (3, values.Length);
-    Assert.AreEqual (6543.123, values[0]);
-    Assert.AreEqual (5432.123, values[1]);
-    Assert.AreEqual (4321.123, values[2]);
+    Assert.That (values.Length, Is.EqualTo (3));
+    Assert.That (values[0], Is.EqualTo (6543.123));
+    Assert.That (values[1], Is.EqualTo (5432.123));
+    Assert.That (values[2], Is.EqualTo (4321.123));
   }
 
   [Test]
@@ -387,27 +387,27 @@ public class StringUtilityTest
   {
     Thread.CurrentThread.CurrentCulture = _cultureEnUs;
     object value = StringUtility.Parse (_doubleArray, @"6.543\,123,5.432\,123,4.321\,123", _cultureDeDe);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_doubleArray, value.GetType());
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_doubleArray));
     double[] values = (double[]) value;
-    Assert.AreEqual (3, values.Length);
-    Assert.AreEqual (6543.123, values[0]);
-    Assert.AreEqual (5432.123, values[1]);
-    Assert.AreEqual (4321.123, values[2]);
+    Assert.That (values.Length, Is.EqualTo (3));
+    Assert.That (values[0], Is.EqualTo (6543.123));
+    Assert.That (values[1], Is.EqualTo (5432.123));
+    Assert.That (values[2], Is.EqualTo (4321.123));
   }
 
   [Test]
   public void ParseStringArray()
   {
     object value = StringUtility.Parse (_stringArray, "\"a\",\"b\",\"c\",\"d\"", null);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_stringArray, value.GetType());
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_stringArray));
     string[] values = (string[]) value;
-    Assert.AreEqual (4, values.Length);
-    Assert.AreEqual ("a", values[0]);
-    Assert.AreEqual ("b", values[1]);
-    Assert.AreEqual ("c", values[2]);
-    Assert.AreEqual ("d", values[3]);
+    Assert.That (values.Length, Is.EqualTo (4));
+    Assert.That (values[0], Is.EqualTo ("a"));
+    Assert.That (values[1], Is.EqualTo ("b"));
+    Assert.That (values[2], Is.EqualTo ("c"));
+    Assert.That (values[3], Is.EqualTo ("d"));
   }
 
   [Test]
@@ -420,40 +420,40 @@ public class StringUtilityTest
   [Test]
   public void CanParseDoubleArray()
   {
-    Assert.IsTrue (StringUtility.CanParse (_doubleArray));
+    Assert.That (StringUtility.CanParse (_doubleArray), Is.True);
   }
 
   [Test]
   public void CanParseArrayDoubleArray()
   {
-    Assert.IsFalse (StringUtility.CanParse (typeof (double[][])));
+    Assert.That (StringUtility.CanParse (typeof (double[][])), Is.False);
   }
 
   [Test]
   public void CanParseString()
   {
-    Assert.IsTrue (StringUtility.CanParse (_string));
+    Assert.That (StringUtility.CanParse (_string), Is.True);
   }
 
   [Test]
   public void CanParseDBNull()
   {
-    Assert.IsTrue (StringUtility.CanParse (_dbNull));
+    Assert.That (StringUtility.CanParse (_dbNull), Is.True);
   }
 
   [Test]
   public void ParseDBNull()
   {
     object value = StringUtility.Parse (_dbNull, DBNull.Value.ToString(), null);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_dbNull, value.GetType());
-    Assert.AreEqual (DBNull.Value, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_dbNull));
+    Assert.That (value, Is.EqualTo (DBNull.Value));
   }
 
   [Test]
   public void CanParseGuid()
   {
-    Assert.IsTrue (StringUtility.CanParse (_guid));
+    Assert.That (StringUtility.CanParse (_guid), Is.True);
   }
 
   [Test]
@@ -461,9 +461,9 @@ public class StringUtilityTest
   {
     Guid guid = Guid.NewGuid();
     object value = StringUtility.Parse (_guid, guid.ToString(), null);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_guid, value.GetType());
-    Assert.AreEqual (guid, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_guid));
+    Assert.That (value, Is.EqualTo (guid));
   }
 
   [Test]
@@ -485,9 +485,9 @@ public class StringUtilityTest
   {
     Guid guid = Guid.Empty;
     object value = StringUtility.Parse (_guid, guid.ToString(), null);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_guid, value.GetType());
-    Assert.AreEqual (guid, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (_guid));
+    Assert.That (value, Is.EqualTo (guid));
   }
 
   [Test]
@@ -495,54 +495,55 @@ public class StringUtilityTest
   {
     Guid? guid = Guid.NewGuid ();
     object value = StringUtility.Parse (_nullableGuid, guid.ToString (), null);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (_guid, value.GetType ());
-    Assert.AreEqual (guid, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType (), Is.EqualTo (_guid));
+    Assert.That (value, Is.EqualTo (guid));
   }
 
   [Test]
   public void ParseNullableGuidWithEmpty ()
   {
-    Assert.IsNull (StringUtility.Parse (_nullableGuid, string.Empty, null));
+    Assert.That (StringUtility.Parse (_nullableGuid, string.Empty, null), Is.Null);
   }
 
   [Test]
   public void ParseNullableGuidWithNull ()
   {
-    Assert.IsNull (StringUtility.Parse (_nullableGuid, null, null));
+    Assert.That (StringUtility.Parse (_nullableGuid, null, null), Is.Null);
   }
+
   [Test]
   public void FormatNull()
   {
-    Assert.AreEqual (string.Empty, StringUtility.Format (null, null));
+    Assert.That (StringUtility.Format (null, null), Is.EqualTo (string.Empty));
   }
 
   [Test]
   public void FormatString()
   {
     const string value = "Hello World!";
-    Assert.AreEqual (value, StringUtility.Format (value, null));
+    Assert.That (StringUtility.Format (value, null), Is.EqualTo (value));
   }
 
   [Test]
   public void FormatDoubleWithCultureEnUs()
   {
     Thread.CurrentThread.CurrentCulture = _cultureDeDe;
-    Assert.AreEqual ("4321.123", StringUtility.Format (4321.123, _cultureEnUs));
+    Assert.That (StringUtility.Format (4321.123, _cultureEnUs), Is.EqualTo ("4321.123"));
   }
 
   [Test]
   public void FormatDoubleWithCultureDeDe()
   {
     Thread.CurrentThread.CurrentCulture = _cultureEnUs;
-    Assert.AreEqual ("4321,123", StringUtility.Format (4321.123, _cultureDeDe));
+    Assert.That (StringUtility.Format (4321.123, _cultureDeDe), Is.EqualTo ("4321,123"));
   }
 
   [Test]
   public void FormatGuid()
   {
     Guid guid = Guid.Empty;
-    Assert.AreEqual (guid.ToString(), StringUtility.Format (guid, null));
+    Assert.That (StringUtility.Format (guid, null), Is.EqualTo (guid.ToString()));
   }
 
   [Test]
@@ -550,7 +551,7 @@ public class StringUtilityTest
   {
     Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     double[] values = new double[] {6543.123, 5432.123, 4321.123};
-    Assert.AreEqual (@"6543.123,5432.123,4321.123", StringUtility.Format (values, _cultureEnUs));
+    Assert.That (StringUtility.Format (values, _cultureEnUs), Is.EqualTo (@"6543.123,5432.123,4321.123"));
   }
 
 
@@ -622,7 +623,7 @@ public class StringUtility_ParseSeparatedListTest
     StringUtility.ParsedItem[] actualItems = StringUtility.ParseSeparatedList (
       value, delimiter, openingQuote, closingQuote, escapingChar, whitespaceCharacters, interpretSpecialCharacters);
 
-    Assert.AreEqual (expectedItems.Length, actualItems.Length);
+    Assert.That (actualItems.Length, Is.EqualTo (expectedItems.Length));
     for (int i = 0; i < expectedItems.Length; ++i)
     {
       Assert.AreEqual (expectedItems[i].Value, actualItems[i].Value, string.Format ("[{0}].Value", i));

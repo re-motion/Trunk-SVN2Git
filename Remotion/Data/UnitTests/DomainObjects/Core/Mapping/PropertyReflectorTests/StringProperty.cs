@@ -38,13 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithStringProperties.NoAttribute",
-          actual.PropertyName);
-      Assert.AreSame (typeof (string), actual.PropertyType);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (string.Empty, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithStringProperties.NoAttribute"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (string)));
+      Assert.That (actual.IsNullable, Is.False);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (string.Empty));
     }
 
     [Test]
@@ -59,13 +57,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithStringProperties.NullableFromAttribute",
-          actual.PropertyName);
-      Assert.AreSame (typeof (string), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (null, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithStringProperties.NullableFromAttribute"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (string)));
+      Assert.That (actual.IsNullable, Is.True);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (null));
     }
 
     [Test]
@@ -82,13 +78,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithStringProperties.MaximumLength",
-          actual.PropertyName);
-      Assert.AreSame (typeof (string), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.AreEqual (100, actual.MaxLength);
-      Assert.AreEqual (null, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithStringProperties.MaximumLength"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (string)));
+      Assert.That (actual.IsNullable, Is.True);
+      Assert.That (actual.MaxLength, Is.EqualTo (100));
+      Assert.That (actual.DefaultValue, Is.EqualTo (null));
     }
 
     [Test]
@@ -106,13 +100,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithStringProperties.NotNullableAndMaximumLength",
-          actual.PropertyName);
-      Assert.AreSame (typeof (string), actual.PropertyType);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.AreEqual (100, actual.MaxLength);
-      Assert.AreEqual (string.Empty, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithStringProperties.NotNullableAndMaximumLength"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (string)));
+      Assert.That (actual.IsNullable, Is.False);
+      Assert.That (actual.MaxLength, Is.EqualTo (100));
+      Assert.That (actual.DefaultValue, Is.EqualTo (string.Empty));
     }
 
     [StringProperty]

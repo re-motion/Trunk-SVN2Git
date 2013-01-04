@@ -44,7 +44,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, "IsVisible");
 
       _testHelper.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -81,7 +81,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       }
 
       _testHelper.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       }
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -111,7 +111,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       }
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -122,7 +122,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasPropertyReadAccess (new SecurableObject (null), "IsVisible");
 
       _testHelper.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -133,7 +133,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasPropertyReadAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -144,7 +144,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasPropertyReadAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
   }
 }

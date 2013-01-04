@@ -29,13 +29,13 @@ namespace Remotion.UnitTests.Utilities
     {
       IEnumerable objects1 = new int[] {1, 2, 3};
       IEnumerable objects2 = new int[] {1, 2, 3};
-      Assert.AreEqual (EqualityUtility.GetRotatedHashCode (objects1), EqualityUtility.GetRotatedHashCode (objects2));
+      Assert.That (EqualityUtility.GetRotatedHashCode (objects2), Is.EqualTo (EqualityUtility.GetRotatedHashCode (objects1)));
 
       IEnumerable objects3 = new int[] {3, 2, 1};
-      Assert.AreNotEqual (EqualityUtility.GetRotatedHashCode (objects1), EqualityUtility.GetRotatedHashCode (objects3));
+      Assert.That (EqualityUtility.GetRotatedHashCode (objects3), Is.Not.EqualTo (EqualityUtility.GetRotatedHashCode (objects1)));
 
       IEnumerable objects4 = new int[] { 1, 2, 17 };
-      Assert.AreNotEqual (EqualityUtility.GetRotatedHashCode (objects1), EqualityUtility.GetRotatedHashCode (objects4));
+      Assert.That (EqualityUtility.GetRotatedHashCode (objects4), Is.Not.EqualTo (EqualityUtility.GetRotatedHashCode (objects1)));
     }
 
     [Test]
@@ -43,13 +43,13 @@ namespace Remotion.UnitTests.Utilities
     {
       IEnumerable objects1 = new int[] { 1, 2, 3 };
       IEnumerable objects2 = new int[] { 1, 2, 3 };
-      Assert.AreEqual (EqualityUtility.GetXorHashCode (objects1), EqualityUtility.GetXorHashCode (objects2));
+      Assert.That (EqualityUtility.GetXorHashCode (objects2), Is.EqualTo (EqualityUtility.GetXorHashCode (objects1)));
 
       IEnumerable objects3 = new int[] { 3, 2, 1 };
-      Assert.AreEqual (EqualityUtility.GetXorHashCode (objects1), EqualityUtility.GetXorHashCode (objects3));
+      Assert.That (EqualityUtility.GetXorHashCode (objects3), Is.EqualTo (EqualityUtility.GetXorHashCode (objects1)));
 
       IEnumerable objects4 = new int[] { 1, 2, 17 };
-      Assert.AreNotEqual (EqualityUtility.GetXorHashCode (objects1), EqualityUtility.GetXorHashCode (objects4));
+      Assert.That (EqualityUtility.GetXorHashCode (objects4), Is.Not.EqualTo (EqualityUtility.GetXorHashCode (objects1)));
     }
 
     [Test]

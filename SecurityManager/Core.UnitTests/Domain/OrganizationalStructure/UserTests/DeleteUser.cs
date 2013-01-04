@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
 
         ClientTransaction.Current.Commit ();
 
-        Assert.IsTrue (ace.IsInvalid);
+        Assert.That (ace.IsInvalid, Is.True);
       }
     }
 

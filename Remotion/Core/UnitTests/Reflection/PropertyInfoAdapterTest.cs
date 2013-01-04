@@ -382,7 +382,7 @@ namespace Remotion.UnitTests.Reflection
 
       PropertyInfo propertyInfo = typeof (ClassWithOverridingMember).GetProperty ("BaseProperty");
       PropertyInfoAdapter overrideAdapter = PropertyInfoAdapter.Create(propertyInfo);
-      Assert.AreNotEqual (overrideAdapter.DeclaringType, overrideAdapter.GetOriginalDeclaringType());
+      Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.Not.EqualTo (overrideAdapter.DeclaringType));
       Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.EqualTo (overrideAdapter.DeclaringType.BaseType));
       Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.TypeOf<TypeAdapter>().And.Property ("Type").SameAs (typeof (ClassWithBaseMember)));
     }

@@ -127,7 +127,7 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
     [Test]
     public void Initialize ()
     {
-      Assert.AreSame (_invoker.Control, _parent);
+      Assert.That (_parent, Is.SameAs (_invoker.Control));
     }
 
     [Test]
@@ -135,7 +135,7 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
     {
       _invoker.InitRecursive ();
 
-      Assert.AreEqual ("Child Init, Parent Init", _events);
+      Assert.That (_events, Is.EqualTo ("Child Init, Parent Init"));
     }
 
     [Test]
@@ -149,9 +149,9 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
       object viewState = _invoker.SaveViewStateRecursive ();
 
       _invokerAfterPostBack.InitRecursive();
-      Assert.AreEqual (string.Empty, _childAfterPostBack.Text);
+      Assert.That (_childAfterPostBack.Text, Is.EqualTo (string.Empty));
       _invokerAfterPostBack.LoadViewStateRecursive (viewState);
-      Assert.AreEqual ("Foo Bar", _childAfterPostBack.Text);
+      Assert.That (_childAfterPostBack.Text, Is.EqualTo ("Foo Bar"));
     }
 
     [Test]
@@ -159,7 +159,7 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
     {
       _invoker.LoadRecursive ();
 
-      Assert.AreEqual ("Parent Load, Child Load", _events);
+      Assert.That (_events, Is.EqualTo ("Parent Load, Child Load"));
     }
 
     [Test]
@@ -167,7 +167,7 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
     {
       _invoker.PreRenderRecursive ();
 
-      Assert.AreEqual ("Parent PreRender, Child PreRender", _events);
+      Assert.That (_events, Is.EqualTo ("Parent PreRender, Child PreRender"));
     }
 
     private void Control_Init (object sender, EventArgs e)

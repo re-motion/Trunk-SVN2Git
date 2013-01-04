@@ -31,11 +31,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
-      Assert.IsNull (orderTicket.Order);
-      Assert.IsNull (order.OrderTicket);
-      Assert.IsNull (orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID());
-      Assert.AreEqual (StateType.Changed, order.State);
-      Assert.AreEqual (StateType.Unchanged, order.InternalDataContainer.State);
+      Assert.That (orderTicket.Order, Is.Null);
+      Assert.That (order.OrderTicket, Is.Null);
+      Assert.That (orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID(), Is.Null);
+      Assert.That (order.State, Is.EqualTo (StateType.Changed));
+      Assert.That (order.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -44,8 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
       Computer computerWithoutEmployee = Computer.GetObject (DomainObjectIDs.Computer4);
       computerWithoutEmployee.Delete ();
 
-      Assert.IsNull (computerWithoutEmployee.Employee);
-      Assert.IsNull (computerWithoutEmployee.Properties[typeof (Computer), "Employee"].GetRelatedObjectID ());
+      Assert.That (computerWithoutEmployee.Employee, Is.Null);
+      Assert.That (computerWithoutEmployee.Properties[typeof (Computer), "Employee"].GetRelatedObjectID (), Is.Null);
     }
 
     [Test]
@@ -56,10 +56,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 
       OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
 
-      Assert.IsNull (orderTicket.Order);
-      Assert.IsNull (order.OrderTicket);
-      Assert.IsNull (orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID ());
-      Assert.AreEqual (StateType.Changed, orderTicket.InternalDataContainer.State);
+      Assert.That (orderTicket.Order, Is.Null);
+      Assert.That (order.OrderTicket, Is.Null);
+      Assert.That (orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID (), Is.Null);
+      Assert.That (orderTicket.InternalDataContainer.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
       Employee employeeWithoutComputer = Employee.GetObject (DomainObjectIDs.Employee1);
       employeeWithoutComputer.Delete ();
 
-      Assert.IsNull (employeeWithoutComputer.Computer);
+      Assert.That (employeeWithoutComputer.Computer, Is.Null);
     }
 
     [Test]
@@ -80,13 +80,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
       Employee subordinate1 = Employee.GetObject (DomainObjectIDs.Employee4);
       Employee subordinate2 = Employee.GetObject (DomainObjectIDs.Employee5);
 
-      Assert.AreEqual (0, supervisor.Subordinates.Count);
-      Assert.IsNull (subordinate1.Supervisor);
-      Assert.IsNull (subordinate2.Supervisor);
-      Assert.IsNull (subordinate1.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID ());
-      Assert.IsNull (subordinate2.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID ());
-      Assert.AreEqual (StateType.Changed, subordinate1.InternalDataContainer.State);
-      Assert.AreEqual (StateType.Changed, subordinate2.InternalDataContainer.State);
+      Assert.That (supervisor.Subordinates.Count, Is.EqualTo (0));
+      Assert.That (subordinate1.Supervisor, Is.Null);
+      Assert.That (subordinate2.Supervisor, Is.Null);
+      Assert.That (subordinate1.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID (), Is.Null);
+      Assert.That (subordinate2.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID (), Is.Null);
+      Assert.That (subordinate1.InternalDataContainer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (subordinate2.InternalDataContainer.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
       Employee supervisor = Employee.GetObject (DomainObjectIDs.Employee3);
       supervisor.Delete ();
 
-      Assert.AreEqual (0, supervisor.Subordinates.Count);
+      Assert.That (supervisor.Subordinates.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -106,12 +106,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
-      Assert.IsNull (orderItem.Order);
-      Assert.AreEqual (1, order.OrderItems.Count);
-      Assert.IsFalse (order.OrderItems.Contains (orderItem.ID));
-      Assert.IsNull (orderItem.Properties[typeof (OrderItem), "Order"].GetRelatedObjectID ());
-      Assert.AreEqual (StateType.Changed, order.State);
-      Assert.AreEqual (StateType.Unchanged, order.InternalDataContainer.State);
+      Assert.That (orderItem.Order, Is.Null);
+      Assert.That (order.OrderItems.Count, Is.EqualTo (1));
+      Assert.That (order.OrderItems.Contains (orderItem.ID), Is.False);
+      Assert.That (orderItem.Properties[typeof (OrderItem), "Order"].GetRelatedObjectID (), Is.Null);
+      Assert.That (order.State, Is.EqualTo (StateType.Changed));
+      Assert.That (order.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
   }
 }

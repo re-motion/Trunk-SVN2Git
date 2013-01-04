@@ -63,7 +63,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
       bool hasAccess = WxeFunction.HasAccess (typeof (TestFunction));
 
       _mockRepository.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -75,7 +75,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
       bool hasAccess = WxeFunction.HasAccess (typeof (TestFunction));
 
       _mockRepository.VerifyAll ();
-      Assert.IsFalse (hasAccess);
+      Assert.That (hasAccess, Is.False);
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
       bool hasAccess = WxeFunction.HasAccess (typeof (TestFunction));
 
       _mockRepository.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
   }
 }

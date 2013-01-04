@@ -25,19 +25,19 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     [Test]
     public void IgnoredClass_IsExcluded ()
     {
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoredByMixins), typeof (MixinIgnoringDerivedClass)));
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedClassIgnoredByMixins), typeof (MixinIgnoringDerivedClass)), Is.False);
     }
 
     [Test]
     public void BaseClass_IsNotExcluded ()
     {
-      Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoredByMixin), typeof (MixinIgnoringDerivedClass)));
+      Assert.That (MixinTypeUtility.HasMixin (typeof (BaseClassForDerivedClassIgnoredByMixin), typeof (MixinIgnoringDerivedClass)), Is.True);
     }
 
     [Test]
     public void DerivedClass_IsExcluded ()
     {
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (DerivedDerivedClassIgnoredByMixin), typeof (MixinIgnoringDerivedClass)));
+      Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedDerivedClassIgnoredByMixin), typeof (MixinIgnoringDerivedClass)), Is.False);
     }
 
     // The following test does not work because GenericClassForMixinIgnoringDerivedClass<int> inherits the mixin from its base class
@@ -53,13 +53,13 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     [Test]
     public void ClosedGenericSpecialization_IsExcluded ()
     {
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (ClosedGenericClassForMixinIgnoringDerivedClass<int>), typeof (MixinIgnoringDerivedClass)));
+      Assert.That (MixinTypeUtility.HasMixin (typeof (ClosedGenericClassForMixinIgnoringDerivedClass<int>), typeof (MixinIgnoringDerivedClass)), Is.False);
     }
 
     [Test]
     public void ClosedGenericSpecializationVariant_IsNotExcluded ()
     {
-      Assert.IsFalse (MixinTypeUtility.HasMixin (typeof (ClosedGenericClassForMixinIgnoringDerivedClass<string>), typeof (MixinIgnoringDerivedClass)));
+      Assert.That (MixinTypeUtility.HasMixin (typeof (ClosedGenericClassForMixinIgnoringDerivedClass<string>), typeof (MixinIgnoringDerivedClass)), Is.False);
     }
   }
 }

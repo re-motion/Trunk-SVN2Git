@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
             _mockMappingLoader, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
         MappingConfiguration.SetCurrent (configuration);
 
-        Assert.AreSame (configuration, MappingConfiguration.Current);
+        Assert.That (MappingConfiguration.Current, Is.SameAs (configuration));
       }
       finally
       {

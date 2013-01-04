@@ -119,11 +119,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       _orderTicket.Delete ();
 
-      Assert.IsNull (_orderTicket.Order);
-      Assert.IsNull (_order.OrderTicket);
-      Assert.IsNull (_orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID());
-      Assert.AreEqual (StateType.Changed, _order.State);
-      Assert.AreEqual (StateType.Unchanged, _order.InternalDataContainer.State);
+      Assert.That (_orderTicket.Order, Is.Null);
+      Assert.That (_order.OrderTicket, Is.Null);
+      Assert.That (_orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID(), Is.Null);
+      Assert.That (_order.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_order.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -131,10 +131,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       _order.Delete ();
 
-      Assert.IsNull (_orderTicket.Order);
-      Assert.IsNull (_order.OrderTicket);
-      Assert.IsNull (_orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID ());
-      Assert.AreEqual (StateType.Changed, _orderTicket.InternalDataContainer.State);
+      Assert.That (_orderTicket.Order, Is.Null);
+      Assert.That (_order.OrderTicket, Is.Null);
+      Assert.That (_orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID (), Is.Null);
+      Assert.That (_orderTicket.InternalDataContainer.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -180,8 +180,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 
       Order originalOrder = (Order) _orderTicket.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
 
-      Assert.IsNotNull (originalOrder);
-      Assert.AreEqual (DomainObjectIDs.Order1, originalOrder.ID);
+      Assert.That (originalOrder, Is.Not.Null);
+      Assert.That (originalOrder.ID, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
@@ -192,8 +192,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 
       OrderTicket deletedOrderTicket = (OrderTicket) oldRelatedOrder.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
 
-      Assert.IsNotNull (deletedOrderTicket);
-      Assert.AreEqual (_orderTicket.ID, deletedOrderTicket.ID);
+      Assert.That (deletedOrderTicket, Is.Not.Null);
+      Assert.That (deletedOrderTicket.ID, Is.EqualTo (_orderTicket.ID));
     }
 
     [Test]
@@ -212,8 +212,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
       _order.Delete ();
       orderTicket.Delete ();
 
-      Assert.IsNotNull (_order.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
-      Assert.IsNotNull (orderTicket.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      Assert.That (_order.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"), Is.Not.Null);
+      Assert.That (orderTicket.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"), Is.Not.Null);
     }
 
     [Test]

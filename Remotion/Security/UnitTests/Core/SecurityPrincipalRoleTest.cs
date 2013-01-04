@@ -69,8 +69,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = new SecurityPrincipalRole ("TheGroup", null);
       var right = new SecurityPrincipalRole ("TheGroup", null);
 
-      Assert.IsTrue (left.Equals (right));
-      Assert.IsTrue (right.Equals (left));
+      Assert.That (left.Equals (right), Is.True);
+      Assert.That (right.Equals (left), Is.True);
     }
 
     [Test]
@@ -79,8 +79,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = new SecurityPrincipalRole ("TheGroup", "ThePosition");
       var right = new SecurityPrincipalRole ("TheGroup", "ThePosition");
 
-      Assert.IsTrue (left.Equals (right));
-      Assert.IsTrue (right.Equals (left));
+      Assert.That (left.Equals (right), Is.True);
+      Assert.That (right.Equals (left), Is.True);
     }
 
     [Test]
@@ -89,8 +89,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = new SecurityPrincipalRole ("TheGroup", "ThePosition");
       var right = new SecurityPrincipalRole ("TheGroup", "OtherPosition");
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -99,8 +99,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = new SecurityPrincipalRole ("TheGroup", null);
       var right = new SecurityPrincipalRole ("TheGroup", "ThePosition");
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -109,8 +109,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = new SecurityPrincipalRole ("TheGroup", "ThePosition");
       var right = new SecurityPrincipalRole ("TheGroup", null);
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -119,8 +119,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = new SecurityPrincipalRole ("TheGroup", "ThePosition");
       var right = new SecurityPrincipalRole ("OtherGroup", "ThePosition");
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -129,7 +129,7 @@ namespace Remotion.Security.UnitTests.Core
       var left = new SecurityPrincipalRole ("TheGroup", "ThePosition");
       var right = (SecurityPrincipalRole)null;
 
-      Assert.IsFalse (left.Equals (right));
+      Assert.That (left.Equals (right), Is.False);
     }
 
     [Test]
@@ -138,7 +138,7 @@ namespace Remotion.Security.UnitTests.Core
       var left = new SecurityPrincipalRole ("TheGroup", "ThePosition");
       var right = new SecurityPrincipalRole ("TheGroup", "ThePosition");
 
-      Assert.IsTrue (left.Equals ((object) right));
+      Assert.That (left.Equals ((object) right), Is.True);
     }
 
     [Test]
@@ -146,7 +146,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       var role = new SecurityPrincipalRole ("TheGroup", "ThePosition");
 
-      Assert.IsFalse (role.Equals ((object) null));
+      Assert.That (role.Equals ((object) null), Is.False);
     }
 
     [Test]
@@ -154,7 +154,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       var role = new SecurityPrincipalRole ("TheGroup", "ThePosition");
 
-      Assert.IsFalse (role.Equals (new object ()));
+      Assert.That (role.Equals (new object ()), Is.False);
     }
 
     [Test]
@@ -173,8 +173,8 @@ namespace Remotion.Security.UnitTests.Core
 
       var deserializedRole = Serializer.SerializeAndDeserialize (role);
 
-      Assert.AreNotSame (role, deserializedRole);
-      Assert.AreEqual (role, deserializedRole);
+      Assert.That (deserializedRole, Is.Not.SameAs (role));
+      Assert.That (deserializedRole, Is.EqualTo (role));
     }
   }
 }

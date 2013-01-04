@@ -35,11 +35,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           TypeAttributes.Public | TypeAttributes.Class, false);
       Type builtType = classEmitter.BuildType ();
 
-      Assert.IsTrue (builtType.ContainsGenericParameters);
+      Assert.That (builtType.ContainsGenericParameters, Is.True);
       Type[] typeParameters = builtType.GetGenericArguments ();
-      Assert.AreEqual (1, typeParameters.Length);
-      Assert.IsTrue (builtType.BaseType.ContainsGenericParameters);
-      Assert.AreEqual (typeParameters[0], builtType.BaseType.GetGenericArguments ()[0]);
+      Assert.That (typeParameters.Length, Is.EqualTo (1));
+      Assert.That (builtType.BaseType.ContainsGenericParameters, Is.True);
+      Assert.That (builtType.BaseType.GetGenericArguments ()[0], Is.EqualTo (typeParameters[0]));
     }
 
     [Test]
@@ -49,10 +49,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "DeriveFromClosedGenericTypeWithConstraints", baseType, Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
       Type builtType = classEmitter.BuildType ();
-      Assert.IsFalse (builtType.ContainsGenericParameters);
-      Assert.IsFalse (builtType.BaseType.ContainsGenericParameters);
-      Assert.AreEqual (typeof (GenericClassWithConstraints<ICloneable, List<string>, int, object, ICloneable, List<List<ICloneable[]>>>),
-        builtType.BaseType);
+      Assert.That (builtType.ContainsGenericParameters, Is.False);
+      Assert.That (builtType.BaseType.ContainsGenericParameters, Is.False);
+      Assert.That (builtType.BaseType, Is.EqualTo (typeof (GenericClassWithConstraints<ICloneable, List<string>, int, object, ICloneable, List<List<ICloneable[]>>>)));
     }
 
     [Test]
@@ -62,11 +61,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "DeriveFromOpenGenericTypeWithConstraints", baseType, Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
       Type builtType = classEmitter.BuildType ();
-      Assert.IsTrue (builtType.ContainsGenericParameters);
+      Assert.That (builtType.ContainsGenericParameters, Is.True);
       Type[] typeParameters = builtType.GetGenericArguments ();
-      Assert.AreEqual (6, typeParameters.Length);
-      Assert.IsTrue (builtType.BaseType.ContainsGenericParameters); // ?
-      Assert.AreEqual (typeParameters[0], builtType.BaseType.GetGenericArguments ()[0]);
+      Assert.That (typeParameters.Length, Is.EqualTo (6));
+      Assert.That (builtType.BaseType.ContainsGenericParameters, Is.True);
+      Assert.That (builtType.BaseType.GetGenericArguments ()[0], Is.EqualTo (typeParameters[0]));
     }
 
     [Test]
@@ -83,7 +82,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       ClassWithSimpleGenericMethod instance = (ClassWithSimpleGenericMethod) Activator.CreateInstance (builtType);
 
       string result = instance.GenericMethod ("1", 2, false);
-      Assert.AreEqual ("1, 2, False", result);
+      Assert.That (result, Is.EqualTo ("1, 2, False"));
     }
 
     [Test]
@@ -100,7 +99,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       ClassWithConstrainedGenericMethod instance = (ClassWithConstrainedGenericMethod) Activator.CreateInstance (builtType);
 
       string result = instance.GenericMethod ("1", 2, "2");
-      Assert.AreEqual ("1, 2, 2", result);
+      Assert.That (result, Is.EqualTo ("1, 2, 2"));
     }
 
     [Test]
@@ -126,8 +125,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           Activator.CreateInstance (builtType);
 
       string result = instance.GenericMethod (1, new List<int[]> (), new List<List<IConvertible[]>> ());
-      Assert.AreEqual ("1, System.Collections.Generic.List`1[System.Int32[]], System.Collections.Generic.List`1[System.Collections.Generic.List`1["
-          + "System.IConvertible[]]]", result);
+      Assert.That (result, Is.EqualTo ("1, System.Collections.Generic.List`1[System.Int32[]], System.Collections.Generic.List`1[System.Collections.Generic.List`1["
+                                       + "System.IConvertible[]]]"));
     }
 
     [Test]
@@ -156,7 +155,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       GenericClassWithAllKindsOfMembers<int> instance = (GenericClassWithAllKindsOfMembers<int>) Activator.CreateInstance (builtType);
 
       instance.Method (5);
-      Assert.AreEqual (0, instance.Property);
+      Assert.That (instance.Property, Is.EqualTo (0));
       instance.Event += delegate { return 0;  };
       instance.Event -= delegate { return 0;  };
     }
@@ -188,7 +187,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           (GenericClassWithAllKindsOfMembers<int>) Activator.CreateInstance (builtType.MakeGenericType (typeof (int)));
 
       instance.Method (5);
-      Assert.AreEqual (0, instance.Property);
+      Assert.That (instance.Property, Is.EqualTo (0));
       instance.Event += delegate { return 0; };
       instance.Event -= delegate { return 0; };
     }
@@ -224,7 +223,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       GenericInterfaceWithAllKindsOfMembers<int> instance = (GenericInterfaceWithAllKindsOfMembers<int>) Activator.CreateInstance (builtType);
 
       instance.Method (7);
-      Assert.AreEqual (13, instance.Property);
+      Assert.That (instance.Property, Is.EqualTo (13));
       instance.Event += delegate { return 0; };
       instance.Event -= delegate { return 0; };
     }

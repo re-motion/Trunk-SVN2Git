@@ -48,17 +48,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void RelatedObject ()
     {
-      Assert.AreSame (_newOrder, _newOrderTicket.Order);
-      Assert.AreSame (_newOrderTicket, _newOrder.OrderTicket);
+      Assert.That (_newOrderTicket.Order, Is.SameAs (_newOrder));
+      Assert.That (_newOrder.OrderTicket, Is.SameAs (_newOrderTicket));
 
       _newOrder.Delete ();
 
-      Assert.IsNull (_newOrderTicket.Order);
+      Assert.That (_newOrderTicket.Order, Is.Null);
 
       _newOrderTicket.Delete ();
 
-      Assert.AreEqual (0, TestableClientTransaction.DataManager.DataContainers.Count);
-      Assert.AreEqual (0, TestableClientTransaction.DataManager.RelationEndPoints.Count);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers.Count, Is.EqualTo (0));
+      Assert.That (TestableClientTransaction.DataManager.RelationEndPoints.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
       ObjectID oldID = _newOrder.ID;
       _newOrder.Delete ();
       ObjectID newID = _newOrder.ID;
-      Assert.AreEqual (oldID, newID);
+      Assert.That (newID, Is.EqualTo (oldID));
     }
 
     [Test]
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       _newOrder.Delete ();
       StateType state = _newOrder.State;
-      Assert.AreEqual (StateType.Invalid, state);
+      Assert.That (state, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]
@@ -137,11 +137,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void DomainObjectIsDiscarded ()
     {
-      Assert.IsFalse (_newOrder.IsInvalid);
+      Assert.That (_newOrder.IsInvalid, Is.False);
 
       _newOrder.Delete ();
 
-      Assert.IsTrue (_newOrder.IsInvalid);
+      Assert.That (_newOrder.IsInvalid, Is.True);
     }
 
     [Test]
@@ -180,14 +180,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     public void DataContainerDomainObject ()
     {
       _newOrder.Delete ();
-      Assert.AreSame (_newOrder, _newOrderContainer.DomainObject);
+      Assert.That (_newOrderContainer.DomainObject, Is.SameAs (_newOrder));
     }
 
     [Test]
     public void DataContainerID ()
     {
       _newOrder.Delete ();
-      Assert.AreSame (_newOrder.ID, _newOrderContainer.ID);
+      Assert.That (_newOrderContainer.ID, Is.SameAs (_newOrder.ID));
     }
 
     [Test]
@@ -211,7 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       _newOrder.Delete ();
       StateType state = _newOrderContainer.State;
-      Assert.AreEqual (StateType.Invalid, state);
+      Assert.That (state, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]
@@ -234,11 +234,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     public void DataContainerIsDiscarded ()
     {
       DataContainer newDataContainer = _newOrder.InternalDataContainer;
-      Assert.IsFalse (newDataContainer.IsDiscarded);
+      Assert.That (newDataContainer.IsDiscarded, Is.False);
 
       _newOrder.Delete ();
 
-      Assert.IsTrue (newDataContainer.IsDiscarded);
+      Assert.That (newDataContainer.IsDiscarded, Is.True);
     }
 
     [Test]
@@ -320,7 +320,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 
       _newOrder.Delete ();
 
-      Assert.IsFalse (newCustomer.Orders.Contains (newOrderID));
+      Assert.That (newCustomer.Orders.Contains (newOrderID), Is.False);
     }
 
     [Test]
@@ -334,7 +334,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 
       newCustomer.Delete ();
 
-      Assert.IsNull (_newOrder.Customer);
+      Assert.That (_newOrder.Customer, Is.Null);
     }
 
     [Test]

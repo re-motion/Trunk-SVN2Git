@@ -27,110 +27,92 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     [Test]
     public void ClosedGenericType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithGenericInterface<ParameterType>), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithGenericInterface<ParameterType>), typeof (IGenericInterface<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
 
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (IGenericInterface<ParameterType>), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (IGenericInterface<ParameterType>), typeof (IGenericInterface<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
     }
 
     [Test]
     public void ClosedGenericType_WithDerivedType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedTypeWithGenericInterface<ParameterType>), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedTypeWithGenericInterface<ParameterType>), typeof (IGenericInterface<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
 
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (IDerivedGenericInterface<ParameterType>), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (IDerivedGenericInterface<ParameterType>), typeof (IGenericInterface<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
     }
 
     [Test]
     public void ClosedGenericType_WithTwoTypeParameters ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType), typeof (int)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithGenericInterface<ParameterType, int>), typeof (IGenericInterface<,>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithGenericInterface<ParameterType, int>), typeof (IGenericInterface<,>)), Is.EqualTo (new Type[] {typeof (ParameterType), typeof (int)}));
     }
 
     [Test]
     public void OpenGenericType_WithClass ()
     {
       Type[] types = ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithGenericInterface<>), typeof (IGenericInterface<>));
-      Assert.AreEqual (1, types.Length);
-      Assert.AreEqual ("T", types[0].Name);
+      Assert.That (types.Length, Is.EqualTo (1));
+      Assert.That (types[0].Name, Is.EqualTo ("T"));
     }
 
     [Test]
     public void OpenGenericType_WihtInterface ()
     {
       Type[] types = ReflectionUtility.GetAscribedGenericArguments (typeof (IGenericInterface<>), typeof (IGenericInterface<>));
-      Assert.AreEqual (1, types.Length);
-      Assert.AreEqual ("T", types[0].Name);
+      Assert.That (types.Length, Is.EqualTo (1));
+      Assert.That (types[0].Name, Is.EqualTo ("T"));
     }
 
     [Test]
     public void OpenGenericType_WithTwoTypeParameters ()
     {
       Type[] types = ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithGenericInterface<,>), typeof (IGenericInterface<,>));
-      Assert.AreEqual (2, types.Length);
-      Assert.AreEqual ("T1", types[0].Name);
-      Assert.AreEqual ("T2", types[1].Name);
+      Assert.That (types.Length, Is.EqualTo (2));
+      Assert.That (types[0].Name, Is.EqualTo ("T1"));
+      Assert.That (types[1].Name, Is.EqualTo ("T2"));
     }
 
     [Test]
     public void OpenGenericType_WithOneOpenTypeParameter ()
     {
       Type[] types = ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithDerivedOpenGenericInterface<>), typeof (IGenericInterface<,>));
-      Assert.AreEqual (2, types.Length);
-      Assert.AreEqual (typeof (ParameterType), types[0]);
-      Assert.AreEqual ("T", types[1].Name);
+      Assert.That (types.Length, Is.EqualTo (2));
+      Assert.That (types[0], Is.EqualTo (typeof (ParameterType)));
+      Assert.That (types[1].Name, Is.EqualTo ("T"));
     }
 
     [Test]
     public void ClosedDerivedGenericType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithDerivedGenericInterface<ParameterType>), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithDerivedGenericInterface<ParameterType>), typeof (IGenericInterface<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
     }
 
     [Test]
     public void OpenDerivedGenericType_WithClass ()
     {
       Type[] types = ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithDerivedGenericInterface<>), typeof (IGenericInterface<>));
-      Assert.AreEqual (1, types.Length);
-      Assert.AreEqual ("T", types[0].Name);
+      Assert.That (types.Length, Is.EqualTo (1));
+      Assert.That (types[0].Name, Is.EqualTo ("T"));
 
 
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (IDerivedGenericInterface<>), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (IDerivedGenericInterface<>), typeof (IGenericInterface<>)), Is.True);
     }
 
     [Test]
     public void OpenDerivedGenericType_WithInterface ()
     {
       Type[] types = ReflectionUtility.GetAscribedGenericArguments (typeof (IDerivedGenericInterface<>), typeof (IGenericInterface<>));
-      Assert.AreEqual (1, types.Length);
-      Assert.AreEqual ("T", types[0].Name);
+      Assert.That (types.Length, Is.EqualTo (1));
+      Assert.That (types[0].Name, Is.EqualTo ("T"));
     }
 
     [Test]
     public void NonGenericDerivedGenericType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithDerivedGenericInterface), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithDerivedGenericInterface), typeof (IGenericInterface<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
 
-      Assert.AreEqual (
-          new Type[] { typeof (ParameterType) },
-          ReflectionUtility.GetAscribedGenericArguments (typeof (IDerivedGenericInterface), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (IDerivedGenericInterface), typeof (IGenericInterface<>)), Is.EqualTo (new Type[] { typeof (ParameterType) }));
 
-      Assert.AreEqual (
-          new Type[] { typeof (ParameterType) },
-          ReflectionUtility.GetAscribedGenericArguments (typeof (IDoubleDerivedGenericInterface), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (IDoubleDerivedGenericInterface), typeof (IGenericInterface<>)), Is.EqualTo (new Type[] { typeof (ParameterType) }));
     }
 
     [Test]
@@ -145,24 +127,19 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     [Test]
     public void TwoSetsOfArgumentsOfWhichOneFitsTheRequest ()
     {
-      Assert.AreEqual (new Type[] {typeof (int) },
-          ReflectionUtility.GetAscribedGenericArguments (typeof (IDoubleInheritingGenericInterface), typeof (IGenericInterface<int>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (IDoubleInheritingGenericInterface), typeof (IGenericInterface<int>)), Is.EqualTo (new Type[] {typeof (int) }));
     }
 
     [Test]
     public void ClosedGenericDerivedGenericType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithGenericDerivedGenericInterface<int>), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithGenericDerivedGenericInterface<int>), typeof (IGenericInterface<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
     }
 
     [Test]
     public void OpenGenericDerivedGenericType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithGenericDerivedGenericInterface<>), typeof (IGenericInterface<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithGenericDerivedGenericInterface<>), typeof (IGenericInterface<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
     }
 
     [Test]

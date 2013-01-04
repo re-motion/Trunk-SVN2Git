@@ -34,13 +34,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var query = (Query) QueryFactory.CreateQueryFromConfiguration ("OrderQuery", parameters);
 
       QueryDefinition definition = DomainObjectsConfiguration.Current.Query.QueryDefinitions["OrderQuery"];
-      Assert.AreSame (definition, query.Definition);
-      Assert.AreEqual (definition.ID, query.ID);
-      Assert.AreEqual (definition.CollectionType, query.CollectionType);
-      Assert.AreEqual (definition.QueryType, query.QueryType);
-      Assert.AreEqual (definition.Statement, query.Statement);
-      Assert.AreEqual (definition.StorageProviderDefinition, query.StorageProviderDefinition);
-      Assert.AreSame (parameters, query.Parameters);
+      Assert.That (query.Definition, Is.SameAs (definition));
+      Assert.That (query.ID, Is.EqualTo (definition.ID));
+      Assert.That (query.CollectionType, Is.EqualTo (definition.CollectionType));
+      Assert.That (query.QueryType, Is.EqualTo (definition.QueryType));
+      Assert.That (query.Statement, Is.EqualTo (definition.Statement));
+      Assert.That (query.StorageProviderDefinition, Is.EqualTo (definition.StorageProviderDefinition));
+      Assert.That (query.Parameters, Is.SameAs (parameters));
     }
 
     [Test]
@@ -51,9 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       QueryDefinition definition = TestQueryFactory.CreateOrderQueryWithCustomCollectionType ();
       var query = new Query (definition, parameters);
 
-      Assert.AreSame (definition, query.Definition);
-      Assert.AreEqual (definition.ID, query.ID);
-      Assert.AreSame (parameters, query.Parameters);
+      Assert.That (query.Definition, Is.SameAs (definition));
+      Assert.That (query.ID, Is.EqualTo (definition.ID));
+      Assert.That (query.Parameters, Is.SameAs (parameters));
     }
 
     [Test]

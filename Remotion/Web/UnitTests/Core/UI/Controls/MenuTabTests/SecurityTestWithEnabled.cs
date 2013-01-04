@@ -51,7 +51,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       bool isEnabled = mainMenuTab.EvaluateEnabled ();
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (isEnabled);
+      Assert.That (isEnabled, Is.True);
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       bool isEnabled = mainMenuTab.EvaluateEnabled ();
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (isEnabled);
+      Assert.That (isEnabled, Is.False);
     }
 
 
@@ -77,7 +77,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       mainMenuTab.IsDisabled = false;
 
       bool isEnabled = mainMenuTab.EvaluateEnabled ();
-      Assert.IsTrue (isEnabled);
+      Assert.That (isEnabled, Is.True);
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       mainMenuTab.IsDisabled = true;
 
       bool isEnabled = mainMenuTab.EvaluateEnabled ();
-      Assert.IsFalse (isEnabled);
+      Assert.That (isEnabled, Is.False);
     }
 
 
@@ -102,7 +102,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       bool isEnabled = mainMenuTab.EvaluateEnabled ();
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (isEnabled);
+      Assert.That (isEnabled, Is.True);
     }
 
     [Test]
@@ -116,7 +116,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       bool isEnabled = mainMenuTab.EvaluateEnabled ();
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (isEnabled);
+      Assert.That (isEnabled, Is.False);
     }
 
 
@@ -130,7 +130,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       bool isEnabled = mainMenuTab.EvaluateEnabled ();
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (isEnabled);
+      Assert.That (isEnabled, Is.False);
     }
 
     private MainMenuTab CreateMainMenuTab ()

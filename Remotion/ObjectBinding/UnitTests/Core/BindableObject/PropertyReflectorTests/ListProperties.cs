@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithListProperties), "Array");
       PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
-      Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
+      Assert.That (GetUnderlyingType (propertyReflector), Is.SameAs (typeof (SimpleReferenceType)));
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata();
 
@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithListProperties), "ReadOnlyArray");
       PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
-      Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
+      Assert.That (GetUnderlyingType (propertyReflector), Is.SameAs (typeof (SimpleReferenceType)));
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
@@ -86,7 +86,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithListProperties), "ListOfT");
       PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
-      Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
+      Assert.That (GetUnderlyingType (propertyReflector), Is.SameAs (typeof (SimpleReferenceType)));
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata();
 
@@ -107,7 +107,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithListProperties), "ReadOnlyListOfT");
       PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
-      Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
+      Assert.That (GetUnderlyingType (propertyReflector), Is.SameAs (typeof (SimpleReferenceType)));
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
@@ -128,7 +128,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithListProperties), "ReadOnlyCollectionOfT");
       PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
-      Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
+      Assert.That (GetUnderlyingType (propertyReflector), Is.SameAs (typeof (SimpleReferenceType)));
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
@@ -149,7 +149,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithListProperties), "ReadOnlyCollectionOfTWithSetter");
       PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
-      Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
+      Assert.That (GetUnderlyingType (propertyReflector), Is.SameAs (typeof (SimpleReferenceType)));
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
@@ -170,7 +170,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithListProperties), "ArrayList");
       PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
-      Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
+      Assert.That (GetUnderlyingType (propertyReflector), Is.SameAs (typeof (SimpleReferenceType)));
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata();
 
@@ -191,7 +191,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithListProperties), "ReadOnlyArrayList");
       PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
-      Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
+      Assert.That (GetUnderlyingType (propertyReflector), Is.SameAs (typeof (SimpleReferenceType)));
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 

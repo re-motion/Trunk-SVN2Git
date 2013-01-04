@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
 
       acl.Index = 1;
-      Assert.AreEqual (1, acl.Index);
+      Assert.That (acl.Index, Is.EqualTo (1));
     }
 
     [Test]
@@ -61,14 +61,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_testHelper.Transaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         acl.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, acl.State);
+        Assert.That (acl.State, Is.EqualTo (StateType.Unchanged));
 
         StateCombination stateCombination = acl.CreateStateCombination ();
 
-        Assert.AreSame (acl, stateCombination.AccessControlList);
-        Assert.AreEqual (acl.Class, stateCombination.Class);
-        Assert.IsEmpty (stateCombination.GetStates());
-        Assert.AreEqual (StateType.Changed, acl.State);
+        Assert.That (stateCombination.AccessControlList, Is.SameAs (acl));
+        Assert.That (stateCombination.Class, Is.EqualTo (acl.Class));
+        Assert.That (stateCombination.GetStates(), Is.Empty);
+        Assert.That (acl.State, Is.EqualTo (StateType.Changed));
       }
     }
 
@@ -79,11 +79,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_testHelper.Transaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         acl.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, acl.State);
+        Assert.That (acl.State, Is.EqualTo (StateType.Unchanged));
 
         acl.CreateStateCombination();
 
-        Assert.AreEqual (StateType.Changed, acl.State);
+        Assert.That (acl.State, Is.EqualTo (StateType.Changed));
       }
     }
 
@@ -96,17 +96,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_testHelper.Transaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         acl.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, acl.State);
+        Assert.That (acl.State, Is.EqualTo (StateType.Unchanged));
 
         StateCombination stateCombination0 = acl.CreateStateCombination ();
         StateCombination stateCombination1 = acl.CreateStateCombination ();
 
-        Assert.AreEqual (2, acl.StateCombinations.Count);
-        Assert.AreSame (stateCombination0, acl.StateCombinations[0]);
-        Assert.AreEqual (0, stateCombination0.Index);
-        Assert.AreSame (stateCombination1, acl.StateCombinations[1]);
-        Assert.AreEqual (1, stateCombination1.Index);
-        Assert.AreEqual (StateType.Changed, acl.State);
+        Assert.That (acl.StateCombinations.Count, Is.EqualTo (2));
+        Assert.That (acl.StateCombinations[0], Is.SameAs (stateCombination0));
+        Assert.That (stateCombination0.Index, Is.EqualTo (0));
+        Assert.That (acl.StateCombinations[1], Is.SameAs (stateCombination1));
+        Assert.That (stateCombination1.Index, Is.EqualTo (1));
+        Assert.That (acl.State, Is.EqualTo (StateType.Changed));
       }
     }
 
@@ -121,9 +121,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         StatefulAccessControlList actualAcl = StatefulAccessControlList.GetObject (expectedAcl.ID);
 
-        Assert.AreEqual (9, actualAcl.StateCombinations.Count);
+        Assert.That (actualAcl.StateCombinations.Count, Is.EqualTo (9));
         for (int i = 0; i < 9; i++)
-          Assert.AreEqual (expectedStateCombinations[i].ID, actualAcl.StateCombinations[i].ID);
+          Assert.That (actualAcl.StateCombinations[i].ID, Is.EqualTo (expectedStateCombinations[i].ID));
       }
     }
 

@@ -73,8 +73,8 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
     [Test]
     public void Initialize()
     {
-      Assert.AreSame (_mockLocalAccessTypeCache, _strategy.LocalCache);
-      Assert.AreSame (_mockGlobalAccessTypeCacheProvider, _strategy.GlobalCacheProvider);
+      Assert.That (_strategy.LocalCache, Is.SameAs (_mockLocalAccessTypeCache));
+      Assert.That (_strategy.GlobalCacheProvider, Is.SameAs (_mockGlobalAccessTypeCacheProvider));
     }
 
     [Test]
@@ -85,7 +85,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       SecurityStrategy strategy = new SecurityStrategy();
 
       Assert.IsInstanceOf (typeof (Cache<ISecurityPrincipal, AccessType[]>), strategy.LocalCache);
-      Assert.AreSame (stubGlobalCacheProvider, strategy.GlobalCacheProvider);
+      Assert.That (strategy.GlobalCacheProvider, Is.SameAs (stubGlobalCacheProvider));
     }
 
     [Test]
@@ -120,7 +120,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -155,7 +155,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Test]
@@ -185,7 +185,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -214,7 +214,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Test]
@@ -231,7 +231,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Test]

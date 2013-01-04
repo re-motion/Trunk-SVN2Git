@@ -29,10 +29,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     {
       TestFunctionWithSerializableParameters function = new TestFunctionWithSerializableParameters ("Hello World", null, 1);
       NameValueCollection parameters = function.VariablesContainer.SerializeParametersForQueryString();
-      Assert.AreEqual (3, parameters.Count);
-      Assert.AreEqual ("Hello World", parameters["StringValue"]);
-      Assert.AreEqual ("", parameters["NaInt32Value"]);
-      Assert.AreEqual ("1", parameters["IntValue"]);
+      Assert.That (parameters.Count, Is.EqualTo (3));
+      Assert.That (parameters["StringValue"], Is.EqualTo ("Hello World"));
+      Assert.That (parameters["NaInt32Value"], Is.EqualTo (""));
+      Assert.That (parameters["IntValue"], Is.EqualTo ("1"));
     }
 
     [Test]
@@ -45,9 +45,9 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
 
       NameValueCollection parameters = function.VariablesContainer.SerializeParametersForQueryString();
 
-      Assert.AreEqual (2, parameters.Count);
-      Assert.AreEqual ("Hello World", parameters["StringValue"]);
-      Assert.AreEqual ("1", parameters["NaInt32Value"]);
+      Assert.That (parameters.Count, Is.EqualTo (2));
+      Assert.That (parameters["StringValue"], Is.EqualTo ("Hello World"));
+      Assert.That (parameters["NaInt32Value"], Is.EqualTo ("1"));
     }
 
     [Test]
@@ -61,9 +61,9 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
 
       function.VariablesContainer.InitializeParameters (parameters);
 
-      Assert.AreEqual ("Hello World", function.StringValue);
-      Assert.AreEqual (null, function.NaInt32Value);
-      Assert.AreEqual (1, function.IntValue);
+      Assert.That (function.StringValue, Is.EqualTo ("Hello World"));
+      Assert.That (function.NaInt32Value, Is.EqualTo (null));
+      Assert.That (function.IntValue, Is.EqualTo (1));
     }
 
     [Test]
@@ -77,9 +77,9 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       TestFunctionWithSerializableParameters function = new TestFunctionWithSerializableParameters();
       function.VariablesContainer.InitializeParameters (parameters);
 
-      Assert.AreEqual ("", function.StringValue);
-      Assert.AreEqual (2, function.NaInt32Value);
-      Assert.AreEqual (1, function.IntValue);
+      Assert.That (function.StringValue, Is.EqualTo (""));
+      Assert.That (function.NaInt32Value, Is.EqualTo (2));
+      Assert.That (function.IntValue, Is.EqualTo (1));
     }
 
     [Test]
@@ -93,9 +93,9 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       TestFunctionWithSerializableParameters function = new TestFunctionWithSerializableParameters();
       function.VariablesContainer.InitializeParameters (parameters);
 
-      Assert.AreEqual ("Hello World", function.StringValue);
-      Assert.AreEqual (null, function.NaInt32Value);
-      Assert.AreEqual (1, function.IntValue);
+      Assert.That (function.StringValue, Is.EqualTo ("Hello World"));
+      Assert.That (function.NaInt32Value, Is.EqualTo (null));
+      Assert.That (function.IntValue, Is.EqualTo (1));
     }
 
     [Test]

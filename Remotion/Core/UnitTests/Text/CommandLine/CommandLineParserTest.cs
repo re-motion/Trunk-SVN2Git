@@ -94,11 +94,11 @@ public class CommandLineParserTest
         "/B-",
         "/Re:y" });
 
-    Assert.AreEqual ("source", argSourceDir.Value);
-    Assert.AreEqual ("dest", argDestinationDir.Value);
-    Assert.AreEqual (false, argCopyBinary.Value);
-    Assert.AreEqual (true, argEnumOption.HasValue);
-    Assert.AreEqual (TestOption.yes, argEnumOption.Value);
+    Assert.That (argSourceDir.Value, Is.EqualTo ("source"));
+    Assert.That (argDestinationDir.Value, Is.EqualTo ("dest"));
+    Assert.That (argCopyBinary.Value, Is.EqualTo (false));
+    Assert.That (argEnumOption.HasValue, Is.EqualTo (true));
+    Assert.That (argEnumOption.Value, Is.EqualTo (TestOption.yes));
   }
 
   [Test]
@@ -113,10 +113,10 @@ public class CommandLineParserTest
     parser.Parse (new string[] {
         "source"} );
 
-    Assert.AreEqual ("source", argSourceDir.Value);
-    Assert.AreEqual (null, argDestinationDir.Value);
-    Assert.AreEqual (true, argCopyBinary.Value);
-    Assert.AreEqual (false, argEnumOption.HasValue);
+    Assert.That (argSourceDir.Value, Is.EqualTo ("source"));
+    Assert.That (argDestinationDir.Value, Is.EqualTo (null));
+    Assert.That (argCopyBinary.Value, Is.EqualTo (true));
+    Assert.That (argEnumOption.HasValue, Is.EqualTo (false));
   }
 
   [Test]
@@ -177,10 +177,10 @@ public class CommandLineParserTest
         "/B-",
         "/Rep:y" });
 
-    Assert.AreEqual ("source", argSourceDir.Value);
-    Assert.AreEqual ("dest", argDestinationDir.Value);
-    Assert.AreEqual (false, argCopyBinary.Value);
-    Assert.AreEqual (TestOption.yes, argEnumOption.Value);
+    Assert.That (argSourceDir.Value, Is.EqualTo ("source"));
+    Assert.That (argDestinationDir.Value, Is.EqualTo ("dest"));
+    Assert.That (argCopyBinary.Value, Is.EqualTo (false));
+    Assert.That (argEnumOption.Value, Is.EqualTo (TestOption.yes));
   }
 
   [Test]
@@ -216,7 +216,7 @@ public class CommandLineParserTest
         + "\n  /rep                   replace target"
         + "\n  /m1                    Primary mode"
         + "\n  /m2                    Secondary mode";
-    Assert.AreEqual (expectedResult, synopsis);
+    Assert.That (synopsis, Is.EqualTo (expectedResult));
   }
 
   [Test]
@@ -226,11 +226,11 @@ public class CommandLineParserTest
     
     enumArg = new CommandLineEnumArgument (false, typeof (TestOption));
     PrivateInvoke.InvokeNonPublicMethod (enumArg, "SetStringValue", "yes");
-    Assert.AreEqual (TestOption.yes, (TestOption) enumArg.Value);
+    Assert.That ((TestOption) enumArg.Value, Is.EqualTo (TestOption.yes));
 
     enumArg = new CommandLineEnumArgument (false, typeof (IncrementalTestOptions));
     PrivateInvoke.InvokeNonPublicMethod (enumArg, "SetStringValue", "no");
-    Assert.AreEqual (IncrementalTestOptions.no, (IncrementalTestOptions) enumArg.Value);
+    Assert.That ((IncrementalTestOptions) enumArg.Value, Is.EqualTo (IncrementalTestOptions.no));
   }
 
   [Test]
@@ -240,11 +240,11 @@ public class CommandLineParserTest
 
     intArg = new CommandLineInt32Argument (true);
     PrivateInvoke.InvokeNonPublicMethod (intArg, "SetStringValue", "32");
-    Assert.AreEqual (32, intArg.Value);
+    Assert.That (intArg.Value, Is.EqualTo (32));
 
     intArg = new CommandLineInt32Argument (true);
     PrivateInvoke.InvokeNonPublicMethod (intArg, "SetStringValue", " ");
-    Assert.AreEqual (null, intArg.Value);
+    Assert.That (intArg.Value, Is.EqualTo (null));
   }
 
   [Test]
@@ -258,7 +258,7 @@ public class CommandLineParserTest
     }
     catch (InvalidCommandLineArgumentValueException e)
     {
-      Assert.IsTrue (e.Message.IndexOf ("Ambiguous") >= 0);
+      Assert.That (e.Message.IndexOf ("Ambiguous") >= 0, Is.True);
       throw e;
     }
   }
@@ -274,7 +274,7 @@ public class CommandLineParserTest
     }
     catch (InvalidCommandLineArgumentValueException e)
     {
-      Assert.IsTrue (e.Message.IndexOf ("Use one of") >= 0);
+      Assert.That (e.Message.IndexOf ("Use one of") >= 0, Is.True);
       throw e;
     }
   }

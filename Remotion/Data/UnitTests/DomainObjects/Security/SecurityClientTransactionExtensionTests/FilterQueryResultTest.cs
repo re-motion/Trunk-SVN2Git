@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.SameAs (queryResult));
-      Assert.AreEqual (0, finalResult.Count);
+      Assert.That (finalResult.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.Not.SameAs (queryResult));
-      Assert.AreEqual (0, finalResult.Count);
+      Assert.That (finalResult.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -124,8 +124,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.Not.SameAs (queryResult));
-      Assert.AreEqual (1, finalResult.Count);
-      Assert.Contains (allowedObject, finalResult.ToArray());
+      Assert.That (finalResult.Count, Is.EqualTo (1));
+      Assert.That (finalResult.ToArray(), Has.Member (allowedObject));
     }
 
     [Test]
@@ -141,8 +141,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.SameAs (queryResult));
-      Assert.AreEqual (1, finalResult.Count);
-      Assert.Contains (nonSecurableObject, finalResult.ToArray());
+      Assert.That (finalResult.Count, Is.EqualTo (1));
+      Assert.That (finalResult.ToArray(), Has.Member (nonSecurableObject));
     }
 
     [Test]
@@ -163,9 +163,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.SameAs (queryResult));
-      Assert.AreEqual (2, queryResult.Count);
-      Assert.Contains (allowedObject, queryResult.ToArray());
-      Assert.Contains (deniedObject, queryResult.ToArray ());
+      Assert.That (queryResult.Count, Is.EqualTo (2));
+      Assert.That (queryResult.ToArray(), Has.Member (allowedObject));
+      Assert.That (queryResult.ToArray (), Has.Member (deniedObject));
     }
 
     [Test]

@@ -43,8 +43,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       ExtendedProviderBase provider = new PermissionReflector ("Provider", config);
 
-      Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreEqual ("The Description", provider.Description);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
+      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
 
     [Test]
@@ -53,8 +53,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Save"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
-      Assert.IsNotNull (requiredAccessTypes);
-      Assert.IsEmpty (requiredAccessTypes);
+      Assert.That (requiredAccessTypes, Is.Not.Null);
+      Assert.That (requiredAccessTypes, Is.Empty);
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Save"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
-      Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation));
+      Assert.That (_permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation), Is.SameAs (requiredAccessTypes));
     }
 
     [Test]
@@ -72,8 +72,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Record"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
-      Assert.AreEqual (1, requiredAccessTypes.Length);
-      Assert.Contains (GeneralAccessTypes.Edit, requiredAccessTypes);
+      Assert.That (requiredAccessTypes.Length, Is.EqualTo (1));
+      Assert.That (requiredAccessTypes, Has.Member (GeneralAccessTypes.Edit));
     }
 
     [Test]
@@ -82,9 +82,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Show"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
-      Assert.AreEqual (2, requiredAccessTypes.Length);
-      Assert.Contains (GeneralAccessTypes.Edit, requiredAccessTypes);
-      Assert.Contains (GeneralAccessTypes.Create, requiredAccessTypes);
+      Assert.That (requiredAccessTypes.Length, Is.EqualTo (2));
+      Assert.That (requiredAccessTypes, Has.Member (GeneralAccessTypes.Edit));
+      Assert.That (requiredAccessTypes, Has.Member (GeneralAccessTypes.Create));
     }
 
     [Test]
@@ -93,7 +93,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Record"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
-      Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation));
+      Assert.That (_permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation), Is.SameAs (requiredAccessTypes));
     }
 
     [Test]
@@ -102,8 +102,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (DerivedSecurableObject).GetMethod ("Record"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (DerivedSecurableObject), methodInformation);
 
-      Assert.AreEqual (1, requiredAccessTypes.Length);
-      Assert.Contains (GeneralAccessTypes.Edit, requiredAccessTypes);
+      Assert.That (requiredAccessTypes.Length, Is.EqualTo (1));
+      Assert.That (requiredAccessTypes, Has.Member (GeneralAccessTypes.Edit));
     }
 
     [Test]
@@ -112,9 +112,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Close"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
-      Assert.AreEqual (2, requiredAccessTypes.Length);
-      Assert.Contains (GeneralAccessTypes.Edit, requiredAccessTypes);
-      Assert.Contains (GeneralAccessTypes.Find, requiredAccessTypes);
+      Assert.That (requiredAccessTypes.Length, Is.EqualTo (2));
+      Assert.That (requiredAccessTypes, Has.Member (GeneralAccessTypes.Edit));
+      Assert.That (requiredAccessTypes, Has.Member (GeneralAccessTypes.Find));
     }
 
     [Test]
@@ -123,8 +123,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("CreateForSpecialCase"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
-      Assert.AreEqual (1, requiredAccessTypes.Length);
-      Assert.AreEqual (GeneralAccessTypes.Create, requiredAccessTypes[0]);
+      Assert.That (requiredAccessTypes.Length, Is.EqualTo (1));
+      Assert.That (requiredAccessTypes[0], Is.EqualTo (GeneralAccessTypes.Create));
     }
   }
 }

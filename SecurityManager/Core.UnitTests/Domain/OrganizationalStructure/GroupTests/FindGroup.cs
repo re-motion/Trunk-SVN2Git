@@ -48,7 +48,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     {
       Group foundGroup = Group.FindByUnqiueIdentifier ("UID: testGroup");
 
-      Assert.AreEqual ("UID: testGroup", foundGroup.UniqueIdentifier);
+      Assert.That (foundGroup.UniqueIdentifier, Is.EqualTo ("UID: testGroup"));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     {
       Group foundGroup = Group.FindByUnqiueIdentifier ("UID: NotExistingGroup");
 
-      Assert.IsNull (foundGroup);
+      Assert.That (foundGroup, Is.Null);
     }
 
     [Test]
@@ -71,7 +71,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       _expressionTreeComparer.Compare (expected, actual);
 
-      Assert.AreEqual (9, actual.Count());
+      Assert.That (actual.Count(), Is.EqualTo (9));
     }
   }
 }

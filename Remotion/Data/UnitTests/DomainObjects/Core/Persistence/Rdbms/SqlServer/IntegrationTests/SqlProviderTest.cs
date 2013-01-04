@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       RdbmsProvider rdbmsProvider = Provider;
 
-      Assert.IsFalse (rdbmsProvider.IsConnected);
+      Assert.That (rdbmsProvider.IsConnected, Is.False);
     }
 
     [Test]
@@ -37,9 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       RdbmsProvider rdbmsProvider = Provider;
 
       rdbmsProvider.Connect ();
-      Assert.IsTrue (rdbmsProvider.IsConnected);
+      Assert.That (rdbmsProvider.IsConnected, Is.True);
       rdbmsProvider.Disconnect ();
-      Assert.IsFalse (rdbmsProvider.IsConnected);
+      Assert.That (rdbmsProvider.IsConnected, Is.False);
     }
 
     [Test]
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       }
 
       RdbmsProvider rdbmsProvider = Provider;
-      Assert.IsFalse (rdbmsProvider.IsConnected);
+      Assert.That (rdbmsProvider.IsConnected, Is.False);
     }
   }
 }

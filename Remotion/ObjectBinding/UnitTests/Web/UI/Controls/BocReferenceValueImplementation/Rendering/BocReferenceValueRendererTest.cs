@@ -268,7 +268,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
       XmlNode span = GetAssertedContainerSpan (false);
       AssertControl (span, OptionMenuConfiguration.NoOptionsMenu);
-      Assert.IsTrue (DropDownList.AutoPostBack);
+      Assert.That (DropDownList.AutoPostBack, Is.True);
     }
 
     private void SetValue ()

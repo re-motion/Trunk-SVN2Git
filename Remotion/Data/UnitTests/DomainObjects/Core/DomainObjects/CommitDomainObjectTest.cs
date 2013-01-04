@@ -39,15 +39,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       customer2.Orders.Add (order);
 
-      Assert.AreEqual (StateType.Changed, customer1.State);
-      Assert.AreEqual (StateType.Changed, customer2.State);
-      Assert.AreEqual (StateType.Changed, order.State);
+      Assert.That (customer1.State, Is.EqualTo (StateType.Changed));
+      Assert.That (customer2.State, Is.EqualTo (StateType.Changed));
+      Assert.That (order.State, Is.EqualTo (StateType.Changed));
 
       TestableClientTransaction.Commit ();
 
-      Assert.AreEqual (StateType.Unchanged, customer1.State);
-      Assert.AreEqual (StateType.Unchanged, customer2.State);
-      Assert.AreEqual (StateType.Unchanged, order.State);
+      Assert.That (customer1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (customer2.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -66,9 +66,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       TestableClientTransaction.Commit ();
 
-			Assert.AreEqual (orderTimestamp, order.InternalDataContainer.Timestamp);
-			Assert.IsFalse (oldOrderTicketTimestamp.Equals (oldOrderTicket.InternalDataContainer.Timestamp));
-			Assert.IsFalse (newOrderTicketTimestamp.Equals (newOrderTicket.InternalDataContainer.Timestamp));
+      Assert.That (order.InternalDataContainer.Timestamp, Is.EqualTo (orderTimestamp));
+      Assert.That (oldOrderTicketTimestamp.Equals (oldOrderTicket.InternalDataContainer.Timestamp), Is.False);
+      Assert.That (newOrderTicketTimestamp.Equals (newOrderTicket.InternalDataContainer.Timestamp), Is.False);
     }
 
     [Test]
@@ -86,8 +86,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       supervisor1 = Employee.GetObject (DomainObjectIDs.Employee1);
       supervisor2 = Employee.GetObject (DomainObjectIDs.Employee2);
 
-      Assert.IsNull (supervisor1.Subordinates[DomainObjectIDs.Employee4]);
-      Assert.IsNotNull (supervisor2.Subordinates[DomainObjectIDs.Employee4]);
+      Assert.That (supervisor1.Subordinates[DomainObjectIDs.Employee4], Is.Null);
+      Assert.That (supervisor2.Subordinates[DomainObjectIDs.Employee4], Is.Not.Null);
     }
 
     [Test]
@@ -109,10 +109,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       company = Company.GetObject (DomainObjectIDs.Company1);
       distributor = Distributor.GetObject (DomainObjectIDs.Distributor1);
 
-      Assert.AreSame (companyCeo, distributor.Ceo);
-      Assert.AreSame (distributor, companyCeo.Company);
-      Assert.AreSame (distributorCeo, company.Ceo);
-      Assert.AreSame (company, distributorCeo.Company);
+      Assert.That (distributor.Ceo, Is.SameAs (companyCeo));
+      Assert.That (companyCeo.Company, Is.SameAs (distributor));
+      Assert.That (company.Ceo, Is.SameAs (distributorCeo));
+      Assert.That (distributorCeo.Company, Is.SameAs (company));
     }
 
     [Test]
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ReInitializeTransaction ();
 
       customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      Assert.AreEqual ("Arthur Dent", customer.Name);
+      Assert.That (customer.Name, Is.EqualTo ("Arthur Dent"));
     }
 
     [Test]
@@ -137,9 +137,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       TestableClientTransaction.Commit ();
 
-      Assert.AreNotSame (originalOrderItems, order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
-      Assert.AreEqual (order.OrderItems, order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
-      Assert.IsTrue (order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems").IsReadOnly);
+      Assert.That (order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"), Is.Not.SameAs (originalOrderItems));
+      Assert.That (order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"), Is.EqualTo (order.OrderItems));
+      Assert.That (order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems").IsReadOnly, Is.True);
     }
   }
 }

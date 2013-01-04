@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       QueryDefinition deserializedQueryDefinition = (QueryDefinition) SerializeAndDeserialize (queryDefinition);
 
-      Assert.IsFalse (ReferenceEquals (queryDefinition, deserializedQueryDefinition));
+      Assert.That (ReferenceEquals (queryDefinition, deserializedQueryDefinition), Is.False);
       AreEqual (queryDefinition, deserializedQueryDefinition);
     }
 
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       QueryDefinition deserializedQueryDefinition = (QueryDefinition) SerializeAndDeserialize (queryDefinition);
 
-      Assert.AreSame (queryDefinition, deserializedQueryDefinition);
+      Assert.That (deserializedQueryDefinition, Is.SameAs (queryDefinition));
     }
 
     [Test]
@@ -98,8 +98,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       QueryDefinitionCollection deserializedQueryDefinitions = (QueryDefinitionCollection) SerializeAndDeserialize (queryDefinitions);
       AreEqual (queryDefinitions, deserializedQueryDefinitions);
-      Assert.AreSame (deserializedQueryDefinitions[0], DomainObjectsConfiguration.Current.Query.QueryDefinitions[0]);
-      Assert.AreSame (deserializedQueryDefinitions[1], DomainObjectsConfiguration.Current.Query.QueryDefinitions[1]);
+      Assert.That (DomainObjectsConfiguration.Current.Query.QueryDefinitions[0], Is.SameAs (deserializedQueryDefinitions[0]));
+      Assert.That (DomainObjectsConfiguration.Current.Query.QueryDefinitions[1], Is.SameAs (deserializedQueryDefinitions[1]));
     }
 
     [Test]
@@ -110,24 +110,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var deserializedQuery = (Query) SerializeAndDeserialize (query);
       AreEqual (query, deserializedQuery);
-      Assert.AreSame (DomainObjectsConfiguration.Current.Query.QueryDefinitions["OrderQuery"], deserializedQuery.Definition);
+      Assert.That (deserializedQuery.Definition, Is.SameAs (DomainObjectsConfiguration.Current.Query.QueryDefinitions["OrderQuery"]));
     }
 
     private void AreEqual (Query expected, Query actual)
     {
-      Assert.IsFalse (ReferenceEquals (expected, actual));
-      Assert.IsNotNull (actual);
+      Assert.That (ReferenceEquals (expected, actual), Is.False);
+      Assert.That (actual, Is.Not.Null);
 
-      Assert.AreEqual (expected.ID, actual.ID);
-      Assert.AreSame (expected.Definition, actual.Definition);
+      Assert.That (actual.ID, Is.EqualTo (expected.ID));
+      Assert.That (actual.Definition, Is.SameAs (expected.Definition));
       AreEqual (expected.Parameters, actual.Parameters);
     }
 
     private void AreEqual (QueryDefinitionCollection expected, QueryDefinitionCollection actual)
     {
-      Assert.IsFalse (ReferenceEquals (expected, actual));
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (expected.Count, actual.Count);
+      Assert.That (ReferenceEquals (expected, actual), Is.False);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Count, Is.EqualTo (expected.Count));
 
       for (int i = 0; i < expected.Count; i++)
         AreEqual (expected[i], actual[i]);
@@ -135,17 +135,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
     private void AreEqual (QueryParameter expected, QueryParameter actual)
     {
-      Assert.IsFalse (ReferenceEquals (expected, actual));
-      Assert.AreEqual (expected.Name, actual.Name);
-      Assert.AreEqual (expected.ParameterType, actual.ParameterType);
-      Assert.AreEqual (expected.Value, actual.Value);
+      Assert.That (ReferenceEquals (expected, actual), Is.False);
+      Assert.That (actual.Name, Is.EqualTo (expected.Name));
+      Assert.That (actual.ParameterType, Is.EqualTo (expected.ParameterType));
+      Assert.That (actual.Value, Is.EqualTo (expected.Value));
     }
 
     private void AreEqual (QueryParameterCollection expected, QueryParameterCollection actual)
     {
-      Assert.IsFalse (ReferenceEquals (expected, actual));
-      Assert.AreEqual (expected.Count, actual.Count);
-      Assert.AreEqual (expected.IsReadOnly, actual.IsReadOnly);
+      Assert.That (ReferenceEquals (expected, actual), Is.False);
+      Assert.That (actual.Count, Is.EqualTo (expected.Count));
+      Assert.That (actual.IsReadOnly, Is.EqualTo (expected.IsReadOnly));
 
       for (int i = 0; i < expected.Count; i++)
       {
@@ -153,17 +153,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
         // Check if Hashtable of CommonCollection is deserialized correctly
         QueryParameter actualQueryParameter = actual[i];
-        Assert.AreSame (actualQueryParameter, actual[actualQueryParameter.Name]);
+        Assert.That (actual[actualQueryParameter.Name], Is.SameAs (actualQueryParameter));
       }
     }
 
     private void AreEqual (QueryDefinition expected, QueryDefinition actual)
     {
-      Assert.AreEqual (expected.ID, actual.ID);
-      Assert.AreEqual (expected.QueryType, actual.QueryType);
-      Assert.AreEqual (expected.Statement, actual.Statement);
-      Assert.AreEqual (expected.StorageProviderDefinition, actual.StorageProviderDefinition);
-      Assert.AreEqual (expected.CollectionType, actual.CollectionType);
+      Assert.That (actual.ID, Is.EqualTo (expected.ID));
+      Assert.That (actual.QueryType, Is.EqualTo (expected.QueryType));
+      Assert.That (actual.Statement, Is.EqualTo (expected.Statement));
+      Assert.That (actual.StorageProviderDefinition, Is.EqualTo (expected.StorageProviderDefinition));
+      Assert.That (actual.CollectionType, Is.EqualTo (expected.CollectionType));
     }
 
   }

@@ -42,9 +42,9 @@ namespace Remotion.UnitTests.Globalization
             new MultiLingualResourcesAttribute ("Two")
           };
       ResourceManager[] resourceManagers = _resolver.GetResourceManagers (typeof (object).Assembly, attributes);
-      Assert.AreEqual (2, resourceManagers.Length);
-      Assert.AreEqual ("One", resourceManagers[0].BaseName);
-      Assert.AreEqual ("Two", resourceManagers[1].BaseName);
+      Assert.That (resourceManagers.Length, Is.EqualTo (2));
+      Assert.That (resourceManagers[0].BaseName, Is.EqualTo ("One"));
+      Assert.That (resourceManagers[1].BaseName, Is.EqualTo ("Two"));
     }
 
     [Test]
@@ -58,11 +58,11 @@ namespace Remotion.UnitTests.Globalization
       ResourceManager[] resourceManagers1 = _resolver.GetResourceManagers (typeof (object).Assembly, attributes);
       ResourceManager[] resourceManagers2 = _resolver.GetResourceManagers (typeof (object).Assembly, attributes);
 
-      Assert.AreNotSame (resourceManagers1, resourceManagers2);
-      Assert.AreSame (resourceManagers1[0], resourceManagers2[0]);
-      Assert.AreSame (resourceManagers1[1], resourceManagers2[1]);
-      Assert.AreNotSame (resourceManagers1[0], resourceManagers1[1]);
-      Assert.AreNotSame (resourceManagers2[0], resourceManagers2[1]);
+      Assert.That (resourceManagers2, Is.Not.SameAs (resourceManagers1));
+      Assert.That (resourceManagers2[0], Is.SameAs (resourceManagers1[0]));
+      Assert.That (resourceManagers2[1], Is.SameAs (resourceManagers1[1]));
+      Assert.That (resourceManagers1[1], Is.Not.SameAs (resourceManagers1[0]));
+      Assert.That (resourceManagers2[1], Is.Not.SameAs (resourceManagers2[0]));
     }
 
     [Test]
@@ -74,9 +74,9 @@ namespace Remotion.UnitTests.Globalization
             new MultiLingualResourcesAttribute ("Two")
           };
       ResourceManager[] resourceManagers = _resolver.GetResourceManagers (typeof (object).Assembly, attributes);
-      Assert.AreEqual (2, resourceManagers.Length);
-      Assert.AreEqual (typeof (object).Assembly, PrivateInvoke.GetNonPublicField (resourceManagers[0], "MainAssembly"));
-      Assert.AreEqual (typeof (object).Assembly, PrivateInvoke.GetNonPublicField (resourceManagers[1], "MainAssembly"));
+      Assert.That (resourceManagers.Length, Is.EqualTo (2));
+      Assert.That (PrivateInvoke.GetNonPublicField (resourceManagers[0], "MainAssembly"), Is.EqualTo (typeof (object).Assembly));
+      Assert.That (PrivateInvoke.GetNonPublicField (resourceManagers[1], "MainAssembly"), Is.EqualTo (typeof (object).Assembly));
     }
 
     [Test]
@@ -91,9 +91,9 @@ namespace Remotion.UnitTests.Globalization
       PrivateInvoke.InvokeNonPublicMethod (attributes[0], "SetResourceAssembly", typeof (ResourceManagerResolverTest).Assembly);
 
       ResourceManager[] resourceManagers = _resolver.GetResourceManagers (typeof (object).Assembly, attributes);
-      Assert.AreEqual (2, resourceManagers.Length);
-      Assert.AreEqual (typeof (ResourceManagerResolverTest).Assembly, PrivateInvoke.GetNonPublicField (resourceManagers[0], "MainAssembly"));
-      Assert.AreEqual (typeof (object).Assembly, PrivateInvoke.GetNonPublicField (resourceManagers[1], "MainAssembly"));
+      Assert.That (resourceManagers.Length, Is.EqualTo (2));
+      Assert.That (PrivateInvoke.GetNonPublicField (resourceManagers[0], "MainAssembly"), Is.EqualTo (typeof (ResourceManagerResolverTest).Assembly));
+      Assert.That (PrivateInvoke.GetNonPublicField (resourceManagers[1], "MainAssembly"), Is.EqualTo (typeof (object).Assembly));
     }
   }
 }

@@ -31,7 +31,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassLookingLikeBaseType3), typeof (MixinWithClassTargetCallDependency));
       var log = Validator.Validate (definition.RequiredTargetCallTypes[typeof (BaseType3)]);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredTargetCallTypeRules.FaceClassMustBeAssignableFromTargetType", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredTargetCallTypeRules.FaceClassMustBeAssignableFromTargetType", log), Is.True);
     }
 
     [Test]
@@ -40,7 +40,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithInvisibleTargetCallDependency));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredTargetCallTypeRules.RequiredTargetCallTypeMustBePublic", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredTargetCallTypeRules.RequiredTargetCallTypeMustBePublic", log), Is.True);
     }
 
   }

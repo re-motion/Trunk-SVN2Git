@@ -43,7 +43,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       SimpleArrayProvider provider = new SimpleArrayProvider();
       object result = InvokeMethod (provider, 1);
-      Assert.AreEqual (2, result);
+      Assert.That (result, Is.EqualTo (2));
     }
   }
 }

@@ -127,8 +127,8 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
       MixedTypeConstructorLookupInfo info2 = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), true);
       Delegate d2 = info2.GetDelegate (typeof (Func<int, ConcreteTypeMock>));
       Delegate d3 = info2.GetDelegate (typeof (Func<int, ConcreteTypeMock>));
-      Assert.AreSame (d1, d2);
-      Assert.AreSame (d1, d3);
+      Assert.That (d2, Is.SameAs (d1));
+      Assert.That (d3, Is.SameAs (d1));
     }
 
     [Test]
@@ -151,7 +151,7 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
 
       MixedTypeConstructorLookupInfo info2 = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), true);
       Delegate d2 = info2.GetDelegate (typeof (Func<int, ConcreteTypeMock>));
-      Assert.AreSame (d1, d2);
+      Assert.That (d2, Is.SameAs (d1));
     }
 
     [Test]
@@ -160,7 +160,7 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
       MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), true);
       Func<int, ConcreteTypeMock> d = (Func<int, ConcreteTypeMock>) info.GetDelegate (typeof (Func<int, ConcreteTypeMock>));
       ConcreteTypeMock instance = d (12);
-      Assert.AreEqual (12, instance.CtorArg);
+      Assert.That (instance.CtorArg, Is.EqualTo (12));
     }
 
     [Test]

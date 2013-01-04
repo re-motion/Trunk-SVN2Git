@@ -87,7 +87,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
 
     private void CopyFile (string sourcePath, string targetDirectory)
     {
-      Assert.IsTrue (Directory.Exists (targetDirectory));
+      Assert.That (Directory.Exists (targetDirectory), Is.True);
       File.Copy (sourcePath, Path.Combine (targetDirectory, Path.GetFileName (sourcePath)));
     }
 
@@ -110,14 +110,14 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
     public void BuildMixinType_CreatesType ()
     {
       Type t = new DynamicMixinBuilder (typeof (object)).BuildMixinType (_invocationHandler);
-      Assert.IsNotNull (t);
+      Assert.That (t, Is.Not.Null);
     }
 
     [Test]
     public void BuildMixinType_CreatesTypeDerivedFromMixin ()
     {
       Type t = new DynamicMixinBuilder (typeof (object)).BuildMixinType (_invocationHandler);
-      Assert.IsTrue (ReflectionUtility.CanAscribe (t, typeof (Mixin<,>)));
+      Assert.That (ReflectionUtility.CanAscribe (t, typeof (Mixin<,>)), Is.True);
     }
 
     [Test]
@@ -127,8 +127,8 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
       Type t = _builder.BuildMixinType (_invocationHandler);
 
       MethodInfo overriderMethod = t.GetMethod ("StringMethod");
-      Assert.IsNotNull (overriderMethod);
-      Assert.IsTrue (overriderMethod.IsDefined (typeof (OverrideTargetAttribute), false));
+      Assert.That (overriderMethod, Is.Not.Null);
+      Assert.That (overriderMethod.IsDefined (typeof (OverrideTargetAttribute), false), Is.True);
     }
 
     [Test]
@@ -144,8 +144,8 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
     {
       Type t = _builder.BuildMixinType (_invocationHandler);
       FieldInfo handlerField = t.GetField ("InvocationHandler");
-      Assert.IsNotNull (handlerField);
-      Assert.AreSame (_invocationHandler, handlerField.GetValue (null));
+      Assert.That (handlerField, Is.Not.Null);
+      Assert.That (handlerField.GetValue (null), Is.SameAs (_invocationHandler));
     }
 
     [Test]
@@ -158,7 +158,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
       {
         SampleTarget target = ObjectFactory.Create<SampleTarget> (ParamList.Empty);
         target.StringMethod (4);
-        Assert.IsTrue (_calls.Count == 1);
+        Assert.That (_calls.Count == 1, Is.True);
       }
     }
 
@@ -174,8 +174,8 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
         target.StringMethod (4);
 
         Tuple<object, MethodInfo, object[], object> callInfo = _calls[0];
-        Assert.AreSame (target, callInfo.Item1);
-        Assert.AreEqual (typeof (SampleTarget).GetMethod ("StringMethod"), callInfo.Item2);
+        Assert.That (callInfo.Item1, Is.SameAs (target));
+        Assert.That (callInfo.Item2, Is.EqualTo (typeof (SampleTarget).GetMethod ("StringMethod")));
         Assert.That (callInfo.Item3, Is.EquivalentTo (new object[] { 4 } ));
       }
     }
@@ -192,7 +192,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
         target.StringMethod (4);
 
         Tuple<object, MethodInfo, object[], object> callInfo = _calls[0];
-        Assert.AreEqual ("SampleTarget.StringMethod (4)", callInfo.Item4);
+        Assert.That (callInfo.Item4, Is.EqualTo ("SampleTarget.StringMethod (4)"));
       }
     }
 
@@ -206,7 +206,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
       {
         SampleTarget target = ObjectFactory.Create<SampleTarget> (ParamList.Empty);
         string result = target.StringMethod (4);
-        Assert.AreEqual ("Intercepted: SampleTarget.StringMethod (4)", result);
+        Assert.That (result, Is.EqualTo ("Intercepted: SampleTarget.StringMethod (4)"));
       }
     }
 
@@ -220,10 +220,10 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
       {
         SampleTarget target = ObjectFactory.Create<SampleTarget> (ParamList.Empty);
         target.VoidMethod ();
-        Assert.IsTrue (target.VoidMethodCalled);
+        Assert.That (target.VoidMethodCalled, Is.True);
 
         Tuple<object, MethodInfo, object[], object> callInfo = _calls[0];
-        Assert.AreEqual (null, callInfo.Item4);
+        Assert.That (callInfo.Item4, Is.EqualTo (null));
       }
     }
   }

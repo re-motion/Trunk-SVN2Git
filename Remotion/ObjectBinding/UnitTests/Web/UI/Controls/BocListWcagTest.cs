@@ -58,9 +58,9 @@ public class BocListWcagTest: BocTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
     _bocList.PageSize = 1;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
-    
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsFalse (WcagHelperMock.HasError);
+
+	  Assert.That (WcagHelperMock.HasWarning, Is.False);
+	  Assert.That (WcagHelperMock.HasError, Is.False);
   }
 
 	[Test]
@@ -69,9 +69,9 @@ public class BocListWcagTest: BocTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
     _bocList.PageSize = 1;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
-    
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsFalse (WcagHelperMock.HasError);
+
+	  Assert.That (WcagHelperMock.HasWarning, Is.False);
+	  Assert.That (WcagHelperMock.HasError, Is.False);
   }
 
 
@@ -82,10 +82,10 @@ public class BocListWcagTest: BocTest
     _bocList.ShowOptionsMenu = true;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
 
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("ShowOptionsMenu", WcagHelperMock.Property);
+	  Assert.That (WcagHelperMock.HasError, Is.True);
+	  Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+	  Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+	  Assert.That (WcagHelperMock.Property, Is.EqualTo ("ShowOptionsMenu"));
   }
 
   [Test]
@@ -94,7 +94,7 @@ public class BocListWcagTest: BocTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
     _bocList.ShowOptionsMenu = true;
     _bocList.OptionsMenuItems.Add (new WebMenuItem());
-    Assert.IsFalse (_bocList.HasOptionsMenu);
+    Assert.That (_bocList.HasOptionsMenu, Is.False);
   }
 
   [Test]
@@ -103,7 +103,7 @@ public class BocListWcagTest: BocTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
     _bocList.ShowOptionsMenu = true;
     _bocList.OptionsMenuItems.Add (new WebMenuItem());
-    Assert.IsTrue (_bocList.HasOptionsMenu);
+    Assert.That (_bocList.HasOptionsMenu, Is.True);
   }
 
 
@@ -114,10 +114,10 @@ public class BocListWcagTest: BocTest
     _bocList.ShowListMenu = true;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
 
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("ShowListMenu", WcagHelperMock.Property);
+	  Assert.That (WcagHelperMock.HasError, Is.True);
+	  Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+	  Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+	  Assert.That (WcagHelperMock.Property, Is.EqualTo ("ShowListMenu"));
   }
 
   [Test]
@@ -126,7 +126,7 @@ public class BocListWcagTest: BocTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
     _bocList.ShowListMenu = true;
     _bocList.ListMenuItems.Add (new WebMenuItem());
-    Assert.IsFalse (_bocList.HasListMenu);
+    Assert.That (_bocList.HasListMenu, Is.False);
   }
 
   [Test]
@@ -135,7 +135,7 @@ public class BocListWcagTest: BocTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
     _bocList.ShowListMenu = true;
     _bocList.ListMenuItems.Add (new WebMenuItem());
-    Assert.IsTrue (_bocList.HasListMenu);
+    Assert.That (_bocList.HasListMenu, Is.True);
   }
 
 
@@ -146,10 +146,10 @@ public class BocListWcagTest: BocTest
     _bocList.ShowAvailableViewsList = true;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
 
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("ShowAvailableViewsList", WcagHelperMock.Property);
+	  Assert.That (WcagHelperMock.HasError, Is.True);
+	  Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+	  Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+	  Assert.That (WcagHelperMock.Property, Is.EqualTo ("ShowAvailableViewsList"));
   }
 
   [Test]
@@ -158,7 +158,7 @@ public class BocListWcagTest: BocTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
     _bocList.ShowAvailableViewsList = true;
     _bocList.AvailableViews.Add (new BocListView ());
-    Assert.IsFalse (_bocList.HasAvailableViewsList);
+    Assert.That (_bocList.HasAvailableViewsList, Is.False);
   }
 
   [Test]
@@ -168,7 +168,7 @@ public class BocListWcagTest: BocTest
     _bocList.ShowAvailableViewsList = true;
     _bocList.AvailableViews.Add (new BocListView ());
     _bocList.AvailableViews.Add (new BocListView ());
-    Assert.IsTrue (_bocList.HasAvailableViewsList);
+    Assert.That (_bocList.HasAvailableViewsList, Is.True);
   }
 
 
@@ -179,10 +179,10 @@ public class BocListWcagTest: BocTest
     _bocList.PageSize = 1;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
 
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("PageSize", WcagHelperMock.Property);
+	  Assert.That (WcagHelperMock.HasError, Is.True);
+	  Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+	  Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+	  Assert.That (WcagHelperMock.Property, Is.EqualTo ("PageSize"));
   }
 
   [Test]
@@ -190,7 +190,7 @@ public class BocListWcagTest: BocTest
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
     _bocList.PageSize = 1;
-    Assert.IsFalse (_bocList.IsPagingEnabled);
+    Assert.That (_bocList.IsPagingEnabled, Is.False);
   }
 
   [Test]
@@ -198,7 +198,7 @@ public class BocListWcagTest: BocTest
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
     _bocList.PageSize = 1;
-    Assert.IsTrue (_bocList.IsPagingEnabled);
+    Assert.That (_bocList.IsPagingEnabled, Is.True);
   }
 
 
@@ -209,10 +209,10 @@ public class BocListWcagTest: BocTest
     _bocList.EnableSorting = true;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
 
-    Assert.IsTrue (WcagHelperMock.HasWarning);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("EnableSorting", WcagHelperMock.Property);
+	  Assert.That (WcagHelperMock.HasWarning, Is.True);
+	  Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+	  Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+	  Assert.That (WcagHelperMock.Property, Is.EqualTo ("EnableSorting"));
   }
 
   [Test]
@@ -220,7 +220,7 @@ public class BocListWcagTest: BocTest
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
     _bocList.EnableSorting = true;
-    Assert.IsTrue (_bocList.IsClientSideSortingEnabled);
+    Assert.That (_bocList.IsClientSideSortingEnabled, Is.True);
   }
 
 
@@ -231,10 +231,10 @@ public class BocListWcagTest: BocTest
     _bocList.RowMenuDisplay = RowMenuDisplay.Automatic;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
 
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("RowMenuDisplay", WcagHelperMock.Property);
+	  Assert.That (WcagHelperMock.HasError, Is.True);
+	  Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+	  Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+	  Assert.That (WcagHelperMock.Property, Is.EqualTo ("RowMenuDisplay"));
   }
 
 	[Test]
@@ -244,10 +244,10 @@ public class BocListWcagTest: BocTest
     BocDropDownMenuColumnDefinition dropDownMenuColumn = new BocDropDownMenuColumnDefinition();
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[1] {dropDownMenuColumn});
 
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("Columns[0]", WcagHelperMock.Property);
+	  Assert.That (WcagHelperMock.HasError, Is.True);
+	  Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+	  Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+	  Assert.That (WcagHelperMock.Property, Is.EqualTo ("Columns[0]"));
   }
 
   [Test]
@@ -257,10 +257,10 @@ public class BocListWcagTest: BocTest
     BocRowEditModeColumnDefinition rowEditModeColumn = new BocRowEditModeColumnDefinition();
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[1] {rowEditModeColumn});
 
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("Columns[0]", WcagHelperMock.Property);
+    Assert.That (WcagHelperMock.HasError, Is.True);
+    Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+    Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+    Assert.That (WcagHelperMock.Property, Is.EqualTo ("Columns[0]"));
   }
 
   [Test]
@@ -271,10 +271,10 @@ public class BocListWcagTest: BocTest
     commandColumn.Command.Type = CommandType.Event;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[1] {commandColumn});
 
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("Columns[0].Command", WcagHelperMock.Property);
+    Assert.That (WcagHelperMock.HasError, Is.True);
+    Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+    Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+    Assert.That (WcagHelperMock.Property, Is.EqualTo ("Columns[0].Command"));
   }
 
   [Test]
@@ -285,10 +285,10 @@ public class BocListWcagTest: BocTest
     commandColumn.Command.Type = CommandType.WxeFunction;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[1] {commandColumn});
 
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("Columns[0].Command", WcagHelperMock.Property);
+    Assert.That (WcagHelperMock.HasError, Is.True);
+    Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+    Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+    Assert.That (WcagHelperMock.Property, Is.EqualTo ("Columns[0].Command"));
   }
 
   [Test]
@@ -298,9 +298,9 @@ public class BocListWcagTest: BocTest
     BocCommandColumnDefinition commandColumn = new BocCommandColumnDefinition();
     commandColumn.Command.Type = CommandType.Href;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[1] {commandColumn});
-    
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsFalse (WcagHelperMock.HasError);
+
+    Assert.That (WcagHelperMock.HasWarning, Is.False);
+    Assert.That (WcagHelperMock.HasError, Is.False);
   }
 
 	[Test]
@@ -310,9 +310,9 @@ public class BocListWcagTest: BocTest
     BocCommandColumnDefinition commandColumn = new BocCommandColumnDefinition();
     commandColumn.Command = null;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[1] {commandColumn});
-    
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsFalse (WcagHelperMock.HasError);
+
+	  Assert.That (WcagHelperMock.HasWarning, Is.False);
+	  Assert.That (WcagHelperMock.HasError, Is.False);
   }
 
 
@@ -324,10 +324,10 @@ public class BocListWcagTest: BocTest
     _bocList.Index = RowIndex.Disabled;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
 
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (2, WcagHelperMock.Priority);
-    Assert.AreSame (_bocList, WcagHelperMock.Control);
-    Assert.AreEqual ("Selection", WcagHelperMock.Property);
+	  Assert.That (WcagHelperMock.HasError, Is.True);
+	  Assert.That (WcagHelperMock.Priority, Is.EqualTo (2));
+	  Assert.That (WcagHelperMock.Control, Is.SameAs (_bocList));
+	  Assert.That (WcagHelperMock.Property, Is.EqualTo ("Selection"));
   }
 
 	[Test]
@@ -337,9 +337,9 @@ public class BocListWcagTest: BocTest
     _bocList.Selection = RowSelection.Disabled;
     _bocList.Index = RowIndex.Disabled;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
-    
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsFalse (WcagHelperMock.HasError);
+
+	  Assert.That (WcagHelperMock.HasWarning, Is.False);
+	  Assert.That (WcagHelperMock.HasError, Is.False);
   }
 
 	[Test]
@@ -349,9 +349,9 @@ public class BocListWcagTest: BocTest
     _bocList.Selection = RowSelection.SingleRadioButton;
     _bocList.Index = RowIndex.InitialOrder;
     _bocList.EvaluateWaiConformity (new BocColumnDefinition[0]);
-    
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsFalse (WcagHelperMock.HasError);
+
+	  Assert.That (WcagHelperMock.HasWarning, Is.False);
+	  Assert.That (WcagHelperMock.HasError, Is.False);
   }
 
 }

@@ -40,9 +40,9 @@ public class WcagTest : BaseTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
     _webButton.UseLegacyButton = false;
     _webButton.EvaluateWaiConformity();
-    
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsFalse (WcagHelperMock.HasError);
+
+	  Assert.That (WcagHelperMock.HasWarning, Is.False);
+	  Assert.That (WcagHelperMock.HasError, Is.False);
   }
 
 	[Test]
@@ -51,9 +51,9 @@ public class WcagTest : BaseTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
     _webButton.UseLegacyButton = false;
     _webButton.EvaluateWaiConformity();
-    
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsFalse (WcagHelperMock.HasError);
+
+	  Assert.That (WcagHelperMock.HasWarning, Is.False);
+	  Assert.That (WcagHelperMock.HasError, Is.False);
   }
 
 	[Test]
@@ -62,11 +62,11 @@ public class WcagTest : BaseTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
     _webButton.UseLegacyButton = false;
     _webButton.EvaluateWaiConformity();
-    
-    Assert.IsTrue (WcagHelperMock.HasError);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_webButton, WcagHelperMock.Control);
-    Assert.AreEqual ("UseLegacyButton", WcagHelperMock.Property);
+
+	  Assert.That (WcagHelperMock.HasError, Is.True);
+	  Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+	  Assert.That (WcagHelperMock.Control, Is.SameAs (_webButton));
+	  Assert.That (WcagHelperMock.Property, Is.EqualTo ("UseLegacyButton"));
   }
 
 
@@ -75,7 +75,7 @@ public class WcagTest : BaseTest
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
     _webButton.UseLegacyButton = false;
-    Assert.IsTrue (_webButton.IsLegacyButtonEnabled);
+    Assert.That (_webButton.IsLegacyButtonEnabled, Is.True);
   }
 
   [Test]
@@ -83,7 +83,7 @@ public class WcagTest : BaseTest
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
     _webButton.UseLegacyButton = false;
-    Assert.IsFalse (_webButton.IsLegacyButtonEnabled);
+    Assert.That (_webButton.IsLegacyButtonEnabled, Is.False);
   }
 }
 

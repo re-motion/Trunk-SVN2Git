@@ -57,9 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Initialization ()
     {
-      Assert.AreSame (_endPoint, _command.ModifiedEndPoint);
-      Assert.AreSame (_relatedObject, _command.OldRelatedObject);
-      Assert.AreSame (_relatedObject, _command.NewRelatedObject);
+      Assert.That (_command.ModifiedEndPoint, Is.SameAs (_endPoint));
+      Assert.That (_command.OldRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (_command.NewRelatedObject, Is.SameAs (_relatedObject));
     }
 
     [Test]

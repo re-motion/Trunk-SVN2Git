@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof(OrderItem),
           null);
 
-      Assert.AreSame (typeof (OrderItem), endPoint.PropertyInfo.PropertyType);
+      Assert.That (endPoint.PropertyInfo.PropertyType, Is.SameAs (typeof (OrderItem)));
     }
 
     [Test]
@@ -73,26 +73,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (OrderCollection),
           "OrderNumber desc");
 
-      Assert.AreEqual ("OrderNumber desc", endPointDefinition.SortExpressionText);
+      Assert.That (endPointDefinition.SortExpressionText, Is.EqualTo ("OrderNumber desc"));
     }
 
     [Test]
     public void IsAnonymous ()
     {
-      Assert.IsFalse (_customerOrdersEndPoint.IsAnonymous);
+      Assert.That (_customerOrdersEndPoint.IsAnonymous, Is.False);
     }
 
     [Test]
     public void RelationDefinition_Null ()
     {
-      Assert.IsNull (_customerOrdersEndPoint.RelationDefinition);
+      Assert.That (_customerOrdersEndPoint.RelationDefinition, Is.Null);
     }
 
     [Test]
     public void RelationDefinition_NonNull ()
     {
       _customerOrdersEndPoint.SetRelationDefinition (new RelationDefinition ("Test", _customerOrdersEndPoint, _customerOrdersEndPoint));
-      Assert.IsNotNull (_customerOrdersEndPoint.RelationDefinition);
+      Assert.That (_customerOrdersEndPoint.RelationDefinition, Is.Not.Null);
     }
 
     [Test]
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ClassDefinition employeeClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Employee));
       VirtualRelationEndPointDefinition relationEndPointDefinition =
           (VirtualRelationEndPointDefinition) employeeClassDefinition.GetRelationEndPointDefinition (typeof (Employee) + ".Computer");
-      Assert.AreEqual (PropertyInfoAdapter.Create(typeof (Employee).GetProperty ("Computer")), relationEndPointDefinition.PropertyInfo);
+      Assert.That (relationEndPointDefinition.PropertyInfo, Is.EqualTo (PropertyInfoAdapter.Create(typeof (Employee).GetProperty ("Computer"))));
     }
 
     private VirtualRelationEndPointDefinition CreateFullVirtualEndPointAndClassDefinition_WithProductProperty (string sortExpressionString)

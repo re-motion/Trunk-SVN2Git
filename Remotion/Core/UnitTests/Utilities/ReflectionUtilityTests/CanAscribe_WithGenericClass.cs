@@ -26,82 +26,82 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     [Test]
     public void ClosedGenericType ()
     {
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType>), typeof (GenericType<>)));
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType>), typeof (GenericType<ParameterType>)));
-      Assert.IsFalse (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType>), typeof (GenericType<object>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType>), typeof (GenericType<>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType>), typeof (GenericType<ParameterType>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType>), typeof (GenericType<object>)), Is.False);
     }
 
     [Test]
     public void ClosedGenericType_WithTwoTypeParameters ()
     {
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType, int>), typeof (GenericType<,>)));
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType, int>), typeof (GenericType<ParameterType, int>)));
-      Assert.IsFalse (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType, int>), typeof (GenericType<object, int>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType, int>), typeof (GenericType<,>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType, int>), typeof (GenericType<ParameterType, int>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericType<ParameterType, int>), typeof (GenericType<object, int>)), Is.False);
     }
 
     [Test]
     public void OpenGenericType ()
     {
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (GenericType<>), typeof (GenericType<>)));
-      Assert.IsFalse (ReflectionUtility.CanAscribe (typeof (GenericType<>), typeof (GenericType<ParameterType>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericType<>), typeof (GenericType<>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericType<>), typeof (GenericType<ParameterType>)), Is.False);
     }
 
     [Test]
     public void OpenGenericType_WithTwoTypeParameters ()
     {
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (GenericType<>), typeof (GenericType<>)));
-      Assert.IsFalse (ReflectionUtility.CanAscribe (typeof (GenericType<>), typeof (GenericType<ParameterType>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericType<>), typeof (GenericType<>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericType<>), typeof (GenericType<ParameterType>)), Is.False);
     }
 
     [Test]
     public void OpenGenericType_WithOneOpenTypeParameter ()
     {
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (DerivedOpenGenericType<>), typeof (GenericType<,>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (DerivedOpenGenericType<>), typeof (GenericType<,>)), Is.True);
     }
 
     [Test]
     public void ClosedDerivedGenericType ()
     {
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (DerivedGenericType<ParameterType>), typeof (GenericType<>)));
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (DerivedGenericType<ParameterType>), typeof (GenericType<ParameterType>)));
-      Assert.IsFalse (ReflectionUtility.CanAscribe (typeof (DerivedGenericType<ParameterType>), typeof (GenericType<object>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (DerivedGenericType<ParameterType>), typeof (GenericType<>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (DerivedGenericType<ParameterType>), typeof (GenericType<ParameterType>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (DerivedGenericType<ParameterType>), typeof (GenericType<object>)), Is.False);
     }
 
     [Test]
     public void OpenDerivedGenericType ()
     {
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (DerivedGenericType<>), typeof (GenericType<>)));
-      Assert.IsFalse (ReflectionUtility.CanAscribe (typeof (DerivedGenericType<>), typeof (GenericType<ParameterType>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (DerivedGenericType<>), typeof (GenericType<>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (DerivedGenericType<>), typeof (GenericType<ParameterType>)), Is.False);
     }
 
     [Test]
     public void NonGenericDerivedGenericType ()
     {
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (DerivedGenericType), typeof (GenericType<>)));
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (DerivedGenericType), typeof (GenericType<ParameterType>)));
-      Assert.IsFalse (ReflectionUtility.CanAscribe (typeof (DerivedGenericType), typeof (GenericType<object>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (DerivedGenericType), typeof (GenericType<>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (DerivedGenericType), typeof (GenericType<ParameterType>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (DerivedGenericType), typeof (GenericType<object>)), Is.False);
     }
 
     [Test]
     public void ClosedGenericDerivedGenericType ()
     {
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<int>), typeof (GenericType<>)));
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<int>), typeof (GenericType<ParameterType>)));
-      Assert.IsFalse (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<int>), typeof (GenericType<object>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<int>), typeof (GenericType<>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<int>), typeof (GenericType<ParameterType>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<int>), typeof (GenericType<object>)), Is.False);
     }
 
     [Test]
     public void OpenGenericDerivedGenericType ()
     {
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<>), typeof (GenericType<>)));
-      Assert.IsTrue (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<>), typeof (GenericType<ParameterType>)));
-      Assert.IsFalse (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<>), typeof (GenericType<object>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<>), typeof (GenericType<>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<>), typeof (GenericType<ParameterType>)), Is.True);
+      Assert.That (ReflectionUtility.CanAscribe (typeof (GenericDerivedGenericType<>), typeof (GenericType<object>)), Is.False);
     }
 
     [Test]
     public void BaseType ()
     {
-      Assert.IsFalse (ReflectionUtility.CanAscribe (typeof (BaseType), typeof (GenericType<>)));
+      Assert.That (ReflectionUtility.CanAscribe (typeof (BaseType), typeof (GenericType<>)), Is.False);
     }
   }
 }

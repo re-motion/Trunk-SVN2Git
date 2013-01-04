@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
         exception = (ObjectDeletedException) formatter.Deserialize (memoryStream);
 
-        Assert.AreEqual (DomainObjectIDs.Order1, exception.ID);
+        Assert.That (exception.ID, Is.EqualTo (DomainObjectIDs.Order1));
       }
     }
   }

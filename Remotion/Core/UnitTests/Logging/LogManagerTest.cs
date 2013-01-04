@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Logging
 
       Assert.IsInstanceOf (typeof (Log4NetLog), log);
       Log4NetLog log4NetLog = (Log4NetLog) log;
-      Assert.AreEqual ("The Name", log4NetLog.Logger.Name);
+      Assert.That (log4NetLog.Logger.Name, Is.EqualTo ("The Name"));
     }
 
     [Test]
@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Logging
 
       Assert.IsInstanceOf (typeof (Log4NetLog), log);
       Log4NetLog log4NetLog = (Log4NetLog) log;
-      Assert.AreEqual ("Remotion.UnitTests.Logging.SampleType", log4NetLog.Logger.Name);
+      Assert.That (log4NetLog.Logger.Name, Is.EqualTo ("Remotion.UnitTests.Logging.SampleType"));
     }
 
   }

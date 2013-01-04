@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Schemas
     [Test]
     public void InitializeWithQueries ()
     {
-      Assert.AreEqual (PrefixNamespace.QueryConfigurationNamespace.Uri, SchemaLoader.Queries.SchemaUri);
+      Assert.That (SchemaLoader.Queries.SchemaUri, Is.EqualTo (PrefixNamespace.QueryConfigurationNamespace.Uri));
     }
 
     [Test]
@@ -37,10 +37,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Schemas
     {
       XmlSchemaSet schemaSet = SchemaLoader.Queries.LoadSchemaSet ();
 
-      Assert.IsNotNull (schemaSet);
-      Assert.AreEqual (2, schemaSet.Count);
-      Assert.IsTrue (schemaSet.Contains (PrefixNamespace.QueryConfigurationNamespace.Uri));
-      Assert.IsTrue (schemaSet.Contains ("http://www.re-motion.org/Data/DomainObjects/Types"));
+      Assert.That (schemaSet, Is.Not.Null);
+      Assert.That (schemaSet.Count, Is.EqualTo (2));
+      Assert.That (schemaSet.Contains (PrefixNamespace.QueryConfigurationNamespace.Uri), Is.True);
+      Assert.That (schemaSet.Contains ("http://www.re-motion.org/Data/DomainObjects/Types"), Is.True);
     }
   }
 }

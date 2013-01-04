@@ -32,8 +32,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     public void MixedUserTest ()
     {
       User user = CreateUser();
-      Assert.IsNotNull (Mixin.Get<UserMixin> (user));
-      Assert.IsTrue (user is ITestInterface);
+      Assert.That (Mixin.Get<UserMixin> (user), Is.Not.Null);
+      Assert.That (user is ITestInterface, Is.True);
     }
   }
 }

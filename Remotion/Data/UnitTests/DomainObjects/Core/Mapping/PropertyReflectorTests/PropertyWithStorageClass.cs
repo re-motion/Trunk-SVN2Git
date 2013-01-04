@@ -67,10 +67,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       var actual = propertyReflector.GetMetadata();
       actual.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("NoAttribute"));
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.NoAttribute",
-          actual.PropertyName);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.NoAttribute"));
+      Assert.That (actual.StorageClass, Is.EqualTo (StorageClass.Persistent));
     }
 
     [Test]
@@ -82,10 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       var actual = propertyReflector.GetMetadata();
       actual.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Persistent"));
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.Persistent",
-          actual.PropertyName);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.Persistent"));
+      Assert.That (actual.StorageClass, Is.EqualTo (StorageClass.Persistent));
     }
 
     [Test]

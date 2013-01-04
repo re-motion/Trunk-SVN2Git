@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.UnitTests.Configuration
       string xmlFragment = @"<remotion.securityManager />";
       _configuration.DeserializeSection (xmlFragment);
 
-      Assert.IsNotNull (_configuration.OrganizationalStructureFactory);
+      Assert.That (_configuration.OrganizationalStructureFactory, Is.Not.Null);
       Assert.IsInstanceOf (typeof (OrganizationalStructureFactory), _configuration.OrganizationalStructureFactory);
     }
 
@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Configuration
       string xmlFragment = @"<remotion.securityManager xmlns=""http://www.re-motion.org/SecurityManager/Configuration"" />";
       _configuration.DeserializeSection (xmlFragment);
 
-      Assert.IsNotNull (_configuration.OrganizationalStructureFactory);
+      Assert.That (_configuration.OrganizationalStructureFactory, Is.Not.Null);
       Assert.IsInstanceOf (typeof (OrganizationalStructureFactory), _configuration.OrganizationalStructureFactory);
     }
 
@@ -63,7 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.Configuration
           </remotion.securityManager>";
       _configuration.DeserializeSection (xmlFragment);
 
-      Assert.IsNotNull (_configuration.OrganizationalStructureFactory);
+      Assert.That (_configuration.OrganizationalStructureFactory, Is.Not.Null);
       Assert.IsInstanceOf (typeof (TestOrganizationalStructureFactory), _configuration.OrganizationalStructureFactory);
     }
 
@@ -87,8 +87,8 @@ namespace Remotion.SecurityManager.UnitTests.Configuration
           <remotion.securityManager xmlns=""http://www.re-motion.org/SecurityManager/Configuration""/>";
       _configuration.DeserializeSection (xmlFragment);
 
-      Assert.IsNotNull (_configuration.AccessControl);
-      Assert.IsFalse (_configuration.AccessControl.DisableSpecificUser);
+      Assert.That (_configuration.AccessControl, Is.Not.Null);
+      Assert.That (_configuration.AccessControl.DisableSpecificUser, Is.False);
     }
 
     [Test]
@@ -101,7 +101,7 @@ namespace Remotion.SecurityManager.UnitTests.Configuration
           </remotion.securityManager>";
       _configuration.DeserializeSection (xmlFragment);
 
-      Assert.IsTrue (_configuration.AccessControl.DisableSpecificUser);
+      Assert.That (_configuration.AccessControl.DisableSpecificUser, Is.True);
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.SecurityManager.UnitTests.Configuration
           </remotion.securityManager>";
       _configuration.DeserializeSection (xmlFragment);
 
-      Assert.IsFalse (_configuration.AccessControl.DisableSpecificUser);
+      Assert.That (_configuration.AccessControl.DisableSpecificUser, Is.False);
     }
   }
 }

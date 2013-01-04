@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
             + " the root element is invalid. Expected namespace: 'http://www.re-motion.org/Data/DomainObjects/Queries/1.0'. File: '{0}'.",
             Path.GetFullPath (configurationFile));
 
-        Assert.AreEqual (expectedMessage, ex.Message);
+        Assert.That (ex.Message, Is.EqualTo (expectedMessage));
       }
     }
 
@@ -234,9 +234,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     {
       QueryConfiguration configuration = new QueryConfiguration ("QueriesForLoaderTest.xml");
 
-      Assert.AreEqual (1, configuration.QueryFiles.Count);
-      Assert.AreEqual ("QueriesForLoaderTest.xml", configuration.QueryFiles[0].FileName);
-      Assert.AreEqual (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "QueriesForLoaderTest.xml"), configuration.QueryFiles[0].RootedFileName);
+      Assert.That (configuration.QueryFiles.Count, Is.EqualTo (1));
+      Assert.That (configuration.QueryFiles[0].FileName, Is.EqualTo ("QueriesForLoaderTest.xml"));
+      Assert.That (configuration.QueryFiles[0].RootedFileName, Is.EqualTo (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "QueriesForLoaderTest.xml")));
     }
 
     [Test]
@@ -244,8 +244,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     {
       QueryConfiguration configuration = new QueryConfiguration (@"c:\QueriesForLoaderTest.xml");
 
-      Assert.AreEqual (1, configuration.QueryFiles.Count);
-      Assert.AreEqual (@"c:\QueriesForLoaderTest.xml", configuration.QueryFiles[0].FileName);
+      Assert.That (configuration.QueryFiles.Count, Is.EqualTo (1));
+      Assert.That (configuration.QueryFiles[0].FileName, Is.EqualTo (@"c:\QueriesForLoaderTest.xml"));
     }
 
     [Test]
@@ -253,11 +253,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     {
       QueryConfiguration configuration = new QueryConfiguration ("Q1.xml", "Q2.xml");
 
-      Assert.AreEqual (2, configuration.QueryFiles.Count);
-      Assert.AreEqual ("Q1.xml", configuration.QueryFiles[0].FileName);
-      Assert.AreEqual (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "Q1.xml"), configuration.QueryFiles[0].RootedFileName);
-      Assert.AreEqual ("Q2.xml", configuration.QueryFiles[1].FileName);
-      Assert.AreEqual (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "Q2.xml"), configuration.QueryFiles[1].RootedFileName);
+      Assert.That (configuration.QueryFiles.Count, Is.EqualTo (2));
+      Assert.That (configuration.QueryFiles[0].FileName, Is.EqualTo ("Q1.xml"));
+      Assert.That (configuration.QueryFiles[0].RootedFileName, Is.EqualTo (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "Q1.xml")));
+      Assert.That (configuration.QueryFiles[1].FileName, Is.EqualTo ("Q2.xml"));
+      Assert.That (configuration.QueryFiles[1].RootedFileName, Is.EqualTo (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "Q2.xml")));
     }
 
     [Test]
@@ -282,7 +282,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
       QueryDefinitionCollection expectedQueries = loader1.GetQueryDefinitions ();
       expectedQueries.Merge (loader2.GetQueryDefinitions());
 
-      Assert.IsTrue (expectedQueries.Count > loader1.GetQueryDefinitions ().Count);
+      Assert.That (expectedQueries.Count > loader1.GetQueryDefinitions ().Count, Is.True);
 
       QueryDefinitionChecker checker = new QueryDefinitionChecker ();
       checker.Check (expectedQueries, configuration.QueryDefinitions);
@@ -326,7 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     public void CollectionType_SupportsTypeUtilityNotation ()
     {
       QueryDefinitionCollection queries = new QueryConfiguration ("DomainObjects\\QueriesForStandardMapping.xml").QueryDefinitions;
-      Assert.AreSame (typeof (SpecificOrderCollection), queries["QueryWithSpecificCollectionType"].CollectionType);
+      Assert.That (queries["QueryWithSpecificCollectionType"].CollectionType, Is.SameAs (typeof (SpecificOrderCollection)));
     }
 
     [Test]

@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void ScalarQueryWithoutParameter ()
     {
-      Assert.AreEqual (42, Provider.ExecuteScalarQuery (QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter")));
+      Assert.That (Provider.ExecuteScalarQuery (QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter")), Is.EqualTo (42));
     }
 
     [Test]
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderNoSumByCustomerNameQuery");
       query.Parameters.Add ("@customerName", "Kunde 1");
 
-      Assert.AreEqual (3, Provider.ExecuteScalarQuery (query));
+      Assert.That (Provider.ExecuteScalarQuery (query), Is.EqualTo (3));
     }
 
     [Test]
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderNoSumForMultipleCustomers");
       query.Parameters.Add ("{companyNames}", "'Kunde 1', 'Kunde 3'", QueryParameterType.Text);
 
-      Assert.AreEqual (6, Provider.ExecuteScalarQuery (query));
+      Assert.That (Provider.ExecuteScalarQuery (query), Is.EqualTo (6));
     }
 
     [Test]
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var query = QueryFactory.CreateQueryFromConfiguration ("BulkUpdateQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1.Value);
 
-      Assert.AreEqual (2, Provider.ExecuteScalarQuery (query));
+      Assert.That (Provider.ExecuteScalarQuery (query), Is.EqualTo (2));
     }
 
     [Test]

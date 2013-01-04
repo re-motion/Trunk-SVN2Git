@@ -51,9 +51,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
-      Assert.IsNull (localizingConverter.MetadataConverter);
-      Assert.AreEqual (1, localizingConverter.Cultures.Length);
-      Assert.AreEqual ("de", localizingConverter.Cultures[0].TwoLetterISOLanguageName);
+      Assert.That (localizingConverter.MetadataConverter, Is.Null);
+      Assert.That (localizingConverter.Cultures.Length, Is.EqualTo (1));
+      Assert.That (localizingConverter.Cultures[0].TwoLetterISOLanguageName, Is.EqualTo ("de"));
     }
 
     [Test]
@@ -65,9 +65,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
-      Assert.IsNull (localizingConverter.MetadataConverter);
-      Assert.AreEqual (1, localizingConverter.Cultures.Length);
-      Assert.AreEqual ("de", localizingConverter.Cultures[0].TwoLetterISOLanguageName);
+      Assert.That (localizingConverter.MetadataConverter, Is.Null);
+      Assert.That (localizingConverter.Cultures.Length, Is.EqualTo (1));
+      Assert.That (localizingConverter.Cultures[0].TwoLetterISOLanguageName, Is.EqualTo ("de"));
     }
 
     [Test]
@@ -79,9 +79,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
-      Assert.IsNull (localizingConverter.MetadataConverter);
-      Assert.AreEqual (1, localizingConverter.Cultures.Length);
-      Assert.AreEqual ("de", localizingConverter.Cultures[0].TwoLetterISOLanguageName);
+      Assert.That (localizingConverter.MetadataConverter, Is.Null);
+      Assert.That (localizingConverter.Cultures.Length, Is.EqualTo (1));
+      Assert.That (localizingConverter.Cultures[0].TwoLetterISOLanguageName, Is.EqualTo ("de"));
     }
 
     [Test]
@@ -94,10 +94,10 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
-      Assert.IsNull (localizingConverter.MetadataConverter);
-      Assert.AreEqual (2, localizingConverter.Cultures.Length);
-      Assert.AreEqual ("de", localizingConverter.Cultures[0].TwoLetterISOLanguageName);
-      Assert.AreEqual ("fr", localizingConverter.Cultures[1].TwoLetterISOLanguageName);
+      Assert.That (localizingConverter.MetadataConverter, Is.Null);
+      Assert.That (localizingConverter.Cultures.Length, Is.EqualTo (2));
+      Assert.That (localizingConverter.Cultures[0].TwoLetterISOLanguageName, Is.EqualTo ("de"));
+      Assert.That (localizingConverter.Cultures[1].TwoLetterISOLanguageName, Is.EqualTo ("fr"));
     }
 
     [Test]
@@ -112,9 +112,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
       Assert.IsInstanceOf (typeof (MetadataToXmlConverter), localizingConverter.MetadataConverter);
-      Assert.AreEqual (2, localizingConverter.Cultures.Length);
-      Assert.AreEqual ("de", localizingConverter.Cultures[0].TwoLetterISOLanguageName);
-      Assert.AreEqual ("fr", localizingConverter.Cultures[1].TwoLetterISOLanguageName);
+      Assert.That (localizingConverter.Cultures.Length, Is.EqualTo (2));
+      Assert.That (localizingConverter.Cultures[0].TwoLetterISOLanguageName, Is.EqualTo ("de"));
+      Assert.That (localizingConverter.Cultures[1].TwoLetterISOLanguageName, Is.EqualTo ("fr"));
     }
 
     [Test]
@@ -127,10 +127,10 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
-      Assert.IsNull (localizingConverter.MetadataConverter);
-      Assert.AreEqual (2, localizingConverter.Cultures.Length);
-      Assert.AreEqual ("de", localizingConverter.Cultures[0].TwoLetterISOLanguageName);
-      Assert.AreEqual (CultureInfo.InvariantCulture.TwoLetterISOLanguageName, localizingConverter.Cultures[1].TwoLetterISOLanguageName);
+      Assert.That (localizingConverter.MetadataConverter, Is.Null);
+      Assert.That (localizingConverter.Cultures.Length, Is.EqualTo (2));
+      Assert.That (localizingConverter.Cultures[0].TwoLetterISOLanguageName, Is.EqualTo ("de"));
+      Assert.That (localizingConverter.Cultures[1].TwoLetterISOLanguageName, Is.EqualTo (CultureInfo.InvariantCulture.TwoLetterISOLanguageName));
     }
 
     [Test]

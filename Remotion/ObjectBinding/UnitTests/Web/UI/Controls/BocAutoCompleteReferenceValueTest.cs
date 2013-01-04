@@ -92,8 +92,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
       _control.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
     [Test]
@@ -102,8 +102,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
       _control.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsTrue (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.True);
       Assert.That (WcagHelperMock.Control, Is.EqualTo (_control));
     }
 
@@ -112,7 +112,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
       _control.Command.Type = CommandType.Event;
-      Assert.IsFalse (((IBocReferenceValueBase) _control).IsCommandEnabled());
+      Assert.That (((IBocReferenceValueBase) _control).IsCommandEnabled(), Is.False);
     }
 
     [Test]
@@ -123,7 +123,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.Property = _propertyReferenceValue;
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
       _control.Command.Type = CommandType.Event;
-      Assert.IsTrue (((IBocReferenceValueBase) _control).IsCommandEnabled());
+      Assert.That (((IBocReferenceValueBase) _control).IsCommandEnabled(), Is.True);
     }
 
     [Test]
@@ -131,7 +131,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
       _control.Command.Type = CommandType.WxeFunction;
-      Assert.IsFalse (((IBocReferenceValueBase) _control).IsCommandEnabled());
+      Assert.That (((IBocReferenceValueBase) _control).IsCommandEnabled(), Is.False);
     }
 
     [Test]
@@ -142,7 +142,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.Property = _propertyReferenceValue;
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
       _control.Command.Type = CommandType.WxeFunction;
-      Assert.IsTrue (((IBocReferenceValueBase) _control).IsCommandEnabled());
+      Assert.That (((IBocReferenceValueBase) _control).IsCommandEnabled(), Is.True);
     }
 
     [Test]
@@ -150,8 +150,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _control.ReadOnly = true;
       string[] actual = _control.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (0, actual.Length);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -159,9 +159,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _control.ReadOnly = false;
       string[] actual = _control.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_control.TextBoxClientID, actual[0]);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (1));
+      Assert.That (actual[0], Is.EqualTo (_control.TextBoxClientID));
     }
 
 
@@ -171,8 +171,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       IBusinessObjectWithIdentity referencedObject = (IBusinessObjectWithIdentity) TypeWithReference.Create();
       _control.IsDirty = false;
       _control.Value = referencedObject;
-      Assert.AreEqual (referencedObject, _control.Value);
-      Assert.IsTrue (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (referencedObject));
+      Assert.That (_control.IsDirty, Is.True);
     }
 
     [Test]
@@ -180,8 +180,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _control.IsDirty = false;
       _control.Value = null;
-      Assert.AreEqual (null, _control.Value);
-      Assert.IsTrue (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (null));
+      Assert.That (_control.IsDirty, Is.True);
     }
 
     [Test]
@@ -189,14 +189,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       IBusinessObjectWithIdentity referencedObject = (IBusinessObjectWithIdentity) TypeWithReference.Create();
       _control.Value = referencedObject;
-      Assert.IsTrue (_control.HasValue);
+      Assert.That (_control.HasValue, Is.True);
     }
 
     [Test]
     public void HasValue_ValueIsNull_ReturnsFalse ()
     {
       _control.Value = null;
-      Assert.IsFalse (_control.HasValue);
+      Assert.That (_control.HasValue, Is.False);
     }
 
     [Test]
@@ -209,8 +209,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.LoadValue (true);
-      Assert.AreEqual (null, _control.Value);
-      Assert.IsTrue (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (null));
+      Assert.That (_control.IsDirty, Is.True);
     }
 
     [Test]
@@ -223,8 +223,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.LoadValue (false);
-      Assert.AreEqual (_businessObject.ReferenceValue, _control.Value);
-      Assert.IsFalse (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (_businessObject.ReferenceValue));
+      Assert.That (_control.IsDirty, Is.False);
     }
 
     [Test]
@@ -237,8 +237,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.LoadValue (false);
-      Assert.AreEqual (_businessObject.ReferenceValue, _control.Value);
-      Assert.IsFalse (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (_businessObject.ReferenceValue));
+      Assert.That (_control.IsDirty, Is.False);
     }
 
     [Test]
@@ -250,8 +250,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.LoadUnboundValue (value, true);
-      Assert.AreEqual (null, _control.Value);
-      Assert.IsTrue (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (null));
+      Assert.That (_control.IsDirty, Is.True);
     }
 
     [Test]
@@ -263,8 +263,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _control.Value);
-      Assert.IsFalse (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (value));
+      Assert.That (_control.IsDirty, Is.False);
     }
 
     [Test]
@@ -276,8 +276,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _control.Value);
-      Assert.IsFalse (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (value));
+      Assert.That (_control.IsDirty, Is.False);
     }
 
     [Test]
@@ -319,7 +319,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", false);
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (null, null);
-      Assert.IsFalse (result);
+      Assert.That (result, Is.False);
     }
 
     [Test]
@@ -615,8 +615,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.LoadValue (false);
-      Assert.AreEqual (value, _control.Value);
-      Assert.IsTrue (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (value));
+      Assert.That (_control.IsDirty, Is.True);
     }
 
     [Test]
@@ -629,8 +629,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.LoadValue (false);
-      Assert.AreEqual (value, _control.Value);
-      Assert.IsTrue (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (value));
+      Assert.That (_control.IsDirty, Is.True);
     }
 
     [Test]
@@ -643,8 +643,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.LoadValue (false);
-      Assert.AreEqual (null, _control.Value);
-      Assert.IsFalse (_control.IsDirty);
+      Assert.That (_control.Value, Is.EqualTo (null));
+      Assert.That (_control.IsDirty, Is.False);
     }
 
 
@@ -682,8 +682,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.SaveValue (true);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsTrue (_control.IsDirty);
+      Assert.That (_businessObject.ReferenceValue, Is.EqualTo (value));
+      Assert.That (_control.IsDirty, Is.True);
     }
 
     [Test]
@@ -697,8 +697,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = true;
 
       _control.SaveValue (false);
-      Assert.AreEqual (null, _businessObject.ReferenceValue);
-      Assert.IsFalse (_control.IsDirty);
+      Assert.That (_businessObject.ReferenceValue, Is.EqualTo (null));
+      Assert.That (_control.IsDirty, Is.False);
     }
 
     [Test]
@@ -712,8 +712,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = false;
 
       _control.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsFalse (_control.IsDirty);
+      Assert.That (_businessObject.ReferenceValue, Is.EqualTo (value));
+      Assert.That (_control.IsDirty, Is.False);
     }
  
     [Test]

@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
       var groupTypes = GroupType.FindAll ();
 
-      Assert.AreEqual (2, groupTypes.Count());
+      Assert.That (groupTypes.Count(), Is.EqualTo (2));
     }
 
     [Test]
@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         ClientTransaction.Current.Commit ();
 
-        Assert.IsTrue (ace.IsInvalid);
+        Assert.That (ace.IsInvalid, Is.True);
       }
     }
 
@@ -78,7 +78,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         groupType.Delete ();
 
-        Assert.IsTrue (concretePosition.IsInvalid);
+        Assert.That (concretePosition.IsInvalid, Is.True);
       }
     }
 
@@ -104,7 +104,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       GroupType groupType = GroupType.NewObject();
       groupType.Name = "GroupTypeName";
 
-      Assert.AreEqual ("GroupTypeName", groupType.DisplayName);
+      Assert.That (groupType.DisplayName, Is.EqualTo ("GroupTypeName"));
     }
   }
 }

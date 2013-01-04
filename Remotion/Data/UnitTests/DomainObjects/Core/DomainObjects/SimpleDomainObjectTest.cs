@@ -44,8 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         ClassDerivedFromSimpleDomainObject gottenInstance = ClassDerivedFromSimpleDomainObject.GetObject (instance.ID);
-        Assert.AreSame (instance, gottenInstance);
-        Assert.AreEqual (7, gottenInstance.IntProperty);
+        Assert.That (gottenInstance, Is.SameAs (instance));
+        Assert.That (gottenInstance.IntProperty, Is.EqualTo (7));
       }
     }
 

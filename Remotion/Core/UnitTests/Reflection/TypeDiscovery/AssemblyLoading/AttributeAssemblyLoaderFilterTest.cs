@@ -33,33 +33,33 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
     public void AttributeConsidering ()
     {
       var filter = new AttributeAssemblyLoaderFilter (typeof (SerializableAttribute)); // attribute type doesn't matter here
-      Assert.IsTrue (filter.ShouldConsiderAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly.GetName()));
-      Assert.IsTrue (filter.ShouldConsiderAssembly (typeof (TestFixtureAttribute).Assembly.GetName()));
-      Assert.IsTrue (filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName()));
-      Assert.IsTrue (filter.ShouldConsiderAssembly (new AssemblyName ("name does not matter")));
+      Assert.That (filter.ShouldConsiderAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly.GetName()), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (TestFixtureAttribute).Assembly.GetName()), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName()), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (new AssemblyName ("name does not matter")), Is.True);
     }
 
     [Test]
     public void AttributeInclusion ()
     {
       var filter = new AttributeAssemblyLoaderFilter (typeof (TestMarkerAttribute));
-      Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly));
-      Assert.IsFalse (filter.ShouldIncludeAssembly (typeof (TestFixtureAttribute).Assembly));
-      Assert.IsFalse (filter.ShouldIncludeAssembly (typeof (object).Assembly));
-      Assert.IsFalse (filter.ShouldIncludeAssembly (typeof (Uri).Assembly));
+      Assert.That (filter.ShouldIncludeAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly), Is.True);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (TestFixtureAttribute).Assembly), Is.False);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (object).Assembly), Is.False);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (Uri).Assembly), Is.False);
 
       filter = new AttributeAssemblyLoaderFilter (typeof (CLSCompliantAttribute));
-      Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly));
-      Assert.IsFalse (filter.ShouldIncludeAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly));
-      Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (TestFixtureAttribute).Assembly));
-      Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (object).Assembly));
-      Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (Uri).Assembly));
+      Assert.That (filter.ShouldIncludeAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly), Is.True);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly), Is.False);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (TestFixtureAttribute).Assembly), Is.True);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (object).Assembly), Is.True);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (Uri).Assembly), Is.True);
 
       filter = new AttributeAssemblyLoaderFilter (typeof (SerializableAttribute));
-      Assert.IsFalse (filter.ShouldIncludeAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly));
-      Assert.IsFalse (filter.ShouldIncludeAssembly (typeof (TestFixtureAttribute).Assembly));
-      Assert.IsFalse (filter.ShouldIncludeAssembly (typeof (object).Assembly));
-      Assert.IsFalse (filter.ShouldIncludeAssembly (typeof (Uri).Assembly));
+      Assert.That (filter.ShouldIncludeAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly), Is.False);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (TestFixtureAttribute).Assembly), Is.False);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (object).Assembly), Is.False);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (Uri).Assembly), Is.False);
     }
   }
 }

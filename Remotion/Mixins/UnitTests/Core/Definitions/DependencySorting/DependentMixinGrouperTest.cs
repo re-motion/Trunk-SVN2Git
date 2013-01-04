@@ -95,7 +95,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void UnrelatedMixins ()
     {
       var groups = GetGroups (_independent1, _independent2, _overrideM1);
-      Assert.AreEqual (3, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (3));
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _independent1 }));
       Assert.That (groups[1].ToArray (), Is.EquivalentTo (new object[] { _independent2 }));
       Assert.That (groups[2].ToArray (), Is.EquivalentTo (new object[] { _overrideM1 }));
@@ -105,7 +105,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void Overrides_NoCut ()
     {
       var groups = GetGroups (_overrideM1, _overrideM2);
-      Assert.AreEqual (2, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (2));
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _overrideM1 }));
       Assert.That (groups[1].ToArray (), Is.EquivalentTo (new object[] { _overrideM2 }));
     }
@@ -114,7 +114,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void Overrides_Cut ()
     {
       var groups = GetGroups (_overrideM1, _overrideM1M2);
-      Assert.AreEqual (1, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (1));
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _overrideM1, _overrideM1M2 }));
     }
 
@@ -122,7 +122,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void Overrides_TransitiveCut ()
     {
       var groups = GetGroups (_overrideM1, _overrideM2, _overrideM1M2);
-      Assert.AreEqual (1, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (1));
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _overrideM1, _overrideM2, _overrideM1M2 }));
     }
 
@@ -130,7 +130,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void NextCallDependency_NoCut ()
     {
       var groups = GetGroups (_nextCallDependency1, _independent1);
-      Assert.AreEqual (2, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (2));
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _nextCallDependency1 }));
       Assert.That (groups[1].ToArray (), Is.EquivalentTo (new object[] { _independent1 }));
     }
@@ -139,7 +139,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void NextCallDependency_Cut ()
     {
       var groups = GetGroups (_nextCallDependency0, _nextCallDependency1);
-      Assert.AreEqual (1, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (1));
       Assert.That (groups[0].ToArray(), Is.EquivalentTo (new object[] { _nextCallDependency0, _nextCallDependency1 }));
     }
 
@@ -147,7 +147,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void NextCallDependency_TransitiveCut ()
     {
       var groups = GetGroups (_nextCallDependency0, _nextCallDependency1, _nextCallDependency2OverrideM1);
-      Assert.AreEqual (1, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (1));
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _nextCallDependency0, _nextCallDependency1, _nextCallDependency2OverrideM1 }));
     }
 
@@ -155,7 +155,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void NextCallDependency_TransitiveCutAndOverride ()
     {
       var groups = GetGroups (_overrideM2, _overrideM1M2, _nextCallDependency1, _nextCallDependency2OverrideM1);
-      Assert.AreEqual (1, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (1));
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _overrideM2, _overrideM1M2, _nextCallDependency1, _nextCallDependency2OverrideM1 }));
     }
 
@@ -163,7 +163,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void ExplicitDependency_NoCut ()
     {
       var groups = GetGroups (_additionalDependency1, _independent1);
-      Assert.AreEqual (2, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (2));
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _additionalDependency1 }));
       Assert.That (groups[1].ToArray (), Is.EquivalentTo (new object[] { _independent1 }));
     }
@@ -172,7 +172,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void ExplicitDependency_Cut ()
     {
       var groups = GetGroups (_additionalDependency0, _additionalDependency1);
-      Assert.AreEqual (1, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (1));
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _additionalDependency0, _additionalDependency1 }));
     }
 
@@ -180,7 +180,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     public void ExplicitDependency_Cut_OtherDirection ()
     {
       var groups = GetGroups (_additionalDependency1, _additionalDependency0);
-      Assert.AreEqual (1, groups.Length);
+      Assert.That (groups.Length, Is.EqualTo (1));
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _additionalDependency0, _additionalDependency1 }));
     }
 

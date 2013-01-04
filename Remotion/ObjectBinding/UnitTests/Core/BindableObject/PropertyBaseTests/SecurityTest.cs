@@ -91,7 +91,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isAccessible = _securableProperty.IsAccessible (_securableObject.BusinessObjectClass, _securableObject);
 
       _mocks.VerifyAll();
-      Assert.IsTrue (isAccessible);
+      Assert.That (isAccessible, Is.True);
     }
 
     [Test]
@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isAccessible = _securableProperty.IsAccessible (_securableObject.BusinessObjectClass, _securableObject);
 
       _mocks.VerifyAll();
-      Assert.IsTrue (isAccessible);
+      Assert.That (isAccessible, Is.True);
     }
 
     [Test]
@@ -115,7 +115,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isAccessible = _securableProperty.IsAccessible (_securableObject.BusinessObjectClass, _securableObject);
 
       _mocks.VerifyAll();
-      Assert.IsFalse (isAccessible);
+      Assert.That (isAccessible, Is.False);
     }
 
     [Test]
@@ -130,7 +130,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isAccessible = _securableExplicitInterfaceProperty.IsAccessible (_securableObject.BusinessObjectClass, _securableObject);
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (isAccessible);
+      Assert.That (isAccessible, Is.True);
     }
 
     [Test]
@@ -141,7 +141,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isAccessible = _nonSecurableProperty.IsAccessible (_nonSecurableObject.BusinessObjectClass, _nonSecurableObject);
 
       _mocks.VerifyAll();
-      Assert.IsTrue (isAccessible);
+      Assert.That (isAccessible, Is.True);
     }
 
     [Test]
@@ -153,7 +153,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isReadOnly = _securableProperty.IsReadOnly (_securableObject);
 
       _mocks.VerifyAll();
-      Assert.IsFalse (isReadOnly);
+      Assert.That (isReadOnly, Is.False);
     }
 
     [Test]
@@ -165,7 +165,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isReadOnly = _securableProperty.IsReadOnly (_securableObject);
 
       _mocks.VerifyAll();
-      Assert.IsTrue (isReadOnly);
+      Assert.That (isReadOnly, Is.True);
     }
 
     [Test]
@@ -180,7 +180,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isReadOnly = _securableExplicitInterfaceProperty.IsReadOnly (_securableObject);
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (isReadOnly);
+      Assert.That (isReadOnly, Is.True);
     }
 
     [Test]
@@ -192,7 +192,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isReadOnly = _securableProperty.IsReadOnly (_securableObject);
 
       _mocks.VerifyAll();
-      Assert.IsFalse (isReadOnly);
+      Assert.That (isReadOnly, Is.False);
     }
 
     [Test]
@@ -203,7 +203,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isReadOnly = _nonSecurableProperty.IsReadOnly (_nonSecurableObject);
 
       _mocks.VerifyAll();
-      Assert.IsFalse (isReadOnly);
+      Assert.That (isReadOnly, Is.False);
     }
 
     [Test]
@@ -214,7 +214,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       bool isReadOnly = _nonSecurablePropertyReadOnly.IsReadOnly (_nonSecurableObject);
 
       _mocks.VerifyAll();
-      Assert.IsTrue (isReadOnly);
+      Assert.That (isReadOnly, Is.True);
     }
 
     private void ExpectHasAccessOnGetAccessor (bool returnValue)

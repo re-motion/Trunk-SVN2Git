@@ -44,34 +44,33 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
     public void ApplicationAssemblyMatchExpression ()
     {
       ApplicationAssemblyLoaderFilter filter = ApplicationAssemblyLoaderFilter.Instance;
-      Assert.AreEqual (@"^((mscorlib)|(System)|(System\..*)|(Microsoft\..*)|(Remotion\..*\.Generated\..*))$",
-                       filter.SystemAssemblyMatchExpression);
+      Assert.That (filter.SystemAssemblyMatchExpression, Is.EqualTo (@"^((mscorlib)|(System)|(System\..*)|(Microsoft\..*)|(Remotion\..*\.Generated\..*))$"));
     }
 
     [Test]
     public void ApplicationAssemblyConsidering ()
     {
       ApplicationAssemblyLoaderFilter filter = ApplicationAssemblyLoaderFilter.Instance;
-      Assert.IsTrue (filter.ShouldConsiderAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly.GetName ()));
-      Assert.IsTrue (filter.ShouldConsiderAssembly (typeof (TestFixtureAttribute).Assembly.GetName ()));
-      Assert.IsTrue (filter.ShouldConsiderAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly.GetName ()));
+      Assert.That (filter.ShouldConsiderAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly.GetName ()), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (TestFixtureAttribute).Assembly.GetName ()), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly.GetName ()), Is.True);
 
-      Assert.IsFalse (filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName ()));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (new AssemblyName ("System")));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (new AssemblyName ("Microsoft.Something.Whatever")));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (new AssemblyName ("Remotion.Mixins.Generated.Unsigned")));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (new AssemblyName ("Remotion.Mixins.Generated.Signed")));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (new AssemblyName ("Remotion.Data.DomainObjects.Generated.Signed")));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (new AssemblyName ("Remotion.Data.DomainObjects.Generated.Unsigned")));
+      Assert.That (filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName ()), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (new AssemblyName ("System")), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (new AssemblyName ("Microsoft.Something.Whatever")), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (new AssemblyName ("Remotion.Mixins.Generated.Unsigned")), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (new AssemblyName ("Remotion.Mixins.Generated.Signed")), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (new AssemblyName ("Remotion.Data.DomainObjects.Generated.Signed")), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (new AssemblyName ("Remotion.Data.DomainObjects.Generated.Unsigned")), Is.False);
     }
 
     [Test]
     public void AddIgnoredAssembly ()
     {
       ApplicationAssemblyLoaderFilter filter = ApplicationAssemblyLoaderFilter.Instance;
-      Assert.IsTrue (filter.ShouldConsiderAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly.GetName ()));
+      Assert.That (filter.ShouldConsiderAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly.GetName ()), Is.True);
       filter.AddIgnoredAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly.GetName ().Name);
-      Assert.IsFalse (filter.ShouldConsiderAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly.GetName ()));
+      Assert.That (filter.ShouldConsiderAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly.GetName ()), Is.False);
     }
 
     [Test]
@@ -86,16 +85,16 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
               var path = (string) args[0];
 
               ApplicationAssemblyLoaderFilter filter = ApplicationAssemblyLoaderFilter.Instance;
-              Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly));
-              Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (TestFixtureAttribute).Assembly));
-              Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly));
-              Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (object).Assembly));
-              Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (Uri).Assembly));
+              Assert.That (filter.ShouldIncludeAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly), Is.True);
+              Assert.That (filter.ShouldIncludeAssembly (typeof (TestFixtureAttribute).Assembly), Is.True);
+              Assert.That (filter.ShouldIncludeAssembly (typeof (ApplicationAssemblyLoaderFilter).Assembly), Is.True);
+              Assert.That (filter.ShouldIncludeAssembly (typeof (object).Assembly), Is.True);
+              Assert.That (filter.ShouldIncludeAssembly (typeof (Uri).Assembly), Is.True);
 
               var assemblyCompiler = new AssemblyCompiler (@"Reflection\TypeDiscovery\TestAssemblies\NonApplicationMarkedAssembly", path,
                                                            typeof (NonApplicationAssemblyAttribute).Assembly.Location);
               assemblyCompiler.Compile ();
-              Assert.IsFalse (filter.ShouldIncludeAssembly (assemblyCompiler.CompiledAssembly));
+              Assert.That (filter.ShouldIncludeAssembly (assemblyCompiler.CompiledAssembly), Is.False);
             }, compiledAssemblyPath);
       }
       finally

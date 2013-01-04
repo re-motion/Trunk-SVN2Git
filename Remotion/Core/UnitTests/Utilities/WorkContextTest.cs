@@ -31,61 +31,47 @@ public class WorkContextTest
   [Test]
   public void TestCatchMainInside ()
   {
-    Assert.AreEqual (
-      "? main",
-      PerformTest (ThrowLocation.main_inside, true));
+    Assert.That (PerformTest (ThrowLocation.main_inside, true), Is.EqualTo ("? main"));
   }
 
   [Test]
   public void TestCatchMainOutside ()
   {
-    Assert.AreEqual (
-      "",
-      PerformTest (ThrowLocation.main_outside, true));
+    Assert.That (PerformTest (ThrowLocation.main_outside, true), Is.EqualTo (""));
   }
 
   [Test]
   public void TestCatchSub1Inside()
   {
-    Assert.AreEqual (
-      "main\n" + 
-      "? sub1",
-      PerformTest (ThrowLocation.sub1_inside, true));
+    Assert.That (PerformTest (ThrowLocation.sub1_inside, true), Is.EqualTo ("main\n" + 
+                                                                            "? sub1"));
   }
 
   [Test]
   public void TestCatchSub1Outside()
   {
-    Assert.AreEqual (
-      "main",
-      PerformTest (ThrowLocation.sub1_outside, true));
+    Assert.That (PerformTest (ThrowLocation.sub1_outside, true), Is.EqualTo ("main"));
   }
 
   [Test]
   public void TestCatchSub2Inside()
   {
-    Assert.AreEqual (
-      "main\n" + 
-      "? sub2",
-      PerformTest (ThrowLocation.sub2_inside, true));
+    Assert.That (PerformTest (ThrowLocation.sub2_inside, true), Is.EqualTo ("main\n" + 
+                                                                            "? sub2"));
   }
 
   [Test]
   public void TestCatchSub2Outside()
   {
-    Assert.AreEqual (
-      "main",
-      PerformTest (ThrowLocation.sub2_outside, true));
+    Assert.That (PerformTest (ThrowLocation.sub2_outside, true), Is.EqualTo ("main"));
   }
 
   [Test]
   public void TestCatchSub2_1Inside()
   {
-    Assert.AreEqual (
-      "main\n" + 
-      "? sub2\n" + 
-      "? sub2.1",
-      PerformTest (ThrowLocation.sub2_1_inside, true));
+    Assert.That (PerformTest (ThrowLocation.sub2_1_inside, true), Is.EqualTo ("main\n" + 
+                                                                              "? sub2\n" + 
+                                                                              "? sub2.1"));
   }
 
   // do not use inner catch
@@ -93,61 +79,47 @@ public class WorkContextTest
   [Test]
   public void TestNoCatchMainInside ()
   {
-    Assert.AreEqual (
-      "? main",
-      PerformTest (ThrowLocation.main_inside, false));
+    Assert.That (PerformTest (ThrowLocation.main_inside, false), Is.EqualTo ("? main"));
   }
 
   [Test]
   public void TestNoCatchMainOutside ()
   {
-    Assert.AreEqual (
-      "",
-      PerformTest (ThrowLocation.main_outside, false));
+    Assert.That (PerformTest (ThrowLocation.main_outside, false), Is.EqualTo (""));
   }
 
   [Test]
   public void TestNoCatchSub1Inside()
   {
-    Assert.AreEqual (
-      "? main\n" + 
-      "? sub1",
-      PerformTest (ThrowLocation.sub1_inside, false));
+    Assert.That (PerformTest (ThrowLocation.sub1_inside, false), Is.EqualTo ("? main\n" + 
+                                                                             "? sub1"));
   }
 
   [Test]
   public void TestNoCatchSub1Outside()
   {
-    Assert.AreEqual (
-      "? main",
-      PerformTest (ThrowLocation.sub1_outside, false));
+    Assert.That (PerformTest (ThrowLocation.sub1_outside, false), Is.EqualTo ("? main"));
   }
 
   [Test]
   public void TestNoCatchSub2Inside()
   {
-    Assert.AreEqual (
-      "? main\n" + 
-      "? sub2",
-      PerformTest (ThrowLocation.sub2_inside, false));
+    Assert.That (PerformTest (ThrowLocation.sub2_inside, false), Is.EqualTo ("? main\n" + 
+                                                                             "? sub2"));
   }
 
   [Test]
   public void TestNoCatchSub2Outside()
   {
-    Assert.AreEqual (
-      "? main",
-      PerformTest (ThrowLocation.sub2_outside, false));
+    Assert.That (PerformTest (ThrowLocation.sub2_outside, false), Is.EqualTo ("? main"));
   }
 
   [Test]
   public void TestNoCatchSub2_1Inside()
   {
-    Assert.AreEqual (
-      "? main\n" + 
-      "? sub2\n" + 
-      "? sub2.1",
-      PerformTest (ThrowLocation.sub2_1_inside, false));
+    Assert.That (PerformTest (ThrowLocation.sub2_1_inside, false), Is.EqualTo ("? main\n" + 
+                                                                               "? sub2\n" + 
+                                                                               "? sub2.1"));
   }
 
   private string PerformTest (ThrowLocation location, bool catchInInnerHandler)
@@ -169,7 +141,7 @@ public class WorkContextTest
         {
           if (!catchInInnerHandler)
             throw;
-          Assert.AreEqual (location.ToString(), e.Message);
+          Assert.That (e.Message, Is.EqualTo (location.ToString()));
           return WorkContext.Stack.ToString();
         }
         try
@@ -190,7 +162,7 @@ public class WorkContextTest
         {
           if (!catchInInnerHandler)
             throw;
-          Assert.AreEqual (location.ToString(), e.Message);
+          Assert.That (e.Message, Is.EqualTo (location.ToString()));
           return WorkContext.Stack.ToString();
         }
         if (location == ThrowLocation.main_inside) throw new Exception (location.ToString());
@@ -201,7 +173,7 @@ public class WorkContextTest
     }
     catch (Exception e)
     {
-      Assert.AreEqual (location.ToString(), e.Message);
+      Assert.That (e.Message, Is.EqualTo (location.ToString()));
       return WorkContext.Stack.ToString();
     }
   }

@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsTrue (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.True);
     }
 
     [Test]
@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
   }
 }

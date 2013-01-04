@@ -50,9 +50,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       RdbmsProviderDefinition provider = new RdbmsProviderDefinition ("Provider", _sqlStorageObjectFactory, "ConnectionString");
 
-      Assert.AreEqual ("Provider", provider.Name);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
       Assert.That (provider.Factory, Is.TypeOf (typeof (SqlStorageObjectFactory)));
-      Assert.AreEqual ("ConnectionString", provider.ConnectionString);
+      Assert.That (provider.ConnectionString, Is.EqualTo ("ConnectionString"));
     }
 
     [Test]
@@ -65,12 +65,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       RdbmsProviderDefinition provider = new RdbmsProviderDefinition ("Provider", config);
 
-      Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreEqual ("The Description", provider.Description);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
+      Assert.That (provider.Description, Is.EqualTo ("The Description"));
       Assert.That (provider.Factory, Is.TypeOf(typeof (SqlStorageObjectFactory)));
-      Assert.AreEqual ("ConnectionString", provider.ConnectionString);
-      Assert.IsEmpty (config);
- }
+      Assert.That (provider.ConnectionString, Is.EqualTo ("ConnectionString"));
+      Assert.That (config, Is.Empty);
+    }
 
     [Test]
     [ExpectedException (typeof (ConfigurationErrorsException), ExpectedMessage = 
@@ -101,13 +101,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void IsIdentityTypeSupportedFalse()
     {
-      Assert.IsFalse (_definition.IsIdentityTypeSupported (typeof (int)));
+      Assert.That (_definition.IsIdentityTypeSupported (typeof (int)), Is.False);
     }
 
     [Test]
     public void IsIdentityTypeSupportedTrue()
     {
-      Assert.IsTrue (_definition.IsIdentityTypeSupported (typeof (Guid)));
+      Assert.That (_definition.IsIdentityTypeSupported (typeof (Guid)), Is.True);
     }
 
     [Test]
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       }
       catch (IdentityTypeNotSupportedException ex)
       {
-        Assert.AreEqual (typeof (string), ex.InvalidIdentityType);
+        Assert.That (ex.InvalidIdentityType, Is.EqualTo (typeof (string)));
       }
     }
   }

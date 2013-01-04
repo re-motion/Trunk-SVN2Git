@@ -61,18 +61,18 @@ public class NameValueCollectionUtilityTest
   public void Clone()
   {
     NameValueCollection actual = NameValueCollectionUtility.Clone (_collection);
-    
-    Assert.IsNotNull (actual);
-    Assert.IsFalse (ReferenceEquals (_collection, actual));
-    Assert.AreEqual (3, actual.Count);
 
-    Assert.AreEqual ("FirstKey", actual.GetKey (0));
-    Assert.AreEqual ("SecondKey", actual.GetKey (1));
-    Assert.AreEqual ("ThirdKey", actual.GetKey (2));
+    Assert.That (actual, Is.Not.Null);
+    Assert.That (ReferenceEquals (_collection, actual), Is.False);
+    Assert.That (actual.Count, Is.EqualTo (3));
 
-    Assert.AreEqual ("FirstValue", actual["FirstKey"]);
-    Assert.AreEqual ("SecondValue", actual["SecondKey"]);
-    Assert.AreEqual ("ThirdValue,Other ThirdValue", actual["ThirdKey"]);
+    Assert.That (actual.GetKey (0), Is.EqualTo ("FirstKey"));
+    Assert.That (actual.GetKey (1), Is.EqualTo ("SecondKey"));
+    Assert.That (actual.GetKey (2), Is.EqualTo ("ThirdKey"));
+
+    Assert.That (actual["FirstKey"], Is.EqualTo ("FirstValue"));
+    Assert.That (actual["SecondKey"], Is.EqualTo ("SecondValue"));
+    Assert.That (actual["ThirdKey"], Is.EqualTo ("ThirdValue,Other ThirdValue"));
   }
 
   [Test]
@@ -80,15 +80,15 @@ public class NameValueCollectionUtilityTest
   {
     NameValueCollectionUtility.Append (_collection, null);
 
-    Assert.AreEqual (3, _collection.Count);
+    Assert.That (_collection.Count, Is.EqualTo (3));
 
-    Assert.AreEqual ("FirstKey", _collection.GetKey (0));
-    Assert.AreEqual ("SecondKey", _collection.GetKey (1));
-    Assert.AreEqual ("ThirdKey", _collection.GetKey (2));
+    Assert.That (_collection.GetKey (0), Is.EqualTo ("FirstKey"));
+    Assert.That (_collection.GetKey (1), Is.EqualTo ("SecondKey"));
+    Assert.That (_collection.GetKey (2), Is.EqualTo ("ThirdKey"));
 
-    Assert.AreEqual ("FirstValue", _collection["FirstKey"]);
-    Assert.AreEqual ("SecondValue", _collection["SecondKey"]);
-    Assert.AreEqual ("ThirdValue,Other ThirdValue", _collection["ThirdKey"]);
+    Assert.That (_collection["FirstKey"], Is.EqualTo ("FirstValue"));
+    Assert.That (_collection["SecondKey"], Is.EqualTo ("SecondValue"));
+    Assert.That (_collection["ThirdKey"], Is.EqualTo ("ThirdValue,Other ThirdValue"));
   } 
 
   [Test]
@@ -96,15 +96,15 @@ public class NameValueCollectionUtilityTest
   {
     NameValueCollectionUtility.Append (_collection, new NameValueCollection());
 
-    Assert.AreEqual (3, _collection.Count);
+    Assert.That (_collection.Count, Is.EqualTo (3));
 
-    Assert.AreEqual ("FirstKey", _collection.GetKey (0));
-    Assert.AreEqual ("SecondKey", _collection.GetKey (1));
-    Assert.AreEqual ("ThirdKey", _collection.GetKey (2));
+    Assert.That (_collection.GetKey (0), Is.EqualTo ("FirstKey"));
+    Assert.That (_collection.GetKey (1), Is.EqualTo ("SecondKey"));
+    Assert.That (_collection.GetKey (2), Is.EqualTo ("ThirdKey"));
 
-    Assert.AreEqual ("FirstValue", _collection["FirstKey"]);
-    Assert.AreEqual ("SecondValue", _collection["SecondKey"]);
-    Assert.AreEqual ("ThirdValue,Other ThirdValue", _collection["ThirdKey"]);
+    Assert.That (_collection["FirstKey"], Is.EqualTo ("FirstValue"));
+    Assert.That (_collection["SecondKey"], Is.EqualTo ("SecondValue"));
+    Assert.That (_collection["ThirdKey"], Is.EqualTo ("ThirdValue,Other ThirdValue"));
   } 
 
   [Test]
@@ -112,61 +112,61 @@ public class NameValueCollectionUtilityTest
   {
     NameValueCollectionUtility.Append (_collection, _otherCollection);
 
-    Assert.AreEqual (5, _collection.Count);
+    Assert.That (_collection.Count, Is.EqualTo (5));
 
-    Assert.AreEqual ("FirstKey", _collection.GetKey (0));
-    Assert.AreEqual ("SecondKey", _collection.GetKey (1));
-    Assert.AreEqual ("ThirdKey", _collection.GetKey (2));
-    Assert.AreEqual ("FourthKey", _collection.GetKey (3));
-    Assert.AreEqual ("FifthKey", _collection.GetKey (4));
+    Assert.That (_collection.GetKey (0), Is.EqualTo ("FirstKey"));
+    Assert.That (_collection.GetKey (1), Is.EqualTo ("SecondKey"));
+    Assert.That (_collection.GetKey (2), Is.EqualTo ("ThirdKey"));
+    Assert.That (_collection.GetKey (3), Is.EqualTo ("FourthKey"));
+    Assert.That (_collection.GetKey (4), Is.EqualTo ("FifthKey"));
 
-    Assert.AreEqual ("FirstValue", _collection["FirstKey"]);
-    Assert.AreEqual ("Other SecondValue", _collection["SecondKey"]);
-    Assert.AreEqual ("ThirdValue,Other ThirdValue", _collection["ThirdKey"]);
-    Assert.AreEqual ("FourthValue", _collection["FourthKey"]);
-    Assert.AreEqual ("FifthValue", _collection["FifthKey"]);
+    Assert.That (_collection["FirstKey"], Is.EqualTo ("FirstValue"));
+    Assert.That (_collection["SecondKey"], Is.EqualTo ("Other SecondValue"));
+    Assert.That (_collection["ThirdKey"], Is.EqualTo ("ThirdValue,Other ThirdValue"));
+    Assert.That (_collection["FourthKey"], Is.EqualTo ("FourthValue"));
+    Assert.That (_collection["FifthKey"], Is.EqualTo ("FifthValue"));
   } 
 
   [Test]
   public void MergeWithFirstNullAndSecondNull()
   {
-    Assert.IsNull (NameValueCollectionUtility.Merge (null, null));
+    Assert.That (NameValueCollectionUtility.Merge (null, null), Is.Null);
   }
 
   [Test]
   public void MergeWithFirstValueAndSecondNull()
   {
     NameValueCollection actual = NameValueCollectionUtility.Merge (_collection, null);
-    
-    Assert.IsNotNull (actual);
-    Assert.IsFalse (ReferenceEquals (_collection, actual));
-    Assert.AreEqual (3, actual.Count);
 
-    Assert.AreEqual ("FirstKey", actual.GetKey (0));
-    Assert.AreEqual ("SecondKey", actual.GetKey (1));
-    Assert.AreEqual ("ThirdKey", actual.GetKey (2));
+    Assert.That (actual, Is.Not.Null);
+    Assert.That (ReferenceEquals (_collection, actual), Is.False);
+    Assert.That (actual.Count, Is.EqualTo (3));
 
-    Assert.AreEqual ("FirstValue", actual["FirstKey"]);
-    Assert.AreEqual ("SecondValue", actual["SecondKey"]);
-    Assert.AreEqual ("ThirdValue,Other ThirdValue", actual["ThirdKey"]);
+    Assert.That (actual.GetKey (0), Is.EqualTo ("FirstKey"));
+    Assert.That (actual.GetKey (1), Is.EqualTo ("SecondKey"));
+    Assert.That (actual.GetKey (2), Is.EqualTo ("ThirdKey"));
+
+    Assert.That (actual["FirstKey"], Is.EqualTo ("FirstValue"));
+    Assert.That (actual["SecondKey"], Is.EqualTo ("SecondValue"));
+    Assert.That (actual["ThirdKey"], Is.EqualTo ("ThirdValue,Other ThirdValue"));
   }
 
   [Test]
   public void MergeWithFirstNullAndSecondValue()
   {
     NameValueCollection actual = NameValueCollectionUtility.Merge (null, _collection);
-    
-    Assert.IsNotNull (actual);
-    Assert.IsFalse (ReferenceEquals (_collection, actual));
-    Assert.AreEqual (3, actual.Count);
 
-    Assert.AreEqual ("FirstKey", actual.GetKey (0));
-    Assert.AreEqual ("SecondKey", actual.GetKey (1));
-    Assert.AreEqual ("ThirdKey", actual.GetKey (2));
+    Assert.That (actual, Is.Not.Null);
+    Assert.That (ReferenceEquals (_collection, actual), Is.False);
+    Assert.That (actual.Count, Is.EqualTo (3));
 
-    Assert.AreEqual ("FirstValue", actual["FirstKey"]);
-    Assert.AreEqual ("SecondValue", actual["SecondKey"]);
-    Assert.AreEqual ("ThirdValue,Other ThirdValue", actual["ThirdKey"]);
+    Assert.That (actual.GetKey (0), Is.EqualTo ("FirstKey"));
+    Assert.That (actual.GetKey (1), Is.EqualTo ("SecondKey"));
+    Assert.That (actual.GetKey (2), Is.EqualTo ("ThirdKey"));
+
+    Assert.That (actual["FirstKey"], Is.EqualTo ("FirstValue"));
+    Assert.That (actual["SecondKey"], Is.EqualTo ("SecondValue"));
+    Assert.That (actual["ThirdKey"], Is.EqualTo ("ThirdValue,Other ThirdValue"));
   }
 
   [Test]
@@ -174,21 +174,21 @@ public class NameValueCollectionUtilityTest
   {
     NameValueCollection actual = NameValueCollectionUtility.Merge (_collection, _otherCollection);
 
-    Assert.IsNotNull (actual);
-    Assert.IsFalse (ReferenceEquals (_collection, actual));
-    Assert.AreEqual (5, actual.Count);
+    Assert.That (actual, Is.Not.Null);
+    Assert.That (ReferenceEquals (_collection, actual), Is.False);
+    Assert.That (actual.Count, Is.EqualTo (5));
 
-    Assert.AreEqual ("FirstKey", actual.GetKey (0));
-    Assert.AreEqual ("SecondKey", actual.GetKey (1));
-    Assert.AreEqual ("ThirdKey", actual.GetKey (2));
-    Assert.AreEqual ("FourthKey", actual.GetKey (3));
-    Assert.AreEqual ("FifthKey", actual.GetKey (4));
+    Assert.That (actual.GetKey (0), Is.EqualTo ("FirstKey"));
+    Assert.That (actual.GetKey (1), Is.EqualTo ("SecondKey"));
+    Assert.That (actual.GetKey (2), Is.EqualTo ("ThirdKey"));
+    Assert.That (actual.GetKey (3), Is.EqualTo ("FourthKey"));
+    Assert.That (actual.GetKey (4), Is.EqualTo ("FifthKey"));
 
-    Assert.AreEqual ("FirstValue", actual["FirstKey"]);
-    Assert.AreEqual ("Other SecondValue", actual["SecondKey"]);
-    Assert.AreEqual ("ThirdValue,Other ThirdValue", actual["ThirdKey"]);
-    Assert.AreEqual ("FourthValue", actual["FourthKey"]);
-    Assert.AreEqual ("FifthValue", actual["FifthKey"]);
+    Assert.That (actual["FirstKey"], Is.EqualTo ("FirstValue"));
+    Assert.That (actual["SecondKey"], Is.EqualTo ("Other SecondValue"));
+    Assert.That (actual["ThirdKey"], Is.EqualTo ("ThirdValue,Other ThirdValue"));
+    Assert.That (actual["FourthKey"], Is.EqualTo ("FourthValue"));
+    Assert.That (actual["FifthKey"], Is.EqualTo ("FifthValue"));
   } 
 }
 

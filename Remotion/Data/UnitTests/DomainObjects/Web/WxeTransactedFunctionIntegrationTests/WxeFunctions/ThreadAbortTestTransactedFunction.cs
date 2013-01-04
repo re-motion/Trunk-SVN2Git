@@ -50,28 +50,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
     private void Step1 ()
     {
-      Assert.IsFalse (FirstStepExecuted);
-      Assert.IsFalse (SecondStepExecuted);
-      Assert.IsFalse (ThreadAborted);
+      Assert.That (FirstStepExecuted, Is.False);
+      Assert.That (SecondStepExecuted, Is.False);
+      Assert.That (ThreadAborted, Is.False);
       FirstStepExecuted = true;
       TransactionScopeInFirstStep = ClientTransactionScope.ActiveScope;
     }
 
     private void Step2 ()
     {
-      Assert.IsTrue (FirstStepExecuted);
-      Assert.IsFalse (SecondStepExecuted);
+      Assert.That (FirstStepExecuted, Is.True);
+      Assert.That (SecondStepExecuted, Is.False);
 
       if (!ThreadAborted)
       {
         TransactionScopeInSecondStepBeforeException = ClientTransactionScope.ActiveScope;
-        Assert.AreSame (TransactionScopeInFirstStep, TransactionScopeInSecondStepBeforeException);
+        Assert.That (TransactionScopeInSecondStepBeforeException, Is.SameAs (TransactionScopeInFirstStep));
         ThreadAborted = true;
         Thread.CurrentThread.Abort();
       }
       TransactionScopeInSecondStepAfterException = ClientTransactionScope.ActiveScope;
-      Assert.AreNotSame (TransactionScopeInFirstStep, TransactionScopeInSecondStepAfterException);
-      Assert.AreSame (TransactionScopeInFirstStep.ScopedTransaction, TransactionScopeInSecondStepAfterException.ScopedTransaction);
+      Assert.That (TransactionScopeInSecondStepAfterException, Is.Not.SameAs (TransactionScopeInFirstStep));
+      Assert.That (TransactionScopeInSecondStepAfterException.ScopedTransaction, Is.SameAs (TransactionScopeInFirstStep.ScopedTransaction));
       SecondStepExecuted = true;
     }
   }

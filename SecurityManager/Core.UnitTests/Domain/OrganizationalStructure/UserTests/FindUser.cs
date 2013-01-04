@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     {
       User foundUser = User.FindByUserName ("test.user");
 
-      Assert.AreEqual ("test.user", foundUser.UserName);
+      Assert.That (foundUser.UserName, Is.EqualTo ("test.user"));
     }
 
     [Test]
@@ -51,7 +51,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     {
       User foundUser = User.FindByUserName ("not.existing");
 
-      Assert.IsNull (foundUser);
+      Assert.That (foundUser, Is.Null);
     }
 
     [Test]
@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     {
       var users = User.FindByTenantID (_expectedTenantID);
 
-      Assert.AreEqual (6, users.Count());
+      Assert.That (users.Count(), Is.EqualTo (6));
     }
   }
 }

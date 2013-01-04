@@ -46,14 +46,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void LoadConcreteSingle ()
     {
       DataContainer customerContainer = _provider.LoadDataContainer (DomainObjectIDs.Customer).LocatedObject;
-      Assert.IsNotNull (customerContainer);
-      Assert.AreEqual (DomainObjectIDs.Customer, customerContainer.ID);
-      Assert.AreEqual ("UnitTests", customerContainer.GetValue (GetPropertyDefinition (typeof (TIDomainBase), "CreatedBy")));
-      Assert.AreEqual (
-          "Zaphod", customerContainer.GetValue (GetPropertyDefinition (typeof (TIPerson), "FirstName")));
-      Assert.AreEqual (
-          CustomerType.Premium,
-          customerContainer.GetValue (GetPropertyDefinition (typeof (TICustomer), "CustomerType")));
+      Assert.That (customerContainer, Is.Not.Null);
+      Assert.That (customerContainer.ID, Is.EqualTo (DomainObjectIDs.Customer));
+      Assert.That (customerContainer.GetValue (GetPropertyDefinition (typeof (TIDomainBase), "CreatedBy")), Is.EqualTo ("UnitTests"));
+      Assert.That (customerContainer.GetValue (GetPropertyDefinition (typeof (TIPerson), "FirstName")), Is.EqualTo ("Zaphod"));
+      Assert.That (customerContainer.GetValue (GetPropertyDefinition (typeof (TICustomer), "CustomerType")), Is.EqualTo (CustomerType.Premium));
     }
 
     [Test]
@@ -68,12 +65,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           sortExpression,
           DomainObjectIDs.Client).ToList();
 
-      Assert.IsNotNull (loadedDataContainers);
-      Assert.AreEqual (4, loadedDataContainers.Count);
-      Assert.AreEqual (DomainObjectIDs.OrganizationalUnit, loadedDataContainers[0].ID);
-      Assert.AreEqual (DomainObjectIDs.Person, loadedDataContainers[1].ID);
-      Assert.AreEqual (DomainObjectIDs.PersonForUnidirectionalRelationTest, loadedDataContainers[2].ID);
-      Assert.AreEqual (DomainObjectIDs.Customer, loadedDataContainers[3].ID);
+      Assert.That (loadedDataContainers, Is.Not.Null);
+      Assert.That (loadedDataContainers.Count, Is.EqualTo (4));
+      Assert.That (loadedDataContainers[0].ID, Is.EqualTo (DomainObjectIDs.OrganizationalUnit));
+      Assert.That (loadedDataContainers[1].ID, Is.EqualTo (DomainObjectIDs.Person));
+      Assert.That (loadedDataContainers[2].ID, Is.EqualTo (DomainObjectIDs.PersonForUnidirectionalRelationTest));
+      Assert.That (loadedDataContainers[3].ID, Is.EqualTo (DomainObjectIDs.Customer));
     }
 
     [Test]
@@ -85,8 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           (RelationEndPointDefinition) relationEndPointDefinition,
           null,
           DomainObjectIDs.Customer);
-      Assert.IsNotNull (result);
-      Assert.AreEqual (0, result.Count());
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.Count(), Is.EqualTo (0));
     }
   }
 }

@@ -1017,14 +1017,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var propertyDefinition = GetPropertyDefinition (typeof (OrderItem), "Product");
       dataContainer.SetValue (propertyDefinition, "newProduct");
 
-      Assert.AreNotEqual ("newProduct", dataContainer.GetValue (propertyDefinition, ValueAccess.Original));
-      Assert.AreEqual ("newProduct", orderItem.Product);
+      Assert.That (dataContainer.GetValue (propertyDefinition, ValueAccess.Original), Is.Not.EqualTo ("newProduct"));
+      Assert.That (orderItem.Product, Is.EqualTo ("newProduct"));
 
       TestableClientTransaction.Commit();
       orderItem.Product = "newProduct2";
 
-      Assert.AreEqual ("newProduct", dataContainer.GetValue (propertyDefinition, ValueAccess.Original));
-      Assert.AreEqual ("newProduct2", orderItem.Product);
+      Assert.That (dataContainer.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo ("newProduct"));
+      Assert.That (orderItem.Product, Is.EqualTo ("newProduct2"));
     }
 
     [Test]
@@ -1129,9 +1129,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       newCustomer.Ceo = Ceo.NewObject();
 
       Customer existingCustomer = Customer.GetObject (DomainObjectIDs.Customer3);
-      Assert.AreEqual (1, existingCustomer.Orders.Count);
-      Assert.IsNotNull (existingCustomer.Orders[0].OrderTicket);
-      Assert.AreEqual (1, existingCustomer.Orders[0].OrderItems.Count);
+      Assert.That (existingCustomer.Orders.Count, Is.EqualTo (1));
+      Assert.That (existingCustomer.Orders[0].OrderTicket, Is.Not.Null);
+      Assert.That (existingCustomer.Orders[0].OrderItems.Count, Is.EqualTo (1));
 
       existingCustomer.Orders[0].OrderTicket.Delete();
       existingCustomer.Orders[0].OrderItems[0].Delete();
@@ -1143,25 +1143,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newCustomer = Customer.GetObject (newCustomer.ID);
         existingCustomer = Customer.GetObject (DomainObjectIDs.Customer3);
 
-        Assert.AreEqual (0, newCustomer.Orders.Count);
-        Assert.AreEqual (0, existingCustomer.Orders.Count);
+        Assert.That (newCustomer.Orders.Count, Is.EqualTo (0));
+        Assert.That (existingCustomer.Orders.Count, Is.EqualTo (0));
       }
     }
 
     private void CheckNoEvents (DomainObjectEventReceiver eventReceiver)
     {
-      Assert.IsFalse (eventReceiver.HasChangingEventBeenCalled);
-      Assert.IsFalse (eventReceiver.HasChangedEventBeenCalled);
-      Assert.IsNull (eventReceiver.ChangingPropertyDefinition);
-      Assert.IsNull (eventReceiver.ChangedPropertyDefinition);
+      Assert.That (eventReceiver.HasChangingEventBeenCalled, Is.False);
+      Assert.That (eventReceiver.HasChangedEventBeenCalled, Is.False);
+      Assert.That (eventReceiver.ChangingPropertyDefinition, Is.Null);
+      Assert.That (eventReceiver.ChangedPropertyDefinition, Is.Null);
     }
 
     private void CheckEvents (DomainObjectEventReceiver eventReceiver, PropertyDefinition propertyDefinition)
     {
-      Assert.IsTrue (eventReceiver.HasChangingEventBeenCalled);
-      Assert.IsTrue (eventReceiver.HasChangedEventBeenCalled);
-      Assert.AreSame (propertyDefinition, eventReceiver.ChangingPropertyDefinition);
-      Assert.AreSame (propertyDefinition, eventReceiver.ChangedPropertyDefinition);
+      Assert.That (eventReceiver.HasChangingEventBeenCalled, Is.True);
+      Assert.That (eventReceiver.HasChangedEventBeenCalled, Is.True);
+      Assert.That (eventReceiver.ChangingPropertyDefinition, Is.SameAs (propertyDefinition));
+      Assert.That (eventReceiver.ChangedPropertyDefinition, Is.SameAs (propertyDefinition));
     }
 
     private void BackToRecord (MockRepository mockRepository, params object[] objects)

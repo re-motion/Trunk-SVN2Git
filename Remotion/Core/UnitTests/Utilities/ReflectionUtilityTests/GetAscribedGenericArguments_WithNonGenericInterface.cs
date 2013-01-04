@@ -26,25 +26,25 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     [Test]
     public void DerivedType ()
     {
-      Assert.AreEqual (new Type[0], ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedType), typeof (IDerivedInterface)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedType), typeof (IDerivedInterface)), Is.EqualTo (new Type[0]));
     }
 
     [Test]
     public void DerivedInterface ()
     {
-      Assert.AreEqual (new Type[0], ReflectionUtility.GetAscribedGenericArguments (typeof (IDerivedInterface), typeof (IDerivedInterface)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (IDerivedInterface), typeof (IDerivedInterface)), Is.EqualTo (new Type[0]));
     }
 
     [Test]
     public void DerivedInterfaceFromBaseInterface ()
     {
-      Assert.AreEqual (new Type[0], ReflectionUtility.GetAscribedGenericArguments (typeof (IDerivedInterface), typeof (IBaseInterface)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (IDerivedInterface), typeof (IBaseInterface)), Is.EqualTo (new Type[0]));
     }
 
     [Test]
     public void DerivedTypeFromBaseInterface ()
     {
-      Assert.AreEqual (new Type[0], ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedType), typeof (IBaseInterface)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedType), typeof (IBaseInterface)), Is.EqualTo (new Type[0]));
     }
 
     [Test]

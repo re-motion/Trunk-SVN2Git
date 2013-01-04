@@ -187,8 +187,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       TypeWithAllDataTypes typeWithAllDataTypes = ArgumentUtility.CheckNotNullAndType<TypeWithAllDataTypes> ("value", value);
 
-      Assert.AreEqual (stringValue, typeWithAllDataTypes.String);
-      Assert.AreEqual (int32Value, typeWithAllDataTypes.Int32);
+      Assert.That (typeWithAllDataTypes.String, Is.EqualTo (stringValue));
+      Assert.That (typeWithAllDataTypes.Int32, Is.EqualTo (int32Value));
     }
 
     protected void CheckEvents (StringCollection expected, StringCollection actual)

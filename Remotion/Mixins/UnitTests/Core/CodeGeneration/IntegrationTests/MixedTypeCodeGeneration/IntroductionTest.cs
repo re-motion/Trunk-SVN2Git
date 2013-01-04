@@ -37,8 +37,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
       var bt1AsMixedIface = bt1 as IBT1Mixin1;
-      Assert.IsNotNull (bt1AsMixedIface);
-      Assert.AreEqual ("BT1Mixin1.IntroducedMethod", bt1AsMixedIface.IntroducedMethod ());
+      Assert.That (bt1AsMixedIface, Is.Not.Null);
+      Assert.That (bt1AsMixedIface.IntroducedMethod (), Is.EqualTo ("BT1Mixin1.IntroducedMethod"));
     }
 
     [Test]
@@ -46,8 +46,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       var bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithExplicitImplementation));
       var explicito = bt1 as IExplicit;
-      Assert.IsNotNull (explicito);
-      Assert.AreEqual ("XXX", explicito.Explicit ());
+      Assert.That (explicito, Is.Not.Null);
+      Assert.That (explicito.Explicit (), Is.EqualTo ("XXX"));
     }
 
     [Test]
@@ -55,20 +55,20 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       var bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingGenericInterface<>));
       var generic = bt1 as IGeneric<BaseType1>;
-      Assert.IsNotNull (generic);
-      Assert.AreEqual ("Generic", generic.Generic (bt1));
+      Assert.That (generic, Is.Not.Null);
+      Assert.That (generic.Generic (bt1), Is.EqualTo ("Generic"));
     }
 
     [Test]
     public void InheritedIntroducedInterfaces ()
     {
       var bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingInheritedInterface));
-      Assert.AreEqual ("MixinIntroducingInheritedInterface.Method1", ((IMixinIII1) bt1).Method1 ());
-      Assert.AreEqual ("MixinIntroducingInheritedInterface.Method1", ((IMixinIII2) bt1).Method1 ());
-      Assert.AreEqual ("MixinIntroducingInheritedInterface.Method2", ((IMixinIII2) bt1).Method2 ());
-      Assert.AreEqual ("MixinIntroducingInheritedInterface.Method3", ((IMixinIII3) bt1).Method3 ());
-      Assert.AreEqual ("MixinIntroducingInheritedInterface.Method4", ((IMixinIII4) bt1).Method4 ());
-      Assert.AreEqual ("MixinIntroducingInheritedInterface.Method2", ((IMixinIII4) bt1).Method2 ());
+      Assert.That (((IMixinIII1) bt1).Method1 (), Is.EqualTo ("MixinIntroducingInheritedInterface.Method1"));
+      Assert.That (((IMixinIII2) bt1).Method1 (), Is.EqualTo ("MixinIntroducingInheritedInterface.Method1"));
+      Assert.That (((IMixinIII2) bt1).Method2 (), Is.EqualTo ("MixinIntroducingInheritedInterface.Method2"));
+      Assert.That (((IMixinIII3) bt1).Method3 (), Is.EqualTo ("MixinIntroducingInheritedInterface.Method3"));
+      Assert.That (((IMixinIII4) bt1).Method4 (), Is.EqualTo ("MixinIntroducingInheritedInterface.Method4"));
+      Assert.That (((IMixinIII4) bt1).Method2 (), Is.EqualTo ("MixinIntroducingInheritedInterface.Method2"));
     }
 
     [Test]
@@ -91,7 +91,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     public void ExplicitlyNonIntroducedInterface ()
     {
       object o = CreateMixedObject<NullTarget> (typeof (MixinNonIntroducingSimpleInterface));
-      Assert.IsFalse (o is ISimpleInterface);
+      Assert.That (o is ISimpleInterface, Is.False);
       Assert.That (Mixin.Get<MixinNonIntroducingSimpleInterface> (o), Is.InstanceOf (typeof (ISimpleInterface)));
     }
 
@@ -100,19 +100,19 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       var o = CreateMixedObject<ClassImplementingSimpleInterface> (typeof (MixinImplementingSimpleInterface));
       Assert.That (o, Is.InstanceOf (typeof (ISimpleInterface)));
-      Assert.AreEqual ("ClassImplementingSimpleInterface.Method", o.Method ());
+      Assert.That (o.Method (), Is.EqualTo ("ClassImplementingSimpleInterface.Method"));
     }
 
     [Test]
     public void MultipleSimilarInterfaces ()
     {
       object o = CreateMixedObject<NullTarget> (typeof (MixinIntroducingInterfacesImplementingEachOther<>));
-      Assert.IsTrue (o is IList<NullTarget>);
-      Assert.IsTrue (o is ICollection<NullTarget>);
-      Assert.IsTrue (o is IEnumerable<NullTarget>);
-      Assert.IsTrue (o is IList);
-      Assert.IsTrue (o is ICollection);
-      Assert.IsTrue (o is IEnumerable);
+      Assert.That (o is IList<NullTarget>, Is.True);
+      Assert.That (o is ICollection<NullTarget>, Is.True);
+      Assert.That (o is IEnumerable<NullTarget>, Is.True);
+      Assert.That (o is IList, Is.True);
+      Assert.That (o is ICollection, Is.True);
+      Assert.That (o is IEnumerable, Is.True);
     }
 
     [Test]

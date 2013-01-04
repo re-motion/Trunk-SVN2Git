@@ -69,53 +69,53 @@ namespace Remotion.UnitTests.Utilities
     [Test]
     public void CanConvertFromString()
     {
-      Assert.IsTrue (_int32EnumConverter.CanConvertFrom (typeof (string)));
-      Assert.IsTrue (_nullableInt32EnumConverter.CanConvertFrom (typeof (string)));
+      Assert.That (_int32EnumConverter.CanConvertFrom (typeof (string)), Is.True);
+      Assert.That (_nullableInt32EnumConverter.CanConvertFrom (typeof (string)), Is.True);
     }
 
     [Test]
     public void CanConvertToString()
     {
-      Assert.IsTrue (_int32EnumConverter.CanConvertTo (typeof (string)));
-      Assert.IsTrue (_nullableInt32EnumConverter.CanConvertTo (typeof (string)));
+      Assert.That (_int32EnumConverter.CanConvertTo (typeof (string)), Is.True);
+      Assert.That (_nullableInt32EnumConverter.CanConvertTo (typeof (string)), Is.True);
     }
 
     [Test]
     public void CanConvertFromNumeric()
     {
-      Assert.IsTrue (_int32EnumConverter.CanConvertFrom (typeof (Int32)));
-      Assert.IsTrue (_int16EnumConverter.CanConvertFrom (typeof (Int16)));
-      Assert.IsTrue (_nullableInt32EnumConverter.CanConvertFrom (typeof (Int32?)));
-      Assert.IsTrue (_nullableInt32EnumConverter.CanConvertFrom (typeof (Int32)));
+      Assert.That (_int32EnumConverter.CanConvertFrom (typeof (Int32)), Is.True);
+      Assert.That (_int16EnumConverter.CanConvertFrom (typeof (Int16)), Is.True);
+      Assert.That (_nullableInt32EnumConverter.CanConvertFrom (typeof (Int32?)), Is.True);
+      Assert.That (_nullableInt32EnumConverter.CanConvertFrom (typeof (Int32)), Is.True);
 
-      Assert.IsFalse (_int32EnumConverter.CanConvertFrom (typeof (Int16)));
-      Assert.IsFalse (_int16EnumConverter.CanConvertFrom (typeof (Int32)));
-      Assert.IsFalse (_int32EnumConverter.CanConvertFrom (typeof (Int32?)));
-      Assert.IsFalse (_nullableInt32EnumConverter.CanConvertFrom (typeof (Int16?)));
+      Assert.That (_int32EnumConverter.CanConvertFrom (typeof (Int16)), Is.False);
+      Assert.That (_int16EnumConverter.CanConvertFrom (typeof (Int32)), Is.False);
+      Assert.That (_int32EnumConverter.CanConvertFrom (typeof (Int32?)), Is.False);
+      Assert.That (_nullableInt32EnumConverter.CanConvertFrom (typeof (Int16?)), Is.False);
     }
 
     [Test]
     public void CanConvertToNumeric()
     {
-      Assert.IsTrue (_int32EnumConverter.CanConvertTo (typeof (Int32)));
-      Assert.IsTrue (_int16EnumConverter.CanConvertTo (typeof (Int16)));
-      Assert.IsTrue (_nullableInt32EnumConverter.CanConvertTo (typeof (Int32?)));
-      Assert.IsTrue (_int32EnumConverter.CanConvertTo (typeof (Int32?)));
+      Assert.That (_int32EnumConverter.CanConvertTo (typeof (Int32)), Is.True);
+      Assert.That (_int16EnumConverter.CanConvertTo (typeof (Int16)), Is.True);
+      Assert.That (_nullableInt32EnumConverter.CanConvertTo (typeof (Int32?)), Is.True);
+      Assert.That (_int32EnumConverter.CanConvertTo (typeof (Int32?)), Is.True);
 
-      Assert.IsFalse (_int32EnumConverter.CanConvertTo (typeof (Int16)));
-      Assert.IsFalse (_int16EnumConverter.CanConvertTo (typeof (Int32)));
-      Assert.IsFalse (_nullableInt32EnumConverter.CanConvertTo (typeof (Int32)));
-      Assert.IsFalse (_nullableInt32EnumConverter.CanConvertTo (typeof (Int16?)));
+      Assert.That (_int32EnumConverter.CanConvertTo (typeof (Int16)), Is.False);
+      Assert.That (_int16EnumConverter.CanConvertTo (typeof (Int32)), Is.False);
+      Assert.That (_nullableInt32EnumConverter.CanConvertTo (typeof (Int32)), Is.False);
+      Assert.That (_nullableInt32EnumConverter.CanConvertTo (typeof (Int16?)), Is.False);
     }
 
     [Test]
     public void ConvertFromString()
     {
-      Assert.AreEqual (Int32Enum.ValueA, _int32EnumConverter.ConvertFrom ("ValueA"));
-      Assert.AreEqual (Int32Enum.ValueB, _int32EnumConverter.ConvertFrom ("ValueB"));
-      Assert.AreEqual (Int32Enum.ValueA, _nullableInt32EnumConverter.ConvertFrom ("ValueA"));
-      Assert.AreEqual (null, _nullableInt32EnumConverter.ConvertFrom (null));
-      Assert.AreEqual (null, _nullableInt32EnumConverter.ConvertFrom (string.Empty));
+      Assert.That (_int32EnumConverter.ConvertFrom ("ValueA"), Is.EqualTo (Int32Enum.ValueA));
+      Assert.That (_int32EnumConverter.ConvertFrom ("ValueB"), Is.EqualTo (Int32Enum.ValueB));
+      Assert.That (_nullableInt32EnumConverter.ConvertFrom ("ValueA"), Is.EqualTo (Int32Enum.ValueA));
+      Assert.That (_nullableInt32EnumConverter.ConvertFrom (null), Is.EqualTo (null));
+      Assert.That (_nullableInt32EnumConverter.ConvertFrom (string.Empty), Is.EqualTo (null));
     }
 
     [Test]
@@ -137,17 +137,17 @@ namespace Remotion.UnitTests.Utilities
     {
       Type destinationType = typeof (string);
 
-      Assert.AreEqual ("ValueA", _int32EnumConverter.ConvertTo (Int32Enum.ValueA, destinationType));
-      Assert.AreEqual ("ValueB", _int32EnumConverter.ConvertTo (Int32Enum.ValueB, destinationType));
-      Assert.AreEqual ("ValueA", _nullableInt32EnumConverter.ConvertTo (Int32Enum.ValueA, destinationType));
-      Assert.AreEqual (string.Empty, _nullableInt32EnumConverter.ConvertTo (null, destinationType));
+      Assert.That (_int32EnumConverter.ConvertTo (Int32Enum.ValueA, destinationType), Is.EqualTo ("ValueA"));
+      Assert.That (_int32EnumConverter.ConvertTo (Int32Enum.ValueB, destinationType), Is.EqualTo ("ValueB"));
+      Assert.That (_nullableInt32EnumConverter.ConvertTo (Int32Enum.ValueA, destinationType), Is.EqualTo ("ValueA"));
+      Assert.That (_nullableInt32EnumConverter.ConvertTo (null, destinationType), Is.EqualTo (string.Empty));
     }
 
     [Test]
     public void ConvertFromInt32()
     {
-      Assert.AreEqual (Int32Enum.ValueA, _int32EnumConverter.ConvertFrom (0));
-      Assert.AreEqual (Int32Enum.ValueB, _int32EnumConverter.ConvertFrom (1));
+      Assert.That (_int32EnumConverter.ConvertFrom (0), Is.EqualTo (Int32Enum.ValueA));
+      Assert.That (_int32EnumConverter.ConvertFrom (1), Is.EqualTo (Int32Enum.ValueB));
     }
 
     [Test]
@@ -170,30 +170,30 @@ namespace Remotion.UnitTests.Utilities
     {
       Type destinationType = typeof (Int32);
 
-      Assert.AreEqual (0, _int32EnumConverter.ConvertTo (Int32Enum.ValueA, destinationType));
-      Assert.AreEqual (1, _int32EnumConverter.ConvertTo (Int32Enum.ValueB, destinationType));
+      Assert.That (_int32EnumConverter.ConvertTo (Int32Enum.ValueA, destinationType), Is.EqualTo (0));
+      Assert.That (_int32EnumConverter.ConvertTo (Int32Enum.ValueB, destinationType), Is.EqualTo (1));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void ConvertToInt32_WithNullableInt32EnumConverter()
     {
-      Assert.AreEqual (1, _nullableInt32EnumConverter.ConvertTo (Int32Enum.ValueB, typeof (Int32)));
+      Assert.That (_nullableInt32EnumConverter.ConvertTo (Int32Enum.ValueB, typeof (Int32)), Is.EqualTo (1));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void ConvertToInt32_WithInt16EnumConverter ()
     {
-      Assert.AreEqual (1, _int16EnumConverter.ConvertTo (Int32Enum.ValueB, typeof (Int32)));
+      Assert.That (_int16EnumConverter.ConvertTo (Int32Enum.ValueB, typeof (Int32)), Is.EqualTo (1));
     }
 
     [Test]
     public void ConvertFromNullableInt32()
     {
-      Assert.AreEqual (Int32Enum.ValueA, _nullableInt32EnumConverter.ConvertFrom (0));
-      Assert.AreEqual (Int32Enum.ValueB, _nullableInt32EnumConverter.ConvertFrom (1));
-      Assert.IsNull (_nullableInt32EnumConverter.ConvertFrom (null));
+      Assert.That (_nullableInt32EnumConverter.ConvertFrom (0), Is.EqualTo (Int32Enum.ValueA));
+      Assert.That (_nullableInt32EnumConverter.ConvertFrom (1), Is.EqualTo (Int32Enum.ValueB));
+      Assert.That (_nullableInt32EnumConverter.ConvertFrom (null), Is.Null);
     }
 
     [Test]
@@ -208,17 +208,17 @@ namespace Remotion.UnitTests.Utilities
     {
       Type destinationType = typeof (Int32?);
 
-      Assert.AreEqual (0, _nullableInt32EnumConverter.ConvertTo (Int32Enum.ValueA, destinationType));
-      Assert.AreEqual (1, _nullableInt32EnumConverter.ConvertTo (Int32Enum.ValueB, destinationType));
-      Assert.IsNull (_nullableInt32EnumConverter.ConvertTo (null, destinationType));
-      Assert.AreEqual (0, _int32EnumConverter.ConvertTo (Int32Enum.ValueA, destinationType));
+      Assert.That (_nullableInt32EnumConverter.ConvertTo (Int32Enum.ValueA, destinationType), Is.EqualTo (0));
+      Assert.That (_nullableInt32EnumConverter.ConvertTo (Int32Enum.ValueB, destinationType), Is.EqualTo (1));
+      Assert.That (_nullableInt32EnumConverter.ConvertTo (null, destinationType), Is.Null);
+      Assert.That (_int32EnumConverter.ConvertTo (Int32Enum.ValueA, destinationType), Is.EqualTo (0));
     }
 
     [Test]
     public void ConvertFromInt16()
     {
-      Assert.AreEqual (Int16Enum.ValueA, _int16EnumConverter.ConvertFrom ((Int16) 0));
-      Assert.AreEqual (Int16Enum.ValueB, _int16EnumConverter.ConvertFrom ((Int16) 1));
+      Assert.That (_int16EnumConverter.ConvertFrom ((Int16) 0), Is.EqualTo (Int16Enum.ValueA));
+      Assert.That (_int16EnumConverter.ConvertFrom ((Int16) 1), Is.EqualTo (Int16Enum.ValueB));
     }
 
     [Test]
@@ -226,8 +226,8 @@ namespace Remotion.UnitTests.Utilities
     {
       Type destinationType = typeof (Int16);
 
-      Assert.AreEqual ((Int16) 0, _int16EnumConverter.ConvertTo (Int16Enum.ValueA, destinationType));
-      Assert.AreEqual ((Int16) 1, _int16EnumConverter.ConvertTo (Int16Enum.ValueB, destinationType));
+      Assert.That (_int16EnumConverter.ConvertTo (Int16Enum.ValueA, destinationType), Is.EqualTo ((Int16) 0));
+      Assert.That (_int16EnumConverter.ConvertTo (Int16Enum.ValueB, destinationType), Is.EqualTo ((Int16) 1));
     }
   }
 }

@@ -61,8 +61,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void CreatePropertyFinder ()
     {
       IPropertyFinder finder = BindableObjectMetadataFactory.Create().CreatePropertyFinder (typeof (TestClass));
-      Assert.AreSame (typeof (ReflectionBasedPropertyFinder), finder.GetType());
-      Assert.AreSame (TypeAdapter.Create (typeof (TestClass)), new List<IPropertyInformation> (finder.GetPropertyInfos())[0].DeclaringType);
+      Assert.That (finder.GetType(), Is.SameAs (typeof (ReflectionBasedPropertyFinder)));
+      Assert.That (new List<IPropertyInformation> (finder.GetPropertyInfos())[0].DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (TestClass))));
     }
 
     [Test]
@@ -74,8 +74,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         IPropertyInformation property = PropertyInfoAdapter.Create(propertyInfo);
         PropertyReflector propertyReflector =
             BindableObjectMetadataFactory.Create().CreatePropertyReflector (typeof (TestClass), property, new BindableObjectProvider());
-        Assert.AreSame (typeof (PropertyReflector), propertyReflector.GetType());
-        Assert.AreSame (property, propertyReflector.PropertyInfo);
+        Assert.That (propertyReflector.GetType(), Is.SameAs (typeof (PropertyReflector)));
+        Assert.That (propertyReflector.PropertyInfo, Is.SameAs (property));
       }
     }
   }

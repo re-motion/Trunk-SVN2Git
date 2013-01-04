@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             "Cannot put DomainObject 'OrderItem|0d7196a5-8161-4048-820d-b1bbdabe3293|System.Guid' into the collection of property "
             + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
             + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. The objects do not belong to the same ClientTransaction.";
-        Assert.AreEqual (expectedMessage, ex.Message);
+        Assert.That (ex.Message, Is.EqualTo (expectedMessage));
       }
     }
 

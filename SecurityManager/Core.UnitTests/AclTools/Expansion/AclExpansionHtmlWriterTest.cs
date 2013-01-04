@@ -478,7 +478,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         // Assert that the ACL ctually contains no states (note: this is not the same as an ACL being a stateless ACL).
         var stateDefinitions = acl.StateCombinations.SelectMany (x => x.GetStates ());
-        Assert.IsFalse (stateDefinitions.Any()); 
+        Assert.That (stateDefinitions.Any(), Is.False);
 
         var acls = ListObjectMother.New<AccessControlList> (acl);
 

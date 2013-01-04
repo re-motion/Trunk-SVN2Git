@@ -30,12 +30,12 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
 
     public void TestSucceeded ()
     {
-      Assert.AreEqual (1, 1);
+      Assert.That (1, Is.EqualTo (1));
     }
 
     public void TestFailed ()
     {
-      Assert.AreEqual (0, 1);
+      Assert.That (1, Is.EqualTo (0));
     }
 
     [ExpectedException(typeof(TestFailedException))]
@@ -47,7 +47,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     [ExpectedException(typeof(TestFailedException))]
     public void TestExpectedExceptionFailed ()
     {
-      Assert.AreEqual (1, 1);
+      Assert.That (1, Is.EqualTo (1));
     }
 
     public void TestThrowsException ()

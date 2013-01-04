@@ -59,7 +59,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       bool hasAccess = _strategy.HasAccess (_stubContextFactory, _mockSecurityProvider, _userStub, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -71,7 +71,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       bool hasAccess = _strategy.HasAccess (_stubContextFactory, _mockSecurityProvider, _userStub, AccessType.Get (GeneralAccessTypes.Create));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Test]
@@ -90,7 +90,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       bool hasAccess = _strategy.HasAccess (_stubContextFactory, _mockSecurityProvider, _userStub, AccessType.Get (GeneralAccessTypes.Read));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
           AccessType.Get (GeneralAccessTypes.Create));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -138,7 +138,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
           AccessType.Get (GeneralAccessTypes.Find));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Test]
@@ -156,7 +156,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
           AccessType.Get (GeneralAccessTypes.Read));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Test]
@@ -174,7 +174,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
           AccessType.Get (GeneralAccessTypes.Read));
 
       _mocks.VerifyAll();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Test]
@@ -186,12 +186,12 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       strategy.LocalCache.GetOrCreateValue (new SecurityPrincipal ("foo", null, null, null), delegate { return accessTypes; });
 
       SecurityStrategy deserializedStrategy = Serializer.SerializeAndDeserialize (strategy);
-      Assert.AreNotSame (strategy, deserializedStrategy);
-      Assert.AreSame (SecurityConfiguration.Current.GlobalAccessTypeCacheProvider, deserializedStrategy.GlobalCacheProvider);
+      Assert.That (deserializedStrategy, Is.Not.SameAs (strategy));
+      Assert.That (deserializedStrategy.GlobalCacheProvider, Is.SameAs (SecurityConfiguration.Current.GlobalAccessTypeCacheProvider));
 
       AccessType[] newAccessTypes;
       bool result = deserializedStrategy.LocalCache.TryGetValue (new SecurityPrincipal ("foo", null, null, null), out newAccessTypes);
-      Assert.IsTrue (result);
+      Assert.That (result, Is.True);
       Assert.That (newAccessTypes, Is.EquivalentTo (accessTypes));
     }
   }

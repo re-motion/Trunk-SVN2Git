@@ -31,26 +31,26 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     public void MixinsIntroduceAttributes ()
     {
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
-      Assert.AreEqual (2, bt1.CustomAttributes.Count);
-      Assert.IsTrue (bt1.CustomAttributes.ContainsKey (typeof (BT1Attribute)));
-      Assert.IsTrue (bt1.CustomAttributes.ContainsKey (typeof (DefaultMemberAttribute)));
+      Assert.That (bt1.CustomAttributes.Count, Is.EqualTo (2));
+      Assert.That (bt1.CustomAttributes.ContainsKey (typeof (BT1Attribute)), Is.True);
+      Assert.That (bt1.CustomAttributes.ContainsKey (typeof (DefaultMemberAttribute)), Is.True);
 
       MixinDefinition mixin1 = bt1.Mixins[typeof (BT1Mixin1)];
-      Assert.AreEqual (1, mixin1.CustomAttributes.Count);
-      Assert.IsTrue (mixin1.CustomAttributes.ContainsKey (typeof (BT1M1Attribute)));
-      Assert.AreEqual (1, mixin1.AttributeIntroductions.Count);
-      Assert.IsTrue (mixin1.AttributeIntroductions.ContainsKey (typeof (BT1M1Attribute)));
+      Assert.That (mixin1.CustomAttributes.Count, Is.EqualTo (1));
+      Assert.That (mixin1.CustomAttributes.ContainsKey (typeof (BT1M1Attribute)), Is.True);
+      Assert.That (mixin1.AttributeIntroductions.Count, Is.EqualTo (1));
+      Assert.That (mixin1.AttributeIntroductions.ContainsKey (typeof (BT1M1Attribute)), Is.True);
 
       MixinDefinition mixin2 = bt1.Mixins[typeof (BT1Mixin2)];
-      Assert.AreEqual (0, mixin2.CustomAttributes.Count);
-      Assert.AreEqual (0, mixin2.AttributeIntroductions.Count);
+      Assert.That (mixin2.CustomAttributes.Count, Is.EqualTo (0));
+      Assert.That (mixin2.AttributeIntroductions.Count, Is.EqualTo (0));
 
-      Assert.AreEqual (1, bt1.ReceivedAttributes.Count);
-      Assert.AreSame (mixin1.CustomAttributes[0], bt1.ReceivedAttributes[0].Attribute);
-      Assert.AreSame (mixin1.AttributeIntroductions[0], bt1.ReceivedAttributes[0]);
-      Assert.AreSame (mixin1, bt1.ReceivedAttributes[0].Parent);
-      Assert.AreEqual (mixin1.CustomAttributes[0].FullName, bt1.ReceivedAttributes[0].FullName);
-      Assert.AreEqual (mixin1.CustomAttributes[0].AttributeType, bt1.ReceivedAttributes[0].AttributeType);
+      Assert.That (bt1.ReceivedAttributes.Count, Is.EqualTo (1));
+      Assert.That (bt1.ReceivedAttributes[0].Attribute, Is.SameAs (mixin1.CustomAttributes[0]));
+      Assert.That (bt1.ReceivedAttributes[0], Is.SameAs (mixin1.AttributeIntroductions[0]));
+      Assert.That (bt1.ReceivedAttributes[0].Parent, Is.SameAs (mixin1));
+      Assert.That (bt1.ReceivedAttributes[0].FullName, Is.EqualTo (mixin1.CustomAttributes[0].FullName));
+      Assert.That (bt1.ReceivedAttributes[0].AttributeType, Is.EqualTo (mixin1.CustomAttributes[0].AttributeType));
     }
 
     [Test]
@@ -82,18 +82,18 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       MethodDefinition member = bt1.Methods[typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes)];
-      Assert.AreEqual (1, member.CustomAttributes.Count);
-      Assert.AreEqual (1, member.ReceivedAttributes.Count);
+      Assert.That (member.CustomAttributes.Count, Is.EqualTo (1));
+      Assert.That (member.ReceivedAttributes.Count, Is.EqualTo (1));
 
       MixinDefinition mixin = bt1.Mixins[typeof (BT1Mixin1)];
       MethodDefinition mixinMember = mixin.Methods[typeof (BT1Mixin1).GetMethod ("VirtualMethod")];
 
-      Assert.IsTrue (member.ReceivedAttributes.ContainsKey (typeof (BT1M1Attribute)));
-      Assert.AreEqual (1, mixinMember.CustomAttributes.Count);
-      Assert.AreSame (mixinMember.CustomAttributes[0], member.ReceivedAttributes[0].Attribute);
-      Assert.AreSame (mixinMember, member.ReceivedAttributes[0].Parent);
-      Assert.AreEqual (mixinMember.CustomAttributes[0].FullName, member.ReceivedAttributes[0].FullName);
-      Assert.AreEqual (mixinMember.CustomAttributes[0].AttributeType, member.ReceivedAttributes[0].AttributeType);
+      Assert.That (member.ReceivedAttributes.ContainsKey (typeof (BT1M1Attribute)), Is.True);
+      Assert.That (mixinMember.CustomAttributes.Count, Is.EqualTo (1));
+      Assert.That (member.ReceivedAttributes[0].Attribute, Is.SameAs (mixinMember.CustomAttributes[0]));
+      Assert.That (member.ReceivedAttributes[0].Parent, Is.SameAs (mixinMember));
+      Assert.That (member.ReceivedAttributes[0].FullName, Is.EqualTo (mixinMember.CustomAttributes[0].FullName));
+      Assert.That (member.ReceivedAttributes[0].AttributeType, Is.EqualTo (mixinMember.CustomAttributes[0].AttributeType));
     }
 
     [Test]
@@ -101,8 +101,8 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
           typeof (BaseTypeWithAllowMultiple), typeof (MixinAddingAllowMultipleToClassAndMember), typeof (MixinAddingAllowMultipleToClassAndMember2));
-      Assert.AreEqual (3, definition.ReceivedAttributes.GetItemCount (typeof (MultiAttribute)));
-      Assert.AreEqual (1, definition.CustomAttributes.GetItemCount (typeof (MultiAttribute)));
+      Assert.That (definition.ReceivedAttributes.GetItemCount (typeof (MultiAttribute)), Is.EqualTo (3));
+      Assert.That (definition.CustomAttributes.GetItemCount (typeof (MultiAttribute)), Is.EqualTo (1));
     }
 
     [Test]
@@ -113,20 +113,20 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
                                                              typeof (MixinAddingAllowMultipleToClassAndMember), typeof (MixinAddingAllowMultipleToClassAndMember2));
       MethodDefinition member = bt1.Methods[typeof (BaseTypeWithAllowMultiple).GetMethod ("Foo")];
 
-      Assert.AreEqual (1, member.CustomAttributes.Count);
-      Assert.AreEqual (2, member.Overrides.Count);
-      Assert.AreEqual (2, member.ReceivedAttributes.Count);
+      Assert.That (member.CustomAttributes.Count, Is.EqualTo (1));
+      Assert.That (member.Overrides.Count, Is.EqualTo (2));
+      Assert.That (member.ReceivedAttributes.Count, Is.EqualTo (2));
 
       MixinDefinition mixin1 = bt1.Mixins[typeof (MixinAddingAllowMultipleToClassAndMember)];
       MethodDefinition mixinMember1 = mixin1.Methods[typeof (MixinAddingAllowMultipleToClassAndMember).GetMethod ("Foo")];
-      Assert.AreEqual (1, mixinMember1.CustomAttributes.Count);
+      Assert.That (mixinMember1.CustomAttributes.Count, Is.EqualTo (1));
 
       MixinDefinition mixin2 = bt1.Mixins[typeof (MixinAddingAllowMultipleToClassAndMember2)];
       MethodDefinition mixinMember2 = mixin2.Methods[typeof (MixinAddingAllowMultipleToClassAndMember).GetMethod ("Foo")];
-      Assert.AreEqual (1, mixinMember2.CustomAttributes.Count);
+      Assert.That (mixinMember2.CustomAttributes.Count, Is.EqualTo (1));
 
-      Assert.IsTrue (member.ReceivedAttributes.ContainsKey (typeof (MultiAttribute)));
-      Assert.AreEqual (2, member.ReceivedAttributes.GetItemCount (typeof (MultiAttribute)));
+      Assert.That (member.ReceivedAttributes.ContainsKey (typeof (MultiAttribute)), Is.True);
+      Assert.That (member.ReceivedAttributes.GetItemCount (typeof (MultiAttribute)), Is.EqualTo (2));
 
       List<AttributeDefinition> attributes =
           new List<AttributeIntroductionDefinition> (member.ReceivedAttributes[typeof (MultiAttribute)])
@@ -139,7 +139,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
           typeof (BaseType1), typeof (MixinAddingNonInheritedAttribute));
-      Assert.AreEqual (0, definition.ReceivedAttributes.GetItemCount (typeof (NonInheritableAttribute)));
+      Assert.That (definition.ReceivedAttributes.GetItemCount (typeof (NonInheritableAttribute)), Is.EqualTo (0));
     }
 
     [Test]
@@ -147,8 +147,8 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
           typeof (BaseType1), typeof (MixinAddingBT1Attribute));
-      Assert.AreEqual (0, definition.ReceivedAttributes.GetItemCount (typeof (BT1Attribute)));
-      Assert.AreEqual (1, definition.CustomAttributes.GetItemCount (typeof (BT1Attribute)));
+      Assert.That (definition.ReceivedAttributes.GetItemCount (typeof (BT1Attribute)), Is.EqualTo (0));
+      Assert.That (definition.CustomAttributes.GetItemCount (typeof (BT1Attribute)), Is.EqualTo (1));
     }
 
     [Test]
@@ -156,8 +156,8 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       MethodDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
           typeof (BaseType1), typeof (MixinAddingBT1AttributeToMember)).Methods[typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes)];
-      Assert.AreEqual (0, definition.ReceivedAttributes.GetItemCount (typeof (BT1Attribute)));
-      Assert.AreEqual (1, definition.CustomAttributes.GetItemCount (typeof (BT1Attribute)));
+      Assert.That (definition.ReceivedAttributes.GetItemCount (typeof (BT1Attribute)), Is.EqualTo (0));
+      Assert.That (definition.CustomAttributes.GetItemCount (typeof (BT1Attribute)), Is.EqualTo (1));
     }
 
     [Test]
@@ -200,18 +200,18 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       using (MixinConfiguration.BuildFromActive ().ForClass<NullTarget> ().Clear ().AddMixins (typeof (MixinIndirectlyAddingAttribute)).EnterScope ())
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
-        Assert.IsFalse (definition.ReceivedAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)));
-        Assert.IsTrue (definition.ReceivedAttributes.ContainsKey (typeof (AttributeWithParameters)));
+        Assert.That (definition.ReceivedAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)), Is.False);
+        Assert.That (definition.ReceivedAttributes.ContainsKey (typeof (AttributeWithParameters)), Is.True);
 
         List<AttributeIntroductionDefinition> introductions =
             new List<AttributeIntroductionDefinition> (definition.ReceivedAttributes[typeof (AttributeWithParameters)]);
         List<AttributeDefinition> attributes =
             new List<AttributeDefinition> (definition.Mixins[typeof (MixinIndirectlyAddingAttribute)].CustomAttributes[typeof (AttributeWithParameters)]);
 
-        Assert.AreEqual (1, introductions.Count);
-        Assert.AreEqual (1, attributes.Count);
+        Assert.That (introductions.Count, Is.EqualTo (1));
+        Assert.That (attributes.Count, Is.EqualTo (1));
 
-        Assert.AreSame (attributes[0], introductions[0].Attribute);
+        Assert.That (introductions[0].Attribute, Is.SameAs (attributes[0]));
       }
     }
 
@@ -246,8 +246,8 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       using (MixinConfiguration.BuildFromActive ().ForClass<NullTarget> ().Clear ().AddMixins (typeof (MixinIndirectlyAddingNonInheritedAttribute)).EnterScope ())
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
-        Assert.IsFalse (definition.ReceivedAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)));
-        Assert.IsTrue (definition.ReceivedAttributes.ContainsKey (typeof (NonInheritableAttribute)));
+        Assert.That (definition.ReceivedAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)), Is.False);
+        Assert.That (definition.ReceivedAttributes.ContainsKey (typeof (NonInheritableAttribute)), Is.True);
       }
     }
 
@@ -257,18 +257,18 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       using (MixinConfiguration.BuildFromActive ().ForClass<NullTarget> ().Clear ().AddMixins (typeof (MixinIndirectlyAddingAttribute)).EnterScope ())
       {
         MethodDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)).Methods[typeof (object).GetMethod ("ToString")];
-        Assert.IsFalse (definition.ReceivedAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)));
-        Assert.IsTrue (definition.ReceivedAttributes.ContainsKey (typeof (AttributeWithParameters)));
+        Assert.That (definition.ReceivedAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)), Is.False);
+        Assert.That (definition.ReceivedAttributes.ContainsKey (typeof (AttributeWithParameters)), Is.True);
 
         List<AttributeIntroductionDefinition> introductions =
             new List<AttributeIntroductionDefinition> (definition.ReceivedAttributes[typeof (AttributeWithParameters)]);
         List<AttributeDefinition> attributes = new List<AttributeDefinition> (
             definition.Overrides[typeof (MixinIndirectlyAddingAttribute)].DeclaringClass.Methods[typeof (MixinIndirectlyAddingAttribute).GetMethod ("ToString")].CustomAttributes[typeof (AttributeWithParameters)]);
 
-        Assert.AreEqual (1, introductions.Count);
-        Assert.AreEqual (1, attributes.Count);
+        Assert.That (introductions.Count, Is.EqualTo (1));
+        Assert.That (attributes.Count, Is.EqualTo (1));
 
-        Assert.AreSame (attributes[0], introductions[0].Attribute);
+        Assert.That (introductions[0].Attribute, Is.SameAs (attributes[0]));
       }
     }
 

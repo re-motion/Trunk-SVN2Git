@@ -63,8 +63,8 @@ namespace Remotion.Security.UnitTests.Core
 
       ExtendedProviderBase provider = new RevisionBasedAccessTypeCacheProvider ("Provider", config);
 
-      Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreEqual ("The Description", provider.Description);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
+      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.Security.UnitTests.Core
       ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = _provider.GetCache ();
 
       _mocks.VerifyAll();
-      Assert.IsNotNull (actual);
+      Assert.That (actual, Is.Not.Null);
     }
 
     [Test]
@@ -89,7 +89,7 @@ namespace Remotion.Security.UnitTests.Core
       ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = _provider.GetCache ();
 
       _mocks.VerifyAll();
-      Assert.AreSame (expected, actual);
+      Assert.That (actual, Is.SameAs (expected));
     }
 
     [Test]
@@ -108,7 +108,7 @@ namespace Remotion.Security.UnitTests.Core
       ThreadRunner.Run (delegate { actual = _provider.GetCache(); });
 
       _mocks.VerifyAll();
-      Assert.AreNotSame (expected, actual);
+      Assert.That (actual, Is.Not.SameAs (expected));
     }
 
     [Test]
@@ -128,7 +128,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void GetIsNull ()
     {
-      Assert.IsFalse (_provider.IsNull);
+      Assert.That (_provider.IsNull, Is.False);
     }
 
     [Test]
@@ -145,17 +145,17 @@ namespace Remotion.Security.UnitTests.Core
 
       RevisionBasedAccessTypeCacheProvider deserializedProvider = Serializer.SerializeAndDeserialize (provider);
 
-      Assert.AreEqual ("MyProvider", deserializedProvider.Name);
-      Assert.AreEqual ("The Description", deserializedProvider.Description);
+      Assert.That (deserializedProvider.Name, Is.EqualTo ("MyProvider"));
+      Assert.That (deserializedProvider.Description, Is.EqualTo ("The Description"));
       Assert.IsInstanceOf (typeof (LockingCacheDecorator<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>), deserializedProvider.GetCache ());
-      Assert.AreNotSame (provider.GetCache(), deserializedProvider.GetCache());
-      Assert.IsFalse (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull);
+      Assert.That (deserializedProvider.GetCache(), Is.Not.SameAs (provider.GetCache()));
+      Assert.That (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull, Is.False);
 
       AccessType[] newAccessTypes;
       bool result = deserializedProvider.GetCache().TryGetValue (Tuple.Create ((ISecurityContext) securityContext, securityPrincipal), out newAccessTypes);
-      Assert.IsTrue (result);
-      Assert.AreNotSame (accessTypes, newAccessTypes);
-      Assert.AreEqual (1, newAccessTypes.Length);
+      Assert.That (result, Is.True);
+      Assert.That (newAccessTypes, Is.Not.SameAs (accessTypes));
+      Assert.That (newAccessTypes.Length, Is.EqualTo (1));
       Assert.That (newAccessTypes, Is.EquivalentTo (accessTypes));
     }
 
@@ -165,7 +165,7 @@ namespace Remotion.Security.UnitTests.Core
       var provider = (RevisionBasedAccessTypeCacheProvider) SecurityConfiguration.Current.GlobalAccessTypeCacheProviders["RevisionBased"];
 
       RevisionBasedAccessTypeCacheProvider deserializedProvider = Serializer.SerializeAndDeserialize (provider);
-      Assert.AreSame (provider, deserializedProvider);
+      Assert.That (deserializedProvider, Is.SameAs (provider));
     }
   }
 }

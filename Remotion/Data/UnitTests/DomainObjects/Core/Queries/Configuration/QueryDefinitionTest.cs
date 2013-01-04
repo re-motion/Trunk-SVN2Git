@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     {
       QueryDefinition definition = new QueryDefinition ("QueryID", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection);
 
-      Assert.AreEqual (typeof (DomainObjectCollection), definition.CollectionType);
+      Assert.That (definition.CollectionType, Is.EqualTo (typeof (DomainObjectCollection)));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
       QueryDefinition definition = 
           new QueryDefinition ("QueryID", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection, typeof (DomainObjectCollection));
 
-      Assert.AreEqual (typeof (DomainObjectCollection), definition.CollectionType);
+      Assert.That (definition.CollectionType, Is.EqualTo (typeof (DomainObjectCollection)));
     }
   }
 }

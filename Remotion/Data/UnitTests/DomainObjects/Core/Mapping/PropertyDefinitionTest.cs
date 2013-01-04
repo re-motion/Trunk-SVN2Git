@@ -165,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (DomainObject));
       var actual = new PropertyDefinition (
           _classDefinition, _propertyInformationStub, "Test", true, false, null, StorageClass.Persistent);
-      Assert.IsTrue (actual.IsObjectID);
+      Assert.That (actual.IsObjectID, Is.True);
     }
 
     [Test]
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int));
       var actual = new PropertyDefinition (
           _classDefinition, _propertyInformationStub, "Test", false, false, null, StorageClass.Persistent);
-      Assert.IsFalse (actual.IsObjectID);
+      Assert.That (actual.IsObjectID, Is.False);
     }
 
     [Test]

@@ -37,7 +37,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
         Type proxyType = t.GetNestedType ("NextCallProxy");
 
         foreach (RequiredNextCallTypeDefinition req in DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).RequiredNextCallTypes)
-          Assert.IsTrue (req.Type.IsAssignableFrom (proxyType));
+          Assert.That (req.Type.IsAssignableFrom (proxyType), Is.True);
       }
     }
 
@@ -51,23 +51,23 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
 
         RequiredNextCallTypeDefinition bt3Mixin4Req =
             DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).RequiredNextCallTypes[typeof (IBT3Mixin4)];
-        Assert.IsNotNull (bt3Mixin4Req);
-        Assert.IsTrue (bt3Mixin4Req.Type.IsAssignableFrom (proxyType));
+        Assert.That (bt3Mixin4Req, Is.Not.Null);
+        Assert.That (bt3Mixin4Req.Type.IsAssignableFrom (proxyType), Is.True);
 
         foreach (RequiredNextCallTypeDefinition req in DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).RequiredNextCallTypes)
-          Assert.IsTrue (req.Type.IsAssignableFrom (proxyType));
+          Assert.That (req.Type.IsAssignableFrom (proxyType), Is.True);
 
         MethodInfo methodImplementdByMixin =
             proxyType.GetMethod ("Remotion.Mixins.UnitTests.Core.TestDomain.IBT3Mixin4.Foo", BindingFlags.NonPublic | BindingFlags.Instance);
-        Assert.IsNotNull (methodImplementdByMixin);
+        Assert.That (methodImplementdByMixin, Is.Not.Null);
 
         MethodInfo methodImplementdByBCOverridden =
             proxyType.GetMethod ("Remotion.Mixins.UnitTests.Core.TestDomain.IBaseType31.IfcMethod", BindingFlags.NonPublic | BindingFlags.Instance);
-        Assert.IsNotNull (methodImplementdByBCOverridden);
+        Assert.That (methodImplementdByBCOverridden, Is.Not.Null);
 
         MethodInfo methodImplementdByBCNotOverridden =
             proxyType.GetMethod ("Remotion.Mixins.UnitTests.Core.TestDomain.IBaseType35.IfcMethod2", BindingFlags.NonPublic | BindingFlags.Instance);
-        Assert.IsNotNull (methodImplementdByBCNotOverridden);
+        Assert.That (methodImplementdByBCNotOverridden, Is.Not.Null);
       }
     }
 
@@ -75,16 +75,15 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
     public void NextCallMethodToThis ()
     {
       BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (MixinWithThisAsBase));
-      Assert.AreEqual ("MixinWithThisAsBase.IfcMethod-BaseType3.IfcMethod", bt3.IfcMethod ());
+      Assert.That (bt3.IfcMethod (), Is.EqualTo ("MixinWithThisAsBase.IfcMethod-BaseType3.IfcMethod"));
     }
 
     [Test]
     public void NextCallMethodToDuckInterface ()
     {
       BaseTypeWithDuckBaseMixin duckBase = ObjectFactory.Create<BaseTypeWithDuckBaseMixin> (ParamList.Empty);
-      Assert.AreEqual ("DuckBaseMixin.MethodImplementedOnBase-BaseTypeWithDuckBaseMixin.MethodImplementedOnBase-"
-                       + "DuckBaseMixin.ProtectedMethodImplementedOnBase-BaseTypeWithDuckBaseMixin.ProtectedMethodImplementedOnBase",
-          duckBase.MethodImplementedOnBase ());
+      Assert.That (duckBase.MethodImplementedOnBase (), Is.EqualTo ("DuckBaseMixin.MethodImplementedOnBase-BaseTypeWithDuckBaseMixin.MethodImplementedOnBase-"
+                                                                    + "DuckBaseMixin.ProtectedMethodImplementedOnBase-BaseTypeWithDuckBaseMixin.ProtectedMethodImplementedOnBase"));
     }
 
     [Test]
@@ -92,8 +91,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
     {
       ClassImplementingIndirectRequirements ciir = ObjectFactory.Create<ClassImplementingIndirectRequirements> (ParamList.Empty);
       MixinWithIndirectRequirements mixin = Mixin.Get<MixinWithIndirectRequirements> (ciir);
-      Assert.AreEqual ("ClassImplementingIndirectRequirements.Method1-ClassImplementingIndirectRequirements.BaseMethod1-"
-                       + "ClassImplementingIndirectRequirements.Method3", mixin.GetStuffViaBase ());
+      Assert.That (mixin.GetStuffViaBase (), Is.EqualTo ("ClassImplementingIndirectRequirements.Method1-ClassImplementingIndirectRequirements.BaseMethod1-"
+                                                         + "ClassImplementingIndirectRequirements.Method3"));
     }
 
     [Test]
@@ -102,7 +101,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType3> ().Clear().AddMixins (typeof (BT3Mixin7Base), typeof (BT3Mixin4)).EnterScope())
       {
         BaseType3 bt3 = ObjectFactory.Create<BaseType3> (ParamList.Empty);
-        Assert.AreEqual ("BT3Mixin7Base.IfcMethod-BT3Mixin4.Foo-BaseType3.IfcMethod-BaseType3.IfcMethod2", bt3.IfcMethod ());
+        Assert.That (bt3.IfcMethod (), Is.EqualTo ("BT3Mixin7Base.IfcMethod-BT3Mixin4.Foo-BaseType3.IfcMethod-BaseType3.IfcMethod2"));
       }
     }
 
@@ -112,7 +111,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
       using (MixinConfiguration.BuildFromActive().ForClass<ClassOverridingToString>().Clear().AddMixins(typeof(MixinOverridingToString)).EnterScope())
       {
         object instance = ObjectFactory.Create<ClassOverridingToString>(ParamList.Empty);
-        Assert.AreEqual("Overridden: ClassOverridingToString", instance.ToString());
+        Assert.That (instance.ToString(), Is.EqualTo ("Overridden: ClassOverridingToString"));
       }
     }
 

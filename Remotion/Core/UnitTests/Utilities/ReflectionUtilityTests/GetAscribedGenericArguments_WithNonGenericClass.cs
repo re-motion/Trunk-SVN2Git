@@ -26,13 +26,13 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     [Test]
     public void DerivedType ()
     {
-      Assert.AreEqual (new Type[0], ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedType), typeof (DerivedType)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedType), typeof (DerivedType)), Is.EqualTo (new Type[0]));
     }
 
     [Test]
     public void DerivedTypeFromBaseType ()
     {
-      Assert.AreEqual (new Type[0], ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedType), typeof (BaseType)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedType), typeof (BaseType)), Is.EqualTo (new Type[0]));
     }
 
     [Test]

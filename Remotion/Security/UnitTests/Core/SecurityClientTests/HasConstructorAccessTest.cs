@@ -42,7 +42,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       bool hasAccess = _securityClient.HasConstructorAccess (typeof (SecurableObject));
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       bool hasAccess = _securityClient.HasConstructorAccess (typeof (SecurableObject));
 
       _testHelper.VerifyAll ();
-      Assert.IsFalse (hasAccess);
+      Assert.That (hasAccess, Is.False);
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       }
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
   }
 }

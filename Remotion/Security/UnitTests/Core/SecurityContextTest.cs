@@ -65,8 +65,8 @@ namespace Remotion.Security.UnitTests.Core
 
       SecurityContext context = CreateTestSecurityContextWithStates (testStates);
 
-      Assert.AreEqual (EnumWrapper.Get(TestSecurityState.Public), context.GetState ("Confidentiality"));
-      Assert.AreEqual (EnumWrapper.Get(TestSecurityState.Secret), context.GetState ("State"));
+      Assert.That (context.GetState ("Confidentiality"), Is.EqualTo (EnumWrapper.Get(TestSecurityState.Public)));
+      Assert.That (context.GetState ("State"), Is.EqualTo (EnumWrapper.Get(TestSecurityState.Secret)));
     }
 
     [Test]
@@ -118,7 +118,7 @@ namespace Remotion.Security.UnitTests.Core
     public void GetClassName ()
     {
       SecurityContext context = CreateTestSecurityContext();
-      Assert.AreEqual ("Remotion.Security.UnitTests.TestDomain.File, Remotion.Security.UnitTests.TestDomain", context.Class);
+      Assert.That (context.Class, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.File, Remotion.Security.UnitTests.TestDomain"));
     }
 
     [Test]
@@ -129,7 +129,7 @@ namespace Remotion.Security.UnitTests.Core
 
       SecurityContext context = CreateTestSecurityContextWithStates (states);
 
-      Assert.IsFalse (context.IsStateless);
+      Assert.That (context.IsStateless, Is.False);
     }
 
     [Test]
@@ -137,7 +137,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       SecurityContext context = CreateTestSecurityContextWithStates (new Dictionary<string, Enum> ());
 
-      Assert.IsFalse (context.IsStateless);
+      Assert.That (context.IsStateless, Is.False);
     }
 
     [Test]
@@ -145,7 +145,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       SecurityContext context = CreateStatelessTestSecurityContext();
 
-      Assert.IsTrue (context.IsStateless);
+      Assert.That (context.IsStateless, Is.True);
     }
 
     [Test]
@@ -156,7 +156,7 @@ namespace Remotion.Security.UnitTests.Core
 
       SecurityContext context = CreateTestSecurityContextWithStates (states);
 
-      Assert.IsTrue (context.ContainsState ("Confidentiality"));
+      Assert.That (context.ContainsState ("Confidentiality"), Is.True);
     }
 
     [Test]
@@ -167,7 +167,7 @@ namespace Remotion.Security.UnitTests.Core
 
       SecurityContext context = CreateTestSecurityContextWithStates (states);
 
-      Assert.IsFalse (context.ContainsState ("State"));
+      Assert.That (context.ContainsState ("State"), Is.False);
     }
 
     [Test]
@@ -178,7 +178,7 @@ namespace Remotion.Security.UnitTests.Core
 
       SecurityContext context = CreateTestSecurityContextWithStates (states);
 
-      Assert.AreEqual (1, context.GetNumberOfStates());
+      Assert.That (context.GetNumberOfStates(), Is.EqualTo (1));
     }
 
     [Test]
@@ -186,7 +186,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       SecurityContext context = CreateStatelessTestSecurityContext ();
 
-      Assert.AreEqual (0, context.GetNumberOfStates ());
+      Assert.That (context.GetNumberOfStates (), Is.EqualTo (0));
     }
 
     [Test]
@@ -194,7 +194,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       SecurityContext context = CreateTestSecurityContext();
 
-      Assert.AreEqual (0, context.GetNumberOfStates());
+      Assert.That (context.GetNumberOfStates(), Is.EqualTo (0));
     }
 
 
@@ -203,7 +203,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       SecurityContext context = SecurityContext.CreateStateless (typeof (SecurableObject));
 
-      Assert.IsFalse (context.Equals (null));
+      Assert.That (context.Equals (null), Is.False);
     }
 
     [Test]
@@ -211,7 +211,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       SecurityContext context = SecurityContext.CreateStateless (typeof (File));
 
-      Assert.IsTrue (context.Equals (context));
+      Assert.That (context.Equals (context), Is.True);
     }
 
     [Test]
@@ -229,8 +229,8 @@ namespace Remotion.Security.UnitTests.Core
       Enum[] rightAbstractRoles = new Enum[] { TestAbstractRoles.QualityEngineer, TestAbstractRoles.Developer };
       SecurityContext right = SecurityContext.Create (typeof (File), "owner", "ownerGroup", "ownerTenant", rightStates, rightAbstractRoles);
 
-      Assert.IsTrue (left.Equals (right));
-      Assert.IsTrue (right.Equals (left));
+      Assert.That (left.Equals (right), Is.True);
+      Assert.That (right.Equals (left), Is.True);
     }
 
     [Test]
@@ -240,8 +240,8 @@ namespace Remotion.Security.UnitTests.Core
       SecurityContext right = SecurityContext.Create (
           typeof (PaperFile), "owner", "ownerGroup", "ownerTenant", CreateTwoStates(), CreateTwoAbstractRoles());
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -252,8 +252,8 @@ namespace Remotion.Security.UnitTests.Core
       SecurityContext right = SecurityContext.Create (
           typeof (File), "owner2", "ownerGroup", "ownerTenant", CreateTwoStates(), CreateTwoAbstractRoles());
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -264,8 +264,8 @@ namespace Remotion.Security.UnitTests.Core
       SecurityContext right = SecurityContext.Create (
           typeof (File), "owner", "ownerGroup2", "ownerTenant", CreateTwoStates(), CreateTwoAbstractRoles());
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -276,8 +276,8 @@ namespace Remotion.Security.UnitTests.Core
       SecurityContext right = SecurityContext.Create (
           typeof (File), "owner", "ownerGroup", "ownerTenant2", CreateTwoStates(), CreateTwoAbstractRoles());
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -289,8 +289,8 @@ namespace Remotion.Security.UnitTests.Core
       rightStates.Add ("Confidentiality", TestSecurityState.Public);
       SecurityContext right = SecurityContext.Create (typeof (File), "owner", "ownerGroup", "ownerTenant", rightStates, CreateTwoAbstractRoles());
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -303,8 +303,8 @@ namespace Remotion.Security.UnitTests.Core
       rightStates.Add ("State1", TestSecurityState.Public);
       SecurityContext right = SecurityContext.Create (typeof (File), "owner", "ownerGroup", "ownerTenant", rightStates, CreateTwoAbstractRoles());
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -317,8 +317,8 @@ namespace Remotion.Security.UnitTests.Core
       rightStates.Add ("State", TestSecurityState.Confidential);
       SecurityContext right = SecurityContext.Create (typeof (File), "owner", "ownerGroup", "ownerTenant", rightStates, CreateTwoAbstractRoles());
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -329,8 +329,8 @@ namespace Remotion.Security.UnitTests.Core
       Enum[] rightAbstractRoles = new Enum[] { TestAbstractRoles.QualityEngineer };
       SecurityContext right = SecurityContext.Create (typeof (File), "owner", "ownerGroup", "ownerTenant", CreateTwoStates(), rightAbstractRoles);
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
 
@@ -342,8 +342,8 @@ namespace Remotion.Security.UnitTests.Core
       Enum[] rightAbstractRoles = new Enum[] { TestAbstractRoles.QualityEngineer, TestAbstractRoles.Manager };
       SecurityContext right = SecurityContext.Create (typeof (File), "owner", "ownerGroup", "ownerTenant", CreateTwoStates(), rightAbstractRoles);
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -352,8 +352,8 @@ namespace Remotion.Security.UnitTests.Core
       SecurityContext left = SecurityContext.CreateStateless (typeof (File));
       SecurityContext right = SecurityContext.Create (typeof (File), null, null, null, new Dictionary<string, Enum>(), new Enum[0]);
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -362,7 +362,7 @@ namespace Remotion.Security.UnitTests.Core
       SecurityContext left = SecurityContext.CreateStateless (typeof (SecurableObject));
       SecurityContext right = SecurityContext.CreateStateless (typeof (SecurableObject));
 
-      Assert.IsTrue (left.Equals ((object) right));
+      Assert.That (left.Equals ((object) right), Is.True);
     }
 
     [Test]
@@ -370,7 +370,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       SecurityContext context = SecurityContext.CreateStateless (typeof (SecurableObject));
 
-      Assert.IsFalse (context.Equals ((object) null));
+      Assert.That (context.Equals ((object) null), Is.False);
     }
 
     [Test]
@@ -378,7 +378,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       SecurityContext context = SecurityContext.CreateStateless (typeof (SecurableObject));
 
-      Assert.IsFalse (context.Equals (new object()));
+      Assert.That (context.Equals (new object()), Is.False);
     }
 
     [Test]
@@ -396,7 +396,7 @@ namespace Remotion.Security.UnitTests.Core
       Enum[] rightAbstractRoles = new Enum[] { TestAbstractRoles.QualityEngineer, TestAbstractRoles.Developer };
       SecurityContext right = SecurityContext.Create (typeof (File), "owner", "ownerGroup", "ownerTenant", rightStates, rightAbstractRoles);
 
-      Assert.AreEqual (left.GetHashCode(), right.GetHashCode());
+      Assert.That (right.GetHashCode(), Is.EqualTo (left.GetHashCode()));
     }
 
     [Test]
@@ -411,8 +411,8 @@ namespace Remotion.Security.UnitTests.Core
       SecurityContext context = SecurityContext.Create (typeof (SecurableObject), "myOwner", "myGroup", "myTenant", myStates, myRoles);
       SecurityContext deserializedContext = Serializer.SerializeAndDeserialize (context);
 
-      Assert.AreNotSame (context, deserializedContext);
-      Assert.AreEqual (context, deserializedContext);
+      Assert.That (deserializedContext, Is.Not.SameAs (context));
+      Assert.That (deserializedContext, Is.EqualTo (context));
     }
 
     private static Dictionary<string, Enum> CreateTwoStates ()

@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
       OrderTicket oldTicket = order.OrderTicket;
       OrderItem oldItem = order.OrderItems[0];
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
 
       OrderTicket newTicket = NewBound<OrderTicket>();
       OrderItem newItem = NewBound<OrderItem>();
@@ -65,12 +65,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       order.OrderNumber = 12;
       order.OrderTicket = newTicket;
       order.OrderItems[0] = newItem;
-      Assert.AreNotEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.Not.EqualTo (1));
 
       _bindingTransaction.Rollback();
-      Assert.AreEqual (1, order.OrderNumber);
-      Assert.AreSame (oldTicket, order.OrderTicket);
-      Assert.AreSame (oldItem, order.OrderItems[0]);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
+      Assert.That (order.OrderTicket, Is.SameAs (oldTicket));
+      Assert.That (order.OrderItems[0], Is.SameAs (oldItem));
     }
 
     [Test]
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
       OrderTicket oldTicket = order.OrderTicket;
       OrderItem oldItem = order.OrderItems[0];
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
 
       OrderTicket newTicket = NewBound<OrderTicket>();
       OrderItem newItem = NewBound<OrderItem>();
@@ -89,16 +89,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       order.OrderNumber = 12;
       order.OrderTicket = newTicket;
       order.OrderItems[0] = newItem;
-      Assert.AreNotEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.Not.EqualTo (1));
 
       oldTicket.Delete();
       oldItem.Delete();
 
       _bindingTransaction.Commit ();
 
-      Assert.AreEqual (12, order.OrderNumber);
-      Assert.AreSame (newTicket, order.OrderTicket);
-      Assert.AreSame (newItem, order.OrderItems[0]);
+      Assert.That (order.OrderNumber, Is.EqualTo (12));
+      Assert.That (order.OrderTicket, Is.SameAs (newTicket));
+      Assert.That (order.OrderItems[0], Is.SameAs (newItem));
     }
 
     [Test]

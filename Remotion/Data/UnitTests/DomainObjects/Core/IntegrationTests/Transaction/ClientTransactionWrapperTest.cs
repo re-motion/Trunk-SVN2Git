@@ -60,14 +60,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CanCreateChild ()
     {
-      Assert.IsTrue (_transaction.CanCreateChild);
+      Assert.That (_transaction.CanCreateChild, Is.True);
     }
 
     [Test]
     public void CreateChild ()
     {
       ITransaction child = _transaction.CreateChild();
-      Assert.IsNotNull (child);
+      Assert.That (child, Is.Not.Null);
       Assert.IsInstanceOf (typeof (ClientTransactionWrapper), child);
       Assert.IsInstanceOf (typeof (ClientTransaction), ((ClientTransactionWrapper) child).WrappedInstance);
 
@@ -79,17 +79,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void IsChild ()
     {
       ITransaction child = _transaction.CreateChild();
-      Assert.IsTrue (child.IsChild);
-      Assert.IsFalse (_transaction.IsChild);
-      Assert.IsTrue (child.CreateChild().IsChild);
+      Assert.That (child.IsChild, Is.True);
+      Assert.That (_transaction.IsChild, Is.False);
+      Assert.That (child.CreateChild().IsChild, Is.True);
     }
 
     [Test]
     public void Parent ()
     {
       ITransaction child = _transaction.CreateChild();
-      Assert.AreSame (((ClientTransactionWrapper) _transaction).WrappedInstance, ((ClientTransactionWrapper) child.Parent).WrappedInstance);
-      Assert.AreSame (((ClientTransactionWrapper) child).WrappedInstance, ((ClientTransactionWrapper) child.CreateChild().Parent).WrappedInstance);
+      Assert.That (((ClientTransactionWrapper) child.Parent).WrappedInstance, Is.SameAs (((ClientTransactionWrapper) _transaction).WrappedInstance));
+      Assert.That (((ClientTransactionWrapper) child.CreateChild().Parent).WrappedInstance, Is.SameAs (((ClientTransactionWrapper) child).WrappedInstance));
     }
 
     [Test]

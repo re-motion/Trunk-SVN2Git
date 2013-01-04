@@ -42,7 +42,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       bool hasAccess = _securityClient.HasStatelessAccess (typeof (SecurableObject), AccessType.Get (TestAccessTypes.First));
 
       _testHelper.VerifyAll ();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       bool hasAccess = _securityClient.HasStatelessAccess (typeof (SecurableObject), AccessType.Get (TestAccessTypes.First));
 
       _testHelper.VerifyAll ();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       }
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
   }
 }

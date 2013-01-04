@@ -90,7 +90,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       bool hasAccess = _securityAdapter.HasAccess (new TestFunctionWithoutPermissions ());
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -101,7 +101,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       bool hasAccess = _securityAdapter.HasStatelessAccess (typeof (TestFunctionWithoutPermissions));
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
   }
 }

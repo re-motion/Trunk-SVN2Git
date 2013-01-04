@@ -73,8 +73,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var scripts = _standardScriptGenerator.GetScripts (MappingConfiguration.GetTypeDefinitions ())
           .Single (s => s.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition);
 
-      Assert.AreEqual (_firstStorageProviderSetupDBScript, scripts.SetUpScript);
-      Assert.AreEqual (_firstStorageProviderTearDownDBScript, scripts.TearDownScript);
+      Assert.That (scripts.SetUpScript, Is.EqualTo (_firstStorageProviderSetupDBScript));
+      Assert.That (scripts.TearDownScript, Is.EqualTo (_firstStorageProviderTearDownDBScript));
     }
 
     [Test]
@@ -83,8 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var scripts = _standardScriptGenerator.GetScripts (MappingConfiguration.GetTypeDefinitions ())
           .Single (s => s.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition);
 
-      Assert.AreEqual (_secondStorageProviderSetupDBScript, scripts.SetUpScript);
-      Assert.AreEqual (_secondStorageProviderTearDownDBScript, scripts.TearDownScript);
+      Assert.That (scripts.SetUpScript, Is.EqualTo (_secondStorageProviderSetupDBScript));
+      Assert.That (scripts.TearDownScript, Is.EqualTo (_secondStorageProviderTearDownDBScript));
     }
 
     [Test]
@@ -93,8 +93,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var scripts = _extendedScriptGenerator.GetScripts (MappingConfiguration.GetTypeDefinitions ())
           .Single (s => s.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition);
 
-      Assert.AreEqual (_thirdStorageProviderSetupDBScript, scripts.SetUpScript);
-      Assert.AreEqual (_thirdStorageProviderTearDownDBScript, scripts.TearDownScript);
+      Assert.That (scripts.SetUpScript, Is.EqualTo (_thirdStorageProviderSetupDBScript));
+      Assert.That (scripts.TearDownScript, Is.EqualTo (_thirdStorageProviderTearDownDBScript));
     }
   }
 }

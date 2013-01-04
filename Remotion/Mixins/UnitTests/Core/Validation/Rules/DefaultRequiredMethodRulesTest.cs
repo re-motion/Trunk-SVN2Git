@@ -33,8 +33,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
             typeof (ClassFulfillingAllMemberRequirementsExplicitly), typeof (MixinRequiringAllMembersNextCall));
         var log = Validator.Validate (definition);
 
-        Assert.IsTrue (
-            HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredMethodRules.RequiredNextCallMethodMustBePublicOrProtected", log));
+        Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredMethodRules.RequiredNextCallMethodMustBePublicOrProtected", log), Is.True);
       }
     }
 

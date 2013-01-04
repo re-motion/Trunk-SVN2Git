@@ -75,9 +75,9 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
     {
       List<T> expectedList = new List<T> (expected);
       List<T> actualList = new List<T> (actual);
-      Assert.AreEqual (expectedList.Count, actualList.Count);
+      Assert.That (actualList.Count, Is.EqualTo (expectedList.Count));
       for (int i = 0; i < expectedList.Count; ++i)
-        Assert.AreEqual (expectedList[i], actualList[i]);
+        Assert.That (actualList[i], Is.EqualTo (expectedList[i]));
     }
 
     [Test]

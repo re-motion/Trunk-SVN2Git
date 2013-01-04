@@ -114,11 +114,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       mockRepository.ReplayAll ();
 
       BindableObjectClass theClass = otherClassReflector.GetMetadata ();
-      Assert.IsNotNull (theClass.GetPropertyDefinition ("Ticks"));
-      Assert.IsNotNull (theClass.GetPropertyDefinition ("NewLine"));
-      
-      Assert.IsNull (theClass.GetPropertyDefinition ("Now"));
-      Assert.IsNull (theClass.GetPropertyDefinition ("TickCount"));
+      Assert.That (theClass.GetPropertyDefinition ("Ticks"), Is.Not.Null);
+      Assert.That (theClass.GetPropertyDefinition ("NewLine"), Is.Not.Null);
+
+      Assert.That (theClass.GetPropertyDefinition ("Now"), Is.Null);
+      Assert.That (theClass.GetPropertyDefinition ("TickCount"), Is.Null);
 
       mockRepository.VerifyAll ();
     }

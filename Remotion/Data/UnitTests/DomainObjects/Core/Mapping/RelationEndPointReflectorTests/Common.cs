@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
           RelationEndPointReflector.CreateRelationEndPointReflector (
               ClassDefinitionObjectMother.CreateClassDefinition (classType: type), propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
+      Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.False);
     }
 
     [Test]
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
           RelationEndPointReflector.CreateRelationEndPointReflector (
               ClassDefinitionObjectMother.CreateClassDefinition (classType: type), propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
+      Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.False);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
           new RdbmsRelationEndPointReflector (
               ClassDefinitionObjectMother.CreateClassDefinition (classType: type), propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
+      Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.False);
     }
 
     [Test]

@@ -60,14 +60,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     public void ContainsState_ValidName ()
     {
       StatePropertyDefinition stateProperty = _testHelper.CreateConfidentialityProperty (0);
-      Assert.IsTrue (stateProperty.ContainsState (MetadataTestHelper.Confidentiality_ConfidentialName));
+      Assert.That (stateProperty.ContainsState (MetadataTestHelper.Confidentiality_ConfidentialName), Is.True);
     }
 
     [Test]
     public void ContainsState_InvalidName ()
     {
       StatePropertyDefinition stateProperty = _testHelper.CreateConfidentialityProperty (0);
-      Assert.IsFalse (stateProperty.ContainsState ("New"));
+      Assert.That (stateProperty.ContainsState ("New"), Is.False);
     }
 
     [Test]
@@ -95,14 +95,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     public void ContainsState_ValidValue ()
     {
       StatePropertyDefinition stateProperty = _testHelper.CreateConfidentialityProperty (0);
-      Assert.IsTrue (stateProperty.ContainsState (MetadataTestHelper.Confidentiality_PrivateValue));
+      Assert.That (stateProperty.ContainsState (MetadataTestHelper.Confidentiality_PrivateValue), Is.True);
     }
 
     [Test]
     public void ContainsState_InvalidValue ()
     {
       StatePropertyDefinition stateProperty = _testHelper.CreateConfidentialityProperty (0);
-      Assert.IsFalse (stateProperty.ContainsState (42));
+      Assert.That (stateProperty.ContainsState (42), Is.False);
     }
 
     [Test]

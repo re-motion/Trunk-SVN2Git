@@ -173,18 +173,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
       _bocTextValue.Property = _businessObject.BusinessObjectClass.GetPropertyDefinition (propertyidentifier);
 
       _bocTextValue.LoadValue (false);
-      Assert.AreEqual (initialValue, _bocTextValue.Value);
-      Assert.IsFalse (_bocTextValue.IsDirty);
+      Assert.That (_bocTextValue.Value, Is.EqualTo (initialValue));
+      Assert.That (_bocTextValue.IsDirty, Is.False);
 
       _bocTextValue.Text = newValueAsString ?? newValue.ToString();
-      Assert.IsTrue (_bocTextValue.IsDirty);
+      Assert.That (_bocTextValue.IsDirty, Is.True);
 
       _bocTextValue.SaveValue (false);
-      Assert.AreEqual (newValue, _bocTextValue.Value);
-      Assert.IsFalse (_bocTextValue.IsDirty);
+      Assert.That (_bocTextValue.Value, Is.EqualTo (newValue));
+      Assert.That (_bocTextValue.IsDirty, Is.False);
       _bocTextValue.SaveValue (false);
 
-      Assert.AreEqual (newValue, _businessObject.GetProperty (propertyidentifier));
+      Assert.That (_businessObject.GetProperty (propertyidentifier), Is.EqualTo (newValue));
     }
   }
 }

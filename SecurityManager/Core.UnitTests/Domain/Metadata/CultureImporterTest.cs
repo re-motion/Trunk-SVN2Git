@@ -60,8 +60,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       {
         Assert.AreEqual (0, _importer.LocalizedNames.Count, "LocalizedNames count");
         Assert.IsNotNull (_importer.Cultures, "Cultures");
-        Assert.AreEqual (1, _importer.Cultures.Count);
-        Assert.AreEqual ("de", _importer.Cultures[0].CultureName);
+        Assert.That (_importer.Cultures.Count, Is.EqualTo (1));
+        Assert.That (_importer.Cultures[0].CultureName, Is.EqualTo ("de"));
       }
     }
 
@@ -81,8 +81,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       using (_transaction.EnterNonDiscardingScope ())
       {
         Assert.AreEqual (1, _importer.LocalizedNames.Count, "LocalizedNames count");
-        Assert.AreEqual ("Beamter", _importer.LocalizedNames[0].Text);
-        Assert.AreEqual (new Guid ("b8621bc9-9ab3-4524-b1e4-582657d6b420"), _importer.LocalizedNames[0].MetadataObject.MetadataItemID);
+        Assert.That (_importer.LocalizedNames[0].Text, Is.EqualTo ("Beamter"));
+        Assert.That (_importer.LocalizedNames[0].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("b8621bc9-9ab3-4524-b1e4-582657d6b420")));
       }
     }
 
@@ -142,11 +142,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       using (_transaction.EnterNonDiscardingScope())
       {
         Assert.AreEqual (3, _importer.LocalizedNames.Count, "LocalizedNames count");
-        Assert.AreEqual ("Beamter", _importer.LocalizedNames[0].Text);
-        Assert.AreEqual (new Guid ("b8621bc9-9ab3-4524-b1e4-582657d6b420"), _importer.LocalizedNames[0].MetadataObject.MetadataItemID);
-        Assert.AreEqual ("Vertraulichkeit", _importer.LocalizedNames[1].Text);
-        Assert.AreEqual (new Guid ("93969f13-65d7-49f4-a456-a1686a4de3de"), _importer.LocalizedNames[1].MetadataObject.MetadataItemID);
-        Assert.AreEqual ("Öffentlich", _importer.LocalizedNames[2].Text);
+        Assert.That (_importer.LocalizedNames[0].Text, Is.EqualTo ("Beamter"));
+        Assert.That (_importer.LocalizedNames[0].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("b8621bc9-9ab3-4524-b1e4-582657d6b420")));
+        Assert.That (_importer.LocalizedNames[1].Text, Is.EqualTo ("Vertraulichkeit"));
+        Assert.That (_importer.LocalizedNames[1].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("93969f13-65d7-49f4-a456-a1686a4de3de")));
+        Assert.That (_importer.LocalizedNames[2].Text, Is.EqualTo ("Öffentlich"));
       }
     }
 
@@ -212,13 +212,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       using (_transaction.EnterNonDiscardingScope ())
       {
         Assert.AreEqual (3, _importer.LocalizedNames.Count, "LocalizedNames count");
-        Assert.AreEqual ("Beamter", _importer.LocalizedNames[0].Text);
-        Assert.AreEqual (clerkNameID, _importer.LocalizedNames[0].ID);
-        Assert.AreEqual (new Guid ("b8621bc9-9ab3-4524-b1e4-582657d6b420"), _importer.LocalizedNames[0].MetadataObject.MetadataItemID);
-        Assert.AreEqual ("Vertraulichkeit", _importer.LocalizedNames[1].Text);
-        Assert.AreEqual (confidentialityNameID, _importer.LocalizedNames[1].ID);
-        Assert.AreEqual (new Guid ("93969f13-65d7-49f4-a456-a1686a4de3de"), _importer.LocalizedNames[1].MetadataObject.MetadataItemID);
-        Assert.AreEqual ("Öffentlich", _importer.LocalizedNames[2].Text);
+        Assert.That (_importer.LocalizedNames[0].Text, Is.EqualTo ("Beamter"));
+        Assert.That (_importer.LocalizedNames[0].ID, Is.EqualTo (clerkNameID));
+        Assert.That (_importer.LocalizedNames[0].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("b8621bc9-9ab3-4524-b1e4-582657d6b420")));
+        Assert.That (_importer.LocalizedNames[1].Text, Is.EqualTo ("Vertraulichkeit"));
+        Assert.That (_importer.LocalizedNames[1].ID, Is.EqualTo (confidentialityNameID));
+        Assert.That (_importer.LocalizedNames[1].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("93969f13-65d7-49f4-a456-a1686a4de3de")));
+        Assert.That (_importer.LocalizedNames[2].Text, Is.EqualTo ("Öffentlich"));
       }
     }
 

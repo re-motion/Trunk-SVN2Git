@@ -40,34 +40,34 @@ namespace Remotion.Security.UnitTests.Core
 
       ExtendedProviderBase provider = new NullSecurityProvider ("Provider", config);
 
-      Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreEqual ("The Description", provider.Description);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
+      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
 
     [Test]
     public void GetAccess_ReturnsEmptyList ()
     {
       AccessType[] accessTypes = _securityProvider.GetAccess (null, null);
-      Assert.IsNotNull (accessTypes);
-      Assert.AreEqual (0, accessTypes.Length);
+      Assert.That (accessTypes, Is.Not.Null);
+      Assert.That (accessTypes.Length, Is.EqualTo (0));
     }
 
     [Test]
     public void GetIsNull ()
     {
-      Assert.IsTrue (_securityProvider.IsNull);
+      Assert.That (_securityProvider.IsNull, Is.True);
     }
 
     [Test]
     public void GetHashcode_DifferentInstancesAreEqual ()
     {
-      Assert.AreEqual (new NullSecurityPrincipal().GetHashCode(), new NullSecurityPrincipal().GetHashCode());
+      Assert.That (new NullSecurityPrincipal().GetHashCode(), Is.EqualTo (new NullSecurityPrincipal().GetHashCode()));
     }
 
     [Test]
     public void Equals_DifferentInstancesAreEqual ()
     {
-      Assert.IsTrue (new NullSecurityPrincipal().Equals(new NullSecurityPrincipal()));
+      Assert.That (new NullSecurityPrincipal().Equals(new NullSecurityPrincipal()), Is.True);
     }
   }
 }

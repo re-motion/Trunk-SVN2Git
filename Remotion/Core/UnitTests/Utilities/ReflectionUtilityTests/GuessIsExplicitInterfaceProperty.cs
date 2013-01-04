@@ -172,10 +172,10 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       Type type = typeof (ClassWithoutInterfaceProperties);
       PropertyInfo[] properties = type.GetProperties (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-      Assert.AreEqual (11, properties.Length);
+      Assert.That (properties.Length, Is.EqualTo (11));
 
       foreach (PropertyInfo property in properties)
-        Assert.IsFalse (ReflectionUtility.GuessIsExplicitInterfaceProperty (property));
+        Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (property), Is.False);
     }
 
     [Test]
@@ -183,29 +183,28 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       Type type = typeof (ClassWithInterfaceProperties);
       PropertyInfo[] properties = type.GetProperties (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-      Assert.AreEqual (11, properties.Length);
+      Assert.That (properties.Length, Is.EqualTo (11));
 
       Array.Sort (properties, delegate (PropertyInfo one, PropertyInfo two)
       {
         return GetShortName (one.Name).CompareTo (GetShortName (two.Name));
       });
 
-      Assert.AreEqual ("Property01", properties[0].Name);
-      Assert.AreEqual ("Property02", properties[1].Name);
-      Assert.AreEqual ("Remotion.UnitTests.Utilities.ReflectionUtilityTests.GuessIsExplicitInterfaceProperty.Interface.Property03",
-          properties[2].Name);
+      Assert.That (properties[0].Name, Is.EqualTo ("Property01"));
+      Assert.That (properties[1].Name, Is.EqualTo ("Property02"));
+      Assert.That (properties[2].Name, Is.EqualTo ("Remotion.UnitTests.Utilities.ReflectionUtilityTests.GuessIsExplicitInterfaceProperty.Interface.Property03"));
 
-      Assert.IsFalse (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[0]));
-      Assert.IsFalse (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[1]));
-      Assert.IsTrue (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[2]));
-      Assert.IsFalse (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[3]));
-      Assert.IsFalse (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[4]));
-      Assert.IsFalse (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[5]));
-      Assert.IsTrue (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[6]));
-      Assert.IsFalse (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[7]));
-      Assert.IsFalse (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[8]));
-      Assert.IsTrue (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[9]));
-      Assert.IsFalse (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[10]));
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[0]), Is.False);
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[1]), Is.False);
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[2]), Is.True);
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[3]), Is.False);
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[4]), Is.False);
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[5]), Is.False);
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[6]), Is.True);
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[7]), Is.False);
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[8]), Is.False);
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[9]), Is.True);
+      Assert.That (ReflectionUtility.GuessIsExplicitInterfaceProperty (properties[10]), Is.False);
     }
 
     private string GetShortName (string name)

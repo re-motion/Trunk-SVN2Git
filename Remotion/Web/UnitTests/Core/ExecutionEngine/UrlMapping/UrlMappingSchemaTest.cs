@@ -76,8 +76,8 @@ public class UrlMappingSchemaTest
   {
     UrlMappingSchema urlMappingSchema = new UrlMappingSchema ();
     XmlSchemaSet xmlSchemaSet = urlMappingSchema.LoadSchemaSet ();
-    Assert.AreEqual (1, xmlSchemaSet.Count);
-    Assert.IsTrue (xmlSchemaSet.Contains (urlMappingSchema.SchemaUri));
+    Assert.That (xmlSchemaSet.Count, Is.EqualTo (1));
+    Assert.That (xmlSchemaSet.Contains (urlMappingSchema.SchemaUri), Is.True);
   }
 
 }

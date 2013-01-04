@@ -29,8 +29,8 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     {
       WxeDemandCreatePermissionAttribute attribute = new WxeDemandCreatePermissionAttribute (typeof (SecurableObject));
 
-      Assert.AreEqual (MethodType.Constructor, attribute.MethodType);
-      Assert.AreSame ( typeof (SecurableObject), attribute.SecurableClass);
+      Assert.That (attribute.MethodType, Is.EqualTo (MethodType.Constructor));
+      Assert.That (attribute.SecurableClass, Is.SameAs (typeof (SecurableObject)));
     }
   }
 }

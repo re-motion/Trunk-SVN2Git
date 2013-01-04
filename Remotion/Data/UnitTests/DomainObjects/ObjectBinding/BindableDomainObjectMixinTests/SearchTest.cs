@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void SearchViaReferencePropertyWithIdentity ()
     {
-      Assert.IsTrue (_property.SupportsSearchAvailableObjects);
+      Assert.That (_property.SupportsSearchAvailableObjects, Is.True);
       var results =
           (IBusinessObjectWithIdentity[]) _property.SearchAvailableObjects (_referencingBusinessObject, new DefaultSearchArguments (_stubbedQueryID));
       Assert.That (
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void SearchViaReferencePropertyWithoutIdentity ()
     {
-      Assert.IsTrue (_property.SupportsSearchAvailableObjects);
+      Assert.That (_property.SupportsSearchAvailableObjects, Is.True);
       IBusinessObject[] results = _property.SearchAvailableObjects (_referencingBusinessObject, new DefaultSearchArguments (_stubbedQueryID));
       Assert.That (
           results,
@@ -96,12 +96,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       {
         IBusinessObject[] results = _property.SearchAvailableObjects (_referencingBusinessObject, new DefaultSearchArguments (_stubbedQueryID));
 
-        Assert.IsNotNull (results);
-        Assert.IsTrue (results.Length > 0);
+        Assert.That (results, Is.Not.Null);
+        Assert.That (results.Length > 0, Is.True);
 
         var resultDomainObject = (DomainObject) results[0];
-        Assert.IsFalse (outerTransaction.IsEnlisted (resultDomainObject));
-        Assert.IsTrue (ClientTransaction.Current.IsEnlisted (resultDomainObject));
+        Assert.That (outerTransaction.IsEnlisted (resultDomainObject), Is.False);
+        Assert.That (ClientTransaction.Current.IsEnlisted (resultDomainObject), Is.True);
       }
     }
 
@@ -117,8 +117,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       }
 
       IBusinessObject[] results = _property.SearchAvailableObjects (boundObject, new DefaultSearchArguments (_stubbedQueryID));
-      Assert.IsNotNull (results);
-      Assert.IsTrue (results.Length > 0);
+      Assert.That (results, Is.Not.Null);
+      Assert.That (results.Length > 0, Is.True);
 
       var resultDomainObject = (DomainObject) results[0];
       Assert.That (ClientTransaction.Current.IsEnlisted (resultDomainObject), Is.False);
@@ -131,8 +131,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       IBusinessObject[] businessObjects =
           _property.SearchAvailableObjects (SampleBindableDomainObject.NewObject(), new DefaultSearchArguments (_stubbedQueryID));
 
-      Assert.IsNotNull (businessObjects);
-      Assert.IsTrue (businessObjects.Length > 0);
+      Assert.That (businessObjects, Is.Not.Null);
+      Assert.That (businessObjects.Length > 0, Is.True);
     }
 
     [Test]
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
 
       IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_referencingBusinessObject, null);
 
-      Assert.IsNotNull (businessObjects);
+      Assert.That (businessObjects, Is.Not.Null);
       Assert.That (((DomainObject) businessObjects[0]).ID, Is.EqualTo (fakeResultData.ObjectID));
     }
 
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
 
       IBusinessObject[] businessObjects = _property.SearchAvailableObjects (boundReferencingObject, null);
 
-      Assert.IsNotNull (businessObjects);
+      Assert.That (businessObjects, Is.Not.Null);
       Assert.That (((DomainObject) businessObjects[0]).GetBindingTransaction(), Is.SameAs (transaction));
     }
 
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
 
       IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_referencingBusinessObject, new DefaultSearchArguments (null));
 
-      Assert.IsNotNull (businessObjects);
+      Assert.That (businessObjects, Is.Not.Null);
       Assert.That (((DomainObject) businessObjects[0]).ID, Is.EqualTo (fakeResultData.ObjectID));
     }
 
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
 
       IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_referencingBusinessObject, new DefaultSearchArguments (""));
 
-      Assert.IsNotNull (businessObjects);
+      Assert.That (businessObjects, Is.Not.Null);
       Assert.That (((DomainObject) businessObjects[0]).ID, Is.EqualTo (fakeResultData.ObjectID));
     }
   }

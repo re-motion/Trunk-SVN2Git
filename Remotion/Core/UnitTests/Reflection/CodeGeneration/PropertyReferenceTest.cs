@@ -38,16 +38,16 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       
       LocalReference oldValueLocal = methodEmitter.DeclareLocal (typeof (string));
       PropertyReference propertyWithSelfOwner = new PropertyReference (propertyEmitter.PropertyBuilder);
-      Assert.AreEqual (typeof (string), propertyWithSelfOwner.Type);
-      
+      Assert.That (propertyWithSelfOwner.Type, Is.EqualTo (typeof (string)));
+
       methodEmitter.AddStatement (new AssignStatement (oldValueLocal, propertyWithSelfOwner.ToExpression()));
       methodEmitter.AddStatement (new AssignStatement (propertyWithSelfOwner, new ConstReference ("New").ToExpression()));
       methodEmitter.AddStatement (new ReturnStatement (oldValueLocal));
 
       object instance = GetBuiltInstance ();
       PrivateInvoke.SetPublicProperty (instance, "Property", "Old");
-      Assert.AreEqual ("Old", InvokeMethod());
-      Assert.AreEqual ("New", PrivateInvoke.GetPublicProperty (instance, "Property"));
+      Assert.That (InvokeMethod(), Is.EqualTo ("Old"));
+      Assert.That (PrivateInvoke.GetPublicProperty (instance, "Property"), Is.EqualTo ("New"));
     }
 
     [Test]
@@ -62,15 +62,15 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       LocalReference oldValueLocal = methodEmitter.DeclareLocal (typeof (string));
       PropertyReference propertyWithNoOwner = new PropertyReference (null, propertyEmitter.PropertyBuilder);
-      Assert.AreEqual (typeof (string), propertyWithNoOwner.Type);
+      Assert.That (propertyWithNoOwner.Type, Is.EqualTo (typeof (string)));
 
       methodEmitter.AddStatement (new AssignStatement (oldValueLocal, propertyWithNoOwner.ToExpression ()));
       methodEmitter.AddStatement (new AssignStatement (propertyWithNoOwner, new ConstReference ("New").ToExpression ()));
       methodEmitter.AddStatement (new ReturnStatement (oldValueLocal));
 
       PrivateInvoke.SetPublicStaticProperty (GetBuiltType(), "Property", "Old");
-      Assert.AreEqual ("Old", InvokeMethod());
-      Assert.AreEqual ("New", PrivateInvoke.GetPublicStaticProperty (GetBuiltType (), "Property"));
+      Assert.That (InvokeMethod(), Is.EqualTo ("Old"));
+      Assert.That (PrivateInvoke.GetPublicStaticProperty (GetBuiltType (), "Property"), Is.EqualTo ("New"));
     }
 
     [Test]

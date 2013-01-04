@@ -39,15 +39,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         ClientTransactionScope.CurrentTransaction.Rollback ();
 
-        Assert.AreEqual (StateType.Unchanged, loadedOrder.State);
-        Assert.AreEqual (StateType.Unchanged, newOrder.State);
+        Assert.That (loadedOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (newOrder.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreEqual (5, loadedOrder.OrderNumber);
-        Assert.AreEqual (7, newOrder.OrderNumber);
+        Assert.That (loadedOrder.OrderNumber, Is.EqualTo (5));
+        Assert.That (newOrder.OrderNumber, Is.EqualTo (7));
       }
 
-      Assert.AreEqual (5, loadedOrder.OrderNumber);
-      Assert.AreEqual (7, newOrder.OrderNumber);
+      Assert.That (loadedOrder.OrderNumber, Is.EqualTo (5));
+      Assert.That (newOrder.OrderNumber, Is.EqualTo (7));
     }
 
     [Test]
@@ -57,8 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       OrderItem orderItem = OrderItem.NewObject ();
       newOrder.OrderItems.Add (orderItem);
 
-      Assert.AreEqual (1, newOrder.OrderItems.Count);
-      Assert.IsTrue (newOrder.OrderItems.ContainsObject (orderItem));
+      Assert.That (newOrder.OrderItems.Count, Is.EqualTo (1));
+      Assert.That (newOrder.OrderItems.ContainsObject (orderItem), Is.True);
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
@@ -66,19 +66,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         newOrder.OrderItems.Add (OrderItem.NewObject ());
         newOrder.OrderItems.Add (OrderItem.NewObject ());
 
-        Assert.AreEqual (2, newOrder.OrderItems.Count);
-        Assert.IsFalse (newOrder.OrderItems.ContainsObject (orderItem));
+        Assert.That (newOrder.OrderItems.Count, Is.EqualTo (2));
+        Assert.That (newOrder.OrderItems.ContainsObject (orderItem), Is.False);
 
         ClientTransactionScope.CurrentTransaction.Rollback ();
 
-        Assert.AreEqual (StateType.Unchanged, newOrder.State);
+        Assert.That (newOrder.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreEqual (1, newOrder.OrderItems.Count);
-        Assert.IsTrue (newOrder.OrderItems.ContainsObject (orderItem));
+        Assert.That (newOrder.OrderItems.Count, Is.EqualTo (1));
+        Assert.That (newOrder.OrderItems.ContainsObject (orderItem), Is.True);
       }
 
-      Assert.AreEqual (1, newOrder.OrderItems.Count);
-      Assert.IsTrue (newOrder.OrderItems.ContainsObject (orderItem));
+      Assert.That (newOrder.OrderItems.Count, Is.EqualTo (1));
+      Assert.That (newOrder.OrderItems.ContainsObject (orderItem), Is.True);
     }
 
     [Test]
@@ -94,23 +94,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         computer.Employee = Employee.NewObject ();
         location.Client = null;
-        Assert.IsNull (employee.Computer);
+        Assert.That (employee.Computer, Is.Null);
 
         ClientTransactionScope.CurrentTransaction.Rollback ();
 
-        Assert.AreEqual (StateType.Unchanged, computer.State);
-        Assert.AreEqual (StateType.Unchanged, employee.State);
-        Assert.AreEqual (StateType.Unchanged, location.State);
-        Assert.AreEqual (StateType.Unchanged, client.State);
+        Assert.That (computer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (employee.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (location.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (client.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (employee, computer.Employee);
-        Assert.AreSame (computer, employee.Computer);
-        Assert.AreSame (client, location.Client);
+        Assert.That (computer.Employee, Is.SameAs (employee));
+        Assert.That (employee.Computer, Is.SameAs (computer));
+        Assert.That (location.Client, Is.SameAs (client));
       }
 
-      Assert.AreSame (employee, computer.Employee);
-      Assert.AreSame (computer, employee.Computer);
-      Assert.AreSame (client, location.Client);
+      Assert.That (computer.Employee, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.SameAs (computer));
+      Assert.That (location.Client, Is.SameAs (client));
     }
 
     [Test]
@@ -123,9 +123,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order.OrderNumber = 3;
         ClientTransactionScope.CurrentTransaction.Rollback ();
       }
-      Assert.AreEqual (5, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (5));
       TestableClientTransaction.Rollback ();
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
     }
   }
 }

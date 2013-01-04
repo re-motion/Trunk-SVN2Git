@@ -32,19 +32,19 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
     {
       BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin2), typeof (BT3Mixin2B));
       var mixin = Mixin.Get<BT3Mixin2> (bt3);
-      Assert.AreSame (bt3, mixin.Target);
+      Assert.That (mixin.Target, Is.SameAs (bt3));
 
       var mixin2 = Mixin.Get<BT3Mixin2B> (bt3);
-      Assert.AreSame (bt3, mixin2.Target);
+      Assert.That (mixin2.Target, Is.SameAs (bt3));
 
       BaseType3 bt3A = Serializer.SerializeAndDeserialize (bt3);
       var mixinA = Mixin.Get<BT3Mixin2> (bt3A);
-      Assert.AreNotSame (mixin, mixinA);
-      Assert.AreSame (bt3A, mixinA.Target);
+      Assert.That (mixinA, Is.Not.SameAs (mixin));
+      Assert.That (mixinA.Target, Is.SameAs (bt3A));
 
       var mixin2A = Mixin.Get<BT3Mixin2B> (bt3A);
-      Assert.AreNotSame (mixin2, mixin2A);
-      Assert.AreSame (bt3A, mixin2A.Target);
+      Assert.That (mixin2A, Is.Not.SameAs (mixin2));
+      Assert.That (mixin2A.Target, Is.SameAs (bt3A));
     }
 
     [Test]
@@ -52,23 +52,23 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
     {
       BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin1), typeof (BT3Mixin1B));
       var mixin = Mixin.Get<BT3Mixin1> (bt3);
-      Assert.IsNotNull (mixin.Next);
-      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin.Next.GetType ());
+      Assert.That (mixin.Next, Is.Not.Null);
+      Assert.That (mixin.Next.GetType (), Is.SameAs (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType));
 
       var mixin2 = Mixin.Get<BT3Mixin1B> (bt3);
-      Assert.IsNotNull (mixin2.Next);
-      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin2.Next.GetType ());
+      Assert.That (mixin2.Next, Is.Not.Null);
+      Assert.That (mixin2.Next.GetType (), Is.SameAs (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType));
 
       BaseType3 bt3A = Serializer.SerializeAndDeserialize (bt3);
       var mixinA = Mixin.Get<BT3Mixin1> (bt3A);
-      Assert.AreNotSame (mixin, mixinA);
-      Assert.IsNotNull (mixinA.Next);
-      Assert.AreSame (bt3A.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixinA.Next.GetType ());
+      Assert.That (mixinA, Is.Not.SameAs (mixin));
+      Assert.That (mixinA.Next, Is.Not.Null);
+      Assert.That (mixinA.Next.GetType (), Is.SameAs (bt3A.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType));
 
       var mixin2A = Mixin.Get<BT3Mixin1B> (bt3A);
-      Assert.AreNotSame (mixin2, mixin2A);
-      Assert.IsNotNull (mixin2A.Next);
-      Assert.AreSame (bt3A.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin2A.Next.GetType ());
+      Assert.That (mixin2A, Is.Not.SameAs (mixin2));
+      Assert.That (mixin2A.Next, Is.Not.Null);
+      Assert.That (mixin2A.Next.GetType (), Is.SameAs (bt3A.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType));
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
     {
       ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers));
       var mixin = Mixin.Get<MixinWithAbstractMembers> (targetInstance);
-      Assert.IsTrue (mixin.GetType ().IsSerializable);
+      Assert.That (mixin.GetType ().IsSerializable, Is.True);
       Serializer.Serialize (targetInstance);
     }
 
@@ -89,8 +89,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
       mixin.I = 13;
 
       MixinWithAbstractMembers mixinA = Serializer.SerializeAndDeserialize (mixin);
-      Assert.AreEqual (mixin.I, mixinA.I);
-      Assert.AreNotSame (mixin, mixinA);
+      Assert.That (mixinA.I, Is.EqualTo (mixin.I));
+      Assert.That (mixinA, Is.Not.SameAs (mixin));
     }
 
     [Test]
@@ -99,16 +99,14 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
       ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers));
       var mixin = Mixin.Get<MixinWithAbstractMembers> (targetInstance);
 
-      Assert.AreEqual (targetInstance, MixinReflector.GetTargetProperty (mixin.GetType()).GetValue (mixin, null));
-      Assert.AreEqual (MixinReflector.GetNextCallProxyType(targetInstance),
-          MixinReflector.GetNextProperty (mixin.GetType ()).GetValue (mixin, null).GetType());
+      Assert.That (MixinReflector.GetTargetProperty (mixin.GetType()).GetValue (mixin, null), Is.EqualTo (targetInstance));
+      Assert.That (MixinReflector.GetNextProperty (mixin.GetType ()).GetValue (mixin, null).GetType(), Is.EqualTo (MixinReflector.GetNextCallProxyType(targetInstance)));
 
       ClassOverridingMixinMembers targetInstanceA = Serializer.SerializeAndDeserialize (targetInstance);
       var mixinA = Mixin.Get<MixinWithAbstractMembers> (targetInstanceA);
 
-      Assert.AreEqual (targetInstanceA, MixinReflector.GetTargetProperty (mixinA.GetType ()).GetValue (mixinA, null));
-      Assert.AreEqual (MixinReflector.GetNextCallProxyType (targetInstanceA),
-          MixinReflector.GetNextProperty (mixinA.GetType ()).GetValue (mixinA, null).GetType ());
+      Assert.That (MixinReflector.GetTargetProperty (mixinA.GetType ()).GetValue (mixinA, null), Is.EqualTo (targetInstanceA));
+      Assert.That (MixinReflector.GetNextProperty (mixinA.GetType ()).GetValue (mixinA, null).GetType (), Is.EqualTo (MixinReflector.GetNextCallProxyType (targetInstanceA)));
     }
 
     [Test]
@@ -119,10 +117,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
       var mixin = Mixin.Get<AbstractMixinImplementingISerializable> (targetInstance);
 
       mixin.I = 15;
-      Assert.AreEqual (15, mixin.I);
+      Assert.That (mixin.I, Is.EqualTo (15));
 
       AbstractMixinImplementingISerializable mixinA = Serializer.SerializeAndDeserialize (mixin);
-      Assert.AreEqual (32, mixinA.I);
+      Assert.That (mixinA.I, Is.EqualTo (32));
     }
 
     [Test]
@@ -147,20 +145,20 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
     {
       ClassOverridingSingleMixinMethod com = CreateMixedObject<ClassOverridingSingleMixinMethod> (typeof (MixinOverridingClassMethod));
       var comAsIfc = com as IMixinOverridingClassMethod;
-      Assert.IsNotNull (Mixin.Get<MixinOverridingClassMethod> (com));
+      Assert.That (Mixin.Get<MixinOverridingClassMethod> (com), Is.Not.Null);
 
-      Assert.IsNotNull (comAsIfc);
-      Assert.AreEqual ("ClassOverridingSingleMixinMethod.AbstractMethod-25", comAsIfc.AbstractMethod (25));
-      Assert.AreEqual ("MixinOverridingClassMethod.OverridableMethod-13", com.OverridableMethod (13));
+      Assert.That (comAsIfc, Is.Not.Null);
+      Assert.That (comAsIfc.AbstractMethod (25), Is.EqualTo ("ClassOverridingSingleMixinMethod.AbstractMethod-25"));
+      Assert.That (com.OverridableMethod (13), Is.EqualTo ("MixinOverridingClassMethod.OverridableMethod-13"));
 
       ClassOverridingSingleMixinMethod com2 = Serializer.SerializeAndDeserialize (com);
       var com2AsIfc = com as IMixinOverridingClassMethod;
-      Assert.IsNotNull (Mixin.Get<MixinOverridingClassMethod> (com2));
-      Assert.AreNotSame (Mixin.Get<MixinOverridingClassMethod> (com), Mixin.Get<MixinOverridingClassMethod> (com2));
+      Assert.That (Mixin.Get<MixinOverridingClassMethod> (com2), Is.Not.Null);
+      Assert.That (Mixin.Get<MixinOverridingClassMethod> (com2), Is.Not.SameAs (Mixin.Get<MixinOverridingClassMethod> (com)));
 
-      Assert.IsNotNull (com2AsIfc);
-      Assert.AreEqual ("ClassOverridingSingleMixinMethod.AbstractMethod-25", com2AsIfc.AbstractMethod (25));
-      Assert.AreEqual ("MixinOverridingClassMethod.OverridableMethod-13", com2.OverridableMethod (13));
+      Assert.That (com2AsIfc, Is.Not.Null);
+      Assert.That (com2AsIfc.AbstractMethod (25), Is.EqualTo ("ClassOverridingSingleMixinMethod.AbstractMethod-25"));
+      Assert.That (com2.OverridableMethod (13), Is.EqualTo ("MixinOverridingClassMethod.OverridableMethod-13"));
     }
   }
 }

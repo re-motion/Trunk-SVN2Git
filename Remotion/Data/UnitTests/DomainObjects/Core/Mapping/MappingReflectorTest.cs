@@ -50,8 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetResolveTypes ()
     {
-      
-      Assert.IsTrue (_mappingReflector.ResolveTypes);
+      Assert.That (_mappingReflector.ResolveTypes, Is.True);
     }
 
     [Test]

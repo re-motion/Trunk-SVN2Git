@@ -62,8 +62,8 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void Initialize ()
     {
-      Assert.AreSame (_stubContextFactory, _strategy.SecurityContextFactory);
-      Assert.AreSame (_mockSecurityStrategy, _strategy.SecurityStrategy);
+      Assert.That (_strategy.SecurityContextFactory, Is.SameAs (_stubContextFactory));
+      Assert.That (_strategy.SecurityStrategy, Is.SameAs (_mockSecurityStrategy));
     }
 
     [Test]
@@ -73,10 +73,10 @@ namespace Remotion.Security.UnitTests.Core
       SecurityConfiguration.Current.GlobalAccessTypeCacheProvider = stubGlobalCacheProvider;
       ObjectSecurityStrategy strategy = new ObjectSecurityStrategy (_stubContextFactory);
 
-      Assert.AreSame (_stubContextFactory, strategy.SecurityContextFactory);
+      Assert.That (strategy.SecurityContextFactory, Is.SameAs (_stubContextFactory));
       Assert.IsInstanceOf (typeof (SecurityStrategy), strategy.SecurityStrategy);
       Assert.IsInstanceOf (typeof (Cache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
-      Assert.AreSame (stubGlobalCacheProvider, ((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider);
+      Assert.That (((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider, Is.SameAs (stubGlobalCacheProvider));
     }
 
     [Test]
@@ -88,7 +88,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess = _strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll ();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -100,7 +100,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess = _strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll ();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Test]
@@ -123,13 +123,13 @@ namespace Remotion.Security.UnitTests.Core
       ObjectSecurityStrategy strategy = new ObjectSecurityStrategy (factory, securityStrategy);
 
       ObjectSecurityStrategy deserializedStrategy = Serializer.SerializeAndDeserialize (strategy);
-      Assert.AreNotSame (strategy, deserializedStrategy);
+      Assert.That (deserializedStrategy, Is.Not.SameAs (strategy));
 
-      Assert.IsNotNull (deserializedStrategy.SecurityContextFactory);
-      Assert.AreNotSame (strategy.SecurityContextFactory, deserializedStrategy.SecurityContextFactory);
+      Assert.That (deserializedStrategy.SecurityContextFactory, Is.Not.Null);
+      Assert.That (deserializedStrategy.SecurityContextFactory, Is.Not.SameAs (strategy.SecurityContextFactory));
 
-      Assert.IsNotNull (deserializedStrategy.SecurityStrategy);
-      Assert.AreNotSame (strategy.SecurityStrategy, deserializedStrategy.SecurityStrategy);
+      Assert.That (deserializedStrategy.SecurityStrategy, Is.Not.Null);
+      Assert.That (deserializedStrategy.SecurityStrategy, Is.Not.SameAs (strategy.SecurityStrategy));
     }
   }
 }

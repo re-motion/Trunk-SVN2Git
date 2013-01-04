@@ -42,16 +42,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetNullable_FromDefault()
     {
-      Assert.IsTrue (_attribute.IsNullable);
-      Assert.IsTrue (_nullable.IsNullable);
+      Assert.That (_attribute.IsNullable, Is.True);
+      Assert.That (_nullable.IsNullable, Is.True);
     }
 
     [Test]
     public void GetNullable_FromExplicitValue()
     {
       _attribute.IsNullable = false;
-      Assert.IsFalse (_attribute.IsNullable);
-      Assert.IsFalse (_nullable.IsNullable);
+      Assert.That (_attribute.IsNullable, Is.False);
+      Assert.That (_nullable.IsNullable, Is.False);
     }
   }
 }

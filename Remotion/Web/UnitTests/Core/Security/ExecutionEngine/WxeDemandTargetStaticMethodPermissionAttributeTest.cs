@@ -29,9 +29,9 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     {
       WxeDemandTargetStaticMethodPermissionAttribute attribute = new WxeDemandTargetStaticMethodPermissionAttribute ("Search", typeof (SecurableObject));
 
-      Assert.AreEqual (MethodType.Static, attribute.MethodType);
-      Assert.AreEqual ("Search", attribute.MethodName);
-      Assert.AreSame ( typeof (SecurableObject), attribute.SecurableClass);
+      Assert.That (attribute.MethodType, Is.EqualTo (MethodType.Static));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Search"));
+      Assert.That (attribute.SecurableClass, Is.SameAs (typeof (SecurableObject)));
     }
 
     [Test]
@@ -39,9 +39,9 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     {
       WxeDemandTargetStaticMethodPermissionAttribute attribute = new WxeDemandTargetStaticMethodPermissionAttribute (SecurableObject.Method.Search);
 
-      Assert.AreEqual (MethodType.Static, attribute.MethodType);
-      Assert.AreEqual ("Search", attribute.MethodName);
-      Assert.AreSame (typeof (SecurableObject), attribute.SecurableClass);
+      Assert.That (attribute.MethodType, Is.EqualTo (MethodType.Static));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Search"));
+      Assert.That (attribute.SecurableClass, Is.SameAs (typeof (SecurableObject)));
     }
 
     [Test]
@@ -50,9 +50,9 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       WxeDemandTargetStaticMethodPermissionAttribute attribute = 
           new WxeDemandTargetStaticMethodPermissionAttribute (SecurableObject.Method.Search, typeof (DerivedSecurableObject));
 
-      Assert.AreEqual (MethodType.Static, attribute.MethodType);
-      Assert.AreEqual ("Search", attribute.MethodName);
-      Assert.AreSame (typeof (DerivedSecurableObject), attribute.SecurableClass);
+      Assert.That (attribute.MethodType, Is.EqualTo (MethodType.Static));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Search"));
+      Assert.That (attribute.SecurableClass, Is.SameAs (typeof (DerivedSecurableObject)));
     }
 
     [Test]

@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
       CreateLocalizedName (_metadataObject, _cultureDeAt, "Class de-AT");
       Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo (_cultureDe.CultureName);
 
-      Assert.AreEqual ("Class de", _metadataObject.DisplayName);
+      Assert.That (_metadataObject.DisplayName, Is.EqualTo ("Class de"));
     }
 
     [Test]
@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
       CreateLocalizedName (_metadataObject, _cultureDeAt, "Class de-AT");
       Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo (_cultureDeAt.CultureName);
 
-      Assert.AreEqual ("Class de-AT", _metadataObject.DisplayName);
+      Assert.That (_metadataObject.DisplayName, Is.EqualTo ("Class de-AT"));
     }
 
     [Test]
@@ -91,7 +91,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
       CreateLocalizedName (_metadataObject, _cultureDeAt, "Class de-AT");
       Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
-      Assert.AreEqual ("Class Invariant", _metadataObject.DisplayName);
+      Assert.That (_metadataObject.DisplayName, Is.EqualTo ("Class Invariant"));
     }
 
     [Test]
@@ -99,7 +99,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
     {
       Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo ("en");
 
-      Assert.AreEqual ("Technical Name", _metadataObject.DisplayName);
+      Assert.That (_metadataObject.DisplayName, Is.EqualTo ("Technical Name"));
     }
 
     [Test]
@@ -109,7 +109,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
       CreateLocalizedName (_metadataObject, _cultureDe, "Class de");
       Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo (_cultureDeAt.CultureName);
 
-      Assert.AreEqual ("Class de", _metadataObject.DisplayName);
+      Assert.That (_metadataObject.DisplayName, Is.EqualTo ("Class de"));
     }
 
     [Test]
@@ -118,7 +118,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
       CreateLocalizedName (_metadataObject, _cultureInvariant, "Class Invariant");
       Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo (_cultureDeAt.CultureName);
 
-      Assert.AreEqual ("Class Invariant", _metadataObject.DisplayName);
+      Assert.That (_metadataObject.DisplayName, Is.EqualTo ("Class Invariant"));
     }
 
     [Test]
@@ -126,13 +126,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
     {
       LocalizedName expectedLocalizedName = CreateLocalizedName (_metadataObject, _cultureDe, "Class de");
 
-      Assert.AreSame (expectedLocalizedName, _metadataObject.GetLocalizedName (_cultureDe));
+      Assert.That (_metadataObject.GetLocalizedName (_cultureDe), Is.SameAs (expectedLocalizedName));
     }
 
     [Test]
     public void GetLocalizedName_NotExistingLocalizedNameForCulture ()
     {
-      Assert.IsNull (_metadataObject.GetLocalizedName (_cultureRu));
+      Assert.That (_metadataObject.GetLocalizedName (_cultureRu), Is.Null);
     }
 
     [Test]
@@ -140,7 +140,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
     {
       LocalizedName expectedLocalizedName = CreateLocalizedName (_metadataObject, _cultureDe, "Class de");
 
-      Assert.AreSame (expectedLocalizedName, _metadataObject.GetLocalizedName ("de"));
+      Assert.That (_metadataObject.GetLocalizedName ("de"), Is.SameAs (expectedLocalizedName));
     }
 
     [Test]
@@ -148,14 +148,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
     {
       LocalizedName localizedName = _metadataObject.GetLocalizedName ("ru");
 
-      Assert.IsNull (localizedName);
+      Assert.That (localizedName, Is.Null);
     }
 
     [Test]
     public void SetAndGet_Index ()
     {
       _metadataObject.Index = 1;
-      Assert.AreEqual (1, _metadataObject.Index);
+      Assert.That (_metadataObject.Index, Is.EqualTo (1));
     }
 
     private LocalizedName CreateLocalizedName (MetadataObject metadataObject, Culture culture, string text)

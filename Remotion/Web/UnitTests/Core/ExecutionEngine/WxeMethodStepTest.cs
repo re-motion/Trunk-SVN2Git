@@ -83,22 +83,22 @@ public class WxeMethodStepTest: WxeTest
     WxeMethodStep methodStep = new WxeMethodStep (_function, step1);
     
     methodStep.Execute (CurrentWxeContext);
-    
-    Assert.AreEqual ("1", _function.LastExecutedStepID);
+
+    Assert.That (_function.LastExecutedStepID, Is.EqualTo ("1"));
   }
 
   [Test]
   public void MethodStepWithDelegate ()
   {
     WxeMethodStep methodStep = new WxeMethodStep (_function.PublicStepMethod);
-    Assert.AreEqual ("PublicStepMethod", PrivateInvoke.GetNonPublicField (methodStep, "_methodName"));
+    Assert.That (PrivateInvoke.GetNonPublicField (methodStep, "_methodName"), Is.EqualTo ("PublicStepMethod"));
   }
 
   [Test]
   public void MethodStepWithDelegateWithContext ()
   {
     WxeMethodStep methodStep = new WxeMethodStep (_function.PublicStepMethodWithContext);
-    Assert.AreEqual ("PublicStepMethodWithContext", PrivateInvoke.GetNonPublicField (methodStep, "_methodName"));
+    Assert.That (PrivateInvoke.GetNonPublicField (methodStep, "_methodName"), Is.EqualTo ("PublicStepMethodWithContext"));
   }
 
   [Test]
@@ -137,11 +137,11 @@ public class WxeMethodStepTest: WxeTest
   {
     WxeMethodStep methodStep = new WxeMethodStep (_function.PublicStepMethod);
 
-    Assert.AreNotEqual ("1", _function.LastExecutedStepID);
+    Assert.That (_function.LastExecutedStepID, Is.Not.EqualTo ("1"));
 
     methodStep.Execute (CurrentWxeContext);
 
-    Assert.AreEqual ("1", _function.LastExecutedStepID);
+    Assert.That (_function.LastExecutedStepID, Is.EqualTo ("1"));
   }
 
   [Test]
@@ -152,9 +152,9 @@ public class WxeMethodStepTest: WxeTest
     WxeMethodStep methodStepWithContext = new WxeMethodStep (_function, step2);
     
     methodStepWithContext.Execute (CurrentWxeContext);
-    
-    Assert.AreEqual ("2", _function.LastExecutedStepID);
-    Assert.AreSame (CurrentWxeContext, _function.WxeContextStep2);
+
+    Assert.That (_function.LastExecutedStepID, Is.EqualTo ("2"));
+    Assert.That (_function.WxeContextStep2, Is.SameAs (CurrentWxeContext));
   }
 
   [Test]
@@ -163,9 +163,9 @@ public class WxeMethodStepTest: WxeTest
     WxeMethodStep methodStepWithContext = new WxeMethodStep (_function.PublicStepMethodWithContext);
     
     methodStepWithContext.Execute (CurrentWxeContext);
-    
-    Assert.AreEqual ("2", _function.LastExecutedStepID);
-    Assert.AreSame (CurrentWxeContext, _function.WxeContextStep2);
+
+    Assert.That (_function.LastExecutedStepID, Is.EqualTo ("2"));
+    Assert.That (_function.WxeContextStep2, Is.SameAs (CurrentWxeContext));
   }
 
   private void InstanceMethodNotDeclaredOnWxeFunction ()

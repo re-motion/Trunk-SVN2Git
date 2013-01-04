@@ -91,7 +91,7 @@ namespace Remotion.UnitTests.Utilities
     public void TestGetType()
     {
       Type t = TypeUtility.GetType ("Remotion.UnitTests::Utilities.TypeUtilityTests", true);
-      Assert.AreEqual (typeof (TypeUtilityTests), t);
+      Assert.That (t, Is.EqualTo (typeof (TypeUtilityTests)));
     }
 
     [Test]
@@ -169,41 +169,41 @@ namespace Remotion.UnitTests.Utilities
     public void GetAbbreviatedTypeName_WithoutSubNamespaceAndWithoutVersionAndCulture ()
     {
       string name = TypeUtility.GetAbbreviatedTypeName (typeof (Uri), false);
-      Assert.AreEqual ("System::Uri", name);
+      Assert.That (name, Is.EqualTo ("System::Uri"));
     }
 
     [Test]
     public void GetAbbreviatedTypeName_WithoutSubNamespaceAndWithVersionAndCulture ()
     {
       string name = TypeUtility.GetAbbreviatedTypeName (typeof (Uri), true);
-      Assert.AreEqual ("System::Uri" + typeof (Uri).Assembly.FullName.Replace ("System", string.Empty), name);
+      Assert.That (name, Is.EqualTo ("System::Uri" + typeof (Uri).Assembly.FullName.Replace ("System", string.Empty)));
     }
 
     [Test]
     public void GetAbbreviatedTypeName_WithSubNamespaceAndWithoutVersionAndCulture ()
     {
       string name = TypeUtility.GetAbbreviatedTypeName (typeof (Timer), false);
-      Assert.AreEqual ("System::Timers.Timer", name);
+      Assert.That (name, Is.EqualTo ("System::Timers.Timer"));
     }
 
     [Test]
     public void GetAbbreviatedTypeName_WithSubNamespaceAndWithVersionAndCulture ()
     {
       string name = TypeUtility.GetAbbreviatedTypeName (typeof (Timer), true);
-      Assert.AreEqual ("System::Timers.Timer" + typeof (Timer).Assembly.FullName.Replace ("System", string.Empty), name);
+      Assert.That (name, Is.EqualTo ("System::Timers.Timer" + typeof (Timer).Assembly.FullName.Replace ("System", string.Empty)));
     }
 
     [Test]
     public void GetAbbreviatedTypeName_WithoutAbbreviate ()
     {
       string name = TypeUtility.GetAbbreviatedTypeName (typeof (Hashtable), false);
-      Assert.AreEqual ("System.Collections.Hashtable, mscorlib", name);
+      Assert.That (name, Is.EqualTo ("System.Collections.Hashtable, mscorlib"));
     }
 
     private void AssertTransformation (string abbreviatedName, string fullName)
     {
       string result = TypeUtility.ParseAbbreviatedTypeName (abbreviatedName);
-      Assert.AreEqual (fullName, result);
+      Assert.That (result, Is.EqualTo (fullName));
     }
   }
 }

@@ -48,7 +48,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), "Show");
 
       _testHelper.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -59,7 +59,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInfo);
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -70,7 +70,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInformation);
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -85,7 +85,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       }
 
       _testHelper.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -100,7 +100,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       }
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -115,7 +115,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       }
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
   }
 }

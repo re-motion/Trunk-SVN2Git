@@ -85,8 +85,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = CreatePrincipal ("TheUser", null, null, null);
       var right = CreatePrincipal ("TheUser", null, null, null);
 
-      Assert.IsTrue (left.Equals (right));
-      Assert.IsTrue (right.Equals (left));
+      Assert.That (left.Equals (right), Is.True);
+      Assert.That (right.Equals (left), Is.True);
     }
 
     [Test]
@@ -95,8 +95,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
       var right = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
 
-      Assert.IsTrue (left.Equals (right));
-      Assert.IsTrue (right.Equals (left));
+      Assert.That (left.Equals (right), Is.True);
+      Assert.That (right.Equals (left), Is.True);
     }
 
     [Test]
@@ -105,8 +105,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
       var right = CreatePrincipal ("OtherUser", "TheGroup", "SomeUser", "SomeGroup");
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -115,8 +115,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
       var right = CreatePrincipal ("TheUser", "OtherGroup", "SomeUser", "SomeGroup");
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -125,8 +125,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
       var right = CreatePrincipal ("TheUser", "TheGroup", "OtherUser", "SomeGroup");
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -135,8 +135,8 @@ namespace Remotion.Security.UnitTests.Core
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
       var right = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "OtherGroup");
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -145,7 +145,7 @@ namespace Remotion.Security.UnitTests.Core
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
       var right = (SecurityPrincipal) null;
 
-      Assert.IsFalse (left.Equals (right));
+      Assert.That (left.Equals (right), Is.False);
     }
 
     [Test]
@@ -154,7 +154,7 @@ namespace Remotion.Security.UnitTests.Core
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
       var right = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
 
-      Assert.IsTrue (left.Equals ((object) right));
+      Assert.That (left.Equals ((object) right), Is.True);
     }
 
     [Test]
@@ -162,7 +162,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
 
-      Assert.IsFalse (left.Equals ((object) null));
+      Assert.That (left.Equals ((object) null), Is.False);
     }
 
     [Test]
@@ -170,7 +170,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
 
-      Assert.IsFalse (left.Equals (new object()));
+      Assert.That (left.Equals (new object()), Is.False);
     }
 
     [Test]
@@ -189,8 +189,8 @@ namespace Remotion.Security.UnitTests.Core
 
       var deserializedRole = Serializer.SerializeAndDeserialize (principal);
 
-      Assert.AreNotSame (principal, deserializedRole);
-      Assert.AreEqual (principal, deserializedRole);
+      Assert.That (deserializedRole, Is.Not.SameAs (principal));
+      Assert.That (deserializedRole, Is.EqualTo (principal));
     }
 
     [Test]

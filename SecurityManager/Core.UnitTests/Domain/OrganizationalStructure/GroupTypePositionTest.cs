@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       GroupTypePosition groupTypePosition = CreateGroupTypePosition ();
 
-      Assert.AreEqual ("GroupTypeName / PositionName", groupTypePosition.DisplayName);
+      Assert.That (groupTypePosition.DisplayName, Is.EqualTo ("GroupTypeName / PositionName"));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       GroupTypePosition groupTypePosition = CreateGroupTypePosition ();
       groupTypePosition.Position = null;
 
-      Assert.AreEqual ("GroupTypeName / ", groupTypePosition.DisplayName);
+      Assert.That (groupTypePosition.DisplayName, Is.EqualTo ("GroupTypeName / "));
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       GroupTypePosition groupTypePosition = CreateGroupTypePosition ();
       groupTypePosition.GroupType = null;
 
-      Assert.AreEqual (" / PositionName", groupTypePosition.DisplayName);
+      Assert.That (groupTypePosition.DisplayName, Is.EqualTo (" / PositionName"));
     }
 
     [Test]
@@ -75,7 +75,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       groupTypePosition.GroupType = null;
       groupTypePosition.Position = null;
 
-      Assert.AreEqual (" / ", groupTypePosition.DisplayName);
+      Assert.That (groupTypePosition.DisplayName, Is.EqualTo (" / "));
     }
 
     [Test]

@@ -31,7 +31,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
       SecurityToken token = TestHelper.CreateTokenWithAbstractRole (entry.SpecificAbstractRole);
 
-      Assert.IsTrue (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.True);
     }
 
     [Test]
@@ -41,7 +41,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
       SecurityToken token = TestHelper.CreateTokenWithAbstractRole (TestHelper.CreateTestAbstractRole ());
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
 
     [Test]
@@ -51,7 +51,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
       SecurityToken token = TestHelper.CreateEmptyToken ();
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
   }
 }

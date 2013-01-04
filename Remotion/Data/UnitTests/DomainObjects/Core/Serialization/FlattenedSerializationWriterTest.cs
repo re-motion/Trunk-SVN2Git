@@ -29,8 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       FlattenedSerializationWriter<int> writer = new FlattenedSerializationWriter<int>();
       int[] data = writer.GetData();
-      Assert.IsNotNull (data);
-      Assert.IsEmpty (data);
+      Assert.That (data, Is.Not.Null);
+      Assert.That (data, Is.Empty);
     }
 
     [Test]
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       FlattenedSerializationWriter<int> writer = new FlattenedSerializationWriter<int> ();
       writer.AddSimpleValue (1);
       int[] data = writer.GetData ();
-      Assert.IsNotNull (data);
+      Assert.That (data, Is.Not.Null);
       Assert.That (data, Is.EqualTo (new int[] { 1 }));
     }
 
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       writer.AddSimpleValue (1);
       writer.AddSimpleValue (2);
       int[] data = writer.GetData ();
-      Assert.IsNotNull (data);
+      Assert.That (data, Is.Not.Null);
       Assert.That (data, Is.EqualTo (new int[] { 1, 2 }));
     }
   }

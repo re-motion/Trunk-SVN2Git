@@ -32,7 +32,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       var log = Validator.Validate (
           definition.Mixins[typeof (MixinWithUnsatisfiedEmptyNextCallDependency)].NextCallDependencies[typeof (IEmptyInterface)]);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultNextCallDependencyRules.DependencyMustBeSatisfied", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultNextCallDependencyRules.DependencyMustBeSatisfied", log), Is.True);
     }
 
     [Test]
@@ -60,7 +60,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (NullTarget), typeof (MixinWithUnsatisfiedEmptyAggregateNextCallDependency));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultNextCallDependencyRules.DependencyMustBeSatisfied", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultNextCallDependencyRules.DependencyMustBeSatisfied", log), Is.True);
     }
   }
 }

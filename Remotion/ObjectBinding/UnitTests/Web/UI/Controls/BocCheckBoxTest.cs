@@ -59,8 +59,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
       _bocCheckBox.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
     [Test]
@@ -70,8 +70,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.AutoPostBack = true;
       _bocCheckBox.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
 
@@ -82,10 +82,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.AutoPostBack = true;
       _bocCheckBox.EvaluateWaiConformity();
 
-      Assert.IsTrue (WcagHelperMock.HasWarning);
-      Assert.AreEqual (1, WcagHelperMock.Priority);
-      Assert.AreSame (_bocCheckBox, WcagHelperMock.Control);
-      Assert.AreEqual ("AutoPostBack", WcagHelperMock.Property);
+      Assert.That (WcagHelperMock.HasWarning, Is.True);
+      Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+      Assert.That (WcagHelperMock.Control, Is.SameAs (_bocCheckBox));
+      Assert.That (WcagHelperMock.Property, Is.EqualTo ("AutoPostBack"));
     }
 
 
@@ -94,8 +94,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocCheckBox.ReadOnly = true;
       string[] actual = _bocCheckBox.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (0, actual.Length);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -103,9 +103,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocCheckBox.ReadOnly = false;
       string[] actual = _bocCheckBox.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_bocCheckBox.GetCheckboxUniqueID(), actual[0]);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (1));
+      Assert.That (actual[0], Is.EqualTo (_bocCheckBox.GetCheckboxUniqueID()));
     }
 
 
@@ -114,8 +114,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocCheckBox.IsDirty = false;
       _bocCheckBox.Value = true;
-      Assert.AreEqual (true, _bocCheckBox.Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (true));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -123,8 +123,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocCheckBox.IsDirty = false;
       _bocCheckBox.Value = false;
-      Assert.AreEqual (false, _bocCheckBox.Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -133,8 +133,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.DefaultValue = false;
       _bocCheckBox.IsDirty = false;
       _bocCheckBox.Value = null;
-      Assert.AreEqual (false, _bocCheckBox.Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -142,8 +142,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocCheckBox.IsDirty = false;
       _bocCheckBox.Value = true;
-      Assert.AreEqual (true, _bocCheckBox.Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (true));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -151,8 +151,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocCheckBox.IsDirty = false;
       _bocCheckBox.Value = false;
-      Assert.AreEqual (false, _bocCheckBox.Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -161,8 +161,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.DefaultValue = false;
       _bocCheckBox.IsDirty = false;
       _bocCheckBox.Value = null;
-      Assert.AreEqual (false, _bocCheckBox.Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
 
@@ -171,8 +171,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocCheckBox.IsDirty = false;
       ((IBusinessObjectBoundControl) _bocCheckBox).Value = true;
-      Assert.AreEqual (true, ((IBusinessObjectBoundControl) _bocCheckBox).Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (((IBusinessObjectBoundControl) _bocCheckBox).Value, Is.EqualTo (true));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -180,8 +180,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocCheckBox.IsDirty = false;
       ((IBusinessObjectBoundControl) _bocCheckBox).Value = false;
-      Assert.AreEqual (false, ((IBusinessObjectBoundControl) _bocCheckBox).Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (((IBusinessObjectBoundControl) _bocCheckBox).Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -190,8 +190,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.DefaultValue = false;
       _bocCheckBox.IsDirty = false;
       ((IBusinessObjectBoundControl) _bocCheckBox).Value = null;
-      Assert.AreEqual (false, ((IBusinessObjectBoundControl) _bocCheckBox).Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (((IBusinessObjectBoundControl) _bocCheckBox).Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -199,8 +199,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocCheckBox.IsDirty = false;
       ((IBusinessObjectBoundControl) _bocCheckBox).Value = true;
-      Assert.AreEqual (true, ((IBusinessObjectBoundControl) _bocCheckBox).Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (((IBusinessObjectBoundControl) _bocCheckBox).Value, Is.EqualTo (true));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -208,8 +208,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocCheckBox.IsDirty = false;
       ((IBusinessObjectBoundControl) _bocCheckBox).Value = false;
-      Assert.AreEqual (false, ((IBusinessObjectBoundControl) _bocCheckBox).Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (((IBusinessObjectBoundControl) _bocCheckBox).Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -218,8 +218,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.DefaultValue = false;
       _bocCheckBox.IsDirty = false;
       ((IBusinessObjectBoundControl) _bocCheckBox).Value = null;
-      Assert.AreEqual (false, ((IBusinessObjectBoundControl) _bocCheckBox).Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (((IBusinessObjectBoundControl) _bocCheckBox).Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
 
@@ -227,14 +227,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     public void HasValue_ValueIsSet_ReturnsTrue ()
     {
       _bocCheckBox.Value = false;
-      Assert.IsTrue (_bocCheckBox.HasValue);
+      Assert.That (_bocCheckBox.HasValue, Is.True);
     }
 
     [Test]
     public void HasValue_ValueIsNull_ReturnsFalse ()
     {
       _bocCheckBox.Value = null;
-      Assert.IsTrue (_bocCheckBox.HasValue);
+      Assert.That (_bocCheckBox.HasValue, Is.True);
     }
 
 
@@ -248,8 +248,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadValue (true);
-      Assert.AreEqual (false, _bocCheckBox.Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -262,8 +262,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadValue (false);
-      Assert.AreEqual (_businessObject.BooleanValue, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (_businessObject.BooleanValue));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -276,8 +276,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadValue (false);
-      Assert.AreEqual (_businessObject.BooleanValue, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (_businessObject.BooleanValue));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -290,8 +290,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadValue (false);
-      Assert.AreEqual (_businessObject.NullableBooleanValue, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (_businessObject.NullableBooleanValue));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -304,8 +304,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadValue (false);
-      Assert.AreEqual (_businessObject.NullableBooleanValue, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (_businessObject.NullableBooleanValue));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -319,8 +319,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadValue (false);
-      Assert.AreEqual (false, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -332,8 +332,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadValue (false);
-      Assert.AreEqual (true, _bocCheckBox.Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (true));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -345,8 +345,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadValue (false);
-      Assert.AreEqual (true, _bocCheckBox.Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (true));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -359,8 +359,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadValue (false);
-      Assert.AreEqual (false, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
 
@@ -372,8 +372,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadUnboundValue (value, true);
-      Assert.AreEqual (false, _bocCheckBox.Value);
-      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.True);
     }
 
     [Test]
@@ -384,8 +384,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (value));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -396,8 +396,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (value));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -408,8 +408,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadUnboundValue (null, false);
-      Assert.AreEqual (false, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -420,8 +420,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (value));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -432,8 +432,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (value));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -445,8 +445,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = true;
 
       _bocCheckBox.LoadUnboundValue (value, false);
-      Assert.AreEqual (false, _bocCheckBox.Value);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_bocCheckBox.Value, Is.EqualTo (false));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
 
     [Test]
@@ -459,8 +459,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocCheckBox.IsDirty = false;
 
       _bocCheckBox.SaveValue (false);
-      Assert.AreEqual (true, _businessObject.BooleanValue);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.That (_businessObject.BooleanValue, Is.EqualTo (true));
+      Assert.That (_bocCheckBox.IsDirty, Is.False);
     }
   }
 }

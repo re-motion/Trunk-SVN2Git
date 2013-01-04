@@ -53,15 +53,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void RealObjectEndPoint_IsFlattenedSerializable ()
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.IsNotNull (deserializedEndPoint);
-      Assert.AreNotSame (_endPoint, deserializedEndPoint);
+      Assert.That (deserializedEndPoint, Is.Not.Null);
+      Assert.That (deserializedEndPoint, Is.Not.SameAs (_endPoint));
     }
 
     [Test]
     public void UntouchedContent ()
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.IsFalse (deserializedEndPoint.HasBeenTouched);
+      Assert.That (deserializedEndPoint.HasBeenTouched, Is.False);
     }
 
     [Test]
@@ -70,10 +70,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Employee1);
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.AreSame (_endPoint.Definition, deserializedEndPoint.Definition);
-      Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
-      Assert.AreEqual (DomainObjectIDs.Employee1, _endPoint.OppositeObjectID);
-      Assert.AreEqual (DomainObjectIDs.Employee3, _endPoint.OriginalOppositeObjectID);
+      Assert.That (deserializedEndPoint.Definition, Is.SameAs (_endPoint.Definition));
+      Assert.That (deserializedEndPoint.HasBeenTouched, Is.True);
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Employee1));
+      Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.Employee3));
     }
 
     [Test]

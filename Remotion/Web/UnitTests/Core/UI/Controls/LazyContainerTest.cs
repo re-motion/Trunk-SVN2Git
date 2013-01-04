@@ -106,21 +106,21 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void Initialize ()
     {
-      Assert.IsTrue (_lazyContainer.Controls is EmptyControlCollection);
+      Assert.That (_lazyContainer.Controls is EmptyControlCollection, Is.True);
 
-      Assert.IsNotNull (_lazyContainer.RealControls);
-      Assert.IsFalse (_lazyContainer.RealControls is EmptyControlCollection);
+      Assert.That (_lazyContainer.RealControls, Is.Not.Null);
+      Assert.That (_lazyContainer.RealControls is EmptyControlCollection, Is.False);
     }
 
     [Test]
     public void Ensure ()
     {
-      Assert.IsTrue (_lazyContainer.Controls is EmptyControlCollection);
+      Assert.That (_lazyContainer.Controls is EmptyControlCollection, Is.True);
 
       _lazyContainer.Ensure ();
 
-      Assert.IsNotNull (_lazyContainer.Controls);
-      Assert.IsFalse (_lazyContainer.Controls is EmptyControlCollection);
+      Assert.That (_lazyContainer.Controls, Is.Not.Null);
+      Assert.That (_lazyContainer.Controls is EmptyControlCollection, Is.False);
     }
 
 
@@ -277,10 +277,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       object viewState = _lazyContainerInvoker.SaveViewState ();
 
-      Assert.IsNotNull (viewState);
-      Assert.IsTrue (viewState is Pair);
+      Assert.That (viewState, Is.Not.Null);
+      Assert.That (viewState is Pair, Is.True);
       Pair values = (Pair) viewState;
-      Assert.IsNull (values.Second);
+      Assert.That (values.Second, Is.Null);
     }
 
     [Test]
@@ -312,10 +312,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       object viewState = _lazyContainerInvoker.SaveViewState ();
 
-      Assert.IsNotNull (viewState);
-      Assert.IsTrue (viewState is Pair);
+      Assert.That (viewState, Is.Not.Null);
+      Assert.That (viewState is Pair, Is.True);
       Pair values = (Pair) viewState;
-      Assert.IsNotNull (values.Second);
+      Assert.That (values.Second, Is.Not.Null);
     }
 
 
@@ -344,15 +344,15 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       Page.LoadAllState ();
       _lazyContainer.RealControls.Add (_parent);
 
-      Assert.IsNull (_parent.ValueInControlState);
-      Assert.IsNull (_child.ValueInControlState);
-      Assert.IsNull (_childSecond.ValueInControlState);
+      Assert.That (_parent.ValueInControlState, Is.Null);
+      Assert.That (_child.ValueInControlState, Is.Null);
+      Assert.That (_childSecond.ValueInControlState, Is.Null);
 
       _lazyContainer.Ensure ();
 
-      Assert.AreEqual ("Parent Value", _parent.ValueInControlState);
-      Assert.AreEqual ("Child Value", _child.ValueInControlState);
-      Assert.IsNull (_childSecond.ValueInControlState);
+      Assert.That (_parent.ValueInControlState, Is.EqualTo ("Parent Value"));
+      Assert.That (_child.ValueInControlState, Is.EqualTo ("Child Value"));
+      Assert.That (_childSecond.ValueInControlState, Is.Null);
     }
 
     [Test]
@@ -377,18 +377,18 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       object controlState = _lazyContainerInvoker.SaveControlState ();
 
-      Assert.IsTrue (controlState is Triplet);
+      Assert.That (controlState is Triplet, Is.True);
       Triplet values = (Triplet) controlState;
       Assert.IsInstanceOf((typeof (HybridDictionary)), values.Third);
       IDictionary actualControlStates = (IDictionary) values.Third;
-      Assert.AreEqual (2, actualControlStates.Count);
+      Assert.That (actualControlStates.Count, Is.EqualTo (2));
 
       foreach (string expectedKey in expectedControlStates.Keys)
       {
         Pair expectedValues = (Pair) expectedControlStates[expectedKey];
 
         object actualControlState = actualControlStates[expectedKey];
-        Assert.IsTrue (actualControlState is Pair);
+        Assert.That (actualControlState is Pair, Is.True);
         Pair actualValues = (Pair) actualControlState;
         Assert.AreEqual (expectedValues.First, actualValues.First, expectedKey);
         Assert.AreEqual (expectedValues.Second, actualValues.Second, expectedKey);
@@ -415,10 +415,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       pageStatePersisterBackup = Page.GetPageStatePersister ();
 
-      Assert.IsTrue (pageStatePersisterBackup.ControlState is IDictionary);
+      Assert.That (pageStatePersisterBackup.ControlState is IDictionary, Is.True);
       IDictionary controlStates = (IDictionary) pageStatePersisterBackup.ControlState;
-      Assert.AreEqual (1, controlStates.Count);
-      Assert.IsTrue (controlStates.Contains (_lazyContainer.UniqueID));
+      Assert.That (controlStates.Count, Is.EqualTo (1));
+      Assert.That (controlStates.Contains (_lazyContainer.UniqueID), Is.True);
 
       TearDownPage ();
       SetUpPage ();
@@ -431,15 +431,15 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       NamingContainerInvoker.LoadRecursive ();
       _lazyContainer.RealControls.Add (_parent);
 
-      Assert.IsNull (_parent.ValueInControlState);
-      Assert.IsNull (_child.ValueInControlState);
-      Assert.IsNull (_childSecond.ValueInControlState);
+      Assert.That (_parent.ValueInControlState, Is.Null);
+      Assert.That (_child.ValueInControlState, Is.Null);
+      Assert.That (_childSecond.ValueInControlState, Is.Null);
 
       _lazyContainer.Ensure ();
 
-      Assert.AreEqual ("Parent Value", _parent.ValueInControlState);
-      Assert.AreEqual ("Child Value", _child.ValueInControlState);
-      Assert.IsNull (_childSecond.ValueInControlState);
+      Assert.That (_parent.ValueInControlState, Is.EqualTo ("Parent Value"));
+      Assert.That (_child.ValueInControlState, Is.EqualTo ("Child Value"));
+      Assert.That (_childSecond.ValueInControlState, Is.Null);
     }
 
     [Test]
@@ -463,10 +463,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       pageStatePersisterBackup = Page.GetPageStatePersister ();
 
-      Assert.IsTrue (pageStatePersisterBackup.ControlState is IDictionary);
+      Assert.That (pageStatePersisterBackup.ControlState is IDictionary, Is.True);
       IDictionary controlStates = (IDictionary) pageStatePersisterBackup.ControlState;
-      Assert.AreEqual (1, controlStates.Count);
-      Assert.IsTrue (controlStates.Contains (_lazyContainer.UniqueID));
+      Assert.That (controlStates.Count, Is.EqualTo (1));
+      Assert.That (controlStates.Contains (_lazyContainer.UniqueID), Is.True);
 
       TearDownPage ();
       SetUpPage ();

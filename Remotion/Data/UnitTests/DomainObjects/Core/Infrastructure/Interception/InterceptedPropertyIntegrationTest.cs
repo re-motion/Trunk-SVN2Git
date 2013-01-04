@@ -50,34 +50,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     public void LoadOfSimpleObjectWorks ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.IsTrue (WasCreatedByFactory (order));
+      Assert.That (WasCreatedByFactory (order), Is.True);
     }
 
     [Test]
     public void ConstructionOfSimpleObjectWorks ()
     {
       Order order = Order.NewObject();
-      Assert.IsTrue (WasCreatedByFactory (order));
+      Assert.That (WasCreatedByFactory (order), Is.True);
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.NewObject();
-      Assert.IsNotNull (classWithAllDataTypes);
-      Assert.IsTrue (WasCreatedByFactory (classWithAllDataTypes));
+      Assert.That (classWithAllDataTypes, Is.Not.Null);
+      Assert.That (WasCreatedByFactory (classWithAllDataTypes), Is.True);
     }
 
     [Test]
     public void ConstructedObjectIsDerived ()
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.NewObject();
-      Assert.IsFalse (((object) classWithAllDataTypes).GetType().Equals (typeof (ClassWithAllDataTypes)));
+      Assert.That (((object) classWithAllDataTypes).GetType().Equals (typeof (ClassWithAllDataTypes)), Is.False);
     }
 
     [Test]
     public void GetPropertyValueWorks ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.AreEqual (1, order.OrderNumber);
-      Assert.AreEqual (new DateTime (2005, 01, 01), order.DeliveryDate);
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
+      Assert.That (order.DeliveryDate, Is.EqualTo (new DateTime (2005, 01, 01)));
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
     }
 
     [Test]
@@ -93,12 +93,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
       order.OrderNumber = 15;
-      Assert.AreEqual (15, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (15));
 
       order.DeliveryDate = new DateTime (2007, 02, 03);
-      Assert.AreEqual (new DateTime (2007, 02, 03), order.DeliveryDate);
+      Assert.That (order.DeliveryDate, Is.EqualTo (new DateTime (2007, 02, 03)));
 
-      Assert.AreEqual (15, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (15));
     }
 
     [Test]
@@ -203,15 +203,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Customer customer = order.Customer;
-      Assert.IsNotNull (customer);
-      Assert.AreSame (Customer.GetObject (DomainObjectIDs.Customer1), customer);
+      Assert.That (customer, Is.Not.Null);
+      Assert.That (customer, Is.SameAs (Customer.GetObject (DomainObjectIDs.Customer1)));
 
       Customer newCustomer = Customer.NewObject();
-      Assert.IsNotNull (newCustomer);
+      Assert.That (newCustomer, Is.Not.Null);
       order.Customer = newCustomer;
-      Assert.AreSame (newCustomer, order.Customer);
+      Assert.That (order.Customer, Is.SameAs (newCustomer));
 
-      Assert.AreSame (customer, order.OriginalCustomer);
+      Assert.That (order.OriginalCustomer, Is.SameAs (customer));
     }
 
     [Test]
@@ -222,9 +222,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       OrderItem orderItem = order.OrderItems[0];
 
       orderItem.Order = null;
-      Assert.IsNull (orderItem.Order);
+      Assert.That (orderItem.Order, Is.Null);
 
-      Assert.AreSame (order, orderItem.OriginalOrder);
+      Assert.That (orderItem.OriginalOrder, Is.SameAs (order));
     }
 
     [Test]
@@ -232,32 +232,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       DomainObjectCollection orderItems = order.OrderItems;
-      Assert.IsNotNull (orderItems);
-      Assert.AreEqual (2, orderItems.Count);
+      Assert.That (orderItems, Is.Not.Null);
+      Assert.That (orderItems.Count, Is.EqualTo (2));
 
-      Assert.IsTrue (orderItems.Contains (DomainObjectIDs.OrderItem1));
-      Assert.IsTrue (orderItems.Contains (DomainObjectIDs.OrderItem2));
+      Assert.That (orderItems.Contains (DomainObjectIDs.OrderItem1), Is.True);
+      Assert.That (orderItems.Contains (DomainObjectIDs.OrderItem2), Is.True);
 
       OrderItem newItem = OrderItem.NewObject();
       order.OrderItems.Add (newItem);
 
-      Assert.IsTrue (order.OrderItems.ContainsObject (newItem));
+      Assert.That (order.OrderItems.ContainsObject (newItem), Is.True);
     }
 
     [Test]
     public void GetRelatedObjects_WithAutomaticProperties ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.IsNotNull (order.OrderItems);
-      Assert.AreEqual (2, order.OrderItems.Count);
+      Assert.That (order.OrderItems, Is.Not.Null);
+      Assert.That (order.OrderItems.Count, Is.EqualTo (2));
 
-      Assert.IsTrue (order.OrderItems.Contains (DomainObjectIDs.OrderItem1));
-      Assert.IsTrue (order.OrderItems.Contains (DomainObjectIDs.OrderItem2));
+      Assert.That (order.OrderItems.Contains (DomainObjectIDs.OrderItem1), Is.True);
+      Assert.That (order.OrderItems.Contains (DomainObjectIDs.OrderItem2), Is.True);
 
       OrderItem newItem = OrderItem.NewObject();
       order.OrderItems.Add (newItem);
 
-      Assert.IsTrue (order.OrderItems.ContainsObject (newItem));
+      Assert.That (order.OrderItems.ContainsObject (newItem), Is.True);
     }
 
     [Test]
@@ -311,13 +311,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       OrderItem item = order.OrderItems[0];
-      Assert.AreSame (order, item.Order);
+      Assert.That (item.Order, Is.SameAs (order));
 
       Order newOrder = Order.NewObject();
-      Assert.IsNotNull (newOrder);
+      Assert.That (newOrder, Is.Not.Null);
       item.Order = newOrder;
-      Assert.AreNotSame (order, item.Order);
-      Assert.AreSame (newOrder, item.Order);
+      Assert.That (item.Order, Is.Not.SameAs (order));
+      Assert.That (item.Order, Is.SameAs (newOrder));
     }
 
     [Test]
@@ -336,7 +336,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       IPropertyInterface domainObject = ClassWithExplicitInterfaceProperty.NewObject();
       domainObject.Property = 5;
-      Assert.AreEqual (5, domainObject.Property);
+      Assert.That (domainObject.Property, Is.EqualTo (5));
     }
 
     [Test]
@@ -363,7 +363,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       {
         order.PropertyAccessFinished();
       }
-      Assert.AreEqual (order.OrderNumber, orderNumber);
+      Assert.That (orderNumber, Is.EqualTo (order.OrderNumber));
     }
 
     [Test]

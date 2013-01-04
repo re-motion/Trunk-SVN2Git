@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       {
         var positions = Position.FindAll();
 
-        Assert.AreEqual (3, positions.Count());
+        Assert.That (positions.Count(), Is.EqualTo (3));
       }
     }
 
@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         ClientTransaction.Current.Commit();
 
-        Assert.IsTrue (ace.IsInvalid);
+        Assert.That (ace.IsInvalid, Is.True);
       }
     }
 
@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         ClientTransaction.Current.Commit ();
 
-        Assert.IsTrue (role.IsInvalid);
+        Assert.That (role.IsInvalid, Is.True);
       }
     }
 
@@ -96,7 +96,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         position.Delete();
 
-        Assert.IsTrue (concretePosition.IsInvalid);
+        Assert.That (concretePosition.IsInvalid, Is.True);
       }
     }
 
@@ -108,7 +108,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       {
         Position position = testHelper.CreatePosition ("PositionName");
 
-        Assert.AreEqual ("PositionName", position.DisplayName);
+        Assert.That (position.DisplayName, Is.EqualTo ("PositionName"));
       }
     }
 
@@ -121,10 +121,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         ISecurableObject position = testHelper.CreatePosition ("PositionName");
 
         IObjectSecurityStrategy objectSecurityStrategy = position.GetSecurityStrategy();
-        Assert.IsNotNull (objectSecurityStrategy);
+        Assert.That (objectSecurityStrategy, Is.Not.Null);
         Assert.IsInstanceOf (typeof (DomainObjectSecurityStrategy), objectSecurityStrategy);
         DomainObjectSecurityStrategy domainObjectSecurityStrategy = (DomainObjectSecurityStrategy) objectSecurityStrategy;
-        Assert.AreEqual (RequiredSecurityForStates.None, domainObjectSecurityStrategy.RequiredSecurityForStates);
+        Assert.That (domainObjectSecurityStrategy.RequiredSecurityForStates, Is.EqualTo (RequiredSecurityForStates.None));
       }
     }
 
@@ -136,7 +136,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       {
         ISecurableObject position = testHelper.CreatePosition ("PositionName");
 
-        Assert.AreSame (position.GetSecurityStrategy(), position.GetSecurityStrategy());
+        Assert.That (position.GetSecurityStrategy(), Is.SameAs (position.GetSecurityStrategy()));
       }
     }
 
@@ -148,7 +148,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       {
         ISecurableObject position = testHelper.CreatePosition ("PositionName");
 
-        Assert.AreSame (typeof (Position), position.GetSecurableType());
+        Assert.That (position.GetSecurableType(), Is.SameAs (typeof (Position)));
       }
     }
 
@@ -161,13 +161,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         Position position = testHelper.CreatePosition ("PositionName");
         IDomainObjectSecurityContextFactory factory = position;
 
-        Assert.IsFalse (factory.IsInvalid);
-        Assert.IsTrue (factory.IsNew);
-        Assert.IsFalse (factory.IsDeleted);
+        Assert.That (factory.IsInvalid, Is.False);
+        Assert.That (factory.IsNew, Is.True);
+        Assert.That (factory.IsDeleted, Is.False);
 
         position.Delete();
 
-        Assert.IsTrue (factory.IsInvalid);
+        Assert.That (factory.IsInvalid, Is.True);
       }
     }
 
@@ -181,13 +181,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         position.Delegation = Delegation.Enabled;
 
         ISecurityContext securityContext = ((ISecurityContextFactory) position).CreateSecurityContext();
-        Assert.AreEqual (position.GetPublicDomainObjectType(), Type.GetType (securityContext.Class));
-        Assert.IsNull (securityContext.Owner);
-        Assert.IsNull (securityContext.OwnerGroup);
-        Assert.IsNull (securityContext.OwnerTenant);
+        Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (position.GetPublicDomainObjectType()));
+        Assert.That (securityContext.Owner, Is.Null);
+        Assert.That (securityContext.OwnerGroup, Is.Null);
+        Assert.That (securityContext.OwnerTenant, Is.Null);
         Assert.That (securityContext.AbstractRoles, Is.Empty);
-        Assert.AreEqual (1, securityContext.GetNumberOfStates ());
-        Assert.AreEqual (EnumWrapper.Get (Delegation.Enabled), securityContext.GetState ("Delegation"));
+        Assert.That (securityContext.GetNumberOfStates (), Is.EqualTo (1));
+        Assert.That (securityContext.GetState ("Delegation"), Is.EqualTo (EnumWrapper.Get (Delegation.Enabled)));
       }
     }
 

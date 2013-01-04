@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.That (orders, Is.Not.Null);
-      Assert.IsEmpty (orders);
+      Assert.That (orders, Is.Empty);
       Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
     }
 

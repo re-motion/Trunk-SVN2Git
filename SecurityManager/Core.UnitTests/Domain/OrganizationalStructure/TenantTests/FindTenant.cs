@@ -43,8 +43,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     {
       var tenants = Tenant.FindAll().ToArray();
 
-      Assert.AreEqual (2, tenants.Length);
-      Assert.AreEqual (_expectedTenantID, tenants[1].ID);
+      Assert.That (tenants.Length, Is.EqualTo (2));
+      Assert.That (tenants[1].ID, Is.EqualTo (_expectedTenantID));
     }
 
     [Test]
@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     {
       Tenant foundTenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
 
-      Assert.AreEqual ("UID: testTenant", foundTenant.UniqueIdentifier);
+      Assert.That (foundTenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
     }
 
     [Test]
@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     {
       Tenant foundTenant = Tenant.FindByUnqiueIdentifier ("UID: NotExistingTenant");
 
-      Assert.IsNull (foundTenant);
+      Assert.That (foundTenant, Is.Null);
     }
   }
 }

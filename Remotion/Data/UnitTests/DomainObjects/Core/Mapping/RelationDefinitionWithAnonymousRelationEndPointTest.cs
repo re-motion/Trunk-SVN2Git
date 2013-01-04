@@ -41,18 +41,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetOppositeEndPointDefinition ()
     {
-      Assert.AreSame (_clientEndPoint, _relation.GetOppositeEndPointDefinition ("Location", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client"));
-      Assert.AreSame (_locationEndPoint, _relation.GetOppositeEndPointDefinition ("Client", null));
+      Assert.That (_relation.GetOppositeEndPointDefinition ("Location", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client"), Is.SameAs (_clientEndPoint));
+      Assert.That (_relation.GetOppositeEndPointDefinition ("Client", null), Is.SameAs (_locationEndPoint));
     }
 
     [Test]
     public void IsEndPoint ()
     {
-      Assert.IsTrue (_relation.IsEndPoint ("Location", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client"));
-      Assert.IsTrue (_relation.IsEndPoint ("Client", null));
+      Assert.That (_relation.IsEndPoint ("Location", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client"), Is.True);
+      Assert.That (_relation.IsEndPoint ("Client", null), Is.True);
 
-      Assert.IsFalse (_relation.IsEndPoint ("Location", null));
-      Assert.IsFalse (_relation.IsEndPoint ("Client", "Client"));
+      Assert.That (_relation.IsEndPoint ("Location", null), Is.False);
+      Assert.That (_relation.IsEndPoint ("Client", "Client"), Is.False);
     }
   }
 }

@@ -39,13 +39,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       var actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.NoAttribute",
-          actual.PropertyName);
-      Assert.AreSame (typeof (byte[]), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (null, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.NoAttribute"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (byte[])));
+      Assert.That (actual.IsNullable, Is.True);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (null));
       DomainModelConstraintProviderStub.VerifyAllExpectations();
     }
 
@@ -60,13 +58,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       var actual = propertyReflector.GetMetadata ();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.NoAttribute",
-          actual.PropertyName);
-      Assert.AreSame (typeof (byte[]), actual.PropertyType);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (new byte[0], actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.NoAttribute"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (byte[])));
+      Assert.That (actual.IsNullable, Is.False);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (new byte[0]));
     }
     
     [Test]
@@ -83,13 +79,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.MaximumLength",
-          actual.PropertyName);
-      Assert.AreSame (typeof (byte[]), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.AreEqual (100, actual.MaxLength);
-      Assert.AreEqual (null, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.MaximumLength"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (byte[])));
+      Assert.That (actual.IsNullable, Is.True);
+      Assert.That (actual.MaxLength, Is.EqualTo (100));
+      Assert.That (actual.DefaultValue, Is.EqualTo (null));
     }
 
     [BinaryProperty]

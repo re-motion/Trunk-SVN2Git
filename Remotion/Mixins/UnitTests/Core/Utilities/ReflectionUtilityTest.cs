@@ -57,33 +57,33 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
     [Test]
     public void IsNewSlotMember()
     {
-      Assert.IsTrue (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetMethod ("Foo")));
-      Assert.IsTrue (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetProperty ("FooP")));
-      Assert.IsTrue (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetEvent ("FooE")));
+      Assert.That (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetMethod ("Foo")), Is.True);
+      Assert.That (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetProperty ("FooP")), Is.True);
+      Assert.That (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetEvent ("FooE")), Is.True);
 
-      Assert.IsFalse (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetMethod ("Bar")));
-      Assert.IsFalse (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetProperty ("BarP")));
-      Assert.IsFalse (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetEvent ("BarE")));
+      Assert.That (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetMethod ("Bar")), Is.False);
+      Assert.That (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetProperty ("BarP")), Is.False);
+      Assert.That (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetEvent ("BarE")), Is.False);
 
-      Assert.IsFalse (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetMethod ("Baz")));
-      Assert.IsFalse (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetProperty ("BazP")));
-      Assert.IsFalse (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetEvent ("BazE")));
+      Assert.That (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetMethod ("Baz")), Is.False);
+      Assert.That (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetProperty ("BazP")), Is.False);
+      Assert.That (ReflectionUtility.IsNewSlotMember (typeof (Derived).GetEvent ("BazE")), Is.False);
     }
 
     [Test]
     public void IsVirtualMember ()
     {
-      Assert.IsTrue (ReflectionUtility.IsVirtualMember (typeof (Derived).GetMethod ("Foo")));
-      Assert.IsTrue (ReflectionUtility.IsVirtualMember (typeof (Derived).GetProperty ("FooP")));
-      Assert.IsTrue (ReflectionUtility.IsVirtualMember (typeof (Derived).GetEvent ("FooE")));
+      Assert.That (ReflectionUtility.IsVirtualMember (typeof (Derived).GetMethod ("Foo")), Is.True);
+      Assert.That (ReflectionUtility.IsVirtualMember (typeof (Derived).GetProperty ("FooP")), Is.True);
+      Assert.That (ReflectionUtility.IsVirtualMember (typeof (Derived).GetEvent ("FooE")), Is.True);
 
-      Assert.IsTrue (ReflectionUtility.IsVirtualMember (typeof (Derived).GetMethod ("Bar")));
-      Assert.IsTrue (ReflectionUtility.IsVirtualMember (typeof (Derived).GetProperty ("BarP")));
-      Assert.IsTrue (ReflectionUtility.IsVirtualMember (typeof (Derived).GetEvent ("BarE")));
+      Assert.That (ReflectionUtility.IsVirtualMember (typeof (Derived).GetMethod ("Bar")), Is.True);
+      Assert.That (ReflectionUtility.IsVirtualMember (typeof (Derived).GetProperty ("BarP")), Is.True);
+      Assert.That (ReflectionUtility.IsVirtualMember (typeof (Derived).GetEvent ("BarE")), Is.True);
 
-      Assert.IsFalse (ReflectionUtility.IsVirtualMember (typeof (Derived).GetMethod ("Baz")));
-      Assert.IsFalse (ReflectionUtility.IsVirtualMember (typeof (Derived).GetProperty ("BazP")));
-      Assert.IsFalse (ReflectionUtility.IsVirtualMember (typeof (Derived).GetEvent ("BazE")));
+      Assert.That (ReflectionUtility.IsVirtualMember (typeof (Derived).GetMethod ("Baz")), Is.False);
+      Assert.That (ReflectionUtility.IsVirtualMember (typeof (Derived).GetProperty ("BazP")), Is.False);
+      Assert.That (ReflectionUtility.IsVirtualMember (typeof (Derived).GetEvent ("BazE")), Is.False);
     }
 
     public class BlaAttribute : Attribute { }
@@ -108,54 +108,54 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
     public void IsPublicOrProtected ()
     {
       BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      Assert.IsTrue (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("Public", bf)));
-      Assert.IsTrue (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("Protected", bf)));
-      Assert.IsTrue (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("ProtectedInternal", bf)));
-      Assert.IsFalse (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("Internal", bf)));
-      Assert.IsFalse (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("Private", bf)));
-      Assert.IsFalse (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("Remotion.Mixins.UnitTests.Core.Utilities.ReflectionUtilityTest.IInterface.Explicit", bf)));
+      Assert.That (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("Public", bf)), Is.True);
+      Assert.That (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("Protected", bf)), Is.True);
+      Assert.That (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("ProtectedInternal", bf)), Is.True);
+      Assert.That (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("Internal", bf)), Is.False);
+      Assert.That (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("Private", bf)), Is.False);
+      Assert.That (ReflectionUtility.IsPublicOrProtected (typeof (ClassWithAllVisibilityMethods).GetMethod ("Remotion.Mixins.UnitTests.Core.Utilities.ReflectionUtilityTest.IInterface.Explicit", bf)), Is.False);
     }
 
     [Test]
     public void IsPublicOrProtectedOrExplicitInterface ()
     {
       BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      Assert.IsTrue (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("Public", bf)));
-      Assert.IsTrue (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("Protected", bf)));
-      Assert.IsTrue (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("ProtectedInternal", bf)));
-      Assert.IsFalse (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("Internal", bf)));
-      Assert.IsFalse (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("Private", bf)));
-      Assert.IsTrue (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("Remotion.Mixins.UnitTests.Core.Utilities.ReflectionUtilityTest.IInterface.Explicit", bf)));
+      Assert.That (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("Public", bf)), Is.True);
+      Assert.That (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("Protected", bf)), Is.True);
+      Assert.That (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("ProtectedInternal", bf)), Is.True);
+      Assert.That (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("Internal", bf)), Is.False);
+      Assert.That (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("Private", bf)), Is.False);
+      Assert.That (ReflectionUtility.IsPublicOrProtectedOrExplicit (typeof (ClassWithAllVisibilityMethods).GetMethod ("Remotion.Mixins.UnitTests.Core.Utilities.ReflectionUtilityTest.IInterface.Explicit", bf)), Is.True);
     }
 
     [Test]
     public void IsAssemblySigned_Assembly ()
     {
-      Assert.IsTrue (ReflectionUtility.IsAssemblySigned (typeof (object).Assembly));
-      Assert.IsTrue (ReflectionUtility.IsAssemblySigned (typeof (Uri).Assembly));
-      Assert.IsTrue (ReflectionUtility.IsAssemblySigned (typeof (Mixin).Assembly));
+      Assert.That (ReflectionUtility.IsAssemblySigned (typeof (object).Assembly), Is.True);
+      Assert.That (ReflectionUtility.IsAssemblySigned (typeof (Uri).Assembly), Is.True);
+      Assert.That (ReflectionUtility.IsAssemblySigned (typeof (Mixin).Assembly), Is.True);
 
-      Assert.IsFalse (ReflectionUtility.IsAssemblySigned (typeof (ReflectionUtilityTest).Assembly));
+      Assert.That (ReflectionUtility.IsAssemblySigned (typeof (ReflectionUtilityTest).Assembly), Is.False);
     }
 
     [Test]
     public void IsAssemblySigned_Name ()
     {
-      Assert.IsTrue (ReflectionUtility.IsAssemblySigned (typeof (object).Assembly.GetName()));
-      Assert.IsTrue (ReflectionUtility.IsAssemblySigned (typeof (Uri).Assembly.GetName ()));
-      Assert.IsTrue (ReflectionUtility.IsAssemblySigned (typeof (Mixin).Assembly.GetName ()));
+      Assert.That (ReflectionUtility.IsAssemblySigned (typeof (object).Assembly.GetName()), Is.True);
+      Assert.That (ReflectionUtility.IsAssemblySigned (typeof (Uri).Assembly.GetName ()), Is.True);
+      Assert.That (ReflectionUtility.IsAssemblySigned (typeof (Mixin).Assembly.GetName ()), Is.True);
 
-      Assert.IsFalse (ReflectionUtility.IsAssemblySigned (typeof (ReflectionUtilityTest).Assembly.GetName ()));
+      Assert.That (ReflectionUtility.IsAssemblySigned (typeof (ReflectionUtilityTest).Assembly.GetName ()), Is.False);
     }
 
     [Test]
     public void IsAssemblySigned_StringName ()
     {
       string fullName = typeof (object).Assembly.FullName;
-      Assert.IsTrue (ReflectionUtility.IsAssemblySigned (new AssemblyName (fullName)));
+      Assert.That (ReflectionUtility.IsAssemblySigned (new AssemblyName (fullName)), Is.True);
 
       fullName = typeof (ReflectionUtilityTest).Assembly.FullName;
-      Assert.IsFalse (ReflectionUtility.IsAssemblySigned (new AssemblyName (fullName)));
+      Assert.That (ReflectionUtility.IsAssemblySigned (new AssemblyName (fullName)), Is.False);
     }
 
     [Test]

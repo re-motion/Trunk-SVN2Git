@@ -59,8 +59,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
       _bocEnumValue.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
     [Test]
@@ -70,8 +70,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.ListControlStyle.AutoPostBack = true;
       _bocEnumValue.EvaluateWaiConformity();
 
-      Assert.IsFalse (WcagHelperMock.HasWarning);
-      Assert.IsFalse (WcagHelperMock.HasError);
+      Assert.That (WcagHelperMock.HasWarning, Is.False);
+      Assert.That (WcagHelperMock.HasError, Is.False);
     }
 
 
@@ -82,10 +82,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.ListControlStyle.AutoPostBack = true;
       _bocEnumValue.EvaluateWaiConformity();
 
-      Assert.IsTrue (WcagHelperMock.HasWarning);
-      Assert.AreEqual (1, WcagHelperMock.Priority);
-      Assert.AreSame (_bocEnumValue, WcagHelperMock.Control);
-      Assert.AreEqual ("ListControlStyle.AutoPostBack", WcagHelperMock.Property);
+      Assert.That (WcagHelperMock.HasWarning, Is.True);
+      Assert.That (WcagHelperMock.Priority, Is.EqualTo (1));
+      Assert.That (WcagHelperMock.Control, Is.SameAs (_bocEnumValue));
+      Assert.That (WcagHelperMock.Property, Is.EqualTo ("ListControlStyle.AutoPostBack"));
     }
 
     [Test]
@@ -93,8 +93,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocEnumValue.ReadOnly = true;
       string[] actual = _bocEnumValue.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (0, actual.Length);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -103,9 +103,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.ReadOnly = false;
       _bocEnumValue.ListControlStyle.ControlType = ListControlType.DropDownList;
       string[] actual = _bocEnumValue.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_bocEnumValue.GetListControlClientID(), actual[0]);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (1));
+      Assert.That (actual[0], Is.EqualTo (_bocEnumValue.GetListControlClientID()));
     }
 
     [Test]
@@ -114,9 +114,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.ReadOnly = false;
       _bocEnumValue.ListControlStyle.ControlType = ListControlType.ListBox;
       string[] actual = _bocEnumValue.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_bocEnumValue.GetListControlClientID(), actual[0]);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (1));
+      Assert.That (actual[0], Is.EqualTo (_bocEnumValue.GetListControlClientID()));
     }
 
     [Test]
@@ -131,11 +131,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.Property = _propertyEnumValue;
 
       string[] actual = _bocEnumValue.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (3, actual.Length);
-      Assert.AreEqual (_bocEnumValue.GetListControlClientID() + "_0", actual[0]);
-      Assert.AreEqual (_bocEnumValue.GetListControlClientID() + "_1", actual[1]);
-      Assert.AreEqual (_bocEnumValue.GetListControlClientID() + "_2", actual[2]);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (3));
+      Assert.That (actual[0], Is.EqualTo (_bocEnumValue.GetListControlClientID() + "_0"));
+      Assert.That (actual[1], Is.EqualTo (_bocEnumValue.GetListControlClientID() + "_1"));
+      Assert.That (actual[2], Is.EqualTo (_bocEnumValue.GetListControlClientID() + "_2"));
     }
 
 
@@ -145,8 +145,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.Property = _propertyEnumValue;
       _bocEnumValue.IsDirty = false;
       _bocEnumValue.Value = TestEnum.Second;
-      Assert.AreEqual (TestEnum.Second, _bocEnumValue.Value);
-      Assert.IsTrue (_bocEnumValue.IsDirty);
+      Assert.That (_bocEnumValue.Value, Is.EqualTo (TestEnum.Second));
+      Assert.That (_bocEnumValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -155,8 +155,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.Property = _propertyEnumValue;
       _bocEnumValue.IsDirty = false;
       _bocEnumValue.Value = null;
-      Assert.AreEqual (null, _bocEnumValue.Value);
-      Assert.IsTrue (_bocEnumValue.IsDirty);
+      Assert.That (_bocEnumValue.Value, Is.EqualTo (null));
+      Assert.That (_bocEnumValue.IsDirty, Is.True);
     }
 
 
@@ -165,7 +165,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocEnumValue.Property = _propertyEnumValue;
       _bocEnumValue.Value = TestEnum.Second;
-      Assert.IsTrue (_bocEnumValue.HasValue);
+      Assert.That (_bocEnumValue.HasValue, Is.True);
     }
 
     [Test]
@@ -173,7 +173,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocEnumValue.Property = _propertyEnumValue;
       _bocEnumValue.Value = null;
-      Assert.IsFalse (_bocEnumValue.HasValue);
+      Assert.That (_bocEnumValue.HasValue, Is.False);
     }
 
 
@@ -187,8 +187,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.LoadValue (true);
-      Assert.AreEqual (null, _bocEnumValue.Value);
-      Assert.IsTrue (_bocEnumValue.IsDirty);
+      Assert.That (_bocEnumValue.Value, Is.EqualTo (null));
+      Assert.That (_bocEnumValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -201,8 +201,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.LoadValue (false);
-      Assert.AreEqual (_businessObject.EnumValue, _bocEnumValue.Value);
-      Assert.IsFalse (_bocEnumValue.IsDirty);
+      Assert.That (_bocEnumValue.Value, Is.EqualTo (_businessObject.EnumValue));
+      Assert.That (_bocEnumValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -214,8 +214,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.LoadValue (false);
-      Assert.AreEqual (TestEnum.Second, _bocEnumValue.Value);
-      Assert.IsTrue (_bocEnumValue.IsDirty);
+      Assert.That (_bocEnumValue.Value, Is.EqualTo (TestEnum.Second));
+      Assert.That (_bocEnumValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -230,8 +230,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.LoadValue (false);
-      Assert.AreEqual (TestEnum.Second, _bocEnumValue.Value);
-      Assert.IsTrue (_bocEnumValue.IsDirty);
+      Assert.That (_bocEnumValue.Value, Is.EqualTo (TestEnum.Second));
+      Assert.That (_bocEnumValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -244,8 +244,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.LoadValue (false);
-      Assert.AreEqual (null, _bocEnumValue.Value);
-      Assert.IsFalse (_bocEnumValue.IsDirty);
+      Assert.That (_bocEnumValue.Value, Is.EqualTo (null));
+      Assert.That (_bocEnumValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -257,8 +257,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.LoadUnboundValue (value, true);
-      Assert.AreEqual (null, _bocEnumValue.Value);
-      Assert.IsTrue (_bocEnumValue.IsDirty);
+      Assert.That (_bocEnumValue.Value, Is.EqualTo (null));
+      Assert.That (_bocEnumValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -270,8 +270,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocEnumValue.Value);
-      Assert.IsFalse (_bocEnumValue.IsDirty);
+      Assert.That (_bocEnumValue.Value, Is.EqualTo (value));
+      Assert.That (_bocEnumValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -283,8 +283,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.LoadUnboundValue (value, false);
-      Assert.AreEqual (value, _bocEnumValue.Value);
-      Assert.IsFalse (_bocEnumValue.IsDirty);
+      Assert.That (_bocEnumValue.Value, Is.EqualTo (value));
+      Assert.That (_bocEnumValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -297,8 +297,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.SaveValue (true);
-      Assert.AreEqual (TestEnum.Second, _businessObject.EnumValue);
-      Assert.IsTrue (_bocEnumValue.IsDirty);
+      Assert.That (_businessObject.EnumValue, Is.EqualTo (TestEnum.Second));
+      Assert.That (_bocEnumValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -311,8 +311,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.SaveValue (false);
-      Assert.AreEqual (TestEnum.First, _businessObject.EnumValue);
-      Assert.IsFalse (_bocEnumValue.IsDirty);
+      Assert.That (_businessObject.EnumValue, Is.EqualTo (TestEnum.First));
+      Assert.That (_bocEnumValue.IsDirty, Is.False);
     }
 
     [Test]
@@ -325,8 +325,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.IsDirty = false;
 
       _bocEnumValue.SaveValue (false);
-      Assert.AreEqual (TestEnum.Second, _businessObject.EnumValue);
-      Assert.IsFalse (_bocEnumValue.IsDirty);
+      Assert.That (_businessObject.EnumValue, Is.EqualTo (TestEnum.Second));
+      Assert.That (_bocEnumValue.IsDirty, Is.False);
     }
   }
 }

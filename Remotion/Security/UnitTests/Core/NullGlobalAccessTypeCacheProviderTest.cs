@@ -43,8 +43,8 @@ namespace Remotion.Security.UnitTests.Core
 
       ExtendedProviderBase provider = new NullGlobalAccessTypeCacheProvider ("Provider", config);
 
-      Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreEqual ("The Description", provider.Description);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
+      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
     
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void GetIsNull ()
     {
-      Assert.IsTrue (_provider.IsNull);
+      Assert.That (_provider.IsNull, Is.True);
     }
 
     [Test]
@@ -68,10 +68,10 @@ namespace Remotion.Security.UnitTests.Core
       NullGlobalAccessTypeCacheProvider provider = new NullGlobalAccessTypeCacheProvider ("MyProvider", config);
       NullGlobalAccessTypeCacheProvider deserializedProvider = Serializer.SerializeAndDeserialize (provider);
 
-      Assert.AreEqual ("MyProvider", deserializedProvider.Name);
-      Assert.AreEqual ("The Description", deserializedProvider.Description);
+      Assert.That (deserializedProvider.Name, Is.EqualTo ("MyProvider"));
+      Assert.That (deserializedProvider.Description, Is.EqualTo ("The Description"));
       Assert.IsInstanceOf (typeof (NullCache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>), deserializedProvider.GetCache ());
-      Assert.IsTrue (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull);
+      Assert.That (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull, Is.True);
     }
 
     [Test]
@@ -81,7 +81,7 @@ namespace Remotion.Security.UnitTests.Core
           (NullGlobalAccessTypeCacheProvider) SecurityConfiguration.Current.GlobalAccessTypeCacheProviders["None"];
 
       NullGlobalAccessTypeCacheProvider deserializedProvider = Serializer.SerializeAndDeserialize (provider);
-      Assert.AreSame (provider, deserializedProvider);
+      Assert.That (deserializedProvider, Is.SameAs (provider));
     }
   }
 }

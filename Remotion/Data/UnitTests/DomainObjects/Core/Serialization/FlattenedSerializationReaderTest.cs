@@ -28,27 +28,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void ReadValue ()
     {
       FlattenedSerializationReader<int> reader = new FlattenedSerializationReader<int> (new int[] { 1, 2, 3 });
-      Assert.AreEqual (1, reader.ReadValue());
+      Assert.That (reader.ReadValue(), Is.EqualTo (1));
     }
 
     [Test]
     public void ReadValue_MultipleTimes ()
     {
       FlattenedSerializationReader<int> reader = new FlattenedSerializationReader<int> (new int[] { 1, 2, 3 });
-      Assert.AreEqual (1, reader.ReadValue ());
-      Assert.AreEqual (2, reader.ReadValue ());
-      Assert.AreEqual (3, reader.ReadValue ());
+      Assert.That (reader.ReadValue (), Is.EqualTo (1));
+      Assert.That (reader.ReadValue (), Is.EqualTo (2));
+      Assert.That (reader.ReadValue (), Is.EqualTo (3));
     }
 
     [Test]
     public void ReadPosition ()
     {
       FlattenedSerializationReader<int> reader = new FlattenedSerializationReader<int> (new int[] { 1, 2, 3 });
-      Assert.AreEqual (0, reader.ReadPosition);
+      Assert.That (reader.ReadPosition, Is.EqualTo (0));
       reader.ReadValue();
-      Assert.AreEqual (1, reader.ReadPosition);
+      Assert.That (reader.ReadPosition, Is.EqualTo (1));
       reader.ReadValue ();
-      Assert.AreEqual (2, reader.ReadPosition);
+      Assert.That (reader.ReadPosition, Is.EqualTo (2));
       reader.ReadValue ();
     }
 
@@ -57,9 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void ReadValue_TooOften ()
     {
       FlattenedSerializationReader<int> reader = new FlattenedSerializationReader<int> (new int[] { 1, 2, 3 });
-      Assert.AreEqual (1, reader.ReadValue ());
-      Assert.AreEqual (2, reader.ReadValue ());
-      Assert.AreEqual (3, reader.ReadValue ());
+      Assert.That (reader.ReadValue (), Is.EqualTo (1));
+      Assert.That (reader.ReadValue (), Is.EqualTo (2));
+      Assert.That (reader.ReadValue (), Is.EqualTo (3));
       reader.ReadValue ();
     }
 

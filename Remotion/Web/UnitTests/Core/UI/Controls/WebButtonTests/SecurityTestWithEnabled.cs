@@ -51,7 +51,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       bool enabled = button.Enabled;
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (enabled);
+      Assert.That (enabled, Is.True);
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       bool enabled = button.Enabled;
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (enabled);
+      Assert.That (enabled, Is.False);
     }
 
     [Test]
@@ -79,7 +79,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       bool enabled = button.Enabled;
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (enabled);
+      Assert.That (enabled, Is.True);
     }
 
     [Test]
@@ -93,7 +93,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       bool enabled = button.Enabled;
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (enabled);
+      Assert.That (enabled, Is.False);
     }
 
     [Test]
@@ -106,7 +106,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       bool enabled = button.Enabled;
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (enabled);
+      Assert.That (enabled, Is.True);
     }
 
     [Test]
@@ -119,7 +119,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       bool enabled = button.Enabled;
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (enabled);
+      Assert.That (enabled, Is.False);
     }
 
     [Test]
@@ -133,7 +133,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       bool enabled = button.Enabled;
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (enabled);
+      Assert.That (enabled, Is.True);
     }
 
     [Test]
@@ -147,7 +147,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       bool enabled = button.Enabled;
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (enabled);
+      Assert.That (enabled, Is.False);
     }
 
     [Test]
@@ -160,7 +160,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       bool enabled = button.Enabled;
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (enabled);
+      Assert.That (enabled, Is.False);
     }
 
     private void TestHandler (object sender, EventArgs e)

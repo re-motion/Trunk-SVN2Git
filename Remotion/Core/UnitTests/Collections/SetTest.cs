@@ -31,90 +31,90 @@ namespace Remotion.UnitTests.Collections
     public void SetInitialization()
     {
       Set<int> set1 = new Set<int>();
-      Assert.AreEqual (0, set1.Count);
-      Assert.IsFalse (set1.Contains (1));
-      Assert.IsFalse (set1.Contains (2));
-      Assert.IsFalse (set1.Contains (3));
-      Assert.IsFalse (set1.Contains (4));
+      Assert.That (set1.Count, Is.EqualTo (0));
+      Assert.That (set1.Contains (1), Is.False);
+      Assert.That (set1.Contains (2), Is.False);
+      Assert.That (set1.Contains (3), Is.False);
+      Assert.That (set1.Contains (4), Is.False);
 
       Set<int> set2 = new Set<int> (new int[] {1, 2, 3});
-      Assert.AreEqual (3, set2.Count);
-      Assert.IsTrue (set2.Contains (1));
-      Assert.IsTrue (set2.Contains (2));
-      Assert.IsTrue (set2.Contains (3));
-      Assert.IsFalse (set2.Contains (4));
+      Assert.That (set2.Count, Is.EqualTo (3));
+      Assert.That (set2.Contains (1), Is.True);
+      Assert.That (set2.Contains (2), Is.True);
+      Assert.That (set2.Contains (3), Is.True);
+      Assert.That (set2.Contains (4), Is.False);
 
       Set<string> set3 = new Set<string> (new string[] { "1", "2", "3", "3", "1", "2", "1", "2", "4", "2", "4" });
-      Assert.AreEqual (4, set3.Count);
-      Assert.IsTrue (set3.Contains ("1"));
-      Assert.IsTrue (set3.Contains ("2"));
-      Assert.IsTrue (set3.Contains ("3"));
-      Assert.IsTrue (set3.Contains ("4"));
-      Assert.IsFalse (set3.Contains ("5"));
+      Assert.That (set3.Count, Is.EqualTo (4));
+      Assert.That (set3.Contains ("1"), Is.True);
+      Assert.That (set3.Contains ("2"), Is.True);
+      Assert.That (set3.Contains ("3"), Is.True);
+      Assert.That (set3.Contains ("4"), Is.True);
+      Assert.That (set3.Contains ("5"), Is.False);
     }
 
     [Test]
     public void AddAndAddRangeAndRemove()
     {
       Set<int> set1 = new Set<int> ();
-      Assert.AreEqual (0, set1.Count);
+      Assert.That (set1.Count, Is.EqualTo (0));
 
       set1.Add (0);
-      Assert.AreEqual (1, set1.Count);
+      Assert.That (set1.Count, Is.EqualTo (1));
 
       set1.Add (0);
-      Assert.AreEqual (1, set1.Count);
+      Assert.That (set1.Count, Is.EqualTo (1));
 
       set1.Add (12);
-      Assert.AreEqual (2, set1.Count);
+      Assert.That (set1.Count, Is.EqualTo (2));
 
       set1.Remove (12);
 
       set1.AddRange (new int[] {1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 7});
-      Assert.AreEqual (8, set1.Count);
+      Assert.That (set1.Count, Is.EqualTo (8));
 
-      Assert.IsTrue (set1.Contains (0));
-      Assert.IsTrue (set1.Contains (1));
-      Assert.IsTrue (set1.Contains (2));
-      Assert.IsTrue (set1.Contains (3));
-      Assert.IsTrue (set1.Contains (4));
-      Assert.IsTrue (set1.Contains (5));
-      Assert.IsTrue (set1.Contains (6));
-      Assert.IsTrue (set1.Contains (7));
-      Assert.IsFalse (set1.Contains (8));
+      Assert.That (set1.Contains (0), Is.True);
+      Assert.That (set1.Contains (1), Is.True);
+      Assert.That (set1.Contains (2), Is.True);
+      Assert.That (set1.Contains (3), Is.True);
+      Assert.That (set1.Contains (4), Is.True);
+      Assert.That (set1.Contains (5), Is.True);
+      Assert.That (set1.Contains (6), Is.True);
+      Assert.That (set1.Contains (7), Is.True);
+      Assert.That (set1.Contains (8), Is.False);
 
       set1.Remove (0);
-      Assert.AreEqual (7, set1.Count);
-      Assert.IsFalse (set1.Contains (0));
-      Assert.IsTrue (set1.Contains (1));
-      Assert.IsTrue (set1.Contains (2));
-      Assert.IsTrue (set1.Contains (3));
-      Assert.IsTrue (set1.Contains (4));
-      Assert.IsTrue (set1.Contains (5));
-      Assert.IsTrue (set1.Contains (6));
-      Assert.IsTrue (set1.Contains (7));
-      Assert.IsFalse (set1.Contains (8));
+      Assert.That (set1.Count, Is.EqualTo (7));
+      Assert.That (set1.Contains (0), Is.False);
+      Assert.That (set1.Contains (1), Is.True);
+      Assert.That (set1.Contains (2), Is.True);
+      Assert.That (set1.Contains (3), Is.True);
+      Assert.That (set1.Contains (4), Is.True);
+      Assert.That (set1.Contains (5), Is.True);
+      Assert.That (set1.Contains (6), Is.True);
+      Assert.That (set1.Contains (7), Is.True);
+      Assert.That (set1.Contains (8), Is.False);
 
       set1.Remove (6);
-      Assert.AreEqual (6, set1.Count);
-      Assert.IsFalse (set1.Contains (0));
-      Assert.IsTrue (set1.Contains (1));
-      Assert.IsTrue (set1.Contains (2));
-      Assert.IsTrue (set1.Contains (3));
-      Assert.IsTrue (set1.Contains (4));
-      Assert.IsTrue (set1.Contains (5));
-      Assert.IsFalse (set1.Contains (6));
-      Assert.IsTrue (set1.Contains (7));
-      Assert.IsFalse (set1.Contains (8));
+      Assert.That (set1.Count, Is.EqualTo (6));
+      Assert.That (set1.Contains (0), Is.False);
+      Assert.That (set1.Contains (1), Is.True);
+      Assert.That (set1.Contains (2), Is.True);
+      Assert.That (set1.Contains (3), Is.True);
+      Assert.That (set1.Contains (4), Is.True);
+      Assert.That (set1.Contains (5), Is.True);
+      Assert.That (set1.Contains (6), Is.False);
+      Assert.That (set1.Contains (7), Is.True);
+      Assert.That (set1.Contains (8), Is.False);
     }
 
     [Test]
     public void Clear()
     {
       Set<int> set1 = new Set<int> (new int[] { 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 7 });
-      Assert.AreEqual (8, set1.Count);
+      Assert.That (set1.Count, Is.EqualTo (8));
       set1.Clear();
-      Assert.AreEqual (0, set1.Count);
+      Assert.That (set1.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -125,37 +125,37 @@ namespace Remotion.UnitTests.Collections
       int[] array2 = new int[set1.Count];
       set1.CopyTo (array2, 0);
 
-      Assert.AreEqual (8, array1.Length);
-      Assert.AreEqual (8, array2.Length);
+      Assert.That (array1.Length, Is.EqualTo (8));
+      Assert.That (array2.Length, Is.EqualTo (8));
       for (int i = 0; i < array1.Length; ++i)
-        Assert.AreEqual (array1[i], array2[i]);
+        Assert.That (array2[i], Is.EqualTo (array1[i]));
 
-      Assert.Contains (0, array1);
-      Assert.Contains (1, array1);
-      Assert.Contains (2, array1);
-      Assert.Contains (3, array1);
-      Assert.Contains (4, array1);
-      Assert.Contains (5, array1);
-      Assert.Contains (6, array1);
-      Assert.Contains (7, array1);
+      Assert.That (array1, Has.Member (0));
+      Assert.That (array1, Has.Member (1));
+      Assert.That (array1, Has.Member (2));
+      Assert.That (array1, Has.Member (3));
+      Assert.That (array1, Has.Member (4));
+      Assert.That (array1, Has.Member (5));
+      Assert.That (array1, Has.Member (6));
+      Assert.That (array1, Has.Member (7));
 
       int[] array3 = new int[] {9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9};
       set1.CopyTo (array3, 2);
 
-      Assert.Contains (0, array3);
-      Assert.Contains (1, array3);
-      Assert.Contains (2, array3);
-      Assert.Contains (3, array3);
-      Assert.Contains (4, array3);
-      Assert.Contains (5, array3);
-      Assert.Contains (6, array3);
-      Assert.Contains (7, array3);
+      Assert.That (array3, Has.Member (0));
+      Assert.That (array3, Has.Member (1));
+      Assert.That (array3, Has.Member (2));
+      Assert.That (array3, Has.Member (3));
+      Assert.That (array3, Has.Member (4));
+      Assert.That (array3, Has.Member (5));
+      Assert.That (array3, Has.Member (6));
+      Assert.That (array3, Has.Member (7));
 
-      Assert.AreEqual (9, array3[0]);
-      Assert.AreEqual (9, array3[1]);
-      Assert.AreNotEqual (9, array3[2]);
-      Assert.AreNotEqual (9, array3[9]);
-      Assert.AreEqual (9, array3[10]);
+      Assert.That (array3[0], Is.EqualTo (9));
+      Assert.That (array3[1], Is.EqualTo (9));
+      Assert.That (array3[2], Is.Not.EqualTo (9));
+      Assert.That (array3[9], Is.Not.EqualTo (9));
+      Assert.That (array3[10], Is.EqualTo (9));
     }
 
     [Test]
@@ -192,7 +192,7 @@ namespace Remotion.UnitTests.Collections
     public void IsReadOnlyAlwaysFalse()
     {
       ICollection<int> coll = new Set<int>();
-      Assert.IsFalse (coll.IsReadOnly);
+      Assert.That (coll.IsReadOnly, Is.False);
     }
 
     [Test]
@@ -202,10 +202,10 @@ namespace Remotion.UnitTests.Collections
       List<string> list = new List<string>();
       foreach (string s in set1)
         list.Add (s);
-      Assert.AreEqual (3, list.Count);
-      Assert.Contains ("a", list);
-      Assert.Contains ("b", list);
-      Assert.Contains ("c", list);
+      Assert.That (list.Count, Is.EqualTo (3));
+      Assert.That (list, Has.Member ("a"));
+      Assert.That (list, Has.Member ("b"));
+      Assert.That (list, Has.Member ("c"));
 
       list.Clear();
 
@@ -213,10 +213,10 @@ namespace Remotion.UnitTests.Collections
 
       foreach (string s in enumerable)
         list.Add (s);
-      Assert.AreEqual (3, list.Count);
-      Assert.Contains ("a", list);
-      Assert.Contains ("b", list);
-      Assert.Contains ("c", list);
+      Assert.That (list.Count, Is.EqualTo (3));
+      Assert.That (list, Has.Member ("a"));
+      Assert.That (list, Has.Member ("b"));
+      Assert.That (list, Has.Member ("c"));
     }
 
     public class ToStringEqualityComparer<T> : IEqualityComparer<T>
@@ -242,18 +242,18 @@ namespace Remotion.UnitTests.Collections
       Set<object> set1 = new Set<object> (new ToStringEqualityComparer<object>());
       set1.AddRange (new object[] {1, 2, "a", "1", "2"});
 
-      Assert.AreEqual (3, set1.Count);
-      Assert.IsTrue (set1.Contains(1));
-      Assert.IsTrue (set1.Contains (2));
-      Assert.IsTrue (set1.Contains ("a"));
-      Assert.IsTrue (set1.Contains ("1"));
-      Assert.IsTrue (set1.Contains ("2"));
+      Assert.That (set1.Count, Is.EqualTo (3));
+      Assert.That (set1.Contains(1), Is.True);
+      Assert.That (set1.Contains (2), Is.True);
+      Assert.That (set1.Contains ("a"), Is.True);
+      Assert.That (set1.Contains ("1"), Is.True);
+      Assert.That (set1.Contains ("2"), Is.True);
 
       object[] array = set1.ToArray();
-      Assert.AreEqual (3, array.Length);
-      Assert.Contains (1, array);
-      Assert.Contains (2, array);
-      Assert.Contains ("a", array);
+      Assert.That (array.Length, Is.EqualTo (3));
+      Assert.That (array, Has.Member (1));
+      Assert.That (array, Has.Member (2));
+      Assert.That (array, Has.Member ("a"));
     }
 
     [Test]
@@ -261,35 +261,35 @@ namespace Remotion.UnitTests.Collections
     {
       Set<object> set1 = new Set<object> (new object[] { 1, 2, "a", "1", "2" }, new ToStringEqualityComparer<object> ());
 
-      Assert.AreEqual (3, set1.Count);
-      Assert.IsTrue (set1.Contains (1));
-      Assert.IsTrue (set1.Contains (2));
-      Assert.IsTrue (set1.Contains ("a"));
-      Assert.IsTrue (set1.Contains ("1"));
-      Assert.IsTrue (set1.Contains ("2"));
+      Assert.That (set1.Count, Is.EqualTo (3));
+      Assert.That (set1.Contains (1), Is.True);
+      Assert.That (set1.Contains (2), Is.True);
+      Assert.That (set1.Contains ("a"), Is.True);
+      Assert.That (set1.Contains ("1"), Is.True);
+      Assert.That (set1.Contains ("2"), Is.True);
 
       object[] array = set1.ToArray ();
-      Assert.AreEqual (3, array.Length);
-      Assert.Contains (1, array);
-      Assert.Contains (2, array);
-      Assert.Contains ("a", array);
+      Assert.That (array.Length, Is.EqualTo (3));
+      Assert.That (array, Has.Member (1));
+      Assert.That (array, Has.Member (2));
+      Assert.That (array, Has.Member ("a"));
     }
 
     [Test]
     public void SetIsSerializable()
     {
-      Assert.IsTrue (typeof (Set<int>).IsSerializable);
+      Assert.That (typeof (Set<int>).IsSerializable, Is.True);
 
       Set<int> s1 = new Set<int> (new int[] {1, 2, 3, 1, 2});
       Set<int> s2 = Serializer.SerializeAndDeserialize (s1);
-      Assert.AreNotSame (s1, s2);
-      Assert.AreEqual (s1.Count, s2.Count);
+      Assert.That (s2, Is.Not.SameAs (s1));
+      Assert.That (s2.Count, Is.EqualTo (s1.Count));
 
       foreach (int i in s1)
-        Assert.IsTrue (s2.Contains (i));
+        Assert.That (s2.Contains (i), Is.True);
 
       foreach (int i in s2)
-        Assert.IsTrue (s1.Contains (i));
+        Assert.That (s1.Contains (i), Is.True);
     }
 
     [Test]
@@ -298,23 +298,23 @@ namespace Remotion.UnitTests.Collections
       Set<int> set = new Set<int> (1, 2, 3, 4, 5, 6, 7, 8);
       object[] targetArray = new object[10];
       ((ICollection) set).CopyTo (targetArray, 1);
-      Assert.AreEqual (null, targetArray[0]);
-      Assert.AreEqual (1, targetArray[1]);
-      Assert.AreEqual (2, targetArray[2]);
-      Assert.AreEqual (3, targetArray[3]);
-      Assert.AreEqual (4, targetArray[4]);
-      Assert.AreEqual (5, targetArray[5]);
-      Assert.AreEqual (6, targetArray[6]);
-      Assert.AreEqual (7, targetArray[7]);
-      Assert.AreEqual (8, targetArray[8]);
-      Assert.AreEqual (null, targetArray[9]);
+      Assert.That (targetArray[0], Is.EqualTo (null));
+      Assert.That (targetArray[1], Is.EqualTo (1));
+      Assert.That (targetArray[2], Is.EqualTo (2));
+      Assert.That (targetArray[3], Is.EqualTo (3));
+      Assert.That (targetArray[4], Is.EqualTo (4));
+      Assert.That (targetArray[5], Is.EqualTo (5));
+      Assert.That (targetArray[6], Is.EqualTo (6));
+      Assert.That (targetArray[7], Is.EqualTo (7));
+      Assert.That (targetArray[8], Is.EqualTo (8));
+      Assert.That (targetArray[9], Is.EqualTo (null));
     }
 
     [Test]
     public void ICollectionIsSynchronized()
     {
       Set<int> set = new Set<int> (1, 2, 3, 4, 5, 6, 7, 8);
-      Assert.IsFalse (((ICollection) set).IsSynchronized);
+      Assert.That (((ICollection) set).IsSynchronized, Is.False);
     }
 
     [Test]
@@ -329,9 +329,9 @@ namespace Remotion.UnitTests.Collections
     public void GetAny()
     {
       Set<int> set = new Set<int> (1, 2, 3, 4, 5, 6, 7, 8);
-      Assert.IsTrue (set.Contains (set.GetAny()));
+      Assert.That (set.Contains (set.GetAny()), Is.True);
       set = new Set<int> (1);
-      Assert.AreEqual (1, set.GetAny ());
+      Assert.That (set.GetAny (), Is.EqualTo (1));
     }
 
     [Test]

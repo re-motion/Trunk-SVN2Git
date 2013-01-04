@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
       SecurityToken token = TestHelper.CreateTokenWithOwningTenant (user, tenant);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
 
     [Test]
@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
       SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, group);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
   }
 }

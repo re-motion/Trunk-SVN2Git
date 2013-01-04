@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
             "An ObjectID cannot be constructed for abstract type '{0}' of class '{1}'.\r\nParameter name: classDefinition",
             typeof (TIDomainBase).AssemblyQualifiedName, "TI_DomainBase");
 
-        Assert.AreEqual (expectedMessage, ex.Message);
+        Assert.That (ex.Message, Is.EqualTo (expectedMessage));
       }
     }
 

@@ -30,7 +30,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       AccessType accessType = AccessType.Get (EnumWrapper.Get(TestAccessTypes.First));
 
-      Assert.AreEqual (EnumWrapper.Get(TestAccessTypes.First), accessType.Value);
+      Assert.That (accessType.Value, Is.EqualTo (EnumWrapper.Get(TestAccessTypes.First)));
     }
 
     [Test]
@@ -45,9 +45,9 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void GetFromCache ()
     {
-      Assert.AreEqual (AccessType.Get (TestAccessTypes.First), AccessType.Get (TestAccessTypes.First));
-      Assert.AreEqual (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)), AccessType.Get (TestAccessTypes.Second));
-      Assert.AreEqual (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Third)), AccessType.Get (EnumWrapper.Get(TestAccessTypes.Third)));
+      Assert.That (AccessType.Get (TestAccessTypes.First), Is.EqualTo (AccessType.Get (TestAccessTypes.First)));
+      Assert.That (AccessType.Get (TestAccessTypes.Second), Is.EqualTo (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second))));
+      Assert.That (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Third)), Is.EqualTo (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Third))));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Security.UnitTests.Core
       EnumWrapper wrapper = EnumWrapper.Get(TestAccessTypes.First);
       AccessType accessType = AccessType.Get (wrapper);
 
-      Assert.AreEqual (wrapper.ToString (), accessType.ToString ());
+      Assert.That (accessType.ToString (), Is.EqualTo (wrapper.ToString ()));
     }
 
     [Test]
@@ -65,49 +65,49 @@ namespace Remotion.Security.UnitTests.Core
       AccessType accessType = AccessType.Get (EnumWrapper.Get(TestAccessTypes.First));
       AccessType deserializedAccessType = Serializer.SerializeAndDeserialize (accessType);
 
-      Assert.AreEqual (accessType, deserializedAccessType);
+      Assert.That (deserializedAccessType, Is.EqualTo (accessType));
     }
 
     [Test]
     public void Equatable_Equals_True ()
     {
-      Assert.IsTrue(AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals (AccessType.Get (TestAccessTypes.Second)));
+      Assert.That (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals (AccessType.Get (TestAccessTypes.Second)), Is.True);
     }
 
     [Test]
     public void Equatable_Equals_False ()
     {
-      Assert.IsFalse (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals (AccessType.Get (TestAccessTypes.Fourth)));
+      Assert.That (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals (AccessType.Get (TestAccessTypes.Fourth)), Is.False);
     }
 
     [Test]
     public void Equals_True ()
     {
-      Assert.IsTrue (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals ((object) AccessType.Get (TestAccessTypes.Second)));
+      Assert.That (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals ((object) AccessType.Get (TestAccessTypes.Second)), Is.True);
     }
 
     [Test]
     public void Equals_False ()
     {
-      Assert.IsFalse (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals ((object) AccessType.Get (TestAccessTypes.Fourth)));
+      Assert.That (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals ((object) AccessType.Get (TestAccessTypes.Fourth)), Is.False);
     }
 
     [Test]
     public void Equals_False_WithDifferentType ()
     {
-      Assert.IsFalse (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals (EnumWrapper.Get(TestAccessTypes.Second)));
+      Assert.That (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals (EnumWrapper.Get(TestAccessTypes.Second)), Is.False);
     }
 
     [Test]
     public void Equals_False_WithNull ()
     {
-      Assert.IsFalse (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals (null));
+      Assert.That (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).Equals (null), Is.False);
     }
 
     [Test]
     public void GetHashCode_IsSameForEqualValues ()
     {
-      Assert.AreEqual (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).GetHashCode(), AccessType.Get (TestAccessTypes.Second).GetHashCode());
+      Assert.That (AccessType.Get (TestAccessTypes.Second).GetHashCode(), Is.EqualTo (AccessType.Get (EnumWrapper.Get(TestAccessTypes.Second)).GetHashCode()));
     }
   }
 }

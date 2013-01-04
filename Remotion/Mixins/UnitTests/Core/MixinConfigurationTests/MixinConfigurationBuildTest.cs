@@ -27,15 +27,15 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
     public void BuildNew ()
     {
       MixinConfiguration previousConfiguration = MixinConfiguration.ActiveConfiguration;
-      Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
+      Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
       using (MixinConfiguration.BuildNew ().ForClass<BaseType7> ().AddMixin<BT7Mixin0> ().EnterScope ())
       {
-        Assert.AreNotSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
-        Assert.IsNotNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)));
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)).Mixins.ContainsKey (typeof (BT7Mixin0)));
-        Assert.IsNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)));
+        Assert.That (MixinConfiguration.ActiveConfiguration, Is.Not.SameAs (previousConfiguration));
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)), Is.Not.Null);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)).Mixins.ContainsKey (typeof (BT7Mixin0)), Is.True);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)), Is.Null);
       }
-      Assert.AreSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
+      Assert.That (MixinConfiguration.ActiveConfiguration, Is.SameAs (previousConfiguration));
     }
 
     [Test]
@@ -44,46 +44,46 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
       MixinConfiguration previousConfiguration = MixinConfiguration.ActiveConfiguration;
       MixinConfiguration parentConfiguration = new MixinConfigurationBuilder (null)
           .ForClass <BaseType2>().AddMixin (typeof (BT2Mixin1)).BuildConfiguration();
-      
-      Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
+
+      Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
       using (MixinConfiguration.BuildFrom (parentConfiguration).ForClass<BaseType7> ().AddMixin<BT7Mixin0> ().EnterScope ())
       {
-        Assert.AreNotSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
-        Assert.AreNotSame (parentConfiguration, MixinConfiguration.ActiveConfiguration);
-        Assert.IsNotNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)));
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)).Mixins.ContainsKey (typeof (BT7Mixin0)));
-        Assert.IsNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)));
-        Assert.IsNotNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType2)));
+        Assert.That (MixinConfiguration.ActiveConfiguration, Is.Not.SameAs (previousConfiguration));
+        Assert.That (MixinConfiguration.ActiveConfiguration, Is.Not.SameAs (parentConfiguration));
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)), Is.Not.Null);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)).Mixins.ContainsKey (typeof (BT7Mixin0)), Is.True);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)), Is.Null);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType2)), Is.Not.Null);
       }
-      Assert.AreSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
+      Assert.That (MixinConfiguration.ActiveConfiguration, Is.SameAs (previousConfiguration));
     }
 
     [Test]
     public void BuildFromActive ()
     {
       MixinConfiguration previousConfiguration = MixinConfiguration.ActiveConfiguration;
-      Assert.IsFalse (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType4)));
+      Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType4)), Is.False);
       using (MixinConfiguration.BuildFromActive ().ForClass<BaseType4> ().AddMixin<BT4Mixin1> ().EnterScope ())
       {
-        Assert.AreNotSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
-        Assert.IsNotNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)));
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)).Mixins.ContainsKey (typeof (BT1Mixin1)));
-        Assert.IsNotNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType4)));
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType4)).Mixins.ContainsKey (typeof (BT4Mixin1)));
+        Assert.That (MixinConfiguration.ActiveConfiguration, Is.Not.SameAs (previousConfiguration));
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)), Is.Not.Null);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)).Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType4)), Is.Not.Null);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType4)).Mixins.ContainsKey (typeof (BT4Mixin1)), Is.True);
       }
-      Assert.AreSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
+      Assert.That (MixinConfiguration.ActiveConfiguration, Is.SameAs (previousConfiguration));
     }
 
     [Test]
     public void BuildFromActive_CausesDefaultConfigurationToBeAnalyzed ()
     {
       MixinConfiguration.SetActiveConfiguration (null);
-      Assert.IsFalse (MixinConfiguration.HasActiveConfiguration);
+      Assert.That (MixinConfiguration.HasActiveConfiguration, Is.False);
       using (MixinConfiguration.BuildFromActive ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1), typeof (BT1Mixin2)).EnterScope ())
       {
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType3)));
+        Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType3)), Is.True);
       }
-      Assert.IsTrue (MixinConfiguration.HasActiveConfiguration);
+      Assert.That (MixinConfiguration.HasActiveConfiguration, Is.True);
     }
 
   }

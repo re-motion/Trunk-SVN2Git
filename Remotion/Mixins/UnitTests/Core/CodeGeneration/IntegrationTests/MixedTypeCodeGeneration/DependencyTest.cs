@@ -32,8 +32,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       {
         object o = ObjectFactory.Create<NullTarget> (ParamList.Empty);
         var c1 = (ICircular2) o;
-        Assert.AreEqual ("MixinWithCircularTargetCallDependency2.Circular12-MixinWithCircularTargetCallDependency1.Circular1-"
-            + "MixinWithCircularTargetCallDependency2.Circular2", c1.Circular12 ());
+        Assert.That (c1.Circular12 (), Is.EqualTo ("MixinWithCircularTargetCallDependency2.Circular12-MixinWithCircularTargetCallDependency1.Circular1-"
+                                                   + "MixinWithCircularTargetCallDependency2.Circular2"));
       }
     }
 
@@ -42,7 +42,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       ClassImplementingInternalInterface ciii = ObjectFactory.Create<ClassImplementingInternalInterface> (ParamList.Empty);
       var mixin = Mixin.Get<MixinWithClassTargetCallImplementingInternalInterface> (ciii);
-      Assert.AreEqual ("ClassImplementingInternalInterface.Foo", mixin.GetStringViaThis ());
+      Assert.That (mixin.GetStringViaThis (), Is.EqualTo ("ClassImplementingInternalInterface.Foo"));
     }
 
     [Test]
@@ -50,8 +50,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       ClassImplementingIndirectRequirements ciir = ObjectFactory.Create<ClassImplementingIndirectRequirements> (ParamList.Empty);
       var mixin = Mixin.Get<MixinWithIndirectRequirements> (ciir);
-      Assert.AreEqual ("ClassImplementingIndirectRequirements.Method1-ClassImplementingIndirectRequirements.BaseMethod1-"
-          + "ClassImplementingIndirectRequirements.Method3", mixin.GetStuffViaThis ());
+      Assert.That (mixin.GetStuffViaThis (), Is.EqualTo ("ClassImplementingIndirectRequirements.Method1-ClassImplementingIndirectRequirements.BaseMethod1-"
+                                                         + "ClassImplementingIndirectRequirements.Method3"));
     }
   }
 }

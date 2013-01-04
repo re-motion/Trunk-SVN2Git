@@ -41,8 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ClassDerivedFromSimpleDomainObject deserializedInstance = deserializedData.Item2;
       using (deserializedData.Item1.EnterNonDiscardingScope ())
       {
-        Assert.AreNotSame (instance, deserializedInstance);
-        Assert.AreEqual (6, deserializedInstance.IntProperty);
+        Assert.That (deserializedInstance, Is.Not.SameAs (instance));
+        Assert.That (deserializedInstance.IntProperty, Is.EqualTo (6));
       }
     }
 
@@ -56,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
       using (deserializedData.Item1.EnterNonDiscardingScope ())
       {
-        Assert.AreNotSame (instance, deserializedInstance);
-        Assert.AreEqual (5, deserializedInstance.Int32Property);
+        Assert.That (deserializedInstance, Is.Not.SameAs (instance));
+        Assert.That (deserializedInstance.Int32Property, Is.EqualTo (5));
       }
     }
 
@@ -76,17 +76,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           Serializer.SerializeAndDeserialize (Tuple.Create (instance.GetBindingTransaction(), instance));
       
       ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
-      Assert.IsTrue (deserializedInstance.HasBindingTransaction);
-      Assert.AreSame (deserializedData.Item1, deserializedInstance.GetBindingTransaction());
-      Assert.AreEqual (5, deserializedInstance.Int32Property);
+      Assert.That (deserializedInstance.HasBindingTransaction, Is.True);
+      Assert.That (deserializedInstance.GetBindingTransaction(), Is.SameAs (deserializedData.Item1));
+      Assert.That (deserializedInstance.Int32Property, Is.EqualTo (5));
     }
 
     [Test]
     public void Serializable_LoadCount ()
     {
       ClassWithAllDataTypes instance = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      Assert.IsTrue (instance.OnLoadedCalled);
-      Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, instance.OnLoadedLoadMode);
+      Assert.That (instance.OnLoadedCalled, Is.True);
+      Assert.That (instance.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
 
       Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
@@ -94,13 +94,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       using (deserializedData.Item1.EnterNonDiscardingScope ())
       {
         ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
-        Assert.IsFalse (deserializedInstance.OnLoadedCalled);
+        Assert.That (deserializedInstance.OnLoadedCalled, Is.False);
         using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
         {
           ClientTransaction.Current.EnlistDomainObject (deserializedInstance);
           deserializedInstance.Int32Property = 15;
-          Assert.IsTrue (deserializedInstance.OnLoadedCalled);
-          Assert.AreEqual (LoadMode.DataContainerLoadedOnly, deserializedInstance.OnLoadedLoadMode);
+          Assert.That (deserializedInstance.OnLoadedCalled, Is.True);
+          Assert.That (deserializedInstance.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
         }
       }
     }
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Customer domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
 
       Customer deserializedDomainObject = Serializer.SerializeAndDeserialize (domainObject);
-      Assert.IsTrue (deserializedDomainObject.OnDeserializationCalled);
+      Assert.That (deserializedDomainObject.OnDeserializationCalled, Is.True);
     }
 
     [Test]
@@ -139,8 +139,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Customer domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
 
       Customer deserializedDomainObject = Serializer.SerializeAndDeserialize (domainObject);
-      Assert.IsTrue (deserializedDomainObject.OnDeserializingAttributeCalled);
-      Assert.IsTrue (deserializedDomainObject.OnDeserializedAttributeCalled);
+      Assert.That (deserializedDomainObject.OnDeserializingAttributeCalled, Is.True);
+      Assert.That (deserializedDomainObject.OnDeserializedAttributeCalled, Is.True);
     }
 
     [Test]

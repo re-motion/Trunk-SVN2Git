@@ -126,12 +126,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
       int numberOfOrderItemsBeforeDelete = _order.OrderItems.Count;
       _orderItem.Delete ();
 
-      Assert.IsNull (_orderItem.Order);
-      Assert.AreEqual (numberOfOrderItemsBeforeDelete - 1, _order.OrderItems.Count);
-      Assert.IsFalse (_order.OrderItems.Contains (_orderItem.ID));
-      Assert.IsNull (_orderItem.Properties[typeof (OrderItem), "Order"].GetRelatedObjectID ());
-      Assert.AreEqual (StateType.Changed, _order.State);
-      Assert.AreEqual (StateType.Unchanged, _order.InternalDataContainer.State);
+      Assert.That (_orderItem.Order, Is.Null);
+      Assert.That (_order.OrderItems.Count, Is.EqualTo (numberOfOrderItemsBeforeDelete - 1));
+      Assert.That (_order.OrderItems.Contains (_orderItem.ID), Is.False);
+      Assert.That (_orderItem.Properties[typeof (OrderItem), "Order"].GetRelatedObjectID (), Is.Null);
+      Assert.That (_order.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_order.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -158,9 +158,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 
       DomainObjectCollection originalOrderItems = _order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
 
-      Assert.IsNotNull (originalOrderItems);
-      Assert.AreEqual (2, originalOrderItems.Count);
-      Assert.AreSame (_orderItem, originalOrderItems[_orderItem.ID]);
+      Assert.That (originalOrderItems, Is.Not.Null);
+      Assert.That (originalOrderItems.Count, Is.EqualTo (2));
+      Assert.That (originalOrderItems[_orderItem.ID], Is.SameAs (_orderItem));
     }
 
     [Test]

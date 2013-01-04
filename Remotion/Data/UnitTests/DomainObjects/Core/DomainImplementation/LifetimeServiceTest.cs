@@ -41,8 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void NewObject_NoCtorArgs ()
     {
       var instance = (Order) LifetimeService.NewObject (TestableClientTransaction, typeof (Order), ParamList.Empty);
-      Assert.IsNotNull (instance);
-      Assert.IsTrue (instance.CtorCalled);
+      Assert.That (instance, Is.Not.Null);
+      Assert.That (instance.CtorCalled, Is.True);
     }
 
     [Test]
@@ -50,8 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var order = Order.NewObject();
       var instance = (OrderItem) LifetimeService.NewObject (TestableClientTransaction, typeof (OrderItem), ParamList.Create (order));
-      Assert.IsNotNull (instance);
-      Assert.AreSame (order, instance.Order);
+      Assert.That (instance, Is.Not.Null);
+      Assert.That (instance.Order, Is.SameAs (order));
     }
 
     [Test]
@@ -76,9 +76,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void GetObject ()
     {
       var order = (Order) LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Order1, false);
-      Assert.IsNotNull (order);
-      Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
-      Assert.IsFalse (order.CtorCalled);
+      Assert.That (order, Is.Not.Null);
+      Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (order.CtorCalled, Is.False);
     }
 
     [Test]
@@ -94,9 +94,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       Order.GetObject (DomainObjectIDs.Order1).Delete ();
       var order = (Order) LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Order1, true);
-      Assert.IsNotNull (order);
-      Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
-      Assert.AreEqual (StateType.Deleted, order.State);
+      Assert.That (order, Is.Not.Null);
+      Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (order.State, Is.EqualTo (StateType.Deleted));
     }
 
     [Test]
@@ -221,9 +221,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void DeleteObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.AreNotEqual (StateType.Deleted, order.State);
+      Assert.That (order.State, Is.Not.EqualTo (StateType.Deleted));
       LifetimeService.DeleteObject (TestableClientTransaction, order);
-      Assert.AreEqual (StateType.Deleted, order.State);
+      Assert.That (order.State, Is.EqualTo (StateType.Deleted));
     }
 
     [Test]

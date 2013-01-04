@@ -30,9 +30,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<ClassWithDifferentProperties> ("String");
 
-      Assert.AreSame (
-          typeof (ClassWithDifferentProperties),
-          ReflectionUtility.GetOriginalDeclaringType (propertyInfo));
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (propertyInfo), Is.SameAs (typeof (ClassWithDifferentProperties)));
     }
 
     [Test]
@@ -40,9 +38,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedClassWithDifferentProperties> ("OtherString");
 
-      Assert.AreSame (
-          typeof (DerivedClassWithDifferentProperties),
-          ReflectionUtility.GetOriginalDeclaringType (propertyInfo));
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (propertyInfo), Is.SameAs (typeof (DerivedClassWithDifferentProperties)));
     }
 
     [Test]
@@ -50,9 +46,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedClassWithDifferentProperties> ("String");
 
-      Assert.AreSame (
-          typeof (DerivedClassWithDifferentProperties),
-          ReflectionUtility.GetOriginalDeclaringType (propertyInfo));
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (propertyInfo), Is.SameAs (typeof (DerivedClassWithDifferentProperties)));
     }
 
     [Test]
@@ -60,9 +54,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<ClassWithDifferentProperties> ("Int32");
 
-      Assert.AreSame (
-          typeof (ClassWithDifferentProperties),
-          ReflectionUtility.GetOriginalDeclaringType (propertyInfo));
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (propertyInfo), Is.SameAs (typeof (ClassWithDifferentProperties)));
     }
 
     [Test]
@@ -70,9 +62,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedClassWithDifferentProperties> ("Int32");
 
-      Assert.AreSame (
-          typeof (ClassWithDifferentProperties),
-          ReflectionUtility.GetOriginalDeclaringType (propertyInfo));
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (propertyInfo), Is.SameAs (typeof (ClassWithDifferentProperties)));
     }
 
     protected PropertyInfo GetPropertyInfo<T> (string property)

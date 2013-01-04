@@ -59,8 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void CollectionEndPointIsFlattenedSerializable ()
     {
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.IsNotNull (deserializedEndPoint);
-      Assert.AreNotSame (_endPoint, deserializedEndPoint);
+      Assert.That (deserializedEndPoint, Is.Not.Null);
+      Assert.That (deserializedEndPoint, Is.Not.SameAs (_endPoint));
     }
 
     [Test]
@@ -69,19 +69,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       _endPoint.Collection.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem5));
 
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.AreSame (_endPoint.Definition, deserializedEndPoint.Definition);
-      Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
+      Assert.That (deserializedEndPoint.Definition, Is.SameAs (_endPoint.Definition));
+      Assert.That (deserializedEndPoint.HasBeenTouched, Is.True);
 
-      Assert.AreEqual (3, deserializedEndPoint.Collection.Count);
-      Assert.IsTrue (deserializedEndPoint.Collection.Contains (DomainObjectIDs.OrderItem1));
-      Assert.IsTrue (deserializedEndPoint.Collection.Contains (DomainObjectIDs.OrderItem2));
-      Assert.IsTrue (deserializedEndPoint.Collection.Contains (DomainObjectIDs.OrderItem5));
-      Assert.IsFalse (deserializedEndPoint.Collection.IsReadOnly);
+      Assert.That (deserializedEndPoint.Collection.Count, Is.EqualTo (3));
+      Assert.That (deserializedEndPoint.Collection.Contains (DomainObjectIDs.OrderItem1), Is.True);
+      Assert.That (deserializedEndPoint.Collection.Contains (DomainObjectIDs.OrderItem2), Is.True);
+      Assert.That (deserializedEndPoint.Collection.Contains (DomainObjectIDs.OrderItem5), Is.True);
+      Assert.That (deserializedEndPoint.Collection.IsReadOnly, Is.False);
 
-      Assert.AreEqual (2, deserializedEndPoint.GetCollectionWithOriginalData().Count);
-      Assert.IsTrue (deserializedEndPoint.GetCollectionWithOriginalData().Contains (DomainObjectIDs.OrderItem1));
-      Assert.IsTrue (deserializedEndPoint.GetCollectionWithOriginalData().Contains (DomainObjectIDs.OrderItem2));
-      Assert.IsTrue (deserializedEndPoint.GetCollectionWithOriginalData().IsReadOnly);
+      Assert.That (deserializedEndPoint.GetCollectionWithOriginalData().Count, Is.EqualTo (2));
+      Assert.That (deserializedEndPoint.GetCollectionWithOriginalData().Contains (DomainObjectIDs.OrderItem1), Is.True);
+      Assert.That (deserializedEndPoint.GetCollectionWithOriginalData().Contains (DomainObjectIDs.OrderItem2), Is.True);
+      Assert.That (deserializedEndPoint.GetCollectionWithOriginalData().IsReadOnly, Is.True);
     }
 
     [Test]
@@ -90,21 +90,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       _endPoint.Touch ();
 
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
+      Assert.That (deserializedEndPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
     public void CollectionEndPoint_Untouched ()
     {
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.IsFalse (deserializedEndPoint.HasBeenTouched);
+      Assert.That (deserializedEndPoint.HasBeenTouched, Is.False);
     }
 
     [Test]
     public void CollectionEndPoint_ClientTransaction ()
     {
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.IsNotNull (deserializedEndPoint.ClientTransaction);
+      Assert.That (deserializedEndPoint.ClientTransaction, Is.Not.Null);
     }
 
     [Test]

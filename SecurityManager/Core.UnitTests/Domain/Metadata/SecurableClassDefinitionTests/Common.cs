@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         List<StateDefinition> states = testHelper.GetDeliveredAndUnpaidStateList (orderClass);
 
         StateCombination stateCombination = orderClass.FindStateCombination (states);
-        Assert.AreSame (expectedCombination, stateCombination);
+        Assert.That (stateCombination, Is.SameAs (expectedCombination));
       }
     }
 
@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
 
-        Assert.IsEmpty (orderClass.StateProperties);
+        Assert.That (orderClass.StateProperties, Is.Empty);
       }
     }
 
@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinitionWithProperties ();
 
-        Assert.AreEqual (AccessControlTestHelper.OrderClassPropertyCount, orderClass.StateProperties.Count);
+        Assert.That (orderClass.StateProperties.Count, Is.EqualTo (AccessControlTestHelper.OrderClassPropertyCount));
       }
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         var firstCollection = orderClass.StateProperties;
         var secondCollection = orderClass.StateProperties;
 
-        Assert.AreNotSame (firstCollection, secondCollection);
+        Assert.That (secondCollection, Is.Not.SameAs (firstCollection));
       }
     }
 
@@ -94,7 +94,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinitionWithProperties ();
 
-        Assert.IsTrue (((ICollection<StatePropertyDefinition>)orderClass.StateProperties).IsReadOnly);
+        Assert.That (((ICollection<StatePropertyDefinition>)orderClass.StateProperties).IsReadOnly, Is.True);
       }
     }
 
@@ -106,7 +106,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
 
-        Assert.IsEmpty (orderClass.AccessTypes);
+        Assert.That (orderClass.AccessTypes, Is.Empty);
       }
     }
 
@@ -119,7 +119,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
         testHelper.AttachJournalizeAccessType (orderClass);
 
-        Assert.AreEqual (1, orderClass.AccessTypes.Count);
+        Assert.That (orderClass.AccessTypes.Count, Is.EqualTo (1));
       }
     }
 
@@ -135,7 +135,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         var firstCollection = orderClass.AccessTypes;
         var secondCollection = orderClass.AccessTypes;
 
-        Assert.AreNotSame (firstCollection, secondCollection);
+        Assert.That (secondCollection, Is.Not.SameAs (firstCollection));
       }
     }
 
@@ -148,7 +148,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
         testHelper.AttachJournalizeAccessType (orderClass);
 
-        Assert.IsTrue (((ICollection<AccessTypeDefinition>)orderClass.AccessTypes).IsReadOnly);
+        Assert.That (((ICollection<AccessTypeDefinition>)orderClass.AccessTypes).IsReadOnly, Is.True);
       }
     }
 
@@ -193,7 +193,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         SecurableClassDefinition foundClass = SecurableClassDefinition.FindByName ("Invce");
 
-        Assert.IsNull (foundClass);
+        Assert.That (foundClass, Is.Null);
       }
     }
 
@@ -207,7 +207,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         DomainObjectCollection result = SecurableClassDefinition.FindAll ();
 
-        Assert.AreEqual (0, result.Count);
+        Assert.That (result.Count, Is.EqualTo (0));
       }
     }
 
@@ -225,7 +225,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         DomainObjectCollection result = SecurableClassDefinition.FindAll ();
 
-        Assert.AreEqual (10, result.Count);
+        Assert.That (result.Count, Is.EqualTo (10));
         for (int i = 0; i < result.Count; i++)
           Assert.AreEqual (expectedClassDefinitions[i].ID, result[i].ID, "Wrong Index.");
       }
@@ -246,7 +246,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         DomainObjectCollection result = SecurableClassDefinition.FindAllBaseClasses ();
 
-        Assert.AreEqual (10, result.Count);
+        Assert.That (result.Count, Is.EqualTo (10));
         for (int i = 0; i < result.Count; i++)
           Assert.AreEqual (expectedClassDefinitions[i].ID, result[i].ID, "Wrong Index.");
       }
@@ -270,7 +270,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         SecurableClassDefinition actualBaseClassDefinition = SecurableClassDefinition.GetObject (expectedBaseClassDefinition.ID);
 
-        Assert.AreEqual (10, actualBaseClassDefinition.DerivedClasses.Count);
+        Assert.That (actualBaseClassDefinition.DerivedClasses.Count, Is.EqualTo (10));
         for (int i = 0; i < actualBaseClassDefinition.DerivedClasses.Count; i++)
           Assert.AreEqual (expectedDerivedClasses[i].ID, actualBaseClassDefinition.DerivedClasses[i].ID, "Wrong Index.");
       }
@@ -285,13 +285,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
           classDefinition.EnsureDataAvailable ();
-          Assert.AreEqual (StateType.Unchanged, classDefinition.State);
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.Unchanged));
 
           StatelessAccessControlList accessControlList = classDefinition.CreateStatelessAccessControlList ();
 
-          Assert.AreSame (classDefinition, accessControlList.Class);
+          Assert.That (accessControlList.Class, Is.SameAs (classDefinition));
           Assert.IsNotEmpty (accessControlList.AccessControlEntries);
-          Assert.AreEqual (StateType.Changed, classDefinition.State);
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.Changed));
         }
       }
     }
@@ -307,7 +307,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
           classDefinition.EnsureDataAvailable ();
-          Assert.AreEqual (StateType.Unchanged, classDefinition.State);
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.Unchanged));
 
           classDefinition.CreateStatelessAccessControlList ();
           classDefinition.CreateStatelessAccessControlList ();
@@ -324,14 +324,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
           classDefinition.EnsureDataAvailable ();
-          Assert.AreEqual (StateType.Unchanged, classDefinition.State);
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.Unchanged));
 
           StatefulAccessControlList accessControlList = classDefinition.CreateStatefulAccessControlList ();
 
-          Assert.AreSame (classDefinition, accessControlList.Class);
+          Assert.That (accessControlList.Class, Is.SameAs (classDefinition));
           Assert.IsNotEmpty (accessControlList.AccessControlEntries);
           Assert.IsNotEmpty (accessControlList.StateCombinations);
-          Assert.AreEqual (StateType.Changed, classDefinition.State);
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.Changed));
         }
       }
     }
@@ -345,17 +345,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
           classDefinition.EnsureDataAvailable ();
-          Assert.AreEqual (StateType.Unchanged, classDefinition.State);
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.Unchanged));
 
           StatefulAccessControlList acccessControlList0 = classDefinition.CreateStatefulAccessControlList ();
           StatefulAccessControlList acccessControlListl = classDefinition.CreateStatefulAccessControlList ();
 
-          Assert.AreEqual (2, classDefinition.StatefulAccessControlLists.Count);
-          Assert.AreSame (acccessControlList0, classDefinition.StatefulAccessControlLists[0]);
-          Assert.AreEqual (0, acccessControlList0.Index);
-          Assert.AreSame (acccessControlListl, classDefinition.StatefulAccessControlLists[1]);
-          Assert.AreEqual (1, acccessControlListl.Index);
-          Assert.AreEqual (StateType.Changed, classDefinition.State);
+          Assert.That (classDefinition.StatefulAccessControlLists.Count, Is.EqualTo (2));
+          Assert.That (classDefinition.StatefulAccessControlLists[0], Is.SameAs (acccessControlList0));
+          Assert.That (acccessControlList0.Index, Is.EqualTo (0));
+          Assert.That (classDefinition.StatefulAccessControlLists[1], Is.SameAs (acccessControlListl));
+          Assert.That (acccessControlListl.Index, Is.EqualTo (1));
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.Changed));
         }
       }
     }
@@ -376,9 +376,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         SecurableClassDefinition actualClassDefinition = SecurableClassDefinition.GetObject (expectedClassDefinition.ID);
 
-        Assert.AreEqual (10, actualClassDefinition.AccessTypes.Count);
+        Assert.That (actualClassDefinition.AccessTypes.Count, Is.EqualTo (10));
         for (int i = 0; i < 10; i++)
-          Assert.AreEqual (expectedAccessTypes[i].ID, actualClassDefinition.AccessTypes[i].ID);
+          Assert.That (actualClassDefinition.AccessTypes[i].ID, Is.EqualTo (expectedAccessTypes[i].ID));
       }
     }
 
@@ -400,9 +400,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         SecurableClassDefinition actualClassDefinition = SecurableClassDefinition.GetObject (expectedClassDefinition.ID);
 
-        Assert.AreEqual (9, actualClassDefinition.StatefulAccessControlLists.Count);
+        Assert.That (actualClassDefinition.StatefulAccessControlLists.Count, Is.EqualTo (9));
         for (int i = 0; i < 9; i++)
-          Assert.AreEqual (expectedAcls[i].ID, actualClassDefinition.StatefulAccessControlLists[i].ID);
+          Assert.That (actualClassDefinition.StatefulAccessControlLists[i].ID, Is.EqualTo (expectedAcls[i].ID));
       }
     }
 
@@ -413,7 +413,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
 
-        Assert.AreEqual (StateType.New, classDefinition.State);
+        Assert.That (classDefinition.State, Is.EqualTo (StateType.New));
       }
     }
 
@@ -424,11 +424,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       {
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
 
-        Assert.AreEqual (StateType.New, classDefinition.State);
+        Assert.That (classDefinition.State, Is.EqualTo (StateType.New));
 
         classDefinition.Touch ();
 
-        Assert.AreEqual (StateType.New, classDefinition.State);
+        Assert.That (classDefinition.State, Is.EqualTo (StateType.New));
       }
     }
 
@@ -440,11 +440,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
-          Assert.AreEqual (StateType.NotLoadedYet, classDefinition.State);
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.NotLoadedYet));
 
           classDefinition.Touch();
 
-          Assert.AreEqual (StateType.Changed, classDefinition.State);
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.Changed));
         }
       }
     }
@@ -460,7 +460,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
 
         SecurableClassValidationResult result = orderClass.Validate ();
 
-        Assert.IsTrue (result.IsValid);
+        Assert.That (result.IsValid, Is.True);
       }
     }
 
@@ -480,7 +480,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
 
         SecurableClassValidationResult result = orderClass.Validate ();
 
-        Assert.IsFalse (result.IsValid);
+        Assert.That (result.IsValid, Is.False);
       }
     }
 
@@ -495,7 +495,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         SecurableClassValidationResult result = new SecurableClassValidationResult ();
         orderClass.ValidateUniqueStateCombinations (result);
 
-        Assert.IsTrue (result.IsValid);
+        Assert.That (result.IsValid, Is.True);
       }
     }
 
@@ -512,9 +512,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         SecurableClassValidationResult result = new SecurableClassValidationResult ();
         orderClass.ValidateUniqueStateCombinations (result);
 
-        Assert.IsFalse (result.IsValid);
-        Assert.Contains (statelessCombination1, result.DuplicateStateCombinations);
-        Assert.Contains (statelessCombination2, result.DuplicateStateCombinations);
+        Assert.That (result.IsValid, Is.False);
+        Assert.That (result.DuplicateStateCombinations, Has.Member (statelessCombination1));
+        Assert.That (result.DuplicateStateCombinations, Has.Member (statelessCombination2));
       }
     }
 
@@ -533,10 +533,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         SecurableClassValidationResult result = new SecurableClassValidationResult ();
         orderClass.ValidateUniqueStateCombinations (result);
 
-        Assert.IsFalse (result.IsValid);
-        Assert.AreEqual (2, result.DuplicateStateCombinations.Count);
-        Assert.Contains (paidCombination1, result.DuplicateStateCombinations);
-        Assert.Contains (paidCombination2, result.DuplicateStateCombinations);
+        Assert.That (result.IsValid, Is.False);
+        Assert.That (result.DuplicateStateCombinations.Count, Is.EqualTo (2));
+        Assert.That (result.DuplicateStateCombinations, Has.Member (paidCombination1));
+        Assert.That (result.DuplicateStateCombinations, Has.Member (paidCombination2));
       }
     }
 
@@ -584,8 +584,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
           SecurableClassValidationResult result = new SecurableClassValidationResult ();
           orderClass.ValidateUniqueStateCombinations (result);
 
-          Assert.IsTrue (result.IsValid);
-          Assert.AreEqual (StateType.Deleted, orderClass.State);
+          Assert.That (result.IsValid, Is.True);
+          Assert.That (orderClass.State, Is.EqualTo (StateType.Deleted));
         }
       }
     }
@@ -603,7 +603,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         SecurableClassValidationResult result = new SecurableClassValidationResult ();
         orderClass.ValidateStateCombinationsAgainstStateProperties (result);
 
-        Assert.IsFalse (result.IsValid);
+        Assert.That (result.IsValid, Is.False);
         Assert.That (result.InvalidStateCombinations, Is.EquivalentTo (new[] { statelessCombination }));
       }
     }

@@ -67,17 +67,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
                                                     "SELECT * FROM [SingleInheritanceBaseClassView]", QueryType.Collection), new QueryParameterCollection ());
         var actualObjects = ClientTransaction.Current.QueryManager.GetCollection<SingleInheritanceBaseClass> (query);
 
-        Assert.AreEqual (2, actualObjects.Count);
+        Assert.That (actualObjects.Count, Is.EqualTo (2));
         var actualFirstDerivedClass = actualObjects.AsEnumerable ().OfType<SingleInheritanceFirstDerivedClass> ().Single ();
         var actualSecondDerivedClass = actualObjects.AsEnumerable ().OfType<SingleInheritanceSecondDerivedClass> ().Single ();
 
-        Assert.AreEqual ("BasePropertyValue 1", actualFirstDerivedClass.BaseProperty);
-        Assert.AreEqual ("FirstDerivedPropertyValue 1", actualFirstDerivedClass.FirstDerivedProperty);
-        Assert.AreEqual ("PersistentPropertyValue 1", ((ISingleInheritancePersistentMixin) actualFirstDerivedClass).PersistentProperty);
+        Assert.That (actualFirstDerivedClass.BaseProperty, Is.EqualTo ("BasePropertyValue 1"));
+        Assert.That (actualFirstDerivedClass.FirstDerivedProperty, Is.EqualTo ("FirstDerivedPropertyValue 1"));
+        Assert.That (((ISingleInheritancePersistentMixin) actualFirstDerivedClass).PersistentProperty, Is.EqualTo ("PersistentPropertyValue 1"));
 
-        Assert.AreEqual ("BasePropertyValue 2", actualSecondDerivedClass.BaseProperty);
-        Assert.AreEqual ("SecondDerivedPropertyValue 2", actualSecondDerivedClass.SecondDerivedProperty);
-        Assert.AreEqual ("PersistentPropertyValue 2", ((ISingleInheritancePersistentMixin) actualSecondDerivedClass).PersistentProperty);
+        Assert.That (actualSecondDerivedClass.BaseProperty, Is.EqualTo ("BasePropertyValue 2"));
+        Assert.That (actualSecondDerivedClass.SecondDerivedProperty, Is.EqualTo ("SecondDerivedPropertyValue 2"));
+        Assert.That (((ISingleInheritancePersistentMixin) actualSecondDerivedClass).PersistentProperty, Is.EqualTo ("PersistentPropertyValue 2"));
       }
     }
 
@@ -124,9 +124,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
           .AsEnumerable().Single();
 
         Assert.IsInstanceOf (typeof (SingleInheritanceFirstDerivedClass), actualObjectWithRelations.ScalarProperty);
-        Assert.AreEqual (2, actualObjectWithRelations.VectorProperty.Count);
-        Assert.IsNotNull (actualObjectWithRelations.VectorProperty.OfType<SingleInheritanceFirstDerivedClass> ().Single ());
-        Assert.IsNotNull (actualObjectWithRelations.VectorProperty.OfType<SingleInheritanceSecondDerivedClass> ().Single ());
+        Assert.That (actualObjectWithRelations.VectorProperty.Count, Is.EqualTo (2));
+        Assert.That (actualObjectWithRelations.VectorProperty.OfType<SingleInheritanceFirstDerivedClass> ().Single (), Is.Not.Null);
+        Assert.That (actualObjectWithRelations.VectorProperty.OfType<SingleInheritanceSecondDerivedClass> ().Single (), Is.Not.Null);
       }
     }
 
@@ -155,17 +155,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
                                                     "SELECT * FROM [ConcreteInheritanceBaseClassView]", QueryType.Collection), new QueryParameterCollection ());
         var actualObjects = ClientTransaction.Current.QueryManager.GetCollection<ConcreteInheritanceBaseClass> (query);
 
-        Assert.AreEqual (2, actualObjects.Count);
+        Assert.That (actualObjects.Count, Is.EqualTo (2));
         var actualFirstDerivedClass = actualObjects.AsEnumerable ().OfType<ConcreteInheritanceFirstDerivedClass> ().Single ();
         var actualSecondDerivedClass = actualObjects.AsEnumerable ().OfType<ConcreteInheritanceSecondDerivedClass> ().Single ();
 
-        Assert.AreEqual ("BasePropertyValue 1", actualFirstDerivedClass.BaseProperty);
-        Assert.AreEqual ("FirstDerivedPropertyValue 1", actualFirstDerivedClass.FirstDerivedProperty);
-        Assert.AreEqual ("PersistentPropertyValue 1", ((IConcreteInheritancePersistentMixin) actualFirstDerivedClass).PersistentProperty);
+        Assert.That (actualFirstDerivedClass.BaseProperty, Is.EqualTo ("BasePropertyValue 1"));
+        Assert.That (actualFirstDerivedClass.FirstDerivedProperty, Is.EqualTo ("FirstDerivedPropertyValue 1"));
+        Assert.That (((IConcreteInheritancePersistentMixin) actualFirstDerivedClass).PersistentProperty, Is.EqualTo ("PersistentPropertyValue 1"));
 
-        Assert.AreEqual ("BasePropertyValue 2", actualSecondDerivedClass.BaseProperty);
-        Assert.AreEqual ("SecondDerivedPropertyValue 2", actualSecondDerivedClass.SecondDerivedProperty);
-        Assert.AreEqual ("PersistentPropertyValue 2", ((IConcreteInheritancePersistentMixin) actualSecondDerivedClass).PersistentProperty);
+        Assert.That (actualSecondDerivedClass.BaseProperty, Is.EqualTo ("BasePropertyValue 2"));
+        Assert.That (actualSecondDerivedClass.SecondDerivedProperty, Is.EqualTo ("SecondDerivedPropertyValue 2"));
+        Assert.That (((IConcreteInheritancePersistentMixin) actualSecondDerivedClass).PersistentProperty, Is.EqualTo ("PersistentPropertyValue 2"));
       }
     }
 
@@ -212,9 +212,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
           .AsEnumerable ().Single ();
 
         Assert.IsInstanceOf (typeof (ConcreteInheritanceFirstDerivedClass), actualObjectWithRelations.ScalarProperty);
-        Assert.AreEqual (2, actualObjectWithRelations.VectorProperty.Count);
-        Assert.IsNotNull (actualObjectWithRelations.VectorProperty.OfType<ConcreteInheritanceFirstDerivedClass> ().Single ());
-        Assert.IsNotNull (actualObjectWithRelations.VectorProperty.OfType<ConcreteInheritanceSecondDerivedClass> ().Single ());
+        Assert.That (actualObjectWithRelations.VectorProperty.Count, Is.EqualTo (2));
+        Assert.That (actualObjectWithRelations.VectorProperty.OfType<ConcreteInheritanceFirstDerivedClass> ().Single (), Is.Not.Null);
+        Assert.That (actualObjectWithRelations.VectorProperty.OfType<ConcreteInheritanceSecondDerivedClass> ().Single (), Is.Not.Null);
       }
     }
 

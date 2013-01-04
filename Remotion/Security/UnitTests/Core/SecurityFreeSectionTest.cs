@@ -26,101 +26,101 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void Enter_IsActive_Leave_WithSingleSecurityFreeSection ()
     {
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
       SecurityFreeSection section = new SecurityFreeSection ();
 
-      Assert.IsTrue (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       section.Leave ();
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
     }
 
     [Test]
     public void Enter_IsActive_Leave_WithNestedSecurityFreeSections ()
     {
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
       SecurityFreeSection section1 = new SecurityFreeSection ();
 
-      Assert.IsTrue (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       using (new SecurityFreeSection ())
       {
-        Assert.IsTrue (SecurityFreeSection.IsActive);
+        Assert.That (SecurityFreeSection.IsActive, Is.True);
       }
 
-      Assert.IsTrue (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       section1.Leave ();
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
     }
 
     [Test]
     public void Enter_IsActive_Leave_WithNestedSecurityFreeSectionsUnorderd ()
     {
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
       SecurityFreeSection section1 = new SecurityFreeSection ();
 
-      Assert.IsTrue (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       SecurityFreeSection section2 = new SecurityFreeSection ();
-      Assert.IsTrue (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       section1.Leave ();
-      Assert.IsTrue (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       section2.Leave ();
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
     }
 
     [Test]
     public void Dispose ()
     {
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
       IDisposable section = new SecurityFreeSection ();
 
-      Assert.IsTrue (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       section.Dispose ();
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
     }
 
     [Test]
     public void Enter_IsActive_Leave_Enter ()
     {
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
       SecurityFreeSection section = new SecurityFreeSection ();
 
-      Assert.IsTrue (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       section.Leave ();
       section.Leave ();
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
 
       using (new SecurityFreeSection ())
       {
-        Assert.IsTrue (SecurityFreeSection.IsActive);
+        Assert.That (SecurityFreeSection.IsActive, Is.True);
       }
     }
 
     [Test]
     public void Threading ()
     {
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
       SecurityFreeSection section = new SecurityFreeSection ();
-      Assert.IsTrue (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       ThreadRunner.Run (delegate ()
           {
-            Assert.IsFalse (SecurityFreeSection.IsActive);
+            Assert.That (SecurityFreeSection.IsActive, Is.False);
             using (new SecurityFreeSection ())
             {
-              Assert.IsTrue (SecurityFreeSection.IsActive);
+              Assert.That (SecurityFreeSection.IsActive, Is.True);
             }
-            Assert.IsFalse (SecurityFreeSection.IsActive);
+            Assert.That (SecurityFreeSection.IsActive, Is.False);
           });
 
       section.Leave ();
-      Assert.IsFalse (SecurityFreeSection.IsActive);
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
     }
   }
 }

@@ -51,7 +51,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       bool isVisible = mainMenuTab.EvaluateVisible ();
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (isVisible);
+      Assert.That (isVisible, Is.True);
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       bool isVisible = mainMenuTab.EvaluateVisible ();
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (isVisible);
+      Assert.That (isVisible, Is.False);
     }
 
 
@@ -77,7 +77,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       mainMenuTab.IsVisible = true;
 
       bool isVisible = mainMenuTab.EvaluateVisible ();
-      Assert.IsTrue (isVisible);
+      Assert.That (isVisible, Is.True);
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       mainMenuTab.IsVisible = false;
 
       bool isVisible = mainMenuTab.EvaluateVisible ();
-      Assert.IsFalse (isVisible);
+      Assert.That (isVisible, Is.False);
     }
 
 
@@ -102,7 +102,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       bool isVisible = mainMenuTab.EvaluateVisible ();
 
       _mocks.VerifyAll ();
-      Assert.IsTrue (isVisible);
+      Assert.That (isVisible, Is.True);
     }
 
     [Test]
@@ -116,7 +116,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       bool isVisible = mainMenuTab.EvaluateVisible ();
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (isVisible);
+      Assert.That (isVisible, Is.False);
     }
 
 
@@ -130,7 +130,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       bool isVisible = mainMenuTab.EvaluateVisible ();
 
       _mocks.VerifyAll ();
-      Assert.IsFalse (isVisible);
+      Assert.That (isVisible, Is.False);
     }
 
     private MainMenuTab CreateMainMenuTab ()

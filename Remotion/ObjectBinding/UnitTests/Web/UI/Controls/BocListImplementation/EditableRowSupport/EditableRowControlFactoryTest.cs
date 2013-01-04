@@ -51,8 +51,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       IBusinessObjectBoundEditableWebControl control = _factory.Create (_stringValueColumn, 0);
 
-      Assert.IsNotNull (control);
-      Assert.IsTrue (control is BocTextValue);
+      Assert.That (control, Is.Not.Null);
+      Assert.That (control is BocTextValue, Is.True);
     }
 
     [Test]

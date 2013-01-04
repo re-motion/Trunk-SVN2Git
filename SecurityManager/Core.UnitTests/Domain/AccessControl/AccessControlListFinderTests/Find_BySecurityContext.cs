@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
       AccessControlList foundAcl = aclFinder.Find (ClientTransaction.CreateRootTransaction (), context);
 
-      Assert.AreEqual (expectedAccessControlList.ID, foundAcl.ID);
+      Assert.That (foundAcl.ID, Is.EqualTo (expectedAccessControlList.ID));
     }
 
     [Test]

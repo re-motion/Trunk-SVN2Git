@@ -31,12 +31,12 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     {
       int[] array = new int[] {1, 2, 3};
       int[] array2 = Serializer.SerializeAndDeserialize (array);
-      Assert.AreNotSame (array, array2);
+      Assert.That (array2, Is.Not.SameAs (array));
 
-      Assert.AreEqual (array.Length, array2.Length);
-      Assert.AreEqual (array[0], array2[0]);
-      Assert.AreEqual (array[1], array2[1]);
-      Assert.AreEqual (array[2], array2[2]);
+      Assert.That (array2.Length, Is.EqualTo (array.Length));
+      Assert.That (array2[0], Is.EqualTo (array[0]));
+      Assert.That (array2[1], Is.EqualTo (array[1]));
+      Assert.That (array2[2], Is.EqualTo (array[2]));
     }
 
     [Test]
@@ -46,7 +46,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       byte[] serializedArray = Serializer.XmlSerialize (array);
       string serializedArrayString = Encoding.UTF8.GetString (serializedArray);
 
-      Assert.AreEqual (GetExpectedXmlString(), serializedArrayString);
+      Assert.That (serializedArrayString, Is.EqualTo (GetExpectedXmlString()));
     }
 
     private string GetExpectedXmlString ()

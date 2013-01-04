@@ -44,7 +44,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
     public void Initialization_Empty ()
     {
       var configuration = new MixinConfiguration();
-      Assert.IsEmpty (configuration.ClassContexts);
+      Assert.That (configuration.ClassContexts, Is.Empty);
     }
 
     [Test]

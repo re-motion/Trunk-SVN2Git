@@ -48,7 +48,7 @@ namespace Remotion.UnitTests
           new DoubleCheckedLockingContainer<SampleClass> (delegate { throw new NotImplementedException(); });
 
       container.Value = expected;
-      Assert.AreSame (expected, container.Value);
+      Assert.That (container.Value, Is.SameAs (expected));
     }
 
     [Test]
@@ -64,7 +64,7 @@ namespace Remotion.UnitTests
       SampleClass actual = container.Value;
 
       _mocks.VerifyAll();
-      Assert.AreSame (expected, actual);
+      Assert.That (actual, Is.SameAs (expected));
     }
 
     [Test]
@@ -88,7 +88,7 @@ namespace Remotion.UnitTests
       SampleClass actual = container.Value;
 
       _mocks.VerifyAll ();
-      Assert.AreSame (expected, actual);
+      Assert.That (actual, Is.SameAs (expected));
     }
 
     [Test]
@@ -101,7 +101,7 @@ namespace Remotion.UnitTests
 
       _mocks.ReplayAll ();
 
-      Assert.IsFalse (container.HasValue);
+      Assert.That (container.HasValue, Is.False);
 
       _mocks.VerifyAll ();
 
@@ -112,11 +112,11 @@ namespace Remotion.UnitTests
 
       SampleClass actual = container.Value;
 
-      Assert.IsTrue (container.HasValue);
+      Assert.That (container.HasValue, Is.True);
       _mocks.VerifyAll ();
 
       container.Value = null;
-      Assert.IsFalse (container.HasValue);
+      Assert.That (container.HasValue, Is.False);
     }
   }
 }

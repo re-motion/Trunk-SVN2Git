@@ -37,55 +37,55 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
     [Test]
     public void ScopeInitializedOnDemand ()
     {
-      Assert.IsFalse (MixedObjectInstantiationScope.HasCurrent);
+      Assert.That (MixedObjectInstantiationScope.HasCurrent, Is.False);
       new MixedObjectInstantiationScope ();
-      Assert.IsTrue (MixedObjectInstantiationScope.HasCurrent);
+      Assert.That (MixedObjectInstantiationScope.HasCurrent, Is.True);
     }
 
     [Test (Description = "Checks (in conjunction with ScopeInitializedOnDemand) whether this test fixture correctly resets the scope.")]
     public void CurrentIsReset ()
     {
-      Assert.IsFalse (MixedObjectInstantiationScope.HasCurrent);
+      Assert.That (MixedObjectInstantiationScope.HasCurrent, Is.False);
       new MixedObjectInstantiationScope ();
-      Assert.IsTrue (MixedObjectInstantiationScope.HasCurrent);
+      Assert.That (MixedObjectInstantiationScope.HasCurrent, Is.True);
     }
 
     [Test]
     public void DefaultMixinInstancesEmpty ()
     {
-      Assert.IsNotNull (MixedObjectInstantiationScope.Current.SuppliedMixinInstances);
-      Assert.AreEqual (0, MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length);
+      Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances, Is.Not.Null);
+      Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length, Is.EqualTo (0));
     }
 
     [Test]
     public void InstancesCanBeSuppliedInScopes ()
     {
-      Assert.AreEqual (0, MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length);
+      Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length, Is.EqualTo (0));
       using (new MixedObjectInstantiationScope ("1", "2"))
       {
-        Assert.AreEqual (2, MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length);
-        Assert.AreEqual ("1", MixedObjectInstantiationScope.Current.SuppliedMixinInstances[0]);
-        Assert.AreEqual ("2", MixedObjectInstantiationScope.Current.SuppliedMixinInstances[1]);
-        
+        Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length, Is.EqualTo (2));
+        Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances[0], Is.EqualTo ("1"));
+        Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances[1], Is.EqualTo ("2"));
+
         using (new MixedObjectInstantiationScope ("a"))
         {
-          Assert.AreEqual (1, MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length);
-          Assert.AreEqual ("a", MixedObjectInstantiationScope.Current.SuppliedMixinInstances[0]);
+          Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length, Is.EqualTo (1));
+          Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances[0], Is.EqualTo ("a"));
 
           using (new MixedObjectInstantiationScope ())
           {
-            Assert.AreEqual (0, MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length);
+            Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length, Is.EqualTo (0));
           }
 
-          Assert.AreEqual (1, MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length);
-          Assert.AreEqual ("a", MixedObjectInstantiationScope.Current.SuppliedMixinInstances[0]);
+          Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length, Is.EqualTo (1));
+          Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances[0], Is.EqualTo ("a"));
         }
 
-        Assert.AreEqual (2, MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length);
-        Assert.AreEqual ("1", MixedObjectInstantiationScope.Current.SuppliedMixinInstances[0]);
-        Assert.AreEqual ("2", MixedObjectInstantiationScope.Current.SuppliedMixinInstances[1]);
+        Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length, Is.EqualTo (2));
+        Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances[0], Is.EqualTo ("1"));
+        Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances[1], Is.EqualTo ("2"));
       }
-      Assert.AreEqual (0, MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length);
+      Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances.Length, Is.EqualTo (0));
     }
   }
 }

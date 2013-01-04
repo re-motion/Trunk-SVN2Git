@@ -27,179 +27,179 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitRootChangedSubChanged ()
     {
       Order obj = GetChangedThroughPropertyValue ();
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         ++obj.OrderNumber;
-        Assert.AreEqual (StateType.Changed, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Changed));
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
     public void CommitRootChangedSubUnchanged ()
     {
       Order obj = GetChangedThroughPropertyValue ();
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         obj.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
     public void CommitRootChangedSubNotLoaded ()
     {
       Order obj = GetChangedThroughPropertyValue ();
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
     public void CommitRootChangedSubDeleted ()
     {
       Order obj = GetChangedThroughPropertyValue ();
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         FullyDeleteOrder (obj);
-        Assert.AreEqual (StateType.Deleted, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
         ClientTransactionScope.CurrentTransaction.Commit();
-        Assert.IsTrue (obj.IsInvalid);
+        Assert.That (obj.IsInvalid, Is.True);
       }
-      Assert.AreEqual (StateType.Deleted, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
     }
 
     [Test]
     public void CommitRootUnchangedSubChanged ()
     {
       Order obj = GetUnchanged();
-      Assert.AreEqual (StateType.Unchanged, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         ++obj.OrderNumber;
-        Assert.AreEqual (StateType.Changed, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Changed));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
     public void CommitRootUnchangedSubUnchanged ()
     {
       Order obj = GetUnchanged();
-      Assert.AreEqual (StateType.Unchanged, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.AreEqual (StateType.Unchanged, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
     public void CommitRootUnchangedSubNotLoaded ()
     {
       Order obj = GetUnchanged ();
-      Assert.AreEqual (StateType.Unchanged, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
-      Assert.AreEqual (StateType.Unchanged, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
     public void CommitRootUnchangedSubDeleted ()
     {
       Order obj = GetUnchanged();
-      Assert.AreEqual (StateType.Unchanged, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         FullyDeleteOrder (obj);
-        Assert.AreEqual (StateType.Deleted, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.AreEqual (StateType.Deleted, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
     }
 
     [Test]
     public void CommitRootNewSubChanged ()
     {
       ClassWithAllDataTypes obj = GetNewUnchanged();
-      Assert.AreEqual (StateType.New, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.New));
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         ++obj.Int32Property;
-        Assert.AreEqual (StateType.Changed, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Changed));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.AreEqual (StateType.New, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
     public void CommitRootNewSubUnchanged ()
     {
       ClassWithAllDataTypes obj = GetNewUnchanged ();
-      Assert.AreEqual (StateType.New, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.New));
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.AreEqual (StateType.New, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
     public void CommitRootNewSubNotLoaded ()
     {
       ClassWithAllDataTypes obj = GetNewUnchanged ();
-      Assert.AreEqual (StateType.New, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.New));
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
-      Assert.AreEqual (StateType.New, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
     public void CommitRootNewSubDeleted ()
     {
       ClassWithAllDataTypes obj = GetNewUnchanged ();
-      Assert.AreEqual (StateType.New, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.New));
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj.Delete();
-        Assert.AreEqual (StateType.Deleted, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.IsTrue (obj.IsInvalid);
+      Assert.That (obj.IsInvalid, Is.True);
     }
 
     [Test]
     public void CommitRootDeletedSubDiscarded ()
     {
       Order obj = GetDeleted();
-      Assert.AreEqual (StateType.Deleted, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.IsTrue (obj.IsInvalid);
+        Assert.That (obj.IsInvalid, Is.True);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.AreEqual (StateType.Deleted, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
     }
 
     [Test]
@@ -208,10 +208,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order obj = GetInvalid();
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.IsTrue (obj.IsInvalid);
+        Assert.That (obj.IsInvalid, Is.True);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.IsTrue (obj.IsInvalid);
+      Assert.That (obj.IsInvalid, Is.True);
     }
 
     [Test]
@@ -221,10 +221,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetChangedThroughPropertyValue();
-        Assert.AreEqual (StateType.Changed, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Changed));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -234,11 +234,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetUnchanged();
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.IsNotNull (TestableClientTransaction.DataManager.DataContainers[obj.ID]);
-      Assert.AreEqual (StateType.Unchanged, obj.State);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[obj.ID], Is.Not.Null);
+      Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -248,10 +248,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetNewUnchanged();
-        Assert.AreEqual (StateType.New, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.New));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.AreEqual (StateType.New, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -263,32 +263,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         objectCreatedInSub = GetNewUnchanged ();
-        Assert.AreEqual (StateType.New, objectCreatedInSub.State);
+        Assert.That (objectCreatedInSub.State, Is.EqualTo (StateType.New));
 
         using (ClientTransactionScope.CurrentTransaction.CreateSubTransaction ().EnterDiscardingScope ())
         {
           objectCreatedInSubSub = GetNewUnchanged ();
 
-          Assert.AreEqual (StateType.NotLoadedYet, objectCreatedInSub.State);
-          Assert.AreEqual (StateType.New, objectCreatedInSubSub.State);
+          Assert.That (objectCreatedInSub.State, Is.EqualTo (StateType.NotLoadedYet));
+          Assert.That (objectCreatedInSubSub.State, Is.EqualTo (StateType.New));
 
           ClientTransactionScope.CurrentTransaction.Commit ();
 
-          Assert.AreEqual (StateType.NotLoadedYet, objectCreatedInSub.State);
-          Assert.AreEqual (StateType.Unchanged, objectCreatedInSubSub.State);
+          Assert.That (objectCreatedInSub.State, Is.EqualTo (StateType.NotLoadedYet));
+          Assert.That (objectCreatedInSubSub.State, Is.EqualTo (StateType.Unchanged));
         }
 
-        Assert.AreEqual (StateType.New, objectCreatedInSub.State);
-        Assert.AreEqual (StateType.New, objectCreatedInSubSub.State);
-        
+        Assert.That (objectCreatedInSub.State, Is.EqualTo (StateType.New));
+        Assert.That (objectCreatedInSubSub.State, Is.EqualTo (StateType.New));
+
         ClientTransactionScope.CurrentTransaction.Commit ();
 
-        Assert.AreEqual (StateType.Unchanged, objectCreatedInSub.State);
-        Assert.AreEqual (StateType.Unchanged, objectCreatedInSubSub.State);
+        Assert.That (objectCreatedInSub.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (objectCreatedInSubSub.State, Is.EqualTo (StateType.Unchanged));
       }
 
-      Assert.AreEqual (StateType.New, objectCreatedInSub.State);
-      Assert.AreEqual (StateType.New, objectCreatedInSubSub.State);
+      Assert.That (objectCreatedInSub.State, Is.EqualTo (StateType.New));
+      Assert.That (objectCreatedInSubSub.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -298,10 +298,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetDeleted();
-        Assert.AreEqual (StateType.Deleted, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.AreEqual (StateType.Deleted, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
     }
 
     [Test]
@@ -311,10 +311,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetInvalid();
-        Assert.IsTrue (obj.IsInvalid);
+        Assert.That (obj.IsInvalid, Is.True);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.IsNull (TestableClientTransaction.DataManager.DataContainers[obj.ID]);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[obj.ID], Is.Null);
     }
 
     [Test]

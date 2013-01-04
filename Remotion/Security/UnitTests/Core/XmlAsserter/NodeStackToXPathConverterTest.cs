@@ -57,7 +57,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       Stack<XmlNode> nodeStack = new Stack<XmlNode> ();
       nodeStack.Push (_document.ChildNodes[0]);
 
-      Assert.AreEqual ("/securityMetadata", _converter.GetXPathExpression (nodeStack));
+      Assert.That (_converter.GetXPathExpression (nodeStack), Is.EqualTo ("/securityMetadata"));
     }
 
     [Test]
@@ -67,7 +67,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       nodeStack.Push (_document.ChildNodes[0].ChildNodes[0]);
       nodeStack.Push (_document.ChildNodes[0]);
 
-      Assert.AreEqual ("/securityMetadata/classes", _converter.GetXPathExpression (nodeStack));
+      Assert.That (_converter.GetXPathExpression (nodeStack), Is.EqualTo ("/securityMetadata/classes"));
     }
 
     [Test]
@@ -78,7 +78,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       nodeStack.Push (_document.ChildNodes[0].ChildNodes[0]);
       nodeStack.Push (_document.ChildNodes[0]);
 
-      Assert.AreEqual ("/securityMetadata/classes/class[@id=\"Class1\"]", _converter.GetXPathExpression (nodeStack));
+      Assert.That (_converter.GetXPathExpression (nodeStack), Is.EqualTo ("/securityMetadata/classes/class[@id=\"Class1\"]"));
     }
 
     [Test]
@@ -89,7 +89,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       nodeStack.Push (_document.ChildNodes[0].ChildNodes[0]);
       nodeStack.Push (_document.ChildNodes[0]);
 
-      Assert.AreEqual ("/securityMetadata/classes/class[@id=\"7823-qwer-124\" and @name=\"Class2\"]", _converter.GetXPathExpression (nodeStack));
+      Assert.That (_converter.GetXPathExpression (nodeStack), Is.EqualTo ("/securityMetadata/classes/class[@id=\"7823-qwer-124\" and @name=\"Class2\"]"));
     }
 
     [Test]
@@ -101,7 +101,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       nodeStack.Push (_document.ChildNodes[0].ChildNodes[0]);
       nodeStack.Push (_document.ChildNodes[0]);
 
-      Assert.AreEqual ("/t:securityMetadata/t:classes", _converter.GetXPathExpression (nodeStack));
+      Assert.That (_converter.GetXPathExpression (nodeStack), Is.EqualTo ("/t:securityMetadata/t:classes"));
     }
 
     [Test]
@@ -116,7 +116,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       nodeStack.Push (_document.ChildNodes[0].ChildNodes[1]);
       nodeStack.Push (_document.ChildNodes[0]);
 
-      Assert.AreEqual ("/t:securityMetadata/default:classes/default:class[@id=\"Class1\"]/default:entity", _converter.GetXPathExpression (nodeStack));
+      Assert.That (_converter.GetXPathExpression (nodeStack), Is.EqualTo ("/t:securityMetadata/default:classes/default:class[@id=\"Class1\"]/default:entity"));
     }
   }
 }

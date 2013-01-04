@@ -53,17 +53,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void RelationEndPointIsFlattenedSerializable ()
     {
       RelationEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.IsNotNull (deserializedEndPoint);
-      Assert.AreNotSame (_endPoint, deserializedEndPoint);
+      Assert.That (deserializedEndPoint, Is.Not.Null);
+      Assert.That (deserializedEndPoint, Is.Not.SameAs (_endPoint));
     }
 
     [Test]
     public void RelationEndPoint_Content ()
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.IsNotNull (deserializedEndPoint.ClientTransaction);
-      Assert.AreSame (_endPoint.Definition, deserializedEndPoint.Definition);
-      Assert.AreEqual (_endPoint.ID, deserializedEndPoint.ID);
+      Assert.That (deserializedEndPoint.ClientTransaction, Is.Not.Null);
+      Assert.That (deserializedEndPoint.Definition, Is.SameAs (_endPoint.Definition));
+      Assert.That (deserializedEndPoint.ID, Is.EqualTo (_endPoint.ID));
     }
   }
 }

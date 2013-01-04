@@ -48,12 +48,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       newSupervisor.Subordinates.Insert (0, subordinate);
 
-      Assert.AreEqual (countBeforeInsert + 1, newSupervisor.Subordinates.Count);
-      Assert.AreEqual (0, newSupervisor.Subordinates.IndexOf (subordinate));
-      Assert.AreSame (newSupervisor, subordinate.Supervisor);
+      Assert.That (newSupervisor.Subordinates.Count, Is.EqualTo (countBeforeInsert + 1));
+      Assert.That (newSupervisor.Subordinates.IndexOf (subordinate), Is.EqualTo (0));
+      Assert.That (subordinate.Supervisor, Is.SameAs (newSupervisor));
 
       Employee oldSupervisor = Employee.GetObject (DomainObjectIDs.Employee2);
-      Assert.IsFalse (oldSupervisor.Subordinates.ContainsObject (subordinate));
+      Assert.That (oldSupervisor.Subordinates.ContainsObject (subordinate), Is.False);
     }
   }
 }

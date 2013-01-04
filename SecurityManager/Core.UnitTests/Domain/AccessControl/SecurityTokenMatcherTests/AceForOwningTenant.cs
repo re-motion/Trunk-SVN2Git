@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityToken token = TestHelper.CreateTokenWithOwningTenant (principal, owningTenant);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsTrue (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.True);
     }
 
     [Test]
@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityToken token = new SecurityToken (new Principal (_companyHelper.CompanyTenant, null, new Role[0]), _companyHelper.CompanyTenant, null, null, new AbstractRoleDefinition[0]);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsTrue (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.True);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityToken token = TestHelper.CreateTokenWithOwningTenant (principal, owningTenant);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
 
     [Test]
@@ -102,7 +102,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
 
     [Test]
@@ -112,7 +112,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityToken token = TestHelper.CreateTokenWithOwningTenant (principal, null);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
 
     [Test]
@@ -121,7 +121,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityToken token = new SecurityToken (new Principal (null, null, new Role[0]), _companyHelper.CompanyTenant, null, null, new AbstractRoleDefinition[0]);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
 
     [Test]
@@ -130,7 +130,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       SecurityToken token = new SecurityToken (new Principal (TestHelper.CreateTenant ("tenant"), null, new Role[0]), _companyHelper.CompanyTenant, null, null, new AbstractRoleDefinition[0]);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.That (matcher.MatchesToken (token), Is.False);
     }
   }
 }

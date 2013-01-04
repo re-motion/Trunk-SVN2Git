@@ -32,11 +32,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
       var bt3 = (BaseType3) Activator.CreateInstance (generatedType);
-      Assert.IsNotNull (bt3);
-      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3));
-      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Target);
-      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Next);
-      Assert.AreSame (bt3, Mixin.Get<BT3Mixin1> (bt3).Target);
+      Assert.That (bt3, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3), Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Target, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Next, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Target, Is.SameAs (bt3));
     }
 
     [Test]
@@ -56,12 +56,12 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       Type evenDerivedType = typeBuilder.CreateType ();
 
       var bt3 = (BaseType3) Activator.CreateInstance (evenDerivedType);
-      Assert.AreSame (generatedType, bt3.GetType ().BaseType);
-      Assert.IsNotNull (bt3);
-      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3));
-      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Target);
-      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Next);
-      Assert.AreSame (bt3, Mixin.Get<BT3Mixin1> (bt3).Target);
+      Assert.That (bt3.GetType ().BaseType, Is.SameAs (generatedType));
+      Assert.That (bt3, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3), Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Target, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Next, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Target, Is.SameAs (bt3));
     }
 
     [Test]
@@ -73,10 +73,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       using (new MixedObjectInstantiationScope (suppliedMixinInstance))
       {
         var bt3 = (BaseType3) Activator.CreateInstance (generatedType);
-        Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3));
-        Assert.AreSame (suppliedMixinInstance, Mixin.Get<BT3Mixin1> (bt3));
-        Assert.AreSame (bt3, suppliedMixinInstance.Target);
-        Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Next);
+        Assert.That (Mixin.Get<BT3Mixin1> (bt3), Is.Not.Null);
+        Assert.That (Mixin.Get<BT3Mixin1> (bt3), Is.SameAs (suppliedMixinInstance));
+        Assert.That (suppliedMixinInstance.Target, Is.SameAs (bt3));
+        Assert.That (Mixin.Get<BT3Mixin1> (bt3).Next, Is.Not.Null);
       }
     }
 

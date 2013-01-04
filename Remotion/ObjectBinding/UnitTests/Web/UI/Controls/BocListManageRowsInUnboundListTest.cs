@@ -78,16 +78,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       int index = _bocList.AddRow (_newValues[0]);
 
-      Assert.IsFalse (object.ReferenceEquals (_values, _bocList.Value));
-      Assert.AreEqual (6, _bocList.Value.Count);
-      Assert.AreSame (_values[0], _bocList.Value[0]);
-      Assert.AreSame (_values[1], _bocList.Value[1]);
-      Assert.AreSame (_values[2], _bocList.Value[2]);
-      Assert.AreSame (_values[3], _bocList.Value[3]);
-      Assert.AreSame (_values[4], _bocList.Value[4]);
+      Assert.That (ReferenceEquals (_values, _bocList.Value), Is.False);
+      Assert.That (_bocList.Value.Count, Is.EqualTo (6));
+      Assert.That (_bocList.Value[0], Is.SameAs (_values[0]));
+      Assert.That (_bocList.Value[1], Is.SameAs (_values[1]));
+      Assert.That (_bocList.Value[2], Is.SameAs (_values[2]));
+      Assert.That (_bocList.Value[3], Is.SameAs (_values[3]));
+      Assert.That (_bocList.Value[4], Is.SameAs (_values[4]));
 
-      Assert.AreEqual (5, index);
-      Assert.AreSame (_newValues[0], _bocList.Value[5]);
+      Assert.That (index, Is.EqualTo (5));
+      Assert.That (_bocList.Value[5], Is.SameAs (_newValues[0]));
     }
 
     [Test]
@@ -103,16 +103,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocList.AddRows (_newValues);
 
-      Assert.IsFalse (object.ReferenceEquals (_values, _bocList.Value));
-      Assert.AreEqual (7, _bocList.Value.Count);
-      Assert.AreSame (_values[0], _bocList.Value[0]);
-      Assert.AreSame (_values[1], _bocList.Value[1]);
-      Assert.AreSame (_values[2], _bocList.Value[2]);
-      Assert.AreSame (_values[3], _bocList.Value[3]);
-      Assert.AreSame (_values[4], _bocList.Value[4]);
+      Assert.That (ReferenceEquals (_values, _bocList.Value), Is.False);
+      Assert.That (_bocList.Value.Count, Is.EqualTo (7));
+      Assert.That (_bocList.Value[0], Is.SameAs (_values[0]));
+      Assert.That (_bocList.Value[1], Is.SameAs (_values[1]));
+      Assert.That (_bocList.Value[2], Is.SameAs (_values[2]));
+      Assert.That (_bocList.Value[3], Is.SameAs (_values[3]));
+      Assert.That (_bocList.Value[4], Is.SameAs (_values[4]));
 
-      Assert.AreSame (_newValues[0], _bocList.Value[5]);
-      Assert.AreSame (_newValues[1], _bocList.Value[6]);
+      Assert.That (_bocList.Value[5], Is.SameAs (_newValues[0]));
+      Assert.That (_bocList.Value[6], Is.SameAs (_newValues[1]));
     }
 
     [Test]
@@ -128,12 +128,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocList.RemoveRow (2);
 
-      Assert.IsFalse (object.ReferenceEquals (_values, _bocList.Value));
-      Assert.AreEqual (4, _bocList.Value.Count);
-      Assert.AreSame (_values[0], _bocList.Value[0]);
-      Assert.AreSame (_values[1], _bocList.Value[1]);
-      Assert.AreSame (_values[3], _bocList.Value[2]);
-      Assert.AreSame (_values[4], _bocList.Value[3]);
+      Assert.That (ReferenceEquals (_values, _bocList.Value), Is.False);
+      Assert.That (_bocList.Value.Count, Is.EqualTo (4));
+      Assert.That (_bocList.Value[0], Is.SameAs (_values[0]));
+      Assert.That (_bocList.Value[1], Is.SameAs (_values[1]));
+      Assert.That (_bocList.Value[2], Is.SameAs (_values[3]));
+      Assert.That (_bocList.Value[3], Is.SameAs (_values[4]));
     }
 
     [Test]
@@ -141,12 +141,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocList.RemoveRow (_values[2]);
 
-      Assert.IsFalse (object.ReferenceEquals (_values, _bocList.Value));
-      Assert.AreEqual (4, _bocList.Value.Count);
-      Assert.AreSame (_values[0], _bocList.Value[0]);
-      Assert.AreSame (_values[1], _bocList.Value[1]);
-      Assert.AreSame (_values[3], _bocList.Value[2]);
-      Assert.AreSame (_values[4], _bocList.Value[3]);
+      Assert.That (ReferenceEquals (_values, _bocList.Value), Is.False);
+      Assert.That (_bocList.Value.Count, Is.EqualTo (4));
+      Assert.That (_bocList.Value[0], Is.SameAs (_values[0]));
+      Assert.That (_bocList.Value[1], Is.SameAs (_values[1]));
+      Assert.That (_bocList.Value[2], Is.SameAs (_values[3]));
+      Assert.That (_bocList.Value[3], Is.SameAs (_values[4]));
     }
 
     [Test]
@@ -154,13 +154,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocList.RemoveRows (new IBusinessObject[0]);
 
-      Assert.IsFalse (object.ReferenceEquals (_values, _bocList.Value));
-      Assert.AreEqual (5, _bocList.Value.Count);
-      Assert.AreSame (_values[0], _bocList.Value[0]);
-      Assert.AreSame (_values[1], _bocList.Value[1]);
-      Assert.AreSame (_values[2], _bocList.Value[2]);
-      Assert.AreSame (_values[3], _bocList.Value[3]);
-      Assert.AreSame (_values[4], _bocList.Value[4]);
+      Assert.That (ReferenceEquals (_values, _bocList.Value), Is.False);
+      Assert.That (_bocList.Value.Count, Is.EqualTo (5));
+      Assert.That (_bocList.Value[0], Is.SameAs (_values[0]));
+      Assert.That (_bocList.Value[1], Is.SameAs (_values[1]));
+      Assert.That (_bocList.Value[2], Is.SameAs (_values[2]));
+      Assert.That (_bocList.Value[3], Is.SameAs (_values[3]));
+      Assert.That (_bocList.Value[4], Is.SameAs (_values[4]));
     }
 
     [Test]
@@ -168,12 +168,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocList.RemoveRows (new IBusinessObject[] {_values[2]});
 
-      Assert.IsFalse (object.ReferenceEquals (_values, _bocList.Value));
-      Assert.AreEqual (4, _bocList.Value.Count);
-      Assert.AreSame (_values[0], _bocList.Value[0]);
-      Assert.AreSame (_values[1], _bocList.Value[1]);
-      Assert.AreSame (_values[3], _bocList.Value[2]);
-      Assert.AreSame (_values[4], _bocList.Value[3]);
+      Assert.That (ReferenceEquals (_values, _bocList.Value), Is.False);
+      Assert.That (_bocList.Value.Count, Is.EqualTo (4));
+      Assert.That (_bocList.Value[0], Is.SameAs (_values[0]));
+      Assert.That (_bocList.Value[1], Is.SameAs (_values[1]));
+      Assert.That (_bocList.Value[2], Is.SameAs (_values[3]));
+      Assert.That (_bocList.Value[3], Is.SameAs (_values[4]));
     }
 
     [Test]
@@ -181,11 +181,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocList.RemoveRows (new IBusinessObject[] {_values[1], _values[3]});
 
-      Assert.IsFalse (object.ReferenceEquals (_values, _bocList.Value));
-      Assert.AreEqual (3, _bocList.Value.Count);
-      Assert.AreSame (_values[0], _bocList.Value[0]);
-      Assert.AreSame (_values[2], _bocList.Value[1]);
-      Assert.AreSame (_values[4], _bocList.Value[2]);
+      Assert.That (ReferenceEquals (_values, _bocList.Value), Is.False);
+      Assert.That (_bocList.Value.Count, Is.EqualTo (3));
+      Assert.That (_bocList.Value[0], Is.SameAs (_values[0]));
+      Assert.That (_bocList.Value[1], Is.SameAs (_values[2]));
+      Assert.That (_bocList.Value[2], Is.SameAs (_values[4]));
     }
   }
 }

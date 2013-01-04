@@ -39,13 +39,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NoAttribute",
-          actual.PropertyName);
-      Assert.AreSame (typeof (TestExtensibleEnum), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (null, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NoAttribute"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (TestExtensibleEnum)));
+      Assert.That (actual.IsNullable, Is.True);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (null));
     }
 
     [Test]
@@ -60,13 +58,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NullableFromAttribute",
-          actual.PropertyName);
-      Assert.AreSame (typeof (TestExtensibleEnum), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (null, actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NullableFromAttribute"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (TestExtensibleEnum)));
+      Assert.That (actual.IsNullable, Is.True);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (null));
     }
 
     [Test]
@@ -81,13 +77,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NotNullable",
-          actual.PropertyName);
-      Assert.AreSame (typeof (TestExtensibleEnum), actual.PropertyType);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (TestExtensibleEnum.Values.Value1(), actual.DefaultValue);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NotNullable"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (TestExtensibleEnum)));
+      Assert.That (actual.IsNullable, Is.False);
+      Assert.That (actual.MaxLength, Is.Null);
+      Assert.That (actual.DefaultValue, Is.EqualTo (TestExtensibleEnum.Values.Value1()));
     }
 
     // ReSharper disable UnusedMember.Local

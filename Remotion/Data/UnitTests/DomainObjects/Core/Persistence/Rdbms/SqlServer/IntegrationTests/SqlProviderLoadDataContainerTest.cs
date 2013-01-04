@@ -36,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       DataContainer container = Provider.LoadDataContainer (id).LocatedObject;
 
-      Assert.IsNotNull (container);
-      Assert.AreEqual (container.ID, id);
+      Assert.That (container, Is.Not.Null);
+      Assert.That (id, Is.EqualTo (container.ID));
     }
 
     [Test]
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       }
       catch (RdbmsProviderException e)
       {
-        Assert.AreEqual (typeof (SqlException), e.InnerException.GetType ());
+        Assert.That (e.InnerException.GetType (), Is.EqualTo (typeof (SqlException)));
         throw;
       }
     }
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       }
       catch (RdbmsProviderException e)
       {
-        Assert.AreEqual (typeof (SqlException), e.InnerException.GetType ());
+        Assert.That (e.InnerException.GetType (), Is.EqualTo (typeof (SqlException)));
         throw;
       }
     }
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       ObjectID id = new ObjectID (typeof (ClassWithAllDataTypes), new Guid ("{E067A627-BA3F-4ee5-8B61-1F46DC28DFC3}"));
 
-      Assert.IsNull (Provider.LoadDataContainer (id).LocatedObject);
+      Assert.That (Provider.LoadDataContainer (id).LocatedObject, Is.Null);
     }
 
     [Test]
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DataContainer orderTicketContainer = Provider.LoadDataContainer (DomainObjectIDs.OrderTicket1).LocatedObject;
       var propertyDefinition = GetPropertyDefinition (typeof (OrderTicket), "Order");
-      Assert.AreEqual (DomainObjectIDs.Order1, orderTicketContainer.GetValue (propertyDefinition));
+      Assert.That (orderTicketContainer.GetValue (propertyDefinition), Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
@@ -181,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DataContainer ceoContainer = Provider.LoadDataContainer (DomainObjectIDs.Ceo7).LocatedObject;
       var propertyDefinition = GetPropertyDefinition (typeof (Ceo), "Company");
-      Assert.AreEqual (DomainObjectIDs.Partner2, ceoContainer.GetValue (propertyDefinition));
+      Assert.That (ceoContainer.GetValue (propertyDefinition), Is.EqualTo (DomainObjectIDs.Partner2));
     }
 
     [Test]

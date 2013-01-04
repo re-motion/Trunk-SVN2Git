@@ -175,9 +175,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var actual = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithDifferentProperties));
 
       _mappingObjectFactoryMock.VerifyAllExpectations();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (2, _classDefinitions.Count);
-      Assert.AreSame (actual, _fakeClassDefinition);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (_classDefinitions.Count, Is.EqualTo (2));
+      Assert.That (_fakeClassDefinition, Is.SameAs (actual));
     }
 
     [Test]
@@ -191,10 +191,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var actual = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (Order));
 
       _mappingObjectFactoryMock.VerifyAllExpectations();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, _classDefinitions.Count);
-      Assert.AreSame (actual, _classDefinitions[typeof (Order)]);
-      Assert.AreSame (existing, actual);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (_classDefinitions.Count, Is.EqualTo (1));
+      Assert.That (_classDefinitions[typeof (Order)], Is.SameAs (actual));
+      Assert.That (actual, Is.SameAs (existing));
     }
   }
 }

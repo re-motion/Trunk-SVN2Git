@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           null,
           DomainObjectIDs.Customer1).ToList();
 
-      Assert.IsNotNull (collection);
+      Assert.That (collection, Is.Not.Null);
       Assert.AreEqual (2, collection.Count, "DataContainerCollection.Count");
       Assert.IsNotNull (collection.SingleOrDefault(o=>o.ID==DomainObjectIDs.Order1), "ID of Order with OrdnerNo 1");
       Assert.IsNotNull (collection.SingleOrDefault(o=>o.ID==DomainObjectIDs.OrderWithoutOrderItem), "ID of Order with OrdnerNo 2");
@@ -50,8 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           null,
           DomainObjectIDs.Person6).ToList();
 
-      Assert.AreEqual (1, collection.Count);
-      Assert.AreEqual (DomainObjectIDs.Distributor2, collection[0].ID);
+      Assert.That (collection.Count, Is.EqualTo (1));
+      Assert.That (collection[0].ID, Is.EqualTo (DomainObjectIDs.Distributor2));
     }
 
     [Test]
@@ -66,9 +66,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           sortExpression,
           DomainObjectIDs.Customer1).ToList();
 
-      Assert.AreEqual (2, orderContainers.Count);
-      Assert.AreEqual (DomainObjectIDs.Order1, orderContainers[0].ID);
-      Assert.AreEqual (DomainObjectIDs.OrderWithoutOrderItem, orderContainers[1].ID);
+      Assert.That (orderContainers.Count, Is.EqualTo (2));
+      Assert.That (orderContainers[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (orderContainers[1].ID, Is.EqualTo (DomainObjectIDs.OrderWithoutOrderItem));
     }
 
     [Test]
@@ -80,8 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           (RelationEndPointDefinition) relationEndPointDefinition,
           null,
           DomainObjectIDs.Official1);
-      Assert.IsNotNull (orderContainers);
-      Assert.AreEqual (5, orderContainers.Count());
+      Assert.That (orderContainers, Is.Not.Null);
+      Assert.That (orderContainers.Count(), Is.EqualTo (5));
     }
 
     [Test]
@@ -93,8 +93,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           (RelationEndPointDefinition) relationEndPointDefinition,
           null,
           DomainObjectIDs.Employee1);
-      Assert.IsNotNull (result);
-      Assert.AreEqual (0, result.Count());
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.Count(), Is.EqualTo (0));
     }
   }
 }

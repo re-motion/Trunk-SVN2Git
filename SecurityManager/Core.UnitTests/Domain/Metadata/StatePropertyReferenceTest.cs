@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
         ClientTransaction.Current.Commit();
 
-        Assert.IsTrue (commitOnClassWasCalled);
+        Assert.That (commitOnClassWasCalled, Is.True);
       }
     }
   }

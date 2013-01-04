@@ -76,33 +76,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void Add ()
     {
-      Assert.AreEqual (0, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (0));
 
       _collection.Add (_extension1);
 
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
     }
 
     [Test]
     public void Insert ()
     {
       _collection.Add (_extension1);
-      Assert.AreEqual (1, _collection.Count);
-      Assert.AreSame (_extension1, _collection[0]);
+      Assert.That (_collection.Count, Is.EqualTo (1));
+      Assert.That (_collection[0], Is.SameAs (_extension1));
 
       _collection.Insert (0, _extension2);
-      Assert.AreEqual (2, _collection.Count);
-      Assert.AreSame (_extension2, _collection[0]);
-      Assert.AreSame (_extension1, _collection[1]);
+      Assert.That (_collection.Count, Is.EqualTo (2));
+      Assert.That (_collection[0], Is.SameAs (_extension2));
+      Assert.That (_collection[1], Is.SameAs (_extension1));
     }
 
     [Test]
     public void Remove ()
     {
       _collection.Add (_extension1);
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
       _collection.Remove (_extension1.Key);
-      Assert.AreEqual (0, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (0));
       _collection.Remove (_extension1.Key);
       //expectation: no exception
     }
@@ -112,8 +112,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       _collection.Add (_extension1);
       _collection.Add (_extension2);
-      Assert.AreSame (_extension1, _collection[0]);
-      Assert.AreSame (_extension2, _collection[1]);
+      Assert.That (_collection[0], Is.SameAs (_extension1));
+      Assert.That (_collection[1], Is.SameAs (_extension2));
     }
 
     [Test]
@@ -121,8 +121,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       _collection.Add (_extension1);
       _collection.Add (_extension2);
-      Assert.AreSame (_extension1, _collection[_extension1.Key]);
-      Assert.AreSame (_extension2, _collection[_extension2.Key]);
+      Assert.That (_collection[_extension1.Key], Is.SameAs (_extension1));
+      Assert.That (_collection[_extension2.Key], Is.SameAs (_extension2));
     }
 
     [Test]
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       _collection.Add (_extension1);
 
-      Assert.AreEqual (0, _collection.IndexOf (_extension1.Key));
+      Assert.That (_collection.IndexOf (_extension1.Key), Is.EqualTo (0));
     }
 
     [Test]

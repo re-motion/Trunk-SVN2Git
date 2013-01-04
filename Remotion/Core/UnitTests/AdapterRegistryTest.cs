@@ -37,13 +37,13 @@ namespace Remotion.UnitTests
     [Test]
     public void GetInstance ()
     {
-      Assert.IsNotNull (AdapterRegistry.Instance);
+      Assert.That (AdapterRegistry.Instance, Is.Not.Null);
     }
 
     [Test]
     public void GetInstance_SameTwice ()
     {
-      Assert.AreSame (AdapterRegistry.Instance, AdapterRegistry.Instance);
+      Assert.That (AdapterRegistry.Instance, Is.SameAs (AdapterRegistry.Instance));
     }
 
     [Test]
@@ -54,13 +54,13 @@ namespace Remotion.UnitTests
 
       _adapterRegistry.SetAdapter (typeof (IAdapter), exptectedAdapter);
 
-      Assert.AreSame (exptectedAdapter, _adapterRegistry.GetAdapter<IAdapter> ());
+      Assert.That (_adapterRegistry.GetAdapter<IAdapter> (), Is.SameAs (exptectedAdapter));
     }
 
     [Test]
     public void GetProviderNotSet ()
     {
-      Assert.IsNull (_adapterRegistry.GetAdapter<IAdapter> ());
+      Assert.That (_adapterRegistry.GetAdapter<IAdapter> (), Is.Null);
     }
 
     [Test]
@@ -70,10 +70,10 @@ namespace Remotion.UnitTests
       _mocks.ReplayAll ();
 
       _adapterRegistry.SetAdapter (typeof (IAdapter), adapter);
-      Assert.IsNotNull (_adapterRegistry.GetAdapter<IAdapter> ());
+      Assert.That (_adapterRegistry.GetAdapter<IAdapter> (), Is.Not.Null);
 
       _adapterRegistry.SetAdapter (typeof (IAdapter), null);
-      Assert.IsNull (_adapterRegistry.GetAdapter<IAdapter> ());
+      Assert.That (_adapterRegistry.GetAdapter<IAdapter> (), Is.Null);
     }
   }
 }

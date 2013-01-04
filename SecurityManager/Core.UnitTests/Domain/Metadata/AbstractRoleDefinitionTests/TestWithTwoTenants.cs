@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.AbstractRoleDefinit
     {
       var result = AbstractRoleDefinition.Find (new EnumWrapper[0]);
 
-      Assert.IsEmpty (result);
+      Assert.That (result, Is.Empty);
     }
 
     [Test]
@@ -58,8 +58,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.AbstractRoleDefinit
       var abstractRoles = new[] { EnumWrapper.Get (ProjectRoles.QualityManager) };
       var result = AbstractRoleDefinition.Find (abstractRoles);
 
-      Assert.AreEqual (1, result.Count);
-      Assert.AreEqual (abstractRoles[0].Name, result[0].Name);
+      Assert.That (result.Count, Is.EqualTo (1));
+      Assert.That (result[0].Name, Is.EqualTo (abstractRoles[0].Name));
     }
 
     [Test]
@@ -68,9 +68,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.AbstractRoleDefinit
       var abstractRoles = new[] { EnumWrapper.Get (ProjectRoles.QualityManager), EnumWrapper.Get (ProjectRoles.Developer) };
       var result = AbstractRoleDefinition.Find (abstractRoles);
 
-      Assert.AreEqual (2, result.Count);
-      Assert.AreEqual (abstractRoles[1].Name, result[0].Name);
-      Assert.AreEqual (abstractRoles[0].Name, result[1].Name);
+      Assert.That (result.Count, Is.EqualTo (2));
+      Assert.That (result[0].Name, Is.EqualTo (abstractRoles[1].Name));
+      Assert.That (result[1].Name, Is.EqualTo (abstractRoles[0].Name));
     }
 
     [Test]
@@ -78,7 +78,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.AbstractRoleDefinit
     {
       var result = AbstractRoleDefinition.FindAll ();
 
-      Assert.AreEqual (2, result.Count);
+      Assert.That (result.Count, Is.EqualTo (2));
       for (int i = 0; i < result.Count; i++)
       {
         AbstractRoleDefinition abstractRole = result[i];

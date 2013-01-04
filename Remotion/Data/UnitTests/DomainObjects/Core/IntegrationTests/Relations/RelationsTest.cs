@@ -34,18 +34,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
       orderTicket.Order = null;
 
-      Assert.IsTrue (orderEventReceiver.HasRelationChangingEventBeenCalled);
-      Assert.IsTrue (orderTicketEventReceiver.HasRelationChangingEventBeenCalled);
-      Assert.AreSame (
-          orderTicket, orderEventReceiver.GetChangingRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
-      Assert.AreSame (
-          order, orderTicketEventReceiver.GetChangingRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      Assert.That (orderEventReceiver.HasRelationChangingEventBeenCalled, Is.True);
+      Assert.That (orderTicketEventReceiver.HasRelationChangingEventBeenCalled, Is.True);
+      Assert.That (orderEventReceiver.GetChangingRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"), Is.SameAs (orderTicket));
+      Assert.That (orderTicketEventReceiver.GetChangingRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"), Is.SameAs (order));
 
-      Assert.IsTrue (orderEventReceiver.HasRelationChangedEventBeenCalled);
-      Assert.IsTrue (orderTicketEventReceiver.HasRelationChangedEventBeenCalled);
-      Assert.AreSame (null, orderEventReceiver.GetChangedRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
-      Assert.AreSame (
-          null, orderTicketEventReceiver.GetChangedRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      Assert.That (orderEventReceiver.HasRelationChangedEventBeenCalled, Is.True);
+      Assert.That (orderTicketEventReceiver.HasRelationChangedEventBeenCalled, Is.True);
+      Assert.That (orderEventReceiver.GetChangedRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"), Is.SameAs (null));
+      Assert.That (orderTicketEventReceiver.GetChangedRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"), Is.SameAs (null));
     }
   }
 }

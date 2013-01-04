@@ -31,20 +31,20 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
 
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType31)));
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType32)));
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType33)));
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType2)));
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType31)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType32)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType33)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType2)), Is.False);
 
       CheckAllRequiringEntities (
           targetClass.RequiredTargetCallTypes[typeof (IBaseType31)], 
           targetClass.Mixins[typeof (BT3Mixin1)], targetClass.GetMixinByConfiguredType (typeof (BT3Mixin6<,>)));
 
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes[typeof (IBaseType31)].IsEmptyInterface);
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes[typeof (IBaseType31)].IsAggregatorInterface);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IBaseType31)].IsEmptyInterface, Is.False);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IBaseType31)].IsAggregatorInterface, Is.False);
 
       targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (Bt3Mixin7TargetCall));
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3BT3Mixin4)));
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3BT3Mixin4)), Is.True);
 
       CheckAllRequiringEntities (
           targetClass.RequiredTargetCallTypes[typeof (ICBaseType3BT3Mixin4)],
@@ -59,9 +59,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
 
-      Assert.IsFalse (targetClass.GetMixinByConfiguredType (typeof (BT3Mixin3<,>)).TargetCallDependencies.ContainsKey (typeof (IBaseType31)));
-      Assert.IsFalse (targetClass.GetMixinByConfiguredType (typeof (BT3Mixin3<,>)).TargetCallDependencies.ContainsKey (typeof (IBaseType33)));
-      Assert.IsTrue (targetClass.GetMixinByConfiguredType (typeof (BT3Mixin3<,>)).TargetCallDependencies.ContainsKey (typeof (BaseType3)));
+      Assert.That (targetClass.GetMixinByConfiguredType (typeof (BT3Mixin3<,>)).TargetCallDependencies.ContainsKey (typeof (IBaseType31)), Is.False);
+      Assert.That (targetClass.GetMixinByConfiguredType (typeof (BT3Mixin3<,>)).TargetCallDependencies.ContainsKey (typeof (IBaseType33)), Is.False);
+      Assert.That (targetClass.GetMixinByConfiguredType (typeof (BT3Mixin3<,>)).TargetCallDependencies.ContainsKey (typeof (BaseType3)), Is.True);
     }
 
     [Test]
@@ -101,10 +101,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       List<Type> requiredNextCallTypes = new List<RequiredNextCallTypeDefinition> (targetClass.RequiredNextCallTypes).ConvertAll<Type>
           (delegate (RequiredNextCallTypeDefinition def) { return def.Type; });
-      Assert.Contains (typeof (IBaseType31), requiredNextCallTypes);
-      Assert.Contains (typeof (IBaseType33), requiredNextCallTypes);
-      Assert.Contains (typeof (IBaseType34), requiredNextCallTypes);
-      Assert.IsFalse (requiredNextCallTypes.Contains (typeof (IBaseType35)));
+      Assert.That (requiredNextCallTypes, Has.Member (typeof (IBaseType31)));
+      Assert.That (requiredNextCallTypes, Has.Member (typeof (IBaseType33)));
+      Assert.That (requiredNextCallTypes, Has.Member (typeof (IBaseType34)));
+      Assert.That (requiredNextCallTypes.Contains (typeof (IBaseType35)), Is.False);
 
       CheckSomeRequiringMixin (
           targetClass.RequiredNextCallTypes[typeof (IBaseType33)],
@@ -117,46 +117,46 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
 
       RequiredNextCallTypeDefinition req1 = targetClass.RequiredNextCallTypes[typeof (IBaseType31)];
-      Assert.AreEqual (typeof (IBaseType31).GetMembers().Length, req1.Methods.Count);
+      Assert.That (req1.Methods.Count, Is.EqualTo (typeof (IBaseType31).GetMembers().Length));
 
       RequiredMethodDefinition member1 = req1.Methods[typeof (IBaseType31).GetMethod ("IfcMethod")];
-      Assert.AreEqual ("Remotion.Mixins.UnitTests.Core.TestDomain.IBaseType31.IfcMethod", member1.FullName);
-      Assert.AreSame (req1, member1.DeclaringRequirement);
-      Assert.AreSame (req1, member1.Parent);
+      Assert.That (member1.FullName, Is.EqualTo ("Remotion.Mixins.UnitTests.Core.TestDomain.IBaseType31.IfcMethod"));
+      Assert.That (member1.DeclaringRequirement, Is.SameAs (req1));
+      Assert.That (member1.Parent, Is.SameAs (req1));
 
-      Assert.AreEqual (typeof (IBaseType31).GetMethod ("IfcMethod"), member1.InterfaceMethod);
-      Assert.AreEqual (targetClass.Methods[typeof (BaseType3).GetMethod ("IfcMethod")], member1.ImplementingMethod);
+      Assert.That (member1.InterfaceMethod, Is.EqualTo (typeof (IBaseType31).GetMethod ("IfcMethod")));
+      Assert.That (member1.ImplementingMethod, Is.EqualTo (targetClass.Methods[typeof (BaseType3).GetMethod ("IfcMethod")]));
 
       RequiredNextCallTypeDefinition req2 = targetClass.RequiredNextCallTypes[typeof (IBT3Mixin4)];
-      Assert.AreEqual (typeof (IBT3Mixin4).GetMembers().Length, req2.Methods.Count);
+      Assert.That (req2.Methods.Count, Is.EqualTo (typeof (IBT3Mixin4).GetMembers().Length));
 
       RequiredMethodDefinition member2 = req2.Methods[typeof (IBT3Mixin4).GetMethod ("Foo")];
-      Assert.AreEqual ("Remotion.Mixins.UnitTests.Core.TestDomain.IBT3Mixin4.Foo", member2.FullName);
-      Assert.AreSame (req2, member2.DeclaringRequirement);
-      Assert.AreSame (req2, member2.Parent);
+      Assert.That (member2.FullName, Is.EqualTo ("Remotion.Mixins.UnitTests.Core.TestDomain.IBT3Mixin4.Foo"));
+      Assert.That (member2.DeclaringRequirement, Is.SameAs (req2));
+      Assert.That (member2.Parent, Is.SameAs (req2));
 
-      Assert.AreEqual (typeof (IBT3Mixin4).GetMethod ("Foo"), member2.InterfaceMethod);
-      Assert.AreEqual (targetClass.Mixins[typeof (BT3Mixin4)].Methods[typeof (BT3Mixin4).GetMethod ("Foo")], member2.ImplementingMethod);
+      Assert.That (member2.InterfaceMethod, Is.EqualTo (typeof (IBT3Mixin4).GetMethod ("Foo")));
+      Assert.That (member2.ImplementingMethod, Is.EqualTo (targetClass.Mixins[typeof (BT3Mixin4)].Methods[typeof (BT3Mixin4).GetMethod ("Foo")]));
 
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType3> ().Clear().AddMixins (typeof (BT3Mixin7Base), typeof (BT3Mixin4)).EnterScope())
       {
         TargetClassDefinition targetClass2 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
 
         RequiredNextCallTypeDefinition req3 = targetClass2.RequiredNextCallTypes[typeof (ICBaseType3BT3Mixin4)];
-        Assert.AreEqual (0, req3.Methods.Count);
+        Assert.That (req3.Methods.Count, Is.EqualTo (0));
 
         req3 = targetClass2.RequiredNextCallTypes[typeof (ICBaseType3)];
-        Assert.AreEqual (0, req3.Methods.Count);
+        Assert.That (req3.Methods.Count, Is.EqualTo (0));
 
         req3 = targetClass2.RequiredNextCallTypes[typeof (IBaseType31)];
-        Assert.AreEqual (1, req3.Methods.Count);
+        Assert.That (req3.Methods.Count, Is.EqualTo (1));
 
         req3 = targetClass2.RequiredNextCallTypes[typeof (IBT3Mixin4)];
-        Assert.AreEqual (1, req3.Methods.Count);
+        Assert.That (req3.Methods.Count, Is.EqualTo (1));
 
         RequiredMethodDefinition member3 = req3.Methods[typeof (IBT3Mixin4).GetMethod ("Foo")];
-        Assert.IsNotNull (member3);
-        Assert.AreEqual (targetClass2.Mixins[typeof (BT3Mixin4)].Methods[typeof (BT3Mixin4).GetMethod ("Foo")], member3.ImplementingMethod);
+        Assert.That (member3, Is.Not.Null);
+        Assert.That (member3.ImplementingMethod, Is.EqualTo (targetClass2.Mixins[typeof (BT3Mixin4)].Methods[typeof (BT3Mixin4).GetMethod ("Foo")]));
       }
     }
 
@@ -166,28 +166,25 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       using (MixinConfiguration.BuildFromActive().ForClass<BaseTypeWithDuckTargetCallMixin> ().Clear().AddMixins (typeof (DuckTargetCallMixin)).EnterScope())
       {
         TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseTypeWithDuckTargetCallMixin));
-        Assert.IsTrue (targetClass.Mixins.ContainsKey (typeof (DuckTargetCallMixin)));
+        Assert.That (targetClass.Mixins.ContainsKey (typeof (DuckTargetCallMixin)), Is.True);
         MixinDefinition mixin = targetClass.Mixins[typeof (DuckTargetCallMixin)];
-        Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IDuckTargetCallRequirements)));
+        Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IDuckTargetCallRequirements)), Is.True);
         CheckAllRequiringEntities (
             targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)],
             mixin);
 
-        Assert.IsTrue (mixin.TargetCallDependencies.ContainsKey (typeof (IDuckTargetCallRequirements)));
-        Assert.AreSame (targetClass, mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].GetImplementer ());
+        Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (IDuckTargetCallRequirements)), Is.True);
+        Assert.That (mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].GetImplementer (), Is.SameAs (targetClass));
 
-        Assert.AreSame (mixin, mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].Depender);
-        Assert.IsNull (mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].Aggregator);
-        Assert.AreEqual (0, mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].AggregatedDependencies.Count);
+        Assert.That (mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].Depender, Is.SameAs (mixin));
+        Assert.That (mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].Aggregator, Is.Null);
+        Assert.That (mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].AggregatedDependencies.Count, Is.EqualTo (0));
 
-        Assert.AreSame (targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)],
-                        mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].RequiredType);
+        Assert.That (mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].RequiredType, Is.SameAs (targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)]));
 
-        Assert.AreEqual (2, targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)].Methods.Count);
-        Assert.AreSame (typeof (IDuckTargetCallRequirements).GetMethod ("MethodImplementedOnBase"),
-                        targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)].Methods[0].InterfaceMethod);
-        Assert.AreSame (targetClass.Methods[typeof (BaseTypeWithDuckTargetCallMixin).GetMethod ("MethodImplementedOnBase")],
-                        targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)].Methods[0].ImplementingMethod);
+        Assert.That (targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)].Methods.Count, Is.EqualTo (2));
+        Assert.That (targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)].Methods[0].InterfaceMethod, Is.SameAs (typeof (IDuckTargetCallRequirements).GetMethod ("MethodImplementedOnBase")));
+        Assert.That (targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)].Methods[0].ImplementingMethod, Is.SameAs (targetClass.Methods[typeof (BaseTypeWithDuckTargetCallMixin).GetMethod ("MethodImplementedOnBase")]));
       }
     }
 
@@ -209,28 +206,25 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       using (MixinConfiguration.BuildFromActive().ForClass<BaseTypeWithDuckBaseMixin> ().Clear().AddMixins (typeof (DuckBaseMixin)).EnterScope())
       {
         TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseTypeWithDuckBaseMixin));
-        Assert.IsTrue (targetClass.Mixins.ContainsKey (typeof (DuckBaseMixin)));
+        Assert.That (targetClass.Mixins.ContainsKey (typeof (DuckBaseMixin)), Is.True);
         MixinDefinition mixin = targetClass.Mixins[typeof (DuckBaseMixin)];
-        Assert.IsTrue (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IDuckBaseRequirements)));
+        Assert.That (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IDuckBaseRequirements)), Is.True);
         CheckAllRequiringEntities (
             targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)],
             mixin);
 
-        Assert.IsTrue (mixin.NextCallDependencies.ContainsKey (typeof (IDuckBaseRequirements)));
-        Assert.AreSame (targetClass, mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].GetImplementer());
+        Assert.That (mixin.NextCallDependencies.ContainsKey (typeof (IDuckBaseRequirements)), Is.True);
+        Assert.That (mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].GetImplementer(), Is.SameAs (targetClass));
 
-        Assert.AreSame (mixin, mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].Depender);
-        Assert.IsNull (mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].Aggregator);
-        Assert.AreEqual (0, mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].AggregatedDependencies.Count);
+        Assert.That (mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].Depender, Is.SameAs (mixin));
+        Assert.That (mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].Aggregator, Is.Null);
+        Assert.That (mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].AggregatedDependencies.Count, Is.EqualTo (0));
 
-        Assert.AreSame (targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)],
-                        mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].RequiredType);
+        Assert.That (mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].RequiredType, Is.SameAs (targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)]));
 
-        Assert.AreEqual (2, targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)].Methods.Count);
-        Assert.AreSame (typeof (IDuckBaseRequirements).GetMethod ("MethodImplementedOnBase"),
-                        targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)].Methods[0].InterfaceMethod);
-        Assert.AreSame (targetClass.Methods[typeof (BaseTypeWithDuckBaseMixin).GetMethod ("MethodImplementedOnBase")],
-                        targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)].Methods[0].ImplementingMethod);
+        Assert.That (targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)].Methods.Count, Is.EqualTo (2));
+        Assert.That (targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)].Methods[0].InterfaceMethod, Is.SameAs (typeof (IDuckBaseRequirements).GetMethod ("MethodImplementedOnBase")));
+        Assert.That (targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)].Methods[0].ImplementingMethod, Is.SameAs (targetClass.Methods[typeof (BaseTypeWithDuckBaseMixin).GetMethod ("MethodImplementedOnBase")]));
       }
     }
 
@@ -251,63 +245,59 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       MixinDefinition bt3Mixin1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)];
 
-      Assert.IsTrue (bt3Mixin1.TargetCallDependencies.ContainsKey (typeof (IBaseType31)));
-      Assert.AreEqual (1, bt3Mixin1.TargetCallDependencies.Count);
+      Assert.That (bt3Mixin1.TargetCallDependencies.ContainsKey (typeof (IBaseType31)), Is.True);
+      Assert.That (bt3Mixin1.TargetCallDependencies.Count, Is.EqualTo (1));
 
-      Assert.IsTrue (bt3Mixin1.NextCallDependencies.ContainsKey (typeof (IBaseType31)));
-      Assert.AreEqual (1, bt3Mixin1.NextCallDependencies.Count);
+      Assert.That (bt3Mixin1.NextCallDependencies.ContainsKey (typeof (IBaseType31)), Is.True);
+      Assert.That (bt3Mixin1.NextCallDependencies.Count, Is.EqualTo (1));
 
       MixinDefinition bt3Mixin2 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin2)];
-      Assert.IsTrue (bt3Mixin2.TargetCallDependencies.ContainsKey (typeof (IBaseType32)));
-      Assert.AreEqual (1, bt3Mixin2.TargetCallDependencies.Count);
+      Assert.That (bt3Mixin2.TargetCallDependencies.ContainsKey (typeof (IBaseType32)), Is.True);
+      Assert.That (bt3Mixin2.TargetCallDependencies.Count, Is.EqualTo (1));
 
-      Assert.AreEqual (0, bt3Mixin2.NextCallDependencies.Count);
+      Assert.That (bt3Mixin2.NextCallDependencies.Count, Is.EqualTo (0));
 
       MixinDefinition bt3Mixin6 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).GetMixinByConfiguredType (typeof (BT3Mixin6<,>));
 
-      Assert.IsTrue (bt3Mixin6.TargetCallDependencies.ContainsKey (typeof (IBaseType31)));
-      Assert.IsTrue (bt3Mixin6.TargetCallDependencies.ContainsKey (typeof (IBaseType32)));
-      Assert.IsTrue (bt3Mixin6.TargetCallDependencies.ContainsKey (typeof (IBaseType33)));
-      Assert.IsTrue (bt3Mixin6.TargetCallDependencies.ContainsKey (typeof (IBT3Mixin4)));
-      Assert.IsFalse (bt3Mixin6.TargetCallDependencies.ContainsKey (typeof (IBaseType34)));
+      Assert.That (bt3Mixin6.TargetCallDependencies.ContainsKey (typeof (IBaseType31)), Is.True);
+      Assert.That (bt3Mixin6.TargetCallDependencies.ContainsKey (typeof (IBaseType32)), Is.True);
+      Assert.That (bt3Mixin6.TargetCallDependencies.ContainsKey (typeof (IBaseType33)), Is.True);
+      Assert.That (bt3Mixin6.TargetCallDependencies.ContainsKey (typeof (IBT3Mixin4)), Is.True);
+      Assert.That (bt3Mixin6.TargetCallDependencies.ContainsKey (typeof (IBaseType34)), Is.False);
 
-      Assert.IsFalse (bt3Mixin6.TargetCallDependencies[typeof (IBaseType31)].IsAggregate);
-      Assert.IsFalse (bt3Mixin6.TargetCallDependencies[typeof (IBT3Mixin4)].IsAggregate);
+      Assert.That (bt3Mixin6.TargetCallDependencies[typeof (IBaseType31)].IsAggregate, Is.False);
+      Assert.That (bt3Mixin6.TargetCallDependencies[typeof (IBT3Mixin4)].IsAggregate, Is.False);
 
-      Assert.AreEqual (0, bt3Mixin6.TargetCallDependencies[typeof (IBaseType31)].AggregatedDependencies.Count);
+      Assert.That (bt3Mixin6.TargetCallDependencies[typeof (IBaseType31)].AggregatedDependencies.Count, Is.EqualTo (0));
 
-      Assert.IsTrue (
-          bt3Mixin6.TargetCallDependencies[typeof (IBT3Mixin4)].RequiredType.RequiringDependencies.ContainsKey (
-              bt3Mixin6.TargetCallDependencies[typeof (IBT3Mixin4)]));
-      Assert.IsNull (bt3Mixin6.TargetCallDependencies[typeof (IBT3Mixin4)].Aggregator);
+      Assert.That (bt3Mixin6.TargetCallDependencies[typeof (IBT3Mixin4)].RequiredType.RequiringDependencies.ContainsKey (
+          bt3Mixin6.TargetCallDependencies[typeof (IBT3Mixin4)]), Is.True);
+      Assert.That (bt3Mixin6.TargetCallDependencies[typeof (IBT3Mixin4)].Aggregator, Is.Null);
 
-      Assert.AreSame (
-          bt3Mixin6.TargetClass.RequiredTargetCallTypes[typeof (IBaseType31)],
-          bt3Mixin6.TargetCallDependencies[typeof (IBaseType31)].RequiredType);
+      Assert.That (bt3Mixin6.TargetCallDependencies[typeof (IBaseType31)].RequiredType, Is.SameAs (bt3Mixin6.TargetClass.RequiredTargetCallTypes[typeof (IBaseType31)]));
 
-      Assert.AreSame (bt3Mixin6.TargetClass, bt3Mixin6.TargetCallDependencies[typeof (IBaseType32)].GetImplementer ());
-      Assert.AreSame (bt3Mixin6.TargetClass.Mixins[typeof (BT3Mixin4)], bt3Mixin6.TargetCallDependencies[typeof (IBT3Mixin4)].GetImplementer());
+      Assert.That (bt3Mixin6.TargetCallDependencies[typeof (IBaseType32)].GetImplementer (), Is.SameAs (bt3Mixin6.TargetClass));
+      Assert.That (bt3Mixin6.TargetCallDependencies[typeof (IBT3Mixin4)].GetImplementer(), Is.SameAs (bt3Mixin6.TargetClass.Mixins[typeof (BT3Mixin4)]));
 
-      Assert.IsTrue (bt3Mixin6.NextCallDependencies.ContainsKey (typeof (IBaseType34)));
-      Assert.IsTrue (bt3Mixin6.NextCallDependencies.ContainsKey (typeof (IBT3Mixin4)));
-      Assert.IsFalse (bt3Mixin6.NextCallDependencies.ContainsKey (typeof (IBaseType31)));
-      Assert.IsFalse (bt3Mixin6.NextCallDependencies.ContainsKey (typeof (IBaseType32)));
+      Assert.That (bt3Mixin6.NextCallDependencies.ContainsKey (typeof (IBaseType34)), Is.True);
+      Assert.That (bt3Mixin6.NextCallDependencies.ContainsKey (typeof (IBT3Mixin4)), Is.True);
+      Assert.That (bt3Mixin6.NextCallDependencies.ContainsKey (typeof (IBaseType31)), Is.False);
+      Assert.That (bt3Mixin6.NextCallDependencies.ContainsKey (typeof (IBaseType32)), Is.False);
       Assert.IsTrue (bt3Mixin6.NextCallDependencies.ContainsKey (typeof (IBaseType33)), "indirect dependency");
 
-      Assert.AreSame (bt3Mixin6.TargetClass.RequiredNextCallTypes[typeof (IBaseType34)], bt3Mixin6.NextCallDependencies[typeof (IBaseType34)].RequiredType);
+      Assert.That (bt3Mixin6.NextCallDependencies[typeof (IBaseType34)].RequiredType, Is.SameAs (bt3Mixin6.TargetClass.RequiredNextCallTypes[typeof (IBaseType34)]));
 
-      Assert.AreSame (bt3Mixin6.TargetClass, bt3Mixin6.NextCallDependencies[typeof (IBaseType34)].GetImplementer());
-      Assert.AreSame (bt3Mixin6.TargetClass.Mixins[typeof (BT3Mixin4)], bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].GetImplementer());
+      Assert.That (bt3Mixin6.NextCallDependencies[typeof (IBaseType34)].GetImplementer(), Is.SameAs (bt3Mixin6.TargetClass));
+      Assert.That (bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].GetImplementer(), Is.SameAs (bt3Mixin6.TargetClass.Mixins[typeof (BT3Mixin4)]));
 
-      Assert.IsFalse (bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].IsAggregate);
-      Assert.IsFalse (bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].IsAggregate);
+      Assert.That (bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].IsAggregate, Is.False);
+      Assert.That (bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].IsAggregate, Is.False);
 
-      Assert.AreEqual (0, bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].AggregatedDependencies.Count);
+      Assert.That (bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].AggregatedDependencies.Count, Is.EqualTo (0));
 
-      Assert.IsTrue (
-          bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].RequiredType.RequiringDependencies.ContainsKey (
-              bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)]));
-      Assert.IsNull (bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].Aggregator);
+      Assert.That (bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].RequiredType.RequiringDependencies.ContainsKey (
+          bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)]), Is.True);
+      Assert.That (bt3Mixin6.NextCallDependencies[typeof (IBT3Mixin4)].Aggregator, Is.Null);
     }
 
     [Test]
@@ -341,29 +331,29 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       MixinDefinition m7 = bt3.Mixins[typeof (Bt3Mixin7TargetCall)];
 
       TargetCallDependencyDefinition d1 = m7.TargetCallDependencies[typeof (ICBaseType3BT3Mixin4)];
-      Assert.IsNull (d1.GetImplementer ());
-      Assert.AreEqual ("Remotion.Mixins.UnitTests.Core.TestDomain.ICBaseType3BT3Mixin4", d1.FullName);
-      Assert.AreSame (m7, d1.Parent);
+      Assert.That (d1.GetImplementer (), Is.Null);
+      Assert.That (d1.FullName, Is.EqualTo ("Remotion.Mixins.UnitTests.Core.TestDomain.ICBaseType3BT3Mixin4"));
+      Assert.That (d1.Parent, Is.SameAs (m7));
 
-      Assert.IsTrue (d1.IsAggregate);
-      Assert.IsTrue (d1.AggregatedDependencies[typeof (ICBaseType3)].IsAggregate);
-      Assert.IsFalse (d1.AggregatedDependencies[typeof (ICBaseType3)]
-                          .AggregatedDependencies[typeof (IBaseType31)].IsAggregate);
-      Assert.AreSame (bt3, d1.AggregatedDependencies[typeof (ICBaseType3)]
-                               .AggregatedDependencies[typeof (IBaseType31)].GetImplementer ());
+      Assert.That (d1.IsAggregate, Is.True);
+      Assert.That (d1.AggregatedDependencies[typeof (ICBaseType3)].IsAggregate, Is.True);
+      Assert.That (d1.AggregatedDependencies[typeof (ICBaseType3)]
+                       .AggregatedDependencies[typeof (IBaseType31)].IsAggregate, Is.False);
+      Assert.That (d1.AggregatedDependencies[typeof (ICBaseType3)]
+                       .AggregatedDependencies[typeof (IBaseType31)].GetImplementer (), Is.SameAs (bt3));
 
-      Assert.IsFalse (d1.AggregatedDependencies[typeof (IBT3Mixin4)].IsAggregate);
-      Assert.AreSame (m4, d1.AggregatedDependencies[typeof (IBT3Mixin4)].GetImplementer ());
+      Assert.That (d1.AggregatedDependencies[typeof (IBT3Mixin4)].IsAggregate, Is.False);
+      Assert.That (d1.AggregatedDependencies[typeof (IBT3Mixin4)].GetImplementer (), Is.SameAs (m4));
 
-      Assert.AreSame (d1, d1.AggregatedDependencies[typeof (IBT3Mixin4)].Aggregator);
+      Assert.That (d1.AggregatedDependencies[typeof (IBT3Mixin4)].Aggregator, Is.SameAs (d1));
 
-      Assert.IsTrue (bt3.RequiredTargetCallTypes[typeof (ICBaseType3)].IsEmptyInterface);
-      Assert.IsTrue (bt3.RequiredTargetCallTypes[typeof (ICBaseType3)].IsAggregatorInterface);
+      Assert.That (bt3.RequiredTargetCallTypes[typeof (ICBaseType3)].IsEmptyInterface, Is.True);
+      Assert.That (bt3.RequiredTargetCallTypes[typeof (ICBaseType3)].IsAggregatorInterface, Is.True);
 
-      Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3BT3Mixin4)));
-      Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3)));
-      Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType31)));
-      Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (IBT3Mixin4)));
+      Assert.That (bt3.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3BT3Mixin4)), Is.True);
+      Assert.That (bt3.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3)), Is.True);
+      Assert.That (bt3.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType31)), Is.True);
+      Assert.That (bt3.RequiredTargetCallTypes.ContainsKey (typeof (IBT3Mixin4)), Is.True);
     }
 
     [Test]
@@ -376,30 +366,30 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       MixinDefinition m7 = bt3.Mixins[typeof (BT3Mixin7Base)];
 
       NextCallDependencyDefinition d2 = m7.NextCallDependencies[typeof (ICBaseType3BT3Mixin4)];
-      Assert.IsNull (d2.GetImplementer ());
+      Assert.That (d2.GetImplementer (), Is.Null);
 
-      Assert.IsTrue (d2.IsAggregate);
+      Assert.That (d2.IsAggregate, Is.True);
 
-      Assert.IsTrue (d2.AggregatedDependencies[typeof (ICBaseType3)].IsAggregate);
-      Assert.AreSame (d2, d2.AggregatedDependencies[typeof (ICBaseType3)].Parent);
+      Assert.That (d2.AggregatedDependencies[typeof (ICBaseType3)].IsAggregate, Is.True);
+      Assert.That (d2.AggregatedDependencies[typeof (ICBaseType3)].Parent, Is.SameAs (d2));
 
-      Assert.IsFalse (d2.AggregatedDependencies[typeof (ICBaseType3)]
-                          .AggregatedDependencies[typeof (IBaseType31)].IsAggregate);
-      Assert.AreSame (bt3, d2.AggregatedDependencies[typeof (ICBaseType3)]
-                               .AggregatedDependencies[typeof (IBaseType31)].GetImplementer ());
+      Assert.That (d2.AggregatedDependencies[typeof (ICBaseType3)]
+                       .AggregatedDependencies[typeof (IBaseType31)].IsAggregate, Is.False);
+      Assert.That (d2.AggregatedDependencies[typeof (ICBaseType3)]
+                       .AggregatedDependencies[typeof (IBaseType31)].GetImplementer (), Is.SameAs (bt3));
 
-      Assert.IsFalse (d2.AggregatedDependencies[typeof (IBT3Mixin4)].IsAggregate);
-      Assert.AreSame (m4, d2.AggregatedDependencies[typeof (IBT3Mixin4)].GetImplementer ());
+      Assert.That (d2.AggregatedDependencies[typeof (IBT3Mixin4)].IsAggregate, Is.False);
+      Assert.That (d2.AggregatedDependencies[typeof (IBT3Mixin4)].GetImplementer (), Is.SameAs (m4));
 
-      Assert.AreSame (d2, d2.AggregatedDependencies[typeof (IBT3Mixin4)].Aggregator);
+      Assert.That (d2.AggregatedDependencies[typeof (IBT3Mixin4)].Aggregator, Is.SameAs (d2));
 
-      Assert.IsTrue (bt3.RequiredNextCallTypes[typeof (ICBaseType3)].IsEmptyInterface);
-      Assert.IsTrue (bt3.RequiredNextCallTypes[typeof (ICBaseType3)].IsAggregatorInterface);
+      Assert.That (bt3.RequiredNextCallTypes[typeof (ICBaseType3)].IsEmptyInterface, Is.True);
+      Assert.That (bt3.RequiredNextCallTypes[typeof (ICBaseType3)].IsAggregatorInterface, Is.True);
 
-      Assert.IsTrue (bt3.RequiredNextCallTypes.ContainsKey (typeof (ICBaseType3BT3Mixin4)));
-      Assert.IsTrue (bt3.RequiredNextCallTypes.ContainsKey (typeof (ICBaseType3)));
-      Assert.IsTrue (bt3.RequiredNextCallTypes.ContainsKey (typeof (IBaseType31)));
-      Assert.IsTrue (bt3.RequiredNextCallTypes.ContainsKey (typeof (IBT3Mixin4)));
+      Assert.That (bt3.RequiredNextCallTypes.ContainsKey (typeof (ICBaseType3BT3Mixin4)), Is.True);
+      Assert.That (bt3.RequiredNextCallTypes.ContainsKey (typeof (ICBaseType3)), Is.True);
+      Assert.That (bt3.RequiredNextCallTypes.ContainsKey (typeof (IBaseType31)), Is.True);
+      Assert.That (bt3.RequiredNextCallTypes.ContainsKey (typeof (IBT3Mixin4)), Is.True);
     }
 
     [Test]
@@ -445,9 +435,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         MixinDefinition m2 = bt1.Mixins[typeof (MixinRequiringEmptyInterface)];
         NextCallDependencyDefinition dependency = m2.NextCallDependencies[0];
         RequiredNextCallTypeDefinition requirement = dependency.RequiredType;
-        Assert.IsTrue (requirement.IsEmptyInterface);
-        Assert.IsFalse (requirement.IsAggregatorInterface);
-        Assert.AreSame (m1, dependency.GetImplementer());
+        Assert.That (requirement.IsEmptyInterface, Is.True);
+        Assert.That (requirement.IsAggregatorInterface, Is.False);
+        Assert.That (dependency.GetImplementer(), Is.SameAs (m1));
       }
     }
 
@@ -456,35 +446,35 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingIndirectRequirements));
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithIndirectRequirements)];
-      Assert.IsNotNull (mixin);
+      Assert.That (mixin, Is.Not.Null);
 
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectTargetAggregator)));
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes[typeof (IIndirectTargetAggregator)].IsAggregatorInterface);
-      
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirement1)));
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirement1)].IsAggregatorInterface);
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirementBase1)));
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirementBase1)].IsAggregatorInterface);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectTargetAggregator)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IIndirectTargetAggregator)].IsAggregatorInterface, Is.True);
 
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirement2)));
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirement2)].IsAggregatorInterface);
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirementBase2)));
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirementBase2)].IsAggregatorInterface);
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirementBase2)].IsEmptyInterface);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirement1)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirement1)].IsAggregatorInterface, Is.False);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirementBase1)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirementBase1)].IsAggregatorInterface, Is.False);
 
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirement3)));
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirement3)].IsAggregatorInterface);
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirementBase3)));
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirementBase3)].IsAggregatorInterface);
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirementBase3)].IsEmptyInterface);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirement2)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirement2)].IsAggregatorInterface, Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirementBase2)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirementBase2)].IsAggregatorInterface, Is.False);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirementBase2)].IsEmptyInterface, Is.True);
 
-      Assert.IsTrue (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectTargetAggregator)));
-      Assert.IsTrue (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirement1)));
-      Assert.IsTrue (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirement2)));
-      Assert.IsTrue (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirement3)));
-      Assert.IsTrue (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirementBase1)));
-      Assert.IsTrue (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirementBase2)));
-      Assert.IsTrue (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirementBase3)));
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirement3)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirement3)].IsAggregatorInterface, Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IIndirectRequirementBase3)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirementBase3)].IsAggregatorInterface, Is.False);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (IIndirectRequirementBase3)].IsEmptyInterface, Is.False);
+
+      Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectTargetAggregator)), Is.True);
+      Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirement1)), Is.True);
+      Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirement2)), Is.True);
+      Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirement3)), Is.True);
+      Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirementBase1)), Is.True);
+      Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirementBase2)), Is.True);
+      Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (IIndirectRequirementBase3)), Is.True);
     }
 
     [Test]
@@ -492,32 +482,32 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingIndirectRequirements));
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithIndirectRequirements)];
-      Assert.IsNotNull (mixin);
+      Assert.That (mixin, Is.Not.Null);
 
-      Assert.IsTrue (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectBaseAggregator)));
-      Assert.IsTrue (targetClass.RequiredNextCallTypes[typeof (IIndirectBaseAggregator)].IsAggregatorInterface);
+      Assert.That (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectBaseAggregator)), Is.True);
+      Assert.That (targetClass.RequiredNextCallTypes[typeof (IIndirectBaseAggregator)].IsAggregatorInterface, Is.True);
 
-      Assert.IsTrue (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirement1)));
-      Assert.IsFalse (targetClass.RequiredNextCallTypes[typeof (IIndirectRequirement1)].IsAggregatorInterface);
-      Assert.IsTrue (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirementBase1)));
-      Assert.IsFalse (targetClass.RequiredNextCallTypes[typeof (IIndirectRequirementBase1)].IsAggregatorInterface);
+      Assert.That (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirement1)), Is.True);
+      Assert.That (targetClass.RequiredNextCallTypes[typeof (IIndirectRequirement1)].IsAggregatorInterface, Is.False);
+      Assert.That (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirementBase1)), Is.True);
+      Assert.That (targetClass.RequiredNextCallTypes[typeof (IIndirectRequirementBase1)].IsAggregatorInterface, Is.False);
 
-      Assert.IsFalse (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirement2)));
-      Assert.IsFalse (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirementBase2)));
+      Assert.That (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirement2)), Is.False);
+      Assert.That (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirementBase2)), Is.False);
 
-      Assert.IsTrue (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirement3)));
-      Assert.IsTrue (targetClass.RequiredNextCallTypes[typeof (IIndirectRequirement3)].IsAggregatorInterface);
-      Assert.IsTrue (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirementBase3)));
-      Assert.IsFalse (targetClass.RequiredNextCallTypes[typeof (IIndirectRequirementBase3)].IsAggregatorInterface);
-      Assert.IsFalse (targetClass.RequiredNextCallTypes[typeof (IIndirectRequirementBase3)].IsEmptyInterface);
+      Assert.That (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirement3)), Is.True);
+      Assert.That (targetClass.RequiredNextCallTypes[typeof (IIndirectRequirement3)].IsAggregatorInterface, Is.True);
+      Assert.That (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IIndirectRequirementBase3)), Is.True);
+      Assert.That (targetClass.RequiredNextCallTypes[typeof (IIndirectRequirementBase3)].IsAggregatorInterface, Is.False);
+      Assert.That (targetClass.RequiredNextCallTypes[typeof (IIndirectRequirementBase3)].IsEmptyInterface, Is.False);
 
-      Assert.IsTrue (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectBaseAggregator)));
-      Assert.IsTrue (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirement1)));
-      Assert.IsFalse (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirement2)));
-      Assert.IsTrue (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirement3)));
-      Assert.IsTrue (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirementBase1)));
-      Assert.IsFalse (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirementBase2)));
-      Assert.IsTrue (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirementBase3)));
+      Assert.That (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectBaseAggregator)), Is.True);
+      Assert.That (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirement1)), Is.True);
+      Assert.That (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirement2)), Is.False);
+      Assert.That (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirement3)), Is.True);
+      Assert.That (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirementBase1)), Is.True);
+      Assert.That (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirementBase2)), Is.False);
+      Assert.That (mixin.NextCallDependencies.ContainsKey (typeof (IIndirectRequirementBase3)), Is.True);
     }
 
     [Test]
@@ -525,15 +515,15 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingInternalInterface));
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithClassTargetCallImplementingInternalInterface)];
-      Assert.IsNotNull (mixin);
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (ClassImplementingInternalInterface)));
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes[typeof (ClassImplementingInternalInterface)].IsAggregatorInterface);
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IInternalInterface1)));
-      Assert.IsFalse (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IInternalInterface2)));
+      Assert.That (mixin, Is.Not.Null);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (ClassImplementingInternalInterface)), Is.True);
+      Assert.That (targetClass.RequiredTargetCallTypes[typeof (ClassImplementingInternalInterface)].IsAggregatorInterface, Is.False);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IInternalInterface1)), Is.False);
+      Assert.That (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IInternalInterface2)), Is.False);
 
-      Assert.IsTrue (mixin.TargetCallDependencies.ContainsKey (typeof (ClassImplementingInternalInterface)));
-      Assert.IsFalse (mixin.TargetCallDependencies.ContainsKey (typeof (IInternalInterface1)));
-      Assert.IsFalse (mixin.TargetCallDependencies.ContainsKey (typeof (IInternalInterface2)));
+      Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (ClassImplementingInternalInterface)), Is.True);
+      Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (IInternalInterface1)), Is.False);
+      Assert.That (mixin.TargetCallDependencies.ContainsKey (typeof (IInternalInterface2)), Is.False);
     }
 
     [Test]
@@ -541,22 +531,21 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithAdditionalInterfaceDependency)];
-      Assert.IsTrue (mixin.MixinDependencies.ContainsKey (typeof (IMixinWithAdditionalClassDependency)));
-      Assert.AreSame (targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)],
-                      mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].GetImplementer ());
-      
-      Assert.AreSame (mixin, mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].Depender);
-      Assert.AreSame (mixin, mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].Parent);
+      Assert.That (mixin.MixinDependencies.ContainsKey (typeof (IMixinWithAdditionalClassDependency)), Is.True);
+      Assert.That (mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].GetImplementer (), Is.SameAs (targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)]));
 
-      Assert.IsTrue (targetClass.RequiredMixinTypes.ContainsKey (typeof (IMixinWithAdditionalClassDependency)));
+      Assert.That (mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].Depender, Is.SameAs (mixin));
+      Assert.That (mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].Parent, Is.SameAs (mixin));
+
+      Assert.That (targetClass.RequiredMixinTypes.ContainsKey (typeof (IMixinWithAdditionalClassDependency)), Is.True);
       RequiredMixinTypeDefinition requirement = targetClass.RequiredMixinTypes[typeof (IMixinWithAdditionalClassDependency)];
       CheckAllRequiringEntities (requirement, mixin);
 
-      Assert.IsTrue (requirement.RequiringDependencies.ContainsKey (mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)]));
-      
+      Assert.That (requirement.RequiringDependencies.ContainsKey (mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)]), Is.True);
+
       Assert.AreEqual(0, requirement.Methods.Count, "mixin type requirements do not contain method requirements");
 
-      Assert.AreSame (requirement, mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].RequiredType);
+      Assert.That (mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].RequiredType, Is.SameAs (requirement));
     }
 
     [Test]
@@ -564,21 +553,21 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)];
-      Assert.IsTrue (mixin.MixinDependencies.ContainsKey (typeof (MixinWithNoAdditionalDependency)));
-      Assert.AreSame (targetClass.Mixins[typeof (MixinWithNoAdditionalDependency)], mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)].GetImplementer ());
+      Assert.That (mixin.MixinDependencies.ContainsKey (typeof (MixinWithNoAdditionalDependency)), Is.True);
+      Assert.That (mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)].GetImplementer (), Is.SameAs (targetClass.Mixins[typeof (MixinWithNoAdditionalDependency)]));
 
-      Assert.AreSame (mixin, mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)].Depender);
-      Assert.AreSame (mixin, mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)].Parent);
+      Assert.That (mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)].Depender, Is.SameAs (mixin));
+      Assert.That (mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)].Parent, Is.SameAs (mixin));
 
-      Assert.IsTrue (targetClass.RequiredMixinTypes.ContainsKey (typeof (MixinWithNoAdditionalDependency)));
+      Assert.That (targetClass.RequiredMixinTypes.ContainsKey (typeof (MixinWithNoAdditionalDependency)), Is.True);
       RequiredMixinTypeDefinition requirement = targetClass.RequiredMixinTypes[typeof (MixinWithNoAdditionalDependency)];
       CheckAllRequiringEntities (requirement, mixin);
 
-      Assert.IsTrue (requirement.RequiringDependencies.ContainsKey (mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)]));
+      Assert.That (requirement.RequiringDependencies.ContainsKey (mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)]), Is.True);
 
       Assert.AreEqual (0, requirement.Methods.Count, "mixin type requirements do not contain method requirements");
 
-      Assert.AreSame (requirement, mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)].RequiredType);
+      Assert.That (mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)].RequiredType, Is.SameAs (requirement));
     }
 
     private void CheckAllRequiringEntities (RequirementDefinitionBase requirement, params MixinDefinition[] expectedRequiringMixins)

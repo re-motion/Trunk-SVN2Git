@@ -64,9 +64,9 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void Initialize ()
     {
-      Assert.AreSame (_mockSecurityStrategy, _strategy.SecurityStrategy);
+      Assert.That (_strategy.SecurityStrategy, Is.SameAs (_mockSecurityStrategy));
     }
-    
+
     [Test]
     public void Initialize_WithDefaults ()
     {
@@ -76,7 +76,7 @@ namespace Remotion.Security.UnitTests.Core
 
       Assert.IsInstanceOf (typeof (SecurityStrategy), strategy.SecurityStrategy);
       Assert.IsInstanceOf (typeof (NullCache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
-      Assert.AreSame (stubGlobalCacheProvider, ((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider);
+      Assert.That (((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider, Is.SameAs (stubGlobalCacheProvider));
     }
 
     [Test]
@@ -92,7 +92,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess = _strategy.HasAccess (typeof (SecurableObject), _stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll ();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -108,7 +108,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess = _strategy.HasAccess (typeof (SecurableObject), _stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll ();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
   }
 }

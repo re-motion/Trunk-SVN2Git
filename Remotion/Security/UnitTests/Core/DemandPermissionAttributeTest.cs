@@ -28,7 +28,7 @@ namespace Remotion.Security.UnitTests.Core
     public void AcceptValidAccessType ()
     {
       var methodPermissionAttribute = new DemandPermissionAttribute (TestAccessTypes.Second);
-      Assert.AreEqual (TestAccessTypes.Second, methodPermissionAttribute.GetAccessTypes()[0]);
+      Assert.That (methodPermissionAttribute.GetAccessTypes()[0], Is.EqualTo (TestAccessTypes.Second));
     }
 
     [Test]
@@ -52,9 +52,9 @@ namespace Remotion.Security.UnitTests.Core
     {
       var methodPermissionAttribute = new DemandPermissionAttribute (TestAccessTypes.Second, TestAccessTypes.Fourth);
 
-      Assert.AreEqual (2, methodPermissionAttribute.GetAccessTypes().Length);
-      Assert.Contains (TestAccessTypes.Second, methodPermissionAttribute.GetAccessTypes());
-      Assert.Contains (TestAccessTypes.Fourth, methodPermissionAttribute.GetAccessTypes());
+      Assert.That (methodPermissionAttribute.GetAccessTypes().Length, Is.EqualTo (2));
+      Assert.That (methodPermissionAttribute.GetAccessTypes(), Has.Member (TestAccessTypes.Second));
+      Assert.That (methodPermissionAttribute.GetAccessTypes(), Has.Member (TestAccessTypes.Fourth));
     }
   }
 }

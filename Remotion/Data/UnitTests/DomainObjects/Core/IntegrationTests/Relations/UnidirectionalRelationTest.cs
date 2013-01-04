@@ -45,11 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     {
       _location.Client = _newClient;
 
-      Assert.AreSame (_newClient, _location.Client);
-      Assert.AreEqual (_newClient.ID, _location.Properties[typeof (Location), "Client"].GetRelatedObjectID ());
-      Assert.AreEqual (StateType.Changed, _location.State);
-      Assert.AreEqual (StateType.Unchanged, _oldClient.State);
-      Assert.AreEqual (StateType.Unchanged, _newClient.State);
+      Assert.That (_location.Client, Is.SameAs (_newClient));
+      Assert.That (_location.Properties[typeof (Location), "Client"].GetRelatedObjectID (), Is.EqualTo (_newClient.ID));
+      Assert.That (_location.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_oldClient.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_newClient.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -76,23 +76,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _location.Client = _oldClient;
 
       eventReceiver.Check (new ChangeState[0]);
-      Assert.AreEqual (StateType.Unchanged, _location.State);
+      Assert.That (_location.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
     public void GetRelatedObject ()
     {
-      Assert.AreSame (_oldClient, _location.GetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"));
+      Assert.That (_location.GetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"), Is.SameAs (_oldClient));
     }
 
     [Test]
     public void GetOriginalRelatedObject ()
     {
-      Assert.AreSame (_oldClient, _location.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"));
+      Assert.That (_location.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"), Is.SameAs (_oldClient));
 
       _location.Client = _newClient;
 
-      Assert.AreSame (_oldClient, _location.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"));
+      Assert.That (_location.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"), Is.SameAs (_oldClient));
     }
 
     [Test]
@@ -108,9 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
       location.Client = client1;
 
-      Assert.AreEqual (StateType.New, client1.State);
-      Assert.AreEqual (StateType.New, client2.State);
-      Assert.AreEqual (StateType.New, location.State);
+      Assert.That (client1.State, Is.EqualTo (StateType.New));
+      Assert.That (client2.State, Is.EqualTo (StateType.New));
+      Assert.That (location.State, Is.EqualTo (StateType.New));
 
       ObjectID clientID1 = client1.ID;
       ObjectID clientID2 = client2.ID;
@@ -133,10 +133,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
         client2 = Client.GetObject (clientID2);
         location = Location.GetObject (locationID);
 
-        Assert.IsNotNull (client1);
-        Assert.IsNotNull (client2);
-        Assert.IsNotNull (location);
-        Assert.AreSame (client1, location.Client);
+        Assert.That (client1, Is.Not.Null);
+        Assert.That (client2, Is.Not.Null);
+        Assert.That (location, Is.Not.Null);
+        Assert.That (location.Client, Is.SameAs (client1));
       }
     }
 
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _location.Client.Delete ();
       Client newClient = Client.NewObject ();
       _location.Client = newClient;
-      Assert.AreSame (newClient, _location.Client);
+      Assert.That (_location.Client, Is.SameAs (newClient));
     }
 
     [Test]
@@ -251,15 +251,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _location.Client.Delete ();
       Client newClient = Client.NewObject ();
       _location.Client = newClient;
-      Assert.AreSame (newClient, _location.Client);
+      Assert.That (_location.Client, Is.SameAs (newClient));
     }
 
     [Test]
     public void StateRemainsUnchangedWhenDeletingRelatedObject ()
     {
-      Assert.AreEqual (StateType.Unchanged, _location.State);
+      Assert.That (_location.State, Is.EqualTo (StateType.Unchanged));
       _location.Client.Delete ();
-      Assert.AreEqual (StateType.Unchanged, _location.State);
+      Assert.That (_location.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -271,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
       TestableClientTransaction.Rollback ();
 
-      Assert.AreEqual (StateType.Unchanged, _location.State);
+      Assert.That (_location.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -293,9 +293,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
         newClient1 = Client.GetObject (newClientID1);
         newClient2 = Client.GetObject (newClientID2);
 
-        Assert.IsNotNull (newClient1);
-        Assert.IsNotNull (newClient2);
-        Assert.AreSame (newClient1, newClient2.ParentClient);
+        Assert.That (newClient1, Is.Not.Null);
+        Assert.That (newClient2, Is.Not.Null);
+        Assert.That (newClient2.ParentClient, Is.SameAs (newClient1));
       }
     }
 

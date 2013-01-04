@@ -33,15 +33,15 @@ namespace Remotion.Web.UnitTests.Core.Security
 
       HttpContextPrincipalProvider provider = new HttpContextPrincipalProvider ("Provider", config);
 
-      Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreEqual ("The Description", provider.Description);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
+      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
     
     [Test]
     public void GetIsNull()
     {
       IPrincipalProvider _principalProvider = new HttpContextPrincipalProvider();
-      Assert.IsFalse (_principalProvider.IsNull);
+      Assert.That (_principalProvider.IsNull, Is.False);
     }
   }
 }

@@ -48,7 +48,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
 
       var log = Validator.Validate (definition);
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInTargetClass", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInTargetClass", log), Is.True);
     }
 
     [Test]
@@ -61,7 +61,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
 
       var log = Validator.Validate (definition);
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInTargetClass", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInTargetClass", log), Is.True);
     }
 
     [Test]
@@ -117,7 +117,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
 
       var log = Validator.Validate (definition);
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInOtherMixins", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInOtherMixins", log), Is.True);
     }
 
     [Test]
@@ -131,7 +131,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
 
       var log = Validator.Validate (definition);
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInOtherMixins", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInOtherMixins", log), Is.True);
     }
   }
 }

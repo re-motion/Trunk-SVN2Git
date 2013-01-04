@@ -55,9 +55,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       IMetadataFactory metadataFactoryStub = MockRepository.GenerateStub<IMetadataFactory>();
       IBusinessObjectServiceFactory serviceFactoryStub = MockRepository.GenerateStub<IBusinessObjectServiceFactory>();
       BindableDomainObjectProvider provider = new BindableDomainObjectProvider (metadataFactoryStub, serviceFactoryStub);
-      
-      Assert.AreSame (metadataFactoryStub, provider.MetadataFactory);
-      Assert.AreSame (serviceFactoryStub, provider.ServiceFactory);
+
+      Assert.That (provider.MetadataFactory, Is.SameAs (metadataFactoryStub));
+      Assert.That (provider.ServiceFactory, Is.SameAs (serviceFactoryStub));
     }
   }
 }

@@ -29,11 +29,11 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     public void RegexConsidering_SimpleName ()
     {
       var filter = new RegexAssemblyLoaderFilter ("^Remotion.*$", RegexAssemblyLoaderFilter.MatchTargetKind.SimpleName);
-      Assert.AreEqual ("^Remotion.*$", filter.MatchExpressionString);
-      Assert.IsTrue (filter.ShouldConsiderAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly.GetName()));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (typeof (TestFixtureAttribute).Assembly.GetName()));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName()));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (new AssemblyName ("this is not a Remotion assembly")));
+      Assert.That (filter.MatchExpressionString, Is.EqualTo ("^Remotion.*$"));
+      Assert.That (filter.ShouldConsiderAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly.GetName()), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (TestFixtureAttribute).Assembly.GetName()), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName()), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (new AssemblyName ("this is not a Remotion assembly")), Is.False);
     }
 
     [Test]
@@ -42,22 +42,22 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var filter = new RegexAssemblyLoaderFilter (
           typeof (object).Assembly.FullName,
           RegexAssemblyLoaderFilter.MatchTargetKind.FullName);
-      Assert.IsTrue (filter.MatchExpressionString.StartsWith ("mscorlib"));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly.GetName()));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (typeof (TestFixtureAttribute).Assembly.GetName()));
-      Assert.IsTrue (filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName()));
-      Assert.IsFalse (filter.ShouldConsiderAssembly (new AssemblyName ("this is not mscorlib")));
+      Assert.That (filter.MatchExpressionString.StartsWith ("mscorlib"), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly.GetName()), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (TestFixtureAttribute).Assembly.GetName()), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName()), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (new AssemblyName ("this is not mscorlib")), Is.False);
     }
 
     [Test]
     public void RegexInclusion_AlwaysTrue ()
     {
       var filter = new RegexAssemblyLoaderFilter ("spispopd", RegexAssemblyLoaderFilter.MatchTargetKind.SimpleName);
-      Assert.AreEqual ("spispopd", filter.MatchExpressionString);
-      Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly));
-      Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (TestFixtureAttribute).Assembly));
-      Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (object).Assembly));
-      Assert.IsTrue (filter.ShouldIncludeAssembly (typeof (Uri).Assembly));
+      Assert.That (filter.MatchExpressionString, Is.EqualTo ("spispopd"));
+      Assert.That (filter.ShouldIncludeAssembly (typeof (AttributeAssemblyLoaderFilterTest).Assembly), Is.True);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (TestFixtureAttribute).Assembly), Is.True);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (object).Assembly), Is.True);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (Uri).Assembly), Is.True);
     }
   }
 }

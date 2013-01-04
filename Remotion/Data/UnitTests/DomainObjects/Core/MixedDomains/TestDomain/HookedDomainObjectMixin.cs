@@ -39,14 +39,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
       OnLoadedCalled = true;
       OnLoadedLoadMode = loadMode;
       ++OnLoadedCount;
-      Assert.IsNotNull (Target.ID);
+      Assert.That (Target.ID, Is.Not.Null);
       ++Target.Property;
     }
 
     public void OnDomainObjectCreated ()
     {
       OnCreatedCalled = true;
-      Assert.IsNotNull (Target.ID);
+      Assert.That (Target.ID, Is.Not.Null);
       Target.Property += 2;
     }
 
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     {
       OnDomainObjectReferenceInitializingCalled = true;
       ++OnDomainObjectReferenceInitializingCount;
-      Assert.IsNotNull (Target.ID);
+      Assert.That (Target.ID, Is.Not.Null);
       if (InitializationHandler != null)
         InitializationHandler (this, EventArgs.Empty);
     }

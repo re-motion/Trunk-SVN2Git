@@ -45,8 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void MixinIsApplied ()
     {
-      Assert.IsNotNull (_loadedClassWithAllDataTypesMixin);
-      Assert.IsNotNull (_newClassWithAllDataTypesMixin);
+      Assert.That (_loadedClassWithAllDataTypesMixin, Is.Not.Null);
+      Assert.That (_newClassWithAllDataTypesMixin, Is.Not.Null);
     }
 
     [Test]
@@ -62,74 +62,74 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void This ()
     {
-      Assert.AreSame (_loadedClassWithAllDataTypes, _loadedClassWithAllDataTypesMixin.Target);
-      Assert.AreSame (_newClassWithAllDataTypes, _newClassWithAllDataTypesMixin.Target);
+      Assert.That (_loadedClassWithAllDataTypesMixin.Target, Is.SameAs (_loadedClassWithAllDataTypes));
+      Assert.That (_newClassWithAllDataTypesMixin.Target, Is.SameAs (_newClassWithAllDataTypes));
     }
 
     [Test]
     public void ID ()
     {
-      Assert.AreSame (_loadedClassWithAllDataTypes.ID, _loadedClassWithAllDataTypesMixin.ID);
-      Assert.AreSame (_newClassWithAllDataTypes.ID, _newClassWithAllDataTypesMixin.ID);
+      Assert.That (_loadedClassWithAllDataTypesMixin.ID, Is.SameAs (_loadedClassWithAllDataTypes.ID));
+      Assert.That (_newClassWithAllDataTypesMixin.ID, Is.SameAs (_newClassWithAllDataTypes.ID));
     }
 
     [Test]
     public void GetPublicDomainObjectType ()
     {
-      Assert.AreSame (_loadedClassWithAllDataTypes.GetPublicDomainObjectType (), _loadedClassWithAllDataTypesMixin.GetPublicDomainObjectType ());
-      Assert.AreSame (_newClassWithAllDataTypes.GetPublicDomainObjectType (), _newClassWithAllDataTypesMixin.GetPublicDomainObjectType ());
+      Assert.That (_loadedClassWithAllDataTypesMixin.GetPublicDomainObjectType (), Is.SameAs (_loadedClassWithAllDataTypes.GetPublicDomainObjectType ()));
+      Assert.That (_newClassWithAllDataTypesMixin.GetPublicDomainObjectType (), Is.SameAs (_newClassWithAllDataTypes.GetPublicDomainObjectType ()));
     }
 
     [Test]
     public void State ()
     {
-      Assert.AreEqual (_loadedClassWithAllDataTypes.State, _loadedClassWithAllDataTypesMixin.State);
-      Assert.AreEqual (_newClassWithAllDataTypes.State, _newClassWithAllDataTypesMixin.State);
+      Assert.That (_loadedClassWithAllDataTypesMixin.State, Is.EqualTo (_loadedClassWithAllDataTypes.State));
+      Assert.That (_newClassWithAllDataTypesMixin.State, Is.EqualTo (_newClassWithAllDataTypes.State));
 
       ++_loadedClassWithAllDataTypes.Int32Property;
-      Assert.AreEqual (_loadedClassWithAllDataTypes.State, _loadedClassWithAllDataTypesMixin.State);
+      Assert.That (_loadedClassWithAllDataTypesMixin.State, Is.EqualTo (_loadedClassWithAllDataTypes.State));
 
       _loadedClassWithAllDataTypes.Delete ();
-      Assert.AreEqual (_loadedClassWithAllDataTypes.State, _loadedClassWithAllDataTypesMixin.State);
+      Assert.That (_loadedClassWithAllDataTypesMixin.State, Is.EqualTo (_loadedClassWithAllDataTypes.State));
     }
 
     [Test]
     public void IsDiscarded()
     {
-      Assert.AreEqual (_loadedClassWithAllDataTypes.IsInvalid, _loadedClassWithAllDataTypesMixin.IsInvalid);
-      Assert.AreEqual (_newClassWithAllDataTypes.IsInvalid, _newClassWithAllDataTypesMixin.IsInvalid);
+      Assert.That (_loadedClassWithAllDataTypesMixin.IsInvalid, Is.EqualTo (_loadedClassWithAllDataTypes.IsInvalid));
+      Assert.That (_newClassWithAllDataTypesMixin.IsInvalid, Is.EqualTo (_newClassWithAllDataTypes.IsInvalid));
 
       _newClassWithAllDataTypes.Delete ();
 
-      Assert.AreEqual (_newClassWithAllDataTypes.IsInvalid, _newClassWithAllDataTypesMixin.IsInvalid);
+      Assert.That (_newClassWithAllDataTypesMixin.IsInvalid, Is.EqualTo (_newClassWithAllDataTypes.IsInvalid));
     }
 
     [Test]
     public void Properties ()
     {
-      Assert.AreEqual (_loadedClassWithAllDataTypes.Properties, _loadedClassWithAllDataTypesMixin.Properties);
-      Assert.AreEqual (_newClassWithAllDataTypes.Properties, _newClassWithAllDataTypesMixin.Properties);
+      Assert.That (_loadedClassWithAllDataTypesMixin.Properties, Is.EqualTo (_loadedClassWithAllDataTypes.Properties));
+      Assert.That (_newClassWithAllDataTypesMixin.Properties, Is.EqualTo (_newClassWithAllDataTypes.Properties));
     }
 
     [Test]
     public void OnDomainObjectReferenceInitializing ()
     {
-      Assert.IsTrue (_loadedClassWithAllDataTypesMixin.OnDomainObjectReferenceInitializingCalled);
-      Assert.IsTrue (_newClassWithAllDataTypesMixin.OnDomainObjectReferenceInitializingCalled);
+      Assert.That (_loadedClassWithAllDataTypesMixin.OnDomainObjectReferenceInitializingCalled, Is.True);
+      Assert.That (_newClassWithAllDataTypesMixin.OnDomainObjectReferenceInitializingCalled, Is.True);
     }
 
     [Test]
     public void OnDomainObjectCreated ()
     {
-      Assert.IsFalse (_loadedClassWithAllDataTypesMixin.OnDomainObjectCreatedCalled);
-      Assert.IsTrue (_newClassWithAllDataTypesMixin.OnDomainObjectCreatedCalled);
+      Assert.That (_loadedClassWithAllDataTypesMixin.OnDomainObjectCreatedCalled, Is.False);
+      Assert.That (_newClassWithAllDataTypesMixin.OnDomainObjectCreatedCalled, Is.True);
     }
 
     [Test]
     public void OnDomainObjectLoaded ()
     {
-      Assert.IsTrue (_loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedCalled);
-      Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, _loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedLoadMode);
+      Assert.That (_loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedCalled, Is.True);
+      Assert.That (_loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
 
       _loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedCalled = false;
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
@@ -138,10 +138,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         ++_loadedClassWithAllDataTypes.Int32Property;
       }
 
-      Assert.IsTrue (_loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedCalled);
-      Assert.AreEqual (LoadMode.DataContainerLoadedOnly, _loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedLoadMode);
+      Assert.That (_loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedCalled, Is.True);
+      Assert.That (_loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
 
-      Assert.IsFalse (_newClassWithAllDataTypesMixin.OnDomainObjectLoadedCalled);
+      Assert.That (_newClassWithAllDataTypesMixin.OnDomainObjectLoadedCalled, Is.False);
     }
 
     [Test]

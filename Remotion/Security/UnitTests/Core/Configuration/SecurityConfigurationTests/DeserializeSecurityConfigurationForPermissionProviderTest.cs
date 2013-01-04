@@ -32,9 +32,9 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.AreEqual (1, Configuration.PermissionProviders.Count);
+      Assert.That (Configuration.PermissionProviders.Count, Is.EqualTo (1));
       Assert.IsInstanceOf (typeof (PermissionReflector), Configuration.PermissionProvider);
-      Assert.AreSame (Configuration.PermissionProvider, Configuration.PermissionProviders["Reflection"]);
+      Assert.That (Configuration.PermissionProviders["Reflection"], Is.SameAs (Configuration.PermissionProvider));
     }
 
     [Test]
@@ -42,7 +42,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.AreSame (Configuration.PermissionProvider, Configuration.PermissionProvider);
+      Assert.That (Configuration.PermissionProvider, Is.SameAs (Configuration.PermissionProvider));
     }
 
     [Test]
@@ -59,7 +59,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
       Assert.IsInstanceOf (typeof (PermissionProviderMock), Configuration.PermissionProvider);
-      Assert.AreSame (Configuration.PermissionProvider, Configuration.PermissionProviders["Custom"]);
+      Assert.That (Configuration.PermissionProviders["Custom"], Is.SameAs (Configuration.PermissionProvider));
     }
 
     [Test]
@@ -75,10 +75,10 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.AreEqual (2, Configuration.PermissionProviders.Count);
+      Assert.That (Configuration.PermissionProviders.Count, Is.EqualTo (2));
       Assert.IsInstanceOf (typeof (PermissionProviderMock), Configuration.PermissionProviders["Custom"]);
       Assert.IsInstanceOf (typeof (PermissionReflector), Configuration.PermissionProvider);
-      Assert.AreSame (Configuration.PermissionProvider, Configuration.PermissionProviders["Reflection"]);
+      Assert.That (Configuration.PermissionProviders["Reflection"], Is.SameAs (Configuration.PermissionProvider));
     }
 
     [Test]

@@ -43,20 +43,20 @@ namespace Remotion.UnitTests.Configuration
     [Test]
     public void Initialize ()
     {
-      Assert.AreEqual (2, _propertyCollection.Count);
+      Assert.That (_propertyCollection.Count, Is.EqualTo (2));
 
       ConfigurationProperty defaultProviderProperty = _propertyCollection["defaultProvider"];
-      Assert.IsNotNull (defaultProviderProperty);
-      Assert.AreEqual (typeof (string), defaultProviderProperty.Type);
-      Assert.AreEqual ("Default Value", defaultProviderProperty.DefaultValue);
-      Assert.IsFalse (defaultProviderProperty.IsRequired);
+      Assert.That (defaultProviderProperty, Is.Not.Null);
+      Assert.That (defaultProviderProperty.Type, Is.EqualTo (typeof (string)));
+      Assert.That (defaultProviderProperty.DefaultValue, Is.EqualTo ("Default Value"));
+      Assert.That (defaultProviderProperty.IsRequired, Is.False);
       Assert.IsInstanceOf (typeof (StringValidator), defaultProviderProperty.Validator);
 
       ConfigurationProperty providersProperty = _propertyCollection["providers"];
-      Assert.IsNotNull (providersProperty);
-      Assert.AreEqual (typeof (ProviderSettingsCollection), providersProperty.Type);
-      Assert.IsNull (providersProperty.DefaultValue);
-      Assert.IsFalse (providersProperty.IsRequired);
+      Assert.That (providersProperty, Is.Not.Null);
+      Assert.That (providersProperty.Type, Is.EqualTo (typeof (ProviderSettingsCollection)));
+      Assert.That (providersProperty.DefaultValue, Is.Null);
+      Assert.That (providersProperty.IsRequired, Is.False);
       Assert.IsInstanceOf (typeof (DefaultValidator), providersProperty.Validator);
     }
 
@@ -73,7 +73,7 @@ namespace Remotion.UnitTests.Configuration
 
       ConfigurationHelper.DeserializeSection (_stubConfigurationSection, xmlFragment);
 
-      Assert.AreEqual (2, _providerHelper.Providers.Count);
+      Assert.That (_providerHelper.Providers.Count, Is.EqualTo (2));
       Assert.IsInstanceOf (typeof (FakeProvider), _providerHelper.Providers["Fake"]);
     }
 
@@ -91,7 +91,7 @@ namespace Remotion.UnitTests.Configuration
       ConfigurationHelper.DeserializeSection (_stubConfigurationSection, xmlFragment);
 
       Assert.IsInstanceOf (typeof (FakeProvider), _providerHelper.Provider);
-      Assert.AreSame (_providerHelper.Providers["Fake"], _providerHelper.Provider);
+      Assert.That (_providerHelper.Provider, Is.SameAs (_providerHelper.Providers["Fake"]));
     }
 
     [Test]
@@ -110,7 +110,7 @@ namespace Remotion.UnitTests.Configuration
       StubProviderHelper providerHelper = stubConfigurationSection.GetStubProviderHelper ();
       providerHelper.InitializeProperties (_stubConfigurationSection.GetProperties ());
 
-      Assert.IsNull (providerHelper.Provider);
+      Assert.That (providerHelper.Provider, Is.Null);
     }
 
     [Test]
@@ -155,7 +155,7 @@ namespace Remotion.UnitTests.Configuration
           typeof (FakeProvider).Assembly.GetName(),
           "Remotion.UnitTests.Configuration.FakeProvider");
 
-      Assert.AreSame (typeof (FakeProvider), type);
+      Assert.That (type, Is.SameAs (typeof (FakeProvider)));
     }
 
     [Test]
@@ -179,7 +179,7 @@ namespace Remotion.UnitTests.Configuration
           "Remotion.UnitTests",
           "Remotion.UnitTests.Configuration.FakeProvider");
 
-      Assert.AreSame (typeof (FakeProvider), type);
+      Assert.That (type, Is.SameAs (typeof (FakeProvider)));
     }
 
     [Test]
@@ -200,10 +200,10 @@ namespace Remotion.UnitTests.Configuration
 
       ProviderBase providerBase = _providerHelper.InstantiateProvider (providerSettings, typeof (FakeProviderBase), typeof (IFakeProvider));
 
-      Assert.IsNotNull (providerBase);
+      Assert.That (providerBase, Is.Not.Null);
       Assert.IsInstanceOf (typeof (FakeProvider), providerBase);
-      Assert.AreEqual ("Custom", providerBase.Name);
-      Assert.AreEqual ("The Description", providerBase.Description);
+      Assert.That (providerBase.Name, Is.EqualTo ("Custom"));
+      Assert.That (providerBase.Description, Is.EqualTo ("The Description"));
     }
 
 
@@ -222,7 +222,7 @@ namespace Remotion.UnitTests.Configuration
       {
         Assert.IsInstanceOf (typeof (TargetInvocationException), ex.InnerException);
         Assert.IsInstanceOf (typeof (ConstructorException), ex.InnerException.InnerException);
-        Assert.AreEqual ("A message from the constructor.", ex.Message);
+        Assert.That (ex.Message, Is.EqualTo ("A message from the constructor."));
       }
     }
 
@@ -260,10 +260,10 @@ namespace Remotion.UnitTests.Configuration
 
       _providerHelper.InstantiateProviders (providerSettingsCollection, providerCollection, typeof (FakeProviderBase), typeof (IFakeProvider));
 
-      Assert.AreEqual (1, providerCollection.Count);
+      Assert.That (providerCollection.Count, Is.EqualTo (1));
       ProviderBase providerBase = providerCollection["Custom"];
       Assert.IsInstanceOf (typeof (FakeProvider), providerBase);
-      Assert.AreEqual ("Custom", providerBase.Name);
+      Assert.That (providerBase.Name, Is.EqualTo ("Custom"));
     }
   }
 }

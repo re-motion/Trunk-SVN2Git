@@ -50,18 +50,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void Initialization ()
     {
-      Assert.AreEqual (0, _transporter.ObjectIDs.Count);
-      Assert.IsEmpty (_transporter.ObjectIDs);
+      Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (0));
+      Assert.That (_transporter.ObjectIDs, Is.Empty);
     }
 
     [Test]
     public void Load ()
     {
       DomainObject domainObject = _transporter.Load (DomainObjectIDs.Order1);
-      Assert.AreEqual (1, _transporter.ObjectIDs.Count);
+      Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (1));
       Assert.That (_transporter.ObjectIDs, Is.EqualTo (new[] { DomainObjectIDs.Order1 }));
 
-      Assert.AreSame (domainObject, _transporter.GetTransportedObject (domainObject.ID));
+      Assert.That (_transporter.GetTransportedObject (domainObject.ID), Is.SameAs (domainObject));
     }
 
     [Test]
@@ -69,9 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       DomainObject domainObject1 = _transporter.Load (DomainObjectIDs.Order1);
       DomainObject domainObject2 = _transporter.Load (DomainObjectIDs.Order1);
-      Assert.AreEqual (1, _transporter.ObjectIDs.Count);
+      Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (1));
       Assert.That (_transporter.ObjectIDs, Is.EqualTo (new[] { DomainObjectIDs.Order1 }));
-      Assert.AreSame (domainObject1, domainObject2);
+      Assert.That (domainObject2, Is.SameAs (domainObject1));
     }
 
     [Test]
@@ -86,11 +86,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void Load_Multiple ()
     {
       _transporter.Load (DomainObjectIDs.Order1);
-      Assert.AreEqual (1, _transporter.ObjectIDs.Count);
+      Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (1));
       _transporter.Load (DomainObjectIDs.Order2);
-      Assert.AreEqual (2, _transporter.ObjectIDs.Count);
+      Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (2));
       _transporter.Load (DomainObjectIDs.OrderItem1);
-      Assert.AreEqual (3, _transporter.ObjectIDs.Count);
+      Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (3));
       Assert.That (_transporter.ObjectIDs, Is.EqualTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 }));
     }
 
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void LoadWithRelatedObjects ()
     {
       IEnumerable<DomainObject> loadedObjects = _transporter.LoadWithRelatedObjects (DomainObjectIDs.Order1);
-      Assert.AreEqual (6, _transporter.ObjectIDs.Count);
+      Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (6));
       Assert.That (
           _transporter.ObjectIDs,
           Is.EquivalentTo (
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void LoadRecursive ()
     {
       IEnumerable<DomainObject> loadedObjects = _transporter.LoadRecursive (DomainObjectIDs.Employee1);
-      Assert.AreEqual (5, _transporter.ObjectIDs.Count);
+      Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (5));
       Assert.That (
           _transporter.ObjectIDs,
           Is.EquivalentTo (
@@ -179,8 +179,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void LoadNew ()
     {
       var order = (Order) _transporter.LoadNew (typeof (Order), ParamList.Empty);
-      Assert.IsNotNull (order);
-      Assert.IsTrue (_transporter.IsLoaded (order.ID));
+      Assert.That (order, Is.Not.Null);
+      Assert.That (_transporter.IsLoaded (order.ID), Is.True);
     }
 
     [Test]
@@ -191,9 +191,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       TransportedDomainObjects transportedObjects = ExportAndLoadTransportData();
 
-      Assert.IsNotNull (transportedObjects);
+      Assert.That (transportedObjects, Is.Not.Null);
       var domainObjects = new List<DomainObject> (transportedObjects.TransportedObjects);
-      Assert.AreEqual (2, domainObjects.Count);
+      Assert.That (domainObjects.Count, Is.EqualTo (2));
       Assert.That (domainObjects.ConvertAll (obj => obj.ID), Is.EquivalentTo (new[] { DomainObjectIDs.Employee1, DomainObjectIDs.Employee2 }));
     }
 
@@ -205,9 +205,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       TransportedDomainObjects transportedObjects = ExportAndLoadTransportData (XmlImportStrategy.Instance, XmlExportStrategy.Instance);
 
-      Assert.IsNotNull (transportedObjects);
+      Assert.That (transportedObjects, Is.Not.Null);
       var domainObjects = new List<DomainObject> (transportedObjects.TransportedObjects);
-      Assert.AreEqual (2, domainObjects.Count);
+      Assert.That (domainObjects.Count, Is.EqualTo (2));
       Assert.That (domainObjects.ConvertAll (obj => obj.ID), Is.EquivalentTo (new[] { DomainObjectIDs.Employee1, DomainObjectIDs.Employee2 }));
     }
 
@@ -226,24 +226,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void IsLoaded_True ()
     {
       _transporter.Load (DomainObjectIDs.Employee1);
-      Assert.IsTrue (_transporter.IsLoaded (DomainObjectIDs.Employee1));
+      Assert.That (_transporter.IsLoaded (DomainObjectIDs.Employee1), Is.True);
     }
 
     [Test]
     public void IsLoaded_False ()
     {
-      Assert.IsFalse (_transporter.IsLoaded (DomainObjectIDs.Employee1));
+      Assert.That (_transporter.IsLoaded (DomainObjectIDs.Employee1), Is.False);
     }
 
     [Test]
     public void TransactionContainsMoreObjects_ThanAreTransported ()
     {
       _transporter.LoadRecursive (DomainObjectIDs.Employee1, new FollowAllProcessNoneStrategy());
-      Assert.AreEqual (0, _transporter.ObjectIDs.Count);
-      Assert.IsEmpty (new List<ObjectID> (_transporter.ObjectIDs));
+      Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (0));
+      Assert.That (new List<ObjectID> (_transporter.ObjectIDs), Is.Empty);
 
       TransportedDomainObjects transportedObjects = ExportAndLoadTransportData();
-      Assert.IsEmpty (transportedObjects.TransportedObjects);
+      Assert.That (transportedObjects.TransportedObjects, Is.Empty);
     }
 
     [Test]
@@ -278,8 +278,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       _transporter.Load (DomainObjectIDs.Order1);
       var order = (Order) _transporter.GetTransportedObject (DomainObjectIDs.Order1);
-      Assert.IsNotNull (order);
-      Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
+      Assert.That (order, Is.Not.Null);
+      Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
@@ -297,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       _transporter.Load (DomainObjectIDs.Order1);
       var order = (Order) _transporter.GetTransportedObject (DomainObjectIDs.Order1);
-      Assert.IsTrue (order.HasBindingTransaction);
+      Assert.That (order.HasBindingTransaction, Is.True);
     }
 
     [Test]
@@ -306,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       _transporter.Load (DomainObjectIDs.Order1);
       var order = (Order) _transporter.GetTransportedObject (DomainObjectIDs.Order1);
       ++order.OrderNumber;
-      Assert.AreEqual (2, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (2));
     }
 
     [Test]
@@ -315,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       _transporter.Load (DomainObjectIDs.Computer1);
       var computer = (Computer) _transporter.GetTransportedObject (DomainObjectIDs.Computer1);
       computer.Employee = null;
-      Assert.IsNull (computer.Employee);
+      Assert.That (computer.Employee, Is.Null);
     }
 
     [Test]
@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       _transporter.Load (DomainObjectIDs.Employee3);
       var employee = (Employee) _transporter.GetTransportedObject (DomainObjectIDs.Employee3);
       employee.Computer = null;
-      Assert.IsNull (employee.Computer);
+      Assert.That (employee.Computer, Is.Null);
     }
 
     [Test]

@@ -33,13 +33,13 @@ namespace Remotion.UnitTests.Configuration
       TypeElement<SampleType, DerivedSampleType> typeElement = new TypeElement<SampleType, DerivedSampleType>();
 
       ConfigurationPropertyCollection properties = (ConfigurationPropertyCollection) PrivateInvoke.GetNonPublicProperty (typeElement, "Properties");
-      Assert.IsNotNull (properties);
+      Assert.That (properties, Is.Not.Null);
       ConfigurationProperty property = properties["type"];
-      Assert.IsNotNull (property);
-      Assert.AreEqual (typeof (DerivedSampleType), property.DefaultValue);
+      Assert.That (property, Is.Not.Null);
+      Assert.That (property.DefaultValue, Is.EqualTo (typeof (DerivedSampleType)));
       Assert.IsInstanceOf (typeof (TypeNameConverter), property.Converter);
       Assert.IsInstanceOf (typeof (SubclassTypeValidator), property.Validator);
-      Assert.IsTrue (property.IsRequired);
+      Assert.That (property.IsRequired, Is.True);
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Configuration
     {
       TypeElement<SampleType, DerivedSampleType> typeElement = new TypeElement<SampleType, DerivedSampleType>();
 
-      Assert.AreEqual (typeof (DerivedSampleType), typeElement.Type);
+      Assert.That (typeElement.Type, Is.EqualTo (typeof (DerivedSampleType)));
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.UnitTests.Configuration
       string xmlFragment = @"<theElement type=""Remotion.UnitTests::Configuration.SampleType"" />";
       ConfigurationHelper.DeserializeElement (typeElement, xmlFragment);
 
-      Assert.AreEqual (typeof (SampleType), typeElement.Type);
+      Assert.That (typeElement.Type, Is.EqualTo (typeof (SampleType)));
     }
   }
 }

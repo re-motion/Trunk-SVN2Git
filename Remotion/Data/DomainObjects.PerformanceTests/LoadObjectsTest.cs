@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
           stopwatch.Stop();
 
-          Assert.AreEqual (6000, files.Count);
+          Assert.That (files.Count, Is.EqualTo (6000));
         }
       }
 
@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
           DomainObjectCollection clientBoundBaseClasses = client.ClientBoundBaseClasses;
 
           stopwatch.Stop();
-          Assert.AreEqual (4000, clientBoundBaseClasses.Count);
+          Assert.That (clientBoundBaseClasses.Count, Is.EqualTo (4000));
         }
       }
 

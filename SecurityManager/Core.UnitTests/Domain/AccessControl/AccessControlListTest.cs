@@ -44,8 +44,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       AccessControlEntry[] foundEntries = acl.FindMatchingEntries (token);
 
-      Assert.AreEqual (1, foundEntries.Length);
-      Assert.Contains (entry, foundEntries);
+      Assert.That (foundEntries.Length, Is.EqualTo (1));
+      Assert.That (foundEntries, Has.Member (entry));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       AccessControlEntry[] foundEntries = acl.FindMatchingEntries (token);
 
-      Assert.AreEqual (0, foundEntries.Length);
+      Assert.That (foundEntries.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -79,9 +79,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       AccessControlEntry[] entries = acl.FindMatchingEntries (token);
 
-      Assert.AreEqual (2, entries.Length);
-      Assert.Contains (ace2, entries);
-      Assert.Contains (ace1, entries);
+      Assert.That (entries.Length, Is.EqualTo (2));
+      Assert.That (entries, Has.Member (ace2));
+      Assert.That (entries, Has.Member (ace1));
     }
 
     [Test]
@@ -185,17 +185,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
         acl.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, acl.State);
+        Assert.That (acl.State, Is.EqualTo (StateType.Unchanged));
 
         AccessControlEntry entry = acl.CreateAccessControlEntry();
 
-        Assert.AreSame (acl, entry.AccessControlList);
-        Assert.AreEqual (2, entry.GetPermissions().Count);
-        Assert.AreSame (readAccessType, (entry.GetPermissions()[0]).AccessType);
-        Assert.AreSame (entry, (entry.GetPermissions()[0]).AccessControlEntry);
-        Assert.AreSame (deleteAccessType, (entry.GetPermissions()[1]).AccessType);
-        Assert.AreSame (entry, (entry.GetPermissions()[1]).AccessControlEntry);
-        Assert.AreEqual (StateType.Changed, acl.State);
+        Assert.That (entry.AccessControlList, Is.SameAs (acl));
+        Assert.That (entry.GetPermissions().Count, Is.EqualTo (2));
+        Assert.That ((entry.GetPermissions()[0]).AccessType, Is.SameAs (readAccessType));
+        Assert.That ((entry.GetPermissions()[0]).AccessControlEntry, Is.SameAs (entry));
+        Assert.That ((entry.GetPermissions()[1]).AccessType, Is.SameAs (deleteAccessType));
+        Assert.That ((entry.GetPermissions()[1]).AccessControlEntry, Is.SameAs (entry));
+        Assert.That (acl.State, Is.EqualTo (StateType.Changed));
       }
     }
 
@@ -207,17 +207,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
         acl.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, acl.State);
+        Assert.That (acl.State, Is.EqualTo (StateType.Unchanged));
 
         AccessControlEntry ace0 = acl.CreateAccessControlEntry();
         AccessControlEntry acel = acl.CreateAccessControlEntry();
 
-        Assert.AreEqual (2, acl.AccessControlEntries.Count);
-        Assert.AreSame (ace0, acl.AccessControlEntries[0]);
-        Assert.AreEqual (0, ace0.Index);
-        Assert.AreSame (acel, acl.AccessControlEntries[1]);
-        Assert.AreEqual (1, acel.Index);
-        Assert.AreEqual (StateType.Changed, acl.State);
+        Assert.That (acl.AccessControlEntries.Count, Is.EqualTo (2));
+        Assert.That (acl.AccessControlEntries[0], Is.SameAs (ace0));
+        Assert.That (ace0.Index, Is.EqualTo (0));
+        Assert.That (acl.AccessControlEntries[1], Is.SameAs (acel));
+        Assert.That (acel.Index, Is.EqualTo (1));
+        Assert.That (acl.State, Is.EqualTo (StateType.Changed));
       }
     }
 
@@ -226,7 +226,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       AccessControlList acl = _testHelper.CreateStatefulAcl (_testHelper.CreateOrderClassDefinitionWithProperties());
 
-      Assert.AreEqual (StateType.New, acl.State);
+      Assert.That (acl.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -241,9 +241,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         AccessControlList actualAcl = StatefulAccessControlList.GetObject (expectedAcl.ID);
 
-        Assert.AreEqual (10, actualAcl.AccessControlEntries.Count);
+        Assert.That (actualAcl.AccessControlEntries.Count, Is.EqualTo (10));
         for (int i = 0; i < 10; i++)
-          Assert.AreEqual (expectedAces[i].ID, actualAcl.AccessControlEntries[i].ID);
+          Assert.That (actualAcl.AccessControlEntries[i].ID, Is.EqualTo (expectedAces[i].ID));
       }
     }
 

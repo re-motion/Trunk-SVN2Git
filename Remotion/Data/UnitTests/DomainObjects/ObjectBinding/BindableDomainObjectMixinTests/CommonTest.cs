@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void SerializeAndDeserialize ()
     {
       SampleBindableMixinDomainObject value = SampleBindableMixinDomainObject.NewObject ();
-      Assert.AreNotEqual ("Earl", value.Name);
+      Assert.That (value.Name, Is.Not.EqualTo ("Earl"));
       value.Name = "Earl";
       Tuple<TestableClientTransaction, SampleBindableMixinDomainObject> deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (TestableClientTransaction, value));
 

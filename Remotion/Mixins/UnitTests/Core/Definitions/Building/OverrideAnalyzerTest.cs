@@ -33,9 +33,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)];
       MixinDefinition mixin2 = targetClass.Mixins[typeof (BT1Mixin2)];
 
-      Assert.IsFalse (mixin1.HasOverriddenMembers());
-      Assert.IsFalse (mixin2.HasOverriddenMembers ());
-      Assert.IsTrue (targetClass.HasOverriddenMembers ());
+      Assert.That (mixin1.HasOverriddenMembers(), Is.False);
+      Assert.That (mixin2.HasOverriddenMembers (), Is.False);
+      Assert.That (targetClass.HasOverriddenMembers (), Is.True);
 
       MethodInfo baseMethod1 = typeof (BaseType1).GetMethod ("VirtualMethod", new Type[0]);
       MethodInfo baseMethod2 = typeof (BaseType1).GetMethod ("VirtualMethod", new[] {typeof (string)});
@@ -43,21 +43,21 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       MethodDefinition overridden = targetClass.Methods[baseMethod1];
 
-      Assert.IsTrue (overridden.Overrides.ContainsKey (typeof (BT1Mixin1)));
+      Assert.That (overridden.Overrides.ContainsKey (typeof (BT1Mixin1)), Is.True);
       MethodDefinition overrider = overridden.Overrides[typeof (BT1Mixin1)];
 
-      Assert.AreSame (overrider, mixin1.Methods[mixinMethod1]);
-      Assert.IsNotNull (overrider.Base);
-      Assert.AreSame (overridden, overrider.Base);
+      Assert.That (mixin1.Methods[mixinMethod1], Is.SameAs (overrider));
+      Assert.That (overrider.Base, Is.Not.Null);
+      Assert.That (overrider.Base, Is.SameAs (overridden));
 
       MethodDefinition notOverridden = targetClass.Methods[baseMethod2];
-      Assert.AreEqual (0, notOverridden.Overrides.Count);
+      Assert.That (notOverridden.Overrides.Count, Is.EqualTo (0));
 
-      Assert.IsTrue (overridden.Overrides.ContainsKey (typeof (BT1Mixin2)));
+      Assert.That (overridden.Overrides.ContainsKey (typeof (BT1Mixin2)), Is.True);
       overrider = overridden.Overrides[typeof (BT1Mixin2)];
 
-      Assert.IsTrue (new List<MemberDefinitionBase> (mixin2.GetAllOverrides()).Contains (overrider));
-      Assert.AreSame (overridden, overrider.Base);
+      Assert.That (new List<MemberDefinitionBase> (mixin2.GetAllOverrides()).Contains (overrider), Is.True);
+      Assert.That (overrider.Base, Is.SameAs (overridden));
     }
 
     [Test]
@@ -73,24 +73,24 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       PropertyDefinition overridden = targetClass.Properties[baseProperty1];
 
-      Assert.IsTrue (overridden.Overrides.ContainsKey (typeof (BT1Mixin1)));
+      Assert.That (overridden.Overrides.ContainsKey (typeof (BT1Mixin1)), Is.True);
 
       PropertyDefinition overrider = overridden.Overrides[typeof (BT1Mixin1)];
 
-      Assert.AreSame (overrider, mixin1.Properties[mixinProperty1]);
-      Assert.IsNotNull (overrider.Base);
-      Assert.AreSame (overridden, overrider.Base);
-      Assert.AreSame (overridden.SetMethod, overrider.SetMethod.Base);
+      Assert.That (mixin1.Properties[mixinProperty1], Is.SameAs (overrider));
+      Assert.That (overrider.Base, Is.Not.Null);
+      Assert.That (overrider.Base, Is.SameAs (overridden));
+      Assert.That (overrider.SetMethod.Base, Is.SameAs (overridden.SetMethod));
 
       PropertyDefinition notOverridden = targetClass.Properties[baseProperty2];
-      Assert.AreEqual (0, notOverridden.Overrides.Count);
+      Assert.That (notOverridden.Overrides.Count, Is.EqualTo (0));
 
-      Assert.IsTrue (overridden.Overrides.ContainsKey (typeof (BT1Mixin2)));
+      Assert.That (overridden.Overrides.ContainsKey (typeof (BT1Mixin2)), Is.True);
       overrider = overridden.Overrides[typeof (BT1Mixin2)];
 
-      Assert.IsTrue (new List<MemberDefinitionBase> (mixin2.GetAllOverrides()).Contains (overrider));
-      Assert.AreSame (overridden, overrider.Base);
-      Assert.AreSame (overridden.GetMethod, overrider.GetMethod.Base);
+      Assert.That (new List<MemberDefinitionBase> (mixin2.GetAllOverrides()).Contains (overrider), Is.True);
+      Assert.That (overrider.Base, Is.SameAs (overridden));
+      Assert.That (overrider.GetMethod.Base, Is.SameAs (overridden.GetMethod));
     }
 
     [Test]
@@ -106,26 +106,26 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       EventDefinition overridden = targetClass.Events[baseEvent1];
 
-      Assert.IsTrue (overridden.Overrides.ContainsKey (typeof (BT1Mixin1)));
+      Assert.That (overridden.Overrides.ContainsKey (typeof (BT1Mixin1)), Is.True);
 
       EventDefinition overrider = overridden.Overrides[typeof (BT1Mixin1)];
 
-      Assert.AreSame (overrider, mixin1.Events[mixinEvent1]);
-      Assert.IsNotNull (overrider.Base);
-      Assert.AreSame (overridden, overrider.Base);
-      Assert.AreSame (overridden.RemoveMethod, overrider.RemoveMethod.Base);
-      Assert.AreSame (overridden.AddMethod, overrider.AddMethod.Base);
+      Assert.That (mixin1.Events[mixinEvent1], Is.SameAs (overrider));
+      Assert.That (overrider.Base, Is.Not.Null);
+      Assert.That (overrider.Base, Is.SameAs (overridden));
+      Assert.That (overrider.RemoveMethod.Base, Is.SameAs (overridden.RemoveMethod));
+      Assert.That (overrider.AddMethod.Base, Is.SameAs (overridden.AddMethod));
 
       EventDefinition notOverridden = targetClass.Events[baseEvent2];
-      Assert.AreEqual (0, notOverridden.Overrides.Count);
+      Assert.That (notOverridden.Overrides.Count, Is.EqualTo (0));
 
-      Assert.IsTrue (overridden.Overrides.ContainsKey (typeof (BT1Mixin2)));
+      Assert.That (overridden.Overrides.ContainsKey (typeof (BT1Mixin2)), Is.True);
       overrider = overridden.Overrides[typeof (BT1Mixin2)];
 
-      Assert.IsTrue (new List<MemberDefinitionBase> (mixin2.GetAllOverrides()).Contains (overrider));
-      Assert.AreSame (overridden, overrider.Base);
-      Assert.AreSame (overridden.AddMethod, overrider.AddMethod.Base);
-      Assert.AreSame (overridden.RemoveMethod, overrider.RemoveMethod.Base);
+      Assert.That (new List<MemberDefinitionBase> (mixin2.GetAllOverrides()).Contains (overrider), Is.True);
+      Assert.That (overrider.Base, Is.SameAs (overridden));
+      Assert.That (overrider.AddMethod.Base, Is.SameAs (overridden.AddMethod));
+      Assert.That (overrider.RemoveMethod.Base, Is.SameAs (overridden.RemoveMethod));
     }
 
     [Test]
@@ -133,17 +133,17 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
       MixinDefinition mixin = targetClass.Mixins[typeof (BT4Mixin1)];
-      Assert.IsNotNull (mixin);
+      Assert.That (mixin, Is.Not.Null);
 
       MethodDefinition overrider = mixin.Methods[typeof (BT4Mixin1).GetMethod ("NonVirtualMethod")];
-      Assert.IsNotNull (overrider);
-      Assert.IsNotNull (overrider.Base);
+      Assert.That (overrider, Is.Not.Null);
+      Assert.That (overrider.Base, Is.Not.Null);
 
-      Assert.AreSame (targetClass, overrider.Base.DeclaringClass);
+      Assert.That (overrider.Base.DeclaringClass, Is.SameAs (targetClass));
 
       var overrides = new List<MethodDefinition> (targetClass.Methods[typeof (BaseType4).GetMethod ("NonVirtualMethod")].Overrides);
-      Assert.AreEqual (1, overrides.Count);
-      Assert.AreSame (overrider, overrides[0]);
+      Assert.That (overrides.Count, Is.EqualTo (1));
+      Assert.That (overrides[0], Is.SameAs (overrider));
     }
 
     [Test]
@@ -151,17 +151,17 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
       MixinDefinition mixin = targetClass.Mixins[typeof (BT4Mixin1)];
-      Assert.IsNotNull (mixin);
+      Assert.That (mixin, Is.Not.Null);
 
       PropertyDefinition overrider = mixin.Properties[typeof (BT4Mixin1).GetProperty ("NonVirtualProperty")];
-      Assert.IsNotNull (overrider);
-      Assert.IsNotNull (overrider.Base);
+      Assert.That (overrider, Is.Not.Null);
+      Assert.That (overrider.Base, Is.Not.Null);
 
-      Assert.AreSame (targetClass, overrider.Base.DeclaringClass);
+      Assert.That (overrider.Base.DeclaringClass, Is.SameAs (targetClass));
 
       var overrides = new List<PropertyDefinition> (targetClass.Properties[typeof (BaseType4).GetProperty ("NonVirtualProperty")].Overrides);
-      Assert.AreEqual (1, overrides.Count);
-      Assert.AreSame (overrider, overrides[0]);
+      Assert.That (overrides.Count, Is.EqualTo (1));
+      Assert.That (overrides[0], Is.SameAs (overrider));
     }
 
     [Test]
@@ -169,17 +169,17 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
       MixinDefinition mixin = targetClass.Mixins[typeof (BT4Mixin1)];
-      Assert.IsNotNull (mixin);
+      Assert.That (mixin, Is.Not.Null);
 
       EventDefinition overrider = mixin.Events[typeof (BT4Mixin1).GetEvent ("NonVirtualEvent")];
-      Assert.IsNotNull (overrider);
-      Assert.IsNotNull (overrider.Base);
+      Assert.That (overrider, Is.Not.Null);
+      Assert.That (overrider.Base, Is.Not.Null);
 
-      Assert.AreSame (targetClass, overrider.Base.DeclaringClass);
+      Assert.That (overrider.Base.DeclaringClass, Is.SameAs (targetClass));
 
       var overrides = new List<EventDefinition> (targetClass.Events[typeof (BaseType4).GetEvent ("NonVirtualEvent")].Overrides);
-      Assert.AreEqual (1, overrides.Count);
-      Assert.AreSame (overrider, overrides[0]);
+      Assert.That (overrides.Count, Is.EqualTo (1));
+      Assert.That (overrides[0], Is.SameAs (overrider));
     }
 
     [Test]
@@ -229,7 +229,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassOverridingSpecificMixinMember));
         MethodDefinition method = definition.Methods[typeof (ClassOverridingSpecificMixinMember).GetMethod ("VirtualMethod")];
-        Assert.AreSame (method.Base.DeclaringClass, definition.Mixins[typeof (MixinWithVirtualMethod)]);
+        Assert.That (definition.Mixins[typeof (MixinWithVirtualMethod)], Is.SameAs (method.Base.DeclaringClass));
       }
     }
 
@@ -253,7 +253,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassOverridingSpecificGenericMixinMember));
         MethodDefinition method = definition.Methods[typeof (ClassOverridingSpecificGenericMixinMember).GetMethod ("VirtualMethod")];
-        Assert.AreSame (method.Base.DeclaringClass, definition.GetMixinByConfiguredType (typeof (GenericMixinWithVirtualMethod<>)));
+        Assert.That (definition.GetMixinByConfiguredType (typeof (GenericMixinWithVirtualMethod<>)), Is.SameAs (method.Base.DeclaringClass));
       }
     }
 
@@ -263,11 +263,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithInheritedMethod));
       MethodDefinition inheritedMethod = targetClass.Methods[typeof (BaseClassWithInheritedMethod).GetMethod ("ProtectedInheritedMethod",
                                                                                                               BindingFlags.NonPublic | BindingFlags.Instance)];
-      Assert.IsNotNull (inheritedMethod);
-      Assert.AreEqual (1, inheritedMethod.Overrides.Count);
-      Assert.AreSame (
-          targetClass.Mixins[typeof (MixinOverridingInheritedMethod)].Methods[typeof (MixinOverridingInheritedMethod).GetMethod ("ProtectedInheritedMethod")],
-          inheritedMethod.Overrides[0]);
+      Assert.That (inheritedMethod, Is.Not.Null);
+      Assert.That (inheritedMethod.Overrides.Count, Is.EqualTo (1));
+      Assert.That (inheritedMethod.Overrides[0], Is.SameAs (targetClass.Mixins[typeof (MixinOverridingInheritedMethod)].Methods[typeof (MixinOverridingInheritedMethod).GetMethod ("ProtectedInheritedMethod")]));
     }
 
     [Test]
@@ -276,11 +274,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithInheritedMethod));
       MethodDefinition inheritedMethod = targetClass.Methods[typeof (BaseClassWithInheritedMethod).GetMethod ("ProtectedInternalInheritedMethod",
                                                                                                               BindingFlags.NonPublic | BindingFlags.Instance)];
-      Assert.IsNotNull (inheritedMethod);
-      Assert.AreEqual (1, inheritedMethod.Overrides.Count);
-      Assert.AreSame (
-          targetClass.Mixins[typeof (MixinOverridingInheritedMethod)].Methods[typeof (MixinOverridingInheritedMethod).GetMethod ("ProtectedInternalInheritedMethod")],
-          inheritedMethod.Overrides[0]);
+      Assert.That (inheritedMethod, Is.Not.Null);
+      Assert.That (inheritedMethod.Overrides.Count, Is.EqualTo (1));
+      Assert.That (inheritedMethod.Overrides[0], Is.SameAs (targetClass.Mixins[typeof (MixinOverridingInheritedMethod)].Methods[typeof (MixinOverridingInheritedMethod).GetMethod ("ProtectedInternalInheritedMethod")]));
     }
 
     [Test]
@@ -288,11 +284,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithInheritedMethod));
       MethodDefinition inheritedMethod = targetClass.Methods[typeof (BaseClassWithInheritedMethod).GetMethod ("PublicInheritedMethod")];
-      Assert.IsNotNull (inheritedMethod);
-      Assert.AreEqual (1, inheritedMethod.Overrides.Count);
-      Assert.AreSame (
-          targetClass.Mixins[typeof (MixinOverridingInheritedMethod)].Methods[typeof (MixinOverridingInheritedMethod).GetMethod ("PublicInheritedMethod")],
-          inheritedMethod.Overrides[0]);
+      Assert.That (inheritedMethod, Is.Not.Null);
+      Assert.That (inheritedMethod.Overrides.Count, Is.EqualTo (1));
+      Assert.That (inheritedMethod.Overrides[0], Is.SameAs (targetClass.Mixins[typeof (MixinOverridingInheritedMethod)].Methods[typeof (MixinOverridingInheritedMethod).GetMethod ("PublicInheritedMethod")]));
     }
 
     [Test]
@@ -300,12 +294,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassOverridingInheritedMixinMethod));
       MethodDefinition inheritedMethod = targetClass.Methods[typeof (ClassOverridingInheritedMixinMethod).GetMethod ("ProtectedInheritedMethod")];
-      Assert.IsNotNull (inheritedMethod);
-      Assert.IsNotNull (inheritedMethod.Base);
-      Assert.AreSame (
-          targetClass.Mixins[typeof (MixinWithInheritedMethod)].Methods[
-              typeof (BaseMixinWithInheritedMethod).GetMethod ("ProtectedInheritedMethod", BindingFlags.NonPublic | BindingFlags.Instance)],
-          inheritedMethod.Base);
+      Assert.That (inheritedMethod, Is.Not.Null);
+      Assert.That (inheritedMethod.Base, Is.Not.Null);
+      Assert.That (inheritedMethod.Base, Is.SameAs (targetClass.Mixins[typeof (MixinWithInheritedMethod)].Methods[
+          typeof (BaseMixinWithInheritedMethod).GetMethod ("ProtectedInheritedMethod", BindingFlags.NonPublic | BindingFlags.Instance)]));
     }
 
     [Test]
@@ -313,12 +305,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassOverridingInheritedMixinMethod));
       MethodDefinition inheritedMethod = targetClass.Methods[typeof (ClassOverridingInheritedMixinMethod).GetMethod ("ProtectedInternalInheritedMethod")];
-      Assert.IsNotNull (inheritedMethod);
-      Assert.IsNotNull (inheritedMethod.Base);
-      Assert.AreSame (
-          targetClass.Mixins[typeof (MixinWithInheritedMethod)].Methods[
-              typeof (BaseMixinWithInheritedMethod).GetMethod ("ProtectedInternalInheritedMethod", BindingFlags.NonPublic | BindingFlags.Instance)],
-          inheritedMethod.Base);
+      Assert.That (inheritedMethod, Is.Not.Null);
+      Assert.That (inheritedMethod.Base, Is.Not.Null);
+      Assert.That (inheritedMethod.Base, Is.SameAs (targetClass.Mixins[typeof (MixinWithInheritedMethod)].Methods[
+          typeof (BaseMixinWithInheritedMethod).GetMethod ("ProtectedInternalInheritedMethod", BindingFlags.NonPublic | BindingFlags.Instance)]));
     }
 
     [Test]
@@ -326,11 +316,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassOverridingInheritedMixinMethod));
       MethodDefinition inheritedMethod = targetClass.Methods[typeof (ClassOverridingInheritedMixinMethod).GetMethod ("PublicInheritedMethod")];
-      Assert.IsNotNull (inheritedMethod);
-      Assert.IsNotNull (inheritedMethod.Base);
-      Assert.AreSame (
-          targetClass.Mixins[typeof (MixinWithInheritedMethod)].Methods[typeof (BaseMixinWithInheritedMethod).GetMethod ("PublicInheritedMethod")],
-          inheritedMethod.Base);
+      Assert.That (inheritedMethod, Is.Not.Null);
+      Assert.That (inheritedMethod.Base, Is.Not.Null);
+      Assert.That (inheritedMethod.Base, Is.SameAs (targetClass.Mixins[typeof (MixinWithInheritedMethod)].Methods[typeof (BaseMixinWithInheritedMethod).GetMethod ("PublicInheritedMethod")]));
     }
   }
 }

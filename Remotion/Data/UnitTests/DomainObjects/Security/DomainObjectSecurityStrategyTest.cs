@@ -59,9 +59,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
     {
       DomainObjectSecurityStrategy strategy = new DomainObjectSecurityStrategy (
           RequiredSecurityForStates.New, _stubContextFactory, _mockSecurityStrategy);
-      Assert.AreSame (_stubContextFactory, strategy.SecurityContextFactory);
-      Assert.AreSame (_mockSecurityStrategy, strategy.SecurityStrategy);
-      Assert.AreEqual (RequiredSecurityForStates.New, strategy.RequiredSecurityForStates);
+      Assert.That (strategy.SecurityContextFactory, Is.SameAs (_stubContextFactory));
+      Assert.That (strategy.SecurityStrategy, Is.SameAs (_mockSecurityStrategy));
+      Assert.That (strategy.RequiredSecurityForStates, Is.EqualTo (RequiredSecurityForStates.New));
     }
 
     [Test]
@@ -71,10 +71,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       SecurityConfiguration.Current.GlobalAccessTypeCacheProvider = stubGlobalCacheProvider;
       DomainObjectSecurityStrategy strategy = new DomainObjectSecurityStrategy (RequiredSecurityForStates.None, _stubContextFactory);
 
-      Assert.AreSame (_stubContextFactory, strategy.SecurityContextFactory);
+      Assert.That (strategy.SecurityContextFactory, Is.SameAs (_stubContextFactory));
       Assert.IsInstanceOf (typeof (SecurityStrategy), strategy.SecurityStrategy);
       Assert.IsInstanceOf (typeof (Cache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
-      Assert.AreSame (stubGlobalCacheProvider, ((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider);
+      Assert.That (((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider, Is.SameAs (stubGlobalCacheProvider));
     }
 
     [Test]
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       bool hasAccess = strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       bool hasAccess = strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       bool hasAccess = strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       bool hasAccess = strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       bool hasAccess = strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       bool hasAccess = strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -204,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       bool hasAccess = strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll();
-      Assert.AreEqual (true, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       bool hasAccess = strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll();
-      Assert.AreEqual (false, hasAccess);
+      Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Serializable]
@@ -260,11 +260,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       DomainObjectSecurityStrategy strategy = new DomainObjectSecurityStrategy (RequiredSecurityForStates.NewAndDeleted, factory, securityStrategy);
       DomainObjectSecurityStrategy deserializedStrategy = Serializer.SerializeAndDeserialize (strategy);
 
-      Assert.AreNotSame (strategy, deserializedStrategy);
-      Assert.AreEqual (RequiredSecurityForStates.NewAndDeleted, deserializedStrategy.RequiredSecurityForStates);
-      Assert.AreNotSame (factory, deserializedStrategy.SecurityContextFactory);
+      Assert.That (deserializedStrategy, Is.Not.SameAs (strategy));
+      Assert.That (deserializedStrategy.RequiredSecurityForStates, Is.EqualTo (RequiredSecurityForStates.NewAndDeleted));
+      Assert.That (deserializedStrategy.SecurityContextFactory, Is.Not.SameAs (factory));
       Assert.IsInstanceOf (typeof (SerializableFactory), deserializedStrategy.SecurityContextFactory);
-      Assert.AreNotSame (securityStrategy, deserializedStrategy.SecurityStrategy);
+      Assert.That (deserializedStrategy.SecurityStrategy, Is.Not.SameAs (securityStrategy));
       Assert.IsInstanceOf (typeof (SecurityStrategy), deserializedStrategy.SecurityStrategy);
     }
   }

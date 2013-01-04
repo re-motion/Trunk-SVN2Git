@@ -30,7 +30,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA ();
       MainMenuTab mainMenuTab = new MainMenuTab ();
       mainMenuTab.Command.Type = CommandType.Event;
-      Assert.IsFalse (mainMenuTab.EvaluateVisible ());
+      Assert.That (mainMenuTab.EvaluateVisible (), Is.False);
     }
 
     [Test]
@@ -39,7 +39,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined ();
       MainMenuTab mainMenuTab = new MainMenuTab ();
       mainMenuTab.Command.Type = CommandType.Event;
-      Assert.IsTrue (mainMenuTab.EvaluateVisible ());
+      Assert.That (mainMenuTab.EvaluateVisible (), Is.True);
     }
 
     [Test]
@@ -48,7 +48,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA ();
       SubMenuTab subMenuTab = new SubMenuTab ();
       subMenuTab.Command.Type = CommandType.Event;
-      Assert.IsFalse (subMenuTab.EvaluateVisible ());
+      Assert.That (subMenuTab.EvaluateVisible (), Is.False);
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined ();
       SubMenuTab subMenuTab = new SubMenuTab ();
       subMenuTab.Command.Type = CommandType.Event;
-      Assert.IsTrue (subMenuTab.EvaluateVisible ());
+      Assert.That (subMenuTab.EvaluateVisible (), Is.True);
     }
   }
 }

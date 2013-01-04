@@ -71,8 +71,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
 
-      Assert.AreEqual (typeof (SerializationHelper).Assembly.FullName, _info.AssemblyName);
-      Assert.AreEqual (typeof (SerializationHelper).FullName, _info.FullTypeName);
+      Assert.That (_info.AssemblyName, Is.EqualTo (typeof (SerializationHelper).Assembly.FullName));
+      Assert.That (_info.FullTypeName, Is.EqualTo (typeof (SerializationHelper).FullName));
     }
 
     [Test]
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
 
-      Assert.AreEqual (typeof (SerializableClass).AssemblyQualifiedName, _info.GetString ("PublicDomainObjectType.AssemblyQualifiedName"));
+      Assert.That (_info.GetString ("PublicDomainObjectType.AssemblyQualifiedName"), Is.EqualTo (typeof (SerializableClass).AssemblyQualifiedName));
     }
 
     [Test]
@@ -89,8 +89,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       _serializableInstance.I = 0x400dd00d;
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
       var members = (object[]) _info.GetValue ("baseMemberValues", typeof (object[]));
-      Assert.IsNotNull (members);
-      Assert.Contains (0x400dd00d, members);
+      Assert.That (members, Is.Not.Null);
+      Assert.That (members, Has.Member (0x400dd00d));
     }
 
     [Test]
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       _serializableInstance.I = 0x400dd00d;
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, false);
       var members = (object[]) _info.GetValue ("baseMemberValues", typeof (object[]));
-      Assert.IsNull (members);
+      Assert.That (members, Is.Null);
     }
 
     [Test]
@@ -109,22 +109,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
       var helper = new SerializationHelper (_info, _context);
       var realObject = (SerializableClass) helper.GetRealObject (_context);
-      Assert.IsNotNull (realObject);
-      Assert.AreEqual (13, _serializableInstance.I);
-      Assert.AreNotEqual (13, realObject.I);
-      Assert.IsTrue (Factory.WasCreatedByFactory (((object)realObject).GetType()));
-      Assert.AreSame (typeof (SerializableClass), ((object) realObject).GetType ().BaseType);
+      Assert.That (realObject, Is.Not.Null);
+      Assert.That (_serializableInstance.I, Is.EqualTo (13));
+      Assert.That (realObject.I, Is.Not.EqualTo (13));
+      Assert.That (Factory.WasCreatedByFactory (((object)realObject).GetType()), Is.True);
+      Assert.That (((object) realObject).GetType ().BaseType, Is.SameAs (typeof (SerializableClass)));
     }
 
     [Test]
     public void CtorUsesISerializableBaseCtorIfNecessary ()
     {
-      Assert.IsFalse (_serializableInstanceImplementingISerializable.ISerializableCtorCalled);
+      Assert.That (_serializableInstanceImplementingISerializable.ISerializableCtorCalled, Is.False);
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstanceImplementingISerializable, false);
       _serializableInstanceImplementingISerializable.GetObjectData (_info, _context);
       var helper = new SerializationHelper (_info, _context);
       var realObject = (SerializableClassImplementingISerializable) helper.GetRealObject (_context);
-      Assert.IsTrue (realObject.ISerializableCtorCalled);
+      Assert.That (realObject.ISerializableCtorCalled, Is.True);
     }
 
     [Test]
@@ -136,25 +136,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       var realObject = (SerializableClass) helper.GetRealObject (_context);
       helper.OnDeserialization (null);
 
-      Assert.AreEqual (13, realObject.I);
+      Assert.That (realObject.I, Is.EqualTo (13));
     }
 
     [Test]
     public void OnDeserializationDoesNothingIfObjectImplementsISerializableCorrectly ()
     {
       _serializableInstanceImplementingISerializable.I = 4;
-      Assert.IsFalse (_serializableInstanceImplementingISerializable.ISerializableCtorCalled);
+      Assert.That (_serializableInstanceImplementingISerializable.ISerializableCtorCalled, Is.False);
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstanceImplementingISerializable, false);
       _serializableInstanceImplementingISerializable.GetObjectData (_info, _context);
 
       var helper = new SerializationHelper (_info, _context);
       var realObject = (SerializableClassImplementingISerializable) helper.GetRealObject (_context);
 
-      Assert.AreEqual (4, realObject.I);
+      Assert.That (realObject.I, Is.EqualTo (4));
 
       helper.OnDeserialization (null);
-      Assert.IsTrue (realObject.ISerializableCtorCalled);
-      Assert.AreEqual (4, realObject.I);
+      Assert.That (realObject.ISerializableCtorCalled, Is.True);
+      Assert.That (realObject.I, Is.EqualTo (4));
     }
 
     [Test]
@@ -201,8 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
       var helper = new SerializationHelper (_info, _context);
-      Assert.AreSame (InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (SerializableClass)),
-          helper.GetRealObject (_context).GetType ());
+      Assert.That (helper.GetRealObject (_context).GetType (), Is.SameAs (InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (SerializableClass))));
     }
   }
 }

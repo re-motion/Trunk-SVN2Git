@@ -64,10 +64,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Principal principal = new Principal (principalTenant, null, new Role[0]);
       SecurityToken token = new SecurityToken (principal, null, null, null, new List<AbstractRoleDefinition> ());
 
-      Assert.IsNull (token.OwningTenant);
-      Assert.IsNull (token.OwningGroup);
-      Assert.IsNull (token.OwningUser);
-      Assert.IsEmpty (token.AbstractRoles);
+      Assert.That (token.OwningTenant, Is.Null);
+      Assert.That (token.OwningGroup, Is.Null);
+      Assert.That (token.OwningUser, Is.Null);
+      Assert.That (token.AbstractRoles, Is.Empty);
     }
 
     private Tenant CreateTenant (string name)

@@ -60,11 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void SubTransactionCanContinueToBeUsedAfterRollback ()
     {
       _subTransaction.Rollback ();
-      Assert.IsFalse (_subTransaction.IsDiscarded);
+      Assert.That (_subTransaction.IsDiscarded, Is.False);
       using (_subTransaction.EnterDiscardingScope ())
       {
         Order order = Order.NewObject ();
-        Assert.IsNotNull (order);
+        Assert.That (order, Is.Not.Null);
       }
     }
 
@@ -72,11 +72,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void SubTransactionCanContinueToBeUsedAfterCommit ()
     {
       _subTransaction.Commit ();
-      Assert.IsFalse (_subTransaction.IsDiscarded);
+      Assert.That (_subTransaction.IsDiscarded, Is.False);
       using (_subTransaction.EnterDiscardingScope ())
       {
         Order order = Order.NewObject ();
-        Assert.IsNotNull (order);
+        Assert.That (order, Is.Not.Null);
       }
     }
 
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         _subTransaction.Rollback ();
 
-        Assert.AreNotEqual (5, order.OrderNumber);
+        Assert.That (order.OrderNumber, Is.Not.EqualTo (5));
       }
     }
 
@@ -114,17 +114,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       _subTransaction.Discard ();
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
       order.OrderNumber = 3;
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         order.OrderNumber = 5;
         ClientTransactionScope.CurrentTransaction.Rollback ();
-        Assert.AreEqual (3, order.OrderNumber);
+        Assert.That (order.OrderNumber, Is.EqualTo (3));
       }
-      Assert.AreEqual (3, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (3));
       TestableClientTransaction.Rollback ();
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
     }
 
 
@@ -149,13 +149,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_subTransaction.EnterDiscardingScope ())
       {
         classWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
-        Assert.AreNotEqual (7, classWithAllDataTypes.Int32Property);
+        Assert.That (classWithAllDataTypes.Int32Property, Is.Not.EqualTo (7));
         classWithAllDataTypes.Int32Property = 7;
         _subTransaction.Commit ();
-        Assert.AreEqual (7, classWithAllDataTypes.Int32Property);
+        Assert.That (classWithAllDataTypes.Int32Property, Is.EqualTo (7));
       }
-      Assert.IsNotNull (classWithAllDataTypes);
-      Assert.AreEqual (7, classWithAllDataTypes.Int32Property);
+      Assert.That (classWithAllDataTypes, Is.Not.Null);
+      Assert.That (classWithAllDataTypes.Int32Property, Is.EqualTo (7));
     }
 
     [Test]
@@ -169,11 +169,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         _subTransaction.Commit ();
 
-        Assert.AreEqual (5, order.OrderNumber);
+        Assert.That (order.OrderNumber, Is.EqualTo (5));
       }
 
-      Assert.IsNotNull (order);
-      Assert.AreEqual (5, order.OrderNumber);
+      Assert.That (order, Is.Not.Null);
+      Assert.That (order.OrderNumber, Is.EqualTo (5));
     }
 
     [Test]
@@ -186,9 +186,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order.OrderNumber = 5;
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
-      Assert.AreEqual (5, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (5));
       TestableClientTransaction.Rollback ();
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
     }
 
     [Test]

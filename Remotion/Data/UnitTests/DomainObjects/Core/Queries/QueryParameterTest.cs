@@ -36,23 +36,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void Initialize ()
     {
-      Assert.AreEqual ("name", _parameter.Name);
-      Assert.AreEqual ("value", _parameter.Value);
-      Assert.AreEqual (QueryParameterType.Value, _parameter.ParameterType);
+      Assert.That (_parameter.Name, Is.EqualTo ("name"));
+      Assert.That (_parameter.Value, Is.EqualTo ("value"));
+      Assert.That (_parameter.ParameterType, Is.EqualTo (QueryParameterType.Value));
     }
 
     [Test]
     public void SetValue ()
     {
       _parameter.Value = "NewValue";
-      Assert.AreEqual ("NewValue", _parameter.Value);
+      Assert.That (_parameter.Value, Is.EqualTo ("NewValue"));
     }
 
     [Test]
     public void SetParameterType ()
     {
       _parameter.ParameterType = QueryParameterType.Text;
-      Assert.AreEqual (QueryParameterType.Text, _parameter.ParameterType);
+      Assert.That (_parameter.ParameterType, Is.EqualTo (QueryParameterType.Text));
     }
 
     [Test]

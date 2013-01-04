@@ -66,114 +66,114 @@ public class WxeStepTest: WxeTest
   public void GetStepByTypeForNull()
   {
     WxeStep step = TestStep.GetStepByType<WxeStep> (null);
-    Assert.IsNull (step);    
+    Assert.That (step, Is.Null);
   }
 
   [Test]
   public void GetStepByTypeForTestStep()
   {
     TestStep step = TestStep.GetStepByType<TestStep> (_standAloneStep);
-    Assert.AreSame (_standAloneStep, step);    
+    Assert.That (step, Is.SameAs (_standAloneStep));
   }
 
   [Test]
   public void GetStepByTypeForWxeFunction()
   {
     WxeFunction step = TestStep.GetStepByType<WxeFunction> (_nestedLevel2FunctionStep);
-    Assert.AreSame (_nestedLevel2Function, step);    
+    Assert.That (step, Is.SameAs (_nestedLevel2Function));
   }
 
   [Test]
   public void GetStepByTypeForWrongType()
   {
     TestFunctionWithInvalidSteps step = TestStep.GetStepByType<TestFunctionWithInvalidSteps> (_nestedLevel2FunctionStep);
-    Assert.IsNull (step);    
+    Assert.That (step, Is.Null);
   }
 
   [Test]
   public void GetFunctionForStep()
   {
     WxeFunction function = WxeStep.GetFunction (_nestedLevel1FunctionStep);
-    Assert.AreSame (_nestedLevel1Function, function);    
+    Assert.That (function, Is.SameAs (_nestedLevel1Function));
   }
 
   [Test]
   public void GetFunctionForNestedFunction()
   {
     WxeFunction function = WxeStep.GetFunction (_nestedLevel1Function);
-    Assert.AreSame (_nestedLevel1Function, function);    
+    Assert.That (function, Is.SameAs (_nestedLevel1Function));
   }
 
   [Test]
   public void GetParentStepForStep()
   {
     WxeStep parentStep = _nestedLevel2FunctionStep.ParentStep;
-    Assert.AreSame (_nestedLevel2Function, parentStep);    
+    Assert.That (parentStep, Is.SameAs (_nestedLevel2Function));
   }
 
   [Test]
   public void GetParentFunctionForStep()
   {
     WxeFunction parentFunction = _nestedLevel2FunctionStep.ParentFunction;
-    Assert.AreSame (_nestedLevel2Function, parentFunction);    
+    Assert.That (parentFunction, Is.SameAs (_nestedLevel2Function));
   }
 
   [Test]
   public void GetParentFunctionForNestedFunction()
   {
     WxeFunction parentFunction = _nestedLevel2Function.ParentFunction;
-    Assert.AreSame (_nestedLevel1Function, parentFunction);    
+    Assert.That (parentFunction, Is.SameAs (_nestedLevel1Function));
   }
 
   [Test]
   public void GetParentStepForStandAloneStep()
   {
     WxeStep parentStep = _standAloneStep.ParentStep;
-    Assert.IsNull(parentStep);    
+    Assert.That (parentStep, Is.Null);
   }
 
   [Test]
   public void GetParentFunctionForStandAloneStep()
   {
     WxeFunction parentFunction = _standAloneStep.ParentFunction;
-    Assert.IsNull (parentFunction);    
+    Assert.That (parentFunction, Is.Null);
   }
 
   [Test]
   public void GetRootFunctionForStep()
   {
     WxeFunction rootFunction = _nestedLevel2FunctionStep.RootFunction;
-    Assert.AreSame (_rootFunction, rootFunction);    
+    Assert.That (rootFunction, Is.SameAs (_rootFunction));
   }
 
   [Test]
   public void GetRootFunctionForStandAloneStep()
   {
     WxeFunction rootFunction = _standAloneStep.RootFunction;
-    Assert.IsNull (rootFunction);    
+    Assert.That (rootFunction, Is.Null);
   }
 
   [Test]
   public void GetRootFunctionForRootFunction()
   {
     WxeFunction rootFunction = _rootFunction.RootFunction;
-    Assert.AreSame (_rootFunction, rootFunction);    
+    Assert.That (rootFunction, Is.SameAs (_rootFunction));
   }
 
   [Test]
   public void AbortStep()
   {
     _standAloneStep.Abort ();
-    Assert.IsTrue (_standAloneStep.IsAbortRecursiveCalled);
-    Assert.IsTrue (_standAloneStep.IsAborted);
+    Assert.That (_standAloneStep.IsAbortRecursiveCalled, Is.True);
+    Assert.That (_standAloneStep.IsAborted, Is.True);
   }
 
   [Test]
   public void ExecuteStep()
   {
     _standAloneStep.Execute ();
-    Assert.IsTrue (_standAloneStep.IsExecuteCalled);
-    Assert.AreSame (CurrentWxeContext, _standAloneStep.WxeContext);
+    Assert.That (_standAloneStep.IsExecuteCalled, Is.True);
+    Assert.That (_standAloneStep.WxeContext, Is.SameAs (CurrentWxeContext));
   }
 
   [Test]
@@ -181,7 +181,7 @@ public class WxeStepTest: WxeTest
   {
     TestStep parentStep = new TestStep();
     _standAloneStep.SetParentStep (parentStep);
-    Assert.AreSame (parentStep, _standAloneStep.ParentStep);
+    Assert.That (_standAloneStep.ParentStep, Is.SameAs (parentStep));
   }
 
   [Test]
@@ -195,14 +195,14 @@ public class WxeStepTest: WxeTest
   public void GetVariablesForFunctionStep()
   {
     NameObjectCollection variables = _nestedLevel2FunctionStep.Variables;
-    Assert.AreSame (_nestedLevel2Function.Variables, variables);
+    Assert.That (variables, Is.SameAs (_nestedLevel2Function.Variables));
   }
 
   [Test]
   public void GetVariablesForStandAloneStep()
   {
     NameObjectCollection variables = _standAloneStep.Variables;
-    Assert.IsNull (variables);
+    Assert.That (variables, Is.Null);
   }
 }
 

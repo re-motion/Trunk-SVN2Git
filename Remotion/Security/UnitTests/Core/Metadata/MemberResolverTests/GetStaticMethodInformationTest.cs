@@ -45,8 +45,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     public void Test_CacheForMethodWithoutAttributes ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "CheckPermissions", MemberAffiliation.Static);
-      
-      Assert.AreSame (methodInformation, _resolver.GetMethodInformation (typeof (SecurableObject), "CheckPermissions", MemberAffiliation.Static));
+
+      Assert.That (_resolver.GetMethodInformation (typeof (SecurableObject), "CheckPermissions", MemberAffiliation.Static), Is.SameAs (methodInformation));
     }
 
     [Test]
@@ -64,7 +64,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "CreateForSpecialCase", MemberAffiliation.Static);
 
-      Assert.AreSame (methodInformation, _resolver.GetMethodInformation (typeof (SecurableObject), "CreateForSpecialCase", MemberAffiliation.Static));
+      Assert.That (_resolver.GetMethodInformation (typeof (SecurableObject), "CreateForSpecialCase", MemberAffiliation.Static), Is.SameAs (methodInformation));
     }
 
     [Test]

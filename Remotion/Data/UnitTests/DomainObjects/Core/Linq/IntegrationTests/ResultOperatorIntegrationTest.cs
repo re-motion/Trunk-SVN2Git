@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var number = (from o in QueryFactory.CreateLinqQuery<Order>()
                     select o).Count();
-      Assert.AreEqual (number, 6);
+      Assert.That (6, Is.EqualTo (number));
     }
 
     [Test]
@@ -323,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = QueryFactory.CreateLinqQuery<Computer>().Any();
 
-      Assert.IsTrue (query);
+      Assert.That (query, Is.True);
     }
 
     [Test]
@@ -331,7 +331,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = QueryFactory.CreateLinqQuery<Computer>().Any (c => c.SerialNumber == "123456");
 
-      Assert.IsFalse (query);
+      Assert.That (query, Is.False);
     }
 
     [Test]
@@ -359,7 +359,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = QueryFactory.CreateLinqQuery<Computer>().Take (10).Take (20).All (c => c.SerialNumber == "123456");
 
-      Assert.IsFalse (query);
+      Assert.That (query, Is.False);
     }
 
     [Test]

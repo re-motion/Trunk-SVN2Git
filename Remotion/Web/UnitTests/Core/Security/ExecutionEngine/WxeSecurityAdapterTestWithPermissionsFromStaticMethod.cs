@@ -119,7 +119,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       bool hasAccess = _securityAdapter.HasAccess (new TestFunctionWithPermissionsFromStaticMethod());
 
       _mocks.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -132,7 +132,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
         hasAccess = _securityAdapter.HasAccess (new TestFunctionWithPermissionsFromStaticMethod());
 
       _mocks.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -144,7 +144,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       bool hasAccess = _securityAdapter.HasAccess (new TestFunctionWithPermissionsFromStaticMethod());
 
       _mocks.VerifyAll();
-      Assert.IsFalse (hasAccess);
+      Assert.That (hasAccess, Is.False);
     }
 
     [Test]
@@ -156,7 +156,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       bool hasAccess = _securityAdapter.HasStatelessAccess (typeof (TestFunctionWithPermissionsFromStaticMethod));
 
       _mocks.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -169,7 +169,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
         hasAccess = _securityAdapter.HasStatelessAccess (typeof (TestFunctionWithPermissionsFromStaticMethod));
 
       _mocks.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -181,7 +181,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       bool hasAccess = _securityAdapter.HasStatelessAccess (typeof (TestFunctionWithPermissionsFromStaticMethod));
 
       _mocks.VerifyAll();
-      Assert.IsFalse (hasAccess);
+      Assert.That (hasAccess, Is.False);
     }
 
     private void ExpectFunctionalSecurityStrategyHasAccessForSecurableObject (Enum accessTypeEnum, bool returnValue)

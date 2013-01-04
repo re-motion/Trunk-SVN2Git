@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void Initialization ()
     {
       TransportItem item = new TransportItem(DomainObjectIDs.Order1);
-      Assert.AreEqual (DomainObjectIDs.Order1, item.ID);
+      Assert.That (item.ID, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
@@ -54,11 +54,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
     public static void CheckEqualData (DataContainer expectedData, TransportItem item)
     {
-      Assert.AreEqual (expectedData.ID, item.ID);
+      Assert.That (item.ID, Is.EqualTo (expectedData.ID));
       foreach (var propertyDefinition in expectedData.ClassDefinition.GetPropertyDefinitions())
       {
-        Assert.IsTrue (item.Properties.ContainsKey (propertyDefinition.PropertyName));
-        Assert.AreEqual (expectedData.GetValue (propertyDefinition), item.Properties[propertyDefinition.PropertyName]);
+        Assert.That (item.Properties.ContainsKey (propertyDefinition.PropertyName), Is.True);
+        Assert.That (item.Properties[propertyDefinition.PropertyName], Is.EqualTo (expectedData.GetValue (propertyDefinition)));
       }
     }
 

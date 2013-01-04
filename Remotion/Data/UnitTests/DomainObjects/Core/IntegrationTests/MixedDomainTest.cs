@@ -35,35 +35,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       using (TestableClientTransaction.CreateSubTransaction ().EnterNonDiscardingScope ())
       {
         IMixinAddingPersistentProperties properties = TargetClassForPersistentMixin.NewObject () as IMixinAddingPersistentProperties;
-        Assert.IsNotNull (properties);
+        Assert.That (properties, Is.Not.Null);
 
         properties.ExtraPersistentProperty = 10;
         properties.PersistentProperty = 11;
         properties.NonPersistentProperty = 12;
 
-        Assert.AreEqual (10, properties.ExtraPersistentProperty);
-        Assert.AreEqual (11, properties.PersistentProperty);
-        Assert.AreEqual (12, properties.NonPersistentProperty);
+        Assert.That (properties.ExtraPersistentProperty, Is.EqualTo (10));
+        Assert.That (properties.PersistentProperty, Is.EqualTo (11));
+        Assert.That (properties.NonPersistentProperty, Is.EqualTo (12));
 
         ClientTransaction.Current.Commit ();
 
-        Assert.AreEqual (10, properties.ExtraPersistentProperty);
-        Assert.AreEqual (11, properties.PersistentProperty);
-        Assert.AreEqual (12, properties.NonPersistentProperty);
+        Assert.That (properties.ExtraPersistentProperty, Is.EqualTo (10));
+        Assert.That (properties.PersistentProperty, Is.EqualTo (11));
+        Assert.That (properties.NonPersistentProperty, Is.EqualTo (12));
 
         properties.ExtraPersistentProperty = 13;
         properties.PersistentProperty = 14;
         properties.NonPersistentProperty = 15;
 
-        Assert.AreEqual (13, properties.ExtraPersistentProperty);
-        Assert.AreEqual (14, properties.PersistentProperty);
-        Assert.AreEqual (15, properties.NonPersistentProperty);
+        Assert.That (properties.ExtraPersistentProperty, Is.EqualTo (13));
+        Assert.That (properties.PersistentProperty, Is.EqualTo (14));
+        Assert.That (properties.NonPersistentProperty, Is.EqualTo (15));
 
         ClientTransaction.Current.Rollback ();
 
-        Assert.AreEqual (10, properties.ExtraPersistentProperty);
-        Assert.AreEqual (11, properties.PersistentProperty);
-        Assert.AreEqual (15, properties.NonPersistentProperty);
+        Assert.That (properties.ExtraPersistentProperty, Is.EqualTo (10));
+        Assert.That (properties.PersistentProperty, Is.EqualTo (11));
+        Assert.That (properties.NonPersistentProperty, Is.EqualTo (15));
       }
     }
 
@@ -110,18 +110,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         loadedMixin = Mixin.Get<MixinAddingPersistentProperties> (loadedInstance);
       }
 
-      Assert.AreNotSame (mixedInstance, loadedInstance);
-      Assert.AreNotSame (mixin, loadedMixin);
+      Assert.That (loadedInstance, Is.Not.SameAs (mixedInstance));
+      Assert.That (loadedMixin, Is.Not.SameAs (mixin));
 
-      Assert.AreEqual (10, loadedMixin.PersistentProperty);
-      Assert.AreEqual (0, loadedMixin.NonPersistentProperty);
-      Assert.AreEqual (1000, loadedMixin.ExtraPersistentProperty);
-      Assert.AreEqual (mixin.RelationProperty.ID, loadedMixin.RelationProperty.ID);
-      Assert.AreEqual (mixin.VirtualRelationProperty.ID, loadedMixin.VirtualRelationProperty.ID);
-      Assert.AreEqual (mixin.CollectionProperty1Side.Count, loadedMixin.CollectionProperty1Side.Count);
-      Assert.AreEqual (mixin.CollectionProperty1Side[0].ID, loadedMixin.CollectionProperty1Side[0].ID);
-      Assert.AreEqual (mixin.CollectionPropertyNSide.ID, loadedMixin.CollectionPropertyNSide.ID);
-      Assert.AreEqual (mixin.UnidirectionalRelationProperty.ID, loadedMixin.UnidirectionalRelationProperty.ID);
+      Assert.That (loadedMixin.PersistentProperty, Is.EqualTo (10));
+      Assert.That (loadedMixin.NonPersistentProperty, Is.EqualTo (0));
+      Assert.That (loadedMixin.ExtraPersistentProperty, Is.EqualTo (1000));
+      Assert.That (loadedMixin.RelationProperty.ID, Is.EqualTo (mixin.RelationProperty.ID));
+      Assert.That (loadedMixin.VirtualRelationProperty.ID, Is.EqualTo (mixin.VirtualRelationProperty.ID));
+      Assert.That (loadedMixin.CollectionProperty1Side.Count, Is.EqualTo (mixin.CollectionProperty1Side.Count));
+      Assert.That (loadedMixin.CollectionProperty1Side[0].ID, Is.EqualTo (mixin.CollectionProperty1Side[0].ID));
+      Assert.That (loadedMixin.CollectionPropertyNSide.ID, Is.EqualTo (mixin.CollectionPropertyNSide.ID));
+      Assert.That (loadedMixin.UnidirectionalRelationProperty.ID, Is.EqualTo (mixin.UnidirectionalRelationProperty.ID));
     }
 
     [Test]
@@ -160,8 +160,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         loadedMixin2 = Mixin.Get<MixinAddingUnidirectionalRelation2> (loadedInstance);
       }
 
-      Assert.AreEqual (mixin1.Computer.ID, loadedMixin1.Computer.ID);
-      Assert.AreEqual (mixin2.Computer.ID, loadedMixin2.Computer.ID);
+      Assert.That (loadedMixin1.Computer.ID, Is.EqualTo (mixin1.Computer.ID));
+      Assert.That (loadedMixin2.Computer.ID, Is.EqualTo (mixin2.Computer.ID));
     }
 
     [Test]
@@ -204,8 +204,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         loadedMixin2 = Mixin.Get<MixinAddingUnidirectionalRelation1> (loadedInstance2);
       }
 
-      Assert.AreEqual (mixin1.Computer.ID, loadedMixin1.Computer.ID);
-      Assert.AreEqual (mixin2.Computer.ID, loadedMixin2.Computer.ID);
+      Assert.That (loadedMixin1.Computer.ID, Is.EqualTo (mixin1.Computer.ID));
+      Assert.That (loadedMixin2.Computer.ID, Is.EqualTo (mixin2.Computer.ID));
     }
   }
 }

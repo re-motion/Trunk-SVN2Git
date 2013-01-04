@@ -109,13 +109,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 
       _supervisor.Delete ();
 
-      Assert.AreEqual (0, _supervisor.Subordinates.Count);
-      Assert.IsNull (_subordinate1.Supervisor);
-      Assert.IsNull (_subordinate2.Supervisor);
-      Assert.IsNull (_subordinate1.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID ());
-      Assert.IsNull (_subordinate2.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID ());
-      Assert.AreEqual (StateType.Changed, _subordinate1.InternalDataContainer.State);
-      Assert.AreEqual (StateType.Changed, _subordinate2.InternalDataContainer.State);
+      Assert.That (_supervisor.Subordinates.Count, Is.EqualTo (0));
+      Assert.That (_subordinate1.Supervisor, Is.Null);
+      Assert.That (_subordinate2.Supervisor, Is.Null);
+      Assert.That (_subordinate1.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID (), Is.Null);
+      Assert.That (_subordinate2.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID (), Is.Null);
+      Assert.That (_subordinate1.InternalDataContainer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_subordinate2.InternalDataContainer.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -143,10 +143,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
       _supervisor.Delete ();
       DomainObjectCollection originalSubordinates = _supervisor.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates");
 
-      Assert.IsNotNull (originalSubordinates);
-      Assert.AreEqual (2, originalSubordinates.Count);
-      Assert.IsNotNull (originalSubordinates[DomainObjectIDs.Employee4]);
-      Assert.IsNotNull (originalSubordinates[DomainObjectIDs.Employee5]);
+      Assert.That (originalSubordinates, Is.Not.Null);
+      Assert.That (originalSubordinates.Count, Is.EqualTo (2));
+      Assert.That (originalSubordinates[DomainObjectIDs.Employee4], Is.Not.Null);
+      Assert.That (originalSubordinates[DomainObjectIDs.Employee5], Is.Not.Null);
     }
 
     [Test]

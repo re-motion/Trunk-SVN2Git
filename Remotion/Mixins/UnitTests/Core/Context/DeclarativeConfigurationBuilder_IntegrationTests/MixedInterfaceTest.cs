@@ -27,22 +27,22 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     public void MixedInterface_GetsClassContext_ViaUses ()
     {
       ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (IMixedInterface));
-      Assert.IsTrue (context.Mixins.ContainsKey (typeof (NullMixin)));
+      Assert.That (context.Mixins.ContainsKey (typeof (NullMixin)), Is.True);
     }
 
     [Test]
     public void MixedInterface_GetsClassContext_ViaExtends ()
     {
       ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (IMixedInterface));
-      Assert.IsTrue (context.Mixins.ContainsKey (typeof (MixinExtendingMixedInterface)));
+      Assert.That (context.Mixins.ContainsKey (typeof (MixinExtendingMixedInterface)), Is.True);
     }
 
     [Test]
     public void ImplementingClass_InheritsMixins ()
     {
       ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassWithMixedInterface));
-      Assert.IsTrue (context.Mixins.ContainsKey (typeof (NullMixin)));
-      Assert.IsTrue (context.Mixins.ContainsKey (typeof (MixinExtendingMixedInterface)));
+      Assert.That (context.Mixins.ContainsKey (typeof (NullMixin)), Is.True);
+      Assert.That (context.Mixins.ContainsKey (typeof (MixinExtendingMixedInterface)), Is.True);
     }
   }
 }

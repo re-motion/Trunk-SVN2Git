@@ -33,8 +33,8 @@ namespace Remotion.UnitTests.Configuration
 
       ExtendedProviderBase provider = new StubExtendedProvider ("Provider", config);
 
-      Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreEqual ("The Description", provider.Description);
+      Assert.That (provider.Name, Is.EqualTo ("Provider"));
+      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
 
     [Test]
@@ -45,9 +45,9 @@ namespace Remotion.UnitTests.Configuration
       config.Add ("Name", "Value");
       config.Add ("Other", "OtherValue");
 
-      Assert.AreEqual ("Value", provider.GetAndRemoveNonEmptyStringAttribute (config, "Name", "Provider", true));
-      Assert.AreEqual ("OtherValue", config.Get ("Other"));
-      Assert.IsNull (config["Name"]);
+      Assert.That (provider.GetAndRemoveNonEmptyStringAttribute (config, "Name", "Provider", true), Is.EqualTo ("Value"));
+      Assert.That (config.Get ("Other"), Is.EqualTo ("OtherValue"));
+      Assert.That (config["Name"], Is.Null);
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.UnitTests.Configuration
       }
       catch
       {
-        Assert.AreEqual (1, config.AllKeys.Length);
+        Assert.That (config.AllKeys.Length, Is.EqualTo (1));
         throw;
       }
     }
@@ -87,7 +87,7 @@ namespace Remotion.UnitTests.Configuration
       StubExtendedProvider provider = new StubExtendedProvider ("Provider", new NameValueCollection ());
       NameValueCollection config = new NameValueCollection ();
 
-      Assert.IsNull (provider.GetAndRemoveNonEmptyStringAttribute (config, "Name", "Provider", false));
+      Assert.That (provider.GetAndRemoveNonEmptyStringAttribute (config, "Name", "Provider", false), Is.Null);
     }
 
     [Test]

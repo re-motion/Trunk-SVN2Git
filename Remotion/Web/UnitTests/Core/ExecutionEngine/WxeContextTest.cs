@@ -79,8 +79,8 @@ public class WxeContextTest
     expectedUrl += UrlUtility.FormatQueryString (expectedQueryString);
 
     string permanentUrl = WxeContext.GetPermanentUrl (new HttpContextWrapper (_currentHttpContext), _functionType, new NameValueCollection ());
-    Assert.IsNotNull (permanentUrl);
-    Assert.AreEqual (expectedUrl, permanentUrl);
+    Assert.That (permanentUrl, Is.Not.Null);
+    Assert.That (permanentUrl, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -90,8 +90,8 @@ public class WxeContextTest
 
     string expectedUrl = UrlUtility.GetAbsoluteUrl (new HttpContextWrapper (_currentHttpContext), _resource);
     string permanentUrl = WxeContext.GetPermanentUrl (new HttpContextWrapper (_currentHttpContext), _functionType, new NameValueCollection ());
-    Assert.IsNotNull (permanentUrl);
-    Assert.AreEqual (expectedUrl, permanentUrl);
+    Assert.That (permanentUrl, Is.Not.Null);
+    Assert.That (permanentUrl, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -99,8 +99,8 @@ public class WxeContextTest
   {
     string expectedUrl = UrlUtility.GetAbsoluteUrl (new HttpContextWrapper (_currentHttpContext), _resource);
     string permanentUrl = WxeContext.GetPermanentUrl (new HttpContextWrapper (_currentHttpContext), _functionType, new NameValueCollection ());
-    Assert.IsNotNull (permanentUrl);
-    Assert.AreEqual (expectedUrl, permanentUrl);
+    Assert.That (permanentUrl, Is.Not.Null);
+    Assert.That (permanentUrl, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -119,8 +119,8 @@ public class WxeContextTest
 
     string permanentUrl = WxeContext.GetPermanentUrl (new HttpContextWrapper(_currentHttpContext), _functionType, queryString);
 
-    Assert.IsNotNull (permanentUrl);
-    Assert.AreEqual (expectedUrl, permanentUrl);
+    Assert.That (permanentUrl, Is.Not.Null);
+    Assert.That (permanentUrl, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -150,8 +150,8 @@ public class WxeContextTest
   {
     string expectedUrl = UrlUtility.GetAbsoluteUrl (new HttpContextWrapper (_currentHttpContext), _resource);
     string permanentUrl = _currentWxeContext.GetPermanentUrl (_functionType, new NameValueCollection(), false);
-    Assert.IsNotNull (permanentUrl);
-    Assert.AreEqual (expectedUrl, permanentUrl);
+    Assert.That (permanentUrl, Is.Not.Null);
+    Assert.That (permanentUrl, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -170,8 +170,8 @@ public class WxeContextTest
 
     string permanentUrl = _currentWxeContext.GetPermanentUrl (_functionType, queryString, false);
 
-    Assert.IsNotNull (permanentUrl);
-    Assert.AreEqual (expectedUrl, permanentUrl);
+    Assert.That (permanentUrl, Is.Not.Null);
+    Assert.That (permanentUrl, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -208,8 +208,8 @@ public class WxeContextTest
 
     string permanentUrl = _currentWxeContext.GetPermanentUrl (_functionType, queryString, true);
 
-    Assert.IsNotNull (permanentUrl);
-    Assert.AreEqual (expectedUrl, permanentUrl);
+    Assert.That (permanentUrl, Is.Not.Null);
+    Assert.That (permanentUrl, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -229,8 +229,8 @@ public class WxeContextTest
 
     string permanentUrl = _currentWxeContext.GetPermanentUrl (_functionType, queryString, false);
 
-    Assert.IsNotNull (permanentUrl);
-    Assert.AreEqual (expectedUrl, permanentUrl);
+    Assert.That (permanentUrl, Is.Not.Null);
+    Assert.That (permanentUrl, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -255,8 +255,8 @@ public class WxeContextTest
 
     string permanentUrl = _currentWxeContext.GetPermanentUrl (_functionType, queryString, true);
 
-    Assert.IsNotNull (permanentUrl);
-    Assert.AreEqual (expectedUrl, permanentUrl);
+    Assert.That (permanentUrl, Is.Not.Null);
+    Assert.That (permanentUrl, Is.EqualTo (expectedUrl));
   }
 
   [Test]

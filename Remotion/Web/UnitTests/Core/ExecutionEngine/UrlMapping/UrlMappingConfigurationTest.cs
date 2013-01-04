@@ -45,23 +45,23 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping
       Assert.IsNotNull (mapping, "Mapping is null.");
 
       Assert.IsNotNull (mapping.Mappings, "Rules are null.");
-      Assert.AreEqual (3, mapping.Mappings.Count);
+      Assert.That (mapping.Mappings.Count, Is.EqualTo (3));
 
       Assert.IsNotNull (mapping.Mappings[0], "First rule is null.");
       Assert.IsNotNull (mapping.Mappings[1], "Second rule is null.");
       Assert.IsNotNull (mapping.Mappings[2], "Thrid rule is null.");
 
-      Assert.AreEqual ("First", mapping.Mappings[0].ID);
-      Assert.AreEqual (typeof (FirstMappedFunction), mapping.Mappings[0].FunctionType);
-      Assert.AreEqual ("~/First.wxe", mapping.Mappings[0].Resource);
+      Assert.That (mapping.Mappings[0].ID, Is.EqualTo ("First"));
+      Assert.That (mapping.Mappings[0].FunctionType, Is.EqualTo (typeof (FirstMappedFunction)));
+      Assert.That (mapping.Mappings[0].Resource, Is.EqualTo ("~/First.wxe"));
 
-      Assert.AreEqual ("Second", mapping.Mappings[1].ID);
-      Assert.AreEqual (typeof (SecondMappedFunction), mapping.Mappings[1].FunctionType);
-      Assert.AreEqual ("~/Second.wxe", mapping.Mappings[1].Resource);
+      Assert.That (mapping.Mappings[1].ID, Is.EqualTo ("Second"));
+      Assert.That (mapping.Mappings[1].FunctionType, Is.EqualTo (typeof (SecondMappedFunction)));
+      Assert.That (mapping.Mappings[1].Resource, Is.EqualTo ("~/Second.wxe"));
 
-      Assert.IsNull (mapping.Mappings[2].ID);
-      Assert.AreEqual (typeof (FirstMappedFunction), mapping.Mappings[2].FunctionType);
-      Assert.AreEqual ("~/Primary.wxe", mapping.Mappings[2].Resource);
+      Assert.That (mapping.Mappings[2].ID, Is.Null);
+      Assert.That (mapping.Mappings[2].FunctionType, Is.EqualTo (typeof (FirstMappedFunction)));
+      Assert.That (mapping.Mappings[2].Resource, Is.EqualTo ("~/Primary.wxe"));
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetExecutionEngineUrlMapping ();
       UrlMappingConfiguration mapping = UrlMappingConfiguration.Current;
-      Assert.IsNotNull (mapping);
+      Assert.That (mapping, Is.Not.Null);
     }
 
     [Test]
@@ -88,23 +88,23 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping
       Assert.IsNotNull (mapping, "Mapping is null.");
 
       Assert.IsNotNull (mapping.Mappings, "Rules are null.");
-      Assert.AreEqual (3, mapping.Mappings.Count);
+      Assert.That (mapping.Mappings.Count, Is.EqualTo (3));
 
       Assert.IsNotNull (mapping.Mappings[0], "First rule is null.");
       Assert.IsNotNull (mapping.Mappings[1], "Second rule is null.");
       Assert.IsNotNull (mapping.Mappings[2], "Thrid rule is null.");
 
-      Assert.AreEqual ("First", mapping.Mappings[0].ID);
-      Assert.AreEqual (typeof (FirstMappedFunction), mapping.Mappings[0].FunctionType);
-      Assert.AreEqual ("~/First.wxe", mapping.Mappings[0].Resource);
+      Assert.That (mapping.Mappings[0].ID, Is.EqualTo ("First"));
+      Assert.That (mapping.Mappings[0].FunctionType, Is.EqualTo (typeof (FirstMappedFunction)));
+      Assert.That (mapping.Mappings[0].Resource, Is.EqualTo ("~/First.wxe"));
 
-      Assert.AreEqual ("Second", mapping.Mappings[1].ID);
-      Assert.AreEqual (typeof (SecondMappedFunction), mapping.Mappings[1].FunctionType);
-      Assert.AreEqual ("~/Second.wxe", mapping.Mappings[1].Resource);
+      Assert.That (mapping.Mappings[1].ID, Is.EqualTo ("Second"));
+      Assert.That (mapping.Mappings[1].FunctionType, Is.EqualTo (typeof (SecondMappedFunction)));
+      Assert.That (mapping.Mappings[1].Resource, Is.EqualTo ("~/Second.wxe"));
 
-      Assert.IsNull (mapping.Mappings[2].ID);
-      Assert.AreEqual (typeof (FirstMappedFunction), mapping.Mappings[2].FunctionType);
-      Assert.AreEqual ("~/Primary.wxe", mapping.Mappings[2].Resource);
+      Assert.That (mapping.Mappings[2].ID, Is.Null);
+      Assert.That (mapping.Mappings[2].FunctionType, Is.EqualTo (typeof (FirstMappedFunction)));
+      Assert.That (mapping.Mappings[2].Resource, Is.EqualTo ("~/Primary.wxe"));
     }
 
     [Test]
@@ -116,7 +116,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping
       Assert.IsNotNull (mapping, "Mapping is null.");
 
       Assert.IsNotNull (mapping.Mappings, "Rules are null.");
-      Assert.AreEqual (0, mapping.Mappings.Count);
+      Assert.That (mapping.Mappings.Count, Is.EqualTo (0));
     }
 
     [Test]

@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       group.Name = "LongGroupName";
       group.ShortName = "ShortName";
 
-      Assert.AreEqual ("ShortName (LongGroupName)", group.DisplayName);
+      Assert.That (@group.DisplayName, Is.EqualTo ("ShortName (LongGroupName)"));
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       group.Name = "LongGroupName";
       group.ShortName = null;
 
-      Assert.AreEqual ("LongGroupName", group.DisplayName);
+      Assert.That (@group.DisplayName, Is.EqualTo ("LongGroupName"));
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       group.UniqueIdentifier = "My Unique Identifier";
 
-      Assert.AreEqual ("My Unique Identifier", group.UniqueIdentifier);
+      Assert.That (@group.UniqueIdentifier, Is.EqualTo ("My Unique Identifier"));
     }
 
     [Test]
@@ -84,7 +84,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       group.UniqueIdentifier = "My Unique Identifier";
 
-      Assert.AreEqual (group.ID.ToString(), businessObject.UniqueIdentifier);
+      Assert.That (businessObject.UniqueIdentifier, Is.EqualTo (@group.ID.ToString()));
     }
 
     [Test]
@@ -95,8 +95,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       group.UniqueIdentifier = "My Unique Identifier";
 
-      Assert.AreEqual ("My Unique Identifier", businessObject.GetProperty ("UniqueIdentifier"));
-      Assert.AreEqual (group.ID.ToString(), businessObject.UniqueIdentifier);
+      Assert.That (businessObject.GetProperty ("UniqueIdentifier"), Is.EqualTo ("My Unique Identifier"));
+      Assert.That (businessObject.UniqueIdentifier, Is.EqualTo (@group.ID.ToString()));
     }
 
     [Test]
@@ -106,8 +106,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       IBusinessObjectWithIdentity businessObject = group;
 
       businessObject.SetProperty ("UniqueIdentifier", "My Unique Identifier");
-      Assert.AreEqual ("My Unique Identifier", group.UniqueIdentifier);
-      Assert.AreEqual (group.ID.ToString(), businessObject.UniqueIdentifier);
+      Assert.That (@group.UniqueIdentifier, Is.EqualTo ("My Unique Identifier"));
+      Assert.That (businessObject.UniqueIdentifier, Is.EqualTo (@group.ID.ToString()));
     }
 
     [Test]
@@ -120,7 +120,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       IBusinessObjectProperty property = businessObject.BusinessObjectClass.GetPropertyDefinition ("UniqueIdentifier");
 
       Assert.IsInstanceOf (typeof (IBusinessObjectStringProperty), property);
-      Assert.AreEqual ("My Unique Identifier", businessObject.GetProperty (property));
+      Assert.That (businessObject.GetProperty (property), Is.EqualTo ("My Unique Identifier"));
     }
 
     [Test]

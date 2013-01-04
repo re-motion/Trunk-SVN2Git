@@ -29,17 +29,17 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     public void DoubleMixinOverrides_CreateMixinInstance ()
     {
       MixinMixingClass instance = ObjectFactory.Create<MixinMixingClass> (ParamList.Empty);
-      Assert.IsNotNull (Mixin.Get<MixinMixingMixin> (instance));
+      Assert.That (Mixin.Get<MixinMixingMixin> (instance), Is.Not.Null);
     }
 
     [Test]
     public void DoubleMixinOverrides_CreateClassInstance ()
     {
       ClassWithMixedMixin instance = ObjectFactory.Create<ClassWithMixedMixin> (ParamList.Empty);
-      Assert.IsNotNull (Mixin.Get<MixinMixingClass> (instance));
-      Assert.IsNotNull (Mixin.Get<MixinMixingMixin> (Mixin.Get<MixinMixingClass> (instance)));
+      Assert.That (Mixin.Get<MixinMixingClass> (instance), Is.Not.Null);
+      Assert.That (Mixin.Get<MixinMixingMixin> (Mixin.Get<MixinMixingClass> (instance)), Is.Not.Null);
 
-      Assert.AreEqual ("MixinMixingMixin-MixinMixingClass-ClassWithMixedMixin.StringMethod (3)", instance.StringMethod (3));
+      Assert.That (instance.StringMethod (3), Is.EqualTo ("MixinMixingMixin-MixinMixingClass-ClassWithMixedMixin.StringMethod (3)"));
     }
 
     [Test]

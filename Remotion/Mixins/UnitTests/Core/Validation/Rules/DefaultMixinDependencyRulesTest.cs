@@ -34,7 +34,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = TargetClassDefinitionFactory.CreateWithoutValidation (context);
       var log = Validator.Validate (definition.Mixins[typeof (MixinWithAdditionalClassDependency)]);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinDependencyRules.DependencyMustBeSatisfiedByAnotherMixin", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinDependencyRules.DependencyMustBeSatisfiedByAnotherMixin", log), Is.True);
     }
 
     [Test]
@@ -45,7 +45,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = TargetClassDefinitionFactory.CreateWithoutValidation (context);
       var log = Validator.Validate (definition.Mixins[typeof (MixinWithAdditionalInterfaceDependency)]);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinDependencyRules.DependencyMustBeSatisfiedByAnotherMixin", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinDependencyRules.DependencyMustBeSatisfiedByAnotherMixin", log), Is.True);
     }
 
   }

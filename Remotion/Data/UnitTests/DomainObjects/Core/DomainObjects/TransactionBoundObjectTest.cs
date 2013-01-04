@@ -40,16 +40,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NewBoundObject ()
     {
       Order order = NewBound<Order>();
-      Assert.IsTrue (order.HasBindingTransaction);
-      Assert.AreSame (_bindingTransaction, order.GetBindingTransaction());
+      Assert.That (order.HasBindingTransaction, Is.True);
+      Assert.That (order.GetBindingTransaction(), Is.SameAs (_bindingTransaction));
     }
 
     [Test]
     public void GetBoundObject ()
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
-      Assert.IsTrue (order.HasBindingTransaction);
-      Assert.AreSame (_bindingTransaction, order.GetBindingTransaction());
+      Assert.That (order.HasBindingTransaction, Is.True);
+      Assert.That (order.GetBindingTransaction(), Is.SameAs (_bindingTransaction));
     }
 
     [Test]
@@ -58,9 +58,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Order order = GetBound<Order> (DomainObjectIDs.Order1);
-        Assert.IsTrue (order.HasBindingTransaction);
-        Assert.AreSame (_bindingTransaction, order.GetBindingTransaction());
-        Assert.AreNotSame (order, Order.GetObject (DomainObjectIDs.Order1));
+        Assert.That (order.HasBindingTransaction, Is.True);
+        Assert.That (order.GetBindingTransaction(), Is.SameAs (_bindingTransaction));
+        Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.Not.SameAs (order));
       }
     }
 
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void CanBeUsedInTransaction ()
     {
       Order order = GetBound<Order>(DomainObjectIDs.Order1);
-      Assert.IsTrue (_bindingTransaction.IsEnlisted (order));
+      Assert.That (_bindingTransaction.IsEnlisted (order), Is.True);
     }
 
     [Test]
@@ -77,8 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Order order = GetBound<Order> (DomainObjectIDs.Order1);
-        Assert.IsTrue (_bindingTransaction.IsEnlisted (order));
-        Assert.IsFalse (ClientTransaction.Current.IsEnlisted (order));
+        Assert.That (_bindingTransaction.IsEnlisted (order), Is.True);
+        Assert.That (ClientTransaction.Current.IsEnlisted (order), Is.False);
       }
     }
 
@@ -104,25 +104,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
       order.OrderNumber = 12;
-      Assert.AreEqual (12, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (12));
     }
 
     [Test]
     public void GetRelatedObject ()
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
-      Assert.IsNotNull (order.OrderTicket);
-      Assert.IsNotNull (order.OrderItems[0]);
+      Assert.That (order.OrderTicket, Is.Not.Null);
+      Assert.That (order.OrderItems[0], Is.Not.Null);
     }
 
     [Test]
     public void LoadedRelatedObjects_AreBound ()
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
-      Assert.IsTrue (order.OrderTicket.HasBindingTransaction);
-      Assert.AreSame (_bindingTransaction, order.OrderTicket.GetBindingTransaction());
-      Assert.IsTrue (order.OrderItems[0].HasBindingTransaction);
-      Assert.AreSame (_bindingTransaction, order.OrderItems[0].GetBindingTransaction());
+      Assert.That (order.OrderTicket.HasBindingTransaction, Is.True);
+      Assert.That (order.OrderTicket.GetBindingTransaction(), Is.SameAs (_bindingTransaction));
+      Assert.That (order.OrderItems[0].HasBindingTransaction, Is.True);
+      Assert.That (order.OrderItems[0].GetBindingTransaction(), Is.SameAs (_bindingTransaction));
     }
 
     [Test]
@@ -132,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       OrderTicket orderTicket = NewBound<OrderTicket> ();
       order.OrderTicket = orderTicket;
-      Assert.AreSame (orderTicket, order.OrderTicket);
+      Assert.That (order.OrderTicket, Is.SameAs (orderTicket));
     }
 
     [Test]
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       OrderItem orderItem = NewBound<OrderItem> ();
       order.OrderItems.Add (orderItem);
-      Assert.AreSame (orderItem, order.OrderItems[order.OrderItems.Count - 1]);
+      Assert.That (order.OrderItems[order.OrderItems.Count - 1], Is.SameAs (orderItem));
     }
 
     [Test]
@@ -171,9 +171,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void State ()
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
-      Assert.AreEqual (StateType.Unchanged, order.State);
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
       ++order.OrderNumber;
-      Assert.AreEqual (StateType.Changed, order.State);
+      Assert.That (order.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -189,11 +189,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void IsDiscarded ()
     {
       Order order = NewBound<Order> ();
-      Assert.AreEqual (StateType.New, order.State);
-      Assert.IsFalse (order.IsInvalid);
+      Assert.That (order.State, Is.EqualTo (StateType.New));
+      Assert.That (order.IsInvalid, Is.False);
       order.Delete ();
-      Assert.AreEqual (StateType.Invalid, order.State);
-      Assert.IsTrue (order.IsInvalid);
+      Assert.That (order.State, Is.EqualTo (StateType.Invalid));
+      Assert.That (order.IsInvalid, Is.True);
     }
 
     [Test]
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = NewBound<Order> ();
       DataContainer dc = order.InternalDataContainer;
-      Assert.AreSame (_bindingTransaction, dc.ClientTransaction);
+      Assert.That (dc.ClientTransaction, Is.SameAs (_bindingTransaction));
     }
 
     [Test]
@@ -209,7 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
       order.Delete();
-      Assert.AreEqual (StateType.Deleted, order.State);
+      Assert.That (order.State, Is.EqualTo (StateType.Deleted));
     }
 
     private T NewBound<T> (params object[] args)

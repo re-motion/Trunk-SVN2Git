@@ -377,10 +377,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       ClassDefinition orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
       ObjectID id1 = _persistenceManager.CreateNewObjectID (orderClass);
-      Assert.IsNotNull (id1);
+      Assert.That (id1, Is.Not.Null);
       ObjectID id2 = _persistenceManager.CreateNewObjectID (orderClass);
-      Assert.IsNotNull (id2);
-      Assert.AreNotEqual (id1, id2);
+      Assert.That (id2, Is.Not.Null);
+      Assert.That (id2, Is.Not.EqualTo (id1));
     }
 
     [Test]
@@ -389,9 +389,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       ClassDefinition orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
       DataContainer container = CreateDataContainer (orderClass);
 
-      Assert.IsNotNull (container);
-      Assert.AreEqual (StateType.New, container.State);
-      Assert.IsNotNull (container.ID);
+      Assert.That (container, Is.Not.Null);
+      Assert.That (container.State, Is.EqualTo (StateType.New));
+      Assert.That (container.ID, Is.Not.Null);
     }
 
     private DataContainer CreateDataContainer (ClassDefinition classDefinition)

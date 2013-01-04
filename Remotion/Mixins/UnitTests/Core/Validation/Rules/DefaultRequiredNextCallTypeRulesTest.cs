@@ -31,7 +31,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithInvisibleNextCallDependency));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredNextCallTypeRules.RequiredNextCallTypeMustBePublic", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredNextCallTypeRules.RequiredNextCallTypeMustBePublic", log), Is.True);
     }
   }
 }

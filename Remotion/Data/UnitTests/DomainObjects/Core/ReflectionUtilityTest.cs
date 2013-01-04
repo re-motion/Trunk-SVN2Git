@@ -50,15 +50,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       PropertyInfo propertyInfo = typeof (DerivedClassWithDifferentProperties).GetProperty ("Int32");
 
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithDifferentProperties.Int32",
-          ReflectionUtility.GetPropertyName (propertyInfo));
+      Assert.That (ReflectionUtility.GetPropertyName (propertyInfo), Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithDifferentProperties.Int32"));
     }
 
     [Test]
     public void GetAssemblyPath ()
     {
-      Assert.AreEqual (AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\'), ReflectionUtility.GetAssemblyDirectory (typeof (ReflectionUtilityTest).Assembly));
+      Assert.That (ReflectionUtility.GetAssemblyDirectory (typeof (ReflectionUtilityTest).Assembly), Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\')));
     }
 
     [Test]
@@ -82,8 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               string assemblyPath = (string) args[1];
 
               Assembly assembly = Assembly.LoadFile (assemblyPath);
-              Assert.AreEqual (directory, Path.GetDirectoryName (assembly.Location));
-              Assert.AreEqual (directory, ReflectionUtility.GetAssemblyDirectory (assembly));
+              Assert.That (Path.GetDirectoryName (assembly.Location), Is.EqualTo (directory));
+              Assert.That (ReflectionUtility.GetAssemblyDirectory (assembly), Is.EqualTo (directory));
             },
             directoryPath,
             newAssemblyPath);
@@ -111,9 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetDomainObjectAssemblyDirectory ()
     {
-      Assert.AreEqual (
-          Path.GetDirectoryName (new Uri (typeof (DomainObject).Assembly.EscapedCodeBase).AbsolutePath),
-          ReflectionUtility.GetConfigFileDirectory());
+      Assert.That (ReflectionUtility.GetConfigFileDirectory(), Is.EqualTo (Path.GetDirectoryName (new Uri (typeof (DomainObject).Assembly.EscapedCodeBase).AbsolutePath)));
     }
 
     [Test]

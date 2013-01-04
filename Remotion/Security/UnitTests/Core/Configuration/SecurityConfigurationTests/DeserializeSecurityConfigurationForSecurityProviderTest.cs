@@ -39,7 +39,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.AreSame (Configuration.SecurityProvider, Configuration.SecurityProvider);
+      Assert.That (Configuration.SecurityProvider, Is.SameAs (Configuration.SecurityProvider));
     }
 
     [Test]
@@ -98,10 +98,10 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.AreEqual (2, Configuration.SecurityProviders.Count);
+      Assert.That (Configuration.SecurityProviders.Count, Is.EqualTo (2));
       Assert.IsInstanceOf (typeof (SecurityProviderMock), Configuration.SecurityProviders["Custom"]);
       Assert.IsInstanceOf (typeof (NullSecurityProvider), Configuration.SecurityProvider);
-      Assert.AreSame (Configuration.SecurityProvider, Configuration.SecurityProviders["None"]);
+      Assert.That (Configuration.SecurityProviders["None"], Is.SameAs (Configuration.SecurityProvider));
     }
 
     [Test]

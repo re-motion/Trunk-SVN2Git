@@ -45,9 +45,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       {
         ace.TenantCondition = TenantCondition.OwningTenant;
 
-        Assert.IsNotNull (ace.SpecificTenant);
+        Assert.That (ace.SpecificTenant, Is.Not.Null);
         ClientTransactionScope.CurrentTransaction.Commit();
-        Assert.IsNull (ace.SpecificTenant);
+        Assert.That (ace.SpecificTenant, Is.Null);
       }
     }
 
@@ -103,9 +103,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       {
         ace.GroupCondition = GroupCondition.OwningGroup;
 
-        Assert.IsNotNull (ace.SpecificGroup);
+        Assert.That (ace.SpecificGroup, Is.Not.Null);
         ClientTransactionScope.CurrentTransaction.Commit();
-        Assert.IsNull (ace.SpecificGroup);
+        Assert.That (ace.SpecificGroup, Is.Null);
       }
     }
 
@@ -162,9 +162,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       {
         ace.GroupCondition = GroupCondition.None;
 
-        Assert.IsNotNull (ace.SpecificGroupType);
+        Assert.That (ace.SpecificGroupType, Is.Not.Null);
         ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.IsNull (ace.SpecificGroupType);
+        Assert.That (ace.SpecificGroupType, Is.Null);
       }
     }
 
@@ -178,7 +178,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
         ace.GroupCondition = GroupCondition.AnyGroupWithSpecificGroupType;
 
         ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.IsNotNull (ace.SpecificGroupType);
+        Assert.That (ace.SpecificGroupType, Is.Not.Null);
       }      
     }
 
@@ -192,7 +192,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
         ace.GroupCondition = GroupCondition.BranchOfOwningGroup;
 
         ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.IsNotNull (ace.SpecificGroupType);
+        Assert.That (ace.SpecificGroupType, Is.Not.Null);
       }
     }
 
@@ -206,9 +206,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       {
         ace.UserCondition = UserCondition.Owner;
 
-        Assert.IsNotNull (ace.SpecificUser);
+        Assert.That (ace.SpecificUser, Is.Not.Null);
         ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.IsNull (ace.SpecificUser);
+        Assert.That (ace.SpecificUser, Is.Null);
       }
     }
 
@@ -220,9 +220,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       {
         ace.UserCondition = UserCondition.Owner;
 
-        Assert.IsNotNull (ace.SpecificPosition);
+        Assert.That (ace.SpecificPosition, Is.Not.Null);
         ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.IsNull (ace.SpecificPosition);
+        Assert.That (ace.SpecificPosition, Is.Null);
       }
     }
 
@@ -235,7 +235,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       {
         ace.TenantCondition = TenantCondition.OwningTenant;
 
-        Assert.IsNotNull (ace.SpecificTenant);
+        Assert.That (ace.SpecificTenant, Is.Not.Null);
         ace.Delete ();
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
@@ -250,7 +250,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       {
         ace.GroupCondition = GroupCondition.OwningGroup;
 
-        Assert.IsNotNull (ace.SpecificGroup);
+        Assert.That (ace.SpecificGroup, Is.Not.Null);
         ace.Delete ();
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
@@ -266,7 +266,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       {
         ace.UserCondition = UserCondition.Owner;
 
-        Assert.IsNotNull (ace.SpecificUser);
+        Assert.That (ace.SpecificUser, Is.Not.Null);
         ace.Delete ();
         ClientTransactionScope.CurrentTransaction.Commit ();
       }

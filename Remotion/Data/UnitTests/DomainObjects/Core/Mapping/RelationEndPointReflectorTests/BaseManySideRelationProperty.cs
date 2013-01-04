@@ -50,9 +50,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
       Assert.IsInstanceOf (typeof (RelationEndPointDefinition), actual);
       RelationEndPointDefinition relationEndPointDefinition = (RelationEndPointDefinition) actual;
-      Assert.AreSame (_classDefinition, relationEndPointDefinition.ClassDefinition);
-      Assert.AreSame (GetPropertyDefinition ("BaseUnidirectional"), relationEndPointDefinition.PropertyDefinition);
-      Assert.IsNull (relationEndPointDefinition.RelationDefinition);
+      Assert.That (relationEndPointDefinition.ClassDefinition, Is.SameAs (_classDefinition));
+      Assert.That (relationEndPointDefinition.PropertyDefinition, Is.SameAs (GetPropertyDefinition ("BaseUnidirectional")));
+      Assert.That (relationEndPointDefinition.RelationDefinition, Is.Null);
     }
 
     [Test]
@@ -68,9 +68,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
       Assert.IsInstanceOf (typeof (RelationEndPointDefinition), actual);
       RelationEndPointDefinition relationEndPointDefinition = (RelationEndPointDefinition) actual;
-      Assert.AreSame (_classDefinition, relationEndPointDefinition.ClassDefinition);
-      Assert.AreSame (GetPropertyDefinition ("BaseBidirectionalOneToOne"), relationEndPointDefinition.PropertyDefinition);
-      Assert.IsNull (relationEndPointDefinition.RelationDefinition);
+      Assert.That (relationEndPointDefinition.ClassDefinition, Is.SameAs (_classDefinition));
+      Assert.That (relationEndPointDefinition.PropertyDefinition, Is.SameAs (GetPropertyDefinition ("BaseBidirectionalOneToOne")));
+      Assert.That (relationEndPointDefinition.RelationDefinition, Is.Null);
     }
 
     [Test]
@@ -86,9 +86,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
       Assert.IsInstanceOf (typeof (RelationEndPointDefinition), actual);
       RelationEndPointDefinition relationEndPointDefinition = (RelationEndPointDefinition) actual;
-      Assert.AreSame (_classDefinition, relationEndPointDefinition.ClassDefinition);
-      Assert.AreSame (GetPropertyDefinition ("BaseBidirectionalOneToMany"), relationEndPointDefinition.PropertyDefinition);
-      Assert.IsNull (relationEndPointDefinition.RelationDefinition);
+      Assert.That (relationEndPointDefinition.ClassDefinition, Is.SameAs (_classDefinition));
+      Assert.That (relationEndPointDefinition.PropertyDefinition, Is.SameAs (GetPropertyDefinition ("BaseBidirectionalOneToMany")));
+      Assert.That (relationEndPointDefinition.RelationDefinition, Is.Null);
     }
     
     [Test]
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       RdbmsRelationEndPointReflector relationEndPointReflector = CreateRelationEndPointReflector ("BaseUnidirectional");
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
+      Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.False);
     }
 
     [Test]
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       RdbmsRelationEndPointReflector relationEndPointReflector = CreateRelationEndPointReflector ("BaseBidirectionalOneToOne");
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
+      Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.False);
     }
 
     [Test]
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       RdbmsRelationEndPointReflector relationEndPointReflector = CreateRelationEndPointReflector ("BaseBidirectionalOneToMany");
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
+      Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.False);
     }
 
     private RdbmsRelationEndPointReflector CreateRelationEndPointReflector (string propertyName)

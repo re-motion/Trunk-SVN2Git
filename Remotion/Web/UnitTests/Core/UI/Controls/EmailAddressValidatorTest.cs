@@ -38,7 +38,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jdoe@provider.net";
     bool result = _validator.IsMatchComplete (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
   #endregion
@@ -50,7 +50,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"j";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -58,7 +58,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jdoe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -66,7 +66,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"Jdoe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -74,7 +74,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jDoe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -82,7 +82,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jdoE";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -90,7 +90,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"2jdoe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -98,7 +98,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"j2doe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -106,7 +106,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jdoe2";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -114,7 +114,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"_jdoe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -122,7 +122,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"j_doe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -130,7 +130,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jdoe_";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -138,7 +138,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"äjdoe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -146,7 +146,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jädoe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -154,7 +154,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jdoeä";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -162,7 +162,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"j-doe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -170,7 +170,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"j.doe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
   #endregion
@@ -182,7 +182,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"pr.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -190,7 +190,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -198,7 +198,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"Provider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -206,7 +206,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"proVider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -214,7 +214,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provideR.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -222,7 +222,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"2provider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -230,7 +230,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"pro2vider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -238,7 +238,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider2.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -246,7 +246,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"_provider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -254,7 +254,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"pro_vider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -262,7 +262,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider_.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -270,7 +270,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"äprovider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -278,7 +278,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"proävider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -286,7 +286,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"providerä.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -294,7 +294,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"pro-vider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -302,7 +302,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"pro.vider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -310,7 +310,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider.ab";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
 	[Test]
@@ -318,7 +318,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider.abcdefghi";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (true, result);
+	  Assert.That (result, Is.EqualTo (true));
   }
 
   #endregion
@@ -330,7 +330,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jdoeprovider.net";
     bool result = _validator.IsMatchComplete (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -338,7 +338,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jdoe@pro@vider.net";
     bool result = _validator.IsMatchComplete (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -346,7 +346,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"";
     bool result = _validator.IsMatchComplete (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
   #endregion
@@ -358,7 +358,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -366,7 +366,7 @@ public class EmailAddressValidatorTest
   {
     string text = @" jdoe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -374,7 +374,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jdoe ";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -382,7 +382,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"-jdoe";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -390,7 +390,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"jdoe-";
     bool result = _validator.IsMatchUserPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
   #endregion
@@ -402,7 +402,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -410,7 +410,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"p.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -418,7 +418,7 @@ public class EmailAddressValidatorTest
   {
     string text = @" provider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -426,7 +426,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider.net ";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -434,7 +434,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"-provider.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -442,7 +442,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider-.net";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -450,7 +450,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider.";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -458,7 +458,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -466,7 +466,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider.a";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
 	[Test]
@@ -474,7 +474,7 @@ public class EmailAddressValidatorTest
   {
     string text = @"provider.abcdefghij";
     bool result = _validator.IsMatchDomainPart (text);
-    Assert.AreEqual (false, result);
+	  Assert.That (result, Is.EqualTo (false));
   }
 
   #endregion

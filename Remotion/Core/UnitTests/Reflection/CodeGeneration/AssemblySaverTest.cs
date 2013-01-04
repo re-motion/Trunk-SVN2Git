@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       ModuleScope scope = new ModuleScope (true);
       string[] paths = AssemblySaver.SaveAssemblies (scope);
-      Assert.AreEqual (0, paths.Length);
+      Assert.That (paths.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -42,8 +42,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomClassEmitter emitter = new CustomClassEmitter (scope, "SignedType", typeof (object));
       emitter.BuildType ();
       string[] paths = AssemblySaver.SaveAssemblies (scope);
-      Assert.AreEqual (1, paths.Length);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, scope.StrongNamedModuleName), paths[0]);
+      Assert.That (paths.Length, Is.EqualTo (1));
+      Assert.That (paths[0], Is.EqualTo (Path.Combine (Environment.CurrentDirectory, scope.StrongNamedModuleName)));
       File.Delete (paths[0]);
       File.Delete (paths[0].Replace (".dll", ".pdb"));
     }
@@ -55,8 +55,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomClassEmitter emitter = new CustomClassEmitter (scope, "UnsignedType", typeof (object), Type.EmptyTypes, TypeAttributes.Public, true);
       emitter.BuildType ();
       string[] paths = AssemblySaver.SaveAssemblies (scope);
-      Assert.AreEqual (1, paths.Length);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, scope.WeakNamedModuleName), paths[0]);
+      Assert.That (paths.Length, Is.EqualTo (1));
+      Assert.That (paths[0], Is.EqualTo (Path.Combine (Environment.CurrentDirectory, scope.WeakNamedModuleName)));
       File.Delete (paths[0]);
       File.Delete (paths[0].Replace (".dll", ".pdb"));
     }

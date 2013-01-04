@@ -27,21 +27,21 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
     public void IsEnabled_WithLevelWarn ()
     {
       SetLoggingThreshold (Level.Warn);
-      Assert.IsTrue (Log.IsErrorEnabled);
+      Assert.That (Log.IsErrorEnabled, Is.True);
     }
 
     [Test]
     public void IsEnabled_WithLevelError()
     {
       SetLoggingThreshold (Level.Error);
-      Assert.IsTrue (Log.IsErrorEnabled);
+      Assert.That (Log.IsErrorEnabled, Is.True);
     }
 
     [Test]
     public void IsEnabled_WithLevelFatal ()
     {
       SetLoggingThreshold (Level.Fatal);
-      Assert.IsFalse (Log.IsErrorEnabled);
+      Assert.That (Log.IsErrorEnabled, Is.False);
     }
 
     [Test]
@@ -51,9 +51,9 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Logger.Log (GetType (), Level.Error, "The message.", null);
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
-      Assert.AreEqual (Level.Error, events[0].Level);
-      Assert.AreEqual ("The message.", events[0].MessageObject);
+      Assert.That (events.Length, Is.EqualTo (1));
+      Assert.That (events[0].Level, Is.EqualTo (Level.Error));
+      Assert.That (events[0].MessageObject, Is.EqualTo ("The message."));
     }
 
     [Test]
@@ -65,14 +65,14 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Log.Error (2, (object) "The message.", exception);
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
+      Assert.That (events.Length, Is.EqualTo (1));
       LoggingEvent loggingEvent = events[0];
-      Assert.AreEqual (Level.Error, loggingEvent.Level);
-      Assert.AreEqual ("The message.", loggingEvent.MessageObject);
-      Assert.AreEqual (2, loggingEvent.Properties["EventID"]);
-      Assert.AreSame (exception, loggingEvent.ExceptionObject);
-      Assert.AreSame (Logger.Repository, loggingEvent.Repository);
-      Assert.AreEqual (Logger.Name, loggingEvent.LoggerName);
+      Assert.That (loggingEvent.Level, Is.EqualTo (Level.Error));
+      Assert.That (loggingEvent.MessageObject, Is.EqualTo ("The message."));
+      Assert.That (loggingEvent.Properties["EventID"], Is.EqualTo (2));
+      Assert.That (loggingEvent.ExceptionObject, Is.SameAs (exception));
+      Assert.That (loggingEvent.Repository, Is.SameAs (Logger.Repository));
+      Assert.That (loggingEvent.LoggerName, Is.EqualTo (Logger.Name));
     }
 
     [Test]
@@ -83,14 +83,14 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Log.Error (1, (object) "The message.");
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
+      Assert.That (events.Length, Is.EqualTo (1));
       LoggingEvent loggingEvent = events[0];
-      Assert.AreEqual (Level.Error, loggingEvent.Level);
-      Assert.AreEqual ("The message.", loggingEvent.MessageObject);
-      Assert.AreEqual (1, loggingEvent.Properties["EventID"]);
-      Assert.IsNull (loggingEvent.ExceptionObject);
-      Assert.AreSame (Logger.Repository, loggingEvent.Repository);
-      Assert.AreEqual (Logger.Name, loggingEvent.LoggerName);
+      Assert.That (loggingEvent.Level, Is.EqualTo (Level.Error));
+      Assert.That (loggingEvent.MessageObject, Is.EqualTo ("The message."));
+      Assert.That (loggingEvent.Properties["EventID"], Is.EqualTo (1));
+      Assert.That (loggingEvent.ExceptionObject, Is.Null);
+      Assert.That (loggingEvent.Repository, Is.SameAs (Logger.Repository));
+      Assert.That (loggingEvent.LoggerName, Is.EqualTo (Logger.Name));
     }
 
     [Test]
@@ -102,13 +102,13 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Log.Error ((object) "The message.", exception);
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
+      Assert.That (events.Length, Is.EqualTo (1));
       LoggingEvent loggingEvent = events[0];
-      Assert.AreEqual (Level.Error, loggingEvent.Level);
-      Assert.AreEqual ("The message.", loggingEvent.MessageObject);
-      Assert.AreSame (exception, loggingEvent.ExceptionObject);
-      Assert.AreSame (Logger.Repository, loggingEvent.Repository);
-      Assert.AreEqual (Logger.Name, loggingEvent.LoggerName);
+      Assert.That (loggingEvent.Level, Is.EqualTo (Level.Error));
+      Assert.That (loggingEvent.MessageObject, Is.EqualTo ("The message."));
+      Assert.That (loggingEvent.ExceptionObject, Is.SameAs (exception));
+      Assert.That (loggingEvent.Repository, Is.SameAs (Logger.Repository));
+      Assert.That (loggingEvent.LoggerName, Is.EqualTo (Logger.Name));
     }
 
     [Test]
@@ -119,13 +119,13 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Log.Error ((object) "The message.");
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
+      Assert.That (events.Length, Is.EqualTo (1));
       LoggingEvent loggingEvent = events[0];
-      Assert.AreEqual (Level.Error, loggingEvent.Level);
-      Assert.AreEqual ("The message.", loggingEvent.MessageObject);
-      Assert.IsNull (loggingEvent.ExceptionObject);
-      Assert.AreSame (Logger.Repository, loggingEvent.Repository);
-      Assert.AreEqual (Logger.Name, loggingEvent.LoggerName);
+      Assert.That (loggingEvent.Level, Is.EqualTo (Level.Error));
+      Assert.That (loggingEvent.MessageObject, Is.EqualTo ("The message."));
+      Assert.That (loggingEvent.ExceptionObject, Is.Null);
+      Assert.That (loggingEvent.Repository, Is.SameAs (Logger.Repository));
+      Assert.That (loggingEvent.LoggerName, Is.EqualTo (Logger.Name));
     }
 
     [Test]
@@ -135,7 +135,7 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
 
       Log.Error (1, (object) "The message.");
 
-      Assert.IsEmpty (GetLoggingEvents ());
+      Assert.That (GetLoggingEvents (), Is.Empty);
     }
 
     [Test]
@@ -147,14 +147,14 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Log.ErrorFormat (1, exception, "{0} {1}", "The", "message.");
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
+      Assert.That (events.Length, Is.EqualTo (1));
       LoggingEvent loggingEvent = events[0];
-      Assert.AreEqual (Level.Error, loggingEvent.Level);
-      Assert.AreEqual ("The message.", loggingEvent.MessageObject.ToString ());
-      Assert.AreEqual (1, loggingEvent.Properties["EventID"]);
-      Assert.AreSame (exception, loggingEvent.ExceptionObject);
-      Assert.AreSame (Logger.Repository, loggingEvent.Repository);
-      Assert.AreEqual (Logger.Name, loggingEvent.LoggerName);
+      Assert.That (loggingEvent.Level, Is.EqualTo (Level.Error));
+      Assert.That (loggingEvent.MessageObject.ToString (), Is.EqualTo ("The message."));
+      Assert.That (loggingEvent.Properties["EventID"], Is.EqualTo (1));
+      Assert.That (loggingEvent.ExceptionObject, Is.SameAs (exception));
+      Assert.That (loggingEvent.Repository, Is.SameAs (Logger.Repository));
+      Assert.That (loggingEvent.LoggerName, Is.EqualTo (Logger.Name));
     }
 
     [Test]
@@ -165,14 +165,14 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Log.ErrorFormat (1, "{0} {1}", "The", "message.");
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
+      Assert.That (events.Length, Is.EqualTo (1));
       LoggingEvent loggingEvent = events[0];
-      Assert.AreEqual (Level.Error, loggingEvent.Level);
-      Assert.AreEqual ("The message.", loggingEvent.MessageObject.ToString ());
-      Assert.AreEqual (1, loggingEvent.Properties["EventID"]);
-      Assert.IsNull (loggingEvent.ExceptionObject);
-      Assert.AreSame (Logger.Repository, loggingEvent.Repository);
-      Assert.AreEqual (Logger.Name, loggingEvent.LoggerName);
+      Assert.That (loggingEvent.Level, Is.EqualTo (Level.Error));
+      Assert.That (loggingEvent.MessageObject.ToString (), Is.EqualTo ("The message."));
+      Assert.That (loggingEvent.Properties["EventID"], Is.EqualTo (1));
+      Assert.That (loggingEvent.ExceptionObject, Is.Null);
+      Assert.That (loggingEvent.Repository, Is.SameAs (Logger.Repository));
+      Assert.That (loggingEvent.LoggerName, Is.EqualTo (Logger.Name));
     }
 
     [Test]
@@ -184,13 +184,13 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Log.ErrorFormat (exception, "{0} {1}", "The", "message.");
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
+      Assert.That (events.Length, Is.EqualTo (1));
       LoggingEvent loggingEvent = events[0];
-      Assert.AreEqual (Level.Error, loggingEvent.Level);
-      Assert.AreEqual ("The message.", loggingEvent.MessageObject.ToString ());
-      Assert.AreSame (exception, loggingEvent.ExceptionObject);
-      Assert.AreSame (Logger.Repository, loggingEvent.Repository);
-      Assert.AreEqual (Logger.Name, loggingEvent.LoggerName);
+      Assert.That (loggingEvent.Level, Is.EqualTo (Level.Error));
+      Assert.That (loggingEvent.MessageObject.ToString (), Is.EqualTo ("The message."));
+      Assert.That (loggingEvent.ExceptionObject, Is.SameAs (exception));
+      Assert.That (loggingEvent.Repository, Is.SameAs (Logger.Repository));
+      Assert.That (loggingEvent.LoggerName, Is.EqualTo (Logger.Name));
     }
 
     [Test]
@@ -201,13 +201,13 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Log.ErrorFormat ("{0} {1}", "The", "message.");
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
+      Assert.That (events.Length, Is.EqualTo (1));
       LoggingEvent loggingEvent = events[0];
-      Assert.AreEqual (Level.Error, loggingEvent.Level);
-      Assert.AreEqual ("The message.", loggingEvent.MessageObject.ToString ());
-      Assert.IsNull (loggingEvent.ExceptionObject);
-      Assert.AreSame (Logger.Repository, loggingEvent.Repository);
-      Assert.AreEqual (Logger.Name, loggingEvent.LoggerName);
+      Assert.That (loggingEvent.Level, Is.EqualTo (Level.Error));
+      Assert.That (loggingEvent.MessageObject.ToString (), Is.EqualTo ("The message."));
+      Assert.That (loggingEvent.ExceptionObject, Is.Null);
+      Assert.That (loggingEvent.Repository, Is.SameAs (Logger.Repository));
+      Assert.That (loggingEvent.LoggerName, Is.EqualTo (Logger.Name));
     }
 
     [Test]
@@ -219,14 +219,14 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Log.ErrorFormat (LogMessages.TheMessage, exception, "First", "Second");
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
+      Assert.That (events.Length, Is.EqualTo (1));
       LoggingEvent loggingEvent = events[0];
-      Assert.AreEqual (Level.Error, loggingEvent.Level);
-      Assert.AreEqual ("The message with First and Second.", loggingEvent.MessageObject.ToString ());
-      Assert.AreEqual ((int) LogMessages.TheMessage, loggingEvent.Properties["EventID"]);
-      Assert.AreSame (exception, loggingEvent.ExceptionObject);
-      Assert.AreSame (Logger.Repository, loggingEvent.Repository);
-      Assert.AreEqual (Logger.Name, loggingEvent.LoggerName);
+      Assert.That (loggingEvent.Level, Is.EqualTo (Level.Error));
+      Assert.That (loggingEvent.MessageObject.ToString (), Is.EqualTo ("The message with First and Second."));
+      Assert.That (loggingEvent.Properties["EventID"], Is.EqualTo ((int) LogMessages.TheMessage));
+      Assert.That (loggingEvent.ExceptionObject, Is.SameAs (exception));
+      Assert.That (loggingEvent.Repository, Is.SameAs (Logger.Repository));
+      Assert.That (loggingEvent.LoggerName, Is.EqualTo (Logger.Name));
     }
 
     [Test]
@@ -237,14 +237,14 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       Log.ErrorFormat (LogMessages.TheMessage, "First", "Second");
 
       LoggingEvent[] events = GetLoggingEvents ();
-      Assert.AreEqual (1, events.Length);
+      Assert.That (events.Length, Is.EqualTo (1));
       LoggingEvent loggingEvent = events[0];
-      Assert.AreEqual (Level.Error, loggingEvent.Level);
-      Assert.AreEqual ("The message with First and Second.", loggingEvent.MessageObject.ToString ());
-      Assert.AreEqual ((int) LogMessages.TheMessage, loggingEvent.Properties["EventID"]);
-      Assert.IsNull (loggingEvent.ExceptionObject);
-      Assert.AreSame (Logger.Repository, loggingEvent.Repository);
-      Assert.AreEqual (Logger.Name, loggingEvent.LoggerName);
+      Assert.That (loggingEvent.Level, Is.EqualTo (Level.Error));
+      Assert.That (loggingEvent.MessageObject.ToString (), Is.EqualTo ("The message with First and Second."));
+      Assert.That (loggingEvent.Properties["EventID"], Is.EqualTo ((int) LogMessages.TheMessage));
+      Assert.That (loggingEvent.ExceptionObject, Is.Null);
+      Assert.That (loggingEvent.Repository, Is.SameAs (Logger.Repository));
+      Assert.That (loggingEvent.LoggerName, Is.EqualTo (Logger.Name));
     }
 
     [Test]
@@ -254,7 +254,7 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
 
       Log.ErrorFormat (1, "{0} {1}", "The", "message.");
 
-      Assert.IsEmpty (GetLoggingEvents ());
+      Assert.That (GetLoggingEvents (), Is.Empty);
     }
   }
 }

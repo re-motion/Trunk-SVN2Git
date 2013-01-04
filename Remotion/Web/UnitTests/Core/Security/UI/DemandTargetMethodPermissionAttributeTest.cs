@@ -29,9 +29,9 @@ namespace Remotion.Web.UnitTests.Core.Security.UI
     {
       DemandTargetMethodPermissionAttribute attribute = new DemandTargetMethodPermissionAttribute ("Show");
 
-      Assert.AreEqual (PermissionSource.SecurableObject, attribute.PermissionSource);
-      Assert.AreEqual ("Show", attribute.MethodName);
-      Assert.IsNull (attribute.SecurableClass);
+      Assert.That (attribute.PermissionSource, Is.EqualTo (PermissionSource.SecurableObject));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Show"));
+      Assert.That (attribute.SecurableClass, Is.Null);
     }
 
     [Test]
@@ -39,9 +39,9 @@ namespace Remotion.Web.UnitTests.Core.Security.UI
     {
       DemandTargetMethodPermissionAttribute attribute = new DemandTargetMethodPermissionAttribute ("Show", typeof (SecurableObject));
 
-      Assert.AreEqual (PermissionSource.SecurableObject, attribute.PermissionSource);
-      Assert.AreEqual ("Show", attribute.MethodName);
-      Assert.AreSame ( typeof (SecurableObject), attribute.SecurableClass);
+      Assert.That (attribute.PermissionSource, Is.EqualTo (PermissionSource.SecurableObject));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Show"));
+      Assert.That (attribute.SecurableClass, Is.SameAs (typeof (SecurableObject)));
     }
 
     [Test]
@@ -49,9 +49,9 @@ namespace Remotion.Web.UnitTests.Core.Security.UI
     {
       DemandTargetMethodPermissionAttribute attribute = new DemandTargetMethodPermissionAttribute (SecurableObject.Method.Show);
 
-      Assert.AreEqual (PermissionSource.SecurableObject, attribute.PermissionSource);
-      Assert.AreEqual ("Show", attribute.MethodName);
-      Assert.AreSame (typeof (SecurableObject), attribute.SecurableClass);
+      Assert.That (attribute.PermissionSource, Is.EqualTo (PermissionSource.SecurableObject));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Show"));
+      Assert.That (attribute.SecurableClass, Is.SameAs (typeof (SecurableObject)));
     }
 
     [Test]
@@ -59,9 +59,9 @@ namespace Remotion.Web.UnitTests.Core.Security.UI
     {
       DemandTargetMethodPermissionAttribute attribute = new DemandTargetMethodPermissionAttribute (SecurableObject.Method.Show, typeof (DerivedSecurableObject));
 
-      Assert.AreEqual (PermissionSource.SecurableObject, attribute.PermissionSource);
-      Assert.AreEqual ("Show", attribute.MethodName);
-      Assert.AreSame (typeof (DerivedSecurableObject), attribute.SecurableClass);
+      Assert.That (attribute.PermissionSource, Is.EqualTo (PermissionSource.SecurableObject));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Show"));
+      Assert.That (attribute.SecurableClass, Is.SameAs (typeof (DerivedSecurableObject)));
     }
 
     [Test]

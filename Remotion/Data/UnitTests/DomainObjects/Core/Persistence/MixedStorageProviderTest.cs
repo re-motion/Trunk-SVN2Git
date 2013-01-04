@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       {
         ClassDefinition orderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
         StorageProvider provider = new StorageProviderManager (NullPersistenceExtension.Instance)[orderDefinition.StorageEntityDefinition.StorageProviderDefinition.Name];
-        Assert.IsNotNull (Mixin.Get<StorageProviderWithFixedGuidMixin> (provider));
+        Assert.That (Mixin.Get<StorageProviderWithFixedGuidMixin> (provider), Is.Not.Null);
       }
     }
 
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
         StorageProvider provider = new StorageProviderManager (NullPersistenceExtension.Instance)[orderDefinition.StorageEntityDefinition.StorageProviderDefinition.Name];
         ObjectID id1 = provider.CreateNewObjectID (orderDefinition);
         ObjectID id2 = provider.CreateNewObjectID (orderDefinition);
-        Assert.AreEqual (id1, id2);
+        Assert.That (id2, Is.EqualTo (id1));
       }
     }
 
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
         ((IStorageProviderWithFixedGuid) provider).FixedGuid = fixedGuid;
 
         ObjectID id = provider.CreateNewObjectID (orderDefinition);
-        Assert.AreEqual (fixedGuid, id.Value);
+        Assert.That (id.Value, Is.EqualTo (fixedGuid));
       }
     }
   }

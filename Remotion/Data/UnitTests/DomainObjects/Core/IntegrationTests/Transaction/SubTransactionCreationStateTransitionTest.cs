@@ -31,11 +31,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       DomainObject obj = GetUnchanged ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
         obj.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       }
-      Assert.AreEqual (StateType.Unchanged, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -44,11 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order obj = GetChangedThroughPropertyValue ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
-        Assert.AreEqual (obj.OrderNumber, obj.Properties[typeof (Order) + ".OrderNumber"].GetOriginalValue<int> ());
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
+        Assert.That (obj.Properties[typeof (Order) + ".OrderNumber"].GetOriginalValue<int> (), Is.EqualTo (obj.OrderNumber));
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       }
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -57,11 +57,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order obj = GetChangedThroughRelatedObjects ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
-        Assert.AreEqual (obj.OrderItems.Count, obj.Properties[typeof (Order) + ".OrderItems"].GetOriginalValue<ObjectList<OrderItem>> ().Count);
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
+        Assert.That (obj.Properties[typeof (Order) + ".OrderItems"].GetOriginalValue<ObjectList<OrderItem>> ().Count, Is.EqualTo (obj.OrderItems.Count));
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       }
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -70,11 +70,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Computer obj = GetChangedThroughRelatedObjectRealSide ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
-        Assert.AreEqual (obj.Employee, obj.Properties[typeof (Computer) + ".Employee"].GetOriginalValue<Employee> ());
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
+        Assert.That (obj.Properties[typeof (Computer) + ".Employee"].GetOriginalValue<Employee> (), Is.EqualTo (obj.Employee));
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       }
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -83,11 +83,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Employee obj = GetChangedThroughRelatedObjectVirtualSide ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
-        Assert.AreEqual (obj.Computer, obj.Properties[typeof (Employee) + ".Computer"].GetOriginalValue<Computer> ());
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
+        Assert.That (obj.Properties[typeof (Employee) + ".Computer"].GetOriginalValue<Computer> (), Is.EqualTo (obj.Computer));
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       }
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -96,11 +96,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       DomainObject obj = GetNewUnchanged ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
         obj.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       }
-      Assert.AreEqual (StateType.New, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -109,11 +109,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       DomainObject obj = GetNewChanged ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
         obj.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       }
-      Assert.AreEqual (StateType.New, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -122,9 +122,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order obj = GetDeleted ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsTrue (obj.IsInvalid);
+        Assert.That (obj.IsInvalid, Is.True);
       }
-      Assert.AreEqual (StateType.Deleted, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
     }
 
     [Test]
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ObjectID id = obj.ID;
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsTrue (obj.IsInvalid);
+        Assert.That (obj.IsInvalid, Is.True);
         Order.GetObject (id);
       }
     }
@@ -146,16 +146,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Client deleted = Client.GetObject (DomainObjectIDs.Client1);
       Location obj = GetUnidirectionalWithDeleted ();
-      Assert.AreEqual (StateType.Deleted, deleted.State);
+      Assert.That (deleted.State, Is.EqualTo (StateType.Deleted));
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
         obj.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, obj.State);
-        Assert.IsTrue (deleted.IsInvalid);
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (deleted.IsInvalid, Is.True);
       }
-      Assert.AreEqual (StateType.Unchanged, obj.State);
-      Assert.AreEqual (StateType.Deleted, deleted.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (deleted.State, Is.EqualTo (StateType.Deleted));
     }
 
     [Test]
@@ -174,11 +174,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Location obj = GetUnidirectionalWithDeletedNew ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
         obj.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, obj.State);
+        Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       }
-      Assert.AreEqual (StateType.Changed, obj.State);
+      Assert.That (obj.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -197,9 +197,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       DomainObject obj = GetInvalid ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsTrue (obj.IsInvalid);
+        Assert.That (obj.IsInvalid, Is.True);
       }
-      Assert.IsTrue (obj.IsInvalid);
+      Assert.That (obj.IsInvalid, Is.True);
     }
   }
 }

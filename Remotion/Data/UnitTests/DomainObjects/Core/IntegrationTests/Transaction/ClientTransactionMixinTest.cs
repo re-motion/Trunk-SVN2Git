@@ -29,8 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClientTransaction)).Clear().AddMixins (typeof (InvertingClientTransactionMixin)).EnterScope())
       {
         ClientTransaction mixedTransaction = ClientTransaction.CreateRootTransaction ();
-        Assert.IsNotNull (mixedTransaction);
-        Assert.IsNotNull (Mixin.Get<InvertingClientTransactionMixin> (mixedTransaction));
+        Assert.That (mixedTransaction, Is.Not.Null);
+        Assert.That (Mixin.Get<InvertingClientTransactionMixin> (mixedTransaction), Is.Not.Null);
       }
     }
 
@@ -41,8 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         ClientTransaction mixedTransaction = ClientTransaction.CreateRootTransaction ();
         ClientTransaction mixedSubTransaction = mixedTransaction.CreateSubTransaction ();
-        Assert.IsNotNull (mixedSubTransaction);
-        Assert.IsNotNull (Mixin.Get<InvertingClientTransactionMixin> (mixedSubTransaction));
+        Assert.That (mixedSubTransaction, Is.Not.Null);
+        Assert.That (Mixin.Get<InvertingClientTransactionMixin> (mixedSubTransaction), Is.Not.Null);
       }
     }
 
@@ -58,19 +58,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         invertedTransaction.Committed += delegate { committed = true; };
         invertedTransaction.RolledBack += delegate { rolledBack = true; };
 
-        Assert.IsFalse (rolledBack);
-        Assert.IsFalse (committed);
+        Assert.That (rolledBack, Is.False);
+        Assert.That (committed, Is.False);
 
         invertedTransaction.Commit();
 
-        Assert.IsTrue (rolledBack);
-        Assert.IsFalse (committed);
+        Assert.That (rolledBack, Is.True);
+        Assert.That (committed, Is.False);
 
         rolledBack = false;
         invertedTransaction.Rollback();
 
-        Assert.IsFalse (rolledBack);
-        Assert.IsTrue (committed);
+        Assert.That (rolledBack, Is.False);
+        Assert.That (committed, Is.True);
       }
     }
 
@@ -80,10 +80,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClientTransaction)).Clear().AddMixins (typeof (ClientTransactionWithIDMixin)).EnterScope())
       {
         IClientTransactionWithID transactionWithID = (IClientTransactionWithID) ClientTransaction.CreateRootTransaction ();
-        Assert.AreEqual (transactionWithID.ID.ToString (), transactionWithID.ToString ());
+        Assert.That (transactionWithID.ToString (), Is.EqualTo (transactionWithID.ID.ToString ()));
         IClientTransactionWithID subTransactionWithID = (IClientTransactionWithID) transactionWithID.AsClientTransaction.CreateSubTransaction ();
-        Assert.AreNotEqual (transactionWithID.ID, subTransactionWithID.ID);
-        Assert.AreEqual (transactionWithID.ID, ((IClientTransactionWithID) subTransactionWithID.AsClientTransaction.ParentTransaction).ID);
+        Assert.That (subTransactionWithID.ID, Is.Not.EqualTo (transactionWithID.ID));
+        Assert.That (((IClientTransactionWithID) subTransactionWithID.AsClientTransaction.ParentTransaction).ID, Is.EqualTo (transactionWithID.ID));
       }
     }
   }

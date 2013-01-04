@@ -63,7 +63,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           _functionWithThisObjectAsSecondParamter.GetType (),
           _attribute);
 
-      Assert.AreSame (_functionWithThisObjectAsSecondParamter.ThisObject, helper.GetSecurableObject (_functionWithThisObjectAsSecondParamter));
+      Assert.That (helper.GetSecurableObject (_functionWithThisObjectAsSecondParamter), Is.SameAs (_functionWithThisObjectAsSecondParamter.ThisObject));
     }
 
     [Test]
@@ -79,7 +79,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           function.GetType (),
           _attribute);
 
-      Assert.AreSame (function.ThisObject, helper.GetSecurableObject (function));
+      Assert.That (helper.GetSecurableObject (function), Is.SameAs (function.ThisObject));
     }
 
     [Test]

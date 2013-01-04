@@ -90,41 +90,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void Add ()
     {
       _collection.Add (_propertyDefinition);
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
     }
 
     [Test]
     public void PropertyNameIndexer ()
     {
       _collection.Add (_propertyDefinition);
-      Assert.AreSame (_propertyDefinition, _collection[_propertyDefinition.PropertyName]);
+      Assert.That (_collection[_propertyDefinition.PropertyName], Is.SameAs (_propertyDefinition));
     }
 
     [Test]
     public void NumericIndexer ()
     {
       _collection.Add (_propertyDefinition);
-      Assert.AreSame (_propertyDefinition, _collection[0]);
+      Assert.That (_collection[0], Is.SameAs (_propertyDefinition));
     }
 
     [Test]
     public void ContainsPropertyNameTrue ()
     {
       _collection.Add (_propertyDefinition);
-      Assert.IsTrue (_collection.Contains (_propertyDefinition.PropertyName));
+      Assert.That (_collection.Contains (_propertyDefinition.PropertyName), Is.True);
     }
 
     [Test]
     public void ContainsPropertyNameFalse ()
     {
-      Assert.IsFalse (_collection.Contains ("UndefinedPropertyName"));
+      Assert.That (_collection.Contains ("UndefinedPropertyName"), Is.False);
     }
 
     [Test]
     public void ContainsPropertyDefinitionTrue ()
     {
       _collection.Add (_propertyDefinition);
-      Assert.IsTrue (_collection.Contains (_propertyDefinition));
+      Assert.That (_collection.Contains (_propertyDefinition), Is.True);
     }
 
     [Test]
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               _propertyDefinition.MaxLength,
               _propertyDefinition.StorageClass);
 
-      Assert.IsFalse (_collection.Contains (copy));
+      Assert.That (_collection.Contains (copy), Is.False);
     }
 
     [Test]
@@ -150,8 +150,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var copiedCollection = new PropertyDefinitionCollection (new[] { _propertyDefinition }, false);
 
-      Assert.AreEqual (1, copiedCollection.Count);
-      Assert.AreSame (_propertyDefinition, copiedCollection[0]);
+      Assert.That (copiedCollection.Count, Is.EqualTo (1));
+      Assert.That (copiedCollection[0], Is.SameAs (_propertyDefinition));
     }
 
     [Test]
@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _collection.Add (_propertyDefinition);
 
-      Assert.IsTrue (_collection.Contains (_propertyDefinition));
+      Assert.That (_collection.Contains (_propertyDefinition), Is.True);
     }
 
     [Test]

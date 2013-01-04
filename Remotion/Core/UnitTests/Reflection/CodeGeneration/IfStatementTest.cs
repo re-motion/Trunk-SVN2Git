@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           new ReturnStatement (new ConstReference ("True"))));
       methodEmitter.AddStatement (new ReturnStatement (new ConstReference ("False")));
 
-      Assert.AreEqual ("True", InvokeMethod());
+      Assert.That (InvokeMethod(), Is.EqualTo ("True"));
     }
 
     [Test]
@@ -43,7 +43,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           new ReturnStatement (new ConstReference ("True"))));
       methodEmitter.AddStatement (new ReturnStatement (new ConstReference ("False")));
 
-      Assert.AreEqual ("False", InvokeMethod ());
+      Assert.That (InvokeMethod (), Is.EqualTo ("False"));
     }
   }
 }

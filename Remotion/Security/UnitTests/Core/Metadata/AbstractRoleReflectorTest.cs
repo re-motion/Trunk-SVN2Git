@@ -59,7 +59,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     public void Initialize ()
     {
       Assert.IsInstanceOf (typeof (IAbstractRoleReflector), _abstractRoleReflector);
-      Assert.AreSame (_enumeratedTypeReflectorMock, _abstractRoleReflector.EnumerationTypeReflector);
+      Assert.That (_abstractRoleReflector.EnumerationTypeReflector, Is.SameAs (_enumeratedTypeReflectorMock));
     }
 
     [Test]
@@ -80,11 +80,11 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       _mocks.VerifyAll ();
 
-      Assert.IsNotNull (values);
-      Assert.AreEqual (3, values.Count);
-      Assert.Contains (AbstractRoles.Clerk, values);
-      Assert.Contains (AbstractRoles.Secretary, values);
-      Assert.Contains (AbstractRoles.Administrator, values);
+      Assert.That (values, Is.Not.Null);
+      Assert.That (values.Count, Is.EqualTo (3));
+      Assert.That (values, Has.Member (AbstractRoles.Clerk));
+      Assert.That (values, Has.Member (AbstractRoles.Secretary));
+      Assert.That (values, Has.Member (AbstractRoles.Administrator));
     }
 
     [Test]
@@ -94,9 +94,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       List<EnumValueInfo> expectedAbstractRoles = reflector.GetAbstractRoles (typeof (File).Assembly, _cache);
       List<EnumValueInfo> actualAbstractRoles = _cache.GetAbstractRoles ();
 
-      Assert.AreEqual (3, expectedAbstractRoles.Count);
+      Assert.That (expectedAbstractRoles.Count, Is.EqualTo (3));
       foreach (EnumValueInfo expected in expectedAbstractRoles)
-        Assert.Contains (expected, actualAbstractRoles);
+        Assert.That (actualAbstractRoles, Has.Member (expected));
     }
   }
 }

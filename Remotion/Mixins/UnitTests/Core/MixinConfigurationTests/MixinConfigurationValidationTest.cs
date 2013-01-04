@@ -33,8 +33,8 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
         using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (NullMixin)).EnterScope())
         {
           var data = MixinConfiguration.ActiveConfiguration.Validate ();
-          Assert.IsTrue (data.GetNumberOfSuccesses () > 0);
-          Assert.AreEqual (0, data.GetNumberOfFailures ());
+          Assert.That (data.GetNumberOfSuccesses () > 0, Is.True);
+          Assert.That (data.GetNumberOfFailures (), Is.EqualTo (0));
         }
       }
     }
@@ -47,7 +47,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
         using (MixinConfiguration.BuildFromActive().ForClass<int> ().Clear().AddMixins (typeof (NullMixin)).EnterScope())
         {
           var data = MixinConfiguration.ActiveConfiguration.Validate ();
-          Assert.IsTrue (data.GetNumberOfFailures () > 0);
+          Assert.That (data.GetNumberOfFailures () > 0, Is.True);
         }
       }
     }
@@ -66,7 +66,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
           .EnterScope ())
       {
         var data = MixinConfiguration.ActiveConfiguration.Validate ();
-        Assert.AreEqual (0, data.GetNumberOfFailures ());
+        Assert.That (data.GetNumberOfFailures (), Is.EqualTo (0));
       }
     }
   }

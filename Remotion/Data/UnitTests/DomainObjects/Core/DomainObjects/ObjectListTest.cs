@@ -121,10 +121,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void IList_IndexOf ()
     {
       IList<OrderItem> emptyList = new ObjectList<OrderItem> ();
-      Assert.AreEqual (-1, emptyList.IndexOf (_orderItem1));
-      Assert.AreEqual (0, _orderItemListAsIList.IndexOf (_orderItem1));
-      Assert.AreEqual (1, _orderItemListAsIList.IndexOf (_orderItem2));
-      Assert.AreEqual (-1, _orderItemListAsIList.IndexOf (_orderItem3));
+      Assert.That (emptyList.IndexOf (_orderItem1), Is.EqualTo (-1));
+      Assert.That (_orderItemListAsIList.IndexOf (_orderItem1), Is.EqualTo (0));
+      Assert.That (_orderItemListAsIList.IndexOf (_orderItem2), Is.EqualTo (1));
+      Assert.That (_orderItemListAsIList.IndexOf (_orderItem3), Is.EqualTo (-1));
     }
 
     [Test]
@@ -162,8 +162,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void IList_Item ()
     {
-      Assert.AreSame (_orderItem1, _orderItemListAsIList[0]);
-      Assert.AreSame (_orderItem2, _orderItemListAsIList[1]);
+      Assert.That (_orderItemListAsIList[0], Is.SameAs (_orderItem1));
+      Assert.That (_orderItemListAsIList[1], Is.SameAs (_orderItem2));
 
       Assert.That (_orderItemListAsIList, Is.EqualTo (new object[] { _orderItem1, _orderItem2 }));
 
@@ -220,9 +220,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void IList_Contains ()
     {
-      Assert.IsTrue (_orderItemListAsIList.Contains (_orderItem1));
-      Assert.IsTrue (_orderItemListAsIList.Contains (_orderItem2));
-      Assert.IsFalse (_orderItemListAsIList.Contains (_orderItem3));
+      Assert.That (_orderItemListAsIList.Contains (_orderItem1), Is.True);
+      Assert.That (_orderItemListAsIList.Contains (_orderItem2), Is.True);
+      Assert.That (_orderItemListAsIList.Contains (_orderItem3), Is.False);
     }
 
     [Test]
@@ -276,11 +276,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void IList_Remove ()
     {
-      Assert.IsFalse (_orderItemListAsIList.Remove (_orderItem3));
-      Assert.IsTrue (_orderItemListAsIList.Remove (_orderItem1));
-      Assert.IsFalse (_orderItemListAsIList.Remove (_orderItem1));
-      Assert.IsTrue (_orderItemListAsIList.Remove (_orderItem2));
-      Assert.IsFalse (_orderItemListAsIList.Remove (_orderItem2));
+      Assert.That (_orderItemListAsIList.Remove (_orderItem3), Is.False);
+      Assert.That (_orderItemListAsIList.Remove (_orderItem1), Is.True);
+      Assert.That (_orderItemListAsIList.Remove (_orderItem1), Is.False);
+      Assert.That (_orderItemListAsIList.Remove (_orderItem2), Is.True);
+      Assert.That (_orderItemListAsIList.Remove (_orderItem2), Is.False);
     }
 
     [Test]
@@ -304,16 +304,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       using (IEnumerator<OrderItem> enumerator = new ObjectList<OrderItem>().GetEnumerator())
       {
-        Assert.IsFalse (enumerator.MoveNext());
+        Assert.That (enumerator.MoveNext(), Is.False);
       }
 
       using (IEnumerator<OrderItem> enumerator = _orderItemListAsIList.GetEnumerator())
       {
-        Assert.IsTrue (enumerator.MoveNext());
-        Assert.AreSame (_orderItem1, enumerator.Current);
-        Assert.IsTrue (enumerator.MoveNext());
-        Assert.AreSame (_orderItem2, enumerator.Current);
-        Assert.IsFalse (enumerator.MoveNext());
+        Assert.That (enumerator.MoveNext(), Is.True);
+        Assert.That (enumerator.Current, Is.SameAs (_orderItem1));
+        Assert.That (enumerator.MoveNext(), Is.True);
+        Assert.That (enumerator.Current, Is.SameAs (_orderItem2));
+        Assert.That (enumerator.MoveNext(), Is.False);
       }
     }
 

@@ -102,7 +102,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
 
       _mocks.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -117,7 +117,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
 
       _mocks.VerifyAll();
-      Assert.IsFalse (hasAccess);
+      Assert.That (hasAccess, Is.False);
     }
 
     [Test]
@@ -132,7 +132,7 @@ namespace Remotion.Security.UnitTests.Core
       }
 
       _mocks.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -146,7 +146,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
 
       _mocks.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -161,7 +161,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
 
       _mocks.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -176,7 +176,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
 
       _mocks.VerifyAll();
-      Assert.IsFalse (hasAccess);
+      Assert.That (hasAccess, Is.False);
     }
 
     [Test]
@@ -191,7 +191,7 @@ namespace Remotion.Security.UnitTests.Core
       }
 
       _mocks.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -205,7 +205,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
 
       _mocks.VerifyAll();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     private void ExpectExpectObjectSecurityStrategyHasAccess (bool accessAllowed)

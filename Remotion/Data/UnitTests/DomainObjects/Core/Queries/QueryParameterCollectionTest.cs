@@ -39,34 +39,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void Add ()
     {
       _collection.Add (_parameter);
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
     }
 
     [Test]
     public void QueryParameterIndexer ()
     {
       _collection.Add (_parameter);
-      Assert.AreSame (_parameter, _collection[_parameter.Name]);
+      Assert.That (_collection[_parameter.Name], Is.SameAs (_parameter));
     }
 
     [Test]
     public void NumericIndexer ()
     {
       _collection.Add (_parameter);
-      Assert.AreSame (_parameter, _collection[0]);
+      Assert.That (_collection[0], Is.SameAs (_parameter));
     }
 
     [Test]
     public void ContainsParameterNameTrue ()
     {
       _collection.Add (_parameter);
-      Assert.IsTrue (_collection.Contains (_parameter.Name));
+      Assert.That (_collection.Contains (_parameter.Name), Is.True);
     }
 
     [Test]
     public void ContainsParameterNameFalse ()
     {
-      Assert.IsFalse (_collection.Contains (_parameter.Name));
+      Assert.That (_collection.Contains (_parameter.Name), Is.False);
     }
 
     [Test]
@@ -76,15 +76,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       QueryParameterCollection copiedCollection = new QueryParameterCollection (_collection, false);
 
-      Assert.AreEqual (1, copiedCollection.Count);
-      Assert.AreSame (_parameter, copiedCollection[0]);
+      Assert.That (copiedCollection.Count, Is.EqualTo (1));
+      Assert.That (copiedCollection[0], Is.SameAs (_parameter));
     }
 
     [Test]
     public void ContainsParameterTrue ()
     {
       _collection.Add (_parameter);
-      Assert.IsTrue (_collection.Contains (_parameter));
+      Assert.That (_collection.Contains (_parameter), Is.True);
     }
 
     [Test]
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       _collection.Add (_parameter);
       QueryParameter param = new QueryParameter ("Test", "Test", QueryParameterType.Text);
-      Assert.IsFalse (_collection.Contains (param));
+      Assert.That (_collection.Contains (param), Is.False);
     }
 
     [Test]
@@ -113,20 +113,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void AddShorthand1 ()
     {
       _collection.Add (_parameter.Name, _parameter.Value, _parameter.ParameterType);
-      Assert.AreEqual (1, _collection.Count);
-      Assert.AreEqual (_parameter.Name, _collection[0].Name);
-      Assert.AreEqual (_parameter.Value, _collection[0].Value);
-      Assert.AreEqual (_parameter.ParameterType, _collection[0].ParameterType);
+      Assert.That (_collection.Count, Is.EqualTo (1));
+      Assert.That (_collection[0].Name, Is.EqualTo (_parameter.Name));
+      Assert.That (_collection[0].Value, Is.EqualTo (_parameter.Value));
+      Assert.That (_collection[0].ParameterType, Is.EqualTo (_parameter.ParameterType));
     }
 
     [Test]
     public void AddShorthand2 ()
     {
       _collection.Add (_parameter.Name, _parameter.Value);
-      Assert.AreEqual (1, _collection.Count);
-      Assert.AreEqual (_parameter.Name, _collection[0].Name);
-      Assert.AreEqual (_parameter.Value, _collection[0].Value);
-      Assert.AreEqual (QueryParameterType.Value, _collection[0].ParameterType);
+      Assert.That (_collection.Count, Is.EqualTo (1));
+      Assert.That (_collection[0].Name, Is.EqualTo (_parameter.Name));
+      Assert.That (_collection[0].Value, Is.EqualTo (_parameter.Value));
+      Assert.That (_collection[0].ParameterType, Is.EqualTo (QueryParameterType.Value));
     }
   }
 }

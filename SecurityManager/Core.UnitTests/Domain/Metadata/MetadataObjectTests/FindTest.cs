@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
 
       MetadataObject metadataObject = MetadataObject.Find (metadataObjectID);
 
-      Assert.IsNull (metadataObject);
+      Assert.That (metadataObject, Is.Null);
     }
 
     [Test]
@@ -69,8 +69,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
 
       Assert.IsInstanceOf (typeof (StateDefinition), metadataObject);
       StateDefinition state = (StateDefinition) metadataObject;
-      Assert.AreEqual ("Reaccounted", state.Name);
-      Assert.AreEqual (2, state.Value);
+      Assert.That (state.Name, Is.EqualTo ("Reaccounted"));
+      Assert.That (state.Value, Is.EqualTo (2));
     }
 
     [Test]
@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
 
       MetadataObject metadataObject = MetadataObject.Find (metadataObjectID);
 
-      Assert.IsNull (metadataObject);
+      Assert.That (metadataObject, Is.Null);
     }
   }
 }

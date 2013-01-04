@@ -34,9 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       TransportItem item2 = new TransportItem (DomainObjectIDs.Order2);
 
       XmlTransportItem[] xmlItems = XmlTransportItem.Wrap (new TransportItem[] { item1, item2 });
-      Assert.AreEqual (2, xmlItems.Length);
-      Assert.AreEqual (item1, xmlItems[0].TransportItem);
-      Assert.AreEqual (item2, xmlItems[1].TransportItem);
+      Assert.That (xmlItems.Length, Is.EqualTo (2));
+      Assert.That (xmlItems[0].TransportItem, Is.EqualTo (item1));
+      Assert.That (xmlItems[1].TransportItem, Is.EqualTo (item2));
     }
 
     [Test]
@@ -46,9 +46,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       TransportItem item2 = new TransportItem (DomainObjectIDs.Order2);
 
       TransportItem[] items = XmlTransportItem.Unwrap (new XmlTransportItem[] { new XmlTransportItem  (item1), new XmlTransportItem (item2)});
-      Assert.AreEqual (2, items.Length);
-      Assert.AreEqual (item1, items[0]);
-      Assert.AreEqual (item2, items[1]);
+      Assert.That (items.Length, Is.EqualTo (2));
+      Assert.That (items[0], Is.EqualTo (item1));
+      Assert.That (items[1], Is.EqualTo (item2));
     }
 
     [Test]
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       byte[] serializedArray = Serializer.XmlSerialize (new XmlTransportItem (item));
       string serializedString = Encoding.UTF8.GetString (serializedArray);
 
-      Assert.AreEqual (XmlSerializationStrings.XmlForComputer1, serializedString);
+      Assert.That (serializedString, Is.EqualTo (XmlSerializationStrings.XmlForComputer1));
     }
 
     [Test]
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       byte[] serializedArray = Serializer.XmlSerialize (new XmlTransportItem (item));
       string serializedString = Encoding.UTF8.GetString (serializedArray);
 
-      Assert.AreEqual (XmlSerializationStrings.XmlForComputer4, serializedString);
+      Assert.That (serializedString, Is.EqualTo (XmlSerializationStrings.XmlForComputer4));
     }
 
     [Test]
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       byte[] serializedArray = Serializer.XmlSerialize (new XmlTransportItem (item));
       string serializedString = Encoding.UTF8.GetString (serializedArray);
 
-      Assert.AreEqual (XmlSerializationStrings.XmlForCustomProperty, serializedString);
+      Assert.That (serializedString, Is.EqualTo (XmlSerializationStrings.XmlForCustomProperty));
     }
 
     [Test]
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       byte[] serializedArray = Serializer.XmlSerialize (new XmlTransportItem (item));
       string serializedString = Encoding.UTF8.GetString (serializedArray);
 
-      Assert.AreEqual (XmlSerializationStrings.XmlForCustomObjectIDProperty, serializedString);
+      Assert.That (serializedString, Is.EqualTo (XmlSerializationStrings.XmlForCustomObjectIDProperty));
     }
 
     [Test]
@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       byte[] serializedArray = Serializer.XmlSerialize (new XmlTransportItem (item));
       string serializedString = Encoding.UTF8.GetString (serializedArray);
 
-      Assert.AreEqual (XmlSerializationStrings.XmlForCustomNullProperty, serializedString);
+      Assert.That (serializedString, Is.EqualTo (XmlSerializationStrings.XmlForCustomNullProperty));
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       byte[] serializedArray = Serializer.XmlSerialize (new XmlTransportItem (item));
       string serializedString = Encoding.UTF8.GetString (serializedArray);
 
-      Assert.AreEqual (XmlSerializationStrings.XmlForCustomExtensibleEnumProperty, serializedString);
+      Assert.That (serializedString, Is.EqualTo (XmlSerializationStrings.XmlForCustomExtensibleEnumProperty));
     }
 
     [Test]
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForComputer4);
       XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
-      Assert.IsNull (item.TransportItem.Properties[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee")]);
+      Assert.That (item.TransportItem.Properties[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee")], Is.Null);
     }
 
     [Test]
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForCustomProperty);
       XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
-      Assert.AreEqual (5, item.TransportItem.Properties["Custom"]);
+      Assert.That (item.TransportItem.Properties["Custom"], Is.EqualTo (5));
     }
 
     [Test]
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForCustomObjectIDProperty);
       XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
-      Assert.AreEqual (DomainObjectIDs.Order2, item.TransportItem.Properties["CustomReference"]);
+      Assert.That (item.TransportItem.Properties["CustomReference"], Is.EqualTo (DomainObjectIDs.Order2));
     }
 
     [Test]
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForCustomNullProperty);
       XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
-      Assert.AreEqual (null, item.TransportItem.Properties["CustomNull"]);
+      Assert.That (item.TransportItem.Properties["CustomNull"], Is.EqualTo (null));
     }
 
     [Test]
@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForCustomExtensibleEnumProperty);
       XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
-      Assert.AreEqual (Color.Values.Red (), item.TransportItem.Properties["CustomExtensibleEnum"]);
+      Assert.That (item.TransportItem.Properties["CustomExtensibleEnum"], Is.EqualTo (Color.Values.Red ()));
     }
 
     [Test]
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       TransportItem item = TransportItem.PackageDataContainer (container);
       TransportItem deserializedItem = SerializeAndDeserialize (item);
 
-      Assert.AreEqual (container.ID, deserializedItem.ID);
+      Assert.That (deserializedItem.ID, Is.EqualTo (container.ID));
     }
 
     [Test]
@@ -193,8 +193,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       item.Properties.Add ("String", "1");
       TransportItem deserializedItem = SerializeAndDeserialize (item);
 
-      Assert.AreEqual (1, deserializedItem.Properties["Int"]);
-      Assert.AreEqual ("1", deserializedItem.Properties["String"]);
+      Assert.That (deserializedItem.Properties["Int"], Is.EqualTo (1));
+      Assert.That (deserializedItem.Properties["String"], Is.EqualTo ("1"));
     }
 
     [Test]

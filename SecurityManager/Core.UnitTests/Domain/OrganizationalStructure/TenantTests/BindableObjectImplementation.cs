@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenantname", "UID");
 
-      Assert.AreEqual ("Tenantname", tenant.DisplayName);
+      Assert.That (tenant.DisplayName, Is.EqualTo ("Tenantname"));
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
 
       tenant.UniqueIdentifier = "My Unique Identifier";
 
-      Assert.AreEqual ("My Unique Identifier", tenant.UniqueIdentifier);
+      Assert.That (tenant.UniqueIdentifier, Is.EqualTo ("My Unique Identifier"));
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
 
       tenant.UniqueIdentifier = "My Unique Identifier";
 
-      Assert.AreEqual (tenant.ID.ToString(), businessObject.UniqueIdentifier);
+      Assert.That (businessObject.UniqueIdentifier, Is.EqualTo (tenant.ID.ToString()));
     }
 
     [Test]
@@ -76,8 +76,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
 
       tenant.UniqueIdentifier = "My Unique Identifier";
 
-      Assert.AreEqual ("My Unique Identifier", businessObject.GetProperty ("UniqueIdentifier"));
-      Assert.AreEqual (tenant.ID.ToString(), businessObject.UniqueIdentifier);
+      Assert.That (businessObject.GetProperty ("UniqueIdentifier"), Is.EqualTo ("My Unique Identifier"));
+      Assert.That (businessObject.UniqueIdentifier, Is.EqualTo (tenant.ID.ToString()));
     }
 
     [Test]
@@ -87,8 +87,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       IBusinessObjectWithIdentity businessObject = tenant;
 
       businessObject.SetProperty ("UniqueIdentifier", "My Unique Identifier");
-      Assert.AreEqual ("My Unique Identifier", tenant.UniqueIdentifier);
-      Assert.AreEqual (tenant.ID.ToString(), businessObject.UniqueIdentifier);
+      Assert.That (tenant.UniqueIdentifier, Is.EqualTo ("My Unique Identifier"));
+      Assert.That (businessObject.UniqueIdentifier, Is.EqualTo (tenant.ID.ToString()));
     }
 
     [Test]
@@ -101,7 +101,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       IBusinessObjectProperty property = businessObject.BusinessObjectClass.GetPropertyDefinition ("UniqueIdentifier");
 
       Assert.IsInstanceOf (typeof (IBusinessObjectStringProperty), property);
-      Assert.AreEqual ("My Unique Identifier", businessObject.GetProperty (property));
+      Assert.That (businessObject.GetProperty (property), Is.EqualTo ("My Unique Identifier"));
     }
 
     [Test]

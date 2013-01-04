@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var expressionReference = new ExpressionReference (typeof (string), new ConstReference ("bla").ToExpression(), methodEmitter);
       methodEmitter.ImplementByReturning (new ReferenceExpression (expressionReference));
 
-      Assert.AreEqual ("bla", InvokeMethod());
+      Assert.That (InvokeMethod(), Is.EqualTo ("bla"));
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       methodEmitter.ImplementByReturning (methodCall);
 
-      Assert.AreEqual ("StructMethod", InvokeMethod());
+      Assert.That (InvokeMethod(), Is.EqualTo ("StructMethod"));
     }
   }
 }

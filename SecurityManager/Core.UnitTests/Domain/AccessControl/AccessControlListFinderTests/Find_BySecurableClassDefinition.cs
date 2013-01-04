@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
-      Assert.AreSame (acl, foundAcl);
+      Assert.That (foundAcl, Is.SameAs (acl));
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
-      Assert.AreSame (acl, foundAcl);
+      Assert.That (foundAcl, Is.SameAs (acl));
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
-      Assert.AreSame (acl, foundAcl);
+      Assert.That (foundAcl, Is.SameAs (acl));
     }
 
     [Test]
@@ -89,7 +89,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
-      Assert.AreSame (acl, foundAcl);
+      Assert.That (foundAcl, Is.SameAs (acl));
     }
 
     [Test]
@@ -103,7 +103,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, premiumOrderClass, context);
 
-      Assert.AreSame (aclForOrder, foundAcl);
+      Assert.That (foundAcl, Is.SameAs (aclForOrder));
     }
 
     [Test]
@@ -152,7 +152,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList acl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
-      Assert.IsNull (acl);
+      Assert.That (acl, Is.Null);
     }
 
     [Test]
@@ -166,7 +166,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, specialOrderClass, context);
 
-      Assert.AreSame (acl, foundAcl);
+      Assert.That (foundAcl, Is.SameAs (acl));
     }
 
     [Test]
@@ -181,7 +181,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, specialOrderClass, context);
 
-      Assert.AreSame (aclForSpecialOrder, foundAcl);
+      Assert.That (foundAcl, Is.SameAs (aclForSpecialOrder));
     }
 
     [Test]
@@ -196,7 +196,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, premiumOrderClass, context);
 
-      Assert.AreSame (aclForPremiumOrder, foundAcl);
+      Assert.That (foundAcl, Is.SameAs (aclForPremiumOrder));
     }
 
     [Test]

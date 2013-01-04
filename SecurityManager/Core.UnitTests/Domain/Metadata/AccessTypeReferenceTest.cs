@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       AccessTypeReference accessTypeReference = AccessTypeReference.NewObject();
 
       accessTypeReference.Index = 1;
-      Assert.AreEqual (1, accessTypeReference.Index);
+      Assert.That (accessTypeReference.Index, Is.EqualTo (1));
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
         ClientTransaction.Current.Commit();
 
-        Assert.IsTrue (commitOnClassWasCalled);
+        Assert.That (commitOnClassWasCalled, Is.True);
       }
     }
   }

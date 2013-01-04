@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     {
       _collection.Add (_definition);
 
-      Assert.IsTrue (_collection.Contains (_definition));
+      Assert.That (_collection.Contains (_definition), Is.True);
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
       QueryDefinition copy = new QueryDefinition (
           _definition.ID, _definition.StorageProviderDefinition, _definition.Statement, _definition.QueryType, _definition.CollectionType);
 
-      Assert.IsFalse (_collection.Contains (copy));
+      Assert.That (_collection.Contains (copy), Is.False);
     }
 
     [Test]
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     {
       _collection.Add (_definition);
 
-      Assert.AreSame (_definition, _collection.GetMandatory (_definition.ID));
+      Assert.That (_collection.GetMandatory (_definition.ID), Is.SameAs (_definition));
     }
 
     [Test]
@@ -112,16 +112,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
 
       target.Merge (source);
 
-      Assert.AreEqual (2, source.Count);
-      Assert.AreSame (query1, source[0]);
-      Assert.AreSame (query2, source[1]);
+      Assert.That (source.Count, Is.EqualTo (2));
+      Assert.That (source[0], Is.SameAs (query1));
+      Assert.That (source[1], Is.SameAs (query2));
 
-      Assert.AreEqual (5, target.Count);
-      Assert.AreSame (query3, target[0]);
-      Assert.AreSame (query4, target[1]);
-      Assert.AreSame (query5, target[2]);
-      Assert.AreSame (query1, target[3]);
-      Assert.AreSame (query2, target[4]);
+      Assert.That (target.Count, Is.EqualTo (5));
+      Assert.That (target[0], Is.SameAs (query3));
+      Assert.That (target[1], Is.SameAs (query4));
+      Assert.That (target[2], Is.SameAs (query5));
+      Assert.That (target[3], Is.SameAs (query1));
+      Assert.That (target[4], Is.SameAs (query2));
     }
 
     [Test]
@@ -139,8 +139,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
 
       target.Merge (source);
 
-      Assert.AreEqual (1, target.Count);
-      Assert.AreSame (query2, target[0]);
+      Assert.That (target.Count, Is.EqualTo (1));
+      Assert.That (target[0], Is.SameAs (query2));
 
       Assert.Fail ();
     }

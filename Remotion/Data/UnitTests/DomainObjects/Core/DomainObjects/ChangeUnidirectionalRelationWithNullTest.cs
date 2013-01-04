@@ -30,14 +30,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Client oldClient = Client.GetObject (DomainObjectIDs.Client1);
       Location location = Location.GetObject (DomainObjectIDs.Location1);
-      Assert.AreSame (oldClient, location.Client);
+      Assert.That (location.Client, Is.SameAs (oldClient));
 
       location.Client = null;
 
-      Assert.IsNull (location.Client);
-      Assert.IsNull (location.Properties[typeof (Location), "Client"].GetRelatedObjectID());
-      Assert.AreEqual (StateType.Changed, location.State);
-      Assert.AreEqual (StateType.Unchanged, oldClient.State);
+      Assert.That (location.Client, Is.Null);
+      Assert.That (location.Properties[typeof (Location), "Client"].GetRelatedObjectID(), Is.Null);
+      Assert.That (location.State, Is.EqualTo (StateType.Changed));
+      Assert.That (oldClient.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -48,10 +48,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       client.ParentClient = newClient;
 
-      Assert.AreSame (newClient, client.ParentClient);
-      Assert.AreEqual (newClient.ID, client.Properties[typeof (Client), "ParentClient"].GetRelatedObjectID ());
-      Assert.AreEqual (StateType.Changed, client.State);
-      Assert.AreEqual (StateType.Unchanged, newClient.State);
+      Assert.That (client.ParentClient, Is.SameAs (newClient));
+      Assert.That (client.Properties[typeof (Client), "ParentClient"].GetRelatedObjectID (), Is.EqualTo (newClient.ID));
+      Assert.That (client.State, Is.EqualTo (StateType.Changed));
+      Assert.That (newClient.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -63,9 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       client.ParentClient = null;
 
       eventReceiver.Check (new ChangeState[0]);
-      Assert.IsNull (client.ParentClient);
-      Assert.IsNull (client.Properties[typeof (Client), "ParentClient"].GetRelatedObjectID ());
-      Assert.AreEqual (StateType.Unchanged, client.State);
+      Assert.That (client.ParentClient, Is.Null);
+      Assert.That (client.Properties[typeof (Client), "ParentClient"].GetRelatedObjectID (), Is.Null);
+      Assert.That (client.State, Is.EqualTo (StateType.Unchanged));
     }
   }
 }

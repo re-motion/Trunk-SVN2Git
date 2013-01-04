@@ -26,103 +26,81 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     [Test]
     public void ClosedGenericType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (GenericType<ParameterType>), typeof (GenericType<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (GenericType<ParameterType>), typeof (GenericType<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
 
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (GenericType<ParameterType>), typeof (GenericType<ParameterType>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (GenericType<ParameterType>), typeof (GenericType<ParameterType>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
     }
 
     [Test]
     public void ClosedGenericType_WithTwoTypeParameters ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType), typeof (int)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (GenericType<ParameterType, int>), typeof (GenericType<,>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (GenericType<ParameterType, int>), typeof (GenericType<,>)), Is.EqualTo (new Type[] {typeof (ParameterType), typeof (int)}));
 
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType), typeof (int)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (GenericType<ParameterType, int>), typeof (GenericType<ParameterType, int>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (GenericType<ParameterType, int>), typeof (GenericType<ParameterType, int>)), Is.EqualTo (new Type[] {typeof (ParameterType), typeof (int)}));
     }
 
     [Test]
     public void OpenGenericType ()
     {
       Type[] types = ReflectionUtility.GetAscribedGenericArguments (typeof (GenericType<>), typeof (GenericType<>));
-      Assert.AreEqual (1, types.Length);
-      Assert.AreEqual ("T", types[0].Name);
+      Assert.That (types.Length, Is.EqualTo (1));
+      Assert.That (types[0].Name, Is.EqualTo ("T"));
     }
 
     [Test]
     public void OpenGenericType_WithTwoTypeParameters ()
     {
       Type[] types = ReflectionUtility.GetAscribedGenericArguments (typeof (GenericType<,>), typeof (GenericType<,>));
-      Assert.AreEqual (2, types.Length);
-      Assert.AreEqual ("T1", types[0].Name);
-      Assert.AreEqual ("T2", types[1].Name);
+      Assert.That (types.Length, Is.EqualTo (2));
+      Assert.That (types[0].Name, Is.EqualTo ("T1"));
+      Assert.That (types[1].Name, Is.EqualTo ("T2"));
     }
 
     [Test]
     public void OpenGenericType_WithOneOpenTypeParameter ()
     {
       Type[] types = ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedOpenGenericType<>), typeof (GenericType<,>));
-      Assert.AreEqual (2, types.Length);
-      Assert.AreEqual (typeof (ParameterType), types[0]);
-      Assert.AreEqual ("T", types[1].Name);
+      Assert.That (types.Length, Is.EqualTo (2));
+      Assert.That (types[0], Is.EqualTo (typeof (ParameterType)));
+      Assert.That (types[1].Name, Is.EqualTo ("T"));
     }
 
     [Test]
     public void ClosedDerivedGenericType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedGenericType<ParameterType>), typeof (GenericType<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedGenericType<ParameterType>), typeof (GenericType<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
 
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedGenericType<ParameterType>), typeof (GenericType<ParameterType>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedGenericType<ParameterType>), typeof (GenericType<ParameterType>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
     }
 
     [Test]
     public void OpenDerivedGenericType ()
     {
       Type[] types = ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedGenericType<>), typeof (GenericType<>));
-      Assert.AreEqual (1, types.Length);
-      Assert.AreEqual ("T", types[0].Name);
+      Assert.That (types.Length, Is.EqualTo (1));
+      Assert.That (types[0].Name, Is.EqualTo ("T"));
     }
 
     [Test]
     public void NonGenericDerivedGenericType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedGenericType), typeof (GenericType<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedGenericType), typeof (GenericType<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
 
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedGenericType), typeof (GenericType<ParameterType>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedGenericType), typeof (GenericType<ParameterType>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
     }
 
     [Test]
     public void ClosedGenericDerivedGenericType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (GenericDerivedGenericType<int>), typeof (GenericType<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (GenericDerivedGenericType<int>), typeof (GenericType<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
 
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (GenericDerivedGenericType<int>), typeof (GenericType<ParameterType>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (GenericDerivedGenericType<int>), typeof (GenericType<ParameterType>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
     }
 
     [Test]
     public void OpenGenericDerivedGenericType ()
     {
-      Assert.AreEqual (
-          new Type[] {typeof (ParameterType)},
-          ReflectionUtility.GetAscribedGenericArguments (typeof (GenericDerivedGenericType<>), typeof (GenericType<>)));
+      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (GenericDerivedGenericType<>), typeof (GenericType<>)), Is.EqualTo (new Type[] {typeof (ParameterType)}));
     }
 
     [Test]

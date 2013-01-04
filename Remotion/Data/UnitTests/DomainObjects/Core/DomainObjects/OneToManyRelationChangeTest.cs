@@ -72,17 +72,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       eventReceiver.Check (expectedChangeStates);
 
-      Assert.AreEqual (StateType.Changed, _order1.State);
-      Assert.AreEqual (StateType.Changed, _oldCustomer.State);
-      Assert.AreEqual (StateType.Changed, _newCustomer.State);
+      Assert.That (_order1.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_oldCustomer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_newCustomer.State, Is.EqualTo (StateType.Changed));
 
-      Assert.AreSame (_newCustomer, _order1.Customer);
-      Assert.IsNull (_oldCustomer.Orders[_order1.ID]);
-      Assert.AreSame (_order1, _newCustomer.Orders[_order1.ID]);
+      Assert.That (_order1.Customer, Is.SameAs (_newCustomer));
+      Assert.That (_oldCustomer.Orders[_order1.ID], Is.Null);
+      Assert.That (_newCustomer.Orders[_order1.ID], Is.SameAs (_order1));
 
-      Assert.AreEqual (StateType.Changed, _order1.InternalDataContainer.State);
-      Assert.AreEqual (StateType.Unchanged, _oldCustomer.InternalDataContainer.State);
-      Assert.AreEqual (StateType.Unchanged, _newCustomer.InternalDataContainer.State);
+      Assert.That (_order1.InternalDataContainer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_oldCustomer.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_newCustomer.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -104,13 +104,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _order1.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomer.State);
-        Assert.AreEqual (StateType.Unchanged, _newCustomer.State);
+        Assert.That (_order1.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newCustomer.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldCustomer, _order1.Customer);
-        Assert.AreSame (_order1, _oldCustomer.Orders[_order1.ID]);
-        Assert.IsNull (_newCustomer.Orders[_order1.ID]);
+        Assert.That (_order1.Customer, Is.SameAs (_oldCustomer));
+        Assert.That (_oldCustomer.Orders[_order1.ID], Is.SameAs (_order1));
+        Assert.That (_newCustomer.Orders[_order1.ID], Is.Null);
       }
     }
 
@@ -140,13 +140,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _order1.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomer.State);
-        Assert.AreEqual (StateType.Unchanged, _newCustomer.State);
+        Assert.That (_order1.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newCustomer.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldCustomer, _order1.Customer);
-        Assert.AreSame (_order1, _oldCustomer.Orders[_order1.ID]);
-        Assert.IsNull (_newCustomer.Orders[_order1.ID]);
+        Assert.That (_order1.Customer, Is.SameAs (_oldCustomer));
+        Assert.That (_oldCustomer.Orders[_order1.ID], Is.SameAs (_order1));
+        Assert.That (_newCustomer.Orders[_order1.ID], Is.Null);
       }
     }
 
@@ -177,13 +177,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _order1.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomer.State);
-        Assert.AreEqual (StateType.Unchanged, _newCustomer.State);
+        Assert.That (_order1.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newCustomer.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldCustomer, _order1.Customer);
-        Assert.AreSame (_order1, _oldCustomer.Orders[_order1.ID]);
-        Assert.IsNull (_newCustomer.Orders[_order1.ID]);
+        Assert.That (_order1.Customer, Is.SameAs (_oldCustomer));
+        Assert.That (_oldCustomer.Orders[_order1.ID], Is.SameAs (_order1));
+        Assert.That (_newCustomer.Orders[_order1.ID], Is.Null);
       }
     }
 
@@ -215,13 +215,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _order1.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomer.State);
-        Assert.AreEqual (StateType.Unchanged, _newCustomer.State);
+        Assert.That (_order1.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newCustomer.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldCustomer, _order1.Customer);
-        Assert.AreSame (_order1, _oldCustomer.Orders[_order1.ID]);
-        Assert.IsNull (_newCustomer.Orders[_order1.ID]);
+        Assert.That (_order1.Customer, Is.SameAs (_oldCustomer));
+        Assert.That (_oldCustomer.Orders[_order1.ID], Is.SameAs (_order1));
+        Assert.That (_newCustomer.Orders[_order1.ID], Is.Null);
       }
     }
 
@@ -254,13 +254,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         eventReceiver.Check (expectedChangeStates);
 
-        Assert.AreEqual (StateType.Unchanged, _order1.State);
-        Assert.AreEqual (StateType.Unchanged, _oldCustomer.State);
-        Assert.AreEqual (StateType.Unchanged, _newCustomer.State);
+        Assert.That (_order1.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_oldCustomer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_newCustomer.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (_oldCustomer, _order1.Customer);
-        Assert.AreSame (_order1, _oldCustomer.Orders[_order1.ID]);
-        Assert.IsNull (_newCustomer.Orders[_order1.ID]);
+        Assert.That (_order1.Customer, Is.SameAs (_oldCustomer));
+        Assert.That (_oldCustomer.Orders[_order1.ID], Is.SameAs (_order1));
+        Assert.That (_newCustomer.Orders[_order1.ID], Is.Null);
       }
     }
 
@@ -269,9 +269,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _newCustomer.Orders.Add (_order1);
 
-      Assert.AreEqual (StateType.Changed, _order1.State);
-      Assert.AreEqual (StateType.Changed, _oldCustomer.State);
-      Assert.AreEqual (StateType.Changed, _newCustomer.State);
+      Assert.That (_order1.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_oldCustomer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_newCustomer.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -280,13 +280,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
       Partner partner = Partner.GetObject (DomainObjectIDs.Partner2);
 
-      Assert.IsNull (industrialSector.Companies[partner.ID]);
-      Assert.IsFalse (ReferenceEquals (industrialSector, partner.IndustrialSector));
+      Assert.That (industrialSector.Companies[partner.ID], Is.Null);
+      Assert.That (ReferenceEquals (industrialSector, partner.IndustrialSector), Is.False);
 
       industrialSector.Companies.Add (partner);
 
-      Assert.IsNotNull (industrialSector.Companies[partner.ID]);
-      Assert.AreSame (industrialSector, partner.IndustrialSector);
+      Assert.That (industrialSector.Companies[partner.ID], Is.Not.Null);
+      Assert.That (partner.IndustrialSector, Is.SameAs (industrialSector));
     }
 
     [Test]
@@ -294,42 +294,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _order1.Customer = _newCustomer;
 
-      Assert.AreEqual (StateType.Changed, _order1.State);
-      Assert.AreEqual (StateType.Changed, _oldCustomer.State);
-      Assert.AreEqual (StateType.Changed, _newCustomer.State);
+      Assert.That (_order1.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_oldCustomer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_newCustomer.State, Is.EqualTo (StateType.Changed));
 
-      Assert.AreSame (_newCustomer, _order1.Customer);
-      Assert.IsNull (_oldCustomer.Orders[_order1.ID]);
-      Assert.AreSame (_order1, _newCustomer.Orders[_order1.ID]);
+      Assert.That (_order1.Customer, Is.SameAs (_newCustomer));
+      Assert.That (_oldCustomer.Orders[_order1.ID], Is.Null);
+      Assert.That (_newCustomer.Orders[_order1.ID], Is.SameAs (_order1));
 
-      Assert.AreEqual (StateType.Changed, _order1.InternalDataContainer.State);
-      Assert.AreEqual (StateType.Unchanged, _newCustomer.InternalDataContainer.State);
-      Assert.AreEqual (StateType.Unchanged, _oldCustomer.InternalDataContainer.State);
+      Assert.That (_order1.InternalDataContainer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_newCustomer.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_oldCustomer.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
     public void ChangeRelationBackToOriginalValue ()
     {
       _order1.Customer = _newCustomer;
-      Assert.AreEqual (StateType.Changed, _order1.State);
-      Assert.AreEqual (StateType.Changed, _oldCustomer.State);
-      Assert.AreEqual (StateType.Changed, _newCustomer.State);
+      Assert.That (_order1.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_oldCustomer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_newCustomer.State, Is.EqualTo (StateType.Changed));
 
       _order1.Customer = _oldCustomer;
-      Assert.AreEqual (StateType.Unchanged, _order1.State);
-      Assert.AreEqual (StateType.Unchanged, _oldCustomer.State);
-      Assert.AreEqual (StateType.Unchanged, _newCustomer.State);
+      Assert.That (_order1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_oldCustomer.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_newCustomer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
     public void SetOriginalValue ()
     {
       _order1.Customer = _order1.Customer;
-      Assert.AreEqual (StateType.Unchanged, _order1.State);
-      Assert.AreEqual (StateType.Unchanged, _order1.Customer.State);
+      Assert.That (_order1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_order1.Customer.State, Is.EqualTo (StateType.Unchanged));
 
-      Assert.AreEqual (StateType.Unchanged, _order1.InternalDataContainer.State);
-      Assert.AreEqual (StateType.Unchanged, _order1.Customer.InternalDataContainer.State);
+      Assert.That (_order1.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_order1.Customer.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -403,20 +403,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _order1.Customer = _newCustomer;
 
-      Assert.AreSame (_newCustomer, _order1.Customer);
-      Assert.AreSame (_oldCustomer, _order1.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"));
+      Assert.That (_order1.Customer, Is.SameAs (_newCustomer));
+      Assert.That (_order1.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"), Is.SameAs (_oldCustomer));
     }
 
     [Test]
     public void GetOriginalRelatedObjects ()
     {
-      Assert.IsNull (_newCustomer.Orders[_order1.ID]);
+      Assert.That (_newCustomer.Orders[_order1.ID], Is.Null);
 
       _newCustomer.Orders.Add (_order1);
 
       DomainObjectCollection oldOrders = _newCustomer.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-      Assert.AreSame (_order1, _newCustomer.Orders[_order1.ID]);
-      Assert.IsNull (oldOrders[_order1.ID]);
+      Assert.That (_newCustomer.Orders[_order1.ID], Is.SameAs (_order1));
+      Assert.That (oldOrders[_order1.ID], Is.Null);
     }
 
     [Test]
@@ -425,7 +425,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee supervisor = Employee.GetObject (DomainObjectIDs.Employee1);
       DomainObjectCollection subordinates = supervisor.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates");
 
-      Assert.AreEqual (2, subordinates.Count);
+      Assert.That (subordinates.Count, Is.EqualTo (2));
     }
 
     [Test]

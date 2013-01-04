@@ -46,14 +46,14 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       InheritedAttribute attribute =
           (InheritedAttribute) AttributeUtility.GetCustomAttribute (_basePropertyWithSingleAttribute, typeof (InheritedAttribute), true);
-      Assert.IsNotNull (attribute);
+      Assert.That (attribute, Is.Not.Null);
     }
 
     [Test]
     public void TestGeneric_FromBaseWithAttribute ()
     {
       InheritedAttribute attribute = AttributeUtility.GetCustomAttribute<InheritedAttribute> (_basePropertyWithSingleAttribute, true);
-      Assert.IsNotNull (attribute);
+      Assert.That (attribute, Is.Not.Null);
     }
 
     [Test]
@@ -68,14 +68,14 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     {
       ICustomAttribute attribute = 
           (ICustomAttribute) AttributeUtility.GetCustomAttribute (_basePropertyWithSingleAttribute, typeof (ICustomAttribute), true);
-      Assert.IsNotNull (attribute);
+      Assert.That (attribute, Is.Not.Null);
     }
 
     [Test]
     public void TestGeneric_FromBaseWithInterface ()
     {
       ICustomAttribute attribute = AttributeUtility.GetCustomAttribute<ICustomAttribute> (_basePropertyWithSingleAttribute, true);
-      Assert.IsNotNull (attribute);
+      Assert.That (attribute, Is.Not.Null);
     }
 
     [Test]
@@ -104,32 +104,32 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_FromOverrideWithAttribute ()
     {
-      Assert.IsNotNull (AttributeUtility.GetCustomAttribute (_derivedPropertyWithSingleAttribute, typeof (InheritedAttribute), true));
+      Assert.That (AttributeUtility.GetCustomAttribute (_derivedPropertyWithSingleAttribute, typeof (InheritedAttribute), true), Is.Not.Null);
     }
 
     [Test]
     [Ignore ("Not supported at the moment by Attribute.GetCustomAttribute - should we leave this or add a workaround?")]
     public void Test_FromProtectedOverrideWithAttribute ()
     {
-      Assert.IsNotNull (AttributeUtility.GetCustomAttribute (_derivedProtectedProperty, typeof (InheritedAttribute), true));
+      Assert.That (AttributeUtility.GetCustomAttribute (_derivedProtectedProperty, typeof (InheritedAttribute), true), Is.Not.Null);
     }
 
     [Test]
     public void Test_FromOverrideWithInterface ()
     {
-      Assert.IsNotNull (AttributeUtility.GetCustomAttribute (_derivedPropertyWithSingleAttribute, typeof (ICustomAttribute), true));
+      Assert.That (AttributeUtility.GetCustomAttribute (_derivedPropertyWithSingleAttribute, typeof (ICustomAttribute), true), Is.Not.Null);
     }
 
     [Test]
     public void Test_FromOverrideWithAttributeAndWithoutInherited ()
     {
-      Assert.IsNull (AttributeUtility.GetCustomAttribute (_derivedPropertyWithSingleAttribute, typeof (InheritedAttribute), false));
+      Assert.That (AttributeUtility.GetCustomAttribute (_derivedPropertyWithSingleAttribute, typeof (InheritedAttribute), false), Is.Null);
     }
 
     [Test]
     public void Test_FromOverrideWithInterfaceAndWithoutInherited ()
     {
-      Assert.IsNull (AttributeUtility.GetCustomAttribute (_derivedPropertyWithSingleAttribute, typeof (ICustomAttribute), false));
+      Assert.That (AttributeUtility.GetCustomAttribute (_derivedPropertyWithSingleAttribute, typeof (ICustomAttribute), false), Is.Null);
     }
 
     [Test]

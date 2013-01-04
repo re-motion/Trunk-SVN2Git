@@ -38,9 +38,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.NewObject ();
 
-      Assert.IsNotNull (order.ID);
-      Assert.AreEqual (StateType.New, order.State);
-      Assert.AreSame (order, order.InternalDataContainer.DomainObject);
+      Assert.That (order.ID, Is.Not.Null);
+      Assert.That (order.State, Is.EqualTo (StateType.New));
+      Assert.That (order.InternalDataContainer.DomainObject, Is.SameAs (order));
     }
 
     [Test]
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.NewObject ();
       Order sameOrder = Order.GetObject (order.ID);
 
-      Assert.AreSame (order, sameOrder);
+      Assert.That (sameOrder, Is.SameAs (order));
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.NewObject ();
 
-      Assert.IsNull (order.OrderTicket);
+      Assert.That (order.OrderTicket, Is.Null);
     }
 
     [Test]
@@ -66,13 +66,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Partner partner = Partner.NewObject ();
       Ceo ceo = Ceo.NewObject ();
 
-      Assert.IsNull (partner.Ceo);
-      Assert.IsNull (ceo.Company);
+      Assert.That (partner.Ceo, Is.Null);
+      Assert.That (ceo.Company, Is.Null);
 
       partner.Ceo = ceo;
 
-      Assert.AreSame (partner, ceo.Company);
-      Assert.AreSame (ceo, partner.Ceo);
+      Assert.That (ceo.Company, Is.SameAs (partner));
+      Assert.That (partner.Ceo, Is.SameAs (ceo));
     }
 
     [Test]
@@ -80,8 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.NewObject ();
 
-      Assert.IsNotNull (order.OrderItems);
-      Assert.AreEqual (0, order.OrderItems.Count);
+      Assert.That (order.OrderItems, Is.Not.Null);
+      Assert.That (order.OrderItems.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -92,9 +92,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       order.OrderItems.Add (orderItem);
 
-      Assert.AreSame (order, orderItem.Order);
-      Assert.AreEqual (1, order.OrderItems.Count);
-      Assert.IsNotNull (order.OrderItems[orderItem.ID]);
+      Assert.That (orderItem.Order, Is.SameAs (order));
+      Assert.That (order.OrderItems.Count, Is.EqualTo (1));
+      Assert.That (order.OrderItems[orderItem.ID], Is.Not.Null);
     }
 
     [Test]
@@ -103,9 +103,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Customer customer = Customer.NewObject ();
       customer.Name = "Arthur Dent";
 
-      Assert.AreEqual ("Arthur Dent", customer.Name);
-      Assert.AreEqual (string.Empty, customer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Name"].GetOriginalValue<string>());
-      Assert.AreEqual (StateType.New, customer.State);
+      Assert.That (customer.Name, Is.EqualTo ("Arthur Dent"));
+      Assert.That (customer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Name"].GetOriginalValue<string>(), Is.EqualTo (string.Empty));
+      Assert.That (customer.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -116,8 +116,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       partner.Ceo = ceo;
 
-      Assert.AreEqual (StateType.New, partner.State);
-      Assert.AreEqual (StateType.New, ceo.State);
+      Assert.That (partner.State, Is.EqualTo (StateType.New));
+      Assert.That (ceo.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -128,8 +128,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       order.OrderItems.Add (orderItem);
 
-      Assert.AreEqual (StateType.New, order.State);
-      Assert.AreEqual (StateType.New, orderItem.State);
+      Assert.That (order.State, Is.EqualTo (StateType.New));
+      Assert.That (orderItem.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -147,25 +147,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.DeliveryDate = new DateTime (2010, 1, 1);
       order.OrderItems.Add (orderItem);
 
-      Assert.IsTrue (orderEventReceiver.HasChangingEventBeenCalled);
-      Assert.IsTrue (orderEventReceiver.HasChangedEventBeenCalled);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate", orderEventReceiver.ChangingPropertyDefinition.PropertyName);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate", orderEventReceiver.ChangedPropertyDefinition.PropertyName);
+      Assert.That (orderEventReceiver.HasChangingEventBeenCalled, Is.True);
+      Assert.That (orderEventReceiver.HasChangedEventBeenCalled, Is.True);
+      Assert.That (orderEventReceiver.ChangingPropertyDefinition.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate"));
+      Assert.That (orderEventReceiver.ChangedPropertyDefinition.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate"));
 
-      Assert.IsTrue (orderEventReceiver.HasRelationChangingEventBeenCalled);
-      Assert.IsTrue (orderEventReceiver.HasRelationChangedEventBeenCalled);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", orderEventReceiver.ChangingRelationPropertyName);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", orderEventReceiver.ChangedRelationPropertyName);
+      Assert.That (orderEventReceiver.HasRelationChangingEventBeenCalled, Is.True);
+      Assert.That (orderEventReceiver.HasRelationChangedEventBeenCalled, Is.True);
+      Assert.That (orderEventReceiver.ChangingRelationPropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+      Assert.That (orderEventReceiver.ChangedRelationPropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
 
-      Assert.IsTrue (orderItemEventReceiver.HasRelationChangingEventBeenCalled);
-      Assert.IsTrue (orderItemEventReceiver.HasRelationChangedEventBeenCalled);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", orderItemEventReceiver.ChangingRelationPropertyName);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", orderItemEventReceiver.ChangedRelationPropertyName);
+      Assert.That (orderItemEventReceiver.HasRelationChangingEventBeenCalled, Is.True);
+      Assert.That (orderItemEventReceiver.HasRelationChangedEventBeenCalled, Is.True);
+      Assert.That (orderItemEventReceiver.ChangingRelationPropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"));
+      Assert.That (orderItemEventReceiver.ChangedRelationPropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"));
 
-      Assert.IsTrue (collectionEventReceiver.HasAddingEventBeenCalled);
-      Assert.IsTrue (collectionEventReceiver.HasAddedEventBeenCalled);
-      Assert.AreSame (orderItem, collectionEventReceiver.AddingDomainObject);
-      Assert.AreSame (orderItem, collectionEventReceiver.AddedDomainObject);
+      Assert.That (collectionEventReceiver.HasAddingEventBeenCalled, Is.True);
+      Assert.That (collectionEventReceiver.HasAddedEventBeenCalled, Is.True);
+      Assert.That (collectionEventReceiver.AddingDomainObject, Is.SameAs (orderItem));
+      Assert.That (collectionEventReceiver.AddedDomainObject, Is.SameAs (orderItem));
     }
 
     [Test]
@@ -176,8 +176,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       partner.Ceo = ceo;
 
-      Assert.IsNull (partner.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo"));
-      Assert.IsNull (ceo.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"));
+      Assert.That (partner.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo"), Is.Null);
+      Assert.That (ceo.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"), Is.Null);
     }
 
     [Test]
@@ -190,9 +190,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       DomainObjectCollection originalOrderItems = order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
 
-      Assert.IsNotNull (originalOrderItems);
-      Assert.AreEqual (0, originalOrderItems.Count);
-      Assert.IsNull (orderItem.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"));
+      Assert.That (originalOrderItems, Is.Not.Null);
+      Assert.That (originalOrderItems.Count, Is.EqualTo (0));
+      Assert.That (orderItem.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"), Is.Null);
     }
 
     [Test]
@@ -227,11 +227,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.Customer = customer;
       order.OrderItems.Add (orderItem);
 
-      Assert.IsNull (ceo.InternalDataContainer.Timestamp);
-      Assert.IsNull (customer.InternalDataContainer.Timestamp);
-      Assert.IsNull (order.InternalDataContainer.Timestamp);
-      Assert.IsNull (orderTicket.InternalDataContainer.Timestamp);
-      Assert.IsNull (orderItem.InternalDataContainer.Timestamp);
+      Assert.That (ceo.InternalDataContainer.Timestamp, Is.Null);
+      Assert.That (customer.InternalDataContainer.Timestamp, Is.Null);
+      Assert.That (order.InternalDataContainer.Timestamp, Is.Null);
+      Assert.That (orderTicket.InternalDataContainer.Timestamp, Is.Null);
+      Assert.That (orderItem.InternalDataContainer.Timestamp, Is.Null);
 
       TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
@@ -243,40 +243,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       orderItem = OrderItem.GetObject (orderItemID);
       Official official = Official.GetObject (DomainObjectIDs.Official1);
 
-      Assert.IsNotNull (ceo);
-      Assert.IsNotNull (customer);
-      Assert.IsNotNull (order);
-      Assert.IsNotNull (orderTicket);
-      Assert.IsNotNull (orderItem);
+      Assert.That (ceo, Is.Not.Null);
+      Assert.That (customer, Is.Not.Null);
+      Assert.That (order, Is.Not.Null);
+      Assert.That (orderTicket, Is.Not.Null);
+      Assert.That (orderItem, Is.Not.Null);
 
-      Assert.AreSame (customer, ceo.Company);
-      Assert.AreSame (ceo, customer.Ceo);
-      Assert.AreSame (customer, order.Customer);
-      Assert.AreEqual (1, customer.Orders.Count);
-      Assert.AreSame (order, customer.Orders[0]);
-      Assert.AreSame (order, orderTicket.Order);
-      Assert.AreSame (orderTicket, order.OrderTicket);
-      Assert.AreSame (order, orderItem.Order);
-      Assert.AreEqual (1, order.OrderItems.Count);
-      Assert.AreSame (orderItem, order.OrderItems[0]);
-      Assert.AreSame (official, order.Official);
-      Assert.AreEqual (6, official.Orders.Count);
-      Assert.IsNotNull (official.Orders[orderID]);
+      Assert.That (ceo.Company, Is.SameAs (customer));
+      Assert.That (customer.Ceo, Is.SameAs (ceo));
+      Assert.That (order.Customer, Is.SameAs (customer));
+      Assert.That (customer.Orders.Count, Is.EqualTo (1));
+      Assert.That (customer.Orders[0], Is.SameAs (order));
+      Assert.That (orderTicket.Order, Is.SameAs (order));
+      Assert.That (order.OrderTicket, Is.SameAs (orderTicket));
+      Assert.That (orderItem.Order, Is.SameAs (order));
+      Assert.That (order.OrderItems.Count, Is.EqualTo (1));
+      Assert.That (order.OrderItems[0], Is.SameAs (orderItem));
+      Assert.That (order.Official, Is.SameAs (official));
+      Assert.That (official.Orders.Count, Is.EqualTo (6));
+      Assert.That (official.Orders[orderID], Is.Not.Null);
 
-      Assert.AreEqual ("Ford Prefect", ceo.Name);
-      Assert.AreEqual (new DateTime (2000, 1, 1), customer.CustomerSince);
-      Assert.AreEqual ("Arthur Dent", customer.Name);
-      Assert.AreEqual (1, orderItem.Position);
-      Assert.AreEqual ("Sternenkarte", orderItem.Product);
-      Assert.AreEqual (@"C:\home\arthur_dent\maporder.png", orderTicket.FileName);
-      Assert.AreEqual (42, order.OrderNumber);
-      Assert.AreEqual (new DateTime (2005, 2, 1), order.DeliveryDate);
+      Assert.That (ceo.Name, Is.EqualTo ("Ford Prefect"));
+      Assert.That (customer.CustomerSince, Is.EqualTo (new DateTime (2000, 1, 1)));
+      Assert.That (customer.Name, Is.EqualTo ("Arthur Dent"));
+      Assert.That (orderItem.Position, Is.EqualTo (1));
+      Assert.That (orderItem.Product, Is.EqualTo ("Sternenkarte"));
+      Assert.That (orderTicket.FileName, Is.EqualTo (@"C:\home\arthur_dent\maporder.png"));
+      Assert.That (order.OrderNumber, Is.EqualTo (42));
+      Assert.That (order.DeliveryDate, Is.EqualTo (new DateTime (2005, 2, 1)));
 
-      Assert.IsNotNull (ceo.InternalDataContainer.Timestamp);
-      Assert.IsNotNull (customer.InternalDataContainer.Timestamp);
-      Assert.IsNotNull (order.InternalDataContainer.Timestamp);
-      Assert.IsNotNull (orderTicket.InternalDataContainer.Timestamp);
-      Assert.IsNotNull (orderItem.InternalDataContainer.Timestamp);
+      Assert.That (ceo.InternalDataContainer.Timestamp, Is.Not.Null);
+      Assert.That (customer.InternalDataContainer.Timestamp, Is.Not.Null);
+      Assert.That (order.InternalDataContainer.Timestamp, Is.Not.Null);
+      Assert.That (orderTicket.InternalDataContainer.Timestamp, Is.Not.Null);
+      Assert.That (orderItem.InternalDataContainer.Timestamp, Is.Not.Null);
     }
 
     [Test]
@@ -298,14 +298,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       supervisor = Employee.GetObject (supervisorID);
       subordinate = Employee.GetObject (subordinateID);
 
-      Assert.IsNotNull (supervisor);
-      Assert.IsNotNull (subordinate);
+      Assert.That (supervisor, Is.Not.Null);
+      Assert.That (subordinate, Is.Not.Null);
 
-      Assert.AreEqual (supervisorID, supervisor.ID);
-      Assert.AreEqual (subordinateID, subordinate.ID);
+      Assert.That (supervisor.ID, Is.EqualTo (supervisorID));
+      Assert.That (subordinate.ID, Is.EqualTo (subordinateID));
 
-      Assert.AreEqual ("Slartibartfast", supervisor.Name);
-      Assert.AreEqual ("Zarniwoop", subordinate.Name);
+      Assert.That (supervisor.Name, Is.EqualTo ("Slartibartfast"));
+      Assert.That (subordinate.Name, Is.EqualTo ("Zarniwoop"));
     }
 
     [Test]
@@ -332,9 +332,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       computer = Computer.GetObject (DomainObjectIDs.Computer4);
       newEmployee = Employee.GetObject (newEmployeeID);
 
-      Assert.IsNotNull (newEmployee);
-      Assert.AreEqual ("Arthur Dent", newEmployee.Name);
-      Assert.AreSame (computer, newEmployee.Computer);
+      Assert.That (newEmployee, Is.Not.Null);
+      Assert.That (newEmployee.Name, Is.EqualTo ("Arthur Dent"));
+      Assert.That (newEmployee.Computer, Is.SameAs (computer));
     }
 
     [Test]
@@ -344,7 +344,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       TestableClientTransaction.Commit ();
 
-      Assert.AreEqual (StateType.Unchanged, computer.State);
+      Assert.That (computer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -353,11 +353,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee employee = Employee.NewObject ();
       employee.Name = "Mr. Prosser";
 
-      Assert.IsTrue (employee.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (Employee), "Name")));
+      Assert.That (employee.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (Employee), "Name")), Is.True);
 
       TestableClientTransaction.Commit ();
 
-      Assert.IsFalse (employee.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (Employee), "Name")));
+      Assert.That (employee.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (Employee), "Name")), Is.False);
     }
 
     [Test]
@@ -366,11 +366,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee employee = Employee.NewObject ();
       employee.Name = "Mr. Prosser";
 
-      Assert.IsTrue (employee.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (Employee), "Name")));
+      Assert.That (employee.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (Employee), "Name")), Is.True);
 
       TestableClientTransaction.Commit ();
 
-      Assert.IsFalse (employee.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (Employee), "Name")));
+      Assert.That (employee.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (Employee), "Name")), Is.False);
     }
 
     [Test]
@@ -384,13 +384,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       employee.Computer = computer;
 
-      Assert.IsNull (employee.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer"));
-      Assert.IsNull (computer.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
+      Assert.That (employee.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer"), Is.Null);
+      Assert.That (computer.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"), Is.Null);
 
       TestableClientTransaction.Commit ();
 
-      Assert.AreSame (computer, employee.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer"));
-      Assert.AreSame (employee, computer.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
+      Assert.That (employee.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer"), Is.SameAs (computer));
+      Assert.That (computer.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"), Is.SameAs (employee));
     }
 
     [Test]
@@ -403,15 +403,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       subordinate.Name = "Zarniwoop";
       supervisor.Subordinates.Add (subordinate);
 
-      Assert.AreEqual (0, supervisor.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates").Count);
-      Assert.IsNull (subordinate.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"));
+      Assert.That (supervisor.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates").Count, Is.EqualTo (0));
+      Assert.That (subordinate.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"), Is.Null);
 
       TestableClientTransaction.Commit ();
 
       DomainObjectCollection originalSubordinates = supervisor.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates");
-      Assert.AreEqual (1, originalSubordinates.Count);
-      Assert.AreSame (subordinate, originalSubordinates[subordinate.ID]);
-      Assert.AreSame (supervisor, subordinate.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"));
+      Assert.That (originalSubordinates.Count, Is.EqualTo (1));
+      Assert.That (originalSubordinates[subordinate.ID], Is.SameAs (subordinate));
+      Assert.That (subordinate.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"), Is.SameAs (supervisor));
     }
   }
 }

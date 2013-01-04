@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       StateCombinationComparer comparer = new StateCombinationComparer ();
 
-      Assert.IsTrue (comparer.Equals (combination1, combination2));
+      Assert.That (comparer.Equals (combination1, combination2), Is.True);
     }
 
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       StateCombinationComparer comparer = new StateCombinationComparer ();
 
-      Assert.IsFalse (comparer.Equals (combination1, combination2));
+      Assert.That (comparer.Equals (combination1, combination2), Is.False);
     }
 
     [Test]
@@ -71,7 +71,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       StateCombinationComparer comparer = new StateCombinationComparer ();
 
-      Assert.IsFalse (comparer.Equals (combination1, combination2));
+      Assert.That (comparer.Equals (combination1, combination2), Is.False);
     }
 
     [Test]
@@ -83,7 +83,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       StateCombinationComparer comparer = new StateCombinationComparer ();
 
-      Assert.AreEqual (comparer.GetHashCode (combination1), comparer.GetHashCode (combination2));
+      Assert.That (comparer.GetHashCode (combination2), Is.EqualTo (comparer.GetHashCode (combination1)));
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       StateCombinationComparer comparer = new StateCombinationComparer ();
 
-      Assert.AreNotEqual (comparer.GetHashCode (combination1), comparer.GetHashCode (combination2));
+      Assert.That (comparer.GetHashCode (combination2), Is.Not.EqualTo (comparer.GetHashCode (combination1)));
     }
 
     [Test]
@@ -109,7 +109,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       StateCombinationComparer comparer = new StateCombinationComparer ();
 
-      Assert.AreNotEqual (comparer.GetHashCode (combination1), comparer.GetHashCode (combination2));
+      Assert.That (comparer.GetHashCode (combination2), Is.Not.EqualTo (comparer.GetHashCode (combination1)));
     }
   }
 }

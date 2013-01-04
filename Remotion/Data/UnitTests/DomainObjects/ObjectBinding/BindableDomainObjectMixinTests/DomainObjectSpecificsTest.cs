@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void OrdinaryProperty ()
     {
-      Assert.IsNotNull (_businessObjectSampleClass.GetPropertyDefinition ("Name"));
+      Assert.That (_businessObjectSampleClass.GetPropertyDefinition ("Name"), Is.Not.Null);
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void NoIDProperty ()
     {
-      Assert.IsNull (_businessObjectSampleClass.GetPropertyDefinition ("ID"));
+      Assert.That (_businessObjectSampleClass.GetPropertyDefinition ("ID"), Is.Null);
     }
 
     [Test]
@@ -66,70 +66,70 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       PropertyBase[] properties = (PropertyBase[]) _businessObjectSampleClass.GetPropertyDefinitions ();
 
       foreach (PropertyBase property in properties)
-        Assert.AreNotEqual (typeof (DomainObject), property.PropertyInfo.DeclaringType);
+        Assert.That (property.PropertyInfo.DeclaringType, Is.Not.EqualTo (typeof (DomainObject)));
     }
 
     [Test]
     public void PropertyNotInMapping ()
     {
-      Assert.IsNotNull (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredPropertyNotInMapping"));
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredPropertyNotInMapping"), Is.Not.Null);
     }
 
     [Test]
     public void PropertyInMapping ()
     {
-      Assert.IsNotNull (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringProperty"));
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringProperty"), Is.Not.Null);
     }
 
     [Test]
     public void ProtectedPropertyInMapping ()
     {
-      Assert.IsNull (_businessObjectClassWithProperties.GetPropertyDefinition ("ProtectedStringProperty"));
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("ProtectedStringProperty"), Is.Null);
     }
 
     [Test]
     public void Requiredness ()
     {
-      Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredPropertyNotInMapping").IsRequired);
-      Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringProperty").IsRequired);
-      Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredValueProperty").IsRequired);
-      Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredEnumProperty").IsRequired);
-      Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredRelatedObjectProperty").IsRequired);
-      Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredBidirectionalRelatedObjectProperty").IsRequired);
-      Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredBidirectionalRelatedObjectsProperty").IsRequired);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredPropertyNotInMapping").IsRequired, Is.True);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringProperty").IsRequired, Is.True);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredValueProperty").IsRequired, Is.True);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredEnumProperty").IsRequired, Is.True);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredRelatedObjectProperty").IsRequired, Is.True);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredBidirectionalRelatedObjectProperty").IsRequired, Is.True);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredBidirectionalRelatedObjectsProperty").IsRequired, Is.True);
 
-      Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredPropertyNotInMapping").IsRequired);
-      Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredStringProperty").IsRequired);
-      Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredValueProperty").IsRequired);
-      Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredEnumProperty").IsRequired);
-      Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredUndefinedEnumProperty").IsRequired);
-      Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredRelatedObjectProperty").IsRequired);
-      Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredBidirectionalRelatedObjectProperty").IsRequired);
-      Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredBidirectionalRelatedObjectsProperty").IsRequired);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredPropertyNotInMapping").IsRequired, Is.False);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredStringProperty").IsRequired, Is.False);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredValueProperty").IsRequired, Is.False);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredEnumProperty").IsRequired, Is.False);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredUndefinedEnumProperty").IsRequired, Is.False);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredRelatedObjectProperty").IsRequired, Is.False);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredBidirectionalRelatedObjectProperty").IsRequired, Is.False);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredBidirectionalRelatedObjectsProperty").IsRequired, Is.False);
     }
 
     [Test]
     public void MaxLength ()
     {
-      Assert.AreEqual (7, ((IBusinessObjectStringProperty)
-          _businessObjectClassWithProperties.GetPropertyDefinition ("MaxLength7StringProperty")).MaxLength);
+      Assert.That (((IBusinessObjectStringProperty)
+                    _businessObjectClassWithProperties.GetPropertyDefinition ("MaxLength7StringProperty")).MaxLength, Is.EqualTo (7));
 
-      Assert.IsNull (((IBusinessObjectStringProperty)
-          _businessObjectClassWithProperties.GetPropertyDefinition ("NoMaxLengthStringPropertyNotInMapping")).MaxLength);
-      Assert.IsNull (((IBusinessObjectStringProperty)
-          _businessObjectClassWithProperties.GetPropertyDefinition ("NoMaxLengthStringProperty")).MaxLength);
+      Assert.That (((IBusinessObjectStringProperty)
+                    _businessObjectClassWithProperties.GetPropertyDefinition ("NoMaxLengthStringPropertyNotInMapping")).MaxLength, Is.Null);
+      Assert.That (((IBusinessObjectStringProperty)
+                    _businessObjectClassWithProperties.GetPropertyDefinition ("NoMaxLengthStringProperty")).MaxLength, Is.Null);
     }
 
     [Test]
     public void InheritanceAndOverriding ()
     {
-      Assert.IsNotNull (_businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength3"));
-      Assert.IsNotNull (_businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength4"));
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength3"), Is.Not.Null);
+      Assert.That (_businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength4"), Is.Not.Null);
 
-      Assert.AreEqual (33, ((IBusinessObjectStringProperty)
-          _businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength3")).MaxLength);
-      Assert.AreEqual (4, ((IBusinessObjectStringProperty)
-          _businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength4")).MaxLength);
+      Assert.That (((IBusinessObjectStringProperty)
+                    _businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength3")).MaxLength, Is.EqualTo (33));
+      Assert.That (((IBusinessObjectStringProperty)
+                    _businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength4")).MaxLength, Is.EqualTo (4));
     }
 
     [Test]

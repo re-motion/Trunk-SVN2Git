@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Initialization ()
     {
-      Assert.AreSame (_endPointMock, _command.AffectedEndPoint);
+      Assert.That (_command.AffectedEndPoint, Is.SameAs (_endPointMock));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var endPoint = new NullObjectEndPoint (TestableClientTransaction, _id.Definition);
       var command = (NullEndPointModificationCommand) endPoint.CreateSetCommand (Employee.NewObject());
-      Assert.AreSame (endPoint, command.AffectedEndPoint);
+      Assert.That (command.AffectedEndPoint, Is.SameAs (endPoint));
     }
 
     [Test]

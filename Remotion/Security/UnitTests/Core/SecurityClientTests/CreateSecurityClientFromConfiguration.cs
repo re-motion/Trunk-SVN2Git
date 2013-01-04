@@ -55,7 +55,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       
       _mocks.VerifyAll();
       Assert.IsInstanceOf (typeof (SecurityClient), securityClient);
-      Assert.IsFalse (((INullObject) securityClient).IsNull);
+      Assert.That (((INullObject) securityClient).IsNull, Is.False);
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
       _mocks.VerifyAll ();
       Assert.IsInstanceOf (typeof (NullSecurityClient), securityClient);
-      Assert.IsTrue (((INullObject) securityClient).IsNull);
+      Assert.That (((INullObject) securityClient).IsNull, Is.True);
     }
   }
 }

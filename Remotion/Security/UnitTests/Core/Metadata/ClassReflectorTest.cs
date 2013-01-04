@@ -73,8 +73,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     public void Initialize ()
     {
       Assert.IsInstanceOf (typeof (IClassReflector), _classReflector);
-      Assert.AreSame (_statePropertyReflectorMock, _classReflector.StatePropertyReflector);
-      Assert.AreSame (_accessTypeReflectorMock, _classReflector.AccessTypeReflector);
+      Assert.That (_classReflector.StatePropertyReflector, Is.SameAs (_statePropertyReflectorMock));
+      Assert.That (_classReflector.AccessTypeReflector, Is.SameAs (_accessTypeReflectorMock));
     }
 
     [Test]
@@ -102,23 +102,23 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       _mocks.VerifyAll ();
 
-      Assert.IsNotNull (info);
-      Assert.AreEqual ("Remotion.Security.UnitTests.TestDomain.PaperFile, Remotion.Security.UnitTests.TestDomain", info.Name);
-      Assert.AreEqual ("00000000-0000-0000-0002-000000000000", info.ID);
-      
-      Assert.AreEqual (0, info.DerivedClasses.Count);
-      Assert.IsNotNull (info.BaseClass);
-      Assert.AreEqual ("Remotion.Security.UnitTests.TestDomain.File, Remotion.Security.UnitTests.TestDomain", info.BaseClass.Name);
-      Assert.AreEqual (1, info.BaseClass.DerivedClasses.Count);
-      Assert.Contains (info, info.BaseClass.DerivedClasses);
+      Assert.That (info, Is.Not.Null);
+      Assert.That (info.Name, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.PaperFile, Remotion.Security.UnitTests.TestDomain"));
+      Assert.That (info.ID, Is.EqualTo ("00000000-0000-0000-0002-000000000000"));
 
-      Assert.AreEqual (2, info.Properties.Count);
-      Assert.Contains (_confidentialityProperty, info.Properties);
-      Assert.Contains (_stateProperty, info.Properties);
+      Assert.That (info.DerivedClasses.Count, Is.EqualTo (0));
+      Assert.That (info.BaseClass, Is.Not.Null);
+      Assert.That (info.BaseClass.Name, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.File, Remotion.Security.UnitTests.TestDomain"));
+      Assert.That (info.BaseClass.DerivedClasses.Count, Is.EqualTo (1));
+      Assert.That (info.BaseClass.DerivedClasses, Has.Member (info));
 
-      Assert.AreEqual (4, info.AccessTypes.Count);
+      Assert.That (info.Properties.Count, Is.EqualTo (2));
+      Assert.That (info.Properties, Has.Member (_confidentialityProperty));
+      Assert.That (info.Properties, Has.Member (_stateProperty));
+
+      Assert.That (info.AccessTypes.Count, Is.EqualTo (4));
       foreach (EnumValueInfo accessType in paperFileAccessTypes)
-        Assert.Contains (accessType, info.AccessTypes);
+        Assert.That (info.AccessTypes, Has.Member (accessType));
     }
 
     [Test]
@@ -127,12 +127,12 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       ClassReflector reflector = new ClassReflector ();
       SecurableClassInfo paperFileInfo = reflector.GetMetadata (typeof (PaperFile), _cache);
 
-      Assert.IsNotNull (paperFileInfo);
-      Assert.AreEqual (paperFileInfo, _cache.GetSecurableClassInfo (typeof (PaperFile)));
+      Assert.That (paperFileInfo, Is.Not.Null);
+      Assert.That (_cache.GetSecurableClassInfo (typeof (PaperFile)), Is.EqualTo (paperFileInfo));
 
       SecurableClassInfo fileInfo = _cache.GetSecurableClassInfo (typeof (File));
-      Assert.IsNotNull (fileInfo);
-      Assert.AreEqual ("Remotion.Security.UnitTests.TestDomain.File, Remotion.Security.UnitTests.TestDomain", fileInfo.Name);
+      Assert.That (fileInfo, Is.Not.Null);
+      Assert.That (fileInfo.Name, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.File, Remotion.Security.UnitTests.TestDomain"));
     }
 
     [Test]

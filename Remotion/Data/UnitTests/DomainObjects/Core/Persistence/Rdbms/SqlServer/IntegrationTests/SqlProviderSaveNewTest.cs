@@ -45,8 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       DataContainer reloadedDataContainer = ReloadDataContainer (newID);
 
-      Assert.IsNotNull (reloadedDataContainer);
-      Assert.AreEqual (newDataContainer.ID, reloadedDataContainer.ID);
+      Assert.That (reloadedDataContainer, Is.Not.Null);
+      Assert.That (reloadedDataContainer.ID, Is.EqualTo (newDataContainer.ID));
     }
 
     [Test]
@@ -96,72 +96,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var reloadedClassWithAllDataTypes = ReloadDataContainer (newID);
 
-      Assert.AreEqual (true, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "BooleanProperty"));
-      Assert.AreEqual (42, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ByteProperty"));
-      Assert.AreEqual (
-          new DateTime (1974, 10, 25), GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateProperty"));
-      Assert.AreEqual (
-          new DateTime (1974, 10, 26, 18, 9, 18),
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateTimeProperty"));
-      Assert.AreEqual (564.956, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DecimalProperty"));
-      Assert.AreEqual (5334.2456d, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DoubleProperty"));
-      Assert.AreEqual (
-          ClassWithAllDataTypes.EnumType.Value0,
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "EnumProperty"));
-      Assert.AreEqual (
-          Color.Values.Green(), GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ExtensibleEnumProperty"));
-      Assert.AreEqual (
-          new Guid ("{98E0FE88-7DB4-4f6c-A1C1-86682D5C95C9}"),
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "GuidProperty"));
-      Assert.AreEqual (67, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int16Property"));
-      Assert.AreEqual (42424242, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property"));
-      Assert.AreEqual (
-          424242424242424242, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property"));
-      Assert.AreEqual (42.42f, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty"));
-      Assert.AreEqual (
-          "zyxwvuZaphodBeeblebrox", GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringProperty"));
-      Assert.AreEqual (
-          "123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876",
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringPropertyWithoutMaxLength"));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "BooleanProperty"), Is.EqualTo (true));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ByteProperty"), Is.EqualTo (42));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateProperty"), Is.EqualTo (new DateTime (1974, 10, 25)));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateTimeProperty"), Is.EqualTo (new DateTime (1974, 10, 26, 18, 9, 18)));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DecimalProperty"), Is.EqualTo (564.956));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DoubleProperty"), Is.EqualTo (5334.2456d));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "EnumProperty"), Is.EqualTo (ClassWithAllDataTypes.EnumType.Value0));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ExtensibleEnumProperty"), Is.EqualTo (Color.Values.Green()));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "GuidProperty"), Is.EqualTo (new Guid ("{98E0FE88-7DB4-4f6c-A1C1-86682D5C95C9}")));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int16Property"), Is.EqualTo (67));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property"), Is.EqualTo (42424242));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property"), Is.EqualTo (424242424242424242));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty"), Is.EqualTo (42.42f));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringProperty"), Is.EqualTo ("zyxwvuZaphodBeeblebrox"));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringPropertyWithoutMaxLength"), Is.EqualTo ("123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876"));
       ResourceManager.IsEqualToImage1 (
           (byte[]) GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "BinaryProperty"));
 
-      Assert.AreEqual (false, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaBooleanProperty"));
-      Assert.AreEqual (21, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteProperty"));
-      Assert.AreEqual (
-          new DateTime (2007, 1, 18), GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateProperty"));
-      Assert.AreEqual (
-          new DateTime (2005, 1, 18, 11, 11, 11),
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateTimeProperty"));
-      Assert.AreEqual (50m, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDecimalProperty"));
-      Assert.AreEqual (56.87d, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDoubleProperty"));
-      Assert.AreEqual (
-          ClassWithAllDataTypes.EnumType.Value1,
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaEnumProperty"));
-      Assert.AreEqual (
-          new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}"),
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidProperty"));
-      Assert.AreEqual (51, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt16Property"));
-      Assert.AreEqual (52, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt32Property"));
-      Assert.AreEqual (53, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt64Property"));
-      Assert.AreEqual (54F, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaSingleProperty"));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaBooleanProperty"), Is.EqualTo (false));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteProperty"), Is.EqualTo (21));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateProperty"), Is.EqualTo (new DateTime (2007, 1, 18)));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateTimeProperty"), Is.EqualTo (new DateTime (2005, 1, 18, 11, 11, 11)));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDecimalProperty"), Is.EqualTo (50m));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDoubleProperty"), Is.EqualTo (56.87d));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaEnumProperty"), Is.EqualTo (ClassWithAllDataTypes.EnumType.Value1));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidProperty"), Is.EqualTo (new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}")));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt16Property"), Is.EqualTo (51));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt32Property"), Is.EqualTo (52));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt64Property"), Is.EqualTo (53));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaSingleProperty"), Is.EqualTo (54F));
 
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaBooleanWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateTimeWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDecimalWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDoubleWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaEnumWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt16WithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt32WithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt64WithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaSingleWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringWithNullValueProperty"));
-      Assert.IsNull (
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ExtensibleEnumWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NullableBinaryProperty"));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaBooleanWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateTimeWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDecimalWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDoubleWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaEnumWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt16WithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt32WithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt64WithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaSingleWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ExtensibleEnumWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NullableBinaryProperty"), Is.Null);
     }
 
     [Test]
@@ -179,59 +159,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var reloadedClassWithAllDataTypes = ReloadDataContainer (newID);
 
-      Assert.AreEqual (false, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "BooleanProperty"));
-      Assert.AreEqual ((byte) 0, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ByteProperty"));
-      Assert.AreEqual (
-          new DateTime (1753, 1, 1), GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateProperty"));
-      Assert.AreEqual (
-          new DateTime (1753, 1, 1, 0, 0, 0),
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateTimeProperty"));
-      Assert.AreEqual (0d, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DoubleProperty"));
-      Assert.AreEqual (
-          ClassWithAllDataTypes.EnumType.Value0,
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "EnumProperty"));
-      Assert.AreEqual (
-          Color.Values.Blue(), GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ExtensibleEnumProperty"));
-      Assert.AreEqual (Guid.Empty, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "GuidProperty"));
-      Assert.AreEqual ((short) 0, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int16Property"));
-      Assert.AreEqual (0, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property"));
-      Assert.AreEqual (0L, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property"));
-      Assert.AreEqual (0F, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty"));
-      Assert.AreEqual (string.Empty, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringProperty"));
-      Assert.AreEqual (
-          string.Empty, GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringPropertyWithoutMaxLength"));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "BooleanProperty"), Is.EqualTo (false));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ByteProperty"), Is.EqualTo ((byte) 0));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateProperty"), Is.EqualTo (new DateTime (1753, 1, 1)));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateTimeProperty"), Is.EqualTo (new DateTime (1753, 1, 1, 0, 0, 0)));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "DoubleProperty"), Is.EqualTo (0d));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "EnumProperty"), Is.EqualTo (ClassWithAllDataTypes.EnumType.Value0));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ExtensibleEnumProperty"), Is.EqualTo (Color.Values.Blue()));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "GuidProperty"), Is.EqualTo (Guid.Empty));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int16Property"), Is.EqualTo ((short) 0));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property"), Is.EqualTo (0));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property"), Is.EqualTo (0L));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty"), Is.EqualTo (0F));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringProperty"), Is.EqualTo (string.Empty));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringPropertyWithoutMaxLength"), Is.EqualTo (string.Empty));
       ResourceManager.IsEmptyImage (
           (byte[]) GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "BinaryProperty"));
 
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaBooleanProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateTimeProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDecimalProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDoubleProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaEnumProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt16Property"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt32Property"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt64Property"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaSingleProperty"));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaBooleanProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateTimeProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDecimalProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDoubleProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaEnumProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt16Property"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt32Property"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt64Property"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaSingleProperty"), Is.Null);
 
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaBooleanWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateTimeWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDecimalWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDoubleWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaEnumWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt16WithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt32WithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt64WithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaSingleWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringWithNullValueProperty"));
-      Assert.IsNull (
-          GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ExtensibleEnumWithNullValueProperty"));
-      Assert.IsNull (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NullableBinaryProperty"));
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaBooleanWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateTimeWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDecimalWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDoubleWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaEnumWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt16WithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt32WithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt64WithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaSingleWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "ExtensibleEnumWithNullValueProperty"), Is.Null);
+      Assert.That (GetPropertyValue (reloadedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "NullableBinaryProperty"), Is.Null);
     }
 
     [Test]
@@ -249,8 +221,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       DataContainer newSupervisorContainer = ReloadDataContainer (newDataContainer.ID);
       DataContainer existingSubordinateContainer = ReloadDataContainer (existingDataContainer.ID);
 
-      Assert.IsNotNull (newSupervisorContainer);
-      Assert.AreEqual (newSupervisorContainer.ID, existingSubordinateContainer.GetValue (supervisorProperty));
+      Assert.That (newSupervisorContainer, Is.Not.Null);
+      Assert.That (existingSubordinateContainer.GetValue (supervisorProperty), Is.EqualTo (newSupervisorContainer.ID));
     }
 
     [Test]
@@ -268,9 +240,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       DataContainer loadedDataContainer = ReloadDataContainer (newDataContainer.ID);
 
-      Assert.IsNotNull (loadedDataContainer);
-      Assert.AreEqual (DomainObjectIDs.Customer1, loadedDataContainer.GetValue (customerProperty));
-      Assert.AreEqual (DomainObjectIDs.Official1, loadedDataContainer.GetValue (officialProperty));
+      Assert.That (loadedDataContainer, Is.Not.Null);
+      Assert.That (loadedDataContainer.GetValue (customerProperty), Is.EqualTo (DomainObjectIDs.Customer1));
+      Assert.That (loadedDataContainer.GetValue (officialProperty), Is.EqualTo (DomainObjectIDs.Official1));
     }
 
     [Test]
@@ -289,9 +261,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       DataContainer reloadedCustomerContainer = ReloadDataContainer (newCustomerDataContainer.ID);
       DataContainer reloadedOrderContainer = ReloadDataContainer (newOrderDataContainer.ID);
 
-      Assert.IsNotNull (reloadedCustomerContainer);
-      Assert.IsNotNull (reloadedOrderContainer);
-      Assert.AreEqual (reloadedCustomerContainer.ID, reloadedOrderContainer.GetValue (customerProperty));
+      Assert.That (reloadedCustomerContainer, Is.Not.Null);
+      Assert.That (reloadedOrderContainer, Is.Not.Null);
+      Assert.That (reloadedOrderContainer.GetValue (customerProperty), Is.EqualTo (reloadedCustomerContainer.ID));
     }
 
     [Test]
@@ -307,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Provider.Save (new[] { dataContainer });
 
       DataContainer reloadedDataContainer = ReloadDataContainer (newID);
-      Assert.IsNull (reloadedDataContainer.GetValue (propertyDefinition));
+      Assert.That (reloadedDataContainer.GetValue (propertyDefinition), Is.Null);
     }
 
     [Test]

@@ -44,8 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var objectID = new ObjectID ("Customer", Guid.NewGuid ());
       DataContainer dataContainer = DataContainer.CreateNew (objectID);
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
-      Assert.AreNotSame (dataContainer, deserializedDataContainer);
-      Assert.AreEqual (dataContainer.ID, deserializedDataContainer.ID);
+      Assert.That (deserializedDataContainer, Is.Not.SameAs (dataContainer));
+      Assert.That (deserializedDataContainer.ID, Is.EqualTo (dataContainer.ID));
     }
 
     [Test]
@@ -59,15 +59,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       DataContainer dataContainer = computer.InternalDataContainer;
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
 
-      Assert.AreEqual (dataContainer.ID, deserializedDataContainer.ID);
-      Assert.IsNotNull (deserializedDataContainer.ClientTransaction);
-      Assert.IsNotNull (deserializedDataContainer.EventListener);
-      Assert.AreEqual (dataContainer.Timestamp, deserializedDataContainer.Timestamp);
-      Assert.IsNotNull (deserializedDataContainer.DomainObject);
-      Assert.AreEqual (dataContainer.DomainObject.ID, deserializedDataContainer.DomainObject.ID);
-      Assert.AreEqual (StateType.Changed, deserializedDataContainer.State);
-      Assert.AreEqual ("abc", GetPropertyValue (deserializedDataContainer, typeof (Computer), "SerialNumber"));
-      Assert.AreEqual (employee.ID, GetPropertyValue (deserializedDataContainer, typeof (Computer), "Employee"));
+      Assert.That (deserializedDataContainer.ID, Is.EqualTo (dataContainer.ID));
+      Assert.That (deserializedDataContainer.ClientTransaction, Is.Not.Null);
+      Assert.That (deserializedDataContainer.EventListener, Is.Not.Null);
+      Assert.That (deserializedDataContainer.Timestamp, Is.EqualTo (dataContainer.Timestamp));
+      Assert.That (deserializedDataContainer.DomainObject, Is.Not.Null);
+      Assert.That (deserializedDataContainer.DomainObject.ID, Is.EqualTo (dataContainer.DomainObject.ID));
+      Assert.That (deserializedDataContainer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (GetPropertyValue (deserializedDataContainer, typeof (Computer), "SerialNumber"), Is.EqualTo ("abc"));
+      Assert.That (GetPropertyValue (deserializedDataContainer, typeof (Computer), "Employee"), Is.EqualTo (employee.ID));
     }
 
     [Test]
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       DataContainer dataContainer = DataContainer.CreateNew (objectID);
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
 
-      Assert.AreEqual (dataContainer.ID, deserializedDataContainer.ID);
+      Assert.That (deserializedDataContainer.ID, Is.EqualTo (dataContainer.ID));
     }
 
     [Test]
@@ -101,11 +101,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Computer computer = Computer.NewObject ();
       DataContainer dataContainer = computer.InternalDataContainer;
       computer.Delete ();
-      Assert.IsTrue (dataContainer.IsDiscarded);
+      Assert.That (dataContainer.IsDiscarded, Is.True);
 
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
-      Assert.IsTrue (deserializedDataContainer.IsDiscarded);
-      Assert.AreEqual (StateType.Invalid, deserializedDataContainer.State);
+      Assert.That (deserializedDataContainer.IsDiscarded, Is.True);
+      Assert.That (deserializedDataContainer.State, Is.EqualTo (StateType.Invalid));
     }
   }
 }

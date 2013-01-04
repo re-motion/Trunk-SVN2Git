@@ -30,21 +30,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void BindableDomainObjectsHaveIdentity ()
     {
       SampleBindableMixinDomainObject domainObject = SampleBindableMixinDomainObject.NewObject ();
-      Assert.IsTrue (domainObject is IBusinessObjectWithIdentity);
+      Assert.That (domainObject is IBusinessObjectWithIdentity, Is.True);
     }
 
     [Test]
     public void BindableDomainObjectClassesHaveIdentity ()
     {
       SampleBindableMixinDomainObject domainObject = SampleBindableMixinDomainObject.NewObject ();
-      Assert.IsTrue (((IBusinessObjectWithIdentity)domainObject).BusinessObjectClass is IBusinessObjectClassWithIdentity);
+      Assert.That (((IBusinessObjectWithIdentity)domainObject).BusinessObjectClass is IBusinessObjectClassWithIdentity, Is.True);
     }
     
     [Test]
     public void UniqueIdentifier ()
     {
       SampleBindableMixinDomainObject domainObject = SampleBindableMixinDomainObject.NewObject ();
-      Assert.AreEqual (domainObject.ID.ToString (), ((IBusinessObjectWithIdentity) domainObject).UniqueIdentifier);
+      Assert.That (((IBusinessObjectWithIdentity) domainObject).UniqueIdentifier, Is.EqualTo (domainObject.ID.ToString ()));
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       
       var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (SampleBindableMixinDomainObject));
       var boClass = (BindableObjectClassWithIdentity) provider.GetBindableObjectClass (typeof (SampleBindableMixinDomainObject));
-      Assert.AreSame (original, boClass.GetObject (original.ID.ToString ()));
+      Assert.That (boClass.GetObject (original.ID.ToString ()), Is.SameAs (original));
     }
   }
 }

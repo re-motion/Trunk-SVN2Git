@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var instance =
           (ClassWithSerializationCallbacks) LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
-      Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object)instance).GetType ());
+      Assert.That (((object)instance).GetType (), Is.Not.SameAs (typeof (ClassWithSerializationCallbacks)));
 
       new SerializationCallbackTester<ClassWithSerializationCallbacks> (new RhinoMocksRepositoryAdapter (), instance, ClassWithSerializationCallbacks.SetReceiver)
           .Test_SerializationCallbacks ();
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var instance = (ClassWithSerializationCallbacks) 
           LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
-      Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType ());
+      Assert.That (((object) instance).GetType (), Is.Not.SameAs (typeof (ClassWithSerializationCallbacks)));
 
       new SerializationCallbackTester<ClassWithSerializationCallbacks> (new RhinoMocksRepositoryAdapter (), instance, ClassWithSerializationCallbacks.SetReceiver)
           .Test_DeserializationCallbacks ();

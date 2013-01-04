@@ -64,20 +64,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void GetPropertyReturnsNonNullIfDefaultValue_OnExistingObject ()
     {
-      Assert.IsNotNull (_loadedBusinessObject.GetProperty ("Int32"));
-      Assert.AreEqual (_loadedObject.Int32, _loadedBusinessObject.GetProperty ("Int32"));
+      Assert.That (_loadedBusinessObject.GetProperty ("Int32"), Is.Not.Null);
+      Assert.That (_loadedBusinessObject.GetProperty ("Int32"), Is.EqualTo (_loadedObject.Int32));
     }
 
     [Test]
     public void GetPropertyReturnsNullIfDefaultValue_OnNewObject ()
     {
-      Assert.IsNull (_newBusinessOrder.GetProperty ("Int32"));
+      Assert.That (_newBusinessOrder.GetProperty ("Int32"), Is.Null);
     }
 
     [Test]
     public void GetPropertyReturnsNonNullIfDefaultListValue_OnNewObject ()
     {
-      Assert.IsNotNull (_newBusinessOrder.GetProperty ("List"));
+      Assert.That (_newBusinessOrder.GetProperty ("List"), Is.Not.Null);
     }
 
     [Test]
@@ -85,8 +85,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     {
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.IsNotNull (_newBusinessOrder.GetProperty ("Int32"));
-        Assert.AreEqual (_newObject.Int32, _newBusinessOrder.GetProperty ("Int32"));
+        Assert.That (_newBusinessOrder.GetProperty ("Int32"), Is.Not.Null);
+        Assert.That (_newBusinessOrder.GetProperty ("Int32"), Is.EqualTo (_newObject.Int32));
       }
     }
 
@@ -94,14 +94,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetPropertyReturnsNonNullIfNonDefaultValue_OnExistingObject ()
     {
       _loadedObject.Int32 = _loadedObject.Int32;
-      Assert.IsNotNull (_loadedBusinessObject.GetProperty ("Int32"));
+      Assert.That (_loadedBusinessObject.GetProperty ("Int32"), Is.Not.Null);
     }
 
     [Test]
     public void GetPropertyReturnsNonNullIfNonDefaultValue_OnNewObject ()
     {
       _newObject.Int32 = _newObject.Int32;
-      Assert.IsNotNull (_newBusinessOrder.GetProperty ("Int32"));
+      Assert.That (_newBusinessOrder.GetProperty ("Int32"), Is.Not.Null);
     }
 
     [Test]
@@ -109,8 +109,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     {
       var businessObject = (IBusinessObject)
                            LifetimeService.NewObject (ClientTransaction.Current, typeof (BindableDomainObjectWithProperties), ParamList.Empty);
-      Assert.IsNotNull (businessObject.GetProperty ("RequiredPropertyNotInMapping"));
-      Assert.AreEqual (true, businessObject.GetProperty ("RequiredPropertyNotInMapping"));
+      Assert.That (businessObject.GetProperty ("RequiredPropertyNotInMapping"), Is.Not.Null);
+      Assert.That (businessObject.GetProperty ("RequiredPropertyNotInMapping"), Is.EqualTo (true));
     }
 
     [Test]

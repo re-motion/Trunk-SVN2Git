@@ -26,25 +26,25 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
     [Test]
     public void NoAttribute ()
     {
-      Assert.IsFalse (MixedMultiLingualResources.ExistsResource (typeof (ClassWithoutMultiLingualResourcesAttributes)));
+      Assert.That (MixedMultiLingualResources.ExistsResource (typeof (ClassWithoutMultiLingualResourcesAttributes)), Is.False);
     }
 
     [Test]
     public void AttributesOnClass ()
     {
-      Assert.IsTrue (MixedMultiLingualResources.ExistsResource (typeof (ClassWithMultiLingualResourcesAttributes)));
+      Assert.That (MixedMultiLingualResources.ExistsResource (typeof (ClassWithMultiLingualResourcesAttributes)), Is.True);
     }
 
     [Test]
     public void AttributesOnBase ()
     {
-      Assert.IsTrue (MixedMultiLingualResources.ExistsResource (typeof (InheritedClassWithoutMultiLingualResourcesAttributes)));
+      Assert.That (MixedMultiLingualResources.ExistsResource (typeof (InheritedClassWithoutMultiLingualResourcesAttributes)), Is.True);
     }
 
     [Test]
     public void AttributesOnBaseAndClass ()
     {
-      Assert.IsTrue (MixedMultiLingualResources.ExistsResource (typeof (InheritedClassWithMultiLingualResourcesAttributes)));
+      Assert.That (MixedMultiLingualResources.ExistsResource (typeof (InheritedClassWithMultiLingualResourcesAttributes)), Is.True);
     }
 
     [Test]
@@ -53,7 +53,7 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
       using (MixinConfiguration.BuildNew ()
           .ForClass<ClassWithoutMultiLingualResourcesAttributes> ().AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
       {
-        Assert.IsTrue (MixedMultiLingualResources.ExistsResource (typeof (ClassWithoutMultiLingualResourcesAttributes)));
+        Assert.That (MixedMultiLingualResources.ExistsResource (typeof (ClassWithoutMultiLingualResourcesAttributes)), Is.True);
       }
     }
 
@@ -66,7 +66,7 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
           .AddMixin<MixinAddingMultiLingualResourcesAttributes2> ()
           .EnterScope ())
       {
-        Assert.IsTrue (MixedMultiLingualResources.ExistsResource (typeof (InheritedClassWithMultiLingualResourcesAttributes)));
+        Assert.That (MixedMultiLingualResources.ExistsResource (typeof (InheritedClassWithMultiLingualResourcesAttributes)), Is.True);
       }
     }
 
@@ -79,7 +79,7 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
           .AddMixin<MixinAddingMultiLingualResourcesAttributes2> ()
           .EnterScope ())
       {
-        Assert.IsTrue (MixedMultiLingualResources.ExistsResource (typeof (ClassWithoutMultiLingualResourcesAttributes)));
+        Assert.That (MixedMultiLingualResources.ExistsResource (typeof (ClassWithoutMultiLingualResourcesAttributes)), Is.True);
       }
     }
   }

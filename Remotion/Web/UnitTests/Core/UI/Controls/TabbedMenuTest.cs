@@ -95,12 +95,12 @@ public class TabbedMenuTest: WebControlTest
     
     NameValueCollection parameters = _tabbedMenu.GetUrlParameters (_mainMenuTab2);
 
-    Assert.IsNotNull (parameters);
-    Assert.AreEqual (1, parameters.Count);
-    Assert.IsNotNull (parameters.GetKey (0));
-    Assert.AreEqual (_tabbedMenu.SelectionID, parameters.GetKey (0));
-    Assert.IsNotNull (parameters.Get (0));
-    Assert.AreEqual (expectedParameterValue, parameters.Get (0));
+    Assert.That (parameters, Is.Not.Null);
+    Assert.That (parameters.Count, Is.EqualTo (1));
+    Assert.That (parameters.GetKey (0), Is.Not.Null);
+    Assert.That (parameters.GetKey (0), Is.EqualTo (_tabbedMenu.SelectionID));
+    Assert.That (parameters.Get (0), Is.Not.Null);
+    Assert.That (parameters.Get (0), Is.EqualTo (expectedParameterValue));
   }
 
   [Test]
@@ -111,12 +111,12 @@ public class TabbedMenuTest: WebControlTest
     
     NameValueCollection parameters = _tabbedMenu.GetUrlParameters (_subMenuTab22);
 
-    Assert.IsNotNull (parameters);
-    Assert.AreEqual (1, parameters.Count);
-    Assert.IsNotNull (parameters.GetKey (0));
-    Assert.AreEqual (_tabbedMenu.SelectionID, parameters.GetKey (0));
-    Assert.IsNotNull (parameters.Get (0));
-    Assert.AreEqual (expectedParameterValue, parameters.Get (0));
+    Assert.That (parameters, Is.Not.Null);
+    Assert.That (parameters.Count, Is.EqualTo (1));
+    Assert.That (parameters.GetKey (0), Is.Not.Null);
+    Assert.That (parameters.GetKey (0), Is.EqualTo (_tabbedMenu.SelectionID));
+    Assert.That (parameters.Get (0), Is.Not.Null);
+    Assert.That (parameters.Get (0), Is.EqualTo (expectedParameterValue));
   }
 
   [Test]
@@ -129,8 +129,8 @@ public class TabbedMenuTest: WebControlTest
     
     string value = _tabbedMenu.FormatUrl (url, _mainMenuTab2);
 
-    Assert.IsNotNull (value);
-    Assert.AreEqual (expectedUrl, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -143,8 +143,8 @@ public class TabbedMenuTest: WebControlTest
     
     string value = _tabbedMenu.FormatUrl (url, _subMenuTab22);
 
-    Assert.IsNotNull (value);
-    Assert.AreEqual (expectedUrl, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -158,8 +158,8 @@ public class TabbedMenuTest: WebControlTest
     
     string value = _tabbedMenu.FormatUrl (url);
 
-    Assert.IsNotNull (value);
-    Assert.AreEqual (expectedUrl, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value, Is.EqualTo (expectedUrl));
   }
 
   [Test]
@@ -173,8 +173,8 @@ public class TabbedMenuTest: WebControlTest
     
     string value = _tabbedMenu.FormatUrl (url);
 
-    Assert.IsNotNull (value);
-    Assert.AreEqual (expectedUrl, value);
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value, Is.EqualTo (expectedUrl));
   }
 
 	[Test]
@@ -186,8 +186,8 @@ public class TabbedMenuTest: WebControlTest
     
     _tabbedMenu.EvaluateWaiConformity();
 
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsFalse (WcagHelperMock.HasError);
+	  Assert.That (WcagHelperMock.HasWarning, Is.False);
+	  Assert.That (WcagHelperMock.HasError, Is.False);
   }
 
 	[Test]
@@ -199,9 +199,9 @@ public class TabbedMenuTest: WebControlTest
     _mainMenuTab1.Command.Type = CommandType.Event;
 
     _tabbedMenu.EvaluateWaiConformity();
-    
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsTrue (WcagHelperMock.HasError);
+
+	  Assert.That (WcagHelperMock.HasWarning, Is.False);
+	  Assert.That (WcagHelperMock.HasError, Is.True);
   }
 
 	[Test]
@@ -213,9 +213,9 @@ public class TabbedMenuTest: WebControlTest
     _mainMenuTab1.Command.Type = CommandType.Event;
 
     _tabbedMenu.EvaluateWaiConformity();
-    
-    Assert.IsFalse (WcagHelperMock.HasWarning);
-    Assert.IsTrue (WcagHelperMock.HasError);
+
+	  Assert.That (WcagHelperMock.HasWarning, Is.False);
+	  Assert.That (WcagHelperMock.HasError, Is.True);
   }
 }
 

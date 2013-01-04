@@ -57,11 +57,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var containers = Provider.LoadDataContainers (ids).ToArray ();
 
-      Assert.IsNotNull (containers);
-      Assert.AreEqual (ids[0], containers[0].LocatedObject.ID);
-      Assert.AreEqual (ids[1], containers[1].LocatedObject.ID);
-      Assert.AreEqual (ids[2], containers[2].LocatedObject.ID);
-      Assert.AreEqual (ids[3], containers[3].LocatedObject.ID);
+      Assert.That (containers, Is.Not.Null);
+      Assert.That (containers[0].LocatedObject.ID, Is.EqualTo (ids[0]));
+      Assert.That (containers[1].LocatedObject.ID, Is.EqualTo (ids[1]));
+      Assert.That (containers[2].LocatedObject.ID, Is.EqualTo (ids[2]));
+      Assert.That (containers[3].LocatedObject.ID, Is.EqualTo (ids[3]));
     }
 
     [Test]

@@ -48,13 +48,13 @@ namespace Remotion.UnitTests.Utilities
     [Test]
     public void CanConvertToString ()
     {
-      Assert.IsTrue (_converter.CanConvertTo (typeof (string)));
+      Assert.That (_converter.CanConvertTo (typeof (string)), Is.True);
     }
 
     [Test]
     public void CanConvertFromString ()
     {
-      Assert.IsTrue (_converter.CanConvertFrom (typeof (string)));
+      Assert.That (_converter.CanConvertFrom (typeof (string)), Is.True);
     }
 
     [Test]
@@ -62,22 +62,16 @@ namespace Remotion.UnitTests.Utilities
     {
       Type destinationType = typeof (string);
 
-      Assert.AreEqual ("", _converter.ConvertTo (null, null, null, destinationType));
-      Assert.AreEqual (
-          "Remotion.UnitTests.Utilities.TypeNameConverterTest, Remotion.UnitTests", 
-          (string) _converter.ConvertTo (null, null, typeof (TypeNameConverterTest), destinationType));
+      Assert.That (_converter.ConvertTo (null, null, null, destinationType), Is.EqualTo (""));
+      Assert.That ((string) _converter.ConvertTo (null, null, typeof (TypeNameConverterTest), destinationType), Is.EqualTo ("Remotion.UnitTests.Utilities.TypeNameConverterTest, Remotion.UnitTests"));
     }
 
     [Test]
     public void ConvertFromString ()
     {
-      Assert.AreEqual (null, _converter.ConvertFrom (null, null, ""));
-      Assert.AreEqual (
-          typeof (TypeNameConverterTest),
-          _converter.ConvertFrom (null, null, "Remotion.UnitTests.Utilities.TypeNameConverterTest, Remotion.UnitTests"));
-      Assert.AreEqual (
-          typeof (TypeNameConverterTest),
-          _converter.ConvertFrom (null, null, "Remotion.UnitTests::Utilities.TypeNameConverterTest"));
+      Assert.That (_converter.ConvertFrom (null, null, ""), Is.EqualTo (null));
+      Assert.That (_converter.ConvertFrom (null, null, "Remotion.UnitTests.Utilities.TypeNameConverterTest, Remotion.UnitTests"), Is.EqualTo (typeof (TypeNameConverterTest)));
+      Assert.That (_converter.ConvertFrom (null, null, "Remotion.UnitTests::Utilities.TypeNameConverterTest"), Is.EqualTo (typeof (TypeNameConverterTest)));
     }
   }
 }

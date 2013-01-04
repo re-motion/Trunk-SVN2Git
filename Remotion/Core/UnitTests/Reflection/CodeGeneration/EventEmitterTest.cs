@@ -132,26 +132,26 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("SimpleEvent", EventKind.Instance, typeof (EventHandler));
 
-      Assert.AreEqual ("SimpleEvent", eventEmitter.Name);
-      Assert.AreEqual (typeof (EventHandler), eventEmitter.EventType);
-      Assert.AreEqual (EventKind.Instance, eventEmitter.EventKind);
+      Assert.That (eventEmitter.Name, Is.EqualTo ("SimpleEvent"));
+      Assert.That (eventEmitter.EventType, Is.EqualTo (typeof (EventHandler)));
+      Assert.That (eventEmitter.EventKind, Is.EqualTo (EventKind.Instance));
 
       ImplementEventAddMethod (eventEmitter);
       ImplementEventRemoveMethod (eventEmitter);
 
       object instance = BuildInstance ();
-      Assert.IsFalse (AddCalled (instance));
-      Assert.IsFalse (RemoveCalled (instance));
+      Assert.That (AddCalled (instance), Is.False);
+      Assert.That (RemoveCalled (instance), Is.False);
 
       AddEventMethod (instance, eventEmitter, (EventHandler) delegate { });
-      
-      Assert.IsTrue (AddCalled (instance));
-      Assert.IsFalse (RemoveCalled (instance));
-      
+
+      Assert.That (AddCalled (instance), Is.True);
+      Assert.That (RemoveCalled (instance), Is.False);
+
       RemoveEventMethod (instance, eventEmitter, (EventHandler) delegate { });
 
-      Assert.IsTrue (AddCalled (instance));
-      Assert.IsTrue (RemoveCalled (instance));
+      Assert.That (AddCalled (instance), Is.True);
+      Assert.That (RemoveCalled (instance), Is.True);
     }
 
     [Test]
@@ -159,45 +159,45 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("StaticEvent", EventKind.Static, typeof (Func<string>));
 
-      Assert.AreEqual ("StaticEvent", eventEmitter.Name);
-      Assert.AreEqual (typeof (Func<string>), eventEmitter.EventType);
-      Assert.AreEqual (EventKind.Static, eventEmitter.EventKind);
+      Assert.That (eventEmitter.Name, Is.EqualTo ("StaticEvent"));
+      Assert.That (eventEmitter.EventType, Is.EqualTo (typeof (Func<string>)));
+      Assert.That (eventEmitter.EventKind, Is.EqualTo (EventKind.Static));
 
       ImplementEventAddMethod (eventEmitter);
       ImplementEventRemoveMethod (eventEmitter);
 
       Type type = _classEmitter.BuildType ();
 
-      Assert.IsFalse (AddCalled (type));
-      Assert.IsFalse (RemoveCalled (type));
+      Assert.That (AddCalled (type), Is.False);
+      Assert.That (RemoveCalled (type), Is.False);
 
       AddEventMethod (type, eventEmitter, (Func<string>) delegate { return null; });
 
-      Assert.IsTrue (AddCalled (type));
-      Assert.IsFalse (RemoveCalled (type));
+      Assert.That (AddCalled (type), Is.True);
+      Assert.That (RemoveCalled (type), Is.False);
 
       RemoveEventMethod (type, eventEmitter, (Func<string>) delegate { return null; });
 
-      Assert.IsTrue (AddCalled (type));
-      Assert.IsTrue (RemoveCalled (type));
+      Assert.That (AddCalled (type), Is.True);
+      Assert.That (RemoveCalled (type), Is.True);
     }
 
     [Test]
     public void DefaultAddMethod ()
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("DefaultAddMethod", EventKind.Static, typeof (EventHandler));
-      Assert.IsNotNull (eventEmitter.AddMethod);
+      Assert.That (eventEmitter.AddMethod, Is.Not.Null);
       Type type = _classEmitter.BuildType ();
-      Assert.IsNotNull (GetEvent (type, eventEmitter).GetAddMethod ());
+      Assert.That (GetEvent (type, eventEmitter).GetAddMethod (), Is.Not.Null);
     }
 
     [Test]
     public void DefaultRemoveMethod ()
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("DefaultRemoveMethod", EventKind.Static, typeof (EventHandler));
-      Assert.IsNotNull (eventEmitter.RemoveMethod);
+      Assert.That (eventEmitter.RemoveMethod, Is.Not.Null);
       Type type = _classEmitter.BuildType ();
-      Assert.IsNotNull (GetEvent (type, eventEmitter).GetRemoveMethod ());
+      Assert.That (GetEvent (type, eventEmitter).GetRemoveMethod (), Is.Not.Null);
     }
 
     [Test]
@@ -261,9 +261,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       eventEmitter.AddCustomAttribute (new CustomAttributeBuilder (typeof (SimpleAttribute).GetConstructor (Type.EmptyTypes), new object[0]));
 
       Type type = _classEmitter.BuildType ();
-      Assert.IsTrue (GetEvent (type, eventEmitter).IsDefined (typeof (SimpleAttribute), false));
-      Assert.AreEqual (1, GetEvent (type, eventEmitter).GetCustomAttributes (false).Length);
-      Assert.AreEqual (new SimpleAttribute(), GetEvent (type, eventEmitter).GetCustomAttributes (false)[0]);
+      Assert.That (GetEvent (type, eventEmitter).IsDefined (typeof (SimpleAttribute), false), Is.True);
+      Assert.That (GetEvent (type, eventEmitter).GetCustomAttributes (false).Length, Is.EqualTo (1));
+      Assert.That (GetEvent (type, eventEmitter).GetCustomAttributes (false)[0], Is.EqualTo (new SimpleAttribute()));
     }
   }
 }

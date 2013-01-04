@@ -103,13 +103,13 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 		public void Succeed_SingleValue ()
 		{
       TestEnum result = ArgumentUtility.CheckValidEnumValueAndTypeAndNotNull<TestEnum> ("arg", TestEnum.Value1);
-      Assert.AreEqual (TestEnum.Value1, result);
+      Assert.That (result, Is.EqualTo (TestEnum.Value1));
 		}
 		[Test]
 		public void Succeed_Flags ()
 		{
       TestFlags result = ArgumentUtility.CheckValidEnumValueAndTypeAndNotNull<TestFlags> ("arg", TestFlags.Flag1 | TestFlags.Flag2);
-      Assert.AreEqual (TestFlags.Flag1 | TestFlags.Flag2, result);
+		  Assert.That (result, Is.EqualTo (TestFlags.Flag1 | TestFlags.Flag2));
 		}
 	}
 
@@ -120,7 +120,7 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 		public void Succeed_Null ()
 		{
       TestEnum? result = ArgumentUtility.CheckValidEnumValueAndType<TestEnum> ("arg", null);
-      Assert.IsNull (result);
+		  Assert.That (result, Is.Null);
 		}
     
     [Test]
@@ -148,13 +148,13 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 		public void Succeed_SingleValue ()
 		{
       TestEnum? result = ArgumentUtility.CheckValidEnumValueAndType<TestEnum> ("arg", TestEnum.Value1);
-      Assert.AreEqual (TestEnum.Value1, result);
+      Assert.That (result, Is.EqualTo (TestEnum.Value1));
 		}
 		[Test]
 		public void Succeed_Flags ()
 		{
       TestFlags? result = ArgumentUtility.CheckValidEnumValueAndType<TestFlags> ("arg", TestFlags.Flag1 | TestFlags.Flag2);
-      Assert.AreEqual (TestFlags.Flag1 | TestFlags.Flag2, result);
+		  Assert.That (result, Is.EqualTo (TestFlags.Flag1 | TestFlags.Flag2));
 		}
 	}
 }

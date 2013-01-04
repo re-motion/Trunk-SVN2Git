@@ -57,7 +57,7 @@ namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
       bool hasAccess = _securityAdapter.HasAccess (_testHelper.CreateSecurableObject (), null);
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
       }
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -84,7 +84,7 @@ namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
       bool hasAccess = _securityAdapter.HasAccess (_testHelper.CreateSecurableObject (), new EventHandler (TestEventHandler));
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
       bool hasAccess = _securityAdapter.HasAccess (_testHelper.CreateSecurableObject (), new EventHandler (TestEventHandler));
 
       _testHelper.VerifyAll ();
-      Assert.IsFalse (hasAccess);
+      Assert.That (hasAccess, Is.False);
     }
 
     [Test]
@@ -108,7 +108,7 @@ namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
       bool hasAccess = _securityAdapter.HasAccess (null, new EventHandler (TestEventHandler));
 
       _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
+      Assert.That (hasAccess, Is.True);
     }
 
     [Test]
@@ -120,7 +120,7 @@ namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
       bool hasAccess = _securityAdapter.HasAccess (null, new EventHandler (TestEventHandler));
 
       _testHelper.VerifyAll ();
-      Assert.IsFalse (hasAccess);
+      Assert.That (hasAccess, Is.False);
     }
 
     [DemandTargetMethodPermission (SecurableObject.Method.Show)]

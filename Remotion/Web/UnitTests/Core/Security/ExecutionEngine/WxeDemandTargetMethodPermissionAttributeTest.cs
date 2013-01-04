@@ -29,9 +29,9 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     {
       WxeDemandTargetMethodPermissionAttribute attribute = new WxeDemandTargetMethodPermissionAttribute ("Show");
 
-      Assert.AreEqual (MethodType.Instance, attribute.MethodType);
-      Assert.AreEqual ("Show", attribute.MethodName);
-      Assert.IsNull (attribute.SecurableClass);
+      Assert.That (attribute.MethodType, Is.EqualTo (MethodType.Instance));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Show"));
+      Assert.That (attribute.SecurableClass, Is.Null);
     }
 
     [Test]
@@ -39,9 +39,9 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     {
       WxeDemandTargetMethodPermissionAttribute attribute = new WxeDemandTargetMethodPermissionAttribute ("Show", typeof (SecurableObject));
 
-      Assert.AreEqual (MethodType.Instance, attribute.MethodType);
-      Assert.AreEqual ("Show", attribute.MethodName);
-      Assert.AreSame ( typeof (SecurableObject), attribute.SecurableClass);
+      Assert.That (attribute.MethodType, Is.EqualTo (MethodType.Instance));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Show"));
+      Assert.That (attribute.SecurableClass, Is.SameAs (typeof (SecurableObject)));
     }
 
     [Test]
@@ -49,9 +49,9 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     {
       WxeDemandTargetMethodPermissionAttribute attribute = new WxeDemandTargetMethodPermissionAttribute (SecurableObject.Method.Show);
 
-      Assert.AreEqual (MethodType.Instance, attribute.MethodType);
-      Assert.AreEqual ("Show", attribute.MethodName);
-      Assert.AreSame (typeof (SecurableObject), attribute.SecurableClass);
+      Assert.That (attribute.MethodType, Is.EqualTo (MethodType.Instance));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Show"));
+      Assert.That (attribute.SecurableClass, Is.SameAs (typeof (SecurableObject)));
     }
 
     [Test]
@@ -59,9 +59,9 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     {
       WxeDemandTargetMethodPermissionAttribute attribute = new WxeDemandTargetMethodPermissionAttribute (SecurableObject.Method.Show, typeof (DerivedSecurableObject));
 
-      Assert.AreEqual (MethodType.Instance, attribute.MethodType);
-      Assert.AreEqual ("Show", attribute.MethodName);
-      Assert.AreSame (typeof (DerivedSecurableObject), attribute.SecurableClass);
+      Assert.That (attribute.MethodType, Is.EqualTo (MethodType.Instance));
+      Assert.That (attribute.MethodName, Is.EqualTo ("Show"));
+      Assert.That (attribute.SecurableClass, Is.SameAs (typeof (DerivedSecurableObject)));
     }
 
     [Test]

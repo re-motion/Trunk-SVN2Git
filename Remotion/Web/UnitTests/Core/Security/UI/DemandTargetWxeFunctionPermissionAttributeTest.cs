@@ -29,8 +29,8 @@ namespace Remotion.Web.UnitTests.Core.Security.UI
     {
       DemandTargetWxeFunctionPermissionAttribute attribute = new DemandTargetWxeFunctionPermissionAttribute (typeof (TestFunctionWithThisObject));
 
-      Assert.AreEqual (PermissionSource.WxeFunction, attribute.PermissionSource);
-      Assert.AreEqual (typeof (TestFunctionWithThisObject), attribute.FunctionType);
+      Assert.That (attribute.PermissionSource, Is.EqualTo (PermissionSource.WxeFunction));
+      Assert.That (attribute.FunctionType, Is.EqualTo (typeof (TestFunctionWithThisObject)));
     }
   }
 }

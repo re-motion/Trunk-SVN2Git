@@ -89,13 +89,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetEndPointDefinition ()
     {
-      Assert.AreSame (
-          _orderEndPoint,
-          _customerToOrder.GetEndPointDefinition ("Order", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"));
-      Assert.AreSame (
-          _customerEndPoint,
-          _customerToOrder.GetEndPointDefinition (
-              "Customer", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"));
+      Assert.That (_customerToOrder.GetEndPointDefinition ("Order", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"), Is.SameAs (_orderEndPoint));
+      Assert.That (_customerToOrder.GetEndPointDefinition (
+          "Customer", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"), Is.SameAs (_customerEndPoint));
     }
 
     [Test]
@@ -149,17 +145,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetEndPointDefinitionForUndefinedClass ()
     {
-      Assert.IsNull (
-          _customerToOrder.GetEndPointDefinition (
-              "OrderTicket", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Customer"));
+      Assert.That (_customerToOrder.GetEndPointDefinition (
+          "OrderTicket", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Customer"), Is.Null);
     }
 
     [Test]
     public void GetOppositeEndPointDefinitionForUndefinedClass ()
     {
-      Assert.IsNull (
-          _customerToOrder.GetOppositeEndPointDefinition (
-              "OrderTicket", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Customer"));
+      Assert.That (_customerToOrder.GetOppositeEndPointDefinition (
+          "OrderTicket", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Customer"), Is.Null);
     }
 
 

@@ -518,7 +518,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       _converter.ConvertAndSave (_cache, filename);
 
-      Assert.IsTrue (IOFile.Exists (filename));
+      Assert.That (IOFile.Exists (filename), Is.True);
     }
   }
 }

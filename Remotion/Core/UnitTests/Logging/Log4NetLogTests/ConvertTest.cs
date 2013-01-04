@@ -27,31 +27,31 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
     [Test]
     public void Test_Info ()
     {
-      Assert.AreEqual (Level.Info, Log4NetLog.Convert (LogLevel.Info));
+      Assert.That (Log4NetLog.Convert (LogLevel.Info), Is.EqualTo (Level.Info));
     }
 
     [Test]
     public void Test_Debug ()
     {
-      Assert.AreEqual (Level.Debug, Log4NetLog.Convert (LogLevel.Debug));
+      Assert.That (Log4NetLog.Convert (LogLevel.Debug), Is.EqualTo (Level.Debug));
     }
 
     [Test]
     public void Test_Warn ()
     {
-      Assert.AreEqual (Level.Warn, Log4NetLog.Convert (LogLevel.Warn));
+      Assert.That (Log4NetLog.Convert (LogLevel.Warn), Is.EqualTo (Level.Warn));
     }
 
     [Test]
     public void Test_Error ()
     {
-      Assert.AreEqual (Level.Error, Log4NetLog.Convert (LogLevel.Error));
+      Assert.That (Log4NetLog.Convert (LogLevel.Error), Is.EqualTo (Level.Error));
     }
 
     [Test]
     public void Test_Fatal ()
     {
-      Assert.AreEqual (Level.Fatal, Log4NetLog.Convert (LogLevel.Fatal));
+      Assert.That (Log4NetLog.Convert (LogLevel.Fatal), Is.EqualTo (Level.Fatal));
     }
 
     [Test]

@@ -34,8 +34,8 @@ namespace Remotion.UnitTests.Xml.XmlSerializationUtilityTests
           typeof (SampleClass),
           GetXmlSchemaSet());
 
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, actual.Value);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Value, Is.EqualTo (1));
     }
 
     [Test]
@@ -47,8 +47,8 @@ namespace Remotion.UnitTests.Xml.XmlSerializationUtilityTests
           SampleClass.SchemaUri,
           SampleClass.GetSchemaReader());
 
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, actual.Value);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Value, Is.EqualTo (1));
     }
 
     [Test]
@@ -60,8 +60,8 @@ namespace Remotion.UnitTests.Xml.XmlSerializationUtilityTests
           "http://www.re-motion.org/core/unitTests",
           GetXmlSchemaSet());
 
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (1, actual.Value);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Value, Is.EqualTo (1));
     }
 
     [Test]
@@ -80,7 +80,7 @@ namespace Remotion.UnitTests.Xml.XmlSerializationUtilityTests
       {
         // Assert.AreEqual (2, e.LineNumber);
         // Assert.AreEqual (26, e.LinePosition);
-        Assert.AreEqual ("test.xml", e.SourceUri);
+        Assert.That (e.SourceUri, Is.EqualTo ("test.xml"));
         throw;
       }
     }

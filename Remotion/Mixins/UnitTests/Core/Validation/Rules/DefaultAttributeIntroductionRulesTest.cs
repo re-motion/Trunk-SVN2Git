@@ -42,9 +42,9 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           typeof (MixinAddingBT1Attribute2));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure (
-          "Remotion.Mixins.Validation.Rules.DefaultAttributeIntroductionRules.AllowMultipleRequiredIfAttributeIntroducedMultipleTimes", log));
-      Assert.AreEqual (2, log.GetNumberOfFailures ());
+      Assert.That (HasFailure (
+          "Remotion.Mixins.Validation.Rules.DefaultAttributeIntroductionRules.AllowMultipleRequiredIfAttributeIntroducedMultipleTimes", log), Is.True);
+      Assert.That (log.GetNumberOfFailures (), Is.EqualTo (2));
     }
 
     [Test]
@@ -54,10 +54,9 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           typeof (MixinAddingBT1AttributeToMember), typeof (MixinAddingBT1AttributeToMember2));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (
-          HasFailure (
-              "Remotion.Mixins.Validation.Rules.DefaultAttributeIntroductionRules.AllowMultipleRequiredIfAttributeIntroducedMultipleTimes", log));
-      Assert.AreEqual (2, log.GetNumberOfFailures ());
+      Assert.That (HasFailure (
+          "Remotion.Mixins.Validation.Rules.DefaultAttributeIntroductionRules.AllowMultipleRequiredIfAttributeIntroducedMultipleTimes", log), Is.True);
+      Assert.That (log.GetNumberOfFailures (), Is.EqualTo (2));
     }
 
     [Test]

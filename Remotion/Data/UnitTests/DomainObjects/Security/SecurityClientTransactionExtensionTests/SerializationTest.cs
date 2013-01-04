@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       var extension = new SecurityClientTransactionExtension ();
       var deserializedExtension = Serializer.SerializeAndDeserialize (extension);
 
-      Assert.AreNotSame (extension, deserializedExtension);
+      Assert.That (deserializedExtension, Is.Not.SameAs (extension));
     }
   }
 }

@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StateCombination combination = _testHelper.GetStateCombinationForDeliveredAndUnpaidOrder();
       List<StateDefinition> states = CreateEmptyStateList();
 
-      Assert.IsFalse (combination.MatchesStates (states));
+      Assert.That (combination.MatchesStates (states), Is.False);
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StateCombination combination = _testHelper.GetStateCombinationForDeliveredAndUnpaidOrder();
       StateDefinition[] states = combination.GetStates ();
 
-      Assert.IsTrue (combination.MatchesStates (states));
+      Assert.That (combination.MatchesStates (states), Is.True);
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StateDefinition[] states = combination.GetStates ();
 
       Assert.Fail ("TODO: Implement");
-      Assert.IsTrue (combination.MatchesStates (states));
+      Assert.That (combination.MatchesStates (states), Is.True);
     }
 
     [Test]
@@ -90,8 +90,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         combination.AttachState (property["Test1"]);
 
         var states = combination.GetStates();
-        Assert.AreEqual (1, states.Length);
-        Assert.AreSame (property["Test1"], states[0]);
+        Assert.That (states.Length, Is.EqualTo (1));
+        Assert.That (states[0], Is.SameAs (property["Test1"]));
       }
     }
 
@@ -103,7 +103,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       combination.AttachState (property["Test1"]);
 
-      Assert.AreEqual (1, combination.GetStates().Length);
+      Assert.That (combination.GetStates().Length, Is.EqualTo (1));
     }
 
     [Test]
@@ -128,7 +128,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       StateDefinition[] states = combination.GetStates();
 
-      Assert.AreEqual (0, states.Length);
+      Assert.That (states.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -141,8 +141,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       StateDefinition[] states = combination.GetStates();
 
-      Assert.AreEqual (1, states.Length);
-      Assert.AreSame (state, states[0]);
+      Assert.That (states.Length, Is.EqualTo (1));
+      Assert.That (states[0], Is.SameAs (state));
     }
 
     [Test]
@@ -157,9 +157,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       StateDefinition[] states = combination.GetStates();
 
-      Assert.AreEqual (2, states.Length);
-      Assert.Contains (paidState, states);
-      Assert.Contains (deliveredState, states);
+      Assert.That (states.Length, Is.EqualTo (2));
+      Assert.That (states, Has.Member (paidState));
+      Assert.That (states, Has.Member (deliveredState));
     }
 
     [Test]
@@ -195,7 +195,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
         orderClass.EnsureDataAvailable();
-        Assert.AreEqual (StateType.Unchanged, orderClass.State);
+        Assert.That (orderClass.State, Is.EqualTo (StateType.Unchanged));
 
         using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
         {
@@ -205,19 +205,19 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
           using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
           {
             orderClass.EnsureDataAvailable();
-            Assert.AreEqual (StateType.Unchanged, orderClass.State);
+            Assert.That (orderClass.State, Is.EqualTo (StateType.Unchanged));
 
             combination.AccessControlList.Delete();
-            Assert.IsNull (combination.Class);
+            Assert.That (combination.Class, Is.Null);
 
-            Assert.AreEqual (StateType.Changed, orderClass.State);
+            Assert.That (orderClass.State, Is.EqualTo (StateType.Changed));
             ClientTransaction.Current.Commit();
           }
 
           ClientTransaction.Current.Commit();
         }
 
-        Assert.AreEqual (StateType.Changed, orderClass.State);
+        Assert.That (orderClass.State, Is.EqualTo (StateType.Changed));
       }
     }
 
@@ -227,7 +227,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StateCombination stateCombination = StateCombination.NewObject();
 
       stateCombination.Index = 1;
-      Assert.AreEqual (1, stateCombination.Index);
+      Assert.That (stateCombination.Index, Is.EqualTo (1));
     }
 
     [Test]

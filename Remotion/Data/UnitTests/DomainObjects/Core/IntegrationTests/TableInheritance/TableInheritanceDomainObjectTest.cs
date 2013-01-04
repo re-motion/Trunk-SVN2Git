@@ -38,11 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
 
       DomainObjectCollection assignedObjects = client.AssignedObjects;
 
-      Assert.AreEqual (4, assignedObjects.Count);
-      Assert.AreEqual (DomainObjectIDs.OrganizationalUnit, assignedObjects[0].ID);
-      Assert.AreEqual (DomainObjectIDs.Person, assignedObjects[1].ID);
-      Assert.AreEqual (DomainObjectIDs.PersonForUnidirectionalRelationTest, assignedObjects[2].ID);
-      Assert.AreEqual (DomainObjectIDs.Customer, assignedObjects[3].ID);
+      Assert.That (assignedObjects.Count, Is.EqualTo (4));
+      Assert.That (assignedObjects[0].ID, Is.EqualTo (DomainObjectIDs.OrganizationalUnit));
+      Assert.That (assignedObjects[1].ID, Is.EqualTo (DomainObjectIDs.Person));
+      Assert.That (assignedObjects[2].ID, Is.EqualTo (DomainObjectIDs.PersonForUnidirectionalRelationTest));
+      Assert.That (assignedObjects[3].ID, Is.EqualTo (DomainObjectIDs.Customer));
     }
 
     [Test]
@@ -60,35 +60,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
     public void RelationsFromConcreteSingle ()
     {
       TICustomer customer = TICustomer.GetObject (DomainObjectIDs.Customer);
-      Assert.AreEqual ("UnitTests", customer.CreatedBy);
-      Assert.AreEqual ("Zaphod", customer.FirstName);
-      Assert.AreEqual (CustomerType.Premium, customer.CustomerType);
+      Assert.That (customer.CreatedBy, Is.EqualTo ("UnitTests"));
+      Assert.That (customer.FirstName, Is.EqualTo ("Zaphod"));
+      Assert.That (customer.CustomerType, Is.EqualTo (CustomerType.Premium));
 
       TIRegion region = customer.Region;
-      Assert.IsNotNull (region);
-      Assert.AreEqual (DomainObjectIDs.Region, region.ID);
+      Assert.That (region, Is.Not.Null);
+      Assert.That (region.ID, Is.EqualTo (DomainObjectIDs.Region));
 
       DomainObjectCollection orders = customer.Orders;
-      Assert.AreEqual (1, orders.Count);
-      Assert.AreEqual (DomainObjectIDs.Order, orders[0].ID);
+      Assert.That (orders.Count, Is.EqualTo (1));
+      Assert.That (orders[0].ID, Is.EqualTo (DomainObjectIDs.Order));
 
       DomainObjectCollection historyEntries = customer.HistoryEntries;
-      Assert.AreEqual (2, historyEntries.Count);
-      Assert.AreEqual (DomainObjectIDs.HistoryEntry2, historyEntries[0].ID);
-      Assert.AreEqual (DomainObjectIDs.HistoryEntry1, historyEntries[1].ID);
+      Assert.That (historyEntries.Count, Is.EqualTo (2));
+      Assert.That (historyEntries[0].ID, Is.EqualTo (DomainObjectIDs.HistoryEntry2));
+      Assert.That (historyEntries[1].ID, Is.EqualTo (DomainObjectIDs.HistoryEntry1));
 
       TIClient client = customer.Client;
-      Assert.AreEqual (DomainObjectIDs.Client, client.ID);
+      Assert.That (client.ID, Is.EqualTo (DomainObjectIDs.Client));
 
-      Assert.IsEmpty (customer.AbstractClassesWithoutDerivations);
+      Assert.That (customer.AbstractClassesWithoutDerivations, Is.Empty);
     }
 
     [Test]
     public void RelationsFromConcrete ()
     {
       TIPerson person = TIPerson.GetObject (DomainObjectIDs.Person);
-      Assert.AreEqual (DomainObjectIDs.Client, person.Client.ID);
-      Assert.AreEqual (1, person.HistoryEntries.Count);
+      Assert.That (person.Client.ID, Is.EqualTo (DomainObjectIDs.Client));
+      Assert.That (person.HistoryEntries.Count, Is.EqualTo (1));
     }
 
 
@@ -96,8 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
     public void OneToManyRelationToConcreteSingle ()
     {
       TIRegion region = TIRegion.GetObject (DomainObjectIDs.Region);
-      Assert.AreEqual (1, region.Customers.Count);
-      Assert.AreEqual (DomainObjectIDs.Customer, region.Customers[0].ID);
+      Assert.That (region.Customers.Count, Is.EqualTo (1));
+      Assert.That (region.Customers[0].ID, Is.EqualTo (DomainObjectIDs.Customer));
     }
 
     [Test]
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         TIOrder order = TIOrder.GetObject (DomainObjectIDs.Order);
-        Assert.AreEqual (DomainObjectIDs.Customer, order.Customer.ID);
+        Assert.That (order.Customer.ID, Is.EqualTo (DomainObjectIDs.Customer));
       }
     }
 
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
     public void ManyToOneRelationToAbstractClass ()
     {
       TIHistoryEntry historyEntry = TIHistoryEntry.GetObject (DomainObjectIDs.HistoryEntry1);
-      Assert.AreEqual (DomainObjectIDs.Customer, historyEntry.Owner.ID);
+      Assert.That (historyEntry.Owner.ID, Is.EqualTo (DomainObjectIDs.Customer));
     }
 
     [Test]
@@ -131,8 +131,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         TICustomer actualCustomer = TICustomer.GetObject (expectedCustomer.ID);
-        Assert.AreEqual ("NewLastName", actualCustomer.LastName);
-        Assert.AreEqual (expectedNewRegion.ID, actualCustomer.Region.ID);
+        Assert.That (actualCustomer.LastName, Is.EqualTo ("NewLastName"));
+        Assert.That (actualCustomer.Region.ID, Is.EqualTo (expectedNewRegion.ID));
       }
     }
 
@@ -157,8 +157,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         TICustomer actualCustomer = TICustomer.GetObject (expectedCustomer.ID);
-        Assert.IsNotNull (actualCustomer);
-        Assert.AreEqual (expectedAddress.ID, actualCustomer.Address.ID);
+        Assert.That (actualCustomer, Is.Not.Null);
+        Assert.That (actualCustomer.Address.ID, Is.EqualTo (expectedAddress.ID));
       }
     }
 

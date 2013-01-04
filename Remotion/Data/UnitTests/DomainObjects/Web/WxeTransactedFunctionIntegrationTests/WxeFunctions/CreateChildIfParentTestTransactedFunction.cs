@@ -42,8 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     private void Step1 ()
     {
       ClientTransaction parentTransaction = ParentFunction.Transaction.GetNativeTransaction<ClientTransaction>();
-      Assert.AreNotSame (parentTransaction, ClientTransactionScope.CurrentTransaction);
-      Assert.AreSame (parentTransaction, ClientTransactionScope.CurrentTransaction.ParentTransaction);
+      Assert.That (ClientTransactionScope.CurrentTransaction, Is.Not.SameAs (parentTransaction));
+      Assert.That (ClientTransactionScope.CurrentTransaction.ParentTransaction, Is.SameAs (parentTransaction));
     }
   }
 }

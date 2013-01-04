@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
           new WxeMethodStep (
               () =>
               {
-                Assert.AreNotSame (PreviousClientTransaction, ClientTransactionScope.CurrentTransaction);
+                Assert.That (ClientTransactionScope.CurrentTransaction, Is.Not.SameAs (PreviousClientTransaction));
                 TransactionBeforeChild = ClientTransactionScope.CurrentTransaction;
               }));
       Add (
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
               () =>
               {
                 TransactionAfterChild = ClientTransactionScope.CurrentTransaction;
-                Assert.AreSame (TransactionBeforeChild, TransactionAfterChild);
+                Assert.That (TransactionAfterChild, Is.SameAs (TransactionBeforeChild));
               }));
     }
 

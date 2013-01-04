@@ -126,7 +126,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       MetadataLocalizationToXmlConverter converter = new MetadataLocalizationToXmlConverter ();
       converter.ConvertAndSave (new LocalizedName[0], new CultureInfo("de"), filename);
 
-      Assert.IsTrue (File.Exists (expectedFilename));
+      Assert.That (File.Exists (expectedFilename), Is.True);
     }
   }
 }

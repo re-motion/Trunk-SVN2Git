@@ -54,7 +54,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -77,7 +77,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate ();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -111,7 +111,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate ();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -144,7 +144,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate ();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -167,7 +167,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate ();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -190,7 +190,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate ();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -213,7 +213,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate ();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -259,7 +259,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate ();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -304,7 +304,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate ();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -327,7 +327,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate ();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]

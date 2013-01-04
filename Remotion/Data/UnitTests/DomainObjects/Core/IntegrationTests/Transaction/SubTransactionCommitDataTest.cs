@@ -36,11 +36,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         ClientTransactionScope.CurrentTransaction.Commit ();
 
-        Assert.AreEqual (5, order.OrderNumber);
+        Assert.That (order.OrderNumber, Is.EqualTo (5));
       }
 
-      Assert.IsNotNull (order);
-      Assert.AreEqual (5, order.OrderNumber);
+      Assert.That (order, Is.Not.Null);
+      Assert.That (order.OrderNumber, Is.EqualTo (5));
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
 
-      Assert.AreEqual (7, classWithAllDataTypes.Int32Property);
+      Assert.That (classWithAllDataTypes.Int32Property, Is.EqualTo (7));
     }
 
     [Test]
@@ -66,10 +66,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order = Order.GetObject (DomainObjectIDs.Order1);
 
         ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.AreEqual (1, order.OrderNumber);
+        Assert.That (order.OrderNumber, Is.EqualTo (1));
       }
 
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
     }
 
     [Test]
@@ -79,10 +79,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
         ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.AreEqual (1, order.OrderNumber);
+        Assert.That (order.OrderNumber, Is.EqualTo (1));
       }
 
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
     }
 
     [Test]
@@ -92,10 +92,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
         ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.AreEqual (0, order.OrderNumber);
+        Assert.That (order.OrderNumber, Is.EqualTo (0));
       }
 
-      Assert.AreEqual (0, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (0));
     }
 
     [Test]
@@ -185,18 +185,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         ClientTransactionScope.CurrentTransaction.Commit ();
 
-        Assert.AreEqual (StateType.Unchanged, loadedOrder.State);
-        Assert.AreEqual (StateType.Unchanged, newClassWithAllDataTypes.State);
+        Assert.That (loadedOrder.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (newClassWithAllDataTypes.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreEqual (13, loadedOrder.OrderNumber);
-        Assert.AreEqual (47, newClassWithAllDataTypes.Int16Property);
+        Assert.That (loadedOrder.OrderNumber, Is.EqualTo (13));
+        Assert.That (newClassWithAllDataTypes.Int16Property, Is.EqualTo (47));
       }
 
-      Assert.AreEqual (13, loadedOrder.OrderNumber);
-      Assert.AreEqual (47, newClassWithAllDataTypes.Int16Property);
+      Assert.That (loadedOrder.OrderNumber, Is.EqualTo (13));
+      Assert.That (newClassWithAllDataTypes.Int16Property, Is.EqualTo (47));
 
-      Assert.AreEqual (StateType.Changed, loadedOrder.State);
-      Assert.AreEqual (StateType.New, newClassWithAllDataTypes.State);
+      Assert.That (loadedOrder.State, Is.EqualTo (StateType.Changed));
+      Assert.That (newClassWithAllDataTypes.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -210,10 +210,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       OrderItem orderItem = OrderItem.NewObject ();
       order.OrderItems.Add (orderItem);
 
-      Assert.AreSame (official, order.Official);
-      Assert.AreEqual (1, order.OrderItems.Count);
-      Assert.IsTrue (order.OrderItems.ContainsObject (orderItem));
-      Assert.IsNull (order.OrderTicket);
+      Assert.That (order.Official, Is.SameAs (official));
+      Assert.That (order.OrderItems.Count, Is.EqualTo (1));
+      Assert.That (order.OrderItems.ContainsObject (orderItem), Is.True);
+      Assert.That (order.OrderTicket, Is.Null);
 
       OrderItem newOrderItem;
       OrderTicket newOrderTicket;
@@ -229,31 +229,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         newOrderTicket = OrderTicket.NewObject ();
         order.OrderTicket = newOrderTicket;
 
-        Assert.AreSame (official, order.Official);
-        Assert.AreEqual (2, order.OrderItems.Count);
-        Assert.IsFalse (order.OrderItems.ContainsObject (orderItem));
-        Assert.IsTrue (order.OrderItems.ContainsObject (newOrderItem));
-        Assert.IsNotNull (order.OrderTicket);
-        Assert.AreSame (newOrderTicket, order.OrderTicket);
+        Assert.That (order.Official, Is.SameAs (official));
+        Assert.That (order.OrderItems.Count, Is.EqualTo (2));
+        Assert.That (order.OrderItems.ContainsObject (orderItem), Is.False);
+        Assert.That (order.OrderItems.ContainsObject (newOrderItem), Is.True);
+        Assert.That (order.OrderTicket, Is.Not.Null);
+        Assert.That (order.OrderTicket, Is.SameAs (newOrderTicket));
 
         ClientTransactionScope.CurrentTransaction.Commit ();
 
-        Assert.AreEqual (StateType.Unchanged, order.State);
+        Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
 
-        Assert.AreSame (official, order.Official);
-        Assert.AreEqual (2, order.OrderItems.Count);
-        Assert.IsFalse (order.OrderItems.ContainsObject (orderItem));
-        Assert.IsTrue (order.OrderItems.ContainsObject (newOrderItem));
-        Assert.IsNotNull (order.OrderTicket);
-        Assert.AreSame (newOrderTicket, order.OrderTicket);
+        Assert.That (order.Official, Is.SameAs (official));
+        Assert.That (order.OrderItems.Count, Is.EqualTo (2));
+        Assert.That (order.OrderItems.ContainsObject (orderItem), Is.False);
+        Assert.That (order.OrderItems.ContainsObject (newOrderItem), Is.True);
+        Assert.That (order.OrderTicket, Is.Not.Null);
+        Assert.That (order.OrderTicket, Is.SameAs (newOrderTicket));
       }
 
-      Assert.AreSame (official, order.Official);
-      Assert.AreEqual (2, order.OrderItems.Count);
-      Assert.IsFalse (order.OrderItems.ContainsObject (orderItem));
-      Assert.IsTrue (order.OrderItems.ContainsObject (newOrderItem));
-      Assert.IsNotNull (order.OrderTicket);
-      Assert.AreSame (newOrderTicket, order.OrderTicket);
+      Assert.That (order.Official, Is.SameAs (official));
+      Assert.That (order.OrderItems.Count, Is.EqualTo (2));
+      Assert.That (order.OrderItems.ContainsObject (orderItem), Is.False);
+      Assert.That (order.OrderItems.ContainsObject (newOrderItem), Is.True);
+      Assert.That (order.OrderTicket, Is.Not.Null);
+      Assert.That (order.OrderTicket, Is.SameAs (newOrderTicket));
     }
 
     [Test]
@@ -314,23 +314,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         newClient2 = Client.NewObject ();
         location2.Client = newClient2;
 
-        Assert.IsNull (employee.Computer);
-        Assert.AreSame (newEmployee, computer.Employee);
-        Assert.AreSame (newClient1, location1.Client);
-        Assert.AreSame (newClient2, location2.Client);
+        Assert.That (employee.Computer, Is.Null);
+        Assert.That (computer.Employee, Is.SameAs (newEmployee));
+        Assert.That (location1.Client, Is.SameAs (newClient1));
+        Assert.That (location2.Client, Is.SameAs (newClient2));
 
         ClientTransactionScope.CurrentTransaction.Commit ();
 
-        Assert.IsNull (employee.Computer);
-        Assert.AreSame (newEmployee, computer.Employee);
-        Assert.AreSame (newClient1, location1.Client);
-        Assert.AreSame (newClient2, location2.Client);
+        Assert.That (employee.Computer, Is.Null);
+        Assert.That (computer.Employee, Is.SameAs (newEmployee));
+        Assert.That (location1.Client, Is.SameAs (newClient1));
+        Assert.That (location2.Client, Is.SameAs (newClient2));
       }
 
-      Assert.IsNull (employee.Computer);
-      Assert.AreSame (newEmployee, computer.Employee);
-      Assert.AreSame (newClient1, location1.Client);
-      Assert.AreSame (newClient2, location2.Client);
+      Assert.That (employee.Computer, Is.Null);
+      Assert.That (computer.Employee, Is.SameAs (newEmployee));
+      Assert.That (location1.Client, Is.SameAs (newClient1));
+      Assert.That (location2.Client, Is.SameAs (newClient2));
     }
 
     [Test]
@@ -365,20 +365,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
 
-      Assert.AreSame (order, newOrderTicket.Order);
-      Assert.AreSame (newOrderTicket, order.OrderTicket);
+      Assert.That (newOrderTicket.Order, Is.SameAs (order));
+      Assert.That (order.OrderTicket, Is.SameAs (newOrderTicket));
 
-      Assert.AreSame (newOrderItem, order.OrderItems[0]);
-      Assert.AreSame (order, newOrderItem.Order);
+      Assert.That (order.OrderItems[0], Is.SameAs (newOrderItem));
+      Assert.That (newOrderItem.Order, Is.SameAs (order));
 
-      Assert.AreSame (order, order.Official.Orders[0]);
-      Assert.AreSame (newOfficial, order.Official);
+      Assert.That (order.Official.Orders[0], Is.SameAs (order));
+      Assert.That (order.Official, Is.SameAs (newOfficial));
 
-      Assert.AreSame (order, order.Customer.Orders[0]);
-      Assert.AreSame (newCustomer, order.Customer);
+      Assert.That (order.Customer.Orders[0], Is.SameAs (order));
+      Assert.That (order.Customer, Is.SameAs (newCustomer));
 
-      Assert.AreSame (newCeo, newCustomer.Ceo);
-      Assert.AreSame (newCustomer, newCeo.Company);
+      Assert.That (newCustomer.Ceo, Is.SameAs (newCeo));
+      Assert.That (newCeo.Company, Is.SameAs (newCustomer));
     }
 
     [Test]
@@ -387,13 +387,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Order orderInSub = Order.GetObject (DomainObjectIDs.Order1);
-        Assert.AreNotEqual (4711, orderInSub.OrderNumber);
+        Assert.That (orderInSub.OrderNumber, Is.Not.EqualTo (4711));
         orderInSub.OrderNumber = 4711;
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
 
       Order orderInParent = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.AreEqual (4711, orderInParent.OrderNumber);
+      Assert.That (orderInParent.OrderNumber, Is.EqualTo (4711));
     }
 
     [Test]
@@ -402,7 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Order orderInSub = Order.GetObject (DomainObjectIDs.Order1);
-        Assert.AreNotEqual (4711, orderInSub.OrderNumber);
+        Assert.That (orderInSub.OrderNumber, Is.Not.EqualTo (4711));
         orderInSub.OrderNumber = 4711;
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
@@ -410,7 +410,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Order orderInSub = Order.GetObject (DomainObjectIDs.Order1);
-        Assert.AreEqual (4711, orderInSub.OrderNumber);
+        Assert.That (orderInSub.OrderNumber, Is.EqualTo (4711));
       }
     }
 
@@ -420,31 +420,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       SetDatabaseModifyable ();
 
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      Assert.AreNotEqual (7, cwadt.Int32Property);
-      Assert.AreNotEqual (8, cwadt.Int16Property);
+      Assert.That (cwadt.Int32Property, Is.Not.EqualTo (7));
+      Assert.That (cwadt.Int16Property, Is.Not.EqualTo (8));
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         cwadt.Int32Property = 7;
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
-          Assert.AreEqual (7, cwadt.Int32Property);
+          Assert.That (cwadt.Int32Property, Is.EqualTo (7));
           cwadt.Int16Property = 8;
           ClientTransaction.Current.Commit ();
         }
-        Assert.AreEqual (7, cwadt.Int32Property);
-        Assert.AreEqual (8, cwadt.Int16Property);
+        Assert.That (cwadt.Int32Property, Is.EqualTo (7));
+        Assert.That (cwadt.Int16Property, Is.EqualTo (8));
         ClientTransaction.Current.Commit ();
       }
-      Assert.AreEqual (7, cwadt.Int32Property);
-      Assert.AreEqual (8, cwadt.Int16Property);
+      Assert.That (cwadt.Int32Property, Is.EqualTo (7));
+      Assert.That (cwadt.Int16Property, Is.EqualTo (8));
       TestableClientTransaction.Commit ();
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (cwadt);
-        Assert.AreEqual (7, cwadt.Int32Property);
-        Assert.AreEqual (8, cwadt.Int16Property);
+        Assert.That (cwadt.Int32Property, Is.EqualTo (7));
+        Assert.That (cwadt.Int16Property, Is.EqualTo (8));
       }
     }
 
@@ -454,81 +454,81 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       SetDatabaseModifyable ();
 
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-      Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-      Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-      Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-      Assert.AreEqual (32767, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original));
-      Assert.AreEqual (2147483647, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original));
+      Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+      Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+      Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+      Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+      Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original), Is.EqualTo (32767));
+      Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original), Is.EqualTo (2147483647));
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         cwadt.Int32Property = 7;
-        Assert.IsTrue (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-        Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-        Assert.IsTrue (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-        Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-        Assert.AreEqual (32767, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original));
-        Assert.AreEqual (2147483647, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original));
+        Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.True);
+        Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+        Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.True);
+        Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+        Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original), Is.EqualTo (32767));
+        Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original), Is.EqualTo (2147483647));
 
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
-          Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-          Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-          Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-          Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-          Assert.AreEqual (32767, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original));
-          Assert.AreEqual (7, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original));
+          Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+          Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+          Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+          Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+          Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original), Is.EqualTo (32767));
+          Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original), Is.EqualTo (7));
 
           cwadt.Int16Property = 8;
 
-          Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-          Assert.IsTrue (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-          Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-          Assert.IsTrue (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
+          Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+          Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.True);
+          Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+          Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.True);
 
           ClientTransaction.Current.Commit ();
 
-          Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-          Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-          Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-          Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-          Assert.AreEqual (8, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original));
-          Assert.AreEqual (7, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original));
+          Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+          Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+          Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+          Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+          Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original), Is.EqualTo (8));
+          Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original), Is.EqualTo (7));
         }
 
-        Assert.IsTrue (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-        Assert.IsTrue (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-        Assert.IsTrue (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-        Assert.IsTrue (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-        Assert.AreEqual (32767, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original));
-        Assert.AreEqual (2147483647, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original));
+        Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.True);
+        Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.True);
+        Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.True);
+        Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.True);
+        Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original), Is.EqualTo (32767));
+        Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original), Is.EqualTo (2147483647));
 
         ClientTransaction.Current.Commit ();
 
-        Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-        Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-        Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-        Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-        Assert.AreEqual (8, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original));
-        Assert.AreEqual (7, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original));
+        Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+        Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+        Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+        Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+        Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original), Is.EqualTo (8));
+        Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original), Is.EqualTo (7));
       }
 
-      Assert.IsTrue (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-      Assert.IsTrue (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-      Assert.IsTrue (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-      Assert.IsTrue (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-      Assert.AreEqual (32767, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original));
-      Assert.AreEqual (2147483647, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original));
+      Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.True);
+      Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.True);
+      Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.True);
+      Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.True);
+      Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original), Is.EqualTo (32767));
+      Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original), Is.EqualTo (2147483647));
 
       TestableClientTransaction.Commit ();
 
-      Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-      Assert.IsFalse (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-      Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")));
-      Assert.IsFalse (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")));
-      Assert.AreEqual (8, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original));
-      Assert.AreEqual (7, cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original));
+      Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+      Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+      Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
+      Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
+      Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property"), ValueAccess.Original), Is.EqualTo (8));
+      Assert.That (cwadt.InternalDataContainer.GetValue (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property"), ValueAccess.Original), Is.EqualTo (7));
     }
 
     [Test]
@@ -552,41 +552,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         orderTicket.Order = newOrder;
         oldOrder.OrderTicket = oldOrderTicket;
-        Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-        Assert.AreEqual (oldOrder.ID, ((IObjectEndPoint)GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+        Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+        Assert.That (((IObjectEndPoint)GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (oldOrder.ID));
 
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
-          Assert.AreEqual (newOrder, orderTicket.Order);
+          Assert.That (orderTicket.Order, Is.EqualTo (newOrder));
 
-          Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-          Assert.AreEqual (newOrder.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+          Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+          Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (newOrder.ID));
 
           orderTicket.Order = newOrder2;
           oldOrderTicket2.Order = newOrder;
 
-          Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-          Assert.AreEqual (newOrder.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+          Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+          Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (newOrder.ID));
 
           ClientTransaction.Current.Commit ();
-          Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-          Assert.AreEqual (newOrder2.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+          Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+          Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (newOrder2.ID));
         }
 
-        Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-        Assert.AreEqual (oldOrder.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+        Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+        Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (oldOrder.ID));
 
         ClientTransaction.Current.Commit ();
-        Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-        Assert.AreEqual (newOrder2.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+        Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+        Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (newOrder2.ID));
       }
-      Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-      Assert.AreEqual (oldOrder.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+      Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+      Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (oldOrder.ID));
 
       ClientTransaction.Current.Commit ();
 
-      Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-      Assert.AreEqual (newOrder2.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+      Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+      Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (newOrder2.ID));
     }
 
     [Test]
@@ -610,41 +610,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order3.OrderTicket = orderTicket1;
         orderTicket3.Order = order1;
 
-        Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-        Assert.AreEqual (orderTicket3.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+        Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+        Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (orderTicket3.ID));
 
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
-          Assert.AreEqual (orderTicket1, order3.OrderTicket);
+          Assert.That (order3.OrderTicket, Is.EqualTo (orderTicket1));
 
-          Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-          Assert.AreEqual (orderTicket1.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+          Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+          Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (orderTicket1.ID));
 
           order3.OrderTicket = orderTicket2;
           orderTicket1.Order = order2;
 
-          Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-          Assert.AreEqual (orderTicket1.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+          Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+          Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (orderTicket1.ID));
 
           ClientTransaction.Current.Commit ();
-          Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-          Assert.AreEqual (orderTicket2.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+          Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+          Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (orderTicket2.ID));
         }
 
-        Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-        Assert.AreEqual (orderTicket3.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+        Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+        Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (orderTicket3.ID));
 
         ClientTransaction.Current.Commit ();
-        Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-        Assert.AreEqual (orderTicket2.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+        Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+        Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (orderTicket2.ID));
       }
-      Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-      Assert.AreEqual (orderTicket3.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+      Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+      Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (orderTicket3.ID));
 
       ClientTransaction.Current.Commit ();
 
-      Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-      Assert.AreEqual (orderTicket2.ID, ((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID);
+      Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+      Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (orderTicket2.ID));
     }
 
     [Test]
@@ -662,50 +662,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         order.OrderItems.Add (newItem);
 
-        Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-        Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem));
-        Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem));
+        Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+        Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem), Is.False);
+        Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem), Is.True);
 
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
-          Assert.IsTrue (order.OrderItems.ContainsObject (newItem));
+          Assert.That (order.OrderItems.ContainsObject (newItem), Is.True);
 
-          Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem));
-          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem));
+          Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+          Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem), Is.True);
+          Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem), Is.True);
 
           order.OrderItems[0].Delete ();
-          Assert.IsTrue (order.OrderItems.ContainsObject (newItem));
+          Assert.That (order.OrderItems.ContainsObject (newItem), Is.True);
 
-          Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem));
-          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem));
+          Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+          Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem), Is.True);
+          Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem), Is.True);
 
           ClientTransaction.Current.Commit ();
 
-          Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem));
-          Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem));
+          Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+          Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem), Is.True);
+          Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem), Is.False);
         }
 
-        Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-        Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem));
-        Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem));
+        Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+        Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem), Is.False);
+        Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem), Is.True);
 
         ClientTransaction.Current.Commit ();
-        Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-        Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem));
-        Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem));
+        Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+        Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem), Is.True);
+        Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem), Is.False);
       }
-      Assert.IsTrue (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-      Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem));
-      Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem));
+      Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
+      Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem), Is.False);
+      Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem), Is.True);
 
       ClientTransaction.Current.Commit ();
 
-      Assert.IsFalse (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged);
-      Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem));
-      Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem));
+      Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
+      Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (newItem), Is.True);
+      Assert.That (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem), Is.False);
     }
 
     [Test]

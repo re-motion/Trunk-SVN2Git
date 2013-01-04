@@ -37,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var orderContainerIDs = Provider.ExecuteCollectionQuery (query).Select (dc => dc.ID).ToArray();
 
-      Assert.IsTrue (orderContainerIDs.Contains (DomainObjectIDs.Order1));
-      Assert.IsTrue (orderContainerIDs.Contains (DomainObjectIDs.OrderWithoutOrderItem));
+      Assert.That (orderContainerIDs.Contains (DomainObjectIDs.Order1), Is.True);
+      Assert.That (orderContainerIDs.Contains (DomainObjectIDs.OrderWithoutOrderItem), Is.True);
     }
 
     [Test]
@@ -115,8 +115,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var actualContainers = Provider.ExecuteCollectionQuery (query).ToArray();
 
-      Assert.IsNotNull (actualContainers);
-      Assert.AreEqual (1, actualContainers.Length);
+      Assert.That (actualContainers, Is.Not.Null);
+      Assert.That (actualContainers.Length, Is.EqualTo (1));
 
       DataContainer expectedContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer ();
       var checker = new DataContainerChecker ();

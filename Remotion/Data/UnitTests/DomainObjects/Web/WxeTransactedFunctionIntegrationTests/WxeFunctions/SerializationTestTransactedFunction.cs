@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
     private void Step1()
     {
-      Assert.IsFalse (FirstStepExecuted);
+      Assert.That (FirstStepExecuted, Is.False);
       FirstStepExecuted = true;
 
       TransactionBeforeSerialization = ClientTransactionScope.CurrentTransaction;
@@ -56,13 +56,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
     private void Step2 ()
     {
-      Assert.IsTrue (FirstStepExecuted);
-      Assert.IsFalse (SecondStepExecuted);
+      Assert.That (FirstStepExecuted, Is.True);
+      Assert.That (SecondStepExecuted, Is.False);
 
       SerializedSelf = Serializer.Serialize (this); // freeze at this point of time
 
       SecondStepExecuted = true;
-      Assert.AreSame (TransactionBeforeSerialization, ClientTransactionScope.CurrentTransaction);
+      Assert.That (ClientTransactionScope.CurrentTransaction, Is.SameAs (TransactionBeforeSerialization));
     }
   }
 }

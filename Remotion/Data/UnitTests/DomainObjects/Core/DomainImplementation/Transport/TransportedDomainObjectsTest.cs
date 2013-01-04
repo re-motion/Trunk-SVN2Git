@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       Assert.That (transportedObjects.DataTransaction, Is.Not.Null);
       Assert.That (transportedObjects.DataTransaction, Is.SameAs (dataTransaction));
-      Assert.IsEmpty (GetTransportedObjects (transportedObjects));
+      Assert.That (GetTransportedObjects (transportedObjects), Is.Empty);
     }
 
     [Test]
@@ -52,14 +52,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       var transportedObjects = new TransportedDomainObjects (ClientTransaction.CreateRootTransaction(), new List<DomainObject>());
 
-      Assert.IsEmpty (GetTransportedObjects (transportedObjects));
+      Assert.That (GetTransportedObjects (transportedObjects), Is.Empty);
 
       using (transportedObjects.DataTransaction.EnterNonDiscardingScope())
       {
         Order.GetObject (DomainObjectIDs.Order1);
       }
 
-      Assert.IsEmpty (GetTransportedObjects (transportedObjects));
+      Assert.That (GetTransportedObjects (transportedObjects), Is.Empty);
     }
 
     [Test]

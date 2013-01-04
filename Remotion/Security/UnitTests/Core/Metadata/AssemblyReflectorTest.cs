@@ -63,9 +63,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void Initialize ()
     {
-      Assert.AreSame (_classReflectorMock, _assemblyReflector.ClassReflector);
-      Assert.AreSame (_accessTypeReflectorMock, _assemblyReflector.AccessTypeReflector);
-      Assert.AreSame (_abstractRoleReflectorMock, _assemblyReflector.AbstractRoleReflector);
+      Assert.That (_assemblyReflector.ClassReflector, Is.SameAs (_classReflectorMock));
+      Assert.That (_assemblyReflector.AccessTypeReflector, Is.SameAs (_accessTypeReflectorMock));
+      Assert.That (_assemblyReflector.AbstractRoleReflector, Is.SameAs (_abstractRoleReflectorMock));
     }
 
     [Test]

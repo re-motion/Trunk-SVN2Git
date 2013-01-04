@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var listener = new InvalidatedTransactionListener();
       InvalidatedTransactionListener deserializedListener = Serializer.SerializeAndDeserialize (listener);
-      Assert.IsNotNull (deserializedListener);
+      Assert.That (deserializedListener, Is.Not.Null);
     }
 
     [Test]
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var listener = new InvalidatedTransactionListener();
       MethodInfo[] methods =
           typeof (InvalidatedTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-      Assert.AreEqual (38, methods.Length);
+      Assert.That (methods.Length, Is.EqualTo (38));
 
       foreach (var method in methods)
       {

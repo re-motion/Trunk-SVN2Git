@@ -43,12 +43,12 @@ namespace Remotion.Mixins.UnitTests.Core
         {
           Assert.Fail ("Expected InvalidOperationException, but was: " + e);
         }
-        Assert.IsNull (ThisValue);
+        Assert.That (ThisValue, Is.Null);
       }
 
       protected override void OnInitialized ()
       {
-        Assert.IsNotNull (Target);
+        Assert.That (Target, Is.Not.Null);
         ThisValue = Target;
         base.OnInitialized();
       }
@@ -59,8 +59,8 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithOnInitialize1));
       MixinWithOnInitialize1 mixin = Mixin.Get<MixinWithOnInitialize1> (bt1);
-      Assert.IsNotNull (mixin);
-      Assert.IsNotNull (mixin.ThisValue);
+      Assert.That (mixin, Is.Not.Null);
+      Assert.That (mixin.ThisValue, Is.Not.Null);
     }
 
     private TTargetType CreateMixedObject<TTargetType> (params Type[] types)
@@ -106,14 +106,14 @@ namespace Remotion.Mixins.UnitTests.Core
           Assert.Fail ("Expected InvalidOperationException, but was: " + e);
         }
 
-        Assert.IsNull (ThisValue);
-        Assert.IsNull (BaseValue);
+        Assert.That (ThisValue, Is.Null);
+        Assert.That (BaseValue, Is.Null);
       }
 
       protected override void OnInitialized ()
       {
-        Assert.IsNotNull (Target);
-        Assert.IsNotNull (Next);
+        Assert.That (Target, Is.Not.Null);
+        Assert.That (Next, Is.Not.Null);
         ThisValue = Target;
         BaseValue = Next;
         base.OnInitialized ();
@@ -125,9 +125,9 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       BaseType2 bt2 = CreateMixedObject<BaseType2> (typeof (MixinWithOnInitialize2));
       MixinWithOnInitialize2 mixin = Mixin.Get<MixinWithOnInitialize2> (bt2);
-      Assert.IsNotNull (mixin);
-      Assert.IsNotNull (mixin.ThisValue);
-      Assert.IsNotNull (mixin.BaseValue);
+      Assert.That (mixin, Is.Not.Null);
+      Assert.That (mixin.ThisValue, Is.Not.Null);
+      Assert.That (mixin.BaseValue, Is.Not.Null);
     }
   }
 }

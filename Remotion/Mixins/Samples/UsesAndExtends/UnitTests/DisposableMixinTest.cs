@@ -54,16 +54,16 @@ namespace Remotion.Mixins.Samples.UsesAndExtends.UnitTests
       C c = ObjectFactory.Create<C>(ParamList.Empty);
       Data data = c.Data;
 
-      Assert.IsFalse (data.ManagedCalled);
-      Assert.IsFalse (data.UnmanagedCalled);
-      
+      Assert.That (data.ManagedCalled, Is.False);
+      Assert.That (data.UnmanagedCalled, Is.False);
+
       using ((IDisposable)c)
       {
-        Assert.IsFalse (data.ManagedCalled);
-        Assert.IsFalse (data.UnmanagedCalled);
+        Assert.That (data.ManagedCalled, Is.False);
+        Assert.That (data.UnmanagedCalled, Is.False);
       }
-      Assert.IsTrue (data.ManagedCalled);
-      Assert.IsTrue (data.UnmanagedCalled);
+      Assert.That (data.ManagedCalled, Is.True);
+      Assert.That (data.UnmanagedCalled, Is.True);
       GC.KeepAlive (c);
     }
 
@@ -73,8 +73,8 @@ namespace Remotion.Mixins.Samples.UsesAndExtends.UnitTests
       C c = ObjectFactory.Create<C> (ParamList.Empty);
       Data data = c.Data;
 
-      Assert.IsFalse (data.ManagedCalled);
-      Assert.IsFalse (data.UnmanagedCalled);
+      Assert.That (data.ManagedCalled, Is.False);
+      Assert.That (data.UnmanagedCalled, Is.False);
 
       GC.KeepAlive (c);
       c = null;
@@ -82,8 +82,8 @@ namespace Remotion.Mixins.Samples.UsesAndExtends.UnitTests
       GC.Collect ();
       GC.WaitForPendingFinalizers();
 
-      Assert.IsFalse (data.ManagedCalled);
-      Assert.IsTrue (data.UnmanagedCalled);
+      Assert.That (data.ManagedCalled, Is.False);
+      Assert.That (data.UnmanagedCalled, Is.True);
     }
   }
 }

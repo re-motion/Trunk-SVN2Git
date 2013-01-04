@@ -41,8 +41,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Reference wrappedReference = _mockRepository.StrictMock<Reference> (ownerReference);
 
       TypeReferenceWrapper tr = new TypeReferenceWrapper (wrappedReference, typeof (int));
-      Assert.AreEqual (typeof (int), tr.Type);
-      Assert.AreSame (ownerReference, tr.OwnerReference);
+      Assert.That (tr.Type, Is.EqualTo (typeof (int)));
+      Assert.That (tr.OwnerReference, Is.SameAs (ownerReference));
     }
 
     [Test]

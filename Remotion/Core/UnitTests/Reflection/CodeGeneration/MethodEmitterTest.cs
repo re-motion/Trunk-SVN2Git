@@ -39,9 +39,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
               method.ArgumentReferences[0].ToExpression (), new ConstReference ("Simple").ToExpression ()));
 
       object returnValue = BuildInstanceAndInvokeMethod(method, "Param");
-      Assert.AreEqual ("ParamSimple", returnValue);
+      Assert.That (returnValue, Is.EqualTo ("ParamSimple"));
 
-      Assert.IsNotNull (method.MethodBuilder);
+      Assert.That (method.MethodBuilder, Is.Not.Null);
       Assert.That (method.ParameterTypes, Is.EqualTo (new[] { typeof (string) }));
     }
 
@@ -58,7 +58,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           method.ArgumentReferences[0].ToExpression (), new ConstReference ("Simple").ToExpression ()));
 
       object returnValue = BuildTypeAndInvokeMethod (method, "Param");
-      Assert.AreEqual ("ParamSimple", returnValue);
+      Assert.That (returnValue, Is.EqualTo ("ParamSimple"));
     }
 
     [Test]
@@ -68,9 +68,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       method.ImplementByReturning (new ConstReference (false).ToExpression ());
 
       object returnValue = BuildInstanceAndInvokeMethod (method, 12);
-      Assert.AreEqual (false, returnValue);
+      Assert.That (returnValue, Is.EqualTo (false));
 
-      Assert.IsNotNull (method.MethodBuilder);
+      Assert.That (method.MethodBuilder, Is.Not.Null);
       Assert.That (method.ReturnType, Is.EqualTo (typeof (bool)));
       Assert.That (method.ParameterTypes, Is.EqualTo (new[] { typeof (int) }));
     }
@@ -82,9 +82,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       method.ImplementByReturning (new ConstReference ("done").ToExpression ());
 
       object returnValue = BuildInstanceAndInvokeMethod (method, new[] { typeof (int), typeof (string), typeof (bool) }, 12, "", false);
-      Assert.AreEqual ("done", returnValue);
+      Assert.That (returnValue, Is.EqualTo ("done"));
 
-      Assert.IsNotNull (method.MethodBuilder);
+      Assert.That (method.MethodBuilder, Is.Not.Null);
       Assert.That (method.ReturnType, Is.EqualTo (typeof (string)));
       Assert.That (method.ParameterTypes, Has.Length.EqualTo (3));
       Assert.That (method.ParameterTypes[0].IsGenericParameter, Is.True);
@@ -100,12 +100,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       var method = ClassEmitter.CreateMethod ("StaticMethod", MethodAttributes.Public | MethodAttributes.Static, typeof (string), new Type[0]);
       ILGenerator gen = method.ILGenerator;
-      Assert.IsNotNull (gen);
+      Assert.That (gen, Is.Not.Null);
       gen.Emit (OpCodes.Ldstr, "manual retval");
       gen.Emit (OpCodes.Ret);
 
       object returnValue = BuildTypeAndInvokeMethod (method);
-      Assert.AreEqual ("manual retval", returnValue);
+      Assert.That (returnValue, Is.EqualTo ("manual retval"));
     }
 
     [Test]
@@ -118,9 +118,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           new[] { typeof (string) });
       Expression[] argumentExpressions = method.GetArgumentExpressions ();
 
-      Assert.AreEqual (method.ArgumentReferences.Length, argumentExpressions.Length);
+      Assert.That (argumentExpressions.Length, Is.EqualTo (method.ArgumentReferences.Length));
       for (int i = 0; i < argumentExpressions.Length; ++i)
-        Assert.AreEqual (method.ArgumentReferences[i], PrivateInvoke.GetNonPublicField (argumentExpressions[i], "reference"));
+        Assert.That (PrivateInvoke.GetNonPublicField (argumentExpressions[i], "reference"), Is.EqualTo (method.ArgumentReferences[i]));
     }
 
     [Test]
@@ -129,7 +129,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var method = ClassEmitter.CreateMethod ("MethodReturning", MethodAttributes.Public, typeof (string), new Type[0])
           .ImplementByReturning (new ConstReference ("none").ToExpression());
 
-      Assert.AreEqual ("none", BuildInstanceAndInvokeMethod (method));
+      Assert.That (BuildInstanceAndInvokeMethod (method), Is.EqualTo ("none"));
     }
 
     [Test]
@@ -138,7 +138,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var method = ClassEmitter.CreateMethod ("MethodReturningVoid", MethodAttributes.Public, typeof (void), new Type[0])
           .ImplementByReturningVoid ();
 
-      Assert.AreEqual (null, BuildInstanceAndInvokeMethod (method));
+      Assert.That (BuildInstanceAndInvokeMethod (method), Is.EqualTo (null));
     }
 
     [Test]
@@ -151,8 +151,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       object instance = BuildInstance ();
 
-      Assert.AreEqual (0, InvokeMethod (instance, intMethod));
-      Assert.AreEqual (new DateTime (), InvokeMethod (instance, dateTimeMethod));
+      Assert.That (InvokeMethod (instance, intMethod), Is.EqualTo (0));
+      Assert.That (InvokeMethod (instance, dateTimeMethod), Is.EqualTo (new DateTime ()));
     }
 
     [Test]
@@ -165,8 +165,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       object instance = BuildInstance ();
 
-      Assert.AreEqual (null, InvokeMethod (instance, objectMethod));
-      Assert.AreEqual (null, InvokeMethod (instance, stringMethod));
+      Assert.That (InvokeMethod (instance, objectMethod), Is.EqualTo (null));
+      Assert.That (InvokeMethod (instance, stringMethod), Is.EqualTo (null));
     }
 
     [Test]
@@ -177,8 +177,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       object instance = BuildInstance ();
 
-      Assert.AreEqual (null, InvokeMethod (instance, voidMethod));
-      Assert.AreEqual (typeof (void), GetMethod (instance, voidMethod).ReturnType);
+      Assert.That (InvokeMethod (instance, voidMethod), Is.EqualTo (null));
+      Assert.That (GetMethod (instance, voidMethod).ReturnType, Is.EqualTo (typeof (void)));
     }
 
     [Test]
@@ -190,8 +190,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       object instance = BuildInstance ();
 
-      Assert.AreEqual (true, InvokeMethod (instance, method, 5));
-      Assert.AreEqual (true, InvokeMethod (instance, method, "five"));
+      Assert.That (InvokeMethod (instance, method, 5), Is.EqualTo (true));
+      Assert.That (InvokeMethod (instance, method, "five"), Is.EqualTo (true));
     }
 
     [Test]
@@ -204,7 +204,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       method.ImplementByDelegating (local, typeof (int).GetMethod ("Equals", new[] { typeof (int) }));
 
       object instance = BuildInstance ();
-      Assert.AreEqual (true, InvokeMethod (instance, method, 5));
+      Assert.That (InvokeMethod (instance, method, 5), Is.EqualTo (true));
     }
 
     [Test]
@@ -215,8 +215,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       object instance = BuildInstance ();
 
-      Assert.AreEqual (false, InvokeMethod (instance, method, 5));
-      Assert.AreEqual (true, InvokeMethod (instance, method, instance));
+      Assert.That (InvokeMethod (instance, method, 5), Is.EqualTo (false));
+      Assert.That (InvokeMethod (instance, method, instance), Is.EqualTo (true));
     }
 
     [Test]
@@ -261,7 +261,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       LocalReference local = method.DeclareLocal (typeof (int));
       method.ImplementByReturning (local.ToExpression ());
 
-      Assert.AreEqual (0, BuildInstanceAndInvokeMethod (method));
+      Assert.That (BuildInstanceAndInvokeMethod (method), Is.EqualTo (0));
     }
 
     [Test]
@@ -271,7 +271,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       method.AddCustomAttribute (new CustomAttributeBuilder (typeof (SimpleAttribute).GetConstructor (Type.EmptyTypes), new object[0]));
 
       MethodInfo methodInfo = BuildTypeAndGetMethod (method);
-      Assert.AreEqual (1, methodInfo.GetCustomAttributes (typeof (SimpleAttribute), false).Length);
+      Assert.That (methodInfo.GetCustomAttributes (typeof (SimpleAttribute), false).Length, Is.EqualTo (1));
     }
 
     [Test]

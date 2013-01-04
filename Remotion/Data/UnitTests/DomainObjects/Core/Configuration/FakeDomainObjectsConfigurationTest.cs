@@ -34,10 +34,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
       MappingLoaderConfiguration mappingLoader = new MappingLoaderConfiguration ();
       QueryConfiguration query = new QueryConfiguration ();
       IDomainObjectsConfiguration configuration = new FakeDomainObjectsConfiguration (mappingLoader, storage, query);
-    
-      Assert.AreSame (mappingLoader, configuration.MappingLoader);
-      Assert.AreSame (storage, configuration.Storage);
-      Assert.AreSame (query, configuration.Query);
+
+      Assert.That (configuration.MappingLoader, Is.SameAs (mappingLoader));
+      Assert.That (configuration.Storage, Is.SameAs (storage));
+      Assert.That (configuration.Query, Is.SameAs (query));
     }
   }
 }

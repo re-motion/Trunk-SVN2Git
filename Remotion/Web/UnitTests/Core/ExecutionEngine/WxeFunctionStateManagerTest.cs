@@ -78,7 +78,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (session);
 
       _mockRepository.VerifyAll();
-      Assert.AreEqual (lastAccess, functionStateManager.GetLastAccess (functionStateMetaData.FunctionToken));
+      Assert.That (functionStateManager.GetLastAccess (functionStateMetaData.FunctionToken), Is.EqualTo (lastAccess));
     }
 
     [Test]
@@ -104,7 +104,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       WxeFunctionState actual = functionStateManager.GetItem (_functionState.FunctionToken);
 
       _mockRepository.VerifyAll();
-      Assert.AreSame (_functionState, actual);
+      Assert.That (actual, Is.SameAs (_functionState));
     }
 
     [Test]
@@ -147,9 +147,9 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_sessionMock);
       functionStateManager.Add (functionState);
-      Assert.IsFalse (functionStateManager.IsExpired (functionState.FunctionToken));
+      Assert.That (functionStateManager.IsExpired (functionState.FunctionToken), Is.False);
       Thread.Sleep (61000);
-      Assert.IsTrue (functionStateManager.IsExpired (functionState.FunctionToken));
+      Assert.That (functionStateManager.IsExpired (functionState.FunctionToken), Is.True);
 
       _mockRepository.VerifyAll();
     }
@@ -160,7 +160,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       _mockRepository.ReplayAll();
 
       WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_sessionMock);
-      Assert.IsTrue (functionStateManager.IsExpired (Guid.NewGuid().ToString()));
+      Assert.That (functionStateManager.IsExpired (Guid.NewGuid().ToString()), Is.True);
 
       _mockRepository.VerifyAll();
     }
@@ -187,12 +187,12 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       Thread.Sleep (61000);
 
-      Assert.IsTrue (functionStateManager.IsExpired (functionStateExpired.FunctionToken));
-      Assert.IsFalse (functionStateManager.IsExpired (functionStateNotExpired.FunctionToken));
+      Assert.That (functionStateManager.IsExpired (functionStateExpired.FunctionToken), Is.True);
+      Assert.That (functionStateManager.IsExpired (functionStateNotExpired.FunctionToken), Is.False);
 
       functionStateManager.CleanUpExpired();
 
-      Assert.IsFalse (functionStateManager.IsExpired (functionStateNotExpired.FunctionToken));
+      Assert.That (functionStateManager.IsExpired (functionStateNotExpired.FunctionToken), Is.False);
 
       _mockRepository.VerifyAll();
     }
@@ -201,31 +201,31 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     public void HasSessionAndGetCurrent ()
     {
       HttpContextHelper.SetCurrent (HttpContextHelper.CreateHttpContext ("get", "default.aspx", string.Empty));
-      Assert.IsFalse (WxeFunctionStateManager.HasSession);
-      Assert.IsNotNull (WxeFunctionStateManager.Current);
-      Assert.IsTrue (WxeFunctionStateManager.HasSession);
+      Assert.That (WxeFunctionStateManager.HasSession, Is.False);
+      Assert.That (WxeFunctionStateManager.Current, Is.Not.Null);
+      Assert.That (WxeFunctionStateManager.HasSession, Is.True);
     }
 
     [Test]
     public void GetCurrent_SameInstanceTwice ()
     {
       HttpContextHelper.SetCurrent (HttpContextHelper.CreateHttpContext ("get", "default.aspx", string.Empty));
-      Assert.AreSame (WxeFunctionStateManager.Current, WxeFunctionStateManager.Current);
+      Assert.That (WxeFunctionStateManager.Current, Is.SameAs (WxeFunctionStateManager.Current));
     }
 
     [Test]
     public void HasSessionAndGetCurrentInSeparateThreads ()
     {
       HttpContextHelper.SetCurrent (HttpContextHelper.CreateHttpContext ("get", "default.aspx", string.Empty));
-      Assert.IsFalse (WxeFunctionStateManager.HasSession);
-      Assert.IsNotNull (WxeFunctionStateManager.Current);
+      Assert.That (WxeFunctionStateManager.HasSession, Is.False);
+      Assert.That (WxeFunctionStateManager.Current, Is.Not.Null);
       ThreadRunner.Run (
           delegate
           {
             HttpContextHelper.SetCurrent (HttpContextHelper.CreateHttpContext ("get", "default.aspx", string.Empty));
-            Assert.IsFalse (WxeFunctionStateManager.HasSession);
-            Assert.IsNotNull (WxeFunctionStateManager.Current);
-            Assert.IsTrue (WxeFunctionStateManager.HasSession);
+            Assert.That (WxeFunctionStateManager.HasSession, Is.False);
+            Assert.That (WxeFunctionStateManager.Current, Is.Not.Null);
+            Assert.That (WxeFunctionStateManager.HasSession, Is.True);
           });
     }
 

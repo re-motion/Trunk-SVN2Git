@@ -55,14 +55,14 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     public void AssertWithListEmpty ()
     {
       var constraint = new EnumValueInfoListContentsConstraint ("First");
-      Assert.IsFalse (constraint.Matches (new List<EnumValueInfo> ()));
+      Assert.That (constraint.Matches (new List<EnumValueInfo> ()), Is.False);
     }
 
     [Test]
     public void AssertWithInvalidValue ()
     {
       var constraint = new EnumValueInfoListContentsConstraint ("Other");
-      Assert.IsFalse (constraint.Matches(_list));
+      Assert.That (constraint.Matches(_list), Is.False);
     }
 
     [Test]

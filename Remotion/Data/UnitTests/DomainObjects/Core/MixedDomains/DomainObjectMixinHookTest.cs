@@ -47,19 +47,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
       var mixinInstance = new HookedDomainObjectMixin();
 
-      Assert.IsFalse (mixinInstance.OnLoadedCalled);
-      Assert.IsFalse (mixinInstance.OnCreatedCalled);
-      Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      Assert.That (mixinInstance.OnLoadedCalled, Is.False);
+      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.False);
 
       using (new MixedObjectInstantiationScope (mixinInstance))
       {
         LifetimeService.GetObject (tx, _objectID, false);
       }
 
-      Assert.IsTrue (mixinInstance.OnLoadedCalled);
-      Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, mixinInstance.OnLoadedLoadMode);
-      Assert.IsFalse (mixinInstance.OnCreatedCalled);
-      Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      Assert.That (mixinInstance.OnLoadedCalled, Is.True);
+      Assert.That (mixinInstance.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
+      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.True);
     }
 
     [Test]
@@ -69,9 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
       var mixinInstance = new HookedDomainObjectMixin();
 
-      Assert.IsFalse (mixinInstance.OnLoadedCalled);
-      Assert.IsFalse (mixinInstance.OnCreatedCalled);
-      Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      Assert.That (mixinInstance.OnLoadedCalled, Is.False);
+      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.False);
 
       HookedTargetClass instance;
       using (new MixedObjectInstantiationScope (mixinInstance))
@@ -85,18 +85,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       ClientTransaction newTransaction = CreateTransactionWithStubbedLoading (_objectID);
       newTransaction.EnlistDomainObject (instance);
 
-      Assert.IsFalse (mixinInstance.OnLoadedCalled);
+      Assert.That (mixinInstance.OnLoadedCalled, Is.False);
 
       using (newTransaction.EnterDiscardingScope())
       {
         ++instance.Property;
       }
 
-      Assert.IsTrue (mixinInstance.OnLoadedCalled);
-      Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
-      Assert.AreEqual (1, mixinInstance.OnLoadedCount);
-      Assert.IsFalse (mixinInstance.OnCreatedCalled);
-      Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      Assert.That (mixinInstance.OnLoadedCalled, Is.True);
+      Assert.That (mixinInstance.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
+      Assert.That (mixinInstance.OnLoadedCount, Is.EqualTo (1));
+      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.True);
     }
 
     [Test]
@@ -106,9 +106,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
       var mixinInstance = new HookedDomainObjectMixin ();
 
-      Assert.IsFalse (mixinInstance.OnLoadedCalled);
-      Assert.IsFalse (mixinInstance.OnCreatedCalled);
-      Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      Assert.That (mixinInstance.OnLoadedCalled, Is.False);
+      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.False);
 
       using (new MixedObjectInstantiationScope (mixinInstance))
       {
@@ -117,11 +117,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         subTx.Discard ();
       }
 
-      Assert.IsTrue (mixinInstance.OnLoadedCalled);
-      Assert.AreEqual (2, mixinInstance.OnLoadedCount);
-      Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
-      Assert.IsFalse (mixinInstance.OnCreatedCalled);
-      Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      Assert.That (mixinInstance.OnLoadedCalled, Is.True);
+      Assert.That (mixinInstance.OnLoadedCount, Is.EqualTo (2));
+      Assert.That (mixinInstance.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
+      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.True);
     }
 
     [Test]
@@ -131,19 +131,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
       var mixinInstance = new HookedDomainObjectMixin ();
 
-      Assert.IsFalse (mixinInstance.OnLoadedCalled);
-      Assert.IsFalse (mixinInstance.OnCreatedCalled);
-      Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      Assert.That (mixinInstance.OnLoadedCalled, Is.False);
+      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.False);
 
       using (new MixedObjectInstantiationScope (mixinInstance))
       {
         LifetimeService.GetObject (tx, _objectID, false);
 
-        Assert.IsTrue (mixinInstance.OnLoadedCalled);
-        Assert.AreEqual (1, mixinInstance.OnLoadedCount);
-        Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, mixinInstance.OnLoadedLoadMode);
-        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
-        Assert.AreEqual (1, mixinInstance.OnDomainObjectReferenceInitializingCount);
+        Assert.That (mixinInstance.OnLoadedCalled, Is.True);
+        Assert.That (mixinInstance.OnLoadedCount, Is.EqualTo (1));
+        Assert.That (mixinInstance.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
+        Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.True);
+        Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCount, Is.EqualTo (1));
 
         using (new MixedObjectInstantiationScope (mixinInstance))
         {
@@ -153,11 +153,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         }
       }
 
-      Assert.AreEqual (2, mixinInstance.OnLoadedCount);
-      Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
-      Assert.IsFalse (mixinInstance.OnCreatedCalled);
-      Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
-      Assert.AreEqual (1, mixinInstance.OnDomainObjectReferenceInitializingCount);
+      Assert.That (mixinInstance.OnLoadedCount, Is.EqualTo (2));
+      Assert.That (mixinInstance.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
+      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.True);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCount, Is.EqualTo (1));
     }
 
     [Test]
@@ -165,9 +165,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     {
       var mixinInstance = new HookedDomainObjectMixin();
 
-      Assert.IsFalse (mixinInstance.OnLoadedCalled);
-      Assert.IsFalse (mixinInstance.OnCreatedCalled);
-      Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      Assert.That (mixinInstance.OnLoadedCalled, Is.False);
+      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.False);
 
       using (new MixedObjectInstantiationScope (mixinInstance))
       {

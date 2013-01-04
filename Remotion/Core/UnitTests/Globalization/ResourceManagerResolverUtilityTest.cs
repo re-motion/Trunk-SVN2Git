@@ -44,8 +44,8 @@ namespace Remotion.UnitTests.Globalization
 		[Test]
 		public void Current_Initial ()
 		{
-			Assert.IsNotNull (ResourceManagerResolverUtility.Current);
-			Assert.AreSame (ResourceManagerResolverUtility.Default, ResourceManagerResolverUtility.Current);
+		  Assert.That (ResourceManagerResolverUtility.Current, Is.Not.Null);
+		  Assert.That (ResourceManagerResolverUtility.Current, Is.SameAs (ResourceManagerResolverUtility.Default));
 		}
 
   	[Test]
@@ -53,14 +53,14 @@ namespace Remotion.UnitTests.Globalization
 		{
 			IResourceManagerResolverUtility mockUtility = _mockRepository.StrictMock<IResourceManagerResolverUtility>();
 			ResourceManagerResolverUtility.SetCurrent (mockUtility);
-			Assert.AreSame (mockUtility, ResourceManagerResolverUtility.Current);
+  	  Assert.That (ResourceManagerResolverUtility.Current, Is.SameAs (mockUtility));
 		}
 
 		[Test]
 		public void Current_Reset ()
 		{
 			ResourceManagerResolverUtility.SetCurrent (null);
-			Assert.AreSame (ResourceManagerResolverUtility.Default, ResourceManagerResolverUtility.Current);
+		  Assert.That (ResourceManagerResolverUtility.Current, Is.SameAs (ResourceManagerResolverUtility.Default));
 		}
 
  	[Test]
@@ -76,9 +76,9 @@ namespace Remotion.UnitTests.Globalization
 
       string text = ResourceManagerResolverUtility.Current.GetResourceText (
           _resolverMock, typeof (ClassWithMultiLingualResourcesAttributes), "Borg");
-      Assert.AreEqual ("Resistance is futile", text);
+ 	  Assert.That (text, Is.EqualTo ("Resistance is futile"));
 
-      _mockRepository.VerifyAll();
+ 	  _mockRepository.VerifyAll();
     }
 
     [Test]
@@ -93,7 +93,7 @@ namespace Remotion.UnitTests.Globalization
 
 			string text = ResourceManagerResolverUtility.Current.GetResourceText (
           _resolverMock, typeof (ClassWithMultiLingualResourcesAttributes), "Grob");
-      Assert.AreEqual ("", text);
+      Assert.That (text, Is.EqualTo (""));
 
       _mockRepository.VerifyAll ();
     }
@@ -122,7 +122,7 @@ namespace Remotion.UnitTests.Globalization
 
 			bool result = ResourceManagerResolverUtility.Current.ExistsResourceText (
           _resolverMock, typeof (ClassWithMultiLingualResourcesAttributes), "Borg");
-      Assert.IsTrue (result);
+      Assert.That (result, Is.True);
 
       _mockRepository.VerifyAll ();
     }
@@ -139,7 +139,7 @@ namespace Remotion.UnitTests.Globalization
 
 			bool result = ResourceManagerResolverUtility.Current.ExistsResourceText (
           _resolverMock, typeof (ClassWithMultiLingualResourcesAttributes), "Borg");
-      Assert.IsFalse (result);
+      Assert.That (result, Is.False);
 
       _mockRepository.VerifyAll ();
     }
@@ -154,7 +154,7 @@ namespace Remotion.UnitTests.Globalization
 
 			bool result = ResourceManagerResolverUtility.Current.ExistsResourceText (
           _resolverMock, typeof (ClassWithMultiLingualResourcesAttributes), "Borg");
-      Assert.IsFalse (result);
+      Assert.That (result, Is.False);
 
       _mockRepository.VerifyAll ();
     }
@@ -164,12 +164,9 @@ namespace Remotion.UnitTests.Globalization
     {
       ResourceManagerResolver<MultiLingualResourcesAttribute> resolver =
 					new ResourceManagerResolver<MultiLingualResourcesAttribute> ();
-      Assert.IsTrue (
-					ResourceManagerResolverUtility.Current.ExistsResource (resolver, typeof (ClassWithMultiLingualResourcesAttributes)));
-      Assert.IsTrue (
-					ResourceManagerResolverUtility.Current.ExistsResource (resolver, typeof (InheritedClassWithMultiLingualResourcesAttributes)));
-      Assert.IsTrue (
-					ResourceManagerResolverUtility.Current.ExistsResource (resolver, typeof (InheritedClassWithoutMultiLingualResourcesAttributes)));
+      Assert.That (ResourceManagerResolverUtility.Current.ExistsResource (resolver, typeof (ClassWithMultiLingualResourcesAttributes)), Is.True);
+      Assert.That (ResourceManagerResolverUtility.Current.ExistsResource (resolver, typeof (InheritedClassWithMultiLingualResourcesAttributes)), Is.True);
+      Assert.That (ResourceManagerResolverUtility.Current.ExistsResource (resolver, typeof (InheritedClassWithoutMultiLingualResourcesAttributes)), Is.True);
     }
 
     [Test]
@@ -177,8 +174,7 @@ namespace Remotion.UnitTests.Globalization
     {
 			ResourceManagerResolver<MultiLingualResourcesAttribute> resolver =
 					new ResourceManagerResolver<MultiLingualResourcesAttribute> ();
-      Assert.IsFalse (
-					ResourceManagerResolverUtility.Current.ExistsResource (resolver, typeof (ClassWithoutMultiLingualResourcesAttributes)));
+      Assert.That (ResourceManagerResolverUtility.Current.ExistsResource (resolver, typeof (ClassWithoutMultiLingualResourcesAttributes)), Is.False);
     }
   }
 }

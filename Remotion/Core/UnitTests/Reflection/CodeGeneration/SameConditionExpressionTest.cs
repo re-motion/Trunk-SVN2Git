@@ -63,7 +63,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       methodEmitter.AddStatement (new TestStatement (
           new SameConditionExpression (new TypeTokenExpression (typeof (object)), new TypeTokenExpression (typeof (object)))));
 
-      Assert.AreEqual ("True", InvokeMethod());
+      Assert.That (InvokeMethod(), Is.EqualTo ("True"));
     }
 
     [Test]
@@ -74,7 +74,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       methodEmitter.AddStatement (new TestStatement (
           new SameConditionExpression (new TypeTokenExpression (typeof (string)), new TypeTokenExpression (typeof (object)))));
 
-      Assert.AreEqual ("False", InvokeMethod ());
+      Assert.That (InvokeMethod (), Is.EqualTo ("False"));
     }
   }
 }

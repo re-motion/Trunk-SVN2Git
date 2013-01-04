@@ -25,13 +25,13 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
   {
     [Test] public void GetNull ()
     {
-      Assert.IsNull (Dev.Null);
+      Assert.That (Dev.Null, Is.Null);
     }
 
     [Test] public void SetNull ()
     {
       Dev.Null = new object();
-      Assert.IsNull (Dev.Null);
+      Assert.That (Dev.Null, Is.Null);
     }
   }
 }

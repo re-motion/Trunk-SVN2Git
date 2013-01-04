@@ -30,7 +30,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       SecurityConfiguration configuration = SecurityConfiguration.Current;
 
-      Assert.IsNotNull (configuration);
+      Assert.That (configuration, Is.Not.Null);
       Assert.IsInstanceOf (typeof (NullSecurityProvider), configuration.SecurityProvider);
       Assert.IsInstanceOf (typeof (ThreadPrincipalProvider), configuration.PrincipalProvider);
       Assert.IsInstanceOf (typeof (FunctionalSecurityStrategy), configuration.FunctionalSecurityStrategy);
@@ -59,7 +59,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.AreSame (Configuration.FunctionalSecurityStrategy, Configuration.FunctionalSecurityStrategy);
+      Assert.That (Configuration.FunctionalSecurityStrategy, Is.SameAs (Configuration.FunctionalSecurityStrategy));
     }
 
     [Test]

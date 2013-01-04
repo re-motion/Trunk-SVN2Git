@@ -65,18 +65,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocList.ReadOnly = true;
       string[] actual = _bocList.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (0, actual.Length);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (0));
     }
 
     [Test]
     public void GetTrackedClientIDsInEditModeWithoutRowEditModeActive ()
     {
       _bocList.ReadOnly = false;
-      Assert.IsFalse (_bocList.IsRowEditModeActive);
+      Assert.That (_bocList.IsRowEditModeActive, Is.False);
       string[] actual = _bocList.GetTrackedClientIDs();
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (0, actual.Length);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -85,8 +85,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       IBusinessObject[] list = new[] { (IBusinessObject) TypeWithString.Create() };
       _bocList.IsDirty = false;
       _bocList.Value = list;
-      Assert.AreEqual (list, _bocList.Value);
-      Assert.IsTrue (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.EqualTo (list));
+      Assert.That (_bocList.IsDirty, Is.True);
     }
 
     [Test]
@@ -94,8 +94,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       _bocList.IsDirty = false;
       _bocList.Value = null;
-      Assert.AreEqual (null, _bocList.Value);
-      Assert.IsTrue (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.EqualTo (null));
+      Assert.That (_bocList.IsDirty, Is.True);
     }
 
 
@@ -103,21 +103,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     public void HasValue_ValueIsSet_ReturnsTrue ()
     {
       _bocList.Value = new IBusinessObjectWithIdentity[1];
-      Assert.IsTrue (_bocList.HasValue);
+      Assert.That (_bocList.HasValue, Is.True);
     }
 
     [Test]
     public void HasValue_ValueIsEmpty_ReturnsFalse ()
     {
       _bocList.Value = new IBusinessObjectWithIdentity[0];
-      Assert.IsFalse(_bocList.HasValue);
+      Assert.That (_bocList.HasValue, Is.False);
     }
 
     [Test]
     public void HasValue_ValueIsNull_ReturnsFalse ()
     {
       _bocList.Value = null;
-      Assert.IsFalse (_bocList.HasValue);
+      Assert.That (_bocList.HasValue, Is.False);
     }
 
 
@@ -131,8 +131,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadValue (true);
-      Assert.AreSame (_businessObject.ReferenceList, _bocList.Value);
-      Assert.IsTrue (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (_businessObject.ReferenceList));
+      Assert.That (_bocList.IsDirty, Is.True);
     }
 
     [Test]
@@ -145,8 +145,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadValue (true);
-      Assert.AreSame (_businessObject.ReferenceList, _bocList.Value);
-      Assert.IsTrue (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (_businessObject.ReferenceList));
+      Assert.That (_bocList.IsDirty, Is.True);
     }
 
     [Test]
@@ -159,8 +159,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = false;
 
       _bocList.LoadValue (true);
-      Assert.AreSame (_businessObject.ReferenceList, _bocList.Value);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (_businessObject.ReferenceList));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -173,8 +173,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = false;
 
       _bocList.LoadValue (true);
-      Assert.AreSame (_businessObject.ReferenceList, _bocList.Value);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (_businessObject.ReferenceList));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -187,8 +187,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadValue (false);
-      Assert.AreSame (_businessObject.ReferenceList, _bocList.Value);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (_businessObject.ReferenceList));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -201,8 +201,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadValue (false);
-      Assert.AreSame (_businessObject.ReferenceList, _bocList.Value);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (_businessObject.ReferenceList));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -215,8 +215,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadValue (false);
-      Assert.AreEqual (value, _bocList.Value);
-      Assert.IsTrue (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.EqualTo (value));
+      Assert.That (_bocList.IsDirty, Is.True);
     }
 
     [Test]
@@ -229,8 +229,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadValue (false);
-      Assert.AreEqual (value, _bocList.Value);
-      Assert.IsTrue (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.EqualTo (value));
+      Assert.That (_bocList.IsDirty, Is.True);
     }
 
     [Test]
@@ -243,8 +243,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadValue (false);
-      Assert.AreEqual (null, _bocList.Value);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.EqualTo (null));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -257,8 +257,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadValue (true);
-      Assert.AreEqual (null, _bocList.Value);
-      Assert.IsTrue (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.EqualTo (null));
+      Assert.That (_bocList.IsDirty, Is.True);
     }
 
 
@@ -271,8 +271,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadUnboundValue (value, true);
-      Assert.AreSame (value, _bocList.Value);
-      Assert.IsTrue (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (value));
+      Assert.That (_bocList.IsDirty, Is.True);
     }
 
     [Test]
@@ -284,8 +284,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadUnboundValue (value, true);
-      Assert.AreSame (value, _bocList.Value);
-      Assert.IsTrue (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (value));
+      Assert.That (_bocList.IsDirty, Is.True);
     }
 
     [Test]
@@ -297,8 +297,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = false;
 
       _bocList.LoadUnboundValue (value, true);
-      Assert.AreSame (value, _bocList.Value);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (value));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -310,8 +310,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = false;
 
       _bocList.LoadUnboundValue (value, true);
-      Assert.AreSame (value, _bocList.Value);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (value));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -323,8 +323,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadUnboundValue (value, false);
-      Assert.AreSame (value, _bocList.Value);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (value));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -336,8 +336,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.LoadUnboundValue (value, false);
-      Assert.AreSame (value, _bocList.Value);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_bocList.Value, Is.SameAs (value));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -351,8 +351,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.SaveValue (true);
-      Assert.AreEqual (newValue, _businessObject.ReferenceList);
-      Assert.IsTrue (_bocList.IsDirty);
+      Assert.That (_businessObject.ReferenceList, Is.EqualTo (newValue));
+      Assert.That (_bocList.IsDirty, Is.True);
     }
 
     [Test]
@@ -366,8 +366,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = true;
 
       _bocList.SaveValue (false);
-      Assert.AreEqual (newValue, _businessObject.ReferenceList);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_businessObject.ReferenceList, Is.EqualTo (newValue));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -381,8 +381,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.IsDirty = false;
 
       _bocList.SaveValue (false);
-      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
-      Assert.IsFalse (_bocList.IsDirty);
+      Assert.That (_businessObject.ReferenceList, Is.EqualTo (oldValue));
+      Assert.That (_bocList.IsDirty, Is.False);
     }
 
     [Test]
@@ -392,10 +392,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.Property = _propertyReferenceList;
       _bocList.Value = new[] { TypeWithReference.Create() };
       _bocList.SwitchRowIntoEditMode (0);
-      Assert.IsTrue (_bocList.IsRowEditModeActive);
+      Assert.That (_bocList.IsRowEditModeActive, Is.True);
 
       _bocList.SaveValue (true);
-      Assert.IsTrue (_bocList.IsRowEditModeActive);
+      Assert.That (_bocList.IsRowEditModeActive, Is.True);
     }
 
     [Test]
@@ -405,10 +405,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.Property = _propertyReferenceList;
       _bocList.Value = new[] { TypeWithReference.Create() };
       _bocList.SwitchRowIntoEditMode (0);
-      Assert.IsTrue (_bocList.IsRowEditModeActive);
+      Assert.That (_bocList.IsRowEditModeActive, Is.True);
 
       _bocList.SaveValue (false);
-      Assert.IsFalse (_bocList.IsRowEditModeActive);
+      Assert.That (_bocList.IsRowEditModeActive, Is.False);
     }
 
     [Test]
@@ -418,10 +418,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.Property = _propertyReferenceList;
       _bocList.Value = new[] { TypeWithReference.Create() };
       _bocList.SwitchListIntoEditMode();
-      Assert.IsTrue (_bocList.IsListEditModeActive);
+      Assert.That (_bocList.IsListEditModeActive, Is.True);
 
       _bocList.SaveValue (true);
-      Assert.IsTrue (_bocList.IsListEditModeActive);
+      Assert.That (_bocList.IsListEditModeActive, Is.True);
     }
 
     [Test]
@@ -431,10 +431,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.Property = _propertyReferenceList;
       _bocList.Value = new[] { TypeWithReference.Create() };
       _bocList.SwitchListIntoEditMode();
-      Assert.IsTrue (_bocList.IsListEditModeActive);
+      Assert.That (_bocList.IsListEditModeActive, Is.True);
 
       _bocList.SaveValue (false);
-      Assert.IsFalse (_bocList.IsListEditModeActive);
+      Assert.That (_bocList.IsListEditModeActive, Is.False);
     }
   }
 }

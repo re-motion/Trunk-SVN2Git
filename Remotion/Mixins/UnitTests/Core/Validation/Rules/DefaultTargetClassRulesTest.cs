@@ -31,8 +31,8 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     {
       TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (DateTime));
       var log = Validator.Validate (bc);
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustNotBeSealed", log));
-      Assert.AreEqual (0, log.GetNumberOfWarnings ());
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustNotBeSealed", log), Is.True);
+      Assert.That (log.GetNumberOfWarnings (), Is.EqualTo (0));
     }
 
     [Test]
@@ -49,7 +49,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (IBaseType2));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustNotBeAnInterface", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustNotBeAnInterface", log), Is.True);
     }
 
     [Test]
@@ -59,7 +59,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           typeof (NullMixin));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustHavePublicOrProtectedCtor", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustHavePublicOrProtectedCtor", log), Is.True);
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           typeof (NullMixin));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustBePublic", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustBePublic", log), Is.True);
     }
 
     [Test]
@@ -79,7 +79,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           typeof (NullMixin));
       var log = Validator.Validate (definition);
 
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustBePublic", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustBePublic", log), Is.True);
     }
 
     [Test]

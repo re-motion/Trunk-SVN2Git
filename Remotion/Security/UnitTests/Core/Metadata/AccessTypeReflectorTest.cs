@@ -56,7 +56,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     public void Initialize ()
     {
       Assert.IsInstanceOf (typeof (IAccessTypeReflector), _accessTypeReflector);
-      Assert.AreSame (_enumeratedTypeReflector, _accessTypeReflector.EnumerationTypeReflector);
+      Assert.That (_accessTypeReflector.EnumerationTypeReflector, Is.SameAs (_enumeratedTypeReflector));
     }
 
     [Test]
@@ -64,8 +64,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     {
       List<EnumValueInfo> actualAccessTypes = _accessTypeReflector.GetAccessTypesFromAssembly (typeof (PaperFile).Assembly, _cache);
 
-      Assert.IsNotNull (actualAccessTypes);
-      Assert.AreEqual (2, actualAccessTypes.Count);
+      Assert.That (actualAccessTypes, Is.Not.Null);
+      Assert.That (actualAccessTypes.Count, Is.EqualTo (2));
       EnumValueInfoAssert.Contains ("Journalize", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Archive", actualAccessTypes);
     }
@@ -75,8 +75,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     {
       List<EnumValueInfo> actualAccessTypes = _accessTypeReflector.GetAccessTypesFromType (typeof (SecurableObjectWithSecuredInstanceMethods), _cache);
 
-      Assert.IsNotNull (actualAccessTypes);
-      Assert.AreEqual (9, actualAccessTypes.Count);
+      Assert.That (actualAccessTypes, Is.Not.Null);
+      Assert.That (actualAccessTypes.Count, Is.EqualTo (9));
       EnumValueInfoAssert.Contains ("Create", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Read", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Edit", actualAccessTypes);
@@ -93,8 +93,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     {
       List<EnumValueInfo> actualAccessTypes = _accessTypeReflector.GetAccessTypesFromType (typeof (SecurableObjectWithSecuredStaticMethods), _cache);
 
-      Assert.IsNotNull (actualAccessTypes);
-      Assert.AreEqual (9, actualAccessTypes.Count);
+      Assert.That (actualAccessTypes, Is.Not.Null);
+      Assert.That (actualAccessTypes.Count, Is.EqualTo (9));
       EnumValueInfoAssert.Contains ("Create", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Read", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Edit", actualAccessTypes);
@@ -111,8 +111,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     {
       List<EnumValueInfo> actualAccessTypes = _accessTypeReflector.GetAccessTypesFromType (typeof (DerivedSecurableObjectWithSecuredInstanceMethods), _cache);
 
-      Assert.IsNotNull (actualAccessTypes);
-      Assert.AreEqual (10, actualAccessTypes.Count);
+      Assert.That (actualAccessTypes, Is.Not.Null);
+      Assert.That (actualAccessTypes.Count, Is.EqualTo (10));
       EnumValueInfoAssert.Contains ("Create", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Read", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Edit", actualAccessTypes);
@@ -130,8 +130,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     {
       List<EnumValueInfo> actualAccessTypes = _accessTypeReflector.GetAccessTypesFromType (typeof (DerivedSecurableObjectWithSecuredStaticMethods), _cache);
 
-      Assert.IsNotNull (actualAccessTypes);
-      Assert.AreEqual (10, actualAccessTypes.Count);
+      Assert.That (actualAccessTypes, Is.Not.Null);
+      Assert.That (actualAccessTypes.Count, Is.EqualTo (10));
       EnumValueInfoAssert.Contains ("Create", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Read", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Edit", actualAccessTypes);
@@ -150,9 +150,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       List<EnumValueInfo> expectedAccessTypes = _accessTypeReflector.GetAccessTypesFromType (typeof (PaperFile), _cache);
       List<EnumValueInfo> actualAccessTypes = _cache.GetAccessTypes ();
 
-      Assert.AreEqual (7, expectedAccessTypes.Count);
+      Assert.That (expectedAccessTypes.Count, Is.EqualTo (7));
       foreach (EnumValueInfo expected in expectedAccessTypes)
-        Assert.Contains (expected, actualAccessTypes);
+        Assert.That (actualAccessTypes, Has.Member (expected));
     }
 
     [Test]
@@ -160,8 +160,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     {
       List<EnumValueInfo> actualAccessTypes = _accessTypeReflector.GetAccessTypesFromType (typeof (SecurableObjectWithSecuredProperties), _cache);
 
-      Assert.IsNotNull (actualAccessTypes);
-      Assert.AreEqual (8, actualAccessTypes.Count);
+      Assert.That (actualAccessTypes, Is.Not.Null);
+      Assert.That (actualAccessTypes.Count, Is.EqualTo (8));
       EnumValueInfoAssert.Contains ("Create", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Read", actualAccessTypes);
       EnumValueInfoAssert.Contains ("Edit", actualAccessTypes);

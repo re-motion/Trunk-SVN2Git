@@ -49,23 +49,23 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       DerivedTypeWithFields dtwp = new DerivedTypeWithFields ();
 
       PrivateInvoke.SetPublicField (twp, "IntField", 21);
-      Assert.AreEqual (21, PrivateInvoke.GetPublicField (twp, "IntField"));
+      Assert.That (PrivateInvoke.GetPublicField (twp, "IntField"), Is.EqualTo (21));
 
       PrivateInvoke.SetNonPublicField (twp, "_stringField", "test 3");
-      Assert.AreEqual ("test 3", PrivateInvoke.GetNonPublicField (twp, "_stringField"));
+      Assert.That (PrivateInvoke.GetNonPublicField (twp, "_stringField"), Is.EqualTo ("test 3"));
 
       PrivateInvoke.SetNonPublicField (dtwp, "_stringField", "test 3");
-      Assert.AreEqual ("test 3", PrivateInvoke.GetNonPublicField (dtwp, "_stringField"));
+      Assert.That (PrivateInvoke.GetNonPublicField (dtwp, "_stringField"), Is.EqualTo ("test 3"));
     }
 
     [Test]
     public void TestStaticFields ()
     {
       PrivateInvoke.SetPublicStaticField (typeof (TypeWithFields), "StaticIntField", 22);
-      Assert.AreEqual (22, PrivateInvoke.GetPublicStaticField (typeof (TypeWithFields), "StaticIntField"));
+      Assert.That (PrivateInvoke.GetPublicStaticField (typeof (TypeWithFields), "StaticIntField"), Is.EqualTo (22));
 
       PrivateInvoke.SetNonPublicStaticField (typeof (TypeWithFields), "s_stringField", "test 4");
-      Assert.AreEqual ("test 4", PrivateInvoke.GetNonPublicStaticField (typeof (TypeWithFields), "s_stringField"));
+      Assert.That (PrivateInvoke.GetNonPublicStaticField (typeof (TypeWithFields), "s_stringField"), Is.EqualTo ("test 4"));
     }
   }
 

@@ -112,14 +112,14 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     {
       WxeFunctionState functionState = _wxeHandler.CreateNewFunctionState (CurrentHttpContext, _functionType);
 
-      Assert.IsNotNull (functionState);
-      Assert.IsNotNull (functionState.FunctionToken);
-      Assert.IsNotNull (functionState.Function);
-      Assert.AreEqual (_functionType, functionState.Function.GetType());
-      Assert.AreEqual (TestFunction.ReturnUrlValue, functionState.Function.ReturnUrl);
+      Assert.That (functionState, Is.Not.Null);
+      Assert.That (functionState.FunctionToken, Is.Not.Null);
+      Assert.That (functionState.Function, Is.Not.Null);
+      Assert.That (functionState.Function.GetType(), Is.EqualTo (_functionType));
+      Assert.That (functionState.Function.ReturnUrl, Is.EqualTo (TestFunction.ReturnUrlValue));
 
       WxeFunctionState expiredFunctionState = WxeFunctionStateManager.Current.GetItem (c_functionTokenForExpiredFunctionState);
-      Assert.IsNull (expiredFunctionState);
+      Assert.That (expiredFunctionState, Is.Null);
     }
 
     [Test]
@@ -133,8 +133,8 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     public void GetFunctionTypeByTypeName ()
     {
       Type type = _wxeHandler.GetTypeByTypeName (_functionTypeName);
-      Assert.IsNotNull (type);
-      Assert.AreEqual (_functionType, type);
+      Assert.That (type, Is.Not.Null);
+      Assert.That (type, Is.EqualTo (_functionType));
     }
 
     [Test]
@@ -144,8 +144,8 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       Type type = _wxeHandler.GetTypeByPath (@"/Test.wxe");
 
-      Assert.IsNotNull (type);
-      Assert.AreEqual (_functionType, type);
+      Assert.That (type, Is.Not.Null);
+      Assert.That (type, Is.EqualTo (_functionType));
     }
 
     [Test]
@@ -164,14 +164,14 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       WxeFunctionState functionState = _wxeHandler.CreateNewFunctionState (CurrentHttpContext, _functionType);
 
-      Assert.IsNotNull (functionState);
-      Assert.IsNotNull (functionState.FunctionToken);
-      Assert.IsNotNull (functionState.Function);
-      Assert.AreEqual (_functionType, functionState.Function.GetType());
-      Assert.AreEqual (_returnUrl, functionState.Function.ReturnUrl);
+      Assert.That (functionState, Is.Not.Null);
+      Assert.That (functionState.FunctionToken, Is.Not.Null);
+      Assert.That (functionState.Function, Is.Not.Null);
+      Assert.That (functionState.Function.GetType(), Is.EqualTo (_functionType));
+      Assert.That (functionState.Function.ReturnUrl, Is.EqualTo (_returnUrl));
 
       WxeFunctionState expiredFunctionState = WxeFunctionStateManager.Current.GetItem (c_functionTokenForExpiredFunctionState);
-      Assert.IsNull (expiredFunctionState);
+      Assert.That (expiredFunctionState, Is.Null);
     }
 
     [Test]
@@ -184,15 +184,15 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       WxeFunctionState functionState = _wxeHandler.CreateNewFunctionState (CurrentHttpContext, _functionType);
 
-      Assert.IsNotNull (functionState);
-      Assert.IsNotNull (functionState.FunctionToken);
-      Assert.IsNotNull (functionState.Function);
-      Assert.AreEqual (_functionType, functionState.Function.GetType());
+      Assert.That (functionState, Is.Not.Null);
+      Assert.That (functionState.FunctionToken, Is.Not.Null);
+      Assert.That (functionState.Function, Is.Not.Null);
+      Assert.That (functionState.Function.GetType(), Is.EqualTo (_functionType));
       TestFunction testFunction = (TestFunction) functionState.Function;
-      Assert.AreEqual (agrumentValue, testFunction.Parameter1);
+      Assert.That (testFunction.Parameter1, Is.EqualTo (agrumentValue));
 
       WxeFunctionState expiredFunctionState = WxeFunctionStateManager.Current.GetItem (c_functionTokenForExpiredFunctionState);
-      Assert.IsNull (expiredFunctionState);
+      Assert.That (expiredFunctionState, Is.Null);
     }
 
     [Test]
@@ -205,14 +205,14 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       WxeFunctionState functionState = _wxeHandler.CreateNewFunctionState (CurrentHttpContext, _functionType);
 
-      Assert.IsNotNull (functionState);
-      Assert.IsNotNull (functionState.FunctionToken);
-      Assert.IsNotNull (functionState.Function);
-      Assert.AreEqual (_functionType, functionState.Function.GetType());
-      Assert.AreEqual (_returnUrl, functionState.Function.ReturnUrl);
+      Assert.That (functionState, Is.Not.Null);
+      Assert.That (functionState.FunctionToken, Is.Not.Null);
+      Assert.That (functionState.Function, Is.Not.Null);
+      Assert.That (functionState.Function.GetType(), Is.EqualTo (_functionType));
+      Assert.That (functionState.Function.ReturnUrl, Is.EqualTo (_returnUrl));
 
       WxeFunctionState expiredFunctionState = WxeFunctionStateManager.Current.GetItem (c_functionTokenForExpiredFunctionState);
-      Assert.IsNull (expiredFunctionState);
+      Assert.That (expiredFunctionState, Is.Null);
     }
 
     [Test]
@@ -224,14 +224,14 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       WxeFunctionState functionState = _wxeHandler.CreateNewFunctionState (CurrentHttpContext, _functionType);
 
-      Assert.IsNotNull (functionState);
-      Assert.IsNotNull (functionState.FunctionToken);
-      Assert.IsNotNull (functionState.Function);
-      Assert.AreEqual (_functionType, functionState.Function.GetType());
-      Assert.AreEqual (CurrentHttpContext.Request.RawUrl, functionState.Function.ReturnUrl);
+      Assert.That (functionState, Is.Not.Null);
+      Assert.That (functionState.FunctionToken, Is.Not.Null);
+      Assert.That (functionState.Function, Is.Not.Null);
+      Assert.That (functionState.Function.GetType(), Is.EqualTo (_functionType));
+      Assert.That (functionState.Function.ReturnUrl, Is.EqualTo (CurrentHttpContext.Request.RawUrl));
 
       WxeFunctionState expiredFunctionState = WxeFunctionStateManager.Current.GetItem (c_functionTokenForExpiredFunctionState);
-      Assert.IsNull (expiredFunctionState);
+      Assert.That (expiredFunctionState, Is.Null);
     }
 
     [Test]
@@ -242,13 +242,13 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       WxeFunctionState functionState = _wxeHandler.ResumeExistingFunctionState (CurrentHttpContext, c_functionTokenForFunctionStateWithEnabledCleanUp);
 
-      Assert.AreSame (_functionStateWithEnabledCleanUp, functionState);
-      Assert.IsTrue (WxeFunctionStateManager.Current.GetLastAccess (c_functionTokenForFunctionStateWithEnabledCleanUp) > timeBeforeRefresh);
-      Assert.IsFalse (functionState.IsAborted);
-      Assert.IsFalse (WxeFunctionStateManager.Current.IsExpired (c_functionTokenForFunctionStateWithEnabledCleanUp));
+      Assert.That (functionState, Is.SameAs (_functionStateWithEnabledCleanUp));
+      Assert.That (WxeFunctionStateManager.Current.GetLastAccess (c_functionTokenForFunctionStateWithEnabledCleanUp) > timeBeforeRefresh, Is.True);
+      Assert.That (functionState.IsAborted, Is.False);
+      Assert.That (WxeFunctionStateManager.Current.IsExpired (c_functionTokenForFunctionStateWithEnabledCleanUp), Is.False);
 
       WxeFunctionState expiredFunctionState = WxeFunctionStateManager.Current.GetItem (c_functionTokenForExpiredFunctionState);
-      Assert.IsNull (expiredFunctionState);
+      Assert.That (expiredFunctionState, Is.Null);
     }
 
     [Test]
@@ -271,8 +271,8 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       WxeFunctionState functionState = _wxeHandler.ResumeExistingFunctionState (context, c_functionTokenForMissingFunctionState);
 
-      Assert.IsNotNull (functionState);
-      Assert.AreEqual (_functionType, functionState.Function.GetType());
+      Assert.That (functionState, Is.Not.Null);
+      Assert.That (functionState.Function.GetType(), Is.EqualTo (_functionType));
     }
 
     [Test]
@@ -314,8 +314,8 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       Remotion.Web.ExecutionEngine.UrlMapping.UrlMappingConfiguration.SetCurrent (null);
 
       WxeFunctionState functionState = _wxeHandler.ResumeExistingFunctionState (context, c_functionTokenForMissingFunctionState);
-      Assert.IsNotNull (functionState);
-      Assert.AreEqual (typeof (TestFunction), functionState.Function.GetType());
+      Assert.That (functionState, Is.Not.Null);
+      Assert.That (functionState.Function.GetType(), Is.EqualTo (typeof (TestFunction)));
     }
 
     [Test]
@@ -389,10 +389,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       WxeFunctionState functionState = _wxeHandler.ResumeExistingFunctionState (CurrentHttpContext, c_functionTokenForFunctionStateWithEnabledCleanUp);
 
-      Assert.IsNull (functionState);
-      Assert.IsTrue (WxeFunctionStateManager.Current.GetLastAccess (c_functionTokenForFunctionStateWithEnabledCleanUp) > timeBeforeRefresh);
-      Assert.IsFalse (_functionStateWithEnabledCleanUp.IsAborted);
-      Assert.IsFalse (WxeFunctionStateManager.Current.IsExpired (c_functionTokenForFunctionStateWithEnabledCleanUp));
+      Assert.That (functionState, Is.Null);
+      Assert.That (WxeFunctionStateManager.Current.GetLastAccess (c_functionTokenForFunctionStateWithEnabledCleanUp) > timeBeforeRefresh, Is.True);
+      Assert.That (_functionStateWithEnabledCleanUp.IsAborted, Is.False);
+      Assert.That (WxeFunctionStateManager.Current.IsExpired (c_functionTokenForFunctionStateWithEnabledCleanUp), Is.False);
     }
 
     [Test]
@@ -408,10 +408,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       WxeFunctionState functionState =
           _wxeHandler.ResumeExistingFunctionState (CurrentHttpContext, c_functionTokenForFunctionStateWithMissingFunction);
 
-      Assert.IsNull (functionState);
-      Assert.IsTrue (WxeFunctionStateManager.Current.GetLastAccess (c_functionTokenForFunctionStateWithMissingFunction) > timeBeforeRefresh);
-      Assert.IsFalse (_functionStateWithMissingFunction.IsAborted);
-      Assert.IsFalse (WxeFunctionStateManager.Current.IsExpired (c_functionTokenForFunctionStateWithMissingFunction));
+      Assert.That (functionState, Is.Null);
+      Assert.That (WxeFunctionStateManager.Current.GetLastAccess (c_functionTokenForFunctionStateWithMissingFunction) > timeBeforeRefresh, Is.True);
+      Assert.That (_functionStateWithMissingFunction.IsAborted, Is.False);
+      Assert.That (WxeFunctionStateManager.Current.IsExpired (c_functionTokenForFunctionStateWithMissingFunction), Is.False);
     }
 
     [Test]
@@ -423,11 +423,11 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       WxeFunctionState functionState = _wxeHandler.ResumeExistingFunctionState (CurrentHttpContext, c_functionTokenForFunctionStateWithEnabledCleanUp);
 
-      Assert.IsNull (functionState);
-      Assert.IsTrue (_functionStateWithEnabledCleanUp.IsAborted);
+      Assert.That (functionState, Is.Null);
+      Assert.That (_functionStateWithEnabledCleanUp.IsAborted, Is.True);
 
       WxeFunctionState expiredFunctionState = WxeFunctionStateManager.Current.GetItem (c_functionTokenForExpiredFunctionState);
-      Assert.IsNull (expiredFunctionState);
+      Assert.That (expiredFunctionState, Is.Null);
     }
 
     [Test]
@@ -440,29 +440,29 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       WxeFunctionState functionState =
           _wxeHandler.ResumeExistingFunctionState (CurrentHttpContext, c_functionTokenForFunctionStateWithMissingFunction);
 
-      Assert.IsNull (functionState);
-      Assert.IsTrue (_functionStateWithMissingFunction.IsAborted);
+      Assert.That (functionState, Is.Null);
+      Assert.That (_functionStateWithMissingFunction.IsAborted, Is.True);
     }
 
     [Test]
     public void CleanUpFunctionStateWithEnabledCleanUp ()
     {
       _wxeHandler.CleanUpFunctionState (_functionStateWithEnabledCleanUp);
-      Assert.IsTrue (_functionStateWithEnabledCleanUp.IsAborted);
+      Assert.That (_functionStateWithEnabledCleanUp.IsAborted, Is.True);
     }
 
     [Test]
     public void CleanUpFunctionStateWithDisabledCleanUp ()
     {
       _wxeHandler.CleanUpFunctionState (_functionStateWithDisabledCleanUp);
-      Assert.IsFalse (_functionStateWithEnabledCleanUp.IsAborted);
+      Assert.That (_functionStateWithEnabledCleanUp.IsAborted, Is.False);
     }
 
     [Test]
     public void CleanUpFunctionStateWithChildFunction ()
     {
       _wxeHandler.CleanUpFunctionState (_functionStateWithChildFunction);
-      Assert.IsFalse (_functionStateWithChildFunction.IsAborted);
+      Assert.That (_functionStateWithChildFunction.IsAborted, Is.False);
     }
 
     [Test]
@@ -473,10 +473,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       TestFunction function = (TestFunction) _functionStateWithEnabledCleanUp.Function;
 
       WxeContext wxeContext = function.TestStep.WxeContext;
-      Assert.AreSame (WxeContext.Current, wxeContext);
-      Assert.AreSame (CurrentHttpContext.Items["Test"], wxeContext.HttpContext.Items["Test"]);
-      Assert.AreEqual (_functionStateWithEnabledCleanUp.FunctionToken, wxeContext.FunctionToken);
-      Assert.AreEqual ("4", function.LastExecutedStepID);
+      Assert.That (wxeContext, Is.SameAs (WxeContext.Current));
+      Assert.That (wxeContext.HttpContext.Items["Test"], Is.SameAs (CurrentHttpContext.Items["Test"]));
+      Assert.That (wxeContext.FunctionToken, Is.EqualTo (_functionStateWithEnabledCleanUp.FunctionToken));
+      Assert.That (function.LastExecutedStepID, Is.EqualTo ("4"));
     }
 
     [Test]
@@ -493,13 +493,13 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       _wxeHandler.ExecuteFunction (function, CurrentWxeContext, true);
 
       WxeContext wxeContext = function.TestStep.WxeContext;
-      Assert.AreSame (WxeContext.Current, wxeContext);
+      Assert.That (wxeContext, Is.SameAs (WxeContext.Current));
 
       Type[] catchExceptionTypes = function.ExceptionHandler.GetCatchExceptionTypes();
-      Assert.AreEqual (1, catchExceptionTypes.Length);
-      Assert.AreSame (typeof (WxeUserCancelException), catchExceptionTypes[0]);
+      Assert.That (catchExceptionTypes.Length, Is.EqualTo (1));
+      Assert.That (catchExceptionTypes[0], Is.SameAs (typeof (WxeUserCancelException)));
 
-      Assert.AreEqual ("4", function.LastExecutedStepID);
+      Assert.That (function.LastExecutedStepID, Is.EqualTo ("4"));
     }
 
     [Test]

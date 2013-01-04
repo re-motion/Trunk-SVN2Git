@@ -29,15 +29,15 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     {
       AppDomainRunner.Run (delegate (object[] args)
         {
-          Assert.AreEqual (2, args.Length);
-          Assert.AreEqual (args[0], "Foo");
-          Assert.AreEqual (args[1], 4);
+          Assert.That (args.Length, Is.EqualTo (2));
+          Assert.That ("Foo", Is.EqualTo (args[0]));
+          Assert.That (4, Is.EqualTo (args[1]));
         }, "Foo", 4);
 
       AppDomainRunner.Run (delegate (object[] args)
-        {
-          Assert.AreEqual (0, args.Length);
-        });
+      {
+        Assert.That (args.Length, Is.EqualTo (0));
+      });
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
           delegate (object[] args)
           {
             Assert.That (AppDomain.CurrentDomain.FriendlyName, Is.EqualTo ("AppDomainRunner - AppDomain"));
-            Assert.AreNotSame (args[0], AppDomain.CurrentDomain);
+            Assert.That (AppDomain.CurrentDomain, Is.Not.SameAs (args[0]));
           },
           current);
     }
@@ -85,7 +85,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     {
       string dynamicBaseBefore = AppDomain.CurrentDomain.SetupInformation.DynamicBase;
       AppDomainRunner.Run (delegate { new AppDomainRunnerTest (); });
-      Assert.AreEqual (dynamicBaseBefore, AppDomain.CurrentDomain.SetupInformation.DynamicBase);
+      Assert.That (AppDomain.CurrentDomain.SetupInformation.DynamicBase, Is.EqualTo (dynamicBaseBefore));
     }
   }
 }

@@ -150,7 +150,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       XmlNode div = GetAssertedDiv (1, false);
       XmlNode table = GetAssertedTable (div, false);
       AssertRow (table, false, false, false);
-      Assert.IsTrue (DropDownList.AutoPostBack);
+      Assert.That (DropDownList.AutoPostBack, Is.True);
     }
 
     [Test]

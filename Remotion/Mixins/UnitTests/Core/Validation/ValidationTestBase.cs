@@ -36,9 +36,9 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
     {
       try
       {
-        Assert.AreEqual (0, log.GetNumberOfFailures ());
-        Assert.AreEqual (0, log.GetNumberOfWarnings ());
-        Assert.AreEqual (0, log.GetNumberOfUnexpectedExceptions ());
+        Assert.That (log.GetNumberOfFailures (), Is.EqualTo (0));
+        Assert.That (log.GetNumberOfWarnings (), Is.EqualTo (0));
+        Assert.That (log.GetNumberOfUnexpectedExceptions (), Is.EqualTo (0));
       }
       catch (AssertionException)
       {

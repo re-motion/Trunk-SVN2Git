@@ -118,8 +118,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void PropertyWithDoubleInterfaceMethod ()
     {
       var propertyInfos = new List<IPropertyInformation> (new ReflectionBasedPropertyFinder (typeof (ClassWithDoubleInterfaceProperty)).GetPropertyInfos ());
-      Assert.AreEqual (1, propertyInfos.Count);
-      Assert.AreEqual ("DisplayName", propertyInfos[0].Name);
+      Assert.That (propertyInfos.Count, Is.EqualTo (1));
+      Assert.That (propertyInfos[0].Name, Is.EqualTo ("DisplayName"));
     }
 
     [Test]

@@ -78,26 +78,26 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     [Test]
     public void TestInvoke()
     {
-      Assert.AreEqual ("f",                    PrivateInvoke.InvokePublicMethod (_twm, "f"));
-      Assert.AreEqual ("f int",                PrivateInvoke.InvokePublicMethod (_twm, "f", 1));
-      Assert.AreEqual ("f int string",         PrivateInvoke.InvokePublicMethod (_twm, "f", 1, null));
-      Assert.AreEqual ("f string",             PrivateInvoke.InvokePublicMethod (_twm, "f", "test"));
-      Assert.AreEqual ("f StringBuilder",      PrivateInvoke.InvokePublicMethod (_twm, "f", new StringBuilder()));
-      Assert.AreEqual ("f int StringBuilder",  PrivateInvoke.InvokeNonPublicMethod (_twm, "f", 1, new StringBuilder()));
+      Assert.That (PrivateInvoke.InvokePublicMethod (_twm, "f"), Is.EqualTo ("f"));
+      Assert.That (PrivateInvoke.InvokePublicMethod (_twm, "f", 1), Is.EqualTo ("f int"));
+      Assert.That (PrivateInvoke.InvokePublicMethod (_twm, "f", 1, null), Is.EqualTo ("f int string"));
+      Assert.That (PrivateInvoke.InvokePublicMethod (_twm, "f", "test"), Is.EqualTo ("f string"));
+      Assert.That (PrivateInvoke.InvokePublicMethod (_twm, "f", new StringBuilder()), Is.EqualTo ("f StringBuilder"));
+      Assert.That (PrivateInvoke.InvokeNonPublicMethod (_twm, "f", 1, new StringBuilder()), Is.EqualTo ("f int StringBuilder"));
 
-      Assert.AreEqual ("f",                    PrivateInvoke.InvokePublicMethod (_dt, "f"));
-      Assert.AreEqual ("f int",                PrivateInvoke.InvokePublicMethod (_dt, "f", 1));
-      Assert.AreEqual ("f int string",         PrivateInvoke.InvokePublicMethod (_dt, "f", 1, null));
-      Assert.AreEqual ("f string",             PrivateInvoke.InvokePublicMethod (_dt, "f", "test"));
-      Assert.AreEqual ("f StringBuilder",      PrivateInvoke.InvokePublicMethod (_dt, "f", new StringBuilder()));
-      Assert.AreEqual ("f int StringBuilder",  PrivateInvoke.InvokeNonPublicMethod (_dt, typeof (TypeWithMethods), "f", 1, new StringBuilder()));
+      Assert.That (PrivateInvoke.InvokePublicMethod (_dt, "f"), Is.EqualTo ("f"));
+      Assert.That (PrivateInvoke.InvokePublicMethod (_dt, "f", 1), Is.EqualTo ("f int"));
+      Assert.That (PrivateInvoke.InvokePublicMethod (_dt, "f", 1, null), Is.EqualTo ("f int string"));
+      Assert.That (PrivateInvoke.InvokePublicMethod (_dt, "f", "test"), Is.EqualTo ("f string"));
+      Assert.That (PrivateInvoke.InvokePublicMethod (_dt, "f", new StringBuilder()), Is.EqualTo ("f StringBuilder"));
+      Assert.That (PrivateInvoke.InvokeNonPublicMethod (_dt, typeof (TypeWithMethods), "f", 1, new StringBuilder()), Is.EqualTo ("f int StringBuilder"));
     }
 
     [Test]
     public void TestStaticInvoke()
     {
-      Assert.AreEqual ("s int",                PrivateInvoke.InvokePublicStaticMethod (typeof(TypeWithMethods), "s", 1));
-      Assert.AreEqual ("s string",             PrivateInvoke.InvokeNonPublicStaticMethod (typeof(TypeWithMethods), "s", "test"));
+      Assert.That (PrivateInvoke.InvokePublicStaticMethod (typeof(TypeWithMethods), "s", 1), Is.EqualTo ("s int"));
+      Assert.That (PrivateInvoke.InvokeNonPublicStaticMethod (typeof(TypeWithMethods), "s", "test"), Is.EqualTo ("s string"));
     }
 
     [Test]

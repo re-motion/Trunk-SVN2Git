@@ -34,10 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       PropertyDefinition actual = propertyReflector.GetMetadata();
       actual.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty());
 
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
-      Assert.AreSame (typeof (bool), actual.PropertyType);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty"));
+      Assert.That (actual.PropertyType, Is.SameAs (typeof (bool)));
     }
   }
 }

@@ -31,16 +31,16 @@ namespace Remotion.UnitTests.Collections
     {
       TestTuple tuple = new TestTuple (1, "X");
 
-      Assert.AreEqual (1, tuple.Item1);
-      Assert.AreEqual ("X", tuple.Item2);
+      Assert.That (tuple.Item1, Is.EqualTo (1));
+      Assert.That (tuple.Item2, Is.EqualTo ("X"));
     }
 
     [Test]
     public void EasyInitialize ()
     {
       TestTuple tuple = Tuple.Create (1, "X");
-      Assert.AreEqual (1, tuple.Item1);
-      Assert.AreEqual ("X", tuple.Item2);
+      Assert.That (tuple.Item1, Is.EqualTo (1));
+      Assert.That (tuple.Item2, Is.EqualTo ("X"));
     }
 
     [Test]
@@ -48,8 +48,8 @@ namespace Remotion.UnitTests.Collections
     public void EasyInitialize_Obsolete ()
     {
       TestTuple tuple = Tuple.NewTuple (1, "X");
-      Assert.AreEqual (1, tuple.A);
-      Assert.AreEqual ("X", tuple.B);
+      Assert.That (tuple.A, Is.EqualTo (1));
+      Assert.That (tuple.B, Is.EqualTo ("X"));
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Collections
     {
       TestTuple left = new TestTuple (1, "X");
 
-      Assert.IsFalse (left.Equals (null));
+      Assert.That (left.Equals (null), Is.False);
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.UnitTests.Collections
     {
       TestTuple tuple = new TestTuple (1, "X");
 
-      Assert.IsTrue (tuple.Equals (tuple));
+      Assert.That (tuple.Equals (tuple), Is.True);
     }
 
     [Test]
@@ -74,8 +74,8 @@ namespace Remotion.UnitTests.Collections
       TestTuple left = new TestTuple (1, "X");
       TestTuple right = new TestTuple (1, "X");
 
-      Assert.IsTrue (left.Equals (right));
-      Assert.IsTrue (right.Equals (left));
+      Assert.That (left.Equals (right), Is.True);
+      Assert.That (right.Equals (left), Is.True);
     }
 
     [Test]
@@ -84,8 +84,8 @@ namespace Remotion.UnitTests.Collections
       Tuple<int?, string> left = new Tuple<int?, string> (null, null);
       Tuple<int?, string> right = new Tuple<int?, string> (null, null);
 
-      Assert.IsTrue (left.Equals (right));
-      Assert.IsTrue (right.Equals (left));
+      Assert.That (left.Equals (right), Is.True);
+      Assert.That (right.Equals (left), Is.True);
     }
 
     [Test]
@@ -94,8 +94,8 @@ namespace Remotion.UnitTests.Collections
       TestTuple left = new TestTuple (1, "X");
       TestTuple right = new TestTuple (-1, "X");
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -104,8 +104,8 @@ namespace Remotion.UnitTests.Collections
       TestTuple left = new TestTuple (1, "X");
       TestTuple right = new TestTuple (1, null);
 
-      Assert.IsFalse (left.Equals (right));
-      Assert.IsFalse (right.Equals (left));
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.UnitTests.Collections
       TestTuple left = new TestTuple (1, "X");
       TestTuple right = new TestTuple (1, "X");
 
-      Assert.IsTrue (left.Equals ((object) right));
+      Assert.That (left.Equals ((object) right), Is.True);
     }
 
     [Test]
@@ -122,7 +122,7 @@ namespace Remotion.UnitTests.Collections
     {
       TestTuple left = new TestTuple (1, "X");
 
-      Assert.IsFalse (left.Equals ((object) null));
+      Assert.That (left.Equals ((object) null), Is.False);
     }
 
     [Test]
@@ -130,7 +130,7 @@ namespace Remotion.UnitTests.Collections
     {
       TestTuple left = new TestTuple (1, "X");
 
-      Assert.IsFalse (left.Equals (new object ()));
+      Assert.That (left.Equals (new object ()), Is.False);
     }
 
     [Test]
@@ -139,7 +139,7 @@ namespace Remotion.UnitTests.Collections
       TestTuple left = new TestTuple (1, "X");
       TestTuple right = new TestTuple (1, "X");
 
-      Assert.AreEqual (left.GetHashCode (), right.GetHashCode ());
+      Assert.That (right.GetHashCode (), Is.EqualTo (left.GetHashCode ()));
     }
 
     [Test]
@@ -148,7 +148,7 @@ namespace Remotion.UnitTests.Collections
       Tuple<int?, string> left = new Tuple<int?, string> (null, null);
       Tuple<int?, string> right = new Tuple<int?, string> (null, null);
 
-      Assert.AreEqual (left.GetHashCode (), right.GetHashCode ());
+      Assert.That (right.GetHashCode (), Is.EqualTo (left.GetHashCode ()));
     }
   }
 }

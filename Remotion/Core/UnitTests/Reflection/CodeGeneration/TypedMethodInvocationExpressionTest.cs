@@ -56,7 +56,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       TypedMethodInvocationExpression expression =
           new TypedMethodInvocationExpression (newObjectReference, typeof (ReferenceType).GetMethod ("Method"));
-      Assert.AreEqual (typeof (ReferenceType).GetMethod ("Method"), expression.Method);
+      Assert.That (expression.Method, Is.EqualTo (typeof (ReferenceType).GetMethod ("Method")));
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       method.ImplementByReturning (new TypedMethodInvocationExpression (newObjectReference,
           typeof (ReferenceType).GetMethod ("Method")));
 
-      Assert.AreEqual ("ReferenceTypeMethod", InvokeMethod ());
+      Assert.That (InvokeMethod (), Is.EqualTo ("ReferenceTypeMethod"));
     }
 
     [Test]
@@ -80,7 +80,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       method.ImplementByReturning (new TypedMethodInvocationExpression (newObjectReference,
           typeof (ValueType).GetMethod ("Method")));
 
-      Assert.AreEqual ("ValueTypeMethod", InvokeMethod ());
+      Assert.That (InvokeMethod (), Is.EqualTo ("ValueTypeMethod"));
     }
 
     [Test]
@@ -95,7 +95,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       method.ImplementByReturning (new TypedMethodInvocationExpression (fieldInfoReference, typeof (ReferenceType).GetMethod ("Method")));
 
-      Assert.AreEqual ("ReferenceTypeMethod", InvokeMethod ());
+      Assert.That (InvokeMethod (), Is.EqualTo ("ReferenceTypeMethod"));
     }
 
     [Test]
@@ -111,7 +111,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       method.ImplementByReturning (new TypedMethodInvocationExpression (fieldInfoReference, typeof (ReferenceType).GetMethod ("MethodWithArgs"),
         new ConstReference (1).ToExpression(), new ConstReference ("2").ToExpression()));
 
-      Assert.AreEqual (new Tuple<int, string> (1, "2"), InvokeMethod ());
+      Assert.That (InvokeMethod (), Is.EqualTo (new Tuple<int, string> (1, "2")));
     }
   }
 }

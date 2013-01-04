@@ -52,157 +52,157 @@ public class BidirectionalStringConverterTest
   [Test]
   public void CanConvertToByte()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (byte)));
+    Assert.That (_converter.CanConvertTo (typeof (byte)), Is.True);
   }
 
   [Test]
   public void CanConvertFromByte()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (byte)));
+    Assert.That (_converter.CanConvertFrom (typeof (byte)), Is.True);
   }
 
   [Test]
   public void CanConvertToInt16()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (short)));
+    Assert.That (_converter.CanConvertTo (typeof (short)), Is.True);
   }
 
   [Test]
   public void CanConvertFromInt16()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (short)));
+    Assert.That (_converter.CanConvertFrom (typeof (short)), Is.True);
   }
 
   [Test]
   public void CanConvertToInt32()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (int)));
+    Assert.That (_converter.CanConvertTo (typeof (int)), Is.True);
   }
 
   [Test]
   public void CanConvertFromInt32()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (int)));
+    Assert.That (_converter.CanConvertFrom (typeof (int)), Is.True);
   }
 
   [Test]
   public void CanConvertToInt64()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (long)));
+    Assert.That (_converter.CanConvertTo (typeof (long)), Is.True);
   }
 
   [Test]
   public void CanConvertFromInt64()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (long)));
+    Assert.That (_converter.CanConvertFrom (typeof (long)), Is.True);
   }
 
   [Test]
   public void CanConvertToSingle()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (float)));
+    Assert.That (_converter.CanConvertTo (typeof (float)), Is.True);
   }
 
   [Test]
   public void CanConvertFromSingle()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (float)));
+    Assert.That (_converter.CanConvertFrom (typeof (float)), Is.True);
   }
 
   [Test]
   public void CanConvertToDouble()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (double)));
+    Assert.That (_converter.CanConvertTo (typeof (double)), Is.True);
   }
 
   [Test]
   public void CanConvertFromDouble()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (double)));
+    Assert.That (_converter.CanConvertFrom (typeof (double)), Is.True);
   }
 
   [Test]
   public void CanConvertToDateTime()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (DateTime)));
+    Assert.That (_converter.CanConvertTo (typeof (DateTime)), Is.True);
   }
 
   [Test]
   public void CanConvertFromDateTime()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (DateTime)));
+    Assert.That (_converter.CanConvertFrom (typeof (DateTime)), Is.True);
   }
 
   [Test]
   public void CanConvertToBoolean()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (bool)));
+    Assert.That (_converter.CanConvertTo (typeof (bool)), Is.True);
   }
 
   [Test]
   public void CanConvertFromBoolean()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (bool)));
+    Assert.That (_converter.CanConvertFrom (typeof (bool)), Is.True);
   }
 
   [Test]
   public void CanConvertToDecimal()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (decimal)));
+    Assert.That (_converter.CanConvertTo (typeof (decimal)), Is.True);
   }
 
   [Test]
   public void CanConvertFromDecimal()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (decimal)));
+    Assert.That (_converter.CanConvertFrom (typeof (decimal)), Is.True);
   }
 
   [Test]
   public void CanConvertToGuid()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (Guid)));
+    Assert.That (_converter.CanConvertTo (typeof (Guid)), Is.True);
   }
 
   [Test]
   public void CanConvertFromGuid()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (Guid)));
+    Assert.That (_converter.CanConvertFrom (typeof (Guid)), Is.True);
   }
 
   [Test]
   public void CanConvertToInt32Array()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (int[])));
+    Assert.That (_converter.CanConvertTo (typeof (int[])), Is.True);
   }
 
   [Test]
   public void CanConvertFromInt32Array()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (int[])));
+    Assert.That (_converter.CanConvertFrom (typeof (int[])), Is.True);
   }
 
   [Test]
   public void CanConvertToObject()
   {
-    Assert.IsFalse (_converter.CanConvertTo (typeof (object)));
+    Assert.That (_converter.CanConvertTo (typeof (object)), Is.False);
   }
 
   [Test]
   public void CanConvertFromObject()
   {
-    Assert.IsFalse (_converter.CanConvertFrom (typeof (object)));
+    Assert.That (_converter.CanConvertFrom (typeof (object)), Is.False);
   }
 
   [Test]
   public void CanConvertToDBNull()
   {
-    Assert.IsTrue (_converter.CanConvertTo (typeof (DBNull)));
+    Assert.That (_converter.CanConvertTo (typeof (DBNull)), Is.True);
   }
 
   [Test]
   public void CanConvertFromDBNull()
   {
-    Assert.IsTrue (_converter.CanConvertFrom (typeof (DBNull)));
+    Assert.That (_converter.CanConvertFrom (typeof (DBNull)), Is.True);
   }
 
 
@@ -211,15 +211,15 @@ public class BidirectionalStringConverterTest
   {
     Type destinationType = typeof (short);
 
-    Assert.AreEqual ((short) 0, _converter.ConvertTo ("0", destinationType));
-    Assert.AreEqual ((short) 1, _converter.ConvertTo ("1", destinationType));
+    Assert.That (_converter.ConvertTo ("0", destinationType), Is.EqualTo ((short) 0));
+    Assert.That (_converter.ConvertTo ("1", destinationType), Is.EqualTo ((short) 1));
   }
 
   [Test]
   public void ConvertFromByte()
   {
-    Assert.AreEqual ("0", _converter.ConvertFrom ((byte) 0));
-    Assert.AreEqual ("1", _converter.ConvertFrom ((byte) 1));
+    Assert.That (_converter.ConvertFrom ((byte) 0), Is.EqualTo ("0"));
+    Assert.That (_converter.ConvertFrom ((byte) 1), Is.EqualTo ("1"));
   }
 
   [Test]
@@ -227,15 +227,15 @@ public class BidirectionalStringConverterTest
   {
     Type destinationType = typeof (byte);
 
-    Assert.AreEqual ((byte) 0, _converter.ConvertTo ("0", destinationType));
-    Assert.AreEqual ((byte) 1, _converter.ConvertTo ("1", destinationType));
+    Assert.That (_converter.ConvertTo ("0", destinationType), Is.EqualTo ((byte) 0));
+    Assert.That (_converter.ConvertTo ("1", destinationType), Is.EqualTo ((byte) 1));
   }
 
   [Test]
   public void ConvertFromInt16()
   {
-    Assert.AreEqual ("0", _converter.ConvertFrom ((short) 0));
-    Assert.AreEqual ("1", _converter.ConvertFrom ((short) 1));
+    Assert.That (_converter.ConvertFrom ((short) 0), Is.EqualTo ("0"));
+    Assert.That (_converter.ConvertFrom ((short) 1), Is.EqualTo ("1"));
   }
 
   [Test]
@@ -243,15 +243,15 @@ public class BidirectionalStringConverterTest
   {
     Type destinationType = typeof (int);
 
-    Assert.AreEqual (0, _converter.ConvertTo ("0", destinationType));
-    Assert.AreEqual (1, _converter.ConvertTo ("1", destinationType));
+    Assert.That (_converter.ConvertTo ("0", destinationType), Is.EqualTo (0));
+    Assert.That (_converter.ConvertTo ("1", destinationType), Is.EqualTo (1));
   }
 
   [Test]
   public void ConvertFromInt32()
   {
-    Assert.AreEqual ("0", _converter.ConvertFrom (0));
-    Assert.AreEqual ("1", _converter.ConvertFrom (1));
+    Assert.That (_converter.ConvertFrom (0), Is.EqualTo ("0"));
+    Assert.That (_converter.ConvertFrom (1), Is.EqualTo ("1"));
   }
 
   [Test]
@@ -259,15 +259,15 @@ public class BidirectionalStringConverterTest
   {
     Type destinationType = typeof (long);
 
-    Assert.AreEqual (0L, _converter.ConvertTo ("0", destinationType));
-    Assert.AreEqual (1L, _converter.ConvertTo ("1", destinationType));
+    Assert.That (_converter.ConvertTo ("0", destinationType), Is.EqualTo (0L));
+    Assert.That (_converter.ConvertTo ("1", destinationType), Is.EqualTo (1L));
   }
 
   [Test]
   public void ConvertFromInt64()
   {
-    Assert.AreEqual ("0", _converter.ConvertFrom (0L));
-    Assert.AreEqual ("1", _converter.ConvertFrom (1L));
+    Assert.That (_converter.ConvertFrom (0L), Is.EqualTo ("0"));
+    Assert.That (_converter.ConvertFrom (1L), Is.EqualTo ("1"));
   }
 
   [Test]
@@ -275,19 +275,19 @@ public class BidirectionalStringConverterTest
   {
     Type destinationType = typeof (float);
 
-    Assert.AreEqual (0F, _converter.ConvertTo ("0", destinationType));
-    Assert.AreEqual (1.5F, _converter.ConvertTo ("1.5", destinationType));
-    Assert.AreEqual (float.MinValue, _converter.ConvertTo (float.MinValue.ToString("R"), destinationType));
-    Assert.AreEqual (float.MaxValue, _converter.ConvertTo (float.MaxValue.ToString("R"), destinationType));
+    Assert.That (_converter.ConvertTo ("0", destinationType), Is.EqualTo (0F));
+    Assert.That (_converter.ConvertTo ("1.5", destinationType), Is.EqualTo (1.5F));
+    Assert.That (_converter.ConvertTo (float.MinValue.ToString("R"), destinationType), Is.EqualTo (float.MinValue));
+    Assert.That (_converter.ConvertTo (float.MaxValue.ToString("R"), destinationType), Is.EqualTo (float.MaxValue));
   }
 
   [Test]
   public void ConvertFromSingle()
   {
-    Assert.AreEqual ("0", _converter.ConvertFrom (0F));
-    Assert.AreEqual ("1.5", _converter.ConvertFrom (1.5F));
-    Assert.AreEqual (float.MinValue.ToString("R"), _converter.ConvertFrom (float.MinValue));
-    Assert.AreEqual (float.MaxValue.ToString("R"), _converter.ConvertFrom (float.MaxValue));
+    Assert.That (_converter.ConvertFrom (0F), Is.EqualTo ("0"));
+    Assert.That (_converter.ConvertFrom (1.5F), Is.EqualTo ("1.5"));
+    Assert.That (_converter.ConvertFrom (float.MinValue), Is.EqualTo (float.MinValue.ToString("R")));
+    Assert.That (_converter.ConvertFrom (float.MaxValue), Is.EqualTo (float.MaxValue.ToString("R")));
   }
 
   [Test]
@@ -295,19 +295,19 @@ public class BidirectionalStringConverterTest
   {
     Type destinationType = typeof (double);
 
-    Assert.AreEqual (0, _converter.ConvertTo ("0", destinationType));
-    Assert.AreEqual (1.5, _converter.ConvertTo ("1.5", destinationType));
-    Assert.AreEqual (double.MinValue, _converter.ConvertTo (double.MinValue.ToString("R"), destinationType));
-    Assert.AreEqual (double.MaxValue, _converter.ConvertTo (double.MaxValue.ToString("R"), destinationType));
+    Assert.That (_converter.ConvertTo ("0", destinationType), Is.EqualTo (0));
+    Assert.That (_converter.ConvertTo ("1.5", destinationType), Is.EqualTo (1.5));
+    Assert.That (_converter.ConvertTo (double.MinValue.ToString("R"), destinationType), Is.EqualTo (double.MinValue));
+    Assert.That (_converter.ConvertTo (double.MaxValue.ToString("R"), destinationType), Is.EqualTo (double.MaxValue));
   }
 
   [Test]
   public void ConvertFromDouble()
   {
-    Assert.AreEqual ("0", _converter.ConvertFrom (0));
-    Assert.AreEqual ("1.5", _converter.ConvertFrom (1.5));
-    Assert.AreEqual (double.MinValue.ToString("R"), _converter.ConvertFrom (double.MinValue));
-    Assert.AreEqual (double.MaxValue.ToString("R"), _converter.ConvertFrom (double.MaxValue));
+    Assert.That (_converter.ConvertFrom (0), Is.EqualTo ("0"));
+    Assert.That (_converter.ConvertFrom (1.5), Is.EqualTo ("1.5"));
+    Assert.That (_converter.ConvertFrom (double.MinValue), Is.EqualTo (double.MinValue.ToString("R")));
+    Assert.That (_converter.ConvertFrom (double.MaxValue), Is.EqualTo (double.MaxValue.ToString("R")));
   }
 
   [Test]
@@ -317,7 +317,7 @@ public class BidirectionalStringConverterTest
     DateTime dateTime = new DateTime (2005, 12, 24, 13, 30, 30, 0);
     string dateTimeString = dateTime.ToString();
 
-    Assert.AreEqual (dateTime, _converter.ConvertTo (dateTimeString, destinationType));
+    Assert.That (_converter.ConvertTo (dateTimeString, destinationType), Is.EqualTo (dateTime));
   }
 
   [Test]
@@ -326,7 +326,7 @@ public class BidirectionalStringConverterTest
     DateTime dateTime = new DateTime (2005, 12, 24, 13, 30, 30, 0);
     string dateTimeString = dateTime.ToString();
 
-    Assert.AreEqual (dateTimeString, _converter.ConvertFrom (dateTime));
+    Assert.That (_converter.ConvertFrom (dateTime), Is.EqualTo (dateTimeString));
   }
 
   [Test]
@@ -334,15 +334,15 @@ public class BidirectionalStringConverterTest
   {
     Type destinationType = typeof (bool);
 
-    Assert.AreEqual (true, _converter.ConvertTo ("True", destinationType));
-    Assert.AreEqual (false, _converter.ConvertTo ("False", destinationType));
+    Assert.That (_converter.ConvertTo ("True", destinationType), Is.EqualTo (true));
+    Assert.That (_converter.ConvertTo ("False", destinationType), Is.EqualTo (false));
   }
 
   [Test]
   public void ConvertFromBoolean()
   {
-    Assert.AreEqual ("True", _converter.ConvertFrom (true));
-    Assert.AreEqual ("False", _converter.ConvertFrom (false));
+    Assert.That (_converter.ConvertFrom (true), Is.EqualTo ("True"));
+    Assert.That (_converter.ConvertFrom (false), Is.EqualTo ("False"));
   }
 
   [Test]
@@ -350,15 +350,15 @@ public class BidirectionalStringConverterTest
   {
     Type destinationType = typeof (double);
 
-    Assert.AreEqual (0m, _converter.ConvertTo ("0", destinationType));
-    Assert.AreEqual (1.5m, _converter.ConvertTo ("1.5", destinationType));
+    Assert.That (_converter.ConvertTo ("0", destinationType), Is.EqualTo (0m));
+    Assert.That (_converter.ConvertTo ("1.5", destinationType), Is.EqualTo (1.5m));
   }
 
   [Test]
   public void ConvertFromDecimal()
   {
-    Assert.AreEqual ("0", _converter.ConvertFrom (0m));
-    Assert.AreEqual ("1.5", _converter.ConvertFrom (1.5m));
+    Assert.That (_converter.ConvertFrom (0m), Is.EqualTo ("0"));
+    Assert.That (_converter.ConvertFrom (1.5m), Is.EqualTo ("1.5"));
   }
 
   [Test]
@@ -367,16 +367,16 @@ public class BidirectionalStringConverterTest
     Type destinationType = typeof (Guid);
 
     Guid guid = Guid.NewGuid();
-    Assert.AreEqual (guid, _converter.ConvertTo (guid.ToString(), destinationType));
-    Assert.AreEqual (Guid.Empty, _converter.ConvertTo (Guid.Empty.ToString(), destinationType));
+    Assert.That (_converter.ConvertTo (guid.ToString(), destinationType), Is.EqualTo (guid));
+    Assert.That (_converter.ConvertTo (Guid.Empty.ToString(), destinationType), Is.EqualTo (Guid.Empty));
   }
 
   [Test]
   public void ConvertFromGuid()
   {
     Guid guid = Guid.NewGuid();
-    Assert.AreEqual (guid.ToString(), _converter.ConvertFrom (guid));
-    Assert.AreEqual (Guid.Empty.ToString(), _converter.ConvertFrom (Guid.Empty));
+    Assert.That (_converter.ConvertFrom (guid), Is.EqualTo (guid.ToString()));
+    Assert.That (_converter.ConvertFrom (Guid.Empty), Is.EqualTo (Guid.Empty.ToString()));
   }
 
   [Test]
@@ -384,18 +384,18 @@ public class BidirectionalStringConverterTest
   {
     Type destinationType = typeof (int[]);
     object value = _converter.ConvertTo ("0, 1", destinationType);
-    Assert.IsNotNull (value);
-    Assert.AreEqual (typeof (int[]), value.GetType());
+    Assert.That (value, Is.Not.Null);
+    Assert.That (value.GetType(), Is.EqualTo (typeof (int[])));
     int[] values = (int[])value;
-    Assert.AreEqual (2, values.Length);
-    Assert.AreEqual (0, values[0]);
-    Assert.AreEqual (1, values[1]);
+    Assert.That (values.Length, Is.EqualTo (2));
+    Assert.That (values[0], Is.EqualTo (0));
+    Assert.That (values[1], Is.EqualTo (1));
   }
 
   [Test]
   public void ConvertFromInt32Array()
   {
-    Assert.AreEqual ("0,1", _converter.ConvertFrom (new int[] {0, 1}));
+    Assert.That (_converter.ConvertFrom (new int[] {0, 1}), Is.EqualTo ("0,1"));
   }
 
   [Test]
@@ -403,18 +403,18 @@ public class BidirectionalStringConverterTest
   {
     Type destinationType = typeof (int?);
 
-    Assert.AreEqual (0, _converter.ConvertTo ("0", destinationType));
-    Assert.AreEqual (1, _converter.ConvertTo ("1", destinationType));
-    Assert.AreEqual (null, _converter.ConvertTo (string.Empty, destinationType));
-    Assert.AreEqual (null, _converter.ConvertTo (null, destinationType));
+    Assert.That (_converter.ConvertTo ("0", destinationType), Is.EqualTo (0));
+    Assert.That (_converter.ConvertTo ("1", destinationType), Is.EqualTo (1));
+    Assert.That (_converter.ConvertTo (string.Empty, destinationType), Is.EqualTo (null));
+    Assert.That (_converter.ConvertTo (null, destinationType), Is.EqualTo (null));
   }
 
   [Test]
   public void ConvertFromNullableInt32 ()
   {
-    Assert.AreEqual ("0", _converter.ConvertFrom ((int?) 0));
-    Assert.AreEqual ("1", _converter.ConvertFrom ((int?) 1));
-    Assert.AreEqual (string.Empty, _converter.ConvertFrom ((int?) null));
+    Assert.That (_converter.ConvertFrom ((int?) 0), Is.EqualTo ("0"));
+    Assert.That (_converter.ConvertFrom ((int?) 1), Is.EqualTo ("1"));
+    Assert.That (_converter.ConvertFrom ((int?) null), Is.EqualTo (string.Empty));
   }
 
   [Test]
@@ -427,19 +427,19 @@ public class BidirectionalStringConverterTest
   [Test]
   public void ConvertFromNull()
   {
-    Assert.AreEqual (string.Empty, _converter.ConvertFrom (null));
+    Assert.That (_converter.ConvertFrom (null), Is.EqualTo (string.Empty));
   }
 
   [Test]
   public void ConvertToDBNull()
   {
-    Assert.AreEqual (DBNull.Value, _converter.ConvertTo ("", typeof (DBNull)));
+    Assert.That (_converter.ConvertTo ("", typeof (DBNull)), Is.EqualTo (DBNull.Value));
   }
 
   [Test]
   public void ConvertFromDBNull()
   {
-    Assert.AreEqual ("", _converter.ConvertFrom (DBNull.Value));
+    Assert.That (_converter.ConvertFrom (DBNull.Value), Is.EqualTo (""));
   }
 }            
 

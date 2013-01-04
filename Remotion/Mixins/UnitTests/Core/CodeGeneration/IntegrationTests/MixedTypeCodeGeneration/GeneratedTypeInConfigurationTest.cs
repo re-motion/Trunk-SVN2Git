@@ -35,7 +35,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget>().Clear().AddMixins (generatedType).EnterScope())
       {
         object instance = ObjectFactory.Create (typeof (NullTarget), ParamList.Empty);
-        Assert.IsNotNull (Mixin.Get (generatedType, instance));
+        Assert.That (Mixin.Get (generatedType, instance), Is.Not.Null);
       }
     }
 
@@ -49,7 +49,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       using (MixinConfiguration.BuildFromActive().ForClass (generatedType).Clear().AddMixins (typeof (NullMixin)).EnterScope())
       {
         object instance = ObjectFactory.Create (generatedType, ParamList.Empty);
-        Assert.IsNotNull (Mixin.Get (typeof (NullMixin), instance));
+        Assert.That (Mixin.Get (typeof (NullMixin), instance), Is.Not.Null);
       }
     }
   }

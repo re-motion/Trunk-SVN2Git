@@ -524,7 +524,7 @@ namespace Remotion.UnitTests.Utilities
     public void Convert_FromString_ToStringArray ()
     {
       string value = "Hello,World,!";
-      Assert.AreEqual (new[] { "Hello", "World", "!" }, _provider.Convert (_string, _stringArray, value));
+      Assert.That (_provider.Convert (_string, _stringArray, value), Is.EqualTo (new[] { "Hello", "World", "!" }));
     }
 
     [Test]

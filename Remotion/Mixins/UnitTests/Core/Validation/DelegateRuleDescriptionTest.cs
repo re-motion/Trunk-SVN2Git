@@ -41,24 +41,24 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
     public void DefaultDescription ()
     {
       IValidationRule rule = new DelegateValidationRule<TargetClassDefinition> (NonDescribedSampleRule);
-      Assert.AreEqual ("Remotion.Mixins.UnitTests.Core.Validation.DelegateRuleDescriptionTest.NonDescribedSampleRule", rule.RuleName);
-      Assert.AreEqual ("Non described sample rule", rule.Message);
+      Assert.That (rule.RuleName, Is.EqualTo ("Remotion.Mixins.UnitTests.Core.Validation.DelegateRuleDescriptionTest.NonDescribedSampleRule"));
+      Assert.That (rule.Message, Is.EqualTo ("Non described sample rule"));
     }
 
     [Test]
     public void DescriptionAttribute_NoChanges ()
     {
       IValidationRule rule = new DelegateValidationRule<TargetClassDefinition> (DescribedSampleRule_NoChanges);
-      Assert.AreEqual ("Remotion.Mixins.UnitTests.Core.Validation.DelegateRuleDescriptionTest.DescribedSampleRule_NoChanges", rule.RuleName);
-      Assert.AreEqual ("Described sample rule_ no changes", rule.Message);
+      Assert.That (rule.RuleName, Is.EqualTo ("Remotion.Mixins.UnitTests.Core.Validation.DelegateRuleDescriptionTest.DescribedSampleRule_NoChanges"));
+      Assert.That (rule.Message, Is.EqualTo ("Described sample rule_ no changes"));
     }
 
     [Test]
     public void DescriptionAttribute_Changes ()
     {
       IValidationRule rule = new DelegateValidationRule<TargetClassDefinition> (DescribedSampleRule_Changes);
-      Assert.AreEqual ("Fritz", rule.RuleName);
-      Assert.AreEqual ("Echo?", rule.Message);
+      Assert.That (rule.RuleName, Is.EqualTo ("Fritz"));
+      Assert.That (rule.Message, Is.EqualTo ("Echo?"));
     }
   }
 }

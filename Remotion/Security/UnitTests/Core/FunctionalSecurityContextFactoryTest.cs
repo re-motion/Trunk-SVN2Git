@@ -30,8 +30,8 @@ namespace Remotion.Security.UnitTests.Core
       ISecurityContextFactory factory = new FunctionalSecurityContextFactory (typeof (SecurableObject));
 
       ISecurityContext context = factory.CreateSecurityContext ();
-      Assert.IsNotNull (context);
-      Assert.AreEqual ("Remotion.Security.UnitTests.Core.SampleDomain.SecurableObject, Remotion.Security.UnitTests", context.Class);
+      Assert.That (context, Is.Not.Null);
+      Assert.That (context.Class, Is.EqualTo ("Remotion.Security.UnitTests.Core.SampleDomain.SecurableObject, Remotion.Security.UnitTests"));
     }
 
     [Test]
@@ -39,12 +39,12 @@ namespace Remotion.Security.UnitTests.Core
     {
       FunctionalSecurityContextFactory factory = new FunctionalSecurityContextFactory (typeof (SecurableObject));
       FunctionalSecurityContextFactory deserializedFactory = Serializer.SerializeAndDeserialize (factory);
-      Assert.AreNotSame (factory, deserializedFactory);
+      Assert.That (deserializedFactory, Is.Not.SameAs (factory));
 
       ISecurityContext context1 = factory.CreateSecurityContext ();
       ISecurityContext context2 = deserializedFactory.CreateSecurityContext ();
-      Assert.AreNotSame (context1, context2);
-      Assert.AreEqual (context1, context2);
+      Assert.That (context2, Is.Not.SameAs (context1));
+      Assert.That (context2, Is.EqualTo (context1));
     }
   }
 }

@@ -40,13 +40,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       object[] data = serializationInfo.GetData();
 
       FlattenedDeserializationInfo deserializationInfo = new FlattenedDeserializationInfo (data);
-      Assert.AreEqual (1, deserializationInfo.GetIntValue ());
-      Assert.AreEqual (true, deserializationInfo.GetBoolValue ());
-      Assert.AreEqual (2, deserializationInfo.GetIntValue ());
-      Assert.AreEqual (false, deserializationInfo.GetBoolValue ());
-      Assert.AreEqual (new DateTime (2007, 1, 2), deserializationInfo.GetValue<DateTime> ());
-      Assert.AreEqual ("Foo", deserializationInfo.GetValue<string> ());
-      Assert.AreEqual (null, deserializationInfo.GetValue<int?> ());
+      Assert.That (deserializationInfo.GetIntValue (), Is.EqualTo (1));
+      Assert.That (deserializationInfo.GetBoolValue (), Is.EqualTo (true));
+      Assert.That (deserializationInfo.GetIntValue (), Is.EqualTo (2));
+      Assert.That (deserializationInfo.GetBoolValue (), Is.EqualTo (false));
+      Assert.That (deserializationInfo.GetValue<DateTime> (), Is.EqualTo (new DateTime (2007, 1, 2)));
+      Assert.That (deserializationInfo.GetValue<string> (), Is.EqualTo ("Foo"));
+      Assert.That (deserializationInfo.GetValue<int?> (), Is.EqualTo (null));
     }
 
     [Test]
@@ -194,15 +194,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       FlattenedDeserializationInfo deserializationInfo = new FlattenedDeserializationInfo (data);
 
-      Assert.AreEqual (dt1, deserializationInfo.GetValueForHandle<DateTime> ());
-      Assert.AreEqual (dt2, deserializationInfo.GetValueForHandle<DateTime> ());
-      Assert.AreEqual (dt1, deserializationInfo.GetValueForHandle<DateTime> ());
-      Assert.AreEqual (dt1, deserializationInfo.GetValueForHandle<DateTime> ());
-      Assert.AreEqual (s1, deserializationInfo.GetValueForHandle<string> ());
-      Assert.AreEqual (s2, deserializationInfo.GetValueForHandle<string> ());
-      Assert.AreEqual (s1, deserializationInfo.GetValueForHandle<string> ());
-      Assert.AreEqual (s1, deserializationInfo.GetValueForHandle<string> ());
-      Assert.AreEqual (s2, deserializationInfo.GetValueForHandle<string> ());
+      Assert.That (deserializationInfo.GetValueForHandle<DateTime> (), Is.EqualTo (dt1));
+      Assert.That (deserializationInfo.GetValueForHandle<DateTime> (), Is.EqualTo (dt2));
+      Assert.That (deserializationInfo.GetValueForHandle<DateTime> (), Is.EqualTo (dt1));
+      Assert.That (deserializationInfo.GetValueForHandle<DateTime> (), Is.EqualTo (dt1));
+      Assert.That (deserializationInfo.GetValueForHandle<string> (), Is.EqualTo (s1));
+      Assert.That (deserializationInfo.GetValueForHandle<string> (), Is.EqualTo (s2));
+      Assert.That (deserializationInfo.GetValueForHandle<string> (), Is.EqualTo (s1));
+      Assert.That (deserializationInfo.GetValueForHandle<string> (), Is.EqualTo (s1));
+      Assert.That (deserializationInfo.GetValueForHandle<string> (), Is.EqualTo (s2));
     }
 
     [Test]
@@ -217,8 +217,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       FlattenedDeserializationInfo deserializationInfo = new FlattenedDeserializationInfo (data);
 
-      Assert.AreEqual (null, deserializationInfo.GetValueForHandle<string> ());
-      Assert.AreEqual (null, deserializationInfo.GetValueForHandle<int?> ());
+      Assert.That (deserializationInfo.GetValueForHandle<string> (), Is.EqualTo (null));
+      Assert.That (deserializationInfo.GetValueForHandle<int?> (), Is.EqualTo (null));
     }
 
     [Test]
@@ -250,8 +250,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       FlattenedDeserializationInfo deserializationInfo = new FlattenedDeserializationInfo (data);
       FlattenedSerializableStub deserializedStub = deserializationInfo.GetValue<FlattenedSerializableStub> ();
 
-      Assert.AreEqual ("begone, foul fiend", deserializedStub.Data1);
-      Assert.AreEqual (123, deserializedStub.Data2);
+      Assert.That (deserializedStub.Data1, Is.EqualTo ("begone, foul fiend"));
+      Assert.That (deserializedStub.Data2, Is.EqualTo (123));
     }
 
     [Test]
@@ -282,10 +282,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       FlattenedSerializableStub deserializedStub2 = deserializationInfo.GetValueForHandle<FlattenedSerializableStub> ();
       FlattenedSerializableStub deserializedStub3 = deserializationInfo.GetValueForHandle<FlattenedSerializableStub> ();
 
-      Assert.AreSame (deserializedStub1, deserializedStub2);
-      Assert.AreSame (deserializedStub2, deserializedStub3);
-      Assert.AreEqual ("begone, foul fiend", deserializedStub1.Data1);
-      Assert.AreEqual (123, deserializedStub1.Data2);
+      Assert.That (deserializedStub2, Is.SameAs (deserializedStub1));
+      Assert.That (deserializedStub3, Is.SameAs (deserializedStub2));
+      Assert.That (deserializedStub1.Data1, Is.EqualTo ("begone, foul fiend"));
+      Assert.That (deserializedStub1.Data2, Is.EqualTo (123));
     }
 
     [Test]
@@ -303,14 +303,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       FlattenedSerializableStub deserializedStub1 = deserializationInfo.GetValueForHandle<FlattenedSerializableStub> ();
       FlattenedSerializableStub deserializedStub2 = deserializedStub1.Data3;
 
-      Assert.AreNotSame (deserializedStub1, deserializedStub2);
-      Assert.AreEqual ("begone, foul fiend", deserializedStub1.Data1);
-      Assert.AreEqual (123, deserializedStub1.Data2);
-      Assert.AreSame (deserializedStub2, deserializedStub1.Data3);
+      Assert.That (deserializedStub2, Is.Not.SameAs (deserializedStub1));
+      Assert.That (deserializedStub1.Data1, Is.EqualTo ("begone, foul fiend"));
+      Assert.That (deserializedStub1.Data2, Is.EqualTo (123));
+      Assert.That (deserializedStub1.Data3, Is.SameAs (deserializedStub2));
 
-      Assert.AreEqual ("befoul, gone fiend", deserializedStub2.Data1);
-      Assert.AreEqual (125, deserializedStub2.Data2);
-      Assert.IsNull (deserializedStub2.Data3);
+      Assert.That (deserializedStub2.Data1, Is.EqualTo ("befoul, gone fiend"));
+      Assert.That (deserializedStub2.Data2, Is.EqualTo (125));
+      Assert.That (deserializedStub2.Data3, Is.Null);
     }
 
     [Test]
@@ -355,11 +355,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       FlattenedDeserializationInfo deserializationInfo = new FlattenedDeserializationInfo (data);
       FlattenedSerializableStub[] deserializedStubs = deserializationInfo.GetArray<FlattenedSerializableStub> ();
 
-      Assert.AreEqual (2, deserializedStubs.Length);
-      Assert.AreEqual ("begone, foul fiend", deserializedStubs[0].Data1);
-      Assert.AreEqual (123, deserializedStubs[0].Data2);
-      Assert.AreEqual ("'twas brillig, and the slithy toves", deserializedStubs[1].Data1);
-      Assert.AreEqual (124, deserializedStubs[1].Data2);
+      Assert.That (deserializedStubs.Length, Is.EqualTo (2));
+      Assert.That (deserializedStubs[0].Data1, Is.EqualTo ("begone, foul fiend"));
+      Assert.That (deserializedStubs[0].Data2, Is.EqualTo (123));
+      Assert.That (deserializedStubs[1].Data1, Is.EqualTo ("'twas brillig, and the slithy toves"));
+      Assert.That (deserializedStubs[1].Data2, Is.EqualTo (124));
     }
 
     [Test]
@@ -375,11 +375,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       FlattenedDeserializationInfo deserializationInfo = new FlattenedDeserializationInfo (data);
       object[] deserializedStubs = deserializationInfo.GetArray<object> ();
 
-      Assert.AreEqual (2, deserializedStubs.Length);
-      Assert.AreEqual ("begone, foul fiend", ((FlattenedSerializableStub) deserializedStubs[0]).Data1);
-      Assert.AreEqual (123, ((FlattenedSerializableStub) deserializedStubs[0]).Data2);
-      Assert.AreEqual ("'twas brillig, and the slithy toves", ((FlattenedSerializableStub) deserializedStubs[1]).Data1);
-      Assert.AreEqual (124, ((FlattenedSerializableStub) deserializedStubs[1]).Data2);
+      Assert.That (deserializedStubs.Length, Is.EqualTo (2));
+      Assert.That (((FlattenedSerializableStub) deserializedStubs[0]).Data1, Is.EqualTo ("begone, foul fiend"));
+      Assert.That (((FlattenedSerializableStub) deserializedStubs[0]).Data2, Is.EqualTo (123));
+      Assert.That (((FlattenedSerializableStub) deserializedStubs[1]).Data1, Is.EqualTo ("'twas brillig, and the slithy toves"));
+      Assert.That (((FlattenedSerializableStub) deserializedStubs[1]).Data2, Is.EqualTo (124));
     }
 
     [Test]

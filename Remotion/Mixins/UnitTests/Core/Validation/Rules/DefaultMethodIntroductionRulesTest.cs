@@ -61,7 +61,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
 
       var log = Validator.Validate (definition);
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMethodIntroductionRules.PublicMethodNameMustBeUniqueInTargetClass", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMethodIntroductionRules.PublicMethodNameMustBeUniqueInTargetClass", log), Is.True);
     }
 
     [Test]
@@ -130,7 +130,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
       MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
 
       var log = Validator.Validate (definition);
-      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMethodIntroductionRules.PublicMethodNameMustBeUniqueInOtherMixins", log));
+      Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMethodIntroductionRules.PublicMethodNameMustBeUniqueInOtherMixins", log), Is.True);
     }
   }
 }

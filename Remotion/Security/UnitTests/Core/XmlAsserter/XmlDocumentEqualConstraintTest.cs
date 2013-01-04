@@ -30,7 +30,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       XmlDocument actual = new XmlDocument ();
 
       var constraint = new XmlDocumentEqualConstraint (expected);
-      Assert.IsTrue (constraint.Matches (actual));
+      Assert.That (constraint.Matches (actual), Is.True);
     }
 
     [Test]
@@ -39,7 +39,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       XmlDocument expected = new XmlDocument ();
 
       var constraint = new XmlDocumentEqualConstraint (expected);
-      Assert.IsFalse (constraint.Matches ((object)null));
+      Assert.That (constraint.Matches ((object)null), Is.False);
     }
 
     [Test]
@@ -48,14 +48,14 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       XmlDocument actual = new XmlDocument ();
 
       var constraint = new XmlDocumentEqualConstraint (null);
-      Assert.IsFalse (constraint.Matches(actual));
+      Assert.That (constraint.Matches(actual), Is.False);
     }
 
     [Test]
     public void ExpectedAndActualDocumentsAreNull ()
     {
       var constraint = new XmlDocumentEqualConstraint (null);
-      Assert.IsTrue (constraint.Matches((object)null));
+      Assert.That (constraint.Matches((object)null), Is.True);
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actual.AppendChild (actualRootNode);
 
       var constraint = new XmlDocumentEqualConstraint (expected);
-      Assert.IsFalse (constraint.Matches (actual));
+      Assert.That (constraint.Matches (actual), Is.False);
     }
 
     [Test]
@@ -85,7 +85,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actual.AppendChild (actualRootNode);
 
       var constraint = new XmlDocumentEqualConstraint (expected);
-      Assert.IsFalse (constraint.Matches(actual));
+      Assert.That (constraint.Matches(actual), Is.False);
     }
 
     [Test]
@@ -102,7 +102,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actual.AppendChild (actualRootNode);
 
       var constraint = new XmlDocumentEqualConstraint (expected);
-      Assert.IsTrue (constraint.Matches (actual));
+      Assert.That (constraint.Matches (actual), Is.True);
     }
 
     [Test]
@@ -124,7 +124,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actual.AppendChild (actualRootNode);
 
       var constraint = new XmlDocumentEqualConstraint (expected);
-      Assert.IsFalse (constraint.Matches(actual));
+      Assert.That (constraint.Matches(actual), Is.False);
     }
 
     [Test]
@@ -146,7 +146,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actual.AppendChild (actualRootNode);
 
       var constraint = new XmlDocumentEqualConstraint (expected);
-      Assert.IsFalse (constraint.Matches (actual));
+      Assert.That (constraint.Matches (actual), Is.False);
     }
 
     [Test]
@@ -166,7 +166,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actual.AppendChild (actualRootNode);
 
       var constraint= new XmlDocumentEqualConstraint (expected);
-      Assert.IsTrue (constraint.Matches (actual));
+      Assert.That (constraint.Matches (actual), Is.True);
     }
 
     [Test]
@@ -188,7 +188,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actual.AppendChild (actualRootNode);
 
       var constraint = new XmlDocumentEqualConstraint (expected);
-      Assert.IsFalse (constraint.Matches (actual));
+      Assert.That (constraint.Matches (actual), Is.False);
     }
 
     [Test]
@@ -207,7 +207,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actual.AppendChild (actualRootNode);
 
       var constraint = new XmlDocumentEqualConstraint(expected);
-      Assert.IsTrue (constraint.Matches (actual));
+      Assert.That (constraint.Matches (actual), Is.True);
     }
 
     [Test]

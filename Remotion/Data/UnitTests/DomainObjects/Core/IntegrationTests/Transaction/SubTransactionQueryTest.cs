@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter");
 
-        Assert.AreEqual (42, ClientTransactionScope.CurrentTransaction.QueryManager.GetScalar (query));
+        Assert.That (ClientTransactionScope.CurrentTransaction.QueryManager.GetScalar (query), Is.EqualTo (42));
       }
     }
 
@@ -63,12 +63,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         var array = queriedObjects.ToArray ();
         var queriedObject = (Customer) array[0];
 
-        Assert.IsNotNull (queriedObjects);
-        Assert.AreEqual (1, queriedObjects.Count);
-        Assert.AreEqual (DomainObjectIDs.Customer1, array[0].ID);
+        Assert.That (queriedObjects, Is.Not.Null);
+        Assert.That (queriedObjects.Count, Is.EqualTo (1));
+        Assert.That (array[0].ID, Is.EqualTo (DomainObjectIDs.Customer1));
 
-        Assert.AreEqual (new DateTime(2000, 1, 1), queriedObject.CustomerSince);
-        Assert.AreSame (Order.GetObject (DomainObjectIDs.Order1), queriedObject.Orders[0]);
+        Assert.That (queriedObject.CustomerSince, Is.EqualTo (new DateTime(2000, 1, 1)));
+        Assert.That (queriedObject.Orders[0], Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
       }
     }
 
@@ -84,12 +84,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         var array = queriedObjects.ToArray ();
         Customer queriedObject = array[0];
 
-        Assert.IsNotNull (queriedObjects);
-        Assert.AreEqual (1, queriedObjects.Count);
-        Assert.AreEqual (DomainObjectIDs.Customer1, array[0].ID);
+        Assert.That (queriedObjects, Is.Not.Null);
+        Assert.That (queriedObjects.Count, Is.EqualTo (1));
+        Assert.That (array[0].ID, Is.EqualTo (DomainObjectIDs.Customer1));
 
-        Assert.AreEqual (new DateTime (2000, 1, 1), queriedObject.CustomerSince);
-        Assert.AreSame (Order.GetObject (DomainObjectIDs.Order1), queriedObject.Orders[0]);
+        Assert.That (queriedObject.CustomerSince, Is.EqualTo (new DateTime (2000, 1, 1)));
+        Assert.That (queriedObject.Orders[0], Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
       }
     }
 
@@ -127,12 +127,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       var queriedObject = (Customer) queriedObjects.ToArray()[0];
 
-      Assert.IsNotNull (queriedObjects);
-      Assert.AreEqual (1, queriedObjects.Count);
-      
-      Assert.AreEqual (DomainObjectIDs.Customer1, queriedObject.ID);
-      Assert.AreEqual (new DateTime (2000, 1, 1), queriedObject.CustomerSince);
-      Assert.AreSame (Order.GetObject (DomainObjectIDs.Order1), queriedObject.Orders[0]);
+      Assert.That (queriedObjects, Is.Not.Null);
+      Assert.That (queriedObjects.Count, Is.EqualTo (1));
+
+      Assert.That (queriedObject.ID, Is.EqualTo (DomainObjectIDs.Customer1));
+      Assert.That (queriedObject.CustomerSince, Is.EqualTo (new DateTime (2000, 1, 1)));
+      Assert.That (queriedObject.Orders[0], Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
     }
 
     [Test]
@@ -160,12 +160,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
 
-      Assert.IsNotNull (queriedObjects);
-      Assert.AreEqual (1, queriedObjects.Count);
-      Assert.AreEqual (DomainObjectIDs.Customer1, queriedObjects.ToArray()[0].ID);
+      Assert.That (queriedObjects, Is.Not.Null);
+      Assert.That (queriedObjects.Count, Is.EqualTo (1));
+      Assert.That (queriedObjects.ToArray()[0].ID, Is.EqualTo (DomainObjectIDs.Customer1));
 
-      Assert.IsNull (queriedObject.CustomerSince);
-      Assert.AreSame (newOrder, queriedObject.Orders[0]);
+      Assert.That (queriedObject.CustomerSince, Is.Null);
+      Assert.That (queriedObject.Orders[0], Is.SameAs (newOrder));
     }
 
     [Test]

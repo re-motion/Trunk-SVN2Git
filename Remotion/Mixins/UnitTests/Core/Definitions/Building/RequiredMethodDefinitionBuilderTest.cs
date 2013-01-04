@@ -28,37 +28,32 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     private static void CheckRequiredMethods (RequirementDefinitionBase requirement, ClassDefinitionBase implementer, string memberPrefix)
     {
       BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      Assert.AreEqual (5, requirement.Methods.Count);
+      Assert.That (requirement.Methods.Count, Is.EqualTo (5));
 
       RequiredMethodDefinition method = requirement.Methods[typeof (IMixinRequiringAllMembersRequirements).GetMethod ("Method", bf)];
-      Assert.IsNotNull (method);
-      Assert.AreEqual (typeof (IMixinRequiringAllMembersRequirements).GetMethod ("Method", bf), method.InterfaceMethod);
-      Assert.AreSame (implementer.Methods[implementer.Type.GetMethod (memberPrefix + "Method", bf)],
-                      method.ImplementingMethod);
+      Assert.That (method, Is.Not.Null);
+      Assert.That (method.InterfaceMethod, Is.EqualTo (typeof (IMixinRequiringAllMembersRequirements).GetMethod ("Method", bf)));
+      Assert.That (method.ImplementingMethod, Is.SameAs (implementer.Methods[implementer.Type.GetMethod (memberPrefix + "Method", bf)]));
 
       RequiredMethodDefinition propertyGetter = requirement.Methods[typeof (IMixinRequiringAllMembersRequirements).GetMethod ("get_Property", bf)];
-      Assert.IsNotNull (propertyGetter);
-      Assert.AreEqual (typeof (IMixinRequiringAllMembersRequirements).GetMethod ("get_Property", bf), propertyGetter.InterfaceMethod);
-      Assert.AreSame (implementer.Properties[implementer.Type.GetProperty (memberPrefix + "Property", bf)].GetMethod,
-                      propertyGetter.ImplementingMethod);
+      Assert.That (propertyGetter, Is.Not.Null);
+      Assert.That (propertyGetter.InterfaceMethod, Is.EqualTo (typeof (IMixinRequiringAllMembersRequirements).GetMethod ("get_Property", bf)));
+      Assert.That (propertyGetter.ImplementingMethod, Is.SameAs (implementer.Properties[implementer.Type.GetProperty (memberPrefix + "Property", bf)].GetMethod));
 
       RequiredMethodDefinition propertySetter = requirement.Methods[typeof (IMixinRequiringAllMembersRequirements).GetMethod ("set_Property", bf)];
-      Assert.IsNotNull (propertySetter);
-      Assert.AreEqual (typeof (IMixinRequiringAllMembersRequirements).GetMethod ("set_Property", bf), propertySetter.InterfaceMethod);
-      Assert.AreSame (implementer.Properties[implementer.Type.GetProperty (memberPrefix + "Property", bf)].SetMethod,
-                      propertySetter.ImplementingMethod);
+      Assert.That (propertySetter, Is.Not.Null);
+      Assert.That (propertySetter.InterfaceMethod, Is.EqualTo (typeof (IMixinRequiringAllMembersRequirements).GetMethod ("set_Property", bf)));
+      Assert.That (propertySetter.ImplementingMethod, Is.SameAs (implementer.Properties[implementer.Type.GetProperty (memberPrefix + "Property", bf)].SetMethod));
 
       RequiredMethodDefinition eventAdder = requirement.Methods[typeof (IMixinRequiringAllMembersRequirements).GetMethod ("add_Event", bf)];
-      Assert.IsNotNull (eventAdder);
-      Assert.AreEqual (typeof (IMixinRequiringAllMembersRequirements).GetMethod ("add_Event", bf), eventAdder.InterfaceMethod);
-      Assert.AreSame (implementer.Events[implementer.Type.GetEvent (memberPrefix + "Event", bf)].AddMethod,
-                      eventAdder.ImplementingMethod);
+      Assert.That (eventAdder, Is.Not.Null);
+      Assert.That (eventAdder.InterfaceMethod, Is.EqualTo (typeof (IMixinRequiringAllMembersRequirements).GetMethod ("add_Event", bf)));
+      Assert.That (eventAdder.ImplementingMethod, Is.SameAs (implementer.Events[implementer.Type.GetEvent (memberPrefix + "Event", bf)].AddMethod));
 
       RequiredMethodDefinition eventRemover = requirement.Methods[typeof (IMixinRequiringAllMembersRequirements).GetMethod ("remove_Event", bf)];
-      Assert.IsNotNull (eventRemover);
-      Assert.AreEqual (typeof (IMixinRequiringAllMembersRequirements).GetMethod ("remove_Event", bf), eventRemover.InterfaceMethod);
-      Assert.AreSame (implementer.Events[implementer.Type.GetEvent (memberPrefix + "Event", bf)].RemoveMethod,
-                      eventRemover.ImplementingMethod);
+      Assert.That (eventRemover, Is.Not.Null);
+      Assert.That (eventRemover.InterfaceMethod, Is.EqualTo (typeof (IMixinRequiringAllMembersRequirements).GetMethod ("remove_Event", bf)));
+      Assert.That (eventRemover.ImplementingMethod, Is.SameAs (implementer.Events[implementer.Type.GetEvent (memberPrefix + "Event", bf)].RemoveMethod));
     }
 
     [Test]
@@ -66,10 +61,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingAllMemberRequirements));
       MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersTargetCall)];
-      Assert.IsNotNull (mixin);
+      Assert.That (mixin, Is.Not.Null);
 
       RequiredTargetCallTypeDefinition requirement = mixin.TargetCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
-      Assert.IsNotNull (requirement);
+      Assert.That (requirement, Is.Not.Null);
 
       CheckRequiredMethods(requirement, TargetClassDefinition, "");
     }
@@ -79,10 +74,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingAllMemberRequirements));
       MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersNextCall)];
-      Assert.IsNotNull (mixin);
+      Assert.That (mixin, Is.Not.Null);
 
       RequiredNextCallTypeDefinition requirement = mixin.NextCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
-      Assert.IsNotNull (requirement);
+      Assert.That (requirement, Is.Not.Null);
 
       CheckRequiredMethods (requirement, TargetClassDefinition, "");
     }
@@ -94,13 +89,13 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       {
         TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingNoMemberRequirements));
         MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersTargetCall)];
-        Assert.IsNotNull (mixin);
+        Assert.That (mixin, Is.Not.Null);
 
         MixinDefinition implementingMixin = TargetClassDefinition.Mixins[typeof (MixinFulfillingAllMemberRequirements)];
-        Assert.IsNotNull (implementingMixin);
+        Assert.That (implementingMixin, Is.Not.Null);
 
         RequiredTargetCallTypeDefinition requirement = mixin.TargetCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
-        Assert.IsNotNull (requirement);
+        Assert.That (requirement, Is.Not.Null);
 
         CheckRequiredMethods (requirement, implementingMixin, "");
       }
@@ -113,13 +108,13 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       {
         TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingNoMemberRequirements));
         MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersNextCall)];
-        Assert.IsNotNull (mixin);
+        Assert.That (mixin, Is.Not.Null);
 
         MixinDefinition implementingMixin = TargetClassDefinition.Mixins[typeof (MixinFulfillingAllMemberRequirements)];
-        Assert.IsNotNull (implementingMixin);
+        Assert.That (implementingMixin, Is.Not.Null);
 
         RequiredNextCallTypeDefinition requirement = mixin.NextCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
-        Assert.IsNotNull (requirement);
+        Assert.That (requirement, Is.Not.Null);
 
         CheckRequiredMethods (requirement, implementingMixin, "");
       }
@@ -130,10 +125,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingAllMemberRequirementsDuck));
       MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersTargetCall)];
-      Assert.IsNotNull (mixin);
+      Assert.That (mixin, Is.Not.Null);
 
       RequiredTargetCallTypeDefinition requirement = mixin.TargetCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
-      Assert.IsNotNull (requirement);
+      Assert.That (requirement, Is.Not.Null);
 
       CheckRequiredMethods (requirement, TargetClassDefinition, "");
     }
@@ -143,10 +138,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingAllMemberRequirementsDuck));
       MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersNextCall)];
-      Assert.IsNotNull (mixin);
+      Assert.That (mixin, Is.Not.Null);
 
       RequiredNextCallTypeDefinition requirement = mixin.NextCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
-      Assert.IsNotNull (requirement);
+      Assert.That (requirement, Is.Not.Null);
 
       CheckRequiredMethods (requirement, TargetClassDefinition, "");
     }
@@ -272,7 +267,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithStaticMethod));
       RequiredTargetCallTypeDefinition requirement = targetClass.RequiredTargetCallTypes[typeof (ClassWithStaticMethod)];
-      Assert.AreEqual (0, requirement.Methods.Count);
+      Assert.That (requirement.Methods.Count, Is.EqualTo (0));
     }
   }
 }

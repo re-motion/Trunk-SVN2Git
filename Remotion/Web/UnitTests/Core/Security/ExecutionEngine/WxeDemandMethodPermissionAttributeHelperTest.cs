@@ -33,10 +33,10 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           typeof (TestFunctionWithThisObject),
           attribute);
 
-      Assert.AreSame (typeof (TestFunctionWithThisObject), helper.FunctionType);
-      Assert.AreEqual (MethodType.Instance, helper.MethodType);
-      Assert.IsNull (helper.SecurableClass);
-      Assert.AreEqual ("Show", helper.MethodName);
+      Assert.That (helper.FunctionType, Is.SameAs (typeof (TestFunctionWithThisObject)));
+      Assert.That (helper.MethodType, Is.EqualTo (MethodType.Instance));
+      Assert.That (helper.SecurableClass, Is.Null);
+      Assert.That (helper.MethodName, Is.EqualTo ("Show"));
     }
 
     [Test]
@@ -48,10 +48,10 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           typeof (TestFunctionWithThisObject),
           attribute);
 
-      Assert.AreSame (typeof (TestFunctionWithThisObject), helper.FunctionType);
-      Assert.AreEqual (MethodType.Instance, helper.MethodType);
-      Assert.AreSame (typeof (DerivedSecurableObject), helper.SecurableClass);
-      Assert.AreEqual ("ShowSpecial", helper.MethodName);
+      Assert.That (helper.FunctionType, Is.SameAs (typeof (TestFunctionWithThisObject)));
+      Assert.That (helper.MethodType, Is.EqualTo (MethodType.Instance));
+      Assert.That (helper.SecurableClass, Is.SameAs (typeof (DerivedSecurableObject)));
+      Assert.That (helper.MethodName, Is.EqualTo ("ShowSpecial"));
     }
 
     [Test]
@@ -63,10 +63,10 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           typeof (TestFunctionWithThisObject),
           attribute);
 
-      Assert.AreSame (typeof (TestFunctionWithThisObject), helper.FunctionType);
-      Assert.AreEqual (MethodType.Instance, helper.MethodType);
-      Assert.AreSame (typeof (SecurableObject), helper.SecurableClass);
-      Assert.AreEqual ("Show", helper.MethodName);
+      Assert.That (helper.FunctionType, Is.SameAs (typeof (TestFunctionWithThisObject)));
+      Assert.That (helper.MethodType, Is.EqualTo (MethodType.Instance));
+      Assert.That (helper.SecurableClass, Is.SameAs (typeof (SecurableObject)));
+      Assert.That (helper.MethodName, Is.EqualTo ("Show"));
     }
 
 
@@ -79,10 +79,10 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           typeof (TestFunctionWithThisObject),
           attribute);
 
-      Assert.AreSame (typeof (TestFunctionWithThisObject), helper.FunctionType);
-      Assert.AreEqual (MethodType.Static, helper.MethodType);
-      Assert.AreSame (typeof (SecurableObject), helper.SecurableClass);
-      Assert.AreEqual ("Search", helper.MethodName);
+      Assert.That (helper.FunctionType, Is.SameAs (typeof (TestFunctionWithThisObject)));
+      Assert.That (helper.MethodType, Is.EqualTo (MethodType.Static));
+      Assert.That (helper.SecurableClass, Is.SameAs (typeof (SecurableObject)));
+      Assert.That (helper.MethodName, Is.EqualTo ("Search"));
     }
 
     [Test]
@@ -94,10 +94,10 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           typeof (TestFunctionWithThisObject),
           attribute);
 
-      Assert.AreSame (typeof (TestFunctionWithThisObject), helper.FunctionType);
-      Assert.AreEqual (MethodType.Static, helper.MethodType);
-      Assert.AreSame (typeof (SecurableObject), helper.SecurableClass);
-      Assert.AreEqual ("Search", helper.MethodName);
+      Assert.That (helper.FunctionType, Is.SameAs (typeof (TestFunctionWithThisObject)));
+      Assert.That (helper.MethodType, Is.EqualTo (MethodType.Static));
+      Assert.That (helper.SecurableClass, Is.SameAs (typeof (SecurableObject)));
+      Assert.That (helper.MethodName, Is.EqualTo ("Search"));
     }
 
     [Test]
@@ -110,10 +110,10 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           typeof (TestFunctionWithThisObject),
           attribute);
 
-      Assert.AreSame (typeof (TestFunctionWithThisObject), helper.FunctionType);
-      Assert.AreEqual (MethodType.Static, helper.MethodType);
-      Assert.AreSame (typeof (DerivedSecurableObject), helper.SecurableClass);
-      Assert.AreEqual ("Search", helper.MethodName);
+      Assert.That (helper.FunctionType, Is.SameAs (typeof (TestFunctionWithThisObject)));
+      Assert.That (helper.MethodType, Is.EqualTo (MethodType.Static));
+      Assert.That (helper.SecurableClass, Is.SameAs (typeof (DerivedSecurableObject)));
+      Assert.That (helper.MethodName, Is.EqualTo ("Search"));
     }
 
 
@@ -126,10 +126,10 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
           typeof (TestFunctionWithThisObject),
           attribute);
 
-      Assert.AreSame (typeof (TestFunctionWithThisObject), helper.FunctionType);
-      Assert.AreEqual (MethodType.Constructor, helper.MethodType);
-      Assert.AreSame (typeof (SecurableObject), helper.SecurableClass);
-      Assert.IsNull (helper.MethodName);
+      Assert.That (helper.FunctionType, Is.SameAs (typeof (TestFunctionWithThisObject)));
+      Assert.That (helper.MethodType, Is.EqualTo (MethodType.Constructor));
+      Assert.That (helper.SecurableClass, Is.SameAs (typeof (SecurableObject)));
+      Assert.That (helper.MethodName, Is.Null);
     }
   }
 }

@@ -37,9 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       collection.Add (Order.GetObject (DomainObjectIDs.Order1));
 
       DomainObjectCollection deserializedCollection = Serializer.SerializeAndDeserialize (collection);
-      Assert.AreEqual (1, deserializedCollection.Count);
-      Assert.IsTrue (deserializedCollection.Contains (DomainObjectIDs.Order1));
-      Assert.AreEqual (DomainObjectIDs.Order1, deserializedCollection[0].ID);
+      Assert.That (deserializedCollection.Count, Is.EqualTo (1));
+      Assert.That (deserializedCollection.Contains (DomainObjectIDs.Order1), Is.True);
+      Assert.That (deserializedCollection[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
@@ -49,12 +49,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       collection.Add (Order.GetObject (DomainObjectIDs.Order1));
 
       DomainObjectCollection deserializedCollection = SerializeAndDeserialize (collection);
-      Assert.AreEqual (1, deserializedCollection.Count);
-      Assert.IsTrue (deserializedCollection.Contains (DomainObjectIDs.Order1));
-      Assert.AreEqual (DomainObjectIDs.Order1, deserializedCollection[0].ID);
-      Assert.AreEqual (typeof (Order), deserializedCollection.RequiredItemType);
-      Assert.IsFalse (deserializedCollection.IsReadOnly);
-      Assert.IsNull (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (deserializedCollection));
+      Assert.That (deserializedCollection.Count, Is.EqualTo (1));
+      Assert.That (deserializedCollection.Contains (DomainObjectIDs.Order1), Is.True);
+      Assert.That (deserializedCollection[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (deserializedCollection.RequiredItemType, Is.EqualTo (typeof (Order)));
+      Assert.That (deserializedCollection.IsReadOnly, Is.False);
+      Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (deserializedCollection), Is.Null);
     }
 
     [Test]
@@ -102,18 +102,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedCollection = deserializedCollectionAndEventReceiver.Item1;
       var deserializedEventReceiver = deserializedCollectionAndEventReceiver.Item2;
 
-      Assert.IsFalse (deserializedEventReceiver.HasAddedEventBeenCalled);
-      Assert.IsFalse (deserializedEventReceiver.HasAddingEventBeenCalled);
-      Assert.IsFalse (deserializedEventReceiver.HasRemovedEventBeenCalled);
-      Assert.IsFalse (deserializedEventReceiver.HasRemovingEventBeenCalled);
+      Assert.That (deserializedEventReceiver.HasAddedEventBeenCalled, Is.False);
+      Assert.That (deserializedEventReceiver.HasAddingEventBeenCalled, Is.False);
+      Assert.That (deserializedEventReceiver.HasRemovedEventBeenCalled, Is.False);
+      Assert.That (deserializedEventReceiver.HasRemovingEventBeenCalled, Is.False);
 
       deserializedCollection.Add (Order.NewObject());
       deserializedCollection.RemoveAt (0);
 
-      Assert.IsTrue (deserializedEventReceiver.HasAddedEventBeenCalled);
-      Assert.IsTrue (deserializedEventReceiver.HasAddingEventBeenCalled);
-      Assert.IsTrue (deserializedEventReceiver.HasRemovedEventBeenCalled);
-      Assert.IsTrue (deserializedEventReceiver.HasRemovingEventBeenCalled);
+      Assert.That (deserializedEventReceiver.HasAddedEventBeenCalled, Is.True);
+      Assert.That (deserializedEventReceiver.HasAddingEventBeenCalled, Is.True);
+      Assert.That (deserializedEventReceiver.HasRemovedEventBeenCalled, Is.True);
+      Assert.That (deserializedEventReceiver.HasRemovingEventBeenCalled, Is.True);
     }
 
     [Test]
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       collection = collection.Clone (true);
 
       var deserializedCollection = SerializeAndDeserialize (collection);
-      Assert.IsTrue (deserializedCollection.IsReadOnly);
+      Assert.That (deserializedCollection.IsReadOnly, Is.True);
     }
 
     private DomainObjectCollection SerializeAndDeserialize (DomainObjectCollection source)

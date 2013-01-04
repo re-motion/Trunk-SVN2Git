@@ -34,16 +34,16 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     [Test]
 		public void Succeed_ValueType ()
     {
-      Assert.AreEqual (1, ArgumentUtility.CheckType ("arg", (object) 1, typeof (int)));
+      Assert.That (ArgumentUtility.CheckType ("arg", (object) 1, typeof (int)), Is.EqualTo (1));
     }
 
-    [Test]
+	  [Test]
     public void Succeed_NullableValueTypeNull ()
     {
-      Assert.AreEqual (null, ArgumentUtility.CheckType ("arg", (object) null, typeof (int?)));
+      Assert.That (ArgumentUtility.CheckType ("arg", (object) null, typeof (int?)), Is.EqualTo (null));
     }
 
-    [Test]
+	  [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
     public void Fail_ValueTypeNull ()
     {
@@ -60,13 +60,13 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     [Test]
 		public void Succeed_ReferenceTypeNull ()
     {
-      Assert.AreEqual (null, ArgumentUtility.CheckType ("arg", (object) null, typeof (string)));
+      Assert.That (ArgumentUtility.CheckType ("arg", (object) null, typeof (string)), Is.EqualTo (null));
     }
 
-    [Test]
+	  [Test]
 		public void Succeed_NotNull ()
     {
-      Assert.AreEqual ("test", ArgumentUtility.CheckType ("arg", "test", typeof (string)));
+      Assert.That (ArgumentUtility.CheckType ("arg", "test", typeof (string)), Is.EqualTo ("test"));
     }
 	}
 }

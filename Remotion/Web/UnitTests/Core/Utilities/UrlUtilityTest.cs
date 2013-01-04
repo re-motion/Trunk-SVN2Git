@@ -50,7 +50,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value, _currentEncoding));
 
     string actual = UrlUtility.AddParameter (url, parameter, value, _currentEncoding);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -67,7 +67,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value, _currentEncoding));
 
     string actual = UrlUtility.AddParameter (url, parameter, value, _currentEncoding);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -84,7 +84,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value, _currentEncoding));
 
     string actual = UrlUtility.AddParameter (url, parameter, value, _currentEncoding);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -101,7 +101,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value, _currentEncoding));
 
     string actual = UrlUtility.AddParameter (url, parameter, value, _currentEncoding);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -118,7 +118,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value, _currentEncoding));
 
     string actual = UrlUtility.AddParameter (url, parameter, value, _currentEncoding);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
 
@@ -144,7 +144,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value2, _currentEncoding));
 
     string actual = UrlUtility.AddParameters (url, queryString, _currentEncoding);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -156,7 +156,7 @@ public class UrlUtilityTest
     string expected = url;
 
     string actual = UrlUtility.AddParameters (url, queryString, _currentEncoding);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
 
@@ -180,7 +180,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value2, _currentEncoding));
 
     string actual = UrlUtility.FormatQueryString (queryString, _currentEncoding);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -190,7 +190,7 @@ public class UrlUtilityTest
     string expected = string.Empty;
 
     string actual = UrlUtility.FormatQueryString (queryString, _currentEncoding);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
 
@@ -220,7 +220,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value2, _currentEncoding));
 
     string actual = UrlUtility.DeleteParameter (original, parameter2);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -249,7 +249,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value2, _currentEncoding));
 
     string actual = UrlUtility.DeleteParameter (original, parameter1);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -278,7 +278,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value2, _currentEncoding));
 
     string actual = UrlUtility.DeleteParameter (original, parameter1);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -307,7 +307,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value2, _currentEncoding));
 
     string actual = UrlUtility.DeleteParameter (original, parameter2);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -326,7 +326,7 @@ public class UrlUtilityTest
     string expected = url;
 
     string actual = UrlUtility.DeleteParameter (original, parameter1);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -343,7 +343,7 @@ public class UrlUtilityTest
     string expected = string.Empty;
 
     string actual = UrlUtility.DeleteParameter (original, parameter1);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -363,7 +363,7 @@ public class UrlUtilityTest
     string expected = original;
 
     string actual = UrlUtility.DeleteParameter (original, parameter2);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -392,7 +392,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value2, _currentEncoding));
 
     string actual = UrlUtility.DeleteParameter (original, parameter2);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -421,7 +421,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value2, _currentEncoding));
 
     string actual = UrlUtility.DeleteParameter (original, parameter1);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
   [Test]
   public void DeleteParameterFromUrlWithNoParameter ()
@@ -431,7 +431,7 @@ public class UrlUtilityTest
     string expected = url;
 
     string actual = UrlUtility.DeleteParameter (url, parameter1);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -442,7 +442,7 @@ public class UrlUtilityTest
     string expected = url;
 
     string actual = UrlUtility.DeleteParameter (url, parameter1);
-    Assert.AreEqual (expected, actual);
+    Assert.That (actual, Is.EqualTo (expected));
   }
 
   [Test]
@@ -461,7 +461,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value2, _currentEncoding));
 
     string actual = UrlUtility.GetParameter (url, parameter2, _currentEncoding);
-    Assert.AreEqual (value2, actual);
+    Assert.That (actual, Is.EqualTo (value2));
   }
 
   [Test]
@@ -480,7 +480,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value2, _currentEncoding));
 
     string actual = UrlUtility.GetParameter (url, parameter1, _currentEncoding);
-    Assert.AreEqual (value1, actual);
+    Assert.That (actual, Is.EqualTo (value1));
   }
 
   [Test]
@@ -496,7 +496,7 @@ public class UrlUtilityTest
         HttpUtility.UrlEncode (value1, _currentEncoding));
 
     string actual = UrlUtility.GetParameter (url, parameter2, _currentEncoding);
-    Assert.IsNull (actual);
+    Assert.That (actual, Is.Null);
   }
 
   [Test]
@@ -514,7 +514,7 @@ public class UrlUtilityTest
         parameter2);
 
     string actual = UrlUtility.GetParameter (url, parameter2, _currentEncoding);
-    Assert.AreEqual (value2, actual);
+    Assert.That (actual, Is.EqualTo (value2));
   }
 
   [Test]
@@ -531,7 +531,7 @@ public class UrlUtilityTest
         parameter2);
 
     string actual = UrlUtility.GetParameter (url, parameter2, _currentEncoding);
-    Assert.IsNull (actual);
+    Assert.That (actual, Is.Null);
   }
 }
 

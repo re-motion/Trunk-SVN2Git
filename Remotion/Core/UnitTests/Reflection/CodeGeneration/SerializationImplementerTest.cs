@@ -50,8 +50,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var implementedMethod = SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter,
           delegate (IMethodEmitter getObjectDataMethod, bool baseIsISerializeable)
           {
-            Assert.IsNotNull (getObjectDataMethod);
-            Assert.IsFalse (baseIsISerializeable);
+            Assert.That (getObjectDataMethod, Is.Not.Null);
+            Assert.That (baseIsISerializeable, Is.False);
 
             return
                 new MethodInvocationExpression (delegationTarget.MethodBuilder, getObjectDataMethod.ArgumentReferences[0].ToExpression(),
@@ -61,9 +61,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type t = classEmitter.BuildType ();
       object instance = Activator.CreateInstance (t);
 
-      Assert.IsFalse ((bool) PrivateInvoke.GetPublicField (instance, "DelegationTargetCalled"));
+      Assert.That ((bool) PrivateInvoke.GetPublicField (instance, "DelegationTargetCalled"), Is.False);
       PrivateInvoke.InvokePublicMethod (instance, implementedMethod.Name, null, new StreamingContext());
-      Assert.IsTrue ((bool) PrivateInvoke.GetPublicField (instance, "DelegationTargetCalled"));
+      Assert.That ((bool) PrivateInvoke.GetPublicField (instance, "DelegationTargetCalled"), Is.True);
     }
 
     [Test]
@@ -73,8 +73,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter,
           delegate (IMethodEmitter getObjectDataMethod, bool baseIsISerializeable)
           {
-            Assert.IsNotNull (getObjectDataMethod);
-            Assert.IsTrue (baseIsISerializeable);
+            Assert.That (getObjectDataMethod, Is.Not.Null);
+            Assert.That (baseIsISerializeable, Is.True);
 
             return new MethodInvocationExpression (typeof (SerializableClass).GetMethod ("GetObjectData"),
               getObjectDataMethod.ArgumentReferences[0].ToExpression(),
@@ -87,8 +87,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       instance.GetObjectData (info, context);
 
-      Assert.AreEqual (info, instance.Info);
-      Assert.AreEqual (context, instance.Context);
+      Assert.That (instance.Info, Is.EqualTo (info));
+      Assert.That (instance.Context, Is.EqualTo (context));
     }
 
     [Test]
@@ -125,7 +125,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       var classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowingWhenBaseHasNoCtor", typeof (object));
       ConstructorEmitter emitter = SerializationImplementer.ImplementDeserializationConstructorByThrowing (classEmitter);
-      Assert.IsNotNull (emitter);
+      Assert.That (emitter, Is.Not.Null);
 
       try
       {
@@ -144,7 +144,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       var classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowing", typeof (SerializableClass));
       ConstructorEmitter emitter = SerializationImplementer.ImplementDeserializationConstructorByThrowing (classEmitter);
-      Assert.IsNotNull (emitter);
+      Assert.That (emitter, Is.Not.Null);
 
       try
       {
@@ -163,7 +163,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       var classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowingIfNotExistsOnBase", typeof (object));
       ConstructorEmitter emitter = SerializationImplementer.ImplementDeserializationConstructorByThrowingIfNotExistsOnBase (classEmitter);
-      Assert.IsNotNull (emitter);
+      Assert.That (emitter, Is.Not.Null);
 
       try
       {
@@ -182,90 +182,90 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       classEmitter.ReplicateBaseTypeConstructors (delegate { }, delegate { });
 
       ConstructorEmitter emitter = SerializationImplementer.ImplementDeserializationConstructorByThrowingIfNotExistsOnBase (classEmitter);
-      Assert.IsNull (emitter);
+      Assert.That (emitter, Is.Null);
 
       var info = new SerializationInfo (typeof (SerializableClass), new FormatterConverter ());
       var context = new StreamingContext ();
       var instance = (SerializableClass) Activator.CreateInstance (classEmitter.BuildType (), new object[] { info, context });
 
-      Assert.AreEqual (info, instance.Info);
-      Assert.AreEqual (context, instance.Context);
+      Assert.That (instance.Info, Is.EqualTo (info));
+      Assert.That (instance.Context, Is.EqualTo (context));
     }
 
     [Test]
     public void OnDeserializationWithFormatter ()
     {
       var instance = new ClassWithDeserializationEvents ();
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
 
       instance = Serializer.SerializeAndDeserialize (instance);
 
-      Assert.IsTrue (instance.OnBaseDeserializingCalled);
-      Assert.IsTrue (instance.OnBaseDeserializedCalled);
-      Assert.IsTrue (instance.OnDeserializingCalled);
-      Assert.IsTrue (instance.OnDeserializedCalled);
-      Assert.IsTrue (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.True);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.True);
+      Assert.That (instance.OnDeserializingCalled, Is.True);
+      Assert.That (instance.OnDeserializedCalled, Is.True);
+      Assert.That (instance.OnDeserializationCalled, Is.True);
     }
 
     [Test]
     public void RaiseOnDeserialization ()
     {
       var instance = new ClassWithDeserializationEvents ();
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
 
       SerializationImplementer.RaiseOnDeserialization (instance, null);
 
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsTrue (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.True);
     }
 
     [Test]
     public void RaiseOnDeserializing ()
     {
       var instance = new ClassWithDeserializationEvents ();
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
 
       SerializationImplementer.RaiseOnDeserializing (instance, new StreamingContext());
 
-      Assert.IsTrue (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsTrue(instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.True);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.True);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
     }
 
     [Test]
     public void RaiseOnDeserialized ()
     {
       var instance = new ClassWithDeserializationEvents ();
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsFalse (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsFalse (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.False);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
 
       SerializationImplementer.RaiseOnDeserialized (instance, new StreamingContext ());
 
-      Assert.IsFalse (instance.OnBaseDeserializingCalled);
-      Assert.IsTrue (instance.OnBaseDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializingCalled);
-      Assert.IsTrue (instance.OnDeserializedCalled);
-      Assert.IsFalse (instance.OnDeserializationCalled);
+      Assert.That (instance.OnBaseDeserializingCalled, Is.False);
+      Assert.That (instance.OnBaseDeserializedCalled, Is.True);
+      Assert.That (instance.OnDeserializingCalled, Is.False);
+      Assert.That (instance.OnDeserializedCalled, Is.True);
+      Assert.That (instance.OnDeserializationCalled, Is.False);
     }
   }
 }

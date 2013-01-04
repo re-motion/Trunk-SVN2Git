@@ -180,7 +180,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetMetadataFactoryForType_WithCustomMetadataFactory ()
     {
       var provider = new BindableObjectProvider (_metadataFactoryStub, _serviceFactoryStub);
-      Assert.AreSame (_metadataFactoryStub, provider.MetadataFactory);
+      Assert.That (provider.MetadataFactory, Is.SameAs (_metadataFactoryStub));
     }
 
     [Test]
@@ -204,7 +204,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetServiceFactoryForType_WithCustomServiceFactory ()
     {
       var provider = new BindableObjectProvider (_metadataFactoryStub, _serviceFactoryStub);
-      Assert.AreSame (_serviceFactoryStub, provider.ServiceFactory);
+      Assert.That (provider.ServiceFactory, Is.SameAs (_serviceFactoryStub));
     }
 
     [Test]

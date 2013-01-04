@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     public void Succeed_Int ()
     {
       int result = ArgumentUtility.CheckType<int> ("arg", 1);
-      Assert.AreEqual (1, result);
+      Assert.That (result, Is.EqualTo (1));
     }
 
     [Test]
@@ -43,42 +43,42 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     public void Succeed_Int_NullableInt ()
     {
       int result = ArgumentUtility.CheckType<int> ("arg", (int?) 1);
-      Assert.AreEqual (1, result);
+      Assert.That (result, Is.EqualTo (1));
     }
 
     [Test]
     public void Succeed_NullableInt ()
     {
       int? result = ArgumentUtility.CheckType<int?> ("arg", (int?) 1);
-      Assert.AreEqual (1, result);
+      Assert.That (result, Is.EqualTo (1));
     }
 
     [Test]
     public void Succeed_NullableInt_Null ()
     {
       int? result = ArgumentUtility.CheckType<int?> ("arg", null);
-      Assert.AreEqual (null, result);
+      Assert.That (result, Is.EqualTo (null));
     }
 
     [Test]
     public void Succeed_NullableInt_Int ()
     {
       int? result = ArgumentUtility.CheckType<int?> ("arg", 1);
-      Assert.AreEqual (1, result);
+      Assert.That (result, Is.EqualTo (1));
     }
 
 		[Test]
 		public void Succeed_String ()
 		{
       string result = ArgumentUtility.CheckType<string> ("arg", "test");
-			Assert.AreEqual ("test", result);
+		  Assert.That (result, Is.EqualTo ("test"));
 		}    
     
     [Test]
     public void Succeed_StringNull ()
     {
       string result = ArgumentUtility.CheckType<string> ("arg", null);
-      Assert.AreEqual (null, result);
+      Assert.That (result, Is.EqualTo (null));
     }
 
 	  private enum TestEnum
@@ -90,7 +90,7 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     public void Succeed_Enum ()
     {
       TestEnum result = ArgumentUtility.CheckType<TestEnum> ("arg", TestEnum.TestValue);
-      Assert.AreEqual (TestEnum.TestValue, result);
+      Assert.That (result, Is.EqualTo (TestEnum.TestValue));
     }
 
     [Test]
@@ -104,14 +104,14 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     public void Succeed_NullableEnum_Null ()
     {
       TestEnum? result = ArgumentUtility.CheckType<TestEnum?> ("arg", null);
-      Assert.AreEqual (null, result);
+      Assert.That (result, Is.EqualTo (null));
     }
 
     [Test]
     public void Succeed_Object_String ()
     {
       object result = ArgumentUtility.CheckType<object> ("arg", "test");
-      Assert.AreEqual ("test", result);
+      Assert.That (result, Is.EqualTo ("test"));
     }
     
     [Test]

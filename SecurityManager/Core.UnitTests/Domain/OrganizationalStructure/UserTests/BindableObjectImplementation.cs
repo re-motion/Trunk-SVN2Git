@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       user.FirstName = "UserFirstName";
       user.Title = "UserTitle";
 
-      Assert.AreEqual ("UserLastName UserFirstName, UserTitle", user.DisplayName);
+      Assert.That (user.DisplayName, Is.EqualTo ("UserLastName UserFirstName, UserTitle"));
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       user.FirstName = "UserFirstName";
       user.Title = null;
 
-      Assert.AreEqual ("UserLastName UserFirstName", user.DisplayName);
+      Assert.That (user.DisplayName, Is.EqualTo ("UserLastName UserFirstName"));
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       user.FirstName = null;
       user.Title = null;
 
-      Assert.AreEqual ("UserLastName", user.DisplayName);
+      Assert.That (user.DisplayName, Is.EqualTo ("UserLastName"));
     }
 
     [Test]

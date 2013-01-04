@@ -49,13 +49,13 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
 
       Func<Type, Type> transformer = delegate (Type t)
       {
-        Assert.AreEqual (mixedObject.GetType (), t);
+        Assert.That (t, Is.EqualTo (mixedObject.GetType ()));
         return derivedType;
       };
 
       IObjectReference objectReference = _moduleManager.BeginDeserialization (transformer, info, context);
       object deserializedObject = objectReference.GetRealObject (context);
-      Assert.AreEqual (derivedType, deserializedObject.GetType ());
+      Assert.That (deserializedObject.GetType (), Is.EqualTo (derivedType));
     }
 
     [Test]
@@ -70,7 +70,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
 
       Func<Type, Type> transformer = delegate (Type t)
       {
-        Assert.AreEqual (mixedObject.GetType (), t);
+        Assert.That (t, Is.EqualTo (mixedObject.GetType ()));
         return typeof (BaseType2);
       };
 
@@ -88,7 +88,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
       ((ISerializable) mixedObject).GetObjectData (info, context);
 
       BaseType1 deserializedObject = (BaseType1) _moduleManager.BeginDeserialization (_identityTransformer, info, context).GetRealObject (context);
-      Assert.AreNotEqual (50, deserializedObject.I);
+      Assert.That (deserializedObject.I, Is.Not.EqualTo (50));
     }
 
     class ClassNotImplementingISerializable
@@ -133,14 +133,14 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
     public void BeginDeserialization_ThrowsOnUnmixedTypes ()
     {
       ClassImplementingISerializable instance = new ClassImplementingISerializable ();
-      Assert.IsFalse (instance.CtorCalled);
+      Assert.That (instance.CtorCalled, Is.False);
 
       SerializationInfo info = new SerializationInfo (instance.GetType (), new FormatterConverter ());
       StreamingContext context = new StreamingContext ();
 
       ClassImplementingISerializable deserializedObject = (ClassImplementingISerializable) _moduleManager.BeginDeserialization (_identityTransformer,
           info, context).GetRealObject (context);
-      Assert.IsTrue (deserializedObject.CtorCalled);
+      Assert.That (deserializedObject.CtorCalled, Is.True);
     }
 
     [Test]
@@ -172,9 +172,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
       _moduleManager.FinishDeserialization (objectReference);
 
       BaseType1 deserializedObject = (BaseType1) objectReference.GetRealObject (context);
-      Assert.AreEqual (50, deserializedObject.I);
-      Assert.IsNotNull (Mixin.Get<BT1Mixin1> (deserializedObject));
-      Assert.AreEqual ("Data", Mixin.Get<BT1Mixin1> (deserializedObject).BackingField);
+      Assert.That (deserializedObject.I, Is.EqualTo (50));
+      Assert.That (Mixin.Get<BT1Mixin1> (deserializedObject), Is.Not.Null);
+      Assert.That (Mixin.Get<BT1Mixin1> (deserializedObject).BackingField, Is.EqualTo ("Data"));
     }
 
     class DummyReference : IObjectReference
