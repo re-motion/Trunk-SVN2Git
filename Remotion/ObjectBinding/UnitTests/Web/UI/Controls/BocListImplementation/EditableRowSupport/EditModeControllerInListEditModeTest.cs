@@ -406,6 +406,31 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "Cannot create edit mode controls for the row with ID '6'. The BocList 'BocList' does not contain the row in its Value collection.")]
+    public void EnsureEditModeRestoredWithMissingRow ()
+    {
+      Assert.IsFalse (Controller.IsRowEditModeActive);
+      ControllerInvoker.LoadControlState (CreateControlState (null, EditMode.RowEditMode, new List<string> { "6" }, false));
+      Assert.IsTrue (Controller.IsRowEditModeActive);
+ 
+      Controller.EnsureEditModeRestored (Columns);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), 
+        ExpectedMessage = "Cannot restore edit mode: The BocList 'BocList' does not have a Value.")]
+    public void EnsureEditModeRestoredWithValueNull_ThrowsInvalidOperationException ()
+    {
+      Assert.IsFalse (Controller.IsListEditModeActive);
+      ControllerInvoker.LoadControlState (CreateControlState (null, EditMode.ListEditMode, new List<string> { "0", "1", "2", "3", "4" }, false));
+      Assert.IsTrue (Controller.IsListEditModeActive);
+      EditModeHost.Value = null;
+
+      Controller.EnsureEditModeRestored (Columns);
+    }
+
+    [Test]
     public void AddRow ()
     {
       Invoker.InitRecursive();
