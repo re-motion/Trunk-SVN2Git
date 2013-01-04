@@ -62,7 +62,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           result,
           Is.TypeOf<ClientTransactionEventBroker>()
               .With.Property<ClientTransactionEventBroker> (m => m.ClientTransaction).SameAs (_fakeConstructedTransaction)
-              .And.Property<ClientTransactionEventBroker> (m => m.EventDistributor).TypeOf<ClientTransactionEventDistributor> ()
               .And.Property<ClientTransactionEventBroker> (m => m.Listeners).EqualTo (new[] { fakeListener }));
     }
 

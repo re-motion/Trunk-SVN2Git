@@ -28,23 +28,26 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
-  /// Manages the <see cref="IClientTransactionListener"/> instances attached to a <see cref="DomainObjects.ClientTransaction"/> instance and
-  /// allows clients to raise events for the <see cref="ClientTransaction"/>. This class delegates the actual event distribution to an implementation 
-  /// of <see cref="IClientTransactionEventDistributor"/>.
+  /// Manages the <see cref="IClientTransactionListener"/> and <see cref="IClientTransactionExtension"/> instances attached to a 
+  /// <see cref="DomainObjects.ClientTransaction"/> and allows clients to raise events for the <see cref="ClientTransaction"/>. 
+  /// The event notifications are forwarded to <see cref="IClientTransactionListener"/>, <see cref="IClientTransactionExtension"/>, 
+  /// <see cref="ClientTransaction"/>, and <see cref="DomainObject"/> instances.
   /// </summary>
   [Serializable]
   public class ClientTransactionEventBroker : IClientTransactionEventBroker
   {
     private readonly ClientTransaction _clientTransaction;
-    private readonly IClientTransactionEventDistributor _eventDistributor;
 
-    public ClientTransactionEventBroker (ClientTransaction clientTransaction, IClientTransactionEventDistributor eventDistributor)
+    private readonly ClientTransactionExtensionCollection _extensionCollection;
+    private readonly CompoundClientTransactionListener _listenerCollection;
+
+    public ClientTransactionEventBroker (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("eventDistributor", eventDistributor);
 
       _clientTransaction = clientTransaction;
-      _eventDistributor = eventDistributor;
+      _extensionCollection = new ClientTransactionExtensionCollection ("root");
+      _listenerCollection = new CompoundClientTransactionListener();
     }
 
     public ClientTransaction ClientTransaction
@@ -52,127 +55,225 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return _clientTransaction; }
     }
 
-    public IClientTransactionEventDistributor EventDistributor
-    {
-      get { return _eventDistributor; }
-    }
-
     public IEnumerable<IClientTransactionListener> Listeners
     {
-      get { return _eventDistributor.Listeners; }
+      get { return _listenerCollection.Listeners; }
+    }
+
+    public ClientTransactionExtensionCollection Extensions
+    {
+      get { return _extensionCollection; }
     }
 
     public void AddListener (IClientTransactionListener listener)
     {
       ArgumentUtility.CheckNotNull ("listener", listener);
-      _eventDistributor.AddListener (listener);
+      _listenerCollection.AddListener (listener);
     }
 
     public void RemoveListener (IClientTransactionListener listener)
     {
       ArgumentUtility.CheckNotNull ("listener", listener);
-      _eventDistributor.RemoveListener (listener);
-    }
-
-    public ClientTransactionExtensionCollection Extensions
-    {
-      get { return _eventDistributor.Extensions; }
+      _listenerCollection.RemoveListener (listener);
     }
 
     public void RaiseTransactionInitializeEvent ()
     {
-      _eventDistributor.TransactionInitialize (_clientTransaction);
+      _listenerCollection.TransactionInitialize (_clientTransaction);
+      _extensionCollection.TransactionInitialize (_clientTransaction);
     }
 
     public void RaiseTransactionDiscardEvent ()
     {
-      _eventDistributor.TransactionDiscard (_clientTransaction);
+      _listenerCollection.TransactionDiscard (_clientTransaction);
+      _extensionCollection.TransactionDiscard (_clientTransaction);
     }
 
     public void RaiseSubTransactionCreatingEvent ()
     {
-      _eventDistributor.SubTransactionCreating (_clientTransaction);
+      _listenerCollection.SubTransactionCreating (_clientTransaction);
+      _extensionCollection.SubTransactionCreating (_clientTransaction);
     }
 
     public void RaiseSubTransactionInitializeEvent (ClientTransaction subTransaction)
     {
-      _eventDistributor.SubTransactionInitialize (_clientTransaction, subTransaction);
+      ArgumentUtility.CheckNotNull ("subTransaction", subTransaction);
+
+      _listenerCollection.SubTransactionInitialize (_clientTransaction, subTransaction);
+      _extensionCollection.SubTransactionInitialize (_clientTransaction, subTransaction);
     }
 
     public void RaiseSubTransactionCreatedEvent (ClientTransaction subTransaction)
     {
-      _eventDistributor.SubTransactionCreated (_clientTransaction, subTransaction);
+      ArgumentUtility.CheckNotNull ("subTransaction", subTransaction);
+
+      using (EnterScopeOnDemand())
+      {
+        _clientTransaction.OnSubTransactionCreated (new SubTransactionCreatedEventArgs (subTransaction));
+      }
+
+      _extensionCollection.SubTransactionCreated (_clientTransaction, subTransaction);
+      _listenerCollection.SubTransactionCreated (_clientTransaction, subTransaction);
     }
 
     public void RaiseNewObjectCreatingEvent (Type type)
     {
-      _eventDistributor.NewObjectCreating (_clientTransaction, type);
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      _listenerCollection.NewObjectCreating (_clientTransaction, type);
+      _extensionCollection.NewObjectCreating (_clientTransaction, type);
     }
 
     public void RaiseObjectsLoadingEvent (ReadOnlyCollection<ObjectID> objectIDs)
     {
-      _eventDistributor.ObjectsLoading (_clientTransaction, objectIDs);
+      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+
+      _listenerCollection.ObjectsLoading (_clientTransaction, objectIDs);
+      _extensionCollection.ObjectsLoading (_clientTransaction, objectIDs);
     }
 
     public void RaiseObjectsLoadedEvent (ReadOnlyCollection<DomainObject> domainObjects)
     {
-      _eventDistributor.ObjectsLoaded (_clientTransaction, domainObjects);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
+      using (EnterScopeOnDemand())
+      {
+        foreach (var domainObject in domainObjects)
+          domainObject.OnLoaded ();
+
+        _clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
+      }
+
+      _extensionCollection.ObjectsLoaded (_clientTransaction, domainObjects);
+      _listenerCollection.ObjectsLoaded (_clientTransaction, domainObjects);
     }
 
     public void RaiseObjectsNotFoundEvent (ReadOnlyCollection<ObjectID> objectIDs)
     {
-      _eventDistributor.ObjectsNotFound (_clientTransaction, objectIDs);
+      _listenerCollection.ObjectsNotFound (_clientTransaction, objectIDs);
     }
 
     public void RaiseObjectsUnloadingEvent (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
-      _eventDistributor.ObjectsUnloading (_clientTransaction, unloadedDomainObjects);
+      ArgumentUtility.CheckNotNull ("unloadedDomainObjects", unloadedDomainObjects);
+
+      _listenerCollection.ObjectsUnloading (_clientTransaction, unloadedDomainObjects);
+      _extensionCollection.ObjectsUnloading (_clientTransaction, unloadedDomainObjects);
+      using (EnterScopeOnDemand())
+      {
+        // This is a for loop for symmetry with ObjectsUnloaded
+        // ReSharper disable ForCanBeConvertedToForeach
+        for (int i = 0; i < unloadedDomainObjects.Count; i++)
+        // ReSharper restore ForCanBeConvertedToForeach
+        {
+          var domainObject = unloadedDomainObjects[i];
+          domainObject.OnUnloading ();
+        }
+      }
     }
 
     public void RaiseObjectsUnloadedEvent (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
-      _eventDistributor.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects);
+      ArgumentUtility.CheckNotNull ("unloadedDomainObjects", unloadedDomainObjects);
+
+      using (EnterScopeOnDemand())
+      {
+        for (int i = unloadedDomainObjects.Count - 1; i >= 0; i--)
+        {
+          var domainObject = unloadedDomainObjects[i];
+          domainObject.OnUnloaded ();
+        }
+      }
+      _extensionCollection.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects);
+      _listenerCollection.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects);
     }
 
     public void RaiseObjectDeletingEvent (DomainObject domainObject)
     {
-      _eventDistributor.ObjectDeleting (_clientTransaction, domainObject);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      _listenerCollection.ObjectDeleting (_clientTransaction, domainObject);
+      _extensionCollection.ObjectDeleting (_clientTransaction, domainObject);
+      using (EnterScopeOnDemand())
+      {
+        domainObject.OnDeleting (EventArgs.Empty);
+      }
     }
 
     public void RaiseObjectDeletedEvent (DomainObject domainObject)
     {
-      _eventDistributor.ObjectDeleted (_clientTransaction, domainObject);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      using (EnterScopeOnDemand())
+      {
+        domainObject.OnDeleted (EventArgs.Empty);
+      }
+      _extensionCollection.ObjectDeleted (_clientTransaction, domainObject);
+      _listenerCollection.ObjectDeleted (_clientTransaction, domainObject);
     }
 
     public void RaisePropertyValueReadingEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
-      _eventDistributor.PropertyValueReading (_clientTransaction, domainObject, propertyDefinition, valueAccess);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+
+      _listenerCollection.PropertyValueReading (_clientTransaction, domainObject, propertyDefinition, valueAccess);
+      _extensionCollection.PropertyValueReading (_clientTransaction, domainObject, propertyDefinition, valueAccess);
     }
 
     public void RaisePropertyValueReadEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
     {
-      _eventDistributor.PropertyValueRead (_clientTransaction, domainObject, propertyDefinition, value, valueAccess);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+
+      _extensionCollection.PropertyValueRead (_clientTransaction, domainObject, propertyDefinition, value, valueAccess);
+      _listenerCollection.PropertyValueRead (_clientTransaction, domainObject, propertyDefinition, value, valueAccess);
     }
 
     public void RaisePropertyValueChangingEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
-      _eventDistributor.PropertyValueChanging (_clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+
+      _listenerCollection.PropertyValueChanging (_clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
+      _extensionCollection.PropertyValueChanging (_clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
+      using (EnterScopeOnDemand())
+      {
+        domainObject.OnPropertyChanging (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue));
+      }
     }
 
     public void RaisePropertyValueChangedEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
-      _eventDistributor.PropertyValueChanged (_clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+
+      using (EnterScopeOnDemand())
+      {
+        domainObject.OnPropertyChanged (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue));
+      }
+
+      _extensionCollection.PropertyValueChanged (_clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
+      _listenerCollection.PropertyValueChanged (_clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }
 
     public void RaiseRelationReadingEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
-      _eventDistributor.RelationReading (_clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+
+      _listenerCollection.RelationReading (_clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
+      _extensionCollection.RelationReading (_clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
     }
 
     public void RaiseRelationReadEvent (
         DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
     {
-      _eventDistributor.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+
+      _extensionCollection.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
+      _listenerCollection.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
     }
 
     public void RaiseRelationReadEvent (
@@ -181,7 +282,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
         ValueAccess valueAccess)
     {
-      _eventDistributor.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+      ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
+
+      _extensionCollection.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
+      _listenerCollection.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
     }
 
     public void RaiseRelationChangingEvent (
@@ -190,7 +296,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject)
     {
-      _eventDistributor.RelationChanging (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+
+      _listenerCollection.RelationChanging (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
+      _extensionCollection.RelationChanging (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
+      using (EnterScopeOnDemand())
+      {
+        domainObject.OnRelationChanging (new RelationChangingEventArgs (relationEndPointDefinition, oldRelatedObject, newRelatedObject));
+      }
     }
 
     public void RaiseRelationChangedEvent (
@@ -199,87 +313,161 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject)
     {
-      _eventDistributor.RelationChanged (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+
+      using (EnterScopeOnDemand())
+      {
+        domainObject.OnRelationChanged (new RelationChangedEventArgs (relationEndPointDefinition, oldRelatedObject, newRelatedObject));
+      }
+      _extensionCollection.RelationChanged (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
+      _listenerCollection.RelationChanged (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 
     public QueryResult<T> RaiseFilterQueryResultEvent<T> (QueryResult<T> queryResult) where T : DomainObject
     {
-      return _eventDistributor.FilterQueryResult (_clientTransaction, queryResult);
+      ArgumentUtility.CheckNotNull ("queryResult", queryResult);
+
+      queryResult = _listenerCollection.FilterQueryResult (_clientTransaction, queryResult);
+      queryResult = _extensionCollection.FilterQueryResult (_clientTransaction, queryResult);
+      return queryResult;
     }
 
     public IEnumerable<T> RaiseFilterCustomQueryResultEvent<T> (IQuery query, IEnumerable<T> results)
     {
-      return _eventDistributor.FilterCustomQueryResult (_clientTransaction, query, results);
+      return _listenerCollection.FilterCustomQueryResult (_clientTransaction, query, results);
     }
 
     public void RaiseTransactionCommittingEvent (ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar)
     {
-      _eventDistributor.TransactionCommitting (_clientTransaction, domainObjects, eventRegistrar);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+      ArgumentUtility.CheckNotNull ("eventRegistrar", eventRegistrar);
+
+      _listenerCollection.TransactionCommitting (_clientTransaction, domainObjects, eventRegistrar);
+      _extensionCollection.Committing (_clientTransaction, domainObjects, eventRegistrar);
+      using (EnterScopeOnDemand())
+      {
+        _clientTransaction.OnCommitting (new ClientTransactionCommittingEventArgs (domainObjects, eventRegistrar));
+        // ReSharper disable ForCanBeConvertedToForeach
+        for (int i = 0; i < domainObjects.Count; i++)
+        {
+          var domainObject = domainObjects[i];
+          if (!domainObject.IsInvalid)
+            domainObject.OnCommitting (new DomainObjectCommittingEventArgs (eventRegistrar));
+        }
+        // ReSharper restore ForCanBeConvertedToForeach
+      }
     }
 
     public void RaiseTransactionCommitValidateEvent (ReadOnlyCollection<PersistableData> committedData)
     {
-      _eventDistributor.TransactionCommitValidate (_clientTransaction, committedData);
+      ArgumentUtility.CheckNotNull ("committedData", committedData);
+
+      _listenerCollection.TransactionCommitValidate (_clientTransaction, committedData);
+      _extensionCollection.CommitValidate (_clientTransaction, committedData);
     }
 
     public void RaiseTransactionCommittedEvent (ReadOnlyCollection<DomainObject> domainObjects)
     {
-      _eventDistributor.TransactionCommitted (_clientTransaction, domainObjects);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
+      using (EnterScopeOnDemand())
+      {
+        for (int i = domainObjects.Count - 1; i >= 0; i--)
+          domainObjects[i].OnCommitted (EventArgs.Empty);
+        _clientTransaction.OnCommitted (new ClientTransactionEventArgs (domainObjects));
+      }
+
+      _extensionCollection.Committed (_clientTransaction, domainObjects);
+      _listenerCollection.TransactionCommitted (_clientTransaction, domainObjects);
     }
 
     public void RaiseTransactionRollingBackEvent (ReadOnlyCollection<DomainObject> domainObjects)
     {
-      _eventDistributor.TransactionRollingBack (_clientTransaction, domainObjects);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
+      _listenerCollection.TransactionRollingBack (_clientTransaction, domainObjects);
+      _extensionCollection.RollingBack (_clientTransaction, domainObjects);
+
+      using (EnterScopeOnDemand())
+      {
+        _clientTransaction.OnRollingBack (new ClientTransactionEventArgs (domainObjects));
+        // ReSharper disable ForCanBeConvertedToForeach
+        for (int i = 0; i < domainObjects.Count; i++)
+        {
+          var domainObject = domainObjects[i];
+          if (!domainObject.IsInvalid)
+            domainObject.OnRollingBack (EventArgs.Empty);
+        }
+        // ReSharper restore ForCanBeConvertedToForeach
+      }
     }
 
     public void RaiseTransactionRolledBackEvent (ReadOnlyCollection<DomainObject> domainObjects)
     {
-      _eventDistributor.TransactionRolledBack (_clientTransaction, domainObjects);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
+      using (EnterScopeOnDemand())
+      {
+        for (int i = domainObjects.Count - 1; i >= 0; i--)
+          domainObjects[i].OnRolledBack (EventArgs.Empty);
+        _clientTransaction.OnRolledBack (new ClientTransactionEventArgs (domainObjects));
+      }
+
+      _extensionCollection.RolledBack (_clientTransaction, domainObjects);
+      _listenerCollection.TransactionRolledBack (_clientTransaction, domainObjects);
     }
 
     public void RaiseRelationEndPointMapRegisteringEvent (IRelationEndPoint endPoint)
     {
-      _eventDistributor.RelationEndPointMapRegistering (_clientTransaction, endPoint);
+      _listenerCollection.RelationEndPointMapRegistering (_clientTransaction, endPoint);
     }
 
     public void RaiseRelationEndPointMapUnregisteringEvent (RelationEndPointID endPointID)
     {
-      _eventDistributor.RelationEndPointMapUnregistering (_clientTransaction, endPointID);
+      _listenerCollection.RelationEndPointMapUnregistering (_clientTransaction, endPointID);
     }
 
     public void RaiseRelationEndPointBecomingIncompleteEvent (RelationEndPointID endPointID)
     {
-      _eventDistributor.RelationEndPointBecomingIncomplete (_clientTransaction, endPointID);
+      _listenerCollection.RelationEndPointBecomingIncomplete (_clientTransaction, endPointID);
     }
 
     public void RaiseObjectMarkedInvalidEvent (DomainObject domainObject)
     {
-      _eventDistributor.ObjectMarkedInvalid (_clientTransaction, domainObject);
+      _listenerCollection.ObjectMarkedInvalid (_clientTransaction, domainObject);
     }
 
     public void RaiseObjectMarkedNotInvalidEvent (DomainObject domainObject)
     {
-      _eventDistributor.ObjectMarkedNotInvalid (_clientTransaction, domainObject);
+      _listenerCollection.ObjectMarkedNotInvalid (_clientTransaction, domainObject);
     }
 
     public void RaiseDataContainerMapRegisteringEvent (DataContainer container)
     {
-      _eventDistributor.DataContainerMapRegistering (_clientTransaction, container);
+      _listenerCollection.DataContainerMapRegistering (_clientTransaction, container);
     }
 
     public void RaiseDataContainerMapUnregisteringEvent (DataContainer container)
     {
-      _eventDistributor.DataContainerMapUnregistering (_clientTransaction, container);
+      _listenerCollection.DataContainerMapUnregistering (_clientTransaction, container);
     }
 
     public void RaiseDataContainerStateUpdatedEvent (DataContainer container, StateType newDataContainerState)
     {
-      _eventDistributor.DataContainerStateUpdated (_clientTransaction, container, newDataContainerState);
+      _listenerCollection.DataContainerStateUpdated (_clientTransaction, container, newDataContainerState);
     }
 
     public void RaiseVirtualRelationEndPointStateUpdatedEvent (RelationEndPointID endPointID, bool? newEndPointChangeState)
     {
-      _eventDistributor.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, newEndPointChangeState);
+      _listenerCollection.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, newEndPointChangeState);
+    }
+
+    private ClientTransactionScope EnterScopeOnDemand ()
+    {
+      if (ClientTransaction.Current != _clientTransaction)
+        return _clientTransaction.EnterNonDiscardingScope ();
+      return null;
     }
   }
 }

@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
 
-      var listenerManager = new ClientTransactionEventBroker (constructedTransaction, new ClientTransactionEventDistributor());
+      var listenerManager = new ClientTransactionEventBroker (constructedTransaction);
       foreach (var listener in CreateListeners (constructedTransaction))
         listenerManager.AddListener (listener);
       return listenerManager;

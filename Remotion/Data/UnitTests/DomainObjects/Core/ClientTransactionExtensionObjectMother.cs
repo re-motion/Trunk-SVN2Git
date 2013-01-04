@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,21 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections.Generic;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+using Remotion.Data.DomainObjects;
+using Rhino.Mocks;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
-  /// <summary>
-  /// Defines an interface for classes forwarding event notifications to <see cref="IClientTransactionListener"/>,
-  /// <see cref="ClientTransaction"/>, and <see cref="DomainObject"/> instances.
-  /// </summary>
-  public interface IClientTransactionEventDistributor : IClientTransactionListener
+  public static class ClientTransactionExtensionObjectMother
   {
-    IEnumerable<IClientTransactionListener> Listeners { get; }
-    ClientTransactionExtensionCollection Extensions { get; }
-
-    void AddListener (IClientTransactionListener listener);
-    void RemoveListener (IClientTransactionListener listener);
+    public static IClientTransactionExtension Create ()
+    {
+      var extension = MockRepository.GenerateStub<IClientTransactionExtension>();
+      extension.Stub (stub => stub.Key).Return ("key");
+      return extension;
+    }
   }
 }

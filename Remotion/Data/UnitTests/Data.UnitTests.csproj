@@ -201,6 +201,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="DomainObjects\Core\ClientTransactionExtensionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\DataManagementCommandDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerLifetimeManagerTest.cs" />
@@ -213,6 +214,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializablePersistenceStrategyFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableTransactionHierarchyManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\ResurrectionServiceTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionListenerObjectMother.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\RegisterForCommitTest.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -335,7 +337,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionEventSinkFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionListenerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableCollectionEndPointCollectionProviderFake.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionEventDistributorFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableAssociatedCollectionDataStrategyFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableCollectionEndPointCollectionManagerFake.cs" />
@@ -358,7 +359,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataWithDataSourceDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NullLoadedObjectDataTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionEventDistributorTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TestableClientTransactionComponentFactoryBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Delete\CascadedDeleteTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\EagerFetching\EagerFetchingTest.cs" />

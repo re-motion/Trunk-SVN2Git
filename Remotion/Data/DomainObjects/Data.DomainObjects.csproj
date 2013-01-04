@@ -217,7 +217,6 @@
     <Compile Include="Infrastructure\ICommitRollbackAgent.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventSink.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventBroker.cs" />
-    <Compile Include="Infrastructure\IClientTransactionEventDistributor.cs" />
     <Compile Include="ICommittingEventRegistrar.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\IObjectInitializationContextProvider.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\IObjectInitializationContext.cs" />
@@ -248,7 +247,6 @@
     <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\UnlockedParentTransactionContext.cs" />
-    <Compile Include="Infrastructure\ClientTransactionEventDistributor.cs" />
     <Compile Include="Linq\ExecutableQueries\CustomSequenceQueryAdapter.cs" />
     <Compile Include="Linq\DomainObjectQueryGenerator.cs" />
     <Compile Include="Linq\ExecutableQueries\DomainObjectSequenceQueryAdapter.cs" />
