@@ -74,32 +74,54 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _eventDistributor.RemoveListener (listener);
     }
 
-    public void RaiseRelationChangingEvent (
-        DomainObject domainObject,
-        IRelationEndPointDefinition relationEndPointDefinition,
-        DomainObject oldRelatedObject,
-        DomainObject newRelatedObject)
+    public ClientTransactionExtensionCollection Extensions
     {
-      _eventDistributor.RelationChanging (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
+      get { return _eventDistributor.Extensions; }
     }
 
-    public void RaiseRelationChangedEvent (
-        DomainObject domainObject,
-        IRelationEndPointDefinition relationEndPointDefinition,
-        DomainObject oldRelatedObject,
-        DomainObject newRelatedObject)
+    public void RaiseTransactionInitializeEvent ()
     {
-      _eventDistributor.RelationChanged (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
+      _eventDistributor.TransactionInitialize (_clientTransaction);
     }
 
-    public void RaiseObjectDeletingEvent (DomainObject domainObject)
+    public void RaiseTransactionDiscardEvent ()
     {
-      _eventDistributor.ObjectDeleting (_clientTransaction, domainObject);
+      _eventDistributor.TransactionDiscard (_clientTransaction);
     }
 
-    public void RaiseObjectDeletedEvent (DomainObject domainObject)
+    public void RaiseSubTransactionCreatingEvent ()
     {
-      _eventDistributor.ObjectDeleted (_clientTransaction, domainObject);
+      _eventDistributor.SubTransactionCreating (_clientTransaction);
+    }
+
+    public void RaiseSubTransactionInitializeEvent (ClientTransaction subTransaction)
+    {
+      _eventDistributor.SubTransactionInitialize (_clientTransaction, subTransaction);
+    }
+
+    public void RaiseSubTransactionCreatedEvent (ClientTransaction subTransaction)
+    {
+      _eventDistributor.SubTransactionCreated (_clientTransaction, subTransaction);
+    }
+
+    public void RaiseNewObjectCreatingEvent (Type type)
+    {
+      _eventDistributor.NewObjectCreating (_clientTransaction, type);
+    }
+
+    public void RaiseObjectsLoadingEvent (ReadOnlyCollection<ObjectID> objectIDs)
+    {
+      _eventDistributor.ObjectsLoading (_clientTransaction, objectIDs);
+    }
+
+    public void RaiseObjectsLoadedEvent (ReadOnlyCollection<DomainObject> domainObjects)
+    {
+      _eventDistributor.ObjectsLoaded (_clientTransaction, domainObjects);
+    }
+
+    public void RaiseObjectsNotFoundEvent (ReadOnlyCollection<ObjectID> objectIDs)
+    {
+      _eventDistributor.ObjectsNotFound (_clientTransaction, objectIDs);
     }
 
     public void RaiseObjectsUnloadingEvent (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
@@ -112,24 +134,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _eventDistributor.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects);
     }
 
-    public void RaiseRelationEndPointBecomingIncompleteEvent (RelationEndPointID endPointID)
+    public void RaiseObjectDeletingEvent (DomainObject domainObject)
     {
-      _eventDistributor.RelationEndPointBecomingIncomplete (_clientTransaction, endPointID);
+      _eventDistributor.ObjectDeleting (_clientTransaction, domainObject);
     }
 
-    public void RaiseRelationEndPointMapRegisteringEvent (IRelationEndPoint endPoint)
+    public void RaiseObjectDeletedEvent (DomainObject domainObject)
     {
-      _eventDistributor.RelationEndPointMapRegistering (_clientTransaction, endPoint);
-    }
-
-    public void RaiseRelationEndPointMapUnregisteringEvent (RelationEndPointID endPointID)
-    {
-      _eventDistributor.RelationEndPointMapUnregistering (_clientTransaction, endPointID);
-    }
-
-    public void RaiseVirtualRelationEndPointStateUpdatedEvent (RelationEndPointID endPointID, bool? newEndPointChangeState)
-    {
-      _eventDistributor.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, newEndPointChangeState);
+      _eventDistributor.ObjectDeleted (_clientTransaction, domainObject);
     }
 
     public void RaisePropertyValueReadingEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
@@ -152,64 +164,52 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _eventDistributor.PropertyValueChanged (_clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }
 
-    public void RaiseDataContainerStateUpdatedEvent (DataContainer container, StateType newDataContainerState)
+    public void RaiseRelationReadingEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
-      _eventDistributor.DataContainerStateUpdated (_clientTransaction, container, newDataContainerState);
+      _eventDistributor.RelationReading (_clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
     }
 
-    public void RaiseDataContainerMapRegisteringEvent (DataContainer container)
+    public void RaiseRelationReadEvent (
+        DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
     {
-      _eventDistributor.DataContainerMapRegistering (_clientTransaction, container);
+      _eventDistributor.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
     }
 
-    public void RaiseDataContainerMapUnregisteringEvent (DataContainer container)
+    public void RaiseRelationReadEvent (
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
+        ValueAccess valueAccess)
     {
-      _eventDistributor.DataContainerMapUnregistering (_clientTransaction, container);
+      _eventDistributor.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
     }
 
-    public void RaiseSubTransactionCreatingEvent ()
+    public void RaiseRelationChangingEvent (
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject)
     {
-      _eventDistributor.SubTransactionCreating (_clientTransaction);
+      _eventDistributor.RelationChanging (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 
-    public void RaiseSubTransactionInitializeEvent (ClientTransaction subTransaction)
+    public void RaiseRelationChangedEvent (
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject)
     {
-      _eventDistributor.SubTransactionInitialize (_clientTransaction, subTransaction);
+      _eventDistributor.RelationChanged (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 
-    public void RaiseSubTransactionCreatedEvent (ClientTransaction subTransaction)
+    public QueryResult<T> RaiseFilterQueryResultEvent<T> (QueryResult<T> queryResult) where T : DomainObject
     {
-      _eventDistributor.SubTransactionCreated (_clientTransaction, subTransaction);
+      return _eventDistributor.FilterQueryResult (_clientTransaction, queryResult);
     }
 
-    public void RaiseObjectMarkedInvalidEvent (DomainObject domainObject)
+    public IEnumerable<T> RaiseFilterCustomQueryResultEvent<T> (IQuery query, IEnumerable<T> results)
     {
-      _eventDistributor.ObjectMarkedInvalid (_clientTransaction, domainObject);
-    }
-
-    public void RaiseObjectMarkedNotInvalidEvent (DomainObject domainObject)
-    {
-      _eventDistributor.ObjectMarkedNotInvalid (_clientTransaction, domainObject);
-    }
-
-    public void RaiseNewObjectCreatingEvent (Type type)
-    {
-      _eventDistributor.NewObjectCreating (_clientTransaction, type);
-    }
-
-    public void RaiseObjectsLoadingEvent (ReadOnlyCollection<ObjectID> objectIDs)
-    {
-      _eventDistributor.ObjectsLoading (_clientTransaction, objectIDs);
-    }
-
-    public void RaiseObjectsLoadedEvent (ReadOnlyCollection<DomainObject> domainObjects)
-    {
-      _eventDistributor.ObjectsLoaded (_clientTransaction, domainObjects);
-    }
-
-    public void RaiseObjectsNotFoundEvent (ReadOnlyCollection<ObjectID> objectIDs)
-    {
-      _eventDistributor.ObjectsNotFound (_clientTransaction, objectIDs);
+      return _eventDistributor.FilterCustomQueryResult (_clientTransaction, query, results);
     }
 
     public void RaiseTransactionCommittingEvent (ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar)
@@ -237,44 +237,49 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _eventDistributor.TransactionRolledBack (_clientTransaction, domainObjects);
     }
 
-    public QueryResult<T> RaiseFilterQueryResultEvent<T> (QueryResult<T> queryResult) where T : DomainObject
+    public void RaiseRelationEndPointMapRegisteringEvent (IRelationEndPoint endPoint)
     {
-     return _eventDistributor.FilterQueryResult (_clientTransaction, queryResult);
+      _eventDistributor.RelationEndPointMapRegistering (_clientTransaction, endPoint);
     }
 
-    public IEnumerable<T> RaiseFilterCustomQueryResultEvent<T> (IQuery query, IEnumerable<T> results)
+    public void RaiseRelationEndPointMapUnregisteringEvent (RelationEndPointID endPointID)
     {
-     return _eventDistributor.FilterCustomQueryResult (_clientTransaction, query, results);
+      _eventDistributor.RelationEndPointMapUnregistering (_clientTransaction, endPointID);
     }
 
-    public void RaiseTransactionInitializeEvent ()
+    public void RaiseRelationEndPointBecomingIncompleteEvent (RelationEndPointID endPointID)
     {
-      _eventDistributor.TransactionInitialize (_clientTransaction);
+      _eventDistributor.RelationEndPointBecomingIncomplete (_clientTransaction, endPointID);
     }
 
-    public void RaiseTransactionDiscardEvent ()
+    public void RaiseObjectMarkedInvalidEvent (DomainObject domainObject)
     {
-      _eventDistributor.TransactionDiscard (_clientTransaction);
+      _eventDistributor.ObjectMarkedInvalid (_clientTransaction, domainObject);
     }
 
-    public void RaiseRelationReadingEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    public void RaiseObjectMarkedNotInvalidEvent (DomainObject domainObject)
     {
-      _eventDistributor.RelationReading (_clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
+      _eventDistributor.ObjectMarkedNotInvalid (_clientTransaction, domainObject);
     }
 
-    public void RaiseRelationReadEvent (
-        DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
+    public void RaiseDataContainerMapRegisteringEvent (DataContainer container)
     {
-      _eventDistributor.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
+      _eventDistributor.DataContainerMapRegistering (_clientTransaction, container);
     }
 
-    public void RaiseRelationReadEvent (
-        DomainObject domainObject,
-        IRelationEndPointDefinition relationEndPointDefinition,
-        ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
-        ValueAccess valueAccess)
+    public void RaiseDataContainerMapUnregisteringEvent (DataContainer container)
     {
-      _eventDistributor.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
+      _eventDistributor.DataContainerMapUnregistering (_clientTransaction, container);
+    }
+
+    public void RaiseDataContainerStateUpdatedEvent (DataContainer container, StateType newDataContainerState)
+    {
+      _eventDistributor.DataContainerStateUpdated (_clientTransaction, container, newDataContainerState);
+    }
+
+    public void RaiseVirtualRelationEndPointStateUpdatedEvent (RelationEndPointID endPointID, bool? newEndPointChangeState)
+    {
+      _eventDistributor.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, newEndPointChangeState);
     }
   }
 }

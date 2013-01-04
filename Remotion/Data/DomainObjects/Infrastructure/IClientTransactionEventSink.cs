@@ -31,89 +31,104 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public interface IClientTransactionEventSink
   {
+    // User event
+    void RaiseTransactionInitializeEvent ();
+    // User event
+    void RaiseTransactionDiscardEvent ();
+
+    // User event
+    void RaiseSubTransactionCreatingEvent ();
+    // User event
+    void RaiseSubTransactionInitializeEvent (ClientTransaction subTransaction);
+    // User event
+    void RaiseSubTransactionCreatedEvent (ClientTransaction subTransaction);
+
+    // User event
+    void RaiseNewObjectCreatingEvent (Type type);
+
+    // User event
+    void RaiseObjectsLoadingEvent (ReadOnlyCollection<ObjectID> objectIDs);
+    // User event
+    void RaiseObjectsLoadedEvent (ReadOnlyCollection<DomainObject> domainObjects);
+    // Infrastructure event
+    void RaiseObjectsNotFoundEvent (ReadOnlyCollection<ObjectID> objectIDs);
+
+    // User event
+    void RaiseObjectsUnloadingEvent (ReadOnlyCollection<DomainObject> unloadedDomainObjects);
+    // User event
+    void RaiseObjectsUnloadedEvent (ReadOnlyCollection<DomainObject> unloadedDomainObjects);
+
+    // User event
+    void RaiseObjectDeletingEvent (DomainObject domainObject);
+    // User event
+    void RaiseObjectDeletedEvent (DomainObject domainObject);
+
+    // User event
+    void RaisePropertyValueReadingEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess);
+    // User event
+    void RaisePropertyValueReadEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess);
+    // User event
+    void RaisePropertyValueChangingEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue);
+    // User event
+    void RaisePropertyValueChangedEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue);
+
+    // User event
+    void RaiseRelationReadingEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess);
+    // User event
+    void RaiseRelationReadEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess);
+    // User event
+    void RaiseRelationReadEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
+    // User event
     void RaiseRelationChangingEvent (
         DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject);
-
+    // User event
     void RaiseRelationChangedEvent (
         DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject);
-
-    void RaiseObjectDeletingEvent (DomainObject domainObject);
-
-    void RaiseObjectDeletedEvent (DomainObject domainObject);
-
-    void RaiseObjectsUnloadingEvent (ReadOnlyCollection<DomainObject> unloadedDomainObjects);
-
-    void RaiseObjectsUnloadedEvent (ReadOnlyCollection<DomainObject> unloadedDomainObjects);
-
-    void RaiseRelationEndPointBecomingIncompleteEvent (RelationEndPointID endPointID);
-
-    void RaiseRelationEndPointMapRegisteringEvent (IRelationEndPoint endPoint);
-
-    void RaiseRelationEndPointMapUnregisteringEvent (RelationEndPointID endPointID);
-
-    void RaiseVirtualRelationEndPointStateUpdatedEvent (RelationEndPointID endPointID, bool? newEndPointChangeState);
-
-    void RaisePropertyValueReadingEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess);
-
-    void RaisePropertyValueReadEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess);
-
-    void RaisePropertyValueChangingEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue);
-
-    void RaisePropertyValueChangedEvent (DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue);
-
-    void RaiseDataContainerStateUpdatedEvent (DataContainer container, StateType newDataContainerState);
-
-    void RaiseDataContainerMapRegisteringEvent (DataContainer container);
-
-    void RaiseDataContainerMapUnregisteringEvent (DataContainer container);
-
-    void RaiseSubTransactionCreatingEvent ();
-
-    void RaiseSubTransactionInitializeEvent (ClientTransaction subTransaction);
-
-    void RaiseSubTransactionCreatedEvent (ClientTransaction subTransaction);
-
-    void RaiseObjectMarkedInvalidEvent (DomainObject domainObject);
-
-    void RaiseObjectMarkedNotInvalidEvent (DomainObject domainObject);
-
-    void RaiseNewObjectCreatingEvent (Type type);
-
-    void RaiseObjectsLoadingEvent (ReadOnlyCollection<ObjectID> objectIDs);
-
-    void RaiseObjectsLoadedEvent (ReadOnlyCollection<DomainObject> domainObjects);
-
-    void RaiseObjectsNotFoundEvent (ReadOnlyCollection<ObjectID> objectIDs);
-
-    void RaiseTransactionCommittingEvent (
-        ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar);
-
-    void RaiseTransactionCommitValidateEvent (ReadOnlyCollection<PersistableData> committedData);
-
-    void RaiseTransactionCommittedEvent (ReadOnlyCollection<DomainObject> domainObjects);
-
-    void RaiseTransactionRollingBackEvent (ReadOnlyCollection<DomainObject> domainObjects);
-
-    void RaiseTransactionRolledBackEvent (ReadOnlyCollection<DomainObject> domainObjects);
-
+    
+    // User event
     QueryResult<T> RaiseFilterQueryResultEvent<T> (QueryResult<T> queryResult) where T : DomainObject;
-
+    // Infrastructure event, may become user event if needed
     IEnumerable<T> RaiseFilterCustomQueryResultEvent<T> (IQuery query, IEnumerable<T> results);
 
-    void RaiseTransactionInitializeEvent ();
+    // User event
+    void RaiseTransactionCommittingEvent (
+        ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar);
+    // User event
+    void RaiseTransactionCommitValidateEvent (ReadOnlyCollection<PersistableData> committedData);
+    // User event
+    void RaiseTransactionCommittedEvent (ReadOnlyCollection<DomainObject> domainObjects);
 
-    void RaiseTransactionDiscardEvent ();
- 
-    void RaiseRelationReadingEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess);
+    // User event
+    void RaiseTransactionRollingBackEvent (ReadOnlyCollection<DomainObject> domainObjects);
+    // User event
+    void RaiseTransactionRolledBackEvent (ReadOnlyCollection<DomainObject> domainObjects);
 
-    void RaiseRelationReadEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess);
+    // Infrastructure event
+    void RaiseRelationEndPointMapRegisteringEvent (IRelationEndPoint endPoint);
+    // Infrastructure event
+    void RaiseRelationEndPointMapUnregisteringEvent (RelationEndPointID endPointID);
+    // Infrastructure event
+    void RaiseRelationEndPointBecomingIncompleteEvent (RelationEndPointID endPointID);
 
-    void RaiseRelationReadEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
+    // Infrastructure event
+    void RaiseObjectMarkedInvalidEvent (DomainObject domainObject);
+    // Infrastructure event
+    void RaiseObjectMarkedNotInvalidEvent (DomainObject domainObject);
+
+    // Infrastructure event
+    void RaiseDataContainerMapRegisteringEvent (DataContainer container);
+    // Infrastructure event
+    void RaiseDataContainerMapUnregisteringEvent (DataContainer container);
+
+    // Infrastructure event
+    void RaiseDataContainerStateUpdatedEvent (DataContainer container, StateType newDataContainerState);
+    // Infrastructure event
+    void RaiseVirtualRelationEndPointStateUpdatedEvent (RelationEndPointID endPointID, bool? newEndPointChangeState);
   }
 }
