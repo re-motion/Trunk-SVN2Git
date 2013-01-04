@@ -25,19 +25,19 @@ namespace Remotion.SecurityManager.UnitTests.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\DatabasesBla")]
-        public string DatabaseDirectory {
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        public string DataSource {
             get {
-                return ((string)(this["DatabaseDirectory"]));
+                return ((string)(this["DataSource"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
-        public string DataSource {
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\databases")]
+        public string DatabaseDirectory {
             get {
-                return ((string)(this["DataSource"]));
+                return ((string)(this["DatabaseDirectory"]));
             }
         }
     }
