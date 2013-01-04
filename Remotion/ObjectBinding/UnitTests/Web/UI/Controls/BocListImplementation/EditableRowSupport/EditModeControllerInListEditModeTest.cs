@@ -406,15 +406,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "Cannot create edit mode controls for the row with ID '6'. The BocList 'BocList' does not contain the row in its Value collection.")]
     public void EnsureEditModeRestoredWithMissingRow ()
     {
-      Assert.That (Controller.IsRowEditModeActive, Is.False);
-      ControllerInvoker.LoadControlState (CreateControlState (null, EditMode.RowEditMode, new List<string> { "6" }, false));
-      Assert.That (Controller.IsRowEditModeActive, Is.True);
+      string idFormat = "Controller_Row_{0}";
+
+      Assert.That (Controller.IsListEditModeActive, Is.False);
+      ControllerInvoker.LoadControlState (CreateControlState (null, EditMode.ListEditMode, new List<string> { "0", "1", "2", "999", "3", "4" }, false));
+      Assert.That (Controller.IsListEditModeActive, Is.True);
 
       Controller.EnsureEditModeRestored (Columns);
+      Assert.That (Controller.IsListEditModeActive, Is.True);
+
+      Assert.That (Controller.Controls[0].ID, Is.EqualTo (string.Format (idFormat, 0)));
+      Assert.That (Controller.Controls[1].ID, Is.EqualTo (string.Format (idFormat, 1)));
+      Assert.That (Controller.Controls[2].ID, Is.EqualTo (string.Format (idFormat, 2)));
+      Assert.That (Controller.Controls[3].ID, Is.EqualTo (string.Format (idFormat, 3)));
+      Assert.That (Controller.Controls[4].ID, Is.EqualTo (string.Format (idFormat, 4)));
     }
 
     [Test]

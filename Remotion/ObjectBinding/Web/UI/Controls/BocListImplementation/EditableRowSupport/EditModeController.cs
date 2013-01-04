@@ -298,19 +298,38 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       Assertion.IsTrue (_rows.Count == 0, "Populating the editable rows only happens after the last edit mode was ended.");
       Assertion.IsTrue (Controls.Count == 0, "Populating the editable rows only happens after the last edit mode was ended.");
 
+      var missingRowIDs = new List<string>();
+
       foreach (var editedRowID in _editedRowIDs)
       {
         var bocListRow = _editModeHost.RowIDProvider.GetRowFromItemRowID (_editModeHost.Value, editedRowID);
         if (bocListRow == null)
         {
-          throw new InvalidOperationException (
-              string.Format (
-                  "Cannot create edit mode controls for the row with ID '{1}'. The BocList '{0}' does not contain the row in its Value collection.",
-                  _editModeHost.ID,
-                  editedRowID));
+          if (IsRowEditModeActive)
+          {
+            throw new InvalidOperationException (
+                string.Format (
+                    "Cannot create edit mode controls for the row with ID '{1}'. The BocList '{0}' does not contain the row in its Value collection.",
+                    _editModeHost.ID,
+                    editedRowID));
+          }
+          else
+          {
+            // Remove ViewState for missing row
+            var missingRow = new EditableRow (_editModeHost);
+            Controls.Add (missingRow);
+            Controls.Remove (missingRow);
+            
+            missingRowIDs.Add (editedRowID);
+          }
         }
-        AddRowToDataStructure (bocListRow, columns);
+        else
+        {
+          AddRowToDataStructure (bocListRow, columns);
+        }
       }
+
+      _editedRowIDs.RemoveAll (missingRowIDs.Contains);
     }
 
     private EditableRow CreateEditableRow (BocListRow bocListRow, BocColumnDefinition[] columns)
