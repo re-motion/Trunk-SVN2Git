@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CreateExtensionCollection ()
+    public void CreateExtensions ()
     {
       var extensionFactoryMock = MockRepository.GenerateStrictMock<IClientTransactionExtensionFactory> ();
       var extensionStub = MockRepository.GenerateStub<IClientTransactionExtension> ();
@@ -129,16 +129,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           .Return (new[] { extensionFactoryMock });
       serviceLocatorMock.Replay ();
 
-      ClientTransactionExtensionCollection extensions;
+      IClientTransactionExtension[] extensions;
       using (new ServiceLocatorScope (serviceLocatorMock))
       {
-        extensions = _factory.CreateExtensionCollection (_fakeConstructedTransaction);
+        extensions = _factory.CreateExtensions (_fakeConstructedTransaction).ToArray();
       }
 
       serviceLocatorMock.VerifyAllExpectations ();
       extensionFactoryMock.VerifyAllExpectations ();
 
-      Assert.That (extensions.Count, Is.EqualTo (2));
+      Assert.That (extensions.Length, Is.EqualTo (2));
       Assert.That (extensions[0], Is.TypeOf<CommitValidationClientTransactionExtension> ());
       Assert.That (extensions[1], Is.SameAs (extensionStub));
       

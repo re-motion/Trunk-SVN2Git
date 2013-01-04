@@ -57,7 +57,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private IObjectLifetimeAgent _objectLifetimeAgentMock;
     private IQueryManager _queryManagerMock;
     private ICommitRollbackAgent _commitRollbackAgentMock;
-    private ClientTransactionExtensionCollection _fakeExtensions;
 
     private TestableClientTransaction _transactionWithMocks;
 
@@ -84,7 +83,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _objectLifetimeAgentMock = _mockRepository.StrictMock<IObjectLifetimeAgent> ();
       _queryManagerMock = _mockRepository.StrictMock<IQueryManager> ();
       _commitRollbackAgentMock = _mockRepository.StrictMock<ICommitRollbackAgent> ();
-      _fakeExtensions = new ClientTransactionExtensionCollection("test");
 
       _transactionWithMocks = ClientTransactionObjectMother.CreateWithComponents<TestableClientTransaction> (
           _fakeApplicationData,
@@ -97,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _objectLifetimeAgentMock,
           _queryManagerMock,
           _commitRollbackAgentMock,
-          _fakeExtensions,
+          Enumerable.Empty<IClientTransactionExtension>(),
           tx => { throw new NotImplementedException(); });
       // Ignore calls made by ctor
       _hierarchyManagerMock.BackToRecord ();
@@ -114,7 +112,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var componentFactoryMock = _mockRepository.StrictMock<IClientTransactionComponentFactory>();
 
-      var fakeExtensionCollection = new ClientTransactionExtensionCollection ("test");
+      var fakeExtension = MockRepository.GenerateStub<IClientTransactionExtension>();
+      fakeExtension.Stub (stub => stub.Key).Return ("fake");
+
+      var fakeExtensionCollection = new ClientTransactionExtensionCollection("root");
 
       ClientTransaction constructedTransaction = null;
 
@@ -204,19 +205,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .Return (_commitRollbackAgentMock)
             .WhenCalled (mi => Assert.That (constructedTransaction.QueryManager, Is.SameAs (_queryManagerMock)));
         componentFactoryMock
-            .Expect (mock => mock.CreateExtensionCollection (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
-            .Return (fakeExtensionCollection)
+            .Expect (mock => mock.CreateExtensions (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
+            .Return (new[] { fakeExtension })
             .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetCommitRollbackAgent (constructedTransaction), Is.SameAs (_commitRollbackAgentMock)));
         _eventBrokerMock
-            .Expect (mock => mock.AddListener (Arg<ExtensionClientTransactionListener>.Is.TypeOf))
-            .WhenCalled (
-                mi =>
-                {
-                  Assert.That (constructedTransaction.Extensions, Is.SameAs (fakeExtensionCollection));
-                  Assert.That (((ExtensionClientTransactionListener) mi.Arguments[0]).Extension, Is.SameAs (constructedTransaction.Extensions)); 
-                });
-
-        _hierarchyManagerMock.Expect (mock => mock.OnBeforeTransactionInitialize());
+            .Stub (mock => mock.Extensions)
+            .Return (fakeExtensionCollection);
+        
+        _hierarchyManagerMock
+            .Expect (mock => mock.OnBeforeTransactionInitialize())
+            .WhenCalled (mi => Assert.That (fakeExtensionCollection, Has.Member (fakeExtension)));
         _eventBrokerMock
             .Expect (mock => mock.RaiseTransactionInitializeEvent());
       }
@@ -233,6 +231,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _mockRepository.VerifyAll();
 
       Assert.That (result, Is.SameAs (constructedTransaction));
+    }
+
+    [Test]
+    public void Extensions ()
+    {
+      var fakeExtensions = new ClientTransactionExtensionCollection ("root");
+      _eventBrokerMock.Stub (mock => mock.Extensions).Return (fakeExtensions);
+      _eventBrokerMock.Replay ();
+
+      Assert.That (_transactionWithMocks.Extensions, Is.SameAs (fakeExtensions));
     }
 
     [Test]

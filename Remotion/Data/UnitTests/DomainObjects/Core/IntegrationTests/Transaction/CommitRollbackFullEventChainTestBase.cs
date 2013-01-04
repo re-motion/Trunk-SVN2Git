@@ -190,10 +190,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered ())
       {
         var domainObjects = domainObjectsAndMocks.Select (t => t.Item1).ToArray ();
-        var extensionOptions = ExtensionMock
-            .Expect (mock => mock.Committing (Arg.Is (_transaction), ArgIsDomainObjectSet (domainObjects), Arg<CommittingEventRegistrar>.Is.TypeOf));
         ListenerMock
             .Expect (mock => mock.TransactionCommitting (Arg.Is (_transaction), ArgIsDomainObjectSet (domainObjects), Arg<CommittingEventRegistrar>.Is.TypeOf));
+        var extensionOptions = ExtensionMock
+            .Expect (mock => mock.Committing (Arg.Is (_transaction), ArgIsDomainObjectSet (domainObjects), Arg<CommittingEventRegistrar>.Is.TypeOf));
         var transactionOptions = TransactionMockEventReceiver.Expect (mock => mock.Committing (domainObjects));
 
         IMethodOptions<RhinoMocksExtensions.VoidType>[] domainObjectOptions;
@@ -239,11 +239,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (_mockRepository.Ordered ())
       {
-        ExtensionMock
-            .Expect (mock => mock.CommitValidate (Arg.Is (_transaction), ArgIsPersistableDataSet (domainObjects)));
         ListenerMock
             .Expect (mock => mock.TransactionCommitValidate (Arg.Is (_transaction), ArgIsPersistableDataSet (domainObjects)))
             .WhenCalled (mi => Assert.That (_transaction.HasChanged(), Is.True, "CommitValidate: last event before actual commit."));
+        ExtensionMock
+            .Expect (mock => mock.CommitValidate (Arg.Is (_transaction), ArgIsPersistableDataSet (domainObjects)));
       }
     }
 
@@ -261,10 +261,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (MockRepository.Ordered ())
       {
         var domainObjects = domainObjectsAndMocks.Select (t => t.Item1).ToArray ();
-        var extensionOptions = _extensionMock
-            .Expect (mock => mock.RollingBack (Arg.Is (Transaction), ArgIsDomainObjectSet (domainObjects)));
         _listenerMock
             .Expect (mock => mock.TransactionRollingBack (Arg.Is (Transaction), ArgIsDomainObjectSet (domainObjects)));
+        var extensionOptions = _extensionMock
+            .Expect (mock => mock.RollingBack (Arg.Is (Transaction), ArgIsDomainObjectSet (domainObjects)));
         var transactionOptions = TransactionMockEventReceiver
             .Expect (mock => mock.RollingBack (domainObjects))
             .WithCurrentTransaction (Transaction);

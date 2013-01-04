@@ -17,10 +17,13 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
+using Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
@@ -38,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private Order _order2;
     private Order _invalidObject;
 
-    private ClientTransactionEventDistributor _listener;
+    private ClientTransactionEventDistributor _distributor;
 
     private MockRepository _mockRepository;
 
@@ -51,6 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private ClientTransactionMockEventReceiver _transactionEventReceiverMock;
 
+    private IClientTransactionExtension _extensionMock;
     private IClientTransactionListener _innerListenerMock;
 
     public override void SetUp ()
@@ -68,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
             return order;
           });
 
-      _listener = new ClientTransactionEventDistributor ();
+      _distributor = new ClientTransactionEventDistributor ();
 
       _mockRepository = new MockRepository();
       _order1EventReceiverMock = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
@@ -85,8 +89,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _order1.SetLoadEventReceiver (_loadEventReceiverMock);
       _order2.SetLoadEventReceiver (_loadEventReceiverMock);
 
-      _innerListenerMock = _mockRepository.StrictMock<IClientTransactionListener>();
-      _listener.AddListener (_innerListenerMock);
+      _extensionMock = _mockRepository.StrictMock<IClientTransactionExtension>();
+      _extensionMock.Stub (stub => stub.Key).Return ("extension");
+      _extensionMock.Replay();
+      _distributor.Extensions.Add (_extensionMock);
+      _extensionMock.BackToRecord ();
+
+      _innerListenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
+      _distributor.AddListener (_innerListenerMock);
+    }
+
+    [Test]
+    public void TransactionInitialize ()
+    {
+      CheckEventWithListenersFirst (
+          l => l.TransactionInitialize (_clientTransaction), 
+          x => x.TransactionInitialize (_clientTransaction));
+    }
+
+    [Test]
+    public void TransactionDiscard ()
+    {
+      CheckEventWithListenersFirst (
+          l => l.TransactionDiscard (_clientTransaction), 
+          x => x.TransactionDiscard (_clientTransaction));
+    }
+
+    [Test]
+    public void SubTransactionCreating ()
+    {
+      CheckEventWithListenersFirst (
+          l => l.SubTransactionCreating (_clientTransaction), 
+          x => x.SubTransactionCreating (_clientTransaction));
+    }
+
+    [Test]
+    public void SubTransactionInitialize ()
+    {
+      var subTransaction = ClientTransactionObjectMother.Create ();
+      CheckEventWithListenersFirst (
+          l => l.SubTransactionInitialize (_clientTransaction, subTransaction), 
+          x => x.SubTransactionInitialize (_clientTransaction, subTransaction));
     }
 
     [Test]
@@ -96,6 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       CheckEventWithListenersLast (
           l => l.SubTransactionCreated (_clientTransaction, subTransaction),
+          x => x.SubTransactionCreated (_clientTransaction, subTransaction),
           () => 
             _transactionEventReceiverMock
                     .Expect (
@@ -106,11 +150,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void NewObjectCreating ()
+    {
+      CheckEventWithListenersFirst (
+          l => l.NewObjectCreating (_clientTransaction, typeof (Order)),
+          x => x.NewObjectCreating (_clientTransaction, typeof (Order)));
+    }
+
+    [Test]
+    public void ObjectsLoading ()
+    {
+      var objectIDs = Array.AsReadOnly (new[] { DomainObjectIDs.Order1 });
+      CheckEventWithListenersFirst (
+          l => l.ObjectsLoading (_clientTransaction, objectIDs),
+          x => x.ObjectsLoading (_clientTransaction, objectIDs));
+    }
+
+    [Test]
     public void ObjectsLoaded ()
     {
       var domainObjects = Array.AsReadOnly (new DomainObject[] { _order1, _order2 });
       CheckEventWithListenersLast (
           l => l.ObjectsLoaded (_clientTransaction, domainObjects),
+          x => x.ObjectsLoaded (_clientTransaction, domainObjects),
           () =>
           {
             _loadEventReceiverMock.Expect (mock => mock.OnLoaded (_order1)).WithCurrentTransaction (_clientTransaction);
@@ -131,6 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       CheckEventWithListenersFirst (
           l => l.ObjectsUnloading (_clientTransaction, unloadedDomainObjects),
+          x => x.ObjectsUnloading (_clientTransaction, unloadedDomainObjects),
           () =>
           {
             _unloadEventReceiverMock
@@ -149,6 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       CheckEventWithListenersLast (
           l => l.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects),
+          x => x.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects),
           () =>
           {
             _unloadEventReceiverMock
@@ -165,6 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       CheckEventWithListenersFirst (
           l => l.ObjectDeleting (_clientTransaction, _order1),
+          x => x.ObjectDeleting (_clientTransaction, _order1),
           () =>
           _order1EventReceiverMock
               .Expect (mock => mock.Deleting (_order1, EventArgs.Empty))
@@ -176,10 +241,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       CheckEventWithListenersLast (
           l => l.ObjectDeleted (_clientTransaction, _order1),
+          x => x.ObjectDeleted (_clientTransaction, _order1),
           () =>
           _order1EventReceiverMock
               .Expect (mock => mock.Deleted (_order1, EventArgs.Empty))
               .WithCurrentTransaction (_clientTransaction));
+    }
+
+    [Test]
+    public void PropertyValueReading ()
+    {
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
+      CheckEventWithListenersFirst (
+          l => l.PropertyValueReading (_clientTransaction, _order1, propertyDefinition, ValueAccess.Current),
+          x => x.PropertyValueReading (_clientTransaction, _order1, propertyDefinition, ValueAccess.Current));
+    }
+
+    [Test]
+    public void PropertyValueRead ()
+    {
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
+      CheckEventWithListenersLast (
+          l => l.PropertyValueRead (_clientTransaction, _order1, propertyDefinition, 17,  ValueAccess.Current),
+          x => x.PropertyValueRead (_clientTransaction, _order1, propertyDefinition, 17, ValueAccess.Current));
+    }
+
+    [Test]
+    public void PropertyValueRead_WithNull ()
+    {
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
+      CheckEventWithListenersLast (
+          l => l.PropertyValueRead (_clientTransaction, _order1, propertyDefinition, null, ValueAccess.Current),
+          x => x.PropertyValueRead (_clientTransaction, _order1, propertyDefinition, null, ValueAccess.Current));
     }
 
     [Test]
@@ -191,6 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       CheckEventWithListenersFirst (
           l => l.PropertyValueChanging (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
+          x => x.PropertyValueChanging (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
           () => _order1EventReceiverMock
               .Expect (mock => mock.PropertyChanging (propertyDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
@@ -200,13 +294,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueChanging_WithNulls ()
     {
       var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
-      object oldValue = null;
-      object newValue = null;
 
       CheckEventWithListenersFirst (
-          l => l.PropertyValueChanging (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
+          l => l.PropertyValueChanging (_clientTransaction, _order1, propertyDefinition, null, null),
+          x => x.PropertyValueChanging (_clientTransaction, _order1, propertyDefinition, null, null),
           () => _order1EventReceiverMock
-                    .Expect (mock => mock.PropertyChanging (propertyDefinition, oldValue, newValue))
+                    .Expect (mock => mock.PropertyChanging (propertyDefinition, null, null))
                     .WithCurrentTransaction (_clientTransaction));
     }
     
@@ -219,6 +312,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       CheckEventWithListenersLast (
           l => l.PropertyValueChanged (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
+          x => x.PropertyValueChanged (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
           () =>
           _order1EventReceiverMock
               .Expect (mock => mock.PropertyChanged (propertyDefinition, oldValue, newValue))
@@ -229,14 +323,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueChanged_WithNulls ()
     {
       var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
-      object oldValue = null;
-      object newValue = null;
 
       CheckEventWithListenersLast (
-          l => l.PropertyValueChanged (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
+          l => l.PropertyValueChanged (_clientTransaction, _order1, propertyDefinition, null, null),
+          x => x.PropertyValueChanged (_clientTransaction, _order1, propertyDefinition, null, null),
           () => _order1EventReceiverMock
-                    .Expect (mock => mock.PropertyChanged (propertyDefinition, oldValue, newValue))
+                    .Expect (mock => mock.PropertyChanged (propertyDefinition, null, null))
                     .WithCurrentTransaction (_clientTransaction));
+    }
+
+    [Test]
+    public void RelationReading ()
+    {
+      var endPointDefinition = GetSomeEndPointDefinition ();
+
+      CheckEventWithListenersFirst (
+          l => l.RelationReading (_clientTransaction, _order1, endPointDefinition, ValueAccess.Current),
+          x => x.RelationReading (_clientTransaction, _order1, endPointDefinition, ValueAccess.Current));
+    }
+
+    [Test]
+    public void RelationRead_Object ()
+    {
+      var endPointDefinition = GetSomeEndPointDefinition ();
+
+      CheckEventWithListenersLast (
+          l => l.RelationRead (_clientTransaction, _order1, endPointDefinition, _order2, ValueAccess.Current),
+          x => x.RelationRead (_clientTransaction, _order1, endPointDefinition, _order2, ValueAccess.Current));
+    }
+
+    [Test]
+    public void RelationRead_Object_WithNull ()
+    {
+      var endPointDefinition = GetSomeEndPointDefinition ();
+
+      CheckEventWithListenersLast (
+          l => l.RelationRead (_clientTransaction, _order1, endPointDefinition, (DomainObject) null, ValueAccess.Current),
+          x => x.RelationRead (_clientTransaction, _order1, endPointDefinition, (DomainObject) null, ValueAccess.Current));
+    }
+
+    [Test]
+    public void RelationRead_Collection ()
+    {
+      var endPointDefinition = GetSomeEndPointDefinition ();
+
+      var relatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection());
+      CheckEventWithListenersLast (
+          l => l.RelationRead (_clientTransaction, _order1, endPointDefinition, relatedObjects, ValueAccess.Current),
+          x => x.RelationRead (_clientTransaction, _order1, endPointDefinition, relatedObjects, ValueAccess.Current));
     }
 
     [Test]
@@ -248,6 +382,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       CheckEventWithListenersFirst (
           l => l.RelationChanging (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
+          x => x.RelationChanging (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
           () =>
           _order1EventReceiverMock
               .Expect (mock => mock.RelationChanging (endPointDefinition, oldValue, newValue))
@@ -258,14 +393,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void RelationChanging_WithNulls ()
     {
       var endPointDefinition = GetSomeEndPointDefinition ();
-      DomainObject oldValue = null;
-      DomainObject newValue = null;
 
       CheckEventWithListenersFirst (
-          l => l.RelationChanging (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
+          l => l.RelationChanging (_clientTransaction, _order1, endPointDefinition, null, null),
+          x => x.RelationChanging (_clientTransaction, _order1, endPointDefinition, null, null),
           () =>
           _order1EventReceiverMock
-              .Expect (mock => mock.RelationChanging (endPointDefinition, oldValue, newValue))
+              .Expect (mock => mock.RelationChanging (endPointDefinition, null, null))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -278,6 +412,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       CheckEventWithListenersLast (
           l => l.RelationChanged (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
+          x => x.RelationChanged (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
           () =>
           _order1EventReceiverMock
               .Expect (mock => mock.RelationChanged (endPointDefinition, oldValue, newValue))
@@ -288,15 +423,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void RelationChanged_WithNulls ()
     {
       var endPointDefinition = GetSomeEndPointDefinition ();
-      DomainObject oldValue = null;
-      DomainObject newValue = null;
 
       CheckEventWithListenersLast (
-          l => l.RelationChanged (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
+          l => l.RelationChanged (_clientTransaction, _order1, endPointDefinition, null, null),
+          x => x.RelationChanged (_clientTransaction, _order1, endPointDefinition, null, null),
           () =>
           _order1EventReceiverMock
-              .Expect (mock => mock.RelationChanged (endPointDefinition, oldValue, newValue))
+              .Expect (mock => mock.RelationChanged (endPointDefinition, null, null))
               .WithCurrentTransaction (_clientTransaction));
+    }
+
+    [Test]
+    public void FilterQueryResult ()
+    {
+      var queryResult1 = QueryResultObjectMother.CreateQueryResult<Order> ();
+      var queryResult2 = QueryResultObjectMother.CreateQueryResult<Order> ();
+      var queryResult3 = QueryResultObjectMother.CreateQueryResult<Order> ();
+      using (_mockRepository.Ordered ())
+      {
+        _innerListenerMock.Expect (l => l.FilterQueryResult (_clientTransaction, queryResult1)).Return (queryResult2);
+        _extensionMock.Expect (x => x.FilterQueryResult (_clientTransaction, queryResult2)).Return (queryResult3);
+      }
+      _mockRepository.ReplayAll ();
+
+      var result = _distributor.FilterQueryResult (_clientTransaction, queryResult1);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.SameAs (queryResult3));
     }
 
     [Test]
@@ -305,6 +458,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var eventRegistrar = MockRepository.GenerateStub<ICommittingEventRegistrar>();
       CheckEventWithListenersFirst (
           l => l.TransactionCommitting (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 }), eventRegistrar),
+          x => x.Committing (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 }), eventRegistrar),
           () =>
           {
             _transactionEventReceiverMock
@@ -328,16 +482,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           });
     }
 
-    [Test]
+   [Test]
     public void TransactionCommitting_InvalidObject ()
     {
       var eventRegistrar = MockRepository.GenerateStub<ICommittingEventRegistrar> ();
       CheckEventWithListenersFirst (
           l => l.TransactionCommitting (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _invalidObject }), eventRegistrar),
+          x => x.Committing (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _invalidObject }), eventRegistrar),
           () =>
           {
             _transactionEventReceiverMock
-                .Expect (mock => mock.Committing (_invalidObject))
+                .Expect (mock => mock.Committing (new[] { _invalidObject }))
                 .WithCurrentTransaction (_clientTransaction);
             _invalidObjectEventReceiverMock
                 .Expect (mock => mock.Committing (Arg<object>.Is.Anything, Arg<DomainObjectCommittingEventArgs>.Is.Anything))
@@ -346,11 +501,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           });
     }
 
+   [Test]
+   public void TransactionCommitValidate ()
+   {
+     var data1 = PersistableDataObjectMother.Create ();
+     var data2 = PersistableDataObjectMother.Create ();
+     CheckEventWithListenersFirst (
+         l => l.TransactionCommitValidate (_clientTransaction, Array.AsReadOnly (new[] { data1, data2 })),
+         x => x.CommitValidate (_clientTransaction, Array.AsReadOnly (new[] { data1, data2 })));
+   }
+
     [Test]
     public void TransactionCommitted ()
     {
       CheckEventWithListenersLast (
           l => l.TransactionCommitted (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
+          x => x.Committed (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
           () =>
           {
             _order2EventReceiverMock
@@ -370,6 +536,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       CheckEventWithListenersFirst (
           l => l.TransactionRollingBack (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
+          x => x.RollingBack (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
           () =>
           {
             _transactionEventReceiverMock
@@ -389,10 +556,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       CheckEventWithListenersFirst (
           l => l.TransactionRollingBack (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _invalidObject })),
+          x => x.RollingBack (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _invalidObject })),
           () =>
           {
             _transactionEventReceiverMock
-                .Expect (mock => mock.RollingBack (_invalidObject))
+                .Expect (mock => mock.RollingBack (new[] { _invalidObject }))
                 .WithCurrentTransaction (_clientTransaction);
             _invalidObjectEventReceiverMock
                 .Expect (mock => mock.RollingBack (Arg<DomainObject>.Is.Anything, Arg<EventArgs>.Is.Anything))
@@ -406,6 +574,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       CheckEventWithListenersLast (
           l => l.TransactionRolledBack (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
+          x => x.RolledBack (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
           () =>
           {
             _order2EventReceiverMock
@@ -424,34 +593,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void Serializable ()
     {
       var instance = new ClientTransactionEventDistributor();
-      instance.AddListener (new SerializableClientTransactionListenerFake());
+      instance.AddListener (new SerializableClientTransactionListenerFake ());
+      instance.Extensions.Add (new SerializableClientTransactionExtensionFake ("bla"));
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
 
       Assert.That (deserializedInstance.Listeners, Is.Not.Empty);
+      Assert.That (deserializedInstance.Extensions, Is.Not.Empty);
     }
 
-    private void CheckEventWithListenersLast (Action<IClientTransactionListener> triggeringEvent, Action orderedPreListenerExpectations)
-    {
-      CheckEventWithListenersInTheMiddle (triggeringEvent, orderedPreListenerExpectations, () => { });
-    }
-
-    private void CheckEventWithListenersFirst (Action<IClientTransactionListener> triggeringEvent, Action orderedPostListenerExpectations)
-    {
-      CheckEventWithListenersInTheMiddle (triggeringEvent, () => { }, orderedPostListenerExpectations);
-    }
-
-    private void CheckEventWithListenersInTheMiddle (Action<IClientTransactionListener> triggeringEvent, Action orderedPreListenerExpectations, Action orderedPostListenerExpectations)
+    private void CheckEventWithListenersLast (
+        Action<IClientTransactionListener> triggeringEvent, Action<IClientTransactionExtension> extensionEvent, Action orderedPreListenerExpectations = null)
     {
       using (_mockRepository.Ordered ())
       {
-        orderedPreListenerExpectations ();
+        if (orderedPreListenerExpectations != null)
+          orderedPreListenerExpectations();
+        _extensionMock.Expect (extensionEvent);
         _innerListenerMock.Expect (triggeringEvent);
-        orderedPostListenerExpectations ();
       }
       _mockRepository.ReplayAll ();
 
-      triggeringEvent (_listener);
+      triggeringEvent (_distributor);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    private void CheckEventWithListenersFirst (
+        Action<IClientTransactionListener> triggeringEvent, Action<IClientTransactionExtension> extensionEvent, Action orderedPostListenerExpectations = null)
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _innerListenerMock.Expect (triggeringEvent);
+        _extensionMock.Expect (extensionEvent);
+        if (orderedPostListenerExpectations != null)
+          orderedPostListenerExpectations();
+      }
+      _mockRepository.ReplayAll ();
+
+      triggeringEvent (_distributor);
 
       _mockRepository.VerifyAll ();
     }

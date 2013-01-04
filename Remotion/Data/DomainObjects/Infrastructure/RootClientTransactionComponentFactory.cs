@@ -31,6 +31,7 @@ using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -83,13 +84,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ObjectFactory.Create<RootPersistenceStrategy> (true, ParamList.Create (constructedTransaction.ID));
     }
 
-    public override ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction)
+    public override IEnumerable<IClientTransactionExtension> CreateExtensions (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
 
-      var extensions = base.CreateExtensionCollection (constructedTransaction);
-      extensions.Insert (0, new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator()));
-      return extensions;
+      return new IClientTransactionExtension[] { new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator()) }
+          .Concat (base.CreateExtensions (constructedTransaction));
     }
 
     public override Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()

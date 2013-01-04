@@ -205,6 +205,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerLifetimeManagerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ForwardingEventListenerTestBase.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionExtensionFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableDataManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableEnlistedDomainObjectManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLoadedObjectDataRegistrationListenerFake.cs" />
@@ -218,6 +219,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="DomainObjects\Core\Queries\QueryObjectMother.cs" />
+    <Compile Include="DomainObjects\Core\Queries\QueryResultObjectMother.cs" />
     <Compile Include="UnitTesting\RootPersistenceStrategyMockFacade.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Transport\PostActionDisposableDecorator.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />
@@ -495,7 +498,6 @@
     <Compile Include="DomainObjects\Core\DomainImplementation\BidirectionalRelationSyncServiceTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\IUnloadEventReceiver.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\ExtensionClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Validation\CommitValidationClientTransactionExtensionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionReplaceDataEventTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionEndPointOppositeTrackingTest.cs" />

@@ -14,20 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+using System;
+using Remotion.Data.DomainObjects;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  /// <summary>
-  /// Defines an interface for classes managing the <see cref="IClientTransactionListener"/> instances attached to a 
-  /// <see cref="DomainObjects.ClientTransaction"/> instance and allowing clients to raise events for the <see cref="ClientTransaction"/>.
-  /// </summary>
-  public interface IClientTransactionEventBroker : IClientTransactionEventSink
+  [Serializable]
+  public class SerializableClientTransactionExtensionFake : ClientTransactionExtensionBase
   {
-    IEnumerable<IClientTransactionListener> Listeners { get; }
-    void AddListener (IClientTransactionListener listener);
-    void RemoveListener (IClientTransactionListener listener);
-
-    ClientTransactionExtensionCollection Extensions { get; }
+    public SerializableClientTransactionExtensionFake (string key)
+        : base(key)
+    {
+    }
   }
 }

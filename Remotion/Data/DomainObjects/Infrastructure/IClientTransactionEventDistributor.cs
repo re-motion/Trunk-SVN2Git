@@ -26,6 +26,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public interface IClientTransactionEventDistributor : IClientTransactionListener
   {
     IEnumerable<IClientTransactionListener> Listeners { get; }
+    ClientTransactionExtensionCollection Extensions { get; }
+
     void AddListener (IClientTransactionListener listener);
     void RemoveListener (IClientTransactionListener listener);
   }

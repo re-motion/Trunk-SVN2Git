@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -83,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IObjectLifetimeAgent objectLifetimeAgent = null,
         IQueryManager queryManager = null,
         ICommitRollbackAgent commitRollbackAgent = null,
-        ClientTransactionExtensionCollection extensions = null,
+        IEnumerable<IClientTransactionExtension> extensions = null,
         Func<ClientTransaction, ClientTransaction> cloneFactory = null)
       where T : ClientTransaction
     {
@@ -115,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IObjectLifetimeAgent objectLifetimeAgent = null,
         IQueryManager queryManager = null,
         ICommitRollbackAgent commitRollbackAgent = null,
-        ClientTransactionExtensionCollection extensions = null,
+        IEnumerable<IClientTransactionExtension> extensions = null,
         Func<ClientTransaction, ClientTransaction> cloneFactory = null)
     {
       applicationData = applicationData ?? new Dictionary<Enum, object> ();
@@ -128,12 +129,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       eventBroker = eventBroker ?? MockRepository.GenerateStub<IClientTransactionEventBroker> ();
       queryManager = queryManager ?? MockRepository.GenerateStub<IQueryManager> ();
       commitRollbackAgent = commitRollbackAgent ?? MockRepository.GenerateStub<ICommitRollbackAgent> ();
-      extensions = extensions ?? new ClientTransactionExtensionCollection ("test");
+      extensions = extensions ?? Enumerable.Empty<IClientTransactionExtension>();
       cloneFactory = cloneFactory ?? (tx => { throw new Exception ("Should not be called."); });
       
       var componentFactoryStub = MockRepository.GenerateStub<IClientTransactionComponentFactory>();
       componentFactoryStub.Stub (stub => stub.CreateApplicationData (Arg<ClientTransaction>.Is.Anything)).Return (applicationData);
-      componentFactoryStub.Stub (stub => stub.CreateEventBroker (Arg<ClientTransaction>.Is.Anything)).Return (eventBroker);
+      componentFactoryStub
+          .Stub (stub => stub.CreateEventBroker (Arg<ClientTransaction>.Is.Anything))
+          .Return (eventBroker);
       componentFactoryStub
           .Stub (stub => stub.CreateTransactionHierarchyManager (Arg<ClientTransaction>.Is.Anything, Arg<IClientTransactionEventSink>.Is.Anything))
           .Return (transactionHierarchyManager);
@@ -177,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<IPersistenceStrategy>.Is.Anything,
               Arg<IDataManager>.Is.Anything))
           .Return (commitRollbackAgent);
-      componentFactoryStub.Stub (stub => stub.CreateExtensionCollection (Arg<ClientTransaction>.Is.Anything)).Return (extensions);
+      componentFactoryStub.Stub (stub => stub.CreateExtensions (Arg<ClientTransaction>.Is.Anything)).Return (extensions);
       componentFactoryStub.Stub (stub => stub.CreateCloneFactory ()).Return (cloneFactory);
       return componentFactoryStub;
     }

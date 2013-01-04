@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           result,
           Is.TypeOf<ClientTransactionEventBroker>()
               .With.Property<ClientTransactionEventBroker> (m => m.ClientTransaction).SameAs (_fakeConstructedTransaction)
-              .And.Property<ClientTransactionEventBroker> (m => m.EventDistributor).TypeOf<ClientTransactionEventDistributor>()
+              .And.Property<ClientTransactionEventBroker> (m => m.EventDistributor).TypeOf<ClientTransactionEventDistributor> ()
               .And.Property<ClientTransactionEventBroker> (m => m.Listeners).EqualTo (new[] { fakeListener }));
     }
 
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CreateExtensionCollection ()
+    public void CreateExtensions ()
     {
       var extensionFactoryMock = MockRepository.GenerateStrictMock<IClientTransactionExtensionFactory> ();
       var extensionStub = MockRepository.GenerateStub<IClientTransactionExtension> ();
@@ -234,17 +234,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           .Return (new[] { extensionFactoryMock });
       serviceLocatorMock.Replay ();
 
-      ClientTransactionExtensionCollection extensions;
+      IClientTransactionExtension[] extensions;
       using (new ServiceLocatorScope (serviceLocatorMock))
       {
-        extensions = _factory.CreateExtensionCollection (_fakeConstructedTransaction);
+        extensions = _factory.CreateExtensions (_fakeConstructedTransaction).ToArray();
       }
 
       serviceLocatorMock.VerifyAllExpectations ();
       extensionFactoryMock.VerifyAllExpectations ();
 
-      Assert.That (extensions.Count, Is.EqualTo (1));
-      Assert.That (extensions[0], Is.SameAs (extensionStub));
+      Assert.That (extensions, Is.EqualTo (new[] { extensionStub }));
     }
 
     [Test]

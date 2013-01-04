@@ -153,7 +153,6 @@ public class ClientTransaction
   private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly IQueryManager _queryManager;
   private readonly ICommitRollbackAgent _commitRollbackAgent;
-  private readonly ClientTransactionExtensionCollection _extensions;
 
   private bool _isDiscarded;
 
@@ -177,8 +176,9 @@ public class ClientTransaction
     _queryManager = componentFactory.CreateQueryManager (this, _eventBroker, _invalidDomainObjectManager, _persistenceStrategy, _dataManager, _hierarchyManager);
     _commitRollbackAgent = componentFactory.CreateCommitRollbackAgent (this, _eventBroker, _persistenceStrategy, _dataManager);
 
-    _extensions = componentFactory.CreateExtensionCollection (this);
-    AddListener (new ExtensionClientTransactionListener (_extensions));
+    var extensions = componentFactory.CreateExtensions (this);
+    foreach (var extension in extensions)
+      _eventBroker.Extensions.Add (extension);
 
     _hierarchyManager.OnBeforeTransactionInitialize();
     _eventBroker.RaiseTransactionInitializeEvent ();
@@ -314,7 +314,7 @@ public class ClientTransaction
   /// </remarks>
   public ClientTransactionExtensionCollection Extensions
   {
-    get { return _extensions; }
+    get { return _eventBroker.Extensions; }
   }
 
   /// <summary>

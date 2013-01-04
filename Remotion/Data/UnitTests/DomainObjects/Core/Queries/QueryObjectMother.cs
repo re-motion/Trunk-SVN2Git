@@ -14,20 +14,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
-  /// <summary>
-  /// Defines an interface for classes managing the <see cref="IClientTransactionListener"/> instances attached to a 
-  /// <see cref="DomainObjects.ClientTransaction"/> instance and allowing clients to raise events for the <see cref="ClientTransaction"/>.
-  /// </summary>
-  public interface IClientTransactionEventBroker : IClientTransactionEventSink
+  public static class QueryObjectMother
   {
-    IEnumerable<IClientTransactionListener> Listeners { get; }
-    void AddListener (IClientTransactionListener listener);
-    void RemoveListener (IClientTransactionListener listener);
+    public static IQuery Create ()
+    {
+      return new Query (CreateQueryDefinition(), new QueryParameterCollection());
+    }
 
-    ClientTransactionExtensionCollection Extensions { get; }
+    private static QueryDefinition CreateQueryDefinition ()
+    {
+      return new QueryDefinition (
+          "test", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Some statement", QueryType.Collection);
+    }
   }
 }

@@ -162,18 +162,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new CommitRollbackAgent (constructedTransaction, eventSink, persistenceStrategy, dataManager);
     }
 
-    public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction)
+    public virtual IEnumerable<IClientTransactionExtension> CreateExtensions (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
 
       var extensionFactories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionExtensionFactory>();
-      var extensions = extensionFactories.SelectMany (f => f.CreateClientTransactionExtensions (constructedTransaction));
-
-      var extensionCollection = new ClientTransactionExtensionCollection ("root");
-      foreach (var factory in extensions)
-        extensionCollection.Add (factory);
-
-      return extensionCollection;
+      return extensionFactories.SelectMany (f => f.CreateClientTransactionExtensions (constructedTransaction));
     }
 
     protected virtual IDataContainerEventListener CreateDataContainerEventListener (IClientTransactionEventSink eventSink)

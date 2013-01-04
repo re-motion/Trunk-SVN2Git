@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
@@ -24,6 +25,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   public class SerializableClientTransactionEventDistributorFake : ClientTransactionListenerBase, IClientTransactionEventDistributor
   {
     public IEnumerable<IClientTransactionListener> Listeners
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public ClientTransactionExtensionCollection Extensions
     {
       get { throw new NotImplementedException(); }
     }
