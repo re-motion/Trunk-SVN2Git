@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel.Design;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using Microsoft.Practices.ServiceLocation;
@@ -36,8 +37,6 @@ using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Persistence;
-using Remotion.SecurityManager.UnitTests.Properties;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests
 {
@@ -46,12 +45,12 @@ namespace Remotion.SecurityManager.UnitTests
   {
     public static string TestDomainConnectionString
     {
-      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=RemotionSecurityManager;Data Source={0}", Settings.Default.DataSource); }
+      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=RemotionSecurityManager;Data Source={0}", ConfigurationManager.AppSettings["DataSource"]); }
     }
 
     public static string MasterConnectionString
     {
-      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=master;Data Source={0}", Settings.Default.DataSource); }
+      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=master;Data Source={0}", ConfigurationManager.AppSettings["DataSource"]); }
     }
 
     [SetUp]
@@ -83,7 +82,7 @@ namespace Remotion.SecurityManager.UnitTests
         SqlConnection.ClearAllPools();
 
         DatabaseAgent masterAgent = new DatabaseAgent (MasterConnectionString);
-        masterAgent.ExecuteBatchFile ("SecurityManagerCreateDB.sql", false, Settings.Default.DatabaseDirectory);
+        masterAgent.ExecuteBatchFile ("SecurityManagerCreateDB.sql", false, ConfigurationManager.AppSettings["DatabaseDirectory"]);
         DatabaseAgent databaseAgent = new DatabaseAgent (TestDomainConnectionString);
         databaseAgent.ExecuteBatchFile ("SecurityManagerSetupDB.sql", true);
         databaseAgent.ExecuteBatchFile ("SecurityManagerSetupConstraints.sql", true);
