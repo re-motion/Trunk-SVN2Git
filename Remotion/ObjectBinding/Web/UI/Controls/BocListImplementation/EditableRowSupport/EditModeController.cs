@@ -305,22 +305,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
         var bocListRow = _editModeHost.RowIDProvider.GetRowFromItemRowID (_editModeHost.Value, editedRowID);
         if (bocListRow == null)
         {
-          if (IsRowEditModeActive)
+          if (IsListEditModeActive)
+          {
+            // Remove ViewState for missing row
+            var missingRow = new EditableRow (_editModeHost);
+            Controls.Add (missingRow);
+            Controls.Remove (missingRow);
+
+            missingRowIDs.Add (editedRowID);
+          }
+          else
           {
             throw new InvalidOperationException (
                 string.Format (
                     "Cannot create edit mode controls for the row with ID '{1}'. The BocList '{0}' does not contain the row in its Value collection.",
                     _editModeHost.ID,
                     editedRowID));
-          }
-          else
-          {
-            // Remove ViewState for missing row
-            var missingRow = new EditableRow (_editModeHost);
-            Controls.Add (missingRow);
-            Controls.Remove (missingRow);
-            
-            missingRowIDs.Add (editedRowID);
           }
         }
         else
@@ -330,6 +330,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       }
 
       _editedRowIDs.RemoveAll (missingRowIDs.Contains);
+
+      if (IsListEditModeActive && _editedRowIDs.Count < _editModeHost.Value.Count)
+      {
+        var availableRows = _editModeHost.Value.Cast<IBusinessObject>().Select ((o, i) => new BocListRow (i, o));
+        var editedRows = _editedRowIDs.Select (rowID => _editModeHost.RowIDProvider.GetRowFromItemRowID (_editModeHost.Value, rowID));
+        var newRows = availableRows.Except (editedRows).ToList();
+
+        foreach (var row in newRows)
+        {
+          _editedRowIDs.Add (_editModeHost.RowIDProvider.GetItemRowID (row));
+          AddRowToDataStructure (row, columns);
+        }
+      }
     }
 
     private EditableRow CreateEditableRow (BocListRow bocListRow, BocColumnDefinition[] columns)
