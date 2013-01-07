@@ -20,48 +20,48 @@ using Remotion.Mixins.UnitTests.Core.TestDomain;
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {
   [TestFixture]
-  public class CompleteInterfaceTest : CodeGenerationBaseTest
+  public class ComposedInterfaceTest : CodeGenerationBaseTest
   {
     [Test]
-    public void GeneratedClass_ImplementsCompleteInterface ()
+    public void GeneratedClass_ImplementsComposedInterface ()
     {
-      var type = TypeFactory.GetConcreteType (typeof (ClassWithCompleteInterface));
-      Assert.That (type.GetInterfaces(), Has.Member (typeof (ClassWithCompleteInterface.ICompleteInterface)));
+      var type = TypeFactory.GetConcreteType (typeof (ClassWithComposedInterface));
+      Assert.That (type.GetInterfaces(), Has.Member (typeof (ClassWithComposedInterface.IComposedInterface)));
 
-      var instance = (ClassWithCompleteInterface.ICompleteInterface) ObjectFactory.Create<ClassWithCompleteInterface> ();
-      Assert.That (instance.M1 (), Is.EqualTo ("ClassWithCompleteInterface.M1"));
+      var instance = (ClassWithComposedInterface.IComposedInterface) ObjectFactory.Create<ClassWithComposedInterface> ();
+      Assert.That (instance.M1 (), Is.EqualTo ("ClassWithComposedInterface.M1"));
       Assert.That (instance.Method (), Is.EqualTo ("MixinImplementingSimpleInterface.Method"));
     }
 
     [Test]
-    public void GeneratedClass_ImplementsCompleteInterface_FromBase ()
+    public void GeneratedClass_ImplementsComposedInterface_FromBase ()
     {
-      var type = TypeFactory.GetConcreteType (typeof (DerivedClassWithCompleteInterface));
-      Assert.That (type.GetInterfaces (), Has.Member (typeof (ClassWithCompleteInterface.ICompleteInterface)));
+      var type = TypeFactory.GetConcreteType (typeof (DerivedClassWithComposedInterface));
+      Assert.That (type.GetInterfaces (), Has.Member (typeof (ClassWithComposedInterface.IComposedInterface)));
 
-      var instance = (ClassWithCompleteInterface.ICompleteInterface) ObjectFactory.Create<DerivedClassWithCompleteInterface> ();
-      Assert.That (instance.M1 (), Is.EqualTo ("ClassWithCompleteInterface.M1"));
+      var instance = (ClassWithComposedInterface.IComposedInterface) ObjectFactory.Create<DerivedClassWithComposedInterface> ();
+      Assert.That (instance.M1 (), Is.EqualTo ("ClassWithComposedInterface.M1"));
       Assert.That (instance.Method (), Is.EqualTo ("MixinImplementingSimpleInterface.Method"));
     }
 
     [Test]
-    public void GeneratedClass_ImplementsCompleteInterface_WithHasInterface_FromGenericBaseClass ()
+    public void GeneratedClass_ImplementsComposedInterface_WithHasInterface_FromGenericBaseClass ()
     {
       var type = TypeFactory.GetConcreteType (typeof (ClassDerivedFromBaseClassWithHasComleteInterface));
-      Assert.That (type.GetInterfaces (), Has.Member (typeof (ClassDerivedFromBaseClassWithHasComleteInterface.ICompleteInterface)));
+      Assert.That (type.GetInterfaces (), Has.Member (typeof (ClassDerivedFromBaseClassWithHasComleteInterface.IComposedInterface)));
 
-      var instance = (ClassDerivedFromBaseClassWithHasComleteInterface.ICompleteInterface) ObjectFactory.Create<ClassDerivedFromBaseClassWithHasComleteInterface> ();
+      var instance = (ClassDerivedFromBaseClassWithHasComleteInterface.IComposedInterface) ObjectFactory.Create<ClassDerivedFromBaseClassWithHasComleteInterface> ();
       Assert.That (instance.M1 (), Is.EqualTo ("ClassDerivedFromBaseClassWithHasComleteInterface.M1"));
       Assert.That (instance.Method (), Is.EqualTo ("MixinImplementingSimpleInterface.Method"));
     }
 
     [Test]
-    public void GeneratedClass_ImplementsCompleteInterface_WithHasInterface_FromBase ()
+    public void GeneratedClass_ImplementsComposedInterface_WithHasInterface_FromBase ()
     {
       var type = TypeFactory.GetConcreteType (typeof (DerivedClassDerivedFromBaseClassWithHasComleteInterface));
-      Assert.That (type.GetInterfaces (), Has.Member (typeof (ClassDerivedFromBaseClassWithHasComleteInterface.ICompleteInterface)));
+      Assert.That (type.GetInterfaces (), Has.Member (typeof (ClassDerivedFromBaseClassWithHasComleteInterface.IComposedInterface)));
 
-      var instance = (ClassDerivedFromBaseClassWithHasComleteInterface.ICompleteInterface) ObjectFactory.Create<DerivedClassDerivedFromBaseClassWithHasComleteInterface> ();
+      var instance = (ClassDerivedFromBaseClassWithHasComleteInterface.IComposedInterface) ObjectFactory.Create<DerivedClassDerivedFromBaseClassWithHasComleteInterface> ();
       Assert.That (instance.M1 (), Is.EqualTo ("ClassDerivedFromBaseClassWithHasComleteInterface.M1"));
       Assert.That (instance.Method (), Is.EqualTo ("MixinImplementingSimpleInterface.Method"));
     }

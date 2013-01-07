@@ -33,7 +33,7 @@ namespace Remotion.Mixins.Context
       List<MixinContext> mixins;
       List<Type> interfaces;
       mixins = new List<MixinContext> (contextToBeDerived.Mixins);
-      interfaces = new List<Type> (contextToBeDerived.CompleteInterfaces);
+      interfaces = new List<Type> (contextToBeDerived.ComposedInterfaces);
 
       foreach (ClassContext baseContext in baseContexts)
         ApplyInheritance (contextToBeDerived.Type, contextToBeDerived.Mixins, baseContext, mixins, interfaces);
@@ -71,7 +71,7 @@ namespace Remotion.Mixins.Context
 
     public void ApplyInheritanceForInterfaces (ClassContext baseContext, ICollection<Type> interfaces)
     {
-      foreach (Type inheritedInterface in baseContext.CompleteInterfaces)
+      foreach (Type inheritedInterface in baseContext.ComposedInterfaces)
       {
         if (!interfaces.Contains (inheritedInterface))
           interfaces.Add (inheritedInterface);

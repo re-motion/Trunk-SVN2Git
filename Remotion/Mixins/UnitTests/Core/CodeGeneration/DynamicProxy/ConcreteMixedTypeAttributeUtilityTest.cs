@@ -31,7 +31,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     public void CreateAttributeBuilder ()
     {
       var context = new ClassContextBuilder (typeof (int))
-          .AddCompleteInterface (typeof (uint))
+          .AddComposedInterface (typeof (uint))
           .AddMixin (typeof (double)).OfKind (MixinKind.Used)
           .AddMixin (typeof (string)).WithDependency (typeof (bool)).OfKind (MixinKind.Extending)
           .BuildClassContext ();

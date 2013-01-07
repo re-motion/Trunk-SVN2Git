@@ -56,10 +56,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     }
 
     [Test]
-    public void AddCompleteInterfaces ()
+    public void AddComposedInterfaces ()
     {
-      _serializer.AddCompleteInterfaces (new[] {typeof (int), typeof (string)});
-      Assert.That (_deserializer.GetCompleteInterfaces(), Is.EqualTo (new[] {typeof (int), typeof (string)}));
+      _serializer.AddComposedInterfaces (new[] {typeof (int), typeof (string)});
+      Assert.That (_deserializer.GetComposedInterfaces(), Is.EqualTo (new[] {typeof (int), typeof (string)}));
     }
 
     [Test]
@@ -88,9 +88,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     [Test]
     [ExpectedException (typeof (SerializationException),
         ExpectedMessage = "Expected value of type 'System.Type[]' at index 2 in the values array, but found 'System.Int32'.")]
-    public void GetCompleteInterfaces_Invalid ()
+    public void GetComposedInterfaces_Invalid ()
     {
-      _invalidDeserializer.GetCompleteInterfaces();
+      _invalidDeserializer.GetComposedInterfaces();
     }
   }
 }

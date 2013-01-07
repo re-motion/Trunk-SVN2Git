@@ -16,9 +16,16 @@
 // 
 namespace Remotion.Mixins.UnitTests.Core.TestDomain
 {
-  // Also supports ClassWithCompleteInterface.ICompleteInterface
-  [Uses (typeof (NullMixin))] // Enforce a separate class context
-  public class DerivedClassWithCompleteInterface : ClassWithCompleteInterface
+  public class ClassWithHasComposedInterfaces : 
+      IHasComposedInterface<ClassWithHasComposedInterfaces.IComposedInterface1>, 
+      IHasComposedInterface<ClassWithHasComposedInterfaces.IComposedInterface2>
   {
+    public interface IComposedInterface1
+    {
+    }
+
+    public interface IComposedInterface2
+    {
+    }
   }
 }

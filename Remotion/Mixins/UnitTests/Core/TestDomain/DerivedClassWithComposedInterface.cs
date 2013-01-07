@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -16,8 +16,9 @@
 // 
 namespace Remotion.Mixins.UnitTests.Core.TestDomain
 {
-  public class BaseClassWithHasCompleteInterface<T> : IHasCompleteInterface<T>
-      where T: class
+  // Also supports ClassWithComposedInterface.IComposedInterface
+  [Uses (typeof (NullMixin))] // Enforce a separate class context
+  public class DerivedClassWithComposedInterface : ClassWithComposedInterface
   {
   }
 }

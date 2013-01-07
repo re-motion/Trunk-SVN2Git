@@ -56,7 +56,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
 
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.True);
-      Assert.That (configuration.GetContext (typeof (BaseType6)).CompleteInterfaces, Has.Member (typeof (ICBT6Mixin1)));
+      Assert.That (configuration.GetContext (typeof (BaseType6)).ComposedInterfaces, Has.Member (typeof (ICBT6Mixin1)));
     }
 
     [Test]
@@ -244,16 +244,16 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     }
 
     [Test]
-    public void CompleteInterfaceConfiguredViaAttribute ()
+    public void ComposedInterfaceConfiguredViaAttribute ()
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
 
       ClassContext classContext = configuration.GetContext (typeof (BaseType6));
       Assert.That (classContext, Is.Not.Null);
 
-      Assert.That (classContext.CompleteInterfaces, Has.Member (typeof (ICBT6Mixin1)));
-      Assert.That (classContext.CompleteInterfaces, Has.Member (typeof (ICBT6Mixin2)));
-      Assert.That (classContext.CompleteInterfaces, Has.Member (typeof (ICBT6Mixin3)));
+      Assert.That (classContext.ComposedInterfaces, Has.Member (typeof (ICBT6Mixin1)));
+      Assert.That (classContext.ComposedInterfaces, Has.Member (typeof (ICBT6Mixin2)));
+      Assert.That (classContext.ComposedInterfaces, Has.Member (typeof (ICBT6Mixin3)));
     }
 
     [Extends (typeof (BaseType1))]

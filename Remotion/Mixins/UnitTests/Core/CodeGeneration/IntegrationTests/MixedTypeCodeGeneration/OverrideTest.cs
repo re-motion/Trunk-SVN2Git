@@ -97,21 +97,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       Assert.IsNotNull (bt1.GetType ().GetEvent ("VirtualEvent"), "overridden member is public and has the same name");
     }
 
-    class Foo1
-    { }
-
-    class Foo2
-    { }
-
-    [CompleteInterface (typeof (Foo1))]
-    [CompleteInterface (typeof (Foo2))]
-    [IgnoreForMixinConfiguration]
-    interface IMultiFace
-    {
-    }
-
     [Test]
-    public void OverrideWithCompleteBaseInterface ()
+    public void OverrideWithComposedBaseInterface ()
     {
       BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin7Base), typeof (BT3Mixin4));
       Assert.That (bt3.IfcMethod (), Is.EqualTo ("BT3Mixin7Base.IfcMethod-BT3Mixin4.Foo-BaseType3.IfcMethod-BaseType3.IfcMethod2"));

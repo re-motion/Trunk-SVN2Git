@@ -153,38 +153,38 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     }
 
     [Test]
-    public void CompleteInterfaces ()
+    public void ComposedInterfaces ()
     {
       ClassContext baseContext = new ClassContextBuilder (typeof (string))
-          .AddCompleteInterface (typeof (object))
-          .AddCompleteInterface (typeof (int))
+          .AddComposedInterface (typeof (object))
+          .AddComposedInterface (typeof (int))
           .BuildClassContext();
 
       ClassContext inheritor = ClassContextObjectMother.Create(typeof (double)).InheritFrom (new[] { baseContext });
 
-      Assert.That (inheritor.CompleteInterfaces.Count, Is.EqualTo (2));
-      Assert.That (inheritor.CompleteInterfaces, Is.EquivalentTo (inheritor.CompleteInterfaces));
+      Assert.That (inheritor.ComposedInterfaces.Count, Is.EqualTo (2));
+      Assert.That (inheritor.ComposedInterfaces, Is.EquivalentTo (inheritor.ComposedInterfaces));
     }
 
     [Test]
-    public void ContainsCompleteInterface ()
+    public void ContainsComposedInterface ()
     {
       var baseContext = new ClassContext (typeof (string), new MixinContext[0], new[] {typeof (object)});
 
       ClassContext inheritor = ClassContextObjectMother.Create(typeof (double)).InheritFrom (new[] { baseContext });
 
-      Assert.That (inheritor.CompleteInterfaces, Has.Member (typeof (object)));
+      Assert.That (inheritor.ComposedInterfaces, Has.Member (typeof (object)));
     }
 
     [Test]
-    public void ExistingCompleteInterface_NotReplacedByInheritance ()
+    public void ExistingComposedInterface_NotReplacedByInheritance ()
     {
       var baseContext = new ClassContext (typeof (string), new MixinContext[0], new[] { typeof (object) });
 
       ClassContext inheritor = new ClassContext (typeof (double), new MixinContext[0], new[] {typeof (object)}).InheritFrom (new[] { baseContext });
 
-      Assert.That (inheritor.CompleteInterfaces.Count, Is.EqualTo (1));
-      Assert.That (inheritor.CompleteInterfaces, Has.Member (typeof (object)));
+      Assert.That (inheritor.ComposedInterfaces.Count, Is.EqualTo (1));
+      Assert.That (inheritor.ComposedInterfaces, Has.Member (typeof (object)));
     }
 
     [Test]
@@ -192,15 +192,15 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     {
       ClassContext baseContext = new ClassContextBuilder (typeof (string))
           .AddMixin (typeof (DateTime))
-          .AddCompleteInterface (typeof (object))
+          .AddComposedInterface (typeof (object))
           .BuildClassContext();
 
       ClassContext inheritor = new ClassContextBuilder (typeof (double))
           .AddMixin (typeof (string))
-          .AddCompleteInterface (typeof (int)).BuildClassContext().InheritFrom (new[] { baseContext });
+          .AddComposedInterface (typeof (int)).BuildClassContext().InheritFrom (new[] { baseContext });
 
       Assert.That (inheritor.Mixins.Count, Is.EqualTo (2));
-      Assert.That (inheritor.CompleteInterfaces.Count, Is.EqualTo (2));
+      Assert.That (inheritor.ComposedInterfaces.Count, Is.EqualTo (2));
     }
 
     [Test]

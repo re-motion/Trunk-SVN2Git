@@ -147,9 +147,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [IgnoreForMixinConfiguration]
     class Extender { }
 
-    [CompleteInterface (typeof (NullTarget))]
+    [ComposedInterface (typeof (NullTarget))]
     [IgnoreForMixinConfiguration]
-    interface ICompleteInterface { }
+    interface IComposedInterface { }
 
 
     [Test]
@@ -157,12 +157,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     {
       _builder.AddType (typeof (User));
       _builder.AddType (typeof (Extender));
-      _builder.AddType (typeof (ICompleteInterface));
+      _builder.AddType (typeof (IComposedInterface));
 
       MixinConfiguration configuration = _builder.BuildConfiguration();
       ClassContext c1 = new ClassContextBuilder (typeof (User)).AddMixin (typeof (NullMixin)).OfKind (MixinKind.Used).BuildClassContext();
       ClassContext c2 = new ClassContextBuilder(typeof (NullTarget))
-          .AddMixin (typeof (Extender)).AddCompleteInterface (typeof (ICompleteInterface)).BuildClassContext ();
+          .AddMixin (typeof (Extender)).AddComposedInterface (typeof (IComposedInterface)).BuildClassContext ();
       Assert.That (configuration.ClassContexts, Is.EquivalentTo (new object[] { c1, c2, _globalClassContext }));
     }
 

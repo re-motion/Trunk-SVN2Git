@@ -136,7 +136,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     }
 
     [Test]
-    public void BuildConfiguration_IncludesParentConfiguration_WithCompleteInterfaces ()
+    public void BuildConfiguration_IncludesParentConfiguration_WithComposedInterfaces ()
     {
       var existingClassContext = new ClassContext (typeof (BaseType3), new MixinContext[0], new[] { typeof (IBaseType31) });
       var parentConfiguration = new MixinConfiguration (new ClassContextCollection (existingClassContext));
@@ -144,7 +144,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       var builder = new MixinConfigurationBuilder (parentConfiguration);
 
       MixinConfiguration configuration = builder.BuildConfiguration ();
-      Assert.That (configuration.GetContext (typeof (BaseType3)).CompleteInterfaces, Has.Member (typeof (IBaseType31)));
+      Assert.That (configuration.GetContext (typeof (BaseType3)).ComposedInterfaces, Has.Member (typeof (IBaseType31)));
     }
 
     [Test]

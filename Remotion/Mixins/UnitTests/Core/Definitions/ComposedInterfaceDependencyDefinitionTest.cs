@@ -16,21 +16,20 @@
 // 
 using NUnit.Framework;
 using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions
 {
   [TestFixture]
-  public class CompleteInterfaceDependencyDefinitionTest
+  public class ComposedInterfaceDependencyDefinitionTest
   {
     [Test]
     public void Accept ()
     {
       var targetClass = DefinitionObjectMother.CreateTargetClassDefinition (typeof (NullTarget));
       var requiredTargetCallTypeDefinition = DefinitionObjectMother.CreateRequiredTargetCallTypeDefinition (targetClass, typeof (ISimpleInterface));
-      var dependency = new CompleteInterfaceDependencyDefinition (requiredTargetCallTypeDefinition, typeof (ISimpleInterface), null);
+      var dependency = new ComposedInterfaceDependencyDefinition (requiredTargetCallTypeDefinition, typeof (ISimpleInterface), null);
 
       var visitorMock = MockRepository.GenerateMock<IDefinitionVisitor> ();
 

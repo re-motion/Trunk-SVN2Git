@@ -64,12 +64,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _constructorArguments[1] = local.ToExpression ();
     }
 
-    public void AddCompleteInterfaces(IEnumerable<Type> completeInterfaces)
+    public void AddComposedInterfaces(IEnumerable<Type> composedInterfaces)
     {
-      ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces);
+      ArgumentUtility.CheckNotNull ("composedInterfaces", composedInterfaces);
 
-      var completeInterfacesArray = completeInterfaces.ToArray ();
-      LocalReference arrayLocal = CodeGenerationSerializerUtility.DeclareAndFillArrayLocal (completeInterfacesArray, _codeBuilder, t => new TypeTokenExpression (t));
+      LocalReference arrayLocal = CodeGenerationSerializerUtility.DeclareAndFillArrayLocal (
+          composedInterfaces.ToArray(), _codeBuilder, t => new TypeTokenExpression (t));
       _constructorArguments[2] = arrayLocal.ToExpression ();
     }
 

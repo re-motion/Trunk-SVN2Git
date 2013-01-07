@@ -16,7 +16,11 @@
 // 
 namespace Remotion.Mixins.UnitTests.Core.TestDomain
 {
+// ReSharper disable PossibleInterfaceMemberAmbiguity - This is on purpose.
+// ReSharper disable RedundantExtendsListEntry - This is on purpose.
   public interface ICBaseType3 : IBaseType31, IBaseType32, IBaseType33, IBaseType34, IBaseType35
+// ReSharper restore RedundantExtendsListEntry
+// ReSharper restore PossibleInterfaceMemberAmbiguity
   { }
 
   public interface ICBaseType3BT3Mixin4 : ICBaseType3, IBT3Mixin4

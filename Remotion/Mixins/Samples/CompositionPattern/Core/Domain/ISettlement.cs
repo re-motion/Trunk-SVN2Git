@@ -21,7 +21,7 @@ namespace Remotion.Mixins.Samples.CompositionPattern.Core.Domain
 {
   /// <summary>
   /// <see cref="ISettlement"/> is the composed interface for the <see cref="Settlement"/> class and the mixins it uses. It contains all members 
-  /// defined by the core domain object and the used mixins. It is planned that the <see cref="CompleteInterfaceAttribute"/> will become unnecessary
+  /// defined by the core domain object and the used mixins. It is planned that the <see cref="ComposedInterfaceAttribute"/> will become unnecessary
   /// at a later point of time; the mixin engine will recognize <see cref="ISettlement"/> to be the composed interface for <see cref="Settlement"/>
   /// because <see cref="Settlement"/> derives from <see cref="ComposedDomainObject{TComposedInterface}"/>, passing <see cref="ISettlement"/> as
   /// the type parameter.

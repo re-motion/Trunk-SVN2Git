@@ -37,14 +37,14 @@ namespace Remotion.Mixins.UnitTests.Core
     public static ClassContext Create (Type type, params Type[] mixinTypes)
     {
       var mixinContexts = GetMixinContexts (mixinTypes);
-      var completeInterfaces = Enumerable.Empty<Type>();
-      return new ClassContext (type, mixinContexts, completeInterfaces);
+      var composedInterfaces = Enumerable.Empty<Type>();
+      return new ClassContext (type, mixinContexts, composedInterfaces);
     }
 
-    public static ClassContext Create (Type type, Type[] mixinTypes, Type[] completeInterfaces)
+    public static ClassContext Create (Type type, Type[] mixinTypes, Type[] composedInterfaces)
     {
       var mixinContexts = GetMixinContexts (mixinTypes);
-      return new ClassContext (type, mixinContexts, completeInterfaces);
+      return new ClassContext (type, mixinContexts, composedInterfaces);
     }
 
     private static IEnumerable<MixinContext> GetMixinContexts (Type[] mixinTypes)

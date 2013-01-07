@@ -39,7 +39,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     private readonly MixinConfigurationBuilder _parent;
     private readonly Type _targetType;
     private readonly Dictionary<Type, MixinContextBuilder> _mixinContextBuilders = new Dictionary<Type, MixinContextBuilder> ();
-    private readonly HashSet<Type> _completeInterfaces = new HashSet<Type> ();
+    private readonly HashSet<Type> _composedInterfaces = new HashSet<Type> ();
     private readonly List<IMixinSuppressionRule> _suppressedMixins = new List<IMixinSuppressionRule> ();
     private readonly MultiDictionary<Type, Type> _mixinDependencies = new MultiDictionary<Type, Type>();
     private bool _suppressInheritance = false;
@@ -85,12 +85,12 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Gets the complete interfaces collected so far.
+    /// Gets the composed interfaces collected so far.
     /// </summary>
-    /// <value>The complete interfaces collected so far by this object.</value>
-    public IEnumerable<Type> CompleteInterfaces
+    /// <value>The composed interfaces collected so far by this object.</value>
+    public IEnumerable<Type> ComposedInterfaces
     {
-      get { return _completeInterfaces; }
+      get { return _composedInterfaces; }
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     public virtual ClassContextBuilder Clear ()
     {
       _mixinContextBuilders.Clear();
-      _completeInterfaces.Clear();
+      _composedInterfaces.Clear();
       _suppressInheritance = true;
       return this;
     }
@@ -538,72 +538,72 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Adds the given type as a complete interface to the <see cref="TargetType"/>. A complete interface can contain both members defined by the
+    /// Adds the given type as a composed interface to the <see cref="TargetType"/>. A composed interface can contain both members defined by the
     /// target class itself and by mixins applied to the class, making it easier to invoke methods and properties on a mixed object without casting.
     /// </summary>
-    /// <param name="interfaceType">The type to collect as a complete interface.</param>
+    /// <param name="interfaceType">The type to collect as a composed interface.</param>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddCompleteInterface (Type interfaceType)
+    public virtual ClassContextBuilder AddComposedInterface (Type interfaceType)
     {
       ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
-      if (_completeInterfaces.Contains (interfaceType))
+      if (_composedInterfaces.Contains (interfaceType))
       {
-        string message = string.Format ("{0} is already configured as a complete interface for type {1}.",
+        string message = string.Format ("{0} is already configured as a composed interface for type {1}.",
             interfaceType.FullName, TargetType.FullName);
         throw new ArgumentException (message, "interfaceType");
       }
-      _completeInterfaces.Add (interfaceType);
+      _composedInterfaces.Add (interfaceType);
       return this;
     }
 
     /// <summary>
-    /// Adds the given type as a complete interface to the <see cref="TargetType"/>. A complete interface can contain both members defined by the
+    /// Adds the given type as a composed interface to the <see cref="TargetType"/>. A composed interface can contain both members defined by the
     /// target class itself and by mixins applied to the class, making it easier to invoke methods and properties on a mixed object without casting.
     /// </summary>
-    /// <typeparam name="TInterface">The type to collect as a complete interface.</typeparam>
+    /// <typeparam name="TInterface">The type to collect as a composed interface.</typeparam>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddCompleteInterface<TInterface> ()
+    public virtual ClassContextBuilder AddComposedInterface<TInterface> ()
     {
-      return AddCompleteInterface (typeof (TInterface));
+      return AddComposedInterface (typeof (TInterface));
     }
 
     /// <summary>
-    /// Adds the given types as complete interfaces to the <see cref="TargetType"/>. A complete interface can contain both members defined by the
+    /// Adds the given types as composed interfaces to the <see cref="TargetType"/>. A composed interface can contain both members defined by the
     /// target class itself and by mixins applied to the class, making it easier to invoke methods and properties on a mixed object without casting.
     /// </summary>
-    /// <param name="interfaceTypes">The types to collect as complete interfaces.</param>
+    /// <param name="interfaceTypes">The types to collect as composed interfaces.</param>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddCompleteInterfaces (params Type[] interfaceTypes)
+    public virtual ClassContextBuilder AddComposedInterfaces (params Type[] interfaceTypes)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("interfaceTypes", interfaceTypes);
       foreach (Type interfaceType in interfaceTypes)
-        AddCompleteInterface (interfaceType);
+        AddComposedInterface (interfaceType);
       return this;
     }
 
     /// <summary>
-    /// Adds the given types as complete interfaces to the <see cref="TargetType"/>. A complete interface can contain both members defined by the
+    /// Adds the given types as composed interfaces to the <see cref="TargetType"/>. A composed interface can contain both members defined by the
     /// target class itself and by mixins applied to the class, making it easier to invoke methods and properties on a mixed object without casting.
     /// </summary>
-    /// <typeparam name="TInterface1">The types to collect as complete interfaces.</typeparam>
-    /// <typeparam name="TInterface2">The types to collect as complete interfaces.</typeparam>
+    /// <typeparam name="TInterface1">The types to collect as composed interfaces.</typeparam>
+    /// <typeparam name="TInterface2">The types to collect as composed interfaces.</typeparam>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddCompleteInterfaces<TInterface1, TInterface2> ()
+    public virtual ClassContextBuilder AddComposedInterfaces<TInterface1, TInterface2> ()
     {
-      return AddCompleteInterfaces (typeof (TInterface1), typeof (TInterface2));
+      return AddComposedInterfaces (typeof (TInterface1), typeof (TInterface2));
     }
 
     /// <summary>
-    /// Adds the given types as complete interfaces to the <see cref="TargetType"/>. A complete interface can contain both members defined by the
+    /// Adds the given types as composed interfaces to the <see cref="TargetType"/>. A composed interface can contain both members defined by the
     /// target class itself and by mixins applied to the class, making it easier to invoke methods and properties on a mixed object without casting.
     /// </summary>
-    /// <typeparam name="TInterface1">The types to collect as complete interfaces.</typeparam>
-    /// <typeparam name="TInterface2">The types to collect as complete interfaces.</typeparam>
-    /// <typeparam name="TInterface3">The types to collect as complete interfaces.</typeparam>
+    /// <typeparam name="TInterface1">The types to collect as composed interfaces.</typeparam>
+    /// <typeparam name="TInterface2">The types to collect as composed interfaces.</typeparam>
+    /// <typeparam name="TInterface3">The types to collect as composed interfaces.</typeparam>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddCompleteInterfaces<TInterface1, TInterface2, TInterface3> ()
+    public virtual ClassContextBuilder AddComposedInterfaces<TInterface1, TInterface2, TInterface3> ()
     {
-      return AddCompleteInterfaces (typeof (TInterface1), typeof (TInterface2), typeof (TInterface3));
+      return AddComposedInterfaces (typeof (TInterface1), typeof (TInterface2), typeof (TInterface3));
     }
 
     /// <summary>
@@ -725,7 +725,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     public virtual ClassContext BuildClassContext (IEnumerable<ClassContext> inheritedContexts)
     {
       var mixinContexts = MixinContextBuilders.Select (mixinContextBuilder => mixinContextBuilder.BuildMixinContext());
-      var classContext = new ClassContext (_targetType, mixinContexts, CompleteInterfaces);
+      var classContext = new ClassContext (_targetType, mixinContexts, ComposedInterfaces);
       classContext = ApplyInheritance (classContext, inheritedContexts);
       classContext = classContext.SuppressMixins (SuppressedMixins);
       try

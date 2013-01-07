@@ -45,10 +45,10 @@ namespace Remotion.Mixins.Context.Serialization
       Values[1] = mixinContexts.Select (mc => (object) SerializeMixinContext (mc)).ToArray ();
     }
 
-    public void AddCompleteInterfaces(IEnumerable<Type> completeInterfaces)
+    public void AddComposedInterfaces(IEnumerable<Type> composedInterfaces)
     {
-      ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces);
-      Values[2] = completeInterfaces.ToArray ();
+      ArgumentUtility.CheckNotNull ("composedInterfaces", composedInterfaces);
+      Values[2] = composedInterfaces.ToArray ();
     }
 
     private object[] SerializeMixinContext (MixinContext m)

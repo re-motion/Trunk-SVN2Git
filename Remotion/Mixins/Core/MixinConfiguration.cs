@@ -48,7 +48,7 @@ namespace Remotion.Mixins
   /// <para>
   /// The master mixin configuration - the default configuration in effect for a thread if not specifically replaced by another configuration - is 
   /// obtained by analyzing the assemblies in the application's bin directory for attributes such as <see cref="UsesAttribute"/>,
-  /// <see cref="ExtendsAttribute"/>, and <see cref="CompleteInterfaceAttribute"/>. (For more information about the default configuration, see
+  /// <see cref="ExtendsAttribute"/>, and <see cref="ComposedInterfaceAttribute"/>. (For more information about the default configuration, see
   /// <see cref="DeclarativeConfigurationBuilder.BuildDefaultConfiguration"/>.) The master configuration can be accessed via 
   /// <see cref="GetMasterConfiguration"/> and <see cref="SetMasterConfiguration"/>.
   /// </para>
@@ -190,7 +190,7 @@ namespace Remotion.Mixins
     }
 
     [Obsolete ("This feature has been removed. Use an IOC container to resolve interfaces into implementations. (1.13.106)", true)]
-    public ClassContext ResolveCompleteInterface (Type interfaceType)
+    public ClassContext ResolveComposedInterface (Type interfaceType)
     {
       ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
       throw new NotImplementedException ("This feature has been removed. Use an IOC container to resolve interfaces into implementations.");

@@ -21,22 +21,22 @@ using Remotion.Utilities;
 namespace Remotion.Mixins
 {
   /// <summary>
-  /// Indicates that an interface acts as a complete interface for a class instantiated via <see cref="ObjectFactory"/>.
+  /// Indicates that an interface acts as a composed interface for a class instantiated via <see cref="ObjectFactory"/>.
   /// </summary>
   /// <remarks>
   /// <para>
-  /// A complete interface combines the API of a target type with that of its mixins. For example, if a target class provides the methods A and B
+  /// A composed interface combines the API of a target type with that of its mixins. For example, if a target class provides the methods A and B
   /// and a mixin adds the methods C and D, users of the class could normally only use either A and B or C and D at the same time (without casting).
-  /// By implementing a complete interface that provides methods A, B, C, and D, users of the class can employ the full API in a simple way.
+  /// By implementing a composed interface that provides methods A, B, C, and D, users of the class can employ the full API in a simple way.
   /// </para>
   /// <para>
-  /// All methods directly specified by a complete interface must be implemented by the target type. If the complete interface extends a set of
-  /// other interfaces, those interfaces can either be implemented by the target class or be introduced by a mixin. This enables the complete 
+  /// All methods directly specified by a composed interface must be implemented by the target type. If the composed interface extends a set of
+  /// other interfaces, those interfaces can either be implemented by the target class or be introduced by a mixin. This enables the composed 
   /// interface to provide access both to methods on the target type and to those introduced by mixins.
   /// </para>
   /// <para>
-  /// This attribute can be applied multiple times if an interface is to be a complete interface for multiple target types. The attribute is not
-  /// inherited, i.e. an interface inheriting from a complete interface does not automatically constitute a complete interface as well.
+  /// This attribute can be applied multiple times if an interface is to be a composed interface for multiple target types. The attribute is not
+  /// inherited, i.e. an interface inheriting from a composed interface does not automatically constitute a composed interface as well.
   /// </para>
   /// </remarks>
   /// <example>
@@ -60,7 +60,7 @@ namespace Remotion.Mixins
   ///   public void D() { Console.WriteLine ("D"); }
   /// }
   /// 
-  /// [CompleteInterface (typeof (MyMixinTarget))]
+  /// [ComposedInterface (typeof (MyMixinTarget))]
   /// public interface ICMyMixinTargetMyMixin : IMyMixin
   /// {
   ///   void A();
@@ -69,23 +69,23 @@ namespace Remotion.Mixins
   /// </code>
   /// </example>
   [AttributeUsage (AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
-  public class CompleteInterfaceAttribute : Attribute, IMixinConfigurationAttribute<Type>
+  public class ComposedInterfaceAttribute : Attribute, IMixinConfigurationAttribute<Type>
   {
     private readonly Type _targetType;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompleteInterfaceAttribute"/> class.
+    /// Initializes a new instance of the <see cref="ComposedInterfaceAttribute"/> class.
     /// </summary>
-    /// <param name="targetType">Target type for which this interface constitutes a complete interface.</param>
-    public CompleteInterfaceAttribute (Type targetType)
+    /// <param name="targetType">Target type for which this interface constitutes a composed interface.</param>
+    public ComposedInterfaceAttribute (Type targetType)
     {
       _targetType = ArgumentUtility.CheckNotNull ("targetType", targetType);
     }
 
     /// <summary>
-    /// Gets the target type for which this interface constitutes a complete interface.
+    /// Gets the target type for which this interface constitutes a composed interface.
     /// </summary>
-    /// <value>The target type of this complete interface.</value>
+    /// <value>The target type of this composed interface.</value>
     public Type TargetType
     {
       get { return _targetType; }
@@ -101,7 +101,7 @@ namespace Remotion.Mixins
       ArgumentUtility.CheckNotNull ("mixinConfigurationBuilder", mixinConfigurationBuilder);
       ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
 
-      mixinConfigurationBuilder.ForClass (TargetType).AddCompleteInterface (interfaceType);
+      mixinConfigurationBuilder.ForClass (TargetType).AddComposedInterface (interfaceType);
     }
   }
 }

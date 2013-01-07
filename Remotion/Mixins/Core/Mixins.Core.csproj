@@ -131,7 +131,7 @@
     <Compile Include="CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializer.cs" />
     <Compile Include="CodeGeneration\TypeFactoryImplementation.cs" />
     <Compile Include="CodeGeneration\TypeImportException.cs" />
-    <Compile Include="CompleteInterfaceAttribute.cs" />
+    <Compile Include="ComposedInterfaceAttribute.cs" />
     <Compile Include="ComposedObject.cs" />
     <Compile Include="ConfigurationException.cs" />
     <Compile Include="Context\ClassContext.cs" />
@@ -139,7 +139,7 @@
     <Compile Include="Context\ClassContextCombiner.cs" />
     <Compile Include="Context\ClassContextDeriver.cs" />
     <Compile Include="Context\ClassContextEventArgs.cs" />
-    <Compile Include="Context\DeclarativeAnalyzers\HasCompleteInterfaceMarkerAnalyzer.cs" />
+    <Compile Include="Context\DeclarativeAnalyzers\HasComposedInterfaceMarkerAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\DeclarativeConfigurationAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\IMixinDeclarationAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\MixinConfigurationAttributeAnalyzer.cs" />
@@ -190,8 +190,8 @@
     <Compile Include="Definitions\Building\DependencySorting\IMixinDefinitionSorter.cs" />
     <Compile Include="Definitions\Building\DependencySorting\IMixinDependencyAnalyzer.cs" />
     <Compile Include="Definitions\Building\ITargetClassDefinitionBuilder.cs" />
-    <Compile Include="Definitions\CompleteInterfaceDependencyDefinition.cs" />
-    <Compile Include="Definitions\Building\CompleteInterfaceDependencyDefinitionBuilder.cs" />
+    <Compile Include="Definitions\ComposedInterfaceDependencyDefinition.cs" />
+    <Compile Include="Definitions\Building\ComposedInterfaceDependencyDefinitionBuilder.cs" />
     <Compile Include="Definitions\Building\DependencyDefinitionBuilderBase.cs" />
     <Compile Include="Definitions\Building\DependencySorting\DependentMixinGrouperAlgorithm.cs" />
     <Compile Include="Definitions\Building\DependencySorting\LegacyMixinDefinitionSorter.cs" />
@@ -255,7 +255,7 @@
     <Compile Include="IgnoreForMixinConfigurationAttribute.cs" />
     <Compile Include="IgnoresClassAttribute.cs" />
     <Compile Include="IgnoresMixinAttribute.cs" />
-    <Compile Include="IHasCompleteInterface.cs" />
+    <Compile Include="IHasComposedInterface.cs" />
     <Compile Include="IInitializableMixin.cs" />
     <Compile Include="IMixinTarget.cs" />
     <Compile Include="IOverrideAttribute.cs" />
@@ -317,7 +317,7 @@
     <Compile Include="Validation\IValidationRule.cs" />
     <Compile Include="Validation\Rules\ContextStoreMemberIntroductionLookupUtility.cs" />
     <Compile Include="Validation\Rules\ContextStoreMemberLookupUtility.cs" />
-    <Compile Include="Validation\Rules\DefaultCompleteInterfaceDependencyRules.cs" />
+    <Compile Include="Validation\Rules\DefaultComposedInterfaceDependencyRules.cs" />
     <Compile Include="Validation\Rules\DefaultAttributeIntroductionRules.cs" />
     <Compile Include="Validation\Rules\DefaultAttributeRules.cs" />
     <Compile Include="Validation\Rules\DefaultEventIntroductionRules.cs" />
@@ -356,7 +356,6 @@
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
-    <None Include="Context\Context.cd" />
     <None Include="doc\include\GettingStartedWithRemix.aml" />
     <None Include="Validation\Validation.cd" />
   </ItemGroup>

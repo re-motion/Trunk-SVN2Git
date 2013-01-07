@@ -82,29 +82,29 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    public void CompleteFaceInterfacesAddedByMixins ()
+    public void ComposedFaceInterfacesAddedByMixins ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType3>().Clear().AddMixins (typeof (Bt3Mixin7TargetCall), typeof (BT3Mixin4)).EnterScope())
       {
-        var complete = (ICBaseType3BT3Mixin4) ObjectFactory.Create<BaseType3> (ParamList.Empty);
+        var composed = (ICBaseType3BT3Mixin4) ObjectFactory.Create<BaseType3> (ParamList.Empty);
 
-        Assert.That (((IBaseType33) complete).IfcMethod(), Is.EqualTo ("BaseType3.IfcMethod"));
-        Assert.That (((IBaseType34) complete).IfcMethod(), Is.EqualTo ("BaseType3.IfcMethod"));
-        Assert.That (complete.IfcMethod2(), Is.EqualTo ("BaseType3.IfcMethod2"));
-        Assert.That (Mixin.Get<Bt3Mixin7TargetCall> (complete).InvokeThisMethods(), Is.EqualTo ("BaseType3.IfcMethod-BT3Mixin4.Foo"));
+        Assert.That (((IBaseType33) composed).IfcMethod(), Is.EqualTo ("BaseType3.IfcMethod"));
+        Assert.That (((IBaseType34) composed).IfcMethod(), Is.EqualTo ("BaseType3.IfcMethod"));
+        Assert.That (composed.IfcMethod2(), Is.EqualTo ("BaseType3.IfcMethod2"));
+        Assert.That (Mixin.Get<Bt3Mixin7TargetCall> (composed).InvokeThisMethods(), Is.EqualTo ("BaseType3.IfcMethod-BT3Mixin4.Foo"));
       }
     }
 
     [Test]
-    public void CompleteFaceInterfacesAddedExplicitly ()
+    public void ComposedFaceInterfacesAddedExplicitly ()
     {
-      object complete = ObjectFactory.Create<BaseType6> (ParamList.Empty);
+      object composed = ObjectFactory.Create<BaseType6> (ParamList.Empty);
 
-      Assert.That (complete, Is.Not.Null);
-      Assert.That (complete, Is.InstanceOf<BaseType6>());
-      Assert.That (complete, Is.InstanceOf<ICBT6Mixin1>());
-      Assert.That (complete, Is.InstanceOf<ICBT6Mixin2>());
-      Assert.That (complete, Is.InstanceOf<ICBT6Mixin3>());
+      Assert.That (composed, Is.Not.Null);
+      Assert.That (composed, Is.InstanceOf<BaseType6>());
+      Assert.That (composed, Is.InstanceOf<ICBT6Mixin1>());
+      Assert.That (composed, Is.InstanceOf<ICBT6Mixin2>());
+      Assert.That (composed, Is.InstanceOf<ICBT6Mixin3>());
     }
 
     [Test]

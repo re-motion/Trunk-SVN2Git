@@ -62,12 +62,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     }
 
     [Test]
-    public void AddCompleteInterfaces ()
+    public void AddComposedInterfaces ()
     {
-      _serializer.AddCompleteInterfaces (new[] {typeof (int), typeof (string)});
-      Assert.That (_info.GetValue ("C1.CompleteInterfaces.AssemblyQualifiedNames", typeof (string[])), 
+      _serializer.AddComposedInterfaces (new[] {typeof (int), typeof (string)});
+      Assert.That (_info.GetValue ("C1.ComposedInterfaces.AssemblyQualifiedNames", typeof (string[])), 
           Is.EqualTo (new[] {typeof (int).AssemblyQualifiedName, typeof (string).AssemblyQualifiedName}));
-      Assert.That (_deserializer.GetCompleteInterfaces().ToArray(), Is.EqualTo (new[] {typeof (int), typeof (string) }));
+      Assert.That (_deserializer.GetComposedInterfaces().ToArray(), Is.EqualTo (new[] {typeof (int), typeof (string) }));
     }
   }
 }

@@ -21,7 +21,7 @@ using Remotion.Mixins.Samples.CompositionPattern.Core.Framework;
 namespace Remotion.Mixins.Samples.CompositionPattern.Core.ExternalDomainMixins
 {
   /// <summary>
-  /// Extends all <see cref="ISettlement"/> implementations with municipal-specific properties. There is no complete interface to access all members
+  /// Extends all <see cref="ISettlement"/> implementations with municipal-specific properties. There is no composed interface to access all members
   /// of <see cref="ISettlement"/> and <see cref="IMunicipalSettlement"/>, Instead, the 
   /// <see cref="Remotion_Mixins_Samples_CompositionPattern_Core_ExternalDomainMixins_MunicipalSettlementExtensions"/> provides an extension method
   /// for <see cref="ISettlement"/> to enable that access.

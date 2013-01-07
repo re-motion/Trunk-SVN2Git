@@ -32,7 +32,7 @@ namespace Remotion.Mixins.Context
 {
   /// <summary>
   /// Provides support for building mixin configuration data from the declarative mixin configuration attributes
-  /// (<see cref="UsesAttribute"/>, <see cref="ExtendsAttribute"/>, <see cref="CompleteInterfaceAttribute"/>,
+  /// (<see cref="UsesAttribute"/>, <see cref="ExtendsAttribute"/>, <see cref="ComposedInterfaceAttribute"/>,
   /// and <see cref="IgnoreForMixinConfigurationAttribute"/>).
   /// </summary>
   /// <threadsafety static="true" instance="false"/>
@@ -216,7 +216,7 @@ namespace Remotion.Mixins.Context
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin configuration: {elapsed}."))
       {
-        var typeAnalyzers = new IMixinDeclarationAnalyzer<Type>[] { CreateAttributeAnalyzer<Type>(), new HasCompleteInterfaceMarkerAnalyzer () };
+        var typeAnalyzers = new IMixinDeclarationAnalyzer<Type>[] { CreateAttributeAnalyzer<Type>(), new HasComposedInterfaceMarkerAnalyzer () };
         var assemblyAnalyzers = new IMixinDeclarationAnalyzer<Assembly>[] { CreateAttributeAnalyzer<Assembly> () };
         
         var configurationAnalyzer = new DeclarativeConfigurationAnalyzer (typeAnalyzers, assemblyAnalyzers);

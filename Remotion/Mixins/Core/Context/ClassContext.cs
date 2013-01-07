@@ -41,19 +41,19 @@ namespace Remotion.Mixins.Context
       return new ClassContext (
           deserializer.GetClassType (),
           deserializer.GetMixins (),
-          deserializer.GetCompleteInterfaces ());
+          deserializer.GetComposedInterfaces ());
     }
 
     private static int CalculateHashCode (ClassContext classContext)
     {
       return classContext.Type.GetHashCode ()
           ^ EqualityUtility.GetXorHashCode (classContext.Mixins)
-          ^ EqualityUtility.GetXorHashCode (classContext.CompleteInterfaces);
+          ^ EqualityUtility.GetXorHashCode (classContext.ComposedInterfaces);
     }
 
     private readonly Type _type;
     private readonly MixinContextCollection _mixins;
-    private readonly ReadOnlyCollectionDecorator<Type> _completeInterfaces;
+    private readonly ReadOnlyCollectionDecorator<Type> _composedInterfaces;
     private readonly int _cachedHashCode;
 
     /// <summary>
@@ -61,21 +61,21 @@ namespace Remotion.Mixins.Context
     /// </summary>
     /// <param name="type">The mixin target type to be represented by this context.</param>
     /// <param name="mixins">A list of <see cref="MixinContext"/> objects representing the mixins applied to this class.</param>
-    /// <param name="completeInterfaces">The complete interfaces supported by the class.</param>
+    /// <param name="composedInterfaces">The composed interfaces supported by the class.</param>
     /// <exception cref="ArgumentNullException">The <paramref name="type"/> parameter is <see langword="null"/>.</exception>
-    public ClassContext (Type type, IEnumerable<MixinContext> mixins, IEnumerable<Type> completeInterfaces)
+    public ClassContext (Type type, IEnumerable<MixinContext> mixins, IEnumerable<Type> composedInterfaces)
         : this (
             ArgumentUtility.CheckNotNull ("type", type),
             new MixinContextCollection (ArgumentUtility.CheckNotNull ("mixins", mixins)),
-            new HashSet<Type> (ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces)).AsReadOnly())
+            new HashSet<Type> (ArgumentUtility.CheckNotNull ("composedInterfaces", composedInterfaces)).AsReadOnly())
     {
     }
 
-    private ClassContext (Type type, MixinContextCollection mixins, ReadOnlyCollectionDecorator<Type> completeInterfaces)
+    private ClassContext (Type type, MixinContextCollection mixins, ReadOnlyCollectionDecorator<Type> composedInterfaces)
     {
       _type = type;
       _mixins = mixins;
-      _completeInterfaces = completeInterfaces;
+      _composedInterfaces = composedInterfaces;
 
       _cachedHashCode = CalculateHashCode (this);
     }
@@ -99,23 +99,23 @@ namespace Remotion.Mixins.Context
     }
 
     /// <summary>
-    /// Gets the complete interfaces associated with this <see cref="ClassContext"/>.
+    /// Gets the composed interfaces associated with this <see cref="ClassContext"/>.
     /// </summary>
-    /// <value>The complete interfaces associated with this context (for an explanation, see <see cref="CompleteInterfaceAttribute"/>).</value>
-    public ReadOnlyCollectionDecorator<Type> CompleteInterfaces
+    /// <value>The composed interfaces associated with this context (for an explanation, see <see cref="ComposedInterfaceAttribute"/>).</value>
+    public ReadOnlyCollectionDecorator<Type> ComposedInterfaces
     {
-      get { return _completeInterfaces; }
+      get { return _composedInterfaces; }
     }
 
     /// <summary>
-    /// Determines whether this <see cref="ClassContext"/> is empty, i.e. it contains no <see cref="Mixins"/> or <see cref="CompleteInterfaces"/>.
+    /// Determines whether this <see cref="ClassContext"/> is empty, i.e. it contains no <see cref="Mixins"/> or <see cref="ComposedInterfaces"/>.
     /// </summary>
     /// <returns>
     /// 	<see langword="true" /> if this <see cref="ClassContext"/> is empty; otherwise, <see langword="false" />.
     /// </returns>
     public bool IsEmpty ()
     {
-      return Mixins.Count == 0 && CompleteInterfaces.Count == 0;
+      return Mixins.Count == 0 && ComposedInterfaces.Count == 0;
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ namespace Remotion.Mixins.Context
     /// <param name="obj">The <see cref="T:System.Object"></see> to compare with this <see cref="ClassContext"/>.</param>
     /// <returns>
     /// True if the specified <see cref="T:System.Object"></see> is a <see cref="ClassContext"/> for the same type with equal mixin 
-    /// and complete interfaces configuration; otherwise, false.
+    /// and composed interfaces configuration; otherwise, false.
     /// </returns>
     public override bool Equals (object obj)
     {
@@ -138,7 +138,7 @@ namespace Remotion.Mixins.Context
       if (other._cachedHashCode != _cachedHashCode 
           || other.Type != Type 
           || other._mixins.Count != _mixins.Count 
-          || other._completeInterfaces.Count != _completeInterfaces.Count)
+          || other._composedInterfaces.Count != _composedInterfaces.Count)
         return false;
 
       // No LINQ expression for performance reasons (avoid closure)
@@ -150,9 +150,9 @@ namespace Remotion.Mixins.Context
           return false;
       }
 
-      foreach (var completeInterface in _completeInterfaces)
+      foreach (var composedInterface in _composedInterfaces)
       {
-        if (!other._completeInterfaces.Contains (completeInterface))
+        if (!other._composedInterfaces.Contains (composedInterface))
           return false;
       }
       // ReSharper restore LoopCanBeConvertedToQuery
@@ -164,7 +164,7 @@ namespace Remotion.Mixins.Context
     /// Returns a hash code for this <see cref="ClassContext"/>.
     /// </summary>
     /// <returns>
-    /// A hash code for the current <see cref="ClassContext"/> which includes the hash codes of this object's complete interfaces and mixin ocntexts.
+    /// A hash code for the current <see cref="ClassContext"/> which includes the hash codes of this object's composed interfaces and mixin contexts.
     /// </returns>
     public override int GetHashCode ()
     {
@@ -176,26 +176,26 @@ namespace Remotion.Mixins.Context
     /// </summary>
     /// <returns>
     /// A <see cref="T:System.String"></see> containing the type names of this context's associated <see cref="Type"/>, all its mixin types, and
-    /// complete interfaces.
+    /// composed interfaces.
     /// </returns>
     public override string ToString ()
     {
       return string.Format (
-          "ClassContext: '{0}'{1}  Mixins: {2}{1}  CompleteInterfaces: ({3})",
+          "ClassContext: '{0}'{1}  Mixins: {2}{1}  ComposedInterfaces: ({3})",
           Type,
           Environment.NewLine,
           SeparatedStringBuilder.Build ("", Mixins, mc => Environment.NewLine + "    " + mc), 
-          SeparatedStringBuilder.Build (",", CompleteInterfaces, ifc => ifc.Name));
+          SeparatedStringBuilder.Build (",", ComposedInterfaces, ifc => ifc.Name));
     }
 
     /// <summary>
-    /// Returns a new <see cref="ClassContext"/> with the same mixins and complete interfaces as this object, but a different target type.
+    /// Returns a new <see cref="ClassContext"/> with the same mixins and composed interfaces as this object, but a different target type.
     /// </summary>
     /// <param name="type">The target type to create the new <see cref="ClassContext"/> for.</param>
     /// <returns>A clone of this <see cref="ClassContext"/> for a different target type.</returns>
     public ClassContext CloneForSpecificType (Type type)
     {
-      var newInstance = new ClassContext (type, Mixins, CompleteInterfaces);
+      var newInstance = new ClassContext (type, Mixins, ComposedInterfaces);
       return newInstance;
     }
 
@@ -248,7 +248,7 @@ namespace Remotion.Mixins.Context
       foreach (var rule in suppressionRules)
         rule.RemoveAffectedMixins (mixinsAfterSuppression);
 
-      return new ClassContext (_type, new MixinContextCollection (mixinsAfterSuppression.Values), _completeInterfaces);
+      return new ClassContext (_type, new MixinContextCollection (mixinsAfterSuppression.Values), _composedInterfaces);
     }
 
     /// <summary>
@@ -277,7 +277,7 @@ namespace Remotion.Mixins.Context
         newMixinContexts[originalMixinContext.MixinType] = newMixinContext;
       }
 
-      return new ClassContext (_type, new MixinContextCollection (newMixinContexts.Values), _completeInterfaces);
+      return new ClassContext (_type, new MixinContextCollection (newMixinContexts.Values), _composedInterfaces);
     }
 
     public void Serialize (IClassContextSerializer serializer)
@@ -286,7 +286,7 @@ namespace Remotion.Mixins.Context
 
       serializer.AddClassType (Type);
       serializer.AddMixins (Mixins);
-      serializer.AddCompleteInterfaces (CompleteInterfaces);
+      serializer.AddComposedInterfaces (ComposedInterfaces);
     }
 
     private MixinContext GetMatchingMixin (Type mixinType, Dictionary<Type, MixinContext> mixinContexts)

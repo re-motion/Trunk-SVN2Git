@@ -23,6 +23,6 @@ namespace Remotion.Mixins.Context.Serialization
   {
     Type GetClassType ();
     IEnumerable<MixinContext> GetMixins ();
-    IEnumerable<Type> GetCompleteInterfaces ();
+    IEnumerable<Type> GetComposedInterfaces ();
   }
 }

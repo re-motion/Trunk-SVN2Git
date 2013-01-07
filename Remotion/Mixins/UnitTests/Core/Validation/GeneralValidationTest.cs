@@ -237,7 +237,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
       RequiredMixinTypeDefinition rmt2 = btWithAdditionalDependencies.RequiredMixinTypes[typeof (MixinWithNoAdditionalDependency)];
       AssertVisitedEquivalent (validationResults, rmt2);
 
-      CompleteInterfaceDependencyDefinition cid1 = bt6.CompleteInterfaceDependencies[typeof (ICBT6Mixin1)];
+      ComposedInterfaceDependencyDefinition cid1 = bt6.ComposedInterfaceDependencies[typeof (ICBT6Mixin1)];
       AssertVisitedEquivalent (validationResults, cid1);
 
       TargetCallDependencyDefinition td1 = bt3m1.TargetCallDependencies[typeof (IBaseType31)];

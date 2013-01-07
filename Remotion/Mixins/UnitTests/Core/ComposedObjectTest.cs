@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
 
@@ -38,18 +39,18 @@ namespace Remotion.Mixins.UnitTests.Core
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Type 'Remotion.Mixins.UnitTests.Core.TestDomain.ClassDerivedFromComposedObject' is not associated with the composed interface "
         + "'IClassDerivedFromComposedObject'. You should instantiate the class via the ObjectFactory class or the NewObject method. If you manually "
-        + "created a mixin configuration, don't forget to add the composed interface as a complete interface.")]
+        + "created a mixin configuration, don't forget to add the composed interface.")]
     public void Ctor_ChecksObjectFactoryCreateUsed ()
     {
-      new ClassDerivedFromComposedObject();
+      Dev.Null = new ClassDerivedFromComposedObject();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "Type 'Remotion.Mixins.UnitTests.Core.TestDomain.ClassDerivedFromComposedObject' is not associated with the composed interface "
         + "'IClassDerivedFromComposedObject'. You should instantiate the class via the ObjectFactory class or the NewObject method. If you manually "
-        + "created a mixin configuration, don't forget to add the composed interface as a complete interface.")]
-    public void Ctor_ChecksCompleteInterfaceAvailable ()
+        + "created a mixin configuration, don't forget to add the composed interface.")]
+    public void Ctor_ChecksComposedInterfaceAvailable ()
     {
       using (MixinConfiguration.BuildNew ().EnterScope ())
       {

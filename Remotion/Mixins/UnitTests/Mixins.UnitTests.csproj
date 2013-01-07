@@ -111,7 +111,7 @@
     <Compile Include="Core\CodeGeneration\GuidNameProviderTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\AttributeSpike.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\AttributeTest.cs" />
-    <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\CompleteInterfaceTest.cs" />
+    <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\ComposedInterfaceTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\DependencyTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\DuckRequirementTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\GeneratedTypeInConfigurationTest.cs" />
@@ -203,13 +203,13 @@
     <Compile Include="Core\CodeGeneration\TestDomain\TargetClassCallingOverriddenMethodFromCtor.cs" />
     <Compile Include="Core\CodeGeneration\TestDomain\TargetClassGettingMixinFromCtor.cs" />
     <Compile Include="Core\CodeGeneration\TestDomain\VeryGenericMixin.cs" />
-    <Compile Include="Core\CompleteInterfaceAttributeTest.cs" />
+    <Compile Include="Core\ComposedInterfaceAttributeTest.cs" />
     <Compile Include="Core\ComposedObjectTest.cs" />
     <Compile Include="Core\Context\ClassContextCollectionTest.cs" />
     <Compile Include="Core\Context\ClassContextCombinerTest.cs" />
     <Compile Include="Core\Context\ClassContextInheritanceTest.cs" />
     <Compile Include="Core\Context\ClassContextTest.cs" />
-    <Compile Include="Core\Context\DeclarativeAnalyzers\HasCompleteInterfaceMarkerAnalyzerTest.cs" />
+    <Compile Include="Core\Context\DeclarativeAnalyzers\HasComposedInterfaceMarkerAnalyzerTest.cs" />
     <Compile Include="Core\Context\DeclarativeAnalyzers\DeclarativeConfigurationAnalyzerTest.cs" />
     <Compile Include="Core\Context\DeclarativeAnalyzers\MixinConfigurationAttributeAnalyzerTest.cs" />
     <Compile Include="Core\Definitions\DependencySorting\MixinDefinitionSorterTest.cs" />
@@ -231,7 +231,7 @@
     <Compile Include="Core\IntegrationTests\Ordering\OrderingTestBase.cs" />
     <Compile Include="Core\UsesAttributeTest.cs" />
     <Compile Include="Core\Context\DeclarativeConfigurationBuilderTest.cs" />
-    <Compile Include="Core\Context\DeclarativeConfigurationBuilder_IntegrationTests\CompleteInterfaceAnalyisTest.cs" />
+    <Compile Include="Core\Context\DeclarativeConfigurationBuilder_IntegrationTests\ComposedInterfaceAnalyisTest.cs" />
     <Compile Include="Core\Context\DeclarativeConfigurationBuilder_IntegrationTests\DeclarativeConfigurationBuilderGeneralTest.cs" />
     <Compile Include="Core\Context\DeclarativeConfigurationBuilder_IntegrationTests\DeclarativeConfigurationBuilderGenericInheritanceTest.cs" />
     <Compile Include="Core\Context\DeclarativeConfigurationBuilder_IntegrationTests\DeclarativeConfigurationBuilderInheritanceTest.cs" />
@@ -275,7 +275,7 @@
     <Compile Include="Core\Context\Suppression\TestDomain\MixinWithCircularSuppress2.cs" />
     <Compile Include="Core\Context\Suppression\TestDomain\SuppressedBaseMixin.cs" />
     <Compile Include="Core\Context\Suppression\TestDomain\SuppressedMixin.cs" />
-    <Compile Include="Core\Definitions\CompleteInterfaceDependencyDefinitionTest.cs" />
+    <Compile Include="Core\Definitions\ComposedInterfaceDependencyDefinitionTest.cs" />
     <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\AddingDependencyWithinDerivedClassTest.cs" />
     <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\ClassWithGenericMixinTest.cs" />
     <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\GenericClassTest.cs" />
@@ -472,7 +472,7 @@
     <Compile Include="Core\TestDomain\BaseClassForDerivedClassIgnoredByMixin.cs" />
     <Compile Include="Core\TestDomain\BaseClassForDerivedClassIgnoringMixin.cs" />
     <Compile Include="Core\TestDomain\BaseClassNotOverridingMixinMethod.cs" />
-    <Compile Include="Core\TestDomain\BaseClassWithHasCompleteInterface.cs" />
+    <Compile Include="Core\TestDomain\BaseClassWithHasComposedInterface.cs" />
     <Compile Include="Core\TestDomain\BaseType1.cs" />
     <Compile Include="Core\TestDomain\BaseType2.cs" />
     <Compile Include="Core\TestDomain\BaseType3.cs" />
@@ -486,7 +486,7 @@
     <Compile Include="Core\TestDomain\BT1Mixin1.cs" />
     <Compile Include="Core\TestDomain\BT1Mixin2.cs" />
     <Compile Include="Core\TestDomain\BT2Mixin1.cs" />
-    <Compile Include="Core\TestDomain\BT3CompleteIfaces.cs" />
+    <Compile Include="Core\TestDomain\BT3ComposedIfaces.cs" />
     <Compile Include="Core\TestDomain\BT3Mixin1.cs" />
     <Compile Include="Core\TestDomain\BT3Mixin2.cs" />
     <Compile Include="Core\TestDomain\BT3Mixin3.cs" />
@@ -532,8 +532,8 @@
     <Compile Include="Core\TestDomain\ClassOverridingSpecificGenericMixinMember.cs" />
     <Compile Include="Core\TestDomain\ClassOverridingSpecificMixinMember.cs" />
     <Compile Include="Core\TestDomain\ClassOverridingToString.cs" />
-    <Compile Include="Core\TestDomain\ClassWithCompleteInterface.cs" />
-    <Compile Include="Core\TestDomain\ClassWithHasCompleteInterfaces.cs" />
+    <Compile Include="Core\TestDomain\ClassWithComposedInterface.cs" />
+    <Compile Include="Core\TestDomain\ClassWithHasComposedInterfaces.cs" />
     <Compile Include="Core\TestDomain\ClassWithMixedInterface.cs" />
     <Compile Include="Core\TestDomain\ClassWithMixedMixin.cs" />
     <Compile Include="Core\TestDomain\ClassWithMixinsAcceptingAlphabeticOrdering.cs" />
@@ -544,7 +544,7 @@
     <Compile Include="Core\TestDomain\DerivedClassIgnoringMixin.cs" />
     <Compile Include="Core\TestDomain\DerivedClassOverridingMixinMethod.cs" />
     <Compile Include="Core\TestDomain\DerivedClassOverridingMixinMethod2.cs" />
-    <Compile Include="Core\TestDomain\DerivedClassWithCompleteInterface.cs" />
+    <Compile Include="Core\TestDomain\DerivedClassWithComposedInterface.cs" />
     <Compile Include="Core\TestDomain\DerivedDerivedClassIgnoredByMixin.cs" />
     <Compile Include="Core\TestDomain\DerivedDerivedClassIgnoringMixin.cs" />
     <Compile Include="Core\TestDomain\DerivedDerivedClassOverridingMixinMethod.cs" />

@@ -40,7 +40,7 @@ namespace Remotion.Mixins.Context.Serialization
       return mixins.Select (oa => MixinContext.Deserialize (new AttributeMixinContextDeserializer ((object[]) oa)));
     }
 
-    public IEnumerable<Type> GetCompleteInterfaces()
+    public IEnumerable<Type> GetComposedInterfaces()
     {
       return GetValue<Type[]> (2);
     }

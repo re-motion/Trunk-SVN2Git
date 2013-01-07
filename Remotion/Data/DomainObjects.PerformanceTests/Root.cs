@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       //RunHasRelationChangedTest();
       //RunCommitTest ();
 
-      BindableObjectWithSecurityTest();
+      // BindableObjectWithSecurityTest();
       BindableObjectWithoutSecurityTest();
 
       //LinqTest();

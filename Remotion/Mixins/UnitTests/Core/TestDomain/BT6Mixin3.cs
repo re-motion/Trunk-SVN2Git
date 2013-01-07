@@ -33,7 +33,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
     }
   }
 
-  [CompleteInterface (typeof (BaseType6))]
+  [ComposedInterface (typeof (BaseType6))]
   public interface ICBT6Mixin3 : IBT6Mixin1, IBT6Mixin2, IBaseType6
   {
   }

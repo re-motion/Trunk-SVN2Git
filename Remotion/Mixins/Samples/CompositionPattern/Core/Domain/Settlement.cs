@@ -26,7 +26,7 @@ namespace Remotion.Mixins.Samples.CompositionPattern.Core.Domain
   /// class is <see cref="ISettlement"/>, it contains all members defined by the core domain object and the used mixins. 
   /// <see cref="ISettlementImplementation"/> is a technical detail that enables the compiler to verify that all members of <see cref="Settlement"/>
   /// are also present on <see cref="ISettlement"/>. External components can also extend <see cref="Settlement"/> with external concerns. Members
-  /// added by such concerns are not present in the complete interface; they are provided via extension methods.
+  /// added by such concerns are not present in the composed interface; they are provided via extension methods.
   /// </summary>
   [Uses (typeof (DocumentMixin))] // introduces IDocument
   [Uses (typeof (TenantBoundMixin))] // introduces ITenantBoundObject

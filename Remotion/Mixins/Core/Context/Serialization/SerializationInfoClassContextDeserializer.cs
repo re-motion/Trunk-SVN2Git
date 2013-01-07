@@ -45,9 +45,9 @@ namespace Remotion.Mixins.Context.Serialization
       }
     }
 
-    public IEnumerable<Type> GetCompleteInterfaces ()
+    public IEnumerable<Type> GetComposedInterfaces ()
     {
-      return GetTypes("CompleteInterfaces");
+      return GetTypes("ComposedInterfaces");
     }
   }
 }

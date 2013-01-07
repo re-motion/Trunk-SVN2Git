@@ -54,12 +54,12 @@ namespace Remotion.Mixins.Context.Serialization
       AddValue ("Mixins.Count", index);
     }
 
-    public void AddCompleteInterfaces(IEnumerable<Type> completeInterfaces)
+    public void AddComposedInterfaces(IEnumerable<Type> composedInterfaces)
     {
-      ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces);
+      ArgumentUtility.CheckNotNull ("composedInterfaces", composedInterfaces);
 
       // Types must be serialized as a string; otherwise, SerializationHelper won't be able to use them immediately after deserialization.
-      AddTypes ("CompleteInterfaces", completeInterfaces);
+      AddTypes ("ComposedInterfaces", composedInterfaces);
     }
   }
 }

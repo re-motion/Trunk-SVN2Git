@@ -65,11 +65,11 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       Assert.That (classBuilder.TargetType, Is.SameAs (typeof (BaseType2)));
       Assert.That (classBuilder.Parent, Is.Not.Null);
       Assert.That (_classBuilder.MixinContextBuilders, Is.Empty);
-      Assert.That (_classBuilder.CompleteInterfaces.ToArray (), Is.Empty);
+      Assert.That (_classBuilder.ComposedInterfaces.ToArray (), Is.Empty);
 
       ClassContext classContext = _classBuilder.BuildClassContext (new ClassContext[0]);
       Assert.That (classContext.Mixins.Count, Is.EqualTo (0));
-      Assert.That (classContext.CompleteInterfaces.Count, Is.EqualTo (0));
+      Assert.That (classContext.ComposedInterfaces.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -78,11 +78,11 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       Assert.That (_classBuilder.TargetType, Is.SameAs (typeof (BaseType2)));
       Assert.That (_classBuilder.Parent, Is.SameAs (_parentBuilderMock));
       Assert.That (_classBuilder.MixinContextBuilders, Is.Empty);
-      Assert.That (_classBuilder.CompleteInterfaces.ToArray (), Is.Empty);
+      Assert.That (_classBuilder.ComposedInterfaces.ToArray (), Is.Empty);
       
       ClassContext classContext = _classBuilder.BuildClassContext(new ClassContext[0]);
       Assert.That (classContext.Mixins.Count, Is.EqualTo (0));
-      Assert.That (classContext.CompleteInterfaces.Count, Is.EqualTo (0));
+      Assert.That (classContext.ComposedInterfaces.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -90,15 +90,15 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     {
       var classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType1));
       classBuilder.AddMixin<BT1Mixin2> ();
-      classBuilder.AddCompleteInterface<IBaseType31> ();
+      classBuilder.AddComposedInterface<IBaseType31> ();
       
       Assert.That (classBuilder.MixinContextBuilders, Is.Not.Empty);
-      Assert.That (classBuilder.CompleteInterfaces, Is.Not.Empty);
+      Assert.That (classBuilder.ComposedInterfaces, Is.Not.Empty);
       Assert.That (classBuilder.SuppressInheritance, Is.False);
 
       Assert.That (classBuilder.Clear(), Is.SameAs (classBuilder));
       Assert.That (classBuilder.MixinContextBuilders, Is.Empty);
-      Assert.That (classBuilder.CompleteInterfaces.ToArray (), Is.Empty);
+      Assert.That (classBuilder.ComposedInterfaces.ToArray (), Is.Empty);
       Assert.That (classBuilder.SuppressInheritance, Is.True);
     }
 
@@ -549,66 +549,66 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     }
 
     [Test]
-    public void AddCompleteInterface_NonGeneric ()
+    public void AddComposedInterface_NonGeneric ()
     {
-      Assert.That (_classBuilder.AddCompleteInterface (typeof (IBT6Mixin1)), Is.SameAs (_classBuilder));
-      Assert.That (_classBuilder.CompleteInterfaces.ToArray(), Is.EquivalentTo (new object[] { typeof (IBT6Mixin1) }));
+      Assert.That (_classBuilder.AddComposedInterface (typeof (IBT6Mixin1)), Is.SameAs (_classBuilder));
+      Assert.That (_classBuilder.ComposedInterfaces.ToArray(), Is.EquivalentTo (new object[] { typeof (IBT6Mixin1) }));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Remotion.Mixins.UnitTests.Core.TestDomain.IBT6Mixin1 is already configured as a "
-        + "complete interface for type Remotion.Mixins.UnitTests.Core.TestDomain.BaseType2.", MatchType = MessageMatch.Contains)]
-    public void AddCompleteInterface_Twice ()
+        + "composed interface for type Remotion.Mixins.UnitTests.Core.TestDomain.BaseType2.", MatchType = MessageMatch.Contains)]
+    public void AddComposedInterface_Twice ()
     {
-      _classBuilder.AddCompleteInterface (typeof (IBT6Mixin1)).AddCompleteInterface (typeof (IBT6Mixin1));
+      _classBuilder.AddComposedInterface (typeof (IBT6Mixin1)).AddComposedInterface (typeof (IBT6Mixin1));
     }
 
     [Test]
-    public void AddCompleteInterface_Generic ()
+    public void AddComposedInterface_Generic ()
     {
-      _classBuilderMock.Expect (mock => mock.AddCompleteInterface<BT2Mixin1> ()).CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-      _classBuilderMock.Expect (mock => mock.AddCompleteInterface (typeof (BT2Mixin1))).Return (_classBuilderMock);
+      _classBuilderMock.Expect (mock => mock.AddComposedInterface<BT2Mixin1> ()).CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+      _classBuilderMock.Expect (mock => mock.AddComposedInterface (typeof (BT2Mixin1))).Return (_classBuilderMock);
 
       _mockRepository.Replay (_classBuilderMock);
-      Assert.That (_classBuilderMock.AddCompleteInterface<BT2Mixin1> (), Is.SameAs (_classBuilderMock));
+      Assert.That (_classBuilderMock.AddComposedInterface<BT2Mixin1> (), Is.SameAs (_classBuilderMock));
       _mockRepository.Verify (_classBuilderMock);
     }
 
     [Test]
-    public void AddCompleteInterfaces_NonGeneric ()
+    public void AddComposedInterfaces_NonGeneric ()
     {
-      _classBuilderMock.Expect (mock => mock.AddCompleteInterfaces (typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2)))
+      _classBuilderMock.Expect (mock => mock.AddComposedInterfaces (typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2)))
           .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-      _classBuilderMock.Expect (mock => mock.AddCompleteInterface (typeof (BT2Mixin1))).Return (_classBuilderMock);
-      _classBuilderMock.Expect (mock => mock.AddCompleteInterface (typeof (BT3Mixin1))).Return (_classBuilderMock);
-      _classBuilderMock.Expect (mock => mock.AddCompleteInterface (typeof (BT3Mixin2))).Return (_classBuilderMock);
+      _classBuilderMock.Expect (mock => mock.AddComposedInterface (typeof (BT2Mixin1))).Return (_classBuilderMock);
+      _classBuilderMock.Expect (mock => mock.AddComposedInterface (typeof (BT3Mixin1))).Return (_classBuilderMock);
+      _classBuilderMock.Expect (mock => mock.AddComposedInterface (typeof (BT3Mixin2))).Return (_classBuilderMock);
 
       _mockRepository.Replay (_classBuilderMock);
-      Assert.That (_classBuilderMock.AddCompleteInterfaces (typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2)), Is.SameAs (_classBuilderMock));
+      Assert.That (_classBuilderMock.AddComposedInterfaces (typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2)), Is.SameAs (_classBuilderMock));
       _mockRepository.Verify (_classBuilderMock);
     }
 
     [Test]
-    public void AddCompleteInterfaces_Generic2 ()
+    public void AddComposedInterfaces_Generic2 ()
     {
-      _classBuilderMock.Expect (mock => mock.AddCompleteInterfaces<BT2Mixin1, BT3Mixin1> ())
+      _classBuilderMock.Expect (mock => mock.AddComposedInterfaces<BT2Mixin1, BT3Mixin1> ())
            .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-      _classBuilderMock.Expect (mock => mock.AddCompleteInterfaces (typeof (BT2Mixin1), typeof (BT3Mixin1))).Return (_classBuilderMock);
+      _classBuilderMock.Expect (mock => mock.AddComposedInterfaces (typeof (BT2Mixin1), typeof (BT3Mixin1))).Return (_classBuilderMock);
 
       _mockRepository.Replay (_classBuilderMock);
-      Assert.That (_classBuilderMock.AddCompleteInterfaces<BT2Mixin1, BT3Mixin1> (), Is.SameAs (_classBuilderMock));
+      Assert.That (_classBuilderMock.AddComposedInterfaces<BT2Mixin1, BT3Mixin1> (), Is.SameAs (_classBuilderMock));
       _mockRepository.Verify (_classBuilderMock);
     }
 
     [Test]
-    public void AddCompleteInterfaces_Generic3 ()
+    public void AddComposedInterfaces_Generic3 ()
     {
-      _classBuilderMock.Expect (mock => mock.AddCompleteInterfaces<BT2Mixin1, BT3Mixin1, BT3Mixin2> ())
+      _classBuilderMock.Expect (mock => mock.AddComposedInterfaces<BT2Mixin1, BT3Mixin1, BT3Mixin2> ())
           .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-      _classBuilderMock.Expect (mock => mock.AddCompleteInterfaces (typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2))).Return (_classBuilderMock);
+      _classBuilderMock.Expect (mock => mock.AddComposedInterfaces (typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2))).Return (_classBuilderMock);
 
       _mockRepository.Replay (_classBuilderMock);
-      Assert.That (_classBuilderMock.AddCompleteInterfaces<BT2Mixin1, BT3Mixin1, BT3Mixin2> (), Is.SameAs (_classBuilderMock));
+      Assert.That (_classBuilderMock.AddComposedInterfaces<BT2Mixin1, BT3Mixin1, BT3Mixin2> (), Is.SameAs (_classBuilderMock));
       _mockRepository.Verify (_classBuilderMock);
     }
 
@@ -715,7 +715,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     public void BuildContext_NoInheritance ()
     {
       _classBuilder.AddMixins<BT1Mixin1, BT1Mixin2>();
-      _classBuilder.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2>();
+      _classBuilder.AddComposedInterfaces<IBT6Mixin1, IBT6Mixin2>();
 
       ClassContext builtContext = _classBuilder.BuildClassContext ();
 
@@ -723,9 +723,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       Assert.That (builtContext.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
       Assert.That (builtContext.Mixins.ContainsKey (typeof (BT1Mixin2)), Is.True);
 
-      Assert.That (builtContext.CompleteInterfaces.Count, Is.EqualTo (2));
-      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin1)));
-      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin2)));
+      Assert.That (builtContext.ComposedInterfaces.Count, Is.EqualTo (2));
+      Assert.That (builtContext.ComposedInterfaces, Has.Member (typeof (IBT6Mixin1)));
+      Assert.That (builtContext.ComposedInterfaces, Has.Member (typeof (IBT6Mixin2)));
     }
 
     [Test]
@@ -733,12 +733,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     {
       ClassContext inheritedContext = new ClassContextBuilder (typeof (BaseType2))
           .AddMixin (typeof (BT3Mixin1))
-          .AddCompleteInterface (typeof (BT1Mixin2))
+          .AddComposedInterface (typeof (BT1Mixin2))
           .BuildClassContext();
 
       _classBuilder.Clear ();
       _classBuilder.AddMixins<BT1Mixin1, BT1Mixin2> ();
-      _classBuilder.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2> ();
+      _classBuilder.AddComposedInterfaces<IBT6Mixin1, IBT6Mixin2> ();
 
       ClassContext builtContext = _classBuilder.BuildClassContext (new[] { inheritedContext });
 
@@ -746,9 +746,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       Assert.That (builtContext.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
       Assert.That (builtContext.Mixins.ContainsKey (typeof (BT1Mixin2)), Is.True);
 
-      Assert.That (builtContext.CompleteInterfaces.Count, Is.EqualTo (2));
-      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin1)));
-      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin2)));
+      Assert.That (builtContext.ComposedInterfaces.Count, Is.EqualTo (2));
+      Assert.That (builtContext.ComposedInterfaces, Has.Member (typeof (IBT6Mixin1)));
+      Assert.That (builtContext.ComposedInterfaces, Has.Member (typeof (IBT6Mixin2)));
     }
 
     [Test]
@@ -756,11 +756,11 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     {
       ClassContext inheritedContext = new ClassContextBuilder (typeof (BaseType7))
           .AddMixin (typeof (BT7Mixin1))
-          .AddCompleteInterface (typeof (BT1Mixin2))
+          .AddComposedInterface (typeof (BT1Mixin2))
           .BuildClassContext();
       
       _classBuilder.AddMixins<BT1Mixin1, BT1Mixin2> ();
-      _classBuilder.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2> ();
+      _classBuilder.AddComposedInterfaces<IBT6Mixin1, IBT6Mixin2> ();
 
       ClassContext builtContext = _classBuilder.BuildClassContext (new[] { inheritedContext });
 
@@ -769,10 +769,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       Assert.That (builtContext.Mixins.ContainsKey (typeof (BT1Mixin2)), Is.True);
       Assert.That (builtContext.Mixins.ContainsKey (typeof (BT7Mixin1)), Is.True);
 
-      Assert.That (builtContext.CompleteInterfaces.Count, Is.EqualTo (3));
-      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin1)));
-      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin2)));
-      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (BT1Mixin2)));
+      Assert.That (builtContext.ComposedInterfaces.Count, Is.EqualTo (3));
+      Assert.That (builtContext.ComposedInterfaces, Has.Member (typeof (IBT6Mixin1)));
+      Assert.That (builtContext.ComposedInterfaces, Has.Member (typeof (IBT6Mixin2)));
+      Assert.That (builtContext.ComposedInterfaces, Has.Member (typeof (BT1Mixin2)));
     }
 
     [Test]

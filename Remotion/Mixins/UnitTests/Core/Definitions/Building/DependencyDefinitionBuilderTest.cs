@@ -71,7 +71,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (ICBT6Mixin1)), "This is added via a dependency of BT6Mixin3.");
       Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (ICBT6Mixin2)), "This is added via a dependency of BT6Mixin3.");
-      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (ICBT6Mixin3)), "This is added because of the CompleteInterfaceAttribute.");
+      Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (ICBT6Mixin3)), "This is added because of the ComposedInterfaceAttribute.");
     }
 
     [Test]
@@ -323,7 +323,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
-    public void CompleteInterfacesAndDependenciesForFace ()
+    public void ComposedInterfacesAndDependenciesForFace ()
     {
       TargetClassDefinition bt3 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (Bt3Mixin7TargetCall));
 
@@ -357,7 +357,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
-    public void CompleteInterfacesAndDependenciesForBase ()
+    public void ComposedInterfacesAndDependenciesForBase ()
     {
       TargetClassDefinition bt3 =
           DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (BT3Mixin7Base));
@@ -393,11 +393,11 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
-    public void CompleteInterfaces ()
+    public void ComposedInterfaces ()
     {
       TargetClassDefinition bt3 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), Type.EmptyTypes, new[] { typeof (ICBaseType3) });
 
-      var dependency = bt3.CompleteInterfaceDependencies[typeof (ICBaseType3)];
+      var dependency = bt3.ComposedInterfaceDependencies[typeof (ICBaseType3)];
       Assert.That (dependency, Is.Not.Null);
 
       var requirement = dependency.RequiredType;
@@ -405,21 +405,21 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.That (requirement, Is.SameAs (bt3.RequiredTargetCallTypes[typeof (ICBaseType3)]));
       Assert.That (requirement.RequiringDependencies, Is.EqualTo (new[] { dependency }));
 
-      Assert.That (dependency, Is.TypeOf<CompleteInterfaceDependencyDefinition> ());
+      Assert.That (dependency, Is.TypeOf<ComposedInterfaceDependencyDefinition> ());
       Assert.That (dependency.RequiredType, Is.SameAs (requirement));
       Assert.That (dependency.TargetClass, Is.SameAs (bt3));
       Assert.That (dependency.Depender, Is.SameAs (bt3));
       Assert.That (dependency.FullName, Is.EqualTo (typeof (ICBaseType3).FullName));
       Assert.That (dependency.Parent, Is.SameAs (dependency.Depender));
-      Assert.That (dependency.CompleteInterface, Is.SameAs (typeof (ICBaseType3)));
+      Assert.That (dependency.ComposedInterface, Is.SameAs (typeof (ICBaseType3)));
 
-      CheckSomeRequiringCompleteInterface (requirement, typeof (ICBaseType3));
+      CheckSomeRequiringComposedInterface (requirement, typeof (ICBaseType3));
       
       Assert.That (dependency.IsAggregate, Is.True);
       Assert.That (dependency.AggregatedDependencies[typeof (IBaseType31)], Is.Not.Null);
-      Assert.That (dependency.AggregatedDependencies[typeof (IBaseType31)], Is.TypeOf<CompleteInterfaceDependencyDefinition> ());
+      Assert.That (dependency.AggregatedDependencies[typeof (IBaseType31)], Is.TypeOf<ComposedInterfaceDependencyDefinition> ());
       Assert.That (
-          ((CompleteInterfaceDependencyDefinition) dependency.AggregatedDependencies[typeof (IBaseType31)]).CompleteInterface, 
+          ((ComposedInterfaceDependencyDefinition) dependency.AggregatedDependencies[typeof (IBaseType31)]).ComposedInterface, 
           Is.SameAs (typeof (ICBaseType3)));
       Assert.That (bt3.RequiredTargetCallTypes[typeof (IBaseType31)], Is.Not.Null);
       Assert.That (bt3.RequiredTargetCallTypes[typeof (IBaseType31)], Is.SameAs (dependency.AggregatedDependencies[typeof (IBaseType31)].RequiredType));
@@ -594,14 +594,14 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.That (requirers, Has.Member ("mixin '" + expectedRequiringMixin.FullName + "'"));
     }
 
-    private void CheckSomeRequiringCompleteInterface (RequirementDefinitionBase requirement, Type expectedRequiringCompleteInterface)
+    private void CheckSomeRequiringComposedInterface (RequirementDefinitionBase requirement, Type expectedRequiringComposedInterface)
     {
       ArgumentUtility.CheckNotNull ("requirement", requirement);
-      ArgumentUtility.CheckNotNull ("expectedRequiringCompleteInterface", expectedRequiringCompleteInterface);
+      ArgumentUtility.CheckNotNull ("expectedRequiringComposedInterface", expectedRequiringComposedInterface);
 
       var requirers = requirement.GetRequiringEntityDescription ().Split (new[] { ", " }, StringSplitOptions.None);
 
-      Assert.That (requirers, Has.Member ("complete interface '" + expectedRequiringCompleteInterface.FullName + "'"));
+      Assert.That (requirers, Has.Member ("composed interface '" + expectedRequiringComposedInterface.FullName + "'"));
     }
   }
 }

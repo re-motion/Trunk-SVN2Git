@@ -1094,12 +1094,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "Original configuration: ClassContext: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
         + "  Mixins: \r\n"
         + "    MixinContext: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.MixinA' (Extending,Private,Dependencies=())\r\n"
-        + "  CompleteInterfaces: ().\r\n"
+        + "  ComposedInterfaces: ().\r\n"
         + "Active configuration: ClassContext: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
         + "  Mixins: \r\n"
         + "    MixinContext: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.NonDomainObjectMixin' (Extending,Private,Dependencies=())\r\n"
         + "    MixinContext: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.MixinA' (Extending,Private,Dependencies=())\r\n"
-        + "  CompleteInterfaces: ()")]
+        + "  ComposedInterfaces: ()")]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenAnyChanges_EvenToNonPersistentMixins ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order), typeof (MixinA));

@@ -68,7 +68,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     public void FromClassContextComplex ()
     {
       ClassContext context = new ClassContextBuilder (typeof (int))
-          .AddCompleteInterface (typeof (uint))
+          .AddComposedInterface (typeof (uint))
           .AddMixin (typeof (string)).WithDependency (typeof (bool))
           .AddMixin (typeof (double)).WithDependency (typeof (int))
           .BuildClassContext();
@@ -83,7 +83,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     public void FromClassContext_MixinKinds ()
     {
       ClassContext context = new ClassContextBuilder (typeof (int))
-          .AddCompleteInterface (typeof (uint))
+          .AddComposedInterface (typeof (uint))
           .AddMixin (typeof (string)).OfKind (MixinKind.Extending)
           .AddMixin (typeof (double)).OfKind (MixinKind.Used)
           .BuildClassContext ();
@@ -109,7 +109,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     {
       ClassContext context = new ClassContextBuilder (typeof (int))
           .AddMixin (typeof (double))
-          .AddCompleteInterface (typeof (uint))
+          .AddComposedInterface (typeof (uint))
           .AddMixin (typeof (string)).WithDependency (typeof (bool))
           .BuildClassContext();
 
@@ -124,7 +124,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     public void GetClassContext_MixinKinds ()
     {
       ClassContext context = new ClassContextBuilder (typeof (int))
-          .AddCompleteInterface (typeof (uint))
+          .AddComposedInterface (typeof (uint))
           .AddMixin (typeof (string)).OfKind (MixinKind.Extending)
           .AddMixin (typeof (double)).OfKind (MixinKind.Used)
           .BuildClassContext ();

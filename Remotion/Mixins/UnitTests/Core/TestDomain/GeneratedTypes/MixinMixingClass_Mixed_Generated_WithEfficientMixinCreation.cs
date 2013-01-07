@@ -49,8 +49,8 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain.GeneratedTypes
           MemberVisibility.Private,
           explicitDependencies,
           new MixinContextOrigin ("some kind", Assembly.Load ("mscorlib"), "some location"));
-      Type[] completeInterfaces = new Type[0];
-      __classContext = new ClassContext(typeof(MixinMixingClass), mixins, completeInterfaces);
+      Type[] composedInterfaces = new Type[0];
+      __classContext = new ClassContext(typeof(MixinMixingClass), mixins, composedInterfaces);
       Type[] expectedMixinTypes = new Type[] { typeof(MixinMixingMixin) };
       __mixinArrayInitializer = new MixinArrayInitializer(typeof(MixinMixingClass), expectedMixinTypes);
     }

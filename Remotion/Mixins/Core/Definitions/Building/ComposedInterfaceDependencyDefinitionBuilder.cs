@@ -21,20 +21,20 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Definitions.Building
 {
   /// <summary>
-  /// Builds <see cref="CompleteInterfaceDependencyDefinition"/> objects, for when a target class has a complete interface.
+  /// Builds <see cref="ComposedInterfaceDependencyDefinition"/> objects, for when a target class has a composed interface.
   /// </summary>
-  public class CompleteInterfaceDependencyDefinitionBuilder : DependencyDefinitionBuilderBase
+  public class ComposedInterfaceDependencyDefinitionBuilder : DependencyDefinitionBuilderBase
   {
     private readonly TargetClassDefinition _targetClass;
-    private readonly Type _completeInterface;
+    private readonly Type _composedInterface;
 
-    public CompleteInterfaceDependencyDefinitionBuilder (TargetClassDefinition targetClass, Type completeInterface)
+    public ComposedInterfaceDependencyDefinitionBuilder (TargetClassDefinition targetClass, Type composedInterface)
     {
       ArgumentUtility.CheckNotNull ("targetClass", targetClass);
-      ArgumentUtility.CheckNotNull ("completeInterface", completeInterface);
+      ArgumentUtility.CheckNotNull ("composedInterface", composedInterface);
 
       _targetClass = targetClass;
-      _completeInterface = completeInterface;
+      _composedInterface = composedInterface;
     }
 
     protected override RequirementDefinitionBase GetRequirement (Type type)
@@ -54,13 +54,13 @@ namespace Remotion.Mixins.Definitions.Building
 
     protected override DependencyDefinitionBase CreateDependency (RequirementDefinitionBase requirement, DependencyDefinitionBase aggregator)
     {
-      return new CompleteInterfaceDependencyDefinition ((RequiredTargetCallTypeDefinition) requirement, _completeInterface, aggregator);
+      return new ComposedInterfaceDependencyDefinition ((RequiredTargetCallTypeDefinition) requirement, _composedInterface, aggregator);
     }
 
     protected override void AddDependency (DependencyDefinitionBase dependency)
     {
       ArgumentUtility.CheckNotNull ("dependency", dependency);
-      _targetClass.CompleteInterfaceDependencies.Add ((CompleteInterfaceDependencyDefinition) dependency);
+      _targetClass.ComposedInterfaceDependencies.Add ((ComposedInterfaceDependencyDefinition) dependency);
     }
   }
 }

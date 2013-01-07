@@ -81,12 +81,12 @@ namespace Remotion.Mixins.UnitTests.Core
       return mixinDependency;
     }
 
-    public static CompleteInterfaceDependencyDefinition CreateCompleteInterfaceDependencyDefinition (TargetClassDefinition targetClassDefinition)
+    public static ComposedInterfaceDependencyDefinition CreateComposedInterfaceDependencyDefinition (TargetClassDefinition targetClassDefinition)
     {
       var dependency =
-          new CompleteInterfaceDependencyDefinition (
+          new ComposedInterfaceDependencyDefinition (
               new RequiredTargetCallTypeDefinition (targetClassDefinition, typeof (ISimpleInterface)), typeof (ISimpleInterface), null);
-      PrivateInvoke.InvokeNonPublicMethod (targetClassDefinition.CompleteInterfaceDependencies, "Add", dependency);
+      PrivateInvoke.InvokeNonPublicMethod (targetClassDefinition.ComposedInterfaceDependencies, "Add", dependency);
       return dependency;
     }
 
@@ -284,13 +284,13 @@ namespace Remotion.Mixins.UnitTests.Core
       return TargetClassDefinitionFactory.CreateWithoutValidation (context);
     }
 
-    public static TargetClassDefinition BuildUnvalidatedDefinition (Type baseType, Type[] mixinTypes, Type[] completeInterfaces)
+    public static TargetClassDefinition BuildUnvalidatedDefinition (Type baseType, Type[] mixinTypes, Type[] composedInterfaces)
     {
       ArgumentUtility.CheckNotNull ("baseType", baseType);
       ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
-      ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces);
+      ArgumentUtility.CheckNotNull ("composedInterfaces", composedInterfaces);
 
-      var context = ClassContextObjectMother.Create (baseType, mixinTypes, completeInterfaces);
+      var context = ClassContextObjectMother.Create (baseType, mixinTypes, composedInterfaces);
       return TargetClassDefinitionFactory.CreateWithoutValidation (context);
     }
 

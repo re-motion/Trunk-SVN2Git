@@ -223,7 +223,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage =
-        "The dependency 'ISimpleInterface' (required by complete interface "
+        "The dependency 'ISimpleInterface' (required by composed interface "
         + "'Remotion.Mixins.UnitTests.Core.Definitions.Building.RequiredMethodDefinitionBuilderTest+IDerivedSimpleInterface' on class "
         + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullTarget') is not fulfilled - public or protected method 'System.String Method()' "
         + "could not be found on the target class.")]
@@ -231,7 +231,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       using (MixinConfiguration
           .BuildFromActive ()
-          .ForClass<NullTarget> ().Clear ().AddMixin<NullMixin> ().AddCompleteInterface<IDerivedSimpleInterface> ()
+          .ForClass<NullTarget> ().Clear ().AddMixin<NullMixin> ().AddComposedInterface<IDerivedSimpleInterface> ()
           .EnterScope ())
       {
         DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));

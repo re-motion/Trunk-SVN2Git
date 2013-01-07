@@ -34,8 +34,8 @@ namespace Remotion.Mixins.Definitions
     private readonly UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> _requiredMixinTypes =
         new UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> (t => t.Type);
     
-    private readonly UniqueDefinitionCollection<Type, CompleteInterfaceDependencyDefinition> _completeInterfaceDependencies =
-        new UniqueDefinitionCollection<Type, CompleteInterfaceDependencyDefinition> (d => d.RequiredType.Type);
+    private readonly UniqueDefinitionCollection<Type, ComposedInterfaceDependencyDefinition> _composedInterfaceDependencies =
+        new UniqueDefinitionCollection<Type, ComposedInterfaceDependencyDefinition> (d => d.RequiredType.Type);
     
     private readonly UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> _receivedInterfaces =
         new UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> (i => i.InterfaceType);
@@ -110,9 +110,9 @@ namespace Remotion.Mixins.Definitions
       get { return _requiredTargetCallTypes; }
     }
 
-    public UniqueDefinitionCollection<Type, CompleteInterfaceDependencyDefinition> CompleteInterfaceDependencies
+    public UniqueDefinitionCollection<Type, ComposedInterfaceDependencyDefinition> ComposedInterfaceDependencies
     {
-      get { return _completeInterfaceDependencies; }
+      get { return _composedInterfaceDependencies; }
     }
 
     protected override void ChildSpecificAccept (IDefinitionVisitor visitor)
@@ -125,7 +125,7 @@ namespace Remotion.Mixins.Definitions
       _requiredTargetCallTypes.Accept (visitor);
       _requiredNextCallTypes.Accept (visitor);
       _requiredMixinTypes.Accept (visitor);
-      _completeInterfaceDependencies.Accept (visitor);
+      _composedInterfaceDependencies.Accept (visitor);
     }
 
     public bool HasMixinWithConfiguredType(Type configuredType)

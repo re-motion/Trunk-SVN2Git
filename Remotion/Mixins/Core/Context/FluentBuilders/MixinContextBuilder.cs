@@ -654,61 +654,61 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Adds the given type as a complete interface to the <see cref="ClassContextBuilder.TargetType"/>. A complete interface can contain both members defined by the
+    /// Adds the given type as a composed interface to the <see cref="ClassContextBuilder.TargetType"/>. A composed interface can contain both members defined by the
     /// target class itself and by mixins applied to the class, making it easier to invoke methods and properties on a mixed object without casting.
     /// </summary>
-    /// <param name="interfaceType">The type to collect as a complete interface.</param>
+    /// <param name="interfaceType">The type to collect as a composed interface.</param>
     /// <returns>This object's <see cref="ClassContextBuilder"/> for further configuration of the <see cref="ClassContextBuilder.TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddCompleteInterface (Type interfaceType)
+    public virtual ClassContextBuilder AddComposedInterface (Type interfaceType)
     {
-      return _parent.AddCompleteInterface (interfaceType);
+      return _parent.AddComposedInterface (interfaceType);
     }
 
     /// <summary>
-    /// Adds the given type as a complete interface to the <see cref="ClassContextBuilder.TargetType"/>. A complete interface can contain both members defined by the
+    /// Adds the given type as a composed interface to the <see cref="ClassContextBuilder.TargetType"/>. A composed interface can contain both members defined by the
     /// target class itself and by mixins applied to the class, making it easier to invoke methods and properties on a mixed object without casting.
     /// </summary>
-    /// <typeparam name="TInterface">The type to collect as a complete interface.</typeparam>
+    /// <typeparam name="TInterface">The type to collect as a composed interface.</typeparam>
     /// <returns>This object's <see cref="ClassContextBuilder"/> for further configuration of the <see cref="ClassContextBuilder.TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddCompleteInterface<TInterface> ()
+    public virtual ClassContextBuilder AddComposedInterface<TInterface> ()
     {
-      return _parent.AddCompleteInterface<TInterface> ();
+      return _parent.AddComposedInterface<TInterface> ();
     }
 
     /// <summary>
-    /// Adds the given types as complete interfaces to the <see cref="ClassContextBuilder.TargetType"/>. A complete interface can contain both members defined by the
+    /// Adds the given types as composed interfaces to the <see cref="ClassContextBuilder.TargetType"/>. A composed interface can contain both members defined by the
     /// target class itself and by mixins applied to the class, making it easier to invoke methods and properties on a mixed object without casting.
     /// </summary>
-    /// <param name="interfaceTypes">The types to collect as complete interfaces.</param>
+    /// <param name="interfaceTypes">The types to collect as composed interfaces.</param>
     /// <returns>This object's <see cref="ClassContextBuilder"/> for further configuration of the <see cref="ClassContextBuilder.TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddCompleteInterfaces (params Type[] interfaceTypes)
+    public virtual ClassContextBuilder AddComposedInterfaces (params Type[] interfaceTypes)
     {
-      return _parent.AddCompleteInterfaces (interfaceTypes);
+      return _parent.AddComposedInterfaces (interfaceTypes);
     }
 
     /// <summary>
-    /// Adds the given types as complete interfaces to the <see cref="ClassContextBuilder.TargetType"/>. A complete interface can contain both members defined by the
+    /// Adds the given types as composed interfaces to the <see cref="ClassContextBuilder.TargetType"/>. A composed interface can contain both members defined by the
     /// target class itself and by mixins applied to the class, making it easier to invoke methods and properties on a mixed object without casting.
     /// </summary>
-    /// <typeparam name="TInterface1">The types to collect as complete interfaces.</typeparam>
-    /// <typeparam name="TInterface2">The types to collect as complete interfaces.</typeparam>
+    /// <typeparam name="TInterface1">The types to collect as composed interfaces.</typeparam>
+    /// <typeparam name="TInterface2">The types to collect as composed interfaces.</typeparam>
     /// <returns>This object's <see cref="ClassContextBuilder"/> for further configuration of the <see cref="ClassContextBuilder.TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddCompleteInterfaces<TInterface1, TInterface2> ()
+    public virtual ClassContextBuilder AddComposedInterfaces<TInterface1, TInterface2> ()
     {
-      return _parent.AddCompleteInterfaces<TInterface1, TInterface2> ();
+      return _parent.AddComposedInterfaces<TInterface1, TInterface2> ();
     }
 
     /// <summary>
-    /// Adds the given types as complete interfaces to the <see cref="ClassContextBuilder.TargetType"/>. A complete interface can contain both members defined by the
+    /// Adds the given types as composed interfaces to the <see cref="ClassContextBuilder.TargetType"/>. A composed interface can contain both members defined by the
     /// target class itself and by mixins applied to the class, making it easier to invoke methods and properties on a mixed object without casting.
     /// </summary>
-    /// <typeparam name="TInterface1">The types to collect as complete interfaces.</typeparam>
-    /// <typeparam name="TInterface2">The types to collect as complete interfaces.</typeparam>
-    /// <typeparam name="TInterface3">The types to collect as complete interfaces.</typeparam>
+    /// <typeparam name="TInterface1">The types to collect as composed interfaces.</typeparam>
+    /// <typeparam name="TInterface2">The types to collect as composed interfaces.</typeparam>
+    /// <typeparam name="TInterface3">The types to collect as composed interfaces.</typeparam>
     /// <returns>This object's <see cref="ClassContextBuilder"/> for further configuration of the <see cref="ClassContextBuilder.TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddCompleteInterfaces<TInterface1, TInterface2, TInterface3> ()
+    public virtual ClassContextBuilder AddComposedInterfaces<TInterface1, TInterface2, TInterface3> ()
     {
-      return _parent.AddCompleteInterfaces<TInterface1, TInterface2, TInterface3> ();
+      return _parent.AddComposedInterfaces<TInterface1, TInterface2, TInterface3> ();
     }
 
     /// <summary>

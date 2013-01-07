@@ -30,19 +30,19 @@ namespace Remotion.Mixins
   /// <remarks>
   /// <para>
   /// When a class inherits members provided by mixins, those additional members are only available by casting the class instance to the respective 
-  /// interfaces introduced by the mixins. This can be cumbersome, so the concept of complete
-  /// interfaces was added. A complete interface combines public members of the
-  /// mixed class with members introduced by mixins. The target class members are added to the complete interface either by having the
-  /// complete interface extend an interface also implemented by the target class, or by simply redeclaring the members of the target class on the
-  /// complete interface. The mixin members are added to the complete interface by having the complete interface extend the interfaces 
-  /// introduced by the mixins. For an example, see the documentation for the <see cref="CompleteInterfaceAttribute"/>.
+  /// interfaces introduced by the mixins. This can be cumbersome, so the concept of composed interfaces was added. 
+  /// A composed interface combines public members of the
+  /// mixed class with members introduced by mixins. The target class members are added to the composed interface either by having the
+  /// composed interface extend an interface also implemented by the target class, or by simply redeclaring the members of the target class on the
+  /// composed interface. The mixin members are added to the composed interface by having the composed interface extend the interfaces 
+  /// introduced by the mixins. For an example, see the documentation for the <see cref="ComposedInterfaceAttribute"/>.
   /// </para>
   /// <para>
-  /// While complete interfaces provide easy access to the members added by mixins, they still require one cast (from the target class instance to
-  /// the complete interface). To remove the need for this cast, classes implementing mixin-based composition can use the 
+  /// While composed interfaces provide easy access to the members added by mixins, they still require one cast (from the target class instance to
+  /// the composed interface). To remove the need for this cast, classes implementing mixin-based composition can use the 
   /// <see cref="ComposedObject{TComposedInterface}"/> base class. When a class derives from <see cref="ComposedObject{TComposedInterface}"/>, 
-  /// it defines a complete interface for itself and all
-  /// the mixins it composes via the <see cref="UsesAttribute"/>. That complete interface is called the <typeparamref name="TComposedInterface"/>.
+  /// it defines a composed interface for itself and all
+  /// the mixins it composes via the <see cref="UsesAttribute"/>. That composed interface is called the <typeparamref name="TComposedInterface"/>.
   /// </para>
   /// <para>
   /// The <see cref="ComposedObject{TComposedInterface}"/> base class associates the <typeparamref name="TComposedInterface"/> with the derived class 
@@ -54,7 +54,7 @@ namespace Remotion.Mixins
   /// if this is not the case.
   /// </para>
   /// </remarks>
-  public abstract class ComposedObject<TComposedInterface> : IHasCompleteInterface<TComposedInterface>
+  public abstract class ComposedObject<TComposedInterface> : IHasComposedInterface<TComposedInterface>
       where TComposedInterface: class
   {
     /// <summary>
@@ -83,7 +83,7 @@ namespace Remotion.Mixins
       {
         var message = string.Format (
             "Type '{0}' is not associated with the composed interface '{1}'. You should instantiate the class via the ObjectFactory class or the "
-            + "NewObject method. If you manually created a mixin configuration, don't forget to add the composed interface as a complete interface.",
+            + "NewObject method. If you manually created a mixin configuration, don't forget to add the composed interface.",
             GetType(),
             typeof (TComposedInterface).Name);
         throw new InvalidOperationException (message);

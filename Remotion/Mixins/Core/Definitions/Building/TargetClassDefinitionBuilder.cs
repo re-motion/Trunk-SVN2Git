@@ -61,7 +61,7 @@ namespace Remotion.Mixins.Definitions.Building
       var attributesBuilder = new AttributeDefinitionBuilder (classDefinition);
       attributesBuilder.Apply (classDefinition.Type);
 
-      ApplyCompleteInterfaces (classDefinition, classContext);
+      ApplyComposedInterfaces (classDefinition, classContext);
       ApplyMixins (classDefinition, classContext);
       ApplyMethodRequirements (classDefinition);
 
@@ -71,13 +71,13 @@ namespace Remotion.Mixins.Definitions.Building
       return classDefinition;
     }
 
-    private void ApplyCompleteInterfaces (TargetClassDefinition classDefinition, ClassContext classContext)
+    private void ApplyComposedInterfaces (TargetClassDefinition classDefinition, ClassContext classContext)
     {
-      foreach (Type completeInterface in classContext.CompleteInterfaces)
+      foreach (Type composedInterface in classContext.ComposedInterfaces)
       {
-        var completeInterfaceDependencyDefinitionBuilder = new CompleteInterfaceDependencyDefinitionBuilder (classDefinition, completeInterface);
-        // Apply recursively creates aggregated dependencies for interfaces implemented by completeInterface
-        completeInterfaceDependencyDefinitionBuilder.Apply (new[] { completeInterface });
+        var composedInterfaceDependencyDefinitionBuilder = new ComposedInterfaceDependencyDefinitionBuilder (classDefinition, composedInterface);
+        // Apply recursively creates aggregated dependencies for interfaces implemented by composedInterface
+        composedInterfaceDependencyDefinitionBuilder.Apply (new[] { composedInterface });
       }
     }
 

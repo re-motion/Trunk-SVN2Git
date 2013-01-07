@@ -43,7 +43,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
       var requiredTargetCallTypeDefinition = DefinitionObjectMother.CreateRequiredTargetCallTypeDefinition (targetClassDefinition, typeof (IBT1Mixin1));
       var requiredNextCallTypeDefinition = DefinitionObjectMother.CreateRequiredNextCallTypeDefinition (targetClassDefinition, typeof (IBT1Mixin1));
       var requiredMixinTypeDefinition = DefinitionObjectMother.CreateRequiredMixinTypeDefinition (targetClassDefinition, typeof (BT1Mixin2));
-      var completeInterfaceDependencyDefinition = DefinitionObjectMother.CreateCompleteInterfaceDependencyDefinition (targetClassDefinition);
+      var composedInterfaceDependencyDefinition = DefinitionObjectMother.CreateComposedInterfaceDependencyDefinition (targetClassDefinition);
 
       var visitorMock = MockRepository.GenerateMock<IDefinitionVisitor> ();
       using (visitorMock.GetMockRepository ().Ordered ())
@@ -53,7 +53,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
         visitorMock.Expect (mock => mock.Visit (requiredTargetCallTypeDefinition));
         visitorMock.Expect (mock => mock.Visit (requiredNextCallTypeDefinition));
         visitorMock.Expect (mock => mock.Visit (requiredMixinTypeDefinition));
-        visitorMock.Expect (mock => mock.Visit (completeInterfaceDependencyDefinition));
+        visitorMock.Expect (mock => mock.Visit (composedInterfaceDependencyDefinition));
       }
 
       visitorMock.Replay ();

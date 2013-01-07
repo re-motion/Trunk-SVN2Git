@@ -22,26 +22,26 @@ using System.Linq;
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {
   /// <summary>
-  /// Analyzes <see cref="IHasCompleteInterface{TInterface}"/> markers implemented by a type and applies the respective configuration information
+  /// Analyzes <see cref="IHasComposedInterface{TInterface}"/> markers implemented by a type and applies the respective configuration information
   /// to the <see cref="MixinConfigurationBuilder"/>.
   /// </summary>
-  public class HasCompleteInterfaceMarkerAnalyzer : IMixinDeclarationAnalyzer<Type>
+  public class HasComposedInterfaceMarkerAnalyzer : IMixinDeclarationAnalyzer<Type>
   {
     public void Analyze (Type type, MixinConfigurationBuilder configurationBuilder)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
 
-      var completeInterfaceMarkers = (from ifc in type.GetInterfaces()
+      var composedInterfaceMarkers = (from ifc in type.GetInterfaces()
                                       where ifc.IsGenericType
                                       let genericTypeDef = ifc.GetGenericTypeDefinition()
-                                      where genericTypeDef == typeof (IHasCompleteInterface<>)
-                                      let completeInterfaceType = ifc.GetGenericArguments ().Single ()
-                                      where !completeInterfaceType.ContainsGenericParameters
-                                      select completeInterfaceType).ToArray();
+                                      where genericTypeDef == typeof (IHasComposedInterface<>)
+                                      let composedInterface = ifc.GetGenericArguments ().Single ()
+                                      where !composedInterface.ContainsGenericParameters
+                                      select composedInterface).ToArray();
 
-      if (completeInterfaceMarkers.Length > 0)
-        configurationBuilder.ForClass (type).AddCompleteInterfaces (completeInterfaceMarkers);
+      if (composedInterfaceMarkers.Length > 0)
+        configurationBuilder.ForClass (type).AddComposedInterfaces (composedInterfaceMarkers);
     }
   }
 }

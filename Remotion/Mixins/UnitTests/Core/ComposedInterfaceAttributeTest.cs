@@ -23,7 +23,7 @@ using Rhino.Mocks;
 namespace Remotion.Mixins.UnitTests.Core
 {
   [TestFixture]
-  public class CompleteInterfaceAttributeTest
+  public class ComposedInterfaceAttributeTest
   {
     private MockRepository _mockRepository;
     private MixinConfigurationBuilder _configurationBuilderMock;
@@ -38,18 +38,18 @@ namespace Remotion.Mixins.UnitTests.Core
     [Test]
     public void IgnoresDuplicates ()
     {
-      var attribute = new CompleteInterfaceAttribute (typeof (string));
+      var attribute = new ComposedInterfaceAttribute (typeof (string));
       Assert.That (attribute.IgnoresDuplicates, Is.False);
     }
 
     [Test]
     public void Apply ()
     {
-      var attribute = new CompleteInterfaceAttribute (typeof (string));
+      var attribute = new ComposedInterfaceAttribute (typeof (string));
       ClassContextBuilder classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_configurationBuilderMock, typeof (string));
 
       _configurationBuilderMock.Expect (mock => mock.ForClass (typeof (string))).Return (classBuilderMock);
-      classBuilderMock.Expect (mock => mock.AddCompleteInterface (typeof (IServiceProvider))).Return (classBuilderMock);
+      classBuilderMock.Expect (mock => mock.AddComposedInterface (typeof (IServiceProvider))).Return (classBuilderMock);
 
       _mockRepository.ReplayAll();
       attribute.Apply (_configurationBuilderMock, typeof (IServiceProvider));

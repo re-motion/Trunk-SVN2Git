@@ -71,20 +71,20 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     }
 
     [Test]
-    public void CompleteInterfaces_Empty()
+    public void ComposedInterfaces_Empty()
     {
       var context = new ClassContext (typeof (BaseType5), new MixinContext[0], new Type[0]);
-      Assert.That (context.CompleteInterfaces.Count, Is.EqualTo (0));
-      Assert.That (context.CompleteInterfaces, Is.Empty);
+      Assert.That (context.ComposedInterfaces.Count, Is.EqualTo (0));
+      Assert.That (context.ComposedInterfaces, Is.Empty);
     }
 
     [Test]
-    public void CompleteInterfaces_NonEmpty ()
+    public void ComposedInterfaces_NonEmpty ()
     {
       var context = new ClassContext (typeof (BaseType5), new MixinContext[0], new[] { typeof (IBT5MixinC1) });
-      Assert.That (context.CompleteInterfaces.Count, Is.EqualTo (1));
-      Assert.That (context.CompleteInterfaces, Has.Member (typeof (IBT5MixinC1)));
-      Assert.That (context.CompleteInterfaces, Has.Member (typeof (IBT5MixinC1)));
+      Assert.That (context.ComposedInterfaces.Count, Is.EqualTo (1));
+      Assert.That (context.ComposedInterfaces, Has.Member (typeof (IBT5MixinC1)));
+      Assert.That (context.ComposedInterfaces, Has.Member (typeof (IBT5MixinC1)));
     }
 
     [Test]
@@ -102,7 +102,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     }
 
     [Test]
-    public void IsEmpty_False_CompleteInterfaces ()
+    public void IsEmpty_False_ComposedInterfaces ()
     {
       var context = new ClassContext (typeof (BaseType1), new MixinContext[0], new[] { typeof (ICBT6Mixin3) });
       Assert.That (context.IsEmpty (), Is.False);
@@ -117,10 +117,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     }
 
     [Test]
-    public void DuplicateCompleteInterfacesAreIgnored ()
+    public void DuplicateComposedInterfacesAreIgnored ()
     {
       var context = new ClassContext (typeof (BaseType5), new MixinContext[0], new[] { typeof (IBT5MixinC1), typeof (IBT5MixinC1) });
-      Assert.That (context.CompleteInterfaces.Count, Is.EqualTo (1));
+      Assert.That (context.ComposedInterfaces.Count, Is.EqualTo (1));
     }
 
     [Test]
@@ -174,7 +174,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
 
       Assert.That (clone, Is.Not.EqualTo (source));
       Assert.That(clone.Mixins, Is.EquivalentTo(mixins));
-      Assert.That (clone.CompleteInterfaces, Is.EquivalentTo (interfaces));
+      Assert.That (clone.ComposedInterfaces, Is.EquivalentTo (interfaces));
       Assert.That (clone.Type, Is.EqualTo (typeof (BaseType2)));
       Assert.That (source.Type, Is.EqualTo (typeof (BaseType1)));
     }
@@ -235,7 +235,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     }
 
     [Test]
-    public void Equals_False_CompleteInterfaces ()
+    public void Equals_False_ComposedInterfaces ()
     {
       var c1 =
           new ClassContext (
@@ -300,7 +300,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
 
       serializer.AssertWasCalled (mock => mock.AddClassType (context.Type));
       serializer.AssertWasCalled (mock => mock.AddMixins (context.Mixins));
-      serializer.AssertWasCalled (mock => mock.AddCompleteInterfaces (context.CompleteInterfaces));
+      serializer.AssertWasCalled (mock => mock.AddComposedInterfaces (context.ComposedInterfaces));
     }
 
     [Test]
@@ -311,7 +311,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var deserializer = MockRepository.GenerateMock<IClassContextDeserializer> ();
       deserializer.Expect (mock => mock.GetClassType ()).Return (expectedContext.Type);
       deserializer.Expect (mock => mock.GetMixins ()).Return (expectedContext.Mixins);
-      deserializer.Expect (mock => mock.GetCompleteInterfaces ()).Return (expectedContext.CompleteInterfaces);
+      deserializer.Expect (mock => mock.GetComposedInterfaces ()).Return (expectedContext.ComposedInterfaces);
 
       var context = ClassContext.Deserialize (deserializer);
 
@@ -383,7 +383,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
                   new[] { typeof (decimal), typeof (byte) },
                   originalMixinContext3.Origin)
           },
-          originalClassContext.CompleteInterfaces);
+          originalClassContext.ComposedInterfaces);
       Assert.That (result, Is.EqualTo (expectedResult));
 
       Assert.That (originalClassContext.Mixins[typeof (string)].ExplicitDependencies, Has.No.Member (typeof (float)), "Original is not changed");
@@ -435,7 +435,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
                   new[] { typeof (double), typeof (byte) },
                   originalMixinContext2.Origin)
           },
-          originalClassContext.CompleteInterfaces);
+          originalClassContext.ComposedInterfaces);
       Assert.That (result, Is.EqualTo (expectedResult));
     }
 

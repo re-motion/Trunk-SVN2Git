@@ -139,14 +139,14 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
-    public void Build_AddsCompleteInterfaces ()
+    public void Build_AddsComposedInterfaces ()
     {
       var classContext = ClassContextObjectMother.Create (typeof (BaseType6), new[] { typeof (BT6Mixin1) }, new[] { typeof (ICBT6Mixin1) });
       var targetClassDefinition = _builder.Build (classContext);
 
-      Assert.That (targetClassDefinition.CompleteInterfaceDependencies[typeof (ICBT6Mixin1)], Is.Not.Null);
+      Assert.That (targetClassDefinition.ComposedInterfaceDependencies[typeof (ICBT6Mixin1)], Is.Not.Null);
       
-      var requirement = targetClassDefinition.CompleteInterfaceDependencies[typeof (ICBT6Mixin1)].RequiredType;
+      var requirement = targetClassDefinition.ComposedInterfaceDependencies[typeof (ICBT6Mixin1)].RequiredType;
       Assert.That (requirement, Is.Not.Null);
       Assert.That (targetClassDefinition.RequiredTargetCallTypes, Has.Member (requirement));
     }

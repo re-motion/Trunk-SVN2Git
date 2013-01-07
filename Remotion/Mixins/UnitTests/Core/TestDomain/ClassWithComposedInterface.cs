@@ -14,19 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Mixins.Definitions;
-
-namespace Remotion.Mixins.Validation.Rules
+namespace Remotion.Mixins.UnitTests.Core.TestDomain
 {
-  /// <summary>
-  /// Holds the validation rules for <see cref="CompleteInterfaceDependencyDefinition"/> objects.
-  /// </summary>
-  public class DefaultCompleteInterfaceDependencyRules : RuleSetBase
+  [Uses (typeof (MixinImplementingSimpleInterface))]
+  public class ClassWithComposedInterface
   {
-    public override void Install (ValidatingVisitor visitor)
+    [ComposedInterface (typeof (ClassWithComposedInterface))]
+    public interface IComposedInterface : ISimpleInterface
     {
-      // no rules ATM
+      string M1 ();
+    }
+
+    public string M1()
+    {
+      return "ClassWithComposedInterface.M1";
     }
   }
 }

@@ -20,22 +20,22 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Definitions
 {
   /// <summary>
-  /// Represents the dependency on an interface added to a target class via a complete interface specification.
+  /// Represents the dependency on an interface added to a target class via a composed interface specification.
   /// </summary>
-  public class CompleteInterfaceDependencyDefinition : DependencyDefinitionBase
+  public class ComposedInterfaceDependencyDefinition : DependencyDefinitionBase
   {
-    private readonly Type _completeInterface;
+    private readonly Type _composedInterface;
 
-    public CompleteInterfaceDependencyDefinition (RequiredTargetCallTypeDefinition requirement, Type completeInterface, DependencyDefinitionBase aggregator)
+    public ComposedInterfaceDependencyDefinition (RequiredTargetCallTypeDefinition requirement, Type composedInterface, DependencyDefinitionBase aggregator)
         : base (requirement, aggregator)
     {
-      ArgumentUtility.CheckNotNull ("completeInterface", completeInterface);
-      _completeInterface = completeInterface;
+      ArgumentUtility.CheckNotNull ("composedInterface", composedInterface);
+      _composedInterface = composedInterface;
     }
 
-    public Type CompleteInterface
+    public Type ComposedInterface
     {
-      get { return _completeInterface; }
+      get { return _composedInterface; }
     }
 
     public new RequiredTargetCallTypeDefinition RequiredType
@@ -50,7 +50,7 @@ namespace Remotion.Mixins.Definitions
 
     public override string GetDependencyDescription ()
     {
-      return string.Format ("complete interface '{0}'", _completeInterface);
+      return string.Format ("composed interface '{0}'", _composedInterface);
     }
 
     public override void Accept (IDefinitionVisitor visitor)
