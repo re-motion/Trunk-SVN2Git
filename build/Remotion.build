@@ -197,4 +197,20 @@
                 ConfigurationID=Debug;"/>
   </Target>
   
+  <Target Name="DependDB" DependsOnTargets="CheckVersion">
+    <MSBuild Projects="%(AllPackages.PackageDeclaration)"
+             BuildInParallel="false"
+             Targets="CreateDependDBPackages;UploadToDependDB"
+             Properties="SolutionDirectory=$(SolutionDirectory);
+                         BinariesDirectory=$(BinariesDirectory);
+                         OutputDirectory=$(OutputDirectory);
+                         ArchiveDirectory=$(ArchiveDirectory);
+                         TempDirectory=$(TempDirectory);
+                         Version=$(Version);
+                         DependDBProjectBranch=$(DependDBProjectBranch);
+                         DependDBProjectVersion=$(DependDBProjectVersion);
+                         DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
+                         DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);"/>
+  </Target>
+  
 </Project>
