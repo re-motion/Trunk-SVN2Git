@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     private EditMode _editMode = EditMode.None;
     private List<string> _editedRowIDs;
-    //private List<string> _newRowIDs;
+    private List<BocListRow> _newRows;
     private bool _isEditNewRow;
 
     private bool _isEditModeRestored;
@@ -331,7 +331,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       }
 
       _editedRowIDs.RemoveAll (missingRowIDs.Contains);
-
+      
+      _newRows = new List<BocListRow>();
       if (IsListEditModeActive && _editedRowIDs.Count < _editModeHost.Value.Count)
       {
         var availableRows = _editModeHost.Value.Cast<IBusinessObject>().Select ((o, i) => new BocListRow (i, o));
@@ -342,6 +343,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
         {
           _editedRowIDs.Add (_editModeHost.RowIDProvider.GetItemRowID (row));
           AddRowToDataStructure (row, columns);
+          _newRows.Add (row);
         }
       }
     }
@@ -361,8 +363,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     private void LoadValues (bool interim)
     {
-      for (int i = 0; i < _rows.Count; i++)
-        _rows[i].GetDataSource().LoadValues (interim);
+      var newRows = _newRows.ToDictionary (r => r.BusinessObject);
+      foreach (var dataSource in _rows.Select (r => r.GetDataSource()))
+        dataSource.LoadValues (interim && !newRows.ContainsKey (dataSource.BusinessObject));
+      _newRows.Clear();
     }
 
     public void EnsureEditModeRestored (BocColumnDefinition[] columns)

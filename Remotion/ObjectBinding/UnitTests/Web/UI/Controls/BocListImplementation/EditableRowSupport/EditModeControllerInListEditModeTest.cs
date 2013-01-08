@@ -448,7 +448,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void EnsureEditModeRestored_CallsLoadValueWithInterimTrue()
     {
-      var dataSourceStub = MockRepository.GenerateMock<IBusinessObjectReferenceDataSource>();
+      var dataSourceStub = MockRepository.GenerateStub<IBusinessObjectReferenceDataSource>();
+      dataSourceStub.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
       EditModeHost.EditModeDataSourceFactory = MockRepository.GenerateStub<EditableRowDataSourceFactory>();
       EditModeHost.EditModeDataSourceFactory
                   .Stub (_ => _.Create (Arg<IBusinessObject>.Is.Anything))
@@ -462,6 +463,29 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Assert.That (Controller.IsListEditModeActive, Is.True);
 
       dataSourceStub.AssertWasCalled (_ => _.LoadValues (true), mo => mo.Repeat.Times (EditModeHost.Value.Count));
+    }
+
+    [Test]
+    public void EnsureEditModeRestored_CallsLoadValueWithInterimTrue_ForAddedRow()
+    {
+      var addedBusinessObject = (IBusinessObject) EditModeHost.Value[2];
+      var dataSourceStub = MockRepository.GenerateStub<IBusinessObjectReferenceDataSource>();
+      dataSourceStub.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
+      var addedRowDataSourceStub = MockRepository.GenerateStub<IBusinessObjectReferenceDataSource>();
+      addedRowDataSourceStub.BusinessObject =addedBusinessObject;
+      EditModeHost.EditModeDataSourceFactory = MockRepository.GenerateStub<EditableRowDataSourceFactory>();
+      EditModeHost.EditModeDataSourceFactory.Stub (_ => _.Create (addedBusinessObject)).Return (addedRowDataSourceStub);
+      EditModeHost.EditModeDataSourceFactory.Stub (_ => _.Create (Arg<IBusinessObject>.Is.NotSame (addedBusinessObject))).Return (dataSourceStub);
+
+      Assert.That (Controller.IsListEditModeActive, Is.False);
+      ControllerInvoker.LoadControlState (CreateControlState (null, EditMode.ListEditMode, new List<string> { "0", "1", "3", "4" }, false));
+      Assert.That (Controller.IsListEditModeActive, Is.True);
+
+      Controller.EnsureEditModeRestored (Columns);
+      Assert.That (Controller.IsListEditModeActive, Is.True);
+
+      dataSourceStub.AssertWasCalled (_ => _.LoadValues (true), mo => mo.Repeat.Times (EditModeHost.Value.Count - 1));
+      addedRowDataSourceStub.AssertWasCalled (_ => _.LoadValues (false), mo => mo.Repeat.Times (1));
     }
 
     [Test]
