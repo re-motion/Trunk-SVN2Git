@@ -31,6 +31,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
   {
     private MockRepository _mockRepository;
     private ChildTransactionStrategy _strategy;
+    private ITransaction _parentTransactionMock;
     private ITransaction _childTransactionMock;
     private IWxeFunctionExecutionContext _executionContextStub;
     private TransactionStrategyBase _outerTransactionStrategyMock;
@@ -44,15 +45,17 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       WxeContextFactory wxeContextFactory = new WxeContextFactory ();
       _context = wxeContextFactory.CreateContext (new TestFunction ());
       _outerTransactionStrategyMock = _mockRepository.StrictMock<TransactionStrategyBase> ();
+      _parentTransactionMock = _mockRepository.StrictMock<ITransaction>();
       _childTransactionMock = _mockRepository.StrictMock<ITransaction> ();
       _executionContextStub = _mockRepository.Stub<IWxeFunctionExecutionContext> ();
       _executionListenerStub = _mockRepository.Stub<IWxeFunctionExecutionListener> ();
      
       _executionContextStub.Stub (stub => stub.GetInParameters ()).Return (new object[0]);
+      _parentTransactionMock.Stub (stub => stub.CreateChild()).Return (_childTransactionMock);
       _childTransactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
       _mockRepository.ReplayAll ();
 
-      _strategy = new ChildTransactionStrategy (true, _childTransactionMock, _outerTransactionStrategyMock, _executionContextStub);
+      _strategy = new ChildTransactionStrategy (true, _outerTransactionStrategyMock, _parentTransactionMock, _executionContextStub);
       
       _mockRepository.BackToRecordAll();
     }

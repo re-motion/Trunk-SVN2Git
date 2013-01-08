@@ -25,8 +25,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   public class ChildTransactionStrategy : ScopedTransactionStrategyBase
   {
     public ChildTransactionStrategy (
-        bool autoCommit, ITransaction transaction, TransactionStrategyBase outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
-        : base (autoCommit, transaction, outerTransactionStrategy, executionContext)
+        bool autoCommit, TransactionStrategyBase outerTransactionStrategy, ITransaction parentTransaction, IWxeFunctionExecutionContext executionContext)
+      : base (autoCommit, parentTransaction.CreateChild, outerTransactionStrategy, executionContext)
     {
     }
 

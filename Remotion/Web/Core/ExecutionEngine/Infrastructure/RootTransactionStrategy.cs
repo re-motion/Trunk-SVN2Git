@@ -25,8 +25,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   public class RootTransactionStrategy : ScopedTransactionStrategyBase
   {
     public RootTransactionStrategy (
-        bool autoCommit, ITransaction transaction, TransactionStrategyBase outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
-      : base (autoCommit, transaction, outerTransactionStrategy, executionContext)
+        bool autoCommit, Func<ITransaction> transactionFactory, TransactionStrategyBase outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
+      : base (autoCommit, transactionFactory, outerTransactionStrategy, executionContext)
     {
     }
 

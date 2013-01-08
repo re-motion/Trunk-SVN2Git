@@ -108,7 +108,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       _transactionMock.Replay();
 
       var strategy = MockRepository.PartialMock<ScopedTransactionStrategyBase> (
-          autoCommit, TransactionMock, parentTransactionStrategy, _executionContextMock);
+          autoCommit, (Func<ITransaction>) (() => TransactionMock), parentTransactionStrategy, _executionContextMock);
       strategy.Replay();
 
       SetChild (strategy, ChildTransactionStrategyMock);

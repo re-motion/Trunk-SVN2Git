@@ -39,14 +39,15 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     {
       WxeContextFactory wxeContextFactory = new WxeContextFactory();
       _wxeContext = wxeContextFactory.CreateContext (new TestFunction());
-      ITransaction transactionMock = MockRepository.GenerateMock<ITransaction>();
       TransactionStrategyBase outerTransactionStrategyStub = MockRepository.GenerateStub<TransactionStrategyBase>();
       IWxeFunctionExecutionContext executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext>();
       executionContextStub.Stub (stub => stub.GetInParameters()).Return (new object[0]);
 
-      _childTransactionMock = transactionMock;
+      _childTransactionMock = MockRepository.GenerateMock<ITransaction>();
+      var parentTransactionStub = MockRepository.GenerateStub<ITransaction>();
+      parentTransactionStub.Stub (stub => stub.CreateChild()).Return (_childTransactionMock);
       _transactionStrategyMock = MockRepository.GenerateMock<ChildTransactionStrategy> (
-          false, _childTransactionMock, outerTransactionStrategyStub, executionContextStub);
+          false, outerTransactionStrategyStub, parentTransactionStub, executionContextStub);
 
       _innerListenerMock = MockRepository.GenerateMock<IWxeFunctionExecutionListener>();
       _transactionListener = new ChildTransactionExecutionListener (_transactionStrategyMock, _innerListenerMock);

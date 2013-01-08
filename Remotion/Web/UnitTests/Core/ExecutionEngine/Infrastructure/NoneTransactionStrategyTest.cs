@@ -94,13 +94,17 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       var childExecutionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext>();
       childExecutionContextStub.Stub (stub => stub.GetInParameters()).Return (new object[0]);
 
-      ChildTransactionStrategy expected = new ChildTransactionStrategy (
-          false, MockRepository.GenerateStub<ITransaction>(), grandParentTransactionStrategyMock, childExecutionContextStub);
+      var fakeParentTransaction = MockRepository.GenerateStub<ITransaction>();
+      fakeParentTransaction.Stub (stub => stub.CreateChild()).Return (MockRepository.GenerateStub<ITransaction>());
+      var fakeChildTransactionStrategy = new ChildTransactionStrategy (
+          false, grandParentTransactionStrategyMock, fakeParentTransaction, childExecutionContextStub);
 
-      grandParentTransactionStrategyMock.Expect (mock => mock.CreateChildTransactionStrategy (true, childExecutionContextStub, _context)).Return (expected);
+      grandParentTransactionStrategyMock
+          .Expect (mock => mock.CreateChildTransactionStrategy (true, childExecutionContextStub, _context))
+          .Return (fakeChildTransactionStrategy);
       
       TransactionStrategyBase actual = noneTransactionStrategy.CreateChildTransactionStrategy (true, childExecutionContextStub, _context);
-      Assert.That (actual, Is.SameAs (expected));
+      Assert.That (actual, Is.SameAs (fakeChildTransactionStrategy));
     }
 
     [Test]

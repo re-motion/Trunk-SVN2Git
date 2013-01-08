@@ -38,7 +38,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       _executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext>();
       _executionContextStub.Stub (stub => stub.GetInParameters()).Return (new object[0]);
 
-      _strategy = new RootTransactionStrategy (true, _transactionMock, _outerTransactionStrategyStub, _executionContextStub);
+      _strategy = new RootTransactionStrategy (true, () => _transactionMock, _outerTransactionStrategyStub, _executionContextStub);
     }
 
     [Test]

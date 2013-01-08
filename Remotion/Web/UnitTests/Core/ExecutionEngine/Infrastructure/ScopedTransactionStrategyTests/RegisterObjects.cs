@@ -47,7 +47,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
+      new RootTransactionStrategy (false, () => TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
 
       MockRepository.VerifyAll();
     }
@@ -65,7 +65,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
+      new RootTransactionStrategy (false, () => TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
 
       MockRepository.VerifyAll();
     }
@@ -84,7 +84,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
+      new RootTransactionStrategy (false, () => TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
 
       MockRepository.VerifyAll();
     }
@@ -103,7 +103,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
+      new RootTransactionStrategy (false, () => TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
 
       MockRepository.VerifyAll();
     }

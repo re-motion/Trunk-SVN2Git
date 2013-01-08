@@ -41,7 +41,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       TransactionMock.Replay();
 
       _strategy = MockRepository.PartialMock<ScopedTransactionStrategyBase> (
-          true, TransactionMock, OuterTransactionStrategyMock, ExecutionContextMock);
+          true, (Func<ITransaction>) (() => TransactionMock), OuterTransactionStrategyMock, ExecutionContextMock);
       _strategy.Replay();
 
       ExecutionContextMock.BackToRecord();
