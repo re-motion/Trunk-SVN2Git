@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class ClientTransactionWrapper : ITransaction
   {
-    private ClientTransaction _wrappedInstance;
+    private readonly ClientTransaction _wrappedInstance;
 
     protected internal ClientTransactionWrapper (ClientTransaction wrappedInstance)
     {
@@ -44,7 +44,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <typeparam name="TTransaction">The type of the transaction abstracted by this instance.</typeparam>
     public TTransaction To<TTransaction> ()
     {
+// ReSharper disable NotResolvedInText - We use the generic parameter on purpose.
       ArgumentUtility.CheckTypeIsAssignableFrom ("TTransaction", typeof (TTransaction), typeof (ClientTransaction));
+// ReSharper restore NotResolvedInText
       return (TTransaction) (object) _wrappedInstance;
     }
 
@@ -140,26 +142,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var domainObjects = objects.OfType<DomainObject>().Distinct();
       _wrappedInstance.EnlistDomainObjects (domainObjects);
-    }
-
-    public virtual void Reset ()
-    {
-      if (!_wrappedInstance.IsActive)
-      {
-        throw new InvalidOperationException (
-            "The transaction cannot be reset as it is read-only. The reason might be an open child transaction.");
-      }
-
-      if (_wrappedInstance.HasChanged ())
-      {
-        throw new InvalidOperationException (
-            "The transaction cannot be reset as it is in a dirty state and needs to be committed or rolled back.");
-      }
-
-      _wrappedInstance.Discard ();
-#pragma warning disable 618 // Disable obsolete warning.
-      _wrappedInstance = _wrappedInstance.CreateEmptyTransactionOfSameType (true);
-#pragma warning restore 618
     }
   }
 }

@@ -83,9 +83,15 @@ namespace Remotion.Data
     /// <param name="objects">The objects to be registered. Must not be <see langword="null" />.</param>
     /// <remarks>If the type of of of the objects is not supported by the transaction, the object must be ignored.</remarks>
     void RegisterObjects (IEnumerable objects);
+  }
 
-    /// <summary>Resets the transaction.</summary>
-    /// <remarks>Performs an operation that is logically equivalent to replacing the transaction with a new transaction.</remarks>
-    void Reset ();
+  public static class ObsoleteMethods
+  {
+    [Obsolete ("This method has been removed. To reset the transaction of a WxeFunction, use WxeFunction.Transaction.Reset. "
+        + "To reset another ClientTransaction, discard the old transaction and create a new one. (1.13.182.0)", true)]
+    public static void Reset (this ITransaction transaction)
+    {
+      throw new NotImplementedException();
+    }
   }
 }
