@@ -210,7 +210,8 @@
                          DependDBProjectBranch=$(DependDBProjectBranch);
                          DependDBProjectVersion=$(DependDBProjectVersion);
                          DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
-                         DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);"/>
+                         DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
+                         DependDBUploadPath=$(DependDBUploadPath)"/>
   </Target>
   
 </Project>
