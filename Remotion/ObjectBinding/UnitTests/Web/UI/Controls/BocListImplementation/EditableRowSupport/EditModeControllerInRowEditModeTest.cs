@@ -22,6 +22,7 @@ using NUnit.Framework;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.EditableRowSupport
 {
@@ -638,6 +639,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Controller.EnsureEditModeRestored (Columns);
     }
 
+    [Test]
+    public void EnsureEditModeRestored_CallsLoadValueWithInterimTrue ()
+    {
+      var editedObject = (IBusinessObject) EditModeHost.Value[2];
+      var dataSourceStub = MockRepository.GenerateStub<IBusinessObjectReferenceDataSource>();
+      dataSourceStub.BusinessObject = editedObject;
+      EditModeHost.EditModeDataSourceFactory = MockRepository.GenerateStub<EditableRowDataSourceFactory>();
+      EditModeHost.EditModeDataSourceFactory.Stub (_ => _.Create (editedObject)).Return (dataSourceStub);
+
+      Assert.That (Controller.IsRowEditModeActive, Is.False);
+      ControllerInvoker.LoadControlState (CreateControlState (null, EditMode.RowEditMode, new List<string> { "2" }, false));
+      Assert.That (Controller.IsRowEditModeActive, Is.True);
+
+      Controller.EnsureEditModeRestored (Columns);
+      Assert.That (Controller.IsRowEditModeActive, Is.True);
+
+      dataSourceStub.AssertWasCalled (_ => _.LoadValues (true));
+    }
 
     [Test]
     public void AddRows ()
