@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    public void Reset_InvalidVariables_AndOtherObjects_AreKeptInvalid ()
+    public void Reset_InvalidVariables_AndOtherObjects_AreNotKeptInvalid ()
     {
       ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
@@ -141,10 +141,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
         f.Transaction.Reset ();
 
         Assert.That (ClientTransaction.Current.IsEnlisted (invalidVariable), Is.True);
-        Assert.That (invalidVariable.IsInvalid, Is.True);
+        Assert.That (invalidVariable.IsInvalid, Is.False);
 
-        Assert.That (ClientTransaction.Current.IsEnlisted (invalidNonVariable), Is.True);
-        Assert.That (invalidNonVariable.IsInvalid, Is.True);
+        Assert.That (ClientTransaction.Current.IsEnlisted (invalidNonVariable), Is.False);
       });
     }
   }

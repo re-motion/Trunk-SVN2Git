@@ -28,8 +28,14 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
 {
   public class ScopedTransactionStrategyTestBase
   {
+    public interface ITransactionFactory
+    {
+      ITransaction Create ();
+    }
+
     private IWxeFunctionExecutionListener _executionListenerStub;
     private ITransactionScope _scopeMock;
+    private ITransactionFactory _transactionFactoryMock;
     private ITransaction _transactionMock;
     private TransactionStrategyBase _outerTransactionStrategyMock;
     private WxeContext _context;
@@ -45,49 +51,58 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
 
       _mockRepository = new MockRepository();
       _executionListenerStub = MockRepository.Stub<IWxeFunctionExecutionListener>();
+      
+      _transactionFactoryMock = MockRepository.StrictMock<ITransactionFactory>();
       _transactionMock = MockRepository.StrictMock<ITransaction>();
-      _scopeMock = MockRepository.StrictMock<ITransactionScope>();
+      _transactionFactoryMock.Stub (stub => stub.Create ()).Return (_transactionMock);
+
+      _scopeMock = MockRepository.StrictMock<ITransactionScope> ();
       _executionContextMock = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
       _outerTransactionStrategyMock = MockRepository.StrictMock<TransactionStrategyBase>();
       _childTransactionStrategyMock = MockRepository.StrictMock<TransactionStrategyBase> ();
     }
 
-    public MockRepository MockRepository
+    protected MockRepository MockRepository
     {
       get { return _mockRepository; }
     }
 
-    public WxeContext Context
+    protected WxeContext Context
     {
       get { return _context; }
     }
 
-    public TransactionStrategyBase OuterTransactionStrategyMock
+    protected TransactionStrategyBase OuterTransactionStrategyMock
     {
       get { return _outerTransactionStrategyMock; }
     }
 
-    public TransactionStrategyBase ChildTransactionStrategyMock
+    protected TransactionStrategyBase ChildTransactionStrategyMock
     {
       get { return _childTransactionStrategyMock; }
     }
 
-    public ITransaction TransactionMock
+    public ITransactionFactory TransactionFactoryMock
+    {
+      get { return _transactionFactoryMock; }
+    }
+
+    protected ITransaction TransactionMock
     {
       get { return _transactionMock; }
     }
-
-    public ITransactionScope ScopeMock
+    
+    protected ITransactionScope ScopeMock
     {
       get { return _scopeMock; }
     }
 
-    public IWxeFunctionExecutionListener ExecutionListenerStub
+    protected IWxeFunctionExecutionListener ExecutionListenerStub
     {
       get { return _executionListenerStub; }
     }
 
-    public IWxeFunctionExecutionContext ExecutionContextMock
+    protected IWxeFunctionExecutionContext ExecutionContextMock
     {
       get { return _executionContextMock; }
     }
@@ -107,8 +122,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       _transactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
       _transactionMock.Replay();
 
+      _transactionFactoryMock.Replay();
+
       var strategy = MockRepository.PartialMock<ScopedTransactionStrategyBase> (
-          autoCommit, (Func<ITransaction>) (() => TransactionMock), parentTransactionStrategy, _executionContextMock);
+          autoCommit, (Func<ITransaction>) _transactionFactoryMock.Create, parentTransactionStrategy, _executionContextMock);
       strategy.Replay();
 
       SetChild (strategy, ChildTransactionStrategyMock);

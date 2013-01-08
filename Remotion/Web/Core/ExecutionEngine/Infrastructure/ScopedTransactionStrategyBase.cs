@@ -29,7 +29,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   {
     private readonly Func<ITransaction> _transactionFactory;
     [NotNull]
-    private readonly ITransaction _transaction;
+    private ITransaction _transaction;
     [NonSerialized]
     private ITransactionScope _scope;
     private readonly bool _autoCommit;
@@ -109,13 +109,14 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (_scope != null)
       {
         _scope.Leave ();
-        // TODO 4589
-        _transaction.Reset ();
+        _transaction.Release();
+        _transaction = CreateTransaction();
         EnterScope();
       }
       else
       {
-        _transaction.Reset();
+        _transaction.Release ();
+        _transaction = CreateTransaction ();
       }
 
       var variables = _executionContext.GetVariables();
