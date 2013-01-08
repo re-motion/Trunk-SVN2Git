@@ -52,6 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     private EditMode _editMode = EditMode.None;
     private List<string> _editedRowIDs;
+    //private List<string> _newRowIDs;
     private bool _isEditNewRow;
 
     private bool _isEditModeRestored;
@@ -380,6 +381,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
               string.Format ("Cannot restore edit mode: The BocList '{0}' does not have a Value.", _editModeHost.ID));
         }
         CreateEditModeControls (columns);
+        LoadValues (true);
       }
     }
 
