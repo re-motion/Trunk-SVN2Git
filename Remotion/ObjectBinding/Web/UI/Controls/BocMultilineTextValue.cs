@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // construction and disposing
 
     public BocMultilineTextValue ()
-        : base (TextBoxMode.MultiLine)
+        : base (BocTextBoxMode.MultiLine)
     {
     }
 

@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
       {
         if (isControlWidthEmpty)
         {
-          bool needsColumnCount = renderingContext.Control.TextBoxStyle.TextMode != TextBoxMode.MultiLine || renderingContext.Control.TextBoxStyle.Columns == null;
+          bool needsColumnCount = renderingContext.Control.TextBoxStyle.TextMode != BocTextBoxMode.MultiLine || renderingContext.Control.TextBoxStyle.Columns == null;
           if (!renderingContext.Control.IsReadOnly && needsColumnCount)
             renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultTextBoxWidth);
         }

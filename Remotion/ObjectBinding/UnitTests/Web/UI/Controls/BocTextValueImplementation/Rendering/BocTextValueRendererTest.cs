@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using System.Web;
@@ -176,6 +176,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       RenderMultiLineReadonly (true, true, true);
     }
 
+    [Test]
+    public void RenderPasswordMaskedEditable ()
+    {
+      RenderPasswordEditable (true, false);
+    }
+
+    [Test]
+    public void RenderPasswordMaskedEditableWithAutoPostback ()
+    {
+      RenderPasswordEditable (true, true);
+    }
+    
+    [Test]
+    public void RenderPasswordNoRenderEditable ()
+    {
+      RenderPasswordEditable (false, false);
+    }
+
     private void RenderSingleLineEditable (bool withStyle, bool withCssClass, bool inStandardProperties, bool autoPostBack)
     {
       TextValue.Stub (mock => mock.Text).Return (BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
@@ -198,8 +216,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       var input = Html.GetAssertedChildElement (content, "input", 0);
       Html.AssertAttribute (input, "type", "text");
       Html.AssertAttribute (input, "value", BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
-      if (TextValue.TextBoxStyle.AutoPostBack == true)
+      Assert.That (TextValue.TextBoxStyle.AutoPostBack, Is.EqualTo (autoPostBack));
+      if (autoPostBack)
         Html.AssertAttribute (input, "onchange", string.Format ("javascript:__doPostBack('{0}','')", TextValue.TextBoxID));
+      else
+        Html.AssertNoAttribute (input, "onchange");
 
       CheckStyle (withStyle, span, input);
     }
@@ -268,7 +289,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
 
       SetStyle (withStyle, withCssClass, inStandardProperties, false);
-      TextValue.TextBoxStyle.TextMode = TextBoxMode.MultiLine;
+      TextValue.TextBoxStyle.TextMode = BocTextBoxMode.MultiLine;
 
       _renderer.Render(new BocTextValueRenderingContext(MockRepository.GenerateMock<HttpContextBase>(),  Html.Writer, TextValue));
 
@@ -293,6 +314,39 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       Html.AssertChildElementCount (labelSpan, 1);
 
       CheckStyle (withStyle, span, labelSpan);
+    }
+
+    private void RenderPasswordEditable (bool renderPassword, bool autoPostBack)
+    {
+      TextValue.Stub (mock => mock.Text).Return (BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+
+      SetStyle (false, false, false, autoPostBack);
+      TextValue.TextBoxStyle.TextMode = renderPassword ? BocTextBoxMode.PasswordRenderMasked : BocTextBoxMode.PasswordNoRender;
+
+      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase>(), Html.Writer, TextValue));
+
+      var document = Html.GetResultDocument();
+      Html.AssertChildElementCount (document.DocumentElement, 1);
+
+      var span = Html.GetAssertedChildElement (document, "span", 0);
+      Html.AssertAttribute (span, "id", "MyTextValue");
+      Html.AssertChildElementCount (span, 1);
+      var content = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertAttribute (content, "class", "content");
+      Html.AssertChildElementCount (content, 1);
+
+      var input = Html.GetAssertedChildElement (content, "input", 0);
+      Html.AssertAttribute (input, "type", "password");
+      if (renderPassword)
+        Html.AssertAttribute (input, "value", BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      else
+        Html.AssertNoAttribute (input, "value");
+
+      Assert.That (TextValue.TextBoxStyle.AutoPostBack, Is.EqualTo (autoPostBack));
+      if (autoPostBack)
+        Html.AssertAttribute (input, "onchange", string.Format ("javascript:__doPostBack('{0}','')", TextValue.TextBoxID));
+      else
+        Html.AssertNoAttribute (input, "onchange");
     }
 
     private void CheckStyle (bool withStyle, XmlNode span, XmlNode valueElement)

@@ -52,14 +52,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       base.Render (renderingContext);
     }
 
+    protected override TextBox GetTextBox (BocRenderingContext<IBocTextValue> renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      var textBox = base.GetTextBox (renderingContext);
+      if (renderingContext.Control.TextBoxStyle.TextMode == BocTextBoxMode.PasswordRenderMasked)
+        textBox.Attributes.Add ("value", textBox.Text);
+      return textBox;
+    }
+
     protected override Label GetLabel (BocRenderingContext<IBocTextValue> renderingContext)
     {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      
       Label label = new Label { Text = renderingContext.Control.Text };
       label.ID = renderingContext.Control.GetTextBoxClientID ();
       label.EnableViewState = false;
 
       string text;
-      if (renderingContext.Control.TextBoxStyle.TextMode == TextBoxMode.MultiLine && !StringUtility.IsNullOrEmpty (renderingContext.Control.Text))
+      if (renderingContext.Control.TextBoxStyle.TextMode == BocTextBoxMode.MultiLine && !StringUtility.IsNullOrEmpty (renderingContext.Control.Text))
       {
         //  Allows for an optional \r
         string temp = renderingContext.Control.Text.Replace ("\r", "");

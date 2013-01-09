@@ -124,6 +124,20 @@ line 3">
     </remotion:boctextvalue></td>
     <td></td>
     <td style="WIDTH: 20%"></td></tr>
+  <tr>
+    <td>Password displayed</td>
+    <td><remotion:boctextvalue id="PasswordRenderMasked" runat="server" ValueType="String" Text="PasswordValue">
+          <TextBoxStyle TextMode="PasswordRenderMasked"></TextBoxStyle>
+        </remotion:boctextvalue></td>
+    <td></td>
+    <td style="WIDTH: 20%"></td></tr>
+  <tr>
+    <td>Password not displayed</td>
+    <td><remotion:boctextvalue id="PasswordNoRender" runat="server" ValueType="String" Text="PasswordValue">
+          <TextBoxStyle TextMode="PasswordNoRender"></TextBoxStyle>
+        </remotion:boctextvalue></td>
+    <td></td>
+    <td style="WIDTH: 20%"></td></tr>
 </table>
 <p><remotion:webbutton id=FirstNameTestSetNullButton runat="server" Text="FirstName Set Null" width="220px"/><remotion:webbutton id=FirstNameTestSetNewValueButton runat="server" Text="FirstName Set New Value" width="220px"/></p>
 <p>FirstName Field Text Changed: <asp:label id=FirstNameFieldTextChangedLabel runat="server" enableviewstate="False">#</asp:label></p>

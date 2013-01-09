@@ -51,6 +51,16 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
       base.Render (renderingContext);
     }
 
+    protected override TextBox GetTextBox (BocRenderingContext<IBocTextValue> renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      var textBox = base.GetTextBox (renderingContext);
+      if (renderingContext.Control.TextBoxStyle.TextMode == BocTextBoxMode.PasswordRenderMasked)
+        textBox.Attributes.Add ("value", textBox.Text);
+      return textBox;
+    }
+
     protected override Label GetLabel (BocRenderingContext<IBocTextValue> renderingContext)
     {
       Label label = new Label { Text = renderingContext.Control.Text };
@@ -58,7 +68,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
       label.EnableViewState = false;
 
       string text;
-      if (renderingContext.Control.TextBoxStyle.TextMode == TextBoxMode.MultiLine
+      if (renderingContext.Control.TextBoxStyle.TextMode == BocTextBoxMode.MultiLine
           && !StringUtility.IsNullOrEmpty (renderingContext.Control.Text))
       {
         //  Allows for an optional \r

@@ -31,6 +31,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     RadioButtonList = 2
   }
 
+  /// <summary>
+  /// Specifies the behavior mode of the text box.
+  /// 
+  /// </summary>
+  public enum BocTextBoxMode
+  {
+    SingleLine,
+    MultiLine,
+    PasswordRenderMasked,
+    PasswordNoRender
+  }
+
   public class ListControlStyle : Style
   {
     private ListControlType _controlType = ListControlType.DropDownList;
@@ -342,18 +354,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private static readonly string s_scriptFileKey = typeof (TextBoxStyle).FullName + "_Script";
 
     private int? _rows;
-    private TextBoxMode _textMode;
-    private readonly TextBoxMode _defaultTextMode = TextBoxMode.SingleLine;
+    private BocTextBoxMode _textMode;
+    private readonly BocTextBoxMode _defaultTextMode = BocTextBoxMode.SingleLine;
     private bool? _wrap;
 
-    public TextBoxStyle (TextBoxMode defaultTextMode)
+    public TextBoxStyle (BocTextBoxMode defaultTextMode)
     {
       _defaultTextMode = defaultTextMode;
       _textMode = _defaultTextMode;
     }
 
     public TextBoxStyle ()
-        : this (TextBoxMode.SingleLine)
+        : this (BocTextBoxMode.SingleLine)
     {
     }
 
@@ -367,13 +379,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (_wrap != null)
         textBox.Wrap = _wrap.Value;
 
-      if (_textMode == TextBoxMode.MultiLine
+      if (_textMode == BocTextBoxMode.MultiLine
           && MaxLength != null
           && CheckClientSideMaxLength != false
           && ! ControlHelper.IsDesignModeForControl (textBox))
         textBox.Attributes.Add ("onkeydown", "return TextBoxStyle_OnKeyDown (this, " + MaxLength.Value + ");");
 
-      textBox.TextMode = _textMode;
+      textBox.TextMode = GetSystemWebTextMode();
+    }
+
+    private TextBoxMode GetSystemWebTextMode ()
+    {
+      switch (_textMode)
+      {
+        case BocTextBoxMode.SingleLine:
+          return TextBoxMode.SingleLine;
+        case BocTextBoxMode.MultiLine:
+          return TextBoxMode.MultiLine;
+        case BocTextBoxMode.PasswordRenderMasked:
+        case BocTextBoxMode.PasswordNoRender:
+          return TextBoxMode.Password;
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
     }
 
     public void RegisterJavaScriptInclude (IResourceUrlFactory resourceUrlFactory, HtmlHeadAppender htmlHeadAppender)
@@ -410,7 +438,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Description ("The behavior mode of the textbox.")]
     [Category ("Behavior")]
     [NotifyParentProperty (true)]
-    public TextBoxMode TextMode
+    public BocTextBoxMode TextMode
     {
       get { return _textMode; }
       set { _textMode = value; }
