@@ -122,11 +122,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (parentTransactionContext));
     }
 
-    public override Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
-    {
-      return templateTransaction => _parentTransaction.CreateSubTransaction();
-    }
-
     protected override IRelationEndPointManager CreateRelationEndPointManager (
         ClientTransaction clientTransaction,
         IRelationEndPointProvider endPointProvider,

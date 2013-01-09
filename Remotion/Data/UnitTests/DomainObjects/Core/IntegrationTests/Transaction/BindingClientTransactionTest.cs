@@ -307,45 +307,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
     }
 
-    [Test]
-    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.138)", false)]
-    public void CreateEmptyTransactionOfSameType ()
-    {
-      var newTransaction = _bindingTransaction.CreateEmptyTransactionOfSameType (false);
-      Assert.That (newTransaction, Is.Not.SameAs (_bindingTransaction));
-      Assert.That (newTransaction.GetType (), Is.EqualTo (_bindingTransaction.GetType ()));
-      Assert.That (
-          ClientTransactionTestHelper.GetPersistenceStrategy (newTransaction).GetType (),
-          Is.EqualTo (ClientTransactionTestHelper.GetPersistenceStrategy (_bindingTransaction).GetType ()));
-    }
-
-    [Test]
-    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.138)", false)]
-    public void CreateEmptyTransactionOfSameType_CopyInvalidObjectInformation_False ()
-    {
-      var order = _bindingTransaction.Execute (() => Order.NewObject());
-      _bindingTransaction.Execute (order.Delete);
-
-      var newTransaction = _bindingTransaction.CreateEmptyTransactionOfSameType (false);
-      Assert.That (newTransaction.IsEnlisted (order), Is.False);
-      Assert.That (newTransaction.IsInvalid (order.ID), Is.False);
-    }
-
-    [Test]
-    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.138)", false)]
-    public void CreateEmptyTransactionOfSameType_CopyInvalidObjectInformation_True ()
-    {
-      var order = _bindingTransaction.Execute (() => Order.NewObject ());
-      _bindingTransaction.Execute (order.Delete);
-
-      Assert.That (
-          () => _bindingTransaction.CreateEmptyTransactionOfSameType (true),
-          Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo (
-              string.Format (
-                  "Cannot enlist the domain object {0} in this binding transaction, because it has originally been loaded in another transaction.",
-                  order.ID)));
-    }
-
     private T NewBound<T> ()
         where T : DomainObject
     {

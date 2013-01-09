@@ -622,43 +622,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (transaction.ToITransaction (), Is.SameAs (wrapperStub));
     }
 
-    [Test]
-    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.138)", false)]
-    public void CreateEmptyTransactionOfSameType ()
-    {
-      var newTransaction = TestableClientTransaction.CreateEmptyTransactionOfSameType (false);
-      Assert.That (newTransaction, Is.Not.SameAs (TestableClientTransaction));
-      Assert.That (newTransaction.GetType (), Is.EqualTo (TestableClientTransaction.GetType ()));
-      Assert.That (
-          ClientTransactionTestHelper.GetPersistenceStrategy (newTransaction).GetType (),
-          Is.EqualTo (
-              ClientTransactionTestHelper.GetPersistenceStrategy (TestableClientTransaction).GetType ()));
-    }
-
-    [Test]
-    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.138)", false)]
-    public void CreateEmptyTransactionOfSameType_CopyInvalidObjectInformation_False ()
-    {
-      var order = Order.NewObject();
-      order.Delete();
-
-      var newTransaction = TestableClientTransaction.CreateEmptyTransactionOfSameType (false);
-      Assert.That (newTransaction.IsEnlisted (order), Is.False);
-      Assert.That (newTransaction.IsInvalid (order.ID), Is.False);
-    }
-
-    [Test]
-    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.138)", false)]
-    public void CreateEmptyTransactionOfSameType_CopyInvalidObjectInformation_True ()
-    {
-      var order = Order.NewObject ();
-      order.Delete ();
-
-      var newTransaction = TestableClientTransaction.CreateEmptyTransactionOfSameType (true);
-      Assert.That (newTransaction.IsEnlisted (order), Is.True);
-      Assert.That (newTransaction.IsInvalid (order.ID), Is.True);
-    }
-
     private bool HasEventHandler (object instance, string eventName, Delegate handler)
     {
       var eventField = (Delegate) PrivateInvoke.GetNonPublicField (instance, eventName);

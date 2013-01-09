@@ -84,8 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IObjectLifetimeAgent objectLifetimeAgent = null,
         IQueryManager queryManager = null,
         ICommitRollbackAgent commitRollbackAgent = null,
-        IEnumerable<IClientTransactionExtension> extensions = null,
-        Func<ClientTransaction, ClientTransaction> cloneFactory = null)
+        IEnumerable<IClientTransactionExtension> extensions = null)
       where T : ClientTransaction
     {
       var componentFactoryStub = CreateComponentFactory (
@@ -99,8 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           objectLifetimeAgent,
           queryManager,
           commitRollbackAgent,
-          extensions,
-          cloneFactory);
+          extensions);
 
       return CreateWithComponents<T> (componentFactoryStub);
     }
@@ -116,8 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IObjectLifetimeAgent objectLifetimeAgent = null,
         IQueryManager queryManager = null,
         ICommitRollbackAgent commitRollbackAgent = null,
-        IEnumerable<IClientTransactionExtension> extensions = null,
-        Func<ClientTransaction, ClientTransaction> cloneFactory = null)
+        IEnumerable<IClientTransactionExtension> extensions = null)
     {
       applicationData = applicationData ?? new Dictionary<Enum, object> ();
       transactionHierarchyManager = transactionHierarchyManager ?? MockRepository.GenerateStub<ITransactionHierarchyManager> ();
@@ -130,7 +127,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       queryManager = queryManager ?? MockRepository.GenerateStub<IQueryManager> ();
       commitRollbackAgent = commitRollbackAgent ?? MockRepository.GenerateStub<ICommitRollbackAgent> ();
       extensions = extensions ?? Enumerable.Empty<IClientTransactionExtension>();
-      cloneFactory = cloneFactory ?? (tx => { throw new Exception ("Should not be called."); });
       
       var componentFactoryStub = MockRepository.GenerateStub<IClientTransactionComponentFactory>();
       componentFactoryStub.Stub (stub => stub.CreateApplicationData (Arg<ClientTransaction>.Is.Anything)).Return (applicationData);
@@ -181,7 +177,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<IDataManager>.Is.Anything))
           .Return (commitRollbackAgent);
       componentFactoryStub.Stub (stub => stub.CreateExtensions (Arg<ClientTransaction>.Is.Anything)).Return (extensions);
-      componentFactoryStub.Stub (stub => stub.CreateCloneFactory ()).Return (cloneFactory);
       return componentFactoryStub;
     }
 

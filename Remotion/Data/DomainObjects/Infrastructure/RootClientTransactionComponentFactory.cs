@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
@@ -90,13 +89,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       return new IClientTransactionExtension[] { new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator()) }
           .Concat (base.CreateExtensions (constructedTransaction));
-    }
-
-    public override Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
-    {
-      return templateTransaction => (ClientTransaction) TypesafeActivator
-          .CreateInstance (templateTransaction.GetType (), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-          .With (this);
     }
 
     protected override IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)

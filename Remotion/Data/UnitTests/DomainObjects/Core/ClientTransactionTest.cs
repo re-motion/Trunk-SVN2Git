@@ -95,8 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _objectLifetimeAgentMock,
           _queryManagerMock,
           _commitRollbackAgentMock,
-          Enumerable.Empty<IClientTransactionExtension>(),
-          tx => { throw new NotImplementedException(); });
+          Enumerable.Empty<IClientTransactionExtension>());
       // Ignore calls made by ctor
       _hierarchyManagerMock.BackToRecord ();
       _eventBrokerMock.BackToRecord ();
@@ -1005,7 +1004,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var deserializedClientTransaction = Serializer.SerializeAndDeserialize (clientTransaction);
 
       Assert.That (deserializedClientTransaction, Is.Not.Null);
-      Assert.That (ClientTransactionTestHelper.GetComponentFactory (deserializedClientTransaction), Is.Not.Null);
       Assert.That (deserializedClientTransaction.ParentTransaction, Is.Null);
       Assert.That (deserializedClientTransaction.ApplicationData, Is.Not.Null);
       Assert.That (deserializedClientTransaction.Extensions, Is.Not.Null);

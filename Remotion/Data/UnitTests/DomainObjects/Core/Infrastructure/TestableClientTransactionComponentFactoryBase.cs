@@ -54,11 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       throw new NotImplementedException();
     }
 
-    public override Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
-    {
-      throw new NotImplementedException();
-    }
-
     protected override IRelationEndPointManager CreateRelationEndPointManager (
         ClientTransaction constructedTransaction,
         IRelationEndPointProvider endPointProvider,

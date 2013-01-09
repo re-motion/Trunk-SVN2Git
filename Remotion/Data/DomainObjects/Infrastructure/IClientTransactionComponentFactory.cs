@@ -75,9 +75,5 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IDataManager dataManager);
 
     IEnumerable<IClientTransactionExtension> CreateExtensions (ClientTransaction constructedTransaction);
-
-    // This member is likely to be removed in the future
-    // TODO 2968: Remove this member
-    Func<ClientTransaction, ClientTransaction> CreateCloneFactory ();
   }
 }

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -140,8 +141,6 @@ public class ClientTransaction
   /// </summary>
   public event EventHandler<ClientTransactionEventArgs> RolledBack;
 
-  private readonly IClientTransactionComponentFactory _componentFactory;
-
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly ITransactionHierarchyManager _hierarchyManager;
   private readonly IClientTransactionEventBroker _eventBroker;
@@ -162,7 +161,6 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
     
-    _componentFactory = componentFactory;
     _applicationData = componentFactory.CreateApplicationData (this);
     _eventBroker = componentFactory.CreateEventBroker (this);
     _hierarchyManager = componentFactory.CreateTransactionHierarchyManager (this, _eventBroker);
@@ -332,34 +330,13 @@ public class ClientTransaction
     return string.Format ("ClientTransaction ({0}, {1}) {2}", rootOrSub, leafOrParent, ID);
   }
 
-  /// <summary>Initializes a new instance of this transaction.</summary>
-  [Obsolete (
-      "This member will be removed in the near future. Use ClientTransaction.CreateRootTransaction and CreateSubTransaction instead. (1.13.138)",
-      false)]
-  public ClientTransaction CreateEmptyTransactionOfSameType (bool copyInvalidObjectInformation)
-  {
-    var transactionFactory = _componentFactory.CreateCloneFactory ();
-    var emptyTransactionOfSameType = transactionFactory (this);
-    if (copyInvalidObjectInformation)
-    {
-      var invalidObjectReferences = _invalidDomainObjectManager.InvalidObjectIDs
-          .Select (id => _invalidDomainObjectManager.GetInvalidObjectReference (id));
-      foreach (var obj in invalidObjectReferences)
-      {
-        emptyTransactionOfSameType.EnlistDomainObject (obj);
-        emptyTransactionOfSameType._invalidDomainObjectManager.MarkInvalid (obj);
-      }
-    }
-    return emptyTransactionOfSameType;
-  }
-
   protected internal void AddListener (IClientTransactionListener listener)
   {
     ArgumentUtility.CheckNotNull ("listener", listener);
     _eventBroker.AddListener (listener);
   }
 
-  protected internal void RemoveListener (IClientTransactionListener listener)
+  protected void RemoveListener (IClientTransactionListener listener)
   {
     ArgumentUtility.CheckNotNull ("listener", listener);
     _eventBroker.RemoveListener (listener);
@@ -1387,6 +1364,14 @@ public class ClientTransaction
 
   [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
   protected internal virtual DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID)
+  {
+    throw new NotImplementedException ();
+  }
+
+  [Obsolete (
+    "This member has been removed. Use ClientTransaction.CreateRootTransaction and CreateSubTransaction instead. (1.13.138, 1.13.182.0)",
+    true)]
+  public ClientTransaction CreateEmptyTransactionOfSameType ([UsedImplicitly]bool copyInvalidObjectInformation)
   {
     throw new NotImplementedException ();
   }

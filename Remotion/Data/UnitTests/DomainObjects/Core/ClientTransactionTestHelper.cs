@@ -37,11 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public static class ClientTransactionTestHelper
   {
-    public static IClientTransactionComponentFactory GetComponentFactory (ClientTransaction clientTransaction)
-    {
-      return (IClientTransactionComponentFactory) PrivateInvoke.GetNonPublicField (clientTransaction, "_componentFactory");
-    }
-
     public static ITransactionHierarchyManager GetHierarchyManager (ClientTransaction clientTransaction)
     {
       return TransactionHierarchyManagerService.GetTransactionHierarchyManager (clientTransaction);

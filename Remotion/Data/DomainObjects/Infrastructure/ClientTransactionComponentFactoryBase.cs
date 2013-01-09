@@ -46,7 +46,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
 
     public abstract IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction);
-    public abstract Func<ClientTransaction, ClientTransaction> CreateCloneFactory ();
 
     protected abstract IRelationEndPointManager CreateRelationEndPointManager (
         ClientTransaction constructedTransaction,
