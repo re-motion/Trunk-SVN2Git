@@ -201,6 +201,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
       RenderPasswordEditable (false, false);
     }
 
+    [Test]
+    public void RenderPasswordMaskedReadonly ()
+    {
+      RenderPasswordReadonly (true);
+    }
+    
+    [Test]
+    public void RenderPasswordNoRenderReadonly ()
+    {
+      RenderPasswordReadonly (false);
+    }
+
     private void RenderSingleLineEditable (bool withStyle, bool withCssClass, bool inStandardProperties, bool autoPostBack)
     {
       TextValue.Stub (mock => mock.Text).Return (BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText);
@@ -343,6 +355,31 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
         Html.AssertAttribute (input, "onchange", string.Format ("javascript:__doPostBack('{0}','')", TextValue.TextBoxID));
       else
         Html.AssertNoAttribute (input, "onchange");
+    }
+    
+    private void RenderPasswordReadonly (bool renderPassword)
+    {
+      TextValue.Stub (mock => mock.Text).Return (BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText);
+
+      SetStyle (false, false, false, false);
+      TextValue.TextBoxStyle.TextMode = renderPassword ? BocTextBoxMode.PasswordRenderMasked : BocTextBoxMode.PasswordNoRender;
+
+      TextValue.Stub (mock => mock.IsReadOnly).Return (true);
+      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
+      
+      var document = Html.GetResultDocument();
+      Html.AssertChildElementCount (document.DocumentElement, 1);
+
+      var span = Html.GetAssertedChildElement (document, "span", 0);
+
+      Html.AssertAttribute (span, "id", "MyTextValue");
+
+      Html.AssertAttribute (span, "class", _renderer.CssClassReadOnly, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      Html.AssertStyleAttribute (span, "width", "auto");
+      Html.AssertChildElementCount (span, 1);
+
+      var labelSpan = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertTextNode (labelSpan, new string ((char) 9679, 5), 0);
     }
 
     private void CheckStyle (bool withStyle, XmlNode span, XmlNode valueElement)

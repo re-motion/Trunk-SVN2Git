@@ -69,9 +69,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       Label label = new Label { Text = renderingContext.Control.Text };
       label.ID = renderingContext.Control.GetTextBoxClientID ();
       label.EnableViewState = false;
+      label.Text = GetText(renderingContext);
+
+      label.Width = Unit.Empty;
+      label.Height = Unit.Empty;
+      label.ApplyStyle (renderingContext.Control.CommonStyle);
+      label.ApplyStyle (renderingContext.Control.LabelStyle);
+      return label;
+    }
+
+    private static string GetText (BocRenderingContext<IBocTextValue> renderingContext)
+    {
+      var textMode = renderingContext.Control.TextBoxStyle.TextMode;
+
+      if (textMode == BocTextBoxMode.PasswordNoRender || textMode == BocTextBoxMode.PasswordRenderMasked)
+        return new string ((char) 9679, 5);
 
       string text;
-      if (renderingContext.Control.TextBoxStyle.TextMode == BocTextBoxMode.MultiLine && !StringUtility.IsNullOrEmpty (renderingContext.Control.Text))
+      if (textMode == BocTextBoxMode.MultiLine && !StringUtility.IsNullOrEmpty (renderingContext.Control.Text))
       {
         //  Allows for an optional \r
         string temp = renderingContext.Control.Text.Replace ("\r", "");
@@ -89,12 +104,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
         //  Too long, can't resize in designer to less than the content's width
         //  Label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
       }
-      label.Text = text;
-      label.Width = Unit.Empty;
-      label.Height = Unit.Empty;
-      label.ApplyStyle (renderingContext.Control.CommonStyle);
-      label.ApplyStyle (renderingContext.Control.LabelStyle);
-      return label;
+
+      return text;
     }
 
     public override string GetCssClassBase(IBocTextValue control)
