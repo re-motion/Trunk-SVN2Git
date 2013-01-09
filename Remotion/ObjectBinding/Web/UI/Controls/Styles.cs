@@ -39,7 +39,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     SingleLine,
     MultiLine,
+    /// <summary>
+    /// Renders the value but sets the input type to masked.
+    /// </summary>
     PasswordRenderMasked,
+    /// <summary>
+    /// Does not render the value, even in its masked form. User input is still displayed as masked.
+    /// </summary>
     PasswordNoRender
   }
 
