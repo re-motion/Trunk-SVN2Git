@@ -18,6 +18,8 @@ using System;
 using System.Configuration;
 using System.Data;
 using NUnit.Framework;
+using Remotion.Data.UnitTests.DomainObjects.Database;
+using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Utilities;
 
@@ -58,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
     {
       if (_isDatabaseModifyable)
       {
-        _databaseAgent.ExecuteBatchFile (_createTestDataFileName, true, ConfigurationManager.AppSettings["DatabaseDirectory"]);
+        _databaseAgent.ExecuteBatchFile (_createTestDataFileName, true, DatabaseConfiguration.GetReplacementDictionary());
       }
     }
 
@@ -83,34 +85,29 @@ namespace Remotion.Data.UnitTests.DomainObjects
     }
 
 
-    private static string DataSource
-    {
-      get { return ConfigurationManager.AppSettings["DataSource"]; }
-    }
-
     public static string TestDomainConnectionString
     {
-      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=TestDomain;Data Source={0}; Max Pool Size=1;", DataSource); }
+      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=TestDomain;Data Source={0}; Max Pool Size=1;", DatabaseConfiguration.DataSource); }
     }
 
     public static string MasterConnectionString
     {
-      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=master;Data Source={0}; Max Pool Size=1;", DataSource); }
+      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=master;Data Source={0}; Max Pool Size=1;", DatabaseConfiguration.DataSource); }
     }
 
     public static string SchemaGenerationConnectionString1
     {
-      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain1;Data Source={0}; Max Pool Size=1;", DataSource); }
+      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain1;Data Source={0}; Max Pool Size=1;", DatabaseConfiguration.DataSource); }
     }
 
     public static string SchemaGenerationConnectionString2
     {
-      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain2;Data Source={0}; Max Pool Size=1;", DataSource); }
+      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain2;Data Source={0}; Max Pool Size=1;", DatabaseConfiguration.DataSource); }
     }
 
     public static string SchemaGenerationConnectionString3
     {
-      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain3;Data Source={0}; Max Pool Size=1;", DataSource); }
+      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain3;Data Source={0}; Max Pool Size=1;", DatabaseConfiguration.DataSource); }
     }
 
     protected void SetDatabaseModifyable ()

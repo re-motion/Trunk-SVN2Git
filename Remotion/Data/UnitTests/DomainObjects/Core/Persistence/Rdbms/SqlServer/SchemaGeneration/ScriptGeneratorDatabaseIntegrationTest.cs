@@ -20,6 +20,8 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Database;
+using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Development.UnitTesting.Resources;
 
@@ -61,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var createDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SchemaGeneration_CreateDB.sql");
 
       var masterAgent = new DatabaseAgent (MasterConnectionString);
-      masterAgent.ExecuteBatchString (createDBScript, false, ConfigurationManager.AppSettings["DatabaseDirectory"]);
+      masterAgent.ExecuteBatchString (createDBScript, false, DatabaseConfiguration.GetReplacementDictionary());
     }
 
     [Test]
@@ -72,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var scripts = _standardScriptGenerator.GetScripts (MappingConfiguration.GetTypeDefinitions ())
           .Single (s => s.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition);
 
-      DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false, ConfigurationManager.AppSettings["DatabaseDirectory"]);
+      DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false, DatabaseConfiguration.GetReplacementDictionary());
     }
 
     [Test]
@@ -83,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var scripts = _standardScriptGenerator.GetScripts (MappingConfiguration.GetTypeDefinitions ())
           .Single (s => s.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition);
 
-      DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false, ConfigurationManager.AppSettings["DatabaseDirectory"]);
+      DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false, DatabaseConfiguration.GetReplacementDictionary());
     }
 
     [Test]
@@ -94,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var scripts = _extendedScriptGenerator.GetScripts (MappingConfiguration.GetTypeDefinitions ())
           .Single (s => s.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition);
 
-      DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false, ConfigurationManager.AppSettings["DatabaseDirectory"]);
+      DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false, DatabaseConfiguration.GetReplacementDictionary());
     }
   }
 }

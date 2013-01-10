@@ -218,6 +218,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\RegisterForCommitTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryResultObjectMother.cs" />
+    <Compile Include="DomainObjects\Database\DatabaseConfiguration.cs" />
     <Compile Include="UnitTesting\RootPersistenceStrategyMockFacade.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Transport\PostActionDisposableDecorator.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />

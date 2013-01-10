@@ -20,6 +20,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Data.SqlClient
@@ -56,7 +57,12 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       ExecuteCommand (string.Format ("ALTER DATABASE [{0}] SET READ_ONLY WITH ROLLBACK IMMEDIATE", database));
     }
 
-    public int ExecuteBatchFile (string sqlFileName, bool useTransaction, string databaseDirectory = null)
+    public int ExecuteBatchFile (string sqlFileName, bool useTransaction)
+    {
+      return ExecuteBatchFile (sqlFileName, useTransaction, null);
+    }
+
+    public int ExecuteBatchFile (string sqlFileName, bool useTransaction, ReadOnlyDictionary<string, string> replacementDictionary)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
@@ -67,14 +73,23 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
         Uri uri = new Uri (assemblyUrl);
         sqlFileName = Path.Combine (Path.GetDirectoryName (uri.LocalPath), sqlFileName);
       }
-      return ExecuteBatchString (File.ReadAllText (sqlFileName, Encoding.Default), useTransaction, databaseDirectory);
+      return ExecuteBatchString (File.ReadAllText (sqlFileName, Encoding.Default), useTransaction, replacementDictionary);
     }
 
-    public int ExecuteBatchString (string commandBatch, bool useTransaction, string databaseDirectory = null)
+    public int ExecuteBatchString (string commandBatch, bool useTransaction)
+    {
+      return ExecuteBatchString (commandBatch, useTransaction, null);
+    }
+
+    public int ExecuteBatchString (string commandBatch, bool useTransaction, ReadOnlyDictionary<string, string> replacementDictionary)
     {
       ArgumentUtility.CheckNotNull ("commandBatch", commandBatch);
 
-      commandBatch = commandBatch.Replace ("'C:\\Databases", "'" + databaseDirectory);
+      if (replacementDictionary != null)
+      {
+        foreach (var replacement in replacementDictionary)
+          commandBatch = commandBatch.Replace (replacement.Key, replacement.Value);
+      }
 
       var count = 0;
       using (IDbConnection connection = CreateConnection ())

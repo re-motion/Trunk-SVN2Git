@@ -52,16 +52,15 @@ namespace Remotion.Data.UnitTests.DomainObjects
         SqlConnection.ClearAllPools();
 
         var masterAgent = new DatabaseAgent (DatabaseTest.MasterConnectionString);
-        var databaseDirectory = ConfigurationManager.AppSettings["DatabaseDirectory"];
-        masterAgent.ExecuteBatchFile ("DataDomainObjects_CreateDB.sql", false, databaseDirectory);
+        masterAgent.ExecuteBatchFile ("DataDomainObjects_CreateDB.sql", false, DatabaseConfiguration.GetReplacementDictionary());  
         var testDomainAgent = new DatabaseAgent (DatabaseTest.TestDomainConnectionString);
-        testDomainAgent.ExecuteBatchFile ("DataDomainObjects_SetupDB.sql", true, databaseDirectory);
+        testDomainAgent.ExecuteBatchFile ("DataDomainObjects_SetupDB.sql", true, DatabaseConfiguration.GetReplacementDictionary());
 
         _standardMappingDatabaseAgent = new StandardMappingDatabaseAgent (DatabaseTest.TestDomainConnectionString);
         string sqlFileName = StandardMappingTest.CreateTestDataFileName;
-        _standardMappingDatabaseAgent.ExecuteBatchFile (sqlFileName, true, databaseDirectory);
+        _standardMappingDatabaseAgent.ExecuteBatchFile (sqlFileName, true, DatabaseConfiguration.GetReplacementDictionary());
         string sqlFileName1 = TableInheritanceMappingTest.CreateTestDataFileName;
-        _standardMappingDatabaseAgent.ExecuteBatchFile (sqlFileName1, true, databaseDirectory);
+        _standardMappingDatabaseAgent.ExecuteBatchFile (sqlFileName1, true, DatabaseConfiguration.GetReplacementDictionary());
         _standardMappingDatabaseAgent.SetDatabaseReadOnly (DatabaseTest.DatabaseName);
 
         // We don't want the tests to initialize a default mapping; therefore, modify MappingConfiguration.s_mappingConfiguration so that it will 

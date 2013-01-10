@@ -22,7 +22,9 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Linq.SqlBackend;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
@@ -35,15 +37,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       base.TestFixtureSetUp ();
 
       SetDatabaseModifyable ();
-      var databaseDirectory = ConfigurationManager.AppSettings["DatabaseDirectory"];
-      DatabaseAgent.ExecuteBatchFile ("DataDomainObjects_DropFulltextIndices.sql", false, databaseDirectory);
-      DatabaseAgent.ExecuteBatchFile ("DataDomainObjects_CreateFulltextIndices.sql", false, databaseDirectory);
+      DatabaseAgent.ExecuteBatchFile ("DataDomainObjects_DropFulltextIndices.sql", false, DatabaseConfiguration.GetReplacementDictionary());
+      DatabaseAgent.ExecuteBatchFile ("DataDomainObjects_CreateFulltextIndices.sql", false, DatabaseConfiguration.GetReplacementDictionary());
       WaitForIndices ();
     }
 
     public override void TestFixtureTearDown ()
     {
-      DatabaseAgent.ExecuteBatchFile ("DataDomainObjects_DropFulltextIndices.sql", false, ConfigurationManager.AppSettings["DatabaseDirectory"]);
+      DatabaseAgent.ExecuteBatchFile ("DataDomainObjects_DropFulltextIndices.sql", false, DatabaseConfiguration.GetReplacementDictionary());
       base.TestFixtureTearDown ();
     }
 
