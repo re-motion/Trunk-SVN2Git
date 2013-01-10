@@ -18,9 +18,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Collections;
@@ -419,13 +421,21 @@ namespace Remotion.Web.UI
       _page.ClientScript.RegisterClientScriptBlock (_page, typeof (SmartPageInfo), "smartPageInitialize", initScript.ToString ());
 
       string isAsynchronous = "false";
-      var scriptManager = ScriptManager.GetCurrent (_page.WrappedInstance);
-      if (scriptManager != null && scriptManager.IsInAsyncPostBack)
+      if (IsInAsyncPostBack)
         isAsynchronous = "true";
       _page.ClientScript.RegisterStartupScriptBlock (_page, typeof (SmartPageInfo), "smartPageStartUp", "SmartPage_OnStartUp (" + isAsynchronous + ", " + isDirty + ");");
 
       // Ensure the __doPostBack function on the rendered page
       _page.ClientScript.GetPostBackEventReference (_page, string.Empty);
+    }
+
+    private bool IsInAsyncPostBack
+    {
+      get
+      {
+        var scriptManager = ScriptManager.GetCurrent (_page.WrappedInstance);
+        return scriptManager != null && scriptManager.IsInAsyncPostBack;
+      }
     }
 
     private string GetAbortMessage ()
@@ -633,6 +643,44 @@ namespace Remotion.Web.UI
         NameValueCollectionUtility.Append (urlParameters, control.GetNavigationUrlParameters());
 
       return urlParameters;
+    }
+
+    
+    //PageRequestManager
+    internal const string AsyncPostBackErrorKey = "System.Web.UI.PageRequestManager:AsyncPostBackError";
+    internal const string AsyncPostBackErrorMessageKey = "System.Web.UI.PageRequestManager:AsyncPostBackErrorMessage";
+    internal const string AsyncPostBackErrorHttpCodeKey = "System.Web.UI.PageRequestManager:AsyncPostBackErrorHttpCode";
+
+
+    public void OnError (EventArgs e, Action<EventArgs> baseCall)
+    {
+      ArgumentUtility.CheckNotNull ("e", e);
+      ArgumentUtility.CheckNotNull ("baseCall", baseCall);
+      if (IsInAsyncPostBack)
+      {
+        var exception = _page.Server.GetLastError();
+
+        string errorHtml;
+        if (_page.Context.IsCustomErrorEnabled)
+        {
+          errorHtml = "Error!";
+        }
+        else
+        {
+          var aspNetErrorPage = new HttpUnhandledException ("Async Postback Error", exception).GetHtmlErrorMessage();
+          var bodyBegin = @"<body bgcolor=""white"">";
+          var bodyEnd = @"</body>";
+          errorHtml = aspNetErrorPage.Split (new[] { bodyBegin, bodyEnd }, StringSplitOptions.None).Skip(1).Take(1).Single();
+        }
+        var items = _page.Context.Items;
+        items[AsyncPostBackErrorKey] = true;
+        items[AsyncPostBackErrorMessageKey] = errorHtml;
+        items[AsyncPostBackErrorHttpCodeKey] = 500;
+
+        throw new AsyncUnhandledException (exception);
+      }
+      else
+        baseCall (e);
     }
   }
 }

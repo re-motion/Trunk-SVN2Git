@@ -101,6 +101,7 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -164,6 +165,21 @@
     </Compile>
     <Compile Include="DropDownMenu.aspx.designer.cs">
       <DependentUpon>DropDownMenu.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorHandling\ErrorForm.aspx.cs">
+      <DependentUpon>ErrorForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ErrorHandling\ErrorForm.aspx.designer.cs">
+      <DependentUpon>ErrorForm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorHandling\ErrorHandlingException.cs" />
+    <Compile Include="ErrorHandling\TestForm.aspx.cs">
+      <DependentUpon>TestForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ErrorHandling\TestForm.aspx.designer.cs">
+      <DependentUpon>TestForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="ExecutionEngine\RedirectHandler.ashx.cs">
       <DependentUpon>RedirectHandler.ashx</DependentUpon>
@@ -378,6 +394,8 @@
       <DependentUpon>CssIncludeTest.aspx</DependentUpon>
     </Compile>
     <Content Include="DefaultButtonTest.aspx" />
+    <Content Include="ErrorHandling\ErrorForm.aspx" />
+    <Content Include="ErrorHandling\TestForm.aspx" />
     <Content Include="ExecutionEngine\ZeroControl.ascx" />
     <Content Include="ExecutionEngine\FourthControl.ascx" />
     <Content Include="ExecutionEngine\ThirdControl.ascx" />

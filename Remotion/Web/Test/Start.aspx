@@ -66,6 +66,10 @@
         <a href="Theming/SingleViewTest.aspx">SingleView</a>
         <a href="Theming/TabbedMultiViewTest.aspx">Tabbed MultiView</a>
       </p>
+      <h3>Error Handling</h3>
+      <p>
+        <a href="ErrorHandling/TestForm.aspx">ErrorTest</a>
+      </p>
       <asp:Button id="ResetSessionButton" runat="server" Text="Reset Session"></asp:Button>
     </form>
   </body>

@@ -90,21 +90,21 @@ function SmartPage_Context(
   var _trackedIDs = new Array();
   var _synchronousPostBackCommands = new Array();
 
-  var _isMsIE = !isNaN (BrowserUtility.GetIEVersion());
+  var _isMsIE = !isNaN(BrowserUtility.GetIEVersion());
   var _cacheStateHasSubmitted = 'hasSubmitted';
   var _cacheStateHasLoaded = 'hasLoaded';
-  
-  var _loadHandler = function() { SmartPage_Context.Instance.OnLoad(); };
-  var _beforeUnloadHandler = function() { return SmartPage_Context.Instance.OnBeforeUnload(); };
-  var _unloadHandler = function() { return SmartPage_Context.Instance.OnUnload(); };
-  var _scrollHandler = function() { SmartPage_Context.Instance.OnScroll(); };
-  var _resizeHandler = function() { SmartPage_Context.Instance.OnResize(); };
-  var _formSubmitHandler = function() { return SmartPage_Context.Instance.OnFormSubmit(); };
-  var _formClickHandler = function(evt) { return SmartPage_Context.Instance.OnFormClick(evt); };
-  var _doPostBackHandler = function(eventTarget, eventArg) { SmartPage_Context.Instance.DoPostBack(eventTarget, eventArg); };
-  var _valueChangedHandler = function(evt) { SmartPage_Context.Instance.OnValueChanged(evt); };
-  var _elementFocusHandler = function(evt) { SmartPage_Context.Instance.OnElementFocus(evt); };
-  var _elementBlurHandler = function(evt) { SmartPage_Context.Instance.OnElementBlur(evt); };
+
+  var _loadHandler = function () { SmartPage_Context.Instance.OnLoad(); };
+  var _beforeUnloadHandler = function () { return SmartPage_Context.Instance.OnBeforeUnload(); };
+  var _unloadHandler = function () { return SmartPage_Context.Instance.OnUnload(); };
+  var _scrollHandler = function () { SmartPage_Context.Instance.OnScroll(); };
+  var _resizeHandler = function () { SmartPage_Context.Instance.OnResize(); };
+  var _formSubmitHandler = function () { return SmartPage_Context.Instance.OnFormSubmit(); };
+  var _formClickHandler = function (evt) { return SmartPage_Context.Instance.OnFormClick(evt); };
+  var _doPostBackHandler = function (eventTarget, eventArg) { SmartPage_Context.Instance.DoPostBack(eventTarget, eventArg); };
+  var _valueChangedHandler = function (evt) { SmartPage_Context.Instance.OnValueChanged(evt); };
+  var _elementFocusHandler = function (evt) { SmartPage_Context.Instance.OnElementFocus(evt); };
+  var _elementBlurHandler = function (evt) { SmartPage_Context.Instance.OnElementBlur(evt); };
 
   this.Init = function ()
   {
@@ -140,18 +140,18 @@ function SmartPage_Context(
 
   this.set_TrackedIDs = function (trackedIDs)
   {
-    ArgumentUtility.CheckTypeIsObject ('trackedIDs', trackedIDs);
+    ArgumentUtility.CheckTypeIsObject('trackedIDs', trackedIDs);
     _trackedIDs = trackedIDs;
   };
 
   this.set_SynchronousPostBackCommands = function (synchronousPostBackCommands)
   {
-    ArgumentUtility.CheckTypeIsObject ('synchronousPostBackCommands', synchronousPostBackCommands);
+    ArgumentUtility.CheckTypeIsObject('synchronousPostBackCommands', synchronousPostBackCommands);
     _synchronousPostBackCommands = synchronousPostBackCommands;
   };
 
   // Attaches the event handlers to the page's events.
-  function AttachPageLevelEventHandlers ()
+  function AttachPageLevelEventHandlers()
   {
     RemoveEventHandler(window, 'load', _loadHandler);
     AddEventHandler(window, 'load', _loadHandler);
@@ -194,6 +194,7 @@ function SmartPage_Context(
     if (TypeUtility.IsDefined(window.Sys) && TypeUtility.IsDefined(Sys.WebForms) && TypeUtility.IsDefined(Sys.WebForms.PageRequestManager))
     {
       Sys.WebForms.PageRequestManager.prototype._updatePanel = Sys$WebForms$PageRequestManager$_updatePanel;
+      Sys.WebForms.PageRequestManager.getInstance().add_endRequest(SmartPage_PageRequestManager_endRequest);
     }
   };
 
@@ -220,10 +221,24 @@ function SmartPage_Context(
     {
       Sys.Application.disposeElement(updatePanelElement, true);
     }
-    else {
+    else
+    {
       throw "Unsupported AJAX library detected."
     }
     $(updatePanelElement).empty().append(rendering);
+  }
+
+  function SmartPage_PageRequestManager_endRequest(sender, args)
+  {
+    if (args.get_error() != undefined && args.get_error().httpStatusCode == '500')
+    {
+      var errorMessage = args.get_error().message;
+      args.set_errorHandled(true);
+
+      var errorBody = '<div class="SmartPageErrorBody"><div>' + errorMessage + '</div></div>';
+
+      SmartPage_Context.Instance.ShowMessage("SmartPageServerErrorMessage", errorBody);
+    }
   }
 
   // Attached the OnValueChanged event handler to all form data elements listed in _trackedIDs.
@@ -305,7 +320,7 @@ function SmartPage_Context(
   };
 
   //  Gets the element that caused the current event.
-  this.GetActiveElement = function()
+  this.GetActiveElement = function ()
   {
     try
     {
@@ -330,13 +345,13 @@ function SmartPage_Context(
   };
 
   //  Sets the element that caused the current event.
-  this.SetActiveElement = function(value)
+  this.SetActiveElement = function (value)
   {
     _activeElement = value;
   };
 
   // Backs up the smart scrolling and smart focusing data for the next post back.
-  this.Backup = function()
+  this.Backup = function ()
   {
     if (_smartScrollingFieldID != null)
       _theForm.elements[_smartScrollingFieldID].value = SmartScrolling_Backup(this.GetActiveElement());
@@ -345,7 +360,7 @@ function SmartPage_Context(
   };
 
   // Restores the smart scrolling and smart focusing data from the previous post back.
-  this.Restore = function()
+  this.Restore = function ()
   {
     if (_smartScrollingFieldID != null)
       SmartScrolling_Restore(_theForm.elements[_smartScrollingFieldID].value);
@@ -371,7 +386,7 @@ function SmartPage_Context(
     var isAsynchronous = sender && sender.get_isInAsyncPostBack();
     if (isAsynchronous)
     {
-      this.PageLoaded(isAsynchronous); 
+      this.PageLoaded(isAsynchronous);
     }
   };
 
@@ -390,7 +405,7 @@ function SmartPage_Context(
   };
 
   // Determines whether the page was loaded from cache.
-  this.CheckIfCached = function()
+  this.CheckIfCached = function ()
   {
     var field = _theForm.SmartPage_CacheDetectionField;
     if (field.value == _cacheStateHasSubmitted)
@@ -409,14 +424,14 @@ function SmartPage_Context(
   };
 
   // Marks the page as loaded.
-  this.SetCacheDetectionFieldLoaded = function()
+  this.SetCacheDetectionFieldLoaded = function ()
   {
     var field = _theForm.SmartPage_CacheDetectionField;
     field.value = _cacheStateHasLoaded;
   };
 
   // Marks the page as submitted.
-  this.SetCacheDetectionFieldSubmitted = function()
+  this.SetCacheDetectionFieldSubmitted = function ()
   {
     var field = _theForm.SmartPage_CacheDetectionField;
     field.value = _cacheStateHasSubmitted;
@@ -432,7 +447,7 @@ function SmartPage_Context(
   // }
   // Wait For Response
   // OnUnload()
-  this.OnBeforeUnload = function()
+  this.OnBeforeUnload = function ()
   {
     _isAbortingBeforeUnload = false;
     var displayAbortConfirmation = false;
@@ -467,7 +482,7 @@ function SmartPage_Context(
   };
 
   // Event handler for window.OnUnload.
-  this.OnUnload = function()
+  this.OnUnload = function ()
   {
     if ((!_isSubmitting || _isAbortingBeforeUnload)
         && !_isAborting)
@@ -507,7 +522,7 @@ function SmartPage_Context(
     setTimeout(function () { _this.DoPostBackInternal(eventTarget, eventArgument); }, 0);
   };
 
-  this.DoPostBackInternal = function(eventTarget, eventArgument)
+  this.DoPostBackInternal = function (eventTarget, eventArgument)
   {
     // Debugger space
     var dummy = 0;
@@ -540,7 +555,7 @@ function SmartPage_Context(
   };
 
   // Event handler for Form.Submit.
-  this.OnFormSubmit = function()
+  this.OnFormSubmit = function ()
   {
     if (_isExecutingDoPostBack)
     {
@@ -609,7 +624,7 @@ function SmartPage_Context(
   };
 
   // Event handler for Form.OnClick.
-  this.OnFormClick = function(evt)
+  this.OnFormClick = function (evt)
   {
     var eventSource = eventSource = GetEventSource(evt);
     this.SetActiveElement(eventSource);
@@ -649,7 +664,7 @@ function SmartPage_Context(
   };
 
   // returns: true to continue with request.
-  this.CheckFormState = function()
+  this.CheckFormState = function ()
   {
     var continueRequest = true;
     var fct = null;
@@ -681,7 +696,7 @@ function SmartPage_Context(
     }
   };
 
-  this.CheckIsAsyncPostback = function(element)
+  this.CheckIsAsyncPostback = function (element)
   {
     if (element == null)
       return false;
@@ -692,7 +707,7 @@ function SmartPage_Context(
     return false;
   };
 
-  this.IsAsyncPostback = function(element)
+  this.IsAsyncPostback = function (element)
   {
     ArgumentUtility.CheckNotNull('element', element);
 
@@ -736,7 +751,7 @@ function SmartPage_Context(
   }
 
   // Event handler for Window.OnScroll.
-  this.OnScroll = function()
+  this.OnScroll = function ()
   {
     if (_statusMessageWindow != null)
       AlignStatusMessage(_statusMessageWindow);
@@ -744,7 +759,7 @@ function SmartPage_Context(
   };
 
   // Event handler for Window.OnResize.
-  this.OnResize = function()
+  this.OnResize = function ()
   {
     if (_statusMessageWindow != null)
       AlignStatusMessage(_statusMessageWindow);
@@ -752,13 +767,13 @@ function SmartPage_Context(
   };
 
   // Sends an AJAX request to the server. Fallback to the load-image technique.
-  this.SendOutOfBandRequest = function(url)
+  this.SendOutOfBandRequest = function (url)
   {
     ArgumentUtility.CheckNotNullAndTypeIsString('url', url);
     try
     {
       var xhttp;
-      if (TypeUtility.IsDefined (window.XMLHttpRequest))
+      if (TypeUtility.IsDefined(window.XMLHttpRequest))
         xhttp = new XMLHttpRequest();
       else
         xhttp = new ActiveXObject('Microsoft.XMLHTTP');
@@ -849,14 +864,14 @@ function SmartPage_Context(
   };
 
   // Shows the status message informing the user that the page is already submitting.
-  this.ShowStatusIsSubmittingMessage = function()
+  this.ShowStatusIsSubmittingMessage = function ()
   {
     if (_statusIsSubmittingMessage != null)
       this.ShowMessage('SmartPageStatusIsSubmittingMessage', _statusIsSubmittingMessage);
   };
 
   //  Shows a status message in the window using a DIV
-  this.ShowMessage = function(id, message)
+  this.ShowMessage = function (id, message)
   {
     ArgumentUtility.CheckNotNullAndTypeIsString('id', id);
     ArgumentUtility.CheckNotNullAndTypeIsString('message', message);
@@ -925,7 +940,7 @@ function SmartPage_Context(
     message.style.top = windowHeight / 2 - message.offsetHeight / 2 + scrollTop;
   };
 
-  this.HideStatusMessage = function()
+  this.HideStatusMessage = function ()
   {
     if (_statusMessageWindow != null)
     {
@@ -1006,7 +1021,7 @@ function SmartPage_Context(
   };
 
   // Event handler for the form-elements loosing the focus.
-  this.OnElementBlur = function(evt)
+  this.OnElementBlur = function (evt)
   {
     this.SetActiveElement(null);
   };
@@ -1035,7 +1050,7 @@ function SmartPage_Context(
       return null;
   };
 
-  this.GetEventTarget = function()
+  this.GetEventTarget = function ()
   {
     if (TypeUtility.IsUndefined(_theForm.__EVENTTARGET))
       return null;
@@ -1046,7 +1061,7 @@ function SmartPage_Context(
     return document.getElementById(UniqueIDToClientID(_theForm.__EVENTTARGET.value));
   };
 
-  this.IsSynchronousPostBackRequired = function(eventTargetID, eventArguments)
+  this.IsSynchronousPostBackRequired = function (eventTargetID, eventArguments)
   {
     if (StringUtility.IsNullOrEmpty(eventTargetID))
       return true;
@@ -1061,12 +1076,12 @@ function SmartPage_Context(
     return false;
   };
 
-  this.ClearIsSubmitting = function()
+  this.ClearIsSubmitting = function ()
   {
     _isSubmitting = false;
   };
 
-  this.DisableAbortConfirmation = function()
+  this.DisableAbortConfirmation = function ()
   {
     _isAbortConfirmationEnabled = false;
   };

@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.ComponentModel;
 using System.Web;
 using Remotion.Logging;
-using log4net.Config;
+using Remotion.Web.Test.ErrorHandling;
+using Remotion.Web.UI;
 
 namespace Remotion.Web.Test
 {
@@ -60,12 +62,15 @@ namespace Remotion.Web.Test
 
     protected void Application_Error (Object sender, EventArgs e)
     {
-      //      string appPath = Request.ApplicationPath;
-      //
-      //      if (!appPath.EndsWith ("/"))
-      //        appPath += "/";
-      //
-      //      Server.Transfer (appPath + "Start.aspx");
+      var exception = Server.GetLastError();
+      if (exception is AsyncUnhandledException)
+        return;
+
+      if (!Context.IsCustomErrorEnabled)
+        return;
+
+      if (exception is HttpUnhandledException && exception.InnerException is ErrorHandlingException)
+        Server.Transfer ("~/ErrorHandling/ErrorForm.aspx");
     }
 
     protected void Session_End (Object sender, EventArgs e)
