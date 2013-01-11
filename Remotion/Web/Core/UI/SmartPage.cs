@@ -527,12 +527,6 @@ public class SmartPage : Page, ISmartPage, ISmartNavigablePage
     return values;
   }
 
-  protected override void OnPreRenderComplete (EventArgs e)
-  {
-    _smartPageInfo.OnPreRenderComplete ();
-    base.OnPreRenderComplete (e);
-  }
-
   void ISmartPage.SaveAllState ()
   {
     ControlHelper.SaveAllState (this);

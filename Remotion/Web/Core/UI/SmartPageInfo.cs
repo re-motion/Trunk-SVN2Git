@@ -18,8 +18,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -93,7 +95,12 @@ namespace Remotion.Web.UI
       ArgumentUtility.CheckNotNullAndType<Page> ("page", page);
       _page = page;
       _page.Init += Page_Init;
-    }
+      // PreRenderComplete-handler must be registered before ScriptManager registers its own PreRenderComplete-handler during OnInit.
+      _page.PreRenderComplete += Page_PreRenderComplete;
+      // Error-handler must be registered before ScriptManager registeres its own Error-handler during OnInit. 
+      // Handling async-errors will result in a control-flow exception preventing other error handlers from executing.
+      _page.Error += Page_Error;
+   }
 
     /// <summary> Implements <see cref="ISmartPage.RegisterClientSidePageEventHandler">ISmartPage.RegisterClientSidePageEventHandler</see>. </summary>
     public void RegisterClientSidePageEventHandler (SmartPageEvents pageEvent, string key, string function)
@@ -327,7 +334,7 @@ namespace Remotion.Web.UI
       get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
-    public void OnPreRenderComplete ()
+    private void Page_PreRenderComplete (object sender, EventArgs eventArgs)
     {
       PreRenderSmartPage();
       PreRenderSmartNavigation();
@@ -652,35 +659,51 @@ namespace Remotion.Web.UI
     internal const string AsyncPostBackErrorHttpCodeKey = "System.Web.UI.PageRequestManager:AsyncPostBackErrorHttpCode";
 
 
-    public void OnError (EventArgs e, Action<EventArgs> baseCall)
+    private void Page_Error (object sender, EventArgs eventArgs)
     {
-      ArgumentUtility.CheckNotNull ("e", e);
-      ArgumentUtility.CheckNotNull ("baseCall", baseCall);
       if (IsInAsyncPostBack)
       {
-        var exception = _page.Server.GetLastError();
+        string errorHtml = GetErrorHtml (_page.Context, _page.Context.Error);
 
-        string errorHtml;
-        if (_page.Context.IsCustomErrorEnabled)
-        {
-          errorHtml = "Error!";
-        }
-        else
-        {
-          var aspNetErrorPage = new HttpUnhandledException ("Async Postback Error", exception).GetHtmlErrorMessage();
-          var bodyBegin = @"<body bgcolor=""white"">";
-          var bodyEnd = @"</body>";
-          errorHtml = aspNetErrorPage.Split (new[] { bodyBegin, bodyEnd }, StringSplitOptions.None).Skip(1).Take(1).Single();
-        }
-        var items = _page.Context.Items;
-        items[AsyncPostBackErrorKey] = true;
-        items[AsyncPostBackErrorMessageKey] = errorHtml;
-        items[AsyncPostBackErrorHttpCodeKey] = 500;
+        _page.Context.Items[AsyncPostBackErrorKey] = true;
+        _page.Context.Items[AsyncPostBackErrorMessageKey] = errorHtml;
+        _page.Context.Items[AsyncPostBackErrorHttpCodeKey] = 500;
 
-        throw new AsyncUnhandledException (exception);
+        throw new AsyncUnhandledException (_page.Context.Error);
+      }
+    }
+
+    private static string GetErrorHtml (HttpContextBase context, Exception exception)
+    {
+      string errorHtml;
+      if (context.IsCustomErrorEnabled)
+      {
+        string aspNetErrorPage;
+        using (var reader = new StreamReader (
+            Assembly.GetExecutingAssembly().GetManifestResourceStream (
+                typeof (SmartPageInfo),
+                "Generic_Error_Async_Remote.htm")))
+        {
+          aspNetErrorPage = reader.ReadToEnd();
+        }
+        errorHtml = GetBodyContent (aspNetErrorPage);
+        errorHtml = errorHtml.Replace ("{applicationPath}", context.Request.ApplicationPath);
       }
       else
-        baseCall (e);
+      {
+        var aspNetErrorPage = new HttpUnhandledException ("Async Postback Error", exception).GetHtmlErrorMessage();
+        errorHtml = GetBodyContent (aspNetErrorPage);
+      }
+      return errorHtml;
+    }
+
+    private static string GetBodyContent (string aspNetErrorPage)
+    {
+      string errorHtml;
+      var bodyBegin = @"<body bgcolor=""white"">";
+      var bodyEnd = @"</body>";
+      errorHtml = aspNetErrorPage.Split (new[] { bodyBegin, bodyEnd }, StringSplitOptions.None).Skip (1).Take (1).Single();
+      return errorHtml;
     }
   }
 }

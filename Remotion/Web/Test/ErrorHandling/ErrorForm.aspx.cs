@@ -27,7 +27,10 @@ namespace Remotion.Web.Test.ErrorHandling
     {
       base.OnLoad (e);
       var exception = GetLastError();
-      ErrorDetails.Text = exception.ToString().Replace ("\r\n", "\r\n<br/>");
+      if (exception != null)
+        ErrorDetails.Text = exception.ToString().Replace ("\r\n", "\r\n<br/>");
+      else
+        ErrorDetails.Text = "Error";
       Server.ClearError();
     }
 
@@ -37,6 +40,11 @@ namespace Remotion.Web.Test.ErrorHandling
       if (exception is HttpException)
         return exception.InnerException;
       return exception;
+    }
+
+    protected override void Render (HtmlTextWriter writer)
+    {
+      base.Render (writer);
     }
   }
 }

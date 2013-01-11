@@ -60,12 +60,15 @@ namespace Remotion.Web.Test
     {
     }
 
-    protected void Application_Error (Object sender, EventArgs e)
+    protected void Application_Error1 (Object sender, EventArgs e)
     {
       var exception = Server.GetLastError();
       if (exception is AsyncUnhandledException)
+      {
+        Server.ClearError();
+        //Response.Redirect (VirtualPathUtility.ToAbsolute ("~/ErrorHandling/ErrorForm.aspx"));
         return;
-
+      }
       if (!Context.IsCustomErrorEnabled)
         return;
 

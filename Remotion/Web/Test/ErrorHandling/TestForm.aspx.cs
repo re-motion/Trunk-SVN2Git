@@ -16,20 +16,50 @@
 // 
 
 using System;
+using System.IO;
+using System.Text;
+using System.Web;
+using System.Web.Hosting;
+using System.Web.UI;
 using Remotion.Web.UI;
 
 namespace Remotion.Web.Test.ErrorHandling
 {
   public partial class TestForm : SmartPage
   {
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+      ScriptManager.AsyncPostBackError += ScriptManager_AsyncPostBackError;
+    }
+
+    void ScriptManager_AsyncPostBackError (object sender, AsyncPostBackErrorEventArgs e)
+    {
+      
+    }
     protected void SynchronousPostbackErrorButton_Click (object sender, EventArgs e)
     {
-      throw new ErrorHandlingException ("Synchronous Error", new ApplicationException ("Inner Exception"));
+      var f = new ErrorPageHandlerFactory();
+      var p = f.GetHandler (Context, "GET", "~/ErrorHandling/ErrorForm.aspx", Server.MapPath ("~/ErrorHandling/ErrorForm.aspx"));
+      var stringBuilder = new StringBuilder();
+      TextWriter output = new StringWriter(stringBuilder);
+      var context = new HttpContext (new SimpleWorkerRequest ("~/ErrorHandling/ErrorForm.aspx", "", output));
+      context.AddError (new ApplicationException ("temp error"));
+      p.ProcessRequest (context);
+      context.Response.Flush();
+      throw new ErrorHandlingException ("Synchronous Error" + stringBuilder, new ApplicationException ("Inner Exception"));
     }
 
     protected void AsynchronousPostbackErrorButton_Click (object sender, EventArgs e)
     {
       throw new ErrorHandlingException ("Asynchronous Error", new ApplicationException ("Inner Exception"));
+    }
+  }
+
+  internal class ErrorPageHandlerFactory : PageHandlerFactory
+  {
+    public ErrorPageHandlerFactory ()
+    {
     }
   }
 }
