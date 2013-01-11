@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.SmartPageImplementation;
 
 namespace Remotion.Web.UI
 {

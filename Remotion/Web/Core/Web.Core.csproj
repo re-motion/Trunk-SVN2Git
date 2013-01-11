@@ -279,6 +279,7 @@
     <Compile Include="UI\HtmlHeadAppenderExtensions.cs" />
     <Compile Include="UI\ISmartPageClientScriptManager.cs" />
     <Compile Include="UI\SmartPageClientScriptManager.cs" />
+    <Compile Include="UI\SmartPageImplementation\SmartPageErrorHandler.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />
@@ -694,7 +695,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\SmartPageEvents.cs" />
-    <Compile Include="UI\SmartPageInfo.cs">
+    <Compile Include="UI\SmartPageImplementation\SmartPageInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\WcagException.cs">
@@ -723,7 +724,7 @@
     <Compile Include="Utilities\WebTypeUtility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="UI\Generic_Error_Async_Remote.htm" />
+    <EmbeddedResource Include="UI\SmartPageImplementation\Generic_Error_Async_Remote.htm" />
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>

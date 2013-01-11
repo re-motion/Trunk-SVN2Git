@@ -24,6 +24,7 @@ using Remotion.Utilities;
 using Remotion.Web.Compilation;
 using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.SmartPageImplementation;
 using Remotion.Web.Utilities;
 using Remotion.Web.Infrastructure;
 

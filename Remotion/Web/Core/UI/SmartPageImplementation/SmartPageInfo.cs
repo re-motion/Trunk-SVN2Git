@@ -14,17 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Collections;
@@ -36,7 +33,7 @@ using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI
+namespace Remotion.Web.UI.SmartPageImplementation
 {
   public class SmartPageInfo
   {
@@ -97,9 +94,6 @@ namespace Remotion.Web.UI
       _page.Init += Page_Init;
       // PreRenderComplete-handler must be registered before ScriptManager registers its own PreRenderComplete-handler during OnInit.
       _page.PreRenderComplete += Page_PreRenderComplete;
-      // Error-handler must be registered before ScriptManager registeres its own Error-handler during OnInit. 
-      // Handling async-errors will result in a control-flow exception preventing other error handlers from executing.
-      _page.Error += Page_Error;
    }
 
     /// <summary> Implements <see cref="ISmartPage.RegisterClientSidePageEventHandler">ISmartPage.RegisterClientSidePageEventHandler</see>. </summary>
@@ -326,6 +320,13 @@ namespace Remotion.Web.UI
         var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
         string url3 = themedResourceUrlResolver.GetResourceUrl (_page, ResourceType.Html, c_styleFileUrl);
         HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url3, HtmlHeadAppender.Priority.Library);
+      }
+
+      var scriptManager = ScriptManager.GetCurrent (_page.WrappedInstance);
+      if (scriptManager != null)
+      {
+        var handler = new SmartPageAsynchronousPostBackErrorHandler (_page.Context);
+        scriptManager.AsyncPostBackError += (o, args) => handler.HandleError (args.Exception);
       }
     }
 
@@ -650,60 +651,6 @@ namespace Remotion.Web.UI
         NameValueCollectionUtility.Append (urlParameters, control.GetNavigationUrlParameters());
 
       return urlParameters;
-    }
-
-    
-    //PageRequestManager
-    internal const string AsyncPostBackErrorKey = "System.Web.UI.PageRequestManager:AsyncPostBackError";
-    internal const string AsyncPostBackErrorMessageKey = "System.Web.UI.PageRequestManager:AsyncPostBackErrorMessage";
-    internal const string AsyncPostBackErrorHttpCodeKey = "System.Web.UI.PageRequestManager:AsyncPostBackErrorHttpCode";
-
-
-    private void Page_Error (object sender, EventArgs eventArgs)
-    {
-      if (IsInAsyncPostBack)
-      {
-        string errorHtml = GetErrorHtml (_page.Context, _page.Context.Error);
-
-        _page.Context.Items[AsyncPostBackErrorKey] = true;
-        _page.Context.Items[AsyncPostBackErrorMessageKey] = errorHtml;
-        _page.Context.Items[AsyncPostBackErrorHttpCodeKey] = 500;
-
-        throw new AsyncUnhandledException (_page.Context.Error);
-      }
-    }
-
-    private static string GetErrorHtml (HttpContextBase context, Exception exception)
-    {
-      string errorHtml;
-      if (context.IsCustomErrorEnabled)
-      {
-        string aspNetErrorPage;
-        using (var reader = new StreamReader (
-            Assembly.GetExecutingAssembly().GetManifestResourceStream (
-                typeof (SmartPageInfo),
-                "Generic_Error_Async_Remote.htm")))
-        {
-          aspNetErrorPage = reader.ReadToEnd();
-        }
-        errorHtml = GetBodyContent (aspNetErrorPage);
-        errorHtml = errorHtml.Replace ("{applicationPath}", context.Request.ApplicationPath);
-      }
-      else
-      {
-        var aspNetErrorPage = new HttpUnhandledException ("Async Postback Error", exception).GetHtmlErrorMessage();
-        errorHtml = GetBodyContent (aspNetErrorPage);
-      }
-      return errorHtml;
-    }
-
-    private static string GetBodyContent (string aspNetErrorPage)
-    {
-      string errorHtml;
-      var bodyBegin = @"<body bgcolor=""white"">";
-      var bodyEnd = @"</body>";
-      errorHtml = aspNetErrorPage.Split (new[] { bodyBegin, bodyEnd }, StringSplitOptions.None).Skip (1).Take (1).Single();
-      return errorHtml;
     }
   }
 }
