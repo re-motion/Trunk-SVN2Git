@@ -46,6 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		build\Remotion.AssembleBuildOutput.include.build = build\Remotion.AssembleBuildOutput.include.build
 		build\Remotion.build = build\Remotion.build
 		build\Remotion.BuildTargets.include.build = build\Remotion.BuildTargets.include.build
+		build\Remotion.BuildTargets.Testing.include.build = build\Remotion.BuildTargets.Testing.include.build
 		build\Remotion.Configurations.include.build = build\Remotion.Configurations.include.build
 		build\Remotion.DependDB.include.build = build\Remotion.DependDB.include.build
 		build\Remotion.DependDB.test.build = build\Remotion.DependDB.test.build
