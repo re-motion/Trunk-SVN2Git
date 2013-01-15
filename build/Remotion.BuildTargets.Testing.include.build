@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file is part of the re-motion Core Framework (www.re-motion.org)
+ ! Copyright (c) rubicon IT GmbH, www.rubicon.eu
+ ! 
+ ! The re-motion Core Framework is free software; you can redistribute it 
+ ! and/or modify it under the terms of the GNU Lesser General Public License 
+ ! as published by the Free Software Foundation; either version 2.1 of the 
+ ! License, or (at your option) any later version.
+ ! 
+ ! re-motion is distributed in the hope that it will be useful, 
+ ! but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ ! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+ ! GNU Lesser General Public License for more details.
+ ! 
+ ! You should have received a copy of the GNU Lesser General Public License
+ ! along with re-motion; if not, see http://www.gnu.org/licenses.
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Constants -->
+  <PropertyGroup>
+    <NoDatabaseRequired>NoDatabaseRequired</NoDatabaseRequired>
+  </PropertyGroup>
+
+  <!-- Call target for local testing (overwrites default configuration in Remotion.Configurations.include.build) -->
+  <Target Name="CreateLocalTestConfiguration">
+    <ItemGroup>
+      <AllPlatforms Remove="@(AllPlatforms)"/>
+      <AllPlatforms Include="x86">
+        <Use32Bit>True</Use32Bit>
+      </AllPlatforms>
+    </ItemGroup>
+
+    <ItemGroup>
+      <AllDatabaseSystems Remove="@(AllDatabaseSystems)"/>
+      <AllDatabaseSystems Include="Local">
+        <DataSource>localhost\MSSQL2012</DataSource>
+        <DatabaseDirectory>C:\Databases\MsSql2012</DatabaseDirectory>
+      </AllDatabaseSystems>
+    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <NumberOfTestFailuresPerProject Include="0"/>
+    <NumberOfTestErrorsPerProject Include="0"/>
+  </ItemGroup>
+
+  <!-- Main target; reporting only, calls RunTestsInternal for actual work -->
+  <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateLogDirectory;BuildTestProjects;RunTestsInternal">
+    <Error Text="ItemGroup 'NumberOfTestFailuresPerProject' is empty, but should contain test results!" Condition="@(NumberOfTestFailuresPerProject) == ''"/>
+    <Error Text="ItemGroup 'NumberOfTestErrorsPerProject' is empty, but should contain test results!" Condition="@(NumberOfTestErrorsPerProject) == ''"/>
+
+    <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="@(NumberOfTestFailuresPerProject)">
+      <Output PropertyName="_failures" TaskParameter="Result"/>
+    </MSBuild.ExtensionPack.Science.Maths>
+    <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="@(NumberOfTestErrorsPerProject)">
+      <Output PropertyName="_errors" TaskParameter="Result"/>
+    </MSBuild.ExtensionPack.Science.Maths>
+
+    <!-- NUnit-Task output error compensation. Remove when implementing RM-5154 (update of MSBuild Extension Pack) -->
+    <MSBuild.ExtensionPack.Science.Maths TaskAction="Subtract" Numbers="$(_failures);$(_errors)">
+      <Output PropertyName="_failures" TaskParameter="Result"/>
+    </MSBuild.ExtensionPack.Science.Maths>
+
+    <Error
+      Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors."
+      Condition="$(_failures) &gt; 0 or $(_errors) &gt; 0"/>
+
+    <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
+  </Target>
+
+  <!-- 
+    Actual testing happens here.
+    BuildTestOutputFilesCrossProduct creates all test configurations (the result is a cross product of TestOutputFiles x
+    AllPlatforms x AllDatabaseSystems), see description on the target for more information. Afterwards _testOutputFiles contains
+    entries like:
+    
+      Identity = MyUnitTests1.dll ; Platform = x86 ; DatabaseSystem = SqlServer2005
+      Identity = MyUnitTests1.dll ; Platform = x64 ; DatabaseSystem = SqlServer2005
+      Identity = MyUnitTests1.dll ; Platform = x86 ; DatabaseSystem = SqlServer2008
+      ...
+      Identity = MyUnitTests2.dll ; Platform = x86 ; DatabaseSystem = NoDatabaseRequired
+      ...
+      (only relevant metadata shown)
+      
+    RunTestsInternal uses target batching to be called once for each combination of "Identity;DatabaseSystem", i.e. the current
+    default configuration would lead to local _testOutputFiles-ItemGroups of length 2 (one entry for each platform), e.g.:
+    
+      Identity = MyUnitTests1.dll ; Platform = x86 ; DatabaseSystem = SqlServer2005
+      Identity = MyUnitTests1.dll ; Platform = x64 ; DatabaseSystem = SqlServer2005
+      
+    When called for such a list, it sets the required database configuration in the app.config file (if required) and finally
+    runs the NUnit task for each of the entries in the local _testOutputFiles-ItemGroup.
+  -->
+  <Target Name="RunTestsInternal" DependsOnTargets="BuildTestOutputFilesCrossProduct" Outputs="%(_testOutputFiles.Identity);%(_testOutputFiles.DatabaseSystem)">
+    <Message Text="Running tests %(_testOutputFiles.FullPath), ConfigurationID=$(ConfigurationID), Additional Configuration Information = %(_testOutputFiles.Platform), %(_testOutputFiles.DatabaseSystem)" Importance="High"/>
+
+    <!-- Adapt App.Config to use correct databaseW -->
+    <PropertyGroup>
+      <_databaseSystem>%(_testOutputFiles.DatabaseSystem)</_databaseSystem>
+      <_appConfigFile>%(_testOutputFiles.FullPath).config</_appConfigFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_appConfigAttributes Remove="@(_appConfigAttributes)"/>
+      <_appConfigAttributes Include="/configuration/appSettings/add[@key='DataSource']">
+        <Key>value</Key>
+        <Value>%(_testOutputFiles.DataSource)</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/appSettings/add[@key='DatabaseDirectory']">
+        <Key>value</Key>
+        <Value>%(_testOutputFiles.DatabaseDirectory)</Value>
+      </_appConfigAttributes>
+    </ItemGroup>
+
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="UpdateAttribute"
+                                       File="$(_appConfigFile)"
+                                       XPath="%(_appConfigAttributes.Identity)"
+                                       Key="%(_appConfigAttributes.Key)"
+                                       Value="%(_appConfigAttributes.Value)"
+                                       Condition="'$(_databaseSystem)' != '$(NoDatabaseRequired)'"/>
+
+    <!-- Run tests -->
+    <MSBuild.ExtensionPack.CodeQuality.NUnit
+        ToolPath="$(NUnitToolPath)"
+        Assemblies="%(_testOutputFiles.FullPath)"
+        ContinueOnError="True"
+        Use32Bit="%(_testOutputFiles.Use32Bit)"
+        OutputXmlFile="$(LogDirectory)%(_testOutputFiles.Filename).$(ActiveConfigurationName).%(_testOutputFiles.Platform).%(_testOutputFiles.DatabaseSystem).xml">
+      <Output TaskParameter="Failures" ItemName="NumberOfTestFailuresPerProject"/>
+      <Output TaskParameter="Errors" ItemName="NumberOfTestErrorsPerProject"/>
+    </MSBuild.ExtensionPack.CodeQuality.NUnit>
+  </Target>
+
+  <!--
+    BuildTestOutputFilesCrossProduct creates all test configurations (the result is a cross product of TestOutputFiles x
+    AllPlatforms x AllDatabaseSystems).
+    
+    Building cross products with MSBuild is not straightforward, see:
+    http://coding-insomnia.com/2007/02/02/generating-a-cross-product-with-msbuild/
+    for more details.    
+  -->
+  <Target Name="BuildTestOutputFilesCrossProduct">
+    <!-- Step 1: Build the cross product testOutputFiles1 = TestOutputFiles x AllPlatforms -->
+    <CreateItem Include="@(TestOutputFiles)"
+                AdditionalMetadata="Platform=%(AllPlatforms.Identity);
+                                    Use32Bit=%(AllPlatforms.Use32Bit)">
+      <Output ItemName="_testOutputFiles1" TaskParameter="Include"/>
+    </CreateItem>
+
+    <!-- Step 2: Build the cross product _testOutputFiles2 = _testOutputFiles1 x AllDatabaseSystems
+           Warning: Contains also entries for %(_testOutputFiles1.IsDatabaseTest) == False  as well! -->
+    <CreateItem Include="@(_testOutputFiles1)"
+                AdditionalMetadata="DatabaseSystem=%(AllDatabaseSystems.Identity);
+                                    DataSource=%(AllDatabaseSystems.DataSource);
+                                    DatabaseDirectory=%(AllDatabaseSystems.DatabaseDirectory)">
+      <!-- Condition="'%(IsDatabaseTest)' == 'True'" not possible (double batching) => filter afterwards -->
+      <Output ItemName="_testOutputFiles2" TaskParameter="Include"/>
+    </CreateItem>
+
+    <!-- Step 3: Filter entries, _testOutputFiles3 = _testOutputFiles2 where %(IsDatabaseTest) -->
+    <ItemGroup>
+      <_testOutputFiles3 Remove="@(_testOutputFiles3)"/>
+      <_testOutputFiles3 Include="@(_testOutputFiles2)" Condition="'%(IsDatabaseTest)' == 'True'"/>
+    </ItemGroup>
+
+    <!-- Step 4: Add additional $(NoDatabaseRequired)-metadata to _testOutputFiles1 where !%(IsDatabaseText) -> _testOutputFiles4 -->
+    <CreateItem Include="@(_testOutputFiles1)"
+                AdditionalMetadata="DatabaseSystem=$(NoDatabaseRequired);
+                                    DataSource=;
+                                    DatabaseDirectory="
+                Condition="'%(IsDatabaseTest)' == 'False'">
+      <Output ItemName="_testOutputFiles4" TaskParameter="Include"/>
+    </CreateItem>
+
+    <!-- Step 5: _testOutputFiles = _testOutputFiles3 + _testOutputFiles4 -->
+    <ItemGroup>
+      <_testOutputFiles Remove="@(_testOutputFiles)"/>
+      <_testOutputFiles Include="@(_testOutputFiles3)"/>
+      <_testOutputFiles Include="@(_testOutputFiles4)"/>
+    </ItemGroup>
+
+    <!-- Print all created configurations -->
+    <Message Text="Created test configuration: $(ActiveConfigurationName) %(_testOutputFiles.FullPath) %(_testOutputFiles.Platform) %(_testOutputFiles.DatabaseSystem)" Importance="high"/>
+  </Target>
+
+</Project>

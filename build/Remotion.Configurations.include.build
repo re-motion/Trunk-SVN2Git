@@ -33,4 +33,35 @@
 
   </ItemGroup>
 
+  <ItemGroup>
+    
+    <AllPlatforms Include="x86">
+      <Use32Bit>True</Use32Bit>
+    </AllPlatforms>
+    
+    <AllPlatforms Include="x64">
+      <Use32Bit>False</Use32Bit>
+    </AllPlatforms>
+    
+  </ItemGroup>
+
+  <ItemGroup>
+    
+    <AllDatabaseSystems Include="SqlServer2005">
+      <DataSource>localhost\MSSQL2005</DataSource>
+      <DatabaseDirectory>C:\Databases\MsSql2005</DatabaseDirectory>
+    </AllDatabaseSystems>
+    
+    <AllDatabaseSystems Include="SqlServer2008">
+      <DataSource>localhost\MSSQL2008</DataSource>
+      <DatabaseDirectory>C:\Databases\MsSql2008</DatabaseDirectory>
+    </AllDatabaseSystems>
+    
+    <AllDatabaseSystems Include="SqlServer2012">
+      <DataSource>localhost\MSSQL2012</DataSource>
+      <DatabaseDirectory>C:\Databases\MsSql2012</DatabaseDirectory>
+    </AllDatabaseSystems>
+    
+  </ItemGroup>
+
 </Project>

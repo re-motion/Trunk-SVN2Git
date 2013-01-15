@@ -19,56 +19,84 @@
 
   <ItemGroup>
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Core\Core.Core.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Core\UnitTests\Core.UnitTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Core\UnitTests\Core.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Mixins\Core\Mixins.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Mixins\MixerTools\Mixins.MixerTools.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Mixins\UnitTests\Mixins.UnitTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Mixins\UnitTests\Mixins.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\TypePipe\Core\TypePipe.Core.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\TypePipe\UnitTests\TypePipe.UnitTests.csproj" />
-    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Remotion\TypePipe\IntegrationTests\TypePipe.IntegrationTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\TypePipe\UnitTests\TypePipe.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Remotion\TypePipe\IntegrationTests\TypePipe.IntegrationTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </IntegrationTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\Core\Linq.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\LinqToSqlAdapter\Linq.LinqToSqlAdapter.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\SqlBackend\Linq.SqlBackend.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Relinq\UnitTests\Linq.UnitTests.csproj" />
-    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj" />
-    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.CSharp\Linq.IntegrationTests.CSharp.csproj" />
-    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.VisualBasic\Linq.IntegrationTests.VisualBasic.vbproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Relinq\UnitTests\Linq.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </IntegrationTestProjectFiles>
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.CSharp\Linq.IntegrationTests.CSharp.csproj">
+      <IsDatabaseTest>True</IsDatabaseTest>
+    </IntegrationTestProjectFiles>
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.VisualBasic\Linq.IntegrationTests.VisualBasic.vbproj">
+      <IsDatabaseTest>True</IsDatabaseTest>
+    </IntegrationTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\Core\Data.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects\Data.DomainObjects.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.RdbmsTools\Data.DomainObjects.RdbmsTools.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.Security\Data.DomainObjects.Security.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.UberProfIntegration\Data.DomainObjects.UberProfIntegration.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Data\UnitTests\Data.UnitTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Data\UnitTests\Data.UnitTests.csproj">
+      <IsDatabaseTest>True</IsDatabaseTest>
+    </UnitTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Development\CodeDom\Development.CodeDom.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Development\Core\Development.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Development\Data\Development.Data.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Development\Web\Development.Web.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Development\UnitTests\Development.UnitTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Development\UnitTests\Development.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Core\ObjectBinding.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Web\ObjectBinding.Web.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Web.Legacy\ObjectBinding.Web.Legacy.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Web.Preview\ObjectBinding.Web.Preview.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\UnitTests\ObjectBinding.UnitTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\UnitTests\ObjectBinding.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Security\Core\Security.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Security\Metadata.Extractor\Security.Metadata.Extractor.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Security\MSBuild.Tasks\Security.MSBuild.Tasks.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Security\UnitTests\Security.UnitTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Security\UnitTests\Security.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Web\Core\Web.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Web\ExecutionEngine.CodeGenerator\Web.ExecutionEngine.CodeGenerator.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Web\Legacy\Web.Legacy.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Web\Security\Web.Security.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Web\UnitTests\Web.UnitTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Web\UnitTests\Web.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Scripting\Core\Scripting.Core.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Scripting\UnitTests\Scripting.UnitTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Scripting\UnitTests\Scripting.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Dms\Clients.Windows.Tray\Dms.Clients.Windows.Tray.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Dms\Core\Dms.Core.csproj" />
@@ -76,13 +104,17 @@
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Dms\DocumentEventMonitor\Dms.DocumentEventMonitor.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Dms\Shared\Dms.Shared.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Dms\Web\Dms.Web.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Dms\UnitTests\Dms.UnitTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Dms\UnitTests\Dms.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\SecurityManager\AclTools.Expander\SecurityManager.AclTools.Expander.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\SecurityManager\Clients.Web\SecurityManager.Clients.Web.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\SecurityManager\Core\SecurityManager.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\SecurityManager\Metadata.Importer\SecurityManager.Metadata.Importer.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\SecurityManager\Core.UnitTests\SecurityManager.Core.UnitTests.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\SecurityManager\Core.UnitTests\SecurityManager.Core.UnitTests.csproj">
+      <IsDatabaseTest>True</IsDatabaseTest>
+    </UnitTestProjectFiles>
 
   </ItemGroup>
 

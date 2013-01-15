@@ -127,47 +127,6 @@
     <Message Text="Done building test projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
 
-  <ItemGroup>
-    <NumberOfTestFailuresPerProject Include="0"/>
-    <NumberOfTestErrorsPerProject Include="0"/>
-  </ItemGroup>
-  
-  <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateLogDirectory;BuildTestProjects;RunTestsInternal">
-    <Error Text="ItemGroup 'NumberOfTestFailuresPerProject' is empty, but should contain test results!" Condition="@(NumberOfTestFailuresPerProject) == ''"/>
-    <Error Text="ItemGroup 'NumberOfTestErrorsPerProject' is empty, but should contain test results!" Condition="@(NumberOfTestErrorsPerProject) == ''"/>
-      
-    <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="@(NumberOfTestFailuresPerProject)">
-      <Output PropertyName="_failures" TaskParameter="Result"/>
-    </MSBuild.ExtensionPack.Science.Maths>
-    <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="@(NumberOfTestErrorsPerProject)">
-      <Output PropertyName="_errors" TaskParameter="Result"/>
-    </MSBuild.ExtensionPack.Science.Maths>
-
-    <!-- NUnit-Task output error compensation. Remove when implementing RM-5154 (update of MSBuild Extension Pack) -->
-    <MSBuild.ExtensionPack.Science.Maths TaskAction="Subtract" Numbers="$(_failures);$(_errors)">
-      <Output PropertyName="_failures" TaskParameter="Result"/>
-    </MSBuild.ExtensionPack.Science.Maths>
-
-    <Error
-      Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors."
-      Condition="$(_failures) &gt; 0 or $(_errors) &gt; 0"/>
-      
-    <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
-  </Target>
-  
-  <Target Name="RunTestsInternal">
-    <Message Text="Running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
-    <MSBuild.ExtensionPack.CodeQuality.NUnit
-        ToolPath="$(NUnitToolPath)"
-        Assemblies="%(TestOutputFiles.FullPath)"
-        ContinueOnError="True"
-        Use32Bit="True"
-        OutputXmlFile="$(LogDirectory)%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml">
-      <Output TaskParameter="Failures" ItemName="NumberOfTestFailuresPerProject"/>
-      <Output TaskParameter="Errors" ItemName="NumberOfTestErrorsPerProject"/>
-    </MSBuild.ExtensionPack.CodeQuality.NUnit>
-  </Target>
-  
   <Target Name="RunMixinXRefTest">
     <Message Text="Check whether the full API required for MixinXRef is available" Importance="High"/>
 

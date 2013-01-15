@@ -22,6 +22,7 @@
   <Import Project="Remotion.Projects.include.build" />
   <Import Project="Remotion.Configurations.include.build" />
   <Import Project="Remotion.BuildTargets.include.build" />
+  <Import Project="Remotion.BuildTargets.Testing.include.build" />
   <Import Project="Remotion.AssembleBuildOutput.include.build" />
   
   <PropertyGroup>
@@ -158,10 +159,10 @@
   <Target Name="TestBuild" DependsOnTargets="CleanFolders" >
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
-             Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
+             Targets="BuildReleaseProjects;BuildTestProjects;CreateLocalTestConfiguration;RunTests;AssembleBuildOutput;RunMixinXRefTest"
              Properties="
                  ConfigurationID=Debug;
-                 SolutionKeyFile=$(SolutionKeyFile);"/>
+                 SolutionKeyFile=$(SolutionKeyFile)"/>
   </Target>
 
   <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >
