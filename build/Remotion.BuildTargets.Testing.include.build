@@ -34,8 +34,8 @@
     <ItemGroup>
       <AllDatabaseSystems Remove="@(AllDatabaseSystems)"/>
       <AllDatabaseSystems Include="Local">
-        <DataSource>localhost\MSSQL2012</DataSource>
-        <DatabaseDirectory>C:\Databases\MsSql2012</DatabaseDirectory>
+        <DataSource>localhost</DataSource>
+        <DatabaseDirectory>C:\Databases</DatabaseDirectory>
       </AllDatabaseSystems>
     </ItemGroup>
   </Target>
