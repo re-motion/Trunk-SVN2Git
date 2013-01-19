@@ -84,9 +84,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Core\Domain\SecurityManagerQueries.xml">
-      <Link>SecurityManagerQueries.xml</Link>
-    </Content>
     <Content Include="Test HTML\AclExpansionTest.css" />
     <Content Include="Test HTML\AclExpansionTest.htm" />
   </ItemGroup>

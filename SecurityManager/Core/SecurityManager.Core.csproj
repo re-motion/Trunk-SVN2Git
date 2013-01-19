@@ -433,8 +433,6 @@
     <None Include="Database\SecurityManagerSetupDBSpecialTables.sql">
     </None>
     <None Include="Doc\include\GettingStartedWithRestrict.aml" />
-    <None Include="Domain\SecurityManagerQueries.xml">
-    </None>
     <None Include="GenerateSetupDBScript.cmd" />
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>

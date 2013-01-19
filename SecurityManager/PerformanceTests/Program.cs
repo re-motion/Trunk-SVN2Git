@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
-using Autofac;
-using AutofacContrib.CommonServiceLocator;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Data.DomainObjects.UberProfIntegration;
 using Remotion.Security;
 using Remotion.Security.Configuration;
+using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.PerformanceTests
 {
@@ -17,14 +12,12 @@ namespace Remotion.SecurityManager.PerformanceTests
   {
     static void Main (string[] args)
     {
-      var builder = new ContainerBuilder ();
+      //var defaultServiceLocator = new DefaultServiceLocator();
 
-      //builder.Register (c => new LinqToSqlListenerFactory ())
-      //    .As<IClientTransactionListenerFactory, IPersistenceListenerFactory> ()
-      //    .InstancePerDependency ();
+      //defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.IClientTransactionExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
+      //defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.Tracing.IPersistenceExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
 
-      var autofacServiceLocator = new AutofacServiceLocator (builder.Build ());
-      ServiceLocator.SetLocatorProvider (() => autofacServiceLocator);
+      //ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
 
       ISecurityProvider provider = SecurityConfiguration.Current.SecurityProvider;
       var context =
@@ -38,7 +31,7 @@ namespace Remotion.SecurityManager.PerformanceTests
               new EnumWrapper[0]);
       ISecurityPrincipal user = new SecurityPrincipal ("TestBenutzer", null, null, null);
       provider.GetAccess (context, user);
-      Thread.Sleep (2000);
+
       Stopwatch stopwatch = Stopwatch.StartNew();
 
       int dummy = 0;
