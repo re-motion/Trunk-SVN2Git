@@ -31,11 +31,12 @@ namespace Remotion.SecurityManager.PerformanceTests
               new EnumWrapper[0]);
       ISecurityPrincipal user = new SecurityPrincipal ("TestBenutzer", null, null, null);
       provider.GetAccess (context, user);
+      Console.ReadKey();
 
       Stopwatch stopwatch = Stopwatch.StartNew();
 
       int dummy = 0;
-      for (int i = 0; i < 10; i++)
+      for (int i = 0; i < 1; i++)
         dummy += provider.GetAccess (context, user).Length;
       stopwatch.Stop();
       Trace.Write (dummy);
