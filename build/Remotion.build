@@ -62,7 +62,7 @@
   <Target Name="BuildAll" DependsOnTargets="CleanFolders;CheckVersion">
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
-             Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"
+             Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;CreateLocalTestConfiguration;RunTests;AssembleBuildOutput;"
              Properties="
                  ConfigurationID=%(AllConfigurations.Identity);
                  SolutionKeyFile=$(SolutionKeyFile);
