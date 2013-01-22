@@ -59,12 +59,13 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
 
     public int ExecuteBatchFile (string sqlFileName, bool useTransaction)
     {
-      return ExecuteBatchFile (sqlFileName, useTransaction, null);
+      return ExecuteBatchFile (sqlFileName, useTransaction, new Dictionary<string, string>());
     }
 
-    public int ExecuteBatchFile (string sqlFileName, bool useTransaction, ReadOnlyDictionary<string, string> replacementDictionary)
+    public int ExecuteBatchFile (string sqlFileName, bool useTransaction, IDictionary<string, string> replacementDictionary)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
+      ArgumentUtility.CheckNotNull ("replacementDictionary", replacementDictionary);      
 
       _fileName = sqlFileName;
       if (!Path.IsPathRooted (sqlFileName))
@@ -78,18 +79,16 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
 
     public int ExecuteBatchString (string commandBatch, bool useTransaction)
     {
-      return ExecuteBatchString (commandBatch, useTransaction, null);
+      return ExecuteBatchString (commandBatch, useTransaction, new Dictionary<string, string>());
     }
 
-    public int ExecuteBatchString (string commandBatch, bool useTransaction, ReadOnlyDictionary<string, string> replacementDictionary)
+    public int ExecuteBatchString (string commandBatch, bool useTransaction, IDictionary<string, string> replacementDictionary)
     {
       ArgumentUtility.CheckNotNull ("commandBatch", commandBatch);
+      ArgumentUtility.CheckNotNull ("replacementDictionary", replacementDictionary);      
 
-      if (replacementDictionary != null)
-      {
-        foreach (var replacement in replacementDictionary)
-          commandBatch = commandBatch.Replace (replacement.Key, replacement.Value);
-      }
+      foreach (var replacement in replacementDictionary)
+        commandBatch = commandBatch.Replace (replacement.Key, replacement.Value);
 
       var count = 0;
       using (IDbConnection connection = CreateConnection ())
