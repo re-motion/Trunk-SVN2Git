@@ -16,7 +16,6 @@
 // 
 using System;
 using System.ComponentModel.Design;
-using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using Microsoft.Practices.ServiceLocation;
@@ -31,7 +30,6 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
