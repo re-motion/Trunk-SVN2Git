@@ -40,6 +40,7 @@ namespace Remotion.ObjectBinding
     string Identifier { get; }
 
     /// <summary> Gets the list of properties in this path. </summary>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="IsDynamic"/> evaluates <see langword="true" />.</exception>
     [NotNull]
     ReadOnlyCollection<IBusinessObjectProperty> Properties { get; }
 
