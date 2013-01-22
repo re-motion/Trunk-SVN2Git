@@ -1460,7 +1460,6 @@
     <Compile Include="DomainObjects\UberProfIntegration\UberProfIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\UberProfIntegration\MockableLinqToSqlAppender.cs" />
     <Compile Include="DomainObjects\UberProfIntegration\LinqToSqlExtensionFactoryTest.cs" />
-    <Compile Include="UnitTesting\ListArgExtensions.cs" />
     <Compile Include="UnitTesting\MethodOptionsExtensions.cs" />
     <Compile Include="UnitTesting\OrderedExpectationCounter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

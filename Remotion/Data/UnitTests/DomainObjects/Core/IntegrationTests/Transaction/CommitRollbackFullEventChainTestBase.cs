@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
+using Remotion.Development.RhinoMocks.UnitTesting;
 using Remotion.FunctionalProgramming;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;

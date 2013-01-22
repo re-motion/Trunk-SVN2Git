@@ -217,6 +217,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RhinoMocks\UnitTesting\DecoratorTestHelperTest.cs" />
+    <Compile Include="RhinoMocks\UnitTesting\ListArgExtensionsTest.cs" />
     <Compile Include="RhinoMocks\UnitTesting\Threading\LockingDecoratorTestHelperTest.cs" />
     <Compile Include="RhinoMocks\UnitTesting\Threading\LockTestHelperTest.cs" />
     <Compile Include="Web\UnitTesting\UI\Controls\ControlInvokerTest.cs" />

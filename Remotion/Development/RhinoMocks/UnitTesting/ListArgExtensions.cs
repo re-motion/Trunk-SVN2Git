@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using Remotion.Development.UnitTesting;
@@ -22,10 +23,16 @@ using Rhino.Mocks.Constraints;
 using Remotion.FunctionalProgramming;
 using System.Linq;
 
-namespace Remotion.Data.UnitTests.UnitTesting
+namespace Remotion.Development.RhinoMocks.UnitTesting
 {
+  /// <summary>
+  /// Extensions methods for the <see cref="ListArg{T}"/> class.
+  /// </summary>
   public static class ListArgExtensions
   {
+    /// <summary>
+    /// Similiar to <see cref="ListArg{T}.Equal"/> but without considering the order of the elements in the collection.
+    /// </summary>
     public static T Equivalent<T> (this ListArg<T> arg, IEnumerable collection) where T : IEnumerable
     {
       var items = collection.Cast<object>().ToArray();
@@ -36,6 +43,9 @@ namespace Remotion.Data.UnitTests.UnitTesting
       return default (T);
     }
 
+    /// <summary>
+    /// Similiar to <see cref="ListArg{T}.Equal"/> but without considering the order of the elements in the collection.
+    /// </summary>
     public static T Equivalent<T> (this ListArg<T> arg, params object[] items) where T : IEnumerable
     {
       return Equivalent (arg, (IEnumerable) items);
