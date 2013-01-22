@@ -15,13 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Configuration;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Database;
-using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Development.UnitTesting.Resources;
 
