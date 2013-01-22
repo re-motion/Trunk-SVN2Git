@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
@@ -79,21 +80,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No database-name could be found in the given connection-string.")]
-    public void GetCreateScript_InvalidConnectionString ()
+    public void GetCreateScript_WithConnectionStringMissingInitialCatalog_ThrowsInvalidOperationException ()
     {
-      var builder = new SqlDatabaseSelectionScriptElementBuilder (_innerScriptBuilderMock, "Test1234");
+      var builder = new SqlDatabaseSelectionScriptElementBuilder (
+          _innerScriptBuilderMock,
+          new SqlConnectionStringBuilder { DataSource = "localhost" }.ToString());
 
-      builder.GetCreateScript();
+      Assert.That (
+          () => builder.GetCreateScript(),
+          Throws.InvalidOperationException
+                .With.Message.EqualTo ("No database name could be found in the given connection string 'Data Source=localhost'."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No database-name could be found in the given connection-string.")]
-    public void GetDropScript_InvalidConnectionString ()
+    public void GetDropScript_WithConnectionStringMissingInitialCatalog_ThrowsInvalidOperationException ()
     {
-      var builder = new SqlDatabaseSelectionScriptElementBuilder (_innerScriptBuilderMock, "Test1234");
+      var builder = new SqlDatabaseSelectionScriptElementBuilder (
+          _innerScriptBuilderMock,
+          new SqlConnectionStringBuilder { DataSource = "localhost" }.ToString());
 
-      builder.GetDropScript ();
+      Assert.That (
+          () => builder.GetDropScript(),
+          Throws.InvalidOperationException
+                .With.Message.EqualTo ("No database name could be found in the given connection string 'Data Source=localhost'."));
     }
   }
 }

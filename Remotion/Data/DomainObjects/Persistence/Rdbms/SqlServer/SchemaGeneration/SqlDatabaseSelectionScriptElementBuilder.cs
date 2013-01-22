@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
@@ -70,14 +71,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
     private string GetDatabaseName ()
     {
-      var initialCatalogMarker = "Initial Catalog=";
+      SqlConnectionStringBuilder connectionStringBuilder;
+      try
+      {
+        connectionStringBuilder = new SqlConnectionStringBuilder (_connectionString);
+      }
+      catch (ArgumentException ex)
+      {
+         throw new InvalidOperationException (string.Format("Format of connection string '{0}' is invalid.", _connectionString), ex);
+      }
 
-      if (!_connectionString.Contains (initialCatalogMarker))
-        throw new InvalidOperationException ("No database-name could be found in the given connection-string.");
+      var initialCatalog = connectionStringBuilder.InitialCatalog;
+      if (string.IsNullOrEmpty (initialCatalog))
+      {
+        throw new InvalidOperationException (
+            string.Format ("No database name could be found in the given connection string '{0}'.", _connectionString));
+      }
 
-      var startIndex = _connectionString.IndexOf (initialCatalogMarker) + initialCatalogMarker.Length;
-      var temp = _connectionString.Substring (startIndex);
-      return temp.Substring (0, temp.IndexOf (";"));
+      return initialCatalog;
     }
   }
 }
