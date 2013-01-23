@@ -25,7 +25,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.UI.SmartPageImplementation
 {
-  public class SmartPageAsynchronousPostBackErrorHandler
+  public class SmartPageAsyncPostBackErrorHandler
   {
     private readonly HttpContextBase _context;
     //PageRequestManager
@@ -35,7 +35,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
 
 
 
-    public SmartPageAsynchronousPostBackErrorHandler (HttpContextBase context)
+    public SmartPageAsyncPostBackErrorHandler (HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       

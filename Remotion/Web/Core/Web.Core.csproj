@@ -279,7 +279,7 @@
     <Compile Include="UI\HtmlHeadAppenderExtensions.cs" />
     <Compile Include="UI\ISmartPageClientScriptManager.cs" />
     <Compile Include="UI\SmartPageClientScriptManager.cs" />
-    <Compile Include="UI\SmartPageImplementation\SmartPageErrorHandler.cs" />
+    <Compile Include="UI\SmartPageImplementation\SmartPageAsyncPostBackErrorHandler.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />

@@ -325,7 +325,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
       var scriptManager = ScriptManager.GetCurrent (_page.WrappedInstance);
       if (scriptManager != null)
       {
-        var handler = new SmartPageAsynchronousPostBackErrorHandler (_page.Context);
+        var handler = new SmartPageAsyncPostBackErrorHandler (_page.Context);
         scriptManager.AsyncPostBackError += (o, args) => handler.HandleError (args.Exception);
       }
     }

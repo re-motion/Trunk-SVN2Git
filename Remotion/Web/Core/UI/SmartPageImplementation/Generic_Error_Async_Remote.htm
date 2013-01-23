@@ -5,8 +5,8 @@
          body {font-family:"Verdana";font-weight:normal;font-size: .7em;color:black;} 
          p {font-family:"Verdana";font-weight:normal;color:black;margin-top: -5px}
          b {font-family:"Verdana";font-weight:bold;color:black;margin-top: -5px}
-         H1 { font-family:"Verdana";font-weight:normal;font-size:18pt;color:red }
-         H2 { font-family:"Verdana";font-weight:normal;font-size:14pt;color:maroon }
+         h1 { font-family:"Verdana";font-weight:normal;font-size:18pt;color:red }
+         h2 { font-family:"Verdana";font-weight:normal;font-size:14pt;color:maroon }
          pre {font-family:"Lucida Console";font-size: .9em}
          .marker {font-weight: bold; color: black;text-decoration: none;}
          .version {color: gray;}
@@ -17,18 +17,18 @@
 
     <body bgcolor="white">
 
-            <span><H1>Server Error in '{applicationPath}' Application.<hr width=100% size=1 color=silver></H1>
+            <span><h1>Server Error in '{applicationPath}' Application.<hr width="100%" size="1" color="silver"></h1>
 
             <h2> <i>Runtime Error</i> </h2></span>
 
-            <font face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif ">
+            <div style="font-family: Arial, Helvetica, Geneva, SunSans-Regular, sans-serif ">
 
             <b> Description: </b>An application error occurred on the server. The current custom error settings for this application prevent the details of the application error from being viewed.
-            <br><br>
+            <br/><br/>
 
-            <b>Details:</b> To enable the details of this specific error message to be viewable on the local server machine, please create a &lt;customErrors&gt; tag within a &quot;web.config&quot; configuration file located in the root directory of the current web application. This &lt;customErrors&gt; tag should then have its &quot;mode&quot; attribute set to &quot;RemoteOnly&quot;. To enable the details to be viewable on remote machines, please set &quot;mode&quot; to &quot;Off&quot;.<br><br>
+            <b>Details:</b> To enable the details of this specific error message to be viewable on the local server machine, please create a &lt;customErrors&gt; tag within a &quot;web.config&quot; configuration file located in the root directory of the current web application. This &lt;customErrors&gt; tag should then have its &quot;mode&quot; attribute set to &quot;RemoteOnly&quot;. To enable the details to be viewable on remote machines, please set &quot;mode&quot; to &quot;Off&quot;.<br/><br/>
 
-            <table width=100% bgcolor="#ffffcc">
+            <table width="100%" bgcolor="#ffffcc">
                <tr>
                   <td>
                       <code><pre>
@@ -49,7 +49,7 @@
 
             <b>Notes:</b> The current error page you are seeing can be replaced by a custom error page by performing a &quot;Redirect&quot; call into the error handler of the &quot;HttpApplication&quot;.<br><br>
 
-            <table width=100% bgcolor="#ffffcc">
+            <table width="100%" bgcolor="#ffffcc">
                <tr>
                   <td>
                       <code><pre>
@@ -75,8 +75,9 @@ public class Global : HttpApplication
                   </td>
                </tr>
             </table>
+            </div>
 
-            <br>
+            <br/>
 
     </body>
 </html>
