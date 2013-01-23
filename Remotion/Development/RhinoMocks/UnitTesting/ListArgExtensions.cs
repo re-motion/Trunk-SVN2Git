@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Remotion.Development.UnitTesting;
 using Remotion.Text;
 using Rhino.Mocks.Constraints;
@@ -49,6 +50,16 @@ namespace Remotion.Development.RhinoMocks.UnitTesting
     public static T Equivalent<T> (this ListArg<T> arg, params object[] items) where T : IEnumerable
     {
       return Equivalent (arg, (IEnumerable) items);
+    }
+
+    public static IEnumerable<T> Equivalent<T> (this ListArg<IEnumerable<T>> arg, params T[] items)
+    {
+      var argManagerType = typeof (ListArg<>).Assembly.GetType ("Rhino.Mocks.ArgManager", true);
+      var message = "equivalent to collection [" + SeparatedStringBuilder.Build (", ", items) + "]";
+      var constraint = new PredicateConstraintWithMessage<IEnumerable<T>> (c => c.SetEquals (items), message);
+      PrivateInvoke.InvokeNonPublicStaticMethod (argManagerType, "AddInArgument", constraint);
+
+      return new T[0];
     }
 
     class PredicateConstraintWithMessage<T> : PredicateConstraint<T>
