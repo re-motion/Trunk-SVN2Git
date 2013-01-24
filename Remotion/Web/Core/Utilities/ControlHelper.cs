@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using System.Web;
@@ -25,23 +26,28 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Utilities
 {
-
   public static class ControlHelper
   {
     private static readonly IInternalControlMemberCaller s_memberCaller = new InternalControlMemberCaller();
 
     public static string PostEventSourceID
-    { get { return "__EVENTTARGET"; } }
+    {
+      get { return "__EVENTTARGET"; }
+    }
 
     public static string PostEventArgumentID
-    { get { return "__EVENTARGUMENT"; } }
+    {
+      get { return "__EVENTARGUMENT"; }
+    }
 
     public static string ViewStateID
-    { get { return "__VIEWSTATE"; } }
+    {
+      get { return "__VIEWSTATE"; }
+    }
 
     public static Control[] GetControlsRecursive (Control parentControl, Type type)
     {
-      ArrayList controlList = new ArrayList ();
+      ArrayList controlList = new ArrayList();
       GetControlsRecursiveInternal (parentControl, type, controlList);
       if (type.IsInterface)
         type = typeof (Control);
@@ -50,7 +56,7 @@ namespace Remotion.Web.Utilities
 
     public static Control[] GetControlsRecursive (Control parentControl, Type type, Control[] stopList)
     {
-      ArrayList controlList = new ArrayList ();
+      ArrayList controlList = new ArrayList();
       GetControlsRecursiveInternal (parentControl, type, new ArrayList (stopList), controlList);
       if (type.IsInterface)
         type = typeof (Control);
@@ -97,11 +103,11 @@ namespace Remotion.Web.Utilities
       if (largerField == null)
         throw new ArgumentException ("ControlToValidate must be TextBox", "largerValidator");
 
-      if (smallerField.Text.Trim () == string.Empty || largerField.Text.Trim () == string.Empty)
+      if (smallerField.Text.Trim() == string.Empty || largerField.Text.Trim() == string.Empty)
         return true;
 
-      smallerValidator.Validate ();
-      largerValidator.Validate ();
+      smallerValidator.Validate();
+      largerValidator.Validate();
       if (!(smallerValidator.IsValid && largerValidator.IsValid))
         return true;
 
@@ -190,7 +196,7 @@ namespace Remotion.Web.Utilities
       }
       catch (HttpException)
       {
-        if (ControlHelper.IsDesignModeForControl (namingContainer))
+        if (IsDesignModeForControl (namingContainer))
           return namingContainer.FindControl (controlID);
         else
           throw;
@@ -202,7 +208,7 @@ namespace Remotion.Web.Utilities
     /// <param name="viewState"> The view state object used for restoring. </param>
     public static void LoadViewStateRecursive (Control target, object viewState)
     {
-      s_memberCaller.LoadViewStateRecursive(target, viewState);
+      s_memberCaller.LoadViewStateRecursive (target, viewState);
     }
 
     /// <summary> Encapsulates the invocation of <see cref="Control"/>'s SaveViewStateRecursive method. </summary>
@@ -210,26 +216,27 @@ namespace Remotion.Web.Utilities
     /// <returns> The view state object for <paramref name="target"/>. </returns>
     public static object SaveViewStateRecursive (Control target)
     {
-      return s_memberCaller.SaveViewStateRecursive(target);
+      return s_memberCaller.SaveViewStateRecursive (target);
     }
 
     /// <summary>Encapsulates the invocation of <see cref="Page"/>'s SaveAllState method.</summary>
     /// <param name="page">The <see cref="Page"/> for which SaveAllState will be invoked. Must not be <see langword="null" />.</param>
     public static void SaveAllState (Page page)
     {
-      s_memberCaller.SaveAllState(page);
+      s_memberCaller.SaveAllState (page);
     }
 
     /// <summary>Returns the control states for all controls that are child-controls of the passed <see cref="Control"/>.</summary>
-    public static IDictionary GetChildControlState<TNamingContainer> (TNamingContainer control) where TNamingContainer: Control, INamingContainer
+    public static IDictionary GetChildControlState<TNamingContainer> (TNamingContainer control) where TNamingContainer : Control, INamingContainer
     {
-      return s_memberCaller.GetChildControlState(control);
+      return s_memberCaller.GetChildControlState (control);
     }
 
     /// <summary>Sets the control states for the child control of the passed <see cref="Control"/>.</summary>
-    public static void SetChildControlState<TNamingContainer> (TNamingContainer control, IDictionary newControlState) where TNamingContainer: Control, INamingContainer
+    public static void SetChildControlState<TNamingContainer> (TNamingContainer control, IDictionary newControlState)
+        where TNamingContainer : Control, INamingContainer
     {
-      s_memberCaller.SetChildControlState(control, newControlState);
+      s_memberCaller.SetChildControlState (control, newControlState);
     }
 
     public static bool IsResponseTextXml (HttpContextBase context)
@@ -257,5 +264,4 @@ namespace Remotion.Web.Utilities
       return IsResponseTextXml (context) || IsResponseTextXHtml (context);
     }
   }
-
 }
