@@ -80,7 +80,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
           if (_postBackCollection[ControlHelper.PostEventSourceID] != sender.UniqueID)
           {
             throw new ArgumentException (
-                "The 'sender' does not match the value in __EventTarget. Please pass the control that orignated the postback.", "sender");
+                string.Format (
+                    "The 'sender' does not match the value in {0}. Please pass the control that orignated the postback.",
+                    ControlHelper.PostEventSourceID),
+                "sender");
           }
 
           _backedUpPostBackData.Add (ControlHelper.PostEventSourceID, _postBackCollection[ControlHelper.PostEventSourceID]);
