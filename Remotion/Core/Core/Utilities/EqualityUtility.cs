@@ -32,7 +32,7 @@ namespace Remotion.Utilities
       return (obj == null) ? 0 : obj.GetHashCode ();
     }
 
-    /// <include file='doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
+    /// <include file='..\doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
     public static int GetRotatedHashCode<A0, A1> (A0 a0, A1 a1)
     {
       int hc = SafeGetHashCode (a0);
@@ -41,7 +41,7 @@ namespace Remotion.Utilities
       return hc;
     }
 
-    /// <include file='doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
+    /// <include file='..\doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
     public static int GetRotatedHashCode<A0, A1, A2> (A0 a0, A1 a1, A2 a2)
     {
       int hc = SafeGetHashCode (a0);
@@ -52,7 +52,7 @@ namespace Remotion.Utilities
       return hc;
     }
 
-    /// <include file='doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
+    /// <include file='..\doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
     public static int GetRotatedHashCode<A0, A1, A2, A3> (A0 a0, A1 a1, A2 a2, A3 a3)
     {
       int hc = SafeGetHashCode (a0);
@@ -65,7 +65,7 @@ namespace Remotion.Utilities
       return hc;
     }
 
-    /// <include file='doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
+    /// <include file='..\doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
     public static int GetRotatedHashCode<A0, A1, A2, A3, A4> (A0 a0, A1 a1, A2 a2, A3 a3, A4 a4)
     {
       int hc = SafeGetHashCode (a0);
@@ -80,7 +80,7 @@ namespace Remotion.Utilities
       return hc;
     }
 
-    /// <include file='doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
+    /// <include file='..\doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
     public static int GetRotatedHashCode<A0, A1, A2, A3, A4, A5> (A0 a0, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
     {
       int hc = SafeGetHashCode (a0);
@@ -97,7 +97,7 @@ namespace Remotion.Utilities
       return hc;
     }
 
-    /// <include file='doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
+    /// <include file='..\doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
     public static int GetRotatedHashCode<A0, A1, A2, A3, A4, A5, A6> (A0 a0, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
     {
       int hc = SafeGetHashCode (a0);
@@ -116,7 +116,7 @@ namespace Remotion.Utilities
       return hc;
     }
 
-    /// <include file='doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
+    /// <include file='..\doc\include\Utilities\EqualityUtility.xml' path='EqualityUtility/GetRotatedHashCode/*' />
     public static int GetRotatedHashCode (params object[] fields)
     {
       int hc = 0;
