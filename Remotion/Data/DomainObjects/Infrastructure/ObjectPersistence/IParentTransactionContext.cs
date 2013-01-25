@@ -29,10 +29,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   {
     ObjectID CreateNewObjectID (ClassDefinition classDefinition);
 
-    DomainObject GetObject (ObjectID objectID);
-    DomainObject[] GetObjects (IEnumerable<ObjectID> objectIDs);
-    DomainObject TryGetObject (ObjectID objectID);
-    DomainObject[] TryGetObjects (IEnumerable<ObjectID> objectIDs);
+    T GetObject<T> (IObjectID<T> objectID) where T : DomainObject;
+    T[] GetObjects<T> (IEnumerable<IObjectID<T>> objectIDs) where T : DomainObject;
+    T TryGetObject<T> (IObjectID<T> objectID) where T : DomainObject;
+    T[] TryGetObjects<T> (IEnumerable<IObjectID<T>> objectIDs) where T : DomainObject;
 
     DomainObject ResolveRelatedObject (RelationEndPointID relationEndPointID);
     IEnumerable<DomainObject> ResolveRelatedObjects (RelationEndPointID relationEndPointID);

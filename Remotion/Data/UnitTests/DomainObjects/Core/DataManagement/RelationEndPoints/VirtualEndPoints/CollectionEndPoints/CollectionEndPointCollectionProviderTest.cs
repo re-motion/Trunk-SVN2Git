@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var classDefinition = GetTypeDefinition (typeof (DomainObjectWithCollectionMissingCtor));
       var relationEndPointDefinition = GetEndPointDefinition (typeof (DomainObjectWithCollectionMissingCtor), "OppositeObjects");
-      var endPointID = RelationEndPointID.Create (new ObjectID (classDefinition, Guid.NewGuid ()), relationEndPointDefinition);
+      var endPointID = RelationEndPointID.Create (ObjectID.Create(classDefinition, Guid.NewGuid ()), relationEndPointDefinition);
 
       _associatedCollectionDataStrategyFactoryMock
           .Stub (mock => mock.CreateDataStrategyForEndPoint (endPointID))

@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void LoadDataContainers_ByNonExistingID ()
     {
-      var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{E067A627-BA3F-4ee5-8B61-1F46DC28DFC3}"));
+      var id = ObjectID.Create("ClassWithAllDataTypes", new Guid ("{E067A627-BA3F-4ee5-8B61-1F46DC28DFC3}"));
 
       var result = Provider.LoadDataContainers (new[] { id }).ToList();
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void LoadDataContainers_ByID ()
     {
-      var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = ObjectID.Create("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       var actualContainer = Provider.LoadDataContainers (new[] { id }).ToArray()[0].LocatedObject;
 
@@ -83,9 +83,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         + "expected ObjectID(s): Distributor|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid")]
     public void LoadDataContainers_WithInvalidClassID ()
     {
-      ObjectID id1 = new ObjectID ("Distributor", (Guid) DomainObjectIDs.Partner1.Value);
-      ObjectID id2 = new ObjectID ("Distributor", (Guid) DomainObjectIDs.Partner2.Value);
-      ObjectID id3 = new ObjectID ("Distributor", (Guid) DomainObjectIDs.Customer1.Value);
+      ObjectID id1 = ObjectID.Create("Distributor", (Guid) DomainObjectIDs.Partner1.Value);
+      ObjectID id2 = ObjectID.Create("Distributor", (Guid) DomainObjectIDs.Partner2.Value);
+      ObjectID id3 = ObjectID.Create("Distributor", (Guid) DomainObjectIDs.Customer1.Value);
       Provider.LoadDataContainers (new[] { id1, id2, id3 }).ToList();
     }
   }

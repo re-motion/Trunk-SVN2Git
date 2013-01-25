@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void TryGetObject_NotFound ()
     {
-      var id = new ObjectID (typeof (Order), Guid.NewGuid());
+      var id = ObjectID.Create(typeof (Order), Guid.NewGuid());
       var gottenInstance = ClassDerivedFromSimpleDomainObject.TryGetObject (id);
       Assert.That (gottenInstance, Is.Null);
     }

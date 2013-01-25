@@ -30,6 +30,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
   [TestFixture]
   public class LifetimeServiceTest : ClientTransactionBaseTest
   {
+    private IObjectID<Order> _typedOrder1ID;
+    private IObjectID<Order> _typedOrder2ID;
+    private IObjectID<Order> _typedOrder3ID;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _typedOrder1ID = (IObjectID<Order>) DomainObjectIDs.Order1;
+      _typedOrder2ID = (IObjectID<Order>) DomainObjectIDs.Order2;
+      _typedOrder3ID = (IObjectID<Order>) DomainObjectIDs.Order3;
+    }
+
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'System.Object'.")]
     public void NewObject_InvalidType ()
@@ -75,7 +88,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void GetObject ()
     {
-      var order = (Order) LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Order1, false);
+      var order = LifetimeService.GetObject (TestableClientTransaction, _typedOrder1ID, false);
+
+      Assert.That (VariableTypeInferrer.GetVariableType (order), Is.SameAs (typeof (Order)));
       Assert.That (order, Is.Not.Null);
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (order.CtorCalled, Is.False);
@@ -113,7 +128,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void TryGetObject ()
     {
-      var order = (Order) LifetimeService.TryGetObject (TestableClientTransaction, DomainObjectIDs.Order1);
+      var order = LifetimeService.TryGetObject (TestableClientTransaction, _typedOrder1ID);
+
+      Assert.That (VariableTypeInferrer.GetVariableType (order), Is.SameAs (typeof (Order)));
       Assert.That (order, Is.Not.Null);
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (order.CtorCalled, Is.False);
@@ -145,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void TryGetObject_NotFound ()
     {
-      var id = new ObjectID (typeof (Order), Guid.NewGuid());
+      var id = ObjectID.Create(typeof (Order), Guid.NewGuid());
       Assert.That (TestableClientTransaction.IsInvalid (id), Is.False);
       
       var result = LifetimeService.TryGetObject (TestableClientTransaction, id);
@@ -157,8 +174,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void GetObjectReference ()
     {
-      var result = LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order1);
+      var result = LifetimeService.GetObjectReference (TestableClientTransaction, _typedOrder1ID);
 
+      Assert.That (VariableTypeInferrer.GetVariableType (result), Is.SameAs (typeof (Order)));
       Assert.That (result, Is.InstanceOf (typeof (Order)));
       Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (result.State, Is.EqualTo (StateType.NotLoadedYet));
@@ -179,12 +197,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void GetObjects ()
     {
-      var deletedObjectID = DomainObjectIDs.Order3;
-      var deletedObject = Order.GetObject (deletedObjectID);
+      var deletedObjectID = _typedOrder3ID;
+      var deletedObject = Order.GetObject (deletedObjectID.AsObjectID());
       deletedObject.Delete();
 
-      Order[] orders = LifetimeService.GetObjects<Order> (TestableClientTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order2, deletedObjectID);
+      var orders = LifetimeService.GetObjects (TestableClientTransaction, _typedOrder1ID, _typedOrder2ID, deletedObjectID);
 
+      Assert.That (VariableTypeInferrer.GetVariableType (orders), Is.SameAs (typeof (Order[])));
       Assert.That (orders, Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2), deletedObject }));
     }
 
@@ -195,25 +214,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       instance.Delete ();
       Assert.That (instance.IsInvalid, Is.True);
 
-      Assert.That (() => LifetimeService.GetObjects<Order> (TestableClientTransaction, instance.ID, instance.ID), Throws.TypeOf<ObjectInvalidException> ());
+      Assert.That (() => LifetimeService.GetObjects (TestableClientTransaction, instance.ID, instance.ID), Throws.TypeOf<ObjectInvalidException> ());
     }
 
     [Test]
     public void TryGetObjects ()
     {
-      var notFoundObjectID = new ObjectID (typeof (Order), Guid.NewGuid());
+      var notFoundObjectID = ObjectID.Create<Order> (Guid.NewGuid());
 
-      var deletedObjectID = DomainObjectIDs.Order3;
-      var deletedObject = Order.GetObject (deletedObjectID);
+      var deletedObjectID = _typedOrder3ID;
+      var deletedObject = Order.GetObject (deletedObjectID.AsObjectID());
       deletedObject.Delete ();
 
       var invalidInstance = Order.NewObject ();
       invalidInstance.Delete ();
       Assert.That (invalidInstance.IsInvalid, Is.True);
 
-      Order[] orders = LifetimeService.TryGetObjects<Order> (
-          TestableClientTransaction, DomainObjectIDs.Order1, notFoundObjectID, deletedObjectID, invalidInstance.ID);
+      var orders = LifetimeService.TryGetObjects (
+          TestableClientTransaction, _typedOrder1ID, notFoundObjectID, deletedObjectID, invalidInstance.GetTypedID());
 
+      Assert.That (VariableTypeInferrer.GetVariableType (orders), Is.SameAs (typeof (Order[])));
       Assert.That (orders, Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1), null, deletedObject, invalidInstance }));
     }
 

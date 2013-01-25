@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       base.SetUp ();
 
-      _nonExistingObjectID = new ObjectID (typeof (Order), Guid.NewGuid());
+      _nonExistingObjectID = ObjectID.Create(typeof (Order), Guid.NewGuid());
 
       var classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
       classWithAllDataTypes.Delete();
@@ -386,7 +386,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void BidirectionalForeignKeyRelationProperty_ShouldReturnInvalidObject ()
     {
-      var id = new ObjectID (typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
+      var id = ObjectID.Create(typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
       var objectWithInvalidRelation = (ClassWithInvalidRelation) ClassWithInvalidRelation.GetObject (id);
 
       DomainObject instance = null;
@@ -403,7 +403,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       DomainObject instance = null;
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        var id = new ObjectID (typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
+        var id = ObjectID.Create(typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
 
         var objectWithInvalidRelation = (ClassWithInvalidRelation) ClassWithInvalidRelation.GetObject (id);
 

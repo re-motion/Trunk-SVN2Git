@@ -331,7 +331,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       CheckClassDefinition (classDefinition, "classDefinition");
 
-      return new ObjectID (classDefinition.ID, Guid.NewGuid());
+      return ObjectID.Create(classDefinition.ID, Guid.NewGuid());
     }
 
     public virtual TracingDbCommand CreateDbCommand ()

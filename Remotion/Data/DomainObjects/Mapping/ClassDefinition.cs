@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
@@ -44,6 +46,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly Type _classType;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
     private readonly IDomainObjectCreator _instanceCreator;
+    private readonly Func<object, ObjectID> _idCreator;
 
     public ClassDefinition (
         string id,
@@ -74,6 +77,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _baseClass = baseClass;
       _instanceCreator = instanceCreator;
+      _idCreator = BuildIDCreator();
     }
 
     // methods and properties
@@ -114,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public ClassDefinition[] GetAllDerivedClasses ()
     {
-      var allDerivedClasses = new List<ClassDefinition> ();
+      var allDerivedClasses = new List<ClassDefinition>();
       FillAllDerivedClasses (allDerivedClasses);
       return allDerivedClasses.ToArray();
     }
@@ -256,7 +260,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("storageEntityDefinition", storageEntityDefinition);
 
       if (_isReadOnly)
-        throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+        throw new NotSupportedException (String.Format ("Class '{0}' is read-only.", ID));
 
       _storageEntityDefinition = storageEntityDefinition;
     }
@@ -266,10 +270,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("propertyDefinitions", propertyDefinitions);
 
       if (_propertyDefinitions != null)
-        throw new InvalidOperationException (string.Format ("The property-definitions for class '{0}' have already been set.", ID));
+        throw new InvalidOperationException (String.Format ("The property-definitions for class '{0}' have already been set.", ID));
 
       if (_isReadOnly)
-        throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+        throw new NotSupportedException (String.Format ("Class '{0}' is read-only.", ID));
 
       CheckPropertyDefinitions (propertyDefinitions);
 
@@ -282,10 +286,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("relationEndPoints", relationEndPoints);
 
       if (_relationEndPoints != null)
-        throw new InvalidOperationException (string.Format ("The relation end point definitions for class '{0}' have already been set.", ID));
+        throw new InvalidOperationException (String.Format ("The relation end point definitions for class '{0}' have already been set.", ID));
 
       if (_isReadOnly)
-        throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+        throw new NotSupportedException (String.Format ("Class '{0}' is read-only.", ID));
 
       CheckRelationEndPointDefinitions (relationEndPoints);
 
@@ -298,10 +302,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("derivedClasses", derivedClasses);
 
       if (_derivedClasses != null)
-        throw new InvalidOperationException (string.Format ("The derived-classes for class '{0}' have already been set.", ID));
+        throw new InvalidOperationException (String.Format ("The derived-classes for class '{0}' have already been set.", ID));
 
       if (_isReadOnly)
-        throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+        throw new NotSupportedException (String.Format ("Class '{0}' is read-only.", ID));
 
       var derivedClassesReadOnly = derivedClasses.ToList ().AsReadOnly ();
       CheckDerivedClass (derivedClassesReadOnly);
@@ -358,6 +362,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _instanceCreator; }
     }
 
+    public Func<object, ObjectID> IDCreator
+    {
+      get { return _idCreator; }
+    }
+
     public PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
@@ -389,7 +398,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get
       {
         if (_propertyDefinitions == null)
-          throw new InvalidOperationException (string.Format ("No property definitions have been set for class '{0}'.", ID));
+          throw new InvalidOperationException (String.Format ("No property definitions have been set for class '{0}'.", ID));
 
         return _propertyDefinitions;
       }
@@ -400,7 +409,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get 
       {
         if (_relationEndPoints == null)
-          throw new InvalidOperationException (string.Format ("No relation end point definitions have been set for class '{0}'.", ID));
+          throw new InvalidOperationException (String.Format ("No relation end point definitions have been set for class '{0}'.", ID));
 
         return _relationEndPoints;
       }
@@ -411,7 +420,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get
       {
         if (_derivedClasses == null)
-          throw new InvalidOperationException (string.Format ("No derived classes have been set for class '{0}'.", ID));
+          throw new InvalidOperationException (String.Format ("No derived classes have been set for class '{0}'.", ID));
 
         return _derivedClasses;
       }
@@ -444,9 +453,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     public void ValidateCurrentMixinConfiguration ()
     {
       var currentMixinConfiguration = Mapping.PersistentMixinFinder.GetMixinConfigurationForDomainObjectType (ClassType);
-      if (!object.Equals (currentMixinConfiguration, PersistentMixinFinder.MixinConfiguration))
+      if (!Equals (currentMixinConfiguration, PersistentMixinFinder.MixinConfiguration))
       {
-        string message = string.Format (
+        string message = String.Format (
             "The mixin configuration for domain object type '{0}' was changed after the mapping information was built." + Environment.NewLine
             + "Original configuration: {1}." + Environment.NewLine
             + "Active configuration: {2}",
@@ -549,6 +558,31 @@ namespace Remotion.Data.DomainObjects.Mapping
               derivedClass.BaseClass.ID);
         }
       }
+    }
+
+    private Func<object, ObjectID> BuildIDCreator ()
+    {
+      var valueParameter = Expression.Parameter (typeof (object), "value");
+
+      Expression body;
+      if (typeof (DomainObject).IsAssignableFrom (ClassType))
+      {
+        var objectIDType = typeof (ObjectID<>).MakeGenericType (ClassType);
+
+        var constructorInfo = objectIDType.GetConstructor (
+            BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof (ClassDefinition), typeof (object) }, null);
+        Assertion.DebugAssert (constructorInfo != null);
+
+        body = Expression.New (constructorInfo, Expression.Constant (this), valueParameter);
+      }
+      else
+      {
+        var throwingDelegate = (Func<ObjectID>) (() => { throw new InvalidOperationException ("ObjectIDs cannot be created when the ClassType does not derive from DomainObject."); });
+        body = Expression.Invoke (Expression.Constant (throwingDelegate));
+      }
+
+      var createDelegate = Expression.Lambda<Func<object, ObjectID>> (body, valueParameter).Compile ();
+      return createDelegate;
     }
 
     [Obsolete ("This method has been removed. Use the StorageEntityDefinition property instead. (1.13.118)")]

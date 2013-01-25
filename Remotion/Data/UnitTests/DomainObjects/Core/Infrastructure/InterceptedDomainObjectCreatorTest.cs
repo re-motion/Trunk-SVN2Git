@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateObjectReference_PreparesMixins ()
     {
-      var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid());
+      var objectID = ObjectID.Create(typeof (TargetClassForPersistentMixin), Guid.NewGuid());
       var instance = _interceptedDomainObjectCreator.CreateObjectReference (objectID, _transaction);
       Assert.That (Mixin.Get<MixinAddingPersistentProperties> (instance), Is.Not.Null);
     }
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       using (MixinConfiguration.BuildNew().EnterScope())
       {
-        var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid());
+        var objectID = ObjectID.Create(typeof (TargetClassForPersistentMixin), Guid.NewGuid());
         _interceptedDomainObjectCreator.CreateObjectReference (objectID, _transaction);
       }
     }

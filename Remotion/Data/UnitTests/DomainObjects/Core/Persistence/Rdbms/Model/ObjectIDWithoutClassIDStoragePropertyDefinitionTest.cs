@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 using Rhino.Mocks;
 
@@ -225,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       var result = _objectIDWithoutClassIDStorageDefinition.CombineValue (_columnValueProviderStub);
 
-      Assert.That (result, Is.TypeOf (typeof (ObjectID)));
+      Assert.That (result, Is.TypeOf<ObjectID<Order>> ());
       Assert.That (((ObjectID) result).Value.ToString (), Is.EqualTo (DomainObjectIDs.Order1.Value.ToString ()));
       Assert.That (((ObjectID) result).ClassDefinition, Is.SameAs (_classDefinition));
     }

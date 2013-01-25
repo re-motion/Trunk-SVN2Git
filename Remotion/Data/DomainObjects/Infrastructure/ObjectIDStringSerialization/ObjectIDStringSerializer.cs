@@ -138,7 +138,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization
       }
 
       var classDefinition = MappingConfiguration.Current.GetClassDefinition (parts[0]);
-      return new ObjectID (classDefinition, value);
+      return ObjectID.Create(classDefinition, value);
     }
 
     private IObjectIDValueParser GetValueParser (Type type)

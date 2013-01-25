@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       if (InnerProvider != null)
         return InnerProvider.CreateNewObjectID (classDefinition);
       else
-        return new ObjectID (classDefinition, s_nextID++);
+        return ObjectID.Create(classDefinition, s_nextID++);
     }
   }
 }

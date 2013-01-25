@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -196,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       // Use a strict mock because the parameter should not be enumerated, it should only be passed on TryGetObjects
 
       _parentTransactionContextMock
-          .Expect (mock => mock.TryGetObjects (new[] { objectID1, objectID2, objectID3 }))
+          .Expect (mock => mock.TryGetObjects (Arg<IEnumerable<IObjectID<DomainObject>>>.List.Equal (new[] { objectID1, objectID2, objectID3 })))
           .Return (new[] { parentObject1, null, parentObject3 });
       _parentTransactionContextMock
           .Expect (mock => mock.GetDataContainerWithLazyLoad (objectID1, true))

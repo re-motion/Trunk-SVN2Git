@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void SequenceOfObjectIDs_ConstructedInMemory ()
     {
       var result =
-          (from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber < 3 select new ObjectID (o.ID.ClassID, o.ID.Value)).ToArray();
+          (from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber < 3 select ObjectID.Create(o.ID.ClassID, o.ID.Value)).ToArray();
 
       Assert.That (result, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem }));
     }
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var result =
           (from o in QueryFactory.CreateLinqQuery<Order> () 
            where o.OrderNumber == 1 
-           select new ObjectID (o.Customer.ID.ClassID, o.Customer.ID.Value)).ToArray ();
+           select ObjectID.Create (o.Customer.ID.ClassID, o.Customer.ID.Value)).ToArray ();
 
       Assert.That (result, Is.EquivalentTo (new[] { DomainObjectIDs.Customer1 }));
     }
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var result =
           (from c in QueryFactory.CreateLinqQuery<Computer> ()
            where c.ID == DomainObjectIDs.Computer1
-           select new ObjectID (c.Employee.ID.ClassID, c.Employee.ID.Value)).ToArray ();
+           select ObjectID.Create(c.Employee.ID.ClassID, c.Employee.ID.Value)).ToArray ();
 
       Assert.That (result, Is.EquivalentTo (new[] { DomainObjectIDs.Employee3 }));
     }

@@ -17,19 +17,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web.Hosting;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
-using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
 using Remotion.Reflection;
 using Rhino.Mocks;
 using System.Linq;
@@ -366,7 +362,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       var importer = DomainObjectImporter.CreateImporterFromStream (streamFake, strategyMock);
       TransportedDomainObjects result = importer.GetImportedObjects();
-      Assert.That (result.TransportedObjects, Is.EquivalentTo (LifetimeService.GetObjects<Order> (result.DataTransaction, DomainObjectIDs.Order1)));
+      Assert.That (
+          result.TransportedObjects, 
+          Is.EquivalentTo (LifetimeService.GetObjects (result.DataTransaction, (IObjectID<Order>) DomainObjectIDs.Order1)));
 
       strategyMock.VerifyAllExpectations();
     }

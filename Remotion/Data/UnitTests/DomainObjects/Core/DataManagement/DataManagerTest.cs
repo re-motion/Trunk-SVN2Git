@@ -893,7 +893,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDataContainerWithLazyLoad_NotFound ()
     {
-      var notFoundID = new ObjectID (typeof (Order), Guid.NewGuid ());
+      var notFoundID = ObjectID.Create(typeof (Order), Guid.NewGuid ());
 
       var throwOnNotFound = BooleanObjectMother.GetRandomBoolean ();
 
@@ -974,7 +974,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var loadedDataContainer = PrepareLoadedDataContainer (_dataManagerWithMocks);
       var nonLoadedDataContainer = PrepareNonLoadedDataContainer();
 
-      var notFoundID = new ObjectID (typeof (Order), Guid.NewGuid());
+      var notFoundID = ObjectID.Create(typeof (Order), Guid.NewGuid());
 
       var throwOnNotFound = BooleanObjectMother.GetRandomBoolean ();
 
@@ -1291,7 +1291,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private DataContainer PrepareLoadedDataContainer (DataManager dataManager)
     {
-      return PrepareLoadedDataContainer (dataManager, new ObjectID (typeof (Order), Guid.NewGuid()));
+      return PrepareLoadedDataContainer (dataManager, ObjectID.Create(typeof (Order), Guid.NewGuid()));
     }
 
     private DataContainer PrepareLoadedDataContainer (DataManager dataManager, ObjectID objectID)

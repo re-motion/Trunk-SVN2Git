@@ -491,7 +491,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void TryGetObject_NotFound ()
     {
-      var objectID = new ObjectID (typeof (Order), Guid.NewGuid());
+      var objectID = ObjectID.Create(typeof (Order), Guid.NewGuid());
       Assert.That (_transaction.IsInvalid (objectID), Is.False);
 
       var order = _transaction.Execute (() => Order.TryGetObject (objectID));

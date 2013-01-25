@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -30,6 +29,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyManagement;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
+using Remotion.Utilities;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -86,24 +86,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       return (ICommitRollbackAgent) PrivateInvoke.GetNonPublicField (clientTransaction, "_commitRollbackAgent");
     }
-    public static DomainObject CallGetObject (ClientTransaction clientTransaction, ObjectID objectID, bool includeDeleted)
+    public static T CallGetObject<T> (ClientTransaction clientTransaction, IObjectID<T> objectID, bool includeDeleted) 
+        where T : DomainObject
     {
-      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetObject", objectID, includeDeleted);
+      return (T) PrivateInvokeGeneric (clientTransaction, "GetObject", new[] { typeof (T) }, objectID, includeDeleted);
     }
 
-    public static DomainObject CallTryGetObject (ClientTransaction clientTransaction, ObjectID objectID)
+    public static T CallTryGetObject<T> (ClientTransaction clientTransaction, IObjectID<T> objectID)
+        where T : DomainObject
     {
-      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "TryGetObject", objectID);
+      return (T) PrivateInvokeGeneric (clientTransaction, "TryGetObject", new[] { typeof (T) }, objectID);
     }
 
-    public static DomainObject CallGetObjectReference (ClientTransaction clientTransaction, ObjectID objectID)
+    public static T CallGetObjectReference<T> (ClientTransaction clientTransaction, IObjectID<T> objectID)
+        where T : DomainObject
     {
-      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetObjectReference", objectID);
+      return (T) PrivateInvokeGeneric (clientTransaction, "GetObjectReference", new[] { typeof (T) }, objectID);
     }
 
-    public static DomainObject CallGetInvalidObjectReference (ClientTransaction clientTransaction, ObjectID objectID)
+    public static T CallGetInvalidObjectReference<T> (ClientTransaction clientTransaction, IObjectID<T> objectID)
+        where T : DomainObject
     {
-      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetInvalidObjectReference", objectID);
+      return (T) PrivateInvokeGeneric (clientTransaction, "GetInvalidObjectReference", new[] { typeof (T) }, objectID);
     }
 
     public static DomainObject CallGetRelatedObject (ClientTransaction clientTransaction, RelationEndPointID relationEndPointID)
@@ -131,18 +135,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "NewObject", domainObjectType, constructorParameters);
     }
 
-    public static T[] CallGetObjects<T> (ClientTransaction clientTransaction, params ObjectID[] objectIDs)
+    public static T[] CallGetObjects<T> (ClientTransaction clientTransaction, params IObjectID<T>[] objectIDs)
+        where T : DomainObject
     {
-      // TODO 5118: Use PrivateInvoke when it gets support for generic.
-      var method = typeof (ClientTransaction).GetMethod ("GetObjects", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod (typeof (T));
-      return (T[]) method.Invoke (clientTransaction, new object[] { objectIDs });
+      return (T[]) PrivateInvokeGeneric (clientTransaction, "GetObjects", new[] { typeof (T) }, new[] { objectIDs });
     }
 
-    public static T[] CallTryGetObjects<T> (ClientTransaction clientTransaction, params ObjectID[] objectIDs)
+    public static T[] CallTryGetObjects<T> (ClientTransaction clientTransaction, params IObjectID<T>[] objectIDs)
+        where T : DomainObject
     {
-      // TODO 5118: Use PrivateInvoke when it gets support for generic.
-      var method = typeof (ClientTransaction).GetMethod ("TryGetObjects", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod (typeof (T));
-      return (T[]) method.Invoke (clientTransaction, new object[] { objectIDs });
+      return (T[]) PrivateInvokeGeneric (clientTransaction, "TryGetObjects", new[] { typeof (T) }, new[] { objectIDs });
     }
 
     public static void AddListener (ClientTransaction clientTransaction, IClientTransactionListener listener)
@@ -220,5 +222,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return listenerManager.Listeners;
     }
 
+    private static object PrivateInvokeGeneric (object obj, string methodName, Type[] typeParameters, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("obj", obj);
+      ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
+      ArgumentUtility.CheckNotNull ("typeParameters", typeParameters);
+      ArgumentUtility.CheckNotNull ("args", args);
+
+      // TODO 5118: Use PrivateInvoke when it gets support for generic.
+      try
+      {
+        var genericMethod =
+            obj.GetType()
+               .GetMethods (BindingFlags.NonPublic | BindingFlags.Instance)
+               .SingleOrDefault (m => m.Name == methodName && m.GetGenericArguments().Length == typeParameters.Length);
+        if (genericMethod == null)
+        {
+          var message = string.Format ("Method '{0}.{1}`{2}' not found.", obj.GetType(), methodName, typeParameters.Length);
+          throw new ArgumentException (message, "methodName");
+        }
+        var method = genericMethod.MakeGenericMethod (typeParameters);
+        return method.Invoke (obj, args);
+      }
+      catch (TargetInvocationException ex)
+      {
+        throw ExceptionUtility.PreserveStackTrace (ex.InnerException);
+      }
+    }
   }
 }

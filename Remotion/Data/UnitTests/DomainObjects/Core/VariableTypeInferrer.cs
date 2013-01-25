@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,13 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 
-namespace Remotion.Data.DomainObjects.Web.Test.Domain
+using System;
+using JetBrains.Annotations;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
-  public static class DomainObjectIDs
+  public static class VariableTypeInferrer
   {
-    public static ObjectID ObjectWithAllDataTypes1 = ObjectID.Create("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
-    public static ObjectID ObjectWithUndefinedEnum = ObjectID.Create("ClassWithUndefinedEnum", new Guid ("{4F85CEE5-A53A-4bc5-B9D3-448C48946498}"));
+    public static Type GetVariableType<T> ([UsedImplicitly] T value)
+    {
+      return typeof (T);
+    }
   }
 }

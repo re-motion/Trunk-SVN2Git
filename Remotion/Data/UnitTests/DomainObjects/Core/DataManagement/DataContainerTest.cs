@@ -49,19 +49,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var idValue = Guid.NewGuid();
 
-      _newDataContainer = DataContainer.CreateNew (new ObjectID (typeof (Order), idValue));
+      _newDataContainer = DataContainer.CreateNew (ObjectID.Create(typeof (Order), idValue));
       _existingDataContainer = DataContainer.CreateForExisting (
-          new ObjectID (typeof (Order), idValue),
+          ObjectID.Create(typeof (Order), idValue),
           null,
           propertyDefinition => propertyDefinition.DefaultValue);
 
       _deletedDataContainer = DataContainer.CreateForExisting (
-          new ObjectID (typeof (Order), idValue),
+          ObjectID.Create(typeof (Order), idValue),
           null,
           propertyDefinition => propertyDefinition.DefaultValue);
       _deletedDataContainer.Delete();
 
-      _invalidObjectID = new ObjectID (typeof (Order), idValue);
+      _invalidObjectID = ObjectID.Create(typeof (Order), idValue);
       _discardedDataContainer = DataContainer.CreateNew (_invalidObjectID);
       _discardedDataContainer.Discard();
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateNew_IncludesStorageClassPersistentProperties ()
     {
-      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
+      DataContainer dc = DataContainer.CreateNew (ObjectID.Create(typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
       var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Persistent");
       Assert.That (dc.GetValue (propertyDefinition), Is.EqualTo (0));
       Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (0));
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateNew_IncludesStorageClassTransactionProperties ()
     {
-      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
+      DataContainer dc = DataContainer.CreateNew (ObjectID.Create(typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
       var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Transaction");
       Assert.That (dc.GetValue (propertyDefinition), Is.EqualTo (0));
       Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (0));
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       TestMappingConfiguration.Initialize();
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
-      var id = new ObjectID (MappingConfiguration.Current.GetClassDefinition ("Order"), new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
+      var id = ObjectID.Create(MappingConfiguration.Current.GetClassDefinition ("Order"), new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
       
       MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
       Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Order))));
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateForExisting_IncludesStorageClassPersistentProperties_WithLookupValue ()
     {
       DataContainer dc = DataContainer.CreateForExisting (
-          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
+          ObjectID.Create(typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
           1,
           delegate { return 2; });
       var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Persistent");
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateForExisting_IncludesStorageClassTransactionProperties_WithLookupValue ()
     {
       DataContainer dc = DataContainer.CreateForExisting (
-          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
+          ObjectID.Create(typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
           1,
           delegate { return 2; });
       var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Transaction");
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       TestMappingConfiguration.Initialize ();
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration ());
-      var id = new ObjectID (MappingConfiguration.Current.GetClassDefinition ("Order"), new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
+      var id = ObjectID.Create(MappingConfiguration.Current.GetClassDefinition ("Order"), new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
 
       MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration ());
       Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Order))));

@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
@@ -27,12 +29,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetIDOrNull ()
     {
-      DomainObject nullDomainObject = null;
-      Assert.That (nullDomainObject.GetSafeID(), Is.Null);
+      Assert.That (((DomainObject) null).GetSafeID(), Is.Null);
 
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
       Assert.That (domainObject.GetSafeID(), Is.EqualTo (domainObject.ID));
     }
 
+    [Test]
+    public void GetTypedID ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order>();
+
+      var objectID = domainObject.GetTypedID ();
+      var domainObjectTypedObjectID1 = domainObject.GetTypedID<DomainObject> ();
+      var domainObjectTypedObjectID2 = ((DomainObject) domainObject).GetTypedID ();
+
+      Assert.That (objectID, Is.TypeOf<ObjectID<Order>> ().And.EqualTo (domainObject.ID));
+      Assert.That (domainObjectTypedObjectID1, Is.TypeOf<ObjectID<Order>> ().And.EqualTo (domainObject.ID));
+      Assert.That (domainObjectTypedObjectID2, Is.TypeOf<ObjectID<Order>> ().And.EqualTo (domainObject.ID));
+
+      Assert.That (VariableTypeInferrer.GetVariableType (objectID), Is.SameAs (typeof (IObjectID<Order>)));
+      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID1), Is.SameAs (typeof (IObjectID<DomainObject>)));
+      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID2), Is.SameAs (typeof (IObjectID<DomainObject>)));
+    }
+
+    [Test]
+    public void GetSafeTypedID ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+
+      var objectID = domainObject.GetSafeTypedID ();
+      var nullID = ((Order) null).GetSafeTypedID ();
+
+      Assert.That (objectID, Is.TypeOf<ObjectID<Order>> ().And.EqualTo (domainObject.ID));
+      Assert.That (VariableTypeInferrer.GetVariableType (objectID), Is.SameAs (typeof (IObjectID<Order>)));
+
+      Assert.That (nullID, Is.Null);
+    }
   }
 }

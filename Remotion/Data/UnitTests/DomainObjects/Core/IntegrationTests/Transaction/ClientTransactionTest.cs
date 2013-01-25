@@ -601,7 +601,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order o2 = Order.GetObject (DomainObjectIDs.Order2);
       Order o3 = Order.GetObject (DomainObjectIDs.Order3);
 
-      var loadedOrders = from o in TestableClientTransaction.GetEnlistedObjects<Order>()
+      var loadedOrders = from o in TestableClientTransaction.GetEnlistedDomainObjects().OfType<Order>()
                          select o;
       Assert.That (loadedOrders.ToArray(), Is.EquivalentTo(new[] {o1, o2, o3}));
     }

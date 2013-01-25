@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
@@ -88,6 +89,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actual.IsReadOnly, Is.False);
       Assert.That (actual.PersistentMixinFinder, Is.SameAs (persistentMixinFinder));
       Assert.That (actual.InstanceCreator, Is.SameAs (instanceCreator));
+    }
+
+    [Test]
+    public void Initialize_IDCreator_CreatesGenericObjectIDs ()
+    {
+      var persistentMixinFinder = MockRepository.GenerateStub<IPersistentMixinFinder> ();
+      var instanceCreator = MockRepository.GenerateStub<IDomainObjectCreator> ();
+
+      var classDefinition = new ClassDefinition ("Order", typeof (Order), false, null, null, persistentMixinFinder, instanceCreator);
+
+      Assert.That (classDefinition.IDCreator, Is.Not.Null);
+
+      var tableDefinition = TableDefinitionObjectMother.Create (_storageProviderDefinition);
+      classDefinition.SetStorageEntity (tableDefinition);
+
+      var value = Guid.NewGuid();
+      var result = classDefinition.IDCreator (value);
+      Assert.That (result, Is.TypeOf<ObjectID<Order>> ());
+      Assert.That (result.Value, Is.EqualTo (value));
+      Assert.That (result.ClassDefinition, Is.SameAs (classDefinition));
+    }
+
+    [Test]
+    public void Initialize_IDCreator_ThrowsWhenNoDomainObject ()
+    {
+      var persistentMixinFinder = MockRepository.GenerateStub<IPersistentMixinFinder> ();
+      var instanceCreator = MockRepository.GenerateStub<IDomainObjectCreator> ();
+
+      var classDefinition = new ClassDefinition ("Order", typeof (string), false, null, null, persistentMixinFinder, instanceCreator);
+
+      Assert.That (classDefinition.IDCreator, Is.Not.Null);
+      Assert.That (
+          () => classDefinition.IDCreator (Guid.NewGuid()), 
+          Throws.InvalidOperationException.With.Message.EqualTo ("ObjectIDs cannot be created when the ClassType does not derive from DomainObject."));
     }
 
     [Test]

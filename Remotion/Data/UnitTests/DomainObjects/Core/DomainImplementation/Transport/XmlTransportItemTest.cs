@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       TransportItem item1 = new TransportItem (DomainObjectIDs.Order1);
       TransportItem item2 = new TransportItem (DomainObjectIDs.Order2);
 
-      XmlTransportItem[] xmlItems = XmlTransportItem.Wrap (new TransportItem[] { item1, item2 });
+      XmlTransportItem[] xmlItems = XmlTransportItem.Wrap (new[] { item1, item2 });
       Assert.That (xmlItems.Length, Is.EqualTo (2));
       Assert.That (xmlItems[0].TransportItem, Is.EqualTo (item1));
       Assert.That (xmlItems[1].TransportItem, Is.EqualTo (item2));
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       TransportItem item1 = new TransportItem (DomainObjectIDs.Order1);
       TransportItem item2 = new TransportItem (DomainObjectIDs.Order2);
 
-      TransportItem[] items = XmlTransportItem.Unwrap (new XmlTransportItem[] { new XmlTransportItem  (item1), new XmlTransportItem (item2)});
+      TransportItem[] items = XmlTransportItem.Unwrap (new[] { new XmlTransportItem  (item1), new XmlTransportItem (item2)});
       Assert.That (items.Length, Is.EqualTo (2));
       Assert.That (items[0], Is.EqualTo (item1));
       Assert.That (items[1], Is.EqualTo (item2));
@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       TransportItem item1 = TransportItem.PackageDataContainer (container1);
       TransportItem item2 = TransportItem.PackageDataContainer (container2);
 
-      TransportItem[] deserializedItems = SerializeAndDeserialize (new TransportItem[] { item1, item2 });
+      TransportItem[] deserializedItems = SerializeAndDeserialize (new[] { item1, item2 });
 
       TransportItemTest.CheckEqualData (container1, deserializedItems[0]);
       TransportItemTest.CheckEqualData (container2, deserializedItems[1]);
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       TransportItem item1 = TransportItem.PackageDataContainer (container1);
       TransportItem item2 = TransportItem.PackageDataContainer (container2);
 
-      TransportItem[] deserializedItems = SerializeAndDeserialize (new TransportItem[] { item1, item2 });
+      TransportItem[] deserializedItems = SerializeAndDeserialize (new[] { item1, item2 });
 
       TransportItemTest.CheckEqualData (container1, deserializedItems[0]);
       TransportItemTest.CheckEqualData (container2, deserializedItems[1]);

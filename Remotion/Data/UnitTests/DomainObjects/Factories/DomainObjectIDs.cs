@@ -762,7 +762,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ObjectID CreateObjectID (string classID, object value)
     {
-      return new ObjectID (_mappingConfiguration.GetClassDefinition (classID), value);
+      return ObjectID.Create(_mappingConfiguration.GetClassDefinition (classID), value);
     }
   }
 }

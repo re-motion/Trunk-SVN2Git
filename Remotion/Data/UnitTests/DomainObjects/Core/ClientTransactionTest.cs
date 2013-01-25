@@ -61,9 +61,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private TestableClientTransaction _transactionWithMocks;
 
     private ObjectID _objectID1;
-    private DomainObject _fakeDomainObject1;
     private ObjectID _objectID2;
-    private DomainObject _fakeDomainObject2;
+
+    private IObjectID<Order> _order1TypedID;
+    private Order _fakeOrder1;
+    private IObjectID<Order> _order2TypedID;
+    private Order _fakeOrder2;
 
     public override void SetUp ()
     {
@@ -101,9 +104,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _eventBrokerMock.BackToRecord ();
 
       _objectID1 = DomainObjectIDs.Order1;
-      _fakeDomainObject1 = DomainObjectMother.CreateFakeObject (_objectID1);
       _objectID2 = DomainObjectIDs.Order2;
-      _fakeDomainObject2 = DomainObjectMother.CreateFakeObject (_objectID2);
+
+      _order1TypedID = (IObjectID<Order>) DomainObjectIDs.Order1;
+      _fakeOrder1 = DomainObjectMother.CreateFakeObject<Order> (_objectID1);
+      _order2TypedID = (IObjectID<Order>) DomainObjectIDs.Order2;
+      _fakeOrder2 = DomainObjectMother.CreateFakeObject<Order> (_objectID2);
     }
 
     [Test]
@@ -414,42 +420,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var includeDeleted = BooleanObjectMother.GetRandomBoolean();
       _objectLifetimeAgentMock
-          .Expect (mock => mock.GetObject (_objectID1, includeDeleted))
-          .Return (_fakeDomainObject1);
+          .Expect (mock => mock.GetObject (_order1TypedID.AsObjectID(), includeDeleted))
+          .Return (_fakeOrder1);
       _objectLifetimeAgentMock.Replay();
 
-      var result = ClientTransactionTestHelper.CallGetObject (_transactionWithMocks, _objectID1, includeDeleted);
+      var result = ClientTransactionTestHelper.CallGetObject (_transactionWithMocks, _order1TypedID, includeDeleted);
 
       _objectLifetimeAgentMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (_fakeDomainObject1));
+      Assert.That (result, Is.SameAs (_fakeOrder1));
+      Assert.That (VariableTypeInferrer.GetVariableType (result), Is.SameAs (typeof (Order)));
     }
 
     [Test]
     public void TryGetObject ()
     {
       _objectLifetimeAgentMock
-          .Expect (mock => mock.TryGetObject (_objectID1))
-          .Return (_fakeDomainObject1);
+          .Expect (mock => mock.TryGetObject (_order1TypedID.AsObjectID ()))
+          .Return (_fakeOrder1);
       _objectLifetimeAgentMock.Replay ();
 
-      var result = ClientTransactionTestHelper.CallTryGetObject (_transactionWithMocks, _objectID1);
+      var result = ClientTransactionTestHelper.CallTryGetObject (_transactionWithMocks, _order1TypedID);
 
       _objectLifetimeAgentMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (_fakeDomainObject1));
+      Assert.That (result, Is.SameAs (_fakeOrder1));
+      Assert.That (VariableTypeInferrer.GetVariableType (result), Is.SameAs (typeof (Order)));
     }
 
     [Test]
     public void GetObjectReference ()
     {
       _objectLifetimeAgentMock
-          .Expect (mock => mock.GetObjectReference (_objectID1))
-          .Return (_fakeDomainObject1);
+          .Expect (mock => mock.GetObjectReference (_order1TypedID.AsObjectID ()))
+          .Return (_fakeOrder1);
       _objectLifetimeAgentMock.Replay ();
 
-      var result = ClientTransactionTestHelper.CallGetObjectReference (_transactionWithMocks, _objectID1);
+      var result = ClientTransactionTestHelper.CallGetObjectReference (_transactionWithMocks, _order1TypedID);
 
       _objectLifetimeAgentMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (_fakeDomainObject1));
+      Assert.That (result, Is.SameAs (_fakeOrder1));
+      Assert.That (VariableTypeInferrer.GetVariableType (result), Is.SameAs (typeof (Order)));
     }
 
     [Test]
@@ -460,9 +469,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       Assert.That (invalidObject.TransactionContext[_transaction].State, Is.EqualTo (StateType.Invalid));
 
-      var invalidObjectReference = ClientTransactionTestHelper.CallGetInvalidObjectReference (_transaction, invalidObject.ID);
+      var invalidObjectReference = ClientTransactionTestHelper.CallGetInvalidObjectReference (_transaction, invalidObject.GetTypedID());
 
       Assert.That (invalidObjectReference, Is.SameAs (invalidObject));
+      Assert.That (VariableTypeInferrer.GetVariableType (invalidObjectReference), Is.SameAs (typeof (Order)));
     }
 
     [Test]
@@ -488,16 +498,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void NewObject ()
     {
       var typeDefinition = GetTypeDefinition (typeof (Order));
-      var constructorParameters = ParamList.Create (_fakeDomainObject1);
+      var constructorParameters = ParamList.Create ("test");
       _objectLifetimeAgentMock
           .Expect (mock => mock.NewObject (typeDefinition, constructorParameters))
-          .Return (_fakeDomainObject1);
+          .Return (_fakeOrder1);
       _objectLifetimeAgentMock.Replay ();
 
       var result = ClientTransactionTestHelper.CallNewObject (_transactionWithMocks, typeof (Order), constructorParameters);
 
       _objectLifetimeAgentMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (_fakeDomainObject1));
+      Assert.That (result, Is.SameAs (_fakeOrder1));
     }
 
     [Test]
@@ -658,8 +668,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetEnlistedDomainObject ()
     {
-      var order = _transaction.Execute (() => Order.NewObject ());
-      Assert.That (_transaction.GetEnlistedDomainObject (order.ID), Is.SameAs (order));
+      _enlistedObjectManagerMock
+          .Expect (mock => mock.GetEnlistedDomainObject (_order1TypedID.AsObjectID()))
+          .Return (_fakeOrder1);
+      _enlistedObjectManagerMock.Replay();
+
+      var result = _transactionWithMocks.GetEnlistedDomainObject (_order1TypedID);
+
+      Assert.That (result, Is.SameAs (_fakeOrder1));
+      Assert.That (VariableTypeInferrer.GetVariableType (result), Is.SameAs (typeof (Order)));
+
+      _enlistedObjectManagerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -971,28 +990,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void GetObjects ()
     {
       _objectLifetimeAgentMock
-          .Expect (mock => mock.GetObjects<DomainObject> (new[] { _objectID1, _objectID2 }))
-          .Return (new[] { _fakeDomainObject1, _fakeDomainObject2 });
+          .Expect (
+              mock =>
+              mock.GetObjects<Order> (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { _order1TypedID.AsObjectID(), _order2TypedID.AsObjectID() })))
+          .Return (new[] { _fakeOrder1, _fakeOrder2 });
       _objectLifetimeAgentMock.Replay ();
 
-      var result = ClientTransactionTestHelper.CallGetObjects<DomainObject> (_transactionWithMocks, _objectID1, _objectID2);
+      var result = ClientTransactionTestHelper.CallGetObjects (_transactionWithMocks, _order1TypedID, _order2TypedID);
 
       _objectLifetimeAgentMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (new[] { _fakeDomainObject1, _fakeDomainObject2 }));
+      Assert.That (result, Is.EqualTo (new[] { _fakeOrder1, _fakeOrder2 }));
+      Assert.That (VariableTypeInferrer.GetVariableType (result), Is.SameAs (typeof (Order[])));
     }
 
     [Test]
     public void TryGetObjects ()
     {
       _objectLifetimeAgentMock
-          .Expect (mock => mock.TryGetObjects<DomainObject> (new[] { _objectID1, _objectID2 }))
-          .Return (new[] { _fakeDomainObject1, _fakeDomainObject2 });
+          .Expect (
+              mock =>
+              mock.TryGetObjects<Order> (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { _order1TypedID.AsObjectID(), _order2TypedID.AsObjectID() })))
+          .Return (new[] { _fakeOrder1, _fakeOrder2 });
       _objectLifetimeAgentMock.Replay ();
 
-      var result = ClientTransactionTestHelper.CallTryGetObjects<DomainObject> (_transactionWithMocks, _objectID1, _objectID2);
+      var result = ClientTransactionTestHelper.CallTryGetObjects (_transactionWithMocks, _order1TypedID, _order2TypedID);
 
       _objectLifetimeAgentMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (new[] { _fakeDomainObject1, _fakeDomainObject2 }));
+      Assert.That (result, Is.EqualTo (new[] { _fakeOrder1, _fakeOrder2 }));
+      Assert.That (VariableTypeInferrer.GetVariableType (result), Is.SameAs (typeof (Order[])));
     }
     
     [Test]

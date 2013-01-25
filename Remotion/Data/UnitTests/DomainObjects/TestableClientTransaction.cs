@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -42,12 +40,14 @@ namespace Remotion.Data.UnitTests.DomainObjects
       get { return (IClientTransactionEventBroker) PrivateInvoke.GetNonPublicProperty (this, typeof (ClientTransaction), "eventBroker"); }
     }
 
-    public new DomainObject GetObject (ObjectID id, bool includeDeleted)
+    public new T GetObject<T> (IObjectID<T> id, bool includeDeleted)
+        where T : DomainObject
     {
       return base.GetObject (id, includeDeleted);
     }
 
-    public new DomainObject TryGetObject (ObjectID id)
+    public new T TryGetObject<T> (IObjectID<T> id)
+        where T : DomainObject
     {
       return base.TryGetObject (id);
     }
@@ -65,12 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public new DomainObjectCollection GetRelatedObjects (RelationEndPointID relationEndPointID)
     {
       return base.GetRelatedObjects (relationEndPointID);
-    }
-
-    public IEnumerable<DomainObject> GetEnlistedObjects<T>()
-      where T : DomainObject
-    {
-      return GetEnlistedDomainObjects().OfType<T>().Cast<DomainObject>();
     }
 
     public new DataManager DataManager

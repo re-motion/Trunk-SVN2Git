@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       {
         writer.WriteElementString ("null", "");
       }
-      else if (valueType == typeof (ObjectID))
+      else if (IsObjectID(valueType))
       {
         writer.WriteString (value.ToString());
       }
@@ -164,7 +164,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
         string idString = reader.ReadContentAsString ();
         value = ExtensibleEnumUtility.GetDefinition (valueType).GetValueInfoByID (idString).Value;
       }
-      else if (valueType == typeof (ObjectID))
+      else if (IsObjectID (valueType))
       {
         string objectIDString = reader.ReadContentAsString ();
         value = ObjectID.Parse (objectIDString);
@@ -184,7 +184,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
 
       if (valueType == null)
         writer.WriteAttributeString ("Type", "null");
-      else if (valueType == typeof (ObjectID))
+      else if (IsObjectID (valueType))
         writer.WriteAttributeString ("Type", "ObjectID");
       else
         writer.WriteAttributeString ("Type", valueType.AssemblyQualifiedName);
@@ -192,7 +192,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       return valueType;
     }
 
-     private Type DeserializeCustomValueType (XmlReader reader)
+    private Type DeserializeCustomValueType (XmlReader reader)
     {
       string valueTypeAttribute = reader.GetAttribute ("Type");
       switch (valueTypeAttribute)
@@ -205,5 +205,10 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
           return ContextAwareTypeDiscoveryUtility.GetType (valueTypeAttribute, true);
       }
     }
+
+     private static bool IsObjectID (Type valueType)
+     {
+       return typeof (ObjectID).IsAssignableFrom (valueType);
+     }
   }
 }

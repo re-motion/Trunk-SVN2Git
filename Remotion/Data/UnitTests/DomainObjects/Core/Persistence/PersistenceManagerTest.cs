@@ -45,8 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       var guid1 = new Guid ("11111111111111111111111111111111");
       var guid2 = new Guid ("22222222222222222222222222222222");
-      _invalidOrderID1 = new ObjectID (typeof (Order), guid1);
-      _invalidOrderID2 = new ObjectID (typeof (Order), guid2);
+      _invalidOrderID1 = ObjectID.Create(typeof (Order), guid1);
+      _invalidOrderID2 = ObjectID.Create(typeof (Order), guid2);
     }
 
     public override void TearDown ()
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void LoadRelatedDataContainer_OptionalNullID ()
     {
-      var id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
+      var id = ObjectID.Create("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
       DataContainer relatedDataContainer = _persistenceManager.LoadRelatedDataContainer (
           RelationEndPointID.Create (id, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional"));
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional'.")]
     public void LoadRelatedDataContainer_NonOptionalNullID ()
     {
-      var id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
+      var id = ObjectID.Create("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
       _persistenceManager.LoadRelatedDataContainer (
           RelationEndPointID.Create(id, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
@@ -207,12 +207,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void LoadRelatedDataContainer_OverValidMandatoryRelation ()
     {
-      var id = new ObjectID ("ClassWithGuidKey", new Guid ("{D0A1BDDE-B13F-47c1-98BD-EBAE21189B01}"));
+      var id = ObjectID.Create("ClassWithGuidKey", new Guid ("{D0A1BDDE-B13F-47c1-98BD-EBAE21189B01}"));
 
       DataContainer relatedContainer = _persistenceManager.LoadRelatedDataContainer (
           RelationEndPointID.Create(id, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
 
-      ObjectID expectedID = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
+      ObjectID expectedID = ObjectID.Create("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
       Assert.That (relatedContainer, Is.Not.Null);
       Assert.That (relatedContainer.ID, Is.EqualTo (expectedID));
@@ -226,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional'.")]
     public void LoadRelatedDataContainer_OverInvalidNonOptionalRelation ()
     {
-      ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
+      ObjectID id = ObjectID.Create("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
       _persistenceManager.LoadRelatedDataContainer (
           RelationEndPointID.Create (id, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
@@ -248,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
         + "'Ceo|c3db20d6-138e-4ced-8576-e81bb4b7961f|System.Guid' refers to ClassID 'Customer', but the actual ClassID is 'Company'.")]
     public void LoadRelatedDataContainer_WithInvalidClassIDOverVirtualEndPoint ()
     {
-      ObjectID companyID = new ObjectID ("Company", new Guid ("{C3DB20D6-138E-4ced-8576-E81BB4B7961F}"));
+      ObjectID companyID = ObjectID.Create("Company", new Guid ("{C3DB20D6-138E-4ced-8576-E81BB4B7961F}"));
 
       RelationEndPointID endPointID = RelationEndPointID.Create (companyID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo");
 
@@ -331,7 +331,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
         + "'Order|da658f26-8107-44ce-9dd0-1804503eccaf|System.Guid' refers to ClassID 'Company', but the actual ClassID is 'Customer'.")]
     public void LoadRelatedDataContainers_WithInvalidClassID ()
     {
-      ObjectID customerID = new ObjectID ("Customer", new Guid ("{DA658F26-8107-44ce-9DD0-1804503ECCAF}"));
+      ObjectID customerID = ObjectID.Create("Customer", new Guid ("{DA658F26-8107-44ce-9DD0-1804503ECCAF}"));
 
       RelationEndPointID endPointID = RelationEndPointID.Create (customerID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
 

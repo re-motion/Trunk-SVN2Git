@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     public DataContainer CreateClassWithAllDataTypes1DataContainer ()
     {
-      ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      ObjectID id = ObjectID.Create("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassDefinition classDefinition = id.ClassDefinition;
       Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     public DataContainer CreateClassWithGuidKeyDataContainer ()
     {
-      ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
+      ObjectID id = ObjectID.Create("ClassWithGuidKey", new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
 
       Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 

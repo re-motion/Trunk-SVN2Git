@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ObjectID CreateObjectID (Type classType, Guid id)
     {
-      return new ObjectID (_mappingConfiguration.GetTypeDefinition (classType), id);
+      return ObjectID.Create(_mappingConfiguration.GetTypeDefinition (classType), id);
     }
   }
 }

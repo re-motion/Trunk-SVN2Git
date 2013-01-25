@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       _persistenceStrategyStub
           .Stub (stub => stub.CreateNewObjectID (Arg<ClassDefinition>.Is.Anything))
           .Return (null)
-          .WhenCalled (mi => { mi.ReturnValue = new ObjectID ((ClassDefinition) mi.Arguments[0], Guid.NewGuid ()); });
+          .WhenCalled (mi => { mi.ReturnValue = ObjectID.Create((ClassDefinition) mi.Arguments[0], Guid.NewGuid ()); });
       return ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<T> (_persistenceStrategyStub);
     }
 
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public ILoadedObjectData CreateFakeResultData (ClientTransaction clientTransaction)
     {
       var existingDataContainer = DataContainer.CreateForExisting (
-          new ObjectID (typeof (OppositeBidirectionalBindableDomainObject), Guid.NewGuid ()),
+          ObjectID.Create(typeof (OppositeBidirectionalBindableDomainObject), Guid.NewGuid ()),
           null,
           pd => pd.DefaultValue);
       existingDataContainer.SetDomainObject (LifetimeService.GetObjectReference (clientTransaction, existingDataContainer.ID));
