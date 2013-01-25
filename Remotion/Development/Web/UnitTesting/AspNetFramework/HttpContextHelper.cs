@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Specialized;
 using System.Web;
 using System.Web.Hosting;
@@ -45,7 +46,7 @@ namespace Remotion.Development.Web.UnitTesting.AspNetFramework
       ArgumentUtility.CheckNotNullOrEmpty ("page", page);
 
 
-      SimpleWorkerRequest workerRequest = 
+      SimpleWorkerRequest workerRequest =
           new SimpleWorkerRequest (s_appVirtualDir, s_appPhysicalDir, page, query, new System.IO.StringWriter());
 
       object httpRuntime = PrivateInvoke.GetNonPublicStaticField (typeof (HttpRuntime), "_theRuntime");
@@ -63,7 +64,19 @@ namespace Remotion.Development.Web.UnitTesting.AspNetFramework
       HttpSessionState sessionState = CreateSession();
       SetSession (context, sessionState);
 
-      context.Request.Browser = new HttpBrowserCapabilities ();
+      context.Request.Browser = new HttpBrowserCapabilities
+                                {
+                                    Capabilities =
+                                        new Hashtable
+                                        {
+                                            { "w3cdomversion", "4.0" },
+                                            { "ecmascriptversion", "5.0" },
+                                            { "supportsCallback", "true" }
+                                        }
+                                };
+      Assertion.IsTrue (context.Request.Browser.W3CDomVersion == new Version (4, 0));
+      Assertion.IsTrue (context.Request.Browser.EcmaScriptVersion == new Version (5, 0));
+      Assertion.IsTrue (context.Request.Browser.SupportsCallback);
 
       return context;
     }

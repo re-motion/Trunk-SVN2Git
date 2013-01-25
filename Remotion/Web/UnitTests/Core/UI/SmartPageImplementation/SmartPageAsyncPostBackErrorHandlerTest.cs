@@ -18,7 +18,9 @@
 using System;
 using System.Collections;
 using System.Web;
+using System.Web.UI;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.UI;
 using Remotion.Web.UI.SmartPageImplementation;
 using Remotion.Web.Utilities;
@@ -56,7 +58,7 @@ namespace Remotion.Web.UnitTests.Core.UI.SmartPageImplementation
       var contextStub = MockRepository.GenerateStub<HttpContextBase>();
       contextStub.Stub (_ => _.Items).Return (new Hashtable());
       contextStub.Stub (_ => _.IsCustomErrorEnabled).Return (true);
-      
+
       var requstStub = MockRepository.GenerateStub<HttpRequestBase>();
       requstStub.Stub (_ => _.ApplicationPath).Return ("Application/Path");
       contextStub.Stub (_ => _.Request).Return (requstStub);
@@ -77,5 +79,35 @@ namespace Remotion.Web.UnitTests.Core.UI.SmartPageImplementation
     "));
     }
 
+    [Test]
+    public void HandleError_SetsAsyncErrorInformation ()
+    {
+      var contextStub = MockRepository.GenerateStub<HttpContextBase>();
+      contextStub.Stub (_ => _.Items).Return (new Hashtable());
+
+      var handler = new SmartPageAsyncPostBackErrorHandler (contextStub);
+
+      Assert.That (() => handler.HandleError (new ApplicationException ("The error")), Throws.TypeOf<AsyncUnhandledException>());
+
+      Assert.That (contextStub.Items[ControlHelper.AsyncPostBackErrorKey], Is.True);
+      Assert.That (contextStub.Items[ControlHelper.AsyncPostBackErrorHttpCodeKey], Is.EqualTo (500));
+      Assert.That (contextStub.Items[ControlHelper.AsyncPostBackErrorMessageKey], Is.Not.Empty);
+    }
+
+    [Test]
+    public void HandleError_IntegrationTest ()
+    {
+      var expectedException = new ApplicationException ("Test exception");
+
+      var page = new FakePageForAsyncPostBack();
+      page.Load += delegate { throw expectedException; };
+
+      page.ScriptManager.AsyncPostBackError += (sender, e) => { ((ScriptManager) sender).AsyncPostBackErrorMessage = e.Exception.Message; };
+
+      Assert.That (() => page.ProcessRequest (), Throws.TypeOf<HttpUnhandledException>().With.InnerException.SameAs (expectedException));
+      Assert.That (page.Context.Items[ControlHelper.AsyncPostBackErrorKey], Is.True);
+      Assert.That (page.Context.Items[ControlHelper.AsyncPostBackErrorHttpCodeKey], Is.EqualTo (500));
+      Assert.That (page.Context.Items[ControlHelper.AsyncPostBackErrorMessageKey], Is.EqualTo (expectedException.Message));
+    }
   }
 }
