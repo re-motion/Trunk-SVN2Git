@@ -24,7 +24,11 @@ namespace Remotion.Web.UI
   public sealed class AsyncUnhandledException : Exception
   {
     public AsyncUnhandledException (Exception innerException)
-        : base ("ASP.NET asynchronous postback exception", innerException)
+        : base (
+            "ASP.NET asynchronous postback exception. This exception can be detected in the HttpApplication's Error handler and based on the requirements, "
+            + "the error can be logged, reset (via Server.ClearError()), "
+            + "and the user can be client-side redirected to a specific error page via Response.Redirect(...).",
+            innerException)
     {
     }
 

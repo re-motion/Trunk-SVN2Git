@@ -26,6 +26,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.SmartPageImplementation
 {
+  /// <summary>
+  /// Can be used to provide the error handling of asynchronous postbacks in a <see cref="SmartPage"/>.
+  /// The <see cref="HandleError"/> method should be registered with the <see cref="ScriptManager.AsyncPostBackError"/> event of the <see cref="ScriptManager"/>.
+  /// </summary>
   public class SmartPageAsyncPostBackErrorHandler
   {
     private readonly HttpContextBase _context;
