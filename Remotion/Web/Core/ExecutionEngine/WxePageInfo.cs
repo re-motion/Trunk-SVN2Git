@@ -151,7 +151,7 @@ namespace Remotion.Web.ExecutionEngine
       else
         collection = httpContext.Request.QueryString;
 
-      if ((collection[ControlHelper.ViewStateID] == null) && (collection[ControlHelper.PostEventSourceID] == null))
+      if ((collection[ControlHelper.ViewStateFieldPrefixID] == null) && (collection[ControlHelper.PostEventSourceID] == null))
         return null;
       else
         return collection;

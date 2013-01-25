@@ -21,6 +21,7 @@ using System.Web;
 using NUnit.Framework;
 using Remotion.Web.UI;
 using Remotion.Web.UI.SmartPageImplementation;
+using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.Core.UI.SmartPageImplementation
@@ -28,10 +29,6 @@ namespace Remotion.Web.UnitTests.Core.UI.SmartPageImplementation
   [TestFixture]
   public class SmartPageAsyncPostBackErrorHandlerTest
   {
-    //private const string c_asyncPostBackErrorKey = "System.Web.UI.PageRequestManager:AsyncPostBackError";
-    private const string c_asyncPostBackErrorMessageKey = "System.Web.UI.PageRequestManager:AsyncPostBackErrorMessage";
-    //private const string c_asyncPostBackErrorHttpCodeKey = "System.Web.UI.PageRequestManager:AsyncPostBackErrorHttpCode";
-
     [Test]
     public void HandleError_IsCustomErrorEnabledFalse_SetsAspNetDetailedErrorMessage ()
     {
@@ -43,7 +40,7 @@ namespace Remotion.Web.UnitTests.Core.UI.SmartPageImplementation
 
       Assert.That (() => handler.HandleError (new ApplicationException ("The error")), Throws.TypeOf<AsyncUnhandledException>());
 
-      var message = contextStub.Items[c_asyncPostBackErrorMessageKey];
+      var message = contextStub.Items[ControlHelper.AsyncPostBackErrorMessageKey];
       Assert.That (message, Is.StringStarting (@"
 
             <span><H1>"));
@@ -69,7 +66,7 @@ namespace Remotion.Web.UnitTests.Core.UI.SmartPageImplementation
 
       Assert.That (() => handler.HandleError (new ApplicationException (exceptionMessage)), Throws.TypeOf<AsyncUnhandledException>());
 
-      var message = contextStub.Items[c_asyncPostBackErrorMessageKey];
+      var message = contextStub.Items[ControlHelper.AsyncPostBackErrorMessageKey];
       Assert.That (message, Is.StringStarting (@"
 
             <span><h1>"));

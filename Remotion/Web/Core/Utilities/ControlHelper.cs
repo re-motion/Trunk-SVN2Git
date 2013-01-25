@@ -32,17 +32,32 @@ namespace Remotion.Web.Utilities
 
     public static string PostEventSourceID
     {
-      get { return "__EVENTTARGET"; }
+      get { return Page.postEventSourceID; }
     }
 
     public static string PostEventArgumentID
     {
-      get { return "__EVENTARGUMENT"; }
+      get { return Page.postEventArgumentID; }
     }
 
-    public static string ViewStateID
+    public static string ViewStateFieldPrefixID
     {
       get { return "__VIEWSTATE"; }
+    }
+    
+    public static string AsyncPostBackErrorKey
+    {
+      get { return "System.Web.UI.PageRequestManager:AsyncPostBackError"; }
+    }
+
+    public static string AsyncPostBackErrorMessageKey
+    {
+      get { return "System.Web.UI.PageRequestManager:AsyncPostBackErrorMessage"; }
+    }
+
+    public static string AsyncPostBackErrorHttpCodeKey
+    {
+      get { return "System.Web.UI.PageRequestManager:AsyncPostBackErrorHttpCode"; }
     }
 
     public static Control[] GetControlsRecursive (Control parentControl, Type type)

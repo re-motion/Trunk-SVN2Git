@@ -238,6 +238,7 @@
     <Compile Include="Core\UI\Controls\WebTreeViewImplementation\IWebTreeViewRendererTest.cs" />
     <Compile Include="Core\UI\HtmlHeadAppenderTest.cs" />
     <Compile Include="Core\UI\SmartPageImplementation\SmartPageAsyncPostBackErrorHandlerTest.cs" />
+    <Compile Include="Core\Utilities\ControlHelperTest.cs" />
     <Compile Include="Core\Utilities\VirtualPathUtilityTests.cs" />
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckJsonService.cs" />
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckScriptService.cs" />

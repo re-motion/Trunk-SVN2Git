@@ -22,18 +22,13 @@ using System.Reflection;
 using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.SmartPageImplementation
 {
   public class SmartPageAsyncPostBackErrorHandler
   {
     private readonly HttpContextBase _context;
-    //PageRequestManager
-    internal const string AsyncPostBackErrorKey = "System.Web.UI.PageRequestManager:AsyncPostBackError";
-    internal const string AsyncPostBackErrorMessageKey = "System.Web.UI.PageRequestManager:AsyncPostBackErrorMessage";
-    internal const string AsyncPostBackErrorHttpCodeKey = "System.Web.UI.PageRequestManager:AsyncPostBackErrorHttpCode";
-
-
 
     public SmartPageAsyncPostBackErrorHandler (HttpContextBase context)
     {
@@ -48,9 +43,9 @@ namespace Remotion.Web.UI.SmartPageImplementation
 
       string errorHtml = GetErrorHtml (_context, error);
 
-      _context.Items[AsyncPostBackErrorKey] = true;
-      _context.Items[AsyncPostBackErrorMessageKey] = errorHtml;
-      _context.Items[AsyncPostBackErrorHttpCodeKey] = 500;
+      _context.Items[ControlHelper.AsyncPostBackErrorKey] = true;
+      _context.Items[ControlHelper.AsyncPostBackErrorMessageKey] = errorHtml;
+      _context.Items[ControlHelper.AsyncPostBackErrorHttpCodeKey] = 500;
 
       throw new AsyncUnhandledException (error);
     }
