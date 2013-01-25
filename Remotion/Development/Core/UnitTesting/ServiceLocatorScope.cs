@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -28,48 +29,24 @@ namespace Remotion.Development.UnitTesting
   /// </summary>
   public class ServiceLocatorScope : IDisposable
   {
-    private static IServiceLocator CreateServiceLocator (params ServiceConfigurationEntry[] configuration)
+    private static DefaultServiceLocator CreateServiceLocator (IEnumerable<ServiceConfigurationEntry> configuration)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("configuration", configuration);
+      ArgumentUtility.CheckNotNull ("configuration", configuration);
 
-      // Use default service locator just for instanciation.
-      var defaultServiceLocator = new DefaultServiceLocator();
-      foreach (var entry in configuration)
-        defaultServiceLocator.Register (entry);
-
-      var delegatingServiceLocator = new DelegatingServiceLocator (SafeServiceLocator.Current);
-      foreach (var entry in configuration)
-      {
-        var serviceType = entry.ServiceType;
-        if (entry.ImplementationInfos.Count == 1)
-          delegatingServiceLocator.Register (serviceType, () => defaultServiceLocator.GetInstance (serviceType));
-        else
-          delegatingServiceLocator.Register (serviceType, () => defaultServiceLocator.GetAllInstances (serviceType));
-      }
-
-      return delegatingServiceLocator;
+      var defaultServiceLocator = new DefaultServiceLocator ();
+      foreach (var stubbedRegistration in configuration)
+        defaultServiceLocator.Register (stubbedRegistration);
+      return defaultServiceLocator;
     }
 
-    private static IServiceLocator CreateServiceLocator (Type serviceType, Func<object> creator)
+    private static DefaultServiceLocator CreateServiceLocator (Type serviceType, params Func<object>[] creators)
     {
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      ArgumentUtility.CheckNotNull ("creator", creator);
+      ArgumentUtility.CheckNotNullOrEmpty ("creators", creators);
 
-      var delegatingServiceLocator = new DelegatingServiceLocator (SafeServiceLocator.Current);
-      delegatingServiceLocator.Register (serviceType, creator);
-
-      return delegatingServiceLocator;
-    }
-
-    private static IServiceLocator CreateServiceLocator (Type serviceType, Func<IEnumerable<object>> creator)
-    {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      ArgumentUtility.CheckNotNull ("creator", creator);
-
-      var delegatingServiceLocator = new DelegatingServiceLocator (SafeServiceLocator.Current);
-      delegatingServiceLocator.RegisterAll (serviceType, creator);
-
-      return delegatingServiceLocator;
+      var defaultServiceLocator = CreateServiceLocator (Enumerable.Empty<ServiceConfigurationEntry> ());
+      defaultServiceLocator.Register (serviceType, creators);
+      return defaultServiceLocator;
     }
 
     private readonly ServiceLocatorProvider _previousLocatorProvider;
@@ -95,17 +72,14 @@ namespace Remotion.Development.UnitTesting
     }
 
     public ServiceLocatorScope (Type serviceType, Type implementationType, LifetimeKind lifetimeKind = LifetimeKind.Instance)
-        : this (CreateServiceLocator (new ServiceConfigurationEntry (serviceType, new ServiceImplementationInfo (implementationType, lifetimeKind))))
+        : this (
+            CreateServiceLocator (
+                new[] { new ServiceConfigurationEntry (serviceType, new ServiceImplementationInfo (implementationType, lifetimeKind)) }))
     {
     }
 
-    public ServiceLocatorScope (Type serviceType, Func<object> creator)
-        : this (CreateServiceLocator (serviceType, creator))
-    {
-    }
-
-    public ServiceLocatorScope (Type serviceType, Func<IEnumerable<object>> creator)
-      : this (CreateServiceLocator (serviceType, creator))
+    public ServiceLocatorScope (Type serviceType, params Func<object>[] creators)
+        : this (CreateServiceLocator (serviceType, creators))
     {
     }
 

@@ -111,7 +111,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       using (new ServiceLocatorScope (entry1, entry2))
       {
         Assert.That (ServiceLocator.Current, Is.Not.SameAs (_locator1));
-        Assert.That (ServiceLocator.Current, Is.TypeOf<DelegatingServiceLocator>());
+        Assert.That (ServiceLocator.Current, Is.TypeOf<DefaultServiceLocator> ());
         Assert.That (ServiceLocator.Current.GetInstance (typeof (object)), Is.TypeOf<DomainType1> ());
         Assert.That (ServiceLocator.Current.GetInstance (typeof (object)), Is.Not.SameAs (ServiceLocator.Current.GetInstance (typeof (object))));
         Assert.That (ServiceLocator.Current.GetInstance (typeof (IFormattable)), Is.TypeOf<DomainType2> ());
@@ -130,7 +130,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       using (new ServiceLocatorScope (typeof (object), typeof (DomainType1), LifetimeKind.Singleton))
       {
         Assert.That (ServiceLocator.Current, Is.Not.SameAs (_locator1));
-        Assert.That (ServiceLocator.Current, Is.TypeOf<DelegatingServiceLocator> ());
+        Assert.That (ServiceLocator.Current, Is.TypeOf<DefaultServiceLocator> ());
         Assert.That (ServiceLocator.Current.GetInstance (typeof (object)), Is.TypeOf<DomainType1> ());
         Assert.That (ServiceLocator.Current.GetInstance (typeof (object)), Is.SameAs (ServiceLocator.Current.GetInstance (typeof (object))));
       }
@@ -148,7 +148,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       using (new ServiceLocatorScope (typeof (object), () => obj))
       {
         Assert.That (ServiceLocator.Current, Is.Not.SameAs (_locator1));
-        Assert.That (ServiceLocator.Current, Is.TypeOf<DelegatingServiceLocator>());
+        Assert.That (ServiceLocator.Current, Is.TypeOf<DefaultServiceLocator>());
         Assert.That (ServiceLocator.Current.GetInstance (typeof (object)), Is.SameAs (obj));
       }
 
@@ -163,41 +163,14 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
 
       var obj1 = new object();
       var obj2 = new object();
-      using (new ServiceLocatorScope (typeof (object), () => new[] { obj1, obj2 }))
+      using (new ServiceLocatorScope (typeof (object), () => obj1, () => obj2))
       {
         Assert.That (ServiceLocator.Current, Is.Not.SameAs (_locator1));
-        Assert.That (ServiceLocator.Current, Is.TypeOf<DelegatingServiceLocator>());
+        Assert.That (ServiceLocator.Current, Is.TypeOf<DefaultServiceLocator>());
         Assert.That (ServiceLocator.Current.GetAllInstances (typeof (object)), Is.EqualTo (new[] { obj1, obj2 }));
       }
 
       Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
-    }
-
-    [Test]
-    public void NestedScopes ()
-    {
-      var obj1 = new object();
-      var obj2 = new object();
-      var obj3 = new object();
-      var obj4 = new object();
-
-      _locator1.Stub (stub => stub.GetInstance (typeof (object), null)).Return (obj1);
-      ServiceLocator.SetLocatorProvider (() => _locator1);
-
-      using (new ServiceLocatorScope (typeof (int), () => obj2))
-      {
-        using (new ServiceLocatorScope (typeof (string), () => obj3))
-        {
-          using (new ServiceLocatorScope (typeof (int), () => obj4))
-          {
-            var locator = ServiceLocator.Current;
-            Assert.That (locator.GetInstance (typeof (object)), Is.SameAs (obj1));
-            Assert.That (locator.GetInstance (typeof (int)), Is.SameAs (obj4));
-            Assert.That (locator.GetInstance (typeof (string)), Is.SameAs (obj3));
-          }
-          Assert.That (SafeServiceLocator.Current.GetInstance (typeof (int)), Is.SameAs (obj2));
-        }
-      }
     }
 
     class DomainType1 { }
