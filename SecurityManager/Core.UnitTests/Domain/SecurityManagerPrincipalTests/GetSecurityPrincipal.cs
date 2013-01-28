@@ -48,7 +48,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       _tenant = _user.Tenant;
       _substitution = _user.GetActiveSubstitutions().Where (s => s.SubstitutedRole != null).First();
 
-      _principal = new SecurityManagerPrincipal (_tenant.ID, _user.ID, _substitution.ID);
+      _principal = new SecurityManagerPrincipal (_tenant.GetTypedID(), _user.GetTypedID(), _substitution.GetTypedID());
     }
 
     public override void TearDown ()

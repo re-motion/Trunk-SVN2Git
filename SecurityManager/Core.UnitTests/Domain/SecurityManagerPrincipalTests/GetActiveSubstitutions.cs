@@ -27,9 +27,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
   [TestFixture]
   public class GetActiveSubstitutions : DomainTest
   {
-    private ObjectID _tenantID;
-    private ObjectID _userID;
-    private ObjectID[] _substitutionIDs;
+    private IObjectID<Tenant> _tenantID;
+    private IObjectID<User> _userID;
+    private IObjectID<Substitution>[] _substitutionIDs;
 
     public override void SetUp ()
     {
@@ -40,9 +40,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
 
       User user = User.FindByUserName ("substituting.user");
-      _userID = user.ID;
-      _tenantID = user.Tenant.ID;
-      _substitutionIDs = user.GetActiveSubstitutions().Select (s => s.ID).ToArray();
+      _userID = user.GetTypedID();
+      _tenantID = user.Tenant.GetTypedID();
+      _substitutionIDs = user.GetActiveSubstitutions().Select (s => s.GetTypedID()).ToArray();
       Assert.That (_substitutionIDs.Length, Is.EqualTo (2));
     }
 

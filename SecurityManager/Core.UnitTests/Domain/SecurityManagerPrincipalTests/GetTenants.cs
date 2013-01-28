@@ -29,10 +29,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
   [TestFixture]
   public class GetTenants : DomainTest
   {
-    private ObjectID _rootTenantID;
-    private ObjectID _childTenantID;
-    private ObjectID _grandChildTenantID;
-    private ObjectID _userID;
+    private IObjectID<Tenant> _rootTenantID;
+    private IObjectID<Tenant> _childTenantID;
+    private IObjectID<Tenant> _grandChildTenantID;
+    private IObjectID<User> _userID;
 
     public override void SetUp ()
     {
@@ -43,10 +43,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
 
       User user = User.FindByUserName ("substituting.user");
-      _userID = user.ID;
-      _rootTenantID = user.Tenant.ID;
-      _childTenantID = user.Tenant.Children.Single ().ID;
-      _grandChildTenantID = user.Tenant.Children.Single ().Children.Single ().ID;
+      _userID = user.GetTypedID();
+      _rootTenantID = user.Tenant.GetTypedID();
+      _childTenantID = user.Tenant.Children.Single().GetTypedID();
+      _grandChildTenantID = user.Tenant.Children.Single().Children.Single().GetTypedID();
     }
 
     public override void TearDown ()

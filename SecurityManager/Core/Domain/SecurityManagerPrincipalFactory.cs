@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using Remotion.Data.DomainObjects;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain
@@ -29,7 +30,7 @@ namespace Remotion.SecurityManager.Domain
     {
     }
 
-    public ISecurityManagerPrincipal CreateWithLocking (ObjectID tenantID, ObjectID userID, ObjectID substitutionID)
+    public ISecurityManagerPrincipal CreateWithLocking (IObjectID<Tenant> tenantID, IObjectID<User> userID, IObjectID<Substitution> substitutionID)
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
       ArgumentUtility.CheckNotNull ("userID", userID);

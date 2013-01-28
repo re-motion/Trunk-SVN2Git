@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 
         var factory = new SecurityManagerPrincipalFactory();
 
-        var principal = factory.CreateWithLocking (tenant.ID, user.ID, null);
+        var principal = factory.CreateWithLocking (tenant.GetTypedID(), user.GetTypedID(), null);
 
         Assert.That (principal, Is.TypeOf<LockingSecurityManagerPrincipalDecorator>());
         var innerPrincipal = PrivateInvoke.GetNonPublicField (principal, "_innerPrincipal");

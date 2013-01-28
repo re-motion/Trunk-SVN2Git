@@ -36,6 +36,6 @@ namespace Remotion.SecurityManager.Domain
     /// <param name="userID">The <see cref="ObjectID"/> of the <see cref="User"/>. Must not be <see langword="null" />.</param>
     /// <param name="substitutionID">The <see cref="ObjectID"/> of the <see cref="Substitution"/>.</param>
     /// <returns>A threadsafe implementation of the <see cref="ISecurityManagerPrincipal"/> interface.</returns>
-    ISecurityManagerPrincipal CreateWithLocking (ObjectID tenantID, ObjectID userID, ObjectID substitutionID);
+    ISecurityManagerPrincipal CreateWithLocking (IObjectID<Tenant> tenantID, IObjectID<User> userID, IObjectID<Substitution> substitutionID);
   }
 }

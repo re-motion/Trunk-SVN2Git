@@ -37,12 +37,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       ArgumentUtility.CheckNotNull ("tenant", tenant);
 
       return new TenantProxy (
-          tenant.ID,
+          tenant.GetTypedID(),
           ((IBusinessObjectWithIdentity) tenant).UniqueIdentifier,
           ((IBusinessObjectWithIdentity) tenant).DisplayName);
     }
 
-    private TenantProxy (ObjectID id, string uniqueIdentifier, string displayName)
+    private TenantProxy (IObjectID<Tenant> id, string uniqueIdentifier, string displayName)
         : base (id, uniqueIdentifier, displayName)
     {
     }

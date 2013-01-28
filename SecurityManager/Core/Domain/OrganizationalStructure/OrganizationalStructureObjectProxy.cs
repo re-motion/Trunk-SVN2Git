@@ -29,14 +29,13 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   public abstract class OrganizationalStructureObjectProxy<T> : BindableObjectWithIdentityBase
       where T : BaseSecurityManagerObject
   {
-    private readonly ObjectID _id;
+    private readonly IObjectID<T> _id;
     private readonly string _uniqueIdentifier;
     private readonly string _displayName;
 
-    protected OrganizationalStructureObjectProxy (ObjectID id, string uniqueIdentifier, string displayName)
+    protected OrganizationalStructureObjectProxy (IObjectID<T> id, string uniqueIdentifier, string displayName)
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      ArgumentUtility.CheckTypeIsAssignableFrom ("id", id.ClassDefinition.ClassType, typeof (T));
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
       ArgumentUtility.CheckNotNullOrEmpty ("displayName", displayName);
 
@@ -46,6 +45,11 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     }
 
     public ObjectID ID
+    {
+      get { return _id.AsObjectID(); }
+    }
+
+    public IObjectID<T> TypedID
     {
       get { return _id; }
     }
@@ -64,9 +68,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       if (obj == null)
         return false;
-      if (obj.GetType() != this.GetType())
+      if (this.GetType() != obj.GetType())
         return false;
-      return ((OrganizationalStructureObjectProxy<T>) obj)._id == this._id;
+      return this._id.Equals (((OrganizationalStructureObjectProxy<T>) obj)._id);
     }
 
     public override int GetHashCode ()

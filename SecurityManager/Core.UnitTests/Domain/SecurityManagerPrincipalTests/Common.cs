@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       User user = User.FindByUserName ("substituting.user");
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (user.Tenant.ID, user.ID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (user.Tenant.GetTypedID(), user.GetTypedID(), null);
       SecurityManagerPrincipal.Current = principal;
       Assert.That (SecurityManagerPrincipal.Current, Is.SameAs (principal));
     }
@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       User user = User.FindByUserName ("substituting.user");
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (user.Tenant.ID, user.ID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (user.Tenant.GetTypedID(), user.GetTypedID(), null);
       SecurityManagerPrincipal.Current = principal;
       Assert.That (SecurityManagerPrincipal.Current, Is.SameAs (principal));
 
@@ -77,7 +77,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
             using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
             {
               User otherUser = User.FindByUserName ("group1/user1");
-              SecurityManagerPrincipal otherPrincipal = new SecurityManagerPrincipal (otherUser.Tenant.ID, otherUser.ID, null);
+              SecurityManagerPrincipal otherPrincipal = new SecurityManagerPrincipal (otherUser.Tenant.GetTypedID(), otherUser.GetTypedID(), null);
 
               Assert.That (SecurityManagerPrincipal.Current.IsNull, Is.True);
               SecurityManagerPrincipal.Current = otherPrincipal;
@@ -95,7 +95,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       Tenant tenant = user.Tenant;
       Substitution substitution = user.GetActiveSubstitutions().First();
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.GetTypedID(), user.GetTypedID(), substitution.GetTypedID());
 
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
@@ -117,7 +117,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       Tenant tenant = user.Tenant;
       Substitution substitution = user.GetActiveSubstitutions().First();
 
-      var principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
+      var principal = new SecurityManagerPrincipal (tenant.GetTypedID(), user.GetTypedID(), substitution.GetTypedID());
       var deserializedPrincipal = Serializer.SerializeAndDeserialize (principal);
 
       Assert.That (deserializedPrincipal.Tenant.ID, Is.EqualTo (principal.Tenant.ID));
@@ -136,7 +136,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       User user = User.FindByUserName ("substituting.user");
       Tenant tenant = user.Tenant;
 
-      ISecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, null);
+      ISecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.GetTypedID(), user.GetTypedID(), null);
 
       Assert.That (principal.IsNull, Is.False);
     }
@@ -152,7 +152,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.GetTypedID(), user.GetTypedID(), substitution.GetTypedID());
 
       //Must test for observable effect
       Assert.That (principal.GetActiveSubstitutions(), Is.Empty);
@@ -169,7 +169,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       Tenant tenant = user.Tenant;
       Substitution substitution = user.GetActiveSubstitutions().First();
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.GetTypedID(), user.GetTypedID(), substitution.GetTypedID());
 
       //Must test for observable effect
       Assert.That (principal.GetActiveSubstitutions(), Is.Not.Empty);

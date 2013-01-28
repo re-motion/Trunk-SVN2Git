@@ -37,12 +37,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       ArgumentUtility.CheckNotNull ("substitution", substitution);
 
       return new SubstitutionProxy (
-          substitution.ID,
+          substitution.GetTypedID(),
           ((IBusinessObjectWithIdentity) substitution).UniqueIdentifier,
           ((IBusinessObjectWithIdentity) substitution).DisplayName);
     }
 
-    private SubstitutionProxy (ObjectID id, string uniqueIdentifier, string displayName)
+    private SubstitutionProxy (IObjectID<Substitution> id, string uniqueIdentifier, string displayName)
         : base (id, uniqueIdentifier, displayName)
     {
     }
