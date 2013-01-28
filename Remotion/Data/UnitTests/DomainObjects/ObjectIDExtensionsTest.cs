@@ -34,8 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public override void SetUp ()
     {
       base.SetUp ();
-      _orderID1 = (IObjectID<Order>) DomainObjectIDs.Order1;
-      _orderID2 = (IObjectID<Order>) DomainObjectIDs.Order2;
+      _orderID1 = DomainObjectIDs.Order1.AsObjectID<Order>();
+      _orderID2 = DomainObjectIDs.Order2.AsObjectID<Order> ();
       _notFoundOrderID = ObjectID.Create<Order> (Guid.NewGuid());
       _clientTransaction = ClientTransaction.CreateRootTransaction();
     }

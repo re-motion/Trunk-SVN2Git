@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       base.SetUp ();
 
-      _orderTypedID = (IObjectID<Order>) DomainObjectIDs.Order1;
+      _orderTypedID = DomainObjectIDs.Order1.AsObjectID<Order>();
       _untypedID = DomainObjectIDs.Order1;
     }
 

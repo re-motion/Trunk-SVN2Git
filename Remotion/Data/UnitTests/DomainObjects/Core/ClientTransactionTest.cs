@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _objectID1 = DomainObjectIDs.Order1;
       _objectID2 = DomainObjectIDs.Order2;
 
-      _order1TypedID = (IObjectID<Order>) DomainObjectIDs.Order1;
+      _order1TypedID = DomainObjectIDs.Order1.AsObjectID<Order> ();
       _fakeOrder1 = DomainObjectMother.CreateFakeObject<Order> (_objectID1);
       _order2TypedID = (IObjectID<Order>) DomainObjectIDs.Order2;
       _fakeOrder2 = DomainObjectMother.CreateFakeObject<Order> (_objectID2);

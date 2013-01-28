@@ -38,9 +38,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       base.SetUp ();
 
-      _typedOrder1ID = (IObjectID<Order>) DomainObjectIDs.Order1;
-      _typedOrder2ID = (IObjectID<Order>) DomainObjectIDs.Order2;
-      _typedOrder3ID = (IObjectID<Order>) DomainObjectIDs.Order3;
+      _typedOrder1ID = DomainObjectIDs.Order1.AsObjectID<Order>();
+      _typedOrder2ID = DomainObjectIDs.Order2.AsObjectID<Order> ();
+      _typedOrder3ID = DomainObjectIDs.Order3.AsObjectID<Order> ();
     }
 
     [Test]

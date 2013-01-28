@@ -288,9 +288,24 @@ namespace Remotion.Data.DomainObjects
       get { return _classDefinition; }
     }
 
+    /// <inheritdoc />
     ObjectID IObjectID<DomainObject>.AsObjectID ()
     {
       return this;
+    }
+
+    /// <inheritdoc />
+    public IObjectID<TOther> AsObjectID<TOther> () where TOther : DomainObject
+    {
+      try
+      {
+        return (IObjectID<TOther>) this;
+      }
+      catch (InvalidCastException ex)
+      {
+        var message = string.Format ("The ObjectID '{0}' cannot be represented as an IObjectID<{1}>.", this, typeof (TOther));
+        throw new InvalidCastException (message, ex);
+      }
     }
 
     /// <summary>

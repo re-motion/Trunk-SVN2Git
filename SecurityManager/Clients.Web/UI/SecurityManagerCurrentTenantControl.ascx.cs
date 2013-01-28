@@ -109,7 +109,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       var oldSecurityManagerPrincipal = SecurityManagerPrincipal.Current;
       var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (
-          (IObjectID<Tenant>) ObjectID.Parse (tenantID),
+          ObjectID.Parse (tenantID).AsObjectID<Tenant> (),
           oldSecurityManagerPrincipal.User.TypedID,
           oldSecurityManagerPrincipal.Substitution != null ? oldSecurityManagerPrincipal.Substitution.TypedID : null);
       ApplicationInstance.SetCurrentPrincipal (newSecurityManagerPrincipal);
@@ -134,7 +134,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (
           oldSecurityManagerPrincipal.Tenant.TypedID,
           oldSecurityManagerPrincipal.User.TypedID,
-          substitutionID != null ? (IObjectID<Substitution>) ObjectID.Parse (substitutionID) : null);
+          substitutionID != null ? ObjectID.Parse (substitutionID).AsObjectID<Substitution>() : null);
       ApplicationInstance.SetCurrentPrincipal (newSecurityManagerPrincipal);
 
       _isCurrentSubstitutionFieldReadOnly = true;

@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects
     public static IObjectID<T> GetTypedID<T> (this T domainObject) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      return (IObjectID<T>) domainObject.ID;
+      return domainObject.ID.AsObjectID<T>();
     }
 
     /// <summary>

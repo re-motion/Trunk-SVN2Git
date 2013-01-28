@@ -70,10 +70,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     }
 
     [Test]
-    public void AsObjectID_Generic ()
+    public void AsObjectID_Generic_CanUpcast ()
     {
-      var id = (IObjectID<Order>) ObjectID.Create (_orderClassDefinition, new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}"));
-      Assert.That (id.AsObjectID (), Is.SameAs (id));
+      var id = ObjectID.Create (_orderClassDefinition, new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}"));
+
+      var result = id.AsObjectID<Order>();
+
+      Assert.That (result, Is.SameAs (id));
+      Assert.That (VariableTypeInferrer.GetVariableType (result), Is.SameAs (typeof (IObjectID<Order>)));
+    }
+
+    [Test]
+    public void AsObjectID_Generic_CanDowncast ()
+    {
+      var id = ObjectID.Create (_orderClassDefinition, new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}"));
+
+      var result = id.AsObjectID<TestDomainBase> ();
+
+      Assert.That (result, Is.SameAs (id));
+      Assert.That (VariableTypeInferrer.GetVariableType (result), Is.SameAs (typeof (IObjectID<TestDomainBase>)));
+    }
+
+    [Test]
+    public void AsObjectID_Generic_ThrowsOnUnsupportedCast ()
+    {
+      var id = ObjectID.Create (_orderClassDefinition, new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}"));
+
+      Assert.That (
+          () => id.AsObjectID<OrderItem>(),
+          Throws.TypeOf<InvalidCastException>().With.Message.EqualTo (
+              "The ObjectID 'Order|5d09030c-25c2-4735-b514-46333bd28ac8|System.Guid' cannot be represented as an "
+              + "IObjectID<Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem>."));
     }
 
     [Test]
