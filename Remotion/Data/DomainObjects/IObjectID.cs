@@ -27,7 +27,6 @@ namespace Remotion.Data.DomainObjects
   /// <typeparam name="T">The class of the object identified by this <see cref="IObjectID{T}"/>.</typeparam>
   /// <remarks>Do not use the equality operator to compare two instances of <see cref="IObjectID{T}"/> for equality - use 
   /// <see cref="object.Equals(object,object)"/> instead!</remarks>
-  [CannotApplyEqualityOperator]
   public interface IObjectID<out T> : IComparable
       where T : DomainObject
   {
@@ -59,6 +58,13 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <returns>An <see cref="ObjectID"/> instance identifying the same <see cref="DomainObject"/> as this <see cref="IObjectID{T}"/>.</returns>
     ObjectID AsObjectID ();
+
+    /// <summary>
+    /// Returns this <see cref="IObjectID{T}"/> as an <see cref="IObjectID{T}"/> of another type.
+    /// </summary>
+    /// <returns>The same <see cref="IObjectID{T}"/> as this object, but typed to another type <typeparamref name="TOther"/>>.</returns>
+    /// <exception cref="InvalidCastException">This <see cref="IObjectID{T}"/> is not compatible with <typeparamref name="TOther"/>.</exception>
+    IObjectID<TOther> AsObjectID<TOther> () where TOther : DomainObject;
 
     /// <summary>
     /// Returns the string representation of the current <see cref="IObjectID{T}"/>.
