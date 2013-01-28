@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   [DBTable]
   [TestDomain]
   [Instantiable]
-  public abstract class Order : TestDomainBase, IOrder
+  public abstract class Order : TestDomainBase, IOrder, ISupportsGetObject
   {
     public static Order NewObject ()
     {

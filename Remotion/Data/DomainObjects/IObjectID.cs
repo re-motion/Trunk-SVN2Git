@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 
@@ -24,6 +25,9 @@ namespace Remotion.Data.DomainObjects
   /// Provides a covariant, typed interface for instances of <see cref="ObjectID"/>.
   /// </summary>
   /// <typeparam name="T">The class of the object identified by this <see cref="IObjectID{T}"/>.</typeparam>
+  /// <remarks>Do not use the equality operator to compare two instances of <see cref="IObjectID{T}"/> for equality - use 
+  /// <see cref="object.Equals(object,object)"/> instead!</remarks>
+  [CannotApplyEqualityOperator]
   public interface IObjectID<out T> : IComparable
       where T : DomainObject
   {

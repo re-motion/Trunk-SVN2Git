@@ -248,6 +248,7 @@
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\UnlockedParentTransactionContext.cs" />
     <Compile Include="IObjectID.cs" />
+    <Compile Include="ISupportsGetObject.cs" />
     <Compile Include="Linq\ExecutableQueries\CustomSequenceQueryAdapter.cs" />
     <Compile Include="Linq\DomainObjectQueryGenerator.cs" />
     <Compile Include="Linq\ExecutableQueries\DomainObjectSequenceQueryAdapter.cs" />
@@ -262,6 +263,7 @@
     <Compile Include="Linq\SqlQueryGeneratorResult.cs" />
     <Compile Include="Mapping\IMappingConfiguration.cs" />
     <Compile Include="Mapping\MappingConfigurationValidationHelper.cs" />
+    <Compile Include="ObjectIDExtensions.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelValidatorFactory.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\QueryResultRow.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\QueryResultRowReader.cs" />

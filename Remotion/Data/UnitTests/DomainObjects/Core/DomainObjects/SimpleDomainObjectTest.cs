@@ -75,6 +75,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void SimpleDomainObject_SupportsGetObjectViaID ()
+    {
+      var instance = ClassDerivedFromSimpleDomainObject.NewObject ();
+      var objectID = instance.GetTypedID();
+
+      var gottenInstance = objectID.GetObject();
+      
+      Assert.That (gottenInstance, Is.SameAs (instance));
+    }
+
+    [Test]
     public void TryGetObject ()
     {
       ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
