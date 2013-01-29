@@ -223,6 +223,7 @@
     <Compile Include="DomainObjects\Database\DatabaseConfiguration.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleExtensionsTest.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeParameterIntegrationTest.cs" />
     <Compile Include="UnitTesting\RootPersistenceStrategyMockFacade.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Transport\PostActionDisposableDecorator.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />
