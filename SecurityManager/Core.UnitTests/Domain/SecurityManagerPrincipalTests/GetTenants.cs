@@ -29,12 +29,12 @@ using Rhino.Mocks;
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
 {
   [TestFixture]
-  public class GetTenants : DomainTest
+  public class GetTenants : SecurityManagerPrincipalTestBase
   {
     private IDomainObjectHandle<Tenant> _rootTenantHandle;
     private IDomainObjectHandle<Tenant> _childTenantHandle;
     private IDomainObjectHandle<Tenant> _grandChildTenantHandle;
-    private IDomainObjectHandle<User> _userID;
+    private IDomainObjectHandle<User> _userHandle;
 
     public override void SetUp ()
     {
@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
 
       User user = User.FindByUserName ("substituting.user");
-      _userID = user.GetHandle();
+      _userHandle = user.GetHandle();
       _rootTenantHandle = user.Tenant.GetHandle();
       _childTenantHandle = user.Tenant.Children.Single().GetHandle();
       _grandChildTenantHandle = user.Tenant.Children.Single().Children.Single().GetHandle();
@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     [Test]
     public void GetTenantHierarchyFromUser ()
     {
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_childTenantHandle, _userID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_childTenantHandle, _userHandle, null);
 
       Assert.That (
           principal.GetTenants (true).Select (t => t.ID),
@@ -71,7 +71,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     [Test]
     public void IncludeAbstractTenants ()
     {
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userHandle, null);
 
       Assert.That (
           principal.GetTenants (true).Select (t => t.ID),
@@ -81,7 +81,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     [Test]
     public void ExcludeAbstractTenants ()
     {
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userHandle, null);
 
       Assert.That (
           principal.GetTenants (false).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantHandle.ObjectID, _grandChildTenantHandle.ObjectID }));
@@ -94,7 +94,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userHandle, null);
 
       Assert.That (principal.GetTenants (true), Is.Empty);
     }

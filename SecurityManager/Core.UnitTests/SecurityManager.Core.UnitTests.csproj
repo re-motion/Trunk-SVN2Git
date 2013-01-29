@@ -220,6 +220,7 @@
     <Compile Include="Domain\SecurityManagerPrincipalTests\GetUser.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalTests\Initialize.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalTests\Refresh.cs" />
+    <Compile Include="Domain\SecurityManagerPrincipalTests\SecurityManagerPrincipalTestBase.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalTests\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityTestHelper.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionProxyTest.cs" />

@@ -25,7 +25,7 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
 {
   [TestFixture]
-  public class GetActiveSubstitutions : DomainTest
+  public class GetActiveSubstitutions : SecurityManagerPrincipalTestBase
   {
     private IDomainObjectHandle<Tenant> _tenantHandle;
     private IDomainObjectHandle<User> _userHandle;

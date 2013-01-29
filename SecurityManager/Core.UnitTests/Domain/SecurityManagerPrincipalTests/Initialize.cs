@@ -25,7 +25,7 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
 {
   [TestFixture]
-  public class Initialize : DomainTest
+  public class Initialize : SecurityManagerPrincipalTestBase
   {
     public override void SetUp ()
     {
@@ -43,32 +43,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     }
 
     [Test]
-    public void Initialize_WithObjects ()
+    public void Initialize_SetsMembers ()
     {
       User user = User.FindByUserName ("substituting.user");
       Tenant tenant = user.Tenant;
       Substitution substitution = user.GetActiveSubstitutions().First();
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.GetHandle(), user.GetHandle(), substitution.GetHandle());
-
-      Assert.That (principal.Tenant.ID, Is.EqualTo (tenant.ID));
-      Assert.That (principal.Tenant, Is.Not.SameAs (tenant));
-
-      Assert.That (principal.User.ID, Is.EqualTo (user.ID));
-      Assert.That (principal.User, Is.Not.SameAs (user));
-
-      Assert.That (principal.Substitution.ID, Is.EqualTo (substitution.ID));
-      Assert.That (principal.Substitution, Is.Not.SameAs (substitution));
-    }
-
-    [Test]
-    public void Initialize_WithObjectIDs ()
-    {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().First();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.GetHandle(), user.GetHandle(), substitution.GetHandle());
+      SecurityManagerPrincipal principal = CreateSecurityManagerPrincipal (tenant, user, substitution);
 
       Assert.That (principal.Tenant.ID, Is.EqualTo (tenant.ID));
       Assert.That (principal.Tenant, Is.Not.SameAs (tenant));
