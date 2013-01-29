@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       ArgumentUtility.CheckNotNull ("tenant", tenant);
       ArgumentUtility.CheckNotNull ("user", user);
 
-      return new SecurityManagerPrincipal (tenant.GetHandle(), user.GetHandle(), substitution == null ? null : substitution.GetHandle());
+      return new SecurityManagerPrincipal (tenant.GetHandle(), user.GetHandle(), substitution.GetSafeHandle());
     }
   }
 }
