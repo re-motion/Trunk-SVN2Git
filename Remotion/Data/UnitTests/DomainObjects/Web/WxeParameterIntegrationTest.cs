@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [Ignore ("RM-4416")]
+    [Ignore ("RM-4405")]
     public void SerializeIDomainObjectHandle ()
     {
       var objectID = GetObjectID();
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [Ignore ("RM-4416")]
+    [Ignore ("RM-4405")]
     public void DeserializeIDomainObjectHandle ()
     {
       var objectID = GetObjectID();
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [Ignore ("RM-4416")]
+    [Ignore ("RM-4405")]
     public void SerializeAndDeserializeIDomainObjectHandle ()
     {
       var objectID = GetObjectID();
