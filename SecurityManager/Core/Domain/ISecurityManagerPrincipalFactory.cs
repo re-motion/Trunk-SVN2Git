@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -32,10 +33,13 @@ namespace Remotion.SecurityManager.Domain
     /// <summary>
     /// Instantiates a threadsafe implementation of the <see cref="ISecurityManagerPrincipal"/> interface.
     /// </summary>
-    /// <param name="tenantID">The <see cref="ObjectID"/> of the <see cref="Tenant"/>. Must not be <see langword="null" />.</param>
-    /// <param name="userID">The <see cref="ObjectID"/> of the <see cref="User"/>. Must not be <see langword="null" />.</param>
-    /// <param name="substitutionID">The <see cref="ObjectID"/> of the <see cref="Substitution"/>.</param>
+    /// <param name="tenantHandle">An <see cref="IDomainObjectHandle{T}"/> for the <see cref="Tenant"/>. Must not be <see langword="null" />.</param>
+    /// <param name="userHandle">An <see cref="IDomainObjectHandle{T}"/> for the <see cref="User"/>. Must not be <see langword="null" />.</param>
+    /// <param name="substitutionHandle">An <see cref="IDomainObjectHandle{T}"/> for the <see cref="Substitution"/>.</param>
     /// <returns>A threadsafe implementation of the <see cref="ISecurityManagerPrincipal"/> interface.</returns>
-    ISecurityManagerPrincipal CreateWithLocking (IDomainObjectHandle<Tenant> tenantID, IDomainObjectHandle<User> userID, IDomainObjectHandle<Substitution> substitutionID);
+    ISecurityManagerPrincipal CreateWithLocking (
+        IDomainObjectHandle<Tenant> tenantHandle,
+        IDomainObjectHandle<User> userHandle,
+        IDomainObjectHandle<Substitution> substitutionHandle);
   }
 }
