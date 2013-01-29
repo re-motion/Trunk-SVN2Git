@@ -49,5 +49,21 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       return domainObject.ID.GetHandle<T>();
     }
+
+    /// <summary>
+    /// Returns a typed handle to the given <paramref name="domainObjectOrNull"/>, or <see langword="null" /> if 
+    /// <paramref name="domainObjectOrNull"/> is itself <see langword="null" />.
+    /// The generic type parameter <typeparamref name="T"/> is inferred from the 
+    /// static type of the value passed as <paramref name="domainObjectOrNull"/>.
+    /// </summary>
+    /// <typeparam name="T">The type to be used for the returned <see cref="IDomainObjectHandle{T}"/>.</typeparam>
+    /// <param name="domainObjectOrNull">The <see cref="DomainObject"/> to get a handle for. If this parameter is 
+    /// <see langword="null" />, the method returns <see langword="null" />.</param>
+    /// <returns>A typed handle to the given <paramref name="domainObjectOrNull"/>, or <see langword="null" /> if <paramref name="domainObjectOrNull"/>
+    /// is <see langword="null" />.</returns>
+    public static IDomainObjectHandle<T> GetSafeHandle<T> (this T domainObjectOrNull) where T : DomainObject
+    {
+      return domainObjectOrNull != null ?domainObjectOrNull.GetHandle() : null;
+    }
   }
 }

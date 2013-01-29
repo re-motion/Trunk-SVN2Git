@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void GetHande_FromObject ()
+    public void GetHandle_FromObject ()
     {
       Order order = Order.NewObject();
 
@@ -102,6 +102,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void GetHandle_Null ()
     {
       Assert.That (() => ((Order) null).GetHandle (), Throws.TypeOf<ArgumentNullException>());
+    }
+
+    [Test]
+    public void GetSafeHandle_FromObject ()
+    {
+      Order order = Order.NewObject ();
+
+      var handle = order.GetSafeHandle ();
+      Assert.That (handle.ObjectID, Is.EqualTo (order.ID));
+      Assert.That (handle, Is.TypeOf<DomainObjectHandle<Order>> ());
+      Assert.That (VariableTypeInferrer.GetVariableType (handle), Is.SameAs (typeof (IDomainObjectHandle<Order>)));
+    }
+
+    [Test]
+    public void GetSafeHandle_Null ()
+    {
+      Assert.That (((Order) null).GetSafeHandle(), Is.Null);
     }
 
     [Test]
