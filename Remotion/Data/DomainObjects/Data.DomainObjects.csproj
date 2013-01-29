@@ -206,6 +206,7 @@
     <Compile Include="DomainImplementation\ResurrectionService.cs" />
     <Compile Include="DomainImplementation\Transport\IDomainObjectImporterCallback.cs" />
     <Compile Include="DomainObjectCommittingEventArgs.cs" />
+    <Compile Include="DomainObjectHandle.cs" />
     <Compile Include="Infrastructure\CommitRollbackAgent.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />
     <Compile Include="Infrastructure\ClientTransactionEventBroker.cs" />
@@ -247,7 +248,7 @@
     <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\UnlockedParentTransactionContext.cs" />
-    <Compile Include="IObjectID.cs" />
+    <Compile Include="IDomainObjectHandle.cs" />
     <Compile Include="ISupportsGetObject.cs" />
     <Compile Include="Linq\ExecutableQueries\CustomSequenceQueryAdapter.cs" />
     <Compile Include="Linq\DomainObjectQueryGenerator.cs" />
@@ -263,7 +264,7 @@
     <Compile Include="Linq\SqlQueryGeneratorResult.cs" />
     <Compile Include="Mapping\IMappingConfiguration.cs" />
     <Compile Include="Mapping\MappingConfigurationValidationHelper.cs" />
-    <Compile Include="ObjectIDExtensions.cs" />
+    <Compile Include="DomainObjectHandleExtensions.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelValidatorFactory.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\QueryResultRow.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\QueryResultRowReader.cs" />

@@ -767,7 +767,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       return ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
           TestableClientTransaction, 
-          ObjectID.Create(type.BaseType, Guid.NewGuid()),
+          new ObjectID(type.BaseType, Guid.NewGuid()),
           () => Activator.CreateInstance (type, args));
     }
   }

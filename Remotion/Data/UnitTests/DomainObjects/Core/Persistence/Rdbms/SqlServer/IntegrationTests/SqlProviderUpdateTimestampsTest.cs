@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void UpdateTimestamps_ByNonExistingID ()
     {
-      var objectID = ObjectID.Create(typeof (ClassWithAllDataTypes), new Guid ("{E067A627-BA3F-4ee5-8B61-1F46DC28DFC3}"));
+      var objectID = new ObjectID(typeof (ClassWithAllDataTypes), new Guid ("{E067A627-BA3F-4ee5-8B61-1F46DC28DFC3}"));
       var dataContainer = DataContainer.CreateForExisting (objectID, null, pd => pd.DefaultValue);
 
       Assert.That (

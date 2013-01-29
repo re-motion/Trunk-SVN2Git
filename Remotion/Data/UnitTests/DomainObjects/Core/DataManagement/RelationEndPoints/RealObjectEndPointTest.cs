@@ -228,7 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void GetOppositeObject_NotFound ()
     {
-      var objectID = ObjectID.Create(typeof (Order), Guid.NewGuid());
+      var objectID = new ObjectID(typeof (Order), Guid.NewGuid());
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, objectID);
 
       var oppositeObject = _endPoint.GetOppositeObject ();

@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var value = _valueProperty.CombineValue (columnValueProvider);
       if (value == null)
         return null;
-      return ObjectID.Create(_classDefinition, value);
+      return new ObjectID(_classDefinition, value);
     }
 
     public ForeignKeyConstraintDefinition CreateForeignKeyConstraint (

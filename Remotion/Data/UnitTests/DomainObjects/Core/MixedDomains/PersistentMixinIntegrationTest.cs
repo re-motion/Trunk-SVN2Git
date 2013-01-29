@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     {
       using (MixinConfiguration.BuildNew().EnterScope())
       {
-        StubStorageTargetClassForPersistentMixin.GetObject (ObjectID.Create(typeof (StubStorageTargetClassForPersistentMixin), 13));
+        StubStorageTargetClassForPersistentMixin.GetObject (new ObjectID(typeof (StubStorageTargetClassForPersistentMixin), 13));
       }
     }
 
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void DynamicChangeInNonPersistentMixinConfigurationDoesntMatter ()
     {
       StubStorageTargetClassForPersistentMixin.NewObject();
-      StubStorageTargetClassForPersistentMixin.GetObject (ObjectID.Create(typeof (StubStorageTargetClassForPersistentMixin), 12));
+      StubStorageTargetClassForPersistentMixin.GetObject (new ObjectID(typeof (StubStorageTargetClassForPersistentMixin), 12));
     }
 
     [Test]

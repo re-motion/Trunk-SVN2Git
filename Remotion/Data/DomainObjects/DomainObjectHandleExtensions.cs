@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Persistence;
@@ -25,23 +26,23 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects
 {
   /// <summary>
-  /// Contains extension methods for <see cref="ObjectID"/> and <see cref="IObjectID{T}"/>.
+  /// Contains extension methods for <see cref="ObjectID"/> and <see cref="IDomainObjectHandle{T}"/>.
   /// </summary>
-  public static class ObjectIDExtensions
+  public static class DomainObjectHandleExtensions
   {
     /// <summary>
     /// Gets a <see cref="DomainObject"/> that already exists or attempts to load it from the data source. If the object's data can't be found, an 
     /// exception is thrown, and the object is marked <see cref="StateType.Invalid"/> in the <paramref name="clientTransaction"/>.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="DomainObject"/> to return. Can be a base type of the actual object type.</typeparam>
-    /// <param name="objectID">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
+    /// <param name="handle">A handle to the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/>. If <see langword="null" /> (or unspecified), the 
     /// <see cref="ClientTransaction.Current"/> transaction is used.</param>
     /// <param name="includeDeleted">Indicates if the method should return <see cref="DomainObject"/>s that are already deleted.</param>
     /// <returns>
-    /// The <see cref="DomainObject"/> with the specified <paramref name="objectID"/>.
+    /// The <see cref="DomainObject"/> with the specified <paramref name="handle"/>.
     /// </returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="clientTransaction"/> or <paramref name="objectID"/> are <see langword="null"/>.</exception>
+    /// <exception cref="System.ArgumentNullException"><paramref name="clientTransaction"/> or <paramref name="handle"/> are <see langword="null"/>.</exception>
     /// <exception cref="ObjectsNotFoundException">
     /// The object could not be found in the data source. Note that the <see cref="ClientTransaction"/> marks
     /// not found objects as <see cref="StateType.Invalid"/>, so calling this API again witht he same <see cref="ObjectID"/> results in a 
@@ -49,17 +50,17 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     /// <exception cref="ObjectInvalidException">The object is invalid in the <paramref name="clientTransaction"/>.</exception>
     /// <exception cref="Persistence.StorageProviderException">
-    /// The Mapping does not contain a class definition for the given <paramref name="objectID"/>.<br/> -or- <br/>
+    /// The Mapping does not contain a class definition for the given <paramref name="handle"/>.<br/> -or- <br/>
     /// An error occurred while reading a <see cref="PropertyValue"/>.<br/> -or- <br/>
     /// An error occurred while accessing the data source.
     /// </exception>
     /// <exception cref="ObjectDeletedException">The object has already been deleted and the <paramref name="includeDeleted"/> flag is 
     /// <see langword="false" />.</exception>
-    public static T GetObject<T> (this IObjectID<T> objectID, ClientTransaction clientTransaction = null, bool includeDeleted = false)
+    public static T GetObject<T> (this IDomainObjectHandle<T> handle, ClientTransaction clientTransaction = null, bool includeDeleted = false)
         where T : DomainObject, ISupportsGetObject
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return LifetimeService.GetObject (GetMandatoryClientTransaction (clientTransaction), objectID, includeDeleted);
+      ArgumentUtility.CheckNotNull ("handle", handle);
+      return (T) LifetimeService.GetObject (GetMandatoryClientTransaction (clientTransaction), handle.ObjectID, includeDeleted);
     }
 
     /// <summary>
@@ -68,23 +69,23 @@ namespace Remotion.Data.DomainObjects
     /// return a <see langword="null" /> reference in its place.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="DomainObject"/> to return. Can be a base type of the actual object type.</typeparam>
-    /// <param name="objectID">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
+    /// <param name="handle">A handle to the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/>. If <see langword="null" /> (or unspecified), the 
     /// <see cref="ClientTransaction.Current"/> transaction is used.</param>
     /// <returns>
-    /// The <see cref="DomainObject"/> with the specified <paramref name="objectID"/>, or <see langword="null" /> if it couldn't be found.
+    /// The <see cref="DomainObject"/> with the specified <paramref name="handle"/>, or <see langword="null" /> if it couldn't be found.
     /// </returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="clientTransaction"/> or <paramref name="objectID"/> are <see langword="null"/>.</exception>
+    /// <exception cref="System.ArgumentNullException"><paramref name="clientTransaction"/> or <paramref name="handle"/> are <see langword="null"/>.</exception>
     /// <exception cref="Persistence.StorageProviderException">
-    /// The Mapping does not contain a class definition for the given <paramref name="objectID"/>.<br/> -or- <br/>
+    /// The Mapping does not contain a class definition for the given <paramref name="handle"/>.<br/> -or- <br/>
     /// An error occurred while reading a <see cref="PropertyValue"/>.<br/> -or- <br/>
     /// An error occurred while accessing the data source.
     /// </exception>
-    public static T TryGetObject<T> (this IObjectID<T> objectID, ClientTransaction clientTransaction = null)
+    public static T TryGetObject<T> (this IDomainObjectHandle<T> handle, ClientTransaction clientTransaction = null)
         where T : DomainObject, ISupportsGetObject
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return LifetimeService.TryGetObject (GetMandatoryClientTransaction (clientTransaction), objectID);
+      ArgumentUtility.CheckNotNull ("handle", handle);
+      return (T) LifetimeService.TryGetObject (GetMandatoryClientTransaction (clientTransaction), handle.ObjectID);
     }
 
     /// <summary>
@@ -94,27 +95,27 @@ namespace Remotion.Data.DomainObjects
     /// object with the given <see cref="ObjectID"/> actually exists in the data source.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="DomainObject"/> to return. Can be a base type of the actual object type.</typeparam>
-    /// <param name="objectID">The <see cref="ObjectID"/> to get an object reference for.</param>
+    /// <param name="handle">A handle to the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/>. If <see langword="null" /> (or unspecified), the 
     /// <see cref="ClientTransaction.Current"/> transaction is used.</param>
     /// <returns>
     /// An object with the given <see cref="ObjectID"/>, possibly in <see cref="StateType.NotLoadedYet"/> state.
     /// </returns>
     /// <remarks>
-    /// When an object with the given <paramref name="objectID"/> has already been enlisted in the transaction, that object is returned. Otherwise,
+    /// When an object with the given <paramref name="handle"/> has already been enlisted in the transaction, that object is returned. Otherwise,
     /// an object in <see cref="StateType.NotLoadedYet"/> state is created and enlisted without loading its data from the data source. In such a case,
     /// the object's data is loaded when it's first needed; e.g., when one of its properties is accessed or when
     /// <see cref="DomainObject.EnsureDataAvailable"/> is called on it. At that point, an
     /// <see cref="ObjectsNotFoundException"/> may be triggered when the object's data cannot be found.
     /// </remarks>
     /// <exception cref="ArgumentNullException">One of the parameters passed to this method is <see langword="null"/>.</exception>
-    /// <exception cref="ObjectInvalidException">The object with the given <paramref name="objectID"/> is invalid in the given 
+    /// <exception cref="ObjectInvalidException">The object with the given <paramref name="handle"/> is invalid in the given 
     /// <paramref name="clientTransaction"/>.</exception>
-    public static T GetObjectReference<T> (this IObjectID<T> objectID, ClientTransaction clientTransaction = null)
+    public static T GetObjectReference<T> (this IDomainObjectHandle<T> handle, ClientTransaction clientTransaction = null)
         where T : DomainObject, ISupportsGetObject
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return LifetimeService.GetObjectReference (GetMandatoryClientTransaction (clientTransaction), objectID);
+      ArgumentUtility.CheckNotNull ("handle", handle);
+      return (T) LifetimeService.GetObjectReference (GetMandatoryClientTransaction (clientTransaction), handle.ObjectID);
     }
 
     /// <summary>
@@ -123,12 +124,12 @@ namespace Remotion.Data.DomainObjects
     /// <see cref="ClientTransaction"/>.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="DomainObject"/> instances to return. Can be a base type of the actual object type.</typeparam>
-    /// <param name="objectIDs">The IDs of the objects to be retrieved.</param>
+    /// <param name="handles">Handles to the <see cref="DomainObject"/> that should be loaded.</param>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/>. If <see langword="null" /> (or unspecified), the 
     /// <see cref="ClientTransaction.Current"/> transaction is used.</param>
     /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in 
-    /// <paramref name="objectIDs"/>. This list might include deleted objects.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
+    /// <paramref name="handles"/>. This list might include deleted objects.</returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="handles"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the expected type <typeparamref name="T"/>.</exception>
     /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
     /// <exception cref="ObjectsNotFoundException">
@@ -136,11 +137,11 @@ namespace Remotion.Data.DomainObjects
     /// not found objects as <see cref="StateType.Invalid"/>, so calling this API again witht he same <see cref="ObjectID"/> results in a 
     /// <see cref="ObjectInvalidException"/> being thrown.
     /// </exception>
-    public static T[] GetObjects<T> (this IEnumerable<IObjectID<T>> objectIDs, ClientTransaction clientTransaction = null)
+    public static T[] GetObjects<T> (this IEnumerable<IDomainObjectHandle<T>> handles, ClientTransaction clientTransaction = null)
         where T : DomainObject, ISupportsGetObject
     {
-      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-      return LifetimeService.GetObjects (GetMandatoryClientTransaction (clientTransaction), objectIDs);
+      ArgumentUtility.CheckNotNull ("handles", handles);
+      return LifetimeService.GetObjects<T> (GetMandatoryClientTransaction (clientTransaction), handles.Select (h => h.ObjectID));
     }
 
     /// <summary>
@@ -149,18 +150,18 @@ namespace Remotion.Data.DomainObjects
     /// contain a <see langword="null" /> reference in its place.
     /// </summary>
     /// <typeparam name="T">The type of objects expected to be returned. Specify <see cref="DomainObject"/> if no specific type is expected.</typeparam>
-    /// <param name="objectIDs">The IDs of the objects to be retrieved.</param>
+    /// <param name="handles">Handles to the <see cref="DomainObject"/> that should be loaded.</param>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/>. If <see langword="null" /> (or unspecified), the 
     /// <see cref="ClientTransaction.Current"/> transaction is used.</param>
     /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in 
-    /// <paramref name="objectIDs"/>. This list can contain invalid and <see langword="null" /> <see cref="DomainObject"/> references.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
+    /// <paramref name="handles"/>. This list can contain invalid and <see langword="null" /> <see cref="DomainObject"/> references.</returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="handles"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-    public static T[] TryGetObjects<T> (this IEnumerable<IObjectID<T>> objectIDs, ClientTransaction clientTransaction = null)
+    public static T[] TryGetObjects<T> (this IEnumerable<IDomainObjectHandle<T>> handles, ClientTransaction clientTransaction = null)
         where T : DomainObject, ISupportsGetObject
     {
-      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-      return LifetimeService.TryGetObjects (GetMandatoryClientTransaction (clientTransaction), objectIDs);
+      ArgumentUtility.CheckNotNull ("handles", handles);
+      return LifetimeService.TryGetObjects<T> (GetMandatoryClientTransaction (clientTransaction), handles.Select (h => h.ObjectID));
     }
 
     private static ClientTransaction GetMandatoryClientTransaction (ClientTransaction specifiedTransactionOrNull)

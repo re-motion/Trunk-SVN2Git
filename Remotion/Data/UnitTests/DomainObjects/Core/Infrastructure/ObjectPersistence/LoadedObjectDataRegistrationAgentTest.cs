@@ -357,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
     private FreshlyLoadedObjectData GetFreshlyLoadedObject ()
     {
-      var id = ObjectID.Create(typeof (Order), Guid.NewGuid());
+      var id = new ObjectID(typeof (Order), Guid.NewGuid());
       var dataContainer = DataContainer.CreateForExisting (id, null, pd => pd.DefaultValue);
       return new FreshlyLoadedObjectData (dataContainer);
     }
@@ -384,7 +384,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
     private NotFoundLoadedObjectData GetNotFoundLoadedObject ()
     {
-      return new NotFoundLoadedObjectData (ObjectID.Create(typeof (Order), Guid.NewGuid()));
+      return new NotFoundLoadedObjectData (new ObjectID(typeof (Order), Guid.NewGuid()));
     }
 
     private void CheckHasEnlistedDomainObject (DataContainer dataContainer)

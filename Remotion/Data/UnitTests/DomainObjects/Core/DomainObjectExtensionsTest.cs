@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
@@ -36,35 +34,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void GetTypedID ()
+    public void GetHandle ()
     {
       var domainObject = DomainObjectMother.CreateFakeObject<Order>();
 
-      var objectID = domainObject.GetTypedID ();
-      var domainObjectTypedObjectID1 = domainObject.GetTypedID<DomainObject> ();
-      var domainObjectTypedObjectID2 = ((DomainObject) domainObject).GetTypedID ();
+      var handle = domainObject.GetHandle ();
+      var domainObjectTypedObjectID1 = domainObject.GetHandle<DomainObject> ();
+      var domainObjectTypedObjectID2 = ((DomainObject) domainObject).GetHandle ();
 
-      Assert.That (objectID, Is.TypeOf<ObjectID<Order>> ().And.EqualTo (domainObject.ID));
-      Assert.That (domainObjectTypedObjectID1, Is.TypeOf<ObjectID<Order>> ().And.EqualTo (domainObject.ID));
-      Assert.That (domainObjectTypedObjectID2, Is.TypeOf<ObjectID<Order>> ().And.EqualTo (domainObject.ID));
+      Assert.That (handle, Is.TypeOf<DomainObjectHandle<Order>> ().And.Property ("ObjectID").EqualTo (domainObject.ID));
+      Assert.That (domainObjectTypedObjectID1, Is.TypeOf<DomainObjectHandle<Order>> ().And.Property ("ObjectID").EqualTo (domainObject.ID));
+      Assert.That (domainObjectTypedObjectID2, Is.TypeOf<DomainObjectHandle<Order>> ().And.Property ("ObjectID").EqualTo (domainObject.ID));
 
-      Assert.That (VariableTypeInferrer.GetVariableType (objectID), Is.SameAs (typeof (IObjectID<Order>)));
-      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID1), Is.SameAs (typeof (IObjectID<DomainObject>)));
-      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID2), Is.SameAs (typeof (IObjectID<DomainObject>)));
-    }
-
-    [Test]
-    public void GetSafeTypedID ()
-    {
-      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
-
-      var objectID = domainObject.GetSafeTypedID ();
-      var nullID = ((Order) null).GetSafeTypedID ();
-
-      Assert.That (objectID, Is.TypeOf<ObjectID<Order>> ().And.EqualTo (domainObject.ID));
-      Assert.That (VariableTypeInferrer.GetVariableType (objectID), Is.SameAs (typeof (IObjectID<Order>)));
-
-      Assert.That (nullID, Is.Null);
+      Assert.That (VariableTypeInferrer.GetVariableType (handle), Is.SameAs (typeof (IDomainObjectHandle<Order>)));
+      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID1), Is.SameAs (typeof (IDomainObjectHandle<DomainObject>)));
+      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID2), Is.SameAs (typeof (IDomainObjectHandle<DomainObject>)));
     }
   }
 }

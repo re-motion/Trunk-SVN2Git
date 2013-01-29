@@ -67,32 +67,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return _parentTransaction.CreateNewObjectID (classDefinition);
     }
 
-    public T GetObject<T> (IObjectID<T> objectID)
-        where T : DomainObject
+    public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       return _parentTransaction.GetObject (objectID, false);
     }
 
-    public T[] GetObjects<T> (IEnumerable<IObjectID<T>> objectIDs)
-        where T : DomainObject
+    public DomainObject[] GetObjects (IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-      return _parentTransaction.GetObjects (objectIDs);
+      return _parentTransaction.GetObjects<DomainObject> (objectIDs);
     }
 
-    public T TryGetObject<T> (IObjectID<T> objectID)
-        where T : DomainObject
+    public DomainObject TryGetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       return _parentTransaction.TryGetObject (objectID);
     }
 
-    public T[] TryGetObjects<T> (IEnumerable<IObjectID<T>> objectIDs)
-        where T : DomainObject
+    public DomainObject[] TryGetObjects (IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-      return _parentTransaction.TryGetObjects (objectIDs);
+      return _parentTransaction.TryGetObjects<DomainObject> (objectIDs);
     }
 
     public DomainObject ResolveRelatedObject (RelationEndPointID relationEndPointID)

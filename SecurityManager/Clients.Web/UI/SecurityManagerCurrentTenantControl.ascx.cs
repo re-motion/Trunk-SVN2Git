@@ -109,9 +109,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       var oldSecurityManagerPrincipal = SecurityManagerPrincipal.Current;
       var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (
-          ObjectID.Parse (tenantID).AsObjectID<Tenant> (),
-          oldSecurityManagerPrincipal.User.TypedID,
-          oldSecurityManagerPrincipal.Substitution != null ? oldSecurityManagerPrincipal.Substitution.TypedID : null);
+          ObjectID.Parse (tenantID).GetHandle<Tenant> (),
+          oldSecurityManagerPrincipal.User.Handle,
+          oldSecurityManagerPrincipal.Substitution != null ? oldSecurityManagerPrincipal.Substitution.Handle : null);
       ApplicationInstance.SetCurrentPrincipal (newSecurityManagerPrincipal);
 
       _isCurrentTenantFieldReadOnly = true;
@@ -132,9 +132,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       var oldSecurityManagerPrincipal = SecurityManagerPrincipal.Current;
       var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (
-          oldSecurityManagerPrincipal.Tenant.TypedID,
-          oldSecurityManagerPrincipal.User.TypedID,
-          substitutionID != null ? ObjectID.Parse (substitutionID).AsObjectID<Substitution>() : null);
+          oldSecurityManagerPrincipal.Tenant.Handle,
+          oldSecurityManagerPrincipal.User.Handle,
+          substitutionID != null ? ObjectID.Parse (substitutionID).GetHandle<Substitution>() : null);
       ApplicationInstance.SetCurrentPrincipal (newSecurityManagerPrincipal);
 
       _isCurrentSubstitutionFieldReadOnly = true;

@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     [Test]
     public void AccessInvalidForeignKeyRelation ()
     {
-      var id = ObjectID.Create(typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
+      var id = new ObjectID(typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
       var objectWithInvalidRelation = (ClassWithInvalidRelation) ClassWithInvalidRelation.GetObject (id);
 
       Assert.That (objectWithInvalidRelation.ClassWithGuidKey.IsInvalid, Is.True);

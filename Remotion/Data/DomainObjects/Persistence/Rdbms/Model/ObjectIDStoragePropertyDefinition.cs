@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
                 SeparatedStringBuilder.Build (", ", _classIDProperty.GetColumns (), c => c.Name)));
       }
 
-      return ObjectID.Create(classID, value);
+      return new ObjectID(classID, value);
     }
 
     public ForeignKeyConstraintDefinition CreateForeignKeyConstraint (

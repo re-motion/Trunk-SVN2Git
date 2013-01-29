@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     {
       base.SetUp ();
 
-      _objectID = ObjectID.Create(typeof (HookedTargetClass), Guid.NewGuid ());
+      _objectID = new ObjectID(typeof (HookedTargetClass), Guid.NewGuid ());
     }
 
     [Test]

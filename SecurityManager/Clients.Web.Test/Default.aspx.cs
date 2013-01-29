@@ -93,7 +93,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test
       {
         var user = SecurityManagerUser.GetObject (ObjectID.Parse (UsersField.BusinessObjectUniqueIdentifier));
         var securityManagerPrincipal = 
-            ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (user.Tenant.GetTypedID(), user.GetTypedID(), null);
+            ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (user.Tenant.GetHandle(), user.GetHandle(), null);
         ApplicationInstance.SetCurrentPrincipal (securityManagerPrincipal);
       }
     }

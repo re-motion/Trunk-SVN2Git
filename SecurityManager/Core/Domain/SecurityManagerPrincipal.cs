@@ -62,22 +62,23 @@ namespace Remotion.SecurityManager.Domain
     }
 
     private int _revision;
-    private readonly IObjectID<Tenant> _tenantID;
-    private readonly IObjectID<User> _userID;
-    private readonly IObjectID<Substitution> _substitutionID;
+    private readonly IDomainObjectHandle<Tenant> _tenantHandle;
+    private readonly IDomainObjectHandle<User> _userHandle;
+    private readonly IDomainObjectHandle<Substitution> _substitutionHandle;
     private TenantProxy _tenantProxy;
     private UserProxy _userProxy;
     private SubstitutionProxy _substitutionProxy;
     private ISecurityPrincipal _securityPrincipal;
 
-    public SecurityManagerPrincipal (IObjectID<Tenant> tenantID, IObjectID<User> userID, IObjectID<Substitution> substitutionID)
+    public SecurityManagerPrincipal (
+        IDomainObjectHandle<Tenant> tenantHandle, IDomainObjectHandle<User> userHandle, IDomainObjectHandle<Substitution> substitutionHandle)
     {
-      ArgumentUtility.CheckNotNull ("tenantID", tenantID);
-      ArgumentUtility.CheckNotNull ("userID", userID);
+      ArgumentUtility.CheckNotNull ("tenantHandle", tenantHandle);
+      ArgumentUtility.CheckNotNull ("userHandle", userHandle);
 
-      _tenantID = tenantID;
-      _userID = userID;
-      _substitutionID = substitutionID;
+      _tenantHandle = tenantHandle;
+      _userHandle = userHandle;
+      _substitutionHandle = substitutionHandle;
 
       InitializeCache();
     }
@@ -201,7 +202,7 @@ namespace Remotion.SecurityManager.Domain
     {
       using (transaction.EnterNonDiscardingScope ())
       {
-        return OrganizationalStructure.Tenant.GetObject (_tenantID.AsObjectID());
+        return OrganizationalStructure.Tenant.GetObject (_tenantHandle.ObjectID);
       }
     }
 
@@ -209,18 +210,18 @@ namespace Remotion.SecurityManager.Domain
     {
       using (transaction.EnterNonDiscardingScope ())
       {
-        return OrganizationalStructure.User.GetObject (_userID.AsObjectID());
+        return OrganizationalStructure.User.GetObject (_userHandle.ObjectID);
       }
     }
 
     private Substitution GetSubstitution (ClientTransaction transaction)
     {
-      if (_substitutionID == null)
+      if (_substitutionHandle == null)
         return null;
 
       using (transaction.EnterNonDiscardingScope ())
       {
-        return (Substitution) OrganizationalStructure.Substitution.GetObject (_substitutionID.AsObjectID());
+        return (Substitution) OrganizationalStructure.Substitution.GetObject (_substitutionHandle.ObjectID);
       }
     }
 

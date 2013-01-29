@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void ObjectReference ()
     {
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (SampleBindableDomainObject));
-      var instance = classDefinition.InstanceCreator.CreateObjectReference (ObjectID.Create(classDefinition, Guid.NewGuid()), TestableClientTransaction);
+      var instance = classDefinition.InstanceCreator.CreateObjectReference (new ObjectID(classDefinition, Guid.NewGuid()), TestableClientTransaction);
       
       var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
       Assert.That (implementation, Is.Not.Null);

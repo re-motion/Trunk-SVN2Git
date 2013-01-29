@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
       _reader = new ObjectIDReader (_idPropertyStrictMock, _columnOrdinalProviderStub);
 
-      _objectID = ObjectID.Create("Order", Guid.NewGuid());
+      _objectID = new ObjectID("Order", Guid.NewGuid());
     }
 
     [Test]
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     public void ReadSequence ()
     {
-      var objectID2 = ObjectID.Create("OrderItem", Guid.NewGuid ());
+      var objectID2 = new ObjectID("OrderItem", Guid.NewGuid ());
       _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (true).Repeat.Times (3);
       _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (false).Repeat.Once ();
       _idPropertyStrictMock

@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       
       _command = new MultiObjectIDLoadCommand (new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, _objectIDReaderStub);
 
-      _objectID1 = ObjectID.Create("Order", Guid.NewGuid());
+      _objectID1 = new ObjectID("Order", Guid.NewGuid());
       _fakeResult = new[] { _objectID1 };
     }
 

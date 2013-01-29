@@ -15,6 +15,8 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
+using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -29,24 +31,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
   [TestFixture]
   public class GetTenants : DomainTest
   {
-    private IObjectID<Tenant> _rootTenantID;
-    private IObjectID<Tenant> _childTenantID;
-    private IObjectID<Tenant> _grandChildTenantID;
-    private IObjectID<User> _userID;
+    private IDomainObjectHandle<Tenant> _rootTenantHandle;
+    private IDomainObjectHandle<Tenant> _childTenantHandle;
+    private IDomainObjectHandle<Tenant> _grandChildTenantHandle;
+    private IDomainObjectHandle<User> _userID;
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
-      ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
+      ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
 
       User user = User.FindByUserName ("substituting.user");
-      _userID = user.GetTypedID();
-      _rootTenantID = user.Tenant.GetTypedID();
-      _childTenantID = user.Tenant.Children.Single().GetTypedID();
-      _grandChildTenantID = user.Tenant.Children.Single().Children.Single().GetTypedID();
+      _userID = user.GetHandle();
+      _rootTenantHandle = user.Tenant.GetHandle();
+      _childTenantHandle = user.Tenant.Children.Single().GetHandle();
+      _grandChildTenantHandle = user.Tenant.Children.Single().Children.Single().GetHandle();
     }
 
     public override void TearDown ()
@@ -59,35 +61,40 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     [Test]
     public void GetTenantHierarchyFromUser ()
     {
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_childTenantID, _userID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_childTenantHandle, _userID, null);
 
-      Assert.That (principal.GetTenants (true).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantID, _childTenantID, _grandChildTenantID }));
+      Assert.That (
+          principal.GetTenants (true).Select (t => t.ID),
+          Is.EqualTo (new[] { _rootTenantHandle.ObjectID, _childTenantHandle.ObjectID, _grandChildTenantHandle.ObjectID }));
     }
 
     [Test]
     public void IncludeAbstractTenants ()
     {
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantID, _userID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userID, null);
 
-      Assert.That (principal.GetTenants (true).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantID, _childTenantID, _grandChildTenantID }));
+      Assert.That (
+          principal.GetTenants (true).Select (t => t.ID),
+          Is.EqualTo (new[] { _rootTenantHandle.ObjectID, _childTenantHandle.ObjectID, _grandChildTenantHandle.ObjectID }));
     }
 
     [Test]
     public void ExcludeAbstractTenants ()
     {
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantID, _userID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userID, null);
 
-      Assert.That (principal.GetTenants (false).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantID, _grandChildTenantID }));
+      Assert.That (
+          principal.GetTenants (false).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantHandle.ObjectID, _grandChildTenantHandle.ObjectID }));
     }
 
     [Test]
     public void UsesSecurityFreeSectionToAccessTenantOfUser ()
     {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
+      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantID, _userID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userID, null);
 
       Assert.That (principal.GetTenants (true), Is.Empty);
     }

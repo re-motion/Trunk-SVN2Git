@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
         MatchType = MessageMatch.Regex)]
     public void Load_Inexistent ()
     {
-      _transporter.Load (ObjectID.Create(typeof (Order), Guid.NewGuid()));
+      _transporter.Load (new ObjectID(typeof (Order), Guid.NewGuid()));
     }
 
     [Test]

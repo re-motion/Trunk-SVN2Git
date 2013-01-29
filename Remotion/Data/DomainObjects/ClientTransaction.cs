@@ -462,7 +462,6 @@ public class ClientTransaction
   /// Returns the <see cref="DomainObject"/> enlisted for the given <paramref name="objectID"/> via <see cref="EnlistDomainObject"/>, or 
   /// <see langword="null"/> if no such object exists.
   /// </summary>
-  /// <typeparam name="T">The type of <see cref="DomainObject"/> to return. Can be a base type of the actual object type.</typeparam>
   /// <param name="objectID">The <see cref="ObjectID"/> for which to retrieve a <see cref="DomainObject"/>.</param>
   /// <returns>
   /// A <see cref="DomainObject"/> with the given <paramref name="objectID"/> previously enlisted via <see cref="EnlistDomainObject"/>,
@@ -472,11 +471,10 @@ public class ClientTransaction
   /// The <see cref="DataContainer"/> of the returned object might not have been loaded yet. In that case, it will be loaded on first
   /// access of the object's properties, and this might trigger an <see cref="ObjectsNotFoundException"/> if the container cannot be loaded.
   /// </remarks>
-  public T GetEnlistedDomainObject<T> (IObjectID<T> objectID)
-      where T : DomainObject
+  public DomainObject GetEnlistedDomainObject (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
-    return (T) _enlistedDomainObjectManager.GetEnlistedDomainObject (objectID.AsObjectID());
+    return _enlistedDomainObjectManager.GetEnlistedDomainObject (objectID);
   }
 
   /// <summary>
@@ -925,7 +923,6 @@ public class ClientTransaction
   /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the data source. If the object's data can't be found, an 
   /// exception is thrown, and the object is marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>.
   /// </summary>
-  /// <typeparam name="T">The type of <see cref="DomainObject"/> to return. Can be a base type of the actual object type.</typeparam>
   /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
   /// <param name="includeDeleted">Indicates if the method should return <see cref="DomainObject"/>s that are already deleted.</param>
   /// <returns>The <see cref="DomainObject"/> with the specified <paramref name="id"/>.</returns>
@@ -943,12 +940,11 @@ public class ClientTransaction
   /// </exception>
   /// <exception cref="ObjectDeletedException">The object has already been deleted and the <paramref name="includeDeleted"/> flag is 
   /// <see langword="false" />.</exception>
-  protected internal virtual T GetObject<T> (IObjectID<T> id, bool includeDeleted)
-      where T : DomainObject
+  protected internal virtual DomainObject GetObject (ObjectID id, bool includeDeleted)
   {
     ArgumentUtility.CheckNotNull ("id", id);
 
-    return (T) _objectLifetimeAgent.GetObject (id.AsObjectID(), includeDeleted);
+    return _objectLifetimeAgent.GetObject (id, includeDeleted);
   }
 
   /// <summary>
@@ -956,7 +952,6 @@ public class ClientTransaction
   /// If an object cannot be found, it will be marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>, and the method will
   /// return a <see langword="null" /> reference in its place.
   /// </summary>
-  /// <typeparam name="T">The type of <see cref="DomainObject"/> to return. Can be a base type of the actual object type.</typeparam>
   /// <param name="objectID">The ID of the object to be retrieved.</param>
   /// <returns>
   /// The <see cref="DomainObject"/> with the specified <paramref name="objectID"/>, or <see langword="null" /> if it couldn't be found.
@@ -967,11 +962,10 @@ public class ClientTransaction
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
   ///   An error occurred while accessing the data source.
   /// </exception>
-  protected internal virtual T TryGetObject<T> (IObjectID<T> objectID)
-      where T : DomainObject
+  protected internal virtual DomainObject TryGetObject (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
-    return (T) _objectLifetimeAgent.TryGetObject (objectID.AsObjectID());
+    return _objectLifetimeAgent.TryGetObject (objectID);
   }
 
   /// <summary>
@@ -980,7 +974,6 @@ public class ClientTransaction
   /// is created without calling a constructor and without loading the object's data from the data source. This method does not check whether an
   /// object with the given <see cref="ObjectID"/> actually exists in the data source, and it will also return invalid or deleted objects.
   /// </summary>
-  /// <typeparam name="T">The type of <see cref="DomainObject"/> to return. Can be a base type of the actual object type.</typeparam>
   /// <param name="objectID">The <see cref="ObjectID"/> to get an object reference for.</param>
   /// <returns>An object with the given <see cref="ObjectID"/>, possibly in <see cref="StateType.NotLoadedYet"/>, <see cref="StateType.Deleted"/>,
   /// or <see cref="StateType.Invalid"/> state.</returns>
@@ -994,11 +987,10 @@ public class ClientTransaction
   /// </para>
   /// </remarks>
   /// <exception cref="ArgumentNullException">The <paramref name="objectID"/> parameter is <see langword="null" />.</exception>
-  protected internal virtual T GetObjectReference<T> (IObjectID<T> objectID)
-      where T : DomainObject
+  protected internal virtual DomainObject GetObjectReference (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
-    return (T) _objectLifetimeAgent.GetObjectReference (objectID.AsObjectID());
+    return _objectLifetimeAgent.GetObjectReference (objectID);
   }
 
   /// <summary>
@@ -1008,11 +1000,10 @@ public class ClientTransaction
   /// <param name="objectID">The object ID to get the <see cref="DomainObject"/> reference for.</param>
   /// <returns>An object with the given <see cref="ObjectID"/> in <see cref="StateType.Invalid"/> state.</returns>
   /// <exception cref="InvalidOperationException">The object is not currently in <see cref="StateType.Invalid"/> state.</exception>
-  protected internal virtual T GetInvalidObjectReference<T> (IObjectID<T> objectID)
-      where T : DomainObject
+  protected internal virtual DomainObject GetInvalidObjectReference (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
-    return (T) _invalidDomainObjectManager.GetInvalidObjectReference (objectID.AsObjectID());
+    return _invalidDomainObjectManager.GetInvalidObjectReference (objectID);
   }
 
   /// <summary>
@@ -1054,11 +1045,11 @@ public class ClientTransaction
   /// not found objects as <see cref="StateType.Invalid"/>, so calling this API again witht he same <see cref="ObjectID"/> results in a 
   /// <see cref="ObjectInvalidException"/> being thrown.
   /// </exception>
-  protected internal T[] GetObjects<T> (IEnumerable<IObjectID<T>> objectIDs)
+  protected internal T[] GetObjects<T> (IEnumerable<ObjectID> objectIDs)
       where T : DomainObject
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-    return _objectLifetimeAgent.GetObjects<T> (objectIDs.Select (id => id.AsObjectID ()));
+    return _objectLifetimeAgent.GetObjects<T> (objectIDs);
   }
 
   /// <summary>
@@ -1072,11 +1063,11 @@ public class ClientTransaction
   /// <paramref name="objectIDs"/>. This list can contain invalid and <see langword="null" /> <see cref="DomainObject"/> references.</returns>
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-  protected internal T[] TryGetObjects<T> (IEnumerable<IObjectID<T>> objectIDs)
+  protected internal T[] TryGetObjects<T> (IEnumerable<ObjectID> objectIDs)
       where T : DomainObject
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-    return _objectLifetimeAgent.TryGetObjects<T> (objectIDs.Select (id => id.AsObjectID ()));
+    return _objectLifetimeAgent.TryGetObjects<T> (objectIDs);
   }
 
   /// <summary>

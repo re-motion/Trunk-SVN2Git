@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void OnLoaded ()
     {
-      var id = ObjectID.Create("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
 
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void NoOnLoadedInReactionToEnlist ()
     {
-      var id = ObjectID.Create("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
       classWithAllDataTypes.OnLoadedCalled = false;
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void OnLoadedInReactionToEnlistOnFirstAccess ()
     {
-      var id = ObjectID.Create("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
       classWithAllDataTypes.OnLoadedCalled = false;
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void OnLoadedInSubTransaction ()
     {
-      var id = ObjectID.Create("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
@@ -203,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void OnLoadedInParentAndSubTransaction ()
     {
-      var id = ObjectID.Create("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
       Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.True);

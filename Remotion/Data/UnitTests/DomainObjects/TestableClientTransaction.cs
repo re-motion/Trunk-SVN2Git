@@ -19,7 +19,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects
@@ -40,14 +39,12 @@ namespace Remotion.Data.UnitTests.DomainObjects
       get { return (IClientTransactionEventBroker) PrivateInvoke.GetNonPublicProperty (this, typeof (ClientTransaction), "eventBroker"); }
     }
 
-    public new T GetObject<T> (IObjectID<T> id, bool includeDeleted)
-        where T : DomainObject
+    public new DomainObject GetObject (ObjectID id, bool includeDeleted)
     {
       return base.GetObject (id, includeDeleted);
     }
 
-    public new T TryGetObject<T> (IObjectID<T> id)
-        where T : DomainObject
+    public new DomainObject TryGetObject (ObjectID id)
     {
       return base.TryGetObject (id);
     }

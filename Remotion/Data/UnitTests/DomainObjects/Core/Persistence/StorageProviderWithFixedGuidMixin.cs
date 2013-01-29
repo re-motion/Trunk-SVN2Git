@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [OverrideTarget]
     public ObjectID CreateNewObjectID (ClassDefinition classDefinition)
     {
-      return ObjectID.Create(classDefinition, FixedGuid);
+      return new ObjectID(classDefinition, FixedGuid);
     }
 
     public Guid FixedGuid

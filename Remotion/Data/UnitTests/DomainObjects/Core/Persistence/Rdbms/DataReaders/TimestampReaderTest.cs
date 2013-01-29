@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
       _reader = new TimestampReader (_idPropertyStrictMock, _timestampStrictMock, _columnOrdinalProviderStub);
 
-      _fakeObjectIDResult = ObjectID.Create(typeof (Order), Guid.NewGuid ());
+      _fakeObjectIDResult = new ObjectID(typeof (Order), Guid.NewGuid ());
       _fakeTimestampResult = new object();
     }
 
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     public void ReadSequence ()
     {
-      var fakeObjectIDResult2 = ObjectID.Create(typeof (OrderItem), Guid.NewGuid ());
+      var fakeObjectIDResult2 = new ObjectID(typeof (OrderItem), Guid.NewGuid ());
       var fakeTimestampResult2 = new object ();
 
       _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (true).Repeat.Times (3);

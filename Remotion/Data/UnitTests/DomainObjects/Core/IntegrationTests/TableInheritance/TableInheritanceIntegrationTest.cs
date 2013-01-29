@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
 
     private ObjectID CreateObjectID (Type classType, string guid)
     {
-      return ObjectID.Create(classType, new Guid (guid));
+      return new ObjectID(classType, new Guid (guid));
     }
   }
 }

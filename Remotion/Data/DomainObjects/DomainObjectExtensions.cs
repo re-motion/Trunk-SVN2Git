@@ -38,32 +38,16 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Returns the <see cref="DomainObject.ID"/> of the given <paramref name="domainObject"/>, typed as <see cref="IObjectID{T}"/>. The generic
-    /// type <typeparamref name="T"/> is inferred from the static type of the value passed as <paramref name="domainObject"/>.
+    /// Returns a typed handle to the given <paramref name="domainObject"/>. The generic type parameter <typeparamref name="T"/> is inferred from the 
+    /// static type of the value passed as <paramref name="domainObject"/>.
     /// </summary>
-    /// <typeparam name="T">The type to be used for the returned <see cref="IObjectID{T}"/>.</typeparam>
-    /// <param name="domainObject">The <see cref="DomainObject"/> whose <see cref="DomainObject.ID"/> to get.</param>
-    /// <returns>The <see cref="DomainObject.ID"/> of the given <paramref name="domainObject"/>, typed as <see cref="IObjectID{T}"/>.</returns>
-    public static IObjectID<T> GetTypedID<T> (this T domainObject) where T : DomainObject
+    /// <typeparam name="T">The type to be used for the returned <see cref="IDomainObjectHandle{T}"/>.</typeparam>
+    /// <param name="domainObject">The <see cref="DomainObject"/> to get a handle for.</param>
+    /// <returns>A typed handle to the given <paramref name="domainObject"/>.</returns>
+    public static IDomainObjectHandle<T> GetHandle<T> (this T domainObject) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      return domainObject.ID.AsObjectID<T>();
-    }
-
-    /// <summary>
-    /// Returns the <see cref="DomainObject.ID"/> of the given <paramref name="domainObjectOrNull"/>, typed as <see cref="IObjectID{T}"/>. The generic
-    /// type <typeparamref name="T"/> is inferred from the static type of the value passed as <paramref name="domainObjectOrNull"/>.
-    /// If <paramref name="domainObjectOrNull"/> is <see langword="null" />, this method returns <see langword="null" />. 
-    /// </summary>
-    /// <typeparam name="T">The type to be used for the returned <see cref="IObjectID{T}"/>.</typeparam>
-    /// <param name="domainObjectOrNull">The <see cref="DomainObject"/> whose <see cref="DomainObject.ID"/> to get.</param>
-    /// <returns>
-    /// The <see cref="DomainObject.ID"/> of the given <paramref name="domainObjectOrNull"/>, typed as <see cref="IObjectID{T}"/>.
-    /// If <paramref name="domainObjectOrNull"/> is <see langword="null" />, this method returns <see langword="null" />.
-    /// </returns>
-    public static IObjectID<T> GetSafeTypedID<T> (this T domainObjectOrNull) where T : DomainObject
-    {
-      return domainObjectOrNull == null ? null : GetTypedID (domainObjectOrNull);
+      return domainObject.ID.GetHandle<T>();
     }
   }
 }

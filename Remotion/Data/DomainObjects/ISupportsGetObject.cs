@@ -20,11 +20,11 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 namespace Remotion.Data.DomainObjects
 {
   /// <summary>
-  /// Marker interface allowing <see cref="ObjectIDExtensions.GetObject{T}"/> and similar methods to be called for a given <see cref="DomainObject"/>
+  /// Marker interface allowing <see cref="DomainObjectHandleExtensions.GetObject{T}"/> and similar methods to be called for a given <see cref="DomainObject"/>
   /// type.
   /// </summary>
   /// <remarks>
-  /// Implement this interface on <see cref="DomainObject"/> classes that should provide <see cref="ObjectIDExtensions.GetObject{T}"/> methods to
+  /// Implement this interface on <see cref="DomainObject"/> classes that should provide <see cref="DomainObjectHandleExtensions.GetObject{T}"/> methods to
   /// domain users. When this interface is not implemented, the <see cref="LifetimeService"/> can be used to get instances of the 
   /// <see cref="DomainObject"/> type.
   /// </remarks>

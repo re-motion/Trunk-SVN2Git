@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly Type _classType;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
     private readonly IDomainObjectCreator _instanceCreator;
-    private readonly Func<object, ObjectID> _idCreator;
+    private readonly Func<ObjectID, IDomainObjectHandle<DomainObject>> _handleCreator;
 
     public ClassDefinition (
         string id,
@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _baseClass = baseClass;
       _instanceCreator = instanceCreator;
-      _idCreator = BuildIDCreator();
+      _handleCreator = BuildHandleCreator();
     }
 
     // methods and properties
@@ -362,9 +362,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _instanceCreator; }
     }
 
-    public Func<object, ObjectID> IDCreator
+    public Func<ObjectID, IDomainObjectHandle<DomainObject>> HandleCreator
     {
-      get { return _idCreator; }
+      get { return _handleCreator; }
     }
 
     public PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
@@ -560,29 +560,30 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    private Func<object, ObjectID> BuildIDCreator ()
+    private Func<ObjectID, IDomainObjectHandle<DomainObject>> BuildHandleCreator ()
     {
-      var valueParameter = Expression.Parameter (typeof (object), "value");
+      var objectIDParameter = Expression.Parameter (typeof (ObjectID), "objectID");
 
       Expression body;
       if (typeof (DomainObject).IsAssignableFrom (ClassType))
       {
-        var objectIDType = typeof (ObjectID<>).MakeGenericType (ClassType);
+        var handleType = typeof (DomainObjectHandle<>).MakeGenericType (ClassType);
 
-        var constructorInfo = objectIDType.GetConstructor (
-            BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof (ClassDefinition), typeof (object) }, null);
+        var constructorInfo = handleType.GetConstructor (
+            BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof (ObjectID) }, null);
         Assertion.DebugAssert (constructorInfo != null);
 
-        body = Expression.New (constructorInfo, Expression.Constant (this), valueParameter);
+        body = Expression.New (constructorInfo, objectIDParameter);
       }
       else
       {
-        var throwingDelegate = (Func<ObjectID>) (() => { throw new InvalidOperationException ("ObjectIDs cannot be created when the ClassType does not derive from DomainObject."); });
+        var throwingDelegate =
+            (Func<IDomainObjectHandle<DomainObject>>)
+            (() => { throw new InvalidOperationException ("Handles cannot be created when the ClassType does not derive from DomainObject."); });
         body = Expression.Invoke (Expression.Constant (throwingDelegate));
       }
 
-      var createDelegate = Expression.Lambda<Func<object, ObjectID>> (body, valueParameter).Compile ();
-      return createDelegate;
+      return Expression.Lambda<Func<ObjectID, IDomainObjectHandle<DomainObject>>> (body, objectIDParameter).Compile ();
     }
 
     [Obsolete ("This method has been removed. Use the StorageEntityDefinition property instead. (1.13.118)")]

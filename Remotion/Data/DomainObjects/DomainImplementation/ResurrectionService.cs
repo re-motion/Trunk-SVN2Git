@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
   /// </description></item>
   /// <item><description>
   /// an object's data could not be found in the data source (e.g., when calling 
-  /// <see cref="LifetimeService.GetObject{T}"/>).
+  /// <see cref="LifetimeService.GetObject(Remotion.Data.DomainObjects.ClientTransaction,Remotion.Data.DomainObjects.ObjectID,bool)"/>).
   /// </description></item>
   /// </list>
   /// </para>

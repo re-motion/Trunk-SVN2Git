@@ -48,7 +48,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       var user = User.FindByUserName ("substituting.user");
       var tenant = user.Tenant;
 
-      var principal = new SecurityManagerPrincipal (tenant.GetTypedID(), user.GetTypedID(), null);
+      var principal = new SecurityManagerPrincipal (tenant.GetHandle(), user.GetHandle(), null);
       
       var oldTenant = principal.Tenant;
       var oldUser = principal.User;
@@ -70,7 +70,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       ClientTransaction.Current.Commit();
       var tenant = user2.Tenant;
 
-      var principal = new SecurityManagerPrincipal (tenant.GetTypedID(), user2.GetTypedID(), null);
+      var principal = new SecurityManagerPrincipal (tenant.GetHandle(), user2.GetHandle(), null);
 
       var oldUser = principal.User;
     

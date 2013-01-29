@@ -40,21 +40,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectIDStri
     [Test]
     public void SerializeStringValue ()
     {
-      var id = ObjectID.Create("Official", "Arthur Dent");
+      var id = new ObjectID("Official", "Arthur Dent");
       Assert.That (ObjectIDStringSerializer.Instance.Serialize (id), Is.EqualTo ("Official|Arthur Dent|System.String"));
     }
 
     [Test]
     public void SerializeInt32Value ()
     {
-      var id = ObjectID.Create("Official", 42);
+      var id = new ObjectID("Official", 42);
       Assert.That (ObjectIDStringSerializer.Instance.Serialize (id), Is.EqualTo ("Official|42|System.Int32"));
     }
 
     [Test]
     public void SerializeGuidValue ()
     {
-      var id = ObjectID.Create("Order", new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}"));
+      var id = new ObjectID("Order", new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}"));
       Assert.That (ObjectIDStringSerializer.Instance.Serialize (id), Is.EqualTo ("Order|5d09030c-25c2-4735-b514-46333bd28ac8|System.Guid"));
     }
 

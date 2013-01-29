@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void NotFoundObject ()
     {
-      var notFoundID = ObjectID.Create(typeof (Order), Guid.NewGuid());
+      var notFoundID = new ObjectID(typeof (Order), Guid.NewGuid());
       var notFoundObject = LifetimeService.GetObjectReference (TestableClientTransaction, notFoundID);
       notFoundObject.TryEnsureDataAvailable();
 
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void NotFoundObject_TryResurrect ()
     {
-      var notFoundID = ObjectID.Create(typeof (Order), Guid.NewGuid ());
+      var notFoundID = new ObjectID(typeof (Order), Guid.NewGuid ());
       var notFoundObject = LifetimeService.GetObjectReference (TestableClientTransaction, notFoundID);
       notFoundObject.TryEnsureDataAvailable ();
 
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void ResurrectObject_ViaParentTransaction ()
     {
-      var notFoundID = ObjectID.Create(typeof (Order), Guid.NewGuid ());
+      var notFoundID = new ObjectID(typeof (Order), Guid.NewGuid ());
       var notFoundObject = LifetimeService.GetObjectReference (TestableClientTransaction, notFoundID);
 
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void ResurrectObject_ViaSubTransaction ()
     {
-      var notFoundID = ObjectID.Create(typeof (Order), Guid.NewGuid ());
+      var notFoundID = new ObjectID(typeof (Order), Guid.NewGuid ());
       var notFoundObject = LifetimeService.GetObjectReference (TestableClientTransaction, notFoundID);
 
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();
@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void TryResurrectObject_ViaParentTransaction ()
     {
-      var notFoundID = ObjectID.Create(typeof (Order), Guid.NewGuid ());
+      var notFoundID = new ObjectID(typeof (Order), Guid.NewGuid ());
       var notFoundObject = LifetimeService.GetObjectReference (TestableClientTransaction, notFoundID);
 
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();
@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void TryResurrectObject_ViaSubTransaction ()
     {
-      var notFoundID = ObjectID.Create(typeof (Order), Guid.NewGuid ());
+      var notFoundID = new ObjectID(typeof (Order), Guid.NewGuid ());
       var notFoundObject = LifetimeService.GetObjectReference (TestableClientTransaction, notFoundID);
 
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();

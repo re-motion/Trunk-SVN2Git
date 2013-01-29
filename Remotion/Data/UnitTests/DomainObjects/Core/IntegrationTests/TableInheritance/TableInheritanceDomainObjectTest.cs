@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
         + "but the actual ClassID is 'TI_Person'.")]
     public void SameIDInDifferentConcreteTables ()
     {
-      TIPerson person = TIPerson.GetObject (ObjectID.Create(typeof (TIPerson), new Guid ("{B969AFCB-2CDA-45ff-8490-EB52A86D5464}")));
+      TIPerson person = TIPerson.GetObject (new ObjectID(typeof (TIPerson), new Guid ("{B969AFCB-2CDA-45ff-8490-EB52A86D5464}")));
       DomainObjectCollection historyEntries = person.HistoryEntries;
     }
 

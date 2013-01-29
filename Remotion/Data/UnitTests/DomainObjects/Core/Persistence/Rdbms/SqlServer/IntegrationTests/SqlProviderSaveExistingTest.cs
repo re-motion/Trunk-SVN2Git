@@ -299,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DataContainer orderContainer = LoadDataContainer (DomainObjectIDs.Order1);
 
-      SetPropertyValue (orderContainer, typeof (Order), "Customer", ObjectID.Create(typeof (Customer), Guid.NewGuid()));
+      SetPropertyValue (orderContainer, typeof (Order), "Customer", new ObjectID(typeof (Customer), Guid.NewGuid()));
 
       Provider.Save (new[] { orderContainer });
     }

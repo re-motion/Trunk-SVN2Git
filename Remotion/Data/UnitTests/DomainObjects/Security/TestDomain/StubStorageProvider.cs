@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       CheckClassDefinition (classDefinition, "classDefinition");
 
-      return ObjectID.Create(classDefinition.ID, Guid.NewGuid ());
+      return new ObjectID(classDefinition.ID, Guid.NewGuid ());
     }
 
     private void CheckClassDefinition (ClassDefinition classDefinition, string argumentName)

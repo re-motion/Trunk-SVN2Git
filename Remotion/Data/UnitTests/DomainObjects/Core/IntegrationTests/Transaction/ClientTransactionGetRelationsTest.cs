@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetOptionalRelatedObject ()
     {
-      var id = ObjectID.Create("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
+      var id = new ObjectID("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
       DomainObject classWithValidRelation = TestableClientTransaction.GetObject (id, false);
       _eventReceiver.Clear ();
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetOptionalRelatedObjectOverVirtualEndPoint ()
     {
-      var id = ObjectID.Create("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
+      var id = new ObjectID("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
       DomainObject classWithGuidKey = TestableClientTransaction.GetObject (id, false);
       _eventReceiver.Clear ();
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetOptionalRelatedObjectTwice ()
     {
-      var id = ObjectID.Create("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
+      var id = new ObjectID("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
       CountingObjectLoaderDecorator decorator = null;
       var clientTransaction =
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetOptionalRelatedObjectOverVirtualEndPointTwice ()
     {
-      var id = ObjectID.Create("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
+      var id = new ObjectID("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
       CountingObjectLoaderDecorator decorator = null;
       var clientTransactionMock = ClientTransactionObjectMother.CreateTransactionWithObjectLoaderDecorator<TestableClientTransaction> (

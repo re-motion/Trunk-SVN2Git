@@ -29,29 +29,29 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   public abstract class OrganizationalStructureObjectProxy<T> : BindableObjectWithIdentityBase
       where T : BaseSecurityManagerObject
   {
-    private readonly IObjectID<T> _id;
+    private readonly IDomainObjectHandle<T> _handle;
     private readonly string _uniqueIdentifier;
     private readonly string _displayName;
 
-    protected OrganizationalStructureObjectProxy (IObjectID<T> id, string uniqueIdentifier, string displayName)
+    protected OrganizationalStructureObjectProxy (IDomainObjectHandle<T> handle, string uniqueIdentifier, string displayName)
     {
-      ArgumentUtility.CheckNotNull ("id", id);
+      ArgumentUtility.CheckNotNull ("handle", handle);
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
       ArgumentUtility.CheckNotNullOrEmpty ("displayName", displayName);
 
-      _id = id;
+      _handle = handle;
       _uniqueIdentifier = uniqueIdentifier;
       _displayName = displayName;
     }
 
     public ObjectID ID
     {
-      get { return _id.AsObjectID(); }
+      get { return _handle.ObjectID; }
     }
 
-    public IObjectID<T> TypedID
+    public IDomainObjectHandle<T> Handle
     {
-      get { return _id; }
+      get { return _handle; }
     }
 
     public override string UniqueIdentifier
@@ -70,12 +70,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         return false;
       if (this.GetType() != obj.GetType())
         return false;
-      return this._id.Equals (((OrganizationalStructureObjectProxy<T>) obj)._id);
+      return this._handle.Equals (((OrganizationalStructureObjectProxy<T>) obj)._handle);
     }
 
     public override int GetHashCode ()
     {
-      return _id.GetHashCode();
+      return _handle.GetHashCode();
     }
   }
 }

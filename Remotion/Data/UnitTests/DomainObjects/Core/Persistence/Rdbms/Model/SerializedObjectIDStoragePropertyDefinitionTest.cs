@@ -22,7 +22,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -172,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       var result = _serializedObjectIDStoragePropertyDefinition.CombineValue (_columnValueProviderStub);
 
-      Assert.That (result, Is.TypeOf<ObjectID<Order>> ());
+      Assert.That (result, Is.TypeOf (typeof (ObjectID)));
       Assert.That (((ObjectID) result).Value.ToString (), Is.EqualTo (DomainObjectIDs.Order1.Value.ToString ()));
       Assert.That (((ObjectID) result).ClassID, Is.EqualTo ("Order"));
     }

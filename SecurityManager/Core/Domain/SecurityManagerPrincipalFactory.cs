@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.Domain
     {
     }
 
-    public ISecurityManagerPrincipal CreateWithLocking (IObjectID<Tenant> tenantID, IObjectID<User> userID, IObjectID<Substitution> substitutionID)
+    public ISecurityManagerPrincipal CreateWithLocking (IDomainObjectHandle<Tenant> tenantID, IDomainObjectHandle<User> userID, IDomainObjectHandle<Substitution> substitutionID)
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
       ArgumentUtility.CheckNotNull ("userID", userID);

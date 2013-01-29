@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
@@ -29,7 +29,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void ObjectIDIsSerializable ()
     {
       ObjectID id = Serializer.SerializeAndDeserialize (DomainObjectIDs.Order1);
-      Assert.That (id, Is.TypeOf<ObjectID<Order>>());
       Assert.That (id, Is.EqualTo (DomainObjectIDs.Order1));
     }
 

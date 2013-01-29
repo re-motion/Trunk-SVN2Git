@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Order), baseClass: null);
       classDefinition.SetStorageEntity (entityDefinition);
 
-      return ObjectID.Create(classDefinition, Guid.NewGuid ());
+      return new ObjectID(classDefinition, Guid.NewGuid ());
     }
   }
 }

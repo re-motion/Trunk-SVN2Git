@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       var constructorLookupInfo = new DomainObjectConstructorLookupInfo (typeof (T), concreteType, BindingFlags.Public | BindingFlags.Instance);
       return ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
           TestableClientTransaction,
-          ObjectID.Create(typeof (T), Guid.NewGuid ()), 
+          new ObjectID(typeof (T), Guid.NewGuid ()), 
           () => (T) ParamList.Empty.InvokeConstructor (constructorLookupInfo));
     }
 
