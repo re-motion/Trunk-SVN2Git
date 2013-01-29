@@ -73,6 +73,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
           new DefaultConverter (typeof (byte[])));
     }
 
+    /// <inheritdoc/>
+    /// <remarks>If overridden in a derived class, <see cref="GetStorageType (Type)"/> must also be overridden based on the same semantics.</remarks>
     public virtual IStorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition, bool forceNullable)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
@@ -85,6 +87,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       return storageType;
     }
 
+    /// <inheritdoc/>
+    /// <remarks>
+    /// If overridden in a derived class, <see cref="GetStorageType (PropertyDefinition, bool)"/> must also be overridden based on the same semantics.
+    /// </remarks>
     public virtual IStorageTypeInformation GetStorageType (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
