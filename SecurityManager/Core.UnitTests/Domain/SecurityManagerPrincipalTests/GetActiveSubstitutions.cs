@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
   {
     private IDomainObjectHandle<Tenant> _tenantHandle;
     private IDomainObjectHandle<User> _userHandle;
-    private IDomainObjectHandle<Substitution>[] _substitutionHandles;
+    private ObjectID[] _substitutionIDs;
 
     public override void SetUp ()
     {
@@ -42,8 +42,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       User user = User.FindByUserName ("substituting.user");
       _userHandle = user.GetHandle();
       _tenantHandle = user.Tenant.GetHandle();
-      _substitutionHandles = user.GetActiveSubstitutions().Select (s => s.GetHandle()).ToArray();
-      Assert.That (_substitutionHandles.Length, Is.EqualTo (2));
+      _substitutionIDs = user.GetActiveSubstitutions().Select (s => s.ID).ToArray();
+      Assert.That (_substitutionIDs.Length, Is.EqualTo (2));
     }
 
     public override void TearDown ()
@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_tenantHandle, _userHandle, null);
 
-      Assert.That (principal.GetActiveSubstitutions().Select (t => t.ID), Is.EquivalentTo (_substitutionHandles.Select (h => h.ObjectID)));
+      Assert.That (principal.GetActiveSubstitutions().Select (s => s.ID), Is.EquivalentTo (_substitutionIDs));
     }
   }
 }
