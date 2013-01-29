@@ -52,22 +52,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void IsTypeSupported_SupportedType ()
-    {
-      var result = _storageTypeInformationProvider.IsTypeSupported (typeof (string));
-
-      Assert.That (result, Is.True);
-    }
-
-    [Test]
-    public void IsTypeSupported_UnsupportedType ()
-    {
-      var result = _storageTypeInformationProvider.IsTypeSupported (typeof (Char));
-
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
     public void GetStorageType_ForProperty_SimpleValueTypes ()
     {
       CheckGetStorageType_ForProperty (

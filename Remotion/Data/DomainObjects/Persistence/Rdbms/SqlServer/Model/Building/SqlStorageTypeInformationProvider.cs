@@ -73,13 +73,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
           new DefaultConverter (typeof (byte[])));
     }
 
-    public virtual bool IsTypeSupported(Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      return GetStorageType (type, null, false) != null;
-    }
-
     public virtual IStorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition, bool forceNullable)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);

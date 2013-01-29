@@ -30,8 +30,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     IStorageTypeInformation GetStorageTypeForClassID (bool isStorageTypeNullable);
     IStorageTypeInformation GetStorageTypeForTimestamp (bool isStorageTypeNullable);
 
-    bool IsTypeSupported (Type type);
-
     /// <summary>
     /// Gets an <see cref="IStorageTypeInformation"/> for the given <paramref name="propertyDefinition"/>.
     /// </summary>
