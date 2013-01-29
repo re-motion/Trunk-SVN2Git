@@ -25,7 +25,7 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 {
   [Serializable]
-  public abstract class TestDomainBase : DomainObject
+  public abstract class TestDomainBase : DomainObject, ISupportsGetObject
   {
     public static event EventHandler StaticCtorHandler;
     public static event EventHandler StaticLoadHandler;
