@@ -73,12 +73,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     public void CreateSecurityContext ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
+      tenant.Parent = TestHelper.CreateTenant ("ParentTenant", "UID: ParentTenant");
 
       ISecurityContext securityContext = ((ISecurityContextFactory) tenant).CreateSecurityContext();
       Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (tenant.GetPublicDomainObjectType()));
       Assert.That (securityContext.Owner, Is.Null);
       Assert.That (securityContext.OwnerGroup, Is.Null);
-      Assert.That (securityContext.OwnerTenant, Is.EqualTo (tenant.UniqueIdentifier));
+      Assert.That (securityContext.OwnerTenant, Is.EqualTo (tenant.Parent.UniqueIdentifier));
+      Assert.That (securityContext.AbstractRoles, Is.Empty);
+      Assert.That (securityContext.IsStateless, Is.False);
+    }
+
+    [Test]
+    public void CreateSecurityContext_WithoutParent ()
+    {
+      Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
+
+      ISecurityContext securityContext = ((ISecurityContextFactory) tenant).CreateSecurityContext();
+      Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (tenant.GetPublicDomainObjectType()));
+      Assert.That (securityContext.Owner, Is.Null);
+      Assert.That (securityContext.OwnerGroup, Is.Null);
+      Assert.That (securityContext.OwnerTenant, Is.Null);
       Assert.That (securityContext.AbstractRoles, Is.Empty);
       Assert.That (securityContext.IsStateless, Is.False);
     }

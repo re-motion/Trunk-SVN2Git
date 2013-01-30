@@ -76,7 +76,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
 
       ISecurityContext securityContext = ((ISecurityContextFactory) user).CreateSecurityContext();
       Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (user.GetPublicDomainObjectType()));
-      Assert.That (securityContext.Owner, Is.EqualTo (user.UserName));
+      Assert.That (securityContext.Owner, Is.Null);
       Assert.That (securityContext.OwnerGroup, Is.EqualTo (user.OwningGroup.UniqueIdentifier));
       Assert.That (securityContext.OwnerTenant, Is.EqualTo (user.Tenant.UniqueIdentifier));
       Assert.That (securityContext.AbstractRoles, Is.Empty);
@@ -84,14 +84,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     }
 
     [Test]
-    public void CreateSecurityContext_WithNoGroup ()
+    public void CreateSecurityContext_WithoutOwningGroup ()
     {
       User user = CreateUser();
       user.OwningGroup = null;
 
       ISecurityContext securityContext = ((ISecurityContextFactory) user).CreateSecurityContext();
       Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (user.GetPublicDomainObjectType()));
-      Assert.That (securityContext.Owner, Is.EqualTo (user.UserName));
+      Assert.That (securityContext.Owner, Is.Null);
       Assert.That (securityContext.OwnerGroup, Is.Null);
       Assert.That (securityContext.OwnerTenant, Is.EqualTo (user.Tenant.UniqueIdentifier));
       Assert.That (securityContext.AbstractRoles, Is.Empty);
@@ -99,14 +99,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     }
 
     [Test]
-    public void CreateSecurityContext_WithNoTenant ()
+    public void CreateSecurityContext_WithoutTenant ()
     {
       User user = CreateUser();
       user.Tenant = null;
 
       ISecurityContext securityContext = ((ISecurityContextFactory) user).CreateSecurityContext();
       Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (user.GetPublicDomainObjectType()));
-      Assert.That (securityContext.Owner, Is.EqualTo (user.UserName));
+      Assert.That (securityContext.Owner, Is.Null);
       Assert.That (securityContext.OwnerGroup, Is.EqualTo (user.OwningGroup.UniqueIdentifier));
       Assert.That (securityContext.OwnerTenant, Is.Null);
       Assert.That (securityContext.AbstractRoles, Is.Empty);

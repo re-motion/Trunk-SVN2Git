@@ -131,26 +131,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
       Group child1 = TestHelper.CreateGroup ("Child1", "UID: Child1", root, tenant);
       Group child2 = TestHelper.CreateGroup ("Child2", "UID: Child2", root, tenant);
-      TestHelper.CreateGroup ("GrandChild1", "UID: GrandChild1", child1, tenant);
+      Group child1_1 = TestHelper.CreateGroup ("GrandChild1.1", "UID: GrandChild1.1", child1, tenant);
+      Group child2_1 = TestHelper.CreateGroup ("GrandChild2.1", "UID: GrandChild2.1", child2, tenant);
 
       ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
-      var child1SecurityContext = ((ISecurityContextFactory) child1).CreateSecurityContext ();
+      var childOfChild2SecurityContext = ((ISecurityContextFactory) child2_1).CreateSecurityContext ();
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg<ISecurityContext>.Is.NotEqual (child1SecurityContext),
+                      Arg<ISecurityContext>.Is.NotEqual (childOfChild2SecurityContext),
                       Arg<ISecurityPrincipal>.Is.Anything)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg.Is (child1SecurityContext),
+                      Arg.Is (childOfChild2SecurityContext),
                       Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var groups = root.GetHierachy ().ToArray ();
 
-        Assert.That (groups, Is.EquivalentTo (new[] { root, child2 }));
+        Assert.That (groups, Is.EquivalentTo (new[] { root, child1, child2, child1_1 }));
       }
     }
 

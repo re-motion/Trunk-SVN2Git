@@ -73,18 +73,19 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     public void CreateSecurityContext ()
     {
       Group group = CreateGroup();
+      group.Parent = TestHelper.CreateGroup ("ParentGroup", "UID: ParentGroup", null, group.Tenant);
 
       ISecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext();
       Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (@group.GetPublicDomainObjectType()));
       Assert.That (securityContext.Owner, Is.Null);
-      Assert.That (securityContext.OwnerGroup, Is.EqualTo (@group.UniqueIdentifier));
+      Assert.That (securityContext.OwnerGroup, Is.EqualTo (@group.Parent.UniqueIdentifier));
       Assert.That (securityContext.OwnerTenant, Is.EqualTo (@group.Tenant.UniqueIdentifier));
       Assert.That (securityContext.AbstractRoles, Is.Empty);
       Assert.That (securityContext.IsStateless, Is.False);
     }
 
     [Test]
-    public void CreateSecurityContext_WithNoTenant ()
+    public void CreateSecurityContext_WithoutTenant ()
     {
       Group group = CreateGroup();
       group.Tenant = null;
@@ -92,10 +93,26 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       ISecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext();
       Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (@group.GetPublicDomainObjectType()));
       Assert.That (securityContext.Owner, Is.Null);
-      Assert.That (securityContext.OwnerGroup, Is.EqualTo (@group.UniqueIdentifier));
+      Assert.That (securityContext.OwnerGroup, Is.Null);
       Assert.That (securityContext.OwnerTenant, Is.Null);
       Assert.That (securityContext.AbstractRoles, Is.Empty);
       Assert.That (securityContext.IsStateless, Is.False);
     }
+
+    [Test]
+    public void CreateSecurityContext_WithoutParent ()
+    {
+      Group group = CreateGroup();
+      group.Parent = null;
+
+      ISecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext();
+      Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (@group.GetPublicDomainObjectType()));
+      Assert.That (securityContext.Owner, Is.Null);
+      Assert.That (securityContext.OwnerGroup, Is.Null);
+      Assert.That (securityContext.OwnerTenant, Is.EqualTo (@group.Tenant.UniqueIdentifier));
+      Assert.That (securityContext.AbstractRoles, Is.Empty);
+      Assert.That (securityContext.IsStateless, Is.False);
+    }
+
   }
 }

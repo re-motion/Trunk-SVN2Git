@@ -196,7 +196,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     protected override string GetOwningGroup ()
     {
-      return UniqueIdentifier;
+      return Parent == null ? null : Parent.UniqueIdentifier;
     }
 
     /// <summary>
