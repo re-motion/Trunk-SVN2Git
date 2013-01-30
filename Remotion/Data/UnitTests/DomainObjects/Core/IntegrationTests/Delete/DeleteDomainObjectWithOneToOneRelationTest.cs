@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       base.SetUp ();
 
-      _orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      _orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       _order = _orderTicket.Order;
 
       _eventReceiver = CreateEventReceiver ();
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void DeleteComputerWithoutEmployeeEvents ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
+      Computer computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
 
       SequenceEventReceiver eventReceiver = new SequenceEventReceiver (
           new DomainObject[] { computer }, new DomainObjectCollection[0]);

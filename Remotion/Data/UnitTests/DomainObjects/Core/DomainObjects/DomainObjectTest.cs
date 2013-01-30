@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void LoadingOfSimpleObject ()
     {
-      ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      ClassWithAllDataTypes classWithAllDataTypes = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
 
       Assert.That (classWithAllDataTypes.ID.Value, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.Value), "ID.Value");
       Assert.That (classWithAllDataTypes.ID.ClassID, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.ClassID), "ID.ClassID");
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void LoadingOfDerivedObject ()
     {
-      Company company = Company.GetObject (DomainObjectIDs.Partner2);
+      Company company = DomainObjectIDs.Partner2.GetObject<Company> ();
       Assert.That (company, Is.Not.Null);
 
       Assert.That (company, Is.InstanceOf (typeof (Partner)));
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void LoadingOfTwiceDerivedObject ()
     {
-      Company company = Company.GetObject (DomainObjectIDs.Supplier1);
+      Company company = DomainObjectIDs.Supplier1.GetObject<Company> ();
       Assert.That (company, Is.Not.Null);
 
       Assert.That (company, Is.InstanceOf (typeof (Supplier)));
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
+      ClassWithAllDataTypes classWithAllDataTypes = id.GetObject<ClassWithAllDataTypes> ();
 
       Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.True);
       Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
+      ClassWithAllDataTypes classWithAllDataTypes = id.GetObject<ClassWithAllDataTypes> ();
       classWithAllDataTypes.OnLoadedCalled = false;
       classWithAllDataTypes.OnLoadedCallCount = 0;
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
+      ClassWithAllDataTypes classWithAllDataTypes = id.GetObject<ClassWithAllDataTypes> ();
       classWithAllDataTypes.OnLoadedCalled = false;
       classWithAllDataTypes.OnLoadedCallCount = 0;
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
+        ClassWithAllDataTypes classWithAllDataTypes = id.GetObject<ClassWithAllDataTypes> ();
 
         Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.True);
         Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (2));
@@ -205,14 +205,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
+      ClassWithAllDataTypes classWithAllDataTypes = id.GetObject<ClassWithAllDataTypes> ();
       Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.True);
       Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
       Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        ClassWithAllDataTypes.GetObject (id);
+        id.GetObject<ClassWithAllDataTypes> ();
 
         Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (2));
         Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
@@ -239,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetRelatedObject ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
 
       Assert.That (order.OrderTicket, Is.Not.Null);
       Assert.That (order.OrderTicket.ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
@@ -248,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetRelatedObjectByInheritedRelationTwice ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer4);
+      Customer customer = DomainObjectIDs.Customer4.GetObject<Customer> ();
 
       Ceo ceoReference1 = customer.Ceo;
 
@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetDerivedRelatedObject ()
     {
-      Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo10);
+      Ceo ceo = DomainObjectIDs.Ceo10.GetObject<Ceo> ();
 
       Company company = ceo.Company;
       Assert.That (company, Is.Not.Null);
@@ -272,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetRelatedObjects ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       Assert.That (customer.Orders, Is.Not.Null);
       Assert.That (customer.Orders.Count, Is.EqualTo (2));
@@ -283,7 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetRelatedObjectsWithDerivation ()
     {
-      IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2);
+      IndustrialSector industrialSector = DomainObjectIDs.IndustrialSector2.GetObject<IndustrialSector> ();
       DomainObjectCollection collection = industrialSector.Companies;
 
       Assert.That (collection.Count, Is.EqualTo (7));
@@ -299,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void ChangeTrackingEvents ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       var eventReceiver = new DomainObjectEventReceiver (customer, false);
       customer.Name = "New name";
@@ -316,7 +316,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CancelChangeTrackingEvents ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       var eventReceiver = new DomainObjectEventReceiver (customer, true);
 
@@ -338,7 +338,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void StateInDifferentTransactions ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       customer.Name = "New name";
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
@@ -363,7 +363,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       ClassWithAllDataTypes newObject = ClassWithAllDataTypes.NewObject ();
       DataContainer newObjectDataContainer = newObject.InternalDataContainer;
-      ClassWithAllDataTypes loadedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      ClassWithAllDataTypes loadedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       DataContainer loadedObjectDataContainer = newObject.InternalDataContainer;
 
       newObject.Delete ();
@@ -386,7 +386,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void IsDiscardedInTransaction ()
     {
       ClientTransaction otherTransaction = ClientTransaction.CreateRootTransaction ();
-      ClassWithAllDataTypes loadedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      ClassWithAllDataTypes loadedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       using (otherTransaction.EnterNonDiscardingScope ())
       {
         otherTransaction.EnlistDomainObject (loadedObject);
@@ -404,7 +404,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ValueTooLongException))]
     public void MaxLengthCheck ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       const string tooLongName = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901";
       customer.Name = tooLongName;
@@ -414,7 +414,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (InvalidTypeException))]
     public void TypeCheck ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       const int invalidName = 123;
       customer.NamePropertyOfInvalidType = invalidName;
@@ -423,11 +423,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void TestAllOperations ()
     {
-      Order order1 = Order.GetObject (DomainObjectIDs.Order1);
-      Order order2 = Order.GetObject (DomainObjectIDs.Order2);
+      Order order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      Order order2 = DomainObjectIDs.Order2.GetObject<Order> ();
 
       Customer customer1 = order1.Customer;
-      Customer customer4 = Customer.GetObject (DomainObjectIDs.Customer4);
+      Customer customer4 = DomainObjectIDs.Customer4.GetObject<Customer> ();
 
       Order order3 = customer4.Orders[DomainObjectIDs.Order3];
       Dev.Null = customer4.Orders[DomainObjectIDs.Order4];
@@ -487,43 +487,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       CheckIfObjectIsDeleted (DomainObjectIDs.OrderItem1);
       CheckIfObjectIsDeleted (DomainObjectIDs.OrderItem2);
 
-      order3 = Order.GetObject (DomainObjectIDs.Order3);
+      order3 = DomainObjectIDs.Order3.GetObject<Order> ();
       Assert.That (order3.OrderNumber, Is.EqualTo (7));
 
-      newOrder = Order.GetObject (newOrderID);
+      newOrder = newOrderID.GetObject<Order> ();
       Assert.That (newOrder, Is.Not.Null);
 
-      official1 = Official.GetObject (DomainObjectIDs.Official1);
+      official1 = DomainObjectIDs.Official1.GetObject<Official>();
       Assert.That (official1.Orders[newOrderID], Is.Not.Null);
       Assert.That (newOrder.Official, Is.SameAs (official1));
       Assert.That (official1.Orders[DomainObjectIDs.Order1], Is.Null);
 
-      orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       Assert.That (orderTicket1.FileName, Is.EqualTo (@"C:\NewFile.tif"));
       Assert.That (orderTicket1.Order, Is.SameAs (newOrder));
       Assert.That (newOrder.OrderTicket, Is.SameAs (orderTicket1));
 
-      newOrderItem1 = OrderItem.GetObject (newOrderItem1ID);
+      newOrderItem1 = newOrderItem1ID.GetObject<OrderItem>();
       Assert.That (newOrderItem1, Is.Not.Null);
       Assert.That (newOrderItem1.Position, Is.EqualTo (1));
       Assert.That (newOrderItem1.Order, Is.SameAs (newOrder));
       Assert.That (newOrder.OrderItems[newOrderItem1ID], Is.Not.Null);
 
-      newOrderItem2 = OrderItem.GetObject (newOrderItem2ID);
+      newOrderItem2 = newOrderItem2ID.GetObject<OrderItem>();
       Assert.That (newOrderItem2, Is.Not.Null);
       Assert.That (newOrderItem2.Position, Is.EqualTo (2));
       Assert.That (newOrderItem2.Order, Is.SameAs (order3));
       Assert.That (order3.OrderItems[newOrderItem2ID], Is.Not.Null);
 
-      newCustomer = Customer.GetObject (newCustomerID);
-      newCeo = Ceo.GetObject (newCeoID);
+      newCustomer = newCustomerID.GetObject<Customer> ();
+      newCeo = newCeoID.GetObject<Ceo> ();
 
       Assert.That (newCeo.Company, Is.SameAs (newCustomer));
       Assert.That (newCustomer.Ceo, Is.SameAs (newCeo));
       Assert.That (newCustomer.Orders.Contains (DomainObjectIDs.Order2), Is.True);
       Assert.That (newCustomer.Orders[DomainObjectIDs.Order2].Customer, Is.SameAs (newCustomer));
 
-      orderTicket3 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket3);
+      orderTicket3 = DomainObjectIDs.OrderTicket3.GetObject<OrderTicket> ();
       Assert.That (orderTicket3.FileName, Is.EqualTo (@"C:\NewFile.gif"));
     }
 
@@ -537,17 +537,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ObjectID newSubordinate1ID = newSubordinate1.ID;
       newSubordinate1.Supervisor = newSupervisor1;
 
-      Employee supervisor1 = Employee.GetObject (DomainObjectIDs.Employee1);
-      Employee subordinate4 = Employee.GetObject (DomainObjectIDs.Employee4);
+      Employee supervisor1 = DomainObjectIDs.Employee1.GetObject<Employee> ();
+      Employee subordinate4 = DomainObjectIDs.Employee4.GetObject<Employee> ();
 
-      Employee supervisor2 = Employee.GetObject (DomainObjectIDs.Employee2);
-      Employee subordinate3 = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee supervisor2 = DomainObjectIDs.Employee2.GetObject<Employee> ();
+      Employee subordinate3 = DomainObjectIDs.Employee3.GetObject<Employee> ();
       supervisor2.Supervisor = supervisor1;
       supervisor2.Name = "New name of supervisor";
       subordinate3.Name = "New name of subordinate";
 
-      Employee supervisor6 = Employee.GetObject (DomainObjectIDs.Employee6);
-      Dev.Null = Employee.GetObject (DomainObjectIDs.Employee7);
+      Employee supervisor6 = DomainObjectIDs.Employee6.GetObject<Employee> ();
+      Dev.Null = DomainObjectIDs.Employee7.GetObject<Employee> ();
 
       Employee newSubordinate2 = Employee.NewObject ();
       ObjectID newSubordinate2ID = newSubordinate2.ID;
@@ -564,18 +564,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
-      newSupervisor1 = Employee.GetObject (newSupervisor1ID);
-      newSubordinate1 = Employee.GetObject (newSubordinate1ID);
+      newSupervisor1 = newSupervisor1ID.GetObject<Employee> ();
+      newSubordinate1 = newSubordinate1ID.GetObject<Employee> ();
 
       Assert.That (newSubordinate1.Supervisor, Is.SameAs (newSupervisor1));
       Assert.That (newSupervisor1.Subordinates.Contains (newSubordinate1ID), Is.True);
 
-      supervisor2 = Employee.GetObject (DomainObjectIDs.Employee2);
+      supervisor2 = DomainObjectIDs.Employee2.GetObject<Employee> ();
 
       Assert.That (supervisor2.Supervisor, Is.Null);
       Assert.That (supervisor2.Name, Is.EqualTo ("New name of supervisor"));
 
-      subordinate3 = Employee.GetObject (DomainObjectIDs.Employee3);
+      subordinate3 = DomainObjectIDs.Employee3.GetObject<Employee> ();
 
       Assert.That (subordinate3.Supervisor, Is.SameAs (supervisor2));
       Assert.That (supervisor2.Subordinates.Contains (DomainObjectIDs.Employee3), Is.True);
@@ -584,12 +584,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (newSupervisor1.Supervisor, Is.SameAs (supervisor2));
       Assert.That (supervisor2.Subordinates.Contains (newSupervisor1ID), Is.True);
 
-      newSubordinate2 = Employee.GetObject (newSubordinate2ID);
+      newSubordinate2 = newSubordinate2ID.GetObject<Employee> ();
 
       Assert.That (newSubordinate2.Supervisor, Is.Null);
 
-      supervisor6 = Employee.GetObject (DomainObjectIDs.Employee6);
-      newSubordinate3 = Employee.GetObject (newSubordinate3ID);
+      supervisor6 = DomainObjectIDs.Employee6.GetObject<Employee> ();
+      newSubordinate3 = newSubordinate3ID.GetObject<Employee> ();
 
       Assert.That (newSubordinate3.Supervisor, Is.SameAs (supervisor6));
       Assert.That (supervisor6.Subordinates.Contains (newSubordinate3ID), Is.True);
@@ -601,7 +601,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void DeleteNewObjectWithExistingRelated ()
     {
-      Computer computer4 = Computer.GetObject (DomainObjectIDs.Computer4);
+      Computer computer4 = DomainObjectIDs.Computer4.GetObject<Computer> ();
 
       Employee newDeletedEmployee = Employee.NewObject ();
       computer4.Employee = newDeletedEmployee;
@@ -611,14 +611,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
-      computer4 = Computer.GetObject (DomainObjectIDs.Computer4);
+      computer4 = DomainObjectIDs.Computer4.GetObject<Computer> ();
       Assert.That (computer4.Employee, Is.Null);
     }
 
     [Test]
     public void ExistingObjectRelatesToNewAndDeleted ()
     {
-      Partner partner = Partner.GetObject (DomainObjectIDs.Partner2);
+      Partner partner = DomainObjectIDs.Partner2.GetObject<Partner> ();
 
       Person newPerson = Person.NewObject ();
       partner.ContactPerson = newPerson;
@@ -627,7 +627,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
-      partner = Partner.GetObject (DomainObjectIDs.Partner2);
+      partner = DomainObjectIDs.Partner2.GetObject<Partner> ();
       Assert.That (partner.ContactPerson.ID, Is.EqualTo (newPerson.ID));
       Assert.That (partner.IndustrialSector, Is.Null);
     }
@@ -635,7 +635,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetRelatedObjectsWithCorrectOrder ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       Assert.That (customer.Orders[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.OrderWithoutOrderItem));
@@ -644,9 +644,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetRelatedObjectsWithCorrectOrderWithLazyLoad ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
-      Dev.Null = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+      Dev.Null = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
 
       Assert.That (customer.Orders[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.OrderWithoutOrderItem));

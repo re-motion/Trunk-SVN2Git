@@ -318,7 +318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       return _transaction.Execute (
           () =>
           {
-            var instance = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+            var instance = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
             instance.Delete ();
             return instance;
           });
@@ -334,7 +334,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       return _transaction.Execute (
           () =>
           {
-            var instance = Order.GetObject (DomainObjectIDs.Order1);
+            var instance = DomainObjectIDs.Order1.GetObject<Order> ();
             instance.RegisterForCommit();
             return instance;
           });
@@ -342,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     private DomainObject GetUnchangedObject ()
     {
-      return _transaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1));
+      return _transaction.Execute (() => DomainObjectIDs.Customer1.GetObject<Customer> ());
     }
 
     protected ReadOnlyCollection<DomainObject> ArgIsDomainObjectSet (params DomainObject[] domainObjects)

@@ -47,11 +47,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return NewObject<ClassWithAllDataTypes> ();
     }
 
-    public new static ClassWithAllDataTypes GetObject (ObjectID id)
-    {
-      return GetObject<ClassWithAllDataTypes> (id);
-    }
-
     protected ClassWithAllDataTypes ()
     {
     }

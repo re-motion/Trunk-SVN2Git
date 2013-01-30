@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
@@ -69,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void TouchedChangedContent ()
     {
-      _endPoint.CreateSetCommand (Computer.GetObject (DomainObjectIDs.Computer2)).Perform ();
+      _endPoint.CreateSetCommand (DomainObjectIDs.Computer2.GetObject<Computer> ()).Perform ();
       _endPoint.Touch();
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);

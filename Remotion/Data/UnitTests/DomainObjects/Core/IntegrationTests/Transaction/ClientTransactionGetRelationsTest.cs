@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetRelatedObjects ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       _eventReceiver.Clear ();
 
       DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (
@@ -214,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetRelatedObjectsTwice ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       _eventReceiver.Clear ();
 
       DomainObjectCollection orders1 = TestableClientTransaction.GetRelatedObjects (
@@ -233,8 +233,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetRelatedObjectsWithAlreadyLoadedObject ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       _eventReceiver.Clear ();
 
       DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (
@@ -247,7 +247,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void LoadedEventDoesNotFireWithEmptyDomainObjectCollection ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer2);
+      Customer customer = DomainObjectIDs.Customer2.GetObject<Customer> ();
       _eventReceiver.Clear ();
 
       DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
@@ -260,12 +260,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetRelatedObjectsWithLazyLoad ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (
           RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
 
       Assert.That (ReferenceEquals (order, orders[DomainObjectIDs.Order1]), Is.True);
     }
@@ -273,7 +273,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetRelatedObjectsAndNavigateBack ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (
           RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));

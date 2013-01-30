@@ -25,16 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Ceo : TestDomainBase
   {
-    public static Ceo NewObject ()
-    {
-      return NewObject<Ceo>();
-    }
-
-    public new static Ceo GetObject (ObjectID id)
-    {
-      return GetObject<Ceo> (id);
-    }
-
     protected Ceo ()
     {
     }

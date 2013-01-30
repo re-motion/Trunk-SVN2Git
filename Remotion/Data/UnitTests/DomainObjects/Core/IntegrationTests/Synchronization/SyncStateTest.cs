@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjectEndPoints;
@@ -31,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void CollectionItems_Synchronized_WithUnload ()
     {
-      var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
       var endPointID = RelationEndPointID.Resolve (orderItem, oi => oi.Order);
       var endPoint = (RealObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (endPoint, Is.Not.Null);
@@ -52,11 +53,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable();
 
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.OrderItems.EnsureDataComplete();
 
       var orderItemID = RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<OrderItem, Order> (order.ID, (oi, o) => oi.Order = o);
-      var orderItem = OrderItem.GetObject (orderItemID);
+      var orderItem = orderItemID.GetObject<OrderItem>();
       var endPointID = RelationEndPointID.Resolve (orderItem, oi => oi.Order);
       var endPoint = (RealObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (endPoint, Is.Not.Null);

@@ -33,8 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     [Test]
     public void GetCollectionWithExistingObjects ()
     {
-      var computer2 = Computer.GetObject (DomainObjectIDs.Computer2);
-      var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
+      var computer2 = DomainObjectIDs.Computer2.GetObject<Computer> ();
+      var computer1 = DomainObjectIDs.Computer1.GetObject<Computer> ();
 
       IQueryManager queryManager = QueryManager;
       var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       query.Parameters.Add ("@3", DomainObjectIDs.Computer1); // preloaded
 
       var resultArray = queryManager.GetCollection (query).ToArray ();
-      Assert.That (resultArray, Is.EqualTo (new[] { computer2, Computer.GetObject (DomainObjectIDs.Computer3), computer1 }));
+      Assert.That (resultArray, Is.EqualTo (new[] { computer2, DomainObjectIDs.Computer3.GetObject<Computer> (), computer1 }));
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
 
       var result = QueryManager.GetCollection (query);
       Assert.That (result.ContainsNulls (), Is.True);
-      Assert.That (result.ToArray (), Is.EqualTo (new[] { null, null, Employee.GetObject (DomainObjectIDs.Employee3) }));
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { null, null, DomainObjectIDs.Employee3.GetObject<Employee> () }));
     }
 
     [Test]
@@ -117,11 +117,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       Assert.That (orders.Count, Is.EqualTo (5));
       Assert.That (orders, Is.EquivalentTo (new object[]
       {
-        Order.GetObject (DomainObjectIDs.Order1),
-        Order.GetObject (DomainObjectIDs.Order2),
-        Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem),
-        Order.GetObject (DomainObjectIDs.Order3),
-        Order.GetObject (DomainObjectIDs.Order4),
+        DomainObjectIDs.Order1.GetObject<Order> (),
+        DomainObjectIDs.Order2.GetObject<Order> (),
+        DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> (),
+        DomainObjectIDs.Order3.GetObject<Order> (),
+        DomainObjectIDs.Order4.GetObject<Order> (),
       }));
       Assert.That (query.CollectionType.IsAssignableFrom (orders.GetType ()), Is.True);
     }
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     [Test]
     public void QueryingEnlists ()
     {
-      Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in transaction
+      DomainObjectIDs.Order1.GetObject<Order> (); // ensure Order1 already exists in transaction
 
       var orders = (OrderCollection) QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection ();
       Assert.AreEqual (2, orders.Count, "Order count");
@@ -185,15 +185,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
 
       int orderNumberSum = orders.Sum (order => order.OrderNumber);
 
-      Assert.That (orderNumberSum, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1).OrderNumber + Order.GetObject (DomainObjectIDs.Order2).OrderNumber));
+      Assert.That (orderNumberSum, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ().OrderNumber + DomainObjectIDs.Order2.GetObject<Order> ().OrderNumber));
     }
 
     [Test]
     public void CollectionQuery_ReturnsDeletedObjects ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       order1.Delete (); // mark as deleted
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+      var order2 = DomainObjectIDs.Order2.GetObject<Order> ();
 
       var query = QueryFactory.CreateCollectionQuery (
           "test",
@@ -212,7 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     [Test]
     public void CollectionQuery_AllowsInvalidObjects ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       order1.Delete ();
       TestableClientTransaction.DataManager.Commit ();
 
@@ -234,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       listenerMock
           .Expect (mock => mock.FilterQueryResult (Arg.Is (TestableClientTransaction), Arg<QueryResult<DomainObject>>.Is.Anything))
           .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ())
-          .WhenCalled (mi => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
+          .WhenCalled (mi => DomainObjectIDs.OrderItem1.GetObject<OrderItem>());
       TestableClientTransaction.AddListener (listenerMock);
 
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       query.Parameters.Add ("@1", Color.Values.Blue ());
 
       var result = QueryManager.GetCollection (query);
-      Assert.That (result.ToArray (), Is.EqualTo (new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) }));
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> () }));
     }
 
   }

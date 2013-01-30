@@ -25,16 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Location : TestDomainBase
   {
-    public static Location NewObject ()
-    {
-      return NewObject<Location> ();
-    }
-
-    public new static Location GetObject (ObjectID id)
-    {
-      return GetObject<Location> (id);
-    }
-
     protected Location()
     {
     }

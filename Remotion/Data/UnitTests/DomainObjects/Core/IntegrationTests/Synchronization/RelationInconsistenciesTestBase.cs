@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         ClientTransaction.Current.Commit ();
         objectID = company.ID;
       }
-      return Company.GetObject (objectID);
+      return objectID.GetObject<Company> ();
     }
 
     protected IndustrialSector CreateIndustrialSectorInDatabaseAndLoad ()
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
         ClientTransaction.Current.Commit ();
       }
-      return IndustrialSector.GetObject (objectID);
+      return objectID.GetObject<IndustrialSector> ();
     }
 
     protected T CreateObjectInDatabaseAndLoad<T> () where T : DomainObject
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       company = CreateCompanyInDatabaseAndLoad ();
       Assert.That (company.IndustrialSector, Is.Null);
 
-      industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      industrialSector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
 
       SetIndustrialSectorInOtherTransaction (company.ID, industrialSector.ID);
 
@@ -141,13 +141,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       SetDatabaseModifyable ();
 
       var companyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (DomainObjectIDs.IndustrialSector1);
-      company = Company.GetObject (companyID);
+      company = companyID.GetObject<Company> ();
 
       Assert.That (company.Properties[typeof (Company), "IndustrialSector"].GetRelatedObjectID (), Is.EqualTo (DomainObjectIDs.IndustrialSector1));
 
       SetIndustrialSectorInOtherTransaction (company.ID, DomainObjectIDs.IndustrialSector2);
 
-      industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      industrialSector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
 
       // Resolve virtual end point - the database says that company does not point to IndustrialSector1, but the transaction says it does!
       industrialSector.Companies.EnsureDataComplete ();
@@ -162,10 +162,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable ();
 
-      computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (DomainObjectIDs.Employee2));
+      computer = CreateComputerAndSetEmployeeInOtherTransaction (DomainObjectIDs.Employee2).GetObject<Computer> ();
       Assert.That (computer.Employee.ID, Is.EqualTo (DomainObjectIDs.Employee2));
 
-      nonMatchingEmployee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
+      nonMatchingEmployee = DomainObjectIDs.Employee1.GetObject<Employee> ();
 
       SetEmployeeInOtherTransaction (computer.ID, nonMatchingEmployee.ID);
 
@@ -181,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       computer = CreateObjectInDatabaseAndLoad<Computer> ();
       Assert.That (computer.Employee, Is.Null);
 
-      nonMatchingEmployee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
+      nonMatchingEmployee = DomainObjectIDs.Employee1.GetObject<Employee> ();
 
       SetEmployeeInOtherTransaction (computer.ID, nonMatchingEmployee.ID);
 
@@ -193,10 +193,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable ();
 
-      employee = Employee.GetObject (DomainObjectIDs.Employee1);
-      employee2 = Employee.GetObject (DomainObjectIDs.Employee2);
+      employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
+      employee2 = DomainObjectIDs.Employee2.GetObject<Employee> ();
 
-      computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (employee2.ID));
+      computer = CreateComputerAndSetEmployeeInOtherTransaction (employee2.ID).GetObject<Computer> ();
       Assert.That (computer.Employee, Is.SameAs (employee2));
       
       // 1:1 relations automatically cause virtual end-points to be marked loaded when the foreign key object is loaded, so unload the virtual side
@@ -214,12 +214,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable ();
 
-      employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
       // Employee has no computer
       Assert.That (employee.Computer, Is.Null);
 
       // This computer points to employee => conflict in the transaction
-      computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (employee.ID));
+      computer = CreateComputerAndSetEmployeeInOtherTransaction (employee.ID).GetObject<Computer> ();
       Assert.That (computer.Employee, Is.SameAs (employee));
     }
 
@@ -227,14 +227,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable ();
 
-      employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
 
       // This computer points to employee
-      computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (employee.ID));
+      computer = CreateComputerAndSetEmployeeInOtherTransaction (employee.ID).GetObject<Computer> ();
       Assert.That (computer.Employee, Is.SameAs (employee));
 
       // This computer _also_ points to employee => conflict in the transaction, 1:1 relation has two real object end-points
-      computer2 = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (employee.ID));
+      computer2 = CreateComputerAndSetEmployeeInOtherTransaction (employee.ID).GetObject<Computer> ();
       Assert.That (computer2.Employee, Is.SameAs (employee));
     }
   }

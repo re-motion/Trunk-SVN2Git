@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        Order order = Order.GetObject (DomainObjectIDs.Order1);
+        Order order = DomainObjectIDs.Order1.GetObject<Order> ();
         _bindingTransaction.EnlistDomainObject (order);
       }
     }
@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        var order = Order.GetObject (DomainObjectIDs.Order1);
+        var order = DomainObjectIDs.Order1.GetObject<Order> ();
         var orderItem = GetBound<OrderItem> (order.OrderItems[0].ID);
         order.OrderItems.Remove (orderItem);
       }
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         var order = GetBound<Order> (DomainObjectIDs.Order1);
-        var orderItem = OrderItem.GetObject (order.OrderItems[0].ID);
+        var orderItem = order.OrderItems[0].ID.GetObject<OrderItem>();
         order.OrderItems.Remove (orderItem);
       }
     }

@@ -30,11 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return NewObject<Location> ();
     }
 
-    public new static Location GetObject (ObjectID id)
-    {
-      return GetObject<Location> (id);
-    }
-
     protected Location()
     {
     }

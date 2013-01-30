@@ -42,10 +42,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       base.SetUp ();
 
-      _order = Order.GetObject (DomainObjectIDs.Order1);
+      _order = DomainObjectIDs.Order1.GetObject<Order> ();
       _oldOrderTicket = _order.OrderTicket;
-      _newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
-      _oldOrderOfNewOrderTicket = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+      _newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
+      _oldOrderOfNewOrderTicket = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
 
       _orderEventReceiver = new DomainObjectEventReceiver (_order);
       _oldOrderTicketEventReceiver = new DomainObjectEventReceiver (_oldOrderTicket);
@@ -394,8 +394,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void ChangeRelationWithInheritance ()
     {
-      Person person = Person.GetObject (DomainObjectIDs.Person1);
-      Distributor distributor = Distributor.GetObject (DomainObjectIDs.Distributor1);
+      Person person = DomainObjectIDs.Person1.GetObject<Person>();
+      Distributor distributor = DomainObjectIDs.Distributor1.GetObject<Distributor> ();
 
       person.AssociatedPartnerCompany = distributor;
 
@@ -471,7 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetOriginalRelatedObjectWithLazyLoad ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order2);
+      Order order = DomainObjectIDs.Order2.GetObject<Order> ();
 
       Assert.That (order.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket").ID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
     }
@@ -479,14 +479,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetNullOriginalRelatedObject ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
+      Computer computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
       Assert.That (computer.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"), Is.Null);
     }
 
     [Test]
     public void OldObjectAndNewObjectAreSameRelationInherited ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer4);
+      Customer customer = DomainObjectIDs.Customer4.GetObject<Customer> ();
 
       Ceo ceo = customer.Ceo;
 
@@ -512,8 +512,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       try
       {
-        OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-        orderTicket.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", Customer.GetObject (DomainObjectIDs.Customer1));
+        OrderTicket orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
+        orderTicket.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", DomainObjectIDs.Customer1.GetObject<Customer> ());
 
         Assert.Fail ("DataManagementException was expected");
       }

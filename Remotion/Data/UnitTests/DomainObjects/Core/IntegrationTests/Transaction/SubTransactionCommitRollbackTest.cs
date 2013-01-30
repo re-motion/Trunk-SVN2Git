@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (_subTransaction.EnterDiscardingScope ())
       {
-        Order order = Order.GetObject (DomainObjectIDs.Order1);
+        Order order = DomainObjectIDs.Order1.GetObject<Order> ();
         order.OrderNumber = 5;
 
         _subTransaction.Rollback ();
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void SubRollbackDoesNotRollbackParent ()
     {
       _subTransaction.Discard ();
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (order.OrderNumber, Is.EqualTo (1));
       order.OrderNumber = 3;
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
@@ -164,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order;
       using (_subTransaction.EnterDiscardingScope ())
       {
-        order = Order.GetObject (DomainObjectIDs.Order1);
+        order = DomainObjectIDs.Order1.GetObject<Order> ();
         order.OrderNumber = 5;
 
         _subTransaction.Commit ();
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void SubCommitDoesNotCommitParent ()
     {
       _subTransaction.Discard ();
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         order.OrderNumber = 5;
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (_subTransaction.EnterDiscardingScope ())
       {
-        ClassWithAllDataTypes domainObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        ClassWithAllDataTypes domainObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
 
         MockRepository repository = new MockRepository();
 
@@ -239,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (_subTransaction.EnterDiscardingScope ())
       {
-        Order domainObject = Order.GetObject (DomainObjectIDs.Order1);
+        Order domainObject = DomainObjectIDs.Order1.GetObject<Order> ();
         domainObject.OrderItems[0].Delete();
 
         MockRepository repository = new MockRepository ();

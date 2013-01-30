@@ -25,16 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [TestDomain]
   public class TargetClassForPersistentMixin : DomainObject
   {
-    public static TargetClassForPersistentMixin NewObject ()
-    {
-      return NewObject<TargetClassForPersistentMixin> ();
-    }
-
-    public static TargetClassForPersistentMixin GetObject (ObjectID id)
-    {
-      return GetObject<TargetClassForPersistentMixin> (id);
-    }
-
     [StorageClassNone]
     public int RedirectedPersistentProperty
     {

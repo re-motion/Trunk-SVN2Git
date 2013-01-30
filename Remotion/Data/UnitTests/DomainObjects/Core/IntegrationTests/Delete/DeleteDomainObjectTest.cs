@@ -39,8 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       base.SetUp ();
 
-      _order = Order.GetObject (DomainObjectIDs.Order2);
-      _orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      _order = DomainObjectIDs.Order2.GetObject<Order> ();
+      _orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       _orderTicket.Delete ();
 
-      OrderTicket.GetObject (_orderTicket.ID);
+      _orderTicket.ID.GetObject<OrderTicket> ();
     }
 
     [Test]
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       _orderTicket.Delete ();
 
-      Assert.That (OrderTicket.GetObject (_orderTicket.ID, true), Is.Not.Null);
+      Assert.That (_orderTicket.ID.GetObject<OrderTicket> (includeDeleted: true), Is.Not.Null);
     }
 
     [Test]
@@ -106,11 +106,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void CascadedDelete ()
     {
-      Employee supervisor = Employee.GetObject (DomainObjectIDs.Employee1);
+      Employee supervisor = DomainObjectIDs.Employee1.GetObject<Employee> ();
       supervisor.DeleteWithSubordinates ();
 
-      DomainObject deletedSubordinate4 = Employee.GetObject (DomainObjectIDs.Employee4, true);
-      DomainObject deletedSubordinate5 = Employee.GetObject (DomainObjectIDs.Employee5, true);
+      DomainObject deletedSubordinate4 = DomainObjectIDs.Employee4.GetObject<Employee> (includeDeleted: true);
+      DomainObject deletedSubordinate5 = DomainObjectIDs.Employee5.GetObject<Employee> (includeDeleted: true);
 
       Assert.That (supervisor.State, Is.EqualTo (StateType.Deleted));
       Assert.That (deletedSubordinate4.State, Is.EqualTo (StateType.Deleted));

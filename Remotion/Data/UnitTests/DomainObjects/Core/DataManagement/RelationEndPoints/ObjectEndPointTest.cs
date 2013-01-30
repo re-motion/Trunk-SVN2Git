@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
@@ -174,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _endPointPartialMock.Stub (mock => mock.OppositeObjectID).Return (DomainObjectIDs.OrderTicket1);
 
-      var orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket4);
+      var orderTicket = DomainObjectIDs.OrderTicket4.GetObject<OrderTicket> ();
       _endPointPartialMock.CreateRemoveCommand (orderTicket);
     }
 

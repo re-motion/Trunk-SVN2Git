@@ -45,9 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void DeleteRelatedDataContainers ()
     {
-      Employee supervisor = Employee.GetObject (DomainObjectIDs.Employee2);
-      Employee subordinate = Employee.GetObject (DomainObjectIDs.Employee3);
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Employee supervisor = DomainObjectIDs.Employee2.GetObject<Employee> ();
+      Employee subordinate = DomainObjectIDs.Employee3.GetObject<Employee> ();
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
 
       supervisor.Delete();
       subordinate.Delete();
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       DataContainer changedDataContainer;
       using (clientTransaction1.EnterDiscardingScope())
       {
-        changedOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+        changedOrderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
         changedOrderTicket.FileName = @"C:\NewFile.jpg";
         changedDataContainer = changedOrderTicket.InternalDataContainer;
       }
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       DataContainer deletedDataContainer;
       using (clientTransaction2.EnterDiscardingScope())
       {
-        deletedOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+        deletedOrderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
         deletedOrderTicket.Delete();
         deletedDataContainer = deletedOrderTicket.InternalDataContainer;
       }
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       using (clientTransaction1.EnterDiscardingScope())
       {
-        changedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        changedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
         changedDataContainer = changedObject.InternalDataContainer;
         changedObject.StringProperty = "New text";
       }
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       using (clientTransaction2.EnterDiscardingScope())
       {
-        deletedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        deletedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
         deletedDataContainer = deletedObject.InternalDataContainer;
         deletedObject.Delete();
       }
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private DataContainer GetDeletedOrderTicketContainer ()
     {
-      OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      OrderTicket orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       orderTicket.Delete();
       return orderTicket.InternalDataContainer;
     }

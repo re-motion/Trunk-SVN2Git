@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetFlattenedRelatedObjectGraph_WithTraversalFilter_FollowLink ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Set<DomainObject> graph = new DomainObjectGraphTraverser (order, new TestTraversalStrategy (true, false)).GetFlattenedRelatedObjectGraph ();
 
       var expected = new Set<DomainObject> (
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetFlattenedRelatedObjectGraph_WithTraversalFilter_FollowLink_IncludeObject ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Set<DomainObject> graph = new DomainObjectGraphTraverser (order, new TestTraversalStrategy (false, false)).GetFlattenedRelatedObjectGraph ();
 
       var expected = new Set<DomainObject> (
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Traversal_NotAffectedByNotProcessingAnObject ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Set<DomainObject> graph = new DomainObjectGraphTraverser (order, new TestTraversalStrategy (false, true)).GetFlattenedRelatedObjectGraph ();
 
       var expected = new Set<DomainObject> (LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Distributor2, false));

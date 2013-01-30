@@ -24,16 +24,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   [Uses (typeof (HookedDomainObjectMixin))]
   [DBTable]
   [TestDomain]
-  public class HookedTargetClass : DomainObject
+  public class HookedTargetClass : DomainObject, ISupportsGetObject
   {
     public static HookedTargetClass NewObject ()
     {
       return NewObject<HookedTargetClass> ();
-    }
-
-    public static HookedTargetClass GetObject (ObjectID objectID)
-    {
-      return GetObject<HookedTargetClass> (objectID);
     }
 
     public virtual int Property { get; set; }

@@ -119,7 +119,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        StatefulAccessControlList actualAcl = StatefulAccessControlList.GetObject (expectedAcl.ID);
+        StatefulAccessControlList actualAcl = expectedAcl.ID.GetObject<StatefulAccessControlList> ();
 
         Assert.That (actualAcl.StateCombinations.Count, Is.EqualTo (9));
         for (int i = 0; i < 9; i++)

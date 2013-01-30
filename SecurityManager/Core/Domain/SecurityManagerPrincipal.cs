@@ -200,18 +200,12 @@ namespace Remotion.SecurityManager.Domain
 
     private Tenant GetTenant (ClientTransaction transaction)
     {
-      using (transaction.EnterNonDiscardingScope ())
-      {
-        return OrganizationalStructure.Tenant.GetObject (_tenantHandle.ObjectID);
-      }
+      return _tenantHandle.GetObject (clientTransaction: transaction);
     }
 
     private User GetUser (ClientTransaction transaction)
     {
-      using (transaction.EnterNonDiscardingScope ())
-      {
-        return OrganizationalStructure.User.GetObject (_userHandle.ObjectID);
-      }
+      return _userHandle.GetObject (clientTransaction: transaction);
     }
 
     private Substitution GetSubstitution (ClientTransaction transaction)
@@ -219,10 +213,7 @@ namespace Remotion.SecurityManager.Domain
       if (_substitutionHandle == null)
         return null;
 
-      using (transaction.EnterNonDiscardingScope ())
-      {
-        return (Substitution) OrganizationalStructure.Substitution.GetObject (_substitutionHandle.ObjectID);
-      }
+      return _substitutionHandle.GetObject (clientTransaction: transaction);
     }
 
     private ClientTransaction CreateClientTransaction ()

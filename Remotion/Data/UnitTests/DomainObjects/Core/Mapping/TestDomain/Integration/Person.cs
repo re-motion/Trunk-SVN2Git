@@ -25,16 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Person : TestDomainBase
   {
-    public static Person NewObject ()
-    {
-      return NewObject<Person>();
-    }
-
-    public new static Person GetObject (ObjectID id)
-    {
-      return GetObject<Person> (id);
-    }
-
     protected Person()
     {
     }

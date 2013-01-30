@@ -44,8 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp();
 
-      _domainObject = Computer.GetObject (DomainObjectIDs.Computer1);
-      _relatedObject = Employee.GetObject (DomainObjectIDs.Employee3);
+      _domainObject = DomainObjectIDs.Computer1.GetObject<Computer> ();
+      _relatedObject = DomainObjectIDs.Employee3.GetObject<Employee> ();
 
       _endPointID = RelationEndPointID.Resolve (_domainObject, c => c.Employee);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _relatedObject.ID);
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void ExpandToAllRelatedObjects_SetSame_Unidirectional ()
     {
-      var client = Client.GetObject (DomainObjectIDs.Client2);
+      var client = DomainObjectIDs.Client2.GetObject<Client> ();
       var unidirectionalEndPointID = RelationEndPointID.Resolve (client, c => c.ParentClient);
       var unidirectionalEndPoint =
           (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);

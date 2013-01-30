@@ -38,11 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     {
       base.SetUp();
 
-      _customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      _customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       _eventReceiverMock = MockRepository.GenerateStrictMock<OrderCollection.ICollectionEventReceiver>();
 
-      _itemA = Order.GetObject (DomainObjectIDs.Order1);
-      _itemB = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+      _itemA = DomainObjectIDs.Order1.GetObject<Order> ();
+      _itemB = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
     }
 
     [Test]

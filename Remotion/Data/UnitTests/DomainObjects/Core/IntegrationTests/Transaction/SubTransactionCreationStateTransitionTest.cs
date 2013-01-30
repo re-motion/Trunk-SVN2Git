@@ -137,14 +137,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (obj.IsInvalid, Is.True);
-        Order.GetObject (id);
+        id.GetObject<Order> ();
       }
     }
 
     [Test]
     public void RootToSubUnidirectionalWithDeleted ()
     {
-      Client deleted = Client.GetObject (DomainObjectIDs.Client1);
+      Client deleted = DomainObjectIDs.Client1.GetObject<Client> ();
       Location obj = GetUnidirectionalWithDeleted ();
       Assert.That (deleted.State, Is.EqualTo (StateType.Deleted));
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())

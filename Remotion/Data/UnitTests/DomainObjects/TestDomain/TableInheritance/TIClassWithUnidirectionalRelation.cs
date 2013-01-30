@@ -22,16 +22,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance
   [DBTable ("TableInheritance_TableWithUnidirectionalRelation")]
   [Instantiable]
   [TableInheritanceTestDomain]
-  public abstract class TIClassWithUnidirectionalRelation : DomainObject
+  public abstract class TIClassWithUnidirectionalRelation : DomainObject, ISupportsGetObject
   {
     public static TIClassWithUnidirectionalRelation NewObject ()
     {
       return NewObject<TIClassWithUnidirectionalRelation> ();
-    }
-
-    public static TIClassWithUnidirectionalRelation GetObject (ObjectID id)
-    {
-      return GetObject<TIClassWithUnidirectionalRelation> (id);
     }
 
     protected TIClassWithUnidirectionalRelation ()

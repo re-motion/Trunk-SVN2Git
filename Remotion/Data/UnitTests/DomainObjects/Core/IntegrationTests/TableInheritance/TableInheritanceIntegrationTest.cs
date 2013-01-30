@@ -58,10 +58,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
     [Test]
     public void LoadObjectsWithSamePropertyNameInDifferentInheritanceBranches ()
     {
-      TIFolder rootFolder = TIFolder.GetObject (_rootFolderID);
+      TIFolder rootFolder = _rootFolderID.GetObject<TIFolder> ();
       Assert.That (rootFolder.CreatedAt, Is.EqualTo (new DateTime (2006, 2, 1)));
 
-      TIFile fileInRootFolder = TIFile.GetObject (_fileInRootFolderID);
+      TIFile fileInRootFolder = _fileInRootFolderID.GetObject<TIFile> ();
       Assert.That (fileInRootFolder.CreatedAt, Is.EqualTo (new DateTime (2006, 2, 3)));
     }
 
@@ -69,13 +69,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
     [Test]
     public void CompositePatternNavigateOneToMany ()
     {
-      TIFolder rootFolder = TIFolder.GetObject (_rootFolderID);
+      TIFolder rootFolder = _rootFolderID.GetObject<TIFolder> ();
 
       Assert.That (rootFolder.FileSystemItems.Count, Is.EqualTo (2));
       Assert.That (rootFolder.FileSystemItems[0].ID, Is.EqualTo (_fileInRootFolderID));
       Assert.That (rootFolder.FileSystemItems[1].ID, Is.EqualTo (_folder1ID));
 
-      TIFolder folder1 = TIFolder.GetObject (_folder1ID);
+      TIFolder folder1 = _folder1ID.GetObject<TIFolder> ();
 
       Assert.That (folder1.FileSystemItems.Count, Is.EqualTo (1));
       Assert.That (folder1.FileSystemItems[0].ID, Is.EqualTo (_fileInFolder1ID));
@@ -84,20 +84,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
     [Test]
     public void CompositePatternNavigateManyToOne ()
     {
-      TIFolder folder1 = TIFolder.GetObject (_folder1ID);
+      TIFolder folder1 = _folder1ID.GetObject<TIFolder> ();
       Assert.That (folder1.ParentFolder.ID, Is.EqualTo (_rootFolderID));
 
-      TIFile fileInRootFolder = TIFile.GetObject (_fileInRootFolderID);
+      TIFile fileInRootFolder = _fileInRootFolderID.GetObject<TIFile> ();
       Assert.That (fileInRootFolder.ParentFolder.ID, Is.EqualTo (_rootFolderID));
 
-      TIFile fileInFolder1 = TIFile.GetObject (_fileInFolder1ID);
+      TIFile fileInFolder1 = _fileInFolder1ID.GetObject<TIFile> ();
       Assert.That (fileInFolder1.ParentFolder.ID, Is.EqualTo (_folder1ID));
     }
 
     [Test]
     public void ObjectHierarchyNavigateOneToMany ()
     {
-      DerivedClassWithEntityWithHierarchy derivedClassWithEntity1 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity1ID);
+      DerivedClassWithEntityWithHierarchy derivedClassWithEntity1 = _derivedClassWithEntity1ID.GetObject<DerivedClassWithEntityWithHierarchy>();
 
       Assert.That (derivedClassWithEntity1.ChildAbstractBaseClassesWithHierarchy.Count, Is.EqualTo (3));
       Assert.That (derivedClassWithEntity1.ChildAbstractBaseClassesWithHierarchy[0].ID, Is.EqualTo (_derivedClassWithEntity3ID));
@@ -109,8 +109,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
       Assert.That (derivedClassWithEntity1.ChildDerivedClassesWithEntityWithHierarchy[1].ID, Is.EqualTo (_derivedClassWithEntity2ID));
       Assert.That (derivedClassWithEntity1.ChildDerivedClassesWithEntityWithHierarchy[2].ID, Is.EqualTo (_derivedClassWithEntity3ID));
 
-      DerivedClassWithEntityWithHierarchy derivedClassWithEntity2 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity2ID);
-      DerivedClassWithEntityWithHierarchy derivedClassWithEntity3 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity3ID);
+      DerivedClassWithEntityWithHierarchy derivedClassWithEntity2 = _derivedClassWithEntity2ID.GetObject<DerivedClassWithEntityWithHierarchy>();
+      DerivedClassWithEntityWithHierarchy derivedClassWithEntity3 = _derivedClassWithEntity3ID.GetObject<DerivedClassWithEntityWithHierarchy>();
 
       Assert.That (derivedClassWithEntity2.ChildAbstractBaseClassesWithHierarchy.Count, Is.EqualTo (1));
       Assert.That (derivedClassWithEntity2.ChildAbstractBaseClassesWithHierarchy[0].ID, Is.EqualTo (_derivedClassWithEntityFromBaseClass2ID));
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
       Assert.That (derivedClassWithEntity3.ChildDerivedClassesWithEntityWithHierarchy[0].ID, Is.EqualTo (_derivedClassWithEntityFromBaseClass3ID));
 
       DerivedClassWithEntityFromBaseClassWithHierarchy derivedClassWithEntityFromBaseClass1 =
-          DerivedClassWithEntityFromBaseClassWithHierarchy.GetObject (_derivedClassWithEntityFromBaseClass1ID);
+          _derivedClassWithEntityFromBaseClass1ID.GetObject<DerivedClassWithEntityFromBaseClassWithHierarchy> ();
 
       Assert.That (derivedClassWithEntityFromBaseClass1.ChildAbstractBaseClassesWithHierarchy, Is.Empty);
       Assert.That (derivedClassWithEntityFromBaseClass1.ChildDerivedClassesWithEntityWithHierarchy, Is.Empty);
@@ -135,30 +135,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
     [Test]
     public void ObjectHierarchyNavigateManyToOne ()
     {
-      DerivedClassWithEntityWithHierarchy derivedClassWithEntity2 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity2ID);
+      DerivedClassWithEntityWithHierarchy derivedClassWithEntity2 = _derivedClassWithEntity2ID.GetObject<DerivedClassWithEntityWithHierarchy>();
 
       Assert.That (derivedClassWithEntity2.ParentAbstractBaseClassWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntity1ID));
       Assert.That (derivedClassWithEntity2.ParentDerivedClassWithEntityWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntity1ID));
 
-      DerivedClassWithEntityWithHierarchy derivedClassWithEntity3 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity3ID);
+      DerivedClassWithEntityWithHierarchy derivedClassWithEntity3 = _derivedClassWithEntity3ID.GetObject<DerivedClassWithEntityWithHierarchy>();
       Assert.That (derivedClassWithEntity3.ParentAbstractBaseClassWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntity1ID));
       Assert.That (derivedClassWithEntity3.ParentDerivedClassWithEntityWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntity1ID));
 
       DerivedClassWithEntityFromBaseClassWithHierarchy derivedClassWithEntityFromBaseClass1 =
-          DerivedClassWithEntityFromBaseClassWithHierarchy.GetObject (_derivedClassWithEntityFromBaseClass1ID);
+          _derivedClassWithEntityFromBaseClass1ID.GetObject<DerivedClassWithEntityFromBaseClassWithHierarchy> ();
 
       Assert.That (derivedClassWithEntityFromBaseClass1.ParentAbstractBaseClassWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntity1ID));
       Assert.That (derivedClassWithEntityFromBaseClass1.ParentDerivedClassWithEntityWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntity1ID));
 
       DerivedClassWithEntityFromBaseClassWithHierarchy derivedClassWithEntityFromBaseClass2 =
-          DerivedClassWithEntityFromBaseClassWithHierarchy.GetObject (_derivedClassWithEntityFromBaseClass2ID);
+          _derivedClassWithEntityFromBaseClass2ID.GetObject<DerivedClassWithEntityFromBaseClassWithHierarchy> ();
 
       Assert.That (derivedClassWithEntityFromBaseClass2.ParentAbstractBaseClassWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntity2ID));
       Assert.That (derivedClassWithEntityFromBaseClass2.ParentDerivedClassWithEntityWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntity2ID));
       Assert.That (derivedClassWithEntityFromBaseClass2.ParentDerivedClassWithEntityFromBaseClassWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntityFromBaseClass1ID));
 
       DerivedClassWithEntityFromBaseClassWithHierarchy derivedClassWithEntityFromBaseClass3 =
-          DerivedClassWithEntityFromBaseClassWithHierarchy.GetObject (_derivedClassWithEntityFromBaseClass3ID);
+          _derivedClassWithEntityFromBaseClass3ID.GetObject<DerivedClassWithEntityFromBaseClassWithHierarchy> ();
 
       Assert.That (derivedClassWithEntityFromBaseClass3.ParentAbstractBaseClassWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntity3ID));
       Assert.That (derivedClassWithEntityFromBaseClass3.ParentDerivedClassWithEntityWithHierarchy.ID, Is.EqualTo (_derivedClassWithEntity3ID));
@@ -170,19 +170,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
     {
       ObjectID client2 = CreateObjectID (typeof (TIClient), "{58535280-84EC-41d9-9F8F-BCAC64BB3709}");
 
-      DerivedClassWithEntityWithHierarchy derivedClassWithEntity1 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity1ID);
+      DerivedClassWithEntityWithHierarchy derivedClassWithEntity1 = _derivedClassWithEntity1ID.GetObject<DerivedClassWithEntityWithHierarchy>();
       Assert.That (derivedClassWithEntity1.ClientFromAbstractBaseClass.ID, Is.EqualTo (DomainObjectIDs.Client));
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        derivedClassWithEntity1 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity1ID);
+        derivedClassWithEntity1 = _derivedClassWithEntity1ID.GetObject<DerivedClassWithEntityWithHierarchy>();
         Assert.That (derivedClassWithEntity1.ClientFromDerivedClassWithEntity.ID, Is.EqualTo (client2));
       }
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         DerivedClassWithEntityFromBaseClassWithHierarchy derivedClassWithEntityFromBaseClass1 =
-            DerivedClassWithEntityFromBaseClassWithHierarchy.GetObject (_derivedClassWithEntityFromBaseClass1ID);
+            _derivedClassWithEntityFromBaseClass1ID.GetObject<DerivedClassWithEntityFromBaseClassWithHierarchy> ();
         Assert.That (derivedClassWithEntityFromBaseClass1.ClientFromDerivedClassWithEntityFromBaseClass.ID, Is.EqualTo (DomainObjectIDs.Client));
       }
     }
@@ -190,19 +190,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
     [Test]
     public void UnidirectionalRelationToAbstractClass ()
     {
-      DerivedClassWithEntityWithHierarchy derivedClassWithEntity1 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity1ID);
+      DerivedClassWithEntityWithHierarchy derivedClassWithEntity1 = _derivedClassWithEntity1ID.GetObject<DerivedClassWithEntityWithHierarchy>();
       Assert.That (derivedClassWithEntity1.FileSystemItemFromAbstractBaseClass.ID, Is.EqualTo (_rootFolderID));
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        derivedClassWithEntity1 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity1ID);
+        derivedClassWithEntity1 = _derivedClassWithEntity1ID.GetObject<DerivedClassWithEntityWithHierarchy>();
         Assert.That (derivedClassWithEntity1.FileSystemItemFromDerivedClassWithEntity.ID, Is.EqualTo (_fileInRootFolderID));
       }
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         DerivedClassWithEntityFromBaseClassWithHierarchy derivedClassWithEntityFromBaseClass1 =
-            DerivedClassWithEntityFromBaseClassWithHierarchy.GetObject (_derivedClassWithEntityFromBaseClass1ID);
+            _derivedClassWithEntityFromBaseClass1ID.GetObject<DerivedClassWithEntityFromBaseClassWithHierarchy> ();
 
         Assert.That (derivedClassWithEntityFromBaseClass1.FileSystemItemFromDerivedClassWithEntityFromBaseClass.ID, Is.EqualTo (_fileInFolder1ID));
       }

@@ -57,8 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp ();
 
       _customerEndPointID = RelationEndPointID.Create(DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _order2 = Order.GetObject (DomainObjectIDs.Order2);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
 
       _fakeCollection = new OrderCollection ();
       _collectionManagerMock = MockRepository.GenerateStrictMock<ICollectionEndPointCollectionManager> ();

@@ -50,8 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       base.SetUp ();
       _service = new BindableDomainObjectSearchAllService ();
-      _persistedSampleObject1 = SampleBindableDomainObject.GetObject (_persistedSampleObject1.ID); // pull object into this transaction
-      _persistedSampleObject2 = SampleBindableDomainObject.GetObject (_persistedSampleObject2.ID); // pull object into this transaction
+      _persistedSampleObject1 = _persistedSampleObject1.ID.GetObject<SampleBindableDomainObject> ();
+      _persistedSampleObject2 = _persistedSampleObject2.ID.GetObject<SampleBindableDomainObject> ();
     }
 
     [Test]

@@ -17,8 +17,6 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 {
@@ -29,16 +27,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
     public static SampleBindableDomainObject_AccessingImplementationFromCtor NewObject ()
     {
       return NewObject<SampleBindableDomainObject_AccessingImplementationFromCtor> ();
-    }
-
-    public static SampleBindableDomainObject_AccessingImplementationFromCtor NewObject (IBindableDomainObjectImplementation implementation)
-    {
-      return NewObject<SampleBindableDomainObject_AccessingImplementationFromCtor> (ParamList.Create (implementation));
-    }
-
-    public static SampleBindableDomainObject_AccessingImplementationFromCtor GetObject (ObjectID id)
-    {
-      return GetObject<SampleBindableDomainObject_AccessingImplementationFromCtor> (id);
     }
 
     public readonly string DisplayNameFromCtor;

@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp ();
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       _customer1 = _order1.Customer;
       _orginalCustomerName = _customer1.Name;
 

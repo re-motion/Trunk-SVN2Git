@@ -27,28 +27,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class OrderTicket : TestDomainBase
   {
-    public static OrderTicket NewObject ()
-    {
-      return NewObject<OrderTicket> ();
-    }
-
-    // New OrderTickets need an associated order for correct initialization.
-    public static OrderTicket NewObject (Order order)
-    {
-      OrderTicket orderTicket = NewObject<OrderTicket>(ParamList.Create (order));
-      return orderTicket;
-    }
-
-    public new static OrderTicket GetObject (ObjectID id)
-    {
-      return GetObject<OrderTicket> (id);
-    }
-
-    public new static OrderTicket GetObject (ObjectID id, bool includeDeleted)
-    {
-      return GetObject<OrderTicket> (id, includeDeleted);
-    }
-
     protected OrderTicket ()
     {
     }

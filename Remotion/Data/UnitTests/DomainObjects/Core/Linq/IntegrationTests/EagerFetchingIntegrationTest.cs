@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>()
                    select o).Single (i => i.OrderNumber == 5);
-      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.Order4))));
+      Assert.That (query, Is.EqualTo (DomainObjectIDs.Order4.GetObject<TestDomainBase> ()));
     }
 
     [Test]

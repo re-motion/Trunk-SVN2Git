@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       base.SetUp();
 
-      Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
+      Dev.Null = DomainObjectIDs.Order1.GetObject<Order> ().OrderItems;
       var endPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderItems"));
       _endPoint = (CollectionEndPoint) 
           ((StateUpdateRaisingCollectionEndPointDecorator) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID)).InnerEndPoint;
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void CollectionEndPoint_Content ()
     {
-      _endPoint.Collection.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem5));
+      _endPoint.Collection.Add (DomainObjectIDs.OrderItem5.GetObject<OrderItem>());
 
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.That (deserializedEndPoint.Definition, Is.SameAs (_endPoint.Definition));
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void CollectionEndPoint_DelegatingDataMembers ()
     {
-      _endPoint.Collection.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem5));
+      _endPoint.Collection.Add (DomainObjectIDs.OrderItem5.GetObject<OrderItem>());
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void CollectionEndPoint_ReplacedCollection_ReferenceEqualityWithOtherCollection ()
     {
-      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var industrialSector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       var oldOpposites = industrialSector.Companies;
       var newOpposites = industrialSector.Companies.Clone ();
       industrialSector.Companies = newOpposites;

@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Customer newCustomer2 = Customer.NewObject();
       newCustomer2.Name = "NewCustomer2";
 
-      Official official2 = Official.GetObject (DomainObjectIDs.Official2);
+      Official official2 = DomainObjectIDs.Official2.GetObject<Official>();
       Ceo newCeo1 = Ceo.NewObject();
       Ceo newCeo2 = Ceo.NewObject();
       Order newOrder1 = Order.NewObject();
@@ -748,13 +748,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void BidirectionalRelationsIncludingHierarchyOfObjects ()
     {
-      Employee employee1 = Employee.GetObject (DomainObjectIDs.Employee1);
-      Employee employee2 = Employee.GetObject (DomainObjectIDs.Employee2);
-      Employee employee3 = Employee.GetObject (DomainObjectIDs.Employee3);
-      Employee employee4 = Employee.GetObject (DomainObjectIDs.Employee4);
-      Employee employee5 = Employee.GetObject (DomainObjectIDs.Employee5);
-      Employee employee6 = Employee.GetObject (DomainObjectIDs.Employee6);
-      Employee employee7 = Employee.GetObject (DomainObjectIDs.Employee7);
+      Employee employee1 = DomainObjectIDs.Employee1.GetObject<Employee> ();
+      Employee employee2 = DomainObjectIDs.Employee2.GetObject<Employee> ();
+      Employee employee3 = DomainObjectIDs.Employee3.GetObject<Employee> ();
+      Employee employee4 = DomainObjectIDs.Employee4.GetObject<Employee> ();
+      Employee employee5 = DomainObjectIDs.Employee5.GetObject<Employee> ();
+      Employee employee6 = DomainObjectIDs.Employee6.GetObject<Employee> ();
+      Employee employee7 = DomainObjectIDs.Employee7.GetObject<Employee> ();
 
       DomainObjectCollection employee1Subordinates = employee1.Subordinates;
       Employee employee1Supervisor = employee1.Supervisor;
@@ -843,11 +843,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void UnidirectionalRelation ()
     {
-      Location location1 = Location.GetObject (DomainObjectIDs.Location1);
+      Location location1 = DomainObjectIDs.Location1.GetObject<Location>();
       Client location1Client = location1.Client;
-      Location location2 = Location.GetObject (DomainObjectIDs.Location2);
+      Location location2 = DomainObjectIDs.Location2.GetObject<Location>();
       Client location2Client = location2.Client;
-      Location location3 = Location.GetObject (DomainObjectIDs.Location3);
+      Location location3 = DomainObjectIDs.Location3.GetObject<Location>();
       Client location3Client = location3.Client;
 
       var locations = new[] { location1, location2, location3 };
@@ -874,7 +874,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void ReplacedDomainObjectCollection ()
     {
-      IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      IndustrialSector industrialSector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       var oldCompanies = industrialSector.Companies;
       var newCompanies = new ObjectList<Company> { Company.NewObject(), Company.NewObject() };
       industrialSector.Companies = newCompanies;

@@ -20,15 +20,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance
 {
   [ClassID ("TI_AbstractBaseClassWithHierarchy")]
   [TableInheritanceTestDomain]
-  public abstract class AbstractBaseClassWithHierarchy : DomainObject
+  public abstract class AbstractBaseClassWithHierarchy : DomainObject, ISupportsGetObject
   {
     protected AbstractBaseClassWithHierarchy ()
     {
-    }
-
-    public static AbstractBaseClassWithHierarchy GetObject (ObjectID id)
-    {
-      return GetObject<AbstractBaseClassWithHierarchy> (id);
     }
 
     [StringProperty (IsNullable = false, MaximumLength = 100)]

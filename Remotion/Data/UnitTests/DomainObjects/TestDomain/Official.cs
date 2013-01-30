@@ -23,16 +23,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   [DBTable]
   [StorageProviderStub]
   [Instantiable]
-  public abstract class Official : StorageProviderStubDomainBase
+  public abstract class Official : StorageProviderStubDomainBase, ISupportsGetObject
   {
     public static Official NewObject ()
     {
       return NewObject<Official> ();
-    }
-
-    public static Official GetObject (ObjectID id)
-    {
-      return GetObject<Official> (id);
     }
 
     protected Official()

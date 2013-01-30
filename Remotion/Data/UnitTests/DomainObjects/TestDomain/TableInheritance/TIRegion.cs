@@ -22,16 +22,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance
   [DBTable ("TableInheritance_Region")]
   [Instantiable]
   [TableInheritanceTestDomain]
-  public abstract class TIRegion : DomainObject
+  public abstract class TIRegion : DomainObject, ISupportsGetObject
   {
     public static TIRegion NewObject ()
     {
       return NewObject<TIRegion> ();
-    }
-
-    public static TIRegion GetObject (ObjectID id)
-    {
-      return GetObject<TIRegion> (id);
     }
 
     protected TIRegion()

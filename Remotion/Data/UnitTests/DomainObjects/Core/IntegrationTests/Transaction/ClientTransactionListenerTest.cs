@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll ();
 
-      ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
 
       _mockRepository.VerifyAll ();
     }
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ObjectsObjectDeletingObjectsDeleted ()
     {
-      ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      ClassWithAllDataTypes cwadt = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       TestableClientTransaction.AddListener (_strictListenerMock);
 
       using (_mockRepository.Ordered ())
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertyValueReadingPropertyValueRead ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       int orderNumber = order.OrderNumber;
 
       TestableClientTransaction.AddListener (_strictListenerMock);
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertyValueChangingPropertyValueChanged ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       int orderNumber = order.OrderNumber;
 
       TestableClientTransaction.AddListener (_strictListenerMock);
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void RelationReadingRelationRead ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Customer customer = order.Customer;
       ObjectList<OrderItem> orderItems = order.OrderItems;
 
@@ -273,7 +273,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void RelationChangingRelationChanged ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Customer oldCustomer = order.Customer;
       Customer newCustomer = Customer.NewObject();
       
@@ -379,7 +379,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void TransactionCommittingTransactionCommitted ()
     {
       SetDatabaseModifyable ();
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       ++order.OrderNumber;
 
       TestableClientTransaction.AddListener (_strictListenerMock);
@@ -409,7 +409,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void TransactionRollingBackTransactionRolledBack ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       ++order.OrderNumber;
 
       TestableClientTransaction.AddListener (_strictListenerMock);
@@ -461,7 +461,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll ();
 
-      Customer.GetObject (DomainObjectIDs.Customer1);
+      DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       _mockRepository.VerifyAll ();
     }
@@ -522,7 +522,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll ();
 
-      ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
 
       _mockRepository.VerifyAll ();
     }
@@ -591,7 +591,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ObjectsUnloadingObjectsUnloaded ()
     {
-      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
 
       var orderEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (orderTicket1.ID, "Order");
       var orderTicketEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (orderTicket1.Order.ID, "OrderTicket");
@@ -633,7 +633,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void RelationEndPointUnload ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order1.OrderItems);
 
       Dev.Null = orderItemsEndPoint.HasChanged; // warm up has changed cache

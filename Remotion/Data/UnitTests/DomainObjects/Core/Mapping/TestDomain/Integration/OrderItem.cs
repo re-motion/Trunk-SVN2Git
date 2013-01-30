@@ -27,26 +27,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class OrderItem : TestDomainBase
   {
-    public static OrderItem NewObject ()
-    {
-      return NewObject<OrderItem> ();
-    }
-
-    public static OrderItem NewObject (Order order)
-    {
-      return NewObject<OrderItem> (ParamList.Create (order));
-    }
-
-    public static OrderItem NewObject (string product)
-    {
-      return NewObject<OrderItem> (ParamList.Create (product));
-    }
-
-    public new static OrderItem GetObject (ObjectID id)
-    {
-      return GetObject<OrderItem> (id);
-    }
-
     protected OrderItem()
     {
     }

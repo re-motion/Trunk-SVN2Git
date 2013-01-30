@@ -44,9 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
       base.SetUp();
       _mockRepository = new MockRepository ();
       _cloner = new DomainObjectCloner ();
-      _classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
+      _classWithAllDataTypes = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _computer1 = DomainObjectIDs.Computer1.GetObject<Computer> ();
 
       using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {

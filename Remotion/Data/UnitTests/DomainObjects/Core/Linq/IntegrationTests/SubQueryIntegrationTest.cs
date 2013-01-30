@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -40,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithSubQueryInWhere_AccessingOuterVariable_InMainFromClause ()
     {
-      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+      var orderItem2 = DomainObjectIDs.OrderItem2.GetObject<OrderItem>();
       var number = from o in QueryFactory.CreateLinqQuery<Order> ()
                    where (from oi in o.OrderItems select oi).Contains (orderItem2)
                    select o;
@@ -62,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithSubQueryAndJoinInWhere_WithOuterVariable ()
     {
-      OrderItem myOrderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      OrderItem myOrderItem = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
       var orders =
           from o in QueryFactory.CreateLinqQuery<Order>()
           where (from oi in QueryFactory.CreateLinqQuery<OrderItem>() where oi.Order == o select oi).Contains (myOrderItem)

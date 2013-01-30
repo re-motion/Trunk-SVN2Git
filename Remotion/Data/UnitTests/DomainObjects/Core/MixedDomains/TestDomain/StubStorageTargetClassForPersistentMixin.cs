@@ -25,16 +25,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   [Uses (typeof (NullMixin))]
   [DBTable]
   [StorageProviderStub]
-  public class StubStorageTargetClassForPersistentMixin : DomainObject
+  public class StubStorageTargetClassForPersistentMixin : DomainObject, ISupportsGetObject
   {
     public static StubStorageTargetClassForPersistentMixin NewObject ()
     {
       return NewObject<StubStorageTargetClassForPersistentMixin> ();
-    }
-
-    public static StubStorageTargetClassForPersistentMixin GetObject (ObjectID id)
-    {
-      return GetObject<StubStorageTargetClassForPersistentMixin> (id);
     }
   }
 }

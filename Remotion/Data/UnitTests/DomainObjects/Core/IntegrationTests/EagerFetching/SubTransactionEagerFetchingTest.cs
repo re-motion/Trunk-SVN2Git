@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var result = ClientTransaction.Current.QueryManager.GetCollection (ordersQuery);
-        Assert.That (result.ToArray (), Is.EquivalentTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2) }));
+        Assert.That (result.ToArray (), Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order> (), DomainObjectIDs.Order2.GetObject<Order> () }));
 
         var subDataManager = ClientTransactionTestHelper.GetIDataManager (ClientTransaction.Current);
         Assert.That (subDataManager.GetRelationEndPointWithoutLoading (id1), Is.Null);
@@ -67,9 +67,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id2), Is.Not.Null);
 
       Assert.That (((ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1)).Collection,
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), DomainObjectIDs.OrderItem2.GetObject<OrderItem>() }));
       Assert.That (((ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id2)).Collection,
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem3) }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem3.GetObject<OrderItem>() }));
     }
 
     [Test]
@@ -108,8 +108,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       using (clientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var result = ClientTransaction.Current.QueryManager.GetCollection<Customer> (outerQuery).ToArray ();
-        Assert.That (result, Is.EquivalentTo (new[] { Customer.GetObject (DomainObjectIDs.Customer1) }));
-        Assert.That (result[0].Orders, Is.EquivalentTo (new[] { Order.GetObject (DomainObjectIDs.Order1) }));
+        Assert.That (result, Is.EquivalentTo (new[] { DomainObjectIDs.Customer1.GetObject<Customer> () }));
+        Assert.That (result[0].Orders, Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order> () }));
       }
 
       persistenceStrategyMock.VerifyAllExpectations ();
@@ -119,10 +119,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
     public void EagerFetching_UsesRelationDataFromParent_InsteadOfFetching ()
     {
       // Load - and change - relation data prior to executing the query
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (
           order.OrderItems,
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), DomainObjectIDs.OrderItem2.GetObject<OrderItem>() }));
 
       var ordersQuery = QueryFactory.CreateCollectionQuery (
           "test",
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
 
         Assert.That (
             order.OrderItems,
-            Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
+            Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), DomainObjectIDs.OrderItem2.GetObject<OrderItem>() }));
       }
     }
   }

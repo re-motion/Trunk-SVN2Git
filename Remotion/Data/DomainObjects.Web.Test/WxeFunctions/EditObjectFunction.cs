@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 
     private void Step1()
     {
-      ObjectWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ObjectWithAllDataTypes1);
+      ObjectWithAllDataTypes = DomainObjectIDs.ObjectWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
     }
 
     private WxePageStep Step2 = new WxePageStep ("EditObject.aspx");

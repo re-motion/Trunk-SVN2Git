@@ -21,11 +21,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [Instantiable]
   public abstract class SpecialOfficial : Official
   {
-    public static new SpecialOfficial NewObject ()
-    {
-      return DomainObject.NewObject <SpecialOfficial>();
-    }
-
     protected SpecialOfficial()
     {
     }

@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithBase ()
     {
-      Company partner = Company.GetObject (DomainObjectIDs.Partner1);
+      Company partner = DomainObjectIDs.Partner1.GetObject<Company> ();
       IQueryable<Company> result = (from c in QueryFactory.CreateLinqQuery<Company> ()
                                     where c.ID == partner.ID
                                     select c);
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithWhere_OuterObject ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      Employee employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
       var employees =
           from e in QueryFactory.CreateLinqQuery<Employee>()
           where e == employee
@@ -272,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithVirtualKeySide_EqualsOuterObject ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       var employees =
           from e in QueryFactory.CreateLinqQuery<Employee>()
           where e.Computer == computer
@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithVirtualKeySide_NotEqualsOuterObject ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       var employees =
           from e in QueryFactory.CreateLinqQuery<Employee>()
           where e.Computer != computer
@@ -297,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithOuterEntityInCondition ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       var computers =
           from c in QueryFactory.CreateLinqQuery<Computer>()
           where c.Employee == employee
@@ -309,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithIDInCondition ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       var computers =
           from c in QueryFactory.CreateLinqQuery<Computer>()
           where c.Employee.ID == employee.ID

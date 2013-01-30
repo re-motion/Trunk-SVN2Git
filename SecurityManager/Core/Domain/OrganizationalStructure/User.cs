@@ -49,11 +49,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return NewObject<User> ();
     }
 
-    public static new User GetObject (ObjectID id)
-    {
-      return DomainObject.GetObject<User> (id);
-    }
-
     public static User FindByUserName (string userName)
     {
       ArgumentUtility.CheckNotNull ("userName", userName);

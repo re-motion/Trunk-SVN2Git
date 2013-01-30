@@ -34,13 +34,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     {
       base.SetUp ();
 
-      _customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
+      _customer1 = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       _secondClientTransaction = ClientTransaction.CreateRootTransaction();
       _secondCollection = new DomainObjectCollection ();
       using (_secondClientTransaction.EnterDiscardingScope ())
       {
-        _secondCustomer1 = Customer.GetObject (DomainObjectIDs.Customer1);
+        _secondCustomer1 = DomainObjectIDs.Customer1.GetObject<Customer> ();
       }
     }
 
@@ -82,13 +82,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     public void Remove_ObjectFromOtherTransaction_WhoseIDIsInCollection ()
     {
       var collection = new DomainObjectCollection (typeof (Customer));
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       collection.Add (customer);
 
       Customer customerInOtherTx;
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        customerInOtherTx = Customer.GetObject (customer.ID);
+        customerInOtherTx = customer.ID.GetObject<Customer> ();
       }
 
       collection.Remove (customerInOtherTx);

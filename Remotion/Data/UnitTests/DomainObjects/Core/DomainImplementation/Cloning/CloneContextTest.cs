@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
     public void GetCloneFor_CallsClonerForNewObject ()
     {
       CloneContext context = new CloneContext (_clonerMock);
-      Order source = Order.GetObject (DomainObjectIDs.Order1);
+      Order source = DomainObjectIDs.Order1.GetObject<Order> ();
       Order clone = Order.NewObject ();
 
       Expect.Call (_clonerMock.CreateCloneHull<DomainObject> (source)).Return (clone);
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
     public void GetCloneFor_DoesntCallClonerTwiceForKnownObject ()
     {
       CloneContext context = new CloneContext (_clonerMock);
-      Order source = Order.GetObject (DomainObjectIDs.Order1);
+      Order source = DomainObjectIDs.Order1.GetObject<Order> ();
       Order clone = Order.NewObject ();
 
       Expect.Call (_clonerMock.CreateCloneHull<DomainObject> (source)).Return (clone);
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
     public void GetCloneFor_AddsToShallowClones()
     {
       CloneContext context = new CloneContext (_clonerMock);
-      Order source = Order.GetObject (DomainObjectIDs.Order1);
+      Order source = DomainObjectIDs.Order1.GetObject<Order> ();
       Order clone = Order.NewObject ();
 
       SetupResult.For (_clonerMock.CreateCloneHull<DomainObject> (source)).Return (clone);
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
     public void GetCloneFor_DoesntAddToShallowClonesForKnownObject ()
     {
       CloneContext context = new CloneContext (_clonerMock);
-      Order source = Order.GetObject (DomainObjectIDs.Order1);
+      Order source = DomainObjectIDs.Order1.GetObject<Order> ();
       Order clone = Order.NewObject ();
 
       SetupResult.For (_clonerMock.CreateCloneHull<DomainObject> (source)).Return (clone);

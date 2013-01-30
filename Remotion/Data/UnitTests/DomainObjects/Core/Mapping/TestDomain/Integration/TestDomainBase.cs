@@ -23,16 +23,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Serializable]
   public abstract class TestDomainBase : DomainObject
   {
-    public static TestDomainBase GetObject (ObjectID id)
-    {
-      return GetObject<TestDomainBase> (id);
-    }
-
-    public static TestDomainBase GetObject (ObjectID id, bool includeDeleted)
-    {
-      return GetObject<TestDomainBase> (id, includeDeleted);
-    }
-
     protected TestDomainBase()
     {
     }

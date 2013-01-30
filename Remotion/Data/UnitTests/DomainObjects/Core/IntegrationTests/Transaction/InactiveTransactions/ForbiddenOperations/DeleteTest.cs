@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp ();
 
-      _loadedClassWithAllDataTypes = ActiveSubTransaction.Execute (() => ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1));
+      _loadedClassWithAllDataTypes = ActiveSubTransaction.Execute (() => DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ());
     }
 
     protected override void InitializeInactiveRootTransaction ()

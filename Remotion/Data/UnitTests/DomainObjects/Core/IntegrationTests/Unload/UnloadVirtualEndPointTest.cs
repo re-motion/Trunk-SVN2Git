@@ -30,10 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadVirtualEndPoint_Collection ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order.OrderItems;
-      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+      var orderItem2 = DomainObjectIDs.OrderItem2.GetObject<OrderItem>();
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
@@ -55,10 +55,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadVirtualEndPoint_Collection_AccessingEndPoint ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order.OrderItems;
-      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+      var orderItem2 = DomainObjectIDs.OrderItem2.GetObject<OrderItem>();
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
@@ -81,10 +81,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadVirtualEndPoint_Collection_EnsureDataComplete ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order.OrderItems;
-      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+      var orderItem2 = DomainObjectIDs.OrderItem2.GetObject<OrderItem>();
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
@@ -105,15 +105,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       SetDatabaseModifyable ();
 
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order.OrderItems;
-      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+      var orderItem2 = DomainObjectIDs.OrderItem2.GetObject<OrderItem>();
 
       ObjectID newOrderItemID;
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var orderInOtherTx = Order.GetObject (DomainObjectIDs.Order1);
+        var orderInOtherTx = DomainObjectIDs.Order1.GetObject<Order> ();
         var newOrderItem = OrderItem.NewObject ();
         newOrderItemID = newOrderItem.ID;
         orderInOtherTx.OrderItems.Add (newOrderItem);
@@ -126,13 +126,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
           TestableClientTransaction, 
           orderItems.AssociatedEndPointID);
 
-      Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2, OrderItem.GetObject (newOrderItemID) }));
+      Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2, newOrderItemID.GetObject<OrderItem>() }));
     }
     
     [Test]
     public void UnloadVirtualEndPoint_Collection_AlreadyUnloaded ()
     {
-      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      var customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       var endPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPoint.ID);
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadVirtualEndPoint_Collection_ChangedCollectionReference_Throws ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.OrderItems = new ObjectList<OrderItem> (order.OrderItems); // new collection reference, same contents
       var endPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
 
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadVirtualEndPoint_Object ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderTicket = order.OrderTicket;
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadVirtualEndPoint_Object_AccessingEndPoint ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
@@ -203,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadVirtualEndPoint_Object_EnsureDataComplete ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderTicket = order.OrderTicket;
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
@@ -223,13 +223,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       SetDatabaseModifyable ();
 
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var oldOrderTicket = order.OrderTicket;
 
       ObjectID newOrderTicketID;
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var orderInOtherTx = Order.GetObject (DomainObjectIDs.Order1);
+        var orderInOtherTx = DomainObjectIDs.Order1.GetObject<Order> ();
         orderInOtherTx.OrderTicket.Delete();
 
         orderInOtherTx.OrderTicket = OrderTicket.NewObject ();
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
-      Assert.That (order.OrderTicket, Is.SameAs (OrderTicket.GetObject (newOrderTicketID)));
+      Assert.That (order.OrderTicket, Is.SameAs (newOrderTicketID.GetObject<OrderTicket> ()));
     }
 
     [Test]
@@ -249,13 +249,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       SetDatabaseModifyable ();
 
-      var employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      var employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
       Dev.Null = employee.Computer;
 
       ObjectID newComputerID;
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var employeeInOtherTx = Employee.GetObject (employee.ID);
+        var employeeInOtherTx = employee.ID.GetObject<Employee> ();
         employeeInOtherTx.Computer = Computer.NewObject();
         newComputerID = employeeInOtherTx.Computer.ID;
         ClientTransaction.Current.Commit ();
@@ -266,13 +266,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (employee, e => e.Computer));
 
       Assert.That (employee.Computer.ID, Is.EqualTo (newComputerID));
-      Assert.That (employee.Computer, Is.SameAs (Computer.GetObject (newComputerID)));
+      Assert.That (employee.Computer, Is.SameAs (newComputerID.GetObject<Computer> ()));
     }
 
     [Test]
     public void UnloadVirtualEndPoint_Object_AlreadyUnloaded ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
@@ -314,8 +314,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadVirtualEndPoint_EndPointsOfDeletedObject_CannotBeUnloaded ()
     {
-      var customerWithoutOrders = Customer.GetObject (DomainObjectIDs.Customer2);
-      var employeeWithoutComputer = Employee.GetObject (DomainObjectIDs.Employee1);
+      var customerWithoutOrders = DomainObjectIDs.Customer2.GetObject<Customer> ();
+      var employeeWithoutComputer = DomainObjectIDs.Employee1.GetObject<Employee> ();
       var endPointID1 = RelationEndPointID.Resolve (customerWithoutOrders, o => o.Orders);
       var endPointID2 = RelationEndPointID.Resolve (employeeWithoutComputer, o => o.Computer);
 

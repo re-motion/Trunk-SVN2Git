@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -42,9 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp ();
 
-      _domainObject = Client.GetObject (DomainObjectIDs.Client3);
-      _oldRelatedObject = Client.GetObject (DomainObjectIDs.Client1);
-      _newRelatedObject = Client.GetObject (DomainObjectIDs.Client2);
+      _domainObject = DomainObjectIDs.Client3.GetObject<Client> ();
+      _oldRelatedObject = DomainObjectIDs.Client1.GetObject<Client> ();
+      _newRelatedObject = DomainObjectIDs.Client2.GetObject<Client> ();
 
       _endPointID = RelationEndPointID.Resolve (_domainObject, c => c.ParentClient);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
@@ -76,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var definition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem))
           .GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
-      var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
       var id = RelationEndPointID.Create(orderItem.ID, definition);
 
       var endPoint = (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (id);
@@ -90,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var definition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderTicket))
           .GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
-      var relationEndPointID = RelationEndPointID.Create(OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).ID, definition);
+      var relationEndPointID = RelationEndPointID.Create(DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ().ID, definition);
       var endPoint = (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
       new ObjectEndPointSetUnidirectionalCommand (endPoint, Order.NewObject (), mi => { }, TransactionEventSinkWithMock);
     }

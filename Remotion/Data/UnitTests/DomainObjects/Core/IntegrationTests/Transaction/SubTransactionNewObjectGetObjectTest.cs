@@ -50,12 +50,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order.OrderItems.Add (item);
         Assert.That (order.OrderItems.Contains (item.ID), Is.True);
 
-        Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
+        Ceo ceo = DomainObjectIDs.Ceo1.GetObject<Ceo> ();
         Assert.That (ceo, Is.Not.Null);
         Assert.That (subTransaction.IsEnlisted (ceo), Is.True);
         Assert.That (TestableClientTransaction.IsEnlisted (ceo), Is.True);
 
-        Assert.That (Company.GetObject (DomainObjectIDs.Company1), Is.SameAs (ceo.Company));
+        Assert.That (DomainObjectIDs.Company1.GetObject<Company> (), Is.SameAs (ceo.Company));
       }
     }
 
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void DomainObjects_LoadedInParent_CanBeUsedInSubTransactions ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
       Assert.That (subTransaction.IsEnlisted (order), Is.True);
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void DomainObjects_LoadedInParent_NotLoadedYetInSubTransaction ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Assert.That (order.TransactionContext[subTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
     }
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
-        Order order = Order.GetObject (DomainObjectIDs.Order1);
+        Order order = DomainObjectIDs.Order1.GetObject<Order> ();
         Assert.That (subTransaction.IsEnlisted (order), Is.True);
         Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
       }
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void SubTransaction_CanAccessObject_LoadedInParent ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order;
       using (subTransaction.EnterDiscardingScope ())
       {
-        order = Order.GetObject (DomainObjectIDs.Order1);
+        order = DomainObjectIDs.Order1.GetObject<Order> ();
       }
       Assert.That (order.OrderNumber, Is.EqualTo (1));
     }
@@ -200,22 +200,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order;
       using (subTransaction.EnterDiscardingScope ())
       {
-        order = Order.GetObject (DomainObjectIDs.Order1);
+        order = DomainObjectIDs.Order1.GetObject<Order> ();
       }
-      Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (order));
+      Assert.That (DomainObjectIDs.Order1.GetObject<Order> (), Is.SameAs (order));
     }
 
     [Test]
     public void GetObject_DeletedInParentTransaction ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       order1.Delete ();
 
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         Assert.That (
-            () => Order.GetObject (order1.ID),
+            () => order1.ID.GetObject<Order> (),
             Throws.TypeOf<ObjectInvalidException> ().With.Message.EqualTo (
                 "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is invalid in this transaction."));
       }
@@ -224,14 +224,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObject_DeletedInParentTransaction_IncludeDeletedTrue ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       order1.Delete ();
 
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         Assert.That (
-            () => Order.GetObject (order1.ID, true),
+            () => order1.ID.GetObject<Order> (includeDeleted: true),
             Throws.TypeOf<ObjectInvalidException> ().With.Message.EqualTo (
                 "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is invalid in this transaction."));
       }
@@ -240,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjectReference_DeletedInParentTransaction ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       order1.Delete ();
 
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
@@ -340,8 +340,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         var expectedObjects = new object[]
                               {
-                                  Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2),
-                                  OrderItem.GetObject (DomainObjectIDs.OrderItem1)
+                                  DomainObjectIDs.Order1.GetObject<Order> (), DomainObjectIDs.Order2.GetObject<Order> (),
+                                  DomainObjectIDs.OrderItem1.GetObject<OrderItem>()
                               };
         DomainObject[] objects = LifetimeService.GetObjects<DomainObject> (
             subTransaction,
@@ -359,9 +359,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (subTransaction.EnterDiscardingScope ())
       {
         var eventReceiver = new ClientTransactionEventReceiver (subTransaction);
-        Order.GetObject (DomainObjectIDs.Order1);
-        Order.GetObject (DomainObjectIDs.Order2);
-        OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+        DomainObjectIDs.Order1.GetObject<Order> ();
+        DomainObjectIDs.Order2.GetObject<Order> ();
+        DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
 
         eventReceiver.Clear ();
 
@@ -446,10 +446,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             DomainObjectIDs.Order2);
         var expectedObjects = new DomainObject[]
                               {
-                                  Order.GetObject (DomainObjectIDs.Order1),
+                                  DomainObjectIDs.Order1.GetObject<Order> (),
                                   newObject,
                                   null,
-                                  Order.GetObject (DomainObjectIDs.Order2)
+                                  DomainObjectIDs.Order2.GetObject<Order> ()
                               };
         Assert.That (objects, Is.EqualTo (expectedObjects));
       }
@@ -472,7 +472,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
-        var order = Order.GetObject (DomainObjectIDs.Order1);
+        var order = DomainObjectIDs.Order1.GetObject<Order> ();
         order.Delete ();
 
         var result = LifetimeService.GetObjects<Order> (subTransaction, DomainObjectIDs.Order1);
@@ -489,7 +489,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
-        ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).Delete ();
+        DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ().Delete ();
         subTransaction.Commit ();
         LifetimeService.GetObjects<ClassWithAllDataTypes> (subTransaction, DomainObjectIDs.ClassWithAllDataTypes1);
       }
@@ -498,9 +498,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_DeletedInParentTransaction_Throws ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
-      var order3 = Order.GetObject (DomainObjectIDs.Order3);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      var order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      var order3 = DomainObjectIDs.Order3.GetObject<Order> ();
 
       order2.Delete ();
       order3.Delete ();
@@ -518,9 +518,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void TryGetObjects_DeletedInParentTransaction ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
-      var order3 = Order.GetObject (DomainObjectIDs.Order3);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      var order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      var order3 = DomainObjectIDs.Order3.GetObject<Order> ();
 
       order2.Delete ();
       order3.Delete ();

@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
     public void Initialize_ThrowsForLoadedObject ()
     {
-      var orderItem = _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
+      var orderItem = _transaction.Execute (() => DomainObjectIDs.OrderItem1.GetObject<OrderItem>());
       orderItem.Initialize (DomainObjectIDs.OrderItem1, null);
     }
 
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
     public void Initialize_ThrowsForDeserializedObject ()
     {
-      var orderItem = _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
+      var orderItem = _transaction.Execute (() => DomainObjectIDs.OrderItem1.GetObject<OrderItem>());
       var deserializedOrderItem = Serializer.SerializeAndDeserialize (orderItem);
       deserializedOrderItem.Initialize (DomainObjectIDs.OrderItem1, null);
     }
@@ -328,7 +328,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void OnLoaded_CanAccessPropertyValues ()
     {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      Order order = _transaction.Execute (() => DomainObjectIDs.Order1.GetObject<Order> ());
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       order.ProtectedLoaded += ((sender, e) => Assert.That (((Order) sender).OrderNumber, Is.EqualTo (1)));
 
@@ -400,7 +400,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void State ()
     {
-      Customer customer = _transaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1));
+      Customer customer = _transaction.Execute (() => DomainObjectIDs.Customer1.GetObject<Customer> ());
 
       _transaction.Execute (() => Assert.That (customer.State, Is.EqualTo (StateType.Unchanged)));
       _transaction.Execute (() => customer.Name = "New name");
@@ -410,7 +410,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void RegisterForCommit ()
     {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      Order order = _transaction.Execute (() => DomainObjectIDs.Order1.GetObject<Order> ());
       _transaction.Execute (() => Assert.That (order.State, Is.EqualTo (StateType.Unchanged)));
 
       _transaction.Execute (order.RegisterForCommit);
@@ -454,7 +454,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetObject_SetsNeedsLoadModeDataContainerOnly_ToTrue ()
     {
-      var order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var order = _transaction.Execute (() => DomainObjectIDs.Order1.GetObject<Order> ());
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
     }
 
@@ -462,17 +462,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void GetObject_WithoutTransaction ()
     {
-      Order.GetObject (DomainObjectIDs.Order1);
+      DomainObjectIDs.Order1.GetObject<Order> ();
     }
 
     [Test]
     public void GetObject_Deleted ()
     {
-      var order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var order = _transaction.Execute (() => DomainObjectIDs.Order1.GetObject<Order> ());
 
       _transaction.Execute (order.Delete);
 
-      _transaction.Execute (() => Assert.That (Order.GetObject (DomainObjectIDs.Order1, true), Is.SameAs (order)));
+      _transaction.Execute (() => Assert.That (DomainObjectIDs.Order1.GetObject<Order> (includeDeleted: true), Is.SameAs (order)));
       _transaction.Execute (() => Assert.That (order.State, Is.EqualTo (StateType.Deleted)));
     }
 
@@ -481,7 +481,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       Assert.That (_transaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
 
-      var order = _transaction.Execute (() => Order.TryGetObject (DomainObjectIDs.Order1));
+      var order = _transaction.Execute (() => DomainObjectIDs.Order1.TryGetObject<TestDomainBase> ());
 
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (_transaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
@@ -494,7 +494,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var objectID = new ObjectID(typeof (Order), Guid.NewGuid());
       Assert.That (_transaction.IsInvalid (objectID), Is.False);
 
-      var order = _transaction.Execute (() => Order.TryGetObject (objectID));
+      var order = _transaction.Execute (() => objectID.TryGetObject<TestDomainBase> ());
 
       Assert.That (order, Is.Null);
       Assert.That (_transaction.IsInvalid (objectID), Is.True);

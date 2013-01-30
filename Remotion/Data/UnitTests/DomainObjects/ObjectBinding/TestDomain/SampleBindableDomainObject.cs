@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   [Instantiable]
   [Serializable]
   [DBTable]
-  public abstract class SampleBindableDomainObject : BindableDomainObject
+  public abstract class SampleBindableDomainObject : BindableDomainObject, ISupportsGetObject
   {
     public static SampleBindableDomainObject NewObject ()
     {
@@ -36,11 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
     public static SampleBindableDomainObject NewObject (IBindableDomainObjectImplementation implementation)
     {
       return NewObject<SampleBindableDomainObject> (ParamList.Create (implementation));
-    }
-
-    public static SampleBindableDomainObject GetObject (ObjectID id)
-    {
-      return GetObject<SampleBindableDomainObject> (id);
     }
 
     protected SampleBindableDomainObject()

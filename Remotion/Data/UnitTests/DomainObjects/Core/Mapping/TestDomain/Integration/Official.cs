@@ -25,16 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Official : StorageProviderStubDomainBase
   {
-    public static Official NewObject ()
-    {
-      return NewObject<Official> ();
-    }
-
-    public static Official GetObject (ObjectID id)
-    {
-      return GetObject<Official> (id);
-    }
-
     protected Official()
     {
     }

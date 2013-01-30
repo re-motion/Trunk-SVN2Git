@@ -97,83 +97,25 @@ namespace Remotion.Data.DomainObjects
       return (T) LifetimeService.NewObject (ClientTransactionScope.CurrentTransaction, typeof (T), constructorParameters);
     }
 
-    /// <summary>
-    /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the data source. If the object's data can't be found, an 
-    /// exception is thrown, and the object is marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>.
-    /// </summary>
-    /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
-    /// <typeparam name="T">The expected type of the concrete <see cref="DomainObject"/></typeparam>
-    /// <returns>The <see cref="DomainObject"/> with the specified <paramref name="id"/>.</returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ObjectsNotFoundException">
-    /// The object could not be found in the data source. Note that the <see cref="ClientTransaction"/> marks
-    /// not found objects as <see cref="StateType.Invalid"/>, so calling this API again witht he same <see cref="ObjectID"/> results in a 
-    /// <see cref="ObjectInvalidException"/> being thrown.
-    /// </exception>
-    /// <exception cref="ObjectInvalidException">The object is invalid in the <see cref="ClientTransaction"/>.</exception>
-    /// <exception cref="Persistence.StorageProviderException">
-    ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
-    ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-    ///   An error occurred while accessing the data source.
-    /// </exception>
-    /// <exception cref="MissingMethodException">The concrete <see cref="DomainObject"/> doesn't implement the required constructor.</exception>
-    /// <exception cref="ObjectDeletedException">The object has already been deleted.</exception>
-    /// <exception cref="InvalidCastException">The loaded <see cref="DomainObject"/> is not of the expected type <typeparamref name="T"/>.</exception>
-    protected static T GetObject<T> (ObjectID id) where T: DomainObject
+    [Obsolete ("This method has been removed. Domain users: Use id.GetObject<DomainObjectClass>() instead. "
+        + "Domain implementers: Use LifetimeService.GetObject instead. (1.13.184.0)", true)]
+    protected static T GetObject<T> (ObjectID id) where T : DomainObject
     {
-      return GetObject<T> (id, false);
+      throw new NotImplementedException();
     }
 
-    /// <summary>
-    /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the data source. If the object's data can't be found, an 
-    /// exception is thrown, and the object is marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>.
-    /// </summary>
-    /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
-    /// <param name="includeDeleted">Indicates if the method should return <see cref="DomainObject"/>s that are already deleted.</param>
-    /// <typeparam name="T">The expected type of the concrete <see cref="DomainObject"/></typeparam>
-    /// <returns>The <see cref="DomainObject"/> with the specified <paramref name="id"/>.</returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ObjectsNotFoundException">
-    /// The object could not be found in the data source. Note that the <see cref="ClientTransaction"/> marks
-    /// not found objects as <see cref="StateType.Invalid"/>, so calling this API again witht he same <see cref="ObjectID"/> results in a 
-    /// <see cref="ObjectInvalidException"/> being thrown.
-    /// </exception>
-    /// <exception cref="ObjectInvalidException">The object is invalid in the <see cref="ClientTransaction"/>.</exception>
-    /// <exception cref="Persistence.StorageProviderException">
-    ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
-    ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-    ///   An error occurred while accessing the data source.
-    /// </exception>
-    /// <exception cref="ObjectDeletedException">The object has already been deleted and the <paramref name="includeDeleted"/> flag is 
-    /// <see langword="false" />.</exception>
-    /// <exception cref="InvalidCastException">The loaded <see cref="DomainObject"/> is not of the expected type <typeparamref name="T"/>.</exception>
+    [Obsolete ("This method has been removed. Domain users: Use id.GetObject<DomainObjectClass>() instead. "
+        + "Domain implementers: Use LifetimeService.GetObject instead. (1.13.184.0)", true)]
     protected static T GetObject<T> (ObjectID id, bool includeDeleted) where T : DomainObject
     {
-      ArgumentUtility.CheckNotNull ("id", id);
-      return (T) LifetimeService.GetObject (ClientTransactionScope.CurrentTransaction, id, includeDeleted);
+      throw new NotImplementedException ();
     }
 
-    /// <summary>
-    /// Gets a <see cref="DomainObject"/> that already exists or attempts to load it from the data source. 
-    /// If an object cannot be found, it will be marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>, and the method will
-    /// return a <see langword="null" /> reference in its place.
-    /// </summary>
-    /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
-    /// <typeparam name="T">The expected type of the concrete <see cref="DomainObject"/></typeparam>
-    /// <returns>
-    /// The <see cref="DomainObject"/> with the specified <paramref name="id"/>, or <see langword="null" /> if it couldn't be found.
-    /// </returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
-    /// <exception cref="Persistence.StorageProviderException">
-    ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
-    ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-    ///   An error occurred while accessing the data source.
-    /// </exception>
-    /// <exception cref="InvalidCastException">The loaded <see cref="DomainObject"/> is not of the expected type <typeparamref name="T"/>.</exception>
+    [Obsolete ("This method has been removed. Domain users: Use id.GetObject<DomainObjectClass>() instead. "
+        + "Domain implementers: Use LifetimeService.GetObject instead. (1.13.184.0)", true)]
     protected static T TryGetObject<T> (ObjectID id) where T : DomainObject
     {
-      ArgumentUtility.CheckNotNull ("id", id);
-      return (T) LifetimeService.TryGetObject (ClientTransactionScope.CurrentTransaction, id);
+      throw new NotImplementedException ();
     }
 
     #endregion
@@ -506,7 +448,8 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Initializes a new <see cref="DomainObject"/> during a call to <see cref="NewObject{T}()"/> or <see cref="GetObject{T}(ObjectID)"/>. This method
+    /// Initializes a new <see cref="DomainObject"/> during a call to <see cref="NewObject{T}()"/> or 
+    /// <see cref="LifetimeService.GetObject(Remotion.Data.DomainObjects.ClientTransaction,Remotion.Data.DomainObjects.ObjectID,bool)"/>. This method
     /// is automatically called by the framework and should not normally be invoked by user code.
     /// </summary>
     /// <param name="id">The <see cref="ObjectID"/> to associate the new <see cref="DomainObject"/> with.</param>

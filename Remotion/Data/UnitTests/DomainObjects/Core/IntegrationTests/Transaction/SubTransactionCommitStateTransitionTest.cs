@@ -320,7 +320,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitRootChangedSubMakesUnchanged ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       ++order.OrderNumber;
       Assert.That (order.State, Is.EqualTo (StateType.Changed));
 

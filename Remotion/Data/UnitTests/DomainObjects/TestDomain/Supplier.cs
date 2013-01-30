@@ -28,11 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return NewObject<Supplier>();
     }
 
-    public new static Supplier GetObject (ObjectID id)
-    {
-      return GetObject<Supplier> (id);
-    }
-
     protected Supplier ()
     {
     }

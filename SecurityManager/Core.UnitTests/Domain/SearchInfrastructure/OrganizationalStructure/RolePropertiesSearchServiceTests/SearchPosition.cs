@@ -111,7 +111,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     {
       SecurityConfiguration.Current.SecurityProvider = new NullSecurityProvider();
       SecurityConfiguration.Current.PrincipalProvider = new ThreadPrincipalProvider();
-      Group parentGroup = Group.GetObject (_expectedParentGroup0ID);
+      Group parentGroup = _expectedParentGroup0ID.GetObject<Group> ();
 
        var positions = _searchService.Search (null, _positionProperty, CreateSearchArguments (parentGroup));
 
@@ -132,7 +132,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     {
       SecurityConfiguration.Current.SecurityProvider = new NullSecurityProvider();
       SecurityConfiguration.Current.PrincipalProvider = new ThreadPrincipalProvider();
-      Group rootGroup = Group.GetObject (_expectedRootGroupID);
+      Group rootGroup = _expectedRootGroupID.GetObject<Group> ();
 
        var positions = _searchService.Search (null, _positionProperty, CreateSearchArguments (rootGroup));
 
@@ -147,7 +147,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       SetupResult.For (_mockPrincipalProvider.GetPrincipal ()).Return (principalStub);
       SetupResultSecurityProviderGetAccessForPosition (Delegation.Enabled, principalStub, SecurityManagerAccessTypes.AssignRole);
       SetupResultSecurityProviderGetAccessForPosition (Delegation.Disabled, principalStub);
-      Group rootGroup = Group.GetObject (_expectedRootGroupID);
+      Group rootGroup = _expectedRootGroupID.GetObject<Group> ();
       _mocks.ReplayAll();
 
       var positions = _searchService.Search (null, _positionProperty, CreateSearchArguments (rootGroup));
@@ -173,7 +173,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       SetupResult.For (_mockPrincipalProvider.GetPrincipal ()).Return (principalStub);
       SetupResultSecurityProviderGetAccessForPosition (Delegation.Enabled, principalStub, SecurityManagerAccessTypes.AssignRole);
       SetupResultSecurityProviderGetAccessForPosition (Delegation.Disabled, principalStub);
-      Group parentGroup = Group.GetObject (_expectedParentGroup0ID);
+      Group parentGroup = _expectedParentGroup0ID.GetObject<Group> ();
       _mocks.ReplayAll();
 
       var positions = _searchService.Search (null, _positionProperty, CreateSearchArguments (parentGroup));
@@ -187,7 +187,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     public void Search_UsesSecurityFreeSectionToRetrieveGroupType ()
     {
       ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
-      Group parentGroup = Group.GetObject (_expectedParentGroup0ID);
+      Group parentGroup = _expectedParentGroup0ID.GetObject<Group> ();
 
       var principalStub = _mocks.Stub<ISecurityPrincipal> ();
       SetupResult.For (principalStub.User).Return ("group0/user1");

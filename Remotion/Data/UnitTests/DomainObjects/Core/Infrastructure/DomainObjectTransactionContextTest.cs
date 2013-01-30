@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       base.SetUp ();
 
-      _loadedOrder1 = Order.GetObject (DomainObjectIDs.Order1);
+      _loadedOrder1 = DomainObjectIDs.Order1.GetObject<Order> ();
       _notYetLoadedOrder2 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order2);
       _newOrder = Order.NewObject();
 

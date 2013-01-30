@@ -44,11 +44,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return NewObject<SecurableClassDefinition>();
     }
 
-    public new static SecurableClassDefinition GetObject (ObjectID id)
-    {
-      return GetObject<SecurableClassDefinition> (id);
-    }
-
     public static SecurableClassDefinition FindByName (string name)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);

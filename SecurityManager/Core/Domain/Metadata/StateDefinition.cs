@@ -39,11 +39,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return NewObject<StateDefinition> (ParamList.Create (name, value));
     }
 
-    public new static StateDefinition GetObject (ObjectID id)
-    {
-      return GetObject<StateDefinition> (id);
-    }
-
     // member fields
 
     // construction and disposing

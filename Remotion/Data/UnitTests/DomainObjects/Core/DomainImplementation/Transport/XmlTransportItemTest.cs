@@ -16,6 +16,7 @@
 // 
 using System.Text;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -54,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void XmlSerialize ()
     {
-      DataContainer container = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
+      DataContainer container = DomainObjectIDs.Computer1.GetObject<Computer> ().InternalDataContainer;
       TransportItem item = TransportItem.PackageDataContainer (container);
       byte[] serializedArray = Serializer.XmlSerialize (new XmlTransportItem (item));
       string serializedString = Encoding.UTF8.GetString (serializedArray);
@@ -65,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void XmlSerialize_WithNullObjectID ()
     {
-      DataContainer container = Computer.GetObject (DomainObjectIDs.Computer4).InternalDataContainer;
+      DataContainer container = DomainObjectIDs.Computer4.GetObject<Computer> ().InternalDataContainer;
       TransportItem item = TransportItem.PackageDataContainer (container);
       byte[] serializedArray = Serializer.XmlSerialize (new XmlTransportItem (item));
       string serializedString = Encoding.UTF8.GetString (serializedArray);
@@ -122,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForComputer1);
       XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
-      TransportItemTest.CheckEqualData (Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer, item.TransportItem);
+      TransportItemTest.CheckEqualData (DomainObjectIDs.Computer1.GetObject<Computer> ().InternalDataContainer, item.TransportItem);
     }
 
     [Test]
@@ -168,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void IntegrationTest_ID ()
     {
-      DataContainer container = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
+      DataContainer container = DomainObjectIDs.Computer1.GetObject<Computer> ().InternalDataContainer;
       TransportItem item = TransportItem.PackageDataContainer (container);
       TransportItem deserializedItem = SerializeAndDeserialize (item);
 
@@ -178,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void IntegrationTest_Properties ()
     {
-      DataContainer container = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
+      DataContainer container = DomainObjectIDs.Computer1.GetObject<Computer> ().InternalDataContainer;
       TransportItem item = TransportItem.PackageDataContainer (container);
       TransportItem deserializedItem = SerializeAndDeserialize (item);
 
@@ -200,8 +201,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void IntegrationTest_Multiple ()
     {
-      DataContainer container1 = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
-      DataContainer container2 = Computer.GetObject (DomainObjectIDs.Computer2).InternalDataContainer;
+      DataContainer container1 = DomainObjectIDs.Computer1.GetObject<Computer> ().InternalDataContainer;
+      DataContainer container2 = DomainObjectIDs.Computer2.GetObject<Computer> ().InternalDataContainer;
       TransportItem item1 = TransportItem.PackageDataContainer (container1);
       TransportItem item2 = TransportItem.PackageDataContainer (container2);
 
@@ -214,8 +215,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void IntegrationTest_ClassesWithAllDataTypes ()
     {
-      DataContainer container1 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).InternalDataContainer;
-      DataContainer container2 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2).InternalDataContainer;
+      DataContainer container1 = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ().InternalDataContainer;
+      DataContainer container2 = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ().InternalDataContainer;
       TransportItem item1 = TransportItem.PackageDataContainer (container1);
       TransportItem item2 = TransportItem.PackageDataContainer (container2);
 

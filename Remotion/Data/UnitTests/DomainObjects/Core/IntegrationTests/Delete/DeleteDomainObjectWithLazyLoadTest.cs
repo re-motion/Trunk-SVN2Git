@@ -26,10 +26,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void DomainObjectWithOneToOneRelationAndNonVirtualProperty ()
     {
-      OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      OrderTicket orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       orderTicket.Delete ();
 
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
 
       Assert.That (orderTicket.Order, Is.Null);
       Assert.That (order.OrderTicket, Is.Null);
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void DomainObjectWithOneToOneRelationAndNonVirtualNullProperty ()
     {
-      Computer computerWithoutEmployee = Computer.GetObject (DomainObjectIDs.Computer4);
+      Computer computerWithoutEmployee = DomainObjectIDs.Computer4.GetObject<Computer> ();
       computerWithoutEmployee.Delete ();
 
       Assert.That (computerWithoutEmployee.Employee, Is.Null);
@@ -51,10 +51,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void DomainObjectWithOneToOneRelationAndVirtualProperty ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Delete ();
 
-      OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      OrderTicket orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
 
       Assert.That (orderTicket.Order, Is.Null);
       Assert.That (order.OrderTicket, Is.Null);
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void DomainObjectWithOneToOneRelationAndVirtualNullProperty ()
     {
-      Employee employeeWithoutComputer = Employee.GetObject (DomainObjectIDs.Employee1);
+      Employee employeeWithoutComputer = DomainObjectIDs.Employee1.GetObject<Employee> ();
       employeeWithoutComputer.Delete ();
 
       Assert.That (employeeWithoutComputer.Computer, Is.Null);
@@ -74,11 +74,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void DomainObjectWithOneToManyRelation ()
     {
-      Employee supervisor = Employee.GetObject (DomainObjectIDs.Employee1);
+      Employee supervisor = DomainObjectIDs.Employee1.GetObject<Employee> ();
       supervisor.Delete ();
 
-      Employee subordinate1 = Employee.GetObject (DomainObjectIDs.Employee4);
-      Employee subordinate2 = Employee.GetObject (DomainObjectIDs.Employee5);
+      Employee subordinate1 = DomainObjectIDs.Employee4.GetObject<Employee> ();
+      Employee subordinate2 = DomainObjectIDs.Employee5.GetObject<Employee> ();
 
       Assert.That (supervisor.Subordinates.Count, Is.EqualTo (0));
       Assert.That (subordinate1.Supervisor, Is.Null);
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void DomainObjectWithEmptyOneToManyRelation ()
     {
-      Employee supervisor = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee supervisor = DomainObjectIDs.Employee3.GetObject<Employee> ();
       supervisor.Delete ();
 
       Assert.That (supervisor.Subordinates.Count, Is.EqualTo (0));
@@ -101,10 +101,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     [Test]
     public void DomainObjectWithManyToOneRelation ()
     {
-      OrderItem orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      OrderItem orderItem = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
       orderItem.Delete ();
 
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
 
       Assert.That (orderItem.Order, Is.Null);
       Assert.That (order.OrderItems.Count, Is.EqualTo (1));

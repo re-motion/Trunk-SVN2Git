@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp();
 
-      _owningOrder = Order.GetObject (DomainObjectIDs.Order1);
+      _owningOrder = DomainObjectIDs.Order1.GetObject<Order> ();
       _endPointID = RelationEndPointID.Resolve (_owningOrder, o => o.OrderItems);
 
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
@@ -74,8 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _delegatingData = new EndPointDelegatingCollectionData (_endPointID, _virtualEndPointProviderStub);
 
-      _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      _orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+      _orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+      _orderItem2 = DomainObjectIDs.OrderItem2.GetObject<OrderItem>();
 
       ClientTransactionScope.EnterNullScope(); // no active transaction
     }
@@ -449,7 +449,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       OrderItem deletedObject;
       using (_delegatingData.GetAssociatedEndPoint().ClientTransaction.EnterNonDiscardingScope())
       {
-        deletedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem5);
+        deletedObject = DomainObjectIDs.OrderItem5.GetObject<OrderItem>();
         deletedObject.Delete();
       }
 
@@ -469,7 +469,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Order deletedOwningObject;
       using (_delegatingData.GetAssociatedEndPoint().ClientTransaction.EnterNonDiscardingScope())
       {
-        deletedOwningObject = Order.GetObject (DomainObjectIDs.Order4);
+        deletedOwningObject = DomainObjectIDs.Order4.GetObject<Order> ();
       }
 
       var endPointStub = CreateCollectionEndPointStub (TestableClientTransaction, deletedOwningObject);

@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       {
         using (ClientTransaction.CreateRootTransaction().EnterScope (AutoRollbackBehavior.None))
         {
-          Client client = Client.GetObject (_clientID);
+          Client client = _clientID.GetObject<Client>();
 
           stopwatch.Start();
 
@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       {
         using (ClientTransaction.CreateRootTransaction ().EnterScope (AutoRollbackBehavior.None))
         {
-          Client client = Client.GetObject (_clientID);
+          Client client = _clientID.GetObject<Client>();
 
           stopwatch.Start();
 

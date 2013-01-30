@@ -25,16 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class IndustrialSector : TestDomainBase
   {
-    public static IndustrialSector NewObject ()
-    {
-      return NewObject<IndustrialSector> ();
-    }
-
-    public new static IndustrialSector GetObject (ObjectID id)
-    {
-      return GetObject<IndustrialSector> (id);
-    }
-
     protected IndustrialSector ()
     {
     }

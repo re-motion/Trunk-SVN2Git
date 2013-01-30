@@ -29,11 +29,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance
       return NewObject<TIFile>();
     }
 
-    public static TIFile GetObject (ObjectID id)
-    {
-      return GetObject<TIFile> (id);
-    }
-
     protected TIFile ()
     {
     }

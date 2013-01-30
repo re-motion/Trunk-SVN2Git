@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -33,14 +34,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                   select cwadt;
 
       var result1 = query1.ToArray ();
-      Assert.That (result1, Is.EqualTo (new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1) }));
+      Assert.That (result1, Is.EqualTo (new[] { DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> () }));
 
       var query2 = from cwadt in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes> ()
                   where cwadt.ExtensibleEnumProperty.Equals (Color.Values.Red())
                   select cwadt;
 
       var result2 = query2.ToArray ();
-      Assert.That (result2, Is.EqualTo (new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1) }));
+      Assert.That (result2, Is.EqualTo (new[] { DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> () }));
 
       var query3 = from cwadt in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes> ()
                    where new[] { Color.Values.Red (), Color.Values.Blue () }.Contains (cwadt.ExtensibleEnumProperty)
@@ -52,8 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           Is.EquivalentTo (
               new[]
               {
-                  ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1),
-                  ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2)
+                  DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> (),
+                  DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ()
               }));
     }
 
@@ -81,8 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       Assert.That (result1, Is.EqualTo (
           new[]
           {
-              ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2), 
-              ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1)
+              DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> (), 
+              DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ()
           }));
 
       var query2 = from cwadt in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes> ()
@@ -90,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    select cwadt;
 
       var result2 = query2.ToArray ();
-      Assert.That (result2, Is.EqualTo (new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1) }));
+      Assert.That (result2, Is.EqualTo (new[] { DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> () }));
 
       var query3 = from cwadt in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes> ()
                    where new[] { Color.Values.Red (), Color.Values.Blue () }.Contains (cwadt.ExtensibleEnumProperty)
@@ -102,8 +103,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           Is.EquivalentTo (
               new[]
               {
-                  ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1),
-                  ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2)
+                  DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> (),
+                  DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ()
               }));
     }
   }

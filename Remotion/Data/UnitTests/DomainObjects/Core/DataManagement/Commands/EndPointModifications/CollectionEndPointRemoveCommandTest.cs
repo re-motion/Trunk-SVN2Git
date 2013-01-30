@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -35,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public override void SetUp ()
     {
       base.SetUp();
-      
-      _removedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
+
+      _removedRelatedObject = DomainObjectIDs.Order1.GetObject<Order> ();
 
       _command = new CollectionEndPointRemoveCommand (
           CollectionEndPoint, _removedRelatedObject, CollectionDataMock, EndPointProviderStub, TransactionEventSinkWithMock);

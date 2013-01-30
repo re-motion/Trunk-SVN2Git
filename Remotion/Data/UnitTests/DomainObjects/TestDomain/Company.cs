@@ -30,11 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return NewObject<Company> ();
     }
 
-    public new static Company GetObject (ObjectID id)
-    {
-      return GetObject<Company> (id);
-    }
-
     protected Company ()
     {
     }

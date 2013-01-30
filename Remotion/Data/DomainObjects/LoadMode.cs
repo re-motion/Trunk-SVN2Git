@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects
   public enum LoadMode
   {
     /// <summary>
-    /// The whole object has been loaded, e.g. as a reaction to <see cref="DomainObject.GetObject{T}(ObjectID)"/>.
+    /// The whole object has been loaded, e.g. as a reaction to <see cref="ObjectIDExtensions.GetObject{T}"/>.
     /// </summary>
     WholeDomainObjectInitialized,
     /// <summary>

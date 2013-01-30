@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void LoadOfSimpleObjectWorks ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (WasCreatedByFactory (order), Is.True);
     }
 
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void GetPropertyValueWorks ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (order.OrderNumber, Is.EqualTo (1));
       Assert.That (order.DeliveryDate, Is.EqualTo (new DateTime (2005, 01, 01)));
       Assert.That (order.OrderNumber, Is.EqualTo (1));
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void SetPropertyValueWorks ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
 
       order.OrderNumber = 15;
       Assert.That (order.OrderNumber, Is.EqualTo (15));
@@ -201,10 +201,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void GetSetRelatedObjectAndOriginal ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Customer customer = order.Customer;
       Assert.That (customer, Is.Not.Null);
-      Assert.That (customer, Is.SameAs (Customer.GetObject (DomainObjectIDs.Customer1)));
+      Assert.That (customer, Is.SameAs (DomainObjectIDs.Customer1.GetObject<Customer> ()));
 
       Customer newCustomer = Customer.NewObject();
       Assert.That (newCustomer, Is.Not.Null);
@@ -217,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void GetSetRelatedObjectAndOriginal_WithNullAndAutomaticProperty ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.IsNotEmpty (order.OrderItems);
       OrderItem orderItem = order.OrderItems[0];
 
@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void GetRelatedObjects ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       DomainObjectCollection orderItems = order.OrderItems;
       Assert.That (orderItems, Is.Not.Null);
       Assert.That (orderItems.Count, Is.EqualTo (2));
@@ -247,7 +247,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void GetRelatedObjects_WithAutomaticProperties ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (order.OrderItems, Is.Not.Null);
       Assert.That (order.OrderItems.Count, Is.EqualTo (2));
 
@@ -309,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void DefaultRelatedObject ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       OrderItem item = order.OrderItems[0];
       Assert.That (item.Order, Is.SameAs (order));
 
@@ -352,7 +352,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void PreparePropertyAccessCorrectlySetsCurrentProperty ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.PreparePropertyAccess ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber");
       int orderNumber;
       try
@@ -369,7 +369,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void PreparePropertyAccess_DoesNotThrowsOnInvalidPropertyName ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.PreparePropertyAccess ("Bla");
       order.PropertyAccessFinished ();
     }
@@ -379,7 +379,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
         "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property named 'Bla'.")]
     public void CurrentProperty_ThrowsOnInvalidPropertyName ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.PreparePropertyAccess ("Bla");
       try
       {
@@ -394,7 +394,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void AccessingInterceptedProperties_ViaReflection_GetProperty ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       var propertyInfo = ((object) order).GetType ().GetProperty ("OrderNumber");
       Assert.That (propertyInfo, Is.Not.Null);
       Assert.That (propertyInfo.GetValue (order, null), Is.EqualTo (1));
@@ -403,7 +403,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     public void AccessingInterceptedProperties_ViaReflection_GetProperties ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       var propertyInfos = ((object) order).GetType ().GetProperties ();
       var orderNumberProperty = propertyInfos.Where (pi => pi.Name == "OrderNumber") .SingleOrDefault();
       Assert.That (orderNumberProperty, Is.Not.Null);

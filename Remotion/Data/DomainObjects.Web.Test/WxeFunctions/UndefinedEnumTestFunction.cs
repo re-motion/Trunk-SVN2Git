@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 
     private void Step1 ()
     {
-      ExistingObjectWithUndefinedEnum = ClassWithUndefinedEnum.GetObject (DomainObjectIDs.ObjectWithUndefinedEnum);
+      ExistingObjectWithUndefinedEnum = DomainObjectIDs.ObjectWithUndefinedEnum.GetObject<ClassWithUndefinedEnum> ();
       NewObjectWithUndefinedEnum = ClassWithUndefinedEnum.NewObject();
       SearchObjectWithUndefinedEnum = ObjectFactory.Create<SearchObjectWithUndefinedEnum> (ParamList.Empty);
     }

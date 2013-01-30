@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                                     where o.OrderNumber == 1 || o.ID == DomainObjectIDs.Order2 
                                     select o;
       ObjectList<Order> list = queryable.ToObjectList();
-      Assert.That (list, Is.EquivalentTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2) }));
+      Assert.That (list, Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order> (), DomainObjectIDs.Order2.GetObject<Order> () }));
     }
   }
 }

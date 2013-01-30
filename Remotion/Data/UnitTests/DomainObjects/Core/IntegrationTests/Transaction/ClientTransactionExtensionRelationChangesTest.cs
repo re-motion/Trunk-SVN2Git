@@ -45,9 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp();
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       _orderTicket1 = _order1.OrderTicket;
-      _location1 = Location.GetObject (DomainObjectIDs.Location1);
+      _location1 = DomainObjectIDs.Location1.GetObject<Location>();
       _client1 = _location1.Client;
 
       _mockRepository = new MockRepository();
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void OneToOneRelationFromVirtualEndPointWithBothOldRelatedObjects ()
     {
-      OrderTicket orderTicket3 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket3);
+      OrderTicket orderTicket3 = DomainObjectIDs.OrderTicket3.GetObject<OrderTicket> ();
       Order oldOrderOfOrderTicket3 = orderTicket3.Order;
 
       var orderTicket3EventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (orderTicket3);
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void OneToOneRelationFromEndPointWithBothOldRelatedObjects ()
     {
-      OrderTicket orderTicket3 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket3);
+      OrderTicket orderTicket3 = DomainObjectIDs.OrderTicket3.GetObject<OrderTicket> ();
       Order oldOrderOfOrderTicket3 = orderTicket3.Order;
 
       var orderTicket3EventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (orderTicket3);
@@ -430,7 +430,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void AddToOneToManyRelationWithOldRelatedObject ()
     {
       DomainObjectCollection preloadedOrderItemsOfOrder1 = _order1.OrderItems;
-      OrderItem newOrderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
+      OrderItem newOrderItem = DomainObjectIDs.OrderItem3.GetObject<OrderItem>();
       Order oldOrderOfNewOrderItem = newOrderItem.Order;
 
       _mockRepository.BackToRecord (_extension);
@@ -558,7 +558,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       OrderItem oldOrderItem = _order1.OrderItems[0];
 
       DomainObjectCollection preloadedOrderItemsOfOrder1 = _order1.OrderItems;
-      OrderItem newOrderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
+      OrderItem newOrderItem = DomainObjectIDs.OrderItem3.GetObject<OrderItem>();
       Order oldOrderOfNewOrderItem = newOrderItem.Order;
       Dev.Null = oldOrderOfNewOrderItem.OrderItems; // preload
 

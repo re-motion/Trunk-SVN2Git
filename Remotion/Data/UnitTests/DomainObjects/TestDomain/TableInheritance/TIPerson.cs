@@ -22,16 +22,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance
   [ClassID ("TI_Person")]
   [DBTable ("TableInheritance_Person")]
   [Instantiable]
-  public abstract class TIPerson: TIDomainBase
+  public abstract class TIPerson: TIDomainBase, ISupportsGetObject
   {
     public static TIPerson NewObject ()
     {
       return NewObject<TIPerson> ();
-    }
-
-    public static TIPerson GetObject (ObjectID id)
-    {
-      return GetObject<TIPerson> (id);
     }
 
     protected TIPerson()

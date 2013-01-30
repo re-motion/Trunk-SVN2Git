@@ -574,8 +574,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var queryStub = QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ());
 
       var originalResult = new QueryResult<Order> (queryStub, new Order[0]);
-      var newResult1 = new QueryResult<Order> (queryStub, new[] { Order.GetObject (DomainObjectIDs.Order1) });
-      var newResult2 = new QueryResult<Order> (queryStub, new[] { Order.GetObject (DomainObjectIDs.Order2) });
+      var newResult1 = new QueryResult<Order> (queryStub, new[] { DomainObjectIDs.Order1.GetObject<Order> () });
+      var newResult2 = new QueryResult<Order> (queryStub, new[] { DomainObjectIDs.Order2.GetObject<Order> () });
 
       _extension1.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, originalResult)).Return (newResult1);
       _extension2.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, newResult1)).Return (newResult2);

@@ -30,16 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return NewObject<Employee> ();
     }
 
-    public new static Employee GetObject (ObjectID id)
-    {
-      return GetObject<Employee> (id);
-    }
-
-    public new static Employee GetObject (ObjectID id, bool includeDeleted)
-    {
-      return GetObject<Employee> (id, includeDeleted);
-    }
-
     protected Employee ()
     {
     }

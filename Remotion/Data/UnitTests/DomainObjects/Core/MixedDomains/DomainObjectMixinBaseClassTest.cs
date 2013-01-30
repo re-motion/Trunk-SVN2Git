@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public override void SetUp ()
     {
       base.SetUp ();
-      _loadedClassWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      _loadedClassWithAllDataTypes = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       _newClassWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
       _loadedClassWithAllDataTypesMixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (_loadedClassWithAllDataTypes);
       _newClassWithAllDataTypesMixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (_newClassWithAllDataTypes);

@@ -23,16 +23,11 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
   [DBTable ("TableWithUndefinedEnum")]
   [Instantiable]
   [DBStorageGroup]
-  public abstract class ClassWithUndefinedEnum: BindableDomainObject
+  public abstract class ClassWithUndefinedEnum : BindableDomainObject, ISupportsGetObject
   {
     public static ClassWithUndefinedEnum NewObject ()
     {
       return DomainObject.NewObject<ClassWithUndefinedEnum> ();
-    }
-
-    public static ClassWithUndefinedEnum GetObject (ObjectID id)
-    {
-      return DomainObject.GetObject<ClassWithUndefinedEnum> (id);
     }
 
     protected ClassWithUndefinedEnum()

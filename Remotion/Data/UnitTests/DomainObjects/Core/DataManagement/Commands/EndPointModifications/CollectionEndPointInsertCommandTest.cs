@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
@@ -37,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp();
 
-      _insertedRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
+      _insertedRelatedObject = DomainObjectIDs.Order2.GetObject<Order> ();
 
       _command = new CollectionEndPointInsertCommand (
           CollectionEndPoint, 12, _insertedRelatedObject, CollectionDataMock, EndPointProviderStub, TransactionEventSinkWithMock);

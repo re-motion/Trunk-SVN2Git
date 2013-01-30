@@ -24,16 +24,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample
   [TestDomain]
   public class StorageGroupClass : AboveInheritanceRootClass
   {
-    public static StorageGroupClass NewObject ()
-    {
-      return NewObject<StorageGroupClass> ();
-    }
-
-    public static StorageGroupClass GetObject (ObjectID id)
-    {
-      return GetObject<StorageGroupClass> (id);
-    }
-
     public StorageGroupClass ()
     {
     

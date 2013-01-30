@@ -65,8 +65,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp();
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _computerWithoutRelatedObjects = Computer.GetObject (DomainObjectIDs.Computer5);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _computerWithoutRelatedObjects = DomainObjectIDs.Computer5.GetObject<Computer> ();
 
       _newTransaction = new TestableClientTransaction();
       _newTransaction.EnlistDomainObjects (_order1);
@@ -161,8 +161,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      Dev.Null = Order.GetObject (DomainObjectIDs.Order2);
-      Dev.Null = Order.GetObject (DomainObjectIDs.Order2);
+      Dev.Null = DomainObjectIDs.Order2.GetObject<Order> ();
+      Dev.Null = DomainObjectIDs.Order2.GetObject<Order> ();
 
       _mockRepository.VerifyAll();
     }
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            Order order = Order.GetObject (DomainObjectIDs.Order2);
+            Order order = DomainObjectIDs.Order2.GetObject<Order> ();
             int orderItemCount = order.OrderItems.Count;
             Assert.That (orderItemCount, Is.EqualTo (1));
           },
@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            OrderItem orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
+            OrderItem orderItem = DomainObjectIDs.OrderItem3.GetObject<OrderItem>();
             Order order = orderItem.Order;
             Assert.That (order, Is.Not.Null);
           },
@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+            Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
             Employee employee = computer.Employee;
             Assert.That (employee, Is.Not.Null);
           },
@@ -221,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+            Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
             Computer computer = employee.Computer;
             Assert.That (computer, Is.Not.Null);
           },
@@ -237,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            Official official = Official.GetObject (DomainObjectIDs.Official2);
+            Official official = DomainObjectIDs.Official2.GetObject<Official>();
             int count = official.Orders.Count;
             Assert.That (count, Is.EqualTo (0));
           },
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            Client client = Client.GetObject (DomainObjectIDs.Client1);
+            Client client = DomainObjectIDs.Client1.GetObject<Client> ();
             Client parent = client.ParentClient;
             Assert.That (parent, Is.Null);
           },
@@ -269,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
+            Computer computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
             Employee employee = computer.Employee;
             Assert.That (employee, Is.Null);
           },
@@ -285,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            Employee employee = Employee.GetObject (DomainObjectIDs.Employee7);
+            Employee employee = DomainObjectIDs.Employee7.GetObject<Employee> ();
             Computer computer = employee.Computer;
             Assert.That (computer, Is.Null);
           },
@@ -309,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       }
 
       _mockRepository.VerifyAll();
@@ -329,7 +329,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        Order.GetObject (DomainObjectIDs.Order2);
+        DomainObjectIDs.Order2.GetObject<Order> ();
       }
       _mockRepository.VerifyAll();
     }
@@ -361,7 +361,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       }
 
       _mockRepository.VerifyAll();
@@ -494,7 +494,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        location = Location.GetObject (DomainObjectIDs.Location1);
+        location = DomainObjectIDs.Location1.GetObject<Location>();
         deletedClient = location.Client;
         deletedClient.Delete();
         newClient = Client.NewObject();
@@ -528,7 +528,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        location = Location.GetObject (DomainObjectIDs.Location1);
+        location = DomainObjectIDs.Location1.GetObject<Location>();
         location.Client = Client.NewObject();
 
         deletedClient = location.Client;
@@ -562,7 +562,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        computer = Computer.GetObject (DomainObjectIDs.Computer4);
+        computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
       }
       _mockRepository.BackToRecord (_extensionMock);
 
@@ -1183,7 +1183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Computer computer;
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        computer = Computer.GetObject (DomainObjectIDs.Computer4);
+        computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
         computer.SerialNumber = "newSerialNumber";
       }
 
@@ -1218,8 +1218,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        computer = Computer.GetObject (DomainObjectIDs.Computer4);
-        employee = Employee.GetObject (DomainObjectIDs.Employee1);
+        computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
+        employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
         computer.Employee = employee;
       }
 
@@ -1258,7 +1258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_newTransaction.EnterNonDiscardingScope())
       {
         oldCustomer = _order1.Customer;
-        newCustomer = Customer.GetObject (DomainObjectIDs.Customer2);
+        newCustomer = DomainObjectIDs.Customer2.GetObject<Customer> ();
         _order1.Customer = newCustomer;
       }
       _mockRepository.BackToRecord (_extensionMock);
@@ -1297,7 +1297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Computer computer;
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        computer = Computer.GetObject (DomainObjectIDs.Computer4);
+        computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
         computer.SerialNumber = "newSerialNumber";
       }
       _mockRepository.BackToRecord (_extensionMock);
@@ -1342,7 +1342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Computer computer;
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        computer = Computer.GetObject (DomainObjectIDs.Computer4);
+        computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
         computer.SerialNumber = "newSerialNumber";
       }
 

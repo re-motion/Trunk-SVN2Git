@@ -41,11 +41,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return NewObject<StatePropertyDefinition> (ParamList.Create (metadataItemID, name));
     }
 
-    public new static StatePropertyDefinition GetObject (ObjectID id)
-    {
-      return GetObject<StatePropertyDefinition> (id);
-    }
-
     private DomainObjectDeleteHandler _deleteHandler;
 
     protected StatePropertyDefinition ()

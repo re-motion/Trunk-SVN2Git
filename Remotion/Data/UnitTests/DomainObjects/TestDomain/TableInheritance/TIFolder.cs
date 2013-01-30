@@ -29,11 +29,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance
       return NewObject<TIFolder>();
     }
 
-    public static TIFolder GetObject (ObjectID id)
-    {
-      return GetObject<TIFolder> (id);
-    }
-
     protected TIFolder()
     {
     }

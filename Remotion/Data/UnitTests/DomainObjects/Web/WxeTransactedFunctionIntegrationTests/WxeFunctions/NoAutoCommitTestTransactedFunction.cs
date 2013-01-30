@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
     private void Step1 ()
     {
-      ClassWithAllDataTypes objectWithAllDataTypes = ClassWithAllDataTypes.GetObject (ObjectWithAllDataTypes);
+      ClassWithAllDataTypes objectWithAllDataTypes = ObjectWithAllDataTypes.GetObject<ClassWithAllDataTypes> ();
 
       objectWithAllDataTypes.Int32Property = 10;
     }

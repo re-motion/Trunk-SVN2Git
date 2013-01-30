@@ -36,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       base.SetUp ();
 
-      _customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
-      _customer2 = Customer.GetObject (DomainObjectIDs.Customer2);
-      _customer3NotInCollection = Customer.GetObject (DomainObjectIDs.Customer3);
+      _customer1 = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      _customer2 = DomainObjectIDs.Customer2.GetObject<Customer> ();
+      _customer3NotInCollection = DomainObjectIDs.Customer3.GetObject<Customer> ();
 
       _wrappedCollection = new DomainObjectCollection (new[] { _customer1, _customer2 }, typeof (Customer));
       _wrapper = new DomainObjectCollectionWrapper<Customer> (_wrappedCollection);

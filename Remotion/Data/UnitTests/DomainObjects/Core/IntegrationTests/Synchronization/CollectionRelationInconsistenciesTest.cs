@@ -31,8 +31,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void VirtualEndPointQuery_OneMany_Consistent_ObjectLoadedFirst ()
     {
-      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       order1.OrderItems.EnsureDataComplete();
 
       Assert.That (orderItem1.Order, Is.SameAs (order1));
@@ -52,9 +52,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void VirtualEndPointQuery_OneMany_Consistent_CollectionLoadedFirst ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       order1.OrderItems.EnsureDataComplete ();
-      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
 
       Assert.That (orderItem1.Order, Is.SameAs (order1));
       Assert.That (order1.OrderItems, Has.Member(orderItem1));
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       var company = CreateCompanyInDatabaseAndLoad ();
       Assert.That (company.IndustrialSector, Is.Null);
 
-      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1); // virtual end point not yet resolved
+      var industrialSector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> (); // virtual end point not yet resolved
 
       SetIndustrialSectorInOtherTransaction (company.ID, industrialSector.ID);
 
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       var company = CreateCompanyInDatabaseAndLoad ();
       Assert.That (company.IndustrialSector, Is.Null);
 
-      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1); // virtual end point not yet resolved
+      var industrialSector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> (); // virtual end point not yet resolved
 
       SetIndustrialSectorInOtherTransaction (company.ID, industrialSector.ID);
 
@@ -158,13 +158,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       SetDatabaseModifyable ();
 
       var companyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (DomainObjectIDs.IndustrialSector1);
-      var company = Company.GetObject (companyID);
+      var company = companyID.GetObject<Company> ();
 
       Assert.That (company.Properties[typeof (Company), "IndustrialSector"].GetRelatedObjectID(), Is.EqualTo (DomainObjectIDs.IndustrialSector1));
 
       SetIndustrialSectorInOtherTransaction (company.ID, DomainObjectIDs.IndustrialSector2);
 
-      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var industrialSector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       // Resolve virtual end point - the database says that company does not point to IndustrialSector1, but the transaction says it does!
       industrialSector.Companies.EnsureDataComplete ();
 
@@ -198,14 +198,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       SetDatabaseModifyable ();
 
       var companyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (DomainObjectIDs.IndustrialSector1);
-      var company = Company.GetObject (companyID);
+      var company = companyID.GetObject<Company> ();
 
-      var industrialSector1 = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var industrialSector1 = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       industrialSector1.Companies.EnsureDataComplete();
 
       SetIndustrialSectorInOtherTransaction (company.ID, DomainObjectIDs.IndustrialSector2);
 
-      var industrialSector2 = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2);
+      var industrialSector2 = DomainObjectIDs.IndustrialSector2.GetObject<IndustrialSector> ();
       industrialSector2.Companies.EnsureDataComplete ();
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector1));
@@ -242,7 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (industrialSector.Companies.Count, Is.EqualTo (1));
 
       // load Company into this transaction; in the database, the Company has a foreign key to the IndustrialSector
-      var newCompany = Company.GetObject (newCompanyID);
+      var newCompany = newCompanyID.GetObject<Company> ();
 
       Assert.That (newCompany.IndustrialSector, Is.SameAs (industrialSector));
       Assert.That (industrialSector.Companies, Has.No.Member (newCompany));
@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (industrialSector.Companies.Count, Is.EqualTo (1));
 
       // load Company into this transaction; in the database, the Company has a foreign key to the IndustrialSector
-      var newCompany = Company.GetObject (newCompanyID);
+      var newCompany = newCompanyID.GetObject<Company> ();
 
       Assert.That (newCompany.IndustrialSector, Is.SameAs (industrialSector));
       Assert.That (industrialSector.Companies, Has.No.Member(newCompany));
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (industrialSector, s => s.Companies, false);
 
       CheckActionThrows<InvalidOperationException> (() => company.IndustrialSector = industrialSector, "out of sync");
-      industrialSector.Companies.Insert (0, Company.GetObject (DomainObjectIDs.Company2));
+      industrialSector.Companies.Insert (0, DomainObjectIDs.Company2.GetObject<Company> ());
       CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Remove (company), "out of sync");
 
       Assert.That (industrialSector.Companies.Count, Is.EqualTo (7));
@@ -347,7 +347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (industrialSector.Companies, Has.No.Member(company));
 
       CheckActionThrows<InvalidOperationException> (() => company.IndustrialSector = null, "out of sync");
-      industrialSector.Companies.Add (Company.GetObject (DomainObjectIDs.Company1));
+      industrialSector.Companies.Add (DomainObjectIDs.Company1.GetObject<Company> ());
       CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (company), "out of sync");
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));

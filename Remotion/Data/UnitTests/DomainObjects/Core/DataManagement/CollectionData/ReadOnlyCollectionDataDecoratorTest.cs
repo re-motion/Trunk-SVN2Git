@@ -44,10 +44,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
       _readOnlyDecorator = new ReadOnlyCollectionDataDecorator (_wrappedDataStub);
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _order2 = Order.GetObject (DomainObjectIDs.Order2);
-      _order3 = Order.GetObject (DomainObjectIDs.Order3);
-      _order4 = Order.GetObject (DomainObjectIDs.Order4);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
+      _order4 = DomainObjectIDs.Order4.GetObject<Order> ();
     }
 
     [Test]

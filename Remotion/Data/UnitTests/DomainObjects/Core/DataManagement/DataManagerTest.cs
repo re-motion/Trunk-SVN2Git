@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void DomainObjectStateCache ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Unchanged));
 
       var propertyName = GetPropertyDefinition (typeof (Order), "OrderNumber");
@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetNewChangedDeletedData_ReturnsObjectsChangedByRelation ()
     {
-      var orderWithChangedRelation = Order.GetObject (DomainObjectIDs.Order1);
+      var orderWithChangedRelation = DomainObjectIDs.Order1.GetObject<Order> ();
 
       orderWithChangedRelation.OrderTicket = null;
       Assert.That (orderWithChangedRelation.State, Is.EqualTo (StateType.Changed));
@@ -579,7 +579,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateDeleteCommand ()
     {
-      var deletedObject = Order.GetObject (DomainObjectIDs.Order1);
+      var deletedObject = DomainObjectIDs.Order1.GetObject<Order> ();
 
       var command = _dataManager.CreateDeleteCommand (deletedObject);
 
@@ -602,7 +602,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateDeleteCommand_DeletedObject ()
     {
-      var deletedObject = Order.GetObject (DomainObjectIDs.Order1);
+      var deletedObject = DomainObjectIDs.Order1.GetObject<Order> ();
       deletedObject.Delete ();
       Assert.That (deletedObject.State, Is.EqualTo (StateType.Deleted));
 
@@ -802,7 +802,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeRelationEndPoints ()
     {
-      var dataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var dataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
 
       var endPoints = _dataManager.GetOppositeRelationEndPoints (dataContainer).ToArray ();
 
@@ -820,7 +820,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeRelationEndPoints_WithNulls ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.OrderTicket = null;
       var dataContainer = order.InternalDataContainer;
       

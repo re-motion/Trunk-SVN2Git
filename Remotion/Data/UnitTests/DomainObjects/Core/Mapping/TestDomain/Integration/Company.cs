@@ -25,16 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Company : TestDomainBase
   {
-    public static Company NewObject ()
-    {
-      return NewObject<Company> ();
-    }
-
-    public new static Company GetObject (ObjectID id)
-    {
-      return GetObject<Company> (id);
-    }
-
     protected Company ()
     {
     }

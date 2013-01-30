@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
@@ -31,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var subTransaction = TestableClientTransaction.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope ())
       {
-        Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+        Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
         employee.Computer = null;
 
         Assert.That (() => subTransaction.Commit(), Throws.Nothing);
@@ -44,9 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var subTransaction = TestableClientTransaction.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope ())
       {
-        var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+        var customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
         foreach (var order in customer.Orders.ToArray())
-          order.Customer = Customer.GetObject (DomainObjectIDs.Customer2);
+        {
+          order.Customer = DomainObjectIDs.Customer2.GetObject<Customer> ();
+        }
 
         Assert.That (customer.Orders, Is.Empty);
         Assert.That (() => subTransaction.Commit(), Throws.Nothing);
@@ -59,8 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var subTransaction = TestableClientTransaction.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope ())
       {
-        Order order = Order.GetObject (DomainObjectIDs.Order1);
-        OrderTicket newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
+        Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+        OrderTicket newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
 
         order.OrderTicket = newOrderTicket;
 
@@ -80,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var subTransaction = TestableClientTransaction.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope ())
       {
-        IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2);
+        IndustrialSector industrialSector = DomainObjectIDs.IndustrialSector2.GetObject<IndustrialSector> ();
         industrialSector.Companies.Clear();
         Assert.That (() => subTransaction.Commit(), Throws.Nothing);
       }
@@ -140,8 +143,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (subTransaction.EnterDiscardingScope ())
       {
-        Order order = Order.GetObject (DomainObjectIDs.Order1);
-        OrderTicket newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
+        Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+        OrderTicket newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
 
         order.OrderTicket = newOrderTicket;
 
@@ -161,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (subTransaction.EnterDiscardingScope ())
       {
-        IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2);
+        IndustrialSector industrialSector = DomainObjectIDs.IndustrialSector2.GetObject<IndustrialSector> ();
         industrialSector.Companies.Clear();
 
         Assert.That (

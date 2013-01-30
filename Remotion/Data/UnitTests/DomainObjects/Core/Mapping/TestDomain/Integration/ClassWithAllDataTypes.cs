@@ -41,17 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
       Flag2 = 2
     }
 
-
-    public static ClassWithAllDataTypes NewObject ()
-    {
-      return NewObject<ClassWithAllDataTypes> ();
-    }
-
-    public new static ClassWithAllDataTypes GetObject (ObjectID id)
-    {
-      return GetObject<ClassWithAllDataTypes> (id);
-    }
-
     protected ClassWithAllDataTypes ()
     {
     }

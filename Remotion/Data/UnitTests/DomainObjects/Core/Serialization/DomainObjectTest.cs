@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void Serializable_LoadCount ()
     {
-      ClassWithAllDataTypes instance = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      ClassWithAllDataTypes instance = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       Assert.That (instance.OnLoadedCalled, Is.True);
       Assert.That (instance.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
 
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void Serialization_WithISerializable_IncludesEventHandlers ()
     {
-      ClassWithAllDataTypes instance = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      ClassWithAllDataTypes instance = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       var eventReceiver = new DomainObjectEventReceiver (instance);
 
       var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (instance, eventReceiver));
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DomainObject_IDeserializationCallbackTest ()
     {
-      Customer domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer domainObject = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       Customer deserializedDomainObject = Serializer.SerializeAndDeserialize (domainObject);
       Assert.That (deserializedDomainObject.OnDeserializationCalled, Is.True);
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DomainObject_DeserializationCallbackAttributesTest ()
     {
-      Customer domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer domainObject = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       Customer deserializedDomainObject = Serializer.SerializeAndDeserialize (domainObject);
       Assert.That (deserializedDomainObject.OnDeserializingAttributeCalled, Is.True);

@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
@@ -34,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp ();
 
-      _replacedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
+      _replacedRelatedObject = DomainObjectIDs.Order1.GetObject<Order> ();
 
       _command = new CollectionEndPointReplaceSameCommand (CollectionEndPoint, _replacedRelatedObject, TransactionEventSinkWithMock);
     }

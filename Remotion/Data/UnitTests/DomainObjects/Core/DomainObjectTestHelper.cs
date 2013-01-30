@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Order.StaticInitializationHandler += handler;
       try
       {
-        Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1); // indirect call of FinishReferenceInitialization
+        new DomainObjectIDs (MappingConfiguration.Current).Order1.GetObject<Order> (); // indirect call of FinishReferenceInitialization
       }
       finally
       {

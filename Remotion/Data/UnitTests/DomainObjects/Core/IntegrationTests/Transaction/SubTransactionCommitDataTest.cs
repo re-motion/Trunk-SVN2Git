@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitPropagatesChangesToLoadedObjectsToParentTransaction ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
         order.OrderNumber = 5;
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order;
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
-        order = Order.GetObject (DomainObjectIDs.Order1);
+        order = DomainObjectIDs.Order1.GetObject<Order> ();
 
         ClientTransactionScope.CurrentTransaction.Commit ();
         Assert.That (order.OrderNumber, Is.EqualTo (1));
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitLeavesUnchangedObjectsLoadedInRoot ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
         ClientTransactionScope.CurrentTransaction.Commit ();
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitDeletedObject_DoesNotInfluencePreviouslyRelatedObjects_OneToMany ()
     {
-      var originalOrder = Order.GetObject (DomainObjectIDs.Order2);
+      var originalOrder = DomainObjectIDs.Order2.GetObject<Order> ();
       Assert.That (originalOrder.OrderItems.Count, Is.EqualTo (1));
 
       var originalTicket = originalOrder.OrderTicket;
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order newOrder;
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        newOrder = Order.GetObject (DomainObjectIDs.Order3);
+        newOrder = DomainObjectIDs.Order3.GetObject<Order> ();
         newOrder.OrderItems.Add (orderItem);
         originalTicket.Delete (); // dependent object
         originalOrder.Delete ();
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitDeletedObject_DoesNotInfluencePreviouslyRelatedObjects_OneToOne ()
     {
-      var originalOrder = Order.GetObject (DomainObjectIDs.Order2);
+      var originalOrder = DomainObjectIDs.Order2.GetObject<Order> ();
       Assert.That (originalOrder.OrderItems.Count, Is.EqualTo (1));
       var originalItem = originalOrder.OrderItems[0];
       var originalOfficial = originalOrder.Official;
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order newOrder;
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        newOrder = Order.GetObject (DomainObjectIDs.Order3);
+        newOrder = DomainObjectIDs.Order3.GetObject<Order> ();
         newOrder.OrderTicket.Delete (); // delete old ticket
         newOrder.OrderTicket = orderTicket;
         
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitSavesPropertyValuesToParentTransaction ()
     {
-      Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
+      Order loadedOrder = DomainObjectIDs.Order1.GetObject<Order> ();
       ClassWithAllDataTypes newClassWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
 
       loadedOrder.OrderNumber = 5;
@@ -203,9 +203,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitSavesRelatedObjectsToParentTransaction ()
     {
       Order order = Order.NewObject ();
-      Official official = Official.GetObject (DomainObjectIDs.Official1);
+      Official official = DomainObjectIDs.Official1.GetObject<Official>();
       order.Official = official;
-      order.Customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      order.Customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       OrderItem orderItem = OrderItem.NewObject ();
       order.OrderItems.Add (orderItem);
@@ -260,9 +260,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommittedRelatedObjectCollectionOrder ()
     {
       Order order = Order.NewObject ();
-      Official official = Official.GetObject (DomainObjectIDs.Official1);
+      Official official = DomainObjectIDs.Official1.GetObject<Official>();
       order.Official = official;
-      order.Customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      order.Customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       OrderItem orderItem1 = OrderItem.NewObject ();
       OrderItem orderItem2 = OrderItem.NewObject ();
@@ -292,7 +292,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitSavesRelatedObjectToParentTransaction ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       Employee employee = computer.Employee;
       Location location1 = Location.NewObject ();
       Location location2 = Location.NewObject ();
@@ -386,13 +386,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Order orderInSub = Order.GetObject (DomainObjectIDs.Order1);
+        Order orderInSub = DomainObjectIDs.Order1.GetObject<Order> ();
         Assert.That (orderInSub.OrderNumber, Is.Not.EqualTo (4711));
         orderInSub.OrderNumber = 4711;
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
 
-      Order orderInParent = Order.GetObject (DomainObjectIDs.Order1);
+      Order orderInParent = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (orderInParent.OrderNumber, Is.EqualTo (4711));
     }
 
@@ -401,7 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Order orderInSub = Order.GetObject (DomainObjectIDs.Order1);
+        Order orderInSub = DomainObjectIDs.Order1.GetObject<Order> ();
         Assert.That (orderInSub.OrderNumber, Is.Not.EqualTo (4711));
         orderInSub.OrderNumber = 4711;
         ClientTransactionScope.CurrentTransaction.Commit ();
@@ -409,7 +409,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Order orderInSub = Order.GetObject (DomainObjectIDs.Order1);
+        Order orderInSub = DomainObjectIDs.Order1.GetObject<Order> ();
         Assert.That (orderInSub.OrderNumber, Is.EqualTo (4711));
       }
     }
@@ -419,7 +419,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       SetDatabaseModifyable ();
 
-      ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      ClassWithAllDataTypes cwadt = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       Assert.That (cwadt.Int32Property, Is.Not.EqualTo (7));
       Assert.That (cwadt.Int16Property, Is.Not.EqualTo (8));
 
@@ -453,7 +453,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       SetDatabaseModifyable ();
 
-      ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      ClassWithAllDataTypes cwadt = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
       Assert.That (cwadt.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int16Property")), Is.False);
       Assert.That (cwadt.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (ClassWithAllDataTypes), "Int32Property")), Is.False);
@@ -536,13 +536,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       SetDatabaseModifyable ();
 
-      OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      OrderTicket orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       Order oldOrder = orderTicket.Order;
       
-      Order newOrder = Order.GetObject (DomainObjectIDs.Order2);
+      Order newOrder = DomainObjectIDs.Order2.GetObject<Order> ();
       OrderTicket oldOrderTicket = newOrder.OrderTicket;
 
-      Order newOrder2 = Order.GetObject (DomainObjectIDs.Order3);
+      Order newOrder2 = DomainObjectIDs.Order3.GetObject<Order> ();
       OrderTicket oldOrderTicket2 = newOrder2.OrderTicket;
 
 
@@ -594,13 +594,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       SetDatabaseModifyable ();
 
-      OrderTicket orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      OrderTicket orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       Order order1 = orderTicket1.Order;
 
-      OrderTicket orderTicket2 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
+      OrderTicket orderTicket2 = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
       Order order2 = orderTicket2.Order;
 
-      Order order3 = Order.GetObject (DomainObjectIDs.Order2);
+      Order order3 = DomainObjectIDs.Order2.GetObject<Order> ();
       OrderTicket orderTicket3 = order3.OrderTicket;
 
       RelationEndPointID propertyID = RelationEndPointID.Create(order3.ID, typeof (Order).FullName + ".OrderTicket");
@@ -652,7 +652,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       SetDatabaseModifyable ();
 
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       OrderItem newItem = OrderItem.NewObject ();
       OrderItem firstItem = order.OrderItems[0];
 

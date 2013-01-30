@@ -26,21 +26,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Order : TestDomainBase, IOrder
   {
-    public static Order NewObject ()
-    {
-      return NewObject<Order> ();
-    }
-
-    public new static Order GetObject (ObjectID id)
-    {
-      return GetObject<Order> (id);
-    }
-
-    public new static Order GetObject (ObjectID id, bool includeDeleted)
-    {
-      return GetObject<Order> (id, includeDeleted);
-    }
-
     [DBColumn ("OrderNo")]
     public abstract int OrderNumber { get; set; }
 

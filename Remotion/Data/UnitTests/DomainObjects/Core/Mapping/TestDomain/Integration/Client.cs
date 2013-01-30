@@ -25,16 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Client : TestDomainBase
   {
-    public static Client NewObject ()
-    {
-      return NewObject<Client> ();
-    }
-
-    public new static Client GetObject (ObjectID id)
-    {
-      return GetObject<Client> (id);
-    }
-
     protected Client ()
     {
     }

@@ -45,10 +45,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (_wrappedData);
       _readOnlyAdapterAsIList = _readOnlyAdapter;
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _order2 = Order.GetObject (DomainObjectIDs.Order2);
-      _order3 = Order.GetObject (DomainObjectIDs.Order3);
-      _order4 = Order.GetObject (DomainObjectIDs.Order4);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
+      _order4 = DomainObjectIDs.Order4.GetObject<Order> ();
     }
 
     [Test]
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void AssociatedEndPointID ()
     {
-      var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
+      var associatedCollection = DomainObjectIDs.Order1.GetObject<Order> ().OrderItems;
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
 
       Assert.That (readOnlyAdapter.AssociatedEndPointID, Is.EqualTo (associatedCollection.AssociatedEndPointID));
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       Assert.That (_readOnlyAdapter.IsDataComplete, Is.True);
 
-      var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
+      var associatedCollection = DomainObjectIDs.Order1.GetObject<Order> ().OrderItems;
       UnloadService.UnloadVirtualEndPoint (
           TestableClientTransaction,
           associatedCollection.AssociatedEndPointID);

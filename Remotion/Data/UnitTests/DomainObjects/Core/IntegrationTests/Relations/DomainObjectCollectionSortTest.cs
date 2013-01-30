@@ -36,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     {
       base.SetUp ();
 
-      _owningCustomer = Customer.GetObject (DomainObjectIDs.Customer1);
-      
+      _owningCustomer = DomainObjectIDs.Customer1.GetObject<Customer> ();
+
       Assert.That (_owningCustomer.Orders.Count, Is.EqualTo (2));
       _itemA = _owningCustomer.Orders[0];
       _itemB = _owningCustomer.Orders[1];

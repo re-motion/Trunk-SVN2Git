@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -33,8 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
 
-      DataContainer expectedContainer1 = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
-      DataContainer expectedContainer2 = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;
+      DataContainer expectedContainer1 = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
+      DataContainer expectedContainer2 = DomainObjectIDs.Order2.GetObject<Order> ().InternalDataContainer;
 
       byte[] data = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForOrder1Order2);
 

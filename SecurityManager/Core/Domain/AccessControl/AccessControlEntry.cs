@@ -46,11 +46,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return NewObject<AccessControlEntry>();
     }
 
-    public new static AccessControlEntry GetObject (ObjectID id)
-    {
-      return GetObject<AccessControlEntry> (id);
-    }
-
     // member fields
 
     private SecurityTokenMatcher _matcher;

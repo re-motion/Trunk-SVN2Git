@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       var subTx = TestableClientTransaction.CreateSubTransaction();
       _subTxScope = subTx.EnterDiscardingScope();
 
-      _loadedObject = SampleBindableMixinDomainObject.GetObject (objectID);
+      _loadedObject = objectID.GetObject<SampleBindableMixinDomainObject>();
       _loadedBusinessObject = (IBusinessObject) _loadedObject;
 
       _newObject = SampleBindableMixinDomainObject.NewObject();

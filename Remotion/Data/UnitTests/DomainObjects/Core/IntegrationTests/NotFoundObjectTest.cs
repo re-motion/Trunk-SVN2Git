@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       _nonExistingObjectID = new ObjectID(typeof (Order), Guid.NewGuid());
 
-      var classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var classWithAllDataTypes = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       classWithAllDataTypes.Delete();
       _nonExistingObjectIDForSubtransaction = classWithAllDataTypes.ID;
     }
@@ -47,23 +47,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void GetObject_True_ShouldThrow_AndMarkObjectNotFound ()
     {
-      Assert.That (() => Order.GetObject (_nonExistingObjectID, true), ThrowsObjectNotFoundException (_nonExistingObjectID));
+      Assert.That (() => _nonExistingObjectID.GetObject<Order> (includeDeleted: true), ThrowsObjectNotFoundException (_nonExistingObjectID));
 
       CheckObjectIsMarkedInvalid (_nonExistingObjectID);
 
       // After the object has been marked invalid
-      Assert.That (() => Order.GetObject (_nonExistingObjectID, true), ThrowsObjectInvalidException (_nonExistingObjectID));
+      Assert.That (() => _nonExistingObjectID.GetObject<Order> (includeDeleted: true), ThrowsObjectInvalidException (_nonExistingObjectID));
     }
 
     [Test]
     public void GetObject_False_ShouldThrow_AndMarkObjectNotFound ()
     {
-      Assert.That (() => Order.GetObject (_nonExistingObjectID, false), ThrowsObjectNotFoundException (_nonExistingObjectID));
+      Assert.That (() => _nonExistingObjectID.GetObject<Order> (includeDeleted: false), ThrowsObjectNotFoundException (_nonExistingObjectID));
 
       CheckObjectIsMarkedInvalid (_nonExistingObjectID);
 
       // After the object has been marked invalid
-      Assert.That (() => Order.GetObject (_nonExistingObjectID, true), ThrowsObjectInvalidException (_nonExistingObjectID));
+      Assert.That (() => _nonExistingObjectID.GetObject<Order> (includeDeleted: true), ThrowsObjectInvalidException (_nonExistingObjectID));
     }
 
     [Test]
@@ -72,13 +72,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (
-            () => Order.GetObject (_nonExistingObjectIDForSubtransaction, true),
+            () => _nonExistingObjectIDForSubtransaction.GetObject<TestDomainBase> (includeDeleted: true),
             ThrowsObjectInvalidException (_nonExistingObjectIDForSubtransaction));
 
         CheckObjectIsMarkedInvalid (_nonExistingObjectIDForSubtransaction);
 
         Assert.That (
-            () => Order.GetObject (_nonExistingObjectID, true),
+            () => _nonExistingObjectID.GetObject<TestDomainBase> (includeDeleted: true),
             ThrowsObjectNotFoundException (_nonExistingObjectID));
 
         CheckObjectIsMarkedInvalid (_nonExistingObjectID);
@@ -92,13 +92,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void TryGetObject_ShouldReturnNull_AndMarkObjectNotFound ()
     {
       DomainObject instance = null;
-      Assert.That (() => instance = Order.TryGetObject (_nonExistingObjectID), Throws.Nothing);
+      Assert.That (() => instance = _nonExistingObjectID.TryGetObject<TestDomainBase> (), Throws.Nothing);
 
       Assert.That (instance, Is.Null);
       CheckObjectIsMarkedInvalid (_nonExistingObjectID);
 
       // After the object has been marked invalid
-      Assert.That (() => instance = Order.TryGetObject (_nonExistingObjectID), Throws.Nothing);
+      Assert.That (() => instance = _nonExistingObjectID.TryGetObject<TestDomainBase> (), Throws.Nothing);
       Assert.That (instance, Is.Not.Null);
       Assert.That (instance.IsInvalid, Is.True);
     }
@@ -111,12 +111,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         DomainObject instance = null;
         CheckObjectIsMarkedInvalid (_nonExistingObjectIDForSubtransaction);
 
-        Assert.That (() => instance = Order.TryGetObject (_nonExistingObjectIDForSubtransaction), Throws.Nothing);
+        Assert.That (() => instance = _nonExistingObjectIDForSubtransaction.TryGetObject<TestDomainBase> (), Throws.Nothing);
 
         Assert.That (instance, Is.Not.Null);
         Assert.That (instance.IsInvalid, Is.True);
 
-        Assert.That (() => instance = Order.TryGetObject (_nonExistingObjectID), Throws.Nothing);
+        Assert.That (() => instance = _nonExistingObjectID.TryGetObject<TestDomainBase> (), Throws.Nothing);
 
         Assert.That (instance, Is.Null);
         CheckObjectIsMarkedInvalid (_nonExistingObjectID);
@@ -350,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       {
         clientID = CreateClientWithNonExistingParentClient();
         
-        var client = Client.GetObject (clientID);
+        var client = clientID.GetObject<Client> ();
         Client instance = null;
         Assert.That (() => instance = client.ParentClient, Throws.Nothing);
         CheckObjectIsMarkedInvalid (instance.ID);
@@ -368,8 +368,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void UnidirectionalRelationProperty_Subtransaction ()
     {
       var newClient = Client.NewObject ();
-      newClient.ParentClient = Client.GetObject (DomainObjectIDs.Client3);
-      
+      newClient.ParentClient = DomainObjectIDs.Client3.GetObject<Client> ();
+
       var nonExistingParentClient = newClient.ParentClient;
       nonExistingParentClient.Delete ();
 
@@ -387,7 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void BidirectionalForeignKeyRelationProperty_ShouldReturnInvalidObject ()
     {
       var id = new ObjectID(typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
-      var objectWithInvalidRelation = (ClassWithInvalidRelation) ClassWithInvalidRelation.GetObject (id);
+      var objectWithInvalidRelation = (ClassWithInvalidRelation) id.GetObject<TestDomainBase> ();
 
       DomainObject instance = null;
       
@@ -405,7 +405,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       {
         var id = new ObjectID(typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
 
-        var objectWithInvalidRelation = (ClassWithInvalidRelation) ClassWithInvalidRelation.GetObject (id);
+        var objectWithInvalidRelation = (ClassWithInvalidRelation) id.GetObject<TestDomainBase> ();
 
         Assert.That (() => instance = objectWithInvalidRelation.ClassWithGuidKey, Throws.Nothing);
         CheckObjectIsMarkedInvalid (instance.ID);
@@ -425,7 +425,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       triggeringObjectReference.ProtectedLoaded += (sender, args) =>
       {
         if (ClientTransaction.Current == TestableClientTransaction)
-          Order.TryGetObject (_nonExistingObjectID);
+          _nonExistingObjectID.TryGetObject<TestDomainBase> ();
       };
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
@@ -448,7 +448,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         var subTransaction = middleTransaction.CreateSubTransaction();
         using (subTransaction.EnterDiscardingScope ())
         {
-          Assert.That (() => Order.GetObject (_nonExistingObjectID, true), ThrowsObjectNotFoundException (_nonExistingObjectID));
+          Assert.That (() => _nonExistingObjectID.GetObject<Order> (includeDeleted: true), ThrowsObjectNotFoundException (_nonExistingObjectID));
 
           CheckObjectIsMarkedInvalid (_nonExistingObjectID);
         }
@@ -500,7 +500,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       {
         var newClient = Client.NewObject ();
         newClientID = newClient.ID;
-        newClient.ParentClient = Client.GetObject (DomainObjectIDs.Client3);
+        newClient.ParentClient = DomainObjectIDs.Client3.GetObject<Client> ();
         newClient.ParentClient.Delete ();
         ClientTransaction.Current.Commit ();
         Assert.That (newClient.ParentClient.State, Is.EqualTo (StateType.Invalid));
@@ -512,7 +512,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var client = Client.GetObject (clientID);
+        var client = clientID.GetObject<Client> ();
         client.Delete ();
         ClientTransaction.Current.Commit ();
       }

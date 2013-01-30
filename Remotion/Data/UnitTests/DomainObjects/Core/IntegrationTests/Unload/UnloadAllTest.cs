@@ -291,7 +291,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void TransactionWithoutDataContainers_ButRelations ()
     {
-      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
+      var customer = DomainObjectIDs.Customer2.GetObject<Customer> ();
       customer.EnsureDataAvailable ();
       ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Resolve (customer, o => o.Orders));
 
@@ -518,7 +518,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void Events_Recalculation ()
     {
-      var order1 = Order.GetObject  (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var order2 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order2);
       var order3 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order3);
 
@@ -623,7 +623,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
     private Order LoadOrderWithRelations (ObjectID objectID)
     {
-      var order = Order.GetObject (objectID);
+      var order = objectID.GetObject<Order> ();
       order.EnsureDataAvailable ();
       ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
       ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderItems));

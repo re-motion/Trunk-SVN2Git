@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataContainer_Contents ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
 
       Computer computer = employee.Computer;
       computer.SerialNumber = "abc";
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataContainer_MarkAsChanged_Contents()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       Computer computer = employee.Computer;
       DataContainer dataContainer = computer.InternalDataContainer;
       dataContainer.MarkAsChanged();

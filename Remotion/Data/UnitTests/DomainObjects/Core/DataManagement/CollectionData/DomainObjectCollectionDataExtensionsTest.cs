@@ -16,6 +16,7 @@
 // 
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
@@ -36,10 +37,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       base.SetUp ();
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _order2 = Order.GetObject (DomainObjectIDs.Order2);
-      _order3 = Order.GetObject (DomainObjectIDs.Order3);
-      _order4 = Order.GetObject (DomainObjectIDs.Order4);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
+      _order4 = DomainObjectIDs.Order4.GetObject<Order> ();
 
       _data = new DomainObjectCollectionData (new[] { _order1, _order2 });
     }

@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     {
       ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
-        var order = Order.GetObject (DomainObjectIDs.Order1);
+        var order = DomainObjectIDs.Order1.GetObject<Order> ();
         f.Variables.Add ("Order", order);
 
         f.Transaction.Reset ();
@@ -62,12 +62,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
       ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
-        var existingObject = Order.GetObject (DomainObjectIDs.Order1);
-        var nonExistingObject = Employee.GetObject (DomainObjectIDs.Employee1);
+        var existingObject = DomainObjectIDs.Order1.GetObject<Order> ();
+        var nonExistingObject = DomainObjectIDs.Employee1.GetObject<Employee> ();
 
         ClientTransaction.CreateRootTransaction ().Execute (() =>
         {
-          Employee.GetObject (nonExistingObject.ID).Delete();
+          nonExistingObject.ID.GetObject<Employee> ().Delete();
           ClientTransaction.Current.Commit();
         });
 
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     {
       ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
-        var order = Order.GetObject (DomainObjectIDs.Order1);
+        var order = DomainObjectIDs.Order1.GetObject<Order> ();
 
         f.Transaction.Reset ();
 
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
         Assert.That (transactionBefore.ParentTransaction, Is.Not.Null);
         var parentBefore = transactionBefore.ParentTransaction;
 
-        var order = Order.GetObject (DomainObjectIDs.Order1);
+        var order = DomainObjectIDs.Order1.GetObject<Order> ();
 
         f.Transaction.Reset();
 

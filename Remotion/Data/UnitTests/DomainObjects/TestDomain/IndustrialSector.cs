@@ -30,11 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return NewObject<IndustrialSector> ();
     }
 
-    public new static IndustrialSector GetObject (ObjectID id)
-    {
-      return GetObject<IndustrialSector> (id);
-    }
-
     protected IndustrialSector ()
     {
     }

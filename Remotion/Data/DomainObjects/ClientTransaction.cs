@@ -499,8 +499,7 @@ public class ClientTransaction
   /// <returns>True if the object was newly enlisted; false if it had already been enlisted in this transaction.</returns>
   /// <remarks>
   /// <para>
-  /// Unlike <see cref="DomainObject.GetObject{T}(ObjectID)"/>, this method does not create a new <see cref="DomainObject"/> reference if the object
-  /// hasn't been loaded yet, but instead
+  /// Unlike <see cref="ObjectIDExtensions.GetObject{T}"/>, this method does not load any data, but instead
   /// marks the given <see cref="DomainObject"/> for use in this transaction. After this, the same object reference can be used in both the
   /// transaction it was originally created in and the transactions it has been enlisted in.
   /// </para>

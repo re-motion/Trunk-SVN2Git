@@ -24,21 +24,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   [DBTable]
   [TestDomain]
   [Instantiable]
-  public abstract class Order : TestDomainBase, IOrder, ISupportsGetObject
+  public abstract class Order : TestDomainBase, IOrder
   {
     public static Order NewObject ()
     {
       return NewObject<Order> ();
-    }
-
-    public new static Order GetObject (ObjectID id)
-    {
-      return GetObject<Order> (id);
-    }
-
-    public new static Order GetObject (ObjectID id, bool includeDeleted)
-    {
-      return GetObject<Order> (id, includeDeleted);
     }
 
     [DBColumn ("OrderNo")]

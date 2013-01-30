@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
@@ -83,7 +84,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
 
       using (new SecurityFreeSection ())
       {
-        var group = Group.GetObject (searchArguments.GroupID);
+        var group = searchArguments.GroupID.GetObject<Group> ();
         return group.GroupType;
       }
     }

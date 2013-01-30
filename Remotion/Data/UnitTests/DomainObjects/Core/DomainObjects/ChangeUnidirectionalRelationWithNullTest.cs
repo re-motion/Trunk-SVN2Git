@@ -28,8 +28,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetRelatedObjectwithNewNullObject ()
     {
-      Client oldClient = Client.GetObject (DomainObjectIDs.Client1);
-      Location location = Location.GetObject (DomainObjectIDs.Location1);
+      Client oldClient = DomainObjectIDs.Client1.GetObject<Client> ();
+      Location location = DomainObjectIDs.Location1.GetObject<Location>();
       Assert.That (location.Client, Is.SameAs (oldClient));
 
       location.Client = null;
@@ -43,8 +43,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetRelatedObjectWithOldNullObject ()
     {
-      Client client = Client.GetObject (DomainObjectIDs.Client4);
-      Client newClient = Client.GetObject (DomainObjectIDs.Client1);
+      Client client = DomainObjectIDs.Client4.GetObject<Client> ();
+      Client newClient = DomainObjectIDs.Client1.GetObject<Client> ();
 
       client.ParentClient = newClient;
 
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetRelatedObjectWithOldAndNewNullObject ()
     {
-      Client client = Client.GetObject (DomainObjectIDs.Client4);
+      Client client = DomainObjectIDs.Client4.GetObject<Client> ();
       SequenceEventReceiver eventReceiver = new SequenceEventReceiver (client);
 
       client.ParentClient = null;

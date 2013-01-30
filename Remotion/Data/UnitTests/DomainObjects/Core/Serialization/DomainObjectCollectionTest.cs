@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void DomainObjectCollection_IsSerializable ()
     {
       var collection = new DomainObjectCollection ();
-      collection.Add (Order.GetObject (DomainObjectIDs.Order1));
+      collection.Add (DomainObjectIDs.Order1.GetObject<Order> ());
 
       DomainObjectCollection deserializedCollection = Serializer.SerializeAndDeserialize (collection);
       Assert.That (deserializedCollection.Count, Is.EqualTo (1));
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void DomainObjectCollection_StandAlone_Contents ()
     {
       var collection = new DomainObjectCollection (typeof (Order));
-      collection.Add (Order.GetObject (DomainObjectIDs.Order1));
+      collection.Add (DomainObjectIDs.Order1.GetObject<Order> ());
 
       DomainObjectCollection deserializedCollection = SerializeAndDeserialize (collection);
       Assert.That (deserializedCollection.Count, Is.EqualTo (1));
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void DomainObjectCollection_StandAlone_Data ()
     {
       var collection = new DomainObjectCollection (typeof (Order));
-      collection.Add (Order.GetObject (DomainObjectIDs.Order1));
+      collection.Add (DomainObjectIDs.Order1.GetObject<Order> ());
 
       DomainObjectCollection deserializedCollection = SerializeAndDeserialize (collection);
 
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DomainObjectCollection_Associated ()
     {
-      var customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
+      var customer1 = DomainObjectIDs.Customer1.GetObject<Customer> ();
       var collection = customer1.Orders;
       var endPointID = collection.AssociatedEndPointID;
       var relatedIDs = collection.Select (obj => obj.ID).ToArray();
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DomainObjectCollection_Events_Contents ()
     {
-      var collection = new DomainObjectCollection (typeof (Order)) {Order.GetObject (DomainObjectIDs.Order1)};
+      var collection = new DomainObjectCollection (typeof (Order)) {DomainObjectIDs.Order1.GetObject<Order> ()};
 
       var eventReceiver = new DomainObjectCollectionEventReceiver (collection);
 

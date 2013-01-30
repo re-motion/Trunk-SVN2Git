@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     {
       Order order = Order.NewObject ();
       order.OrderNumber = 5;
-      order.OrderItems.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem4));
+      order.OrderItems.Add (DomainObjectIDs.OrderItem4.GetObject<OrderItem>());
       Tuple<ClientTransaction, Order> deserializedObjects =
           Serializer.SerializeAndDeserialize (new Tuple<ClientTransaction, Order> (ClientTransactionScope.CurrentTransaction, order));
 

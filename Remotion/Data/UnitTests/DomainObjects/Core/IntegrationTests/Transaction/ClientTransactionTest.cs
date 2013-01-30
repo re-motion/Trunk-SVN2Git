@@ -86,9 +86,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitTwice ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      OrderTicket oldOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      OrderTicket newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+      OrderTicket oldOrderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
+      OrderTicket newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
 
       oldOrderTicket.Order = newOrderTicket.Order;
       order.OrderTicket = newOrderTicket;
@@ -113,10 +113,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitTwiceWithChange ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      OrderTicket oldOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      OrderTicket newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
-      Order oldOrderOfNewOrderTicket = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+      OrderTicket oldOrderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
+      OrderTicket newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
+      Order oldOrderOfNewOrderTicket = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
 
       oldOrderTicket.Order = newOrderTicket.Order;
       order.OrderTicket = newOrderTicket;
@@ -142,9 +142,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void OppositeDomainObjectsTypeAfterCommit ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
-      customer.Orders.Add (Order.GetObject (DomainObjectIDs.Order2));
+      customer.Orders.Add (DomainObjectIDs.Order2.GetObject<Order> ());
       TestableClientTransaction.Commit ();
 
       DomainObjectCollection originalOrders = customer.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
@@ -157,8 +157,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void RollbackReadOnlyOppositeDomainObjects ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      customer.Orders.Add (Order.GetObject (DomainObjectIDs.Order2));
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      customer.Orders.Add (DomainObjectIDs.Order2.GetObject<Order> ());
 
       DomainObjectCollectionDataTestHelper.MakeCollectionReadOnly (customer.Orders);
       TestableClientTransaction.Rollback ();
@@ -170,17 +170,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitDeletedObject ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       computer.Delete ();
       TestableClientTransaction.Commit ();
 
-      Assert.That (() => Computer.GetObject (DomainObjectIDs.Computer1), Throws.TypeOf<ObjectInvalidException>());
+      Assert.That (() => DomainObjectIDs.Computer1.GetObject<Computer> (), Throws.TypeOf<ObjectInvalidException>());
     }
 
     [Test]
     public void AccessDeletedObjectAfterCommit ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       computer.Delete ();
       TestableClientTransaction.Commit ();
 
@@ -196,14 +196,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order1;
       using (clientTransaction1.EnterNonDiscardingScope())
       {
-        order1 = Order.GetObject (DomainObjectIDs.Order1);
+        order1 = DomainObjectIDs.Order1.GetObject<Order> ();
         order1.OrderNumber = 50;
       }
 
       Order order2;
       using (clientTransaction2.EnterNonDiscardingScope ())
       {
-        order2 = Order.GetObject (DomainObjectIDs.Order2);
+        order2 = DomainObjectIDs.Order2.GetObject<Order> ();
         order2.OrderNumber = 60;
       }
 
@@ -213,8 +213,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ClientTransaction clientTransaction3 = ClientTransaction.CreateRootTransaction();
       using (clientTransaction3.EnterNonDiscardingScope ())
       {
-        Order changedOrder1 = Order.GetObject (DomainObjectIDs.Order1);
-        Order changedOrder2 = Order.GetObject (DomainObjectIDs.Order2);
+        Order changedOrder1 = DomainObjectIDs.Order1.GetObject<Order> ();
+        Order changedOrder2 = DomainObjectIDs.Order2.GetObject<Order> ();
 
         Assert.That (ReferenceEquals (order1, changedOrder1), Is.False);
         Assert.That (ReferenceEquals (order2, changedOrder2), Is.False);
@@ -292,7 +292,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void HasChanged ()
     {
       Assert.That (ClientTransactionScope.CurrentTransaction.HasChanged(), Is.False);
-      Order order1 = Order.GetObject (DomainObjectIDs.Order1);
+      Order order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       order1.OrderNumber = order1.OrderNumber + 1;
       Assert.That (ClientTransactionScope.CurrentTransaction.HasChanged(), Is.True);
     }
@@ -420,7 +420,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Obsolete ("TODO 2072 - Remove")]
     public void CopyCollectionEventHandlers ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       DomainObjectCollectionChangeEventHandler addedEventHandler = delegate { };
       DomainObjectCollectionChangeEventHandler addingEventHandler = delegate { };
       DomainObjectCollectionChangeEventHandler removedEventHandler = delegate { };
@@ -447,7 +447,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Obsolete ("TODO 2072 - Remove")]
     public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInOriginalTransaction ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       int loadedObjectsBefore = TestableClientTransaction.DataManager.DataContainers.Count;
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
@@ -467,7 +467,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Ignore ("TODO: Optimize CopyCollectionEventHandlers")]
     public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInDestinationTransaction_IfNotRequiredTo ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Dev.Null = order.OrderItems; // load relation in source transaction, but do not attach event handlers
 
       var innerTransaction = new TestableClientTransaction();
@@ -509,7 +509,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       mockRepository.ReplayAll ();
 
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.OrderItems.Added += delegate { };
 
       using (innerTransaction.EnterDiscardingScope ())
@@ -597,9 +597,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void LinqToClientTransaction ()
     {
-      Order o1 = Order.GetObject (DomainObjectIDs.Order1);
-      Order o2 = Order.GetObject (DomainObjectIDs.Order2);
-      Order o3 = Order.GetObject (DomainObjectIDs.Order3);
+      Order o1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      Order o2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      Order o3 = DomainObjectIDs.Order3.GetObject<Order> ();
 
       var loadedOrders = from o in TestableClientTransaction.GetEnlistedDomainObjects().OfType<Order>()
                          select o;

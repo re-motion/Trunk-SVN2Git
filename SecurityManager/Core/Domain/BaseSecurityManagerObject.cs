@@ -22,11 +22,12 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 namespace Remotion.SecurityManager.Domain
 {
   [Serializable]
-  public abstract class BaseSecurityManagerObject : BindableDomainObject
+  public abstract class BaseSecurityManagerObject : BindableDomainObject, ISupportsGetObject
   {
+    [Obsolete ("This method has been removed. Use objectID.GetObject<BaseSecurityManagerObject>() instead. (1.13.184.0)", true)]
     public static BaseSecurityManagerObject GetObject (ObjectID id)
     {
-      return DomainObject.GetObject<BaseSecurityManagerObject> (id);
+      throw new NotImplementedException();
     }
 
     protected BaseSecurityManagerObject ()

@@ -35,9 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     {
       base.SetUp ();
 
-      _oldClient = Client.GetObject (DomainObjectIDs.Client1);
-      _newClient = Client.GetObject (DomainObjectIDs.Client2);
-      _location = Location.GetObject (DomainObjectIDs.Location1);
+      _oldClient = DomainObjectIDs.Client1.GetObject<Client> ();
+      _newClient = DomainObjectIDs.Client2.GetObject<Client> ();
+      _location = DomainObjectIDs.Location1.GetObject<Location>();
     }
 
     [Test]
@@ -129,9 +129,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        client1 = Client.GetObject (clientID1);
-        client2 = Client.GetObject (clientID2);
-        location = Location.GetObject (locationID);
+        client1 = clientID1.GetObject<Client> ();
+        client2 = clientID2.GetObject<Client> ();
+        location = locationID.GetObject<Location>();
 
         Assert.That (client1, Is.Not.Null);
         Assert.That (client2, Is.Not.Null);
@@ -168,13 +168,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _oldClient.Delete ();
       _newClient.Delete ();
 
-      Client client3 = Client.GetObject (DomainObjectIDs.Client3);
+      Client client3 = DomainObjectIDs.Client3.GetObject<Client> ();
       client3.Delete ();
 
-      Location location2 = Location.GetObject (DomainObjectIDs.Location2);
+      Location location2 = DomainObjectIDs.Location2.GetObject<Location>();
       location2.Delete ();
 
-      Location location3 = Location.GetObject (DomainObjectIDs.Location3);
+      Location location3 = DomainObjectIDs.Location3.GetObject<Location>();
       location3.Delete ();
 
       TestableClientTransaction.Commit ();
@@ -195,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     public void DeletedObject_CanBeOverwritten ()
     {
       Location location = Location.NewObject ();
-      location.Client = Client.GetObject (DomainObjectIDs.Client1);
+      location.Client = DomainObjectIDs.Client1.GetObject<Client> ();
       location.Client.Delete ();
       location.Client = Client.NewObject ();
     }
@@ -290,8 +290,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        newClient1 = Client.GetObject (newClientID1);
-        newClient2 = Client.GetObject (newClientID2);
+        newClient1 = newClientID1.GetObject<Client> ();
+        newClient2 = newClientID2.GetObject<Client> ();
 
         Assert.That (newClient1, Is.Not.Null);
         Assert.That (newClient2, Is.Not.Null);

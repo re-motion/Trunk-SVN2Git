@@ -31,21 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public static event EventHandler StaticLoadHandler;
     public static event EventHandler StaticInitializationHandler;
 
-    public static TestDomainBase GetObject (ObjectID id)
-    {
-      return GetObject<TestDomainBase> (id);
-    }
-
-    public static TestDomainBase GetObject (ObjectID id, bool includeDeleted)
-    {
-      return GetObject<TestDomainBase> (id, includeDeleted);
-    }
-
-    public static TestDomainBase TryGetObject (ObjectID id)
-    {
-      return TryGetObject<TestDomainBase> (id);
-    }
-
     public static void ClearStaticCtorHandlers ()
     {
       if (StaticCtorHandler != null)

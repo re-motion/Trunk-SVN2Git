@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
       if (CurrentObject == null)
       {
         User = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreateUser ();
-        User.Tenant = Tenant.GetObject (TenantID);
+        User.Tenant = TenantID.GetObject<Tenant> ();
       }
     }
 

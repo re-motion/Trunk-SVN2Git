@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable();
 
-      var deletedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var deletedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       deletedObject.Delete ();
       TestableClientTransaction.Commit();
 
@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable ();
 
-      var deletedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var deletedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       deletedObject.Delete ();
       TestableClientTransaction.Commit ();
 
@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void DeletedInParent ()
     {
-      var deletedObject = Order.GetObject (DomainObjectIDs.Order1);
+      var deletedObject = DomainObjectIDs.Order1.GetObject<Order> ();
       deletedObject.Delete();
 
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void NotInvalidAtAll ()
     {
-      var notInvalidObject = Order.GetObject (DomainObjectIDs.Order1);
+      var notInvalidObject = DomainObjectIDs.Order1.GetObject<Order> ();
 
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())

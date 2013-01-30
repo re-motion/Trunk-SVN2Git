@@ -46,9 +46,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void Commit_Rollback_ExistingObject ()
     {
       DateTime referenceDateTime = DateTime.Now;
-      Employee referenceEmployee = Employee.GetObject (DomainObjectIDs.Employee1);
+      Employee referenceEmployee = DomainObjectIDs.Employee1.GetObject<Employee> ();
 
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       CheckDefaultValueAndValueAfterSet (computer, referenceDateTime, referenceEmployee);
 
       TestableClientTransaction.Rollback ();
@@ -69,10 +69,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       DateTime referenceDateTime = DateTime.MinValue;
       DateTime referenceDateTime2 = DateTime.MaxValue;
-      Employee referenceEmployee = Employee.GetObject (DomainObjectIDs.Employee1);
-      Employee referenceEmployee2 = Employee.GetObject (DomainObjectIDs.Employee2);
+      Employee referenceEmployee = DomainObjectIDs.Employee1.GetObject<Employee> ();
+      Employee referenceEmployee2 = DomainObjectIDs.Employee2.GetObject<Employee> ();
 
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       computer.Int32TransactionProperty = 5;
       computer.DateTimeTransactionProperty = referenceDateTime;
       computer.EmployeeTransactionProperty = referenceEmployee;
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void Commit_Rollback_SubtransactionNewObject ()
     {
       DateTime referenceDateTime = DateTime.Now;
-      Employee referenceEmployee = Employee.GetObject (DomainObjectIDs.Employee1);
+      Employee referenceEmployee = DomainObjectIDs.Employee1.GetObject<Employee> ();
 
       Computer computer;
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
@@ -150,8 +150,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        Computer sameComputer = Computer.GetObject (computer.ID);
-        Employee sameReferenceEmployee = Employee.GetObject (referenceEmployee.ID);
+        Computer sameComputer = computer.ID.GetObject<Computer> ();
+        Employee sameReferenceEmployee = referenceEmployee.ID.GetObject<Employee> ();
         Assert.That (sameComputer.Int32TransactionProperty, Is.EqualTo (0));
         Assert.That (sameComputer.DateTimeTransactionProperty, Is.EqualTo (new DateTime()));
         Assert.That (sameComputer.EmployeeTransactionProperty, Is.Null);

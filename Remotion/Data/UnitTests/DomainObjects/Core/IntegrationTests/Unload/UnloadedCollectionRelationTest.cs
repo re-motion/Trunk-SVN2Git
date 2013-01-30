@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       base.SetUp ();
 
       _newOrderItem = OrderItem.NewObject();
-      _orderWithUnloadedCollection = Order.GetObject (DomainObjectIDs.Order1);
+      _orderWithUnloadedCollection = DomainObjectIDs.Order1.GetObject<Order> ();
       _originalOrderItemCount = _orderWithUnloadedCollection.OrderItems.Count;
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, _orderWithUnloadedCollection.OrderItems.AssociatedEndPointID);
     }

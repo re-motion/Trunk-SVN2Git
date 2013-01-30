@@ -128,7 +128,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       if (CurrentStateCombination.Class.StateProperties.Count == 1)
       {
         string id = StateDefinitionField.BusinessObjectUniqueIdentifier;
-        StateDefinition stateDefinition = StateDefinition.GetObject (ObjectID.Parse (id));
+        StateDefinition stateDefinition = ObjectID.Parse (id).GetObject<StateDefinition> ();
         CurrentStateCombination.ClearStates();
           CurrentStateCombination.AttachState (stateDefinition);
       }

@@ -23,16 +23,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Supplier : Partner
   {
-    public new static Supplier NewObject ()
-    {
-      return NewObject<Supplier>();
-    }
-
-    public new static Supplier GetObject (ObjectID id)
-    {
-      return GetObject<Supplier> (id);
-    }
-
     protected Supplier ()
     {
     }

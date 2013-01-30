@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
       ClientTransaction bindingTransaction = ClientTransaction.CreateBindingTransaction ();
       cloner.CloneTransaction = bindingTransaction;
 
-      Order source = Order.GetObject (DomainObjectIDs.Order1);
+      Order source = DomainObjectIDs.Order1.GetObject<Order> ();
       Order clone = cloner.CreateClone (source, new CompleteCloneStrategy());
 
       Assert.That (clone, Is.Not.SameAs (source));
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
       DomainObjectCloner cloner = new DomainObjectCloner ();
       CloneContext context = new CloneContext (cloner);
 
-      Order source = Order.GetObject (DomainObjectIDs.Order1);
+      Order source = DomainObjectIDs.Order1.GetObject<Order> ();
       Order clone1 = cloner.CreateClone (source, new CompleteCloneStrategy(), context);
       Order clone2 = cloner.CreateClone (source, new CompleteCloneStrategy(), context);
 

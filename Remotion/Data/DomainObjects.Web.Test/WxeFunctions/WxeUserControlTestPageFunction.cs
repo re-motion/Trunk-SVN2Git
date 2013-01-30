@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 
     private void Step1()
     {
-      ObjectPassedIntoSecondControl = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ObjectWithAllDataTypes1);
+      ObjectPassedIntoSecondControl = DomainObjectIDs.ObjectWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
     }
 
     private WxePageStep Step2 = new WxePageStep ("WxeUserControlTestPage.aspx");

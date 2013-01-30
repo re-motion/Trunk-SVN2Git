@@ -340,7 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_DoesNotContainRoot ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.No.Member(order));
     }
@@ -348,7 +348,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_DoesNotContainIndirectRelatedObjects ()
     {
-      Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
+      Ceo ceo = DomainObjectIDs.Ceo1.GetObject<Ceo> ();
       var relatedObjects = new List<DomainObject> (ceo.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.No.Member(ceo.Company.IndustrialSector));
     }
@@ -356,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_DoesNotContainDuplicates ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Is.EquivalentTo (new Set<DomainObject> (relatedObjects)));
     }
@@ -372,7 +372,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_ContainsSimpleRelatedObject ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.Member (order.Official));
       Assert.That (relatedObjects, Has.Member (order.OrderTicket));
@@ -381,11 +381,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_ContainsSimpleRelatedObjectBothSides ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       var relatedObjects = new List<DomainObject> (computer.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.Member (computer.Employee));
 
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       relatedObjects = new List<DomainObject> (employee.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.Member (employee.Computer));
 
@@ -394,7 +394,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_ContainsSimpleRelatedObjectUnidirectional ()
     {
-      Client client = Client.GetObject (DomainObjectIDs.Client2);
+      Client client = DomainObjectIDs.Client2.GetObject<Client> ();
       var relatedObjects = new List<DomainObject> (client.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.Member (client.ParentClient));
     }
@@ -402,7 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_ContainsRelatedObjects ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (order.OrderItems, Is.SubsetOf (relatedObjects));
     }
@@ -410,7 +410,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void PropertyIndexer_CachesPropertyData()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       var indexer = new PropertyIndexer (order);
       Assert.That (indexer[typeof (Order), "OrderNumber"].PropertyData, Is.SameAs (indexer[typeof (Order), "OrderNumber"].PropertyData));
     }
@@ -418,7 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void DomainObject_CachesPropertyIndexer()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (order.Properties, Is.SameAs (order.Properties));
     }
   }

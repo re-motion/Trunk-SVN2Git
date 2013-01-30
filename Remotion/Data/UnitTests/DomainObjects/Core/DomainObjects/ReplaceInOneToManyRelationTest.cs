@@ -34,10 +34,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       base.SetUp ();
 
-      _customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      _oldCustomerOfNewOrder = Customer.GetObject (DomainObjectIDs.Customer3);
-      _oldOrder = Order.GetObject (DomainObjectIDs.Order1);
-      _newOrder = Order.GetObject (DomainObjectIDs.Order2);
+      _customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      _oldCustomerOfNewOrder = DomainObjectIDs.Customer3.GetObject<Customer> ();
+      _oldOrder = DomainObjectIDs.Order1.GetObject<Order> ();
+      _newOrder = DomainObjectIDs.Order2.GetObject<Order> ();
     }
 
     [Test]
@@ -447,7 +447,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void ChangeEventsWithOldRelatedObjectNotLoaded ()
     {
-      Order newOrder = Order.GetObject (DomainObjectIDs.Order3);
+      Order newOrder = DomainObjectIDs.Order3.GetObject<Order> ();
 
       SequenceEventReceiver eventReceiver = new SequenceEventReceiver (
           new DomainObject[] { _oldOrder, newOrder, _customer },
@@ -459,7 +459,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (newOrder.Customer, Is.SameAs (_customer));
       Assert.That (_customer.Orders.ContainsObject (newOrder), Is.True);
 
-      Customer oldCustomerOfNewOrder = Customer.GetObject (DomainObjectIDs.Customer4);
+      Customer oldCustomerOfNewOrder = DomainObjectIDs.Customer4.GetObject<Customer> ();
 
       Assert.That (oldCustomerOfNewOrder.Orders.ContainsObject (newOrder), Is.False);
 

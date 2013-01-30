@@ -17,12 +17,9 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
-using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -106,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       MixinAddingPersistentProperties loadedMixin;
       using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
-        loadedInstance = TargetClassForPersistentMixin.GetObject (mixedInstance.ID);
+        loadedInstance = mixedInstance.ID.GetObject<TargetClassForPersistentMixin> ();
         loadedMixin = Mixin.Get<MixinAddingPersistentProperties> (loadedInstance);
       }
 
@@ -155,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
-        loadedInstance = TargetClassWithTwoUnidirectionalMixins.GetObject (mixedInstance.ID);
+        loadedInstance = mixedInstance.GetHandle().GetObject();
         loadedMixin1 = Mixin.Get<MixinAddingUnidirectionalRelation1> (loadedInstance);
         loadedMixin2 = Mixin.Get<MixinAddingUnidirectionalRelation2> (loadedInstance);
       }
@@ -198,9 +195,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
-        loadedInstance1 = TargetClassWithUnidirectionalMixin1.GetObject (mixedInstance1.ID);
+        loadedInstance1 = mixedInstance1.GetHandle().GetObject ();
         loadedMixin1 = Mixin.Get<MixinAddingUnidirectionalRelation1> (loadedInstance1);
-        loadedInstance2 = TargetClassWithUnidirectionalMixin2.GetObject (mixedInstance2.ID);
+        loadedInstance2 = mixedInstance2.GetHandle().GetObject ();
         loadedMixin2 = Mixin.Get<MixinAddingUnidirectionalRelation1> (loadedInstance2);
       }
 

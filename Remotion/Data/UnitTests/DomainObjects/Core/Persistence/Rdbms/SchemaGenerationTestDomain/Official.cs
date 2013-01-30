@@ -23,16 +23,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [Instantiable]
   public abstract class Official : DomainObject
   {
-    public static Official NewObject()
-    {
-      return DomainObject.NewObject<Official> ();
-    }
-
-    public static Official GetObject (ObjectID id)
-    {
-      return DomainObject.GetObject<Official> (id);
-    }
-
     protected Official()
     {
     }

@@ -17,6 +17,7 @@
 using System.IO;
 using System.Text;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -29,8 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void Export_SerializesData ()
     {
-      DataContainer container1 = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
-      DataContainer container2 = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;
+      DataContainer container1 = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
+      DataContainer container2 = DomainObjectIDs.Order2.GetObject<Order> ().InternalDataContainer;
 
       TransportItem item1 = TransportItem.PackageDataContainer (container1);
       TransportItem item2 = TransportItem.PackageDataContainer (container2);

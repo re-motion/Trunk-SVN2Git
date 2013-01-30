@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -546,7 +547,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         "GetRelationEndPointWithLazyLoad cannot be called for anonymous end points.\r\nParameter name: endPointID")]
     public void GetRelationEndPointWithLazyLoad_DoesNotSupportAnonymousEndPoints ()
     {
-      var client = Client.GetObject (DomainObjectIDs.Client2);
+      var client = DomainObjectIDs.Client2.GetObject<Client> ();
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
       IRelationEndPoint unidirectionalEndPoint =
           _relationEndPointManager.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (client.ID, parentClientEndPointDefinition));
@@ -720,7 +721,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         "GetOrCreateVirtualEndPoint cannot be called for anonymous end points.\r\nParameter name: endPointID")]
     public void GetOrCreateVirtualEndPoint_DoesNotSupportAnonymousEndPoints ()
     {
-      var client = Client.GetObject (DomainObjectIDs.Client2);
+      var client = DomainObjectIDs.Client2.GetObject<Client> ();
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
       IRelationEndPoint unidirectionalEndPoint =
           _relationEndPointManager.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (client.ID, parentClientEndPointDefinition));

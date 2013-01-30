@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -116,7 +117,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       // Create ACLs
       //--------------------------------
 
-      SecurableClassDefinition orderClass = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID);
+      SecurableClassDefinition orderClass = SetUpFixture.OrderClassID.GetObject<SecurableClassDefinition>();
       var aclList = orderClass.StatefulAccessControlLists;
       Assert.That (aclList.Count, Is.GreaterThanOrEqualTo (2));
       

@@ -30,11 +30,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return NewObject<StatelessAccessControlList> ();
     }
 
-    public new static StatelessAccessControlList GetObject (ObjectID id)
-    {
-      return DomainObject.GetObject<StatelessAccessControlList> (id);
-    }
-
     protected StatelessAccessControlList ()
     {
     }

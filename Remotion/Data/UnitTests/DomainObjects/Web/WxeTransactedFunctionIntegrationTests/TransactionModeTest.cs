@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     {
       using (clientTransaction.EnterDiscardingScope ())
       {
-        ClassWithAllDataTypes objectWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        ClassWithAllDataTypes objectWithAllDataTypes = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
 
         objectWithAllDataTypes.Int32Property = value;
 
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     {
       using (clientTransaction.EnterDiscardingScope ())
       {
-        ClassWithAllDataTypes objectWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        ClassWithAllDataTypes objectWithAllDataTypes = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
 
         return objectWithAllDataTypes.Int32Property;
       }

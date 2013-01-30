@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Order order = GetBound<Order> (DomainObjectIDs.Order1);
         Assert.That (order.HasBindingTransaction, Is.True);
         Assert.That (order.GetBindingTransaction(), Is.SameAs (_bindingTransaction));
-        Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.Not.SameAs (order));
+        Assert.That (DomainObjectIDs.Order1.GetObject<Order> (), Is.Not.SameAs (order));
       }
     }
 

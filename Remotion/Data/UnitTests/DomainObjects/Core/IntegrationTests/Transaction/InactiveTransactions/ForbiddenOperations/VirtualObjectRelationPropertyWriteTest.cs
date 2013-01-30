@@ -34,10 +34,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp ();
 
-      _order1 = ActiveSubTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      _orderTicket1 = ActiveSubTransaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket1));
-      _orderTicket2 = ActiveSubTransaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket2));
-      _orderTicket3 = ActiveSubTransaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket3));
+      _order1 = ActiveSubTransaction.Execute (() => DomainObjectIDs.Order1.GetObject<Order> ());
+      _orderTicket1 = ActiveSubTransaction.Execute (() => DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ());
+      _orderTicket2 = ActiveSubTransaction.Execute (() => DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ());
+      _orderTicket3 = ActiveSubTransaction.Execute (() => DomainObjectIDs.OrderTicket3.GetObject<OrderTicket> ());
 
       ActiveSubTransaction.Execute (() => _order1.OrderTicket = _orderTicket2);
       ActiveSubTransaction.Execute (() => _orderTicket3.Order.EnsureDataAvailable());

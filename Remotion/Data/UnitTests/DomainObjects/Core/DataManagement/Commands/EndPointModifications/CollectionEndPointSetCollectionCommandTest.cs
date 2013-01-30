@@ -46,9 +46,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp();
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
-      _order2 = Order.GetObject (DomainObjectIDs.Order2);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _orderWithoutOrderItem = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
+      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
 
       // Collection currently contains _order1, _orderWithoutOrderItem
       _modifiedCollectionData = new DomainObjectCollectionData (new[] { _order1, _orderWithoutOrderItem });
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (_order1.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
       Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
 
-      var customer3 = Customer.GetObject (DomainObjectIDs.Customer3);
+      var customer3 = DomainObjectIDs.Customer3.GetObject<Customer> ();
       Assert.That (_order2.Customer, Is.SameAs (customer3));
 
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();

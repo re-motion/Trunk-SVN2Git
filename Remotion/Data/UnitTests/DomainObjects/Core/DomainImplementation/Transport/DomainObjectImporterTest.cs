@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void NonExistingObjects_PreparedForUse ()
     {
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.ClassWithAllDataTypes1);
-      ModifyDatabase (() => ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).Delete ());
+      ModifyDatabase (() => DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ().Delete ());
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
 
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void NonExistingObjects_New ()
     {
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.ClassWithAllDataTypes1);
-      ModifyDatabase (() => ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).Delete());
+      ModifyDatabase (() => DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ().Delete());
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
       Assert.That (imported[0].State, Is.EqualTo (StateType.New));
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
           DomainObjectIDs.ClassWithAllDataTypes1,
           ReflectionMappingHelper.GetPropertyName (typeof (ClassWithAllDataTypes), "Int32Property"),
           12);
-      ModifyDatabase (() => ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).Delete());
+      ModifyDatabase (() => DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ().Delete());
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
       Assert.That (imported[0].State, Is.EqualTo (StateType.New));
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void ExistingObjects_ChangedIfNecessary ()
     {
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
-      ModifyDatabase (delegate { Order.GetObject (DomainObjectIDs.Order1).OrderNumber++; });
+      ModifyDatabase (delegate { DomainObjectIDs.Order1.GetObject<Order> ().OrderNumber++; });
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
 
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void SimplePropertyChanges ()
     {
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.Order1);
-      ModifyDatabase (delegate { Order.GetObject (DomainObjectIDs.Order1).OrderNumber = 13; });
+      ModifyDatabase (delegate { DomainObjectIDs.Order1.GetObject<Order> ().OrderNumber = 13; });
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
       Assert.That (((Order) imported[0]).Properties[typeof (Order), "OrderNumber"].HasChanged, Is.True);
@@ -187,8 +187,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       ModifyDatabase (
           delegate
           {
-            Computer.GetObject (DomainObjectIDs.Computer1).Employee = null;
-            Computer.GetObject (DomainObjectIDs.Computer2).Employee = Employee.GetObject (DomainObjectIDs.Employee1);
+            DomainObjectIDs.Computer1.GetObject<Computer> ().Employee = null;
+            DomainObjectIDs.Computer2.GetObject<Computer> ().Employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
           });
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
@@ -202,19 +202,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       using (loadedObject1.GetBindingTransaction().EnterNonDiscardingScope())
       {
-        Assert.That (loadedObject1.Employee, Is.EqualTo (Employee.GetObject (DomainObjectIDs.Employee3)));
-        Assert.That (loadedObject2.Employee, Is.EqualTo (Employee.GetObject (DomainObjectIDs.Employee4)));
-        Assert.That (loadedObject3.Employee, Is.EqualTo (Employee.GetObject (DomainObjectIDs.Employee5)));
+        Assert.That (loadedObject1.Employee, Is.EqualTo (DomainObjectIDs.Employee3.GetObject<Employee> ()));
+        Assert.That (loadedObject2.Employee, Is.EqualTo (DomainObjectIDs.Employee4.GetObject<Employee> ()));
+        Assert.That (loadedObject3.Employee, Is.EqualTo (DomainObjectIDs.Employee5.GetObject<Employee> ()));
       }
     }
 
     [Test]
     public void RelatedObjectChanges_ToNull_RealSide ()
     {
-      ModifyDatabase (delegate { Computer.GetObject (DomainObjectIDs.Computer1).Employee = null; });
+      ModifyDatabase (delegate { DomainObjectIDs.Computer1.GetObject<Computer> ().Employee = null; });
 
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.Computer1);
-      ModifyDatabase (delegate { Computer.GetObject (DomainObjectIDs.Computer1).Employee = Employee.GetObject (DomainObjectIDs.Employee3); });
+      ModifyDatabase (delegate
+      {
+        DomainObjectIDs.Computer1.GetObject<Computer> ().Employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
+      });
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
       var loadedObject1 = (Computer) imported[0];
@@ -229,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void RelatedObjectChanges_NonExistentObject_RealSide ()
     {
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.Computer1);
-      ModifyDatabase (() => Computer.GetObject (DomainObjectIDs.Computer1).Employee.Delete());
+      ModifyDatabase (() => DomainObjectIDs.Computer1.GetObject<Computer> ().Employee.Delete());
 
       DomainObjectTransporterTestHelper.Import (binaryData);
 
@@ -240,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void RelatedObjectChanges_VirtualSide ()
     {
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.Employee3);
-      ModifyDatabase (delegate { Employee.GetObject (DomainObjectIDs.Employee3).Computer = null; });
+      ModifyDatabase (delegate { DomainObjectIDs.Employee3.GetObject<Employee> ().Computer = null; });
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
 
@@ -251,7 +254,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void RelatedObjectCollection_OneSide ()
     {
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
-      ModifyDatabase (delegate { OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order = Order.GetObject (DomainObjectIDs.Order2); });
+      ModifyDatabase (delegate
+      {
+        DomainObjectIDs.OrderItem1.GetObject<OrderItem>().Order = DomainObjectIDs.Order2.GetObject<Order> ();
+      });
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
       var loadedObject1 = (OrderItem) imported[0];
@@ -262,8 +268,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       using (loadedObject1.GetBindingTransaction().EnterNonDiscardingScope())
       {
-        Assert.That (loadedObject1.Order, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
-        Assert.That (loadedObject2.Order, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
+        Assert.That (loadedObject1.Order, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ()));
+        Assert.That (loadedObject2.Order, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ()));
       }
     }
 
@@ -271,7 +277,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void RelatedObjectCollection_ManySide ()
     {
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.Order1);
-      ModifyDatabase (delegate { Order.GetObject (DomainObjectIDs.Order1).OrderItems[0].Order = Order.GetObject (DomainObjectIDs.Order2); });
+      ModifyDatabase (delegate
+      {
+        DomainObjectIDs.Order1.GetObject<Order> ().OrderItems[0].Order = DomainObjectIDs.Order2.GetObject<Order> ();
+      });
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
 
@@ -349,7 +358,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       TransportItem[] items;
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        items = new[] { TransportItem.PackageDataContainer (Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer) };
+        items = new[] { TransportItem.PackageDataContainer (DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer) };
       }
       
       var repository = new MockRepository();

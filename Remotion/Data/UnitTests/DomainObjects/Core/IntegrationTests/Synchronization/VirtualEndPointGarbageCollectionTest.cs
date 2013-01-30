@@ -41,12 +41,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable();
 
-      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var industrialSector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       var companies = industrialSector.Companies;
       industrialSector.Companies.EnsureDataComplete();
 
       var unsynchronizedCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
-      var unsynchronizedCompany = Company.GetObject (unsynchronizedCompanyID);
+      var unsynchronizedCompany = unsynchronizedCompanyID.GetObject<Company> ();
 
       var virtualEndPointID = RelationEndPointID.Resolve (industrialSector, s => s.Companies);
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable ();
 
-      var employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      var employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       employee.Subordinates.EnsureDataComplete ();
       Assert.That (employee.Subordinates, Is.Empty);
 
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
           RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Employee, Employee> (
             employee.ID,
             (subOrdinate, e) => subOrdinate.Supervisor = e);
-      var unsynchronizedSubordinate = Employee.GetObject (unsynchronizedSubordinateID);
+      var unsynchronizedSubordinate = unsynchronizedSubordinateID.GetObject<Employee> ();
 
       var virtualEndPointID = RelationEndPointID.Resolve (employee, o => o.Subordinates);
 
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable ();
 
-      var employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      var employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       var virtualEndPointID = RelationEndPointID.Resolve (employee, e => e.Computer);
       TestableClientTransaction.EnsureDataComplete (virtualEndPointID);
 
@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
           RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (
             employee.ID,
             (c, e) => c.Employee = e);
-      var unsynchronizedComputer = Computer.GetObject (unsynchronizedComputerID);
+      var unsynchronizedComputer = unsynchronizedComputerID.GetObject<Computer> ();
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable ();
 
-      var employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      var employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
       var virtualEndPointID = RelationEndPointID.Resolve (employee, e => e.Computer);
       TestableClientTransaction.EnsureDataComplete (virtualEndPointID);
       Assert.That (employee.Computer, Is.Null);
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
           RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (
             employee.ID,
             (c, e) => c.Employee = e);
-      var unsynchronizedComputer = Computer.GetObject (unsynchronizedComputerID);
+      var unsynchronizedComputer = unsynchronizedComputerID.GetObject<Computer> ();
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void UnloadCollectionEndPoint_WithoutReferences_CausesEndPointToBeRemoved_ButKeepsDomainObjectCollectionInMemory ()
     {
-      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
+      var customer = DomainObjectIDs.Customer2.GetObject<Customer> ();
       var customerOrders = customer.Orders;
       customer.Orders.EnsureDataComplete ();
       Assert.That (customer.Orders, Is.Empty);
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void UnloadCollectionEndPoint_WithReferences_LeavesIncompleteEndPoint ()
     {
-      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      var customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       var customerOrders = customer.Orders;
       customerOrders.EnsureDataComplete ();
       Assert.That (customer.Orders, Is.Not.Empty);
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void UnloadVirtualObjectEndPoint_WithoutReferences_CausesEndPointToBeRemoved ()
     {
-      var employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      var employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
       Assert.That (employee.Computer, Is.Null);
 
       var virtualEndPointID = RelationEndPointID.Resolve (employee, e => e.Computer);
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void UnloadVirtualObjectEndPoint_WithReferences_LeavesIncompleteEndPoint ()
     {
-      var employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      var employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       Assert.That (employee.Computer, Is.Not.Null);
 
       var virtualEndPointID = RelationEndPointID.Resolve (employee, e => e.Computer);
@@ -215,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable();
 
-      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
+      var customer = DomainObjectIDs.Customer2.GetObject<Customer> ();
 
       var newCustomerOrders = new OrderCollection();
       customer.Orders = newCustomerOrders;
@@ -240,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable ();
 
-      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
+      var customer = DomainObjectIDs.Customer2.GetObject<Customer> ();
       var oldCustomerOrders = customer.Orders;
       Assert.That (customer.Orders, Is.Empty);
 

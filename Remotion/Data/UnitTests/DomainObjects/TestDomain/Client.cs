@@ -30,11 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return NewObject<Client> ();
     }
 
-    public new static Client GetObject (ObjectID id)
-    {
-      return GetObject<Client> (id);
-    }
-
     protected Client ()
     {
     }

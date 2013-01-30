@@ -24,16 +24,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   [Serializable]
   [DBTable]
   [BindableDomainObject]
-  public abstract class SampleBindableMixinDomainObject : DomainObject
+  public abstract class SampleBindableMixinDomainObject : DomainObject, ISupportsGetObject
   {
     public static SampleBindableMixinDomainObject NewObject ()
     {
       return NewObject<SampleBindableMixinDomainObject> ();
-    }
-
-    public static SampleBindableMixinDomainObject GetObject (ObjectID id)
-    {
-      return GetObject<SampleBindableMixinDomainObject> (id);
     }
 
     public abstract string Name { get; set; }

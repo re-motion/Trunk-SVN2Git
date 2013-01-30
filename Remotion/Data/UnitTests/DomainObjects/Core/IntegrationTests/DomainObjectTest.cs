@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Customer newCustomer2 = Customer.NewObject();
       newCustomer2.Name = "NewCustomer2";
 
-      Official official2 = Official.GetObject (DomainObjectIDs.Official2);
+      Official official2 = DomainObjectIDs.Official2.GetObject<Official>();
       Ceo newCeo1 = Ceo.NewObject();
       Ceo newCeo2 = Ceo.NewObject();
       Order newOrder1 = Order.NewObject();
@@ -1010,7 +1010,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void SetValuesAndAccessOriginalValuesTest ()
     {
-      OrderItem orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      OrderItem orderItem = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
 
       DataContainer dataContainer = orderItem.InternalDataContainer;
 
@@ -1044,7 +1044,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       OrderItem orderItem = OrderItem.NewObject();
       order1.OrderItems.Add (orderItem);
-      order1.Official = Official.GetObject (DomainObjectIDs.Official2);
+      order1.Official = DomainObjectIDs.Official2.GetObject<Official>();
       customer.Orders.Add (order1);
 
       Assert.That (() => TestableClientTransaction.Commit (), Throws.Nothing);
@@ -1099,7 +1099,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void PropertyEventsOfExistingObjectPropertyChangeTest ()
     {
-      Order order2 = Order.GetObject (DomainObjectIDs.Order2);
+      Order order2 = DomainObjectIDs.Order2.GetObject<Order> ();
 
       var eventReceiver = new DomainObjectEventReceiver (order2);
       CheckNoEvents(eventReceiver);
@@ -1112,7 +1112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void PropertyEventsOfExistingObjectRelationChangeTest ()
     {
-      Order order2 = Order.GetObject (DomainObjectIDs.Order2);
+      Order order2 = DomainObjectIDs.Order2.GetObject<Order> ();
 
       var eventReceiver = new DomainObjectEventReceiver (order2);
       CheckNoEvents(eventReceiver);
@@ -1128,7 +1128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Customer newCustomer = Customer.NewObject();
       newCustomer.Ceo = Ceo.NewObject();
 
-      Customer existingCustomer = Customer.GetObject (DomainObjectIDs.Customer3);
+      Customer existingCustomer = DomainObjectIDs.Customer3.GetObject<Customer> ();
       Assert.That (existingCustomer.Orders.Count, Is.EqualTo (1));
       Assert.That (existingCustomer.Orders[0].OrderTicket, Is.Not.Null);
       Assert.That (existingCustomer.Orders[0].OrderItems.Count, Is.EqualTo (1));
@@ -1140,8 +1140,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       ClientTransactionScope.CurrentTransaction.Commit();
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        newCustomer = Customer.GetObject (newCustomer.ID);
-        existingCustomer = Customer.GetObject (DomainObjectIDs.Customer3);
+        newCustomer = newCustomer.ID.GetObject<Customer> ();
+        existingCustomer = DomainObjectIDs.Customer3.GetObject<Customer> ();
 
         Assert.That (newCustomer.Orders.Count, Is.EqualTo (0));
         Assert.That (existingCustomer.Orders.Count, Is.EqualTo (0));

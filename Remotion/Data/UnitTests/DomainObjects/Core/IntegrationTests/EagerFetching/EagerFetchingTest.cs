@@ -40,25 +40,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id2), Is.Null);
 
       var result = TestableClientTransaction.QueryManager.GetCollection (ordersQuery);
-      Assert.That (result.ToArray (), Is.EquivalentTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2) }));
+      Assert.That (result.ToArray (), Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order> (), DomainObjectIDs.Order2.GetObject<Order> () }));
 
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Not.Null);
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id2), Is.Not.Null);
 
       Assert.That (((ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1)).Collection,
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), DomainObjectIDs.OrderItem2.GetObject<OrderItem>() }));
       Assert.That (((ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id2)).Collection,
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem3) }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem3.GetObject<OrderItem>() }));
     }
 
     [Test]
     public void EagerFetching_WithExistingRelationData ()
     {
       // Load relation data prior to executing the query.
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (
           order.OrderItems,
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), DomainObjectIDs.OrderItem2.GetObject<OrderItem>() }));
 
       var ordersQuery = CreateOrdersQuery ("OrderNo = 1");
       // This will return a different relation collection (an empty one).
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
 
       Assert.That (
           order.OrderItems,
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), DomainObjectIDs.OrderItem2.GetObject<OrderItem>() }));
     }
 
     [Test]
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
 
       var result = TestableClientTransaction.QueryManager.GetCollection (ordersQuery);
 
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (result.ToArray(), Is.EquivalentTo (new[] { order1 }));
 
       var orderItemsEndPointID = RelationEndPointID.Resolve (order1, o => o.OrderItems);
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       // The relation contains the fetched result, disregarding the in-memory data. This makes it an unsynchronized relation.
       Assert.That (
           order1.OrderItems, 
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), orderItem2 }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), orderItem2 }));
 
       Assert.That (orderItem2.Order, Is.Not.SameAs (order1));
       Assert.That (BidirectionalRelationSyncService.IsSynchronized (TestableClientTransaction, orderItemsEndPointID), Is.False);

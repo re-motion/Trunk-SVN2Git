@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_OrderTicket ()
     {
-      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       var order = orderTicket1.Order;
       order.EnsureDataAvailable ();
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_OrderTicket_ReloadData ()
     {
-      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       var order = orderTicket1.Order;
       order.EnsureDataAvailable ();
 
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_OrderTicket_ReloadRelation_OneToOne_FromRealSide ()
     {
-      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       var order = orderTicket1.Order;
       order.EnsureDataAvailable ();
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_OrderTicket_ReloadRelation_OneToOne_FromVirtualSide ()
     {
-      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       var order = orderTicket1.Order;
       order.EnsureDataAvailable ();
 
@@ -126,13 +126,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       SetDatabaseModifyable();
 
-      var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
+      var computer1 = DomainObjectIDs.Computer1.GetObject<Computer> ();
       var employee = computer1.Employee;
       employee.EnsureDataAvailable ();
 
       var unsynchronizedComputerID =
           RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (employee.ID, (ot, o) => ot.Employee = o);
-      var unsynchronizedComputer = Computer.GetObject (unsynchronizedComputerID);
+      var unsynchronizedComputer = unsynchronizedComputerID.GetObject<Computer> ();
 
       Assert.That (computer1.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (unsynchronizedComputer.State, Is.EqualTo (StateType.Unchanged));
@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_Order ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order1.OrderItems;
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
@@ -207,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_Order_RelationAccess_OneToMany_FromRealSide ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
 
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_Order_RelationAccess_OneToMany_FromVirtualSide ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
 
@@ -264,7 +264,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_OrderItem ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order1.OrderItems;
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
@@ -295,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       SetDatabaseModifyable();
 
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order1.OrderItems;
       var newOrderItem = OrderItem.NewObject();
       orderItems.Add (newOrderItem);
@@ -314,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_OrderItem_ReloadRelation_OneToMany_FromRealSide ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
 
@@ -342,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_OrderItem_ReloadRelation_OneToMany_FromVirtualSide ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
 
@@ -371,11 +371,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void UnloadData_ReloadChanges_PropertyValue ()
     {
       SetDatabaseModifyable();
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var orderInOtherTx = Order.GetObject (order1.ID);
+        var orderInOtherTx = order1.ID.GetObject<Order> ();
         orderInOtherTx.OrderNumber = 4711;
         ClientTransaction.Current.Commit ();
       }
@@ -391,28 +391,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void UnloadData_ReloadChanges_ForeignKey ()
     {
       SetDatabaseModifyable ();
-      var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
+      var computer1 = DomainObjectIDs.Computer1.GetObject<Computer> ();
 
       ObjectID newEmployeeID;
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var computerInOtherTx = Computer.GetObject (computer1.ID);
+        var computerInOtherTx = computer1.ID.GetObject<Computer> ();
         computerInOtherTx.Employee = Employee.NewObject ();
         newEmployeeID = computerInOtherTx.Employee.ID;
         ClientTransaction.Current.Commit ();
       }
 
-      Assert.That (computer1.Employee, Is.SameAs (Employee.GetObject (DomainObjectIDs.Employee3)));
+      Assert.That (computer1.Employee, Is.SameAs (DomainObjectIDs.Employee3.GetObject<Employee> ()));
 
       UnloadService.UnloadData (TestableClientTransaction, computer1.ID);
 
-      Assert.That (computer1.Employee, Is.SameAs (Employee.GetObject (newEmployeeID)));
+      Assert.That (computer1.Employee, Is.SameAs (newEmployeeID.GetObject<Employee> ()));
     }
 
     [Test]
     public void UnloadData_AlreadyUnloaded ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (TestableClientTransaction.GetEnlistedDomainObject (DomainObjectIDs.Order1), Is.SameAs (order1));
@@ -440,7 +440,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' (Changed).")]
     public void UnloadData_Changed ()
     {
-      ++Order.GetObject (DomainObjectIDs.Order1).OrderNumber;
+      ++DomainObjectIDs.Order1.GetObject<Order> ().OrderNumber;
       UnloadService.UnloadData (TestableClientTransaction, DomainObjectIDs.Order1);
     }
 
@@ -449,7 +449,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       var newTicket = OrderTicket.NewObject ();
 
-      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      var domainObject = DomainObjectIDs.Order1.GetObject<Order> ();
       domainObject.OrderTicket = newTicket;
 
       UnloadService.UnloadData (TestableClientTransaction, domainObject.ID);
@@ -461,7 +461,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_ChangedVirtualNullEndPoint ()
     {
-      var domainObject = Employee.GetObject (DomainObjectIDs.Employee3);
+      var domainObject = DomainObjectIDs.Employee3.GetObject<Employee> ();
 
       domainObject.Computer = null;
       
@@ -479,7 +479,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
         + "changed. Non-virtual end-points that are part of changed relations cannot be unloaded.")]
     public void UnloadData_ChangedCollection ()
     {
-      OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order.OrderItems.Add (OrderItem.NewObject ());
+      DomainObjectIDs.OrderItem1.GetObject<OrderItem>().Order.OrderItems.Add (OrderItem.NewObject ());
       Assert.That (TestableClientTransaction.DataManager.DataContainers[DomainObjectIDs.OrderItem1].State, Is.EqualTo (StateType.Unchanged));
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID).HasChanged, Is.True);
@@ -490,7 +490,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void ReadingValueProperties_ReloadsObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -505,7 +505,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void WritingValueProperties_ReloadsObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -520,7 +520,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void ReadingStateProperties_DoesNotReloadObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -544,7 +544,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void ReadingTimestamp_ReloadsObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -559,7 +559,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void RegisterForCommit_ReloadsObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -574,7 +574,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void EnsureDataAvailable_ReloadsObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -589,7 +589,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void ReadingPropertyAccessor_DoesNotReloadObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -607,7 +607,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void ReadingTransactionContext_DoesNotReloadObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -622,7 +622,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void ReadingCollectionEndPoint_DoesNotReloadObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var customer = order1.Customer;
       var customerOrders = customer.Orders;
       customerOrders.EnsureDataComplete();
@@ -643,7 +643,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void ChangingCollectionEndPoint_ReloadsCollectionAndObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var customer = order1.Customer;
       var customerOrders = customer.Orders;
 
@@ -666,7 +666,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Ignore ("TODO 2264")]
     public void ReadingVirtualRelationEndPoints_DoesNotReloadObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order1.OrderItems;
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
@@ -692,7 +692,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Ignore ("TODO 2264")]
     public void ReadingOriginalVirtualRelationEndPoints_DoesNotReloadObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
       var orderTicket = order1.OrderTicket;
@@ -716,7 +716,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Ignore ("TODO 2263")]
     public void ChangingVirtualRelationEndPoints_DoesNotReloadObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
       var orderTicket = order1.OrderTicket;
@@ -742,7 +742,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Ignore ("TODO 2263")]
     public void ChangingRealRelationEndPoints_DoesNotReloadOppositeObjects ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItemA = order1.OrderItems[0];
       var orderTicket = order1.OrderTicket;
 
@@ -760,7 +760,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void ReadingRealRelationEndPoints_ReloadsObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var customer = order1.Customer;
 
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
@@ -777,7 +777,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void ChangingRealRelationEndPoints_ReloadsObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
 
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
@@ -792,7 +792,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void ReadingOppositeCollectionEndPoints_ReloadsObject ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var customer = order1.Customer;
 
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
@@ -809,7 +809,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Ignore ("TODO 2263")]
     public void AddingToCollectionEndPoint_DoesntReloadOtherItems ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var customer = order1.Customer;
       Console.WriteLine (customer.State);
 
@@ -827,8 +827,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void AddingToCollectionEndPoint_ReloadsObjectBeingAdded ()
     {
-      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+      var customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      var order2 = DomainObjectIDs.Order2.GetObject<Order> ();
 
       UnloadService.UnloadData (TestableClientTransaction, order2.ID);
       Assert.That (order2.State, Is.EqualTo (StateType.NotLoadedYet));
@@ -844,7 +844,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void Commit_DoesNotReloadObjectOrCollection ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var customerOrders = order1.Customer.Orders;
 
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
@@ -863,7 +863,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void Rollback_DoesNotReloadObjectOrCollection ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var customerOrders = order1.Customer.Orders;
 
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);

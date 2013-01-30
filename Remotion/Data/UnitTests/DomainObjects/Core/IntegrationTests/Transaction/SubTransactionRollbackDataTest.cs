@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void RollbackResetsPropertyValuesToThoseOfParentTransaction ()
     {
-      Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
+      Order loadedOrder = DomainObjectIDs.Order1.GetObject<Order> ();
       Order newOrder = Order.NewObject ();
 
       loadedOrder.OrderNumber = 5;
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void RollbackResetsRelatedObjectToThatOfParentTransaction ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       Employee employee = computer.Employee;
       Location location = Location.NewObject ();
       Client client = Client.NewObject ();
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void SubCommitDoesNotRollbackParent ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.OrderNumber = 5;
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {

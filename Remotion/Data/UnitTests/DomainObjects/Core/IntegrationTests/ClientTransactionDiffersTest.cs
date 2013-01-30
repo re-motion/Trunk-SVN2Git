@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -30,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
        MatchType = MessageMatch.Regex)]
     public void PerformCollectionAddWithOtherClientTransaction ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItem3 = DomainObjectMother.GetObjectInOtherTransaction<OrderItem> (DomainObjectIDs.OrderItem3);
 
       order1.OrderItems.Add (orderItem3);
@@ -42,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         MatchType = MessageMatch.Regex)]
     public void PerformCollectionInsertWithOtherClientTransaction ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItem3 = DomainObjectMother.GetObjectInOtherTransaction<OrderItem> (DomainObjectIDs.OrderItem3);
 
       order1.OrderItems.Insert (0, orderItem3);
@@ -55,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         MatchType = MessageMatch.Regex)]
     public void PerformCollectionRemoveWithOtherClientTransaction ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItem1 = DomainObjectMother.GetObjectInOtherTransaction<OrderItem> (DomainObjectIDs.OrderItem1);
 
       var endPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order1.OrderItems);
@@ -65,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void PerformCollectionReplaceWithOtherClientTransaction ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItem3 = DomainObjectMother.GetObjectInOtherTransaction<OrderItem> (DomainObjectIDs.OrderItem3);
 
       int index = order1.OrderItems.IndexOf (DomainObjectIDs.OrderItem1);

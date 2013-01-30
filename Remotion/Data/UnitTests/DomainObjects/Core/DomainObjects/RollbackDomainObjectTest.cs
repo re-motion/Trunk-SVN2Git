@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void RollbackPropertyChange ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       customer.Name = "Arthur Dent";
 
       Assert.That (customer.State, Is.EqualTo (StateType.Changed));
@@ -42,9 +42,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void RollbackOneToOneRelationChange ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       OrderTicket oldOrderTicket = order.OrderTicket;
-      OrderTicket newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
+      OrderTicket newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
       Order oldOrderOfNewOrderTicket = newOrderTicket.Order;
 
       order.OrderTicket = newOrderTicket;
@@ -61,8 +61,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void RollbackOneToManyRelationChange ()
     {
-      Customer customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
-      Customer customer2 = Customer.GetObject (DomainObjectIDs.Customer2);
+      Customer customer1 = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      Customer customer2 = DomainObjectIDs.Customer2.GetObject<Customer> ();
 
       Order order = customer1.Orders[DomainObjectIDs.Order1];
 
@@ -81,12 +81,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void RollbackDeletion ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
+      Computer computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
       computer.Delete ();
 
       TestableClientTransaction.Rollback ();
 
-      Computer computerAfterRollback = Computer.GetObject (DomainObjectIDs.Computer4);
+      Computer computerAfterRollback = DomainObjectIDs.Computer4.GetObject<Computer> ();
       Assert.That (computerAfterRollback, Is.SameAs (computer));
       Assert.That (computer.State, Is.EqualTo (StateType.Unchanged));
     }
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void RollbackDeletionAndPropertyChange ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
+      Computer computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
       computer.SerialNumber = "1111111111111";
 
       Assert.That (computer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"].GetOriginalValue<string>(), Is.EqualTo ("63457-kol-34"));
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void RollbackDeletionWithRelationChange ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
 
       OrderTicket oldOrderTicket = order.OrderTicket;
       DomainObjectCollection oldOrderItems = order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
@@ -152,10 +152,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order newOrder = Order.NewObject ();
       ObjectID newOrderID = newOrder.ID;
 
-      Order order1 = Order.GetObject (DomainObjectIDs.Order1);
-      OrderTicket orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      Order order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      OrderTicket orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      OrderItem orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
 
       newOrder.OrderTicket = orderTicket1;
       customer.Orders.Add (newOrder);
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetOneToManyRelationForNewObjectAfterRollback ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       OrderItem orderItem = OrderItem.NewObject (order);
       ObjectID orderItemID = orderItem.ID;
 
@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void DomainObjectCollectionIsSameAfterRollback ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       DomainObjectCollection orderItems = order.OrderItems;
       OrderItem orderItem = OrderItem.NewObject (order);
 

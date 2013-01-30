@@ -37,11 +37,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       OrderTicket orderTicket;
       using (subTransaction.EnterDiscardingScope ())
       {
-        order = Order.GetObject (DomainObjectIDs.Order1);
+        order = DomainObjectIDs.Order1.GetObject<Order> ();
         orderTicket = order.OrderTicket;
       }
-      Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (order));
-      Assert.That (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1), Is.SameAs (orderTicket));
+      Assert.That (DomainObjectIDs.Order1.GetObject<Order> (), Is.SameAs (order));
+      Assert.That (DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> (), Is.SameAs (orderTicket));
     }
 
     [Test]
@@ -52,14 +52,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Employee employee;
       using (subTransaction.EnterDiscardingScope ())
       {
-        computer = Computer.GetObject (DomainObjectIDs.Computer4);
+        computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
         Assert.That (computer.Employee, Is.Null);
-        employee = Employee.GetObject (DomainObjectIDs.Employee1);
+        employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
         Assert.That (employee.Computer, Is.Null);
       }
-      Assert.That (Computer.GetObject (DomainObjectIDs.Computer4).Employee, Is.Null);
+      Assert.That (DomainObjectIDs.Computer4.GetObject<Computer> ().Employee, Is.Null);
       Assert.That (computer.Employee, Is.Null);
-      Assert.That (Employee.GetObject (DomainObjectIDs.Employee1).Computer, Is.Null);
+      Assert.That (DomainObjectIDs.Employee1.GetObject<Employee> ().Computer, Is.Null);
       Assert.That (employee.Computer, Is.Null);
     }
 
@@ -71,13 +71,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var orderItems = new Set<OrderItem> ();
       using (subTransaction.EnterDiscardingScope ())
       {
-        order = Order.GetObject (DomainObjectIDs.Order1);
+        order = DomainObjectIDs.Order1.GetObject<Order> ();
         orderItems.Add (order.OrderItems[0]);
         orderItems.Add (order.OrderItems[1]);
       }
-      Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (order));
-      Assert.That (orderItems.Contains (OrderItem.GetObject (DomainObjectIDs.OrderItem1)), Is.True);
-      Assert.That (orderItems.Contains (OrderItem.GetObject (DomainObjectIDs.OrderItem1)), Is.True);
+      Assert.That (DomainObjectIDs.Order1.GetObject<Order> (), Is.SameAs (order));
+      Assert.That (orderItems.Contains (DomainObjectIDs.OrderItem1.GetObject<OrderItem>()), Is.True);
+      Assert.That (orderItems.Contains (DomainObjectIDs.OrderItem1.GetObject<OrderItem>()), Is.True);
     }
 
     [Test]
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void OverwritingDeletedLoadedUnidirectionalInSubTransactionWorks ()
     {
       Location location = Location.NewObject ();
-      location.Client = Client.GetObject (DomainObjectIDs.Client1);
+      location.Client = DomainObjectIDs.Client1.GetObject<Client> ();
       location.Client.Delete ();
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void LoadRelatedDataContainers_MakesParentWritableWhileGettingItsContainers ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
 
       // cause parent tx to require reload of data containers...
       UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, order.OrderItems.AssociatedEndPointID);
@@ -143,14 +143,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         var relatedObjects = order.OrderItems.ToArray ();
         Assert.That (relatedObjects,
-            Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
+            Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), DomainObjectIDs.OrderItem2.GetObject<OrderItem>() }));
       }
     }
 
     [Test]
     public void SubTransactionHasRelatedObjectCollectionEqualToParent ()
     {
-      Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
+      Order loadedOrder = DomainObjectIDs.Order1.GetObject<Order> ();
       ObjectList<OrderItem> loadedItems = loadedOrder.OrderItems;
 
       Assert.That (loadedOrder.OrderItems, Is.SameAs (loadedItems));
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (loadedOrder));
+        Assert.That (DomainObjectIDs.Order1.GetObject<Order> (), Is.SameAs (loadedOrder));
         Assert.That (loadedOrder.OrderItems, Is.Not.SameAs (loadedItems));
 
         Assert.That (loadedOrder.OrderItems.Count, Is.EqualTo (3));
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void SortExpressionNotExecuted_WhenLoadingCollectionFromParent ()
     {
-      var customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
+      var customer1 = DomainObjectIDs.Customer1.GetObject<Customer> ();
       var orders = customer1.Orders.Reverse ().ToArray ();
       customer1.Orders.Clear ();
       customer1.Orders.AddRange (orders);
@@ -218,10 +218,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void SubTransactionCanGetRelatedObjectCollectionEvenWhenObjectsHaveBeenDiscarded ()
     {
-      Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
+      Order loadedOrder = DomainObjectIDs.Order1.GetObject<Order> ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+        OrderItem orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
         orderItem1.Delete ();
         ClientTransactionScope.CurrentTransaction.Commit ();
         Assert.That (orderItem1.IsInvalid, Is.True);
@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void RelatedObjectCollectionChangesAreNotPropagatedToParent ()
     {
-      Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
+      Order loadedOrder = DomainObjectIDs.Order1.GetObject<Order> ();
 
       Assert.That (loadedOrder.OrderItems.Count, Is.EqualTo (2));
       OrderItem loadedItem1 = loadedOrder.OrderItems[0];
@@ -261,8 +261,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void SubTransactionHasSameRelatedObjectAsParent1To1 ()
     {
-      Computer loadedComputer = Computer.GetObject (DomainObjectIDs.Computer1);
-      Employee loadedEmployee = Employee.GetObject (DomainObjectIDs.Employee1);
+      Computer loadedComputer = DomainObjectIDs.Computer1.GetObject<Computer> ();
+      Employee loadedEmployee = DomainObjectIDs.Employee1.GetObject<Employee> ();
       Assert.That (loadedEmployee, Is.Not.SameAs (loadedComputer.Employee));
       loadedComputer.Employee = loadedEmployee;
 
@@ -275,8 +275,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.That (Computer.GetObject (DomainObjectIDs.Computer1), Is.SameAs (loadedComputer));
-        Assert.That (Employee.GetObject (DomainObjectIDs.Employee1), Is.SameAs (loadedEmployee));
+        Assert.That (DomainObjectIDs.Computer1.GetObject<Computer> (), Is.SameAs (loadedComputer));
+        Assert.That (DomainObjectIDs.Employee1.GetObject<Employee> (), Is.SameAs (loadedEmployee));
 
         Assert.That (loadedComputer.Employee, Is.SameAs (loadedEmployee));
         Assert.That (loadedEmployee.Computer, Is.SameAs (loadedComputer));
@@ -289,8 +289,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void RelatedObjectChangesAreNotPropagatedToParent ()
     {
-      Computer loadedComputer = Computer.GetObject (DomainObjectIDs.Computer1);
-      Employee loadedEmployee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Computer loadedComputer = DomainObjectIDs.Computer1.GetObject<Computer> ();
+      Employee loadedEmployee = DomainObjectIDs.Employee3.GetObject<Employee> ();
 
       Computer newComputer = Computer.NewObject ();
       Employee newEmployee = Employee.NewObject ();

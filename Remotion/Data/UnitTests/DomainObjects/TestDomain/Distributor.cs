@@ -28,11 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return NewObject<Distributor> ();
     }
 
-    public new static Distributor GetObject (ObjectID id)
-    {
-      return GetObject<Distributor> (id);
-    }
-
     protected Distributor ()
     {
     }

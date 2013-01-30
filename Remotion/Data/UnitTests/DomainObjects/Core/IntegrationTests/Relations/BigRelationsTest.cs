@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 using Remotion.Linq.Utilities;
@@ -43,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       var script = SeparatedStringBuilder.Build (Environment.NewLine, insertStatements);
       DatabaseAgent.ExecuteCommand (script);
 
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order.OrderItems;
 
       Assert.That (orderItems.Count, Is.EqualTo (4002));
@@ -71,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       var script = SeparatedStringBuilder.Build (Environment.NewLine, insertStatements);
       DatabaseAgent.ExecuteCommand (script);
 
-      var folder = TIFolder.GetObject (domainObjectIDs.Folder1);
+      var folder = domainObjectIDs.Folder1.GetObject<TIFolder> ();
       var fileSystemItems = folder.FileSystemItems;
 
       Assert.That (fileSystemItems.Count, Is.EqualTo (4001));

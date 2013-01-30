@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetObject_Generic ()
     {
       Order order = Order.NewObject ();
-      Order sameOrder = Order.GetObject (order.ID);
+      Order sameOrder = order.ID.GetObject<Order> ();
 
       Assert.That (sameOrder, Is.SameAs (order));
     }
@@ -223,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       order.OrderNumber = 42;
       order.DeliveryDate = new DateTime (2005, 2, 1);
-      order.Official = Official.GetObject (DomainObjectIDs.Official1);
+      order.Official = DomainObjectIDs.Official1.GetObject<Official>();
       order.Customer = customer;
       order.OrderItems.Add (orderItem);
 
@@ -236,12 +236,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
-      ceo = Ceo.GetObject (ceoID);
-      customer = Customer.GetObject (customerID);
-      order = Order.GetObject (orderID);
-      orderTicket = OrderTicket.GetObject (orderTicketID);
-      orderItem = OrderItem.GetObject (orderItemID);
-      Official official = Official.GetObject (DomainObjectIDs.Official1);
+      ceo = ceoID.GetObject<Ceo> ();
+      customer = customerID.GetObject<Customer> ();
+      order = orderID.GetObject<Order> ();
+      orderTicket = orderTicketID.GetObject<OrderTicket> ();
+      orderItem = orderItemID.GetObject<OrderItem>();
+      Official official = DomainObjectIDs.Official1.GetObject<Official>();
 
       Assert.That (ceo, Is.Not.Null);
       Assert.That (customer, Is.Not.Null);
@@ -295,8 +295,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
-      supervisor = Employee.GetObject (supervisorID);
-      subordinate = Employee.GetObject (subordinateID);
+      supervisor = supervisorID.GetObject<Employee> ();
+      subordinate = subordinateID.GetObject<Employee> ();
 
       Assert.That (supervisor, Is.Not.Null);
       Assert.That (subordinate, Is.Not.Null);
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SaveExistingObjectWithRelatedNew ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
+      Computer computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
       Employee newEmployee = Employee.NewObject ();
       ObjectID newEmployeeID = newEmployee.ID;
 
@@ -329,8 +329,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
-      computer = Computer.GetObject (DomainObjectIDs.Computer4);
-      newEmployee = Employee.GetObject (newEmployeeID);
+      computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
+      newEmployee = newEmployeeID.GetObject<Employee> ();
 
       Assert.That (newEmployee, Is.Not.Null);
       Assert.That (newEmployee.Name, Is.EqualTo ("Arthur Dent"));

@@ -25,16 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [TestDomain]
   public abstract class OrderWithNewPropertyAccess: DomainObject
   {
-    public static OrderWithNewPropertyAccess NewObject()
-    {
-      return NewObject<OrderWithNewPropertyAccess>();
-    }
-
-    public static OrderWithNewPropertyAccess GetObject (ObjectID id)
-    {
-      return GetObject<OrderWithNewPropertyAccess> (id);
-    }
-
     protected OrderWithNewPropertyAccess()
     {
     }

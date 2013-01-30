@@ -34,11 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance
       return NewObject<TICustomer> ();
     }
 
-    public new static TICustomer GetObject (ObjectID id)
-    {
-      return GetObject<TICustomer> (id);
-    }
-
     protected TICustomer()
     {
     }

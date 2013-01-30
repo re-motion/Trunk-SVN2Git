@@ -268,7 +268,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
 
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        SecurableClassDefinition actualBaseClassDefinition = SecurableClassDefinition.GetObject (expectedBaseClassDefinition.ID);
+        SecurableClassDefinition actualBaseClassDefinition = expectedBaseClassDefinition.ID.GetObject<SecurableClassDefinition>();
 
         Assert.That (actualBaseClassDefinition.DerivedClasses.Count, Is.EqualTo (10));
         for (int i = 0; i < actualBaseClassDefinition.DerivedClasses.Count; i++)
@@ -374,7 +374,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
 
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        SecurableClassDefinition actualClassDefinition = SecurableClassDefinition.GetObject (expectedClassDefinition.ID);
+        SecurableClassDefinition actualClassDefinition = expectedClassDefinition.ID.GetObject<SecurableClassDefinition>();
 
         Assert.That (actualClassDefinition.AccessTypes.Count, Is.EqualTo (10));
         for (int i = 0; i < 10; i++)
@@ -398,7 +398,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
 
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        SecurableClassDefinition actualClassDefinition = SecurableClassDefinition.GetObject (expectedClassDefinition.ID);
+        SecurableClassDefinition actualClassDefinition = expectedClassDefinition.ID.GetObject<SecurableClassDefinition>();
 
         Assert.That (actualClassDefinition.StatefulAccessControlLists.Count, Is.EqualTo (9));
         for (int i = 0; i < 9; i++)

@@ -37,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       base.SetUp ();
 
-      _supervisor = Employee.GetObject (DomainObjectIDs.Employee1);
-      _subordinate = Employee.GetObject (DomainObjectIDs.Employee4);
+      _supervisor = DomainObjectIDs.Employee1.GetObject<Employee> ();
+      _subordinate = DomainObjectIDs.Employee4.GetObject<Employee> ();
 
       _supervisorEventReceiver = new DomainObjectEventReceiver (_supervisor);
       _subordinateEventReceiver = new DomainObjectEventReceiver (_subordinate);

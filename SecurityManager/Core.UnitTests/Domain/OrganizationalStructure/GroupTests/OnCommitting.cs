@@ -92,8 +92,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        Group parentInOtherThread = Group.GetObject (parent.ID);
-        parentInOtherThread.Parent = Group.GetObject (grandParent.ID);
+        Group parentInOtherThread = parent.ID.GetObject<Group> ();
+        parentInOtherThread.Parent = grandParent.ID.GetObject<Group> ();
         ClientTransaction.Current.Commit();
       }
 
@@ -118,7 +118,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        Group parentInOtherThread = Group.GetObject (parent.ID);
+        Group parentInOtherThread = parent.ID.GetObject<Group> ();
         parentInOtherThread.Name = "NewName";
         ClientTransaction.Current.Commit();
       }
@@ -139,7 +139,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        Group parentInOtherThread = Group.GetObject (parent.ID);
+        Group parentInOtherThread = parent.ID.GetObject<Group> ();
         parentInOtherThread.Name = "NewName";
         ClientTransaction.Current.Commit();
       }

@@ -30,12 +30,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable();
 
-      var computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      var computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       computer.SerialNumber = "100";
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var computerInOtherTransaction = Computer.GetObject (DomainObjectIDs.Computer1);
+        var computerInOtherTransaction = DomainObjectIDs.Computer1.GetObject<Computer> ();
         computerInOtherTransaction.SerialNumber = "200";
         ClientTransaction.Current.Commit ();
       }
@@ -56,12 +56,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable ();
 
-      var computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      var computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       computer.RegisterForCommit ();
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var computerInOtherTransaction = Computer.GetObject (DomainObjectIDs.Computer1);
+        var computerInOtherTransaction = DomainObjectIDs.Computer1.GetObject<Computer> ();
         computerInOtherTransaction.RegisterForCommit ();
         ClientTransaction.Current.Commit ();
       }

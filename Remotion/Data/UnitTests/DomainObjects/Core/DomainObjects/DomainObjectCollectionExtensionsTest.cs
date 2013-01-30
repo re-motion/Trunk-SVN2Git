@@ -38,9 +38,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       base.SetUp ();
 
-      _customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
-      _customer2 = Customer.GetObject (DomainObjectIDs.Customer2);
-      _customer3NotInCollection = Customer.GetObject (DomainObjectIDs.Customer3);
+      _customer1 = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      _customer2 = DomainObjectIDs.Customer2.GetObject<Customer> ();
+      _customer3NotInCollection = DomainObjectIDs.Customer3.GetObject<Customer> ();
       _customer1FromOtherTransaction = DomainObjectMother.GetObjectInOtherTransaction<Customer> (_customer1.ID);
 
       _collection = new DomainObjectCollection (typeof (Customer)) { _customer1, _customer2 };
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void UnionWith ()
     {
       var secondCollection = _collection.Clone();
-      secondCollection.Add (Customer.GetObject (DomainObjectIDs.Customer3));
+      secondCollection.Add (DomainObjectIDs.Customer3.GetObject<Customer> ());
 
       _collection.UnionWith (secondCollection);
 
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void UnionWith_ChecksItems ()
     {
       var secondCollection = new DomainObjectCollection ();
-      secondCollection.Add (Order.GetObject (DomainObjectIDs.Order1));
+      secondCollection.Add (DomainObjectIDs.Order1.GetObject<Order> ());
 
       _collection.UnionWith (secondCollection);
     }

@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
       if (CurrentObject == null)
       {
         Group = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreateGroup ();
-        Group.Tenant = Tenant.GetObject (TenantID);
+        Group.Tenant = TenantID.GetObject<Tenant> ();
       }
     }
 

@@ -40,11 +40,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp();
 
-      _loadedOrder = ActiveSubTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      _relatedCustomer = ActiveSubTransaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1));
-      _relatedOrderTicket = ActiveSubTransaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket1));
-      _relatedOrderItem1 = ActiveSubTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
-      _relatedOrderItem2 = ActiveSubTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem2));
+      _loadedOrder = ActiveSubTransaction.Execute (() => DomainObjectIDs.Order1.GetObject<Order> ());
+      _relatedCustomer = ActiveSubTransaction.Execute (() => DomainObjectIDs.Customer1.GetObject<Customer> ());
+      _relatedOrderTicket = ActiveSubTransaction.Execute (() => DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ());
+      _relatedOrderItem1 = ActiveSubTransaction.Execute (() => DomainObjectIDs.OrderItem1.GetObject<OrderItem>());
+      _relatedOrderItem2 = ActiveSubTransaction.Execute (() => DomainObjectIDs.OrderItem2.GetObject<OrderItem>());
 
       InstallListenerMock();
       InstallExtensionMock();

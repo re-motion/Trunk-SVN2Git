@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         Assert.That (array[0].ID, Is.EqualTo (DomainObjectIDs.Customer1));
 
         Assert.That (queriedObject.CustomerSince, Is.EqualTo (new DateTime(2000, 1, 1)));
-        Assert.That (queriedObject.Orders[0], Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
+        Assert.That (queriedObject.Orders[0], Is.SameAs (DomainObjectIDs.Order1.GetObject<Order> ()));
       }
     }
 
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         Assert.That (array[0].ID, Is.EqualTo (DomainObjectIDs.Customer1));
 
         Assert.That (queriedObject.CustomerSince, Is.EqualTo (new DateTime (2000, 1, 1)));
-        Assert.That (queriedObject.Orders[0], Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
+        Assert.That (queriedObject.Orders[0], Is.SameAs (DomainObjectIDs.Order1.GetObject<Order> ()));
       }
     }
 
@@ -132,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Assert.That (queriedObject.ID, Is.EqualTo (DomainObjectIDs.Customer1));
       Assert.That (queriedObject.CustomerSince, Is.EqualTo (new DateTime (2000, 1, 1)));
-      Assert.That (queriedObject.Orders[0], Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
+      Assert.That (queriedObject.Orders[0], Is.SameAs (DomainObjectIDs.Order1.GetObject<Order> ()));
     }
 
     [Test]
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension> ();
 
-        Order.GetObject (DomainObjectIDs.Order1);
+        DomainObjectIDs.Order1.GetObject<Order> ();
         extensionMock.Stub (stub => stub.Key).Return ("stub");
         extensionMock.Replay();
         TestableClientTransaction.Extensions.Add (extensionMock);
@@ -190,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
           extensionMock
               .Expect (mock => mock.FilterQueryResult (Arg<ClientTransaction>.Is.Anything, Arg<QueryResult<DomainObject>>.Is.Anything))
-              .WhenCalled (mi => Order.GetObject (DomainObjectIDs.Order1))
+              .WhenCalled (mi => DomainObjectIDs.Order1.GetObject<Order> ())
               .Return (newQueryResult);
 
           extensionMock.Replay ();
@@ -311,7 +311,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         var result = ClientTransaction.Current.QueryManager.GetCollection (query);
         Assert.That (result.ContainsNulls(), Is.True);
-        Assert.That (result.ToArray(), Is.EqualTo (new[] { null, null, Employee.GetObject (DomainObjectIDs.Employee3) }));
+        Assert.That (result.ToArray(), Is.EqualTo (new[] { null, null, DomainObjectIDs.Employee3.GetObject<Employee> () }));
       }
     }
   }

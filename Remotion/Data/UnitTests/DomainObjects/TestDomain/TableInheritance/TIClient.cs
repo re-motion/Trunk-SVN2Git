@@ -22,16 +22,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance
   [DBTable ("TableInheritance_Client")]
   [Instantiable]
   [TableInheritanceTestDomain]
-  public abstract class TIClient : DomainObject
+  public abstract class TIClient : DomainObject, ISupportsGetObject
   {
     public static TIClient NewObject ()
     {
       return NewObject<TIClient> ();
-    }
-
-    public static TIClient GetObject (ObjectID id)
-    {
-      return GetObject<TIClient> (id);
     }
 
     protected TIClient ()

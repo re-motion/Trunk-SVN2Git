@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void EnsureNotDeleted_NotDeleted ()
     {
-      var relatedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var relatedObject = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
 
       DomainObjectCheckUtility.EnsureNotDeleted (relatedObject, TestableClientTransaction);
     }
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [ExpectedException (typeof (ObjectDeletedException))]
     public void EnsureNotDeleted_Deleted ()
     {
-      var relatedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var relatedObject = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
       relatedObject.Delete ();
 
       DomainObjectCheckUtility.EnsureNotDeleted (relatedObject, TestableClientTransaction);

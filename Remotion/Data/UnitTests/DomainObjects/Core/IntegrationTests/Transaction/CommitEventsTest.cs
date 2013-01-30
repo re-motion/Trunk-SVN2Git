@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp();
 
-      _customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      _customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
     }
 
     [Test]
@@ -204,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var clientTransactionEventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
 
-      ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      ClassWithAllDataTypes classWithAllDataTypes = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       ObjectID classWithAllDataTypesID = classWithAllDataTypes.ID;
 
       classWithAllDataTypes.Delete();

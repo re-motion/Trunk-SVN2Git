@@ -188,9 +188,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           DomainObjectIDs.OrderItem1);
 
       var expectedObjects = new object[] {
-          Order.GetObject (DomainObjectIDs.Order1), 
-          Order.GetObject (DomainObjectIDs.Order2),
-          OrderItem.GetObject (DomainObjectIDs.OrderItem1)};
+          DomainObjectIDs.Order1.GetObject<Order> (), 
+          DomainObjectIDs.Order2.GetObject<Order> (),
+          DomainObjectIDs.OrderItem1.GetObject<OrderItem>()};
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
 
@@ -220,8 +220,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_LoadedObjects ()
     {
-      var expectedObjects = new object[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2),
-          OrderItem.GetObject (DomainObjectIDs.OrderItem1)};
+      var expectedObjects = new object[] {DomainObjectIDs.Order1.GetObject<Order> (), DomainObjectIDs.Order2.GetObject<Order> (),
+          DomainObjectIDs.OrderItem1.GetObject<OrderItem>()};
       DomainObject[] objects = LifetimeService.GetObjects<DomainObject> (
           TestableClientTransaction,
           DomainObjectIDs.Order1,
@@ -233,9 +233,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_LoadedObjects_Events ()
     {
-      Order.GetObject (DomainObjectIDs.Order1);
-      Order.GetObject (DomainObjectIDs.Order2);
-      OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      DomainObjectIDs.Order1.GetObject<Order> ();
+      DomainObjectIDs.Order2.GetObject<Order> ();
+      DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
 
       _eventReceiver.Clear ();
 
@@ -302,10 +302,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           new ObjectID (typeof (Order), guid),
           DomainObjectIDs.Order2);
       var expectedObjects = new DomainObject[] { 
-          Order.GetObject (DomainObjectIDs.Order1), 
+          DomainObjectIDs.Order1.GetObject<Order> (), 
           newObject, 
           null,
-          Order.GetObject (DomainObjectIDs.Order2) };
+          DomainObjectIDs.Order2.GetObject<Order> () };
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
 
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_Deleted ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Delete ();
 
       var result = LifetimeService.GetObjects<Order> (TestableClientTransaction, DomainObjectIDs.Order1);
@@ -333,7 +333,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void GetObjects_Discarded ()
     {
       SetDatabaseModifyable ();
-      ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).Delete ();
+      DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ().Delete ();
       TestableClientTransaction.Commit ();
       LifetimeService.GetObjects<ClassWithAllDataTypes> (TestableClientTransaction, DomainObjectIDs.ClassWithAllDataTypes1);
     }
@@ -344,7 +344,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction ();
       using (clientTransaction.EnterDiscardingScope ())
       {
-        Order order = Order.GetObject (DomainObjectIDs.Order1);
+        Order order = DomainObjectIDs.Order1.GetObject<Order> ();
 
         Assert.That (order.InternalDataContainer.ClientTransaction, Is.SameAs (clientTransaction));
         Assert.That (clientTransaction.IsEnlisted (order), Is.True);
@@ -357,11 +357,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction ();
       using (clientTransaction.EnterDiscardingScope ())
       {
-        Order order = Order.GetObject (DomainObjectIDs.Order1);
+        Order order = DomainObjectIDs.Order1.GetObject<Order> ();
 
         order.Delete ();
 
-        order = Order.GetObject (DomainObjectIDs.Order1, true);
+        order = DomainObjectIDs.Order1.GetObject<Order> (includeDeleted: true);
         Assert.That (order.State, Is.EqualTo (StateType.Deleted));
         Assert.That (order.InternalDataContainer.ClientTransaction, Is.SameAs (clientTransaction));
         Assert.That (clientTransaction.IsEnlisted (order), Is.True);
@@ -414,7 +414,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       var result = LifetimeService.TryGetObjects<Order> (TestableClientTransaction, ids.ToArray ());
       Assert.That (result.Length, Is.EqualTo (4002));
-      Assert.That (result.Distinct ().ToArray (), Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2), null }));
+      Assert.That (result.Distinct ().ToArray (), Is.EqualTo (new[] { DomainObjectIDs.Order1.GetObject<Order> (), DomainObjectIDs.Order2.GetObject<Order> (), null }));
     }
 
   }

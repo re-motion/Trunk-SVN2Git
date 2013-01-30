@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -26,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     [Test]
     public void OneToOneRelationChangeTest ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       OrderTicket orderTicket = order.OrderTicket;
 
       var orderEventReceiver = new DomainObjectRelationCheckEventReceiver (order);

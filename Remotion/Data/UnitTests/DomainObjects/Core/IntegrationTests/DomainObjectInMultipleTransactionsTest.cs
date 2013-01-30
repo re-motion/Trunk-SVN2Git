@@ -45,8 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       order.DeliveryDate = DateTime.Now;
       order.OrderItems.Add (OrderItem.NewObject ());
       order.OrderTicket = OrderTicket.NewObject ();
-      order.Official = Official.GetObject (DomainObjectIDs.Official1);
-      order.Customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      order.Official = DomainObjectIDs.Official1.GetObject<Official>();
+      order.Customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       newTransaction.EnlistDomainObject (order);
 
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void EnlistedObject_CanBeUsedInTwoTransactions ()
     {
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       newTransaction.EnlistDomainObject (order);
       Assert.That (newTransaction.IsEnlisted (order), Is.True);
       Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       ClientTransaction newTransaction1 = ClientTransaction.CreateRootTransaction ();
       ClientTransaction newTransaction2 = ClientTransaction.CreateRootTransaction ();
 
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       newTransaction1.EnlistDomainObject (order);
 
       int oldOrderNumber = order.OrderNumber;
@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void DeletedObject_CanBeEnlistedAndUsedInTransaction_IfNotCommitted ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       int orderNumber = order.OrderNumber;
       order.Delete ();
       Assert.That (order.State, Is.EqualTo (StateType.Deleted));
@@ -173,18 +173,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void GetObject_AfterEnlistingReturnsEnlistedObject ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClientTransactionScope.CurrentTransaction.EnlistDomainObject (order);
-        Assert.That (Order.GetObject (order.ID), Is.SameAs (order));
+        Assert.That (order.ID.GetObject<Order> (), Is.SameAs (order));
       }
     }
 
     private Order GetObjectDeleteCommit ()
     {
       SetDatabaseModifyable ();
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       for (int i = order.OrderItems.Count - 1; i >= 0; --i)
         order.OrderItems[i].Delete ();
 

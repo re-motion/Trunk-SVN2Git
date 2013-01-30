@@ -37,10 +37,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       base.SetUp ();
 
-      _oldCustomer = Customer.GetObject (DomainObjectIDs.Customer1);
-      _newCustomer = Customer.GetObject (DomainObjectIDs.Customer2);
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+      _oldCustomer = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      _newCustomer = DomainObjectIDs.Customer2.GetObject<Customer> ();
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _orderWithoutOrderItem = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
     }
 
     [Test]
@@ -277,8 +277,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void ChangeWithInheritance ()
     {
-      IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-      Partner partner = Partner.GetObject (DomainObjectIDs.Partner2);
+      IndustrialSector industrialSector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
+      Partner partner = DomainObjectIDs.Partner2.GetObject<Partner> ();
 
       Assert.That (industrialSector.Companies[partner.ID], Is.Null);
       Assert.That (ReferenceEquals (industrialSector, partner.IndustrialSector), Is.False);
@@ -422,7 +422,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetOriginalRelatedObjectsWithLazyLoad ()
     {
-      Employee supervisor = Employee.GetObject (DomainObjectIDs.Employee1);
+      Employee supervisor = DomainObjectIDs.Employee1.GetObject<Employee> ();
       DomainObjectCollection subordinates = supervisor.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates");
 
       Assert.That (subordinates.Count, Is.EqualTo (2));
@@ -432,7 +432,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ArgumentTypeException))]
     public void CheckRequiredItemTypeForExisting ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       DomainObjectCollection orderItems = order.OrderItems;
 
       orderItems.Add (Customer.NewObject ());
@@ -452,7 +452,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ArgumentTypeException))]
     public void SetRelatedObjectWithInvalidObjectClass ()
     {
-      _order1.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", Company.GetObject (DomainObjectIDs.Company1));  
+      _order1.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", DomainObjectIDs.Company1.GetObject<Company> ());  
     }
 
     [Test]

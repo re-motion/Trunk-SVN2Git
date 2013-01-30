@@ -48,11 +48,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return NewObject<Tenant>();
     }
 
-    public new static Tenant GetObject (ObjectID id)
-    {
-      return GetObject<Tenant> (id);
-    }
-
     public static IQueryable<Tenant> FindAll ()
     {
       return from t in QueryFactory.CreateLinqQuery<Tenant>()

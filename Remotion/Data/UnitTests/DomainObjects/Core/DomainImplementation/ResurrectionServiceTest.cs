@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void ResurrectInvalidObject_Hierarchy_InvalidInSubOnly ()
     {
-      var objectInvalidInSubOnly = Order.GetObject (DomainObjectIDs.Order1);
+      var objectInvalidInSubOnly = DomainObjectIDs.Order1.GetObject<Order> ();
       objectInvalidInSubOnly.Delete();
 
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void TryResurrectInvalidObject_Hierarchy_InvalidInSubOnly ()
     {
-      var objectInvalidInSubOnly = Order.GetObject (DomainObjectIDs.Order1);
+      var objectInvalidInSubOnly = DomainObjectIDs.Order1.GetObject<Order> ();
       objectInvalidInSubOnly.Delete ();
 
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();

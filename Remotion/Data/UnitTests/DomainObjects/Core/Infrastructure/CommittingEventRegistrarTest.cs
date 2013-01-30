@@ -46,13 +46,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _newDomainObject = _clientTransaction.Execute (() => Order.NewObject ());
       _changedObject = _clientTransaction.Execute (() =>
       {
-        var instance = Order.GetObject (DomainObjectIDs.Order1);
+        var instance = DomainObjectIDs.Order1.GetObject<Order> ();
         instance.RegisterForCommit();
         return instance;
       });
       _deletedObject = _clientTransaction.Execute (() =>
       {
-        var instance = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        var instance = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
         instance.Delete();
         return instance;
       });
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         instance.Delete ();
         return instance;
       });
-      _unchangedObject = _clientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order3));
+      _unchangedObject = _clientTransaction.Execute (() => DomainObjectIDs.Order3.GetObject<Order> ());
       _notLoadedYetObject = LifetimeService.GetObjectReference (_clientTransaction, DomainObjectIDs.Order4);
 
       _registrar = new CommittingEventRegistrar (_clientTransaction);

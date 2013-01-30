@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       using (transportedObjects.DataTransaction.EnterNonDiscardingScope())
       {
-        Order.GetObject (DomainObjectIDs.Order1);
+        DomainObjectIDs.Order1.GetObject<Order> ();
       }
 
       Assert.That (GetTransportedObjects (transportedObjects), Is.Empty);
@@ -70,9 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       var transportedObjectList = new List<DomainObject>();
       using (newTransaction.EnterNonDiscardingScope())
       {
-        transportedObjectList.Add (Order.GetObject (DomainObjectIDs.Order1));
-        transportedObjectList.Add (Order.GetObject (DomainObjectIDs.Order2));
-        transportedObjectList.Add (Company.GetObject (DomainObjectIDs.Company1));
+        transportedObjectList.Add (DomainObjectIDs.Order1.GetObject<Order> ());
+        transportedObjectList.Add (DomainObjectIDs.Order2.GetObject<Order> ());
+        transportedObjectList.Add (DomainObjectIDs.Company1.GetObject<Company> ());
       }
 
       var transportedObjects = new TransportedDomainObjects (newTransaction, transportedObjectList);
@@ -125,8 +125,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       ModifyDatabase (
           delegate
           {
-            ClassWithAllDataTypes c1 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-            ClassWithAllDataTypes c2 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+            ClassWithAllDataTypes c1 = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
+            ClassWithAllDataTypes c2 = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ();
             c1.Delete();
             c2.Delete();
           });
@@ -136,8 +136,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       var expectedObjects = new List<DomainObject>();
       using (transportedObjects.DataTransaction.EnterNonDiscardingScope())
       {
-        expectedObjects.Add (ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1));
-        expectedObjects.Add (ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2));
+        expectedObjects.Add (DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ());
+        expectedObjects.Add (DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ());
       }
 
       var filteredObjects = new List<DomainObject>();
@@ -161,8 +161,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        ClassWithAllDataTypes c3 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-        ClassWithAllDataTypes c4 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+        ClassWithAllDataTypes c3 = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
+        ClassWithAllDataTypes c4 = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ();
 
         Assert.That (c3.Int32Property, Is.EqualTo (2147483647));
         Assert.That (c4.Int32Property, Is.EqualTo (-2147483647));
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       {
         try
         {
-          ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+          DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
           Assert.Fail ("Expected ObjectsNotFoundException");
         }
         catch (ObjectsNotFoundException)
@@ -194,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
           // ok
         }
 
-        ClassWithAllDataTypes c2 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+        ClassWithAllDataTypes c2 = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ();
         Assert.That (c2.Int32Property, Is.EqualTo (-2147483647));
       }
     }
@@ -217,10 +217,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        var c1 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        var c1 = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
         Assert.That (c1.Int32Property, Is.EqualTo (42));
 
-        var c2 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+        var c2 = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ();
         Assert.That (c2.Int32Property, Is.Not.EqualTo (42));
       }
     }

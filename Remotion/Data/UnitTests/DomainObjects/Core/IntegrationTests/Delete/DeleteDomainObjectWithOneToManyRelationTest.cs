@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       base.SetUp ();
 
-      _supervisor = Employee.GetObject (DomainObjectIDs.Employee1);
+      _supervisor = DomainObjectIDs.Employee1.GetObject<Employee> ();
       _subordinate1 = (Employee) _supervisor.Subordinates[0];
       _subordinate2 = (Employee) _supervisor.Subordinates[1];
 
@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       _supervisor.Delete ();
 
-      _supervisor.Subordinates.Add (Employee.GetObject (DomainObjectIDs.Employee3));
+      _supervisor.Subordinates.Add (DomainObjectIDs.Employee3.GetObject<Employee> ());
     }
 
     [Test]

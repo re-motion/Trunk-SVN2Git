@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     public Location GetUnidirectionalWithDeletedNew ()
     {
-      Location unidirectionalWithDeletedNew = Location.GetObject (DomainObjectIDs.Location3);
+      Location unidirectionalWithDeletedNew = DomainObjectIDs.Location3.GetObject<Location>();
       unidirectionalWithDeletedNew.Client = Client.NewObject();
       unidirectionalWithDeletedNew.Client.Delete ();
       return unidirectionalWithDeletedNew;
@@ -40,14 +40,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     public Location GetUnidirectionalWithDeleted ()
     {
-      Location unidirectionalWithDeleted = Location.GetObject (DomainObjectIDs.Location1);
+      Location unidirectionalWithDeleted = DomainObjectIDs.Location1.GetObject<Location>();
       unidirectionalWithDeleted.Client.Delete ();
       return unidirectionalWithDeleted;
     }
 
     public Order GetDeleted ()
     {
-      Order deleted = Order.GetObject (DomainObjectIDs.Order4);
+      Order deleted = DomainObjectIDs.Order4.GetObject<Order> ();
       FullyDeleteOrder (deleted);
       return deleted;
     }
@@ -66,35 +66,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     public Employee GetChangedThroughRelatedObjectVirtualSide ()
     {
-      Employee changedThroughRelatedObjectVirtualSide = Employee.GetObject (DomainObjectIDs.Employee3);
-      changedThroughRelatedObjectVirtualSide.Computer = Computer.GetObject (DomainObjectIDs.Computer3);
+      Employee changedThroughRelatedObjectVirtualSide = DomainObjectIDs.Employee3.GetObject<Employee> ();
+      changedThroughRelatedObjectVirtualSide.Computer = DomainObjectIDs.Computer3.GetObject<Computer> ();
       return changedThroughRelatedObjectVirtualSide;
     }
 
     public Computer GetChangedThroughRelatedObjectRealSide ()
     {
-      Computer changedThroughRelatedObjectRealSide = Computer.GetObject (DomainObjectIDs.Computer1);
-      changedThroughRelatedObjectRealSide.Employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      Computer changedThroughRelatedObjectRealSide = DomainObjectIDs.Computer1.GetObject<Computer> ();
+      changedThroughRelatedObjectRealSide.Employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
       return changedThroughRelatedObjectRealSide;
     }
 
     public Order GetChangedThroughRelatedObjects ()
     {
-      Order changedThroughRelatedObjects = Order.GetObject (DomainObjectIDs.Order3);
+      Order changedThroughRelatedObjects = DomainObjectIDs.Order3.GetObject<Order> ();
       changedThroughRelatedObjects.OrderItems.Clear ();
       return changedThroughRelatedObjects;
     }
 
     public Order GetChangedThroughPropertyValue ()
     {
-      Order changedThroughPropertyValue = Order.GetObject (DomainObjectIDs.Order2);
+      Order changedThroughPropertyValue = DomainObjectIDs.Order2.GetObject<Order> ();
       changedThroughPropertyValue.OrderNumber = 74;
       return changedThroughPropertyValue;
     }
 
     public Order GetUnchanged ()
     {
-      return Order.GetObject (DomainObjectIDs.Order1);
+      return DomainObjectIDs.Order1.GetObject<Order> ();
     }
 
     [Test]

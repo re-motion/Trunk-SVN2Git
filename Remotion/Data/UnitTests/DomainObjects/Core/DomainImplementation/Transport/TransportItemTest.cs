@@ -16,6 +16,7 @@
 // 
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void PackageDataContainer ()
     {
-      DataContainer container = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
+      DataContainer container = DomainObjectIDs.Computer1.GetObject<Computer> ().InternalDataContainer;
       TransportItem item = TransportItem.PackageDataContainer (container);
 
       CheckEqualData(container, item);
@@ -44,8 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void PackageDataContainers()
     {
-      DataContainer container1 = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
-      DataContainer container2 = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
+      DataContainer container1 = DomainObjectIDs.Computer1.GetObject<Computer> ().InternalDataContainer;
+      DataContainer container2 = DomainObjectIDs.Computer1.GetObject<Computer> ().InternalDataContainer;
       TransportItem[] items = TransportItem.PackageDataContainers (new DataContainer[] { container1, container2 }).ToArray ();
 
       CheckEqualData (container1, items[0]);

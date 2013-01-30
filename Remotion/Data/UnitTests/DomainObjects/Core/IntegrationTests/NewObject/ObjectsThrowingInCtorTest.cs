@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.NewObject
     [Test]
     public void ThrowingObjectInBidirectionalRelation_AlsoThrowingFromOnDeleting_CausesObjectCleanupException_AndRemainsInRelation ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       OrderItem throwingInstance = null;
       RegisterThrowingCtorHandler<OrderItem> (instance =>
       {

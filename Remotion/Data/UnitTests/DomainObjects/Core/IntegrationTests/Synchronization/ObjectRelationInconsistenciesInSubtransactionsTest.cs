@@ -35,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-        order1 = Order.GetObject (DomainObjectIDs.Order1);
+        orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
+        order1 = DomainObjectIDs.Order1.GetObject<Order> ();
 
         Assert.That (orderTicket1.Order, Is.SameAs (order1));
         Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
@@ -70,9 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        order1 = Order.GetObject (DomainObjectIDs.Order1);
+        order1 = DomainObjectIDs.Order1.GetObject<Order> ();
         order1.OrderTicket.EnsureDataAvailable();
-        orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+        orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
 
         Assert.That (orderTicket1.Order, Is.SameAs (order1));
         Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
@@ -308,8 +308,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void ConsistentState_GuaranteedInSubTransaction_OneOne ()
     {
-      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
 
       Assert.That (orderTicket1.Order, Is.SameAs (order1));
       Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));

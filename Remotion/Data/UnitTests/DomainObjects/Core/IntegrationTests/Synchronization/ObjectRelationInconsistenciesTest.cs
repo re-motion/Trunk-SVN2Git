@@ -31,8 +31,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void VirtualEndPointQuery_OneOne_Consistent_RealEndPointLoadedFirst ()
     {
-      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
 
       Assert.That (orderTicket1.Order, Is.SameAs (order1));
       Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
@@ -51,9 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void VirtualEndPointQuery_OneOne_Consistent_VirtualEndPointLoadedFirst ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       order1.OrderTicket.EnsureDataAvailable();
-      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var orderTicket1 = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
 
       Assert.That (orderTicket1.Order, Is.SameAs (order1));
       Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
@@ -238,9 +238,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable ();
 
-      var employee2 = Employee.GetObject (DomainObjectIDs.Employee2);
+      var employee2 = DomainObjectIDs.Employee2.GetObject<Employee> ();
 
-      var computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (employee2.ID));
+      var computer = CreateComputerAndSetEmployeeInOtherTransaction (employee2.ID).GetObject<Computer> ();
       Assert.That (computer.Employee, Is.SameAs (employee2));
 
       // 1:1 relations automatically cause virtual end-points to be marked loaded when the foreign key object is loaded, so unload the virtual side

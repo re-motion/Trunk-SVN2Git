@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -39,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void Query_WithDomainObjectCollectionContainsObject ()
     {
-      OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      OrderItem item = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
       var orders =
           from o in QueryFactory.CreateLinqQuery<Order>()
           where o.OrderItems.ContainsObject (item)
@@ -88,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
                          orderby o.ID
                          select o).First();
-      Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.InvalidOrder)));
+      Assert.That (queryResult, Is.EqualTo (DomainObjectIDs.InvalidOrder.GetObject<Order> ()));
     }
 
     [Test]
@@ -97,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> ()
                          orderby o.OrderNumber
                          select (IOrder) o).First ();
-      Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
+      Assert.That (queryResult, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ()));
     }
 
     [Test]
@@ -115,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
                          orderby o.ID
                          select o).FirstOrDefault();
-      Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.InvalidOrder)));
+      Assert.That (queryResult, Is.EqualTo (DomainObjectIDs.InvalidOrder.GetObject<Order> ()));
     }
 
     [Test]
@@ -133,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
                          where o.OrderNumber == 1
                          select o).Single();
-      Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
+      Assert.That (queryResult, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ()));
     }
 
     [Test]
@@ -150,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
                          where o.OrderNumber == 1
                          select o).SingleOrDefault();
-      Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
+      Assert.That (queryResult, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ()));
     }
 
     [Test]

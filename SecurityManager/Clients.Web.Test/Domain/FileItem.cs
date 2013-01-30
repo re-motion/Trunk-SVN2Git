@@ -25,21 +25,13 @@ namespace Remotion.SecurityManager.Clients.Web.Test.Domain
   [Instantiable]
   [DBTable]
   [DBStorageGroup]
-  public abstract class FileItem : BaseSecurableObject
+  public abstract class FileItem : BaseSecurableObject, ISupportsGetObject
   {
     public static FileItem NewObject (ClientTransaction clientTransaction)
     {
       using (clientTransaction.EnterNonDiscardingScope ())
       {
         return DomainObject.NewObject<FileItem> ();
-      }
-    }
-
-    public static FileItem GetObject (ObjectID id, ClientTransaction clientTransaction)
-    {
-      using (clientTransaction.EnterNonDiscardingScope())
-      {
-        return DomainObject.GetObject<FileItem> (id);
       }
     }
 

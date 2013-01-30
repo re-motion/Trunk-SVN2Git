@@ -163,7 +163,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
     {
       using (clientTransaction.EnterDiscardingScope ())
       {
-        ClassWithAllDataTypes objectWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ObjectWithAllDataTypes1);
+        ClassWithAllDataTypes objectWithAllDataTypes = DomainObjectIDs.ObjectWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
 
         objectWithAllDataTypes.Int32Property = value;
 
@@ -175,7 +175,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
     {
       using (clientTransaction.EnterDiscardingScope ())
       {
-        ClassWithAllDataTypes objectWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ObjectWithAllDataTypes1);
+        ClassWithAllDataTypes objectWithAllDataTypes = DomainObjectIDs.ObjectWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
 
         return objectWithAllDataTypes.Int32Property;
       }

@@ -33,8 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CommitOneToManyRelation ()
     {
-      Customer customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
-      Customer customer2 = Customer.GetObject (DomainObjectIDs.Customer2);
+      Customer customer1 = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      Customer customer2 = DomainObjectIDs.Customer2.GetObject<Customer> ();
       Order order = customer1.Orders[DomainObjectIDs.Order1];
 
       customer2.Orders.Add (order);
@@ -53,9 +53,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CommitOneToOneRelation ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      OrderTicket oldOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      OrderTicket newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+      OrderTicket oldOrderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
+      OrderTicket newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
 
 			object orderTimestamp = order.InternalDataContainer.Timestamp;
 			object oldOrderTicketTimestamp = oldOrderTicket.InternalDataContainer.Timestamp;
@@ -74,8 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CommitHierarchy ()
     {
-      Employee supervisor1 = Employee.GetObject (DomainObjectIDs.Employee1);
-      Employee supervisor2 = Employee.GetObject (DomainObjectIDs.Employee2);
+      Employee supervisor1 = DomainObjectIDs.Employee1.GetObject<Employee> ();
+      Employee supervisor2 = DomainObjectIDs.Employee2.GetObject<Employee> ();
       Employee subordinate = (Employee) supervisor1.Subordinates[DomainObjectIDs.Employee4];
 
       subordinate.Supervisor = supervisor2;
@@ -83,8 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
-      supervisor1 = Employee.GetObject (DomainObjectIDs.Employee1);
-      supervisor2 = Employee.GetObject (DomainObjectIDs.Employee2);
+      supervisor1 = DomainObjectIDs.Employee1.GetObject<Employee> ();
+      supervisor2 = DomainObjectIDs.Employee2.GetObject<Employee> ();
 
       Assert.That (supervisor1.Subordinates[DomainObjectIDs.Employee4], Is.Null);
       Assert.That (supervisor2.Subordinates[DomainObjectIDs.Employee4], Is.Not.Null);
@@ -93,10 +93,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CommitPolymorphicRelation ()
     {
-      Ceo companyCeo = Ceo.GetObject (DomainObjectIDs.Ceo1);
-      Ceo distributorCeo = Ceo.GetObject (DomainObjectIDs.Ceo10);
+      Ceo companyCeo = DomainObjectIDs.Ceo1.GetObject<Ceo> ();
+      Ceo distributorCeo = DomainObjectIDs.Ceo10.GetObject<Ceo> ();
       Company company = companyCeo.Company;
-      Distributor distributor = Distributor.GetObject (DomainObjectIDs.Distributor1);
+      Distributor distributor = DomainObjectIDs.Distributor1.GetObject<Distributor> ();
 
       distributor.Ceo = companyCeo;
       company.Ceo = distributorCeo;
@@ -104,10 +104,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
-      companyCeo = Ceo.GetObject (DomainObjectIDs.Ceo1);
-      distributorCeo = Ceo.GetObject (DomainObjectIDs.Ceo10);
-      company = Company.GetObject (DomainObjectIDs.Company1);
-      distributor = Distributor.GetObject (DomainObjectIDs.Distributor1);
+      companyCeo = DomainObjectIDs.Ceo1.GetObject<Ceo> ();
+      distributorCeo = DomainObjectIDs.Ceo10.GetObject<Ceo> ();
+      company = DomainObjectIDs.Company1.GetObject<Company> ();
+      distributor = DomainObjectIDs.Distributor1.GetObject<Distributor> ();
 
       Assert.That (distributor.Ceo, Is.SameAs (companyCeo));
       Assert.That (companyCeo.Company, Is.SameAs (distributor));
@@ -118,20 +118,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CommitPropertyChange ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       customer.Name = "Arthur Dent";
 
       TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
-      customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       Assert.That (customer.Name, Is.EqualTo ("Arthur Dent"));
     }
 
     [Test]
     public void OriginalDomainObjectCollection_IsNotSameAfterCommit ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       DomainObjectCollection originalOrderItems = order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
       OrderItem.NewObject (order);
 

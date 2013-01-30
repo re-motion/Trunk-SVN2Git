@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void ChangedObject_RemembersRegistration_EvenWhenChangedBack ()
     {
-      var domainObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var domainObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       ++domainObject.Int32Property;
       Assert.That (domainObject.State, Is.EqualTo (StateType.Changed));
 
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void UnchangedObject ()
     {
-      var domainObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var domainObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       Assert.That (domainObject.State, Is.EqualTo (StateType.Unchanged));
 
       domainObject.RegisterForCommit ();
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void DeletedObject ()
     {
-      var domainObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var domainObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       domainObject.Delete();
       Assert.That (domainObject.State, Is.EqualTo (StateType.Deleted));
 
@@ -146,11 +146,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       newObject.DateProperty = new DateTime (2012, 12, 12);
       Assert.That (newObject.State, Is.EqualTo (StateType.New));
 
-      var changedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var changedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       ++changedObject.Int32Property;
       Assert.That (changedObject.State, Is.EqualTo (StateType.Changed));
 
-      var unchangedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+      var unchangedObject = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ();
       Assert.That (unchangedObject.State, Is.EqualTo (StateType.Unchanged));
 
       newObject.RegisterForCommit();
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void CommitRoot_RegisterForUnchanged_LeadsToConcurrencyCheck ()
     {
-      var unchangedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+      var unchangedObject = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ();
       unchangedObject.RegisterForCommit ();
 
       SetDatabaseModifyable();
@@ -218,11 +218,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newObject = ClassWithAllDataTypes.NewObject();
         Assert.That (newObject.State, Is.EqualTo (StateType.New));
 
-        changedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        changedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
         ++changedObject.Int32Property;
         Assert.That (changedObject.State, Is.EqualTo (StateType.Changed));
 
-        unchangedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+        unchangedObject = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ();
         Assert.That (unchangedObject.State, Is.EqualTo (StateType.Unchanged));
 
         newObject.RegisterForCommit();
@@ -282,7 +282,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void CommitSub_Nested ()
     {
-      var domainObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var domainObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       CheckNotMarkedAsChanged (domainObject);
       Assert.That (domainObject.State, Is.EqualTo (StateType.Unchanged));
 
@@ -367,11 +367,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var newObject = ClassWithAllDataTypes.NewObject ();
       Assert.That (newObject.State, Is.EqualTo (StateType.New));
 
-      var changedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var changedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       ++changedObject.Int32Property;
       Assert.That (changedObject.State, Is.EqualTo (StateType.Changed));
 
-      var unchangedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+      var unchangedObject = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ();
       Assert.That (unchangedObject.State, Is.EqualTo (StateType.Unchanged));
 
       newObject.RegisterForCommit ();
@@ -419,7 +419,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        var domainObject = ClassWithAllDataTypes.GetObject (objectID);
+        var domainObject = objectID.GetObject<ClassWithAllDataTypes> ();
         ++domainObject.Int32Property;
         ClientTransaction.Current.Commit();
       }

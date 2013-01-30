@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       base.SetUp ();
 
-      _orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      _orderItem = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
       _order = _orderItem.Order;
 
       _eventReceiver = CreateEventReceiver ();

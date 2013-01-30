@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -76,10 +77,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp ();
 
-      _domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
+      _domainObject = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _orderWithoutOrderItem = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
 
       _relationEndPointID = RelationEndPointID.Create(DomainObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       _collectionEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_relationEndPointID, new[] { _order1, _orderWithoutOrderItem });

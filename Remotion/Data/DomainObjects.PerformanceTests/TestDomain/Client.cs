@@ -20,16 +20,11 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
 {
   [Instantiable]
   [DBTable]
-  public abstract class Client : DomainObject
+  public abstract class Client : DomainObject, ISupportsGetObject
   {
     public static Client NewObject()
     {
       return DomainObject.NewObject<Client>();
-    }
-
-    public static Client GetObject (ObjectID id)
-    {
-      return DomainObject.GetObject<Client> (id);
     }
 
     protected Client ()

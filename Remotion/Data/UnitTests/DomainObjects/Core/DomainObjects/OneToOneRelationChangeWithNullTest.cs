@@ -29,8 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void OldRelatedObjectOfNewRelatedObjectIsNull ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
-      Computer newComputerWithoutEmployee = Computer.GetObject (DomainObjectIDs.Computer4);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
+      Computer newComputerWithoutEmployee = DomainObjectIDs.Computer4.GetObject<Computer> ();
 
       employee.Computer = newComputerWithoutEmployee;
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void NewRelatedObjectIsNull ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       employee.Computer = null;
 
       // expectation: no exception
@@ -49,8 +49,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void OldRelatedObjectIsNull ()
     {
-      Employee employeeWithoutComputer = Employee.GetObject (DomainObjectIDs.Employee1);
-      Computer computerWithoutEmployee = Computer.GetObject (DomainObjectIDs.Computer4);
+      Employee employeeWithoutComputer = DomainObjectIDs.Employee1.GetObject<Employee> ();
+      Computer computerWithoutEmployee = DomainObjectIDs.Computer4.GetObject<Computer> ();
       employeeWithoutComputer.Computer = computerWithoutEmployee;
 
       // expectation: no exception
@@ -59,8 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetRelatedObjectAndOldRelatedObjectIsNull ()
     {
-      Computer computerWithoutEmployee = Computer.GetObject (DomainObjectIDs.Computer4);
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      Computer computerWithoutEmployee = DomainObjectIDs.Computer4.GetObject<Computer> ();
+      Employee employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
       computerWithoutEmployee.Employee = employee;
 
       Assert.That (computerWithoutEmployee.Properties[typeof (Computer), "Employee"].GetRelatedObjectID (), Is.EqualTo (employee.ID));
@@ -72,8 +72,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetRelatedObjectOverVirtualEndPointAndOldRelatedObjectIsNull ()
     {
-      Employee employeeWithoutComputer = Employee.GetObject (DomainObjectIDs.Employee1);
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
+      Employee employeeWithoutComputer = DomainObjectIDs.Employee1.GetObject<Employee> ();
+      Computer computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
       employeeWithoutComputer.Computer = computer;
 
       Assert.That (computer.Properties[typeof (Computer), "Employee"].GetRelatedObjectID (), Is.EqualTo (employeeWithoutComputer.ID));
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetNewRelatedObjectNull ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       Computer computer = employee.Computer;
       computer.Employee = null;
 
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetNewRelatedObjectNullOverVirtualEndPoint ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       Computer computer = employee.Computer;
       employee.Computer = null;
 
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void HasBeenTouchedWithNull_RealSide ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       Computer computer = employee.Computer;
 
       CheckTouching (delegate { computer.Employee = null; }, computer, "Employee",
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void HasBeenTouchedWithNullTwice_RealSide ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       Computer computer = employee.Computer;
 
       computer.Employee = null;
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void HasBeenTouchedWithNull_VirtualSide ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
       Computer computer = employee.Computer;
 
       CheckTouching (delegate { employee.Computer = null; }, computer, "Employee",
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void HasBeenTouchedWithNullTwice_VirtualSide ()
     {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
 
       employee.Computer = null;
 

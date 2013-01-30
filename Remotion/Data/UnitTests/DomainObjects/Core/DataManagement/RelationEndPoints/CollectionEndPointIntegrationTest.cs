@@ -41,9 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp ();
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
-      _order2 = Order.GetObject (DomainObjectIDs.Order2);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _orderWithoutOrderItem = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
+      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
 
       var stateUpdateRaisingEndPointDecorator = (StateUpdateRaisingCollectionEndPointDecorator) 
           TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var newOpposites = new OrderCollection { _orderWithoutOrderItem, _order2};
 
-      var customer3 = Customer.GetObject (DomainObjectIDs.Customer3);
+      var customer3 = DomainObjectIDs.Customer3.GetObject<Customer> ();
       
       Assert.That (_order1.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
       Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));

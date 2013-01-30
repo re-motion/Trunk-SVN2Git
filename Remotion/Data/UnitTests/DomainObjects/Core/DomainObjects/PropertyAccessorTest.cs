@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetValue_WithObjectList_SelfReplace ()
     {
-      var sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var sector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       var previousEndPointID = sector.Companies.AssociatedEndPointID;
 
       sector.Companies = sector.Companies;
@@ -199,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ObjectDeletedException))]
     public void SetValue_WithObjectList_ObjectDeleted ()
     {
-      var sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var sector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       sector.Delete ();
 
       CreateAccessor (sector, "Companies").SetValue (new ObjectList<Company> ());
@@ -208,7 +208,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetValue_WithRelatedObject ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var newTicket = OrderTicket.NewObject();
 
       CreateAccessor (order, "OrderTicket").SetValue (newTicket);
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetValue_WithRelatedObject_PerformsBidirectionalChange ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var newTicket = OrderTicket.NewObject ();
       var oldTicket = order.OrderTicket;
 
@@ -234,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
 
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var oldTicket = order.OrderTicket;
       var newTicket = OrderTicket.NewObject ();
 
@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ObjectDeletedException))]
     public void SetValue_WithRelatedObject_ObjectDeleted ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Delete();
 
       CreateAccessor (order, "OrderTicket").SetValue (OrderTicket.NewObject ());
@@ -259,8 +259,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ObjectDeletedException))]
     public void SetValue_WithRelatedObject_NewObjectDeleted ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
-      var newTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
+      var newTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
       newTicket.Delete();
 
       CreateAccessor (order, "OrderTicket").SetValue (newTicket);
@@ -270,8 +270,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ArgumentTypeException))]
     public void SetValue_WithRelatedObject_WithInvalidType ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
-      var customer = Company.GetObject (DomainObjectIDs.Customer1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
+      var customer = DomainObjectIDs.Customer1.GetObject<Company> ();
 
       CreateAccessor (order, "OrderTicket").SetValueWithoutTypeCheck (customer);
     }
@@ -279,8 +279,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetValue_WithRelatedObject_WithCorrectDerivedType ()
     {
-      var ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
-      var partnerCompany = Partner.GetObject (DomainObjectIDs.Partner1);
+      var ceo = DomainObjectIDs.Ceo1.GetObject<Ceo> ();
+      var partnerCompany = DomainObjectIDs.Partner1.GetObject<Partner> ();
 
       CreateAccessor (ceo, "Company").SetValueWithoutTypeCheck (partnerCompany);
 
@@ -291,8 +291,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ArgumentTypeException))]
     public void SetValue_WithRelatedObject_WithInvalidBaseType ()
     {
-      var person = Person.GetObject (DomainObjectIDs.Person1);
-      var company = Company.GetObject (DomainObjectIDs.Company1);
+      var person = DomainObjectIDs.Person1.GetObject<Person>();
+      var company = DomainObjectIDs.Company1.GetObject<Company> ();
 
       CreateAccessor (person, "AssociatedPartnerCompany").SetValueWithoutTypeCheck (company);
     }
@@ -304,7 +304,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. The objects do not belong to the same ClientTransaction.")]
     public void SetValue_WithRelatedObject_WithObjectNotEnlistedInThisTransaction ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderTicketFromOtherTransaction = DomainObjectMother.GetObjectInOtherTransaction<OrderTicket> (DomainObjectIDs.OrderTicket1);
 
       CreateAccessor (order, "OrderTicket").SetValueWithoutTypeCheck (orderTicketFromOtherTransaction);
@@ -322,7 +322,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void HasChangedAndOriginalValueSimple()
     {
-      IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      IndustrialSector sector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       PropertyAccessor property = CreateAccessor (sector, "Name");
       Assert.That (property.HasChanged, Is.False);
       var originalValue = property.GetValue<string>();
@@ -339,7 +339,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void HasChangedAndOriginalValueRelated()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       PropertyAccessor property = CreateAccessor (computer, "Employee");
       Assert.That (property.HasChanged, Is.False);
       var originalValue = property.GetOriginalValue<Employee>();
@@ -358,7 +358,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void HasChangedAndOriginalValueRelatedCollection()
     {
-      IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      IndustrialSector sector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       PropertyAccessor property = CreateAccessor (sector, "Companies");
 
       Assert.That (property.HasChanged, Is.False);
@@ -387,7 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void HasBeenTouchedSimple ()
     {
-      IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      IndustrialSector sector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       PropertyAccessor property = CreateAccessor (sector, "Name");
 
       Assert.That (property.HasBeenTouched, Is.False);
@@ -398,7 +398,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void HasBeenTouchedRelated ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
       PropertyAccessor property = CreateAccessor (computer, "Employee");
 
       Assert.That (property.HasBeenTouched, Is.False);
@@ -409,7 +409,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void HasBeenTouchedRelatedCollection ()
     {
-      IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      IndustrialSector sector = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
       PropertyAccessor property = CreateAccessor (sector, "Companies");
 
       Assert.That (property.HasBeenTouched, Is.False);
@@ -472,7 +472,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull, Is.True);
 
       var eventReceiver = new ClientTransactionEventReceiver (ClientTransactionScope.CurrentTransaction);
-      Order existingOrder = Order.GetObject (DomainObjectIDs.Order1);
+      Order existingOrder = DomainObjectIDs.Order1.GetObject<Order> ();
 
       eventReceiver.Clear ();
       Assert.That (eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
@@ -497,7 +497,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].IsNull, Is.True);
 
       var eventReceiver = new ClientTransactionEventReceiver (ClientTransactionScope.CurrentTransaction);
-      Order existingOrder = Order.GetObject (DomainObjectIDs.Order1);
+      Order existingOrder = DomainObjectIDs.Order1.GetObject<Order> ();
 
       eventReceiver.Clear ();
       Assert.That (eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
@@ -570,14 +570,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This operation can only be used on related object properties.")]
     public void GetRelatedObjectIDSimple ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].GetRelatedObjectID ();
     }
 
     [Test]
     public void GetRelatedObjectIDRelatedRealEndPoint ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetRelatedObjectID (), Is.EqualTo (order.Customer.ID));
     }
 
@@ -586,7 +586,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         ExpectedMessage = "ObjectIDs only exist on the real side of a relation, not on the virtual side.")]
     public void GetRelatedObjectIDRelatedVirtualEndPoint ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetRelatedObjectID ();
     }
 
@@ -594,7 +594,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This operation can only be used on related object properties.")]
     public void GetRelatedObjectIDRelatedCollection ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].GetRelatedObjectID ();
     }
 
@@ -602,14 +602,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This operation can only be used on related object properties.")]
     public void GetOriginalRelatedObjectIDSimple ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].GetOriginalRelatedObjectID ();
     }
 
     [Test]
     public void GetOriginalRelatedObjectIDRelatedRealEndPoint ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       ObjectID originalID = order.Customer.ID;
       order.Customer = Customer.NewObject ();
       Assert.That (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetOriginalRelatedObjectID (), Is.Not.EqualTo (order.Customer.ID));
@@ -621,7 +621,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         ExpectedMessage = "ObjectIDs only exist on the real side of a relation, not on the virtual side.")]
     public void GetOriginalRelatedObjectIDRelatedVirtualEndPoint ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetOriginalRelatedObjectID ();
     }
 
@@ -629,7 +629,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This operation can only be used on related object properties.")]
     public void GetOriginalRelatedObjectIDRelatedCollection ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].GetOriginalRelatedObjectID ();
     }
 

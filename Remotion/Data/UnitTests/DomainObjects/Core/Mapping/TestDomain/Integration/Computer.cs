@@ -25,16 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Computer : TestDomainBase
   {
-    public static Computer NewObject ()
-    {
-      return NewObject<Computer> ();
-    }
-
-    public new static Computer GetObject (ObjectID id)
-    {
-      return GetObject<Computer> (id);
-    }
-
     protected Computer ()
     {
     }

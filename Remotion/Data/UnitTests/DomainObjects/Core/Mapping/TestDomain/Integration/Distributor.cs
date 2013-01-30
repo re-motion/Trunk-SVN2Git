@@ -23,16 +23,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Distributor : Partner
   {
-    public static new Distributor NewObject ()
-    {
-      return NewObject<Distributor> ();
-    }
-
-    public new static Distributor GetObject (ObjectID id)
-    {
-      return GetObject<Distributor> (id);
-    }
-
     protected Distributor ()
     {
     }

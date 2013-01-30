@@ -36,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       base.SetUp ();
 
-      _supervisor = Employee.GetObject (DomainObjectIDs.Employee1);
-      _subordinate = Employee.GetObject (DomainObjectIDs.Employee2);
+      _supervisor = DomainObjectIDs.Employee1.GetObject<Employee> ();
+      _subordinate = DomainObjectIDs.Employee2.GetObject<Employee> ();
 
       _supervisorEventReceiver = new DomainObjectEventReceiver (_supervisor);
       _subordinateEventReceiver = new DomainObjectEventReceiver (_subordinate);
@@ -323,8 +323,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void AddSubordinateWithOldSupervisor ()
     {
-      Employee subordinate = Employee.GetObject (DomainObjectIDs.Employee3);
-      Employee oldSupervisorOfSubordinate = Employee.GetObject (DomainObjectIDs.Employee2);
+      Employee subordinate = DomainObjectIDs.Employee3.GetObject<Employee> ();
+      Employee oldSupervisorOfSubordinate = DomainObjectIDs.Employee2.GetObject<Employee> ();
 
       var subordinateEventReceiver = new DomainObjectEventReceiver (subordinate);
       subordinateEventReceiver.Cancel = false;

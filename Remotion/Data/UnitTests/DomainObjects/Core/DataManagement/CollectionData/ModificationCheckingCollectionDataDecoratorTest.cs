@@ -45,9 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _modificationCheckingDecorator = new ModificationCheckingCollectionDataDecorator (typeof (Order), _wrappedDataMock);
       _modificationCheckingDecoratorWithoutRequiredItemType = new ModificationCheckingCollectionDataDecorator (null, _wrappedDataMock);
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _order2 = Order.GetObject (DomainObjectIDs.Order2);
-      _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
+      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      _orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
     }
 
     [Test]

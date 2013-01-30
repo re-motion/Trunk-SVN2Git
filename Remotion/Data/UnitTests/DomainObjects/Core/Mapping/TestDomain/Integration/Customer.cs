@@ -38,16 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
       Gold = 2
     }
 
-    public new static Customer NewObject ()
-    {
-      return NewObject<Customer> ();
-    }
-
-    public new static Customer GetObject (ObjectID id)
-    {
-      return GetObject<Customer> (id);
-    }
-
     protected Customer ()
     {
     }

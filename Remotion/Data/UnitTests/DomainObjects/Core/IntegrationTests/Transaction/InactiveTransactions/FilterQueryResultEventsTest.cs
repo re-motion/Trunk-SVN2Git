@@ -38,10 +38,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp ();
 
-      _order1 = ActiveSubTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      _order2 = ActiveSubTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
-      _order3 = ActiveSubTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order3));
-      _order4 = ActiveSubTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order4));
+      _order1 = ActiveSubTransaction.Execute (() => DomainObjectIDs.Order1.GetObject<Order> ());
+      _order2 = ActiveSubTransaction.Execute (() => DomainObjectIDs.Order2.GetObject<Order> ());
+      _order3 = ActiveSubTransaction.Execute (() => DomainObjectIDs.Order3.GetObject<Order> ());
+      _order4 = ActiveSubTransaction.Execute (() => DomainObjectIDs.Order4.GetObject<Order> ());
 
       _queryStub = MockRepository.GenerateStub<IQuery>();
 

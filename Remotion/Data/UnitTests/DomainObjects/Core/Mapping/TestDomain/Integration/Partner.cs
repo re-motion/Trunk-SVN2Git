@@ -23,16 +23,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [Instantiable]
   public abstract class Partner : Company
   {
-    public static new Partner NewObject ()
-    {
-      return NewObject<Partner>();
-    }
-
-    public new static Partner GetObject (ObjectID id)
-    {
-      return GetObject<Partner> (id);
-    }
-
     protected Partner ()
     {
     }

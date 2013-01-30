@@ -54,10 +54,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
           Assert.That (f.InParameter.Int32Property, Is.EqualTo (7));
           Assert.That (f.InParameterArray[0].Int32Property, Is.EqualTo (8));
 
-          f.OutParameter = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+          f.OutParameter = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
           f.OutParameter.Int32Property = 12;
 
-          f.OutParameterArray = new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) };
+          f.OutParameterArray = new[] { DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> () };
           f.OutParameterArray[0].Int32Property = 13;
         }, inParameter, inParameterArray, out outParameter, out outParameterArray);
 
@@ -108,8 +108,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
       {
         var outerTransaction = ClientTransaction.Current;
 
-        var inParameter = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-        var inParameterArray = new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) };
+        var inParameter = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
+        var inParameterArray = new[] { DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> () };
 
         inParameter.Int32Property = 7;
         inParameterArray[0].Int32Property = 8;
@@ -142,10 +142,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
         ClassWithAllDataTypes[] outParameterArray;
         ExecuteDelegateInWxeFunctionWithParameters (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
         {
-          f.OutParameter = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+          f.OutParameter = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
           f.OutParameter.Int32Property = 12;
 
-          f.OutParameterArray = new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) };
+          f.OutParameterArray = new[] { DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> () };
           f.OutParameterArray[0].Int32Property = 13;
         }, null, null, out outParameter, out outParameterArray);
 
@@ -166,10 +166,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
           WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
           (ctx, f) =>
           {
-            f.OutParameter = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+            f.OutParameter = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
             f.OutParameter.Int32Property = 12;
 
-            f.OutParameterArray = new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) };
+            f.OutParameterArray = new[] { DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> () };
             f.OutParameterArray[0].Int32Property = 13;
 
             transactionOfParentFunction = f.ParentFunction.Transaction.GetNativeTransaction<ClientTransaction> ();

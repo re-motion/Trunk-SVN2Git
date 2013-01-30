@@ -85,14 +85,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [ExpectedException (typeof (ObjectDeletedException))]
     public void GetObject_IncludeDeleted_False ()
     {
-      Order.GetObject (DomainObjectIDs.Order1).Delete();
+      DomainObjectIDs.Order1.GetObject<Order> ().Delete();
       LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Order1, false);
     }
 
     [Test]
     public void GetObject_IncludeDeleted_True ()
     {
-      Order.GetObject (DomainObjectIDs.Order1).Delete ();
+      DomainObjectIDs.Order1.GetObject<Order> ().Delete ();
       var order = (Order) LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Order1, true);
       Assert.That (order, Is.Not.Null);
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void TryGetObject_Deleted ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Delete ();
 
       var orderAgain = LifetimeService.TryGetObject (TestableClientTransaction, DomainObjectIDs.Order1);
@@ -180,12 +180,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void GetObjects ()
     {
       var deletedObjectID = DomainObjectIDs.Order3;
-      var deletedObject = Order.GetObject (deletedObjectID);
+      var deletedObject = deletedObjectID.GetObject<Order> ();
       deletedObject.Delete();
 
       Order[] orders = LifetimeService.GetObjects<Order> (TestableClientTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order2, deletedObjectID);
 
-      Assert.That (orders, Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2), deletedObject }));
+      Assert.That (orders, Is.EqualTo (new[] { DomainObjectIDs.Order1.GetObject<Order> (), DomainObjectIDs.Order2.GetObject<Order> (), deletedObject }));
     }
 
     [Test]
@@ -204,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var notFoundObjectID = new ObjectID (typeof (Order), Guid.NewGuid());
 
       var deletedObjectID = DomainObjectIDs.Order3;
-      var deletedObject = Order.GetObject (deletedObjectID);
+      var deletedObject = deletedObjectID.GetObject<Order> ();
       deletedObject.Delete ();
 
       var invalidInstance = Order.NewObject ();
@@ -214,13 +214,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       Order[] orders = LifetimeService.TryGetObjects<Order> (
           TestableClientTransaction, DomainObjectIDs.Order1, notFoundObjectID, deletedObjectID, invalidInstance.ID);
 
-      Assert.That (orders, Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1), null, deletedObject, invalidInstance }));
+      Assert.That (orders, Is.EqualTo (new[] { DomainObjectIDs.Order1.GetObject<Order> (), null, deletedObject, invalidInstance }));
     }
 
     [Test]
     public void DeleteObject ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Assert.That (order.State, Is.Not.EqualTo (StateType.Deleted));
       LifetimeService.DeleteObject (TestableClientTransaction, order);
       Assert.That (order.State, Is.EqualTo (StateType.Deleted));
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void DeleteObject_Twice ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       LifetimeService.DeleteObject (TestableClientTransaction, order);
       LifetimeService.DeleteObject (TestableClientTransaction, order);
     }

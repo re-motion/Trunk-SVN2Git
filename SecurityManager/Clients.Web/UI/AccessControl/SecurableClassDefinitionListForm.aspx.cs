@@ -91,7 +91,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       }
       else
       {
-        var classDefinition = SecurableClassDefinition.GetObject (((EditPermissionsFormFunction) ReturningFunction).CurrentObjectID);
+        var classDefinition = ((EditPermissionsFormFunction) ReturningFunction).CurrentObjectID.GetObject<SecurableClassDefinition>();
         UnloadService.UnloadVirtualEndPoint (
             ClientTransaction.Current,
             RelationEndPointID.Resolve (classDefinition, c => c.StatelessAccessControlList));

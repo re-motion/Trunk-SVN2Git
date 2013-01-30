@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var domainObject = _endPoint.GetDomainObject ();
 
       Assert.That (domainObject.State, Is.EqualTo (StateType.Unchanged));
-      Assert.That (domainObject, Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
+      Assert.That (domainObject, Is.SameAs (DomainObjectIDs.Order1.GetObject<Order> ()));
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void GetDomainObject_Deleted ()
     {
-      var order1 = Order.GetObject (_endPoint.ObjectID);
+      var order1 = _endPoint.ObjectID.GetObject<Order> ();
       order1.Delete ();
 
       Assert.That (order1.State, Is.EqualTo (StateType.Deleted));

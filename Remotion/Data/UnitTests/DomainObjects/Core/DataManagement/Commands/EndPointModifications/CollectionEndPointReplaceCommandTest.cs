@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -36,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp();
 
-      _replacedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
-      _replacementRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
+      _replacedRelatedObject = DomainObjectIDs.Order1.GetObject<Order> ();
+      _replacementRelatedObject = DomainObjectIDs.Order2.GetObject<Order> ();
 
       _command =
           new CollectionEndPointReplaceCommand (

@@ -23,18 +23,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   [Instantiable]
   [DBTable]
   [TestDomain]
-  public abstract class OrderWithNewPropertyAccess: DomainObject
+  public abstract class OrderWithNewPropertyAccess: DomainObject, ISupportsGetObject
   {
-    public static OrderWithNewPropertyAccess NewObject()
-    {
-      return NewObject<OrderWithNewPropertyAccess>();
-    }
-
-    public static OrderWithNewPropertyAccess GetObject (ObjectID id)
-    {
-      return GetObject<OrderWithNewPropertyAccess> (id);
-    }
-
     protected OrderWithNewPropertyAccess()
     {
     }

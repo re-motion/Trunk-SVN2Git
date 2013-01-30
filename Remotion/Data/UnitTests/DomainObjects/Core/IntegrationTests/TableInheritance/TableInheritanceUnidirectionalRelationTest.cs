@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
       SetDatabaseModifyable ();
 
       TIClassWithUnidirectionalRelation classWithUnidirectionalRelation =
-          TIClassWithUnidirectionalRelation.GetObject (DomainObjectIDs.ClassWithUnidirectionalRelation);
+          DomainObjectIDs.ClassWithUnidirectionalRelation.GetObject<TIClassWithUnidirectionalRelation>();
       classWithUnidirectionalRelation.DomainBase.Delete ();
       ClientTransactionScope.CurrentTransaction.Commit ();
 
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         TIClassWithUnidirectionalRelation reloadedObject =
-            TIClassWithUnidirectionalRelation.GetObject (DomainObjectIDs.ClassWithUnidirectionalRelation);
+            DomainObjectIDs.ClassWithUnidirectionalRelation.GetObject<TIClassWithUnidirectionalRelation>();
 
         Assert.That (reloadedObject.DomainBase, Is.Null);
       }

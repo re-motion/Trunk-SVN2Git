@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -32,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       base.SetUp();
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
 
       var realContent = new DomainObjectCollectionData ();
       _observableDecorator = new ObservableCollectionDataDecorator (realContent);

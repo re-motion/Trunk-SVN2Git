@@ -23,16 +23,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance
   [DBTable ("TableInheritance_Order")]
   [TableInheritanceTestDomain]
   [Instantiable]
-  public abstract class TIOrder: DomainObject
+  public abstract class TIOrder: DomainObject, ISupportsGetObject
   {
     public static TIOrder NewObject()
     {
       return NewObject<TIOrder>();
-    }
-
-    public static TIOrder GetObject (ObjectID id)
-    {
-      return GetObject<TIOrder> (id);
     }
 
     protected TIOrder()

@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
       get
       {
         if (CurrentObjectID != null)
-          return BaseSecurityManagerObject.GetObject (CurrentObjectID);
+          return CurrentObjectID.GetObject<BaseSecurityManagerObject>();
 
         return null;
       }

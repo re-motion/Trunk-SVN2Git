@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
   [DBTable ("TableWithAllDataTypes")]
   [Instantiable]
   [DBStorageGroup]
-  public abstract class ClassWithAllDataTypes : BindableDomainObject, ISecurableObject, IDomainObjectSecurityContextFactory
+  public abstract class ClassWithAllDataTypes : BindableDomainObject, ISecurableObject, IDomainObjectSecurityContextFactory, ISupportsGetObject
   {
     // types
     [EnumDescriptionResource ("Remotion.Data.DomainObjects.Web.Test.Globalization.ClassWithAllDataTypes")]
@@ -46,19 +46,6 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
     public static ClassWithAllDataTypes NewObject ()
     {
       return NewObject<ClassWithAllDataTypes> ();
-    }
-
-    public static ClassWithAllDataTypes GetObject (ObjectID id)
-    {
-      return GetObject<ClassWithAllDataTypes> (id);
-    }
-
-    public static ClassWithAllDataTypes GetObject (ObjectID id, ClientTransaction clientTransaction)
-    {
-      using (clientTransaction.EnterNonDiscardingScope())
-      {
-        return GetObject<ClassWithAllDataTypes> (id);
-      }
     }
 
     private SecurityContext _securityContext;

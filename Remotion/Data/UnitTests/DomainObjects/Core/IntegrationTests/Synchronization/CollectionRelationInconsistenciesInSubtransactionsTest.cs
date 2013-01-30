@@ -38,8 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       // Sub-transaction loading OrderItem.Order before Order.OrderItems
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-        order1 = Order.GetObject (DomainObjectIDs.Order1);
+        orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+        order1 = DomainObjectIDs.Order1.GetObject<Order> ();
         order1.OrderItems.EnsureDataComplete();
 
         Assert.That (orderItem1.Order, Is.SameAs (order1));
@@ -74,9 +74,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        order1 = Order.GetObject (DomainObjectIDs.Order1);
+        order1 = DomainObjectIDs.Order1.GetObject<Order> ();
         order1.OrderItems.EnsureDataComplete();
-        orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+        orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
 
         Assert.That (orderItem1.Order, Is.SameAs (order1));
         Assert.That (order1.OrderItems, Has.Member(orderItem1));
@@ -235,14 +235,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         var companyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (DomainObjectIDs.IndustrialSector1);
-        company = Company.GetObject (companyID);
+        company = companyID.GetObject<Company> ();
 
-        industrialSector1 = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+        industrialSector1 = DomainObjectIDs.IndustrialSector1.GetObject<IndustrialSector> ();
         industrialSector1.Companies.EnsureDataComplete();
 
         SetIndustrialSectorInOtherTransaction (company.ID, DomainObjectIDs.IndustrialSector2);
 
-        industrialSector2 = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2);
+        industrialSector2 = DomainObjectIDs.IndustrialSector2.GetObject<IndustrialSector> ();
         industrialSector2.Companies.EnsureDataComplete();
 
         Assert.That (company.IndustrialSector, Is.SameAs (industrialSector1));
@@ -276,10 +276,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     [Test]
     public void ConsistentState_GuaranteedInSubTransaction_OneMany ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.OrderItems.EnsureDataComplete();
 
-      var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
 
       Assert.That (order.OrderItems, Has.Member (orderItem));
       Assert.That (orderItem.Order, Is.SameAs (order));
@@ -418,11 +418,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         Assert.That (industrialSector.Companies.Count, Is.EqualTo (6));
 
         CheckActionThrows<InvalidOperationException> (() => company.IndustrialSector = industrialSector, "out of sync");
-        company.IndustrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2);
-        industrialSector.Companies.Insert (0, Company.GetObject (DomainObjectIDs.Company2));
+        company.IndustrialSector = DomainObjectIDs.IndustrialSector2.GetObject<IndustrialSector> ();
+        industrialSector.Companies.Insert (0, DomainObjectIDs.Company2.GetObject<Company> ());
         CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Remove (company), "out of sync");
 
-        Assert.That (company.IndustrialSector, Is.SameAs (IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2)));
+        Assert.That (company.IndustrialSector, Is.SameAs (DomainObjectIDs.IndustrialSector2.GetObject<IndustrialSector> ()));
         Assert.That (industrialSector.Companies.Count, Is.EqualTo (7));
 
         ClientTransaction.Current.Commit();
@@ -430,11 +430,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         CheckSyncState (company, c => c.IndustrialSector, true);
         CheckSyncState (industrialSector, s => s.Companies, false);
 
-        Assert.That (company.IndustrialSector, Is.SameAs (IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2)));
+        Assert.That (company.IndustrialSector, Is.SameAs (DomainObjectIDs.IndustrialSector2.GetObject<IndustrialSector> ()));
         Assert.That (industrialSector.Companies.Count, Is.EqualTo (7));
       }
 
-      Assert.That (company.IndustrialSector, Is.SameAs (IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2)));
+      Assert.That (company.IndustrialSector, Is.SameAs (DomainObjectIDs.IndustrialSector2.GetObject<IndustrialSector> ()));
       Assert.That (industrialSector.Companies.Count, Is.EqualTo (7));
 
       CheckSyncState (company, c => c.IndustrialSector, true);
@@ -460,7 +460,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         Assert.That (industrialSector.Companies.Count, Is.EqualTo (5));
 
         CheckActionThrows<InvalidOperationException> (() => company.IndustrialSector = null, "out of sync");
-        industrialSector.Companies.Add (Company.GetObject (DomainObjectIDs.Company1));
+        industrialSector.Companies.Add (DomainObjectIDs.Company1.GetObject<Company> ());
         CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (company), "out of sync");
 
         Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));

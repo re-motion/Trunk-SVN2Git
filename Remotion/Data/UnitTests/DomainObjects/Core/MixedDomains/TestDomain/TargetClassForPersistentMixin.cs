@@ -25,16 +25,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   [Uses (typeof (NullMixin))]
   [DBTable ("MixedDomains_Target")]
   [TestDomain]
-  public class TargetClassForPersistentMixin : DomainObject
+  public class TargetClassForPersistentMixin : DomainObject, ISupportsGetObject
   {
     public static TargetClassForPersistentMixin NewObject ()
     {
       return NewObject<TargetClassForPersistentMixin> ();
-    }
-
-    public static TargetClassForPersistentMixin GetObject (ObjectID id)
-    {
-      return GetObject<TargetClassForPersistentMixin> (id);
     }
 
     [StorageClassNone]

@@ -949,7 +949,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDataFromSubTransaction_SetsValues ()
     {
-      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
       var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
       Assert.That (newDataContainer.GetValue (_orderNumberProperty), Is.Not.EqualTo (1));
 
@@ -961,7 +961,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDataFromSubTransaction_SetsForeignKeys ()
     {
-      var sourceDataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;
+      var sourceDataContainer = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ().InternalDataContainer;
       var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket2);
       var propertyDefinition = GetPropertyDefinition (typeof (OrderTicket), "Order");
       Assert.That (newDataContainer.GetValue (propertyDefinition), Is.Not.EqualTo (DomainObjectIDs.Order1));
@@ -974,8 +974,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDataFromSubTransaction_SetsChangedFlag_IfChanged ()
     {
-      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
-      var existingDataContainer = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;
+      var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
+      var existingDataContainer = DomainObjectIDs.Order2.GetObject<Order> ().InternalDataContainer;
       Assert.That (existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
       existingDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
@@ -986,7 +986,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDataFromSubTransaction_ResetsChangedFlag_IfUnchanged ()
     {
-      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order1);
       targetDataContainer.SetValue (_orderNumberProperty, 10);
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
@@ -1011,7 +1011,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDataFromSubTransaction_RaisesStateUpdated_Unchanged ()
     {
-      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
       targetDataContainer.SetValue (_orderNumberProperty, 10);
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
@@ -1022,7 +1022,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDataFromSubTransaction_RaisesStateUpdated_OtherState ()
     {
-      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
       targetDataContainer.Delete ();
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Deleted));
@@ -1033,7 +1033,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDataFromSubTransaction_DoesntMarkAsChanged ()
     {
-      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order1);
       sourceDataContainer.MarkAsChanged();
       Assert.That (sourceDataContainer.HasBeenMarkedChanged, Is.True);
@@ -1050,8 +1050,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         + "have the same class definition.\r\nParameter name: source")]
     public void SetDataFromSubTransaction_InvalidDefinition ()
     {
-      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
-      var targetDataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;
+      var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
+      var targetDataContainer = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ().InternalDataContainer;
 
       targetDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
     }
@@ -1077,7 +1077,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void MarkAsChanged ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       DataContainer dataContainer = order.InternalDataContainer;
       Assert.That (dataContainer.State, Is.EqualTo (StateType.Unchanged));
       dataContainer.MarkAsChanged();
@@ -1131,7 +1131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DataContainers can be marked as changed.")]
     public void MarkAsChangedThrowsWhenDeleted ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.Delete();
       DataContainer dataContainer = order.InternalDataContainer;
       dataContainer.MarkAsChanged();
@@ -1156,7 +1156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDomainObject ()
     {
-      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      var domainObject = DomainObjectIDs.Order1.GetObject<Order> ();
 
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       dc.SetDomainObject (domainObject);
@@ -1169,7 +1169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
                                                                       + "Parameter name: domainObject")]
     public void SetDomainObject_InvalidID ()
     {
-      var domainObject = Order.GetObject (DomainObjectIDs.Order2);
+      var domainObject = DomainObjectIDs.Order2.GetObject<Order> ();
 
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       dc.SetDomainObject (domainObject);
@@ -1179,7 +1179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This DataContainer has already been associated with a DomainObject.")]
     public void SetDomainObject_DomainObjectAlreadySet ()
     {
-      var domainObject1 = Order.GetObject (DomainObjectIDs.Order1);
+      var domainObject1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
 
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
@@ -1190,7 +1190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDomainObject_SameDomainObjectAlreadySet ()
     {
-      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      var domainObject = DomainObjectIDs.Order1.GetObject<Order> ();
 
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       dc.SetDomainObject (domainObject);
@@ -1209,7 +1209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasDomainObject_True ()
     {
-      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      var domainObject = DomainObjectIDs.Order1.GetObject<Order> ();
 
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       dc.SetDomainObject (domainObject);

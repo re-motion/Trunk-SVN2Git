@@ -40,11 +40,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       base.SetUp ();
 
-      _order = Order.GetObject (DomainObjectIDs.Order1);
+      _order = DomainObjectIDs.Order1.GetObject<Order> ();
       _orderItem1 = _order.OrderItems[0];
       _orderItem2 = _order.OrderItems[1];
-      _orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
-      _orderItem4 = OrderItem.GetObject (DomainObjectIDs.OrderItem4);
+      _orderItem3 = DomainObjectIDs.OrderItem3.GetObject<OrderItem>();
+      _orderItem4 = DomainObjectIDs.OrderItem4.GetObject<OrderItem>();
       _orderItemListAsIList = _order.OrderItems;
     }
 
