@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects
 {
@@ -131,18 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public new void ToString ()
     {
       var handle = new DomainObjectHandle<Order> (DomainObjectIDs.Order1);
-      Assert.That (handle.ToString(), Is.EqualTo (DomainObjectIDs.Order1.ToString()));
-    }
-
-    [Test]
-    public void Parse ()
-    {
-      var originalHandle = new DomainObjectHandle<Order> (DomainObjectIDs.Order1);
-      var formattedString = originalHandle.ToString();
-
-      var parsedHandle = DomainObjectHandle<Order>.Parse (formattedString);
-
-      Assert.That (parsedHandle, Is.EqualTo (originalHandle));
+      Assert.That (handle.ToString (), Is.EqualTo ("Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid (handle)"));
     }
 
     [Test]
@@ -153,6 +143,21 @@ namespace Remotion.Data.UnitTests.DomainObjects
       var result = Serializer.SerializeAndDeserialize (handle);
 
       Assert.That (result, Is.EqualTo (handle));
+    }
+
+    [Test]
+    public void TypeProvider_OnInterface ()
+    {
+      Assert.That (TypeConversionProvider.Current.CanConvert (typeof (IDomainObjectHandle<Order>), typeof (string)), Is.True);
+      Assert.That (TypeConversionProvider.Current.CanConvert (typeof (string), typeof (IDomainObjectHandle<Order>)), Is.True);
+    }
+
+    [Test]
+    [Ignore ("TODO 4405")]
+    public void TypeProvider_OnClass ()
+    {
+      Assert.That (TypeConversionProvider.Current.CanConvert (typeof (DomainObjectHandle<Order>), typeof (string)), Is.True);
+      Assert.That (TypeConversionProvider.Current.CanConvert (typeof (string), typeof (DomainObjectHandle<Order>)), Is.True);
     }
   }
 }

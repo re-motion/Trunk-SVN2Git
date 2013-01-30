@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -27,6 +28,7 @@ namespace Remotion.Data.DomainObjects
   /// <see cref="ClientTransaction"/>. Get a handle for a <see cref="DomainObject"/> or an <see cref="DomainObjects.ObjectID"/> by calling 
   /// <see cref="DomainObjectExtensions.GetHandle{T}"/> or <see cref="DomainObjects.ObjectID.GetHandle{T}"/>.
   /// </remarks>
+  [TypeConverter (typeof (DomainObjectHandleConverter))]
   public interface IDomainObjectHandle<out T>
       where T : DomainObject
   {

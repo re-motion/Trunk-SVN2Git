@@ -29,14 +29,6 @@ namespace Remotion.Data.DomainObjects
   public class DomainObjectHandle<T> : IDomainObjectHandle<T>, IEquatable<DomainObjectHandle<T>>
       where T : DomainObject
   {
-    public static object Parse (string formattedString)
-    {
-      ArgumentUtility.CheckNotNull ("formattedString", formattedString);
-
-      var objectID = ObjectID.Parse (formattedString);
-      return new DomainObjectHandle<T> (objectID);
-    }
-
     private readonly ObjectID _objectID;
 
     public DomainObjectHandle (ObjectID objectID)
@@ -97,7 +89,7 @@ namespace Remotion.Data.DomainObjects
 
     public override string ToString ()
     {
-      return _objectID.ToString();
+      return _objectID + " (handle)";
     }
   }
 }

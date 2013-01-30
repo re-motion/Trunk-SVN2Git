@@ -77,7 +77,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [Ignore ("RM-4405")]
     public void SerializeIDomainObjectHandle ()
     {
       var objectID = GetObjectID();
@@ -96,7 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [Ignore ("RM-4405")]
     public void DeserializeIDomainObjectHandle ()
     {
       var objectID = GetObjectID();
@@ -109,11 +107,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
 
       function.VariablesContainer.InitializeParameters (new NameValueCollection { { "name", objectID.ToString() } });
 
-      Assert.That (function.Variables["name"], Is.EqualTo (objectID));
+      Assert.That (function.Variables["name"], Is.InstanceOf<IDomainObjectHandle<ClassWithAllDataTypes>> ());
+      Assert.That (((IDomainObjectHandle<ClassWithAllDataTypes>) function.Variables["name"]).ObjectID, Is.EqualTo (objectID));
     }
 
     [Test]
-    [Ignore ("RM-4405")]
     public void SerializeAndDeserializeIDomainObjectHandle ()
     {
       var objectID = GetObjectID();
@@ -132,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
       var deserializedfunction = new TestFunction (parameterDeclaration, null);
       deserializedfunction.VariablesContainer.InitializeParameters (queryString);
       Assert.That (function.Variables["name"], Is.InstanceOf<IDomainObjectHandle<ClassWithAllDataTypes>>());
-      Assert.That (((IDomainObjectHandle<ClassWithAllDataTypes>) function.Variables["name"]).ObjectID, Is.EqualTo (objectID));
+      Assert.That (function.Variables["name"], Is.EqualTo (domainObjectHandle));
     }
 
     private static ObjectID GetObjectID ()
