@@ -91,17 +91,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group grandChild2 = TestHelper.CreateGroup ("GrandChild2", "UID: GrandChild2", grandChild1, tenant);
       root.Parent = grandChild2;
 
-      try
-      {
-        grandChild1.GetHierachy().ToArray();
-        Assert.Fail();
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message,
-            Is.EqualTo ("The hierarchy for group '" + grandChild1.ID + "' cannot be resolved because a circular reference exists."));
-      }
+      Assert.That (
+          () => grandChild1.GetHierachy().ToArray(),
+          Throws.InvalidOperationException
+                .With.Message.EqualTo ("The hierarchy for group '" + grandChild1.ID + "' cannot be resolved because a circular reference exists."));
     }
 
     [Test]
@@ -111,17 +104,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
       root.Parent = root;
 
-      try
-      {
-        root.GetHierachy ().ToArray ();
-        Assert.Fail ();
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message,
-            Is.EqualTo ("The hierarchy for group '" + root.ID + "' cannot be resolved because a circular reference exists."));
-      }
+      Assert.That (
+          () => root.GetHierachy().ToArray(),
+          Throws.InvalidOperationException
+                .With.Message.EqualTo ("The hierarchy for group '" + root.ID + "' cannot be resolved because a circular reference exists."));
     }
 
     [Test]

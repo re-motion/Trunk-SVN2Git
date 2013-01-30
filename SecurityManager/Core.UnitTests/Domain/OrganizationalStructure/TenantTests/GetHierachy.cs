@@ -90,16 +90,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       grandChild2.Parent = grandChild1;
       root.Parent = grandChild2;
 
-      try
-      {
-        grandChild1.GetHierachy().ToArray();
-        Assert.Fail();
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message, Is.EqualTo ("The hierarchy for tenant '" + grandChild1 + "' cannot be resolved because a circular reference exists."));
-      }
+      Assert.That (
+          () => grandChild1.GetHierachy().ToArray(),
+          Throws.InvalidOperationException
+                .With.Message.EqualTo ("The hierarchy for tenant '" + grandChild1 + "' cannot be resolved because a circular reference exists."));
     }
 
     [Test]
