@@ -25,7 +25,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
 {
-  // TODO Review: Unit tests
   /// <summary>
   /// Creates new domain object instances via an instance of <see cref="IObjectFactory"/>.
   /// </summary>
