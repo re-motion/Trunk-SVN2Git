@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Collections;
@@ -77,8 +78,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       _publicDomainObjectType = publicDomainObjectType;
       _baseType = typeToDeriveFrom;
 
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (
+          publicDomainObjectType,
+          t => new NonInterceptableTypeException (string.Format ("Cannot instantiate type {0} as it is not part of the mapping.", t.FullName), t));
+
       // Analyze type before creating the class emitter; that way, we won't have half-created types lying around in case of configuration errors
-      Set<Tuple<PropertyInfo, string>> properties = new InterceptedPropertyCollector (publicDomainObjectType, typeConversionProvider).GetProperties ();
+      Set<Tuple<PropertyInfo, string>> properties = new InterceptedPropertyCollector (classDefinition, typeConversionProvider).GetProperties();
 
       string typeName = typeToDeriveFrom.FullName + "_WithInterception_" + Guid.NewGuid ().ToString ("N");
       var interfaces = new[] { typeof (IInterceptedDomainObject), typeof (ISerializable) };

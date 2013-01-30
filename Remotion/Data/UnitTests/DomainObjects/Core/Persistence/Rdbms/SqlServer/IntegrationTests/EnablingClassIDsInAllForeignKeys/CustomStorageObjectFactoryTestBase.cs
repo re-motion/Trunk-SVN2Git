@@ -19,6 +19,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -26,7 +27,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.IntegrationTests.EnablingClassIDsInAllForeignKeys
@@ -44,7 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new FixedTypeDiscoveryService (GetReflectedTypes()),
           new ClassIDProvider(),
           new DomainModelConstraintProvider(),
-          new ReflectionBasedNameResolver());
+          new ReflectionBasedNameResolver(),
+          new ThrowingDomainObjectCreator());
       _storageObjectFactory = CreateSqlStorageObjectFactory ();
       var storageProviderDefinitionFinderStub = MockRepository.GenerateStub<IStorageProviderDefinitionFinder>();
       _storageProviderDefinition = new RdbmsProviderDefinition ("test", _storageObjectFactory, DatabaseTest.TestDomainConnectionString);

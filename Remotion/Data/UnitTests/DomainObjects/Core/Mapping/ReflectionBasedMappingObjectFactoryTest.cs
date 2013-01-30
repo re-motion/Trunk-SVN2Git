@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Reflection;
@@ -27,15 +28,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class ReflectionBasedMappingObjectFactoryTest : StandardMappingTest
   {
-    private ReflectionBasedMappingObjectFactory _factory;
     private ReflectionBasedNameResolver _mappingNameResolver;
+    private ThrowingDomainObjectCreator _domainObjectCreator;
+
+    private ReflectionBasedMappingObjectFactory _factory;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
+
       _mappingNameResolver = new ReflectionBasedNameResolver();
-      _factory = new ReflectionBasedMappingObjectFactory (_mappingNameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
+      _domainObjectCreator = new ThrowingDomainObjectCreator();
+
+      _factory = new ReflectionBasedMappingObjectFactory (
+          _mappingNameResolver, new ClassIDProvider(), new DomainModelConstraintProvider(), _domainObjectCreator);
     }
 
     [Test]
@@ -45,6 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.ClassType, Is.SameAs (typeof (Order)));
+      Assert.That (result.InstanceCreator, Is.SameAs (_domainObjectCreator));
       Assert.That (result.BaseClass, Is.Null);
     }
 
@@ -58,6 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.ClassType, Is.SameAs (typeof (Customer)));
+      Assert.That (result.InstanceCreator, Is.SameAs (_domainObjectCreator));
       Assert.That (result.BaseClass, Is.SameAs (companyClass));
     }
 

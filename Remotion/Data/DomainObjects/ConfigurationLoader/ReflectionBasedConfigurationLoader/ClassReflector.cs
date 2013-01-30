@@ -35,25 +35,30 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly IMappingNameResolver _nameResolver;
     private readonly IClassIDProvider _classIDProvider;
     private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
+    private readonly IDomainObjectCreator _instanceCreator;
 
     public ClassReflector (
         Type type,
         IMappingObjectFactory mappingObjectFactory,
         IMappingNameResolver nameResolver,
         IClassIDProvider classIDProvider,
-        IDomainModelConstraintProvider domainModelConstraintProvider)
+        IDomainModelConstraintProvider domainModelConstraintProvider,
+        IDomainObjectCreator instanceCreator)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
       ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
       ArgumentUtility.CheckNotNull ("classIDProvider", classIDProvider);
       ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
+      ArgumentUtility.CheckNotNull ("instanceCreator", instanceCreator);
+      
 
       _type = type;
       _mappingObjectFactory = mappingObjectFactory;
       _nameResolver = nameResolver;
       _classIDProvider = classIDProvider;
       _domainModelConstraintProvider = domainModelConstraintProvider;
+      _instanceCreator = instanceCreator;
     }
 
     public Type Type
@@ -74,9 +79,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public ClassDefinition GetMetadata (ClassDefinition baseClassDefinition)
     {
       var persistentMixinFinder = new PersistentMixinFinder (Type, baseClassDefinition == null);
-      var instanceCreator = InterceptedDomainObjectCreator.Instance;
       var classDefinition = new ClassDefinition (
-          _classIDProvider.GetClassID (Type), Type, IsAbstract (), baseClassDefinition, GetStorageGroupType (), persistentMixinFinder, instanceCreator);
+          _classIDProvider.GetClassID (Type), Type, IsAbstract(), baseClassDefinition, GetStorageGroupType(), persistentMixinFinder, _instanceCreator);
 
       var properties = MappingObjectFactory.CreatePropertyDefinitionCollection (classDefinition, GetPropertyInfos (classDefinition));
       classDefinition.SetPropertyDefinitions (properties);

@@ -29,12 +29,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public class InterceptedDomainObjectCreator : IDomainObjectCreator
   {
-    public static readonly InterceptedDomainObjectCreator Instance =
-        new InterceptedDomainObjectCreator (Environment.CurrentDirectory, TypeConversionProvider.Create());
+    public static readonly InterceptedDomainObjectCreator Instance = new InterceptedDomainObjectCreator();
 
-    private InterceptedDomainObjectCreator (string assemblyDirectory, TypeConversionProvider typeConversionProvider)
+    public InterceptedDomainObjectCreator ()
     {
-      Factory = new InterceptedDomainObjectTypeFactory (assemblyDirectory, typeConversionProvider);
+      Factory = new InterceptedDomainObjectTypeFactory (Environment.CurrentDirectory, TypeConversionProvider.Create());
     }
 
     public InterceptedDomainObjectTypeFactory Factory { get; set; }
@@ -70,6 +69,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return instance;
     }
 
+    // Public solely for TypePipe.PerformanceTests.
     public IConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType)
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);

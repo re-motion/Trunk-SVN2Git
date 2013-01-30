@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -30,24 +31,30 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly IMappingNameResolver _mappingNameResolver;
     private readonly IClassIDProvider _classIDProvider;
     private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
+    private readonly IDomainObjectCreator _instanceCreator;
 
     public ReflectionBasedMappingObjectFactory (
-        IMappingNameResolver mappingNameResolver, IClassIDProvider classIDProvider, IDomainModelConstraintProvider domainModelConstraintProvider)
+        IMappingNameResolver mappingNameResolver,
+        IClassIDProvider classIDProvider,
+        IDomainModelConstraintProvider domainModelConstraintProvider,
+        IDomainObjectCreator instanceCreator)
     {
       ArgumentUtility.CheckNotNull ("mappingNameResolver", mappingNameResolver);
       ArgumentUtility.CheckNotNull ("classIDProvider", classIDProvider);
       ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
+      ArgumentUtility.CheckNotNull ("instanceCreator", instanceCreator);
 
       _mappingNameResolver = mappingNameResolver;
       _classIDProvider = classIDProvider;
       _domainModelConstraintProvider = domainModelConstraintProvider;
+      _instanceCreator = instanceCreator;
     }
 
     public ClassDefinition CreateClassDefinition (Type type, ClassDefinition baseClass)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      var classReflector = new ClassReflector (type, this, _mappingNameResolver, _classIDProvider, _domainModelConstraintProvider);
+      var classReflector = new ClassReflector (type, this, _mappingNameResolver, _classIDProvider, _domainModelConstraintProvider, _instanceCreator);
       return classReflector.GetMetadata (baseClass);
     }
 

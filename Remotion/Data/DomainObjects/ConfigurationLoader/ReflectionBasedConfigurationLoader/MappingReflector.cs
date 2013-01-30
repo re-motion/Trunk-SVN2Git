@@ -18,12 +18,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -43,7 +45,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
             ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService(),
             new ClassIDProvider(),
             new DomainModelConstraintProvider(),
-            new ReflectionBasedNameResolver())
+            new ReflectionBasedNameResolver(),
+            SafeServiceLocator.Current.GetInstance<IDomainObjectCreator>())
     {
     }
 
@@ -51,18 +54,21 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         ITypeDiscoveryService typeDiscoveryService,
         IClassIDProvider classIDProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider,
-        IMappingNameResolver nameResolver)
+        IMappingNameResolver nameResolver,
+        IDomainObjectCreator domainObjectCreator)
     {
       ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
       ArgumentUtility.CheckNotNull ("classIDProvider", classIDProvider);
       ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
+      ArgumentUtility.CheckNotNull ("domainObjectCreator", domainObjectCreator);
 
       _typeDiscoveryService = typeDiscoveryService;
       _classIDProvider = classIDProvider;
       _domainModelConstraintProvider = domainModelConstraintProvider;
       _nameResolver = nameResolver;
-      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (_nameResolver, _classIDProvider, _domainModelConstraintProvider);
+      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (
+          _nameResolver, _classIDProvider, _domainModelConstraintProvider, domainObjectCreator);
     }
 
     public ITypeDiscoveryService TypeDiscoveryService

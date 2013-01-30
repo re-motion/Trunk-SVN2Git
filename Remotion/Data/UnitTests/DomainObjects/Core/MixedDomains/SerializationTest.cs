@@ -26,6 +26,7 @@ using Remotion.Mixins;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 {
   [TestFixture]
+  [UseLegacyCodeGeneration]
   public class SerializationTest : ClientTransactionBaseTest
   {
     [Test]

@@ -155,8 +155,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void Serializable ()
     {
+      //TODO 5370: Remove
+      SetUp ();
+
       StubInnerData (_order1, _order2, _order3);
       var result = Serializer.SerializeAndDeserialize (_readOnlyAdapter);
       Assert.That (result.Count, Is.EqualTo (3));

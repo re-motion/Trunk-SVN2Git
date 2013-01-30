@@ -45,17 +45,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     private readonly ClassDefinition _classDefinition;
     private readonly TypeConversionProvider _typeConversionProvider;
 
-    public InterceptedPropertyCollector (Type baseType, TypeConversionProvider typeConversionProvider)
+    public InterceptedPropertyCollector (ClassDefinition classDefinition, TypeConversionProvider typeConversionProvider)
     {
-      ArgumentUtility.CheckNotNull ("baseType", baseType);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
 
-      _baseType = baseType;
+      _classDefinition = classDefinition;
       _typeConversionProvider = typeConversionProvider;
-
-      _classDefinition = MappingConfiguration.Current.GetTypeDefinition (
-          _baseType,
-          t => new NonInterceptableTypeException (string.Format ("Cannot instantiate type {0} as it is not part of the mapping.", t.FullName), t));
+      _baseType = classDefinition.ClassType;
 
       if (_classDefinition.IsAbstract)
       {

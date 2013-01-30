@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableSealedClass as it is sealed.")]
+        "Cannot instantiate type 'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableSealedClass' as it is sealed.")]
     public void SealedCannotBeInstantiated ()
     {
       NonInstantiableSealedClass.NewObject();
@@ -166,8 +166,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage =
-        "Type Remotion.Data.UnitTests.DomainObjects.TestDomain."
-        + "Order does not support the requested constructor with signature (System.String, System.String, System.String, System.Object).")]
+        "Type 'Remotion.Data.UnitTests.DomainObjects.TestDomain."
+        + "Order' does not contain a constructor with the following signature: (String, String, String, Object).")]
     public void WrongConstructorCannotBeInstantiated ()
     {
       LifetimeService.NewObject (TestableClientTransaction, typeof (Order), ParamList.Create ("foo", "bar", "foobar", (object) null));
@@ -182,8 +182,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage =
-        "Type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.ClassWithWrongConstructor does not support the "
-        + "requested constructor with signature ().")]
+        "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.ClassWithWrongConstructor' does not contain a "
+        + "constructor with the following signature: ().")]
     public void ConstructorMismatch1 ()
     {
       ClassWithWrongConstructor.NewObject();
@@ -191,8 +191,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage =
-        "Type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.ClassWithWrongConstructor does not support the "
-        + "requested constructor with signature (System.Double).")]
+        "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.ClassWithWrongConstructor' does not contain a "
+        + "constructor with the following signature: (Double).")]
     public void ConstructorMismatch2 ()
     {
       ClassWithWrongConstructor.NewObject (3.0);

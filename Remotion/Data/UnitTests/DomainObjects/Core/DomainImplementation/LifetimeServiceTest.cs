@@ -55,8 +55,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Data.UnitTests.DomainObjects.TestDomain."
-                                                                           + "OrderItem does not support the requested constructor with signature (System.Decimal).")]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage =
+      "Type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem' does not contain a constructor with the following signature: (Decimal).")]
     public void NewObject_WrongCtorArgs ()
     {
       LifetimeService.NewObject (TestableClientTransaction, typeof (OrderItem), ParamList.Create (0m));

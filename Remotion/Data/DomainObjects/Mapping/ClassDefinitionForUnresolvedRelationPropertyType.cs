@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public ClassDefinitionForUnresolvedRelationPropertyType (
         string id, Type classType, IPropertyInformation relationProperty)
-        : base (id, classType, false, null, null, new PersistentMixinFinder (classType), InterceptedDomainObjectCreator.Instance)
+        : base (id, classType, false, null, null, new PersistentMixinFinder (classType), new ThrowingDomainObjectCreator())
     {
       ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
 

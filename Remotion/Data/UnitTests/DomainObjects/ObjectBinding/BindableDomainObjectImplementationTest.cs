@@ -38,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void Deserialization ()
     {
       var wrapper = SampleBindableDomainObject.NewObject ();

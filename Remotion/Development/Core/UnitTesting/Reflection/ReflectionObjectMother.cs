@@ -1,20 +1,19 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
-//
-// See the NOTICE file distributed with this work for additional information
-// regarding copyright ownership.  rubicon licenses this file to you under 
-// the Apache License, Version 2.0 (the "License"); you may not use this 
-// file except in compliance with the License.  You may obtain a copy of the 
-// License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software 
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-// License for the specific language governing permissions and limitations
-// under the License.
 // 
-
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +22,7 @@ using System.Text;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
-namespace Remotion.TypePipe.UnitTests
+namespace Remotion.Development.UnitTesting.Reflection
 {
   public static class ReflectionObjectMother
   {
@@ -48,9 +47,9 @@ namespace Remotion.TypePipe.UnitTests
     private static readonly MethodInfo[] s_finalMethods = EnsureNoNulls (new[] { typeof(DomainType).GetMethod("FinalMethod") });
     private static readonly MethodInfo[] s_nonGenericMethods = EnsureNoNulls (new[] { typeof (object).GetMethod ("ToString"), typeof (string).GetMethod ("Concat", new[] { typeof (object) }) });
     private static readonly MethodInfo[] s_genericMethods = EnsureNoNulls (new[] { typeof (Enumerable).GetMethod ("Empty"), typeof (ReflectionObjectMother).GetMethod ("GetRandomElement", BindingFlags.NonPublic | BindingFlags.Static) });
-    private static readonly MethodInfo[] s_modifiableMethodInfos = EnsureNoNulls (new[] { typeof (object).GetMethod ("ToString"), typeof (object).GetMethod ("Equals", new[] { typeof (object ) }) });
     private static readonly MethodInfo[] s_abstractMethodInfos = EnsureNoNulls (new[] { typeof (MethodInfo).GetMethod ("GetBaseDefinition"), typeof (Type).GetMethod ("GetMethods", new[] { typeof (BindingFlags) }) });
     private static readonly ParameterInfo[] s_parameterInfos = EnsureNoNulls (typeof (Dictionary<,>).GetMethod ("TryGetValue").GetParameters());
+    private static readonly PropertyInfo[] s_properties = EnsureNoNulls (new[] { typeof (List<>).GetProperty ("Count"), typeof (Type).GetProperty ("IsArray") });
 
     public static Type GetSomeType ()
     {
@@ -206,11 +205,6 @@ namespace Remotion.TypePipe.UnitTests
       return method;
     }
 
-    public static MethodInfo GetSomeModifiableMethod ()
-    {
-      return GetRandomElement (s_modifiableMethodInfos);
-    }
-
     public static MethodInfo[] GetMultipeMethods (int count)
     {
       var result = s_nonGenericMethods.Take (count).ToArray();
@@ -221,6 +215,11 @@ namespace Remotion.TypePipe.UnitTests
     public static ParameterInfo GetSomeParameter ()
     {
       return GetRandomElement (s_parameterInfos);
+    }
+
+    public static PropertyInfo GetSomeProperty ()
+    {
+      return GetRandomElement (s_properties);
     }
 
     public static object GetDefaultValue (Type type)
@@ -241,7 +240,6 @@ namespace Remotion.TypePipe.UnitTests
             .Concat (s_finalMethods)
             .Concat (s_nonGenericMethods)
             .Concat (s_genericMethods)
-            .Concat (s_modifiableMethodInfos)
             .Concat (s_abstractMethodInfos);
       }
     }

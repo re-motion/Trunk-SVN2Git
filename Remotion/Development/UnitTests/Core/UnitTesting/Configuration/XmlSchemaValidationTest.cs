@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.IO;
 using System.Xml.Schema;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Configuration;
@@ -45,9 +44,9 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Configuration
       var validFragment = @"<tag xmlns=""targetNamespace"" attribute=""true"" />";
       var invalidFragment = @"<tag xmlns=""targetNamespace"" attribute=""null"" />";
 
-      Assert.That (() => Check (xsdContent, validFragment), Throws.Nothing);
+      Assert.That (() => XmlSchemaValidation.Validate (validFragment, xsdContent), Throws.Nothing);
       Assert.That (
-          () => Check (xsdContent, invalidFragment),
+          () => XmlSchemaValidation.Validate (invalidFragment, xsdContent),
           Throws.Exception.With.Message.StartsWith ("Validation of the xml fragment did not succeed for schema"));
     }
 
@@ -56,15 +55,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Configuration
     public void Validate_InvalidSchema ()
     {
       var invalidSchema = @"<xs:invalid xmlns:xs=""http://www.w3.org/2001/XMLSchema"" />";
-      Check (invalidSchema, xmlFragment: "does not matter");
-    }
-
-    private void Check (string xsdContent, string xmlFragment)
-    {
-      var xsdPath = Path.GetTempFileName();
-      File.WriteAllText (xsdPath, xsdContent);
-
-      XmlSchemaValidation.Validate (xmlFragment, xsdPath);
+      XmlSchemaValidation.Validate ("does not matter", invalidSchema);
     }
   }
 }

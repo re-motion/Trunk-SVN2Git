@@ -28,7 +28,7 @@ public class TestDataLoader : IDisposable
 
   // static members and constants
 
-  private const string c_testDomainFilename = "CreateTestData.sql";
+  private const string c_testDomainFilename = @"Database\CreateTestData.sql";
 
   // member fields
 

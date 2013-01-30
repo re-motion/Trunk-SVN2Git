@@ -18,10 +18,14 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection.TypeDiscovery;
 using System.Linq;
 
@@ -45,6 +49,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var reflector = new MappingReflector ();
 
       Assert.That (reflector.TypeDiscoveryService, Is.SameAs (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ()));
+    }
+
+    [Test]
+    [Ignore ("TODO 5370")]
+    public void Initialization_MappingObjectFactory_InstanceCreator_ResolvedViaServiceLocator ()
+    {
+      var defaultCreator = new MappingReflector().MappingObjectFactory.CreateClassDefinition (typeof (Order), null).InstanceCreator;
+      Assert.That (defaultCreator, Is.TypeOf<TypePipeBasedDomainObjectCreator>());
+
+      var otherCreator = new MappingReflector ().MappingObjectFactory.CreateClassDefinition (typeof (Order), null).InstanceCreator;
+      Assert.That (otherCreator, Is.SameAs (defaultCreator), "Should be singleton.");
+
+      using (new ServiceLocatorScope (typeof (IDomainObjectCreator), typeof (ThrowingDomainObjectCreator)))
+      {
+        var configuredCreator = new MappingReflector ().MappingObjectFactory.CreateClassDefinition (typeof (Order), null).InstanceCreator;
+        Assert.That (configuredCreator, Is.TypeOf<ThrowingDomainObjectCreator>());
+      }
     }
 
     [Test]

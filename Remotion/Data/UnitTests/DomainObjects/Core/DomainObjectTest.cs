@@ -145,9 +145,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
+	[UseLegacyCodeGeneration]
     public void Initialize_ThrowsForDeserializedObject ()
     {
+      //TODO 5370: Remove
+      SetUp();
+
       var orderItem = _transaction.Execute (() => DomainObjectIDs.OrderItem1.GetObject<OrderItem>());
+
+
       var deserializedOrderItem = Serializer.SerializeAndDeserialize (orderItem);
       deserializedOrderItem.Initialize (DomainObjectIDs.OrderItem1, null);
     }
@@ -521,8 +527,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void NeedsLoadModeDataContainerOnly_Serialization_True ()
     {
+      // TODO 5370: Remove.
+      SetUp ();
+
       var order = _transaction.Execute (() => Order.NewObject ());
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
 
@@ -531,8 +541,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void NeedsLoadModeDataContainerOnly_Serialization_False ()
     {
+      // TODO 5370: Remove.
+      SetUp();
+
       var creator = DomainObjectIDs.Order1.ClassDefinition.InstanceCreator;
       var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
 
@@ -543,8 +557,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_True ()
     {
+      // TODO 5370: Remove.
+      SetUp ();
+
       var classWithAllDataTypes = _transaction.Execute (() => ClassWithAllDataTypes.NewObject ());
       Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.True);
 
@@ -553,8 +571,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_False ()
     {
+      // TODO 5370: Remove.
+      SetUp ();
+
       var creator = DomainObjectIDs.Order1.ClassDefinition.InstanceCreator;
       var classWithAllDataTypes = (ClassWithAllDataTypes) creator.CreateObjectReference (DomainObjectIDs.ClassWithAllDataTypes1, _transaction);
 
@@ -577,8 +599,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void Properties_Serialization ()
     {
+      // TODO 5370: Remove.
+      SetUp ();
+
       var order = _transaction.Execute (() => Order.NewObject ());
       var propertyIndexer = _transaction.Execute (() => order.Properties);
       Assert.That (propertyIndexer, Is.Not.Null);

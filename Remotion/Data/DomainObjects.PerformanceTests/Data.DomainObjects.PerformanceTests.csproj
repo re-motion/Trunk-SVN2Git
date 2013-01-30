@@ -149,6 +149,10 @@
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
+      <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
+      <Name>TypePipe.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DomainObjects.Security\Data.DomainObjects.Security.csproj">
       <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>
       <Name>Data.DomainObjects.Security</Name>
@@ -172,6 +176,7 @@
     <Compile Include="BindableObjectWithSecurityTest.cs" />
     <Compile Include="CommitTest.cs" />
     <Compile Include="ClassDefinitionTest.cs" />
+    <Compile Include="DomainObjectCreatorSwitch.cs" />
     <Compile Include="HasRelationChangedTest.cs" />
     <Compile Include="InstantiationTest.cs" />
     <Compile Include="LinqPerformanceTestHelper.cs" />
@@ -214,16 +219,23 @@
     <Compile Include="TestDomain\File.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UseLegacyCodeGenerationAttribute.cs" />
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
     <None Include="App.config" />
-    <None Include="Database\CreateTestData.sql" />
-    <None Include="Database\SetupDB.sql" />
+    <Content Include="Database\CreateTestData.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Database\SetupDB.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <Content Include="Database\CreateDB.sql" />
+    <Content Include="Database\CreateDB.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Doc\readme.txt" />
     <Content Include="Queries.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -253,7 +265,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy "$(ProjectDir)Database\*.sql" "$(TargetDir)"
+    <PostBuildEvent>
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

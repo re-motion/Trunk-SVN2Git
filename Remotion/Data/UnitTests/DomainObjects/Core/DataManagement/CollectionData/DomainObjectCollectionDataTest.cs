@@ -471,8 +471,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void Serializable ()
     {
+      //TODO 5370: Remove
+      SetUp();
+
       Add (_order1);
       Add (_order2);
       Add (_order3);

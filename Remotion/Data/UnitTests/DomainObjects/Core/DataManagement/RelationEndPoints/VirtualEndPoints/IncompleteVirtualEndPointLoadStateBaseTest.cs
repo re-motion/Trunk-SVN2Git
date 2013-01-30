@@ -215,8 +215,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void FlattenedSerializable ()
     {
+      //TODO 5370: Remove
+      SetUp ();
+
       var endPointLoader =
           new SerializableVirtualEndPointLoaderFake<
               IVirtualEndPoint<object>, 

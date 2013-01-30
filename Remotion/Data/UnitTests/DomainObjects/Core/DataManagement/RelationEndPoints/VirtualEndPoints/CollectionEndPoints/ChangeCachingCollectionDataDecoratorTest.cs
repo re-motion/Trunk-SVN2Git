@@ -678,8 +678,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void Serializable ()
     {
+      //TODO 5370: Remove
+      SetUp ();
+
       var wrappedData = new DomainObjectCollectionData (new[] { _domainObject });
       var decorator = new ChangeCachingCollectionDataDecorator (wrappedData);
 

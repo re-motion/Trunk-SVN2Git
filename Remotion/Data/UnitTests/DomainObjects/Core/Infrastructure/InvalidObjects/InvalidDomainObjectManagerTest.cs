@@ -23,7 +23,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFake
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjects
 {
@@ -173,8 +172,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void Serializable ()
     {
+      // TODO 5370: Remove
+      _order1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+
       var transactionEventSink = new SerializableClientTransactionEventSinkFake();
       var manager = new InvalidDomainObjectManager (transactionEventSink);
 

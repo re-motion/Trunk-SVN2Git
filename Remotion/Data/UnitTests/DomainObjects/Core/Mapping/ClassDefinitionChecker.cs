@@ -54,6 +54,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "IsAbstract of class definition '{0}' does not match.",
           expectedDefinition.ID);
 
+      Assert.AreSame (
+          expectedDefinition.InstanceCreator,
+          actualDefinition.InstanceCreator,
+          "Instance creator of class definition '{0}' is not the expected object.",
+          actualDefinition.ID);
+
       if (expectedDefinition.BaseClass == null)
       {
         Assert.IsNull (actualDefinition.BaseClass, "actualDefinition.BaseClass of class definition '{0}' is not null.", expectedDefinition.ID);

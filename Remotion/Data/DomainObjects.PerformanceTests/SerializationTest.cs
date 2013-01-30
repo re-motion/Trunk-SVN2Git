@@ -26,6 +26,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
   // Reference system: Dell Prevision T1600, Intel Xeon @ 3.6 GHz, 16 GB RAM; run in Release mode (1.13.157, 2012-06-27)
 
   [TestFixture]
+  [UseLegacyCodeGeneration]
   public class SerializationTest : DatabaseTest
   {
     public override void TestFixtureSetUp ()
@@ -33,7 +34,6 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       base.TestFixtureSetUp ();
       WriteHeadings ();
     }
-
 
     [Test]
     public void SerializeRelationPropertyObjects00041 ()

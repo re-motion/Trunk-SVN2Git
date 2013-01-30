@@ -110,8 +110,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void SerializeAndDeserialize ()
     {
+      //TODO 5370: Remove
+      SetUp ();
+
       Serializer.SerializeAndDeserialize (_instanceOverridingDisplayName);
     }
 
@@ -127,6 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void DeserializationConstructor_CallsBase ()
     {
       var serializable = SampleBindableDomainObject_ImplementingISerializable.NewObject();

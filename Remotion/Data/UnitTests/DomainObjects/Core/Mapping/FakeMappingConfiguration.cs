@@ -20,13 +20,13 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
@@ -824,7 +824,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           baseClass,
           null,
           new PersistentMixinFinderStub (classType, persistentMixins),
-          InterceptedDomainObjectCreator.Instance);
+          MappingReflectorObjectMother.DomainObjectCreator);
       SetFakeStorageEntity (classDefinition, entityName);
       return classDefinition;
     }

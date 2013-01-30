@@ -140,6 +140,10 @@
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
       <Name>ObjectBinding.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
+      <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
+      <Name>TypePipe.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Data.Core.csproj">
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Core</Name>
@@ -155,8 +159,12 @@
     <Compile Include="ClientTransactionEventArgs.cs" />
     <Compile Include="ClientTransactionExtensionBase.cs" />
     <Compile Include="ClientTransactionExtensions.cs" />
-    <Compile Include="ClientTransactionFactory.cs" />
-    <Compile Include="DomainObjectHandleConverter.cs" />
+    <Compile Include="ClientTransactionFactory.cs" />    <Compile Include="DomainObjectHandleConverter.cs" />
+    <Compile Include="Infrastructure\TypePipe\IAccessorInterceptor.cs" />
+    <Compile Include="Infrastructure\TypePipe\ImplementingAccessorInterceptorBase.cs" />
+    <Compile Include="Infrastructure\TypePipe\ImplementingGetAccessorInterceptor.cs" />
+    <Compile Include="Infrastructure\TypePipe\ImplementingSetAccessorInterceptor.cs" />
+    <Compile Include="Infrastructure\TypePipe\WrappingAccessorInterceptor.cs" />
     <Compile Include="ObjectIDExtensions.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\DataManagementCommandDecoratorBase.cs" />
     <Compile Include="DomainImplementation\Cloning\CloneContext.cs" />
@@ -221,6 +229,11 @@
     <Compile Include="Infrastructure\IClientTransactionEventSink.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventBroker.cs" />
     <Compile Include="ICommittingEventRegistrar.cs" />
+    <Compile Include="Infrastructure\ThrowingDomainObjectCreator.cs" />
+    <Compile Include="Infrastructure\TypePipe\DomainObjectParticipant.cs" />
+    <Compile Include="Infrastructure\TypePipe\IInterceptedPropertyFinder.cs" />
+    <Compile Include="Infrastructure\TypePipe\InterceptedPropertyCollectorAdapter.cs" />
+    <Compile Include="Infrastructure\TypePipe\ITypeDefinitionProvider.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\IObjectInitializationContextProvider.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\IObjectInitializationContext.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\IObjectLifetimeAgent.cs" />
@@ -250,6 +263,8 @@
     <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\UnlockedParentTransactionContext.cs" />
+    <Compile Include="Infrastructure\TypePipe\TypeDefinitionProvider.cs" />
+    <Compile Include="Infrastructure\TypePipe\TypePipeBasedDomainObjectCreator.cs" />
     <Compile Include="IDomainObjectHandle.cs" />
     <Compile Include="ISupportsGetObject.cs" />
     <Compile Include="Linq\ExecutableQueries\CustomSequenceQueryAdapter.cs" />

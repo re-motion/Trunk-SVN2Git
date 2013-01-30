@@ -226,8 +226,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void Serializable ()
     {
+      //TODO 5370: Remove
+      SetUp();
+
       var decorator = new ModificationCheckingCollectionDataDecorator (typeof (Order), new DomainObjectCollectionData(new[] { _order1, _order2 }));
       var deserializedDecorator = Serializer.SerializeAndDeserialize (decorator);
 

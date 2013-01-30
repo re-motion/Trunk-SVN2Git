@@ -130,8 +130,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void Serializable ()
     {
+      //TODO 5370: Remove
+      SetUp();
+
      Assert.That (_copyOnWriteData.Count, Is.EqualTo (2));
 
       var deserialized = Serializer.SerializeAndDeserialize (_copyOnWriteData);

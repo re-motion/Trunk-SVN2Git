@@ -274,8 +274,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void Serialization ()
     {
+      //TODO 5370: Remove
+      SetUp ();
+
       var deserializedTuple = Serializer.SerializeAndDeserialize (Tuple.Create (_cachingListener, _transaction, _existingOrder));
 
       var deserializedCache = deserializedTuple.Item1;

@@ -171,12 +171,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       Assert.That (
           CallWithInitializationContextAndTransaction (
-              () => _interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithPublicCtor), ParamList.Empty), DomainObjectIDs.OrderItem1),
+              () => _interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithPublicCtor2), ParamList.Empty), DomainObjectIDs.OrderItem1),
           Is.Not.Null);
 
       Assert.That (
           CallWithInitializationContextAndTransaction (
-              () => _interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithProtectedCtor), ParamList.Empty), DomainObjectIDs.OrderItem2),
+              () => _interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithProtectedCtor2), ParamList.Empty), DomainObjectIDs.OrderItem2),
           Is.Not.Null);
     }
 
@@ -197,17 +197,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [DBTable]
-    public class DomainObjectWithPublicCtor : DomainObject
+    public class DomainObjectWithPublicCtor2 : DomainObject
     {
-      public DomainObjectWithPublicCtor ()
+      public DomainObjectWithPublicCtor2 ()
       {
       }
     }
 
     [DBTable]
-    public class DomainObjectWithProtectedCtor : DomainObject
+    public class DomainObjectWithProtectedCtor2 : DomainObject
     {
-      protected DomainObjectWithProtectedCtor ()
+      protected DomainObjectWithProtectedCtor2 ()
       {
       }
     }

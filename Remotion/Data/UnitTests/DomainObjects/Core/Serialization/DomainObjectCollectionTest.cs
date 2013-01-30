@@ -28,6 +28,7 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {
   [TestFixture]
+  [UseLegacyCodeGeneration]
   public class DomainObjectCollectionTest : ClientTransactionBaseTest
   {
     [Test]

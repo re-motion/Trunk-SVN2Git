@@ -26,6 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
   public class MandatoryRelationNotSetExceptionTest : ClientTransactionBaseTest
   {
     [Test]
+    [UseLegacyCodeGeneration]
     public void Serialization ()
     {
       var domainObject = Order.NewObject();

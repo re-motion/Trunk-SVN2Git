@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Rhino.Mocks;
@@ -28,22 +29,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class MappingReflectionTestBase
   {
-    private ReflectionBasedMappingObjectFactory _mappingObjectFactory;
-    private IClassIDProvider _classIDProviderStub;
-    private IDomainModelConstraintProvider _domainModelConstraintProviderStub;
     public const string DefaultStorageProviderID = "DefaultStorageProvider";
     public const string c_testDomainProviderID = "TestDomain";
     public const string c_unitTestStorageProviderStubID = "UnitTestStorageProviderStub";
 
-    protected IClassIDProvider ClassIDProviderStub
-    {
-      get { return _classIDProviderStub; }
-    }
-
-    protected IDomainModelConstraintProvider DomainModelConstraintProviderStub
-    {
-      get { return _domainModelConstraintProviderStub; }
-    }
+    protected IClassIDProvider ClassIDProviderStub { get; private set; }
+    protected IDomainModelConstraintProvider DomainModelConstraintProviderStub { get; private set; }
+    protected ReflectionBasedMappingObjectFactory MappingObjectFactory { get; private set; }
+    protected IDomainObjectCreator DomainObjectCreatorStub { get; private set; }
 
     [SetUp]
     public virtual void SetUp ()
@@ -52,11 +45,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
       ConfigurationWrapper.SetCurrent (null);
       
-      _classIDProviderStub = MockRepository.GenerateStub<IClassIDProvider>();
-      _domainModelConstraintProviderStub = MockRepository.GenerateStub<IDomainModelConstraintProvider>();
+      ClassIDProviderStub = MockRepository.GenerateStub<IClassIDProvider>();
+      DomainModelConstraintProviderStub = MockRepository.GenerateStub<IDomainModelConstraintProvider>();
+      DomainObjectCreatorStub = MockRepository.GenerateStub<IDomainObjectCreator>();
 
-      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (
-          Configuration.NameResolver, _classIDProviderStub, _domainModelConstraintProviderStub);
+      MappingObjectFactory = new ReflectionBasedMappingObjectFactory (
+          Configuration.NameResolver, ClassIDProviderStub, DomainModelConstraintProviderStub, DomainObjectCreatorStub);
     }
 
     [TearDown]
@@ -91,11 +85,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     protected StorageProviderDefinition UnitTestDomainStorageProviderDefinition
     {
       get { return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_unitTestStorageProviderStubID]; }
-    }
-
-    protected ReflectionBasedMappingObjectFactory MappingObjectFactory
-    {
-      get { return _mappingObjectFactory; }
     }
   }
 }

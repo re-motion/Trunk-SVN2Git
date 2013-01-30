@@ -165,6 +165,7 @@
     </Compile>
     <Compile Include="UnitTesting\ClassWithSerializationCallbacksBase.cs" />
     <Compile Include="UnitTesting\Reflection\NormalizingMemberInfoFromExpressionUtility.cs" />
+    <Compile Include="UnitTesting\Reflection\ReflectionObjectMother.cs" />
     <Compile Include="UnitTesting\Reflection\TypeDiscovery\FilteringTypeDiscoveryService.cs" />
     <Compile Include="UnitTesting\Reflection\TypeDiscovery\FixedTypeDiscoveryService.cs" />
     <Compile Include="UnitTesting\Reflection\TypeDiscovery\NullTypeDiscoveryService.cs" />

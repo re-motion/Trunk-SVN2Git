@@ -43,8 +43,8 @@ namespace Remotion.Development.UnitTesting.Configuration
     /// </summary>
     /// <param name="configurationSection">The configuration to populate from the fragment.</param>
     /// <param name="xmlFragment">The XML fragment.</param>
-    /// <param name="xsdPath">The path of the XSD file, or <see langword="null"/> for no validation.</param>
-    public static void DeserializeSection (ConfigurationSection configurationSection, string xmlFragment, string xsdPath = null)
+    /// <param name="xsdContent">The content of the XSD, or <see langword="null"/> for no validation.</param>
+    public static void DeserializeSection (ConfigurationSection configurationSection, string xmlFragment, string xsdContent = null)
     {
       ArgumentUtility.CheckNotNull ("configurationSection", configurationSection);
       ArgumentUtility.CheckNotNullOrEmpty ("xmlFragment", xmlFragment);
@@ -55,8 +55,8 @@ namespace Remotion.Development.UnitTesting.Configuration
         PrivateInvoke.InvokeNonPublicMethod (configurationSection, "DeserializeSection", reader);
       }
 
-      if (xsdPath != null)
-        XmlSchemaValidation.Validate (xmlFragment, xsdPath);
+      if (xsdContent != null)
+        XmlSchemaValidation.Validate (xmlFragment, xsdContent);
     }
   }
 }

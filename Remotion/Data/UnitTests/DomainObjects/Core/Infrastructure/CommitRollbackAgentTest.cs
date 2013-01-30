@@ -227,8 +227,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    [UseLegacyCodeGeneration]
     public void Serializable ()
     {
+      //TODO 5370: Remove
+      SetUp ();
+
       var instance = new CommitRollbackAgent (
           _clientTransaction,
           new SerializableClientTransactionEventSinkFake(),
