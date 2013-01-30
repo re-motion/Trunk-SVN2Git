@@ -19,7 +19,6 @@ using Remotion.Security;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  //TODO FS: Move to SecurityInterfaces
   //verwendet in wxe um security abfragen zu tun.
   public interface IWxeSecurityAdapter : ISecurityAdapter
   {
