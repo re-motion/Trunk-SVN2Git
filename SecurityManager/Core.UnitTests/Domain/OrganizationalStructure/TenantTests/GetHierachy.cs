@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -109,29 +108,34 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       Tenant root = TestHelper.CreateTenant ("Root", "UID: Root");
       Tenant child1 = TestHelper.CreateTenant ("Child1", "UID: Child1");
       child1.Parent = root;
+
       Tenant child2 = TestHelper.CreateTenant ("Child2", "UID: Child2");
       child2.Parent = root;
-      Tenant grandChild1 = TestHelper.CreateTenant ("GrandChild1", "UID: GrandChild1");
-      grandChild1.Parent = child1;
+
+      Tenant child1_1 = TestHelper.CreateTenant ("Child1.1", "UID: Child1.1");
+      child1_1.Parent = child1;
+      
+      Tenant child2_1 = TestHelper.CreateTenant ("Child2.1", "UID: Child2.1");
+      child2_1.Parent = child2;
 
       ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
-      var child1SecurityContext = ((ISecurityContextFactory) child1).CreateSecurityContext();
+      var childOfChild2SecurityContext = ((ISecurityContextFactory) child2_1).CreateSecurityContext ();
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg<ISecurityContext>.Is.NotEqual (child1SecurityContext),
+                      Arg<ISecurityContext>.Is.NotEqual (childOfChild2SecurityContext),
                       Arg<ISecurityPrincipal>.Is.Anything)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg.Is (child1SecurityContext),
+                      Arg.Is (childOfChild2SecurityContext),
                       Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension ());
 
-        Assert.That (root.GetHierachy(), Is.EquivalentTo (new[] { root, child2 }));
+        Assert.That (root.GetHierachy(), Is.EquivalentTo (new[] { root, child1, child2, child1_1 }));
       }
     }
 
