@@ -105,9 +105,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     }
 
     [StorageClassNone]
-    public virtual OrderWithNewPropertyAccess NotInMappingRelated
+    public virtual OrderTicket NotInMappingRelated
     {
-      get { return CurrentProperty.GetValue<OrderWithNewPropertyAccess> (); }
+      get { return CurrentProperty.GetValue<OrderTicket> (); }
       set { CurrentProperty.SetValue (value); }
     }
 

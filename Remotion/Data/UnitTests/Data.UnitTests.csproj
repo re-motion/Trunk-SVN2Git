@@ -874,9 +874,7 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\Order.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\OrderCollection.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\OrderItem.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\OrderItemWithNewPropertyAccess.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\OrderTicket.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\OrderWithNewPropertyAccess.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\Partner.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\Person.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassHavingClassIDAttribute.cs" />
