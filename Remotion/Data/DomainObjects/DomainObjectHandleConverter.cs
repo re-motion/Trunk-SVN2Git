@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects
       if (value == null)
         return null;
 
-      IDomainObjectHandle<DomainObject> domainObjectHandle = value as IDomainObjectHandle<DomainObject>;
+      var domainObjectHandle = value as IDomainObjectHandle<DomainObject>;
       if (domainObjectHandle == null)
       {
         var message = string.Format ("This TypeConverter can only convert values of type '{0}'.", typeof (IDomainObjectHandle<DomainObject>));
