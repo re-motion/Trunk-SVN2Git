@@ -91,7 +91,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Tenant tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
-        Group group = Group.FindByTenantID (tenant.ID).Where (g => g.Name == "parentGroup0").Single ();
+        Group group = Group.FindByTenant (tenant.GetHandle()).Where (g => g.Name == "parentGroup0").Single ();
         GroupType groupType = group.GroupType;
 
         groupType.Delete ();

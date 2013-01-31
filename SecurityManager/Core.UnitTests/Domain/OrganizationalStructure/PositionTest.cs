@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       using (testHelper.Transaction.EnterNonDiscardingScope ())
       {
         Tenant tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
-        User user = User.FindByTenantID (tenant.ID).First();
+        User user = User.FindByTenant (tenant.GetHandle()).First();
         Role role = user.Roles[0];
         Position position = role.Position;
         AccessControlEntry ace = testHelper.CreateAceWithPosition (position);
@@ -73,7 +73,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Tenant tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
-        User user = User.FindByTenantID (tenant.ID).First();
+        User user = User.FindByTenant (tenant.GetHandle()).First();
         Role role = user.Roles[0];
         Position position = role.Position;
         position.Delete ();

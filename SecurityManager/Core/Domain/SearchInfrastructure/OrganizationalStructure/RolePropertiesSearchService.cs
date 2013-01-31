@@ -79,12 +79,12 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
 
     private GroupType GetGroupType (RolePropertiesSearchArguments searchArguments)
     {
-      if (searchArguments == null || searchArguments.GroupID == null)
+      if (searchArguments == null || searchArguments.GroupHandle == null)
         return null;
 
       using (new SecurityFreeSection ())
       {
-        var group = searchArguments.GroupID.GetObject<Group> ();
+        var group = searchArguments.GroupHandle.GetObject();
         return group.GroupType;
       }
     }

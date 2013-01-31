@@ -26,6 +26,7 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -128,7 +129,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       if (string.IsNullOrEmpty (args))
         return null;
 
-      return new TenantConstraint (ObjectID.Parse (args));
+      return new TenantConstraint (ObjectID.Parse (args).GetHandle<Tenant>());
     }
 
     private ResultSizeConstraint GetResultSizeConstraint (int? completionSetCount)

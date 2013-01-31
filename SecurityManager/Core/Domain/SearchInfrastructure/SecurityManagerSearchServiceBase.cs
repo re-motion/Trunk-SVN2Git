@@ -20,6 +20,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
@@ -75,7 +76,9 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       {
         if (string.IsNullOrEmpty (defaultSearchArguments.SearchStatement))
           return new SecurityManagerSearchArguments (null, null, null);
-        return new SecurityManagerSearchArguments (new TenantConstraint (ObjectID.Parse (defaultSearchArguments.SearchStatement)), null, null);
+
+        var tenantHandle = ObjectID.Parse (defaultSearchArguments.SearchStatement).GetHandle<Tenant>();
+        return new SecurityManagerSearchArguments (new TenantConstraint (tenantHandle), null, null);
       }
 
       return ArgumentUtility.CheckType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);

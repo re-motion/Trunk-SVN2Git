@@ -17,21 +17,22 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
   public class TenantConstraint
   {
-    private readonly ObjectID _value;
+    private readonly IDomainObjectHandle<Tenant> _value;
 
-    public TenantConstraint (ObjectID value)
+    public TenantConstraint (IDomainObjectHandle<Tenant> value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
       _value = value;
     }
 
-    public ObjectID Value
+    public IDomainObjectHandle<Tenant> Value
     {
       get { return _value; }
     }

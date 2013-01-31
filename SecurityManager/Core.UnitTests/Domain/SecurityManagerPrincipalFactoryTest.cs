@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       {
         var dbFixtures = new DatabaseFixtures();
         var tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
-        var user = User.FindByTenantID (tenant.ID).First();
+        var user = User.FindByTenant (tenant.GetHandle()).First();
 
         var factory = new SecurityManagerPrincipalFactory();
 

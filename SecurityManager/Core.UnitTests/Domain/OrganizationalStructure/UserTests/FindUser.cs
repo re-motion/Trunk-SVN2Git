@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
   public class FindUser : UserTestBase
   {
     private DatabaseFixtures _dbFixtures;
-    private ObjectID _expectedTenantID;
+    private IDomainObjectHandle<Tenant> _expectedTenantHandle;
 
     public override void TestFixtureSetUp ()
     {
@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
 
       _dbFixtures = new DatabaseFixtures();
       Tenant tenant = _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
-      _expectedTenantID = tenant.ID;
+      _expectedTenantHandle = tenant.GetHandle();
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     [Test]
     public void Find_UsersByTenantID ()
     {
-      var users = User.FindByTenantID (_expectedTenantID);
+      var users = User.FindByTenant (_expectedTenantHandle);
 
       Assert.That (users.Count(), Is.EqualTo (6));
     }

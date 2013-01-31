@@ -32,7 +32,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
         = new ExpressionTreeComparer ((actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)));
 
     private DatabaseFixtures _dbFixtures;
-    private ObjectID _expectedTenantID;
+    private IDomainObjectHandle<Tenant> _expectedTenantHandle;
 
     public override void TestFixtureSetUp ()
     {
@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       _dbFixtures = new DatabaseFixtures();
       Tenant tenant = _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
-      _expectedTenantID = tenant.ID;
+      _expectedTenantHandle = tenant.GetHandle();
     }
 
     [Test]
@@ -63,11 +63,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     public void Find_GroupsByTenantID ()
     {
       var expected = from g in QueryFactory.CreateLinqQuery<Group>()
-                     where g.Tenant.ID == _expectedTenantID
+                     where g.Tenant.ID == _expectedTenantHandle.ObjectID
                      orderby g.Name, g.ShortName
                      select g;
 
-      var actual = Group.FindByTenantID (_expectedTenantID);
+      var actual = Group.FindByTenant (_expectedTenantHandle);
 
       _expressionTreeComparer.Compare (expected, actual);
 

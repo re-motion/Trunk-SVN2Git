@@ -18,6 +18,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure
@@ -27,17 +28,17 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
   /// </summary>
   public class RolePropertiesSearchArguments : ISearchAvailableObjectsArguments
   {
-    private readonly ObjectID _groupID;
+    private readonly IDomainObjectHandle<Group> _groupHandle;
 
-    public RolePropertiesSearchArguments (ObjectID groupID)
+    public RolePropertiesSearchArguments (IDomainObjectHandle<Group> groupHandle)
     {
-      ArgumentUtility.CheckNotNull ("groupID", groupID);
-      _groupID = groupID;
+      ArgumentUtility.CheckNotNull ("groupHandle", groupHandle);
+      _groupHandle = groupHandle;
     }
 
-    public ObjectID GroupID
+    public IDomainObjectHandle<Group> GroupHandle
     {
-      get { return _groupID; }
+      get { return _groupHandle; }
     }
   }
 }

@@ -18,6 +18,7 @@
 using System;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Data.DomainObjects;
 using Remotion.FunctionalProgramming;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -108,7 +109,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
       }
       else
       {
-        var positions = positionReferenceValue.Property.SearchAvailableObjects (null, new RolePropertiesSearchArguments (group.ID));
+        var positions = positionReferenceValue.Property.SearchAvailableObjects (null, new RolePropertiesSearchArguments (group.GetHandle()));
         positionReferenceValue.SetBusinessObjectList (positions);
         positionReferenceValue.Enabled = true;
       }

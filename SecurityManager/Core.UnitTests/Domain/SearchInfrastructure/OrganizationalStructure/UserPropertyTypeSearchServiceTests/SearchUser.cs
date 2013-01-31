@@ -18,6 +18,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -45,7 +46,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       var user = User.FindByUserName ("group0/user1");
       Assert.That (user, Is.Not.Null);
 
-      _tenantConstraint = new TenantConstraint (user.Tenant.ID);
+      _tenantConstraint = new TenantConstraint (user.Tenant.GetHandle());
     }
 
     [Test]
@@ -57,7 +58,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     [Test]
     public void Search ()
     {
-      var expected = User.FindByTenantID (_tenantConstraint.Value);
+      var expected = User.FindByTenant (_tenantConstraint.Value);
       Assert.That (expected, Is.Not.Empty);
 
       IBusinessObject[] actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null));
@@ -68,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     [Test]
     public void Search_WithDisplayNameConstraint_FindLastNameContainingPrefix ()
     {
-      var expected = User.FindByTenantID (_tenantConstraint.Value).Where (u => u.LastName.Contains ("user")).ToArray();
+      var expected = User.FindByTenant (_tenantConstraint.Value).Where (u => u.LastName.Contains ("user")).ToArray();
       Assert.That (expected.Length, Is.GreaterThan (1));
 
       var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("user"));
@@ -79,7 +80,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     [Test]
     public void Search_WithDisplayNameConstraint_FindFirstNameContainingPrefix ()
     {
-      var expected = User.FindByTenantID (_tenantConstraint.Value).Where (u => u.FirstName.Contains ("est")).ToArray();
+      var expected = User.FindByTenant (_tenantConstraint.Value).Where (u => u.FirstName.Contains ("est")).ToArray();
       Assert.That (expected, Is.Not.Empty);
 
       var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("est"));

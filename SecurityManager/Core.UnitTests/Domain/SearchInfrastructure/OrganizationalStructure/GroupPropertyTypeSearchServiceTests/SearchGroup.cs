@@ -17,6 +17,7 @@
 // 
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -44,7 +45,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       var group = Group.FindByUnqiueIdentifier ("UID: group0");
       Assert.That (group, Is.Not.Null);
 
-      _tenantConstraint = new TenantConstraint (group.Tenant.ID);
+      _tenantConstraint = new TenantConstraint (group.Tenant.GetHandle());
     }
 
     [Test]
@@ -56,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     [Test]
     public void Search ()
     {
-      var expected = Group.FindByTenantID (_tenantConstraint.Value).ToArray();
+      var expected = Group.FindByTenant (_tenantConstraint.Value).ToArray();
       Assert.That (expected, Is.Not.Empty);
 
       var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantConstraint, null, null));
@@ -67,7 +68,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     [Test]
     public void Search_WithDisplayNameConstraint_FindNameContainingPrefix ()
     {
-      var expected = Group.FindByTenantID (_tenantConstraint.Value).Where (g => g.Name.Contains ("Group1")).ToArray();
+      var expected = Group.FindByTenant (_tenantConstraint.Value).Where (g => g.Name.Contains ("Group1")).ToArray();
       Assert.That (expected.Length, Is.GreaterThan (1));
 
       var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("Group1"));
@@ -78,7 +79,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     [Test]
     public void Search_WithDisplayNameConstraint_FindShortNameContainingPrefix ()
     {
-      var expected = Group.FindByTenantID (_tenantConstraint.Value).Where (g => g.ShortName.Contains ("G1")).ToArray();
+      var expected = Group.FindByTenant (_tenantConstraint.Value).Where (g => g.ShortName.Contains ("G1")).ToArray();
       Assert.That (expected.Length, Is.GreaterThan (1));
 
       var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("G1"));
