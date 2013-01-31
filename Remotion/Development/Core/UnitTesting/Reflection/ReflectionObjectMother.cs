@@ -48,6 +48,8 @@ namespace Remotion.Development.UnitTesting.Reflection
     private static readonly MethodInfo[] s_nonGenericMethods = EnsureNoNulls (new[] { typeof (object).GetMethod ("ToString"), typeof (string).GetMethod ("Concat", new[] { typeof (object) }) });
     private static readonly MethodInfo[] s_genericMethods = EnsureNoNulls (new[] { typeof (Enumerable).GetMethod ("Empty"), typeof (ReflectionObjectMother).GetMethod ("GetRandomElement", BindingFlags.NonPublic | BindingFlags.Static) });
     private static readonly MethodInfo[] s_abstractMethodInfos = EnsureNoNulls (new[] { typeof (MethodInfo).GetMethod ("GetBaseDefinition"), typeof (Type).GetMethod ("GetMethods", new[] { typeof (BindingFlags) }) });
+    private static readonly MethodInfo[] s_nonPublicMethodInfos = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("PrivateMethod", BindingFlags.NonPublic | BindingFlags.Instance), typeof (DomainType).GetMethod ("ProtectedMethod", BindingFlags.NonPublic | BindingFlags.Instance) });
+    private static readonly MethodInfo[] s_publicMethodInfos = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("FinalMethod"), typeof (DomainType).GetMethod("Override") });
     private static readonly ParameterInfo[] s_parameterInfos = EnsureNoNulls (typeof (Dictionary<,>).GetMethod ("TryGetValue").GetParameters());
     private static readonly PropertyInfo[] s_properties = EnsureNoNulls (new[] { typeof (List<>).GetProperty ("Count"), typeof (Type).GetProperty ("IsArray") });
 
@@ -198,6 +200,20 @@ namespace Remotion.Development.UnitTesting.Reflection
       return method;
     }
 
+    public static MethodInfo GetSomeNonPublicMethod ()
+    {
+      var method = GetRandomElement (s_nonPublicMethodInfos);
+      Assertion.IsFalse (method.IsPublic);
+      return method;
+    }
+
+    public static MethodInfo GetSomePublicMethod ()
+    {
+      var method = GetRandomElement (s_publicMethodInfos);
+      Assertion.IsTrue (method.IsPublic);
+      return method;
+    }
+
     public static MethodInfo GetSomeGenericMethod ()
     {
       var method = GetRandomElement (s_genericMethods);
@@ -272,6 +288,9 @@ namespace Remotion.Development.UnitTesting.Reflection
 
       public override void Override () { }
       public override string ToString () { return ""; }
+
+      private void PrivateMethod () { }
+      protected void ProtectedMethod () { }
     }
   }
 }
