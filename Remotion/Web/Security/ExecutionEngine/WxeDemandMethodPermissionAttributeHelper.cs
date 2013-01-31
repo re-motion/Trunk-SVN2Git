@@ -94,6 +94,8 @@ namespace Remotion.Web.Security.ExecutionEngine
       if (SecurableClass == null)
         return parameterDeclaration.Type;
 
+      // TODO 4405: First, check for ISecurableObjectHandle attribute on parameterDeclaration.Type - if yes, use this to get the referenced type to check.
+
       if (!parameterDeclaration.Type.IsAssignableFrom (SecurableClass))
       {
         throw new WxeException (string.Format (
@@ -117,6 +119,8 @@ namespace Remotion.Web.Security.ExecutionEngine
            _attribute.GetType ().Name, parameterDeclaration.Name, _functionType.FullName));
       }
 
+      // TODO 4405: First, check for ISecurableObjectHandle attribute - if yes, use this to get the ISecurableObject. Otherwise, get object as below.
+
       ISecurableObject securableObject = parameterValue as ISecurableObject;
       if (securableObject == null)
       {
@@ -125,6 +129,8 @@ namespace Remotion.Web.Security.ExecutionEngine
             _attribute.GetType ().Name, parameterDeclaration.Name, _functionType.FullName, typeof (ISecurableObject).FullName));
       }
 
+      // TODO 4405: Consider:
+      // if (SecurableClass != null && !securableObject.GetSecurableType ().IsAssignableFrom (SecurableClass))
       if (SecurableClass != null && !parameterDeclaration.Type.IsAssignableFrom (SecurableClass))
       {
         throw new WxeException (string.Format (
