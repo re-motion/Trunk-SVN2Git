@@ -25,5 +25,6 @@ namespace Remotion.Context
     public const string WebExecutionEngineWxeContextCurrent = "Rm.WxeCtx";
     public const string ScriptingScriptContext = "Rm.SSC";
     public const string ScriptingScriptingHost = "Rm.SSH";
+    public const string SecurityManagerPrincipalCurrent= "Rm.SMPC";
   }
 }

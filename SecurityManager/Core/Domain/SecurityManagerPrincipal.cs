@@ -47,17 +47,15 @@ namespace Remotion.SecurityManager.Domain
   [Serializable]
   public class SecurityManagerPrincipal : ISecurityManagerPrincipal
   {
-    private static readonly string s_currentKey = typeof (SecurityManagerPrincipal).AssemblyQualifiedName + "_Current";
-
     public static readonly ISecurityManagerPrincipal Null = new NullSecurityManagerPrincipal();
 
     public static ISecurityManagerPrincipal Current
     {
-      get { return (ISecurityManagerPrincipal) SafeContext.Instance.GetData (s_currentKey) ?? Null; }
+      get { return (ISecurityManagerPrincipal) SafeContext.Instance.GetData (SafeContextKeys.SecurityManagerPrincipalCurrent) ?? Null; }
       set
       {
         ArgumentUtility.CheckNotNull ("value", value);
-        SafeContext.Instance.SetData (s_currentKey, value);
+        SafeContext.Instance.SetData (SafeContextKeys.SecurityManagerPrincipalCurrent, value);
       }
     }
 
@@ -200,12 +198,12 @@ namespace Remotion.SecurityManager.Domain
 
     private Tenant GetTenant (ClientTransaction transaction)
     {
-      return _tenantHandle.GetObject (clientTransaction: transaction);
+      return _tenantHandle.GetObject (transaction);
     }
 
     private User GetUser (ClientTransaction transaction)
     {
-      return _userHandle.GetObject (clientTransaction: transaction);
+      return _userHandle.GetObject (transaction);
     }
 
     private Substitution GetSubstitution (ClientTransaction transaction)
@@ -213,7 +211,7 @@ namespace Remotion.SecurityManager.Domain
       if (_substitutionHandle == null)
         return null;
 
-      return _substitutionHandle.GetObject (clientTransaction: transaction);
+      return _substitutionHandle.GetObject (transaction);
     }
 
     private ClientTransaction CreateClientTransaction ()
