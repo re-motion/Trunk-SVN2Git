@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
@@ -35,17 +34,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
   [WebMultiLingualResources (typeof (AccessControlResources))]
   public partial class EditStateCombinationControl : BaseControl
   {
-    // types
-
-    // static members and constants
-
     private static readonly object s_deleteEvent = new object ();
 
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
@@ -74,7 +64,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         if (!interim)
           FillStateDefinitionField();
 
-        StateDefinition currentStateDefinition = GetStateDefinition (CurrentStateCombination);
+        var currentStateDefinition = GetStateDefinition (CurrentStateCombination);
         StateDefinitionField.LoadUnboundValue (currentStateDefinition, interim);
         StateDefinitionContainer.Visible = true;
       }
@@ -127,16 +117,15 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       if (CurrentStateCombination.Class.StateProperties.Count == 1)
       {
-        string id = StateDefinitionField.BusinessObjectUniqueIdentifier;
-        StateDefinition stateDefinition = ObjectID.Parse (id).GetObject<StateDefinition> ();
+        var stateDefinition = (StateDefinition) StateDefinitionField.Value;
         CurrentStateCombination.ClearStates();
-          CurrentStateCombination.AttachState (stateDefinition);
+        CurrentStateCombination.AttachState (stateDefinition);
       }
     }
 
     protected void DeleteStateDefinitionButton_Click (object sender, EventArgs e)
     {
-      EventHandler handler = (EventHandler) Events[s_deleteEvent];
+      var handler = (EventHandler) Events[s_deleteEvent];
       if (handler != null)
         handler (this, EventArgs.Empty);
     }
