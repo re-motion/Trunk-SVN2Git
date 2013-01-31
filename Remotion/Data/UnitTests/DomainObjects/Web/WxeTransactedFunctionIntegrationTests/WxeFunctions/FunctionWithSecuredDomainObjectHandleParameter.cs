@@ -16,26 +16,27 @@
 // 
 using System;
 using JetBrains.Annotations;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.DomainObjects;
+using Remotion.Security;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Security.ExecutionEngine;
-using Remotion.Web.Security.UI;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
   [Serializable]
   [WxeDemandTargetMethodPermission ("SecuredMethod", typeof (SecurableDomainObject), ParameterName = "SecurableParameter")]
-  public class FunctionWithSecuredDomainObjectParameter : WxeFunction
+  public class FunctionWithSecuredDomainObjectHandleParameter : WxeFunction
   {
-    public FunctionWithSecuredDomainObjectParameter (ITransactionMode transactionMode)
+    public FunctionWithSecuredDomainObjectHandleParameter (ITransactionMode transactionMode)
         : base (transactionMode)
     {
     }
 
     [WxeParameter (1, false, WxeParameterDirection.In)]
-    public SecurableDomainObject SecurableParameter
+    public IDomainObjectHandle<SecurableDomainObject> SecurableParameter
     {
-      get { return (SecurableDomainObject) Variables["SecurableParameter"]; }
+      get { return (IDomainObjectHandle<SecurableDomainObject>) Variables["SecurableParameter"]; }
       set { Variables["SecurableParameter"] = value; }
     }
 

@@ -16,33 +16,37 @@
 // 
 using System;
 using JetBrains.Annotations;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Web.Security.ExecutionEngine;
-using Remotion.Web.Security.UI;
+using Remotion.Data.DomainObjects;
+using Remotion.Security;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
-  [Serializable]
-  [WxeDemandTargetMethodPermission ("SecuredMethod", typeof (SecurableDomainObject), ParameterName = "SecurableParameter")]
-  public class FunctionWithSecuredDomainObjectParameter : WxeFunction
+  [DBTable]
+  public class SecurableDomainObject : DomainObject, ISecurableObject
   {
-    public FunctionWithSecuredDomainObjectParameter (ITransactionMode transactionMode)
-        : base (transactionMode)
+    [StorageClassNone]
+    public Type SecurableType { get; set; }
+
+    [StorageClassNone]
+    public IObjectSecurityStrategy SecurityStrategy { get; set; }
+
+    public IObjectSecurityStrategy GetSecurityStrategy ()
     {
+      Assertion.IsNotNull (SecurityStrategy, "Must set SecurityStrategy first.");
+      return SecurityStrategy;
     }
 
-    [WxeParameter (1, false, WxeParameterDirection.In)]
-    public SecurableDomainObject SecurableParameter
+    public Type GetSecurableType ()
     {
-      get { return (SecurableDomainObject) Variables["SecurableParameter"]; }
-      set { Variables["SecurableParameter"] = value; }
+      Assertion.IsNotNull (SecurableType, "Must set SecurableType first.");
+      return SecurableType;
     }
 
     [UsedImplicitly]
-    private void Step1 ()
+    [DemandPermission (TestAccessTypes.Value)]
+    public void SecuredMethod ()
     {
-      // Nothing to do here - we just check whether execution throws an exception
     }
   }
 }

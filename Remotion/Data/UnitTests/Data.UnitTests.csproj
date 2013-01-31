@@ -244,8 +244,12 @@
     <Compile Include="DomainObjects\DomainObjectHandleExtensionsTest.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleTest.cs" />
     <Compile Include="DomainObjects\Web\WxeParameterIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SecuredFunctionTestBase.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SecuredFunctionViaDomainObjectParameterTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\FunctionWithSecuredDomainObjectHandleParameter.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\FunctionWithSecuredDomainObjectParameter.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\SecurableDomainObject.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\TestAccessTypes.cs" />
     <Compile Include="UnitTesting\RootPersistenceStrategyMockFacade.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Transport\PostActionDisposableDecorator.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />

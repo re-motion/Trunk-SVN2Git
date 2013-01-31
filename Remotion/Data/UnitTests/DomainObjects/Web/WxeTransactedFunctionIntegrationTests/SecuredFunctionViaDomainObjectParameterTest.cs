@@ -16,64 +16,21 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.Security.ExecutionEngine;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests
 {
   [TestFixture]
-  public class SecuredFunctionViaDomainObjectParameterTest : WxeTransactedFunctionIntegrationTestBase
+  public class SecuredFunctionViaDomainObjectParameterTest : SecuredFunctionTestBase
   {
-    private IWxeSecurityAdapter _previousAdapter;
-
-    private ISecurityProvider _securityProviderMock;
-    private ISecurityPrincipal _securityPrincipalStub;
-    private IFunctionalSecurityStrategy _functionalSecurityStrategyMock;
-
-    private IObjectSecurityStrategy _objectSecurityStrategyStub;
-    private AccessType _testAccessTypeValue;
-
-    public override void SetUp ()
-    {
-      base.SetUp ();
-
-      _previousAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter>();
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), new WxeSecurityAdapter ());
-
-      _securityProviderMock = MockRepository.GenerateStrictMock<ISecurityProvider> ();
-      _securityProviderMock.Stub (stub => stub.IsNull).Return (false);
-
-      var _principalProviderStub = MockRepository.GenerateStub<IPrincipalProvider> ();
-      _securityPrincipalStub = MockRepository.GenerateStub<ISecurityPrincipal> ();
-      _functionalSecurityStrategyMock = MockRepository.GenerateStrictMock<IFunctionalSecurityStrategy> ();
-
-      _principalProviderStub.Stub (stub => stub.GetPrincipal ()).Return (_securityPrincipalStub);
-
-      SecurityConfiguration.Current.SecurityProvider = _securityProviderMock;
-      SecurityConfiguration.Current.PrincipalProvider = _principalProviderStub;
-      SecurityConfiguration.Current.FunctionalSecurityStrategy = _functionalSecurityStrategyMock;
-
-      _objectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy> ();
-      _testAccessTypeValue = AccessType.Get (FunctionWithSecuredDomainObjectParameter.TestAccessTypes.Value);
-    }
-
-    public override void TearDown ()
-    {
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _previousAdapter);
-
-      base.TearDown ();
-    }
-
     [Test]
     public void ExecuteWithSecurityCheck_ViaDomainObjectParameter_WithObjectHasAccessTrue_Succeeds ()
     {
       var wxeFunction = CreateWxeFunctionWithSecurityOnDomainObject();
-      _objectSecurityStrategyStub.Stub (stub => stub.HasAccess (_securityProviderMock, _securityPrincipalStub, _testAccessTypeValue)).Return (true);
+      ObjectSecurityStrategyStub.Stub (stub => stub.HasAccess (SecurityProviderStub, SecurityPrincipalStub, TestAccessTypeValue)).Return (true);
 
       wxeFunction.Execute (Context);
     }
@@ -82,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     public void ExecuteWithSecurityCheck_ViaDomainObjectParameter_WithObjectHasAccessFalse_Fails ()
     {
       var wxeFunction = CreateWxeFunctionWithSecurityOnDomainObject ();
-      _objectSecurityStrategyStub.Stub (stub => stub.HasAccess (_securityProviderMock, _securityPrincipalStub, _testAccessTypeValue)).Return (false);
+      ObjectSecurityStrategyStub.Stub (stub => stub.HasAccess (SecurityProviderStub, SecurityPrincipalStub, TestAccessTypeValue)).Return (false);
 
       Assert.That (() => wxeFunction.Execute (Context), Throws.TypeOf<WxeUnhandledException>().With.InnerException.TypeOf<PermissionDeniedException>());
     }
@@ -90,12 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     [Test]
     public void HasAccess_ViaDomainObjectParameter_WithFunctionalHasAccessTrue_ReturnsTrue ()
     {
-      _functionalSecurityStrategyMock
-          .Stub (stub => stub.HasAccess (
-              typeof (FunctionWithSecuredDomainObjectParameter.SecurableDomainObject),
-              _securityProviderMock,
-              _securityPrincipalStub,
-              _testAccessTypeValue))
+      FunctionalSecurityStrategyStub
+          .Stub (stub => stub.HasAccess (typeof (SecurableDomainObject), SecurityProviderStub, SecurityPrincipalStub, TestAccessTypeValue))
           .Return (true);
 
       Assert.That (WxeFunction.HasAccess (typeof (FunctionWithSecuredDomainObjectParameter)), Is.True);
@@ -104,12 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     [Test]
     public void HasAccess_ViaDomainObjectParameter_WithFunctionalHasAccessFalse_ReturnsFalse ()
     {
-      _functionalSecurityStrategyMock
-          .Stub (stub => stub.HasAccess (
-              typeof (FunctionWithSecuredDomainObjectParameter.SecurableDomainObject),
-              _securityProviderMock,
-              _securityPrincipalStub,
-              _testAccessTypeValue))
+      FunctionalSecurityStrategyStub
+          .Stub (stub => stub.HasAccess (typeof (SecurableDomainObject), SecurityProviderStub, SecurityPrincipalStub, TestAccessTypeValue))
           .Return (false);
 
       Assert.That (WxeFunction.HasAccess (typeof (FunctionWithSecuredDomainObjectParameter)), Is.False);
@@ -117,10 +66,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     
     private FunctionWithSecuredDomainObjectParameter CreateWxeFunctionWithSecurityOnDomainObject ()
     {
+      var securableDomainObject = CreateSecurableDomainObject();
+
       var wxeFunction = new FunctionWithSecuredDomainObjectParameter (WxeTransactionMode<ClientTransactionFactory>.CreateRoot);
-      wxeFunction.SecurableParameter = DomainObjectMother.CreateFakeObject<FunctionWithSecuredDomainObjectParameter.SecurableDomainObject>();
-      wxeFunction.SecurableParameter.SecurableType = typeof (FunctionWithSecuredDomainObjectParameter.SecurableDomainObject);
-      wxeFunction.SecurableParameter.SecurityStrategy = _objectSecurityStrategyStub;
+      wxeFunction.SecurableParameter = securableDomainObject;
       return wxeFunction;
     }
   }
