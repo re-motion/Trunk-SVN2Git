@@ -17,6 +17,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.SecurityManager.Domain;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
@@ -61,7 +62,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
       get
       {
         if (CurrentObjectID != null)
-          return CurrentObjectID.GetObject<BaseSecurityManagerObject>();
+          return (BaseSecurityManagerObject) LifetimeService.GetObject (ClientTransaction.Current, CurrentObjectID, false);
 
         return null;
       }

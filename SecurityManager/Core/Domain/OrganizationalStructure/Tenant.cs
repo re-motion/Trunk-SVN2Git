@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [Instantiable]
   [DBTable]
   [SecurityManagerStorageGroup]
-  public abstract class Tenant : OrganizationalStructureObject
+  public abstract class Tenant : OrganizationalStructureObject, ISupportsGetObject
   {
     public enum Methods
     {

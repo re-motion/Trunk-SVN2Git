@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [Instantiable]
   [DBTable]
   [SecurityManagerStorageGroup]
-  public abstract class Position : OrganizationalStructureObject
+  public abstract class Position : OrganizationalStructureObject, ISupportsGetObject
   {
     private DomainObjectDeleteHandler _deleteHandler;
 
