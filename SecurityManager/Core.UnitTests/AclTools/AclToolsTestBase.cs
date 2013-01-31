@@ -117,7 +117,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       // Create ACLs
       //--------------------------------
 
-      SecurableClassDefinition orderClass = SetUpFixture.OrderClassID.GetObject<SecurableClassDefinition>();
+      SecurableClassDefinition orderClass = SetUpFixture.OrderClassHandle.GetObject();
       var aclList = orderClass.StatefulAccessControlLists;
       Assert.That (aclList.Count, Is.GreaterThanOrEqualTo (2));
       

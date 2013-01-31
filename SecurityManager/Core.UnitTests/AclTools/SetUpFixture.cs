@@ -36,9 +36,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     private Culture _cultureEn;
     private Culture _cultureDe;
 
-    public static ObjectID OrderClassID { get; private set; }
+    public static IDomainObjectHandle<SecurableClassDefinition> OrderClassHandle { get; private set; }
     public static  List<AccessControlList> aclList { get; private set; }
-    public ObjectID InvoiceClassID { get; set; }
 
     [SetUp]
     public void SetUp ()
@@ -58,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
           _cultureEn = Culture.NewObject ("en-US");
 
           SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
-          OrderClassID = orderClass.ID;
+          OrderClassHandle = orderClass.GetHandle();
 
           testHelper.AttachAccessType (orderClass, Guid.NewGuid (), "FirstAccessType", 0);
           testHelper.AttachAccessType (orderClass, Guid.NewGuid(), "FirstAccessType2", 2);
@@ -67,8 +66,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
           var ace = aclList[0].CreateAccessControlEntry ();
           ace.GetPermissions()[0].Allowed = true; // FirstAccessType
 
-          var invoiceClass = testHelper.CreateInvoiceClassDefinition();
-          InvoiceClassID = invoiceClass.ID;
+          testHelper.CreateInvoiceClassDefinition();
 
           LocalizeClassEnDe (orderClass, "Order", "Bestellung");
           

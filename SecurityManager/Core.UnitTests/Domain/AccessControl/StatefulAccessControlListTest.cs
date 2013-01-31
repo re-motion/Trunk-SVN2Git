@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 
@@ -119,7 +120,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        StatefulAccessControlList actualAcl = expectedAcl.ID.GetObject<StatefulAccessControlList> ();
+        var actualAcl = (StatefulAccessControlList) LifetimeService.GetObject (ClientTransaction.Current, expectedAcl.ID, false);
 
         Assert.That (actualAcl.StateCombinations.Count, Is.EqualTo (9));
         for (int i = 0; i < 9; i++)
