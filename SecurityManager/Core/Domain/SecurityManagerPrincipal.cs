@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
@@ -211,7 +212,7 @@ namespace Remotion.SecurityManager.Domain
       if (_substitutionHandle == null)
         return null;
 
-      return _substitutionHandle.GetObject (transaction);
+      return (Substitution) LifetimeService.GetObject (transaction, _substitutionHandle.ObjectID, false);
     }
 
     private ClientTransaction CreateClientTransaction ()
