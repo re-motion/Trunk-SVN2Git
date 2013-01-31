@@ -33,7 +33,8 @@
       <a href="SecurableClassDefinitionList.wxe?WxeReturnToSelf=True&TabbedMenuSelection=AccessControlTab">Berechtigungen verwalten</a>
     </p>
     <p>
-      <remotion:BocReferenceValue runat="server" ID="UsersField" OnSelectionChanged="UsersField_SelectionChanged">
+      <remotion:BindableObjectDataSourceControl ID="UserDataSource" runat="server" Type="Remotion.SecurityManager.Domain.OrganizationalStructure.User, Remotion.SecurityManager" />
+      <remotion:BocReferenceValue runat="server" ID="UsersField" DataSourceControl="UserDataSource" OnSelectionChanged="UsersField_SelectionChanged">
         <PersistedCommand>
           <remotion:BocCommand />
         </PersistedCommand>

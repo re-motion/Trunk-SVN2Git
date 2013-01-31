@@ -35,7 +35,8 @@
       <asp:Button ID="EvaluateSecurity" runat="server" Text="Evaluate Security" OnClick="EvaluateSecurity_Click" />
     </p>
     <p>
-      <remotion:BocReferenceValue runat="server" ID="UsersField" OnSelectionChanged="UsersField_SelectionChanged">
+      <remotion:BindableObjectDataSourceControl ID="UserDataSource" runat="server" Type="Remotion.SecurityManager.Domain.OrganizationalStructure.User, Remotion.SecurityManager" />
+      <remotion:BocReferenceValue runat="server" ID="UsersField" DataSourceControl="UserDataSource" OnSelectionChanged="UsersField_SelectionChanged">
         <PersistedCommand>
           <remotion:BocCommand />
         </PersistedCommand>
