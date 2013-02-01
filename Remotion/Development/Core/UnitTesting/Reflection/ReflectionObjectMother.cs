@@ -35,8 +35,9 @@ namespace Remotion.Development.UnitTesting.Reflection
     private static readonly Type[] s_delegateTypes = EnsureNoNulls (new[] { typeof (EventHandler), typeof (Action<,,>) });
     private static readonly Type[] s_interfaceTypes = EnsureNoNulls (new[] { typeof (IDisposable), typeof (IServiceProvider) });
     private static readonly Type[] s_otherInterfaceTypes = EnsureNoNulls (new[] { typeof (IComparable), typeof (ICloneable) });
-    private static readonly FieldInfo[] s_fields = EnsureNoNulls (new[] { typeof (string).GetField ("Empty"), typeof (Type).GetField ("EmptyTypes") });
+    private static readonly FieldInfo[] s_staticFields = EnsureNoNulls (new[] { typeof (string).GetField ("Empty"), typeof (Type).GetField ("EmptyTypes") });
     private static readonly FieldInfo[] s_instanceFields = EnsureNoNulls (new[] { typeof (DomainType).GetField ("Field") });
+    private static readonly ConstructorInfo[] s_staticCtors = EnsureNoNulls (new[] { typeof (DomainType).TypeInitializer });
     private static readonly ConstructorInfo[] s_defaultCtors = EnsureNoNulls (new[] { typeof (object).GetConstructor (Type.EmptyTypes), typeof (List<int>).GetConstructor (Type.EmptyTypes) });
     private static readonly MethodInfo[] s_instanceMethod = EnsureNoNulls (new[] { typeof (object).GetMethod ("ToString"), typeof (object).GetMethod ("GetHashCode") });
     private static readonly MethodInfo[] s_staticMethod = EnsureNoNulls (new[] { typeof (object).GetMethod ("ReferenceEquals"), typeof (double).GetMethod ("IsNaN") });
@@ -92,19 +93,41 @@ namespace Remotion.Development.UnitTesting.Reflection
     {
       return GetRandomElement (
           AllMethods.Cast<MemberInfo>()
-              .Concat (s_fields)
+              .Concat (s_instanceFields)
+              .Concat (s_staticFields)
               .Concat (s_defaultCtors)
               .ToArray());
     }
 
     public static FieldInfo GetSomeField ()
     {
-      return GetRandomElement (s_fields);
+      return GetRandomElement (s_instanceFields);
+    }
+
+    public static FieldInfo GetSomeOtherField ()
+    {
+      return GetRandomElement (s_staticFields);
     }
 
     public static FieldInfo GetSomeInstanceField ()
     {
-      return GetRandomElement (s_instanceFields);
+      var field = GetRandomElement (s_instanceFields);
+      Assertion.IsFalse (field.IsStatic);
+      return field;
+    }
+
+    public static FieldInfo GetSomeStaticField()
+    {
+      var field = GetRandomElement (s_staticFields);
+      Assertion.IsTrue (field.IsStatic);
+      return field;
+    }
+
+    public static ConstructorInfo GetSomeTypeInitializer()
+    {
+      var constructor = GetRandomElement (s_staticCtors);
+      Assertion.IsTrue (constructor.IsStatic);
+      return constructor;
     }
 
     public static ConstructorInfo GetSomeDefaultConstructor ()
@@ -115,6 +138,11 @@ namespace Remotion.Development.UnitTesting.Reflection
     public static ConstructorInfo GetSomeConstructor ()
     {
       return GetSomeDefaultConstructor();
+    }
+
+    public static ConstructorInfo GetSomeOtherConstructor ()
+    {
+      return GetRandomElement (s_staticCtors);
     }
 
     public static MethodInfo GetSomeMethod ()
@@ -282,6 +310,8 @@ namespace Remotion.Development.UnitTesting.Reflection
 
     private class DomainType : DomainTypeBase
     {
+      static DomainType () { }
+
       [UsedImplicitly] public int Field = 0;
 
       public sealed override void FinalMethod () { }
