@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -160,6 +161,20 @@ namespace Remotion.Data.UnitTests.DomainObjects
       // Therefore, we don't need a TypeConverter for DomainObjectHandle<T>.
       Assert.That (TypeConversionProvider.Current.CanConvert (typeof (DomainObjectHandle<Order>), typeof (string)), Is.False);
       Assert.That (TypeConversionProvider.Current.CanConvert (typeof (string), typeof (DomainObjectHandle<Order>)), Is.False);
+    }
+
+    [Test]
+    public void HandleAttribute_OnInterface ()
+    {
+      Assert.That (typeof (IDomainObjectHandle<>).IsDefined (typeof (DomainObjectHandleAttribute), false), Is.True);
+    }
+
+    [Test]
+    public void HandleAttribute_OnClass ()
+    {
+      // Using the DomainObjectHandle<T> class in APIs is not recommended, IDomainObjectHandle<T> should be used instead.
+      // Therefore, we don't need the handle attribute on DomainObjectHandle<T>.
+      Assert.That (typeof (DomainObjectHandle<>).IsDefined (typeof (DomainObjectHandleAttribute), false), Is.False);
     }
   }
 }

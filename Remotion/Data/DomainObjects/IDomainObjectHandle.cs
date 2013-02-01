@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel;
+using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -29,6 +30,7 @@ namespace Remotion.Data.DomainObjects
   /// <see cref="DomainObjectExtensions.GetHandle{T}"/> or <see cref="DomainObjects.ObjectID.GetHandle{T}"/>.
   /// </remarks>
   [TypeConverter (typeof (DomainObjectHandleConverter))]
+  [DomainObjectHandle]
   public interface IDomainObjectHandle<out T>
       where T : DomainObject
   {

@@ -209,6 +209,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectHandleAttributeTest.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleConverterTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\ImplementingAccessorInterceptorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\InterceptedPropertyCollectorAdapterTest.cs" />

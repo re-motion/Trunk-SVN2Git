@@ -159,7 +159,9 @@
     <Compile Include="ClientTransactionEventArgs.cs" />
     <Compile Include="ClientTransactionExtensionBase.cs" />
     <Compile Include="ClientTransactionExtensions.cs" />
-    <Compile Include="ClientTransactionFactory.cs" />    <Compile Include="DomainObjectHandleConverter.cs" />
+    <Compile Include="ClientTransactionFactory.cs" />
+    <Compile Include="DomainObjectHandleConverter.cs" />
+    <Compile Include="Infrastructure\DomainObjectHandleAttribute.cs" />
     <Compile Include="Infrastructure\TypePipe\IAccessorInterceptor.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingAccessorInterceptorBase.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingGetAccessorInterceptor.cs" />
