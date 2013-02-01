@@ -147,7 +147,12 @@ namespace Remotion.Development.UnitTesting.Reflection
 
     public static MethodInfo GetSomeMethod ()
     {
-      return GetRandomElement (AllMethods.ToArray());
+      return GetRandomElement (AllMethods.Except(s_genericMethods).ToArray());
+    }
+
+    public static MethodInfo GetSomeOtherMethod ()
+    {
+      return GetRandomElement (s_genericMethods);
     }
 
     public static MethodInfo GetSomeInstanceMethod ()
