@@ -27,7 +27,6 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests
 {
   [TestFixture]
-  [Ignore ("TODO 4405")]
   public class SecuredFunctionViaDomainObjectHandleParameterTest : SecuredFunctionTestBase
   {
     private ClientTransaction _clientTransaction;
