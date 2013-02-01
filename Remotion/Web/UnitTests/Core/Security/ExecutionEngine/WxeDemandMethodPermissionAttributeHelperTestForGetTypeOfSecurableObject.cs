@@ -166,5 +166,19 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
               + "'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithHandleParameter' does not implement interface "
               + "'Remotion.Security.ISecurableObject'."));
     }
+
+    [Test]
+    public void TestWithHandle_InheritingHandleAttribute ()
+    {
+      var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (SecurableObject))
+      {
+        ParameterName = "HandleInheritingAttribute"
+      };
+      var helper = new WxeDemandMethodPermissionAttributeHelper (typeof (TestFunctionWithHandleParameter), attribute);
+
+      var result = helper.GetTypeOfSecurableObject ();
+
+      Assert.That (result, Is.SameAs (typeof (SecurableObject)));
+    }
   }
 }

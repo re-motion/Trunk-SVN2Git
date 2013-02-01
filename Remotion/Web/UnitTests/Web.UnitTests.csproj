@@ -176,6 +176,8 @@
     <Compile Include="Core\Design\DesignTimeResourceUrlTest.cs" />
     <Compile Include="Core\Design\DesignTimeThemedResourceUrlTest.cs" />
     <Compile Include="Core\Factories\ResourceUrlFactoryTest.cs" />
+    <Compile Include="Core\Security\Domain\HandleInheritingAttribute.cs" />
+    <Compile Include="Core\Security\Domain\DerivedHandleWithAttribute.cs" />
     <Compile Include="Core\Security\Domain\Handle.cs" />
     <Compile Include="Core\Security\Domain\IHandle.cs" />
     <Compile Include="Core\Security\Domain\TestHandleAttribute.cs" />

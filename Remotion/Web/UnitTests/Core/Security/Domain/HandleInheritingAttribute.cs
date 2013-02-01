@@ -16,27 +16,14 @@
 // 
 
 using System;
-using System.Linq;
 
 namespace Remotion.Web.UnitTests.Core.Security.Domain
 {
-  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Interface, Inherited = true, AllowMultiple = false)]
-  public class TestHandleAttribute : Attribute, IHandleAttribute
+  public class HandleInheritingAttribute<T> : DerivedHandleWithAttribute<T>
   {
-    public Type GetReferencedType (Type handleType)
+    public HandleInheritingAttribute (T referencedInstance)
+        : base(referencedInstance)
     {
-      if (handleType.IsGenericType && handleType.GetGenericTypeDefinition() == typeof (IHandle<>))
-        return handleType.GetGenericArguments().Single();
-      else
-      {
-        var handleInterface = handleType.GetInterfaces().Single (i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof (IHandle<>));
-        return GetReferencedType (handleInterface);
-      }
-    }
-
-    public object GetReferencedInstance (object handleInstance)
-    {
-      return ((Handle<object>) handleInstance).GetReferencedInstance ();
     }
   }
 }

@@ -41,5 +41,12 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       get { return (IHandle<object>) Variables["HandleWithNonSecurableObject"]; }
       set { Variables["HandleWithNonSecurableObject"] = value; }
     }
+
+    [WxeParameter (2, false, WxeParameterDirection.In)]
+    public HandleInheritingAttribute<SecurableObject> HandleInheritingAttribute
+    {
+      get { return (HandleInheritingAttribute<SecurableObject>) Variables["HandleInheritingAttribute"]; }
+      set { Variables["HandleInheritingAttribute"] = value; }
+    }
   }
 }

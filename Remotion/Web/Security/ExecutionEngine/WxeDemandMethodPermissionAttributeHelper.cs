@@ -190,8 +190,7 @@ namespace Remotion.Web.Security.ExecutionEngine
 
     private static Type GetActualParameterType (Type declaredParameterType)
     {
-      // TODO 4405: Inherited or not? Test case!
-      var handleAttributes = (IHandleAttribute[]) declaredParameterType.GetCustomAttributes (typeof (IHandleAttribute), false);
+      var handleAttributes = (IHandleAttribute[]) declaredParameterType.GetCustomAttributes (typeof (IHandleAttribute), true);
       if (handleAttributes.Any())
         return handleAttributes.First().GetReferencedType (declaredParameterType);
       
