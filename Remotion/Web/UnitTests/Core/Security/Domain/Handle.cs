@@ -19,7 +19,6 @@ using System;
 
 namespace Remotion.Web.UnitTests.Core.Security.Domain
 {
-  [TestHandle]
   class Handle<T> : IHandle<T>
   {
     private readonly T _referencedInstance;

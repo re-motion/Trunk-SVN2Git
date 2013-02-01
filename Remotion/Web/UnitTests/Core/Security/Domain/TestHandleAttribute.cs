@@ -17,16 +17,16 @@
 
 using System;
 using System.Linq;
-using NUnit.Framework;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UnitTests.Core.Security.Domain
 {
-  class TestHandleAttribute : Attribute, IHandleAttribute
+  public class TestHandleAttribute : Attribute, IHandleAttribute
   {
     public Type GetReferencedType (Type handleType)
     {
-      Assert.That (handleType, Is.AssignableTo<IHandle<object>> ());
-      return handleType.GetInterfaces ().First (i => typeof (IHandle<object>).IsAssignableFrom (handleType)).GetGenericArguments ().Single ();
+      Assertion.IsTrue (handleType.IsGenericType && handleType.GetGenericTypeDefinition() == typeof (IHandle<>));
+      return handleType.GetGenericArguments ().Single ();
     }
 
     public object GetReferencedInstance (object handleInstance)

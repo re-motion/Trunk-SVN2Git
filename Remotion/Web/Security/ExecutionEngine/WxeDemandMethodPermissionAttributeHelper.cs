@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
@@ -84,7 +85,9 @@ namespace Remotion.Web.Security.ExecutionEngine
     {
       WxeParameterDeclaration[] parameterDeclarations = WxeVariablesContainer.GetParameterDeclarations (_functionType);
       WxeParameterDeclaration parameterDeclaration = GetParameterDeclaration (parameterDeclarations);
-      if (!typeof (ISecurableObject).IsAssignableFrom (parameterDeclaration.Type))
+
+      var actualParameterType = GetActualParameterType (parameterDeclaration.Type);
+      if (!typeof (ISecurableObject).IsAssignableFrom (actualParameterType))
       {
         throw new WxeException (string.Format (
             "The parameter '{1}' specified by the {0} applied to WxeFunction '{2}' does not implement interface '{3}'.",
@@ -92,10 +95,9 @@ namespace Remotion.Web.Security.ExecutionEngine
       }
 
       if (SecurableClass == null)
-        return parameterDeclaration.Type;
+        return actualParameterType;
 
-      // TODO 4405: First, check for ISecurableObjectHandle attribute on parameterDeclaration.Type - if yes, use this to get the referenced type to check.
-      CheckParameterDeclarationMatchesSecurableClass (parameterDeclaration.Type, parameterDeclaration.Name);
+      CheckParameterDeclarationMatchesSecurableClass (actualParameterType, parameterDeclaration.Name);
 
       return SecurableClass;
     }
@@ -184,6 +186,16 @@ namespace Remotion.Web.Security.ExecutionEngine
                 parameterType.FullName,
                 SecurableClass.FullName));
       }
+    }
+
+    private static Type GetActualParameterType (Type declaredParameterType)
+    {
+      // TODO 4405: Inherited or not? Test case!
+      var handleAttributes = (IHandleAttribute[]) declaredParameterType.GetCustomAttributes (typeof (IHandleAttribute), false);
+      if (handleAttributes.Any())
+        return handleAttributes.First().GetReferencedType (declaredParameterType);
+      
+      return declaredParameterType;
     }
   }
 }

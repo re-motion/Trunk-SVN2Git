@@ -19,6 +19,7 @@ using System;
 
 namespace Remotion.Web.UnitTests.Core.Security.Domain
 {
+  [TestHandle]
   public interface IHandle<out T>
   {
     T GetReferencedInstance ();

@@ -137,8 +137,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     }
 
     [Test]
-    [Ignore ("TODO 4405")]
-    public void TestWithHandle_PointingToSecurableObjectBase_ShouldReturnDerivedSecurableObject ()
+    public void TestWithHandle_PointingToSecurableObjectBase_ShouldReturnTypeDeclaredInInterface ()
     {
       var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (DerivedSecurableObject))
                       {
@@ -152,7 +151,6 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     }
 
     [Test]
-    [Ignore ("TODO 4405")]
     public void TestWithHandle_PointingToNonSecurableObject_ShouldThrow ()
     {
       var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (SecurableObject))
@@ -161,7 +159,12 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       };
       var helper = new WxeDemandMethodPermissionAttributeHelper (typeof (TestFunctionWithHandleParameter), attribute);
 
-      Assert.That (() => helper.GetTypeOfSecurableObject (), Throws.TypeOf<WxeException>().With.Message.EqualTo ("..."));
+      Assert.That (
+          () => helper.GetTypeOfSecurableObject(),
+          Throws.TypeOf<WxeException>().With.Message.EqualTo (
+              "The parameter 'HandleWithNonSecurableObject' specified by the WxeDemandTargetMethodPermissionAttribute applied to WxeFunction "
+              + "'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithHandleParameter' does not implement interface "
+              + "'Remotion.Security.ISecurableObject'."));
     }
   }
 }
