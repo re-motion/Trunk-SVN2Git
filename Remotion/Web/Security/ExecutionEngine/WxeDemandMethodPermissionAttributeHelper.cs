@@ -95,13 +95,7 @@ namespace Remotion.Web.Security.ExecutionEngine
         return parameterDeclaration.Type;
 
       // TODO 4405: First, check for ISecurableObjectHandle attribute on parameterDeclaration.Type - if yes, use this to get the referenced type to check.
-
-      if (!parameterDeclaration.Type.IsAssignableFrom (SecurableClass))
-      {
-        throw new WxeException (string.Format (
-            "The parameter '{1}' specified by the {0} applied to WxeFunction '{2}' is of type '{3}', which is not a base type of type '{4}'.",
-            _attribute.GetType ().Name, parameterDeclaration.Name, _functionType.FullName, parameterDeclaration.Type.FullName, SecurableClass.FullName));
-      }
+      CheckParameterDeclarationMatchesSecurableClass (parameterDeclaration.Type, parameterDeclaration.Name);
 
       return SecurableClass;
     }
@@ -129,15 +123,8 @@ namespace Remotion.Web.Security.ExecutionEngine
             _attribute.GetType ().Name, parameterDeclaration.Name, _functionType.FullName, typeof (ISecurableObject).FullName));
       }
 
-      // TODO 4405: Consider:
-      // if (SecurableClass != null && !securableObject.GetSecurableType ().IsAssignableFrom (SecurableClass))
-      if (SecurableClass != null && !parameterDeclaration.Type.IsAssignableFrom (SecurableClass))
-      {
-        throw new WxeException (string.Format (
-            "The parameter '{1}' specified by the {0} applied to WxeFunction '{2}' is not derived from type '{3}'.",
-            _attribute.GetType ().Name, parameterDeclaration.Name, _functionType.FullName, SecurableClass.FullName));
-      }
-
+      if (SecurableClass != null)
+        CheckParameterDeclarationMatchesSecurableClass (parameterDeclaration.Type, parameterDeclaration.Name);
       return securableObject;
     }
 
@@ -181,6 +168,21 @@ namespace Remotion.Web.Security.ExecutionEngine
         throw new WxeException (string.Format (
             "The {0} applied to WxeFunction '{1}' does not specify a type implementing interface '{2}'.",
             _attribute.GetType ().Name, functionType.FullName, typeof (ISecurableObject).FullName));
+      }
+    }
+
+    private void CheckParameterDeclarationMatchesSecurableClass (Type parameterType, string parameterName)
+    {
+      if (!parameterType.IsAssignableFrom (SecurableClass))
+      {
+        throw new WxeException (
+            string.Format (
+                "The parameter '{1}' specified by the {0} applied to WxeFunction '{2}' is of type '{3}', which is not a base type of type '{4}'.",
+                _attribute.GetType ().Name,
+                parameterName,
+                _functionType.FullName,
+                parameterType.FullName,
+                SecurableClass.FullName));
       }
     }
   }

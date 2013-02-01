@@ -135,5 +135,33 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
 
       helper.GetTypeOfSecurableObject ();
     }
+
+    [Test]
+    [Ignore ("TODO 4405")]
+    public void TestWithHandle_PointingToSecurableObjectBase_ShouldReturnDerivedSecurableObject ()
+    {
+      var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (DerivedSecurableObject))
+                      {
+                          ParameterName = "HandleWithSecurableObject"
+                      };
+      var helper = new WxeDemandMethodPermissionAttributeHelper (typeof (TestFunctionWithHandleParameter), attribute);
+
+      var result = helper.GetTypeOfSecurableObject();
+
+      Assert.That (result, Is.SameAs (typeof (DerivedSecurableObject)));
+    }
+
+    [Test]
+    [Ignore ("TODO 4405")]
+    public void TestWithHandle_PointingToNonSecurableObject_ShouldThrow ()
+    {
+      var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (SecurableObject))
+      {
+        ParameterName = "HandleWithNonSecurableObject"
+      };
+      var helper = new WxeDemandMethodPermissionAttributeHelper (typeof (TestFunctionWithHandleParameter), attribute);
+
+      Assert.That (() => helper.GetTypeOfSecurableObject (), Throws.TypeOf<WxeException>().With.Message.EqualTo ("..."));
+    }
   }
 }
