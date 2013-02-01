@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Linq;
+using JetBrains.Annotations;
+using Remotion.Collections;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
@@ -31,8 +33,8 @@ namespace Remotion.Web.Security.ExecutionEngine
 
     // member fields
 
-    private Type _functionType;
-    private WxeDemandTargetPermissionAttribute _attribute;
+    private readonly Type _functionType;
+    private readonly WxeDemandTargetPermissionAttribute _attribute;
 
     // construction and disposing
 
@@ -107,15 +109,16 @@ namespace Remotion.Web.Security.ExecutionEngine
       ArgumentUtility.CheckNotNullAndType ("function", function, _functionType);
       
       WxeParameterDeclaration parameterDeclaration = GetParameterDeclaration (function.VariablesContainer.ParameterDeclarations);
-      object parameterValue = function.Variables[parameterDeclaration.Name];
+      var tuple = GetActualParameterTypeAndValue (parameterDeclaration.Type, function.Variables[parameterDeclaration.Name]);
+      var actualParameterType = tuple.Item1;
+      var parameterValue = tuple.Item2;
+
       if (parameterValue == null)
       {
         throw new WxeException (string.Format (
            "The parameter '{1}' specified by the {0} applied to WxeFunction '{2}' is null.",
            _attribute.GetType ().Name, parameterDeclaration.Name, _functionType.FullName));
       }
-
-      // TODO 4405: First, check for ISecurableObjectHandle attribute - if yes, use this to get the ISecurableObject. Otherwise, get object as below.
 
       ISecurableObject securableObject = parameterValue as ISecurableObject;
       if (securableObject == null)
@@ -126,7 +129,7 @@ namespace Remotion.Web.Security.ExecutionEngine
       }
 
       if (SecurableClass != null)
-        CheckParameterDeclarationMatchesSecurableClass (parameterDeclaration.Type, parameterDeclaration.Name);
+        CheckParameterDeclarationMatchesSecurableClass (actualParameterType, parameterDeclaration.Name);
       return securableObject;
     }
 
@@ -163,6 +166,7 @@ namespace Remotion.Web.Security.ExecutionEngine
       }
     }
 
+    [AssertionMethod]
     private void CheckSecurabeClassNotNull (Type functionType, Type securableClass)
     {
       if (securableClass == null)
@@ -190,11 +194,28 @@ namespace Remotion.Web.Security.ExecutionEngine
 
     private static Type GetActualParameterType (Type declaredParameterType)
     {
-      var handleAttributes = (IHandleAttribute[]) declaredParameterType.GetCustomAttributes (typeof (IHandleAttribute), true);
-      if (handleAttributes.Any())
-        return handleAttributes.First().GetReferencedType (declaredParameterType);
+      var handleAttribute = GetHandleAttribute (declaredParameterType);
+      if (handleAttribute != null)
+        return handleAttribute.GetReferencedType (declaredParameterType);
       
       return declaredParameterType;
+    }
+
+    private static Tuple<Type, object> GetActualParameterTypeAndValue (Type declaredParameterType, object parameterValue)
+    {
+      if (parameterValue == null)
+        return Tuple.Create (declaredParameterType, (object) null);
+        
+      var handleAttribute = GetHandleAttribute (declaredParameterType);
+      if (handleAttribute != null)
+        return Tuple.Create (handleAttribute.GetReferencedType (declaredParameterType), handleAttribute.GetReferencedInstance (parameterValue));
+
+      return Tuple.Create (declaredParameterType, parameterValue);
+    }
+
+    private static IHandleAttribute GetHandleAttribute (Type declaredParameterType)
+    {
+      return ((IHandleAttribute[]) declaredParameterType.GetCustomAttributes (typeof (IHandleAttribute), true)).FirstOrDefault ();
     }
   }
 }

@@ -165,7 +165,6 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     }
 
     [Test]
-     [Ignore ("TODO 4405")]
     public void TestWithHandle_PointingToSecurableObject_ShouldReturnValue ()
     {
       var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (SecurableObject))
@@ -173,7 +172,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
         ParameterName = "HandleWithSecurableObject"
       };
       var helper = new WxeDemandMethodPermissionAttributeHelper (typeof (TestFunctionWithHandleParameter), attribute);
-      var function = new TestFunctionWithHandleParameter() { HandleWithSecurableObject = new Handle<SecurableObject> (_securableObject) };
+      var function = new TestFunctionWithHandleParameter { HandleWithSecurableObject = new Handle<SecurableObject> (_securableObject) };
       
       var result = helper.GetSecurableObject (function);
 
@@ -181,7 +180,6 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     }
 
     [Test]
-    [Ignore ("TODO 4405")]
     public void TestWithHandle_PointingToNull_ShouldThrow ()
     {
       var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (SecurableObject))
@@ -189,13 +187,33 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
         ParameterName = "HandleWithSecurableObject"
       };
       var helper = new WxeDemandMethodPermissionAttributeHelper (typeof (TestFunctionWithHandleParameter), attribute);
-      var function = new TestFunctionWithHandleParameter () { HandleWithSecurableObject = new Handle<SecurableObject> (null) };
+      var function = new TestFunctionWithHandleParameter { HandleWithSecurableObject = new Handle<SecurableObject> (null) };
 
-      Assert.That (() => helper.GetSecurableObject (function), Throws.TypeOf<WxeException> ().With.Message.EqualTo ("..."));
+      Assert.That (
+          () => helper.GetSecurableObject (function), 
+          Throws.TypeOf<WxeException> ().With.Message.EqualTo (
+              "The parameter 'HandleWithSecurableObject' specified by the WxeDemandTargetMethodPermissionAttribute applied to WxeFunction "
+              + "'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithHandleParameter' is null."));
     }
 
     [Test]
-    [Ignore ("TODO 4405")]
+    public void TestWithHandle_NullHandle_ShouldThrow ()
+    {
+      var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (SecurableObject))
+      {
+        ParameterName = "HandleWithSecurableObject"
+      };
+      var helper = new WxeDemandMethodPermissionAttributeHelper (typeof (TestFunctionWithHandleParameter), attribute);
+      var function = new TestFunctionWithHandleParameter { HandleWithSecurableObject = null };
+
+      Assert.That (
+          () => helper.GetSecurableObject (function),
+          Throws.TypeOf<WxeException> ().With.Message.EqualTo (
+              "The parameter 'HandleWithSecurableObject' specified by the WxeDemandTargetMethodPermissionAttribute applied to WxeFunction "
+              + "'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithHandleParameter' is null."));
+    }
+
+    [Test]
     public void TestWithHandle_PointingToNonSecurableObject_ShouldThrow ()
     {
       var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (SecurableObject))
@@ -203,23 +221,33 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
         ParameterName = "HandleWithNonSecurableObject"
       };
       var helper = new WxeDemandMethodPermissionAttributeHelper (typeof (TestFunctionWithHandleParameter), attribute);
-      var function = new TestFunctionWithHandleParameter () { HandleWithNonSecurableObject = new Handle<object> (new object ()) };
+      var function = new TestFunctionWithHandleParameter { HandleWithNonSecurableObject = new Handle<object> (new object ()) };
 
-      Assert.That (() => helper.GetSecurableObject (function), Throws.TypeOf<WxeException> ().With.Message.EqualTo ("..."));
+      Assert.That (
+          () => helper.GetSecurableObject (function),
+          Throws.TypeOf<WxeException>().With.Message.EqualTo (
+              "The parameter 'HandleWithNonSecurableObject' specified by the WxeDemandTargetMethodPermissionAttribute applied to WxeFunction "
+              + "'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithHandleParameter' does not implement interface "
+              + "'Remotion.Security.ISecurableObject'."));
     }
 
     [Test]
-    [Ignore ("TODO 4405")]
     public void TestWithHandle_PointingToSecurableObject_ButIncompatibleParameterDeclaration_ShouldThrow ()
     {
-      var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (SecurableObject))
+      var attribute = new WxeDemandTargetMethodPermissionAttribute ("Some method", typeof (OtherSecurableObject))
       {
-        ParameterName = "HandleWithNonSecurableObject"
+        ParameterName = "HandleWithSecurableObject"
       };
       var helper = new WxeDemandMethodPermissionAttributeHelper (typeof (TestFunctionWithHandleParameter), attribute);
-      var function = new TestFunctionWithHandleParameter () { HandleWithNonSecurableObject = new Handle<object> (_securableObject) };
+      var function = new TestFunctionWithHandleParameter { HandleWithSecurableObject = new Handle<SecurableObject> (_securableObject) };
 
-      Assert.That (() => helper.GetSecurableObject (function), Throws.TypeOf<WxeException> ().With.Message.EqualTo ("..."));
+      Assert.That (
+          () => helper.GetSecurableObject (function),
+          Throws.TypeOf<WxeException>().With.Message.EqualTo (
+              "The parameter 'HandleWithSecurableObject' specified by the WxeDemandTargetMethodPermissionAttribute applied to WxeFunction "
+              + "'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithHandleParameter' is of type "
+              + "'Remotion.Web.UnitTests.Core.Security.Domain.SecurableObject', which is not a base type of type "
+              + "'Remotion.Web.UnitTests.Core.Security.Domain.OtherSecurableObject'."));
     }
   }
 }
