@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions;
 using Remotion.Security;
@@ -93,9 +95,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
       get { return _testAccessTypeValue; }
     }
 
-    protected SecurableDomainObject CreateSecurableDomainObject ()
+    protected SecurableDomainObject CreateSecurableDomainObject (ClientTransaction clientTransaction = null)
     {
-      var securableDomainObject = DomainObjectMother.CreateFakeObject<SecurableDomainObject>();
+      clientTransaction = clientTransaction ?? ClientTransaction.CreateRootTransaction();
+
+      var securableDomainObject = DomainObjectMother.CreateObjectInTransaction<SecurableDomainObject> (clientTransaction);
       securableDomainObject.SecurableType = typeof (SecurableDomainObject);
       securableDomainObject.SecurityStrategy = _objectSecurityStrategyStub;
       return securableDomainObject;

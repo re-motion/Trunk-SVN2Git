@@ -14,62 +14,81 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests
 {
   [TestFixture]
-  public class SecuredFunctionViaDomainObjectParameterTest : SecuredFunctionTestBase
+  [Ignore ("TODO 4405")]
+  public class SecuredFunctionViaDomainObjectHandleParameterTest : SecuredFunctionTestBase
   {
-    [Test]
-    public void ExecuteWithSecurityCheck_ViaDomainObjectParameter_WithObjectHasAccessTrue_Succeeds ()
+    private ClientTransaction _clientTransaction;
+
+    public override void SetUp ()
     {
-      var wxeFunction = CreateWxeFunction();
+      base.SetUp ();
+
+      _clientTransaction = ClientTransaction.CreateRootTransaction();
+    }
+
+    [Test]
+    public void ExecuteWithSecurityCheck_ViaDomainObjectHandleParameter_WithObjectHasAccessTrue_Succeeds ()
+    {
+      var wxeFunction = CreateWxeFunction (_clientTransaction);
       ObjectSecurityStrategyStub.Stub (stub => stub.HasAccess (SecurityProviderStub, SecurityPrincipalStub, TestAccessTypeValue)).Return (true);
 
       wxeFunction.Execute (Context);
     }
 
     [Test]
-    public void ExecuteWithSecurityCheck_ViaDomainObjectParameter_WithObjectHasAccessFalse_Fails ()
+    public void ExecuteWithSecurityCheck_ViaDomainObjectHandleParameter_WithObjectHasAccessFalse_Fails ()
     {
-      var wxeFunction = CreateWxeFunction ();
+      var wxeFunction = CreateWxeFunction (_clientTransaction);
       ObjectSecurityStrategyStub.Stub (stub => stub.HasAccess (SecurityProviderStub, SecurityPrincipalStub, TestAccessTypeValue)).Return (false);
 
       Assert.That (() => wxeFunction.Execute (Context), Throws.TypeOf<WxeUnhandledException>().With.InnerException.TypeOf<PermissionDeniedException>());
     }
 
     [Test]
-    public void HasAccess_ViaDomainObjectParameter_WithFunctionalHasAccessTrue_ReturnsTrue ()
+    public void HasAccess_ViaDomainObjectHandleParameter_WithFunctionalHasAccessTrue_ReturnsTrue ()
     {
       FunctionalSecurityStrategyStub
           .Stub (stub => stub.HasAccess (typeof (SecurableDomainObject), SecurityProviderStub, SecurityPrincipalStub, TestAccessTypeValue))
           .Return (true);
 
-      Assert.That (WxeFunction.HasAccess (typeof (FunctionWithSecuredDomainObjectParameter)), Is.True);
+      Assert.That (WxeFunction.HasAccess (typeof (FunctionWithSecuredDomainObjectHandleParameter)), Is.True);
     }
 
     [Test]
-    public void HasAccess_ViaDomainObjectParameter_WithFunctionalHasAccessFalse_ReturnsFalse ()
+    public void HasAccess_ViaDomainObjectHandleParameter_WithFunctionalHasAccessFalse_ReturnsFalse ()
     {
       FunctionalSecurityStrategyStub
           .Stub (stub => stub.HasAccess (typeof (SecurableDomainObject), SecurityProviderStub, SecurityPrincipalStub, TestAccessTypeValue))
           .Return (false);
 
-      Assert.That (WxeFunction.HasAccess (typeof (FunctionWithSecuredDomainObjectParameter)), Is.False);
+      Assert.That (WxeFunction.HasAccess (typeof (FunctionWithSecuredDomainObjectHandleParameter)), Is.False);
     }
     
-    private FunctionWithSecuredDomainObjectParameter CreateWxeFunction ()
+    private FunctionWithSecuredDomainObjectHandleParameter CreateWxeFunction (ClientTransaction clientTransaction)
     {
-      var securableDomainObject = CreateSecurableDomainObject();
+      var securableDomainObject = CreateSecurableDomainObject (clientTransaction);
 
-      var wxeFunction = new FunctionWithSecuredDomainObjectParameter (WxeTransactionMode<ClientTransactionFactory>.CreateRoot);
-      wxeFunction.SecurableParameter = securableDomainObject;
+      var mode = MockRepository.GenerateStub<ITransactionMode>();
+      mode.Stub (stub => stub.CreateTransactionStrategy (Arg<WxeFunction>.Is.Anything, Arg<WxeContext>.Is.Anything))
+          .Do (
+              (Func<WxeFunction, WxeContext, TransactionStrategyBase>)
+              ((function, context) => new RootTransactionStrategy (false, clientTransaction.ToITransaction, NullTransactionStrategy.Null, function)));
+
+      var wxeFunction = new FunctionWithSecuredDomainObjectHandleParameter (mode);
+      wxeFunction.SecurableParameter = securableDomainObject.GetHandle();
       return wxeFunction;
     }
   }
