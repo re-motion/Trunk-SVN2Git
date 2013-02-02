@@ -24,7 +24,6 @@ using System.Web.UI.WebControls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
-using Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Web;
@@ -35,31 +34,21 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
   [WebMultiLingualResources (typeof (AccessControlResources))]
-  public partial class EditPermissionsForm : BaseEditPage
+  public partial class EditPermissionsForm : BaseEditPage<SecurableClassDefinition>
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
     private readonly List<EditAccessControlListControlBase> _editAccessControlListControls = new List<EditAccessControlListControlBase>();
-
-    // construction and disposing
-
-    // methods and properties
-
-    protected new EditPermissionsFormFunction CurrentFunction
-    {
-      get { return (EditPermissionsFormFunction) base.CurrentFunction; }
-    }
 
     protected override void OnPreRenderComplete (EventArgs e)
     {
-      string title = string.Format (AccessControlResources.Title, CurrentFunction.SecurableClassDefinition.DisplayName);
+      string title = string.Format (AccessControlResources.Title, CurrentSecurableClassDefinition.DisplayName);
       TitleLabel.InnerText = title;
       HtmlHeadAppender.Current.SetTitle (title);
       base.OnPreRenderComplete (e);
+    }
+
+    private SecurableClassDefinition CurrentSecurableClassDefinition
+    {
+      get { return CurrentFunction.CurrentObject; }
     }
 
     protected override void LoadValues (bool interim)
@@ -68,19 +57,19 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       LoadAccessControlLists (interim);
 
-      CurrentObjectHeaderControls.BusinessObject = CurrentFunction.SecurableClassDefinition;
+      CurrentObjectHeaderControls.BusinessObject = CurrentSecurableClassDefinition;
       CurrentObjectHeaderControls.LoadValues (interim);
 
-      CurrentObject.BusinessObject = CurrentFunction.SecurableClassDefinition;
+      CurrentObject.BusinessObject = CurrentSecurableClassDefinition;
       CurrentObject.LoadValues (interim);
     }
 
     private void LoadAccessControlLists (bool interim)
     {
       var accessControlLists =
-          new List<AccessControlList> (CurrentFunction.SecurableClassDefinition.StatefulAccessControlLists.Cast<AccessControlList>());
-      if (CurrentFunction.SecurableClassDefinition.StatelessAccessControlList != null)
-        accessControlLists.Insert (0, CurrentFunction.SecurableClassDefinition.StatelessAccessControlList);
+          new List<AccessControlList> (CurrentSecurableClassDefinition.StatefulAccessControlLists.Cast<AccessControlList>());
+      if (CurrentSecurableClassDefinition.StatelessAccessControlList != null)
+        accessControlLists.Insert (0, CurrentSecurableClassDefinition.StatelessAccessControlList);
 
       CreateEditAccessControlListControls (accessControlLists.ToArray());
       foreach (var control in _editAccessControlListControls)
@@ -197,11 +186,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected void DuplicateStateCombinationsValidator_ServerValidate (object source, ServerValidateEventArgs args)
     {
-      if (CurrentFunction.SecurableClassDefinition.StateProperties.Count > 1)
+      if (CurrentSecurableClassDefinition.StateProperties.Count > 1)
         throw new NotSupportedException ("Only classes with a zero or one StatePropertyDefinition are supported.");
 
       var usedStates = new HashSet<StateDefinition>();
-      foreach (var accessControlList in CurrentFunction.SecurableClassDefinition.StatefulAccessControlLists)
+      foreach (var accessControlList in CurrentSecurableClassDefinition.StatefulAccessControlLists)
       {
         foreach (var stateCombination in accessControlList.StateCombinations)
         {
@@ -239,7 +228,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       SaveAccessControlLists (false);
       IsDirty = true;
 
-      var accessControlList = CurrentFunction.SecurableClassDefinition.CreateStatelessAccessControlList();
+      var accessControlList = CurrentSecurableClassDefinition.CreateStatelessAccessControlList();
 
       LoadAccessControlLists (false);
       _editAccessControlListControls.Where (o => o.BusinessObject == accessControlList).Single().ExpandAllAccessControlEntries();
@@ -255,7 +244,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       SaveAccessControlLists (false);
       IsDirty = true;
 
-      var accessControlList = CurrentFunction.SecurableClassDefinition.CreateStatefulAccessControlList ();
+      var accessControlList = CurrentSecurableClassDefinition.CreateStatefulAccessControlList ();
 
       LoadAccessControlLists (false);
       _editAccessControlListControls.Where (o => o.BusinessObject == accessControlList).Single ().ExpandAllAccessControlEntries ();
@@ -292,16 +281,16 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void EnableNewAccessControlListButton ()
     {
-      var stateProperties = CurrentFunction.SecurableClassDefinition.StateProperties;
+      var stateProperties = CurrentSecurableClassDefinition.StateProperties;
       if (stateProperties.Count > 1)
         throw new NotSupportedException ("Only classes with a zero or one StatePropertyDefinition are supported.");
 
       int possibleStateCombinations = 1;
       if (stateProperties.Count > 0)
         possibleStateCombinations = stateProperties[0].DefinedStates.Count;
-      NewStatefulAccessControlListButton.Enabled = CurrentFunction.SecurableClassDefinition.StateCombinations.Count < possibleStateCombinations;
+      NewStatefulAccessControlListButton.Enabled = CurrentSecurableClassDefinition.StateCombinations.Count < possibleStateCombinations;
 
-      NewStatelessAccessControlListButton.Enabled = CurrentFunction.SecurableClassDefinition.StatelessAccessControlList == null;
+      NewStatelessAccessControlListButton.Enabled = CurrentSecurableClassDefinition.StatelessAccessControlList == null;
     }
 
     private HtmlGenericControl CreateAccessControlListTitle (string title)

@@ -20,24 +20,18 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
+using Remotion.SecurityManager.Domain;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes
 {
-  public abstract class BaseEditPage : BasePage
+  public abstract class BaseEditPage<T> : BasePage
+      where T : BaseSecurityManagerObject, ISupportsGetObject
   {
-    // types
+    private readonly List<DataEditUserControl> _dataEditUserControls = new List<DataEditUserControl>();
 
-    // static members and constants
-
-    // member fields
-    private List<DataEditUserControl> _dataEditUserControls = new List<DataEditUserControl>();
-
-    // construction and disposing
-
-    // methods and properties
-    protected new FormFunction CurrentFunction
+    protected new FormFunction<T> CurrentFunction
     {
-      get { return (FormFunction) base.CurrentFunction; }
+      get { return (FormFunction<T>) base.CurrentFunction; }
     }
 
     protected override void OnLoad (EventArgs e)

@@ -17,6 +17,7 @@
 // 
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
@@ -88,7 +89,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnPreRender (e);
 
-      _owningGroupField.Args = CurrentFunction.TenantID.ToString();
+      _owningGroupField.Args = CurrentFunction.TenantHandle.AsArgument();
     }
   }
 }

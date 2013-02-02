@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
@@ -25,46 +26,28 @@ using Remotion.Web.ExecutionEngine;
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure
 {
   [Serializable]
-  public class EditTenantFormFunction : FormFunction
+  public class EditTenantFormFunction : FormFunction<Tenant>
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     public EditTenantFormFunction ()
     {
     }
 
     protected EditTenantFormFunction (ITransactionMode transactionMode, params object[] args)
-      : base (transactionMode, args)
+        : base (transactionMode, args)
     {
     }
 
-    public EditTenantFormFunction (ITransactionMode transactionMode, ObjectID organizationalStructureObjectID)
-      : base (transactionMode, organizationalStructureObjectID)
+    public EditTenantFormFunction (ITransactionMode transactionMode, IDomainObjectHandle<Tenant> currentObjectHandle)
+        : base (transactionMode, currentObjectHandle)
     {
-    }
-
-    // methods and properties
-    public Tenant Tenant
-    {
-      get { return (Tenant) CurrentObject; }
-      set { CurrentObject = value; }
     }
 
     private void Step1 ()
     {
-      // TODO check CurrentTransaction
       if (CurrentObject == null)
-      {
-        Tenant = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreateTenant ();
-      }
+        CurrentObject = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreateTenant();
     }
 
-    WxeResourcePageStep Step2 = new WxeResourcePageStep (typeof (EditTenantForm), "UI/OrganizationalStructure/EditTenantForm.aspx");
+    private WxeResourcePageStep Step2 = new WxeResourcePageStep (typeof (EditTenantForm), "UI/OrganizationalStructure/EditTenantForm.aspx");
   }
 }

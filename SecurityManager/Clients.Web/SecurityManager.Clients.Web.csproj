@@ -21,6 +21,10 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -179,6 +183,7 @@
     <Compile Include="Classes\OrganizationalStructure\InlineEditingDeleteItemMenuItemCommand.cs" />
     <Compile Include="Classes\OrganizationalStructure\InlineEditingNewItemMenuItemCommand.cs" />
     <Compile Include="Classes\OrganizationalStructure\IOrganizationalStructureEditControlFormGridRowProvider.cs" />
+    <Compile Include="Classes\ReferenceValueArgumentExtensions.cs" />
     <Compile Include="Classes\OrganizationalStructure\UserRolesListEditableRowControlFactory.cs" />
     <Compile Include="Classes\OrganizationalStructure\UserSubstitedByListEditableRowControlFactory.cs" />
     <Compile Include="Classes\SecurableClassDefinitionTreeView.cs" />

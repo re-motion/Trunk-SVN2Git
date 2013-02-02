@@ -15,56 +15,38 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure
 {
   [Serializable]
-  public class EditGroupTypeFormFunction : FormFunction
+  public class EditGroupTypeFormFunction : FormFunction<GroupType>
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     public EditGroupTypeFormFunction ()
     {
     }
 
     protected EditGroupTypeFormFunction (ITransactionMode transactionMode, params object[] args)
-      : base (transactionMode, args)
+        : base (transactionMode, args)
     {
     }
 
-    public EditGroupTypeFormFunction (ITransactionMode transactionMode, ObjectID organizationalStructureObjectID)
-      : base (transactionMode, organizationalStructureObjectID)
+    public EditGroupTypeFormFunction (ITransactionMode transactionMode, IDomainObjectHandle<GroupType> currentObjectHandle)
+        : base (transactionMode, currentObjectHandle)
     {
-    }
-
-    // methods and properties
-    public GroupType GroupType
-    {
-      get { return (GroupType) CurrentObject; }
-      set { CurrentObject = value; }
     }
 
     private void Step1 ()
     {
-      // TODO check CurrentTransaction
       if (CurrentObject == null)
-      {
-        GroupType = GroupType.NewObject ();
-      }
+        CurrentObject = GroupType.NewObject();
     }
 
-    WxeResourcePageStep Step2 = new WxeResourcePageStep (typeof (EditGroupTypeForm), "UI/OrganizationalStructure/EditGroupTypeForm.aspx");
+    private WxeResourcePageStep Step2 = new WxeResourcePageStep (typeof (EditGroupTypeForm), "UI/OrganizationalStructure/EditGroupTypeForm.aspx");
   }
 }

@@ -264,7 +264,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       if (resetValue)
         SpecificGroupField.Value = null;
 
-      SpecificGroupField.Args = SpecificTenantField.BusinessObjectUniqueIdentifier ?? CurrentFunction.TenantID.ToString();
+      SpecificGroupField.Args = SpecificTenantField.BusinessObjectUniqueIdentifier ?? CurrentFunction.TenantHandle.AsArgument();
 
       SpecificGroupField.Visible = (GroupCondition?) GroupConditionField.Value == GroupCondition.SpecificGroup;
     }
@@ -297,7 +297,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       if (resetValue)
         SpecificUserField.Value = null;
 
-      SpecificUserField.Args = SpecificTenantField.BusinessObjectUniqueIdentifier ?? CurrentFunction.TenantID.ToString();
+      SpecificUserField.Args = SpecificTenantField.BusinessObjectUniqueIdentifier ?? CurrentFunction.TenantHandle.AsArgument();
 
       SpecificUserField.Visible = (UserCondition?) UserConditionField.Value == UserCondition.SpecificUser;
     }

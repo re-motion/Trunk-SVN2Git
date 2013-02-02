@@ -20,6 +20,7 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using Remotion.FunctionalProgramming;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
@@ -98,7 +99,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnPreRender (e);
 
-      _parentField.Args = CurrentFunction.TenantID.ToString();
+      _parentField.Args = CurrentFunction.TenantHandle.AsArgument();
     }
 
     protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)
@@ -115,7 +116,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     private bool IsParentHierarchyValid (Group group)
     {
-      var groups = group.CreateSequence (g => g.Parent, g => g != null && g != CurrentFunction.Group && g.Parent != group).ToArray();
+      var groups = group.CreateSequence (g => g.Parent, g => g != null && g != CurrentFunction.CurrentObject && g.Parent != group).ToArray();
       if (groups.Length == 0)
         return false;
       if (groups.Last().Parent != null)

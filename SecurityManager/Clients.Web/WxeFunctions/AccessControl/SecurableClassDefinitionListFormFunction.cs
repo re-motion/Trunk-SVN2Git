@@ -18,44 +18,32 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.AccessControl;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl
 {
   [Serializable]
-  public class SecurableClassDefinitionListFormFunction : FormFunction
+  public class SecurableClassDefinitionListFormFunction : FormFunction<Tenant>
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     public SecurableClassDefinitionListFormFunction ()
     {
     }
 
-    // TODO: Make protected once delegation works
-    public SecurableClassDefinitionListFormFunction (ITransactionMode transactionMode, params object[] args)
+    protected SecurableClassDefinitionListFormFunction (ITransactionMode transactionMode, params object[] args)
       : base (transactionMode, args)
     {
     }
 
-    public SecurableClassDefinitionListFormFunction (ITransactionMode transactionMode, ObjectID tenantID)
-      : base (transactionMode, tenantID)
+    public SecurableClassDefinitionListFormFunction (ITransactionMode transactionMode, IDomainObjectHandle<Tenant> tenantHandle)
+      : base (transactionMode, tenantHandle)
     {
     }
-
-    // methods and properties
 
     private void Step1 ()
     {
     }
 
     WxeResourcePageStep Step2 = new WxeResourcePageStep (typeof (SecurableClassDefinitionListForm), "UI/AccessControl/SecurableClassDefinitionListForm.aspx");
-
   }
 }

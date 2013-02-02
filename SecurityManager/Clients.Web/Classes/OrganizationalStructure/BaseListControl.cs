@@ -20,16 +20,18 @@ using System.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
+using Remotion.SecurityManager.Domain;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 {
-  public abstract class BaseListControl : BaseControl
+  public abstract class BaseListControl<T> : BaseControl
+    where T : BaseSecurityManagerObject, ISupportsGetObject
   {
     protected abstract IList GetValues ();
 
-    protected abstract FormFunction CreateEditFunction (ITransactionMode transactionMode, ObjectID objectID);
+    protected abstract FormFunction<T> CreateEditFunction (ITransactionMode transactionMode, T editedObject);
 
     protected void HandleEditItemClick (BocList sender, BocListItemCommandClickEventArgs e)
     {
@@ -37,12 +39,12 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 
       if (!Page.IsReturningPostBack)
       {
-        var editUserFormFunction = CreateEditFunction (WxeTransactionMode.CreateRootWithAutoCommit, ((DomainObject) e.BusinessObject).ID);
+        var editUserFormFunction = CreateEditFunction (WxeTransactionMode.CreateRootWithAutoCommit, ((T) e.BusinessObject));
         Page.ExecuteFunction (editUserFormFunction, WxeCallArguments.Default);
       }
       else
       {
-        if (!((FormFunction) Page.ReturningFunction).HasUserCancelled)
+        if (!((FormFunction<T>) Page.ReturningFunction).HasUserCancelled)
         {
           CurrentFunction.Transaction.Reset();
           sender.LoadUnboundValue (GetValues(), false);
@@ -61,7 +63,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
       }
       else
       {
-        if (!((FormFunction) Page.ReturningFunction).HasUserCancelled)
+        if (!((FormFunction<T>) Page.ReturningFunction).HasUserCancelled)
         {
           CurrentFunction.Transaction.Reset();
           sender.LoadUnboundValue (GetValues(), false);

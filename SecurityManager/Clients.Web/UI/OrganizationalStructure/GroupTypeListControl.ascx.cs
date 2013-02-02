@@ -15,13 +15,13 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Collections;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
@@ -33,7 +33,7 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (GroupTypeListControlResources))]
-  public partial class GroupTypeListControl : BaseListControl
+  public partial class GroupTypeListControl : BaseListControl<GroupType>
   {
     public override IBusinessObjectDataSourceControl DataSource
     {
@@ -77,9 +77,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       return GroupType.FindAll().ToArray();
     }
 
-    protected override FormFunction CreateEditFunction (ITransactionMode transactionMode, ObjectID objectID)
+    protected override FormFunction<GroupType> CreateEditFunction (ITransactionMode transactionMode, GroupType editedObject)
     {
-      return new EditGroupTypeFormFunction (transactionMode, objectID);
+      return new EditGroupTypeFormFunction (transactionMode, editedObject.GetHandle());
     }
   }
 }

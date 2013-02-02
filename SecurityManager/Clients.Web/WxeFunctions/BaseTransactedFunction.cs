@@ -18,6 +18,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
@@ -36,14 +37,14 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
       Initialize();
     }
 
-    public ObjectID TenantID
+    public IDomainObjectHandle<Tenant> TenantHandle
     {
       get
       {
         var securityManagerPrincipal = SecurityManagerPrincipal.Current;
         if (securityManagerPrincipal.IsNull)
           throw new InvalidOperationException ("The Seucrity Manager principal is not set. Possible reason: session timeout");
-        return securityManagerPrincipal.Tenant.ID;
+        return securityManagerPrincipal.Tenant.Handle;
       }
     }
 

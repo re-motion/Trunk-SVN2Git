@@ -25,16 +25,8 @@ using Remotion.Web.ExecutionEngine;
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure
 {
   [Serializable]
-  public class EditGroupFormFunction : FormFunction
+  public class EditGroupFormFunction : FormFunction<Group>
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     public EditGroupFormFunction ()
     {
     }
@@ -44,25 +36,17 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
     {
     }
 
-    public EditGroupFormFunction (ITransactionMode transactionMode, ObjectID organizationalStructureObjectID)
-      : base (transactionMode, organizationalStructureObjectID)
+    public EditGroupFormFunction (ITransactionMode transactionMode, IDomainObjectHandle<Group> currentObjectHandle)
+      : base (transactionMode, currentObjectHandle)
     {
-    }
-
-    // methods and properties
-    public Group Group
-    {
-      get { return (Group) CurrentObject; }
-      set { CurrentObject = value; }
     }
 
     private void Step1 ()
     {
-      // TODO check CurrentTransaction
       if (CurrentObject == null)
       {
-        Group = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreateGroup ();
-        Group.Tenant = TenantID.GetObject<Tenant> ();
+        CurrentObject = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreateGroup ();
+        CurrentObject.Tenant = TenantHandle.GetObject ();
       }
     }
 

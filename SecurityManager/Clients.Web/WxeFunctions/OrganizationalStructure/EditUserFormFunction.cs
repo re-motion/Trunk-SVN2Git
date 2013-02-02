@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
@@ -25,47 +26,31 @@ using Remotion.Web.ExecutionEngine;
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure
 {
   [Serializable]
-  public class EditUserFormFunction : FormFunction
+  public class EditUserFormFunction : FormFunction<User>
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     public EditUserFormFunction ()
     {
     }
 
     protected EditUserFormFunction (ITransactionMode transactionMode, params object[] args)
-      : base (transactionMode, args)
+        : base (transactionMode, args)
     {
     }
 
-    public EditUserFormFunction (ITransactionMode transactionMode, ObjectID organizationalStructureObjectID)
-      : base (transactionMode, organizationalStructureObjectID)
+    public EditUserFormFunction (ITransactionMode transactionMode, IDomainObjectHandle<User> currentObjectHandle)
+        : base (transactionMode, currentObjectHandle)
     {
-    }
-
-    // methods and properties
-    public User User
-    {
-      get { return (User) CurrentObject; }
-      set { CurrentObject = value; }
     }
 
     private void Step1 ()
     {
-      // TODO check CurrentTransaction
       if (CurrentObject == null)
       {
-        User = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreateUser ();
-        User.Tenant = TenantID.GetObject<Tenant> ();
+        CurrentObject = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreateUser();
+        CurrentObject.Tenant = TenantHandle.GetObject();
       }
     }
 
-    WxeResourcePageStep Step2 = new WxeResourcePageStep (typeof (EditUserForm), "UI/OrganizationalStructure/EditUserForm.aspx");
+    private WxeResourcePageStep Step2 = new WxeResourcePageStep (typeof (EditUserForm), "UI/OrganizationalStructure/EditUserForm.aspx");
   }
 }

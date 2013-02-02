@@ -21,7 +21,6 @@ using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
@@ -34,7 +33,7 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (PositionListControlResources))]
-  public partial class PositionListControl : BaseListControl
+  public partial class PositionListControl : BaseListControl<Position>
   {
     public override IBusinessObjectDataSourceControl DataSource
     {
@@ -79,9 +78,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       return Position.FindAll().ToArray();
     }
 
-    protected override FormFunction CreateEditFunction (ITransactionMode transactionMode, ObjectID objectID)
+    protected override FormFunction<Position> CreateEditFunction (ITransactionMode transactionMode, Position editedObject)
     {
-      return new EditPositionFormFunction (transactionMode, objectID);
+      return new EditPositionFormFunction (transactionMode, editedObject.GetHandle());
     }
   }
 }

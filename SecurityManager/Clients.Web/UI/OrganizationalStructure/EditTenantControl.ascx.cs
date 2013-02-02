@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Linq;
 using System.Web.UI.WebControls;
@@ -44,7 +45,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       get { return (EditTenantFormFunction) base.CurrentFunction; }
     }
 
-    protected override FormGridManager GetFormGridManager()
+    protected override FormGridManager GetFormGridManager ()
     {
       return FormGridManager;
     }
@@ -53,7 +54,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       get { return NameField; }
     }
-    
+
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
@@ -79,7 +80,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     private bool IsParentHierarchyValid (Tenant group)
     {
-      var groups = group.CreateSequence (g => g.Parent, g => g != null && g != CurrentFunction.Tenant && g.Parent != group).ToArray();
+      var groups = group.CreateSequence (g => g.Parent, g => g != null && g != CurrentFunction.CurrentObject && g.Parent != group).ToArray();
       if (groups.Length == 0)
         return false;
       if (groups.Last().Parent != null)

@@ -77,8 +77,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       if (!IsReturningPostBack)
       {
-        SecurableClassDefinition classDefinition = (SecurableClassDefinition) e.BusinessObjectTreeNode.BusinessObject;
-        EditPermissionsFormFunction function = new EditPermissionsFormFunction (WxeTransactionMode.CreateRootWithAutoCommit , classDefinition.ID);
+        var classDefinition = (SecurableClassDefinition) e.BusinessObjectTreeNode.BusinessObject;
+        var function = new EditPermissionsFormFunction (WxeTransactionMode.CreateRootWithAutoCommit , classDefinition.GetHandle());
         var options = new WxeCallOptionsExternal (
             "_blank", "width=1000, height=700, resizable=yes, menubar=no, toolbar=no, location=no, status=no", true);
         try
@@ -91,7 +91,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       }
       else
       {
-        var classDefinition = ((EditPermissionsFormFunction) ReturningFunction).CurrentObjectID.GetObject<SecurableClassDefinition>();
+        var classDefinition = ((EditPermissionsFormFunction) ReturningFunction).CurrentObjectHandle.GetObject();
         UnloadService.UnloadVirtualEndPoint (
             ClientTransaction.Current,
             RelationEndPointID.Resolve (classDefinition, c => c.StatelessAccessControlList));

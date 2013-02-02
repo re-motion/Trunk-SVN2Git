@@ -17,24 +17,15 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.SecurityManager.Domain;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 {
   [Serializable]
-  public abstract class FormFunction : BaseTransactedFunction
+  public abstract class FormFunction<T> : BaseTransactedFunction
+      where T : BaseSecurityManagerObject, ISupportsGetObject
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     protected FormFunction ()
     {
     }
@@ -44,31 +35,30 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
     {
     }
 
-    protected FormFunction (ITransactionMode transactionMode, ObjectID CurrentObjectID)
-      : base (transactionMode, CurrentObjectID)
+    protected FormFunction (ITransactionMode transactionMode, IDomainObjectHandle<T> currentObjectHandle)
+      : base (transactionMode, currentObjectHandle)
     {
     }
 
-    // methods and properties
     [WxeParameter (1, false, WxeParameterDirection.In)]
-    public ObjectID CurrentObjectID
+    public IDomainObjectHandle<T> CurrentObjectHandle
     {
-      get { return (ObjectID) Variables["CurrentObjectID"]; }
-      set { Variables["CurrentObjectID"] = value; }
+      get { return (IDomainObjectHandle<T>) Variables["CurrentObjectHandle"]; }
+      set { Variables["CurrentObjectHandle"] = value; }
     }
 
-    public BaseSecurityManagerObject CurrentObject
+    public T CurrentObject
     {
       get
       {
-        if (CurrentObjectID != null)
-          return (BaseSecurityManagerObject) LifetimeService.GetObject (ClientTransaction.Current, CurrentObjectID, false);
+        if (CurrentObjectHandle != null)
+          return CurrentObjectHandle.GetObject();
 
         return null;
       }
       set
       {
-        CurrentObjectID = (value != null) ? value.ID : null;
+        CurrentObjectHandle = value.GetHandle();
       }
     }
   }

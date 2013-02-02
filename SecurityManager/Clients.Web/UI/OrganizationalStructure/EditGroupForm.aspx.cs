@@ -18,6 +18,7 @@
 using System;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -25,7 +26,7 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (EditGroupFormResources))]
-  public partial class EditGroupForm : BaseEditPage
+  public partial class EditGroupForm : BaseEditPage<Group>
   {
     protected override IFocusableControl InitialFocusControl
     {

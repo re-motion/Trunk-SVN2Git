@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Collections;
 using System.Linq;
@@ -33,7 +34,7 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (UserListControlResources))]
-  public partial class UserListControl : BaseListControl
+  public partial class UserListControl : BaseListControl<User>
   {
     public override IBusinessObjectDataSourceControl DataSource
     {
@@ -75,12 +76,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     protected override IList GetValues ()
     {
-      return User.FindByTenant (CurrentFunction.TenantID.GetHandle<Tenant>()).ToArray();
+      return User.FindByTenant (CurrentFunction.TenantHandle).ToArray();
     }
 
-    protected override FormFunction CreateEditFunction (ITransactionMode transactionMode, ObjectID objectID)
+    protected override FormFunction<User> CreateEditFunction (ITransactionMode transactionMode, User editedObject)
     {
-      return new EditUserFormFunction (transactionMode, objectID);
+      return new EditUserFormFunction (transactionMode, editedObject.GetHandle());
     }
   }
 }

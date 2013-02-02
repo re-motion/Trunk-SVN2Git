@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -36,7 +37,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     // static members and constants
 
-    private static readonly string s_currentTenantIDKey = typeof (BaseControl).FullName + "_CurrentTenantID";
+    private static readonly string s_currentTenantHandleKey = typeof (BaseControl).FullName + "_CurrentTenantID";
 
     // member fields
 
@@ -62,10 +63,10 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       get { return null; }
     }
 
-    protected ObjectID CurrentTenantID
+    protected IDomainObjectHandle<Tenant> CurrentTenantHandle
     {
-      get { return (ObjectID) ViewState[s_currentTenantIDKey]; }
-      set { ViewState[s_currentTenantIDKey] = value; }
+      get { return (IDomainObjectHandle<Tenant>) ViewState[s_currentTenantHandleKey]; }
+      set { ViewState[s_currentTenantHandleKey] = value; }
     }
 
     protected bool HasTenantChanged
@@ -78,14 +79,16 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       base.OnLoad (e);
 
       if (!IsPostBack)
-        CurrentTenantID = CurrentFunction.TenantID;
+      {
+        CurrentTenantHandle = CurrentFunction.TenantHandle;
+      }
     }
 
     protected override void OnPreRender (EventArgs e)
     {
-      if (CurrentTenantID != CurrentFunction.TenantID)
+      if (!CurrentFunction.TenantHandle.Equals (CurrentTenantHandle))
       {
-        CurrentTenantID = CurrentFunction.TenantID;
+        CurrentTenantHandle = CurrentFunction.TenantHandle;
         _hasTenantChanged = true;
       }
 
