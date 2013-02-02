@@ -920,7 +920,7 @@ function SmartPage_Context(
           + message
           + '</td></tr></table>';
 
-      window.document.body.insertBefore(statusMessageWindow, _theForm);
+      window.document.body.appendChild(statusMessageWindow, _theForm);
       AlignStatusMessage(statusMessageWindow);
       _statusMessageWindow = statusMessageWindow;
     }
