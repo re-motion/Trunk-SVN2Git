@@ -2463,6 +2463,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public void SwitchRowIntoEditMode (int index)
     {
       _editModeController.SwitchRowIntoEditMode (index, EnsureColumnsGot());
+      OnStateOfDisplayedRowsChanged();
     }
 
     /// <summary>
@@ -2485,6 +2486,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       _editModeController.SwitchListIntoEditMode (EnsureColumnsGot());
+      OnStateOfDisplayedRowsChanged();
     }
 
     /// <summary> 
