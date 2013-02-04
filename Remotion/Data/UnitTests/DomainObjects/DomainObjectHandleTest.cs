@@ -22,6 +22,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects
 {
@@ -94,10 +95,36 @@ namespace Remotion.Data.UnitTests.DomainObjects
     }
 
     [Test]
+    public void Equals_Object_False_Null ()
+    {
+      var handle = new DomainObjectHandle<Order> (DomainObjectIDs.Order1);
+
+      Assert.That (handle.Equals ((object) null), Is.False);
+    }
+
+    [Test]
     public void Equals_Object_False_DifferentIDs ()
     {
       var handle1 = new DomainObjectHandle<Order> (DomainObjectIDs.Order1);
       var handle2 = new DomainObjectHandle<Order> (DomainObjectIDs.Order2);
+
+      Assert.That (handle1.Equals ((object) handle2), Is.False);
+    }
+
+    [Test]
+    public void Equals_Object_False_UnrelatedObject ()
+    {
+      var handle = new DomainObjectHandle<Order> (DomainObjectIDs.Order1);
+
+      Assert.That (handle.Equals ("what?"), Is.False);
+    }
+
+    [Test]
+    public void Equals_Object_False_WrongType ()
+    {
+      var handle1 = new DomainObjectHandle<Order> (DomainObjectIDs.Order1);
+      var handle2 = MockRepository.GenerateStub<IDomainObjectHandle<DomainObject>>();
+      handle2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
 
       Assert.That (handle1.Equals ((object) handle2), Is.False);
     }
@@ -112,10 +139,30 @@ namespace Remotion.Data.UnitTests.DomainObjects
     }
 
     [Test]
+    public void Equals_Equatable_False_Null ()
+    {
+      var handle = new DomainObjectHandle<Order> (DomainObjectIDs.Order1);
+
+// ReSharper disable RedundantCast
+      Assert.That (handle.Equals ((IDomainObjectHandle<DomainObject>) null), Is.False);
+// ReSharper restore RedundantCast
+    }
+
+    [Test]
     public void Equals_Equatable_False_DifferentIDs ()
     {
       var handle1 = new DomainObjectHandle<Order> (DomainObjectIDs.Order1);
       var handle2 = new DomainObjectHandle<Order> (DomainObjectIDs.Order2);
+
+      Assert.That (handle1.Equals (handle2), Is.False);
+    }
+
+    [Test]
+    public void Equals_Equatable_False_WrongType ()
+    {
+      var handle1 = new DomainObjectHandle<Order> (DomainObjectIDs.Order1);
+      var handle2 = MockRepository.GenerateStub<IDomainObjectHandle<DomainObject>> ();
+      handle2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
 
       Assert.That (handle1.Equals (handle2), Is.False);
     }

@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects
   /// </summary>
   /// <typeparam name="T">The type of <see cref="DomainObject"/> identified by this class.</typeparam>
   [Serializable]
-  public class DomainObjectHandle<T> : IDomainObjectHandle<T>, IEquatable<DomainObjectHandle<T>>
+  public class DomainObjectHandle<T> : IDomainObjectHandle<T>
       where T : DomainObject
   {
     private readonly ObjectID _objectID;
@@ -62,13 +62,15 @@ namespace Remotion.Data.DomainObjects
       }
     }
 
-    public bool Equals (DomainObjectHandle<T> other)
+    public bool Equals (IDomainObjectHandle<DomainObject> other)
     {
       if (ReferenceEquals (null, other))
         return false;
       if (ReferenceEquals (this, other))
         return true;
-      return Equals (_objectID, other._objectID);
+      if (GetType() != other.GetType())
+        return false;
+      return Equals (_objectID, other.ObjectID);
     }
 
     public override bool Equals (object obj)
@@ -77,14 +79,12 @@ namespace Remotion.Data.DomainObjects
         return false;
       if (ReferenceEquals (this, obj))
         return true;
-      if (obj.GetType () != this.GetType ())
-        return false;
-      return Equals ((DomainObjectHandle<T>) obj);
+      return Equals (obj as IDomainObjectHandle<DomainObject>);
     }
 
     public override int GetHashCode ()
     {
-      return (_objectID != null ? _objectID.GetHashCode () : 0);
+      return _objectID.GetHashCode ();
     }
 
     public override string ToString ()

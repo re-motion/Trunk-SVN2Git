@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects
   /// </remarks>
   [TypeConverter (typeof (DomainObjectHandleConverter))]
   [DomainObjectHandle]
-  public interface IDomainObjectHandle<out T>
+  public interface IDomainObjectHandle<out T> : IEquatable<IDomainObjectHandle<DomainObject>>
       where T : DomainObject
   {
     /// <summary>
