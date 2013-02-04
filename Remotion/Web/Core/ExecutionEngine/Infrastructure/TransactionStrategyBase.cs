@@ -31,7 +31,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public abstract void Commit ();
     public abstract void Rollback ();
     public abstract void Reset ();
-    public abstract void RegisterObjects (IEnumerable objects);
+    public abstract void EnsureCompatibility (IEnumerable objects);
     public abstract bool IsNull { get; }
 
     public abstract TransactionStrategyBase OuterTransactionStrategy { get; }

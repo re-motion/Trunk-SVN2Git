@@ -120,41 +120,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void RegisterObjects ()
+    public void EnsureCompatibility_WithNonDomainObject_Succeeds ()
     {
-      ClientTransaction firstClientTransaction = ClientTransaction.CreateRootTransaction();
-
-      var domainObject1 = LifetimeService.GetObject (firstClientTransaction, DomainObjectIDs.ClassWithAllDataTypes2, false);
-      var domainObject2 = LifetimeService.GetObject (firstClientTransaction, DomainObjectIDs.Partner1, false);
-
-      var secondClientTransaction = TestableClientTransaction;
-      ITransaction secondTransaction = secondClientTransaction.ToITransaction();
-      Assert.That (secondClientTransaction.IsEnlisted (domainObject1), Is.False);
-      Assert.That (secondClientTransaction.IsEnlisted (domainObject2), Is.False);
-
-      secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2, domainObject2 });
-
-      Assert.That (secondClientTransaction.IsEnlisted (domainObject1), Is.True);
-      Assert.That (secondClientTransaction.Execute (() => domainObject1.State), Is.EqualTo (StateType.NotLoadedYet));
-
-      Assert.That (secondClientTransaction.IsEnlisted (domainObject2), Is.True);
-      Assert.That (secondClientTransaction.Execute (() => domainObject2.State), Is.EqualTo (StateType.NotLoadedYet));
+      _transaction.EnsureCompatibility (new[] { "what?" });
     }
 
     [Test]
-    public void RegisterObjects_WithNewObject ()
+    public void EnsureCompatibility_WithObjectFromSameTransaction_Succeeds ()
     {
-      ClientTransaction firstClientTransaction = ClientTransaction.CreateRootTransaction();
+      var domainObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> (TestableClientTransaction);
 
-      var domainObject = LifetimeService.NewObject (firstClientTransaction, typeof (Partner), ParamList.Empty);
+      _transaction.EnsureCompatibility (new[] { domainObject });
+    }
 
-      var secondClientTransaction = TestableClientTransaction;
-      ITransaction secondTransaction = secondClientTransaction.ToITransaction();
+    [Test]
+    public void EnsureCompatibility_WithObjectFromSubTransaction_Succeeds ()
+    {
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
+      {
+        var domainObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> (TestableClientTransaction);
+        _transaction.EnsureCompatibility (new[] { domainObject });
+      }
+    }
 
-      secondTransaction.RegisterObjects (new object[] { domainObject });
+    [Test]
+    public void EnsureCompatibility_WithObjectFromParentTransaction_Succeeds ()
+    {
+      var domainObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> (TestableClientTransaction);
+      var transaction = TestableClientTransaction.CreateSubTransaction().ToITransaction();
+      transaction.EnsureCompatibility (new[] { domainObject });
+    }
 
-      Assert.That (secondClientTransaction.Execute (() => domainObject.State), Is.EqualTo (StateType.NotLoadedYet));
-      Assert.That (() => secondClientTransaction.Execute (domainObject.EnsureDataAvailable), Throws.TypeOf<ObjectsNotFoundException>());
+    [Test]
+    public void EnsureCompatibility_WithObjectsFromUnrelatedTransaction_ThrowsException ()
+    {
+      var domainObject1 = DomainObjectMother.GetObjectInOtherTransaction<ClassWithAllDataTypes> (DomainObjectIDs.ClassWithAllDataTypes1);
+      var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<ClassWithAllDataTypes> (DomainObjectIDs.ClassWithAllDataTypes2);
+      Assert.That (
+          () => _transaction.EnsureCompatibility (new[] { domainObject1, domainObject2 }),
+          Throws.TypeOf<InvalidOperationException>().With.Message.StringMatching (
+              @"The following objects are incompatible with the target transaction\: "
+              + @"ClassWithAllDataTypes\|.*\|System\.Guid, ClassWithAllDataTypes\|.*\|System\.Guid\. "
+              + @"Use variables of type \'Remotion\.Data\.DomainObjects\.IDomainObjectHandle\`1\[T\]\' instead\.")
+                .And.Message.StringContaining ("ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid")
+                .And.Message.StringContaining ("ClassWithAllDataTypes|583ec716-8443-4b55-92bf-09f7c8768529|System.Guid"));
     }
 
     [Test]

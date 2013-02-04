@@ -73,9 +73,9 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     }
 
     [Test]
-    public void RegisterObjects ()
+    public void EnsureCompatibility ()
     {
-      _strategy.RegisterObjects (null);
+      _strategy.EnsureCompatibility (null);
     }
 
     [Test]

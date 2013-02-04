@@ -245,9 +245,11 @@
     <Compile Include="DomainObjects\DomainObjectHandleExtensionsTest.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleTest.cs" />
     <Compile Include="DomainObjects\Web\WxeParameterIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\DomainObjectParametersTest.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SecuredFunctionViaDomainObjectHandleParameterTest.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SecuredFunctionTestBase.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SecuredFunctionViaDomainObjectParameterTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\DomainObjectHandleParameterTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\FunctionWithSecuredDomainObjectHandleParameter.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\FunctionWithSecuredDomainObjectParameter.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\SecurableDomainObject.cs" />
@@ -453,7 +455,6 @@
     <Compile Include="DomainObjects\Core\Persistence\ObjectsNotFoundExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectGetObjectServiceTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\ParameterEnlistingTest.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\ResetTest.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SerializationTest.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\ThreadAbortExceptionTest.cs" />

@@ -69,11 +69,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       OuterTransactionStrategy.UnregisterChildTransactionStrategy (childTransactionStrategy);
     }
 
-    public override void RegisterObjects (IEnumerable objects)
+    public override void EnsureCompatibility (IEnumerable objects)
     {
       ArgumentUtility.CheckNotNull ("objects", objects);
 
-      OuterTransactionStrategy.RegisterObjects (objects);
+      OuterTransactionStrategy.EnsureCompatibility (objects);
     }
 
     public override TTransaction GetNativeTransaction<TTransaction> ()

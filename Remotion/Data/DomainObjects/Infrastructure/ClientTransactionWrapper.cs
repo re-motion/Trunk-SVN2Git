@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -136,12 +137,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>Registers the <paramref name="objects"/> with the transaction.</summary>
     /// <param name="objects">The objects to be registered. Must not be <see langword="null" />.</param>
     /// <remarks>If the type of of of the objects is not supported by the transaction, the object must be ignored.</remarks>
-    public virtual void RegisterObjects (IEnumerable objects)
+    public virtual void EnsureCompatibility (IEnumerable objects)
     {
       ArgumentUtility.CheckNotNull ("objects", objects);
 
       var domainObjects = objects.OfType<DomainObject>().Distinct();
-      _wrappedInstance.EnlistDomainObjects (domainObjects);
+      var incompatibleObjects = domainObjects.Where (obj => !_wrappedInstance.IsEnlisted (obj)).ToArray();
+      if (incompatibleObjects.Length > 0)
+      {
+        var message = string.Format (
+            "The following objects are incompatible with the target transaction: {0}. Use variables of type '{1}' instead.",
+            SeparatedStringBuilder.Build (", ", incompatibleObjects, obj => obj.ID.ToString()),
+            typeof (IDomainObjectHandle<>));
+        throw new InvalidOperationException (message);
+      }
     }
   }
 }

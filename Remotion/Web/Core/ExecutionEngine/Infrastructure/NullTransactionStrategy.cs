@@ -63,7 +63,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       return innerListener;
     }
 
-    public override void RegisterObjects (IEnumerable objects)
+    public override void EnsureCompatibility (IEnumerable objects)
     {
       //NOP
     }

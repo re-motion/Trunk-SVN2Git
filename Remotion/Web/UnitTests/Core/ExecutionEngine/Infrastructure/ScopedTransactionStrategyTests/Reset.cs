@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using NUnit.Framework;
 using Remotion.Data;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
@@ -50,7 +51,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
         TransactionFactoryMock.Expect (mock => mock.Create ()).Return (_newTransactionMock);
 
         ExecutionContextMock.Expect (mock => mock.GetVariables()).Return (new[] { object1, object2 });
-        _newTransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
+        _newTransactionMock.Expect (mock => mock.EnsureCompatibility (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
       }
       Assert.That (_strategy.Scope, Is.Null);
       MockRepository.ReplayAll();
@@ -108,7 +109,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
         _newTransactionMock.Expect (mock => mock.EnterScope ()).Return (newScopeMock);
 
         ExecutionContextMock.Expect (mock => mock.GetVariables()).Return (new[] { object1, object2 });
-        _newTransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
+        _newTransactionMock.Expect (mock => mock.EnsureCompatibility (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
       }
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
       MockRepository.ReplayAll();
@@ -172,6 +173,35 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       MockRepository.VerifyAll();
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
       Assert.That (_strategy.Transaction, Is.SameAs (TransactionMock), "Transaction just released is retained.");
+    }
+
+    [Test]
+    public void Test_WithIncompatibleVariables ()
+    {
+      var object1 = new object ();
+      var object2 = new object ();
+      var invalidOperationException = new InvalidOperationException ("Oh nos!");
+
+      TransactionMock.BackToRecord ();
+      TransactionFactoryMock.BackToRecord ();
+      TransactionMock.Stub (mock => mock.Release());
+      TransactionFactoryMock.Stub (mock => mock.Create()).Return (_newTransactionMock);
+
+      ExecutionContextMock.Stub (mock => mock.GetVariables()).Return (new[] { object1, object2 });
+      _newTransactionMock
+          .Stub (mock => mock.EnsureCompatibility (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })))
+          .Throw (invalidOperationException);
+      MockRepository.ReplayAll ();
+
+      Assert.That (
+          () => _strategy.Reset(),
+          Throws
+              .TypeOf<WxeException>()
+              .With.Message.EqualTo ("One or more of the variables of the WxeFunction are incompatible with the new transaction after the Reset. Oh nos!")
+              .And.InnerException.SameAs (invalidOperationException));
+
+      Assert.That (_strategy.Scope, Is.Null);
+      Assert.That (_strategy.Transaction, Is.SameAs (_newTransactionMock));
     }
   }
 }

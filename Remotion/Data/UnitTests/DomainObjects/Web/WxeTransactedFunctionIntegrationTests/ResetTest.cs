@@ -16,7 +16,6 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Web.ExecutionEngine;
 
@@ -41,59 +40,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    public void Reset_Variables_AreEnlistedInNewTransaction ()
+    public void Reset_VariablesOfDomainObjectTypes_CauseException ()
     {
       ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
         var order = DomainObjectIDs.Order1.GetObject<Order> ();
         f.Variables.Add ("Order", order);
+        var transactionBefore = ClientTransaction.Current;
+        Assert.That (transactionBefore, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction>()));
 
-        f.Transaction.Reset ();
+        Assert.That (
+            () =>
+            f.Transaction.Reset(),
+            Throws.TypeOf<WxeException>().With.Message.EqualTo (
+                "One or more of the variables of the WxeFunction are incompatible with the new transaction after the Reset. The following objects "
+                + "are incompatible with the target transaction: Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid. "
+                + "Use variables of type 'Remotion.Data.DomainObjects.IDomainObjectHandle`1[T]' instead."));
 
-        var transactionAfter = f.Transaction.GetNativeTransaction<ClientTransaction> ();
-        Assert.That (transactionAfter.IsEnlisted (order), Is.True);
+        Assert.That (ClientTransaction.Current, Is.Not.Null.And.Not.SameAs (transactionBefore));
+        Assert.That (ClientTransaction.Current, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction>()));
       });
     }
 
     [Test]
-    public void Reset_NonLoadableVariables ()
+    public void Reset_VariablesOfDomainObjectHandleType_CauseNoException ()
     {
-      SetDatabaseModifyable();
-
       ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
-        var existingObject = DomainObjectIDs.Order1.GetObject<Order> ();
-        var nonExistingObject = DomainObjectIDs.Employee1.GetObject<Employee> ();
+        var orderHandle = DomainObjectIDs.Order1.GetHandle<Order> ();
+        f.Variables.Add ("OrderHandle", orderHandle);
+        var transactionBefore = ClientTransaction.Current;
+        Assert.That (transactionBefore, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction> ()));
 
-        ClientTransaction.CreateRootTransaction ().Execute (() =>
-        {
-          nonExistingObject.ID.GetObject<Employee> ().Delete();
-          ClientTransaction.Current.Commit();
-        });
+        Assert.That (() => f.Transaction.Reset (), Throws.Nothing);
 
-        ClientTransaction.Current.Rollback();
-
-        f.Variables.Add ("ExistingObject", existingObject);
-        f.Variables.Add ("NonExistingObject", nonExistingObject);
-
-        f.Transaction.Reset ();
-
-        Assert.That (existingObject.State, Is.EqualTo (StateType.NotLoadedYet));
-        Assert.That (nonExistingObject.State, Is.EqualTo (StateType.NotLoadedYet));
-
-        Assert.That (() => existingObject.EnsureDataAvailable (), Throws.Nothing);
-        Assert.That (() => nonExistingObject.EnsureDataAvailable (), Throws.TypeOf<ObjectsNotFoundException> ());
+        Assert.That (ClientTransaction.Current, Is.Not.Null.And.Not.SameAs (transactionBefore));
+        Assert.That (ClientTransaction.Current, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction> ()));
       });
     }
 
     [Test]
-    public void Reset_NonVariables_AreNotEnlistedInNewTransaction ()
+    public void Reset_NonVariables_CauseNoException ()
     {
       ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
         var order = DomainObjectIDs.Order1.GetObject<Order> ();
 
-        f.Transaction.Reset ();
+        Assert.That (() => f.Transaction.Reset (), Throws.Nothing);
 
         var transactionAfter = f.Transaction.GetNativeTransaction<ClientTransaction> ();
         Assert.That (transactionAfter.IsEnlisted (order), Is.False);
@@ -111,6 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
         var parentBefore = transactionBefore.ParentTransaction;
 
         var order = DomainObjectIDs.Order1.GetObject<Order> ();
+        f.Variables.Add ("Order", order);
 
         f.Transaction.Reset();
 
@@ -121,29 +115,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
         // This is because it was automatically enlisted in the outer transaction before the reset
         Assert.That (transactionAfter.IsEnlisted (order), Is.True);
-      });
-    }
-
-    [Test]
-    public void Reset_InvalidVariables_AndOtherObjects_AreNotKeptInvalid ()
-    {
-      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
-      {
-        var invalidVariable = Order.NewObject();
-        invalidVariable.Delete();
-        f.Variables.Add ("InvalidOrderVariable", invalidVariable);
-        Assert.That (invalidVariable.IsInvalid, Is.True);
-
-        var invalidNonVariable = Order.NewObject();
-        invalidNonVariable.Delete ();
-        Assert.That (invalidNonVariable.IsInvalid, Is.True);
-
-        f.Transaction.Reset ();
-
-        Assert.That (ClientTransaction.Current.IsEnlisted (invalidVariable), Is.True);
-        Assert.That (invalidVariable.IsInvalid, Is.False);
-
-        Assert.That (ClientTransaction.Current.IsEnlisted (invalidNonVariable), Is.False);
       });
     }
   }

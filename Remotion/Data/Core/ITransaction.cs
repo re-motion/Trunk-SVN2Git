@@ -79,10 +79,11 @@ namespace Remotion.Data
     /// <remarks>The scope must not discard the transaction when it is left.</remarks>
     ITransactionScope EnterScope ();
 
-    /// <summary>Registers the <paramref name="objects"/> with the transaction.</summary>
-    /// <param name="objects">The objects to be registered. Must not be <see langword="null" />.</param>
-    /// <remarks>If the type of of of the objects is not supported by the transaction, the object must be ignored.</remarks>
-    void RegisterObjects (IEnumerable objects);
+    /// <summary>Ensures that the giben <paramref name="objects"/> are compatible with the transaction.</summary>
+    /// <param name="objects">The objects to be checked. Must not be <see langword="null" />.</param>
+    /// <remarks>If the type of the objects is not supported by the transaction, the object must be ignored.</remarks>
+    /// <exception cref="NotSupportedException">At least one of the given objects is not compatible with this transaction (and cannot be made so).</exception>
+    void EnsureCompatibility (IEnumerable objects);
   }
 
   public static class ObsoleteMethods

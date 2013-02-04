@@ -52,7 +52,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
      
       _executionContextStub.Stub (stub => stub.GetInParameters ()).Return (new object[0]);
       _parentTransactionMock.Stub (stub => stub.CreateChild()).Return (_childTransactionMock);
-      _childTransactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
+      _childTransactionMock.Stub (stub => stub.EnsureCompatibility (Arg<IEnumerable>.Is.NotNull));
       _mockRepository.ReplayAll ();
 
       _strategy = new ChildTransactionStrategy (true, _outerTransactionStrategyMock, _parentTransactionMock, _executionContextStub);
@@ -107,8 +107,8 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       {
         _childTransactionMock.Stub (stub => stub.Commit ());
         _executionContextStub.Stub (stub => stub.GetOutParameters ()).Return (new object[0]);
-        _childTransactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
-        _outerTransactionStrategyMock.Stub (mock => mock.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
+        _childTransactionMock.Stub (stub => stub.EnsureCompatibility (Arg<IEnumerable>.Is.NotNull));
+        _outerTransactionStrategyMock.Stub (mock => mock.EnsureCompatibility (Arg<IEnumerable>.Is.NotNull));
         _childTransactionMock.Expect (mock => mock.Release ());
         _outerTransactionStrategyMock.Expect (mock => mock.UnregisterChildTransactionStrategy (_strategy));
       }

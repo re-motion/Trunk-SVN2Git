@@ -56,7 +56,15 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _transaction = CreateTransaction();
 
       var inParameters = _executionContext.GetInParameters ();
-      RegisterObjects (inParameters);
+      try
+      {
+        EnsureCompatibility (inParameters);
+      }
+      catch (InvalidOperationException ex)
+      {
+        var message = "One or more of the input parameters passed to the WxeFunction are incompatible with the function's transaction. " + ex.Message;
+        throw new WxeException (message, ex);
+      }
     }
 
     public ITransaction Transaction
@@ -120,7 +128,15 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
 
       var variables = _executionContext.GetVariables();
-      RegisterObjects (variables);
+      try
+      {
+        EnsureCompatibility (variables);
+      }
+      catch (InvalidOperationException ex)
+      {
+        var message = "One or more of the variables of the WxeFunction are incompatible with the new transaction after the Reset. " + ex.Message;
+        throw new WxeException (message, ex);
+      }
     }
 
     public override sealed TransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext, WxeContext wxeContext)
@@ -156,11 +172,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _child = NullTransactionStrategy.Null;
     }
 
-    public override sealed void RegisterObjects (IEnumerable objects)
+    public override sealed void EnsureCompatibility (IEnumerable objects)
     {
       ArgumentUtility.CheckNotNull ("objects", objects);
 
-      _transaction.RegisterObjects (FlattenList (objects));
+      _transaction.EnsureCompatibility (FlattenList (objects));
     }
 
     public override void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
@@ -193,7 +209,16 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         CommitTransaction();
 
       var outParameters = _executionContext.GetOutParameters ();
-      _outerTransactionStrategy.RegisterObjects (outParameters);
+      try
+      {
+        _outerTransactionStrategy.EnsureCompatibility (outParameters);
+      }
+      catch (InvalidOperationException ex)
+      {
+        var message = "One or more of the output parameters returned from the WxeFunction are incompatible with the function's parent transaction. "
+                      + ex.Message;
+        throw new WxeException (message, ex);
+      }
 
       LeaveScopeAndReleaseTransaction (null);
     }

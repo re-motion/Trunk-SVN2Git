@@ -85,7 +85,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
         TransactionMock.Expect (mock => mock.Commit ());
 
         ExecutionContextMock.Expect (mock => mock.GetOutParameters()).Return (expectedObjects);
-        OuterTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
+        OuterTransactionStrategyMock.Expect (mock => mock.EnsureCompatibility (expectedObjects));
 
         ScopeMock.Expect (mock => mock.Leave());
         TransactionMock.Expect (mock => mock.Release());
@@ -259,7 +259,34 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
     }
 
     [Test]
-    public void Test_RegisterObjectsThrows ()
+    public void Test_EnsureCompatibility_ThrowsBecauseOfIncompatibleOutParameters ()
+    {
+      var strategy = CreateScopedTransactionStrategy (false, OuterTransactionStrategyMock);
+      var invalidOperationException = new InvalidOperationException ("Completely bad objects!");
+
+      InvokeOnExecutionPlay (strategy);
+      ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionStop (Context, ExecutionListenerStub));
+
+      ExecutionContextMock.Expect (mock => mock.GetOutParameters()).Return (new object[0]);
+      OuterTransactionStrategyMock.Expect (mock => mock.EnsureCompatibility (Arg<IEnumerable>.Is.Anything)).Throw (invalidOperationException);
+
+      MockRepository.ReplayAll();
+
+      Assert.That (
+          () => strategy.OnExecutionStop (Context, ExecutionListenerStub),
+          Throws
+              .TypeOf<WxeException> ()
+              .With.Message.EqualTo (
+                  "One or more of the output parameters returned from the WxeFunction are incompatible with the function's parent transaction. "
+                  + "Completely bad objects!")
+              .And.InnerException.SameAs (invalidOperationException));
+      
+      MockRepository.VerifyAll();
+      Assert.That (strategy.Scope, Is.SameAs (ScopeMock));
+    }
+
+    [Test]
+    public void Test_EnsureCompatibilityThrowsUnexpected_GetsBubbledOut ()
     {
       var strategy = CreateScopedTransactionStrategy (false, OuterTransactionStrategyMock);
       var innerException = new ApplicationException ("GetOutParameters Exception");
@@ -267,22 +294,17 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       InvokeOnExecutionPlay (strategy);
       ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionStop (Context, ExecutionListenerStub));
 
-      ExecutionContextMock.Expect (mock => mock.GetOutParameters()).Return (new object[0]);
-      OuterTransactionStrategyMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.Is.Anything)).Throw (innerException);
+      ExecutionContextMock.Expect (mock => mock.GetOutParameters ()).Return (new object[0]);
+      OuterTransactionStrategyMock.Expect (mock => mock.EnsureCompatibility (Arg<IEnumerable>.Is.Anything)).Throw (innerException);
 
-      MockRepository.ReplayAll();
+      MockRepository.ReplayAll ();
 
-      try
-      {
-        strategy.OnExecutionStop (Context, ExecutionListenerStub);
-        Assert.Fail ("Expected Exception");
-      }
-      catch (ApplicationException actualException)
-      {
-        Assert.That (actualException, Is.SameAs (innerException));
-      }
+      Assert.That (
+          () => strategy.OnExecutionStop (Context, ExecutionListenerStub),
+          Throws.Exception.SameAs (innerException));
 
-      MockRepository.VerifyAll();
+
+      MockRepository.VerifyAll ();
       Assert.That (strategy.Scope, Is.SameAs (ScopeMock));
     }
 

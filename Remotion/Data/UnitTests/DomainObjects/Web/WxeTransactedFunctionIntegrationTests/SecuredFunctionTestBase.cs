@@ -15,12 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Security.ExecutionEngine;
 using Rhino.Mocks;
 
@@ -103,6 +105,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
       securableDomainObject.SecurableType = typeof (SecurableDomainObject);
       securableDomainObject.SecurityStrategy = _objectSecurityStrategyStub;
       return securableDomainObject;
+    }
+
+    protected static ITransactionMode CreateTransactionModeForClientTransaction (ClientTransaction clientTransaction)
+    {
+      var mode = MockRepository.GenerateStub<ITransactionMode>();
+      mode.Stub (stub => stub.CreateTransactionStrategy (Arg<WxeFunction>.Is.Anything, Arg<WxeContext>.Is.Anything))
+          .Do (
+              (Func<WxeFunction, WxeContext, TransactionStrategyBase>)
+              ((function, context) => new RootTransactionStrategy (false, clientTransaction.ToITransaction, NullTransactionStrategy.Null, function)));
+      return mode;
     }
   }
 }

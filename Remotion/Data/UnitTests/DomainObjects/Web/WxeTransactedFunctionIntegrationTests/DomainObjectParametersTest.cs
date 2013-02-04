@@ -17,7 +17,6 @@
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions;
@@ -26,10 +25,10 @@ using Remotion.Web.ExecutionEngine;
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests
 {
   [TestFixture]
-  public class ParameterEnlistingTest : WxeTransactedFunctionIntegrationTestBase
+  public class DomainObjectParametersTest : WxeTransactedFunctionIntegrationTestBase
   {
     [Test]
-    public void AutomaticParameterEnlisting_CreateNone_FunctionCanUseObjectsFromOuterTransaction ()
+    public void CreateNoneTransactionMode_FunctionCanUseObjectsFromOuterTransaction ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
@@ -72,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    public void AutomaticParameterEnlisting_CreateNone_FunctionCannotUseParametersNotFromOuterTransaction ()
+    public void CreateNoneTransactionMode_FunctionCannotUseParametersNotFromOuterTransaction ()
     {
       var objectFromOtherTransaction = DomainObjectMother.GetObjectInOtherTransaction<ClassWithAllDataTypes> (DomainObjectIDs.ClassWithAllDataTypes1);
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
@@ -102,39 +101,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    public void AutomaticParameterEnlisting_CreateRoot_InParametersAreEnlisted ()
+    public void CreateRootTransactionMode_InParametersOfDomainObjectType_CauseException ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var outerTransaction = ClientTransaction.Current;
-
         var inParameter = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
         var inParameterArray = new[] { DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> () };
 
         inParameter.Int32Property = 7;
         inParameterArray[0].Int32Property = 8;
 
-        ClassWithAllDataTypes outParameter;
-        ClassWithAllDataTypes[] outParameterArray;
-        ExecuteDelegateInWxeFunctionWithParameters (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
-        {
-          var clientTransaction = f.Transaction.GetNativeTransaction<ClientTransaction> ();
-          Assert.That (clientTransaction, Is.Not.Null);
-          Assert.That (ClientTransaction.Current, Is.Not.SameAs (outerTransaction));
-          Assert.That (clientTransaction.ParentTransaction, Is.Null);
-
-          Assert.That (outerTransaction.IsEnlisted (f.InParameter), Is.True);
-          Assert.That (outerTransaction.IsEnlisted (f.InParameterArray[0]));
-
-          // Since this function is running in a parallel root transaction, the properties set in the outside transaction are not visible from here.
-          Assert.That (f.InParameter.Int32Property, Is.Not.EqualTo (7));
-          Assert.That (f.InParameterArray[0].Int32Property, Is.Not.EqualTo (8));
-        }, inParameter, inParameterArray, out outParameter, out outParameterArray);
+        var function = new DomainObjectParameterTestTransactedFunction (
+            WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) => { }, inParameter, inParameterArray);
+        Assert.That (
+            () => function.Execute (Context),
+            Throws.TypeOf<WxeException>()
+                  .With.Message.StringStarting (
+                      "One or more of the input parameters passed to the WxeFunction are incompatible with the function's transaction. "
+                      + "The following objects are incompatible with the target transaction: ")
+                  .And.Message.StringContaining ("ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid")
+                  .And.Message.StringContaining ("ClassWithAllDataTypes|583ec716-8443-4b55-92bf-09f7c8768529|System.Guid")
+                  .And.Message.StringEnding (". Use variables of type 'Remotion.Data.DomainObjects.IDomainObjectHandle`1[T]' instead."));
       }
     }
 
     [Test]
-    public void AutomaticParameterEnlisting_CreateRoot_OutParameters_NotEnlisted_WithoutSurroundingFunction ()
+    public void CreateRootTransactionMode_OutParametersOfDomainObjectType_WithoutSurroundingFunction ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
@@ -149,99 +141,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
           f.OutParameterArray[0].Int32Property = 13;
         }, null, null, out outParameter, out outParameterArray);
 
-        // Wxe does not enlist parameters in the calling transaction if there is no calling function.
+
         Assert.That (ClientTransaction.Current.IsEnlisted (outParameter), Is.False);
         Assert.That (ClientTransaction.Current.IsEnlisted (outParameterArray[0]), Is.False);
       }
     }
 
     [Test]
-    public void AutomaticParameterEnlisting_CreateRoot_OutParameters_Enlisted_WithSurroundingFunction ()
-    {
-      ClientTransaction transactionOfParentFunction = null;
-      ClassWithAllDataTypes outParameter;
-      ClassWithAllDataTypes[] outParameterArray;
-      ExecuteDelegateInSubWxeFunctionWithParameters (
-          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
-          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
-          (ctx, f) =>
-          {
-            f.OutParameter = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
-            f.OutParameter.Int32Property = 12;
-
-            f.OutParameterArray = new[] { DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> () };
-            f.OutParameterArray[0].Int32Property = 13;
-
-            transactionOfParentFunction = f.ParentFunction.Transaction.GetNativeTransaction<ClientTransaction> ();
-          },
-          null,
-          null,
-          out outParameter,
-          out outParameterArray);
-
-      // Wxe does enlist parameters in the transaction of the calling function.
-      Assert.That (transactionOfParentFunction.IsEnlisted (outParameter), Is.True);
-      Assert.That (transactionOfParentFunction.IsEnlisted (outParameterArray[0]), Is.True);
-    }
-
-    [Test]
-    public void AutomaticParameterEnlisting_CreateRoot_WithNonLoadableInParameter ()
-    {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        var inParameter = ClassWithAllDataTypes.NewObject ();
-        var inParameterArray = new[] { ClassWithAllDataTypes.NewObject () };
-
-        // We're passing in new objects which, of course, don't exist in the database.
-
-        ClassWithAllDataTypes outParameter;
-        ClassWithAllDataTypes[] outParameterArray;
-        ExecuteDelegateInWxeFunctionWithParameters (
-            WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
-            {
-              Assert.That (f.Transaction.GetNativeTransaction<ClientTransaction> ().IsEnlisted (f.InParameter), Is.True);
-              Assert.That (f.InParameter.State, Is.EqualTo (StateType.NotLoadedYet));
-              Assert.That (() => f.InParameter.EnsureDataAvailable(), Throws.TypeOf<ObjectsNotFoundException>());
-
-              Assert.That (f.Transaction.GetNativeTransaction<ClientTransaction> ().IsEnlisted (f.InParameterArray[0]), Is.True);
-              Assert.That (f.InParameterArray[0].State, Is.EqualTo (StateType.NotLoadedYet));
-              Assert.That (() => f.InParameterArray[0].EnsureDataAvailable (), Throws.TypeOf<ObjectsNotFoundException> ());
-            }, inParameter, inParameterArray, out outParameter, out outParameterArray);
-      }
-    }
-
-    [Test]
-    public void AutomaticParameterEnlisting_CreateRoot_WithNonLoadableOutParameter ()
+    public void CreateRootTransactionMode_OutParametersOfDomainObjectType_WithSurroundingFunction ()
     {
       ClassWithAllDataTypes outParameter;
       ClassWithAllDataTypes[] outParameterArray;
-      ClientTransaction transactionOfParentFunction = null;
 
-      ExecuteDelegateInSubWxeFunctionWithParameters (
-          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
-          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
-          (ctx, f) =>
-          {
-            // These out parameters is of course not valid in the outer transaction
-            f.OutParameter = ClassWithAllDataTypes.NewObject ();
-            f.OutParameterArray = new[] { ClassWithAllDataTypes.NewObject () };
+      Assert.That (
+          () => ExecuteDelegateInSubWxeFunctionWithParameters (
+              WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+              WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+              (ctx, f) =>
+              {
+                f.OutParameter = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes>();
+                f.OutParameter.Int32Property = 12;
 
-            transactionOfParentFunction = f.ParentFunction.Transaction.GetNativeTransaction<ClientTransaction>();
-          },
-          null,
-          null,
-          out outParameter,
-          out outParameterArray);
-
-      Assert.That (transactionOfParentFunction.IsEnlisted (outParameter), Is.True);
-      Assert.That (() => transactionOfParentFunction.Execute (() => outParameter.State), Is.EqualTo (StateType.NotLoadedYet));
-
-      Assert.That (transactionOfParentFunction.IsEnlisted (outParameterArray[0]), Is.True);
-      Assert.That (() => transactionOfParentFunction.Execute (() => outParameterArray[0].State), Is.EqualTo (StateType.NotLoadedYet));
+                f.OutParameterArray = new[] { DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes>() };
+                f.OutParameterArray[0].Int32Property = 13;
+              },
+              null,
+              null,
+              out outParameter,
+              out outParameterArray),
+          Throws.TypeOf<WxeUnhandledException>()
+                .With.Message.StringStarting (
+                    "An unhandled exception ocured while executing WxeFunction "
+                    + "'Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions.DomainObjectParameterTestTransactedFunction':\r\n"
+                    + "One or more of the output parameters returned from the WxeFunction are incompatible with the function's parent transaction. "
+                    + "The following objects are incompatible with the target transaction: ")
+                    .And.Message.StringContaining ("ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid")
+                    .And.Message.StringContaining ("ClassWithAllDataTypes|583ec716-8443-4b55-92bf-09f7c8768529|System.Guid")
+                    .And.Message.StringEnding (". Use variables of type 'Remotion.Data.DomainObjects.IDomainObjectHandle`1[T]' instead."));
     }
 
     [Test]
-    public void AutomaticParameterEnlisting_CreateChild_InAndOutParametersAreEnlisted ()
+    public void CreateChildTransactionMode_InAndOutParametersCanBeUsed ()
     {
       ExecuteDelegateInWxeFunction (
           WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
@@ -300,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    public void AutomaticParameterEnlisting_CreateChild_WithNonLoadableInParameter ()
+    public void CreateChildTransactionMode_WithNonLoadableInParameter ()
     {
       ExecuteDelegateInWxeFunction (
           WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
@@ -331,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    public void AutomaticParameterEnlisting_CreateChild_WithNonLoadableOutParameter ()
+    public void CreateChildTransactionMode_WithNonLoadableOutParameter ()
     {
       ExecuteDelegateInWxeFunction (
           WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
@@ -359,6 +299,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
             Assert.That (subFunction.OutParameterArray[0].State, Is.EqualTo (StateType.Invalid));
             Assert.That (() => subFunction.OutParameterArray[0].EnsureDataAvailable(), Throws.TypeOf<ObjectInvalidException>());
           });
+    }
+
+    [Test]
+    public void PassingDomainObjectsAround_BetweenTransactions_WithDomainObjectHandles ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var inParameter = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
+        inParameter.Int32Property = 7;
+
+        var function = new DomainObjectHandleParameterTestTransactedFunction (
+            WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+            (ctx, f) =>
+            {
+              var inParameterInFunction = f.InParameter.GetObject ();
+              Assert.That (inParameterInFunction, Is.Not.SameAs (inParameter));
+              Assert.That (inParameterInFunction.ID, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1));
+              Assert.That (inParameterInFunction.Int32Property, Is.Not.EqualTo (7));
+              f.OutParameter = DomainObjectIDs.ClassWithAllDataTypes2.GetHandle<ClassWithAllDataTypes> ();
+              f.OutParameter.GetObject ().Int32Property = 8;
+            },
+            inParameter.GetHandle ());
+        function.Execute (Context);
+
+        Assert.That (function.OutParameter.ObjectID, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes2));
+        var outParameter = function.OutParameter.GetObject ();
+        Assert.That (outParameter.Int32Property, Is.Not.EqualTo (8));
+      }
     }
   }
 }

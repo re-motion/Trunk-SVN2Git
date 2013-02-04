@@ -119,13 +119,13 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     }
 
     [Test]
-    public void RegisterObjects ()
+    public void EnsureCompatibility ()
     {
       var expectedObjects = new[] { new object() };
 
-      _outerTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
+      _outerTransactionStrategyMock.Expect (mock => mock.EnsureCompatibility (expectedObjects));
 
-      _strategy.RegisterObjects (expectedObjects);
+      _strategy.EnsureCompatibility (expectedObjects);
 
       _executionContextMock.VerifyAllExpectations();
       _outerTransactionStrategyMock.VerifyAllExpectations();

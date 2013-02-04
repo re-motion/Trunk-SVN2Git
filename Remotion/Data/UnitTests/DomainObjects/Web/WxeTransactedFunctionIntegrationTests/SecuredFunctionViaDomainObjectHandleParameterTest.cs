@@ -80,11 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     {
       var securableDomainObject = CreateSecurableDomainObject (clientTransaction);
 
-      var mode = MockRepository.GenerateStub<ITransactionMode>();
-      mode.Stub (stub => stub.CreateTransactionStrategy (Arg<WxeFunction>.Is.Anything, Arg<WxeContext>.Is.Anything))
-          .Do (
-              (Func<WxeFunction, WxeContext, TransactionStrategyBase>)
-              ((function, context) => new RootTransactionStrategy (false, clientTransaction.ToITransaction, NullTransactionStrategy.Null, function)));
+      var mode = CreateTransactionModeForClientTransaction (clientTransaction);
 
       var wxeFunction = new FunctionWithSecuredDomainObjectHandleParameter (mode);
       wxeFunction.SecurableParameter = securableDomainObject.GetHandle();

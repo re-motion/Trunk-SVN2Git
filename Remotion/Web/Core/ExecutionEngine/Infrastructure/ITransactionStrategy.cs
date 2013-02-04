@@ -26,6 +26,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     void Commit ();
     void Rollback ();
     void Reset ();
-    void RegisterObjects (IEnumerable objects);
+    void EnsureCompatibility (IEnumerable objects);
   }
 }

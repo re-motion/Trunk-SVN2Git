@@ -139,7 +139,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions
       _isReset = true;
     }
 
-    public void RegisterObjects (IEnumerable objects)
+    public void EnsureCompatibility (IEnumerable objects)
     {
       foreach (var obj in objects)
         _registeredObjects.Add (obj);

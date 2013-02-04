@@ -66,9 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     
     private FunctionWithSecuredDomainObjectParameter CreateWxeFunction ()
     {
-      var securableDomainObject = CreateSecurableDomainObject();
+      var clientTransaction = ClientTransaction.CreateRootTransaction();
+      var securableDomainObject = CreateSecurableDomainObject(clientTransaction);
 
-      var wxeFunction = new FunctionWithSecuredDomainObjectParameter (WxeTransactionMode<ClientTransactionFactory>.CreateRoot);
+      var transactionMode = CreateTransactionModeForClientTransaction (clientTransaction);
+      var wxeFunction = new FunctionWithSecuredDomainObjectParameter (transactionMode);
       wxeFunction.SecurableParameter = securableDomainObject;
       return wxeFunction;
     }

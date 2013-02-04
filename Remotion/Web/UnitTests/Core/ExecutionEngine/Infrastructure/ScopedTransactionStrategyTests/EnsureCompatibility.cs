@@ -17,14 +17,14 @@
 using System;
 using System.Collections;
 using NUnit.Framework;
-using Remotion.Data;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTransactionStrategyTests
 {
   [TestFixture]
-  public class RegisterObjects : ScopedTransactionStrategyTestBase
+  public class EnsureCompatibility : ScopedTransactionStrategyTestBase
   {
     private ScopedTransactionStrategyBase _strategy;
 
@@ -43,13 +43,34 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       using (MockRepository.Ordered())
       {
         ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, object2 });
-        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
+        TransactionMock.Expect (mock => mock.EnsureCompatibility (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
       }
       MockRepository.ReplayAll();
 
       new RootTransactionStrategy (false, () => TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
 
       MockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithIncompatibleInParameters ()
+    {
+      var object1 = new object();
+      var invalidOperationException = new InvalidOperationException ("Objects no good!");
+
+      ExecutionContextMock.Stub (mock => mock.GetInParameters()).Return (new[] { object1 });
+      TransactionMock
+          .Stub (mock => mock.EnsureCompatibility (Arg<IEnumerable>.List.ContainsAll (new[] { object1 })))
+          .Throw (invalidOperationException);
+      MockRepository.ReplayAll();
+
+      Assert.That (
+          () => new RootTransactionStrategy (false, () => TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock),
+          Throws
+              .TypeOf<WxeException>()
+              .With.Message.EqualTo (
+                  "One or more of the input parameters passed to the WxeFunction are incompatible with the function's transaction. Objects no good!")
+              .And.InnerException.SameAs (invalidOperationException));
     }
 
     [Test]
@@ -61,7 +82,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       using (MockRepository.Ordered())
       {
         ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, null, object2 });
-        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
+        TransactionMock.Expect (mock => mock.EnsureCompatibility (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
       }
       MockRepository.ReplayAll();
 
@@ -80,7 +101,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       using (MockRepository.Ordered())
       {
         ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, new[] { object2, object3 } });
-        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2, object3 })));
+        TransactionMock.Expect (mock => mock.EnsureCompatibility (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2, object3 })));
       }
       MockRepository.ReplayAll();
 
@@ -99,7 +120,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       using (MockRepository.Ordered())
       {
         ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, new[] { object2, null, object3 } });
-        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2, object3 })));
+        TransactionMock.Expect (mock => mock.EnsureCompatibility (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2, object3 })));
       }
       MockRepository.ReplayAll();
 

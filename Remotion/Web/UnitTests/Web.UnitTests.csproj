@@ -193,7 +193,7 @@
     <Compile Include="Core\ExecutionEngine\Infrastructure\NullTransactionStrategyTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\RootTransactionStrategyTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ScopedTransactionStrategyTests\Common.cs" />
-    <Compile Include="Core\ExecutionEngine\Infrastructure\ScopedTransactionStrategyTests\RegisterObjects.cs" />
+    <Compile Include="Core\ExecutionEngine\Infrastructure\ScopedTransactionStrategyTests\EnsureCompatibility.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ScopedTransactionStrategyTests\Reset.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ScopedTransactionStrategyTests\OnExecutionFail.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ScopedTransactionStrategyTests\OnExecutionPause.cs" />

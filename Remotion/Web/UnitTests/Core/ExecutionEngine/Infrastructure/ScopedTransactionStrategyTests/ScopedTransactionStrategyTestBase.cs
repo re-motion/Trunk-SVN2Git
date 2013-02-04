@@ -119,7 +119,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       _executionContextMock.Replay();
 
       _transactionMock.BackToRecord();
-      _transactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
+      _transactionMock.Stub (stub => stub.EnsureCompatibility (Arg<IEnumerable>.Is.NotNull));
       _transactionMock.Replay();
 
       _transactionFactoryMock.Replay();
