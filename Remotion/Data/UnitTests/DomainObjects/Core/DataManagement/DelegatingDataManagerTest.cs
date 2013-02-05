@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       CheckDelegation (dm => dm.Discard (dataContainer));
       CheckDelegation (dm => dm.DataContainers, MockRepository.GenerateStub<IDataContainerMapReadOnlyView> ());
       CheckDelegation (dm => dm.RelationEndPoints, MockRepository.GenerateStub<IRelationEndPointMapReadOnlyView> ());
-      CheckDelegation (dm => dm.DomainObjectStateCache, new DomainObjectStateCache (ClientTransaction.CreateRootTransaction()));
+      CheckDelegation (dm => dm.GetState (objectID), StateType.Deleted);
       CheckDelegation (dm => dm.GetDataContainerWithLazyLoad (objectID, randomBoolean), dataContainer);
       CheckDelegation (dm => dm.GetDataContainersWithLazyLoad (new[] { objectID }, true), new[] { dataContainer });
       CheckDelegation (dm => dm.GetLoadedDataByObjectState (StateType.Unchanged), new[] { persistableData });

@@ -47,14 +47,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Dev.Null = order.OrderItems[0];
 
-      Assert.That (dataManager.DomainObjectStateCache, Is.Not.Null);
       Assert.That (dataManager.DataContainers.Count, Is.Not.EqualTo (0));
       Assert.That (dataManager.RelationEndPoints.Count, Is.Not.EqualTo (0));
 
       Tuple<ClientTransaction, DataManager> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, dataManager));
 
-      Assert.That (deserializedData.Item2.DomainObjectStateCache, Is.Not.Null);
       Assert.That (deserializedData.Item2.TransactionEventSink, Is.Not.Null);
       Assert.That (deserializedData.Item2.DataContainerEventListener, Is.Not.Null);
 

@@ -80,15 +80,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void DomainObjectStateCache ()
+    public void GetState ()
     {
       var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Unchanged));
+      Assert.That (_dataManager.GetState (order1.ID), Is.EqualTo (StateType.Unchanged));
 
       var propertyName = GetPropertyDefinition (typeof (Order), "OrderNumber");
       _dataManager.DataContainers[order1.ID].SetValue (propertyName, 100);
 
-      Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Changed));
+      Assert.That (_dataManager.GetState (order1.ID), Is.EqualTo (StateType.Changed));
     }
 
     [Test]

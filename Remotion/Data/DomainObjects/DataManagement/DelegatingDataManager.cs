@@ -77,9 +77,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return SafeInnerDataManager.RelationEndPoints; }
     }
 
-    public DomainObjectStateCache DomainObjectStateCache
+    public StateType GetState (ObjectID objectID)
     {
-      get { return SafeInnerDataManager.DomainObjectStateCache; }
+      return SafeInnerDataManager.GetState (objectID);
     }
 
     public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound)

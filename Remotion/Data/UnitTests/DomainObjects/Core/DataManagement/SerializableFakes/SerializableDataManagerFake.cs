@@ -83,9 +83,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       get { throw new NotImplementedException(); }
     }
 
-    public DomainObjectStateCache DomainObjectStateCache
+    public StateType GetState (ObjectID objectID)
     {
-      get { throw new NotImplementedException(); }
+      throw new NotImplementedException();
     }
 
     public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound)

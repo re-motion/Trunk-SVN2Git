@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get
       {
         DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-        return ClientTransaction.DataManager.DomainObjectStateCache.GetState (DomainObject.ID);
+        return ClientTransaction.DataManager.GetState (DomainObject.ID);
       }
     }
 

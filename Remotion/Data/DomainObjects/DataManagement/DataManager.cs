@@ -100,12 +100,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _relationEndPointManager.RelationEndPoints; }
     }
 
-    // TODO 4499: Remove
-    public DomainObjectStateCache DomainObjectStateCache
-    {
-      get { return _domainObjectStateCache; }
-    }
-
     public IEnumerable<PersistableData> GetLoadedDataByObjectState (params StateType[] domainObjectStates)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("domainObjectStates", domainObjectStates);
@@ -256,6 +250,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ObjectInvalidException (objectID);
 
       return DataContainers[objectID];
+    }
+
+    public StateType GetState (ObjectID objectID)
+    {
+      return _domainObjectStateCache.GetState (objectID);
     }
 
     public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound)
