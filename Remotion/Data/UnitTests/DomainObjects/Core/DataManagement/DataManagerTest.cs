@@ -714,39 +714,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetOppositeRelationEndPoints ()
-    {
-      var dataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
-
-      var endPoints = _dataManager.GetOppositeRelationEndPoints (dataContainer).ToArray ();
-
-      var expectedIDs = new[] {
-        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order"),
-        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem2, "Order"),
-        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order"),
-        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Official1, "Orders"),
-        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders")
-      };
-      var expectedEndPoints = expectedIDs.Select (id => _dataManager.GetRelationEndPointWithLazyLoad (id)).ToArray();
-      Assert.That (endPoints, Is.EquivalentTo (expectedEndPoints));
-    }
-
-    [Test]
-    public void GetOppositeRelationEndPoints_WithNulls ()
-    {
-      var order = DomainObjectIDs.Order1.GetObject<Order> ();
-      order.OrderTicket = null;
-      var dataContainer = order.InternalDataContainer;
-      
-      var endPoints = _dataManager.GetOppositeRelationEndPoints (dataContainer).ToArray ();
-
-      var nullEndPoint = endPoints.OfType<NullObjectEndPoint>().Single();
-      var expectedEndPointDefinition = 
-          Configuration.GetTypeDefinition (typeof (OrderTicket)).GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
-      Assert.That (nullEndPoint.Definition, Is.EqualTo (expectedEndPointDefinition));
-    }
-
-    [Test]
     public void GetDataContainerWithoutLoading_NotLoaded ()
     {
       var result = _dataManagerWithMocks.GetDataContainerWithoutLoading (DomainObjectIDs.Order1);

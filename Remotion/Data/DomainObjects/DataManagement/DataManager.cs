@@ -116,22 +116,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return matchingObjects;
     }
 
-    // TODO 4498: Remove
-
-    // TODO 4411: Remove
-    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      return from endPointID in dataContainer.AssociatedRelationEndPointIDs
-             let endPoint = GetRelationEndPointWithLazyLoad (endPointID)
-             let oppositeRelationEndPointIDs = endPoint.GetOppositeRelationEndPointIDs ()
-             from oppositeEndPointID in oppositeRelationEndPointIDs
-             select GetRelationEndPointWithLazyLoad (oppositeEndPointID);
-    }
-
-    // TODO 4498: Remove
-
     public void RegisterDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);

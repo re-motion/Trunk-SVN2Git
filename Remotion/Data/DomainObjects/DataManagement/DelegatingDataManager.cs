@@ -97,11 +97,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return SafeInnerDataManager.GetLoadedDataByObjectState (domainObjectStates);
     }
 
-    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
-    {
-      return SafeInnerDataManager.GetOppositeRelationEndPoints (dataContainer);
-    }
-
     public void MarkInvalid (DomainObject domainObject)
     {
       SafeInnerDataManager.MarkInvalid (domainObject);

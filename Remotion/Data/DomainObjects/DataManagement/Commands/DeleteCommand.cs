@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
@@ -31,6 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     private readonly DomainObject _deletedObject;
     private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly DataContainer _dataContainer;
+    private readonly IRelationEndPoint[] _endPoints;
     private readonly CompositeCommand _endPointDeleteCommands;
 
     public DeleteCommand (ClientTransaction clientTransaction, DomainObject deletedObject, IClientTransactionEventSink transactionEventSink)
@@ -46,11 +48,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _dataContainer = _clientTransaction.DataManager.GetDataContainerWithLazyLoad (_deletedObject.ID, throwOnNotFound: true);
       Assertion.IsFalse (_dataContainer.State == StateType.Deleted);
       Assertion.IsFalse (_dataContainer.State == StateType.Invalid);
-      
-      _endPointDeleteCommands = new CompositeCommand (
-          from endPointID in _dataContainer.AssociatedRelationEndPointIDs
-          let endPoint = _clientTransaction.DataManager.GetRelationEndPointWithLazyLoad (endPointID)
-          select endPoint.CreateDeleteCommand());
+
+      _endPoints = (from endPointID in _dataContainer.AssociatedRelationEndPointIDs
+                    let endPoint = _clientTransaction.DataManager.GetRelationEndPointWithLazyLoad (endPointID)
+                    select endPoint).ToArray();
+      _endPointDeleteCommands = new CompositeCommand (_endPoints.Select (endPoint => endPoint.CreateDeleteCommand()));
     }
 
     public ClientTransaction ClientTransaction
@@ -103,11 +105,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public ExpandedCommand ExpandToAllRelatedObjects ()
     {
-      var allOppositeRelationEndPoints = _clientTransaction.DataManager.GetOppositeRelationEndPoints (
-        _clientTransaction.DataManager.GetDataContainerWithLazyLoad (_deletedObject.ID, throwOnNotFound: true));
-
-      var commands = from oppositeEndPoint in allOppositeRelationEndPoints
-                     select oppositeEndPoint.CreateRemoveCommand (_deletedObject);
+      var commands =
+          from endPoint in _endPoints
+          from oppositeEndPointID in endPoint.GetOppositeRelationEndPointIDs()
+          let oppositeEndPoint = _clientTransaction.DataManager.GetRelationEndPointWithLazyLoad (oppositeEndPointID)
+          select oppositeEndPoint.CreateRemoveCommand (_deletedObject);
 
       return new ExpandedCommand (this).CombineWith (commands);
     }

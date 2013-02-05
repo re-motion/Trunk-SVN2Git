@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.RhinoMocks.UnitTesting;
@@ -55,7 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       CheckDelegation (dm => dm.GetDataContainerWithLazyLoad (objectID, randomBoolean), dataContainer);
       CheckDelegation (dm => dm.GetDataContainersWithLazyLoad (new[] { objectID }, true), new[] { dataContainer });
       CheckDelegation (dm => dm.GetLoadedDataByObjectState (StateType.Unchanged), new[] { persistableData });
-      CheckDelegation (dm => dm.GetOppositeRelationEndPoints (dataContainer), new[] { virtualEndPoint });
       CheckDelegation (dm => dm.MarkInvalid (domainObject));
       CheckDelegation (dm => dm.MarkNotInvalid (objectID));
       CheckDelegation (dm => dm.Commit ());

@@ -103,11 +103,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
-    {
-      throw new NotImplementedException();
-    }
-
     public void MarkInvalid (DomainObject domainObject)
     {
       throw new NotImplementedException();

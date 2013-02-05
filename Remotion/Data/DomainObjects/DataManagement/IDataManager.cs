@@ -36,8 +36,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     IEnumerable<PersistableData> GetLoadedDataByObjectState (params StateType[] domainObjectStates);
     // TODO 4411: Remove
-    IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer);
-    
+
     void RegisterDataContainer (DataContainer dataContainer);
     void Discard (DataContainer dataContainer);
 
