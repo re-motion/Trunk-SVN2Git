@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new TransactionHierarchyManager (constructedTransaction, eventSink, _parentTransaction, _parentHierarchyManager, _parentEventSink);
     }
 
-    public override Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction)
+    public override IDictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       return _parentTransaction.ApplicationData;

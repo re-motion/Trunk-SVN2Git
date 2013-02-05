@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public abstract ITransactionHierarchyManager CreateTransactionHierarchyManager (
         ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
 
-    public abstract Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
+    public abstract IDictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
     public abstract IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
 
     public abstract IInvalidDomainObjectManager CreateInvalidDomainObjectManager (

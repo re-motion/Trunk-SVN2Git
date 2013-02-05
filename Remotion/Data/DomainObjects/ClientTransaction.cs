@@ -141,7 +141,7 @@ public class ClientTransaction
   /// </summary>
   public event EventHandler<ClientTransactionEventArgs> RolledBack;
 
-  private readonly Dictionary<Enum, object> _applicationData;
+  private readonly IDictionary<Enum, object> _applicationData;
   private readonly ITransactionHierarchyManager _hierarchyManager;
   private readonly IClientTransactionEventBroker _eventBroker;
 
@@ -1305,7 +1305,7 @@ public class ClientTransaction
   /// its (direct and indirect) substransactions.
   /// </para>
   /// </remarks>
-  public Dictionary<Enum, object> ApplicationData
+  public IDictionary<Enum, object> ApplicationData
   {
     get { return _applicationData; }
   }

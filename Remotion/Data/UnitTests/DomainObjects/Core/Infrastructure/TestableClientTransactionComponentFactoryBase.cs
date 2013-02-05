@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       throw new NotImplementedException();
     }
 
-    public override Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction)
+    public override IDictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction)
     {
       throw new NotImplementedException();
     }
