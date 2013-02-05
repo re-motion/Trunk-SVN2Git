@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       // Retrieving the property does not cause any calls to the mock objects.
 
       var requestedType = ReflectionObjectMother.GetSomeType();
-      var fakePublicDomainType = ReflectionObjectMother.GetSomeDifferentType();
+      var fakePublicDomainType = ReflectionObjectMother.GetSomeOtherType();
       var fakeClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition();
       _typeDefinitionProviderMock.Expect (mock => mock.GetPublicDomainObjectType (requestedType)).Return (fakePublicDomainType);
       _typeDefinitionProviderMock.Expect (mock => mock.GetTypeDefinition (fakePublicDomainType)).Return (fakeClassDefinition);

@@ -63,7 +63,7 @@ namespace Remotion.Development.UnitTesting.Reflection
       return GetRandomElement (s_types);
     }
 
-    public static Type GetSomeDifferentType ()
+    public static Type GetSomeOtherType ()
     {
       return GetRandomElement (s_otherTypes);
     }
@@ -88,7 +88,7 @@ namespace Remotion.Development.UnitTesting.Reflection
       return GetRandomElement (s_interfaceTypes);
     }
 
-    public static Type GetSomeDifferentInterfaceType ()
+    public static Type GetSomeOtherInterfaceType ()
     {
       return GetRandomElement (s_otherInterfaceTypes);
     }
