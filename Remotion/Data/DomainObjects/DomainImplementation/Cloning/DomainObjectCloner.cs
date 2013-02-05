@@ -81,10 +81,10 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Cloning
       var classType = source.ID.ClassDefinition.ClassType;
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (classType);
 
+      // Get an object reference for a non-existing object, then register a new DataContainer for it. This, in effect, creates a New object that has
+      // no ctor called.
       var cloneObjectID = CloneTransaction.CreateNewObjectID (classDefinition);
-
-      var creator = classDefinition.InstanceCreator;
-      var instance = creator.CreateObjectReference (cloneObjectID, CloneTransaction);
+      var instance = CloneTransaction.GetObjectReference (cloneObjectID);
 
       var cloneDataContainer = DataContainer.CreateNew (cloneObjectID);
       cloneDataContainer.SetDomainObject (instance);
