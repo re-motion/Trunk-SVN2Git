@@ -53,6 +53,7 @@ namespace Remotion.Development.UnitTesting.Reflection
     private static readonly MethodInfo[] s_publicMethodInfos = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("FinalMethod"), typeof (DomainType).GetMethod("Override") });
     private static readonly ParameterInfo[] s_parameterInfos = EnsureNoNulls (typeof (Dictionary<,>).GetMethod ("TryGetValue").GetParameters());
     private static readonly PropertyInfo[] s_properties = EnsureNoNulls (new[] { typeof (List<>).GetProperty ("Count"), typeof (Type).GetProperty ("IsArray") });
+    private static readonly PropertyInfo[] s_staticProperties = EnsureNoNulls (new[] { typeof (Environment).GetProperty ("CurrentDirectory"), typeof (Type).GetProperty ("DefaultBinder") });
 
     public static Type GetSomeType ()
     {
@@ -269,6 +270,20 @@ namespace Remotion.Development.UnitTesting.Reflection
     public static PropertyInfo GetSomeProperty ()
     {
       return GetRandomElement (s_properties);
+    }
+
+    public static PropertyInfo GetSomeOtherProperty ()
+    {
+      return GetRandomElement (s_staticProperties);
+    }
+
+    public static PropertyInfo GetSomeStaticProperty ()
+    {
+      var property = GetRandomElement (s_staticProperties);
+      var getter = property.GetGetMethod();
+      var setter = property.GetSetMethod();
+      Assertion.IsTrue (getter != null && getter.IsStatic || setter != null && setter.IsStatic);
+      return property;
     }
 
     public static object GetDefaultValue (Type type)
