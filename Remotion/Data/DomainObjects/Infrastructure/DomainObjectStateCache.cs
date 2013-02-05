@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -114,9 +115,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         return StateType.NotLoadedYet;
 
       if (dataContainer.State == StateType.Unchanged)
-        return _clientTransaction.DataManager.HasRelationChanged (dataContainer) ? StateType.Changed : StateType.Unchanged;
+        return HasRelationChanged (dataContainer) ? StateType.Changed : StateType.Unchanged;
 
       return dataContainer.State;
+    }
+
+    private bool HasRelationChanged (DataContainer dataContainer)
+    {
+      return dataContainer.AssociatedRelationEndPointIDs
+          .Select (id => _clientTransaction.DataManager.GetRelationEndPointWithoutLoading (id))
+          .Any (endPoint => endPoint != null && endPoint.HasChanged);
     }
   }
 

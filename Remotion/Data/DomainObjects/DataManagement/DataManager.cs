@@ -117,10 +117,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // TODO 4498: Remove
-    public IEnumerable<PersistableData> GetNewChangedDeletedData ()
-    {
-      return GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New);
-    }
 
     // TODO 4411: Remove
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
@@ -135,14 +131,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // TODO 4498: Remove
-    public bool HasRelationChanged (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      return dataContainer.AssociatedRelationEndPointIDs
-          .Select (GetRelationEndPointWithoutLoading)
-          .Any (endPoint => endPoint != null && endPoint.HasChanged);
-    }
 
     public void RegisterDataContainer (DataContainer dataContainer)
     {

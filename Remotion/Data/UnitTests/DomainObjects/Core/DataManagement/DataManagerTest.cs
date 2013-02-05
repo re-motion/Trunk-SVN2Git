@@ -109,49 +109,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetNewChangedDeletedData_Empty ()
-    {
-      var changedDomainObjects = _dataManager.GetNewChangedDeletedData ();
-      Assert.That (changedDomainObjects.ToArray(), Is.Empty);
-    }
-
-    [Test]
-    public void GetNewChangedDeletedData ()
-    {
-      var changedInstance = DomainObjectMother.GetChangedObject (TestableClientTransaction, DomainObjectIDs.OrderItem1);
-      var newInstance = DomainObjectMother.GetNewObject ();
-      var deletedInstance = DomainObjectMother.GetDeletedObject (TestableClientTransaction, DomainObjectIDs.ClassWithAllDataTypes1);
-
-      DomainObjectMother.GetUnchangedObject (TestableClientTransaction, DomainObjectIDs.Order1);
-      DomainObjectMother.GetInvalidObject (TestableClientTransaction);
-      DomainObjectMother.GetNotLoadedObject (TestableClientTransaction, DomainObjectIDs.Order2);
-
-      var changedDomainObjects = _dataManager.GetNewChangedDeletedData ();
-      
-      var expected = new[] { 
-          CreatePersistableData (changedInstance), 
-          CreatePersistableData (newInstance),
-          CreatePersistableData (deletedInstance) };
-
-      CheckPersistableDataSequence(expected, changedDomainObjects);
-    }
-
-    [Test]
-    public void GetNewChangedDeletedData_ReturnsObjectsChangedByRelation ()
-    {
-      var orderWithChangedRelation = DomainObjectIDs.Order1.GetObject<Order> ();
-
-      orderWithChangedRelation.OrderTicket = null;
-      Assert.That (orderWithChangedRelation.State, Is.EqualTo (StateType.Changed));
-      Assert.That (orderWithChangedRelation.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
-
-      var data = _dataManager.GetNewChangedDeletedData ();
-      
-      var expected = CreatePersistableData (orderWithChangedRelation);
-      CheckHasPersistableDataItem (expected, data.ToDictionary (item => item.DomainObject));
-    }
-
-    [Test]
     public void RegisterDataContainer_RegistersDataContainerInMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
@@ -754,49 +711,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (unloadAllCommand.DataContainerMap, Is.SameAs (DataManagerTestHelper.GetDataContainerMap (_dataManagerWithMocks)));
       Assert.That (unloadAllCommand.InvalidDomainObjectManager, Is.SameAs (DataManagerTestHelper.GetInvalidDomainObjectManager (_dataManagerWithMocks)));
       Assert.That (unloadAllCommand.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
-    }
-
-    [Test]
-    public void HasRelationChanged_True ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
-      var endPoint = (RealObjectEndPoint) _dataManager.GetRelationEndPointWithoutLoading (endPointID);
-      RealObjectEndPointTestHelper.SetOppositeObjectID (endPoint, DomainObjectIDs.Official1);
-      Assert.That (endPoint.HasChanged, Is.True);
-
-      var result = _dataManager.HasRelationChanged (dataContainer);
-
-      Assert.That (result, Is.True);
-    }
-
-    [Test]
-    public void HasRelationChanged_False ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      var result = _dataManager.HasRelationChanged (dataContainer);
-
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
-    public void HasRelationChanged_IgnoresUnregisteredEndPoints ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
-      var endPoint = (RealObjectEndPoint) _dataManager.GetRelationEndPointWithoutLoading (endPointID);
-      RealObjectEndPointTestHelper.SetOppositeObjectID (endPoint, DomainObjectIDs.Official1);
-      Assert.That (endPoint.HasChanged, Is.True);
-
-      DataManagerTestHelper.RemoveEndPoint (_dataManager, endPointID);
-
-      Assert.That (_dataManager.HasRelationChanged (dataContainer), Is.False);
     }
 
     [Test]

@@ -55,9 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       CheckDelegation (dm => dm.GetDataContainerWithLazyLoad (objectID, randomBoolean), dataContainer);
       CheckDelegation (dm => dm.GetDataContainersWithLazyLoad (new[] { objectID }, true), new[] { dataContainer });
       CheckDelegation (dm => dm.GetLoadedDataByObjectState (StateType.Unchanged), new[] { persistableData });
-      CheckDelegation (dm => dm.GetNewChangedDeletedData (), new[] { persistableData });
       CheckDelegation (dm => dm.GetOppositeRelationEndPoints (dataContainer), new[] { virtualEndPoint });
-      CheckDelegation (dm => dm.HasRelationChanged (dataContainer), true);
       CheckDelegation (dm => dm.MarkInvalid (domainObject));
       CheckDelegation (dm => dm.MarkNotInvalid (objectID));
       CheckDelegation (dm => dm.Commit ());

@@ -97,19 +97,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return SafeInnerDataManager.GetLoadedDataByObjectState (domainObjectStates);
     }
 
-    public IEnumerable<PersistableData> GetNewChangedDeletedData ()
-    {
-      return SafeInnerDataManager.GetNewChangedDeletedData();
-    }
-
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
     {
       return SafeInnerDataManager.GetOppositeRelationEndPoints (dataContainer);
-    }
-
-    public bool HasRelationChanged (DataContainer dataContainer)
-    {
-      return SafeInnerDataManager.HasRelationChanged (dataContainer);
     }
 
     public void MarkInvalid (DomainObject domainObject)

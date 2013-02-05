@@ -103,17 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public IEnumerable<PersistableData> GetNewChangedDeletedData ()
-    {
-      throw new NotImplementedException();
-    }
-
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
-    {
-      throw new NotImplementedException();
-    }
-
-    public bool HasRelationChanged (DataContainer dataContainer)
     {
       throw new NotImplementedException();
     }

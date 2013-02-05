@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public bool HasDataChanged ()
     {
-      return _dataManager.GetNewChangedDeletedData ().Any ();
+      return GetNewChangedDeletedData ().Any ();
     }
 
     public void CommitData ()
@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // If an object is changed back to its original state during the Committing phase, no Committed event will be raised,
       // because in this case the object won't be committed to the underlying backend (e.g. database).
 
-      var committingEventNotRaised = _dataManager.GetNewChangedDeletedData ().ToList ();
+      var committingEventNotRaised = GetNewChangedDeletedData().ToList ();
       var committingEventRaised = new HashSet<ObjectID>();
 
       // Repeat this until all objects in the commit set have got the event. The commit set can change while this loop is iterated.
@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         committingEventRaised.ExceptWith (committingEventRegistrar.RegisteredObjects.Select (obj => obj.ID));
 
         // Reevaluate the commit set - it might have changed. Have all objects in it got the event? If yes, return the commit set.
-        var changedItems = _dataManager.GetNewChangedDeletedData ().ToList();
+        var changedItems = GetNewChangedDeletedData ().ToList();
         committingEventNotRaised = changedItems.Where (item => !committingEventRaised.Contains (item.DomainObject.ID)).ToList ();
        
         if (!committingEventNotRaised.Any ())
@@ -160,7 +160,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // If an object is changed back to its original state during the RollingBack phase, no RolledBack event will be raised,
       // because the object actually has never been changed from a ClientTransaction's perspective.
 
-      var rollingBackEventNotRaised = _dataManager.GetNewChangedDeletedData ().ToList ();
+      var rollingBackEventNotRaised = GetNewChangedDeletedData ().ToList ();
       var rollingBackEventRaised = new HashSet<ObjectID> ();
 
       // Repeat this until all objects in the rollback set have got the event. The rollback set can change while this loop is iterated.
@@ -173,7 +173,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         rollingBackEventRaised.UnionWith (rollingBackEventNotRaised.Select (item => item.DomainObject.ID));
 
         // Reevaluate the rollback set - it might have changed. Have all objects in it got the event? If yes, return the rollback set.
-        var changedItems = _dataManager.GetNewChangedDeletedData ().ToList ();
+        var changedItems = GetNewChangedDeletedData ().ToList ();
         rollingBackEventNotRaised = changedItems.Where (item => !rollingBackEventRaised.Contains (item.DomainObject.ID)).ToList ();
 
         if (!rollingBackEventNotRaised.Any ())
@@ -185,5 +185,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       _eventSink.RaiseTransactionRolledBackEvent (changedDomainObjects);
     }
+
+    private IEnumerable<PersistableData> GetNewChangedDeletedData ()
+    {
+      return _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New);
+    }
+
   }
 }

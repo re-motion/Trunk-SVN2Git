@@ -27,7 +27,6 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.RhinoMocks.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
@@ -90,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var item = new PersistableData (fakeDomainObject, StateType.Changed, fakeDataContainer, new IRelationEndPoint[0]);
 
-      _dataManagerMock.Stub (stub => stub.GetNewChangedDeletedData()).Return (new[] { item });
+      _dataManagerMock.Stub (stub => stub.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New)).Return (new[] { item });
       _mockRepository.ReplayAll ();
 
       var result = _agent.HasDataChanged();
@@ -100,7 +99,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void HasDataChanged_False ()
     {
-      _dataManagerMock.Stub (stub => stub.GetNewChangedDeletedData ()).Return (new PersistableData[0]);
+      _dataManagerMock
+          .Stub (stub => stub.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
+          .Return (new PersistableData[0]);
       _mockRepository.ReplayAll ();
 
       var result = _agent.HasDataChanged ();
@@ -114,19 +115,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       {
         // First run of BeginCommit: fakeChangedPersistableItem, _fakeNewPersistableItem in commit set - event raised for both
         _dataManagerMock
-            .Expect (mock => mock.GetNewChangedDeletedData ())
+            .Expect (mock => mock.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
             .Return (new[] { _fakeChangedPersistableItem, _fakeNewPersistableItem });
         ExpectTransactionCommitting (_fakeChangedDomainObject, _fakeNewDomainObject);
 
         // Second run of BeginCommit: _fakeChangedPersistableItem, _fakeNewPersistableItem, _fakeDeletedPersistableItem in commit set 
         // Event is raised just for _fakeDeletedPersistableItem - the others have already got their event
         _dataManagerMock
-            .Expect (mock => mock.GetNewChangedDeletedData ())
+            .Expect (mock => mock.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
             .Return (new[] { _fakeChangedPersistableItem, _fakeNewPersistableItem, _fakeDeletedPersistableItem });
         ExpectTransactionCommitting (_fakeDeletedDomainObject);
 
         // End of BeginCommit: _fakeNewPersistableItem, _fakeDeletedPersistableItem in commit set - events already raised for all of those
-        _dataManagerMock.Expect (mock => mock.GetNewChangedDeletedData ()).Return (new[] { _fakeNewPersistableItem, _fakeDeletedPersistableItem });
+        _dataManagerMock
+            .Expect (mock => mock.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
+            .Return (new[] { _fakeNewPersistableItem, _fakeDeletedPersistableItem });
 
         // CommitValidate: _fakeNewPersistableItem, _fakeDeletedPersistableItem in commit set - this is what actually gets committed
         ExpectTransactionCommitValidate (new[] { _fakeNewPersistableItem, _fakeDeletedPersistableItem });
@@ -153,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         // First run of BeginCommit: fakeChangedPersistableItem, _fakeNewPersistableItem in commit set - event raised for both
         // fakeChangedDomainObject and _fakeNewDomainObject are both reregistered
         _dataManagerMock
-            .Expect (mock => mock.GetNewChangedDeletedData ())
+            .Expect (mock => mock.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
             .Return (new[] { _fakeChangedPersistableItem, _fakeNewPersistableItem });
         ExpectTransactionCommitting (_fakeChangedDomainObject, _fakeNewDomainObject)
             .WhenCalled (mi => GetEventRegistrar (mi).RegisterForAdditionalCommittingEvents (_fakeChangedDomainObject, _fakeNewDomainObject));
@@ -162,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         // Event is raised for all three - two have been reregistered, one is added to the commit set
         // _fakeChangedDomainObject is again reregistered
         _dataManagerMock
-            .Expect (mock => mock.GetNewChangedDeletedData ())
+            .Expect (mock => mock.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
             .Return (new[] { _fakeChangedPersistableItem, _fakeNewPersistableItem, _fakeDeletedPersistableItem });
         ExpectTransactionCommitting (_fakeChangedDomainObject, _fakeDeletedDomainObject, _fakeNewDomainObject)
             .WhenCalled (mi => GetEventRegistrar(mi).RegisterForAdditionalCommittingEvents (_fakeChangedDomainObject));
@@ -170,12 +173,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         // Third run of BeginCommit: _fakeChangedPersistableItem, _fakeNewPersistableItem, fakeDeletedPersistableItem in commit set 
         // Event is raised only for _fakeChangedDomainObject, it was reregistered
         _dataManagerMock
-            .Expect (mock => mock.GetNewChangedDeletedData ())
+            .Expect (mock => mock.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
             .Return (new[] { _fakeChangedPersistableItem, _fakeNewPersistableItem, _fakeDeletedPersistableItem });
         ExpectTransactionCommitting (_fakeChangedDomainObject);
 
         // End of BeginCommit: _fakeNewPersistableItem, _fakeDeletedPersistableItem in commit set - events already raised for all of those
-        _dataManagerMock.Expect (mock => mock.GetNewChangedDeletedData ()).Return (new[] { _fakeNewPersistableItem, _fakeDeletedPersistableItem });
+        _dataManagerMock
+            .Expect (mock => mock.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
+            .Return (new[] { _fakeNewPersistableItem, _fakeDeletedPersistableItem });
 
         // CommitValidate: _fakeNewPersistableItem, _fakeDeletedPersistableItem in commit set - this is what actually gets committed
         ExpectTransactionCommitValidate (_fakeNewPersistableItem, _fakeDeletedPersistableItem);
@@ -200,18 +205,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       using (_mockRepository.Ordered ())
       {
         // First run of BeginRollback: fakeChangedPersistableItem, _fakeNewPersistableItem in rollback set - event raised for both
-        _dataManagerMock.Expect (mock => mock.GetNewChangedDeletedData()).Return (new[] { _fakeChangedPersistableItem, _fakeNewPersistableItem });
+        _dataManagerMock
+            .Expect (mock => mock.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
+            .Return (new[] { _fakeChangedPersistableItem, _fakeNewPersistableItem });
         ExpectTransactionRollingBack (_fakeChangedDomainObject, _fakeNewDomainObject);
 
         // Second run of BeginRollback: fakeChangedPersistableItem, _fakeNewPersistableItem, _fakeDeletedPersistableItem in rollback set 
         // Event is raised just for _fakeDeletedPersistableItem -  the others have alreay got their event
         _dataManagerMock
-            .Expect (mock => mock.GetNewChangedDeletedData ())
+            .Expect (mock => mock.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
             .Return (new[] { _fakeChangedPersistableItem, _fakeNewPersistableItem, _fakeDeletedPersistableItem });
         ExpectTransactionRollingBack (_fakeDeletedDomainObject);
 
         // End of BeginRollback: _fakeNewPersistableItem, _fakeDeletedPersistableItem in rollback set - events already raised for all of those
-        _dataManagerMock.Expect (mock => mock.GetNewChangedDeletedData ()).Return (new[] { _fakeNewPersistableItem, _fakeDeletedPersistableItem });
+        _dataManagerMock
+            .Expect (mock => mock.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New))
+            .Return (new[] { _fakeNewPersistableItem, _fakeDeletedPersistableItem });
 
         // Rollback
         _dataManagerMock.Expect (mock => mock.Rollback ());
