@@ -136,7 +136,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
           referenceBuilder.AddType (t);
       }
 
-      Assert.That (_builder.AllTypes, Is.EquivalentTo ((ICollection) referenceBuilder.AllTypes));
+      Assert.That (_builder.AllTypes, Is.EquivalentTo (referenceBuilder.AllTypes));
     }
 
     [Uses (typeof (NullMixin))]

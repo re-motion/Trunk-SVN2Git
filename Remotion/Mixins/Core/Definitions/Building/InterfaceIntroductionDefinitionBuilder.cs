@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions.Building
@@ -26,13 +26,13 @@ namespace Remotion.Mixins.Definitions.Building
   {
     private readonly MixinDefinition _mixin;
     private readonly MemberVisibility _defaultVisibility;
-    private readonly Set<Type> _nonIntroducedInterfaces;
+    private readonly HashSet<Type> _nonIntroducedInterfaces;
 
     public InterfaceIntroductionDefinitionBuilder (MixinDefinition mixin, MemberVisibility defaultVisibility)
     {
       _mixin = mixin;
       _defaultVisibility = defaultVisibility;
-      _nonIntroducedInterfaces = new Set<Type> (typeof (ISerializable), typeof (IDeserializationCallback), typeof (IInitializableMixin));
+      _nonIntroducedInterfaces = new HashSet<Type> { typeof (ISerializable), typeof (IDeserializationCallback), typeof (IInitializableMixin) };
       AnalyzeNonIntroducedInterfaces ();
     }
 
@@ -87,7 +87,7 @@ namespace Remotion.Mixins.Definitions.Building
     private void AnalyzeIntroducedMembers (InterfaceIntroductionDefinition introducedInterface)
     {
       MemberImplementationFinder memberFinder = new MemberImplementationFinder (introducedInterface.InterfaceType, _mixin);
-      Set<MethodInfo> specialMethods = new Set<MethodInfo>();
+      var specialMethods = new HashSet<MethodInfo> ();
 
       AnalyzeProperties (introducedInterface, memberFinder, specialMethods);
       AnalyzeEvents (introducedInterface, memberFinder, specialMethods);
@@ -95,7 +95,7 @@ namespace Remotion.Mixins.Definitions.Building
     }
 
     private void AnalyzeProperties (InterfaceIntroductionDefinition introducedInterface, MemberImplementationFinder memberFinder,
-         Set<MethodInfo> specialMethods)
+         HashSet<MethodInfo> specialMethods)
     {
       foreach (PropertyInfo interfaceProperty in introducedInterface.InterfaceType.GetProperties())
       {
@@ -115,7 +115,7 @@ namespace Remotion.Mixins.Definitions.Building
     }
 
     private void AnalyzeEvents (InterfaceIntroductionDefinition introducedInterface, MemberImplementationFinder memberFinder,
-        Set<MethodInfo> specialMethods)
+        HashSet<MethodInfo> specialMethods)
     {
       foreach (EventInfo interfaceEvent in introducedInterface.InterfaceType.GetEvents())
       {
@@ -130,7 +130,7 @@ namespace Remotion.Mixins.Definitions.Building
     }
 
     private void AnalyzeMethods (InterfaceIntroductionDefinition introducedInterface, MemberImplementationFinder memberFinder,
-        Set<MethodInfo> specialMethods)
+        HashSet<MethodInfo> specialMethods)
     {
       foreach (MethodInfo interfaceMethod in introducedInterface.InterfaceType.GetMethods())
       {
@@ -159,7 +159,7 @@ namespace Remotion.Mixins.Definitions.Building
       {
         string message = string.Format (
             "An implementation for interface member {0}.{1} could not be found in mixin {2}.",
-            interfaceMember.DeclaringType.FullName,
+            interfaceMember.DeclaringType,
             interfaceMember.Name,
             _mixin.FullName);
         throw new ConfigurationException (message);

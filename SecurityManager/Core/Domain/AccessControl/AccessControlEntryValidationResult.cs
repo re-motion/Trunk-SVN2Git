@@ -16,8 +16,8 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using System.Text;
-using Remotion.Collections;
 using System.Linq;
 using Remotion.Utilities;
 
@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// </summary>
   public class AccessControlEntryValidationResult
   {
-    private readonly Set<AccessControlEntryValidationError> _errors = new Set<AccessControlEntryValidationError>();
+    private readonly HashSet<AccessControlEntryValidationError> _errors = new HashSet<AccessControlEntryValidationError> ();
 
     public AccessControlEntryValidationResult ()
     {

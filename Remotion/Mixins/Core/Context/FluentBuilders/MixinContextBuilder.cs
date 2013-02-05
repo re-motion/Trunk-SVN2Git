@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Remotion.Collections;
 using Remotion.Mixins.Context.Suppression;
 using Remotion.Utilities;
 
@@ -33,7 +32,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     private readonly Type _mixinType;
     private readonly MixinContextOrigin _origin;
 
-    private readonly Set<Type> _dependencies = new Set<Type> ();
+    private readonly HashSet<Type> _dependencies = new HashSet<Type> ();
 
     private MixinKind _mixinKind;
     private MemberVisibility _introducedMemberVisiblity;

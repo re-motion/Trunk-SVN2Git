@@ -25,6 +25,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Collections
 {
   [TestFixture]
+  [Obsolete ("1.13.185.0")]
   public class SetTest
   {
     [Test]

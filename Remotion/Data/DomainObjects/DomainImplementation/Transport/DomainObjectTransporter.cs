@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
     }
 
     private readonly ClientTransaction _transportTransaction;
-    private readonly Set<ObjectID> _transportedObjects = new Set<ObjectID>();
+    private readonly HashSet<ObjectID> _transportedObjects = new HashSet<ObjectID>();
 
     public DomainObjectTransporter ()
     {
@@ -200,7 +200,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       DomainObject sourceObject = _transportTransaction.GetObject (objectID, false);
       using (_transportTransaction.EnterNonDiscardingScope ())
       {
-        Set<DomainObject> graph = new DomainObjectGraphTraverser (sourceObject, strategy).GetFlattenedRelatedObjectGraph ();
+        HashSet<DomainObject> graph = new DomainObjectGraphTraverser (sourceObject, strategy).GetFlattenedRelatedObjectGraph ();
         foreach (DomainObject domainObject in graph)
           Load (domainObject.ID); // explicitly call load rather than just implicitly loading it into the transaction for consistency
         return graph;

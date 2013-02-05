@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -51,7 +50,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       if (_persistentMixinFinder != null)
       {
-        var processedMixins = new Set<Type> ();
+        var processedMixins = new HashSet<Type> ();
         return from mixin in _persistentMixinFinder.GetPersistentMixins ()
                from propertyInfo in FindPropertyInfosOnMixin (mixin, processedMixins)
                select propertyInfo;
@@ -62,7 +61,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
     }
 
-    private IEnumerable<IPropertyInformation> FindPropertyInfosOnMixin (Type mixin, Set<Type> processedMixins)
+    private IEnumerable<IPropertyInformation> FindPropertyInfosOnMixin (Type mixin, HashSet<Type> processedMixins)
     {
       Type current = mixin;
       while (current != null && !IsMixinBaseClass (current))

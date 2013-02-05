@@ -16,8 +16,8 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Mixins.Context;
+using System.Linq;
 
 namespace Remotion.Mixins.UnitTests.Core.Context
 {
@@ -89,8 +89,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       ClassContext result = _combiner.GetCombinedContexts (typeof (int));
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
 
-      Set<Type> expectedInterfaces = new Set<Type> (_context1.ComposedInterfaces);
-      expectedInterfaces.AddRange (_context2.ComposedInterfaces);
+      var expectedInterfaces = _context1.ComposedInterfaces.Union (_context2.ComposedInterfaces);
       Assert.That (result.ComposedInterfaces, Is.EquivalentTo (expectedInterfaces));
     }
   }

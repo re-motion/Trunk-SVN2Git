@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Mixins.Globalization;
 using Remotion.Mixins.UnitTests.Core.Globalization.TestDomain;
@@ -61,15 +61,15 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
       Assert.That (resourceManager[0].Name, Is.EqualTo ("OnTarget"));
     }
 
-		[Test]
-		public void AttributesOnBaseAndClass_InheritedDefault ()
-		{
-			ResourceManagerSet resourceManager =
-					(ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes));
+    [Test]
+    public void AttributesOnBaseAndClass_InheritedDefault ()
+    {
+      ResourceManagerSet resourceManager =
+          (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes));
 
-		  Assert.That (resourceManager.Count, Is.EqualTo (1));
-		  Assert.That (resourceManager[0].Name, Is.EqualTo ("OnInherited"));
-		}
+      Assert.That (resourceManager.Count, Is.EqualTo (1));
+      Assert.That (resourceManager[0].Name, Is.EqualTo ("OnInherited"));
+    }
 
     [Test]
     public void AttributesOnBaseAndClass_InheritedFalse ()
@@ -88,8 +88,7 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true);
 
       Assert.That (resourceManager.Count, Is.EqualTo (2));
-      Set<string> names = new Set<string> (resourceManager[0].Name, resourceManager[1].Name);
-      Assert.That (names, Is.EquivalentTo (new string[] {"OnTarget", "OnInherited"}));
+      Assert.That (new[] { resourceManager[0].Name, resourceManager[1].Name }, Is.EquivalentTo (new[] { "OnTarget", "OnInherited" }));
     }
 
     [Test]
@@ -133,8 +132,9 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), false);
 
         Assert.That (resourceManager.Count, Is.EqualTo (3));
-        string[] names = new string[] { resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name };
-        Assert.That (names, Is.EquivalentTo (new object[] {"OnMixin1", "OnMixin2a", "OnMixin2b"}));
+        Assert.That (
+            new[] { resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name },
+            Is.EquivalentTo (new object[] { "OnMixin1", "OnMixin2a", "OnMixin2b" }));
       }
     }
 
@@ -151,9 +151,12 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
 
         Assert.That (resourceManager.Count, Is.EqualTo (4));
-        Set<string> names = new Set<string> (resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name, resourceManager[3].Name,
-						resourceManager[3].Name);
-				Assert.That (names, Is.EquivalentTo (new string[] { "OnInherited", "OnMixin1", "OnMixin2a", "OnMixin2b" }));
+        Assert.That (
+            new[]
+            {
+                resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name, resourceManager[3].Name, resourceManager[3].Name
+            },
+            Is.EquivalentTo (new[] { "OnInherited", "OnInherited", "OnMixin1", "OnMixin2a", "OnMixin2b" }));
       }
     }
 
@@ -170,9 +173,13 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true);
 
         Assert.That (resourceManager.Count, Is.EqualTo (5));
-        Set<string> names = new Set<string> (resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name, resourceManager[3].Name,
-            resourceManager[4].Name);
-        Assert.That (names, Is.EquivalentTo (new string[] { "OnTarget", "OnInherited", "OnMixin1", "OnMixin2a", "OnMixin2b" }));
+        Assert.That (
+            new[]
+            {
+                resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name, resourceManager[3].Name,
+                resourceManager[4].Name
+            },
+            Is.EquivalentTo (new[] { "OnTarget", "OnInherited", "OnMixin1", "OnMixin2a", "OnMixin2b" }));
       }
     }
 

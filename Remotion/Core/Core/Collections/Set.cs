@@ -41,6 +41,7 @@ namespace Remotion.Collections
   /// </remarks>
   [DebuggerDisplay ("Set - Count = {Count}")]
   [Serializable]
+  [Obsolete ("Use a standard .NET System.Collections.Generic.HashSet<T> instead. (1.13.185.0)", true)]
   public class Set<T> : IEnumerable<T>, ICollection<T>, ICollection
   {
     private Dictionary<T, T> _items;

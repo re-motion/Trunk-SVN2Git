@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.UnitTests.Globalization.TestDomain;
 using Remotion.Utilities;
@@ -126,8 +125,7 @@ namespace Remotion.UnitTests.Globalization
 
       var resourceManagerSet = (ResourceManagerSet) entry.ResourceManager;
       Assert.That (resourceManagerSet.Count, Is.EqualTo (2));
-      var names = new Set<string> (resourceManagerSet[0].Name, resourceManagerSet[1].Name);
-      Assert.That (names, Is.EquivalentTo (new[] { "Four", "Five" }));
+      Assert.That (new[] { resourceManagerSet[0].Name, resourceManagerSet[1].Name }, Is.EquivalentTo (new[] { "Four", "Five" }));
     }
 
     [Test]
@@ -137,8 +135,9 @@ namespace Remotion.UnitTests.Globalization
       Assert.That (entry.DefiningType, Is.SameAs (typeof (ClassWithMultiLingualResourcesAttributes)));
       var resourceManagerSet = (ResourceManagerSet) entry.ResourceManager;
       Assert.That (resourceManagerSet.Count, Is.EqualTo (3));
-      var names = new Set<string> (resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name);
-      Assert.That (names, Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (
+          new[] { resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name },
+          Is.EquivalentTo (new[] { "One", "Two", "Three" }));
     }
 
     [Test]
@@ -175,8 +174,7 @@ namespace Remotion.UnitTests.Globalization
           (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false, out definingType);
       Assert.That (definingType, Is.SameAs (typeof (InheritedClassWithMultiLingualResourcesAttributes)));
       Assert.That (resourceManagerSet.Count, Is.EqualTo (2));
-      var names = new Set<string> (resourceManagerSet[0].Name, resourceManagerSet[1].Name);
-      Assert.That (names, Is.EquivalentTo (new[] { "Four", "Five" }));
+      Assert.That (new[] { resourceManagerSet[0].Name, resourceManagerSet[1].Name }, Is.EquivalentTo (new[] { "Four", "Five" }));
     }
 
     [Test]
@@ -187,8 +185,9 @@ namespace Remotion.UnitTests.Globalization
           (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false, out definingType);
       Assert.That (definingType, Is.SameAs (typeof (ClassWithMultiLingualResourcesAttributes)));
       Assert.That (resourceManagerSet.Count, Is.EqualTo (3));
-      var names = new Set<string> (resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name);
-      Assert.That (names, Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (
+          new[] { resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name },
+          Is.EquivalentTo (new[] { "One", "Two", "Three" }));
     }
 
     [Test]
@@ -222,8 +221,7 @@ namespace Remotion.UnitTests.Globalization
     {
       var resourceManagerSet = (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
       Assert.That (resourceManagerSet.Count, Is.EqualTo (2));
-      var names = new Set<string> (resourceManagerSet[0].Name, resourceManagerSet[1].Name);
-      Assert.That (names, Is.EquivalentTo (new[] { "Four", "Five" }));
+      Assert.That (new[] { resourceManagerSet[0].Name, resourceManagerSet[1].Name }, Is.EquivalentTo (new[] { "Four", "Five" }));
     }
 
     [Test]
@@ -232,8 +230,9 @@ namespace Remotion.UnitTests.Globalization
       var resourceManagerSet =
           (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false);
       Assert.That (resourceManagerSet.Count, Is.EqualTo (3));
-      var names = new Set<string> (resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name);
-      Assert.That (names, Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (
+          new[] { resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name },
+          Is.EquivalentTo (new[] { "One", "Two", "Three" }));
     }
 
     [Test]
@@ -241,13 +240,16 @@ namespace Remotion.UnitTests.Globalization
     {
       var resourceManagerSet = (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true);
       Assert.That (resourceManagerSet.Count, Is.EqualTo (5));
-      var names = new Set<string> (
-          resourceManagerSet[0].Name,
-          resourceManagerSet[1].Name,
-          resourceManagerSet[2].Name,
-          resourceManagerSet[3].Name,
-          resourceManagerSet[4].Name);
-      Assert.That (names, Is.EquivalentTo (new[] { "One", "Two", "Three", "Four", "Five" }));
+      Assert.That (
+          new[]
+          {
+              resourceManagerSet[0].Name,
+              resourceManagerSet[1].Name,
+              resourceManagerSet[2].Name,
+              resourceManagerSet[3].Name,
+              resourceManagerSet[4].Name
+          },
+          Is.EquivalentTo (new[] { "One", "Two", "Three", "Four", "Five" }));
     }
   }
 }

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -33,7 +32,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private readonly Type _type;
     private readonly bool _includeBaseProperties;
-    private readonly Set<IMethodInformation> _explicitInterfaceImplementations;
+    private readonly HashSet<IMethodInformation> _explicitInterfaceImplementations;
     private readonly IMappingNameResolver _nameResolver;
     private readonly bool _includeMixinProperties;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
@@ -169,9 +168,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return FindPropertiesFilter (PropertyInfoAdapter.Create((PropertyInfo) member));
     }
 
-    private Set<IMethodInformation> GetExplicitInterfaceImplementations (Type type)
+    private HashSet<IMethodInformation> GetExplicitInterfaceImplementations (Type type)
     {
-      var explicitInterfaceImplementationSet = new Set<IMethodInformation> ();
+      var explicitInterfaceImplementationSet = new HashSet<IMethodInformation> ();
 
       foreach (Type interfaceType in type.GetInterfaces())
       {
@@ -179,7 +178,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         MethodInfo[] explicitInterfaceImplementations = Array.FindAll (
             interfaceMapping.TargetMethods,
             targetMethod => targetMethod.IsSpecialName && !targetMethod.IsPublic);
-        explicitInterfaceImplementationSet.AddRange (explicitInterfaceImplementations.Select (mi => (IMethodInformation) MethodInfoAdapter.Create(mi)));
+        explicitInterfaceImplementationSet.UnionWith (explicitInterfaceImplementations.Select (mi => (IMethodInformation) MethodInfoAdapter.Create(mi)));
       }
 
       return explicitInterfaceImplementationSet;

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Samples.DynamicMixinBuilding.Core
@@ -31,7 +30,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.Core
     public static ModuleScope Scope = new ModuleScope (true);
 
     private readonly Type _targetType;
-    private readonly Set<MethodInfo> _methodsToOverride = new Set<MethodInfo> ();
+    private readonly HashSet<MethodInfo> _methodsToOverride = new HashSet<MethodInfo> ();
 
     public DynamicMixinBuilder (Type targetType)
     {

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -358,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
-      Assert.That (relatedObjects, Is.EquivalentTo (new Set<DomainObject> (relatedObjects)));
+      Assert.That (relatedObjects, Is.EquivalentTo (relatedObjects.Distinct()));
     }
 
     [Test]

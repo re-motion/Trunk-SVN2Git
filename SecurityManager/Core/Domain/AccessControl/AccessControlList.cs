@@ -17,10 +17,10 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
@@ -88,8 +88,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
-      var allowedAccessTypesResult = new Set<AccessTypeDefinition> ();
-      var deniedAccessTypesResult = new Set<AccessTypeDefinition> ();
+      var allowedAccessTypesResult = new HashSet<AccessTypeDefinition> ();
+      var deniedAccessTypesResult = new HashSet<AccessTypeDefinition> ();
 
       foreach (var ace in FindMatchingEntries (token))
       {
@@ -97,8 +97,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         var deniedAccessTypesForCurrentAce = ace.GetDeniedAccessTypes ();
 
         // Add allowed/denied access types of ACE to result
-        allowedAccessTypesResult.AddRange (allowedAccesTypesForCurrentAce);
-        deniedAccessTypesResult.AddRange (deniedAccessTypesForCurrentAce);
+        allowedAccessTypesResult.UnionWith (allowedAccesTypesForCurrentAce);
+        deniedAccessTypesResult.UnionWith (deniedAccessTypesForCurrentAce);
 
         // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
         // The recorded information allows deduction of whether the probing ACE was matched for ACL-expansion code

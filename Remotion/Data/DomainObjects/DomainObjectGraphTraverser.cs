@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -45,25 +46,25 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Gets the flattened related object graph for the root <see cref="DomainObject"/> associated with this traverser.
     /// </summary>
-    /// <returns>A <see cref="Set{T}"/> of <see cref="DomainObject"/> instances containing the root object and all objects directly or indirectly
+    /// <returns>A <see cref="HashSet{T}"/> of <see cref="DomainObject"/> instances containing the root object and all objects directly or indirectly
     /// referenced by it.</returns>
     // Note: Implemented nonrecursively in order to support very large graphs.
-    public Set<DomainObject> GetFlattenedRelatedObjectGraph ()
+    public HashSet<DomainObject> GetFlattenedRelatedObjectGraph ()
     {
-      var visited = new Set<DomainObject> ();
-      var resultSet = new Set<DomainObject> ();
-      var objectsToBeProcessed = new Set<Tuple<DomainObject, int>> (Tuple.Create (_rootObject, 0));
+      var visited = new HashSet<DomainObject> ();
+      var resultSet = new HashSet<DomainObject> ();
+      var objectsToBeProcessed = new HashSet<Tuple<DomainObject, int>> { Tuple.Create (_rootObject, 0) };
 
       while (objectsToBeProcessed.Count > 0)
       {
-        Tuple<DomainObject, int> current = objectsToBeProcessed.GetAny ();
+        Tuple<DomainObject, int> current = objectsToBeProcessed.First();
         objectsToBeProcessed.Remove (current);
         if (!visited.Contains (current.Item1))
         {
           visited.Add (current.Item1);
           if (_strategy.ShouldProcessObject (current.Item1))
             resultSet.Add (current.Item1);
-          objectsToBeProcessed.AddRange (GetNextTraversedObjects (current.Item1, current.Item2, _strategy));
+          objectsToBeProcessed.UnionWith (GetNextTraversedObjects (current.Item1, current.Item2, _strategy));
         }
       }
 

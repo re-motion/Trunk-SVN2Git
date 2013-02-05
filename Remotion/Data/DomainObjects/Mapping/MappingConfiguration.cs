@@ -202,7 +202,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private IEnumerable<ClassDefinition> GetInheritanceRootClasses (IEnumerable<ClassDefinition> classDefinitions)
     {
-      var rootClasses = new Set<ClassDefinition> ();
+      var rootClasses = new HashSet<ClassDefinition> ();
       foreach (var classDefinition in classDefinitions)
       {
         var rootClassDefinition = classDefinition.GetInheritanceRootClass ();

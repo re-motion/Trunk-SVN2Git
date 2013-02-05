@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Mixins.Context.DeclarativeAnalyzers;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Reflection.TypeDiscovery;
@@ -138,7 +137,7 @@ namespace Remotion.Mixins.Context
     }
 
     private readonly MixinConfiguration _parentConfiguration;
-    private readonly Set<Type> _allTypes = new Set<Type> ();
+    private readonly HashSet<Type> _allTypes = new HashSet<Type> ();
 
     /// <summary>
     /// Initializes a new <see cref="DeclarativeConfigurationBuilder"/>, which can be used to collect assemblies and types with declarative

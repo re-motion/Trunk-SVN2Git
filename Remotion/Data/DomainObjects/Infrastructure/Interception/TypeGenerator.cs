@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
           t => new NonInterceptableTypeException (string.Format ("Cannot instantiate type {0} as it is not part of the mapping.", t.FullName), t));
 
       // Analyze type before creating the class emitter; that way, we won't have half-created types lying around in case of configuration errors
-      Set<Tuple<PropertyInfo, string>> properties = new InterceptedPropertyCollector (classDefinition, typeConversionProvider).GetProperties();
+      HashSet<Tuple<PropertyInfo, string>> properties = new InterceptedPropertyCollector (classDefinition, typeConversionProvider).GetProperties();
 
       string typeName = typeToDeriveFrom.FullName + "_WithInterception_" + Guid.NewGuid ().ToString ("N");
       var interfaces = new[] { typeof (IInterceptedDomainObject), typeof (ISerializable) };

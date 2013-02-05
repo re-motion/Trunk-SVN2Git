@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Utilities;
 
@@ -36,7 +37,7 @@ namespace Remotion.Reflection
 
     public Type[] GetLeafTypes ()
     {
-      Set<Type> baseTypes = new Set<Type>();
+      HashSet<Type> baseTypes = new HashSet<Type> ();
       foreach (Type type in _types)
       {
         baseTypes.Add (type.BaseType);

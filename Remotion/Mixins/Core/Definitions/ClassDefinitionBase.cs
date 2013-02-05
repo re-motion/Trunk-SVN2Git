@@ -18,9 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Utilities;
-using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 
 namespace Remotion.Mixins.Definitions
 {
@@ -36,7 +34,7 @@ namespace Remotion.Mixins.Definitions
         new MultiDefinitionCollection<Type, AttributeDefinition> (a => a.AttributeType);
 
     private readonly Type _type;
-    private readonly Set<Type> _implementedInterfaces;
+    private readonly HashSet<Type> _implementedInterfaces;
 
     protected ClassDefinitionBase (Type type)
     {
@@ -44,7 +42,7 @@ namespace Remotion.Mixins.Definitions
       if (type.ContainsGenericParameters)
         throw new ArgumentException (string.Format ("The type {0} contains generic parameters, which is not allowed.", type), "type");
       _type = type;
-      _implementedInterfaces = new Set<Type> (_type.GetInterfaces());
+      _implementedInterfaces = new HashSet<Type> (_type.GetInterfaces());
     }
 
     public Type Type
@@ -98,7 +96,7 @@ namespace Remotion.Mixins.Definitions
 
     public abstract IVisitableDefinition Parent { get; }
 
-    public Set<Type> ImplementedInterfaces
+    public HashSet<Type> ImplementedInterfaces
     {
       get { return _implementedInterfaces; }
     }

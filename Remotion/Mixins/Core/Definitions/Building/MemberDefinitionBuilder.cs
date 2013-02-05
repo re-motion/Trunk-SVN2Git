@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 
@@ -29,7 +28,7 @@ namespace Remotion.Mixins.Definitions.Building
 
     private readonly ClassDefinitionBase _classDefinition;
     private readonly Predicate<MethodInfo> _methodFilter;
-    private readonly Set<MethodInfo> _specialMethods = new Set<MethodInfo> ();
+    private readonly HashSet<MethodInfo> _specialMethods = new HashSet<MethodInfo> ();
 
     public MemberDefinitionBuilder (ClassDefinitionBase classDefinition, Predicate<MethodInfo> methodFilter)
     {

@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Mapping;
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Order order;
-      var orderItems = new Set<OrderItem> ();
+      var orderItems = new HashSet<OrderItem> ();
       using (subTransaction.EnterDiscardingScope ())
       {
         order = DomainObjectIDs.Order1.GetObject<Order> ();

@@ -38,7 +38,7 @@ namespace Remotion.Collections
   /// influance the hash code and should therefore be avoided.
   /// </para>
   /// <para>
-  /// Note that, because this type is based on <see cref="Set{T}"/>, equal elements are regarded as one. This is, a set (1, 1, 2, 2) is equivalent to 
+  /// Note that, because this type is based on <see cref="HashSet{T}"/>, equal elements are regarded as one. This is, a set (1, 1, 2, 2) is equivalent to 
   /// a set (1, 2).
   /// </para>
   /// </remarks>
@@ -49,7 +49,7 @@ namespace Remotion.Collections
       return EqualityUtility.GetXorHashCode (items);
     }
 
-    private readonly Set<T> _items;
+    private readonly HashSet<T> _items;
     private readonly int _cachedHashCode;
 
     public SetBasedCacheKey(params T[] items) : this((IEnumerable<T>) items)
@@ -59,7 +59,7 @@ namespace Remotion.Collections
     public SetBasedCacheKey (IEnumerable<T> items)
     {
       ArgumentUtility.CheckNotNull ("items", items);
-      _items = new Set<T> (items);
+      _items = new HashSet<T> (items);
       _cachedHashCode = CalculateHashCode (_items);
     }
 
