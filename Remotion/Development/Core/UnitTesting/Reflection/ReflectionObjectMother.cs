@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -26,11 +27,11 @@ namespace Remotion.Development.UnitTesting.Reflection
 {
   public static class ReflectionObjectMother
   {
-    private static readonly Random s_random = new Random();
+    private static readonly Random s_random = new Random ();
 
     private static readonly Type[] s_types = EnsureNoNulls (new[] { typeof (DateTime), typeof (Random) });
     private static readonly Type[] s_otherTypes = EnsureNoNulls (new[] { typeof (decimal), typeof (StringBuilder) });
-    private static readonly Type[] s_serializableTypes = EnsureNoNulls (new[] { typeof (object), typeof (string), typeof(List<int>) });
+    private static readonly Type[] s_serializableTypes = EnsureNoNulls (new[] { typeof (object), typeof (string), typeof (List<int>) });
     private static readonly Type[] s_unsealedTypes = EnsureNoNulls (new[] { typeof (object), typeof (List<int>) });
     private static readonly Type[] s_delegateTypes = EnsureNoNulls (new[] { typeof (EventHandler), typeof (Action<,,>) });
     private static readonly Type[] s_interfaceTypes = EnsureNoNulls (new[] { typeof (IDisposable), typeof (IServiceProvider) });
@@ -41,19 +42,21 @@ namespace Remotion.Development.UnitTesting.Reflection
     private static readonly ConstructorInfo[] s_defaultCtors = EnsureNoNulls (new[] { typeof (object).GetConstructor (Type.EmptyTypes), typeof (List<int>).GetConstructor (Type.EmptyTypes) });
     private static readonly MethodInfo[] s_instanceMethod = EnsureNoNulls (new[] { typeof (object).GetMethod ("ToString"), typeof (object).GetMethod ("GetHashCode") });
     private static readonly MethodInfo[] s_staticMethod = EnsureNoNulls (new[] { typeof (object).GetMethod ("ReferenceEquals"), typeof (double).GetMethod ("IsNaN") });
-    private static readonly MethodInfo[] s_virtualMethods = EnsureNoNulls (new[] { typeof (object).GetMethod ("ToString"), typeof(object).GetMethod("GetHashCode") });
+    private static readonly MethodInfo[] s_virtualMethods = EnsureNoNulls (new[] { typeof (object).GetMethod ("ToString"), typeof (object).GetMethod ("GetHashCode") });
     private static readonly MethodInfo[] s_nonVirtualMethods = EnsureNoNulls (new[] { typeof (object).GetMethod ("ReferenceEquals"), typeof (string).GetMethod ("Concat", new[] { typeof (object) }) });
     private static readonly MethodInfo[] s_nonVirtualInstanceMethods = EnsureNoNulls (new[] { typeof (object).GetMethod ("GetType"), typeof (string).GetMethod ("Contains", new[] { typeof (string) }) });
     private static readonly MethodInfo[] s_overridingMethods = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("Override"), typeof (DomainType).GetMethod ("ToString") });
-    private static readonly MethodInfo[] s_finalMethods = EnsureNoNulls (new[] { typeof(DomainType).GetMethod("FinalMethod") });
+    private static readonly MethodInfo[] s_finalMethods = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("FinalMethod") });
     private static readonly MethodInfo[] s_nonGenericMethods = EnsureNoNulls (new[] { typeof (object).GetMethod ("ToString"), typeof (string).GetMethod ("Concat", new[] { typeof (object) }) });
     private static readonly MethodInfo[] s_genericMethods = EnsureNoNulls (new[] { typeof (Enumerable).GetMethod ("Empty"), typeof (ReflectionObjectMother).GetMethod ("GetRandomElement", BindingFlags.NonPublic | BindingFlags.Static) });
     private static readonly MethodInfo[] s_abstractMethodInfos = EnsureNoNulls (new[] { typeof (MethodInfo).GetMethod ("GetBaseDefinition"), typeof (Type).GetMethod ("GetMethods", new[] { typeof (BindingFlags) }) });
     private static readonly MethodInfo[] s_nonPublicMethodInfos = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("PrivateMethod", BindingFlags.NonPublic | BindingFlags.Instance), typeof (DomainType).GetMethod ("ProtectedMethod", BindingFlags.NonPublic | BindingFlags.Instance) });
-    private static readonly MethodInfo[] s_publicMethodInfos = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("FinalMethod"), typeof (DomainType).GetMethod("Override") });
-    private static readonly ParameterInfo[] s_parameterInfos = EnsureNoNulls (typeof (Dictionary<,>).GetMethod ("TryGetValue").GetParameters());
+    private static readonly MethodInfo[] s_publicMethodInfos = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("FinalMethod"), typeof (DomainType).GetMethod ("Override") });
+    private static readonly ParameterInfo[] s_parameterInfos = EnsureNoNulls (typeof (Dictionary<,>).GetMethod ("TryGetValue").GetParameters ());
     private static readonly PropertyInfo[] s_properties = EnsureNoNulls (new[] { typeof (List<>).GetProperty ("Count"), typeof (Type).GetProperty ("IsArray") });
     private static readonly PropertyInfo[] s_staticProperties = EnsureNoNulls (new[] { typeof (Environment).GetProperty ("CurrentDirectory"), typeof (Type).GetProperty ("DefaultBinder") });
+    private static readonly EventInfo[] s_events = EnsureNoNulls (new[] { typeof (INotifyPropertyChanged).GetEvent ("PropertyChanged"), typeof (AppDomain).GetEvent ("AssemblyLoad") });
+    private static readonly EventInfo[] s_staticEvents = EnsureNoNulls (new[] { typeof (DomainType).GetEvent ("StaticEvent") });
 
     public static Type GetSomeType ()
     {
@@ -93,11 +96,11 @@ namespace Remotion.Development.UnitTesting.Reflection
     public static MemberInfo GetSomeMember ()
     {
       return GetRandomElement (
-          AllMethods.Cast<MemberInfo>()
+          AllMethods.Cast<MemberInfo> ()
               .Concat (s_instanceFields)
               .Concat (s_staticFields)
               .Concat (s_defaultCtors)
-              .ToArray());
+              .ToArray ());
     }
 
     public static FieldInfo GetSomeField ()
@@ -117,14 +120,14 @@ namespace Remotion.Development.UnitTesting.Reflection
       return field;
     }
 
-    public static FieldInfo GetSomeStaticField()
+    public static FieldInfo GetSomeStaticField ()
     {
       var field = GetRandomElement (s_staticFields);
       Assertion.IsTrue (field.IsStatic);
       return field;
     }
 
-    public static ConstructorInfo GetSomeTypeInitializer()
+    public static ConstructorInfo GetSomeTypeInitializer ()
     {
       var constructor = GetRandomElement (s_staticCtors);
       Assertion.IsTrue (constructor.IsStatic);
@@ -138,7 +141,7 @@ namespace Remotion.Development.UnitTesting.Reflection
 
     public static ConstructorInfo GetSomeConstructor ()
     {
-      return GetSomeDefaultConstructor();
+      return GetSomeDefaultConstructor ();
     }
 
     public static ConstructorInfo GetSomeOtherConstructor ()
@@ -148,7 +151,7 @@ namespace Remotion.Development.UnitTesting.Reflection
 
     public static MethodInfo GetSomeMethod ()
     {
-      return GetRandomElement (AllMethods.Except(s_genericMethods).ToArray());
+      return GetRandomElement (AllMethods.Except (s_genericMethods).ToArray ());
     }
 
     public static MethodInfo GetSomeOtherMethod ()
@@ -209,14 +212,14 @@ namespace Remotion.Development.UnitTesting.Reflection
     public static MethodInfo GetSomeOverridingMethod ()
     {
       var method = GetRandomElement (s_overridingMethods);
-      Assertion.IsTrue (method.GetBaseDefinition() != method);
+      Assertion.IsTrue (method.GetBaseDefinition () != method);
       return method;
     }
 
     public static MethodInfo GetSomeBaseDefinition ()
     {
-      var method = GetRandomElement (s_instanceMethod).GetBaseDefinition();
-      Assertion.IsTrue (method == method.GetBaseDefinition());
+      var method = GetRandomElement (s_instanceMethod).GetBaseDefinition ();
+      Assertion.IsTrue (method == method.GetBaseDefinition ());
       return method;
     }
 
@@ -257,7 +260,7 @@ namespace Remotion.Development.UnitTesting.Reflection
 
     public static MethodInfo[] GetMultipeMethods (int count)
     {
-      var result = s_nonGenericMethods.Take (count).ToArray();
+      var result = s_nonGenericMethods.Take (count).ToArray ();
       Assertion.IsTrue (result.Length == count, "Count must be at most {0} (or add elements to s_methodInfos).", s_nonGenericMethods.Length);
       return result;
     }
@@ -280,10 +283,27 @@ namespace Remotion.Development.UnitTesting.Reflection
     public static PropertyInfo GetSomeStaticProperty ()
     {
       var property = GetRandomElement (s_staticProperties);
-      var getter = property.GetGetMethod();
-      var setter = property.GetSetMethod();
+      var getter = property.GetGetMethod ();
+      var setter = property.GetSetMethod ();
       Assertion.IsTrue (getter != null && getter.IsStatic || setter != null && setter.IsStatic);
       return property;
+    }
+
+    public static EventInfo GetSomeEvent ()
+    {
+      return GetRandomElement (s_events);
+    }
+
+    public static EventInfo GetSomeOtherEvent ()
+    {
+      return GetRandomElement (s_staticEvents);
+    }
+
+    public static EventInfo GetSomeStaticEvent ()
+    {
+      var @event = GetRandomElement (s_staticEvents);
+      Assertion.IsTrue (@event.GetAddMethod().IsStatic);
+      return @event;
     }
 
     public static object GetDefaultValue (Type type)
@@ -332,7 +352,8 @@ namespace Remotion.Development.UnitTesting.Reflection
     {
       static DomainType () { }
 
-      [UsedImplicitly] public int Field = 0;
+      [UsedImplicitly]
+      public int Field = 0;
 
       public sealed override void FinalMethod () { }
 
@@ -341,6 +362,10 @@ namespace Remotion.Development.UnitTesting.Reflection
 
       private void PrivateMethod () { }
       protected void ProtectedMethod () { }
+
+#pragma warning disable 67
+      public static event Action StaticEvent;
+#pragma warning restore 67
     }
   }
 }
