@@ -58,15 +58,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return instance;
     }
 
-    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters)
+    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters, ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
       ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
       var constructorLookupInfo = GetConstructorLookupInfo (domainObjectType);
-      var instance = (DomainObject) constructorParameters.InvokeConstructor (constructorLookupInfo);
-      DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
-      return instance;
+      using (clientTransaction.EnterNonDiscardingScope())
+      {
+        var instance = (DomainObject) constructorParameters.InvokeConstructor (constructorLookupInfo);
+        DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
+        return instance;
+      }
     }
 
     // Public solely for TypePipe.PerformanceTests.

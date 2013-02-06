@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw new NotSupportedException ("ThrowingDomainObjectCreator.CreateObjectReference was invoked.");
     }
 
-    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters)
+    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters, ClientTransaction clientTransaction)
     {
       throw new NotSupportedException ("ThrowingDomainObjectCreator.CreateNewObject was invoked.");
     }

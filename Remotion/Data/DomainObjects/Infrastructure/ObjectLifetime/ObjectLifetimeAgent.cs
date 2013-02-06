@@ -123,7 +123,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 
       try
       {
-        return _clientTransaction.Execute (() => classDefinition.InstanceCreator.CreateNewObject (classDefinition.ClassType, constructorParameters));
+        return classDefinition.InstanceCreator.CreateNewObject (classDefinition.ClassType, constructorParameters, _clientTransaction);
       }
       catch (Exception ex)
       {

@@ -38,9 +38,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       return SelectCreator().CreateObjectReference (objectID, clientTransaction);
     }
 
-    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters)
+    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters, ClientTransaction clientTransaction)
     {
-      return SelectCreator().CreateNewObject (domainObjectType, constructorParameters);
+      return SelectCreator().CreateNewObject (domainObjectType, constructorParameters, clientTransaction);
     }
 
     private IDomainObjectCreator SelectCreator ()

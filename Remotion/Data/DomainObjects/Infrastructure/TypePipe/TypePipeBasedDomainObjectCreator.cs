@@ -61,22 +61,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       return instance;
     }
 
-    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters)
+    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters, ClientTransaction clientTransaction)
     {
-      ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
-      ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("domainObjectType", domainObjectType, typeof (DomainObject));
-
+      ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      
       CheckDomainTypeAndClassDefinition (domainObjectType);
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (domainObjectType);
       classDefinition.ValidateCurrentMixinConfiguration();
 
       var mixedType = DomainObjectMixinCodeGenerationBridge.GetConcreteType (domainObjectType);
-      var instance = (DomainObject) _objectFactory.CreateObject (mixedType, constructorParameters, allowNonPublicConstructor: true);
-
-      DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
-
-      return instance;
+      using (clientTransaction.EnterNonDiscardingScope ())
+      {
+        var instance = (DomainObject) _objectFactory.CreateObject (mixedType, constructorParameters, allowNonPublicConstructor: true);
+        DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
+        return instance;
+      }
     }
 
     private void CheckDomainTypeAndClassDefinition (Type domainObjectType)

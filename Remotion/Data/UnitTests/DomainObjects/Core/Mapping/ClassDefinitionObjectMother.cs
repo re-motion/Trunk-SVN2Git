@@ -54,9 +54,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    public static ClassDefinition CreateClassDefinitionWithTable (Type type, StorageProviderDefinition storageProviderDefinition)
+    public static ClassDefinition CreateClassDefinitionWithTable (
+        StorageProviderDefinition storageProviderDefinition,
+        string id = null,
+        Type classType = null,
+        bool isAbstract = false,
+        ClassDefinition baseClass = null,
+        Type storageGroupType = null,
+        IPersistentMixinFinder persistentMixinFinder = null,
+        IDomainObjectCreator instanceCreator = null)
     {
-      var classDefinition = CreateClassDefinition (classType: type);
+      var classDefinition = CreateClassDefinition (id, classType, isAbstract, baseClass, storageGroupType, persistentMixinFinder, instanceCreator);
       classDefinition.SetStorageEntity (TableDefinitionObjectMother.Create (storageProviderDefinition));
       return classDefinition;
     }
