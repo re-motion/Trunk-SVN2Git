@@ -22,31 +22,13 @@
     <NoDatabaseRequired>NoDatabaseRequired</NoDatabaseRequired>
   </PropertyGroup>
 
-  <!-- Call target for local testing (overwrites default configuration in Remotion.Configurations.include.build) -->
-  <Target Name="CreateLocalTestConfiguration">
-    <ItemGroup>
-      <AllPlatforms Remove="@(AllPlatforms)"/>
-      <AllPlatforms Include="x86">
-        <Use32Bit>True</Use32Bit>
-      </AllPlatforms>
-    </ItemGroup>
-
-    <ItemGroup>
-      <AllDatabaseSystems Remove="@(AllDatabaseSystems)"/>
-      <AllDatabaseSystems Include="Local">
-        <DataSource>localhost</DataSource>
-        <DatabaseDirectory>C:\Databases</DatabaseDirectory>
-      </AllDatabaseSystems>
-    </ItemGroup>
-  </Target>
-
   <ItemGroup>
     <NumberOfTestFailuresPerProject Include="0"/>
     <NumberOfTestErrorsPerProject Include="0"/>
   </ItemGroup>
 
   <!-- Main target; reporting only, calls RunTestsInternal for actual work -->
-  <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateLogDirectory;BuildTestProjects;RunTestsInternal">
+  <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateTestConfigurations;CreateLogDirectory;BuildTestProjects;RunTestsInternal">
     <Error Text="ItemGroup 'NumberOfTestFailuresPerProject' is empty, but should contain test results!" Condition="@(NumberOfTestFailuresPerProject) == ''"/>
     <Error Text="ItemGroup 'NumberOfTestErrorsPerProject' is empty, but should contain test results!" Condition="@(NumberOfTestErrorsPerProject) == ''"/>
 
@@ -61,9 +43,13 @@
     <MSBuild.ExtensionPack.Science.Maths TaskAction="Subtract" Numbers="$(_failures);$(_errors)">
       <Output PropertyName="_failures" TaskParameter="Result"/>
     </MSBuild.ExtensionPack.Science.Maths>
-
+    
+    <CallTarget Targets="CreateNUnitErrorsProperty" />
+    
+    <Warning Condition="'@(FailedProjects)' != ''"
+             Text="%(FailedProjects.Identity) (%(FailedProjects.Platform)/%(FailedProjects.DatabaseSystem)): %(FailedProjects.Failures) failures, %(FailedProjects.Errors) errors" />
     <Error
-      Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors."
+      Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors in"
       Condition="$(_failures) &gt; 0 or $(_errors) &gt; 0"/>
 
     <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
@@ -121,15 +107,35 @@
                                        Condition="'$(_databaseSystem)' != '$(NoDatabaseRequired)'"/>
 
     <!-- Run tests -->
+    
+    <PropertyGroup>
+      <_testResultFile>$(LogDirectory)%(_testOutputFiles.Filename).$(ActiveConfigurationName).%(_testOutputFiles.Platform).%(_testOutputFiles.DatabaseSystem).xml</_testResultFile>
+    </PropertyGroup>
+    
+    <Message Condition="'$(TEAMCITY_VERSION)' != ''"
+             Text="##teamcity[importData type='nunit' path='$(_testResultFile)' verbose='true']"
+             Importance="High" />
+             
     <MSBuild.ExtensionPack.CodeQuality.NUnit
         ToolPath="$(NUnitToolPath)"
         Assemblies="%(_testOutputFiles.FullPath)"
         ContinueOnError="True"
         Use32Bit="%(_testOutputFiles.Use32Bit)"
-        OutputXmlFile="$(LogDirectory)%(_testOutputFiles.Filename).$(ActiveConfigurationName).%(_testOutputFiles.Platform).%(_testOutputFiles.DatabaseSystem).xml">
-      <Output TaskParameter="Failures" ItemName="NumberOfTestFailuresPerProject"/>
-      <Output TaskParameter="Errors" ItemName="NumberOfTestErrorsPerProject"/>
+        OutputXmlFile="$(_testResultFile)">
+      <Output TaskParameter="Failures" PropertyName="_nunit_failures"/>
+      <Output TaskParameter="Errors" PropertyName="_nunit_errors"/>
     </MSBuild.ExtensionPack.CodeQuality.NUnit>
+	
+    <ItemGroup  Condition="$(_nunit_failures) &gt; 0 or $(_nunit_errors) &gt; 0">
+      <NumberOfTestFailuresPerProject Include="$(_nunit_failures)" />
+      <NumberOfTestErrorsPerProject Include="$(_nunit_errors)" />
+      <FailedProjects Include="%(_testOutputFiles.FullPath)">
+        <Platform>%(_testOutputFiles.Platform)</Platform>
+        <DatabaseSystem>%(_testOutputFiles.DatabaseSystem)</DatabaseSystem>
+        <Failures>$(_nunit_failures)</Failures>
+        <Errors>$(_nunit_errors)</Errors>
+      </FailedProjects>
+    </ItemGroup>
   </Target>
 
   <!--
@@ -182,6 +188,35 @@
 
     <!-- Print all created configurations -->
     <Message Text="Created test configuration: $(ActiveConfigurationName) %(_testOutputFiles.FullPath) %(_testOutputFiles.Platform) %(_testOutputFiles.DatabaseSystem)" Importance="high"/>
+  </Target>
+  
+  
+  <Target Name="CreateNUnitErrorsProperty">
+
+    <ItemGroup>
+      <NUnitTestResultFiles Include="$(LogDirectory)\Remotion.*Tests.*.xml" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <_nunitErrorLogFile>$(LogDirectory)\nunit.errors.log</_nunitErrorLogFile>
+    </PropertyGroup>
+
+<!--     <XslTransformation XmlInputPaths="@(NUnitTestResultFiles)"
+                       XslInputPath="$(MSBuildProjectDirectory)\NUnitErrors.xslt"
+                       OutputPaths="@(NUnitTestRulesFiles)"
+                       Condition="'@(NUnitTestResultFiles)' != ''" /> -->
+    <MSBuild.Community.Tasks.Xslt Inputs="@(NUnitTestResultFiles)" 
+                                  RootTag="mergedroot"
+                                  Xsl="$(MSBuildProjectDirectory)\NUnitErrors.xslt"
+                                  Output="$(_nunitErrorLogFile)"
+                                  Condition="@(NUnitTestResultFiles) != ''"/>
+
+    <PropertyGroup>
+      <NUnitErrors Condition="Exists($(_nunitErrorLogFile))">$([System.IO.File]::ReadAllText ($(_nunitErrorLogFile)))</NUnitErrors>
+    </PropertyGroup>
+    
+    <Message Condition="'$(TEAMCITY_VERSION)' != ''" Text="##teamcity[setParameter name='nunit_errors' value='$(NUnitErrors)']" />
+    
   </Target>
 
 </Project>

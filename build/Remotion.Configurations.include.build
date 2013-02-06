@@ -18,7 +18,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-    
     <AllConfigurations Include="Release">
       <Name>Release</Name>
       <Framework>net-3.5</Framework>
@@ -30,38 +29,53 @@
       <Framework>net-3.5</Framework>
       <OutputDirectory>net-3.5\bin\debug\</OutputDirectory>
     </AllConfigurations>
-
   </ItemGroup>
+    
+  <Target Name="CreateTestConfigurations">
 
-  <ItemGroup>
+    <Error Text="'Platforms' was not defined." Condition="'$(Platforms)' == ''" />
+    <ItemGroup>
+      <PlatformsList Include="$(Platforms.Split('+'))" />
+    </ItemGroup>
     
-    <AllPlatforms Include="x86">
-      <Use32Bit>True</Use32Bit>
-    </AllPlatforms>
-    
-    <AllPlatforms Include="x64">
-      <Use32Bit>False</Use32Bit>
-    </AllPlatforms>
-    
-  </ItemGroup>
+    <Error Text="'DatabaseSystems' was not defined." Condition="'$(DatabaseSystems)' == ''" />
+    <ItemGroup>
+      <DatabaseSystemsList Include="$(DatabaseSystems.Split('+'))" />
+    </ItemGroup>
 
-  <ItemGroup>
     
-    <AllDatabaseSystems Include="SqlServer2005">
-      <DataSource>localhost\MSSQL2005</DataSource>
-      <DatabaseDirectory>C:\Databases\MsSql2005</DatabaseDirectory>
-    </AllDatabaseSystems>
-    
-    <AllDatabaseSystems Include="SqlServer2008">
-      <DataSource>localhost\MSSQL2008</DataSource>
-      <DatabaseDirectory>C:\Databases\MsSql2008</DatabaseDirectory>
-    </AllDatabaseSystems>
-    
-    <AllDatabaseSystems Include="SqlServer2012">
-      <DataSource>localhost\MSSQL2012</DataSource>
-      <DatabaseDirectory>C:\Databases\MsSql2012</DatabaseDirectory>
-    </AllDatabaseSystems>
-    
-  </ItemGroup>
+    <ItemGroup>
+      <AllPlatforms Include="x86" Condition="'%(PlatformsList.Identity)' == 'x86'">
+        <Use32Bit>True</Use32Bit>
+      </AllPlatforms>
+      
+      <AllPlatforms Include="x64" Condition="'%(PlatformsList.Identity)' == 'x64'">
+        <Use32Bit>False</Use32Bit>
+      </AllPlatforms>
+    </ItemGroup>
+
+    <ItemGroup>
+      <AllDatabaseSystems Include="SqlServerDefault" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServerDefault'">
+        <DataSource>localhost</DataSource>
+        <DatabaseDirectory>C:\Databases</DatabaseDirectory>
+      </AllDatabaseSystems>
+        
+      <AllDatabaseSystems Include="SqlServer2005" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2005'">
+        <DataSource>localhost\MSSQL2005</DataSource>
+        <DatabaseDirectory>C:\Databases\MsSql2005</DatabaseDirectory>
+      </AllDatabaseSystems>
+
+      <AllDatabaseSystems Include="SqlServer2008" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2008'">
+        <DataSource>localhost\MSSQL2008</DataSource>
+        <DatabaseDirectory>C:\Databases\MsSql2008</DatabaseDirectory>
+      </AllDatabaseSystems>
+
+      <AllDatabaseSystems Include="SqlServer2012" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2012'">
+        <DataSource>localhost\MSSQL2012</DataSource>
+        <DatabaseDirectory>C:\Databases\MsSql2012</DatabaseDirectory>
+      </AllDatabaseSystems>
+	  </ItemGroup>
+  
+  </Target>
 
 </Project>

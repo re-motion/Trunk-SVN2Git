@@ -28,7 +28,7 @@
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Mixins\UnitTests\Mixins.UnitTests.csproj">
       <IsDatabaseTest>False</IsDatabaseTest>
     </UnitTestProjectFiles>
-
+    
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\TypePipe\Core\TypePipe.Core.csproj" />
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\TypePipe\UnitTests\TypePipe.UnitTests.csproj">
       <IsDatabaseTest>False</IsDatabaseTest>
@@ -115,7 +115,7 @@
     <UnitTestProjectFiles Include="$(SolutionDirectory)\SecurityManager\Core.UnitTests\SecurityManager.Core.UnitTests.csproj">
       <IsDatabaseTest>True</IsDatabaseTest>
     </UnitTestProjectFiles>
-
+    
   </ItemGroup>
 
 </Project>

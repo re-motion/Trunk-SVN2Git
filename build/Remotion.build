@@ -15,7 +15,7 @@
  ! You should have received a copy of the GNU Lesser General Public License
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
-<Project DefaultTargets="TestBuild" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <Import Project="Remotion.Tasks.include.build" />
   <Import Project="Remotion.Packages.include.build" />
@@ -27,7 +27,7 @@
   
   <PropertyGroup>
     <Version></Version>
-    <ReleaseType>LOCAL</ReleaseType>
+    <ReleaseType></ReleaseType>
     <AdditionalBuildMetadata></AdditionalBuildMetadata>
 
     <SolutionDirectory>$(MSBuildProjectDirectory)\..\</SolutionDirectory>
@@ -55,20 +55,10 @@
   <PropertyGroup>
     <NUnitToolPath>$(SolutionDirectory)prereq\Tools\NUnit-2.6\bin</NUnitToolPath>
     <MixinXRefToolPath>$(SolutionDirectory)prereq\Tools\DependDB\DependDB.BuildProcessor\ReportGenerators\XRef\</MixinXRefToolPath>
+    <MSBuildCommunityTasksPath>$(SolutionDirectory)prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
   </PropertyGroup>
-
-  <Target Name="BuildAll" DependsOnTargets="CleanFolders;CheckVersion">
-    <MSBuild Projects="$(MSBuildProjectFile)"
-             BuildInParallel="false"
-             Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;CreateLocalTestConfiguration;RunTests;AssembleBuildOutput;"
-             Properties="
-                 ConfigurationID=%(AllConfigurations.Identity);
-                 SolutionKeyFile=$(SolutionKeyFile);
-                 ReleaseType=$(ReleaseType);
-                 AdditionalBuildMetadata=$(AdditionalBuildMetadata);"/>
-  </Target>
 
   <Target Name="DocumentAll">
     <ItemGroup>
@@ -100,7 +90,7 @@
                  TempDirectory=$(TempDirectory);
                  Version=$(Version);
                  DependDBProjectBranch=$(DependDBProjectBranch);
-                 DependDBProjectVersion=$(DependDBProjectVersion);
+                 DependDBProjectVersion=$(Version);
                  DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
                  DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);"/>
 
@@ -146,23 +136,64 @@
                  DependDBUploadPath=$(DependDBUploadPath);"/>
 
     <MSBuild Projects="%(NuGetPackages.PackageDeclaration)"
-         BuildInParallel="false"
-         Targets="UploadNuGetPackage"
-         Properties="SolutionDirectory=$(SolutionDirectory);
-                     OutputDirectory=$(OutputDirectory);
-                     ArchiveDirectory=$(ArchiveDirectory);
-                     NuGetApiKey=$(NuGetApiKey)"/>
+             BuildInParallel="false"
+             Targets="UploadNuGetPackage"
+             Properties="SolutionDirectory=$(SolutionDirectory);
+                         OutputDirectory=$(OutputDirectory);
+                         ArchiveDirectory=$(ArchiveDirectory);
+                         NuGetApiKey=$(NuGetApiKey)"/>
   </Target>
 
-  <Target Name="FullBuild" DependsOnTargets="BuildAll;RunMixinXRefTest;DocumentAll;PackageAll" />
-
-  <Target Name="TestBuild" DependsOnTargets="CleanFolders" >
+  <Target Name="BuildAll" DependsOnTargets="CleanFolders;CheckVersion">
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
-             Targets="BuildReleaseProjects;BuildTestProjects;CreateLocalTestConfiguration;RunTests;AssembleBuildOutput;RunMixinXRefTest"
+             Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
+             Properties="ConfigurationID=%(AllConfigurations.Identity);
+                         SolutionKeyFile=$(SolutionKeyFile);
+                         SolutionDirectory=$(SolutionDirectory);
+                         OutputDirectory=$(OutputDirectory);
+                         TempDirectory=$(TempDirectory);
+                         LogDirectory=$(LogDirectory);
+                         Version=$(Version);
+                         ArchiveDirectory=$(ArchiveDirectory);
+                         ReleaseType=$(ReleaseType);
+                         AdditionalBuildMetadata=$(AdditionalBuildMetadata);
+                         Platforms=$(Platforms);
+                         DatabaseSystems=$(DatabaseSystems);
+                         DependDBProjectBranch=$(DependDBProjectBranch);
+                         DependDBProjectVersion=$(Version);
+                         DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
+                         DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);"/>
+  </Target>
+  
+  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;BuildAll;DocumentAll;PackageAll" />
+
+  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;CleanFolders">
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             BuildInParallel="false"
+             Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
              Properties="
-                 ConfigurationID=Debug;
-                 SolutionKeyFile=$(SolutionKeyFile)"/>
+                  ConfigurationID=Debug;
+                  SolutionKeyFile=$(SolutionKeyFile);
+                  SolutionDirectory=$(SolutionDirectory);
+                  OutputDirectory=$(OutputDirectory);
+                  TempDirectory=$(TempDirectory);
+                  LogDirectory=$(LogDirectory);
+                  Version=$(Version);
+                  ArchiveDirectory=$(ArchiveDirectory);
+                  ReleaseType=$(ReleaseType);
+                  AdditionalBuildMetadata=$(AdditionalBuildMetadata);
+                  Platforms=$(Platforms);
+                  DatabaseSystems=$(DatabaseSystems)"/>
+  </Target>
+  
+  <Target Name="TestBuildWithRelease" DependsOnTargets="CleanFolders">
+    <MSBuild Projects="$(MSBuildProjectFile)"
+    BuildInParallel="false"
+    Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
+    Properties="
+    ConfigurationID=%(AllConfigurations.Identity);
+    SolutionKeyFile=$(SolutionKeyFile)"/>
   </Target>
 
   <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >

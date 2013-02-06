@@ -1,0 +1,4 @@
+--password [^ ]*
+CodeplexPassword=[^ ]*
+/password:[^ ]*
+NuGet.exe push "[^"]*" [^ ]*
