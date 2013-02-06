@@ -162,6 +162,7 @@
     <Compile Include="ClientTransactionFactory.cs" />
     <Compile Include="DomainObjectHandleConverter.cs" />
     <Compile Include="Infrastructure\DomainObjectHandleAttribute.cs" />
+    <Compile Include="Infrastructure\ObjectLifetime\ObjectReferenceInitializationContext.cs" />
     <Compile Include="Infrastructure\TypePipe\IAccessorInterceptor.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingAccessorInterceptorBase.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingGetAccessorInterceptor.cs" />
@@ -240,7 +241,7 @@
     <Compile Include="Infrastructure\ObjectLifetime\IObjectLifetimeAgent.cs" />
     <Compile Include="Infrastructure\NotFoundObjectsClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\ObjectCleanupException.cs" />
-    <Compile Include="Infrastructure\ObjectLifetime\ObjectInitializationContext.cs" />
+    <Compile Include="Infrastructure\ObjectLifetime\NewObjectInitializationContext.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\ObjectLifetimeAgent.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationListener.cs" />

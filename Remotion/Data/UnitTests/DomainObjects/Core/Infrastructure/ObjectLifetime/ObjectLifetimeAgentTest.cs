@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           .WhenCalled (mi => 
           {
             // Pretend an object was registered, then throw an exception - that way, the registered object needs to be cleaned up
-            FakeRegisteredObject ((ObjectInitializationContext) _agent.CurrentInitializationContext, _domainObject1);
+            FakeRegisteredObject ((NewObjectInitializationContext) _agent.CurrentInitializationContext, _domainObject1);
             throw exception;
           })
           .Return (null);
@@ -265,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           .WhenCalled (mi =>
           {
             // Pretend an object was registered, then throw an exception - that way, the registered object needs to be cleaned up
-            FakeRegisteredObject ((ObjectInitializationContext) _agent.CurrentInitializationContext, _domainObject1);
+            FakeRegisteredObject ((NewObjectInitializationContext) _agent.CurrentInitializationContext, _domainObject1);
             throw exceptionInCreate;
           })
           .Return (null);
@@ -580,13 +580,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     {
       Assert.That (
           _agent.CurrentInitializationContext,
-          Is.Not.Null.And.Property<ObjectInitializationContext> (c => c.ObjectID)
+          Is.Not.Null.And.Property<NewObjectInitializationContext> (c => c.ObjectID)
             .EqualTo (expectedObjectID)
-            .And.Property<ObjectInitializationContext> (c => c.BindingTransaction)
+            .And.Property<NewObjectInitializationContext> (c => c.BindingTransaction)
             .SameAs (bindingTransaction));
     }
 
-    private void FakeRegisteredObject (ObjectInitializationContext objectInitializationContext, DomainObject registeredObject)
+    private void FakeRegisteredObject (NewObjectInitializationContext objectInitializationContext, DomainObject registeredObject)
     {
       PrivateInvoke.SetNonPublicField (objectInitializationContext, "_registeredObject", registeredObject);
     }

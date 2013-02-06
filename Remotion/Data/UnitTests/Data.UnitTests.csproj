@@ -210,6 +210,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectHandleAttributeTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectReferenceInitializationContextTest.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleConverterTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\ImplementingAccessorInterceptorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\InterceptedPropertyCollectorAdapterTest.cs" />
@@ -268,7 +269,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\NonInstantiableClassWithMixinWithPersistentAutoProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NotFoundObjectsClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectCleanupExceptionTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectInitializationContextTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\NewObjectInitializationContextTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectLifetimeAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectLifetimeAgentTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationListenerTest.cs" />

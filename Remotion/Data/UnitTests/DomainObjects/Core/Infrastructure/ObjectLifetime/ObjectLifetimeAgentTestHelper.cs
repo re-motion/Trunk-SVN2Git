@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
 
     public static void StubCurrentObjectInitializationContext (ClientTransaction clientTransaction, ObjectID objectID)
     {
-      var initializationContextStub = new ObjectInitializationContext (
+      var initializationContextStub = new NewObjectInitializationContext (
           objectID,
           ClientTransactionTestHelper.GetEnlistedDomainObjectManager (clientTransaction),
           ClientTransactionTestHelper.GetIDataManager (clientTransaction),

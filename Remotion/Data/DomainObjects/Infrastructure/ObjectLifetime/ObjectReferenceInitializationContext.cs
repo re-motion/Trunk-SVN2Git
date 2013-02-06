@@ -22,29 +22,25 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 {
   /// <summary>
-  /// Represents the context of an object being initialized via <see cref="IObjectLifetimeAgent.NewObject"/>.
+  /// Represents the context of an object reference being initialized.
   /// </summary>
-  public class ObjectInitializationContext : IObjectInitializationContext
+  public class ObjectReferenceInitializationContext : IObjectInitializationContext
   {
     private readonly ObjectID _objectID;
     private readonly ClientTransaction _bindingTransaction;
     private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
-    private readonly IDataManager _dataManager;
 
     private DomainObject _registeredObject;
 
-    public ObjectInitializationContext (
+    public ObjectReferenceInitializationContext (
         ObjectID objectID,
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
-        IDataManager dataManager,
         ClientTransaction bindingTransaction)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       ArgumentUtility.CheckNotNull ("enlistedDomainObjectManager", enlistedDomainObjectManager);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       _objectID = objectID;
-      _dataManager = dataManager;
       _bindingTransaction = bindingTransaction;
       _enlistedDomainObjectManager = enlistedDomainObjectManager;
     }
@@ -59,11 +55,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _enlistedDomainObjectManager; }
     }
 
-    public IDataManager DataManager
-    {
-      get { return _dataManager; }
-    }
-
     public ClientTransaction BindingTransaction
     {
       get { return _bindingTransaction; }
@@ -74,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _registeredObject; }
     }
 
-    public void RegisterObject (DomainObject domainObject)
+    public virtual void RegisterObject (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
@@ -90,13 +81,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       if (_registeredObject != null)
         throw new InvalidOperationException ("Only one object can be registered using this context.");
 
-      var newDataContainer = DataContainer.CreateNew (_objectID);
-      newDataContainer.SetDomainObject (domainObject);
-
       _enlistedDomainObjectManager.EnlistDomainObject (domainObject);
-       Assertion.IsNull (_dataManager.DataContainers[_objectID], "If enlisting succeeded, there cannot be a DataContainer with this ID.");
-      _dataManager.RegisterDataContainer (newDataContainer);
-
       _registeredObject = domainObject;
     }
   }

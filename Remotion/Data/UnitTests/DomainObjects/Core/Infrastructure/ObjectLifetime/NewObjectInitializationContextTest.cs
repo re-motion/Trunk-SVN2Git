@@ -22,22 +22,22 @@ using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Development.UnitTesting.ObjectMothers;
 using Rhino.Mocks;
+using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime
 {
   [TestFixture]
-  public class ObjectInitializationContextTest : StandardMappingTest
+  public class NewObjectInitializationContextTest : StandardMappingTest
   {
     private ObjectID _objectID;
     private IEnlistedDomainObjectManager _enlistedDomainObjectManagerMock;
     private IDataManager _dataManagerMock;
     private ClientTransaction _bindingClientTransaction;
 
-    private ObjectInitializationContext _contextWithBindingTransaction;
-    private ObjectInitializationContext _contextWithoutBindingTransaction;
+    private NewObjectInitializationContext _contextWithBindingTransaction;
+    private NewObjectInitializationContext _contextWithoutBindingTransaction;
 
     private DomainObject _boundObject;
-    private DomainObject _unboundObject;
 
     public override void SetUp ()
     {
@@ -48,12 +48,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager> ();
       _bindingClientTransaction = ClientTransactionObjectMother.CreateBinding();
 
-      _contextWithBindingTransaction = new ObjectInitializationContext (
+      _contextWithBindingTransaction = new NewObjectInitializationContext (
           _objectID, _enlistedDomainObjectManagerMock, _dataManagerMock, _bindingClientTransaction);
-      _contextWithoutBindingTransaction = new ObjectInitializationContext (_objectID, _enlistedDomainObjectManagerMock, _dataManagerMock, null);
+      _contextWithoutBindingTransaction = new NewObjectInitializationContext (_objectID, _enlistedDomainObjectManagerMock, _dataManagerMock, null);
 
       _boundObject = DomainObjectMother.GetObjectReference (_bindingClientTransaction, _objectID);
-      _unboundObject = DomainObjectMother.CreateFakeObject (_objectID);
     }
 
     [Test]
@@ -73,11 +72,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     }
 
     [Test]
-    public void RegisterObject_Bound ()
+    public void RegisterObject ()
     {
+      var counter = new OrderedExpectationCounter();
       _enlistedDomainObjectManagerMock
           .Expect (mock => mock.EnlistDomainObject (_boundObject))
-          .Return (BooleanObjectMother.GetRandomBoolean());
+          .Return (BooleanObjectMother.GetRandomBoolean())
+          .Ordered (counter);
       StubEmptyDataContainersCollection (_dataManagerMock);
       _dataManagerMock
           .Expect (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything))
@@ -86,7 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
             var dc = (DataContainer) mi.Arguments[0];
             Assert.That (dc.ID, Is.EqualTo (_objectID));
             Assert.That (dc.DomainObject, Is.SameAs (_boundObject));
-          });
+          })
+          .Ordered (counter);
 
       _contextWithBindingTransaction.RegisterObject (_boundObject);
 
@@ -95,40 +97,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
 
       Assert.That (_contextWithBindingTransaction.RegisteredObject, Is.SameAs (_boundObject));
     }
-
+    
     [Test]
-    public void RegisterObject_Unbound ()
-    {
-      _enlistedDomainObjectManagerMock
-          .Stub (stub => stub.EnlistDomainObject (_unboundObject))
-          .Return (BooleanObjectMother.GetRandomBoolean ());
-      StubEmptyDataContainersCollection (_dataManagerMock);
-      _dataManagerMock.Stub (stub => stub.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
-
-      _contextWithoutBindingTransaction.RegisterObject (_unboundObject);
-    }
-
-    [Test]
-    public void RegisterObject_Twice ()
-    {
-      _enlistedDomainObjectManagerMock.Stub (mock => mock.EnlistDomainObject (_boundObject)).Return (BooleanObjectMother.GetRandomBoolean ());
-      StubEmptyDataContainersCollection (_dataManagerMock);
-      _dataManagerMock.Stub (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
-
-      _contextWithBindingTransaction.RegisterObject (_boundObject);
-
-      Assert.That (
-          () => _contextWithBindingTransaction.RegisterObject (_boundObject),
-          Throws.InvalidOperationException.With.Message.EqualTo ("Only one object can be registered using this context."));
-
-      _enlistedDomainObjectManagerMock.VerifyAllExpectations ();
-      _dataManagerMock.VerifyAllExpectations ();
-
-      Assert.That (_contextWithBindingTransaction.RegisteredObject, Is.SameAs (_boundObject));
-    }
-
-    [Test]
-    public void RegisterObject_WrongID ()
+    public void RegisterObject_WithError ()
     {
       var objectWithWrongID = DomainObjectMother.CreateFakeObject (DomainObjectIDs.Customer1);
       Assert.That (objectWithWrongID.ID, Is.Not.EqualTo (_objectID));
@@ -136,42 +107,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       Assert.That (
           () => _contextWithBindingTransaction.RegisterObject (objectWithWrongID),
           Throws.ArgumentException.With.Message.EqualTo ("The given DomainObject must have ID '" + _objectID + "'.\r\nParameter name: domainObject"));
-    }
 
-    [Test]
-    public void RegisterObject_NotBound_ButShouldBe ()
-    {
-      Assert.That (_unboundObject.HasBindingTransaction, Is.False);
-      Assert.That (_contextWithBindingTransaction.BindingTransaction, Is.Not.Null);
-
-      Assert.That (
-          () => _contextWithBindingTransaction.RegisterObject (_unboundObject),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "The given DomainObject must have BindingClientTransaction '" + _bindingClientTransaction + "'.\r\nParameter name: domainObject"));
-    }
-
-    [Test]
-    public void RegisterObject_Bound_ButShouldNotBe ()
-    {
-      Assert.That (_boundObject.HasBindingTransaction, Is.True);
-      Assert.That (_contextWithoutBindingTransaction.BindingTransaction, Is.Null);
-
-      Assert.That (
-          () => _contextWithoutBindingTransaction.RegisterObject (_boundObject),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "The given DomainObject must not have a BindingClientTransaction.\r\nParameter name: domainObject"));
-    }
-
-    [Test]
-    public void RegisterObject_BoundToWrongTransaction ()
-    {
-      var differentlyBoundObject = DomainObjectMother.GetObjectReference (ClientTransactionObjectMother.CreateBinding(), _objectID);
-      Assert.That (differentlyBoundObject.GetBindingTransaction(), Is.Not.SameAs (_contextWithBindingTransaction.BindingTransaction));
-
-      Assert.That (
-          () => _contextWithBindingTransaction.RegisterObject (differentlyBoundObject),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "The given DomainObject must have BindingClientTransaction '" + _bindingClientTransaction + "'.\r\nParameter name: domainObject"));
+      _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
     }
 
     private void StubEmptyDataContainersCollection (IDataManager dataManagerMock)

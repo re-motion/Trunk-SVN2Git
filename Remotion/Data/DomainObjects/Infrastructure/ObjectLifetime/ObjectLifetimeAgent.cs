@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 
       var objectID = _persistenceStrategy.CreateNewObjectID (classDefinition);
       var bindingTransaction = _clientTransaction as BindingClientTransaction;
-      _currentInitializationContext = new ObjectInitializationContext (objectID, _enlistedDomainObjectManager, _dataManager, bindingTransaction);
+      _currentInitializationContext = new NewObjectInitializationContext (objectID, _enlistedDomainObjectManager, _dataManager, bindingTransaction);
 
       try
       {
