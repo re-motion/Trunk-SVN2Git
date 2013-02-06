@@ -164,11 +164,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (objectLifetimeAgent.DataManager, Is.SameAs (dataManager));
       Assert.That (objectLifetimeAgent.EnlistedDomainObjectManager, Is.SameAs (enlistedDomainObjectManager));
       Assert.That (objectLifetimeAgent.PersistenceStrategy, Is.SameAs (persistenceStrategy));
-      Assert.That (objectLifetimeAgent.ObjectInitializationContextProvider, Is.TypeOf<ObjectInitializationContextProvider> ());
-      
-      var objectInitializationContextProvider = ((ObjectInitializationContextProvider) objectLifetimeAgent.ObjectInitializationContextProvider);
-      Assert.That (objectInitializationContextProvider.EnlistedDomainObjectManager, Is.SameAs (enlistedDomainObjectManager));
-      Assert.That (objectInitializationContextProvider.DataManager, Is.SameAs (dataManager));
     }
 
     [Test]

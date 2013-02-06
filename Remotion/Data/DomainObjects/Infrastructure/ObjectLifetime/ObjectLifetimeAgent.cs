@@ -41,7 +41,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
     private readonly IDataManager _dataManager;
     private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
     private readonly IPersistenceStrategy _persistenceStrategy;
-    private readonly IObjectInitializationContextProvider _objectInitializationContextProvider;
 
     [ThreadStatic]
     private static IObjectInitializationContext _currentInitializationContext;
@@ -52,15 +51,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager,
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
-        IPersistenceStrategy persistenceStrategy,
-        IObjectInitializationContextProvider objectInitializationContextProvider)
+        IPersistenceStrategy persistenceStrategy)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
-      ArgumentUtility.CheckNotNull ("objectInitializationContextProvider", objectInitializationContextProvider);
 
       _clientTransaction = clientTransaction;
       _eventSink = eventSink;
@@ -68,7 +65,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       _dataManager = dataManager;
       _enlistedDomainObjectManager = enlistedDomainObjectManager;
       _persistenceStrategy = persistenceStrategy;
-      _objectInitializationContextProvider = objectInitializationContextProvider;
     }
 
     public ClientTransaction ClientTransaction
@@ -101,11 +97,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _persistenceStrategy; }
     }
 
-    public IObjectInitializationContextProvider ObjectInitializationContextProvider
-    {
-      get { return _objectInitializationContextProvider; }
-    }
-
     public IObjectInitializationContext CurrentInitializationContext
     {
       get { return _currentInitializationContext; }
@@ -127,8 +118,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       var previousInitializationContext = _currentInitializationContext;
 
       var objectID = _persistenceStrategy.CreateNewObjectID (classDefinition);
-      var bindingClientTransaction = _clientTransaction as BindingClientTransaction;
-      _currentInitializationContext = _objectInitializationContextProvider.CreateContext (objectID, bindingClientTransaction);
+      var bindingTransaction = _clientTransaction as BindingClientTransaction;
+      _currentInitializationContext = new ObjectInitializationContext (objectID, _enlistedDomainObjectManager, _dataManager, bindingTransaction);
 
       try
       {

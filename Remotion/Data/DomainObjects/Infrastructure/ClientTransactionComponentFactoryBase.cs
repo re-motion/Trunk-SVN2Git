@@ -124,8 +124,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
 
       return new ObjectLifetimeAgent (
-          constructedTransaction, eventSink, invalidDomainObjectManager, dataManager, enlistedDomainObjectManager, persistenceStrategy, 
-          new ObjectInitializationContextProvider (enlistedDomainObjectManager, dataManager));
+          constructedTransaction, eventSink, invalidDomainObjectManager, dataManager, enlistedDomainObjectManager, persistenceStrategy);
     }
 
     public virtual IQueryManager CreateQueryManager (
