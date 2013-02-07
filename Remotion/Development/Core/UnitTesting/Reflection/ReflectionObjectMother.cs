@@ -31,7 +31,7 @@ namespace Remotion.Development.UnitTesting.Reflection
 
     private static readonly Type[] s_types = EnsureNoNulls (new[] { typeof (DateTime), typeof (Random) });
     private static readonly Type[] s_otherTypes = EnsureNoNulls (new[] { typeof (decimal), typeof (StringBuilder) });
-    private static readonly Type[] s_genericTypes = EnsureNoNulls (new[] { typeof (IComparable<>), typeof (List<>) });
+    private static readonly Type[] s_genericTypes = EnsureNoNulls (new[] { typeof (IComparable<>), typeof (Dictionary<,>) });
     private static readonly Type[] s_serializableTypes = EnsureNoNulls (new[] { typeof (object), typeof (string), typeof (List<int>) });
     private static readonly Type[] s_unsealedTypes = EnsureNoNulls (new[] { typeof (object), typeof (List<int>) });
     private static readonly Type[] s_delegateTypes = EnsureNoNulls (new[] { typeof (EventHandler), typeof (Action<,,>) });
