@@ -284,11 +284,15 @@
   <Target Name="Server_Deploy" DependsOnTargets="Deploy" />
   
   <Target Name="Version_CiAndNightly" AfterTargets="GetEarliestUnreleasedVersion">
-    <Version>$(Version)-test</Version>
+    <PropertyGroup>
+      <Version>$(Version)-test</Version>
+    </PropertyGroup>
   </Target>
   
   <Target Name="Version_FullAndDeploy" AfterTargets="GetLatestReleasedVersion">
-    <Version>$(ReleasedVersion)</Version>
+    <PropertyGroup>
+      <Version>$(ReleasedVersion)</Version>
+    </PropertyGroup>
   </Target>
   
   <Target Name="Teamcity_SetBuildNumber" AfterTargets="CIBuild; NightlyBuild; Server_FullBuild">
