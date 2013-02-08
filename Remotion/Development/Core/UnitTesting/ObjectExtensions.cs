@@ -16,11 +16,12 @@
 // 
 
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Remotion.Development.UnitTesting
 {
   /// <summary>
-  /// Provides useful extension methods on <see cref="object"/> to increase clarity in unti tests.
+  /// Provides useful extension methods on <see cref="object"/> to increase clarity in unit tests.
   /// </summary>
   public static class ObjectExtensions
   {
@@ -28,6 +29,18 @@ namespace Remotion.Development.UnitTesting
     public static T As<T> (this object obj)
     {
       return (T) obj;
+    }
+
+    [DebuggerStepThrough]
+    public static T InvokeNonPublicMethod<T> (this object target, string method, params object[] args)
+    {
+      return (T) PrivateInvoke.InvokeNonPublicMethod (target, method, args);
+    }
+
+    [DebuggerStepThrough]
+    public static void InvokeNonPublicMethod (this object target, string method, params object[] args)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (target, method, args);
     }
   }
 }
