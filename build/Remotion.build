@@ -166,9 +166,7 @@
                          DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);"/>
   </Target>
   
-  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;BuildAll;DocumentAll;PackageAll" />
-
-  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;CleanFolders">
+  <Target Name="TestDebug" DependsOnTargets="CleanFolders">
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
              Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"

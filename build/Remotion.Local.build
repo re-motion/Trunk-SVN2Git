@@ -22,42 +22,31 @@
   <PropertyGroup>
     <SolutionBuildFile>Remotion.build</SolutionBuildFile>
     <ReleaseType>LOCAL</ReleaseType>
+    <SvnBranchFolder>trunk</SvnBranchFolder>  
+    <SvnRevision>0</SvnRevision>
+
+    <DependDBProjectVCSUrlTemplate>http://localost/svn/!svn/bc/$(SvnRevision)/$(SvnBranchFolder)/{0}</DependDBProjectVCSUrlTemplate>
+    <DependDBProjectImportNotificationMailAddress>noreply@localhost</DependDBProjectImportNotificationMailAddress>
   </PropertyGroup>
   
-  <Target Name="Common_Configuration">
-    <PropertyGroup>
-      <DependDBProjectVCSUrlTemplate>$(SvnBaseUri)/!svn/bc/$(SvnRevision)/$(SvnBranchFolder)/{0}</DependDBProjectVCSUrlTemplate>
-      <DependDBProjectImportNotificationMailAddress>$(UserName)@rubicon.eu</DependDBProjectImportNotificationMailAddress>
-    </PropertyGroup>
-  </Target>
-  
-  <Target Name="TestBuild_Configuration" DependsOnTargets="Common_Configuration">
+  <Target Name="TestBuild_Configuration">
     <PropertyGroup>
       <Platforms>x86</Platforms>
       <DatabaseSystems>SqlServerDefault</DatabaseSystems>
     </PropertyGroup>
   </Target>
   
-  <Target Name="FullBuild_Configuration" DependsOnTargets="Common_Configuration">
+  <Target Name="FullBuild_Configuration">
     <PropertyGroup>
       <Platforms>x86+x64</Platforms>
       <DatabaseSystems>SqlServerDefault</DatabaseSystems>
     </PropertyGroup>
   </Target>
-
-<!--   <Target Name="TestBuild">
-    <MSBuild Projects="$(SolutionBuildFile)"
-             BuildInParallel="false"
-             Targets="TestBuild"
-             Properties="Platforms=x86;DatabaseSystems=SqlServerDefault"/>
-  </Target>
-
-  <Target Name="FullBuild">
-    <MSBuild Projects="$(SolutionBuildFile)"
-             BuildInParallel="false"
-             Targets="TestBuildWithRelease"
-             Properties="Platforms=x86+x64;DatabaseSystems=SqlServerDefault"/>
-  </Target> -->
+ 
+  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestDebug" />
+  
+  <!--TODO: DependDBInfos, Version number, etc-->
+  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;BuildAll;DocumentAll;PackageAll" />
   
   <Target Name="DocumentationTestBuild">
     <MSBuild Projects="$(SolutionBuildFile)"
