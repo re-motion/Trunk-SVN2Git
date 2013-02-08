@@ -276,25 +276,23 @@
 
     <Message Text="Updated AssemblyInfos for local build in '$(SvnBaseUri)/$(SvnBranchFolder)': set version to '$(_newVersion)'" Importance="High" />
   </Target>
-  
-  <Target Name="SetFullBuildNumber">
-    <Message Text="##teamcity[buildNumber '$(ReleasedVersion)']" />
-  </Target>
-  
-  <Target Name="SetBuildNumber" DependsOnTargets="GetLatestReleasedVersion">
-    <PropertyGroup>
-      <_versionMajor>$([System.Version]::Parse ($(ReleasedVersion)).Major)</_versionMajor>
-      <_versionMinor>$([System.Version]::Parse ($(ReleasedVersion)).Minor)</_versionMinor>
-      <_versionBuild>$([System.Version]::Parse ($(ReleasedVersion)).Build)</_versionBuild>
-      <_versionRevision>$(BUILD_NUMBER)</_versionRevision>
-    </PropertyGroup>
-    <Message Text="##teamcity[buildNumber '$(_versionMajor).$(_versionMinor).$(_versionBuild).$(_versionRevision)']" />
-  </Target>
 
   <!-- Main Build Targets -->  
-  <Target Name="CIBuild" DependsOnTargets="SetBuildNumber;GetEarliestUnreleasedVersion;CreateAdditionalBuildMetadata;TestBuild" />
-  <Target Name="NightlyBuild" DependsOnTargets="SetBuildNumber;FullBuildInternal" />
-  <Target Name="Server_FullBuild" DependsOnTargets="FullBuildInternal;Tag;ReleaseJiraVersion;UpdateAssemblyInfosForLocalBuild;SetFullBuildNumber" />
+  <Target Name="CIBuild" DependsOnTargets="GetEarliestUnreleasedVersion;CreateAdditionalBuildMetadata;TestBuild" />
+  <Target Name="NightlyBuild" DependsOnTargets="FullBuildInternal" />
+  <Target Name="Server_FullBuild" DependsOnTargets="FullBuildInternal;Tag;ReleaseJiraVersion;UpdateAssemblyInfosForLocalBuild" />
   <Target Name="Server_Deploy" DependsOnTargets="Deploy" />
+  
+  <Target Name="Version_CiAndNightly" AfterTargets="GetEarliestUnreleasedVersion">
+    <Version>$(Version)-test</Version>
+  </Target>
+  
+  <Target Name="Version_FullAndDeploy" AfterTargets="GetLatestReleasedVersion">
+    <Version>$(ReleasedVersion)</Version>
+  </Target>
+  
+  <Target Name="Teamcity_SetBuildNumber" AfterTargets="CIBuild; NightlyBuild; Server_FullBuild">
+    <Message Text="##teamcity[buildNumber '$(Version)']" />
+  </Target>
 
 </Project>
