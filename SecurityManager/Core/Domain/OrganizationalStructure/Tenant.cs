@@ -102,7 +102,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     protected override string GetOwningTenant ()
     {
-      return Parent == null ? null : Parent.UniqueIdentifier;
+      return UniqueIdentifier;
     }
 
     /// <summary>

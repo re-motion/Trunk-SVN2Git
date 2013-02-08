@@ -79,7 +79,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (tenant.GetPublicDomainObjectType()));
       Assert.That (securityContext.Owner, Is.Null);
       Assert.That (securityContext.OwnerGroup, Is.Null);
-      Assert.That (securityContext.OwnerTenant, Is.EqualTo (tenant.Parent.UniqueIdentifier));
+      Assert.That (securityContext.OwnerTenant, Is.EqualTo (tenant.UniqueIdentifier));
       Assert.That (securityContext.AbstractRoles, Is.Empty);
       Assert.That (securityContext.IsStateless, Is.False);
     }
@@ -93,7 +93,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       Assert.That (Type.GetType (securityContext.Class), Is.EqualTo (tenant.GetPublicDomainObjectType()));
       Assert.That (securityContext.Owner, Is.Null);
       Assert.That (securityContext.OwnerGroup, Is.Null);
-      Assert.That (securityContext.OwnerTenant, Is.Null);
+      Assert.That (securityContext.OwnerTenant, Is.EqualTo (tenant.UniqueIdentifier));
       Assert.That (securityContext.AbstractRoles, Is.Empty);
       Assert.That (securityContext.IsStateless, Is.False);
     }

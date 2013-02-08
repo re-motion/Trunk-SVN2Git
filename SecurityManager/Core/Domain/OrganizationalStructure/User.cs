@@ -165,7 +165,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     protected override string GetOwner ()
     {
-      return null;
+      return UserName;
     }
 
     protected override string GetOwningTenant ()
