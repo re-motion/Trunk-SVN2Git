@@ -19,7 +19,7 @@
 
     <ReleaseType>DEV</ReleaseType>
     
-    <SecureNetworkShare>\\w0396\additional_build\</SecureNetworkShare>
+    <SecureNetworkShare>\\VIRTUAL-REBUILD\c$\build\build</SecureNetworkShare>
     <SolutionKeyFile>$(SecureNetworkShare)\remotion.snk</SolutionKeyFile>
     <CodePlexPasswordFile>$(SecureNetworkShare)\Codeplex-user.password</CodePlexPasswordFile>
     <NuGetApiKeyFile>$(SecureNetworkShare)\NuGet-user.apikey</NuGetApiKeyFile>
