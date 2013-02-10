@@ -279,6 +279,21 @@
   <Target Name="SetVersionFullBuild" DependsOnTargets="CheckVersion">
     <Message Text="##teamcity[buildNumber '$(Version)']" />
   </Target>
+  
+  <!-- Test time -->
+  
+  <Target Name="Measure_Start" BeforeTargets="BuildAll">
+    <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="Get" Format="dd MMM yy HH:mm:ss">
+      <Output TaskParameter="Result" PropertyName="StartTime"/>
+    </MSBuild.ExtensionPack.Framework.DateAndTime>
+  </Target>
+  
+  <Target Name="Measure_Start" AfterTargets="BuildAll">
+    <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="GetElapsed" Start="$(StartTime)" Format="Minutes">
+      <Output TaskParameter="Result" PropertyName="ElapsedTime"/>
+    </MSBuild.ExtensionPack.Framework.DateAndTime>
+    <Message Text="##teamcity[buildStatisticValue key='test_time_total' value='$(ElapsedTime)']" />
+  </Target>
 
   <!-- Main Build Targets -->  
   <Target Name="CIBuild" DependsOnTargets="TestBuild;SetVersionCiAndNightlyBuild" />
