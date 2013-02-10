@@ -11,15 +11,15 @@
     <SolutionDirectory>$(BuildRootDirectory)working\</SolutionDirectory>
     <OutputDirectory>$(BuildRootDirectory)output\</OutputDirectory>
     <TempDirectory>$(BuildRootDirectory)temp\</TempDirectory>
-    <ArchiveDirectory>\\at-vie-dc-02\Development\build\Remotion\</ArchiveDirectory>
-    <WebShareDirectory>\\s0319\builds\</WebShareDirectory>
+    <ArchiveDirectory></ArchiveDirectory>
+    <WebShareDirectory></WebShareDirectory>
     <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
     
     <SolutionBuildFile>$(SolutionDirectory)build\Remotion.build</SolutionBuildFile>
 
     <ReleaseType>DEV</ReleaseType>
     
-    <SecureNetworkShare>\\VIRTUAL-REBUILD\c$\build\build</SecureNetworkShare>
+    <SecureNetworkShare></SecureNetworkShare>
     <SolutionKeyFile>$(SecureNetworkShare)\remotion.snk</SolutionKeyFile>
     <CodePlexPasswordFile>$(SecureNetworkShare)\Codeplex-user.password</CodePlexPasswordFile>
     <NuGetApiKeyFile>$(SecureNetworkShare)\NuGet-user.apikey</NuGetApiKeyFile>
