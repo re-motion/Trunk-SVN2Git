@@ -16,6 +16,7 @@
 // 
 
 using System;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -25,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public class ThrowingDomainObjectCreator : IDomainObjectCreator
   {
-    public DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction clientTransaction)
+    public DomainObject CreateObjectReference (IObjectInitializationContext objectInitializationContext, ClientTransaction clientTransaction)
     {
       throw new NotSupportedException ("ThrowingDomainObjectCreator.CreateObjectReference was invoked.");
     }

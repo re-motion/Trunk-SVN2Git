@@ -149,7 +149,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
         return enlistedObject;
 
       var creator = objectID.ClassDefinition.InstanceCreator;
-      return creator.CreateObjectReference (objectID, _clientTransaction);
+      var bindingTransaction = _clientTransaction as BindingClientTransaction;
+      var initializationContext = new ObjectReferenceInitializationContext (objectID, _enlistedDomainObjectManager, bindingTransaction);
+      return creator.CreateObjectReference (initializationContext, _clientTransaction);
     }
 
     public DomainObject GetObject (ObjectID objectID, bool includeDeleted)

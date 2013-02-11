@@ -20,6 +20,7 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
@@ -211,7 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (domainObject.OnReferenceInitializingBindingTransaction, Is.Null);
 
       var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-      var boundDomainObject = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, bindingTransaction);
+      var boundDomainObject = (Order) LifetimeService.GetObjectReference (bindingTransaction, DomainObjectIDs.Order1);
       Assert.That (boundDomainObject.OnReferenceInitializingBindingTransaction, Is.SameAs (bindingTransaction));
     }
 
@@ -509,16 +510,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_False_BeforeGetObject ()
     {
-      var creator = DomainObjectIDs.Order1.ClassDefinition.InstanceCreator;
-      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var order = (Order) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.Order1);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
     }
 
     [Test]
     public void NeedsLoadModeDataContainerOnly_True_AfterOnLoaded ()
     {
-      var creator = DomainObjectIDs.Order1.ClassDefinition.InstanceCreator;
-      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var order = (Order) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.Order1);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
 
       PrivateInvoke.InvokeNonPublicMethod (order, typeof (DomainObject), "OnLoaded");
@@ -547,8 +546,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       // TODO 5370: Remove.
       SetUp();
 
-      var creator = DomainObjectIDs.Order1.ClassDefinition.InstanceCreator;
-      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var order = (Order) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.Order1);
 
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
 
@@ -577,8 +575,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       // TODO 5370: Remove.
       SetUp ();
 
-      var creator = DomainObjectIDs.Order1.ClassDefinition.InstanceCreator;
-      var classWithAllDataTypes = (ClassWithAllDataTypes) creator.CreateObjectReference (DomainObjectIDs.ClassWithAllDataTypes1, _transaction);
+      var classWithAllDataTypes = (ClassWithAllDataTypes) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.ClassWithAllDataTypes1);
 
       Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.False);
 

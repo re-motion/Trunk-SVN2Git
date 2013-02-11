@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
 
@@ -28,15 +29,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public interface IDomainObjectCreator
   {
     /// <summary>
-    /// Creates a new <see cref="DomainObject"/> instance and initializes it with the given <paramref name="objectID"/> and 
+    /// Creates a new <see cref="DomainObject"/> instance and initializes it with the given <paramref name="objectInitializationContext"/> and 
     /// <paramref name="clientTransaction"/>. The object is enlisted with the transaction, but no <see cref="DataContainer"/> is created for it.
     /// The instance is created without a constructor being called.
     /// </summary>
-    /// <param name="objectID">The <see cref="ObjectID"/> to assign to the object.</param>
+    /// <param name="objectInitializationContext"></param>
     /// <param name="clientTransaction">The transaction to create the object reference with. The reference is automatically enlisted in the given
-    /// transaction. If the transaction is a binding transaction, the reference is automatically bound to it.</param>
-    /// <returns>A <see cref="DomainObject"/> instance with the given <paramref name="objectID"/> that is enlisted in the given transaction.</returns>
-    DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction clientTransaction);
+    ///   transaction. If the transaction is a binding transaction, the reference is automatically bound to it.</param>
+    /// <returns>A <see cref="DomainObject"/> instance with the <see cref="ObjectID"/> from the given <paramref name="objectInitializationContext"/> 
+    /// that is enlisted in the given transaction.</returns>
+    DomainObject CreateObjectReference (IObjectInitializationContext objectInitializationContext, ClientTransaction clientTransaction);
 
     /// <summary>
     /// Creates a new <see cref="DomainObject"/> instance of the given <paramref name="domainObjectType"/> by calling its constructor.

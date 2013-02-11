@@ -18,6 +18,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
@@ -34,9 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects
     private readonly TypePipeBasedDomainObjectCreator _typePipeCreator =
         new TypePipeBasedDomainObjectCreator (SafeServiceLocator.Current.GetInstance<IObjectFactory>());
 
-    public DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction clientTransaction)
+    public DomainObject CreateObjectReference (IObjectInitializationContext objectInitializationContext, ClientTransaction clientTransaction)
     {
-      return SelectCreator().CreateObjectReference (objectID, clientTransaction);
+      return SelectCreator().CreateObjectReference (objectInitializationContext, clientTransaction);
     }
 
     public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters, ClientTransaction clientTransaction)

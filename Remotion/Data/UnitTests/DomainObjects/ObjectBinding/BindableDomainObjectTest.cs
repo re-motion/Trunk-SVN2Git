@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
@@ -139,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void ObjectReference ()
     {
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (SampleBindableDomainObject));
-      var instance = classDefinition.InstanceCreator.CreateObjectReference (new ObjectID(classDefinition, Guid.NewGuid()), TestableClientTransaction);
+      var instance = LifetimeService.GetObjectReference (TestableClientTransaction, new ObjectID (classDefinition, Guid.NewGuid()));
       
       var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
       Assert.That (implementation, Is.Not.Null);

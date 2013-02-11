@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -38,11 +39,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public InterceptedDomainObjectTypeFactory Factory { get; set; }
 
-    public DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction clientTransaction)
+    public DomainObject CreateObjectReference (IObjectInitializationContext objectInitializationContext, ClientTransaction clientTransaction)
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      ArgumentUtility.CheckNotNull ("objectInitializationContext", objectInitializationContext);
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
+      var objectID = objectInitializationContext.ObjectID;
       objectID.ClassDefinition.ValidateCurrentMixinConfiguration ();
 
       var concreteType = Factory.GetConcreteDomainObjectType (objectID.ClassDefinition.ClassType);
@@ -50,9 +52,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
       Factory.PrepareUnconstructedInstance (instance);
 
-      instance.Initialize (objectID, clientTransaction as BindingClientTransaction);
-
-      clientTransaction.EnlistDomainObject (instance);
+      // These calls are also performed by DomainObject's ctor
+      instance.Initialize (objectID, objectInitializationContext.BindingTransaction);
+      objectInitializationContext.RegisterObject (instance);
       clientTransaction.Execute (instance.RaiseReferenceInitializatingEvent);
 
       return instance;

@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
 
       _domainObjectCreatorMock
           .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, constructorParameters, _transaction))
-          .WhenCalled (mi => CheckCurrentInitializationContext (_objectID1, null))
+          .WhenCalled (mi => CheckCurrentInitializationContext<NewObjectInitializationContext> (_objectID1, null))
           .Return (_domainObject1);
 
       Assert.That (_agent.CurrentInitializationContext, Is.Null);
@@ -127,7 +127,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     public void NewObject_WithBindingClientTransaction ()
     {
       var bindingTransaction = ClientTransactionObjectMother.CreateBinding();
-
       var agent = new ObjectLifetimeAgent (
           bindingTransaction,
           _eventSinkWithMock,
@@ -140,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (Arg<ClassDefinition>.Is.Anything)).Return (_objectID1);
       _domainObjectCreatorMock
           .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, ParamList.Empty, bindingTransaction))
-          .WhenCalled (mi => CheckCurrentInitializationContext (_objectID1, bindingTransaction))
+          .WhenCalled (mi => CheckCurrentInitializationContext<NewObjectInitializationContext> (_objectID1, bindingTransaction))
           .Return (_domainObject1);
 
       agent.NewObject (_typeDefinitionWithCreatorMock, ParamList.Empty);
@@ -181,19 +180,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, ParamList.Empty, _transaction))
           .WhenCalled (mi =>
           {
-            CheckCurrentInitializationContext (_objectID1, null);
+            CheckCurrentInitializationContext<NewObjectInitializationContext> (_objectID1, null);
             
             // Recursive call
             _agent.NewObject (typeDefinitionWithCreatorMock2, ParamList.Empty);
 
-            CheckCurrentInitializationContext (_objectID1, null);
+            CheckCurrentInitializationContext<NewObjectInitializationContext> (_objectID1, null);
           })
           .Return (_domainObject1);
 
       // Expectation for recursive call
       _domainObjectCreatorMock
           .Expect (mock => mock.CreateNewObject (typeDefinitionWithCreatorMock2.ClassType, ParamList.Empty, _transaction))
-          .WhenCalled (mi => CheckCurrentInitializationContext (_objectID2, null))
+          .WhenCalled (mi => CheckCurrentInitializationContext<NewObjectInitializationContext> (_objectID2, null))
           .Return (_domainObject2);
 
       Assert.That (_agent.CurrentInitializationContext, Is.Null);
@@ -324,7 +323,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       var result = _agent.GetObjectReference (_objectIDWithCreatorMock);
 
       _invalidDomainObjectManagerMock.VerifyAllExpectations();
-      _domainObjectCreatorMock.AssertWasNotCalled (mock => mock.CreateObjectReference (Arg<ObjectID>.Is.Anything, Arg<ClientTransaction>.Is.Anything));
+      _domainObjectCreatorMock.AssertWasNotCalled (
+          mock => mock.CreateObjectReference (Arg<IObjectInitializationContext>.Is.Anything, Arg<ClientTransaction>.Is.Anything));
 
       Assert.That (result, Is.SameAs (_domainObject1));
     }
@@ -338,7 +338,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       var result = _agent.GetObjectReference (_objectIDWithCreatorMock);
 
       _enlistedDomainObjectManagerMock.VerifyAllExpectations ();
-      _domainObjectCreatorMock.AssertWasNotCalled (mock => mock.CreateObjectReference (Arg<ObjectID>.Is.Anything, Arg<ClientTransaction>.Is.Anything));
+      _domainObjectCreatorMock.AssertWasNotCalled (
+          mock => mock.CreateObjectReference (Arg<IObjectInitializationContext>.Is.Anything, Arg<ClientTransaction>.Is.Anything));
 
       Assert.That (result, Is.SameAs (_domainObject1));
     }
@@ -350,12 +351,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _enlistedDomainObjectManagerMock.Stub (stub => stub.GetEnlistedDomainObject (_objectIDWithCreatorMock)).Return (null);
 
       _domainObjectCreatorMock
-          .Expect (mock => mock.CreateObjectReference (_objectIDWithCreatorMock, _transaction))
-          .Return (_domainObject1);
+          .Expect (mock => mock.CreateObjectReference (Arg<ObjectReferenceInitializationContext>.Is.Anything, Arg.Is (_transaction)))
+          .Return (_domainObject1)
+          .WhenCalled (
+              mi => CheckInitializationContext<ObjectReferenceInitializationContext> (
+                  (IObjectInitializationContext) mi.Arguments[0], _objectIDWithCreatorMock, null));
 
       var result = _agent.GetObjectReference (_objectIDWithCreatorMock);
 
       _domainObjectCreatorMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_domainObject1));
+    }
+
+    [Test]
+    public void GetObjectReference_UnknownObject_WithBindingTransaction_PutsTransactionIntoContext ()
+    {
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction();
+      var agent = new ObjectLifetimeAgent (
+          bindingTransaction,
+          _eventSinkWithMock,
+          _invalidDomainObjectManagerMock,
+          _dataManagerMock,
+          _enlistedDomainObjectManagerMock,
+          _persistenceStrategyMock);
+
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (_objectIDWithCreatorMock)).Return (false);
+      _enlistedDomainObjectManagerMock.Stub (stub => stub.GetEnlistedDomainObject (_objectIDWithCreatorMock)).Return (null);
+
+      _domainObjectCreatorMock
+          .Expect (mock => mock.CreateObjectReference (Arg<ObjectReferenceInitializationContext>.Is.TypeOf, Arg.Is (bindingTransaction)))
+          .Return (_domainObject1)
+          .WhenCalled (
+              mi => CheckInitializationContext<ObjectReferenceInitializationContext> (
+                  (IObjectInitializationContext) mi.Arguments[0], _objectIDWithCreatorMock, bindingTransaction));
+
+      var result = agent.GetObjectReference (_objectIDWithCreatorMock);
+
+      _domainObjectCreatorMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (_domainObject1));
     }
 
@@ -578,11 +610,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       return actualCommandMock;
     }
 
-    private void CheckCurrentInitializationContext (ObjectID expectedObjectID, ClientTransaction bindingTransaction)
+    private void CheckCurrentInitializationContext<TExpectedContextType> (ObjectID expectedObjectID, ClientTransaction bindingTransaction)
+    {
+      var initializationContext = _agent.CurrentInitializationContext;
+      CheckInitializationContext<TExpectedContextType> (initializationContext, expectedObjectID, bindingTransaction);
+    }
+
+    private static void CheckInitializationContext<TExpectedContextType> (
+        IObjectInitializationContext initializationContext, ObjectID expectedObjectID, ClientTransaction bindingTransaction)
     {
       Assert.That (
-          _agent.CurrentInitializationContext,
-          Is.Not.Null.And.Property<NewObjectInitializationContext> (c => c.ObjectID)
+          initializationContext,
+          Is.Not.Null
+            .And.TypeOf<TExpectedContextType>()
+            .And.Property<NewObjectInitializationContext> (c => c.ObjectID)
             .EqualTo (expectedObjectID)
             .And.Property<NewObjectInitializationContext> (c => c.BindingTransaction)
             .SameAs (bindingTransaction));
