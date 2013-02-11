@@ -125,7 +125,7 @@
       <Output TaskParameter="Failures" PropertyName="_nunit_failures"/>
       <Output TaskParameter="Errors" PropertyName="_nunit_errors"/>
     </MSBuild.ExtensionPack.CodeQuality.NUnit>
-	
+  
     <ItemGroup  Condition="$(_nunit_failures) &gt; 0 or $(_nunit_errors) &gt; 0">
       <NumberOfTestFailuresPerProject Include="$(_nunit_failures)" />
       <NumberOfTestErrorsPerProject Include="$(_nunit_errors)" />
