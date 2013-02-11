@@ -133,6 +133,10 @@
       <Output TaskParameter="Value" PropertyName="_testTime" />                                       
     </MSBuild.ExtensionPack.Xml.XmlFile>
     
+    <MSBuild.ExtensionPack.Science.Maths TaskAction="Multiply" Numbers="$(_testTime);1000">
+            <Output TaskParameter="Result" PropertyName="_testTime" />
+    </MSBuild.ExtensionPack.Science.Maths>
+    
     <Message Condition="'$(TEAMCITY_VERSION)' != ''"
              Text="##teamcity[buildStatisticValue key='$(_testName)' value='$(_testTime)']" />
   
