@@ -54,10 +54,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
       _objectFactory.PrepareExternalUninitializedObject (instance);
 
-      // These calls are also performed by DomainObject's ctor
+      // These calls are normally performed by DomainObject's ctor
       instance.Initialize (objectID, objectInitializationContext.BindingTransaction);
       objectInitializationContext.RegisterObject (instance);
-      clientTransaction.Execute (instance.RaiseReferenceInitializatingEvent);
+
+      using (clientTransaction.EnterNonDiscardingScope())
+      {
+        instance.RaiseReferenceInitializatingEvent();
+      }
 
       return instance;
     }
