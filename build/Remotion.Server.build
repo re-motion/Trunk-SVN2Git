@@ -289,7 +289,7 @@
   </Target>
   
   <Target Name="Measure_End">
-    <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="GetElapsed" Start="$(StartTime)" Format="Minutes">
+    <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="GetElapsed" Start="$(StartTime)" Format="MilliSeconds">
       <Output TaskParameter="Result" PropertyName="ElapsedTime"/>
     </MSBuild.ExtensionPack.Framework.DateAndTime>
     <!-- adapt decimal format -->
