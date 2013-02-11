@@ -166,7 +166,7 @@
                          DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);"/>
   </Target>
   
-  <Target Name="TestDebug" DependsOnTargets="CleanFolders">
+  <Target Name="TestBuildDebugOnly" DependsOnTargets="CleanFolders">
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
              Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
@@ -185,13 +185,23 @@
                   DatabaseSystems=$(DatabaseSystems)"/>
   </Target>
   
-  <Target Name="TestBuildWithRelease" DependsOnTargets="CleanFolders">
+  <Target Name="TestBuildAllConfigurations" DependsOnTargets="CleanFolders">
     <MSBuild Projects="$(MSBuildProjectFile)"
-    BuildInParallel="false"
-    Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
-    Properties="
-    ConfigurationID=%(AllConfigurations.Identity);
-    SolutionKeyFile=$(SolutionKeyFile)"/>
+             BuildInParallel="false"
+             Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
+             Properties="
+                  ConfigurationID=%(AllConfigurations.Identity);
+                  SolutionKeyFile=$(SolutionKeyFile)  ;
+                  SolutionDirectory=$(SolutionDirectory);
+                  OutputDirectory=$(OutputDirectory);
+                  TempDirectory=$(TempDirectory);
+                  LogDirectory=$(LogDirectory);
+                  Version=$(Version);
+                  ArchiveDirectory=$(ArchiveDirectory);
+                  ReleaseType=$(ReleaseType);
+                  AdditionalBuildMetadata=$(AdditionalBuildMetadata);
+                  Platforms=$(Platforms);
+                  DatabaseSystems=$(DatabaseSystems)"/>
   </Target>
 
   <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >

@@ -43,10 +43,8 @@
     </PropertyGroup>
   </Target>
  
-  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestDebug" />
-  
-  <!--TODO: DependDBInfos, Version number, etc-->
-  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;BuildAll;DocumentAll;PackageAll" />
+  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly" />
+  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;TestBuildAllConfigurations" />
   
   <Target Name="DocumentationTestBuild">
     <MSBuild Projects="$(SolutionBuildFile)"
