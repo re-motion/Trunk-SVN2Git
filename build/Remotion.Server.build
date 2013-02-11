@@ -288,7 +288,7 @@
     </MSBuild.ExtensionPack.Framework.DateAndTime>
   </Target>
   
-  <Target Name="Measure_Start" AfterTargets="BuildAll">
+  <Target Name="Measure_End" AfterTargets="BuildAll">
     <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="GetElapsed" Start="$(StartTime)" Format="Minutes">
       <Output TaskParameter="Result" PropertyName="ElapsedTime"/>
     </MSBuild.ExtensionPack.Framework.DateAndTime>
