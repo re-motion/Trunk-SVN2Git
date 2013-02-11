@@ -180,7 +180,7 @@
     </PropertyGroup>
   </Target>
   
-  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;GetEarliestUnreleasedVersion;Measure_Start;TestDebug;Measure_End" />
+  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;GetEarliestUnreleasedVersion;Measure_Start;TestBuildDebugOnly;Measure_End" />
   
   <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;GetEarliestUnreleasedVersion;CreateAdditionalBuildMetadata;Measure_Start;BuildAll;Measure_End;DocumentAll;PackageAll" />
   
