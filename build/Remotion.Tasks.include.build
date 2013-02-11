@@ -30,6 +30,7 @@
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.CodeQuality.NUnit" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.DNZip" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.AssemblyInfo" />
+  <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.DateAndTime" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.File" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Science.Maths" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Xml.XmlFile" />
