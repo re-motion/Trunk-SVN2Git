@@ -127,7 +127,7 @@
     <Message Text="Done building test projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
 
-  <Target Name="RunMixinXRefTest">
+  <Target Name="RunMixinXRefTest" Condition="$(ActiveConfigurationOutputDirectory.Contains('debug'))">
     <Message Text="Check whether the full API required for MixinXRef is available" Importance="High"/>
 
     <PropertyGroup>
