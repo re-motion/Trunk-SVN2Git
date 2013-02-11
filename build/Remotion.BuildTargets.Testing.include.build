@@ -109,12 +109,12 @@
     <!-- Run tests -->
     
     <PropertyGroup>
-      <_testResultFile>$(LogDirectory)%(_testOutputFiles.Filename).$(ActiveConfigurationName).%(_testOutputFiles.Platform).%(_testOutputFiles.DatabaseSystem).xml</_testResultFile>
+      <_testName>%(_testOutputFiles.Filename).$(ActiveConfigurationName).%(_testOutputFiles.Platform).%(_testOutputFiles.DatabaseSystem)</_testName>
+      <_testResultFile>$(LogDirectory)$(_testName).xml</_testResultFile>
     </PropertyGroup>
     
     <Message Condition="'$(TEAMCITY_VERSION)' != ''"
-             Text="##teamcity[importData type='nunit' path='$(_testResultFile)' verbose='true']"
-             Importance="High" />
+             Text="##teamcity[importData type='nunit' path='$(_testResultFile)' verbose='true']" />
              
     <MSBuild.ExtensionPack.CodeQuality.NUnit
         ToolPath="$(NUnitToolPath)"
@@ -125,6 +125,16 @@
       <Output TaskParameter="Failures" PropertyName="_nunit_failures"/>
       <Output TaskParameter="Errors" PropertyName="_nunit_errors"/>
     </MSBuild.ExtensionPack.CodeQuality.NUnit>
+    
+    <MSBuild.ExtensionPack.Xml.XmlFile
+        TaskAction="ReadAttribute"
+        File="$(_testResultFile)"
+        XPath="/test-results/test-suite/@time">
+      <Output TaskParameter="Value" PropertyName="_testTime" />                                       
+    </MSBuild.ExtensionPack.Xml.XmlFile>
+    
+    <Message Condition="'$(TEAMCITY_VERSION)' != ''"
+             Text="##teamcity[buildStatisticValue key='$(_testName)' value='$(_testTime)']" />
   
     <ItemGroup  Condition="$(_nunit_failures) &gt; 0 or $(_nunit_errors) &gt; 0">
       <NumberOfTestFailuresPerProject Include="$(_nunit_failures)" />
