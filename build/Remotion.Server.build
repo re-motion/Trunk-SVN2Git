@@ -180,9 +180,9 @@
     </PropertyGroup>
   </Target>
   
-  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;GetEarliestUnreleasedVersion;TestDebug" />
+  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;GetEarliestUnreleasedVersion;Measure_Start;TestDebug;Measure_End" />
   
-  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;GetEarliestUnreleasedVersion;CreateAdditionalBuildMetadata;BuildAll;DocumentAll;PackageAll" />
+  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;GetEarliestUnreleasedVersion;CreateAdditionalBuildMetadata;Measure_Start;BuildAll;Measure_End;DocumentAll;PackageAll" />
   
   <Target Name="Deploy" DependsOnTargets="GetLatestReleasedVersion;CreateCodePlexPasswordProperty;CreateNuGetApiKey;CreateAdditionalBuildMetadata;DeployAll">
     <Message Text="Deployed re-motion, version '$(Version)', revision '$(SvnRevision)'." Importance="High"/>
@@ -280,15 +280,15 @@
     <Message Text="##teamcity[buildNumber '$(Version)']" />
   </Target>
   
-  <!-- Test time -->
+  <!-- Test time measurement -->
   
-  <Target Name="Measure_Start" BeforeTargets="BuildAll">
+  <Target Name="Measure_Start">
     <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="Get" Format="dd MMM yy HH:mm:ss">
       <Output TaskParameter="Result" PropertyName="StartTime"/>
     </MSBuild.ExtensionPack.Framework.DateAndTime>
   </Target>
   
-  <Target Name="Measure_End" AfterTargets="BuildAll">
+  <Target Name="Measure_End">
     <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="GetElapsed" Start="$(StartTime)" Format="Minutes">
       <Output TaskParameter="Result" PropertyName="ElapsedTime"/>
     </MSBuild.ExtensionPack.Framework.DateAndTime>
