@@ -43,7 +43,7 @@
     <SvnTagsFolder>tags</SvnTagsFolder>
     
     <DependDBProjectBranch>Trunk</DependDBProjectBranch>
-    <DependDBUploadPath>\\s0508\Import</DependDBUploadPath>
+    <DependDBUploadPath></DependDBUploadPath>
     <DependDBProjectVCSUrlTemplate>$(SvnBaseUri)/!svn/bc/$(SvnRevision)/$(SvnBranchFolder)/{0}</DependDBProjectVCSUrlTemplate>
     <DependDBProjectImportNotificationMailAddress>$(UserName)@rubicon.eu</DependDBProjectImportNotificationMailAddress>
     
