@@ -292,6 +292,10 @@
     <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="GetElapsed" Start="$(StartTime)" Format="Minutes">
       <Output TaskParameter="Result" PropertyName="ElapsedTime"/>
     </MSBuild.ExtensionPack.Framework.DateAndTime>
+    <!-- adapt decimal format -->
+    <MSBuild.ExtensionPack.Framework.TextString TaskAction="Replace" OldString="$(ElapsedTime)" OldValue="," NewValue=".">
+      <Output TaskParameter="NewString" PropertyName="ElapsedTime" />
+    </MSBuild.ExtensionPack.Framework.TextString>
     <Message Text="##teamcity[buildStatisticValue key='test_time_total' value='$(ElapsedTime)']" />
   </Target>
 
