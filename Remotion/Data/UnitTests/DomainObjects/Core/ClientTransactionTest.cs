@@ -375,19 +375,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void CurrentObjectInitializationContext()
-    {
-      var fakeInitializationContext = MockRepository.GenerateStub<IObjectInitializationContext>();
-      _objectLifetimeAgentMock.Expect (mock => mock.CurrentInitializationContext).Return (fakeInitializationContext);
-      _objectLifetimeAgentMock.Replay ();
-
-      var result = ClientTransactionTestHelper.GetCurrentObjectInitializationContext (_transactionWithMocks);
-
-      _objectLifetimeAgentMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (fakeInitializationContext));
-    }
-
-    [Test]
     public void Commit ()
     {
       _commitRollbackAgentMock.Expect (mock => mock.CommitData());

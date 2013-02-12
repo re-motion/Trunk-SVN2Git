@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
@@ -60,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       Type concreteType = Factory.GetConcreteDomainObjectType (typeof (T));
       var constructorLookupInfo = new DomainObjectConstructorLookupInfo (typeof (T), concreteType, BindingFlags.Public | BindingFlags.Instance);
-      return ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
+      return ObjectInititalizationContextScopeHelper.CallWithNewObjectInitializationContext (
           TestableClientTransaction,
           new ObjectID(typeof (T), Guid.NewGuid ()), 
           () => (T) ParamList.Empty.InvokeConstructor (constructorLookupInfo));
@@ -165,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstanceImplementingISerializableNotCallingBaseCtor, false);
       _serializableInstanceImplementingISerializableNotCallingBaseCtor.GetObjectData (_info, _context);
-      ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
+      ObjectInititalizationContextScopeHelper.CallWithNewObjectInitializationContext (
           TestableClientTransaction, DomainObjectIDs.Order1, () => new SerializationHelper (_info, _context).OnDeserialization (null));
     }
 

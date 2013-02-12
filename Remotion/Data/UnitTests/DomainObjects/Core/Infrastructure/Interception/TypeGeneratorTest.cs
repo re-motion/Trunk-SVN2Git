@@ -30,7 +30,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
@@ -765,7 +764,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
     private object CreateInstanceOfGeneratedType (Type type, params object[] args)
     {
-      return ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
+      return ObjectInititalizationContextScopeHelper.CallWithNewObjectInitializationContext (
           TestableClientTransaction, 
           new ObjectID(type.BaseType, Guid.NewGuid()),
           () => Activator.CreateInstance (type, args));

@@ -204,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
         + "created by InterceptedDomainObjectTypeFactory.GetConcreteDomainObjectType.\r\nParameter name: instance")]
     public void PrepareUnconstructedInstanceThrowsOnTypeNotCreatedByFactory ()
     {
-      var directlyInstantiatedObject = ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
+      var directlyInstantiatedObject = ObjectInititalizationContextScopeHelper.CallWithNewObjectInitializationContext (
           TestableClientTransaction, DomainObjectIDs.Order1, () => new DirectlyInstantiableDO());
 
       Factory.PrepareUnconstructedInstance (directlyInstantiatedObject);

@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
@@ -45,10 +44,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _transaction = ClientTransaction.CreateRootTransaction();
       _interceptedDomainObjectCreator = InterceptedDomainObjectCreator.Instance;
 
-      _order1InitializationContext = CreateInitializationContext (DomainObjectIDs.Order1, null);
+      _order1InitializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, null);
 
       var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid ());
-      _targetClassForPersistentMixinInitializationContext = CreateInitializationContext (objectID, null);
+      _targetClassForPersistentMixinInitializationContext = CreateFakeInitializationContext (objectID, null);
     }
 
     [Test]
@@ -112,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateObjectReference_WithBindingTransaction ()
     {
       var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-      var initializationContext = CreateInitializationContext (DomainObjectIDs.Order1, bindingTransaction);
+      var initializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, bindingTransaction);
 
       var instance = _interceptedDomainObjectCreator.CreateObjectReference (initializationContext, bindingTransaction);
 
@@ -123,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateObjectReference_NoBindingTransaction ()
     {
-      var initializationContext = CreateInitializationContext (DomainObjectIDs.Order1, null);
+      var initializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, null);
 
       var instance = _interceptedDomainObjectCreator.CreateObjectReference (initializationContext, _transaction);
 
@@ -157,16 +156,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateNewObject ()
     {
-      var result =
-          CallWithInitializationContext (
-              () => _interceptedDomainObjectCreator.CreateNewObject (typeof (OrderItem), ParamList.Create ("A product"), _transaction),
-              DomainObjectIDs.OrderItem1);
+      var initializationContext = CreateNewObjectInitializationContext (_transaction, DomainObjectIDs.OrderItem1, null);
+      var result = _interceptedDomainObjectCreator.CreateNewObject (initializationContext, ParamList.Create ("A product"), _transaction);
 
       Assert.That (_interceptedDomainObjectCreator.Factory.WasCreatedByFactory (((object) result).GetType()), Is.True);
-      Assert.That (result, Is.AssignableTo<OrderItem>());
+      Assert.That (result, Is.AssignableTo<OrderItem> ());
+      Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.OrderItem1));
       Assert.That (_transaction.IsDiscarded, Is.False);
       Assert.That (_transaction.IsEnlisted (result), Is.True);
       Assert.That (_transaction.Execute (() => ((OrderItem) result).Product), Is.EqualTo ("A product"));
+      Assert.That (ObjectInititalizationContextScope.CurrentObjectInitializationContext, Is.Null);
     }
 
     [Test]
@@ -175,18 +174,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       using (MixinConfiguration.BuildNew().EnterScope())
       {
-        CallWithInitializationContext (
-            () => _interceptedDomainObjectCreator.CreateNewObject (typeof (TargetClassForPersistentMixin), ParamList.Empty, _transaction),
-            DomainObjectIDs.OrderItem1);
+        _interceptedDomainObjectCreator.CreateNewObject (_targetClassForPersistentMixinInitializationContext, ParamList.Empty, _transaction);
       }
     }
 
     [Test]
     public void CreateNewObject_InitializesMixins ()
     {
-      var result = CallWithInitializationContext (
-          () => _interceptedDomainObjectCreator.CreateNewObject (typeof (ClassWithAllDataTypes), ParamList.Empty, _transaction),
-          DomainObjectIDs.OrderItem1);
+      var initializationContext = CreateNewObjectInitializationContext (_transaction, DomainObjectIDs.ClassWithAllDataTypes1, null);
+
+      var result = _interceptedDomainObjectCreator.CreateNewObject (initializationContext, ParamList.Empty, _transaction);
 
       var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (result);
       Assert.That (mixin, Is.Not.Null);
@@ -198,38 +195,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateNewObject_AllowsPublicAndNonPublicCtors ()
     {
       Assert.That (
-          CallWithInitializationContext (
-              () => _interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithPublicCtor2), ParamList.Empty, _transaction),
-              DomainObjectIDs.OrderItem1),
+          () =>
+          _interceptedDomainObjectCreator.CreateNewObject (
+              CreateNewObjectInitializationContext (_transaction, DomainObjectIDs.OrderItem1, null), ParamList.Empty, _transaction),
           Is.Not.Null);
 
       Assert.That (
-          CallWithInitializationContext (
-              () => _interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithProtectedCtor2), ParamList.Empty, _transaction),
-              DomainObjectIDs.OrderItem2),
+          () =>
+          _interceptedDomainObjectCreator.CreateNewObject (
+              CreateNewObjectInitializationContext (_transaction, DomainObjectIDs.OrderItem2, null), ParamList.Empty, _transaction),
           Is.Not.Null);
     }
 
-    private T CallWithInitializationContext<T> (Func<T> func, ObjectID objectID)
-    {
-      ObjectLifetimeAgentTestHelper.StubCurrentObjectInitializationContext (_transaction, objectID);
-      try
-      {
-        return func ();
-      }
-      finally
-      {
-        ObjectLifetimeAgentTestHelper.SetCurrentInitializationContext (null);
-      }
-    }
-
-    private IObjectInitializationContext CreateInitializationContext (ObjectID objectID, ClientTransaction bindingTransaction)
+    private IObjectInitializationContext CreateFakeInitializationContext (ObjectID objectID, ClientTransaction bindingTransaction)
     {
       var initializationContextStub = MockRepository.GenerateStub<IObjectInitializationContext> ();
 
       initializationContextStub.Stub (stub => stub.ObjectID).Return (objectID);
       initializationContextStub.Stub (stub => stub.BindingTransaction).Return (bindingTransaction);
       return initializationContextStub;
+    }
+
+    private NewObjectInitializationContext CreateNewObjectInitializationContext (ClientTransaction clientTransaction, ObjectID objectID, ClientTransaction bindingTransaction)
+    {
+      return new NewObjectInitializationContext (
+          objectID,
+          ClientTransactionTestHelper.GetEnlistedDomainObjectManager (clientTransaction),
+          ClientTransactionTestHelper.GetIDataManager (clientTransaction),
+          bindingTransaction);
     }
 
     [DBTable]

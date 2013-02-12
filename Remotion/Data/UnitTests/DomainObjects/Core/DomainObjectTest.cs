@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -72,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       TestDomainBase.StaticCtorHandler +=
           (sender, args) =>
-          Assert.That (ClientTransactionTestHelper.GetCurrentObjectInitializationContext (_transaction).RegisteredObject, Is.SameAs (sender));
+          Assert.That (ObjectInititalizationContextScope.CurrentObjectInitializationContext.RegisteredObject, Is.SameAs (sender));
 
       Order instance;
       try

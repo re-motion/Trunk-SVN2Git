@@ -40,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects
       return SelectCreator().CreateObjectReference (objectInitializationContext, clientTransaction);
     }
 
-    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters, ClientTransaction clientTransaction)
+    public DomainObject CreateNewObject (IObjectInitializationContext objectInitializationContext, ParamList constructorParameters, ClientTransaction clientTransaction)
     {
-      return SelectCreator().CreateNewObject (domainObjectType, constructorParameters, clientTransaction);
+      return SelectCreator().CreateNewObject (objectInitializationContext, constructorParameters, clientTransaction);
     }
 
     private IDomainObjectCreator SelectCreator ()

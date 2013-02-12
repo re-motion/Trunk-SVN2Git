@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <paramref name="clientTransaction"/>. The object is enlisted with the transaction, but no <see cref="DataContainer"/> is created for it.
     /// The instance is created without a constructor being called.
     /// </summary>
-    /// <param name="objectInitializationContext"></param>
+    /// <param name="objectInitializationContext">The <see cref="IObjectInitializationContext"/> describing the object to be created.</param>
     /// <param name="clientTransaction">The transaction to create the object reference with. The reference is automatically enlisted in the given
     ///   transaction. If the transaction is a binding transaction, the reference is automatically bound to it.</param>
     /// <returns>A <see cref="DomainObject"/> instance with the <see cref="ObjectID"/> from the given <paramref name="objectInitializationContext"/> 
@@ -41,18 +41,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     DomainObject CreateObjectReference (IObjectInitializationContext objectInitializationContext, ClientTransaction clientTransaction);
 
     /// <summary>
-    /// Creates a new <see cref="DomainObject"/> instance of the given <paramref name="domainObjectType"/> by calling its constructor.
-    /// This method <see cref="ConstructorLookupInfo"/> does not raise the events notmally raised when a <see cref="DomainObject"/> is constructed. 
+    /// Creates a new <see cref="DomainObject"/> instance as specified by the given <paramref name="objectInitializationContext"/> by calling its 
+    /// constructor. This method <see cref="ConstructorLookupInfo"/> does not raise the events notmally raised when a <see cref="DomainObject"/> is 
+    /// constructed. 
     /// Use <see cref="ClientTransaction.NewObject"/> to create a <see cref="DomainObject"/> with the right events being fired.
     /// </summary>
-    /// <param name="domainObjectType">Type of the domain object.</param>
+    /// <param name="objectInitializationContext">The <see cref="IObjectInitializationContext"/> describing the object to be created.</param>
     /// <param name="constructorParameters">The constructor parameters.</param>
     /// <param name="clientTransaction">The transaction to create the object reference with. The reference is automatically enlisted in the given
-    /// transaction. If the transaction is a binding transaction, the reference is automatically bound to it.</param>
-    /// <returns>A <see cref="DomainObject"/> instance of the given <paramref name="domainObjectType"/> with its constructor executed.</returns>
+    ///   transaction. If the transaction is a binding transaction, the reference is automatically bound to it.</param>
+    /// <returns>A <see cref="DomainObject"/> instance with its constructor executed.</returns>
     /// <remarks>
-    /// The returned object might be an instance of a proxy type compatible with <paramref name="domainObjectType"/>.
+    /// The returned object might be an instance of a proxy type.
     /// </remarks>
-    DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters, ClientTransaction clientTransaction);
+    DomainObject CreateNewObject (IObjectInitializationContext objectInitializationContext, ParamList constructorParameters, ClientTransaction clientTransaction);
   }
 }

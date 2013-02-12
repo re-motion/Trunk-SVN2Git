@@ -60,17 +60,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return instance;
     }
 
-    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters, ClientTransaction clientTransaction)
+    public DomainObject CreateNewObject (
+        IObjectInitializationContext objectInitializationContext, ParamList constructorParameters, ClientTransaction clientTransaction)
     {
-      ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
+      ArgumentUtility.CheckNotNull ("objectInitializationContext", objectInitializationContext);
       ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
-      var constructorLookupInfo = GetConstructorLookupInfo (domainObjectType);
+      var constructorLookupInfo = GetConstructorLookupInfo (objectInitializationContext.ObjectID.ClassDefinition.ClassType);
       using (clientTransaction.EnterNonDiscardingScope())
       {
-        var instance = (DomainObject) constructorParameters.InvokeConstructor (constructorLookupInfo);
-        DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
-        return instance;
+        using (new ObjectInititalizationContextScope (objectInitializationContext))
+        {
+          var instance = (DomainObject) constructorParameters.InvokeConstructor (constructorLookupInfo);
+          DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
+          return instance;
+        }
       }
     }
 

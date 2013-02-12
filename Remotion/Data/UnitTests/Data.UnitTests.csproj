@@ -210,6 +210,8 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectHandleAttributeTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectInititalizationContextScopeHelper.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectInititalizationContextScopeTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectReferenceInitializationContextTest.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleConverterTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\ImplementingAccessorInterceptorBaseTest.cs" />
@@ -271,7 +273,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectCleanupExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\NewObjectInitializationContextTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectLifetimeAgentTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectLifetimeAgentTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NotFoundLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\NewObject\ObjectsThrowingInCtorTest.cs" />

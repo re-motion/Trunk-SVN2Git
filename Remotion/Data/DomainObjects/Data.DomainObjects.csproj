@@ -162,6 +162,7 @@
     <Compile Include="ClientTransactionFactory.cs" />
     <Compile Include="DomainObjectHandleConverter.cs" />
     <Compile Include="Infrastructure\DomainObjectHandleAttribute.cs" />
+    <Compile Include="Infrastructure\ObjectLifetime\ObjectInititalizationContextScope.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\ObjectReferenceInitializationContext.cs" />
     <Compile Include="Infrastructure\TypePipe\IAccessorInterceptor.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingAccessorInterceptorBase.cs" />

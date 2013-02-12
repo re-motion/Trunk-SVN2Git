@@ -17,11 +17,9 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
 
@@ -54,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       var del = lookupInfo.GetDelegate (typeof (Func<Order>));
       Assert.That (del, Is.InstanceOf (typeof (Func<Order>)));
       Assert.That (
-          ObjectLifetimeAgentTestHelper.CallWithInitializationContext (TestableClientTransaction, DomainObjectIDs.Order1, () => ((Func<Order>) del)()),
+          ObjectInititalizationContextScopeHelper.CallWithNewObjectInitializationContext (TestableClientTransaction, DomainObjectIDs.Order1, () => ((Func<Order>) del)()),
           Is.InstanceOf (concreteDomainObjectType));
     }
 
@@ -78,8 +76,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
           concreteDomainObjectType,
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-      var order = ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
-          TestableClientTransaction, DomainObjectIDs.Order1, () => (Order) ParamList.Empty.InvokeConstructor (lookupInfo));
+      var order = ObjectInititalizationContextScopeHelper.CallWithNewObjectInitializationContext (
+          TestableClientTransaction, DomainObjectIDs.Order1, (() => (Order) ParamList.Empty.InvokeConstructor (lookupInfo)));
       Assert.That (order, Is.Not.Null);
       Assert.That (((object) order).GetType(), Is.SameAs (concreteDomainObjectType));
     }
@@ -94,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
               concreteDomainObjectType,
               BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-      var instance = ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
+      var instance = ObjectInititalizationContextScopeHelper.CallWithNewObjectInitializationContext (
           TestableClientTransaction, DomainObjectIDs.Order1, () => (DOWithConstructors) ParamList.Create ("17", "4").InvokeConstructor (lookupInfo));
       Assert.That (instance, Is.Not.Null);
       Assert.That (instance.FirstArg, Is.EqualTo ("17"));

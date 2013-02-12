@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -212,7 +213,7 @@ namespace Remotion.Data.DomainObjects
 // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
       Assertion.IsNotNull (ClientTransaction.Current, "This constructor cannot be called with a null ClientTransaction.");
-      var initializationContext = ClientTransaction.Current.CurrentObjectInitializationContext;
+      var initializationContext = ObjectInititalizationContextScope.CurrentObjectInitializationContext;
       if (initializationContext == null)
       {
         throw new InvalidOperationException (

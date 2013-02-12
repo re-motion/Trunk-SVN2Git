@@ -42,9 +42,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
     private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
     private readonly IPersistenceStrategy _persistenceStrategy;
 
-    [ThreadStatic]
-    private static IObjectInitializationContext _currentInitializationContext;
-
     public ObjectLifetimeAgent (
         ClientTransaction clientTransaction,
         IClientTransactionEventSink eventSink,
@@ -97,11 +94,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _persistenceStrategy; }
     }
 
-    public IObjectInitializationContext CurrentInitializationContext
-    {
-      get { return _currentInitializationContext; }
-    }
-
     public DomainObject NewObject (ClassDefinition classDefinition, ParamList constructorParameters)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -115,25 +107,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 
       _eventSink.RaiseNewObjectCreatingEvent (classDefinition.ClassType);
 
-      var previousInitializationContext = _currentInitializationContext;
-
       var objectID = _persistenceStrategy.CreateNewObjectID (classDefinition);
       var bindingTransaction = _clientTransaction as BindingClientTransaction;
-      _currentInitializationContext = new NewObjectInitializationContext (objectID, _enlistedDomainObjectManager, _dataManager, bindingTransaction);
+      var initializationContext = new NewObjectInitializationContext (objectID, _enlistedDomainObjectManager, _dataManager, bindingTransaction);
 
       try
       {
-        return classDefinition.InstanceCreator.CreateNewObject (classDefinition.ClassType, constructorParameters, _clientTransaction);
+        return classDefinition.InstanceCreator.CreateNewObject (initializationContext, constructorParameters, _clientTransaction);
       }
       catch (Exception ex)
       {
-        if (_currentInitializationContext.RegisteredObject != null)
-          CleanupCreatedObject (objectID, _currentInitializationContext.RegisteredObject, ex);
+        if (initializationContext.RegisteredObject != null)
+          CleanupCreatedObject (objectID, initializationContext.RegisteredObject, ex);
         throw;
-      }
-      finally
-      {
-        _currentInitializationContext = previousInitializationContext;
       }
     }
 
