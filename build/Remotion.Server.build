@@ -237,7 +237,7 @@
       <Output TaskParameter="Result" PropertyName="_versionRevision" />
     </MSBuild.Community.Tasks.Math.Add>
     <PropertyGroup>
-        <_newVersion>$(_versionMajor).$(_versionMinor).$(_versionBuild).1</_newVersion>
+        <_newVersion>$(_versionMajor).$(_versionMinor).$(_versionBuild).$(_versionRevision)</_newVersion>
     </PropertyGroup>
 
     <MSBuild Projects="$(SolutionBuildFile)"
@@ -301,7 +301,7 @@
   </Target>
 
   <!-- Main Build Targets -->  
-  <Target Name="CIBuild" DependsOnTargets="GetLatestReleasedVersion;TestBuild;UpdateAssemblyInfosForLocalBuild;SetVersionCiAndNightlyBuild" />
+  <Target Name="CIBuild" DependsOnTargets="GetLatestReleasedVersion;TestBuild;SetVersionCiAndNightlyBuild" />
   <Target Name="NightlyBuild" DependsOnTargets="GetLatestReleasedVersion;FullBuild;SetVersionCiAndNightlyBuild" />
   <Target Name="Server_FullBuild" DependsOnTargets="GetEarliestUnreleasedVersion;FullBuild;Tag;ReleaseJiraVersion;UpdateAssemblyInfosForLocalBuild;SetVersionFullBuild" />
   <Target Name="Server_Deploy" DependsOnTargets="GetLatestReleasedVersion;Deploy;SetVersionFullBuild" />
