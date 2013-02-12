@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
-	[UseLegacyCodeGeneration]
+    [UseLegacyCodeGeneration]
     public void Initialize_ThrowsForDeserializedObject ()
     {
       //TODO 5370: Remove
