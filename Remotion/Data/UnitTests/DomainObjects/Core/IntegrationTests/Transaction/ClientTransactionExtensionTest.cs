@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
@@ -33,7 +32,6 @@ using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.RhinoMocks.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -46,14 +44,15 @@ using Remotion.FunctionalProgramming;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
   [TestFixture]
-  public class ClientTransactionExtensionTest : ClientTransactionBaseTest
+  public class ClientTransactionExtensionTest : StandardMappingTest
   {
-    private MockRepository _mockRepository;
-    private IClientTransactionExtension _extensionMock;
-    private TestableClientTransaction _newTransaction;
+    private TestableClientTransaction _transaction;
 
     private Order _order1;
     private Computer _computerWithoutRelatedObjects;
+
+    private MockRepository _mockRepository;
+    private IClientTransactionExtension _extensionMock;
 
     public override void TestFixtureSetUp ()
     {
@@ -65,36 +64,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp();
 
-      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _computerWithoutRelatedObjects = DomainObjectIDs.Computer5.GetObject<Computer> ();
+      _transaction = new TestableClientTransaction ();
 
-      _newTransaction = new TestableClientTransaction();
-      _newTransaction.EnlistDomainObjects (_order1);
-      _order1.TransactionContext[_newTransaction].EnsureDataAvailable();
-      _newTransaction.EnlistDomainObjects (_computerWithoutRelatedObjects);
-      _computerWithoutRelatedObjects.TransactionContext[_newTransaction].EnsureDataAvailable ();
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> (_transaction);
+      _computerWithoutRelatedObjects = DomainObjectIDs.Computer5.GetObject<Computer> (_transaction);
 
       _mockRepository = new MockRepository ();
       _extensionMock = _mockRepository.StrictMock<IClientTransactionExtension> ();
 
       _extensionMock.Stub (stub => stub.Key).Return ("TestExtension");
       _extensionMock.Replay();
-      TestableClientTransaction.Extensions.Add (_extensionMock);
-      _newTransaction.Extensions.Add (_extensionMock);
+      _transaction.Extensions.Add (_extensionMock);
       _extensionMock.BackToRecord();
     }
 
     public override void TearDown ()
     {
-      TestableClientTransaction.Extensions.Remove ("TestExtension");
-      _newTransaction.Extensions.Remove ("TestExtension");
+      _transaction.Extensions.Remove ("TestExtension");
       base.TearDown ();
     }
 
     [Test]
     public void Extensions ()
     {
-      Assert.That (TestableClientTransaction.Extensions, Has.Member(_extensionMock));
+      Assert.That (_transaction.Extensions, Has.Member(_extensionMock));
     }
 
     [Test]
@@ -126,10 +119,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void TransactionDiscard ()
     {
-      _extensionMock.Expect (mock => mock.TransactionDiscard (TestableClientTransaction));
+      _extensionMock.Expect (mock => mock.TransactionDiscard (_transaction));
       _extensionMock.Replay ();
 
-      TestableClientTransaction.Discard();
+      _transaction.Discard();
 
       _extensionMock.VerifyAllExpectations ();
     }
@@ -137,11 +130,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void NewObjectCreation ()
     {
-      _extensionMock.Expect (mock => mock.NewObjectCreating (TestableClientTransaction, typeof (Order)));
+      _extensionMock.Expect (mock => mock.NewObjectCreating (_transaction, typeof (Order)));
 
       _mockRepository.ReplayAll();
       
-      Order.NewObject();
+      _transaction.Execute (() => Order.NewObject());
 
       _mockRepository.VerifyAll();
     }
@@ -152,17 +145,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (TestableClientTransaction), 
+            Arg.Is (_transaction), 
             Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2 })));
         _extensionMock.Expect (mock => mock.ObjectsLoaded (
-            Arg.Is (TestableClientTransaction), 
+            Arg.Is (_transaction), 
             Arg<ReadOnlyCollection<DomainObject>>.Matches (loadedObjects => loadedObjects.Count == 1 && loadedObjects[0].ID == DomainObjectIDs.Order2)));
       }
 
       _mockRepository.ReplayAll();
 
-      Dev.Null = DomainObjectIDs.Order2.GetObject<Order> ();
-      Dev.Null = DomainObjectIDs.Order2.GetObject<Order> ();
+      Dev.Null = DomainObjectIDs.Order2.GetObject<Order> (_transaction);
+      Dev.Null = DomainObjectIDs.Order2.GetObject<Order> (_transaction);
 
       _mockRepository.VerifyAll();
     }
@@ -299,18 +292,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void ObjectsLoaded ()
     {
       _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.ClassWithAllDataTypes1 })));
       _extensionMock.Expect (mock => mock.ObjectsLoaded (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<DomainObject>>.Matches (collection => collection.Count == 1)));
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
-      }
+      DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> (_transaction);
 
       _mockRepository.VerifyAll();
     }
@@ -319,18 +309,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void ObjectsLoadedWithRelations ()
     {
       _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2 })));
       _extensionMock.Expect (mock => mock.ObjectsLoaded (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<DomainObject>>.Matches (collection => collection.Count == 1)));
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        DomainObjectIDs.Order2.GetObject<Order> ();
-      }
+      DomainObjectIDs.Order2.GetObject<Order> (_transaction);
+
       _mockRepository.VerifyAll();
     }
 
@@ -338,31 +326,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void ObjectsLoadedWithEvents ()
     {
       var clientTransactionEventReceiver =
-          _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_newTransaction);
+          _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_transaction);
 
       using (_mockRepository.Ordered())
       {
         _extensionMock.Expect (
             mock => mock.ObjectsLoading (
-                        Arg.Is (_newTransaction),
+                        Arg.Is (_transaction),
                         Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.ClassWithAllDataTypes1 })));
 
         clientTransactionEventReceiver.Loaded (null, null);
         LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_transaction),
             Property.ValueConstraint ("DomainObjects", Property.Value ("Count", 1)));
         _extensionMock.Expect (
             mock => mock.ObjectsLoaded (
-                Arg.Is (_newTransaction),
+                Arg.Is (_transaction),
                 Arg<ReadOnlyCollection<DomainObject>>.Matches (collection => collection.Count == 1)));
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
-      }
+      DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> (_transaction);
 
       _mockRepository.VerifyAll();
     }
@@ -375,15 +360,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.Expect (mock => mock.ObjectDeleting (TestableClientTransaction, _computerWithoutRelatedObjects));
+        _extensionMock.Expect (mock => mock.ObjectDeleting (_transaction, _computerWithoutRelatedObjects));
         eventReceiverMock.Expect (mock => mock.Deleting (_computerWithoutRelatedObjects, EventArgs.Empty));
         eventReceiverMock.Expect (mock => mock.Deleted (_computerWithoutRelatedObjects, EventArgs.Empty));
-        _extensionMock.Expect (mock => mock.ObjectDeleted (TestableClientTransaction, _computerWithoutRelatedObjects));
+        _extensionMock.Expect (mock => mock.ObjectDeleted (_transaction, _computerWithoutRelatedObjects));
       }
 
       _mockRepository.ReplayAll();
 
-      _computerWithoutRelatedObjects.Delete ();
+      _transaction.Execute (() => _computerWithoutRelatedObjects.Delete ());
 
       _mockRepository.VerifyAll();
     }
@@ -398,7 +383,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Customer customer;
       OrderCollection customerOrders;
       DomainObjectCollection officialOrders;
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         orderItem1 = _order1.OrderItems[0];
         orderItem2 = _order1.OrderItems[1];
@@ -429,58 +414,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.ObjectDeleting (_newTransaction, _order1);
+        _extensionMock.ObjectDeleting (_transaction, _order1);
         order1MockEventReceiver.Deleting (_order1, EventArgs.Empty);
 
         using (_mockRepository.Unordered())
         {
           customerOrdersMockEventReceiver.Removing (customerOrders, _order1);
-          _extensionMock.RelationChanging (_newTransaction, customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
+          _extensionMock.RelationChanging (_transaction, customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
           customerMockEventReceiver.RelationChanging (GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
 
-          _extensionMock.RelationChanging (_newTransaction, orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
+          _extensionMock.RelationChanging (_transaction, orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
           orderTicketMockEventReceiver.RelationChanging (GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
 
-          _extensionMock.RelationChanging (_newTransaction, orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+          _extensionMock.RelationChanging (_transaction, orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
           orderItem1MockEventReceiver.RelationChanging (GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
 
-          _extensionMock.RelationChanging (_newTransaction, orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+          _extensionMock.RelationChanging (_transaction, orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
           orderItem2MockEventReceiver.RelationChanging (GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
 
           officialOrdersMockEventReceiver.Removing (officialOrders, _order1);
-          _extensionMock.RelationChanging (_newTransaction, official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
+          _extensionMock.RelationChanging (_transaction, official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
           officialMockEventReceiver.RelationChanging (GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
         }
 
         using (_mockRepository.Unordered ())
         {
           customerMockEventReceiver.RelationChanged (GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
-          _extensionMock.RelationChanged (_newTransaction, customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
+          _extensionMock.RelationChanged (_transaction, customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
           customerOrdersMockEventReceiver.Removed (customerOrders, _order1);
 
           orderTicketMockEventReceiver.RelationChanged (GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
-          _extensionMock.RelationChanged (_newTransaction, orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
+          _extensionMock.RelationChanged (_transaction, orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
 
           orderItem1MockEventReceiver.RelationChanged (GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-          _extensionMock.RelationChanged (_newTransaction, orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+          _extensionMock.RelationChanged (_transaction, orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
 
           orderItem2MockEventReceiver.RelationChanged (GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-          _extensionMock.RelationChanged (_newTransaction, orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+          _extensionMock.RelationChanged (_transaction, orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
 
           officialOrdersMockEventReceiver.Removed (officialOrders, _order1);
           officialMockEventReceiver.RelationChanged (GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
-          _extensionMock.RelationChanged (_newTransaction, official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
+          _extensionMock.RelationChanged (_transaction, official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
         }
 
         order1MockEventReceiver.Deleted (_order1, EventArgs.Empty);
-        _extensionMock.ObjectDeleted (_newTransaction, _order1);
+        _extensionMock.ObjectDeleted (_transaction, _order1);
       }
 
       _mockRepository.ReplayAll();
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        _order1.Delete();
-      }
+
+      _transaction.Execute (() => _order1.Delete());
+      
       _mockRepository.VerifyAll();
     }
 
@@ -490,9 +474,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Location location;
       Client deletedClient;
       Client newClient;
-
-
-      using (_newTransaction.EnterNonDiscardingScope())
+      
+      using (_transaction.EnterNonDiscardingScope())
       {
         location = DomainObjectIDs.Location1.GetObject<Location>();
         deletedClient = location.Client;
@@ -504,16 +487,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.RelationChanging (_newTransaction, location, GetEndPointDefinition (typeof (Location), "Client"), deletedClient, newClient);
-        _extensionMock.RelationChanged (_newTransaction, location, GetEndPointDefinition (typeof (Location), "Client"), deletedClient, newClient);
+        _extensionMock.RelationChanging (_transaction, location, GetEndPointDefinition (typeof (Location), "Client"), deletedClient, newClient);
+        _extensionMock.RelationChanged (_transaction, location, GetEndPointDefinition (typeof (Location), "Client"), deletedClient, newClient);
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        location.Client = newClient;
-      }
+      _transaction.Execute (() => location.Client = newClient);
 
       _mockRepository.VerifyAll();
     }
@@ -525,8 +505,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Client deletedClient;
       Client newClient;
 
-
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         location = DomainObjectIDs.Location1.GetObject<Location>();
         location.Client = Client.NewObject();
@@ -541,16 +520,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.RelationChanging (_newTransaction, location, GetEndPointDefinition (typeof (Location), "Client"), deletedClient, newClient);
-        _extensionMock.RelationChanged (_newTransaction, location, GetEndPointDefinition (typeof (Location), "Client"), deletedClient, newClient);
+        _extensionMock.RelationChanging (_transaction, location, GetEndPointDefinition (typeof (Location), "Client"), deletedClient, newClient);
+        _extensionMock.RelationChanged (_transaction, location, GetEndPointDefinition (typeof (Location), "Client"), deletedClient, newClient);
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        location.Client = newClient;
-      }
+      _transaction.Execute (() => location.Client = newClient);
 
       _mockRepository.VerifyAll();
     }
@@ -558,27 +534,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ObjectDeleteTwice ()
     {
-      Computer computer;
-
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
-      }
+      var computer = DomainObjectIDs.Computer4.GetObject<Computer> (_transaction);
       _mockRepository.BackToRecord (_extensionMock);
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.ObjectDeleting (_newTransaction, computer);
-        _extensionMock.ObjectDeleted (_newTransaction, computer);
+        _extensionMock.ObjectDeleting (_transaction, computer);
+        _extensionMock.ObjectDeleted (_transaction, computer);
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        computer.Delete();
-        computer.Delete();
-      }
+      _transaction.Execute (computer.Delete);
+      _transaction.Execute (computer.Delete);
 
       _mockRepository.VerifyAll();
     }
@@ -586,24 +554,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertyRead ()
     {
-      int orderNumber = _order1.OrderNumber;
+      int orderNumber = _transaction.Execute (() => _order1.OrderNumber);
       _mockRepository.BackToRecord (_extensionMock);
 
       var propertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
       using (_mockRepository.Ordered())
       {
-        _extensionMock.PropertyValueReading (_newTransaction, _order1, propertyDefinition, ValueAccess.Current);
-        _extensionMock.PropertyValueRead (_newTransaction, _order1, propertyDefinition, orderNumber, ValueAccess.Current);
-        _extensionMock.PropertyValueReading (_newTransaction, _order1, propertyDefinition, ValueAccess.Original);
-        _extensionMock.PropertyValueRead (_newTransaction, _order1, propertyDefinition, orderNumber, ValueAccess.Original);
+        _extensionMock.PropertyValueReading (_transaction, _order1, propertyDefinition, ValueAccess.Current);
+        _extensionMock.PropertyValueRead (_transaction, _order1, propertyDefinition, orderNumber, ValueAccess.Current);
+        _extensionMock.PropertyValueReading (_transaction, _order1, propertyDefinition, ValueAccess.Original);
+        _extensionMock.PropertyValueRead (_transaction, _order1, propertyDefinition, orderNumber, ValueAccess.Original);
       }
 
       _mockRepository.ReplayAll();
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        Dev.Null = _order1.OrderNumber;
-        Dev.Null = _order1.Properties[propertyDefinition.PropertyName].GetOriginalValueWithoutTypeCheck();
-      }
+
+      _transaction.Execute (() => Dev.Null = _order1.OrderNumber);
+      _transaction.Execute (() => Dev.Null = _order1.Properties[propertyDefinition.PropertyName].GetOriginalValueWithoutTypeCheck());
 
       _mockRepository.VerifyAll();
     }
@@ -612,35 +578,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void ReadObjectIDProperty ()
     {
       var customerPropertyDefinition = GetPropertyDefinition (typeof (Order), "Customer");
-      var customerID = _order1.Properties[customerPropertyDefinition.PropertyName, _newTransaction].GetRelatedObjectID();
+      var customerID = _order1.Properties[customerPropertyDefinition.PropertyName, _transaction].GetRelatedObjectID();
 
       _mockRepository.BackToRecord (_extensionMock);
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.PropertyValueReading (_newTransaction, _order1, customerPropertyDefinition, ValueAccess.Current);
-        _extensionMock.PropertyValueRead (_newTransaction, _order1, customerPropertyDefinition, customerID, ValueAccess.Current);
+        _extensionMock.PropertyValueReading (_transaction, _order1, customerPropertyDefinition, ValueAccess.Current);
+        _extensionMock.PropertyValueRead (_transaction, _order1, customerPropertyDefinition, customerID, ValueAccess.Current);
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        Dev.Null = _order1.Properties[customerPropertyDefinition.PropertyName, _newTransaction].GetRelatedObjectID ();
-      }
+      _transaction.Execute (() => Dev.Null = _order1.Properties[customerPropertyDefinition.PropertyName, _transaction].GetRelatedObjectID ());
+
       _mockRepository.VerifyAll();
     }
 
     [Test]
     public void PropertySetToSameValue ()
     {
-      int orderNumber = _order1.OrderNumber;
+      int orderNumber = _transaction.Execute (() => _order1.OrderNumber);
 
       _mockRepository.BackToRecord (_extensionMock);
       // Note: No method call on the extension is expected.
       _mockRepository.ReplayAll();
 
-      _order1.OrderNumber = orderNumber;
+      _transaction.Execute (() => _order1.OrderNumber = orderNumber);
 
       _mockRepository.VerifyAll();
     }
@@ -648,7 +612,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ChangeAndReadProperty ()
     {
-      int oldOrderNumber = _order1.OrderNumber;
+      int oldOrderNumber = _transaction.Execute (() => _order1.OrderNumber);
       int newOrderNumber = oldOrderNumber + 1;
 
       var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
@@ -658,36 +622,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.PropertyValueChanging (
-            _newTransaction,
+            _transaction,
             _order1,
             orderNumberPropertyDefinition,
             oldOrderNumber,
             newOrderNumber);
         _extensionMock.PropertyValueChanged (
-            _newTransaction,
+            _transaction,
             _order1,
             orderNumberPropertyDefinition,
             oldOrderNumber,
             newOrderNumber);
 
         _extensionMock.PropertyValueReading (
-            _newTransaction,
+            _transaction,
             _order1,
             orderNumberPropertyDefinition,
             ValueAccess.Current);
         _extensionMock.PropertyValueRead (
-            _newTransaction,
+            _transaction,
             _order1,
             orderNumberPropertyDefinition,
             newOrderNumber,
             ValueAccess.Current);
         _extensionMock.PropertyValueReading (
-            _newTransaction,
+            _transaction,
             _order1,
             orderNumberPropertyDefinition,
             ValueAccess.Original);
         _extensionMock.PropertyValueRead (
-            _newTransaction,
+            _transaction,
             _order1,
             orderNumberPropertyDefinition,
             oldOrderNumber,
@@ -695,7 +659,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
 
       _mockRepository.ReplayAll();
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         _order1.OrderNumber = newOrderNumber;
         Dev.Null = _order1.OrderNumber;
@@ -708,7 +672,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertyChange ()
     {
-      int oldOrderNumber = _order1.OrderNumber;
+      int oldOrderNumber = _transaction.Execute (() => _order1.OrderNumber);
       _mockRepository.BackToRecord (_extensionMock);
 
       var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
@@ -716,13 +680,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.PropertyValueChanging (
-            _newTransaction,
+            _transaction,
             _order1,
             orderNumberPropertyDefinition,
             oldOrderNumber,
             oldOrderNumber + 1);
         _extensionMock.PropertyValueChanged (
-            _newTransaction,
+            _transaction,
             _order1,
             orderNumberPropertyDefinition,
             oldOrderNumber,
@@ -731,7 +695,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         _order1.OrderNumber = oldOrderNumber + 1;
       }
@@ -742,19 +706,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertyChangeWithEvents ()
     {
-      int oldOrderNumber = _order1.OrderNumber;
+      int oldOrderNumber = _transaction.Execute (() => _order1.OrderNumber);
       _mockRepository.BackToRecord (_extensionMock);
 
       var domainObjectMockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
       var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
-
-
+      
       using (_mockRepository.Ordered())
       {
         // "Changing" notifications
 
         _extensionMock.PropertyValueChanging (
-            _newTransaction,
+            _transaction,
             _order1,
             orderNumberPropertyDefinition,
             oldOrderNumber,
@@ -769,7 +732,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         LastCall.IgnoreArguments();
 
         _extensionMock.PropertyValueChanged (
-            _newTransaction,
+            _transaction,
             _order1,
             orderNumberPropertyDefinition,
             oldOrderNumber,
@@ -778,7 +741,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         _order1.OrderNumber = oldOrderNumber + 1;
       }
@@ -808,7 +771,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       OrderTicket orderTicket;
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         orderTicket = _order1.OrderTicket;
       }
@@ -817,13 +780,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.RelationReading (_newTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), ValueAccess.Current);
-        _extensionMock.RelationRead (_newTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket, ValueAccess.Current);
+        _extensionMock.RelationReading (_transaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), ValueAccess.Current);
+        _extensionMock.RelationRead (_transaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket, ValueAccess.Current);
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         Dev.Null = _order1.OrderTicket;
       }
@@ -835,7 +798,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void GetOriginalRelatedObject ()
     {
       OrderTicket originalOrderTicket;
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         originalOrderTicket =
             (OrderTicket) _order1.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
@@ -844,13 +807,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.RelationReading (_newTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), ValueAccess.Original);
-        _extensionMock.RelationRead (_newTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), originalOrderTicket, ValueAccess.Original);
+        _extensionMock.RelationReading (_transaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), ValueAccess.Original);
+        _extensionMock.RelationRead (_transaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), originalOrderTicket, ValueAccess.Original);
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         Dev.Null = _order1.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       }
@@ -862,7 +825,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void GetRelatedObjects ()
     {
       DomainObjectCollection orderItems;
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         orderItems = _order1.OrderItems;
       }
@@ -871,10 +834,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.RelationReading (
-            _newTransaction, _order1, GetEndPointDefinition (typeof(Order), "OrderItems"), ValueAccess.Current);
+            _transaction, _order1, GetEndPointDefinition (typeof(Order), "OrderItems"), ValueAccess.Current);
         _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_transaction),
             Rhino_Is.Same (_order1),
             Rhino_Is.Equal (GetEndPointDefinition (typeof (Order), "OrderItems")),
             Property.Value ("Count", 2) & Rhino.Mocks.Constraints.List.IsIn (orderItems[0]) & Rhino.Mocks.Constraints.List.IsIn (orderItems[1]),
@@ -883,7 +846,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         Dev.Null = _order1.OrderItems;
       }
@@ -895,7 +858,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void GetOriginalRelatedObjects ()
     {
       DomainObjectCollection originalOrderItems;
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         originalOrderItems = _order1.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
       }
@@ -904,11 +867,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.RelationReading (
-            _newTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), ValueAccess.Original);
+            _transaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), ValueAccess.Original);
         _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Original);
 
         LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_transaction),
             Rhino_Is.Same (_order1),
             Rhino_Is.Equal (GetEndPointDefinition (typeof (Order), "OrderItems")),
             Property.Value ("Count", 2) & Rhino.Mocks.Constraints.List.IsIn (originalOrderItems[0]) & Rhino.Mocks.Constraints.List.IsIn (originalOrderItems[1]),
@@ -917,7 +880,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         Dev.Null = _order1.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
       }
@@ -931,18 +894,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.RelationReading (
-            _newTransaction, _order1, GetEndPointDefinition (typeof(Order), "OrderTicket"), ValueAccess.Current);
+            _transaction, _order1, GetEndPointDefinition (typeof(Order), "OrderTicket"), ValueAccess.Current);
 
         _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_newTransaction), 
+            Arg.Is (_transaction), 
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 1)));
         
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Property.Value ("Count", 1));
 
         _extensionMock.RelationRead (null, null, null, (DomainObject) null, ValueAccess.Current);
         LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_transaction),
             Rhino_Is.Same (_order1),
             Rhino_Is.Equal (GetEndPointDefinition (typeof (Order), "OrderTicket")),
             Rhino_Is.NotNull(),
@@ -950,7 +913,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         Dev.Null = _order1.OrderTicket;
       }
@@ -963,16 +926,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.RelationReading (
-            _newTransaction, _order1, GetEndPointDefinition (typeof(Order), "OrderItems"), ValueAccess.Current);
+            _transaction, _order1, GetEndPointDefinition (typeof(Order), "OrderItems"), ValueAccess.Current);
 
-        _extensionMock.ObjectsLoading (_newTransaction, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
+        _extensionMock.ObjectsLoading (_transaction, null);
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Property.Value ("Count", 2));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Property.Value ("Count", 2));
         _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_transaction),
             Rhino_Is.Same (_order1),
             Rhino_Is.Equal (GetEndPointDefinition (typeof (Order), "OrderItems")),
             Rhino_Is.NotNull(),
@@ -980,7 +943,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         Dev.Null = _order1.OrderItems;
       }
@@ -994,17 +957,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.RelationReading (
-            _newTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), ValueAccess.Original);
+            _transaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), ValueAccess.Original);
 
         _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 1)));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Property.Value ("Count", 1));
         _extensionMock.RelationRead (null, null, null, (DomainObject) null, ValueAccess.Current);
         LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_transaction),
             Rhino_Is.Same (_order1),
             Rhino_Is.Equal (GetEndPointDefinition (typeof (Order), "OrderTicket")),
             Rhino_Is.NotNull(),
@@ -1012,7 +975,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         Dev.Null = _order1.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       }
@@ -1026,17 +989,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.RelationReading (
-            _newTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), ValueAccess.Original);
+            _transaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), ValueAccess.Original);
 
         _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Property.Value ("Count", 2));
         _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_transaction),
             Rhino_Is.Same (_order1),
             Rhino_Is.Equal (GetEndPointDefinition (typeof (Order), "OrderItems")),
             Rhino_Is.NotNull(),
@@ -1044,7 +1007,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         Dev.Null = _order1.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
       }
@@ -1057,7 +1020,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1);
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
       }
@@ -1067,12 +1030,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       QueryResult<DomainObject> newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject>();
       _extensionMock
           .Expect (
-          mock => mock.FilterQueryResult (Arg.Is (_newTransaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
+          mock => mock.FilterQueryResult (Arg.Is (_transaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
           .Return (newQueryResult);
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         QueryResult<DomainObject> finalResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
         Assert.That (finalResult, NUnit.Framework.Is.SameAs (newQueryResult));
@@ -1092,21 +1055,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Property.Value ("Count", 2));
         _extensionMock
             .Expect (
             mock =>
-            mock.FilterQueryResult (Arg.Is (_newTransaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
+            mock.FilterQueryResult (Arg.Is (_transaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
             .Return (newQueryResult);
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         QueryResult<DomainObject> finalQueryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
         Assert.That (finalQueryResult, NUnit.Framework.Is.SameAs (newQueryResult));
@@ -1121,12 +1084,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4);
 
       var filteringExtension = _mockRepository.StrictMock<ClientTransactionExtensionWithQueryFiltering>();
-      _newTransaction.Extensions.Add (filteringExtension);
+      _transaction.Extensions.Add (filteringExtension);
 
       var lastExtension = _mockRepository.StrictMock<IClientTransactionExtension>();
       lastExtension.Stub (stub => stub.Key).Return ("LastExtension");
       lastExtension.Replay();
-      _newTransaction.Extensions.Add (lastExtension);
+      _transaction.Extensions.Add (lastExtension);
       lastExtension.BackToRecord();
 
       QueryResult<DomainObject> newQueryResult1 = TestQueryFactory.CreateTestQueryResult<DomainObject> (query, new[] { _order1 });
@@ -1135,40 +1098,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
         filteringExtension.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
         lastExtension.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Property.Value ("Count", 2));
         filteringExtension.ObjectsLoaded (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Property.Value ("Count", 2));
         lastExtension.ObjectsLoaded (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Property.Value ("Count", 2));
 
         _extensionMock
             .Expect (
             mock =>
-            mock.FilterQueryResult (Arg.Is (_newTransaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
+            mock.FilterQueryResult (Arg.Is (_transaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
             .Return (newQueryResult1);
         filteringExtension
-            .Expect (mock => mock.FilterQueryResult (_newTransaction, newQueryResult1))
+            .Expect (mock => mock.FilterQueryResult (_transaction, newQueryResult1))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
         lastExtension
             .Expect (
             mock =>
-            mock.FilterQueryResult (Arg.Is (_newTransaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 0 && qr.Query == query)))
+            mock.FilterQueryResult (Arg.Is (_transaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 0 && qr.Query == query)))
             .Return (newQueryResult2);
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         QueryResult<DomainObject> finalQueryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
         Assert.That (finalQueryResult, NUnit.Framework.Is.SameAs (newQueryResult2));
@@ -1181,7 +1144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitWithChangedPropertyValue ()
     {
       Computer computer;
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
         computer.SerialNumber = "newSerialNumber";
@@ -1194,18 +1157,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.Expect (
             mock =>
             mock.Committing (
-                Arg.Is (_newTransaction),
+                Arg.Is (_transaction),
                 Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer }),
                 Arg<CommittingEventRegistrar>.Is.TypeOf));
         _extensionMock.Expect (mock => mock.CommitValidate (
-            Arg.Is (_newTransaction), 
+            Arg.Is (_transaction), 
             Arg<ReadOnlyCollection<PersistableData>>.Matches (c => c.Select (d => d.DomainObject).SetEquals (new[] { computer }))));
-        _extensionMock.Expect (mock => mock.Committed (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
+        _extensionMock.Expect (mock => mock.Committed (Arg.Is (_transaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
       }
 
       _mockRepository.ReplayAll();
 
-      _newTransaction.Commit();
+      _transaction.Commit();
 
       _mockRepository.VerifyAll();
     }
@@ -1216,7 +1179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Computer computer;
       Employee employee;
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
         employee = DomainObjectIDs.Employee1.GetObject<Employee> ();
@@ -1230,22 +1193,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.Expect (
             mock =>
             mock.Committing (
-                Arg.Is (_newTransaction),
+                Arg.Is (_transaction),
                 Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { computer, employee }),
                 Arg<CommittingEventRegistrar>.Is.TypeOf));
         _extensionMock.Expect (
             mock =>
             mock.CommitValidate (
-                Arg.Is (_newTransaction), 
+                Arg.Is (_transaction), 
                 Arg<ReadOnlyCollection<PersistableData>>.Matches (c => c.Select (d => d.DomainObject).SetEquals (new DomainObject[] { computer, employee }))));
         _extensionMock.Expect (
             mock =>
-            mock.Committed (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { computer, employee })));
+            mock.Committed (Arg.Is (_transaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { computer, employee })));
       }
 
       _mockRepository.ReplayAll();
 
-      _newTransaction.Commit();
+      _transaction.Commit();
 
       _mockRepository.VerifyAll();
     }
@@ -1255,7 +1218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Customer oldCustomer;
       Customer newCustomer;
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         oldCustomer = _order1.Customer;
         newCustomer = DomainObjectIDs.Customer2.GetObject<Customer> ();
@@ -1268,23 +1231,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.Expect (
             mock =>
             mock.Committing (
-                Arg.Is (_newTransaction),
+                Arg.Is (_transaction),
                 Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { _order1, newCustomer, oldCustomer }),
                 Arg<CommittingEventRegistrar>.Is.TypeOf));
         _extensionMock.Expect (
             mock =>
             mock.CommitValidate (
-                Arg.Is (_newTransaction), 
+                Arg.Is (_transaction), 
                 Arg<ReadOnlyCollection<PersistableData>>.Matches (c => c.Select (d => d.DomainObject).SetEquals (new DomainObject[] { _order1, newCustomer, oldCustomer }))));
         _extensionMock.Expect (
             mock =>
             mock.Committed (
-                Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { _order1, newCustomer, oldCustomer })));
+                Arg.Is (_transaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { _order1, newCustomer, oldCustomer })));
       }
 
       _mockRepository.ReplayAll();
 
-      _newTransaction.Commit();
+      _transaction.Commit();
 
       _mockRepository.VerifyAll();
     }
@@ -1295,7 +1258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       SetDatabaseModifyable();
 
       Computer computer;
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
         computer.SerialNumber = "newSerialNumber";
@@ -1303,7 +1266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _mockRepository.BackToRecord (_extensionMock);
 
       var clientTransactionMockEventReceiver =
-          _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_newTransaction);
+          _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_transaction);
       var computerEventReveiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (computer);
 
       using (_mockRepository.Ordered())
@@ -1311,26 +1274,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.Expect (
             mock =>
             mock.Committing (
-                Arg.Is (_newTransaction),
+                Arg.Is (_transaction),
                 Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer }),
                 Arg<CommittingEventRegistrar>.Is.TypeOf));
         clientTransactionMockEventReceiver.Expect (mock =>mock.Committing (computer));
         computerEventReveiver.Expect (mock => mock.Committing ());
 
         _extensionMock.Expect (mock => mock.CommitValidate (
-            Arg.Is (_newTransaction), 
+            Arg.Is (_transaction), 
             Arg<ReadOnlyCollection<PersistableData>>.Matches (c => c.Select (d => d.DomainObject).SetEquals (new DomainObject[] { computer }))));
 
         computerEventReveiver.Expect (mock => mock.Committed ());
         clientTransactionMockEventReceiver.Expect (mock => mock.Committed (computer));
-        _extensionMock.Expect (mock => mock.Committed (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
+        _extensionMock.Expect (mock => mock.Committed (Arg.Is (_transaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
-        _newTransaction.Commit();
+        _transaction.Commit();
       }
 
       _mockRepository.VerifyAll();
@@ -1340,7 +1303,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void Rollback ()
     {
       Computer computer;
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
         computer.SerialNumber = "newSerialNumber";
@@ -1351,15 +1314,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.RollingBack (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Rhino.Mocks.Constraints.List.IsIn (computer));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Rhino.Mocks.Constraints.List.IsIn (computer));
 
         _extensionMock.RolledBack (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Rhino.Mocks.Constraints.List.IsIn (computer));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Rhino.Mocks.Constraints.List.IsIn (computer));
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
         ClientTransactionScope.CurrentTransaction.Rollback();
       }
@@ -1376,9 +1339,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.Expect (mock => mock.SubTransactionCreating (_newTransaction));
+        _extensionMock.Expect (mock => mock.SubTransactionCreating (_transaction));
         _extensionMock
-            .Expect (mock => mock.SubTransactionInitialize (Arg.Is (_newTransaction), Arg<ClientTransaction>.Is.Anything))
+            .Expect (mock => mock.SubTransactionInitialize (Arg.Is (_transaction), Arg<ClientTransaction>.Is.Anything))
             .WhenCalled (
                 mi =>
                 {
@@ -1388,14 +1351,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         subExtenstionMock.Stub (stub => stub.Key).Return ("inner");
         subExtenstionMock.Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
         _extensionMock.Expect (mock => mock.SubTransactionCreated (
-            Arg.Is (_newTransaction), 
+            Arg.Is (_transaction), 
             Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
         subExtenstionMock.Expect (mock => mock.TransactionDiscard (Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
       }
 
       _mockRepository.ReplayAll();
 
-      var subTransaction = _newTransaction.CreateSubTransaction ();
+      var subTransaction = _transaction.CreateSubTransaction ();
       subTransaction.Discard();
 
       _mockRepository.VerifyAll();
@@ -1408,18 +1371,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_newTransaction),
+            Arg.Is (_transaction),
             Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2, DomainObjectIDs.Order3 })));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Rhino.Mocks.Constraints.List.Count (Rhino_Is.Equal (2)));
+        LastCall.Constraints (Rhino_Is.Same (_transaction), Rhino.Mocks.Constraints.List.Count (Rhino_Is.Equal (2)));
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
+      using (_transaction.EnterNonDiscardingScope())
       {
-        LifetimeService.GetObjects<DomainObject> (_newTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
+        LifetimeService.GetObjects<DomainObject> (_transaction, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
       }
 
       _mockRepository.VerifyAll();
@@ -1432,19 +1395,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _extensionMock
             .Expect (mock => mock.ObjectsUnloading (
-                        Arg.Is (TestableClientTransaction),
+                        Arg.Is (_transaction),
                         Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (TestableClientTransaction.DataManager.DataContainers[_order1.ID] != null));
+            .WhenCalled (mi => Assert.That (_transaction.DataManager.DataContainers[_order1.ID] != null));
         _extensionMock
             .Expect (mock => mock.ObjectsUnloaded (
-                        Arg.Is (TestableClientTransaction),
+                        Arg.Is (_transaction),
                         Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (TestableClientTransaction.DataManager.DataContainers[_order1.ID] == null));
+            .WhenCalled (mi => Assert.That (_transaction.DataManager.DataContainers[_order1.ID] == null));
       }
 
       _mockRepository.ReplayAll ();
 
-      UnloadService.UnloadData (TestableClientTransaction, _order1.ID);
+      UnloadService.UnloadData (_transaction, _order1.ID);
 
       _mockRepository.VerifyAll ();
     }
@@ -1507,9 +1470,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ObjectID[] expectedRelatedIDs)
     {
       _mockRepository.BackToRecordAll ();
-      RecordObjectLoadingCalls (_newTransaction, expectedMainObjectID, expectCollection, expectLoadedEvent, expectedRelatedIDs);
+      RecordObjectLoadingCalls (_transaction, expectedMainObjectID, expectCollection, expectLoadedEvent, expectedRelatedIDs);
 
-      using (_newTransaction.EnterNonDiscardingScope ())
+      using (_transaction.EnterNonDiscardingScope ())
       {
         _mockRepository.ReplayAll ();
 
