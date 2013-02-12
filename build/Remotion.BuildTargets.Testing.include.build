@@ -46,10 +46,8 @@
     
     <CallTarget Targets="CreateNUnitErrorsProperty" />
     
-    <Warning Condition="'@(FailedProjects)' != ''"
-             Text="%(FailedProjects.Identity) (%(FailedProjects.Platform)/%(FailedProjects.DatabaseSystem)): %(FailedProjects.Failures) failures, %(FailedProjects.Errors) errors" />
     <Error
-      Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors in"
+      Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors in: %0A@(FailedProjects->'%(Identity) (%(Platform)/%(DatabaseSystem)) with %(Failures) failures and %(Errors) errors','%0A')"
       Condition="$(_failures) &gt; 0 or $(_errors) &gt; 0"/>
 
     <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
