@@ -180,11 +180,11 @@
     </PropertyGroup>
   </Target>
   
-  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;GetEarliestUnreleasedVersion;Measure_Start;TestBuildDebugOnly;Measure_End" />
+  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;Measure_Start;TestBuildDebugOnly;Measure_End" />
   
-  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;GetEarliestUnreleasedVersion;CreateAdditionalBuildMetadata;Measure_Start;BuildAll;Measure_End;DocumentAll;PackageAll" />
+  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;CreateAdditionalBuildMetadata;Measure_Start;BuildAll;Measure_End;DocumentAll;PackageAll" />
   
-  <Target Name="Deploy" DependsOnTargets="GetLatestReleasedVersion;CreateCodePlexPasswordProperty;CreateNuGetApiKey;CreateAdditionalBuildMetadata;DeployAll">
+  <Target Name="Deploy" DependsOnTargets="CreateCodePlexPasswordProperty;CreateNuGetApiKey;CreateAdditionalBuildMetadata;DeployAll">
     <Message Text="Deployed re-motion, version '$(Version)', revision '$(SvnRevision)'." Importance="High"/>
   </Target>
   
@@ -301,9 +301,9 @@
   </Target>
 
   <!-- Main Build Targets -->  
-  <Target Name="CIBuild" DependsOnTargets="TestBuild;UpdateAssemblyInfosForLocalBuild;SetVersionCiAndNightlyBuild" />
-  <Target Name="NightlyBuild" DependsOnTargets="FullBuild;SetVersionCiAndNightlyBuild" />
-  <Target Name="Server_FullBuild" DependsOnTargets="FullBuild;Tag;ReleaseJiraVersion;UpdateAssemblyInfosForLocalBuild;SetVersionFullBuild" />
-  <Target Name="Server_Deploy" DependsOnTargets="Deploy;SetVersionFullBuild" />
+  <Target Name="CIBuild" DependsOnTargets="GetLatestReleasedVersion;TestBuild;UpdateAssemblyInfosForLocalBuild;SetVersionCiAndNightlyBuild" />
+  <Target Name="NightlyBuild" DependsOnTargets="GetLatestReleasedVersion;FullBuild;SetVersionCiAndNightlyBuild" />
+  <Target Name="Server_FullBuild" DependsOnTargets="GetEarliestUnreleasedVersion;FullBuild;Tag;ReleaseJiraVersion;UpdateAssemblyInfosForLocalBuild;SetVersionFullBuild" />
+  <Target Name="Server_Deploy" DependsOnTargets="GetLatestReleasedVersion;Deploy;SetVersionFullBuild" />
 
 </Project>
