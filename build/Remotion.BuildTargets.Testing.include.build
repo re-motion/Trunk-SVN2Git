@@ -120,10 +120,10 @@
       <Output TaskParameter="Errors" PropertyName="_nunit_errors"/>
     </MSBuild.ExtensionPack.CodeQuality.NUnit>
     
-    <!--<Message Text="##teamcity[importData type='nunit' path='$(_testResultFile)' verbose='true' whenNoDataPublished='error']"
-             Condition="'$(TEAMCITY_VERSION)' != ''" />-->
+    <Message Text="##teamcity[importData type='nunit' path='$(_testResultFile)' verbose='true' whenNoDataPublished='error']"
+             Condition="'$(TEAMCITY_VERSION)' != ''" />
 
-    <!--<MSBuild.ExtensionPack.Xml.XmlFile
+    <MSBuild.ExtensionPack.Xml.XmlFile
         TaskAction="ReadAttribute"
         File="$(_testResultFile)"
         XPath="/test-results/test-suite/@time">
@@ -132,10 +132,10 @@
 
     <MSBuild.ExtensionPack.Science.Maths TaskAction="Multiply" Numbers="$(_testTime);1000">
             <Output TaskParameter="Result" PropertyName="_testTime" />
-    </MSBuild.ExtensionPack.Science.Maths>-->
+    </MSBuild.ExtensionPack.Science.Maths>
     
-    <!--<Message Text="##teamcity[buildStatisticValue key='$(_testName)' value='$(_testTime)']" 
-             Condition="'$(TEAMCITY_VERSION)' != ''" />-->
+    <Message Text="##teamcity[buildStatisticValue key='$(_testName)' value='$(_testTime)']" 
+             Condition="'$(TEAMCITY_VERSION)' != ''" />
 
     <ItemGroup  Condition="$(_nunit_failures) &gt; 0 or $(_nunit_errors) &gt; 0">
       <NumberOfTestFailuresPerProject Include="$(_nunit_failures)" />
