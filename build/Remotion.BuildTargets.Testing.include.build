@@ -122,9 +122,9 @@
     </MSBuild.ExtensionPack.CodeQuality.NUnit>
     
     <Message Condition="'$(TEAMCITY_VERSION)' != ''"
-             Text="##teamcity[importData type='nunit' path='$(_testResultFile)' verbose='true']" />
+             Text="##teamcity[importData type='nunit' path='$(_testResultFile)' verbose='true' whenNoDataPublished='error']" />
     
-    <MSBuild.ExtensionPack.Xml.XmlFile
+    <!--<MSBuild.ExtensionPack.Xml.XmlFile
         TaskAction="ReadAttribute"
         File="$(_testResultFile)"
         XPath="/test-results/test-suite/@time">
@@ -136,7 +136,7 @@
     </MSBuild.ExtensionPack.Science.Maths>
     
     <Message Condition="'$(TEAMCITY_VERSION)' != ''"
-             Text="##teamcity[buildStatisticValue key='$(_testName)' value='$(_testTime)']" />
+             Text="##teamcity[buildStatisticValue key='$(_testName)' value='$(_testTime)']" />-->
   
     <ItemGroup  Condition="$(_nunit_failures) &gt; 0 or $(_nunit_errors) &gt; 0">
       <NumberOfTestFailuresPerProject Include="$(_nunit_failures)" />
