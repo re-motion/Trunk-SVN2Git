@@ -110,9 +110,6 @@
       <_testName>%(_testOutputFiles.Filename).$(ActiveConfigurationName).%(_testOutputFiles.Platform).%(_testOutputFiles.DatabaseSystem)</_testName>
       <_testResultFile>$(LogDirectory)$(_testName).xml</_testResultFile>
     </PropertyGroup>
-    
-    <Message Condition="'$(TEAMCITY_VERSION)' != ''"
-             Text="##teamcity[importData type='nunit' path='$(_testResultFile)' verbose='true']" />
              
     <MSBuild.ExtensionPack.CodeQuality.NUnit
         ToolPath="$(NUnitToolPath)"
@@ -123,6 +120,9 @@
       <Output TaskParameter="Failures" PropertyName="_nunit_failures"/>
       <Output TaskParameter="Errors" PropertyName="_nunit_errors"/>
     </MSBuild.ExtensionPack.CodeQuality.NUnit>
+    
+    <Message Condition="'$(TEAMCITY_VERSION)' != ''"
+             Text="##teamcity[importData type='nunit' path='$(_testResultFile)' verbose='true']" />
     
     <MSBuild.ExtensionPack.Xml.XmlFile
         TaskAction="ReadAttribute"
