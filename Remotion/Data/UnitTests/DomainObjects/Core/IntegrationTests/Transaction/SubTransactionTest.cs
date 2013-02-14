@@ -166,17 +166,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var subTx = TestableClientTransaction.CreateSubTransaction ();
 
-      var order = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
-      Assert.That (subTx.IsEnlisted (order), Is.False);
-      Assert.That (TestableClientTransaction.IsEnlisted (order), Is.False);
-
-      subTx.EnlistDomainObject (order);
+      var order = DomainObjectIDs.Order1.GetObject<Order> (subTx);
+     
       Assert.That (subTx.IsEnlisted (order), Is.True);
       Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
     }
-
-
-
+    
     [Test]
     public void SubTransactionCreatedEvent ()
     {

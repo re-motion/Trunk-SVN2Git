@@ -149,40 +149,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void NoOnLoadedInReactionToEnlist ()
+    public void NoOnLoaded_ByGetObjectReference ()
     {
       var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      ClassWithAllDataTypes classWithAllDataTypes = id.GetObject<ClassWithAllDataTypes> ();
-      classWithAllDataTypes.OnLoadedCalled = false;
-      classWithAllDataTypes.OnLoadedCallCount = 0;
-      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
-
-      newTransaction.EnlistDomainObject (classWithAllDataTypes);
-
+      var classWithAllDataTypes = id.GetObjectReference<ClassWithAllDataTypes> ();
       Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.False);
     }
 
     [Test]
-    public void OnLoadedInReactionToEnlistOnFirstAccess ()
+    public void OnLoaded_OnFirstAccess ()
     {
       var id = new ObjectID("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      ClassWithAllDataTypes classWithAllDataTypes = id.GetObject<ClassWithAllDataTypes> ();
-      classWithAllDataTypes.OnLoadedCalled = false;
-      classWithAllDataTypes.OnLoadedCallCount = 0;
-      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
-
-      newTransaction.EnlistDomainObject (classWithAllDataTypes);
-
-      using (newTransaction.EnterDiscardingScope ())
-      {
-        classWithAllDataTypes.Int32Property = 5;
-      }
+      var classWithAllDataTypes = id.GetObjectReference<ClassWithAllDataTypes> ();
+      classWithAllDataTypes.Int32Property = 5;
 
       Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.True);
       Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
-      Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
+      Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
     }
 
     [Test]
@@ -383,21 +368,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void StateInRootAndSubTransaction ()
+    {
+      Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
+      customer.Name = "New name";
+
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        Assert.That (customer.State, Is.EqualTo (StateType.NotLoadedYet));
+
+        customer.EnsureDataAvailable ();
+
+        Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (customer.TransactionContext[TestableClientTransaction].State, Is.EqualTo (StateType.Changed));
+
+        using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+        {
+          Assert.That (customer.TransactionContext[TestableClientTransaction].State, Is.EqualTo (StateType.Changed)); // must not throw a ClientTransactionDiffersException
+        }
+      }
+    }
+
+    [Test]
     public void IsDiscardedInTransaction ()
     {
-      ClientTransaction otherTransaction = ClientTransaction.CreateRootTransaction ();
-      ClassWithAllDataTypes loadedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
-      using (otherTransaction.EnterNonDiscardingScope ())
-      {
-        otherTransaction.EnlistDomainObject (loadedObject);
-        loadedObject.Delete ();
-        otherTransaction.Commit ();
-        Assert.That (loadedObject.IsInvalid, Is.True);
-      }
-      Assert.That (loadedObject.IsInvalid, Is.False);
+      var discardedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
+      var nonDiscardedObject = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ();
+      
+      discardedObject.Delete ();
+      TestableClientTransaction.Commit ();
+      
+      Assert.That (discardedObject.IsInvalid, Is.True);
+      Assert.That (nonDiscardedObject.IsInvalid, Is.False);
 
-      Assert.That (loadedObject.TransactionContext[otherTransaction].IsInvalid, Is.True);
-      Assert.That (loadedObject.TransactionContext[ClientTransaction.Current].IsInvalid, Is.False);
+      Assert.That (discardedObject.TransactionContext[TestableClientTransaction].IsInvalid, Is.True);
+      Assert.That (nonDiscardedObject.TransactionContext[TestableClientTransaction].IsInvalid, Is.False);
     }
 
     [Test]

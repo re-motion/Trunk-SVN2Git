@@ -137,20 +137,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectsNotFoundException), ExpectedMessage = 
-        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' could not be found.", 
-        MatchType = MessageMatch.Regex)]
     public void DeletedObject_NotFoundOnFirstAccess ()
     {
-      var order = GetObjectDeleteCommit ();
-
-      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
-      newTransaction.EnlistDomainObject (order);
-
-      using (newTransaction.EnterDiscardingScope ())
-      {
-        ++order.OrderNumber;
-      }
+      var orderHandle = ClientTransaction.CreateRootTransaction().Execute (() => GetObjectDeleteCommit ().GetHandle());
+      
+      var order = orderHandle.GetObjectReference();
+      Assert.That (
+          () => ++order.OrderNumber,
+          Throws.TypeOf<ObjectsNotFoundException>()
+                .With.Message.StringContaining (order.ID.ToString()));
     }
 
     [Test]

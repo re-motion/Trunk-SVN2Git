@@ -336,12 +336,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void OnLoaded_CanAccessPropertyValues ()
     {
-      Order order = _transaction.Execute (() => DomainObjectIDs.Order1.GetObject<Order> ());
-      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
+      Order order = _transaction.Execute (() => DomainObjectIDs.Order1.GetObjectReference<Order> ());
       order.ProtectedLoaded += ((sender, e) => Assert.That (((Order) sender).OrderNumber, Is.EqualTo (1)));
 
-      newTransaction.EnlistDomainObject (order);
-      order.TransactionContext[newTransaction].EnsureDataAvailable ();
+      Assert.That (order.OnLoadedCalled, Is.False);
+
+      _transaction.Execute (order.EnsureDataAvailable);
+
+      Assert.That (order.OnLoadedCalled, Is.True);
     }
 
     [Test]

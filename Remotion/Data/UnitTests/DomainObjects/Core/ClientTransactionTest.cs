@@ -700,10 +700,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var otherTransaction = ClientTransaction.CreateRootTransaction ();
       Assert.That (orderItemAdded, Is.False);
 
-      otherTransaction.EnlistDomainObject (order);
+      var orderInOtherTransaction = order.GetHandle().GetObject (otherTransaction);
       otherTransaction.CopyCollectionEventHandlers (order, _transaction);
 
-      otherTransaction.Execute (() => order.OrderItems.Add (OrderItem.NewObject ()));
+      otherTransaction.Execute (() => orderInOtherTransaction.OrderItems.Add (OrderItem.NewObject ()));
       Assert.That (orderItemAdded, Is.True);
     }
 

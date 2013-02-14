@@ -96,9 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       {
         ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
         Assert.That (deserializedInstance.OnLoadedCalled, Is.False);
-        using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+        using (ClientTransaction.Current.CreateSubTransaction ().EnterNonDiscardingScope ())
         {
-          ClientTransaction.Current.EnlistDomainObject (deserializedInstance);
           deserializedInstance.Int32Property = 15;
           Assert.That (deserializedInstance.OnLoadedCalled, Is.True);
           Assert.That (deserializedInstance.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));

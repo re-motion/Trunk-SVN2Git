@@ -442,9 +442,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        ClientTransaction.Current.EnlistDomainObject (cwadt);
-        Assert.That (cwadt.Int32Property, Is.EqualTo (7));
-        Assert.That (cwadt.Int16Property, Is.EqualTo (8));
+        var objectInThisTransaction = cwadt.GetHandle().GetObject();
+        Assert.That (objectInThisTransaction.Int32Property, Is.EqualTo (7));
+        Assert.That (objectInThisTransaction.Int16Property, Is.EqualTo (8));
       }
     }
 

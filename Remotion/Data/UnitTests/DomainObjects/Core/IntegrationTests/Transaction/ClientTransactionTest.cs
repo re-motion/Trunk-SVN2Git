@@ -433,13 +433,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        ClientTransaction.Current.EnlistDomainObject (order);
         ClientTransaction.Current.CopyCollectionEventHandlers (order, TestableClientTransaction);
 
-        Assert.That (HasEventHandler (order.OrderItems, "Added", addedEventHandler), Is.True);
-        Assert.That (HasEventHandler (order.OrderItems, "Adding", addingEventHandler), Is.True);
-        Assert.That (HasEventHandler (order.OrderItems, "Removed", removedEventHandler), Is.True);
-        Assert.That (HasEventHandler (order.OrderItems, "Removing", removingEventHandler), Is.True);
+        var orderInThisTransaction = order.GetHandle ().GetObject ();
+
+        Assert.That (HasEventHandler (orderInThisTransaction.OrderItems, "Added", addedEventHandler), Is.True);
+        Assert.That (HasEventHandler (orderInThisTransaction.OrderItems, "Adding", addingEventHandler), Is.True);
+        Assert.That (HasEventHandler (orderInThisTransaction.OrderItems, "Removed", removedEventHandler), Is.True);
+        Assert.That (HasEventHandler (orderInThisTransaction.OrderItems, "Removing", removingEventHandler), Is.True);
       }
     }
 
@@ -454,34 +455,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        ClientTransaction.Current.EnlistDomainObject (order);
         ClientTransaction.Current.CopyCollectionEventHandlers (order, TestableClientTransaction);
       }
 
       int loadedObjectsAfter = TestableClientTransaction.DataManager.DataContainers.Count;
       Assert.That (loadedObjectsAfter, Is.EqualTo (loadedObjectsBefore));
-    }
-
-    [Test]
-    [Obsolete ("TODO 2072 - Remove")]
-    [Ignore ("TODO: Optimize CopyCollectionEventHandlers")]
-    public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInDestinationTransaction_IfNotRequiredTo ()
-    {
-      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
-      Dev.Null = order.OrderItems; // load relation in source transaction, but do not attach event handlers
-
-      var innerTransaction = new TestableClientTransaction();
-      using (innerTransaction.EnterDiscardingScope ())
-      {
-        innerTransaction.EnlistDomainObject (order);
-
-        ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (innerTransaction);
-        
-        int loadedObjectsBefore = innerTransaction.DataManager.DataContainers.Count;
-        innerTransaction.CopyCollectionEventHandlers (order, TestableClientTransaction);
-        int loadedObjectsAfter = innerTransaction.DataManager.DataContainers.Count;
-        Assert.That (loadedObjectsAfter, Is.EqualTo (loadedObjectsBefore));
-      }
     }
 
     [Test]
@@ -514,8 +492,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (innerTransaction.EnterDiscardingScope ())
       {
-        innerTransaction.EnlistDomainObject (order);
-        order.EnsureDataAvailable (); // preload order, but not orderItems
+        // preload order, but not orderItems
+        order.GetHandle().GetObject();
 
         innerTransaction.AddListener (listenerMock);
         int loadedObjectsBefore = innerTransaction.DataManager.DataContainers.Count;
