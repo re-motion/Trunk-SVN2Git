@@ -16,32 +16,31 @@
 // 
 
 using System;
+using System.Reflection.Emit;
 using Remotion.TypePipe.MutableReflection;
-using Remotion.TypePipe.MutableReflection.Implementation;
 using Remotion.Utilities;
 
 namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions
 {
   /// <summary>
-  /// Decorates an instance of <see cref="IFieldBuilder"/> to allow <see cref="CustomType"/>s to be used in signatures and 
-  /// for checking strong-name compatibility.
+  /// Adapts <see cref="PropertyBuilder"/> with the <see cref="IPropertyBuilder"/> interface.
   /// </summary>
-  public class FieldBuilderDecorator : BuilderDecoratorBase, IFieldBuilder
+  public class PropertyBuilderAdapter : BuilderAdapterBase, IPropertyBuilder
   {
-    private readonly IFieldBuilder _fieldBuilder;
+    private readonly PropertyBuilder _propertyBuilder;
 
-    public FieldBuilderDecorator (IFieldBuilder fieldBuilder, IEmittableOperandProvider emittableOperandProvider)
-        : base (fieldBuilder, emittableOperandProvider)
+    public PropertyBuilderAdapter (PropertyBuilder propertyBuilder)
+        : base (ArgumentUtility.CheckNotNull ("propertyBuilder", propertyBuilder).SetCustomAttribute)
     {
-      _fieldBuilder = fieldBuilder;
+      _propertyBuilder = propertyBuilder;
     }
 
-    public void RegisterWith (IEmittableOperandProvider emittableOperandProvider, MutableFieldInfo field)
+    public void RegisterWith (IEmittableOperandProvider emittableOperandProvider, MutablePropertyInfo property)
     {
       ArgumentUtility.CheckNotNull ("emittableOperandProvider", emittableOperandProvider);
-      ArgumentUtility.CheckNotNull ("field", field);
+      ArgumentUtility.CheckNotNull ("property", property);
 
-      _fieldBuilder.RegisterWith (emittableOperandProvider, field);
+      emittableOperandProvider.AddMapping (property, _propertyBuilder);
     }
   }
 }
