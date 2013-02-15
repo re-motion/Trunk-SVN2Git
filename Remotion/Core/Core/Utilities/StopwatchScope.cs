@@ -61,21 +61,26 @@ namespace Remotion.Utilities
     /// <param name="formatString">A string to format the result with. The string can contain the following placeholders:
     /// <list type="bullet">
     /// <item>
-    ///   <c>{context}</c> Replaced with the context string passed to <see cref="Checkpoint"/>. At the end of the scope, this is the string "end".
+    /// <term>{context}</term>
+    /// <description>Replaced with the context string passed to <see cref="Checkpoint"/>. At the end of the scope, this is the string "end".</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsed}</c> Replaced with the standard string representation of <see cref="ElapsedTotal"/>.
+    /// <term>{elapsed}</term>
+    /// <description>Replaced with the standard string representation of <see cref="ElapsedTotal"/>.</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsed:ms}</c> Replaced with <see cref="ElapsedTotal"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
-    ///   number of milliseconds elapsed since the last checkpoint.
+    /// <term>{elapsed:ms}</term>
+    /// <description>Replaced with <see cref="ElapsedTotal"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsedCP}</c> Replaced with the standard string representation of <see cref="ElapsedSinceLastCheckpoint"/>.
+    /// <term>{elapsedCP}</term>
+    /// <description>Replaced with the standard string representation of <see cref="ElapsedSinceLastCheckpoint"/>.</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsedCP:ms}</c> Replaced with <see cref="ElapsedSinceLastCheckpoint"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
-    ///   number of milliseconds elapsed since the last checkpoint.
+    /// <term>{elapsedCP:ms}</term>
+    /// <description>Replaced with <see cref="ElapsedSinceLastCheckpoint"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.</description>
     /// </item>
     /// </list>
     /// </param>
@@ -101,21 +106,26 @@ namespace Remotion.Utilities
     /// <param name="formatString">A string to format the result with. The string can contain the following placeholders:
     /// <list type="bullet">
     /// <item>
-    ///   <c>{context}</c> Replaced with the context string passed to <see cref="Checkpoint"/>. At the end of the scope, this contains the string "end".
+    /// <term>{context}</term>
+    /// <description>Replaced with the context string passed to <see cref="Checkpoint"/>. At the end of the scope, this is the string "end".</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsed}</c> Replaced with the standard string representation of <see cref="ElapsedTotal"/>.
+    /// <term>{elapsed}</term>
+    /// <description>Replaced with the standard string representation of <see cref="ElapsedTotal"/>.</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsed:ms}</c> Replaced with <see cref="ElapsedTotal"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
-    ///   number of milliseconds elapsed since the last checkpoint.
+    /// <term>{elapsed:ms}</term>
+    /// <description>Replaced with <see cref="ElapsedTotal"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsedCP}</c> Replaced with the standard string representation of <see cref="ElapsedSinceLastCheckpoint"/>.
+    /// <term>{elapsedCP}</term>
+    /// <description>Replaced with the standard string representation of <see cref="ElapsedSinceLastCheckpoint"/>.</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsedCP:ms}</c> Replaced with <see cref="ElapsedSinceLastCheckpoint"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
-    ///   number of milliseconds elapsed since the last checkpoint.
+    /// <term>{elapsedCP:ms}</term>
+    /// <description>Replaced with <see cref="ElapsedSinceLastCheckpoint"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.</description>
     /// </item>
     /// </list>
     /// </param>
@@ -142,21 +152,26 @@ namespace Remotion.Utilities
     /// <param name="formatString">A string to format the result with. The string can contain the following placeholders:
     /// <list type="bullet">
     /// <item>
-    ///   <c>{context}</c> Replaced with the context string passed to <see cref="Checkpoint"/>. At the end of the scope, this contains the string "end".
+    /// <term>{context}</term>
+    /// <description>Replaced with the context string passed to <see cref="Checkpoint"/>. At the end of the scope, this is the string "end".</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsed}</c> Replaced with the standard string representation of <see cref="ElapsedTotal"/>.
+    /// <term>{elapsed}</term>
+    /// <description>Replaced with the standard string representation of <see cref="ElapsedTotal"/>.</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsed:ms}</c> Replaced with <see cref="ElapsedTotal"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
-    ///   number of milliseconds elapsed since the last checkpoint.
+    /// <term>{elapsed:ms}</term>
+    /// <description>Replaced with <see cref="ElapsedTotal"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsedCP}</c> Replaced with the standard string representation of <see cref="ElapsedSinceLastCheckpoint"/>.
+    /// <term>{elapsedCP}</term>
+    /// <description>Replaced with the standard string representation of <see cref="ElapsedSinceLastCheckpoint"/>.</description>
     /// </item>
     /// <item>
-    ///   <c>{elapsedCP:ms}</c> Replaced with <see cref="ElapsedSinceLastCheckpoint"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
-    ///   number of milliseconds elapsed since the last checkpoint.
+    /// <term>{elapsedCP:ms}</term>
+    /// <description>Replaced with <see cref="ElapsedSinceLastCheckpoint"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.</description>
     /// </item>
     /// </list>
     /// </param>
