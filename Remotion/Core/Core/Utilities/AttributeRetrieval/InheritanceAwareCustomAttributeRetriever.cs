@@ -22,6 +22,8 @@ using System.Reflection;
 
 namespace Remotion.Utilities.AttributeRetrieval
 {
+  // Note: This class is currently only tested integratively, via AttributeUtility. When changing it, consider adding tests specifically for this 
+  // class.
   /// <summary>
   /// Implements a generic custom attribute retrieval algorithm that knows how to deal with inheritance.
   /// </summary>
@@ -32,7 +34,9 @@ namespace Remotion.Utilities.AttributeRetrieval
     // Note: We're calling MethodInfo.GetParentDefinition via Reflection here for best performance. If this method is ever removed, we'll need to
     // find a different way of getting the parent method. Note that finding it by iterating base methods and comparing base definitions is too slow.
     // Maybe the implementation of the Attribute class has an idea?
+    // ReSharper disable StaticFieldInGenericType - yes, the field will exist once per instantiation, but we don't care.
     private static readonly DoubleCheckedLockingContainer<Func<MethodInfo, MethodInfo>> s_getMethodParentDefinition =
+    // ReSharper restore StaticFieldInGenericType
         new DoubleCheckedLockingContainer<Func<MethodInfo, MethodInfo>> (
             () =>
             {

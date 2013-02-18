@@ -21,6 +21,8 @@ using System.Reflection;
 
 namespace Remotion.Utilities.AttributeRetrieval
 {
+  // Note: This class is currently only tested integratively, via AttributeUtility. When changing it, consider adding tests specifically for this 
+  // class.
   /// <summary>
   /// Implements <see cref="InheritanceAwareCustomAttributeRetriever{TCustomAttributeProvider}"/> for <see cref="PropertyInfo"/> objects.
   /// </summary>

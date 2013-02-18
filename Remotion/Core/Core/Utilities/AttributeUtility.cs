@@ -155,17 +155,6 @@ namespace Remotion.Utilities
       } while (inherit && currentType != null && currentType != typeof (object)); // iterate unless inherit == false, stop when typeof (object) is reached
     }
 
-    private static void CheckAttributeType (Type attributeType, string parameterName)
-    {
-      ArgumentUtility.CheckNotNull ("attributeType", attributeType);
-
-      if (!typeof (Attribute).IsAssignableFrom (attributeType) && !attributeType.IsInterface)
-      {
-        string message = "The attribute type must be assignable to System.Attribute or an interface.";
-        throw new ArgumentTypeException (message, parameterName, typeof (Attribute), attributeType);
-      }
-    }
-
     public static bool IsAttributeInherited (Type attributeType)
     {
       AttributeUsageAttribute usage = GetAttributeUsage (attributeType);
@@ -223,6 +212,17 @@ namespace Remotion.Utilities
             key, k => GetCustomAttributesWithMetadata (k.Item1, typeof (SuppressAttributesAttribute), k.Item2).ToArray());
       }
       return result;
+    }
+
+    private static void CheckAttributeType (Type attributeType, string parameterName)
+    {
+      ArgumentUtility.CheckNotNull ("attributeType", attributeType);
+
+      if (!typeof (Attribute).IsAssignableFrom (attributeType) && !attributeType.IsInterface)
+      {
+        string message = "The attribute type must be assignable to System.Attribute or an interface.";
+        throw new ArgumentTypeException (message, parameterName, typeof (Attribute), attributeType);
+      }
     }
   }
 }

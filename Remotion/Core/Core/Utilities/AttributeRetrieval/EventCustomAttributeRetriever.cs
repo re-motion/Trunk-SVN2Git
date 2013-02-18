@@ -19,7 +19,12 @@ using System.Reflection;
 
 namespace Remotion.Utilities.AttributeRetrieval
 {
-  public class EventCustomAttributeRetriever : InheritanceAwareCustomAttributeRetriever<EventInfo>
+  // Note: This class is currently only tested integratively, via AttributeUtility. When changing it, consider adding tests specifically for this 
+  // class.
+  /// <summary>
+  /// Implements <see cref="InheritanceAwareCustomAttributeRetriever{TCustomAttributeProvider}"/> for <see cref="EventInfo"/> objects.
+  /// </summary>
+  public sealed class EventCustomAttributeRetriever : InheritanceAwareCustomAttributeRetriever<EventInfo>
   {
     protected override EventInfo GetBaseMember (EventInfo memberInfo)
     {
@@ -30,7 +35,7 @@ namespace Remotion.Utilities.AttributeRetrieval
       if (baseAccessor == null)
         return null;
 
-      // Note: We're ignoring the case where a base Event has a different name than the overriding Event - that can't be implemented in C#/VB anyway.
+      // Note: We're ignoring the case where a base event has a different name than the overriding event - that can't be implemented in C#/VB anyway.
       Assertion.DebugAssert (baseAccessor.DeclaringType != null, "Global methods canot be overridden.");
       return baseAccessor.DeclaringType.GetEvent (memberInfo.Name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
     }
