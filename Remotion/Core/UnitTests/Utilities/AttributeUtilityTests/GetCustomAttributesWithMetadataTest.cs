@@ -81,7 +81,6 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
         new AttributeWithMetadata (typeof (DerivedClassWithAttribute), new BaseNonInheritedAttribute ("DerivedClass")), 
         new AttributeWithMetadata (typeof (DerivedClassWithAttribute), new DerivedNonInheritedAttribute ("DerivedClass")),
         new AttributeWithMetadata (typeof (DerivedClassWithAttribute), new SuppressAttributesAttribute (typeof (InheritedNotMultipleAttribute))),
-        new AttributeWithMetadata (typeof (BaseClassWithAttribute), new InheritedNotMultipleAttribute ("BaseClass")),
         new AttributeWithMetadata (typeof (DerivedClassWithAttribute), new InheritedNotMultipleAttribute ("DerivedClass")),
       }));
     }

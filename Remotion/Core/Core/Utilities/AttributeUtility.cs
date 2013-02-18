@@ -128,16 +128,28 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      // TODO 5412: Bug: AllowMultiple is not checked when inheritance is resolved
+      var attributeUsageAttributes = new Dictionary<Type, AttributeUsageAttribute>();
 
       Type currentType = type;
       do
       {
-        var attributes = currentType.GetCustomAttributes (attributeType, false); // get attributes exactly for current type
-        foreach (Attribute attribute in attributes)
+        var currentAttributes = currentType.GetCustomAttributes (attributeType, false); // get attributes exactly for current type
+        foreach (Attribute currentAttribute in currentAttributes)
         {
-          if (type == currentType || IsAttributeInherited (attribute.GetType ()))
-            yield return new AttributeWithMetadata (currentType, attribute);
+          var currentAttributeType = currentAttribute.GetType();
+          AttributeUsageAttribute currentAttributeUsage;
+
+          if (!attributeUsageAttributes.TryGetValue (currentAttributeType, out currentAttributeUsage))
+          {
+            currentAttributeUsage = GetAttributeUsage (currentAttributeType);
+            attributeUsageAttributes.Add (currentAttributeType, currentAttributeUsage);
+            if (currentType == type || currentAttributeUsage.Inherited)
+              yield return new AttributeWithMetadata (currentType, currentAttribute);
+          }
+          else if ((currentType == type || currentAttributeUsage.Inherited) && currentAttributeUsage.AllowMultiple)
+          {
+            yield return new AttributeWithMetadata (currentType, currentAttribute);
+          }
         }
         currentType = currentType.BaseType;
       } while (inherit && currentType != null && currentType != typeof (object)); // iterate unless inherit == false, stop when typeof (object) is reached

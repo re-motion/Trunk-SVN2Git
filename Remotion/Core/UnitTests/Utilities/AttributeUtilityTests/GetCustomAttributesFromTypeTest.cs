@@ -86,7 +86,22 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
         new InheritedNotMultipleAttribute ("DerivedClass"),
       }));
     }
-    
+
+    [Test]
+    public void BaseClass_InheritableNotMultipleAttribute ()
+    {
+      object[] attributes = AttributeUtility.GetCustomAttributes (typeof (BaseWithInheritedNonMultipleAttribute), typeof (Attribute), true);
+      Assert.That (attributes, Has.Length.EqualTo (1));
+      Assert.That (((InheritedNotMultipleAttribute) attributes[0]).Context, Is.EqualTo ("Base"));
+    }
+
+    [Test]
+    public void DerivedClass_ShadowingInheritedNotMultipleAttribute ()
+    {
+      object[] attributes = AttributeUtility.GetCustomAttributes (typeof (DerivedShadowingNonMultipleAttribute), typeof (Attribute), true);
+      Assert.That (attributes, Has.Length.EqualTo (1));
+      Assert.That (((InheritedNotMultipleAttribute) attributes[0]).Context, Is.EqualTo ("Derived"));
+    }
     
     [Test]
     public void Filtering_WithBaseAttributeType ()
