@@ -317,6 +317,7 @@
     <Compile Include="Reflection\ParamListTest.cs" />
     <Compile Include="Reflection\TestDomain\ClassWithManyConstructorArguments.cs" />
     <Compile Include="Utilities\ArgumentTypeExceptionTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\PerformanceTest.cs" />
     <Compile Include="Utilities\CompoundComparerTest.cs" />
     <Compile Include="Utilities\CustomAttributeTypedArgumentUtilityTest.cs" />
     <Compile Include="Utilities\DefaultConverterTest.cs" />

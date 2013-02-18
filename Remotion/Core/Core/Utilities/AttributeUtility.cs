@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -27,6 +28,15 @@ namespace Remotion.Utilities
   /// </summary>
   public static class AttributeUtility
   {
+    // Caching AttributeUsageAttributes and SuppressAttributes is safe because they will never mutate through usage.
+    // (As shown by their implementation, and all used members are non-virtual.)
+
+    private static readonly ICache<Tuple<Type, bool>, AttributeWithMetadata[]> s_suppressAttributesCache =
+        CacheFactory.CreateWithLocking<Tuple<Type, bool>, AttributeWithMetadata[]>();
+
+    private static readonly LockingCacheDecorator<Type, AttributeUsageAttribute> s_attributeUsageCache =
+        CacheFactory.CreateWithLocking<Type, AttributeUsageAttribute>();
+    
     public static bool IsDefined<T> (MemberInfo element, bool inherit)
        where T : class
     {
@@ -87,6 +97,10 @@ namespace Remotion.Utilities
       Attribute[] attributes = Attribute.GetCustomAttributes (element, typeof (Attribute), inherit);
       Attribute[] filteredAttributes = Array.FindAll (attributes, attribute => attributeType.IsInstanceOfType (attribute));
       return (object[]) ArrayUtility.Convert (filteredAttributes, attributeType);
+
+      // TODO 5412
+      // If element is property or event, implement manual approach
+      // else simply call standard GetCustomAttributes impl
     }
 
     public static object[] GetCustomAttributes (Type type, Type attributeType, bool inherit)
@@ -94,39 +108,33 @@ namespace Remotion.Utilities
       ArgumentUtility.CheckNotNull ("type", type);
       CheckAttributeType (attributeType, "attributeType");
 
-      AttributeWithMetadata[] attributes = GetCustomAttributesWithMetadata (type, inherit);
-      AttributeWithMetadata[] suppressAttributes = 
-          AttributeWithMetadata.IncludeAll (attributes, typeof (SuppressAttributesAttribute)).ToArray ();
+      var attributesWithRightType = GetCustomAttributesWithMetadata (type, attributeType, inherit);
+      var filteredAttributes = AttributeWithMetadata.ExcludeAll (attributesWithRightType, typeof (SuppressAttributesAttribute));
 
-      IEnumerable<AttributeWithMetadata> attributesWithRightType = AttributeWithMetadata.IncludeAll (attributes, attributeType);
-      IEnumerable<AttributeWithMetadata> filteredAttributes = 
-          AttributeWithMetadata.ExcludeAll (attributesWithRightType, typeof (SuppressAttributesAttribute));
+      var suppressAttributes = GetCachedSuppressAttributes (type, inherit);
+      var nonSuppressedAttributes = AttributeWithMetadata.Suppress (filteredAttributes, suppressAttributes);
+      var attributeInstances = AttributeWithMetadata.ExtractInstances (nonSuppressedAttributes);
 
-      IEnumerable<AttributeWithMetadata> suppressedAttributes = AttributeWithMetadata.Suppress (filteredAttributes, suppressAttributes);
-      IEnumerable<Attribute> attributeInstances = AttributeWithMetadata.ExtractInstances (suppressedAttributes);
-
-      return (object[]) ArrayUtility.Convert (attributeInstances.ToArray (), attributeType);
+      return CreateTypedArray (attributeInstances, attributeType);
     }
 
-    public static AttributeWithMetadata[] GetCustomAttributesWithMetadata (Type type, bool inherit)
+    public static IEnumerable<AttributeWithMetadata> GetCustomAttributesWithMetadata (Type type, Type attributeType, bool inherit)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      var result = new List<AttributeWithMetadata>();
+      // TODO 5412: Bug: AllowMultiple is not checked when inheritance is resolved
 
       Type currentType = type;
       do
       {
-        Attribute[] attributes = Attribute.GetCustomAttributes(currentType, false); // get attributes exactly for current type
+        var attributes = currentType.GetCustomAttributes (attributeType, false); // get attributes exactly for current type
         foreach (Attribute attribute in attributes)
         {
-          if (type == currentType || IsAttributeInherited (attribute.GetType()))
-            result.Add(new AttributeWithMetadata(currentType, attribute));
+          if (type == currentType || IsAttributeInherited (attribute.GetType ()))
+            yield return new AttributeWithMetadata (currentType, attribute);
         }
         currentType = currentType.BaseType;
-      } while (inherit && currentType != null && currentType != typeof(object)); // iterate unless inherit == false, stop when typeof (object) is reached
-
-      return result.ToArray();
+      } while (inherit && currentType != null && currentType != typeof (object)); // iterate unless inherit == false, stop when typeof (object) is reached
     }
 
     private static void CheckAttributeType (Type attributeType, string parameterName)
@@ -152,13 +160,11 @@ namespace Remotion.Utilities
       return usage.AllowMultiple;
     }
 
-    private static readonly LockingCacheDecorator<Type, AttributeUsageAttribute> s_cache = CacheFactory.CreateWithLocking<Type, AttributeUsageAttribute>();
-
     public static AttributeUsageAttribute GetAttributeUsage (Type attributeType)
     {
       ArgumentUtility.CheckNotNull ("attributeType", attributeType);
 
-      AttributeUsageAttribute cachedInstance = s_cache.GetOrCreateValue (
+      AttributeUsageAttribute cachedInstance = s_attributeUsageCache.GetOrCreateValue (
           attributeType,
           delegate (Type type)
           {
@@ -178,5 +184,30 @@ namespace Remotion.Utilities
       newInstance.Inherited = cachedInstance.Inherited;
       return newInstance;
     }
+
+    private static object[] CreateTypedArray (IEnumerable attributeInstances, Type elementType)
+    {
+      var arrayList = new ArrayList ();
+      foreach (var attributeInstance in attributeInstances)
+      {
+        arrayList.Add (attributeInstance);
+      }
+      // This cast succeeds because elementType is always a reference type (as it's either derived from Attribute, or an interface).
+      Assertion.DebugAssert (!elementType.IsValueType);
+      return (object[]) arrayList.ToArray (elementType);
+    }
+
+    private static AttributeWithMetadata[] GetCachedSuppressAttributes (Type type, bool inherit)
+    {
+      AttributeWithMetadata[] result;
+      var key = Tuple.Create (type, inherit);
+      if (!s_suppressAttributesCache.TryGetValue (key, out result))
+      {
+        result = s_suppressAttributesCache.GetOrCreateValue (
+            key, k => GetCustomAttributesWithMetadata (k.Item1, typeof (SuppressAttributesAttribute), k.Item2).ToArray());
+      }
+      return result;
+    }
+
   }
 }

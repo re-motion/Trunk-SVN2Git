@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void BaseClass_InheritedFalse ()
     {
       AttributeWithMetadata[] attributes = 
-        AttributeUtility.GetCustomAttributesWithMetadata (typeof (BaseClassWithAttribute), false).ToArray ();
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (BaseClassWithAttribute), typeof (Attribute), false).ToArray ();
       Assert.That (attributes, Is.EquivalentTo (new object[] {
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new BaseInheritedAttribute ("BaseClass")), 
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new DerivedInheritedAttribute ("BaseClass")), 
@@ -43,7 +43,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void BaseClass_InheritedTrue ()
     {
       AttributeWithMetadata[] attributes =
-        AttributeUtility.GetCustomAttributesWithMetadata (typeof (BaseClassWithAttribute), true).ToArray ();
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (BaseClassWithAttribute), typeof (Attribute), true).ToArray ();
       Assert.That (attributes, Is.EquivalentTo (new object[] {
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new BaseInheritedAttribute ("BaseClass")), 
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new DerivedInheritedAttribute ("BaseClass")), 
@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void DerivedClass_InheritedFalse ()
     {
       AttributeWithMetadata[] attributes =
-        AttributeUtility.GetCustomAttributesWithMetadata (typeof (DerivedClassWithAttribute), false).ToArray ();
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (DerivedClassWithAttribute), typeof (Attribute), false).ToArray ();
       Assert.That (attributes, Is.EquivalentTo (new object[] {
         new AttributeWithMetadata (typeof (DerivedClassWithAttribute), new BaseInheritedAttribute ("DerivedClass")), 
         new AttributeWithMetadata (typeof (DerivedClassWithAttribute), new DerivedInheritedAttribute ("DerivedClass")), 
@@ -72,7 +72,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void DerivedClass_InheritedTrue ()
     {
       AttributeWithMetadata[] attributes =
-        AttributeUtility.GetCustomAttributesWithMetadata (typeof (DerivedClassWithAttribute), true).ToArray ();
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (DerivedClassWithAttribute), typeof (Attribute), true).ToArray ();
       Assert.That (attributes, Is.EquivalentTo (new object[] {
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new BaseInheritedAttribute ("BaseClass")), 
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new DerivedInheritedAttribute ("BaseClass")), 
@@ -87,10 +87,23 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     }
 
     [Test]
+    public void DerivedClass_WithTypeFilter ()
+    {
+      AttributeWithMetadata[] attributes =
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (DerivedClassWithAttribute), typeof (BaseInheritedAttribute), true).ToArray ();
+      Assert.That (attributes, Is.EquivalentTo (new object[] {
+        new AttributeWithMetadata (typeof (BaseClassWithAttribute), new BaseInheritedAttribute ("BaseClass")), 
+        new AttributeWithMetadata (typeof (BaseClassWithAttribute), new DerivedInheritedAttribute ("BaseClass")), 
+        new AttributeWithMetadata (typeof (DerivedClassWithAttribute), new BaseInheritedAttribute ("DerivedClass")), 
+        new AttributeWithMetadata (typeof (DerivedClassWithAttribute), new DerivedInheritedAttribute ("DerivedClass")), 
+      }));
+    }
+
+    [Test]
     public void ObjectClass_InheritedFalse ()
     {
       AttributeWithMetadata[] attributes =
-        AttributeUtility.GetCustomAttributesWithMetadata (typeof (object), false).ToArray ();
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (object), typeof (Attribute), false).ToArray ();
       Assert.That (attributes.Length, Is.EqualTo (typeof (object).GetCustomAttributes (false).Length));
     }
 
@@ -98,15 +111,15 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void ObjectClass_InheritedTrue ()
     {
       AttributeWithMetadata[] attributes =
-        AttributeUtility.GetCustomAttributesWithMetadata (typeof (object), true).ToArray ();
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (object), typeof (Attribute), true).ToArray ();
       Assert.That (attributes.Length, Is.EqualTo (typeof (object).GetCustomAttributes (false).Length));
     }
 
     [Test]
     public void Type_ReturnsNewInstance ()
     {
-      var attributeMetadata1 = AttributeUtility.GetCustomAttributesWithMetadata (typeof (SampleClass), false).Single();
-      var attributeMetadata2 = AttributeUtility.GetCustomAttributesWithMetadata (typeof (SampleClass), false).Single();
+      var attributeMetadata1 = AttributeUtility.GetCustomAttributesWithMetadata (typeof (SampleClass), typeof (Attribute), false).Single ();
+      var attributeMetadata2 = AttributeUtility.GetCustomAttributesWithMetadata (typeof (SampleClass), typeof (Attribute), false).Single ();
       Assert.That (attributeMetadata1.AttributeInstance, Is.Not.SameAs (attributeMetadata2.AttributeInstance));
     }
   }
