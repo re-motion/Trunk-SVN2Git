@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 {
   [TestFixture]
-  public class IsDefinedFromMemberInfoTest
+  public class IsDefinedFromPropertyInfoTest
   {
     private PropertyInfo _basePropertyWithSingleAttribute;
     private PropertyInfo _derivedPropertyWithSingleAttribute;

@@ -14,27 +14,67 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+using JetBrains.Annotations;
+
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
 {
   [Inherited]
   public class SampleClass
   {
     [Inherited]
+    [UsedImplicitly]
     public virtual string PropertyWithSingleAttribute
     {
       get { return null; }
     }
 
     [Inherited]
+    [UsedImplicitly]
     protected virtual string ProtectedPropertyWithAttribute
     {
       get { return null; }
     }
 
     [Multiple]
+    [UsedImplicitly]
     public virtual string PropertyWithMultipleAttribute
     {
       get { return null; }
+    }
+
+    [Inherited]
+    [UsedImplicitly]
+    public virtual event EventHandler EventWithSingleAttribute;
+
+    [Inherited]
+    [UsedImplicitly]
+    protected virtual event EventHandler ProtectedEventWithAttribute;
+
+    [Multiple]
+    [UsedImplicitly]
+    public virtual event EventHandler EventWithMultipleAttribute;
+
+    [Inherited]
+    [UsedImplicitly]
+    public virtual string MethodWithSingleAttribute ()
+    {
+      return null;
+    }
+
+    [Inherited]
+    [UsedImplicitly]
+    protected virtual string ProtectedMethodWithAttribute ()
+    {
+      return null;
+    }
+
+    [Multiple]
+    [UsedImplicitly]
+    public virtual string MethodWithMultipleAttribute ()
+    {
+      return null;
     }
   }
 }

@@ -24,7 +24,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 {
   [TestFixture]
-  public class GetCustomAttributeFromMemberInfoTest
+  public class GetCustomAttributeFromPropertyInfoTest
   {
     private PropertyInfo _basePropertyWithSingleAttribute;
     private PropertyInfo _derivedPropertyWithSingleAttribute;

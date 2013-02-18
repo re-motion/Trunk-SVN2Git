@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 {
   [TestFixture]
-  public class GetCustomAttributesFromType_WithSuppresTest
+  public class GetCustomAttributesFromType_WithSuppressTest
   {
     [Test]
     public void BaseClass_NothingSuppressed ()

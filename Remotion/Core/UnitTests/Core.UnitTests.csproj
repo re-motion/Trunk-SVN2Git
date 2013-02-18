@@ -317,6 +317,9 @@
     <Compile Include="Reflection\ParamListTest.cs" />
     <Compile Include="Reflection\TestDomain\ClassWithManyConstructorArguments.cs" />
     <Compile Include="Utilities\ArgumentTypeExceptionTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromEventInfoTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromMethodInfoTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromMemberInfoTestBase.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\PerformanceTest.cs" />
     <Compile Include="Utilities\CompoundComparerTest.cs" />
     <Compile Include="Utilities\CustomAttributeTypedArgumentUtilityTest.cs" />
@@ -511,7 +514,7 @@
     <Compile Include="Utilities\AttributeUtilityTests\AttributeUsageTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\AttributeWithMetadataTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\IsDefined_WithSuppressTest.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromType_WithSuppresTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromType_WithSuppressTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesWithMetadataTest.cs" />
     <Compile Include="Utilities\AdvancedEnumConverterTest_Flags.cs" />
     <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTest.cs" />
@@ -535,11 +538,11 @@
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\DerivedWithAttributesAndSuppressed.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\NotInheritedNotMultipleAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\ImplicitUsageAttribute.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\IsDefinedFromMemberInfoTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\IsDefinedFromPropertyInfoTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\MultipleAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\DerivedSampleClass.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributeFromMemberInfoTest.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromMemberInfoTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributeFromPropertyInfoTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromPropertyInfoTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\ICustomAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\InheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\SampleClass.cs" />

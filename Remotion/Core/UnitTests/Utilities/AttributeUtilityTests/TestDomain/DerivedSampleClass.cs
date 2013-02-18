@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using JetBrains.Annotations;
+
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
 {
   public class DerivedSampleClass : SampleClass
@@ -32,6 +35,29 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
     public override string PropertyWithMultipleAttribute
     {
       get { return null; }
+    }
+
+    public override event System.EventHandler EventWithSingleAttribute;
+    protected override event System.EventHandler ProtectedEventWithAttribute;
+    [Multiple]
+    public override event System.EventHandler EventWithMultipleAttribute;
+
+    [UsedImplicitly]
+    public override string MethodWithSingleAttribute ()
+    {
+      return base.MethodWithSingleAttribute ();
+    }
+
+    [UsedImplicitly]
+    protected override string ProtectedMethodWithAttribute ()
+    {
+      return base.ProtectedMethodWithAttribute ();
+    }
+
+    [Multiple]
+    public override string MethodWithMultipleAttribute ()
+    {
+      return base.MethodWithMultipleAttribute ();
     }
   }
 }

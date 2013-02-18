@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -23,28 +22,17 @@ using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 {
-  [TestFixture]
-  public class GetCustomAttributesFromMemberInfoTest
+  public abstract class GetCustomAttributesFromMemberInfoTestBase
   {
-    private PropertyInfo _basePropertyWithSingleAttribute;
-    private PropertyInfo _derivedPropertyWithSingleAttribute;
-    private PropertyInfo _derivedPropertyWithMultipleAttribute;
-    private PropertyInfo _derivedProtectedProperty;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _basePropertyWithSingleAttribute = typeof (SampleClass).GetProperty ("PropertyWithSingleAttribute");
-      _derivedPropertyWithSingleAttribute = typeof (DerivedSampleClass).GetProperty ("PropertyWithSingleAttribute");
-      _derivedPropertyWithMultipleAttribute = typeof (DerivedSampleClass).GetProperty ("PropertyWithMultipleAttribute");
-      _derivedProtectedProperty = typeof (DerivedSampleClass).GetProperty ("ProtectedPropertyWithAttribute",
-          BindingFlags.NonPublic | BindingFlags.Instance);
-    }
+    public abstract MemberInfo BaseMemberWithSingleAttribute { get; }
+    public abstract MemberInfo DerivedMemberWithSingleAttribute { get; }
+    public abstract MemberInfo DerivedMemberWithMultipleAttribute { get; }
+    public abstract MemberInfo DerivedProtectedMember { get; }
 
     [Test]
     public void TestGeneric_FromBaseWithAttribute ()
     {
-      InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (_basePropertyWithSingleAttribute, true);
+      InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (BaseMemberWithSingleAttribute, true);
 
       Assert.That (attributes.Length, Is.EqualTo (1));
       Assert.That (attributes[0], Is.Not.Null);
@@ -53,7 +41,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_FromBaseWithAttribute ()
     {
-      object[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (InheritedAttribute), true);
+      object[] attributes = AttributeUtility.GetCustomAttributes (BaseMemberWithSingleAttribute, typeof (InheritedAttribute), true);
 
       Assert.That (attributes.Length, Is.EqualTo (1));
       Assert.That (attributes[0], Is.Not.Null);
@@ -63,7 +51,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void TestGeneric_FromBaseWithInterface ()
     {
-      ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (_basePropertyWithSingleAttribute, true);
+      ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (BaseMemberWithSingleAttribute, true);
 
       Assert.That (attributes.Length, Is.EqualTo (1));
       Assert.That (attributes[0], Is.Not.Null);
@@ -72,7 +60,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_FromBaseWithInterface ()
     {
-      object[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (ICustomAttribute), true);
+      object[] attributes = AttributeUtility.GetCustomAttributes (BaseMemberWithSingleAttribute, typeof (ICustomAttribute), true);
 
       Assert.That (attributes.Length, Is.EqualTo (1));
       Assert.That (attributes[0], Is.Not.Null);
@@ -84,7 +72,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
         "The attribute type must be assignable to System.Attribute or an interface.\r\nParameter name: T")]
     public void TestGeneric_FromBaseWithInvalidType ()
     {
-      AttributeUtility.GetCustomAttributes<object> (_basePropertyWithSingleAttribute, true);
+      AttributeUtility.GetCustomAttributes<object> (BaseMemberWithSingleAttribute, true);
     }
 
     [Test]
@@ -92,13 +80,13 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
         "The attribute type must be assignable to System.Attribute or an interface.\r\nParameter name: attributeType")]
     public void Test_FromBaseWithInvalidType ()
     {
-      AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (object), true);
+      AttributeUtility.GetCustomAttributes (BaseMemberWithSingleAttribute, typeof (object), true);
     }
 
     [Test]
     public void Test_FromOverrideWithAttribute ()
     {
-      InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (_derivedPropertyWithSingleAttribute, true);
+      InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (DerivedMemberWithSingleAttribute, true);
 
       Assert.That (attributes.Length, Is.EqualTo (1));
       Assert.That (attributes[0], Is.Not.Null);
@@ -108,7 +96,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Ignore ("Not supported at the moment by Attribute.GetCustomAttribute - should we leave this or add a workaround?")]
     public void Test_FromProtectedOverrideWithAttribute ()
     {
-      InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (_derivedProtectedProperty, true);
+      InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (DerivedProtectedMember, true);
 
       Assert.That (attributes.Length, Is.EqualTo (1));
       Assert.That (attributes[0], Is.Not.Null);
@@ -117,7 +105,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_FromOverrideWithInterface ()
     {
-      ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (_derivedPropertyWithSingleAttribute, true);
+      ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (DerivedMemberWithSingleAttribute, true);
 
       Assert.That (attributes.Length, Is.EqualTo (1));
       Assert.That (attributes[0], Is.Not.Null);
@@ -126,7 +114,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_FromOverrideWithAttributeAndMultiple ()
     {
-      MultipleAttribute[] attributes = AttributeUtility.GetCustomAttributes<MultipleAttribute> (_derivedPropertyWithMultipleAttribute, true);
+      MultipleAttribute[] attributes = AttributeUtility.GetCustomAttributes<MultipleAttribute> (DerivedMemberWithMultipleAttribute, true);
 
       Assert.That (attributes.Length, Is.EqualTo (2));
       Assert.That (attributes[0], Is.Not.Null);
@@ -136,7 +124,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_FromOverrideWithInterfaceAndMultiple ()
     {
-      ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (_derivedPropertyWithMultipleAttribute, true);
+      ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (DerivedMemberWithMultipleAttribute, true);
 
       Assert.That (attributes.Length, Is.EqualTo (2));
       Assert.That (attributes[0], Is.Not.Null);
@@ -146,7 +134,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_FromOverrideWithAttributeAndWithoutInherited ()
     {
-      InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (_derivedPropertyWithSingleAttribute, false);
+      InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (DerivedMemberWithSingleAttribute, false);
 
       Assert.That (attributes, Is.Empty);
     }
@@ -154,7 +142,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_FromOverrideWithInterfaceAndWithoutInherited ()
     {
-      ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (_derivedPropertyWithSingleAttribute, false);
+      ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (DerivedMemberWithSingleAttribute, false);
 
       Assert.That (attributes, Is.Empty);
     }
@@ -162,17 +150,17 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_ReturnSpecificArrayType ()
     {
-      object[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (BaseInheritedAttribute), false);
+      object[] attributes = AttributeUtility.GetCustomAttributes (BaseMemberWithSingleAttribute, typeof (BaseInheritedAttribute), false);
       Assert.That (attributes, Is.InstanceOf (typeof (BaseInheritedAttribute[])));
     }
 
     [Test]
     public void Test_ReturnsNewInstance ()
     {
-      var attribute1 = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (InheritedAttribute), false).Single();
-      var attribute2 = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (InheritedAttribute), false).Single();
+      var attribute1 = AttributeUtility.GetCustomAttributes (BaseMemberWithSingleAttribute, typeof (InheritedAttribute), false).Single();
+      var attribute2 = AttributeUtility.GetCustomAttributes (BaseMemberWithSingleAttribute, typeof (InheritedAttribute), false).Single();
 
       Assert.That (attribute1, Is.Not.SameAs (attribute2));
     }
-  }
+   }
 }
