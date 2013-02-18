@@ -16,6 +16,7 @@
 // 
 
 using JetBrains.Annotations;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
 {
@@ -37,10 +38,34 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
       get { return null; }
     }
 
+    public override string this[int i]
+    {
+      get { return null; }
+    }
+
+    public override string PropertyWithoutGetter
+    {
+      set { Dev.Null = value; }
+    }
+
+    public override string PropertyWithNotInheritedAttribute
+    {
+      get { return null; }
+    }
+
+    [InheritedNotMultiple ("Derived")]
+    public override string PropertyWithInheritedNotMultipleAttribute
+    {
+      get { return null; }
+    }
+
     public override event System.EventHandler EventWithSingleAttribute;
     protected override event System.EventHandler ProtectedEventWithAttribute;
     [Multiple]
     public override event System.EventHandler EventWithMultipleAttribute;
+    public override event System.EventHandler EventWithNotInheritedAttribute;
+    [InheritedNotMultiple ("Derived")]
+    public override event System.EventHandler EventWithInheritedNotMultipleAttribute;
 
     [UsedImplicitly]
     public override string MethodWithSingleAttribute ()
@@ -58,6 +83,18 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
     public override string MethodWithMultipleAttribute ()
     {
       return base.MethodWithMultipleAttribute ();
+    }
+
+    [UsedImplicitly]
+    public override string MethodWithNotInheritedAttribute ()
+    {
+      return base.MethodWithNotInheritedAttribute ();
+    }
+
+    [InheritedNotMultiple ("Derived")]
+    public override string MethodWithInheritedNotMultipleAttribute ()
+    {
+      return base.MethodWithInheritedNotMultipleAttribute ();
     }
   }
 }

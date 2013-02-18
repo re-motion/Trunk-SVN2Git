@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Reflection;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain;
 
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
@@ -24,27 +25,42 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
   [TestFixture]
   public class GetCustomAttributesFromMethodInfoTest : GetCustomAttributesFromMemberInfoTestBase
   {
-    public override MemberInfo BaseMemberWithSingleAttribute
+    protected override MemberInfo BaseMemberWithSingleAttribute
     {
       get { return typeof (SampleClass).GetMethod ("MethodWithSingleAttribute"); }
     }
 
-    public override MemberInfo DerivedMemberWithSingleAttribute
+    protected override MemberInfo BaseMemberWithNonInheritedAttribute
+    {
+      get { return typeof (SampleClass).GetMethod ("MethodWithNotInheritedAttribute"); }
+    }
+
+    protected override MemberInfo DerivedMemberWithSingleAttribute
     {
       get { return typeof (DerivedSampleClass).GetMethod ("MethodWithSingleAttribute"); }
     }
 
-    public override MemberInfo DerivedMemberWithMultipleAttribute
+    protected override MemberInfo DerivedMemberWithMultipleAttribute
     {
       get { return typeof (DerivedSampleClass).GetMethod ("MethodWithMultipleAttribute"); }
     }
 
-    public override MemberInfo DerivedProtectedMember
+    protected override MemberInfo DerivedProtectedMember
     {
       get
       {
         return typeof (DerivedSampleClass).GetMethod ("ProtectedMethodWithAttribute", BindingFlags.NonPublic | BindingFlags.Instance);
       }
+    }
+
+    protected override MemberInfo DerivedMemberNotInheritingAttribute
+    {
+      get { return typeof (DerivedSampleClass).GetMethod ("MethodWithNotInheritedAttribute"); }
+    }
+
+    protected override MemberInfo DerivedMemberHidingAttribute
+    {
+      get { return typeof (DerivedSampleClass).GetMethod ("MethodWithInheritedNotMultipleAttribute"); }
     }
   }
 }

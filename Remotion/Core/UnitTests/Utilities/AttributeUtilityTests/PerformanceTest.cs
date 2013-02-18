@@ -36,8 +36,11 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void SetUp ()
     {
       _types = AppDomain.CurrentDomain.GetAssemblies().SelectMany (a => a.GetTypes()).ToArray();
+      _types = _types.Concat (_types).Concat (_types).Concat (_types).Concat (_types).ToArray();
+
       var bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
       _properties = _types.SelectMany (t => t.GetProperties (bindingFlags)).ToArray();
+      _properties = _properties.Concat (_properties).Concat (_properties).Concat (_properties).Concat (_properties).ToArray();
     }
 
     [Test]

@@ -24,27 +24,42 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
   [TestFixture]
   public class GetCustomAttributesFromEventInfoTest : GetCustomAttributesFromMemberInfoTestBase
   {
-    public override MemberInfo BaseMemberWithSingleAttribute
+    protected override MemberInfo BaseMemberWithSingleAttribute
     {
       get { return typeof (SampleClass).GetEvent ("EventWithSingleAttribute"); }
     }
 
-    public override MemberInfo DerivedMemberWithSingleAttribute
+    protected override MemberInfo BaseMemberWithNonInheritedAttribute
+    {
+      get { return typeof (SampleClass).GetEvent ("EventWithNotInheritedAttribute"); }
+    }
+
+    protected override MemberInfo DerivedMemberWithSingleAttribute
     {
       get { return typeof (DerivedSampleClass).GetEvent ("EventWithSingleAttribute"); }
     }
 
-    public override MemberInfo DerivedMemberWithMultipleAttribute
+    protected override MemberInfo DerivedMemberWithMultipleAttribute
     {
       get { return typeof (DerivedSampleClass).GetEvent ("EventWithMultipleAttribute"); }
     }
 
-    public override MemberInfo DerivedProtectedMember
+    protected override MemberInfo DerivedProtectedMember
     {
       get
       {
         return typeof (DerivedSampleClass).GetEvent ("ProtectedEventWithAttribute", BindingFlags.NonPublic | BindingFlags.Instance);
       }
+    }
+
+    protected override MemberInfo DerivedMemberNotInheritingAttribute
+    {
+      get { return typeof (DerivedSampleClass).GetEvent ("EventWithNotInheritedAttribute"); }
+    }
+
+    protected override MemberInfo DerivedMemberHidingAttribute
+    {
+      get { return typeof (DerivedSampleClass).GetEvent ("EventWithInheritedNotMultipleAttribute"); }
     }
   }
 }

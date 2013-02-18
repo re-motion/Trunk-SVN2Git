@@ -24,10 +24,13 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 {
   public abstract class GetCustomAttributesFromMemberInfoTestBase
   {
-    public abstract MemberInfo BaseMemberWithSingleAttribute { get; }
-    public abstract MemberInfo DerivedMemberWithSingleAttribute { get; }
-    public abstract MemberInfo DerivedMemberWithMultipleAttribute { get; }
-    public abstract MemberInfo DerivedProtectedMember { get; }
+    protected abstract MemberInfo BaseMemberWithSingleAttribute { get; }
+    protected abstract MemberInfo BaseMemberWithNonInheritedAttribute { get; }
+    protected abstract MemberInfo DerivedMemberWithSingleAttribute { get; }
+    protected abstract MemberInfo DerivedMemberWithMultipleAttribute { get; }
+    protected abstract MemberInfo DerivedProtectedMember { get; }
+    protected abstract MemberInfo DerivedMemberHidingAttribute { get; }
+    protected abstract MemberInfo DerivedMemberNotInheritingAttribute { get; }
 
     [Test]
     public void TestGeneric_FromBaseWithAttribute ()
@@ -84,6 +87,14 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     }
 
     [Test]
+    public void Test_FromBaseWithNonInheritedAttribute ()
+    {
+      ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (BaseMemberWithNonInheritedAttribute, false);
+
+      Assert.That (attributes.Length, Is.EqualTo (1));
+    }
+
+    [Test]
     public void Test_FromOverrideWithAttribute ()
     {
       InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (DerivedMemberWithSingleAttribute, true);
@@ -93,7 +104,6 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     }
 
     [Test]
-    [Ignore ("Not supported at the moment by Attribute.GetCustomAttribute - should we leave this or add a workaround?")]
     public void Test_FromProtectedOverrideWithAttribute ()
     {
       InheritedAttribute[] attributes = AttributeUtility.GetCustomAttributes<InheritedAttribute> (DerivedProtectedMember, true);
@@ -143,6 +153,23 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void Test_FromOverrideWithInterfaceAndWithoutInherited ()
     {
       ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (DerivedMemberWithSingleAttribute, false);
+
+      Assert.That (attributes, Is.Empty);
+    }
+
+    [Test]
+    public void Test_FromOverrideHidingBaseAttribute ()
+    {
+      var attributes = AttributeUtility.GetCustomAttributes<InheritedNotMultipleAttribute> (DerivedMemberHidingAttribute, true);
+
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0].Context, Is.EqualTo ("Derived"));
+    }
+
+    [Test]
+    public void Test_FromOverrideWithNonInheritedAttribute ()
+    {
+      ICustomAttribute[] attributes = AttributeUtility.GetCustomAttributes<ICustomAttribute> (DerivedMemberNotInheritingAttribute, true);
 
       Assert.That (attributes, Is.Empty);
     }

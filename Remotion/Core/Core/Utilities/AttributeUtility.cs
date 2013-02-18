@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.Utilities.AttributeRetrieval;
 
 namespace Remotion.Utilities
 {
@@ -36,8 +37,11 @@ namespace Remotion.Utilities
 
     private static readonly LockingCacheDecorator<Type, AttributeUsageAttribute> s_attributeUsageCache =
         CacheFactory.CreateWithLocking<Type, AttributeUsageAttribute>();
-    
-    public static bool IsDefined<T> (MemberInfo element, bool inherit)
+
+    private static readonly PropertyCustomAttributeRetriever s_propertyCustomAttributeRetriever = new PropertyCustomAttributeRetriever ();
+    private static readonly EventCustomAttributeRetriever s_eventCustomAttributeRetriever = new EventCustomAttributeRetriever ();
+
+   public static bool IsDefined<T> (MemberInfo element, bool inherit)
        where T : class
     {
       ArgumentUtility.CheckNotNull ("element", element);
@@ -94,13 +98,15 @@ namespace Remotion.Utilities
       if (elementAsType != null)
         return GetCustomAttributes (elementAsType, attributeType, inherit);
 
-      Attribute[] attributes = Attribute.GetCustomAttributes (element, typeof (Attribute), inherit);
-      Attribute[] filteredAttributes = Array.FindAll (attributes, attribute => attributeType.IsInstanceOfType (attribute));
-      return (object[]) ArrayUtility.Convert (filteredAttributes, attributeType);
+      var elementAsProperty = element as PropertyInfo;
+      if (elementAsProperty != null)
+        return s_propertyCustomAttributeRetriever.GetCustomAttributes (elementAsProperty, attributeType, inherit);
 
-      // TODO 5412
-      // If element is property or event, implement manual approach
-      // else simply call standard GetCustomAttributes impl
+      var elementAsEvent = element as EventInfo;
+      if (elementAsEvent != null)
+        return s_eventCustomAttributeRetriever.GetCustomAttributes (elementAsEvent, attributeType, inherit);
+
+      return element.GetCustomAttributes (attributeType, inherit);
     }
 
     public static object[] GetCustomAttributes (Type type, Type attributeType, bool inherit)
@@ -192,8 +198,6 @@ namespace Remotion.Utilities
       {
         arrayList.Add (attributeInstance);
       }
-      // This cast succeeds because elementType is always a reference type (as it's either derived from Attribute, or an interface).
-      Assertion.DebugAssert (!elementType.IsValueType);
       return (object[]) arrayList.ToArray (elementType);
     }
 
@@ -208,6 +212,5 @@ namespace Remotion.Utilities
       }
       return result;
     }
-
   }
 }

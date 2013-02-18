@@ -18,33 +18,71 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 {
   [TestFixture]
   public class GetCustomAttributesFromPropertyInfoTest : GetCustomAttributesFromMemberInfoTestBase
   {
-    public override MemberInfo BaseMemberWithSingleAttribute
+    protected override MemberInfo BaseMemberWithSingleAttribute
     {
       get { return typeof (SampleClass).GetProperty ("PropertyWithSingleAttribute"); }
     }
 
-    public override MemberInfo DerivedMemberWithSingleAttribute
+    protected override MemberInfo BaseMemberWithNonInheritedAttribute
+    {
+      get { return typeof (SampleClass).GetProperty ("PropertyWithNotInheritedAttribute"); }
+    }
+
+    protected override MemberInfo DerivedMemberWithSingleAttribute
     {
       get { return typeof (DerivedSampleClass).GetProperty ("PropertyWithSingleAttribute"); }
     }
 
-    public override MemberInfo DerivedMemberWithMultipleAttribute
+    protected override MemberInfo DerivedMemberWithMultipleAttribute
     {
       get { return typeof (DerivedSampleClass).GetProperty ("PropertyWithMultipleAttribute"); }
     }
 
-    public override MemberInfo DerivedProtectedMember
+    protected override MemberInfo DerivedProtectedMember
     {
       get
       {
         return typeof (DerivedSampleClass).GetProperty ("ProtectedPropertyWithAttribute", BindingFlags.NonPublic | BindingFlags.Instance);
       }
+    }
+
+    protected override MemberInfo DerivedMemberNotInheritingAttribute
+    {
+      get { return typeof (DerivedSampleClass).GetProperty ("PropertyWithNotInheritedAttribute"); }
+    }
+
+    protected override MemberInfo DerivedMemberHidingAttribute
+    {
+      get { return typeof (DerivedSampleClass).GetProperty ("PropertyWithInheritedNotMultipleAttribute"); }
+    }
+
+    [Test]
+    public void Test_FromOverrideWithBaseOverloads ()
+    {
+      var propertyInfo = typeof (DerivedSampleClass).GetProperty ("Item", new[] { typeof (int) });
+      object[] attributes = AttributeUtility.GetCustomAttributes (propertyInfo, typeof (InheritedAttribute), true);
+
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0], Is.Not.Null);
+      Assert.IsInstanceOf (typeof (InheritedAttribute), attributes[0]);
+    }
+
+    [Test]
+    public void Test_NoGetter ()
+    {
+      var propertyInfo = typeof (DerivedSampleClass).GetProperty ("PropertyWithoutGetter");
+      object[] attributes = AttributeUtility.GetCustomAttributes (propertyInfo, typeof (InheritedAttribute), true);
+
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0], Is.Not.Null);
+      Assert.IsInstanceOf (typeof (InheritedAttribute), attributes[0]);
     }
   }
 }

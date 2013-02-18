@@ -209,6 +209,7 @@
     <Compile Include="Utilities\ArgumentItemNullException.cs" />
     <Compile Include="Utilities\ArgumentItemTypeException.cs" />
     <Compile Include="Utilities\ArgumentTypeException.cs" />
+    <Compile Include="Utilities\AttributeRetrieval\EventCustomAttributeRetriever.cs" />
     <Compile Include="Utilities\CompoundComparer.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparer.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapper.cs" />
@@ -473,12 +474,14 @@
     <Compile Include="Utilities\DelegateBasedComparer.cs" />
     <Compile Include="Utilities\InvertedComparerDecorator.cs" />
     <Compile Include="Utilities\IUtcNowProvider.cs" />
+    <Compile Include="Utilities\AttributeRetrieval\InheritanceAwareCustomAttributeRetriever.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparer.cs" />
     <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
     <Compile Include="Utilities\NullableTypeUtility.cs" />
     <Compile Include="Utilities\NullComparer.cs" />
     <Compile Include="Utilities\NullValueConverter.cs" />
     <Compile Include="Utilities\PostActionDisposableDecorator.cs" />
+    <Compile Include="Utilities\AttributeRetrieval\PropertyCustomAttributeRetriever.cs" />
     <Compile Include="Utilities\ReferenceEqualityComparer.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\AssertionConditionAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\AssertionConditionType.cs" />

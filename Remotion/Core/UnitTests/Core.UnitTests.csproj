@@ -321,6 +321,7 @@
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromMethodInfoTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromMemberInfoTestBase.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\PerformanceTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\TestDomain\NotInheritedAttribute.cs" />
     <Compile Include="Utilities\CompoundComparerTest.cs" />
     <Compile Include="Utilities\CustomAttributeTypedArgumentUtilityTest.cs" />
     <Compile Include="Utilities\DefaultConverterTest.cs" />

@@ -17,6 +17,7 @@
 
 using System;
 using JetBrains.Annotations;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
 {
@@ -46,6 +47,40 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
 
     [Inherited]
     [UsedImplicitly]
+    public virtual string this[int i]
+    {
+      get { return null; }
+    }
+
+    [UsedImplicitly]
+    public virtual string this[string s]
+    {
+      get { return null; }
+    }
+
+    [Inherited]
+    [UsedImplicitly]
+    public virtual string PropertyWithoutGetter
+    {
+      set { Dev.Null = value; }
+    }
+
+    [NotInheritedAttribute]
+    [UsedImplicitly]
+    public virtual string PropertyWithNotInheritedAttribute
+    {
+      get { return null; }
+    }
+
+    [InheritedNotMultiple ("Base")]
+    [UsedImplicitly]
+    public virtual string PropertyWithInheritedNotMultipleAttribute
+    {
+      get { return null; }
+    }
+
+    [Inherited]
+    [UsedImplicitly]
     public virtual event EventHandler EventWithSingleAttribute;
 
     [Inherited]
@@ -55,6 +90,14 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
     [Multiple]
     [UsedImplicitly]
     public virtual event EventHandler EventWithMultipleAttribute;
+
+    [NotInheritedAttribute]
+    [UsedImplicitly]
+    public virtual event EventHandler EventWithNotInheritedAttribute;
+
+    [InheritedNotMultiple ("Base")]
+    [UsedImplicitly]
+    public virtual event EventHandler EventWithInheritedNotMultipleAttribute;
 
     [Inherited]
     [UsedImplicitly]
@@ -73,6 +116,20 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
     [Multiple]
     [UsedImplicitly]
     public virtual string MethodWithMultipleAttribute ()
+    {
+      return null;
+    }
+
+    [NotInherited]
+    [UsedImplicitly]
+    public virtual string MethodWithNotInheritedAttribute ()
+    {
+      return null;
+    }
+
+    [InheritedNotMultiple ("Base")]
+    [UsedImplicitly]
+    public virtual string MethodWithInheritedNotMultipleAttribute()
     {
       return null;
     }

@@ -118,8 +118,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Type_ReturnsNewInstance ()
     {
-      var attributeMetadata1 = AttributeUtility.GetCustomAttributesWithMetadata (typeof (SampleClass), typeof (Attribute), false).Single ();
-      var attributeMetadata2 = AttributeUtility.GetCustomAttributesWithMetadata (typeof (SampleClass), typeof (Attribute), false).Single ();
+      var attributeMetadata1 = AttributeUtility.GetCustomAttributesWithMetadata (typeof (SampleClass), typeof (InheritedAttribute), false).Single ();
+      var attributeMetadata2 = AttributeUtility.GetCustomAttributesWithMetadata (typeof (SampleClass), typeof (InheritedAttribute), false).Single ();
       Assert.That (attributeMetadata1.AttributeInstance, Is.Not.SameAs (attributeMetadata2.AttributeInstance));
     }
   }
