@@ -27,8 +27,11 @@
     />
 
   <xsl:template match="/">
+    <xsl:variable name="issues" select="/rss/channel/item"/>
+    <xsl:variable name="root" select="/"/>
+    
     <xsl:choose>
-      <xsl:when test ="//item">
+      <xsl:when test ="(count(functx:value-intersect($issues/status, $root//issueVisibility/visibleStatus)) > 0 or count($root//rss/channel/item[parent = $issues/key and ru:contains($root//issueVisibility/visibleStatus, status)]) > 0) and (count(functx:value-intersect($issues/resolution, $root//issueVisibility/visibleResolution)) > 0 or count($root//rss/channel/item[parent = $issues/key and ru:contains($root//issueVisibility/visibleResolution, resolution)]) > 0)">
         <xsl:call-template name="htmlSite">
           <xsl:with-param name="siteTitle" />
         </xsl:call-template>
