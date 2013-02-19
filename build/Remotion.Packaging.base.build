@@ -35,12 +35,7 @@
 
       <UploadToNuGet>False</UploadToNuGet>
       <UploadToNuGet Condition="$(_hasResolvedIssues) == 'True'">True</UploadToNuGet>
-
-      <UploadToCodePlex>False</UploadToCodePlex>
-      <UploadToNuGet>False</UploadToNuGet>
-
     </PropertyGroup>
-    <Warning Text="Temporarily disabled CodePlex and NuGet upload until RM-5353 is fixed"/>
   </Target>
   
 </Project>
