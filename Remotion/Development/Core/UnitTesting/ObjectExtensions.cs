@@ -42,5 +42,17 @@ namespace Remotion.Development.UnitTesting
     {
       PrivateInvoke.InvokeNonPublicMethod (target, method, args);
     }
+
+    [DebuggerStepThrough]
+    public static void InvokeNonPublicMethod (this object target, MethodInfo method, params object[] args)
+    {
+      method.Invoke (target, args);
+    }
+
+    [DebuggerStepThrough]
+    public static T InvokeNonPublicMethod<T> (this object target, MethodInfo method, params object[] args)
+    {
+      return (T) method.Invoke (target, args);
+    }
   }
 }
