@@ -130,7 +130,7 @@
       <Output TaskParameter="Value" PropertyName="_testTime" />
     </MSBuild.ExtensionPack.Xml.XmlFile>
 
-    <MSBuild.ExtensionPack.Framework.TextString TaskAction="Replace" OldString="$(_testTime)" OldValue="." NewValue=",">
+    <MSBuild.ExtensionPack.Framework.TextString TaskAction="Replace" OldString="$(_testTime)" OldValue="." NewValue="">
       <Output TaskParameter="NewString" PropertyName="_testTime" />
     </MSBuild.ExtensionPack.Framework.TextString>
     
