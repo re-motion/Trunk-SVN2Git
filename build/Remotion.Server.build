@@ -175,9 +175,9 @@
     </PropertyGroup>
   </Target>
   
-  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;Measure_Start;TestBuildDebugOnly;Measure_End" />
+  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly" />
   
-  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;CreateAdditionalBuildMetadata;Measure_Start;BuildAll;Measure_End;DocumentAll;PackageAll" />
+  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;CreateAdditionalBuildMetadata;BuildAll;DocumentAll;PackageAll" />
   
   <Target Name="Deploy" DependsOnTargets="CreateAdditionalBuildMetadata;DeployAll">
     <Message Text="Deployed re-motion, version '$(Version)', revision '$(SvnRevision)'." Importance="High"/>
@@ -253,25 +253,6 @@
   
   <Target Name="SetVersionFullBuild" DependsOnTargets="CheckVersion">
     <Message Text="##teamcity[buildNumber '$(Version)']" />
-  </Target>
-  
-  <!-- Test time measurement -->
-  
-  <Target Name="Measure_Start">
-    <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="Get" Format="dd MMM yy HH:mm:ss">
-      <Output TaskParameter="Result" PropertyName="StartTime"/>
-    </MSBuild.ExtensionPack.Framework.DateAndTime>
-  </Target>
-  
-  <Target Name="Measure_End">
-    <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="GetElapsed" Start="$(StartTime)" Format="MilliSeconds">
-      <Output TaskParameter="Result" PropertyName="ElapsedTime"/>
-    </MSBuild.ExtensionPack.Framework.DateAndTime>
-    <!-- adapt decimal format -->
-    <MSBuild.ExtensionPack.Framework.TextString TaskAction="Replace" OldString="$(ElapsedTime)" OldValue="," NewValue=".">
-      <Output TaskParameter="NewString" PropertyName="ElapsedTime" />
-    </MSBuild.ExtensionPack.Framework.TextString>
-    <Message Text="##teamcity[buildStatisticValue key='test_time_total' value='$(ElapsedTime)']" />
   </Target>
 
   <!-- Main Build Targets -->  
