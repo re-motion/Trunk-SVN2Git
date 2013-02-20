@@ -69,7 +69,7 @@
 
   <!-- SVN Operations -->
   
-  <Target Name="Tag" DependsOnTargets="GetEarliestUnreleasedVersion;CreateSvnPasswordProperty;CreateSvnWorkingCopyPath">  
+  <Target Name="Tag" DependsOnTargets="GetEarliestUnreleasedVersion;CreateSvnWorkingCopyPath">  
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
     <Error Text="The property 'SvnRevision' is not set." Condition="'$(SvnRevision)' == ''" />
     <Error Text="The property 'SvnWorkingCopyPath' is not set." Condition="'$(SvnWorkingCopyPath)' == ''" />
@@ -86,7 +86,7 @@
   
   <!-- JIRA Operations -->
   
-  <Target Name="GetEarliestUnreleasedVersion" DependsOnTargets="CreateJiraPasswordProperty">
+  <Target Name="GetEarliestUnreleasedVersion">
     <Error Text="Property 'Version' was already set. Probably caused by: GetLatestReleasedVersion" Condition="'$(Version)' != ''" />
     
     <JiraGetEarliestUnreleasedVersion JiraUrl="$(JiraUrl)"
@@ -110,7 +110,7 @@
     <Error Text="Only versions >= $(_firstVersion) are supported." Condition="$([System.Version]::Parse ($(Version)).CompareTo ( $([System.Version]::Parse ($(_firstVersion))) ) ) &lt; 0" />
   </Target>
 
-  <Target Name="GetLatestReleasedVersion" DependsOnTargets="CreateJiraPasswordProperty">
+  <Target Name="GetLatestReleasedVersion">
     <Error Text="Property 'Version' was already set. Probably caused by: GetEarliestUnreleasedVersion" Condition="'$(Version)' != ''" />
     
     <JiraGetLatestReleasedVersion JiraUrl="$(JiraUrl)"
@@ -127,7 +127,7 @@
     <Message Text="Determined version (latest relesed): $(Version), next version (earliest unrelesed) is going to be $(_nextUnreleasedVersion)" Importance="High"/>
   </Target>
   
-  <Target Name="ReleaseJiraVersion" DependsOnTargets="GetEarliestUnreleasedVersion;CreateJiraPasswordProperty">
+  <Target Name="ReleaseJiraVersion" DependsOnTargets="GetEarliestUnreleasedVersion">
     <Error Text="JIRA problem: no unreleased version available." Condition="'$(VersionID)' == ''"/>
     <Error Text="JIRA problem: no subsequent unreleased version available." Condition="'$(NextVersionID)' == ''"/>
     <Error Text="JIRA problem: no number of unreleased versions known." Condition="'$(NumberOfUnreleasedVersions)' == ''"/>
@@ -150,13 +150,6 @@
                         NextVersionID="$(NextVersionID)"/>
 
     <Message Text="Done releasing JIRA version." Importance="High"/>
-  </Target>
-  
-  <Target Name="CreateJiraPasswordProperty">
-    <Error Text="JIRA password file ($(JiraPasswordFile)) was not found." Condition="!Exists ($(JiraPasswordFile))"/>
-    <PropertyGroup>
-      <JiraPassword>$([System.IO.File]::ReadAllText($(JiraPasswordFile)))</JiraPassword>
-    </PropertyGroup>
   </Target>
   
   <!-- re-motion build -->
@@ -186,7 +179,7 @@
   
   <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;CreateAdditionalBuildMetadata;Measure_Start;BuildAll;Measure_End;DocumentAll;PackageAll" />
   
-  <Target Name="Deploy" DependsOnTargets="CreateCodePlexPasswordProperty;CreateNuGetApiKey;CreateAdditionalBuildMetadata;DeployAll">
+  <Target Name="Deploy" DependsOnTargets="CreateAdditionalBuildMetadata;DeployAll">
     <Message Text="Deployed re-motion, version '$(Version)', revision '$(SvnRevision)'." Importance="High"/>
   </Target>
   
@@ -199,31 +192,10 @@
       <SvnWorkingCopyPath>$(SolutionDirectory.TrimEnd('\'))</SvnWorkingCopyPath>
     </PropertyGroup>
   </Target>
-  
-  <Target Name="CreateCodePlexPasswordProperty">
-    <Error Text="CodePlex password file ($(CodePlexPasswordFile)) was not found." Condition="!Exists ($(CodePlexPasswordFile))"/>
-    <PropertyGroup>
-      <CodePlexPassword>$([System.IO.File]::ReadAllText($(CodePlexPasswordFile)))</CodePlexPassword>
-    </PropertyGroup>
-  </Target>
 
-  <Target Name="CreateSvnPasswordProperty">
-    <Error Text="SVN password file ($(SvnPasswordFile)) was not found." Condition="!Exists ($(SvnPasswordFile))"/>
-    <PropertyGroup>
-      <SvnPassword>$([System.IO.File]::ReadAllText($(SvnPasswordFile)))</SvnPassword>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="CreateNuGetApiKey">
-    <Error Text="NuGet API key file ($(NuGetApiKeyFile)) was not found." Condition="!Exists ($(NuGetApiKeyFile))"/>
-    <PropertyGroup>
-      <NuGetApiKey>$([System.IO.File]::ReadAllText($(NuGetApiKeyFile)))</NuGetApiKey>
-    </PropertyGroup>
-  </Target>
-  
   <!-- AssemblyInfo -->
 
-  <Target Name="UpdateAssemblyInfosForLocalBuild" DependsOnTargets="CreateSvnPasswordProperty;CreateSvnWorkingCopyPath;CheckVersion">
+  <Target Name="UpdateAssemblyInfosForLocalBuild" DependsOnTargets="CreateSvnWorkingCopyPath;CheckVersion">
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
     <Error Text="The property 'SvnBranchFolder' is not set." Condition="'$(SvnBranchFolder)' == ''" />
     <Error Text="The property 'SvnWorkingCopyPath' is not set." Condition="'$(SvnWorkingCopyPath)' == ''" />
