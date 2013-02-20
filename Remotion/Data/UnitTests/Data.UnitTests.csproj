@@ -213,6 +213,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectInititalizationContextScopeHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectInititalizationContextScopeTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectReferenceInitializationContextTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\NewObject\RecursiveNewObjectCallTest.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleConverterTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\ImplementingAccessorInterceptorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\InterceptedPropertyCollectorAdapterTest.cs" />
