@@ -30,13 +30,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 
     public NewObjectInitializationContext (
         ObjectID objectID,
+        ClientTransaction rootTransaction,
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
-        IDataManager dataManager,
-        ClientTransaction bindingTransaction)
-      : base (objectID, enlistedDomainObjectManager, bindingTransaction)
+        IDataManager dataManager)
+      : base (objectID, rootTransaction, enlistedDomainObjectManager)
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      ArgumentUtility.CheckNotNull ("enlistedDomainObjectManager", enlistedDomainObjectManager);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       _dataManager = dataManager;

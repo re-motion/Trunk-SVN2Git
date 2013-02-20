@@ -30,14 +30,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
   public class NewObjectInitializationContextTest : StandardMappingTest
   {
     private ObjectID _objectID;
+    private ClientTransaction _rootTransaction;
     private IEnlistedDomainObjectManager _enlistedDomainObjectManagerMock;
     private IDataManager _dataManagerMock;
-    private ClientTransaction _bindingClientTransaction;
 
-    private NewObjectInitializationContext _contextWithBindingTransaction;
-    private NewObjectInitializationContext _contextWithoutBindingTransaction;
+    private NewObjectInitializationContext _context;
 
-    private DomainObject _boundObject;
+    private DomainObject _domainObject;
 
     public override void SetUp ()
     {
@@ -46,29 +45,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _objectID = DomainObjectIDs.Order1;
       _enlistedDomainObjectManagerMock = MockRepository.GenerateStrictMock<IEnlistedDomainObjectManager> ();
       _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager> ();
-      _bindingClientTransaction = ClientTransactionObjectMother.CreateBinding();
+      _rootTransaction = ClientTransaction.CreateRootTransaction();
 
-      _contextWithBindingTransaction = new NewObjectInitializationContext (
-          _objectID, _enlistedDomainObjectManagerMock, _dataManagerMock, _bindingClientTransaction);
-      _contextWithoutBindingTransaction = new NewObjectInitializationContext (_objectID, _enlistedDomainObjectManagerMock, _dataManagerMock, null);
+      _context = new NewObjectInitializationContext (_objectID, _rootTransaction, _enlistedDomainObjectManagerMock, _dataManagerMock);
 
-      _boundObject = DomainObjectMother.GetObjectReference (_bindingClientTransaction, _objectID);
+      _domainObject = DomainObjectMother.CreateFakeObject (_objectID);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_contextWithBindingTransaction.ObjectID, Is.EqualTo (_objectID));
-      Assert.That (_contextWithBindingTransaction.EnlistedDomainObjectManager, Is.SameAs (_enlistedDomainObjectManagerMock));
-      Assert.That (_contextWithBindingTransaction.DataManager, Is.SameAs (_dataManagerMock));
-      Assert.That (_contextWithBindingTransaction.BindingTransaction, Is.SameAs (_bindingClientTransaction));
-      Assert.That (_contextWithBindingTransaction.RegisteredObject, Is.Null);
-    }
-
-    [Test]
-    public void Initialization_NullBindingTransaction ()
-    {
-      Assert.That (_contextWithoutBindingTransaction.BindingTransaction, Is.Null);
+      Assert.That (_context.ObjectID, Is.EqualTo (_objectID));
+      Assert.That (_context.EnlistedDomainObjectManager, Is.SameAs (_enlistedDomainObjectManagerMock));
+      Assert.That (_context.DataManager, Is.SameAs (_dataManagerMock));
+      Assert.That (_context.RootTransaction, Is.SameAs (_rootTransaction));
+      Assert.That (_context.RegisteredObject, Is.Null);
     }
 
     [Test]
@@ -76,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     {
       var counter = new OrderedExpectationCounter();
       _enlistedDomainObjectManagerMock
-          .Expect (mock => mock.EnlistDomainObject (_boundObject))
+          .Expect (mock => mock.EnlistDomainObject (_domainObject))
           .Return (BooleanObjectMother.GetRandomBoolean())
           .Ordered (counter);
       StubEmptyDataContainersCollection (_dataManagerMock);
@@ -86,16 +77,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           {
             var dc = (DataContainer) mi.Arguments[0];
             Assert.That (dc.ID, Is.EqualTo (_objectID));
-            Assert.That (dc.DomainObject, Is.SameAs (_boundObject));
+            Assert.That (dc.DomainObject, Is.SameAs (_domainObject));
           })
           .Ordered (counter);
 
-      _contextWithBindingTransaction.RegisterObject (_boundObject);
+      _context.RegisterObject (_domainObject);
 
       _enlistedDomainObjectManagerMock.VerifyAllExpectations();
       _dataManagerMock.VerifyAllExpectations();
 
-      Assert.That (_contextWithBindingTransaction.RegisteredObject, Is.SameAs (_boundObject));
+      Assert.That (_context.RegisteredObject, Is.SameAs (_domainObject));
     }
     
     [Test]
@@ -105,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       Assert.That (objectWithWrongID.ID, Is.Not.EqualTo (_objectID));
 
       Assert.That (
-          () => _contextWithBindingTransaction.RegisterObject (objectWithWrongID),
+          () => _context.RegisterObject (objectWithWrongID),
           Throws.ArgumentException.With.Message.EqualTo ("The given DomainObject must have ID '" + _objectID + "'.\r\nParameter name: domainObject"));
 
       _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));

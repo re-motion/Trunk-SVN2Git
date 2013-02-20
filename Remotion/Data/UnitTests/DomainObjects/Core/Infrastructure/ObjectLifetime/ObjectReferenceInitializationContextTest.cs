@@ -29,6 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
   {
     private ObjectID _objectID;
     private IEnlistedDomainObjectManager _enlistedDomainObjectManagerMock;
+    private ClientTransaction _rootTransaction;
     private ClientTransaction _bindingClientTransaction;
 
     private ObjectReferenceInitializationContext _contextWithBindingTransaction;
@@ -43,10 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
 
       _objectID = DomainObjectIDs.Order1;
       _enlistedDomainObjectManagerMock = MockRepository.GenerateStrictMock<IEnlistedDomainObjectManager> ();
+      _rootTransaction = ClientTransaction.CreateRootTransaction();
       _bindingClientTransaction = ClientTransactionObjectMother.CreateBinding();
 
-      _contextWithBindingTransaction = new ObjectReferenceInitializationContext (_objectID, _enlistedDomainObjectManagerMock, _bindingClientTransaction);
-      _contextWithoutBindingTransaction = new ObjectReferenceInitializationContext (_objectID, _enlistedDomainObjectManagerMock, null);
+      _contextWithBindingTransaction = new ObjectReferenceInitializationContext (_objectID, _bindingClientTransaction, _enlistedDomainObjectManagerMock);
+      _contextWithoutBindingTransaction = new ObjectReferenceInitializationContext (_objectID, _rootTransaction, _enlistedDomainObjectManagerMock);
 
       _boundObject = DomainObjectMother.GetObjectReference (_bindingClientTransaction, _objectID);
       _unboundObject = DomainObjectMother.CreateFakeObject (_objectID);
@@ -57,6 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     {
       Assert.That (_contextWithBindingTransaction.ObjectID, Is.EqualTo (_objectID));
       Assert.That (_contextWithBindingTransaction.EnlistedDomainObjectManager, Is.SameAs (_enlistedDomainObjectManagerMock));
+      Assert.That (_contextWithBindingTransaction.RootTransaction, Is.SameAs (_bindingClientTransaction));
       Assert.That (_contextWithBindingTransaction.BindingTransaction, Is.SameAs (_bindingClientTransaction));
       Assert.That (_contextWithBindingTransaction.RegisteredObject, Is.Null);
     }
@@ -64,7 +67,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     [Test]
     public void Initialization_NullBindingTransaction ()
     {
+      Assert.That (_contextWithoutBindingTransaction.RootTransaction, Is.SameAs (_rootTransaction));
       Assert.That (_contextWithoutBindingTransaction.BindingTransaction, Is.Null);
+    }
+
+    [Test]
+    public void Initialization_NonRootTransaction ()
+    {
+      Assert.That (
+          () => new ObjectReferenceInitializationContext (_objectID, _rootTransaction.CreateSubTransaction(), _enlistedDomainObjectManagerMock),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The rootTransaction parameter must be passed a root transaction.\r\nParameter name: rootTransaction"));
     }
 
     [Test]

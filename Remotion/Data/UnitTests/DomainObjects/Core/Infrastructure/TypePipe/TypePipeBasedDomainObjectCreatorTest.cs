@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     [Test]
     public void CreateNewObject ()
     {
-      var initializationContext = CreateNewObjectInitializationContext (_transaction, DomainObjectIDs.OrderItem1, null);
+      var initializationContext = CreateNewObjectInitializationContext (DomainObjectIDs.OrderItem1, _transaction);
       var result = _interceptedDomainObjectCreator.CreateNewObject (initializationContext, ParamList.Create ("A product"), _transaction);
 
       Assert.That (((object) result).GetType().Name, Is.StringMatching (@"_Proxy\d"));
@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     [Test]
     public void CreateNewObject_InitializesMixins ()
     {
-      var initializationContext = CreateNewObjectInitializationContext (_transaction, DomainObjectIDs.ClassWithAllDataTypes1, null);
+      var initializationContext = CreateNewObjectInitializationContext (DomainObjectIDs.ClassWithAllDataTypes1, _transaction);
 
       var result = _interceptedDomainObjectCreator.CreateNewObject (initializationContext, ParamList.Empty, _transaction);
 
@@ -199,13 +199,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       Assert.That (
           () =>
           _interceptedDomainObjectCreator.CreateNewObject (
-              CreateNewObjectInitializationContext (_transaction, DomainObjectIDs.OrderItem1, null), ParamList.Empty, _transaction),
+              CreateNewObjectInitializationContext (DomainObjectIDs.OrderItem1, _transaction), ParamList.Empty, _transaction),
           Is.Not.Null);
 
       Assert.That (
           () =>
           _interceptedDomainObjectCreator.CreateNewObject (
-              CreateNewObjectInitializationContext (_transaction, DomainObjectIDs.OrderItem2, null), ParamList.Empty, _transaction),
+              CreateNewObjectInitializationContext (DomainObjectIDs.OrderItem2, _transaction), ParamList.Empty, _transaction),
           Is.Not.Null);
     }
 
@@ -218,13 +218,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       return initializationContextStub;
     }
 
-    private NewObjectInitializationContext CreateNewObjectInitializationContext (ClientTransaction clientTransaction, ObjectID objectID, ClientTransaction bindingTransaction)
+    private NewObjectInitializationContext CreateNewObjectInitializationContext (ObjectID objectID, ClientTransaction rootTransaction)
     {
       return new NewObjectInitializationContext (
           objectID,
-          ClientTransactionTestHelper.GetEnlistedDomainObjectManager (clientTransaction),
-          ClientTransactionTestHelper.GetIDataManager (clientTransaction),
-          bindingTransaction);
+          rootTransaction,
+          ClientTransactionTestHelper.GetEnlistedDomainObjectManager (rootTransaction),
+          ClientTransactionTestHelper.GetIDataManager (rootTransaction));
     }
 
     [DBTable]

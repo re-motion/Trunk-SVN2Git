@@ -108,8 +108,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       _eventSink.RaiseNewObjectCreatingEvent (classDefinition.ClassType);
 
       var objectID = _persistenceStrategy.CreateNewObjectID (classDefinition);
-      var bindingTransaction = _clientTransaction as BindingClientTransaction;
-      var initializationContext = new NewObjectInitializationContext (objectID, _enlistedDomainObjectManager, _dataManager, bindingTransaction);
+      var initializationContext = new NewObjectInitializationContext (
+          objectID, _clientTransaction.RootTransaction, _enlistedDomainObjectManager, _dataManager);
 
       try
       {
@@ -135,8 +135,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
         return enlistedObject;
 
       var creator = objectID.ClassDefinition.InstanceCreator;
-      var bindingTransaction = _clientTransaction as BindingClientTransaction;
-      var initializationContext = new ObjectReferenceInitializationContext (objectID, _enlistedDomainObjectManager, bindingTransaction);
+      var initializationContext = new ObjectReferenceInitializationContext (
+          objectID, _clientTransaction.RootTransaction, _enlistedDomainObjectManager);
       return creator.CreateObjectReference (initializationContext, _clientTransaction);
     }
 

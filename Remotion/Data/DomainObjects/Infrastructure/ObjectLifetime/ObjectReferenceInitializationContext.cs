@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Utilities;
 
@@ -27,21 +26,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
   public class ObjectReferenceInitializationContext : IObjectInitializationContext
   {
     private readonly ObjectID _objectID;
-    private readonly ClientTransaction _bindingTransaction;
+    private readonly ClientTransaction _rootTransaction;
     private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
 
     private DomainObject _registeredObject;
 
     public ObjectReferenceInitializationContext (
         ObjectID objectID,
-        IEnlistedDomainObjectManager enlistedDomainObjectManager,
-        ClientTransaction bindingTransaction)
+        ClientTransaction rootTransaction,
+        IEnlistedDomainObjectManager enlistedDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
+      ArgumentUtility.CheckNotNull ("rootTransaction", rootTransaction);
       ArgumentUtility.CheckNotNull ("enlistedDomainObjectManager", enlistedDomainObjectManager);
 
+      if (rootTransaction != rootTransaction.RootTransaction)
+        throw new ArgumentException ("The rootTransaction parameter must be passed a root transaction.", "rootTransaction");
+
       _objectID = objectID;
-      _bindingTransaction = bindingTransaction;
+      _rootTransaction = rootTransaction;
       _enlistedDomainObjectManager = enlistedDomainObjectManager;
     }
 
@@ -50,14 +53,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _objectID; }
     }
 
-    public IEnlistedDomainObjectManager EnlistedDomainObjectManager
+    public ClientTransaction RootTransaction
     {
-      get { return _enlistedDomainObjectManager; }
+      get { return _rootTransaction; }
     }
 
     public ClientTransaction BindingTransaction
     {
-      get { return _bindingTransaction; }
+      get { return _rootTransaction as BindingClientTransaction; }
+    }
+
+    public IEnlistedDomainObjectManager EnlistedDomainObjectManager
+    {
+      get { return _enlistedDomainObjectManager; }
     }
 
     public DomainObject RegisteredObject
@@ -72,10 +80,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       if (domainObject.ID != _objectID)
         throw new ArgumentException (string.Format ("The given DomainObject must have ID '{0}'.", _objectID), "domainObject");
 
-      if (BindingTransaction != null && (!domainObject.HasBindingTransaction || domainObject.GetBindingTransaction () != BindingTransaction))
-        throw new ArgumentException (string.Format ("The given DomainObject must have BindingClientTransaction '{0}'.", _bindingTransaction), "domainObject");
+      var bindingTransaction = BindingTransaction;
+      if (bindingTransaction != null && (!domainObject.HasBindingTransaction || domainObject.GetBindingTransaction () != bindingTransaction))
+        throw new ArgumentException (string.Format ("The given DomainObject must have BindingClientTransaction '{0}'.", bindingTransaction), "domainObject");
 
-      if (BindingTransaction == null && domainObject.HasBindingTransaction)
+      if (bindingTransaction == null && domainObject.HasBindingTransaction)
         throw new ArgumentException ("The given DomainObject must not have a BindingClientTransaction.", "domainObject");
 
       if (_registeredObject != null)

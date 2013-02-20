@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _domainObjectCreatorMock
           .Expect (
               mock => mock.CreateNewObject (Arg<IObjectInitializationContext>.Is.Anything, Arg.Is (constructorParameters), Arg.Is (_transaction)))
-          .WhenCalled (mi => CheckInitializationContext<NewObjectInitializationContext> (mi.Arguments[0], _objectID1, null))
+          .WhenCalled (mi => CheckInitializationContext<NewObjectInitializationContext> (mi.Arguments[0], _objectID1, _transaction))
           .Return (_domainObject1);
 
       var result = _agent.NewObject (_typeDefinitionWithCreatorMock, constructorParameters);
@@ -121,27 +121,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     }
 
     [Test]
-    public void NewObject_WithBindingClientTransaction ()
+    public void NewObject_WithSubTransaction ()
     {
-      var bindingTransaction = ClientTransactionObjectMother.CreateBinding();
+      var subTransaction = _transaction.CreateSubTransaction ();
       var agent = new ObjectLifetimeAgent (
-          bindingTransaction,
+          subTransaction,
           _eventSinkWithMock,
           _invalidDomainObjectManagerMock,
           _dataManagerMock,
           _enlistedDomainObjectManagerMock,
           _persistenceStrategyMock);
 
-      _eventSinkWithMock.Stub (mock => mock.RaiseNewObjectCreatingEvent ( Arg<Type>.Is.Anything));
+      _eventSinkWithMock.Stub (mock => mock.RaiseNewObjectCreatingEvent (Arg<Type>.Is.Anything));
       _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (Arg<ClassDefinition>.Is.Anything)).Return (_objectID1);
       _domainObjectCreatorMock
-          .Expect (mock => mock.CreateNewObject (Arg<IObjectInitializationContext>.Is.Anything, Arg.Is (ParamList.Empty), Arg.Is (bindingTransaction)))
-          .WhenCalled (mi => CheckInitializationContext<NewObjectInitializationContext> (mi.Arguments[0], _objectID1, bindingTransaction))
+          .Expect (mock => mock.CreateNewObject (Arg<IObjectInitializationContext>.Is.Anything, Arg.Is (ParamList.Empty), Arg.Is (subTransaction)))
+          .WhenCalled (mi => CheckInitializationContext<NewObjectInitializationContext> (mi.Arguments[0], _objectID1, _transaction))
           .Return (_domainObject1);
 
       agent.NewObject (_typeDefinitionWithCreatorMock, ParamList.Empty);
 
-      _domainObjectCreatorMock.VerifyAllExpectations();
+      _domainObjectCreatorMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -284,7 +284,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _domainObjectCreatorMock
           .Expect (mock => mock.CreateObjectReference (Arg<IObjectInitializationContext>.Is.Anything, Arg.Is (_transaction)))
           .Return (_domainObject1)
-          .WhenCalled (mi => CheckInitializationContext<ObjectReferenceInitializationContext> (mi.Arguments[0], _objectIDWithCreatorMock, null));
+          .WhenCalled (
+              mi => CheckInitializationContext<ObjectReferenceInitializationContext> (mi.Arguments[0], _objectIDWithCreatorMock, _transaction));
 
       var result = _agent.GetObjectReference (_objectIDWithCreatorMock);
 
@@ -293,11 +294,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     }
 
     [Test]
-    public void GetObjectReference_UnknownObject_WithBindingTransaction_PutsTransactionIntoContext ()
+    public void GetObjectReference_UnknownObject_WithSubTransaction_PutsRootTransactionIntoContext ()
     {
-      var bindingTransaction = ClientTransaction.CreateBindingTransaction();
+      var subTransaction = _transaction.CreateSubTransaction ();
       var agent = new ObjectLifetimeAgent (
-          bindingTransaction,
+          subTransaction,
           _eventSinkWithMock,
           _invalidDomainObjectManagerMock,
           _dataManagerMock,
@@ -308,10 +309,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _enlistedDomainObjectManagerMock.Stub (stub => stub.GetEnlistedDomainObject (_objectIDWithCreatorMock)).Return (null);
 
       _domainObjectCreatorMock
-          .Expect (mock => mock.CreateObjectReference (Arg<ObjectReferenceInitializationContext>.Is.TypeOf, Arg.Is (bindingTransaction)))
+          .Expect (mock => mock.CreateObjectReference (Arg<ObjectReferenceInitializationContext>.Is.TypeOf, Arg.Is (subTransaction)))
           .Return (_domainObject1)
           .WhenCalled (
-              mi => CheckInitializationContext<ObjectReferenceInitializationContext> (mi.Arguments[0], _objectIDWithCreatorMock, bindingTransaction));
+              mi => CheckInitializationContext<ObjectReferenceInitializationContext> (mi.Arguments[0], _objectIDWithCreatorMock, _transaction));
 
       var result = agent.GetObjectReference (_objectIDWithCreatorMock);
 
@@ -353,7 +354,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
 
       _dataManagerMock.Stub (stub => stub.GetDataContainerWithLazyLoad (_objectID1, true)).Return (dataContainer);
 
-      Assert.That (() => _agent.GetObject (_objectID1, false), Throws.TypeOf<ObjectDeletedException>().With.Property<ObjectDeletedException>(e => e.ID).EqualTo (_objectID1));
+      Assert.That (
+          () => _agent.GetObject (_objectID1, false),
+          Throws.TypeOf<ObjectDeletedException>().With.Property<ObjectDeletedException> (e => e.ID).EqualTo (_objectID1));
     }
 
     [Test]
@@ -539,16 +542,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     }
 
     private static void CheckInitializationContext<TExpectedContextType> (
-        object initializationContext, ObjectID expectedObjectID, ClientTransaction bindingTransaction)
+        object initializationContext, ObjectID expectedObjectID, ClientTransaction expectedRootTransaction)
+      where TExpectedContextType : IObjectInitializationContext
     {
       Assert.That (
           initializationContext,
           Is.Not.Null
             .And.TypeOf<TExpectedContextType>()
-            .And.Property<NewObjectInitializationContext> (c => c.ObjectID)
-            .EqualTo (expectedObjectID)
-            .And.Property<NewObjectInitializationContext> (c => c.BindingTransaction)
-            .SameAs (bindingTransaction));
+            .And.Property<IObjectInitializationContext> (c => c.ObjectID).EqualTo (expectedObjectID)
+            .And.Property<IObjectInitializationContext> (c => c.RootTransaction).SameAs (expectedRootTransaction));
     }
 
     private void FakeRegisteredObject (NewObjectInitializationContext objectInitializationContext, DomainObject registeredObject)

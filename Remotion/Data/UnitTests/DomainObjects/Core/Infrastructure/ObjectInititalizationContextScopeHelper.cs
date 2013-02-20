@@ -17,7 +17,6 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -43,13 +42,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       }
     }
 
-    private static NewObjectInitializationContext CreateNewObjectInitializationContext (ClientTransaction clientTransaction, ObjectID objectID)
+    private static NewObjectInitializationContext CreateNewObjectInitializationContext (ClientTransaction rootTransaction, ObjectID objectID)
     {
       var initializationContext = new NewObjectInitializationContext (
           objectID,
-          ClientTransactionTestHelper.GetEnlistedDomainObjectManager (clientTransaction),
-          ClientTransactionTestHelper.GetIDataManager (clientTransaction),
-          clientTransaction as BindingClientTransaction);
+          rootTransaction,
+          ClientTransactionTestHelper.GetEnlistedDomainObjectManager (rootTransaction),
+          ClientTransactionTestHelper.GetIDataManager (rootTransaction));
       return initializationContext;
     }
   }
