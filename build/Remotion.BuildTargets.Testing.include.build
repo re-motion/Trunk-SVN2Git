@@ -129,10 +129,6 @@
         XPath="/test-results/test-suite/@time">
       <Output TaskParameter="Value" PropertyName="_testTime" />
     </MSBuild.ExtensionPack.Xml.XmlFile>
-
-    <MSBuild.ExtensionPack.Science.Maths TaskAction="Multiply" Numbers="$(_testTime);1000">
-            <Output TaskParameter="Result" PropertyName="_testTime" />
-    </MSBuild.ExtensionPack.Science.Maths>
     
     <Message Text="##teamcity[buildStatisticValue key='$(_testName)' value='$(_testTime)']" 
              Condition="'$(TEAMCITY_VERSION)' != ''" />
