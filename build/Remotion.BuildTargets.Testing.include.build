@@ -129,6 +129,10 @@
         XPath="/test-results/test-suite/@time">
       <Output TaskParameter="Value" PropertyName="_testTime" />
     </MSBuild.ExtensionPack.Xml.XmlFile>
+
+    <MSBuild.ExtensionPack.Framework.TextString TaskAction="Replace" OldString="$(_testTime)" OldValue="." NewValue=",">
+      <Output TaskParameter="NewString" PropertyName="_testTime" />
+    </MSBuild.ExtensionPack.Framework.TextString>
     
     <Message Text="##teamcity[buildStatisticValue key='$(_testName)' value='$(_testTime)']" 
              Condition="'$(TEAMCITY_VERSION)' != ''" />
