@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 
     public virtual void TransactionDiscard (ClientTransaction clientTransaction)
     {
-      // allowed (but TODO RM-5001)
+      // allowed
     }
 
     public virtual void SubTransactionCreating (ClientTransaction clientTransaction)
