@@ -45,7 +45,7 @@
     <DependDBProjectBranch>Trunk</DependDBProjectBranch>
     <DependDBUploadPath></DependDBUploadPath>
     <DependDBProjectVCSUrlTemplate>$(SvnBaseUri)/!svn/bc/$(SvnRevision)/$(SvnBranchFolder)/{0}</DependDBProjectVCSUrlTemplate>
-    <DependDBProjectImportNotificationMailAddress>$(UserName)@rubicon.eu</DependDBProjectImportNotificationMailAddress>
+    <DependDBProjectImportNotificationMailAddress></DependDBProjectImportNotificationMailAddress>
     
     <VersionPattern>^1\.13\.\d+\.0$</VersionPattern>
   </PropertyGroup>
