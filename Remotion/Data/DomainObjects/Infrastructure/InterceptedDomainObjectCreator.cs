@@ -55,7 +55,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // These calls are also performed by DomainObject's ctor
       instance.Initialize (objectID, objectInitializationContext.BindingTransaction);
       objectInitializationContext.RegisterObject (instance);
-      clientTransaction.Execute (instance.RaiseReferenceInitializatingEvent);
+
+      using (clientTransaction.EnterNonDiscardingScope ())
+      {
+        instance.RaiseReferenceInitializatingEvent ();
+      }
 
       return instance;
     }
