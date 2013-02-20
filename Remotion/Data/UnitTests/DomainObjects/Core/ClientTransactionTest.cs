@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -647,45 +646,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var order = _transaction.Execute (() => Order.NewObject ());
       Assert.That (_transaction.GetEnlistedDomainObject (order.ID), Is.SameAs (order));
-    }
-
-    [Test]
-    public void EnlistDomainObject ()
-    {
-      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (_objectID1);
-      Assert.That (_transaction.IsEnlisted (order), Is.False);
-
-      _transaction.EnlistDomainObject (order);
-
-      Assert.That (_transaction.IsEnlisted (order), Is.True);
-    }
-
-    [Test]
-    public void EnlistDomainObject_DoesntLoad ()
-    {
-      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (_objectID1);
-      Assert.That (_transaction.IsEnlisted (order), Is.False);
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-
-      _transaction.EnlistDomainObject (order);
-
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
-          Arg<ClientTransaction>.Is.Anything, 
-          Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-    }
-
-    [Test]
-    public void EnlistDomainObject_InvalidObjects ()
-    {
-      var invalidObject = _transaction.Execute (() => Order.NewObject ());
-      _transaction.Execute (invalidObject.Delete);
-      Assert.That (invalidObject.TransactionContext[_transaction].IsInvalid, Is.True);
-
-      var newTransaction = ClientTransaction.CreateRootTransaction();
-      newTransaction.EnlistDomainObject (invalidObject);
-
-      Assert.That (newTransaction.IsEnlisted (invalidObject), Is.True);
     }
 
     [Test]

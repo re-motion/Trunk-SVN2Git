@@ -459,12 +459,12 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Returns the <see cref="DomainObject"/> enlisted for the given <paramref name="objectID"/> via <see cref="EnlistDomainObject"/>, or 
+  /// Returns the <see cref="DomainObject"/> registered for the given <paramref name="objectID"/> in this <see cref="ClientTransaction"/>, or 
   /// <see langword="null"/> if no such object exists.
   /// </summary>
   /// <param name="objectID">The <see cref="ObjectID"/> for which to retrieve a <see cref="DomainObject"/>.</param>
   /// <returns>
-  /// A <see cref="DomainObject"/> with the given <paramref name="objectID"/> previously enlisted via <see cref="EnlistDomainObject"/>,
+  /// A <see cref="DomainObject"/> with the given <paramref name="objectID"/> previously registered in this <see cref="ClientTransaction"/>,
   /// or <see langword="null"/> if no such object exists.
   /// </returns>
   /// <remarks>
@@ -488,99 +488,6 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     return _enlistedDomainObjectManager.IsEnlisted (domainObject);
-  }
-
-  /// <summary>
-  /// Allows the given <see cref="DomainObject"/> to be used in the context of this transaction without needing to explicitly reload it there.
-  /// The <see cref="DomainObject"/> should be loadable into this transaction (i.e. it must be present in the underlying data store or the
-  /// ParentTransaction), but this is not enforced until first access to the object.
-  /// </summary>
-  /// <param name="domainObject">The object to be enlisted in this transaction.</param>
-  /// <returns>True if the object was newly enlisted; false if it had already been enlisted in this transaction.</returns>
-  /// <remarks>
-  /// <para>
-  /// Unlike <see cref="ObjectIDExtensions.GetObject{T}"/>, this method does not load any data, but instead
-  /// marks the given <see cref="DomainObject"/> for use in this transaction. After this, the same object reference can be used in both the
-  /// transaction it was originally created in and the transactions it has been enlisted in.
-  /// </para>
-  /// <para>
-  /// Using a <see cref="DomainObject"/> in two different transactions at the same time will result in its <see cref="DomainObject.Properties"/>
-  /// differing depending on which transaction is currently active.
-  /// For example, if a property is changed (and even committed) in transaction A and the object
-  /// has been enlisted in transaction B before transaction's A commit, transaction B will not see the changes committed by transaction A.
-  /// </para>
-  /// <para>
-  /// If a certain <see cref="ObjectID"/> has already been associated with a certain <see cref="DomainObject"/> in this transaction, it is not
-  /// possible to register another <see cref="DomainObject"/> reference with the same <see cref="DomainObject.ID"/>.
-  /// </para>
-  /// <para>The data for the <see cref="DomainObject"/> is not loaded immediately by this method, but will be retrieved when the object is first
-  /// used in this transaction. If the object has been deleted from the underlying database, access to such an object will result in an
-  /// <see cref="ObjectsNotFoundException"/>.</para>
-  /// </remarks>
-  /// <exception cref="InvalidOperationException">The domain object cannot be enlisted, e.g., because another <see cref="DomainObject"/> with the same
-  /// <see cref="ObjectID"/> has already been associated with this transaction..</exception>
-  /// <exception cref="ArgumentNullException">The <paramref name="domainObject"/> parameter is <see langword="null"/>.</exception>
-  public bool EnlistDomainObject (DomainObject domainObject)
-  {
-    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-    
-    CheckDomainObjectForEnlisting (domainObject);
-    return _enlistedDomainObjectManager.EnlistDomainObject (domainObject);
-  }
-
-  /// <summary>
-  /// Checks whether the given <see cref="DomainObject"/> can be enlisted in this <see cref="ClientTransaction"/>, throwing an 
-  /// <see cref="InvalidOperationException"/> if it can't.
-  /// </summary>
-  /// <param name="domainObject">The domain object to check.</param>
-  /// <exception cref="InvalidOperationException">Thrown when the <paramref name="domainObject"/> cannot be enlisted in this transaction.</exception>
-  /// <remarks>
-  /// The default implementation of this method checks whether the <paramref name="domainObject"/> has already been bound to another transaction. Sub-
-  /// transactions can override this method to remove this check or perform additional checks.
-  /// </remarks>
-  protected virtual void CheckDomainObjectForEnlisting (DomainObject domainObject)
-  {
-    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-    if (domainObject.HasBindingTransaction && domainObject.GetBindingTransaction() != this)
-    {
-      string message = String.Format ("Cannot enlist the domain object '{0}' in this transaction, because it is already bound to another transaction.",
-                                      domainObject.ID);
-      throw new InvalidOperationException (message);
-    }
-  }
-
-  /// <summary>
-  /// Calls <see cref="EnlistDomainObject"/> for each <see cref="DomainObject"/> reference in the given collection.
-  /// </summary>
-  /// <param name="domainObjects">The domain objects to enlist.</param>
-  /// <exception cref="ArgumentNullException">The <paramref name="domainObjects"/> parameter is <see langword="null"/>.</exception>
-  /// <exception cref="InvalidOperationException">A domain object cannot be enlisted, because another <see cref="DomainObject"/> with the same
-  /// <see cref="ObjectID"/> has already been associated with this transaction.</exception>
-  /// <remarks>This method also enlists objects that do not exist in the database; accessing such an object in the context of this transaction will
-  /// result in an <see cref="ObjectsNotFoundException"/>.</remarks>
-  public void EnlistDomainObjects (IEnumerable<DomainObject> domainObjects)
-  {
-    ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
-
-    foreach (DomainObject domainObject in domainObjects)
-      EnlistDomainObject (domainObject);
-  }
-
-  /// <summary>
-  /// Calls <see cref="EnlistDomainObject"/> for each <see cref="DomainObject"/> reference in the given collection.
-  /// </summary>
-  /// <param name="domainObjects">The domain objects to enlist.</param>
-  /// <exception cref="ArgumentNullException">The <paramref name="domainObjects"/> parameter is <see langword="null"/>.</exception>
-  /// <exception cref="InvalidOperationException">A domain object cannot be enlisted, because another <see cref="DomainObject"/> with the same
-  /// <see cref="ObjectID"/> has already been associated with this transaction.</exception>
-  /// <remarks>This method also enlists objects that do not exist in the database; accessing such an object in the context of this transaction will
-  /// result in an <see cref="ObjectsNotFoundException"/>.</remarks>
-  public void EnlistDomainObjects (params DomainObject[] domainObjects)
-  {
-    ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
-
-    EnlistDomainObjects ((IEnumerable<DomainObject>) domainObjects);
   }
 
   /// <summary>
@@ -1361,6 +1268,33 @@ public class ClientTransaction
     "This member has been removed. Use ClientTransaction.CreateRootTransaction and CreateSubTransaction instead. (1.13.138, 1.13.182.0)",
     true)]
   public ClientTransaction CreateEmptyTransactionOfSameType ([UsedImplicitly]bool copyInvalidObjectInformation)
+  {
+    throw new NotImplementedException ();
+  }
+
+  [Obsolete (
+    "Enlisting DomainObjects in multiple transactions is no longer supported. Get a new DomainObject reference for each transaction hierarchy. "
+    + "(1.13.187)",
+    true)]
+  public bool EnlistDomainObject (DomainObject domainObject)
+  {
+    throw new NotImplementedException ();
+  }
+
+  [Obsolete (
+      "Enlisting DomainObjects in multiple transactions is no longer supported. Get a new DomainObject reference for each transaction hierarchy. "
+      + "(1.13.187)",
+      true)]
+  public void EnlistDomainObjects (IEnumerable<DomainObject> domainObjects)
+  {
+    throw new NotImplementedException ();
+  }
+
+  [Obsolete (
+      "Enlisting DomainObjects in multiple transactions is no longer supported. Get a new DomainObject reference for each transaction hierarchy. "
+      + "(1.13.187)",
+      true)]
+  public void EnlistDomainObjects (params DomainObject[] domainObjects)
   {
     throw new NotImplementedException ();
   }

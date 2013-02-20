@@ -102,25 +102,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot enlist the domain object Order|5682f032-2f0b-494b-a31c-"
-        + "c97f02b89c36|System.Guid in this binding transaction, because it has originally been loaded in another transaction.")]
-    public void EnlistingFails_ForObjectFromOther ()
-    {
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-      {
-        Order order = DomainObjectIDs.Order1.GetObject<Order> ();
-        _bindingTransaction.EnlistDomainObject (order);
-      }
-    }
-
-    [Test]
-    public void EnlistingSucceeds_ForSameTransaction ()
-    {
-      Order order = GetBound<Order> (DomainObjectIDs.Order1);
-      _bindingTransaction.EnlistDomainObject (order);
-    }
-
-    [Test]
     [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = 
         "Cannot insert DomainObject 'OrderItem|90a931d6-d7e9-4a6c-9109-53f5e3b481ee|System.Guid' into collection of property "
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "

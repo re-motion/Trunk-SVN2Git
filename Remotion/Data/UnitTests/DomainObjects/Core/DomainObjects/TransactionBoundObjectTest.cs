@@ -83,23 +83,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot enlist the domain object 'Order|5682f032-2f0b-494b-a31c-"
-        + "c97f02b89c36|System.Guid' in this transaction, because it is already bound to another transaction.")]
-    public void Enlist_InDifferentTransaction ()
-    {
-      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
-      Order order = GetBound<Order> (DomainObjectIDs.Order1);
-      newTransaction.EnlistDomainObject (order);
-    }
-
-    [Test]
-    public void Enlist_InBindingTransaction ()
-    {
-      Order order = GetBound<Order> (DomainObjectIDs.Order1);
-      _bindingTransaction.EnlistDomainObject (order);
-    }
-
-    [Test]
     public void GetSetValue ()
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);

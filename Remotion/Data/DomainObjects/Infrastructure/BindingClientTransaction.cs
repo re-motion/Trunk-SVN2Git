@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -40,22 +39,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public override ClientTransaction CreateSubTransaction ()
     {
       throw new InvalidOperationException ("Binding transactions cannot have subtransactions.");
-    }
-
-    protected override void CheckDomainObjectForEnlisting (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      if (!domainObject.HasBindingTransaction || domainObject.GetBindingTransaction() != this)
-      {
-        string message =
-            string.Format (
-                "Cannot enlist the domain object {0} in this binding transaction, because it has originally been loaded in another transaction.",
-                domainObject.ID);
-        throw new InvalidOperationException (message);
-      }
-
-      base.CheckDomainObjectForEnlisting (domainObject);
     }
   }
 }

@@ -25,12 +25,12 @@ namespace Remotion.Data.DomainObjects
   public enum LoadMode
   {
     /// <summary>
-    /// The whole object has been loaded, e.g. as a reaction to <see cref="ObjectIDExtensions.GetObject{T}"/>.
+    /// The whole object has been loaded for the first time, e.g. as a reaction to <see cref="ObjectIDExtensions.GetObject{T}"/>.
     /// </summary>
     WholeDomainObjectInitialized,
     /// <summary>
-    /// Only the object's <see cref="DataContainer"/> has been loaded, e.g. as a reaction to <see cref="ClientTransaction.EnlistDomainObject"/> or
-    /// in a substransaction.
+    /// Only the object's <see cref="DataContainer"/> has been loaded, e.g. when an object is loaded into a substransaction, or it is reloaded after
+    /// being unloaded.
     /// </summary>
     DataContainerLoadedOnly
   }

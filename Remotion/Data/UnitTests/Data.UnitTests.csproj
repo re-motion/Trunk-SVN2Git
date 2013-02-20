@@ -1342,7 +1342,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointSetCommandTestBase.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\LifetimeServiceTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectGraphTraverserTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectInMultipleTransactionsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\ObjectListTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyIndexerTest.cs" />

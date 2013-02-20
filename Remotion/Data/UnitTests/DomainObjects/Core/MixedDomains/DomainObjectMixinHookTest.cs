@@ -63,43 +63,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     }
 
     [Test]
-    public void OnDomainObjectLoadedAfterEnlist ()
-    {
-      var tx = CreateTransactionWithStubbedLoading (_objectID);
-
-      var mixinInstance = new HookedDomainObjectMixin();
-
-      Assert.That (mixinInstance.OnLoadedCalled, Is.False);
-      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
-      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.False);
-
-      HookedTargetClass instance;
-      using (new MixedObjectInstantiationScope (mixinInstance))
-      {
-        instance = (HookedTargetClass) LifetimeService.GetObject (tx, _objectID, false);
-      }
-
-      mixinInstance.OnLoadedCalled = false;
-      mixinInstance.OnLoadedCount = 0;
-
-      ClientTransaction newTransaction = CreateTransactionWithStubbedLoading (_objectID);
-      newTransaction.EnlistDomainObject (instance);
-
-      Assert.That (mixinInstance.OnLoadedCalled, Is.False);
-
-      using (newTransaction.EnterDiscardingScope())
-      {
-        ++instance.Property;
-      }
-
-      Assert.That (mixinInstance.OnLoadedCalled, Is.True);
-      Assert.That (mixinInstance.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
-      Assert.That (mixinInstance.OnLoadedCount, Is.EqualTo (1));
-      Assert.That (mixinInstance.OnCreatedCalled, Is.False);
-      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.True);
-    }
-
-    [Test]
     public void OnDomainObjectLoadedInSubTransaction ()
     {
       var tx = CreateTransactionWithStubbedLoading (_objectID);

@@ -326,9 +326,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       customer.Name = "New name";
 
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        ClientTransaction.Current.EnlistDomainObject (customer);
         Assert.That (customer.State, Is.EqualTo (StateType.NotLoadedYet));
 
         customer.EnsureDataAvailable ();
