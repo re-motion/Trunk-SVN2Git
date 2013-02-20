@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Factory.PrepareUnconstructedInstance (instance);
 
       // These calls are also performed by DomainObject's ctor
-      instance.Initialize (objectID, objectInitializationContext.BindingTransaction);
+      instance.Initialize (objectID, objectInitializationContext.RootTransaction);
       objectInitializationContext.RegisterObject (instance);
 
       using (clientTransaction.EnterNonDiscardingScope ())

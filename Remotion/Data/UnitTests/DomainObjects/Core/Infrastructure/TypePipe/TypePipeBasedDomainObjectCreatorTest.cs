@@ -46,10 +46,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       _transaction = ClientTransaction.CreateRootTransaction();
       _interceptedDomainObjectCreator = new TypePipeBasedDomainObjectCreator (SafeServiceLocator.Current.GetInstance<IObjectFactory>());
 
-      _order1InitializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, null);
+      _order1InitializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, _transaction, null);
 
       var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid ());
-      _targetClassForPersistentMixinInitializationContext = CreateFakeInitializationContext (objectID, null);
+      _targetClassForPersistentMixinInitializationContext = CreateFakeInitializationContext (objectID, _transaction, null);
     }
 
     [Test]
@@ -59,6 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
       Assert.That (order, Is.InstanceOf (typeof (Order)));
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (order.RootTransaction, Is.EqualTo (_transaction));
     }
 
     [Test]
@@ -99,6 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
       var initializationContextMock = MockRepository.GenerateStrictMock<IObjectInitializationContext> ();
       initializationContextMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
+      initializationContextMock.Stub (stub => stub.RootTransaction).Return (_transaction);
       initializationContextMock.Stub (stub => stub.BindingTransaction).Return (null);
       initializationContextMock
           .Expect (mock => mock.RegisterObject (Arg<DomainObject>.Matches (obj => obj.ID == DomainObjectIDs.Order1)))
@@ -109,28 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       initializationContextMock.VerifyAllExpectations ();
       Assert.That (instance, Is.SameAs (registeredObject));
     }
-
-    [Test]
-    public void CreateObjectReference_WithBindingTransaction ()
-    {
-      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-      var initializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, bindingTransaction);
-
-      var instance = _interceptedDomainObjectCreator.CreateObjectReference (initializationContext, bindingTransaction);
-
-      Assert.That (instance.HasBindingTransaction, Is.True);
-      Assert.That (instance.GetBindingTransaction (), Is.SameAs (bindingTransaction));
-    }
-
-    [Test]
-    public void CreateObjectReference_NoBindingTransaction ()
-    {
-      var initializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, null);
-
-      var instance = _interceptedDomainObjectCreator.CreateObjectReference (initializationContext, _transaction);
-      Assert.That (instance.HasBindingTransaction, Is.False);
-    }
-
+    
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "mixin", MatchType = MessageMatch.Contains)]
     public void CreateObjectReference_ValidatesMixinConfiguration ()
@@ -164,6 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       Assert.That (((object) result).GetType().Name, Is.StringMatching (@"_Proxy\d"));
       Assert.That (result, Is.AssignableTo<OrderItem>());
       Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.OrderItem1));
+      Assert.That (result.RootTransaction, Is.SameAs (_transaction));
       Assert.That (_transaction.IsDiscarded, Is.False);
       Assert.That (_transaction.IsEnlisted (result), Is.True);
       Assert.That (_transaction.Execute (() => ((OrderItem) result).Product), Is.EqualTo ("A product"));
@@ -209,11 +191,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
           Is.Not.Null);
     }
 
-    private IObjectInitializationContext CreateFakeInitializationContext (ObjectID objectID, ClientTransaction bindingTransaction)
+    private IObjectInitializationContext CreateFakeInitializationContext (ObjectID objectID, ClientTransaction rootTransaction, ClientTransaction bindingTransaction)
     {
       var initializationContextStub = MockRepository.GenerateStub<IObjectInitializationContext> ();
 
       initializationContextStub.Stub (stub => stub.ObjectID).Return (objectID);
+      initializationContextStub.Stub (stub => stub.RootTransaction).Return (rootTransaction);
       initializationContextStub.Stub (stub => stub.BindingTransaction).Return (bindingTransaction);
       return initializationContextStub;
     }

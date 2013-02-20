@@ -54,6 +54,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void Ctor_SetsRootTransaction ()
+    {
+      var instance = _transaction.Execute (() => Order.NewObject ());
+
+      Assert.That (instance.RootTransaction, Is.SameAs (_transaction));
+    }
+
+    [Test]
     public void Ctor_SetsBindingTransaction ()
     {
       var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
@@ -134,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Initialize_ThrowsForNewObject ()
     {
       var orderItem = _transaction.Execute (() => OrderItem.NewObject ("Test Toast"));
-      orderItem.Initialize (DomainObjectIDs.OrderItem1, null);
+      orderItem.Initialize (DomainObjectIDs.OrderItem1, _transaction);
     }
 
     [Test]
@@ -142,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Initialize_ThrowsForLoadedObject ()
     {
       var orderItem = _transaction.Execute (() => DomainObjectIDs.OrderItem1.GetObject<OrderItem>());
-      orderItem.Initialize (DomainObjectIDs.OrderItem1, null);
+      orderItem.Initialize (DomainObjectIDs.OrderItem1, _transaction);
     }
 
     [Test]
@@ -157,17 +165,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
 
       var deserializedOrderItem = Serializer.SerializeAndDeserialize (orderItem);
-      deserializedOrderItem.Initialize (DomainObjectIDs.OrderItem1, null);
+      deserializedOrderItem.Initialize (DomainObjectIDs.OrderItem1, _transaction);
     }
 
     [Test]
-    public void Initialize_WithUninitializedObject_SetsID ()
+    public void Initialize_WithUninitializedObject_SetsIDAndRootTransaction ()
     {
       var type = InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (OrderItem));
       var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
-      orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
+      orderItem.Initialize (DomainObjectIDs.OrderItem1, _transaction);
 
       Assert.That (orderItem.ID, Is.EqualTo (DomainObjectIDs.OrderItem1));
+      Assert.That (orderItem.RootTransaction, Is.SameAs (_transaction));
+    }
+
+    [Test]
+    public void Initialize_ThrowsForNonRootTransaction ()
+    {
+      var type = InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (OrderItem));
+      var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
+      Assert.That (
+          () => orderItem.Initialize (DomainObjectIDs.OrderItem1, _transaction.CreateSubTransaction()),
+          Throws.ArgumentException.With.Message.EqualTo (
+            "The rootTransaction parameter must be passed a root transaction.\r\nParameter name: rootTransaction"));
     }
 
     [Test]

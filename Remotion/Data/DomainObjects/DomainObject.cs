@@ -184,7 +184,7 @@ namespace Remotion.Data.DomainObjects
     public event EventHandler RolledBack;
 
     private ObjectID _id;
-    private ClientTransaction _bindingTransaction; // null unless this object is bound to a fixed transaction
+    private ClientTransaction _rootTransaction; // null unless this object is bound to a fixed transaction
     private bool _needsLoadModeDataContainerOnly; // true if the object was created by a constructor call or OnLoaded has already been called once
     private bool _isReferenceInitializeEventExecuting; // true only while OnReferenceInitializing is executed
 
@@ -221,7 +221,7 @@ namespace Remotion.Data.DomainObjects
             + "If this exception occurs during a base call of a deserialization constructor, adjust the base call to call the DomainObject's "
             + "deserialization constructor instead.");
       }
-      Initialize (initializationContext.ObjectID, initializationContext.BindingTransaction);
+      Initialize (initializationContext.ObjectID, initializationContext.RootTransaction);
       initializationContext.RegisterObject (this);
 
       RaiseReferenceInitializatingEvent ();
@@ -247,7 +247,7 @@ namespace Remotion.Data.DomainObjects
       try
       {
         _id = (ObjectID) info.GetValue ("DomainObject.ID", typeof (ObjectID));
-        _bindingTransaction = (ClientTransaction) info.GetValue ("DomainObject._bindingTransaction", typeof (ClientTransaction));
+        _rootTransaction = (ClientTransaction) info.GetValue ("DomainObject._rootTransaction", typeof (ClientTransaction));
         _needsLoadModeDataContainerOnly = info.GetBoolean ("DomainObject._needsLoadModeDataContainerOnly");
 
         PropertyChanging = (EventHandler<PropertyChangeEventArgs>) info.GetValue ("DomainObject.PropertyChanging", typeof (EventHandler<PropertyChangeEventArgs>));
@@ -281,11 +281,24 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
+    /// Gets the root <see cref="ClientTransaction"/> of the transaction hierarchy this <see cref="DomainObject"/> is associated with.
+    /// </summary>
+    /// <value>The <see cref="DomainObjects.ClientTransaction"/> this object is bound to.</value>
+    /// <remarks>
+    /// When a <see cref="DomainObject"/> is created, loaded, or its reference is initialized within a specific <see cref="ClientTransaction"/>, it
+    /// automatically becomes associated with the hierarchy of that <see cref="ClientTransaction"/>. It can then always be used in 
+    /// </remarks>
+    public ClientTransaction RootTransaction
+    {
+      get { return _rootTransaction; }
+    }
+
+    /// <summary>
     /// Gets the <see cref="DomainObjects.ClientTransaction"/> this <see cref="DomainObject"/> instance was bound to. If the object has not been 
-    /// bound, this method throws an exception. Use <see cref="HasBindingTransaction"/> to check whether the object has been boung to a 
+    /// bound, this method throws an exception. Use <see cref="HasBindingTransaction"/> to check whether the object has been bound to a 
     /// <see cref="BindingClientTransaction"/> or not.
     /// </summary>
-    /// <value>The <see cref="DomainObjects.ClientTransaction"/> this object was bound to, or <see langword="null"/>.</value>
+    /// <value>The <see cref="DomainObjects.ClientTransaction"/> this object was bound to.</value>
     /// <exception cref="InvalidOperationException">The object has not been bound.</exception>
     /// <remarks>
     /// If a <see cref="DomainObject"/> has been bound to a <see cref="BindingClientTransaction"/>, its properties are always accessed in the context of that
@@ -301,7 +314,8 @@ namespace Remotion.Data.DomainObjects
             "This object has not been bound to a specific transaction, it uses the current transaction when it is "
             + "accessed. Use HasBindingTransaction to check whether an object has been bound or not.");
       }
-      return _bindingTransaction;
+      
+      return _rootTransaction;
     }
 
     /// <summary>
@@ -324,7 +338,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     public bool HasBindingTransaction
     {
-      get { return _bindingTransaction != null; }
+      get { return _rootTransaction is BindingClientTransaction; }
     }
 
     /// <summary>
@@ -433,7 +447,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("info", info);
 
       info.AddValue ("DomainObject.ID", ID);
-      info.AddValue ("DomainObject._bindingTransaction", _bindingTransaction);
+      info.AddValue ("DomainObject._rootTransaction", _rootTransaction);
       info.AddValue ("DomainObject._needsLoadModeDataContainerOnly", _needsLoadModeDataContainerOnly);
 
       info.AddValue ("DomainObject.PropertyChanging", PropertyChanging);
@@ -454,21 +468,24 @@ namespace Remotion.Data.DomainObjects
     /// is automatically called by the framework and should not normally be invoked by user code.
     /// </summary>
     /// <param name="id">The <see cref="ObjectID"/> to associate the new <see cref="DomainObject"/> with.</param>
-    /// <param name="bindingTransaction">The <see cref="DomainObjects.ClientTransaction"/> to bind the new <see cref="DomainObject"/> to, or 
-    /// <see langword="null" /> if the object should not be bound.</param>
-    /// <exception cref="ArgumentNullException">The <paramref name="id"/> or <paramref name="bindingTransaction"/> parameter is null.</exception>
+    /// <param name="rootTransaction">The root <see cref="DomainObjects.ClientTransaction"/> to associate the new <see cref="DomainObject"/> with.</param>
+    /// <exception cref="ArgumentNullException">The <paramref name="id"/> or <paramref name="rootTransaction"/> parameter is null.</exception>
     /// <exception cref="InvalidOperationException">This <see cref="DomainObject"/> has already been initialized.</exception>
     /// <remarks>This method is always called exactly once per <see cref="DomainObject"/> instance by the framework. It sets the object's 
     /// <see cref="ID"/> and enlists it with the given <see cref="DomainObjects.ClientTransaction"/>.</remarks>
-    public void Initialize (ObjectID id, ClientTransaction bindingTransaction)
+    public void Initialize (ObjectID id, ClientTransaction rootTransaction)
     {
       ArgumentUtility.CheckNotNull ("id", id);
+      ArgumentUtility.CheckNotNull ("rootTransaction", rootTransaction);
+
+      if (rootTransaction.RootTransaction != rootTransaction)
+        throw new ArgumentException ("The rootTransaction parameter must be passed a root transaction.", "rootTransaction");
 
       if (_id != null)
         throw new InvalidOperationException ("The object cannot be initialized, it already has an ID.");
 
       _id = id;
-      _bindingTransaction = bindingTransaction;
+      _rootTransaction = rootTransaction;
     }
 
     /// <summary>

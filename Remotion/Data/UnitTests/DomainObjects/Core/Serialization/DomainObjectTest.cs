@@ -40,6 +40,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Tuple<ClientTransaction, ClassDerivedFromSimpleDomainObject> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
       ClassDerivedFromSimpleDomainObject deserializedInstance = deserializedData.Item2;
+
+      Assert.That (deserializedInstance.ID, Is.EqualTo (instance.ID));
+      Assert.That (deserializedInstance.RootTransaction, Is.SameAs (deserializedData.Item1));
+
       using (deserializedData.Item1.EnterNonDiscardingScope ())
       {
         Assert.That (deserializedInstance, Is.Not.SameAs (instance));
@@ -55,6 +59,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
       ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
+      
+      Assert.That (deserializedInstance.ID, Is.EqualTo (instance.ID));
+      Assert.That (deserializedInstance.RootTransaction, Is.SameAs (deserializedData.Item1));
+      
       using (deserializedData.Item1.EnterNonDiscardingScope ())
       {
         Assert.That (deserializedInstance, Is.Not.SameAs (instance));

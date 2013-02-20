@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       _objectFactory.PrepareExternalUninitializedObject (instance);
 
       // These calls are normally performed by DomainObject's ctor
-      instance.Initialize (objectID, objectInitializationContext.BindingTransaction);
+      instance.Initialize (objectID, objectInitializationContext.RootTransaction);
       objectInitializationContext.RegisterObject (instance);
 
       using (clientTransaction.EnterNonDiscardingScope())
