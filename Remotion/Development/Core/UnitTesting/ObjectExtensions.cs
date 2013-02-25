@@ -38,15 +38,15 @@ namespace Remotion.Development.UnitTesting
     }
 
     [DebuggerStepThrough]
-    public static void InvokeNonPublicMethod (this object target, string method, params object[] args)
+    public static object InvokeNonPublicMethod (this object target, string method, params object[] args)
     {
-      PrivateInvoke.InvokeNonPublicMethod (target, method, args);
+      return PrivateInvoke.InvokeNonPublicMethod (target, method, args);
     }
 
     [DebuggerStepThrough]
-    public static void InvokeNonPublicMethod (this object target, MethodInfo method, params object[] args)
+    public static object InvokeNonPublicMethod (this object target, MethodInfo method, params object[] args)
     {
-      method.Invoke (target, args);
+      return method.Invoke (target, args);
     }
 
     [DebuggerStepThrough]
