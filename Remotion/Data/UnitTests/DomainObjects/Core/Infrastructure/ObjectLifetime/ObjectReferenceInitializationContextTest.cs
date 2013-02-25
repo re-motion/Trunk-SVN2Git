@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
-using Remotion.Development.UnitTesting.ObjectMothers;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime
@@ -83,9 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     [Test]
     public void RegisterObject_Bound ()
     {
-      _enlistedDomainObjectManagerMock
-          .Expect (mock => mock.EnlistDomainObject (_boundObject))
-          .Return (BooleanObjectMother.GetRandomBoolean());
+      _enlistedDomainObjectManagerMock.Expect (mock => mock.EnlistDomainObject (_boundObject));
 
       _contextWithBindingTransaction.RegisterObject (_boundObject);
 
@@ -97,9 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     [Test]
     public void RegisterObject_Unbound ()
     {
-      _enlistedDomainObjectManagerMock
-          .Stub (stub => stub.EnlistDomainObject (_unboundObject))
-          .Return (BooleanObjectMother.GetRandomBoolean ());
+      _enlistedDomainObjectManagerMock.Stub (stub => stub.EnlistDomainObject (_unboundObject));
 
       _contextWithoutBindingTransaction.RegisterObject (_unboundObject);
     }
@@ -107,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     [Test]
     public void RegisterObject_Twice ()
     {
-      _enlistedDomainObjectManagerMock.Stub (mock => mock.EnlistDomainObject (_boundObject)).Return (BooleanObjectMother.GetRandomBoolean ());
+      _enlistedDomainObjectManagerMock.Stub (mock => mock.EnlistDomainObject (_boundObject));
 
       _contextWithBindingTransaction.RegisterObject (_boundObject);
 

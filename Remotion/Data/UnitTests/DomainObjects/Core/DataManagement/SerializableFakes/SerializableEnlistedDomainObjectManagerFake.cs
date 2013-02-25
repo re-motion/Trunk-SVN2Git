@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException ();
     }
 
-    public bool EnlistDomainObject (DomainObject domainObject)
+    public void EnlistDomainObject (DomainObject domainObject)
     {
       throw new NotImplementedException();
     }

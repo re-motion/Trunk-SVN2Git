@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
       return GetEnlistedDomainObject (domainObject.ID) == domainObject;
     }
 
-    public bool EnlistDomainObject (DomainObject domainObject)
+    public void EnlistDomainObject (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
@@ -63,15 +63,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
         string message = string.Format ("A domain object instance for object '{0}' already exists in this transaction.", domainObject.ID);
         throw new InvalidOperationException (message);
       }
-      else if (alreadyEnlistedObject == null)
-      {
+      
+      if (alreadyEnlistedObject == null)
         _enlistedObjects.Add (domainObject.ID, domainObject);
-        return true;
-      }
-      else
-      {
-        return false;
-      }
     }
 
     public void DisenlistDomainObject (DomainObject domainObject)

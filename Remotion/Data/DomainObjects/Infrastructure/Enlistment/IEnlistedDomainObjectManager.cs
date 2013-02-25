@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
     /// </remarks>
     /// <exception cref="InvalidOperationException">Another object has already been registered for the <paramref name="domainObject"/>'s 
     /// <see cref="DomainObject.ID"/>.</exception>
-    bool EnlistDomainObject (DomainObject domainObject);
+    void EnlistDomainObject (DomainObject domainObject);
 
     /// <summary>
     /// Disenlists the given <see cref="DomainObject"/>, throwing an exception if the object wasn't enlisted in the first place.

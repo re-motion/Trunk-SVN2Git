@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
-using Remotion.Development.UnitTesting.ObjectMothers;
 using Rhino.Mocks;
 using Remotion.Data.UnitTests.UnitTesting;
 
@@ -68,7 +67,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       var counter = new OrderedExpectationCounter();
       _enlistedDomainObjectManagerMock
           .Expect (mock => mock.EnlistDomainObject (_domainObject))
-          .Return (BooleanObjectMother.GetRandomBoolean())
           .Ordered (counter);
       StubEmptyDataContainersCollection (_dataManagerMock);
       _dataManagerMock
