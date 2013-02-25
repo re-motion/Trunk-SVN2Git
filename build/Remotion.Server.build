@@ -162,9 +162,7 @@
   <Target Name="TestBuild_Configuration">
     <PropertyGroup>
       <Platforms>x86</Platforms>
-      <!--<DatabaseSystems>SqlServer2012</DatabaseSystems>-->
-      <DatabaseSystems>SqlServer2005+SqlServer2008+SqlServer2012</DatabaseSystems>
-      <!--<DatabaseSystems>SqlServer2008</DatabaseSystems>-->
+      <DatabaseSystems>SqlServer2008</DatabaseSystems>
     </PropertyGroup>
   </Target>
   
