@@ -54,6 +54,7 @@
     <ToolPath>$(SolutionDirectory)prereq\Tools\</ToolPath>
     <SvnToolPath>$(ToolPath)Subversion\</SvnToolPath>
     <MSBuildCommunityTasksPath>$(ToolPath)MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
+    <MSBuildExtensionPackPath>$(ToolPath)MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <MSBuildRemotionTasksPath>$(ToolPath)Remotion.BuildTools.MSBuildTasks\</MSBuildRemotionTasksPath>
   </PropertyGroup>  
   
@@ -61,7 +62,7 @@
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Subversion.SvnCopy" />
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Subversion.SvnCommit" />
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Subversion.SvnExport" />
-  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Math.Add" />
+  <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Science.Maths" />
   <UsingTask AssemblyFile="$(MSBuildRemotionTasksPath)\Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.Jira.JiraGetEarliestUnreleasedVersion" />
   <UsingTask AssemblyFile="$(MSBuildRemotionTasksPath)\Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.Jira.JiraGetLatestReleasedVersion" />
   <UsingTask AssemblyFile="$(MSBuildRemotionTasksPath)\Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.Jira.JiraCreateNewVersion" />
@@ -206,9 +207,9 @@
         <_versionBuild>$([System.Version]::Parse ($(Version)).Build)</_versionBuild>
         <_versionRevision>$([System.Version]::Parse ($(Version)).Revision)</_versionRevision>
     </PropertyGroup>
-    <MSBuild.Community.Tasks.Math.Add Numbers="$(_versionRevision);1">
-      <Output TaskParameter="Result" PropertyName="_versionRevision" />
-    </MSBuild.Community.Tasks.Math.Add>
+    <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="$(_versionRevision);1">
+      <Output PropertyName="_versionRevision" TaskParameter="Result"/>
+    </MSBuild.ExtensionPack.Science.Maths>
     <PropertyGroup>
         <_newVersion>$(_versionMajor).$(_versionMinor).$(_versionBuild).$(_versionRevision)</_newVersion>
     </PropertyGroup>
