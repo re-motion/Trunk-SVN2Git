@@ -15,7 +15,7 @@
  ! You should have received a copy of the GNU Lesser General Public License
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Constants -->
   <PropertyGroup>
@@ -202,31 +202,46 @@
   </Target>
   
   
-  <Target Name="CreateNUnitErrorsProperty">
+  <Target Name="CreateNUnitErrorsProperty" Condition="'$(TEAMCITY_VERSION)' != ''">
 
-    <ItemGroup>
-      <NUnitTestResultFiles Include="$(LogDirectory)\Remotion.*Tests.*.xml" />
-    </ItemGroup>
-
+    <!-- Create temp directory for transformed files -->
     <PropertyGroup>
-      <_nunitErrorLogFile>$(LogDirectory)\nunit.errors.log</_nunitErrorLogFile>
+      <_tempDir>$(LogDirectory)\output\</_tempDir>
     </PropertyGroup>
-
-<!--     <XslTransformation XmlInputPaths="@(NUnitTestResultFiles)"
+    <MakeDir Directories="$(_tempDir)"/>
+  
+    <!-- Find all NUnit result files -->
+    <ItemGroup>
+      <_nunitTestResultFiles Include="$(LogDirectory)\Remotion.*Tests.*.xml">
+        <OutputPath></OutputPath>
+      </_nunitTestResultFiles>
+      <_nunitTestResultFiles>
+        <OutputPath>$(_tempDir)\%(FileName).output.xml</OutputPath>
+      </_nunitTestResultFiles>
+    </ItemGroup>
+    
+    <!-- Transform NUnit result files to temporary files containing failures/errors only -->
+    <XslTransformation XmlInputPaths="%(_nunitTestResultFiles.Identity)"
                        XslInputPath="$(MSBuildProjectDirectory)\NUnitErrors.xslt"
-                       OutputPaths="@(NUnitTestRulesFiles)"
-                       Condition="'@(NUnitTestResultFiles)' != ''" /> -->
-    <MSBuild.Community.Tasks.Xslt Inputs="@(NUnitTestResultFiles)" 
-                                  RootTag="mergedroot"
-                                  Xsl="$(MSBuildProjectDirectory)\NUnitErrors.xslt"
-                                  Output="$(_nunitErrorLogFile)"
-                                  Condition="@(NUnitTestResultFiles) != ''"/>
+                       OutputPaths="%(_nunitTestResultFiles.OutputPath)"
+                       Condition="@(_nunitTestResultFiles) != ''"/>
 
+    <!-- XslTransformation outputs files, read all files into one single property -->
+    <ItemGroup>
+      <_fileContents Include="$([System.IO.File]::ReadAllText (%(_nunitTestResultFiles.OutputPath)))"/>
+    </ItemGroup>
     <PropertyGroup>
-      <NUnitErrors Condition="Exists($(_nunitErrorLogFile))">$([System.IO.File]::ReadAllText ($(_nunitErrorLogFile)))</NUnitErrors>
+      <!-- Two new lines are required, do not reformat! -->
+      <_mergedFileContents>@(_fileContents,'
+
+')</_mergedFileContents>
     </PropertyGroup>
     
-    <Message Condition="'$(TEAMCITY_VERSION)' != ''" Text="##teamcity[setParameter name='nunit_errors' value='$(NUnitErrors)']" />
+    <!-- Output for TeamCity -->
+    <Message Condition="'$(TEAMCITY_VERSION)' != '' and '$(_mergedFileContents)' != ''" Text="##teamcity[setParameter name='nunit_errors' value='$(_mergedFileContents)']" />
+    
+    <!-- Delete temp directory containing transformed files -->
+    <RemoveDir Directories="$(_tempDir)"/>
     
   </Target>
 
