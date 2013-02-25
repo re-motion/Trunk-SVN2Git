@@ -130,6 +130,7 @@
   <Target Name="RunMixinXRefTest" Condition="$(ActiveConfigurationOutputDirectory.Contains('debug'))">
     <Message Text="Check whether the full API required for MixinXRef is available" Importance="High"/>
 
+    <!-- TrimEnd('\') is necessary, otherwise the " afterwards is unintentionally masked by the console and arguments are swallowed -->
     <PropertyGroup>
       <_directory>$(ActiveConfigurationOutputDirectory.TrimEnd('\'))</_directory>
     </PropertyGroup>

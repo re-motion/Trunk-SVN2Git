@@ -131,7 +131,7 @@
     <Message Text="Copy release notes from share to local temp directory..." Importance="High"/>
 
     <Error Text="The ReleaseNotesRemoteShareDirectory ('$(ReleaseNotesRemoteShareDirectory)') does not exist - probably remote directory not reachable or new minor version created without creating the corresponding ReleaseNotesRemoteShareDirectory."
-           Condition="!Exists('$ReleaseNotesRemoteShareDirectory')"/>
+           Condition="!Exists('$(ReleaseNotesRemoteShareDirectory)')"/>
     
     <ItemGroup>
       <_releaseNoteFiles Remove="@(_releaseNoteFiles)"/>
@@ -157,8 +157,13 @@
       <_htmlTitle Condition="$(PackageName) != 'Remotion'">Release notes for Remotion $(PackageName)</_htmlTitle>
       <_htmlTitle Condition="$(PackageName) == 'Remotion'">Release notes for Remotion Core</_htmlTitle>
     </PropertyGroup>
+    
+    <!-- TrimEnd('\') is necessary, otherwise the " afterwards is unintentionally masked by the console and arguments are swallowed -->
+    <PropertyGroup>
+      <_releaseNotesLocalTempDirectory>$(ReleaseNotesLocalTempDirectory.TrimEnd('\'))</_releaseNotesLocalTempDirectory>
+    </PropertyGroup>
 
-    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesLocalTempDirectory) &quot;t:$(_htmlTitle)&quot; $(_jiraComponent)"
+    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) &quot;$(_releaseNotesLocalTempDirectory)&quot; &quot;t:$(_htmlTitle)&quot; $(_jiraComponent)"
           WorkingDirectory="$(JiraReleaseNoteGeneratorPath)" />
     
     <Message Text="Done creating release notes, PackageName=$(PackageName)" Importance="High"/>
