@@ -115,6 +115,13 @@
         <XPath>$(SettingsXPath)/c:NotificationAddresses/c:To</XPath>
         <Value>$(DependDBProjectImportNotificationMailAddress)</Value>
       </_config>
+      <_configAddElements Include="DependDBProjectImportNotificationMailAddressCc" Condition="$(DependDBProjectImportNotificationMailAddressCc) != ''">
+        <XPath>$(SettingsXPath)/c:NotificationAddresses</XPath>
+        <Element>c:Cc</Element>
+        <Value>$(DependDBProjectImportNotificationMailAddressCc)</Value>
+        <AttrKey></AttrKey>
+        <AttrValue></AttrValue>
+      </_configAddElements>
     </ItemGroup>
     <!-- DependDB configuration: Analyzer -->
     <ItemGroup>

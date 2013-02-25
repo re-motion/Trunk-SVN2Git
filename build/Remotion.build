@@ -49,6 +49,7 @@
     <DependDBProjectVersion></DependDBProjectVersion>
     <DependDBProjectVCSUrlTemplate></DependDBProjectVCSUrlTemplate>
     <DependDBProjectImportNotificationMailAddress></DependDBProjectImportNotificationMailAddress>
+    <DependDBProjectImportNotificationMailAddressCc></DependDBProjectImportNotificationMailAddressCc>
     <DependDBUploadPath>$(MSBuildProjectDirectory)\BuildOutput\DependDB\</DependDBUploadPath>
   </PropertyGroup>
   
@@ -251,6 +252,7 @@
                          DependDBProjectVersion=$(DependDBProjectVersion);
                          DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
                          DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
+                         DependDBProjectImportNotificationMailAddressCc=$(DependDBProjectImportNotificationMailAddressCc);
                          DependDBUploadPath=$(DependDBUploadPath)"/>
   </Target>
   
