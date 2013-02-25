@@ -130,12 +130,13 @@
   <Target Name="CopyReleaseNotesFromShareToTemp" DependsOnTargets="CreateReleaseNotesProperties">
     <Message Text="Copy release notes from share to local temp directory..." Importance="High"/>
 
+    <Error Text="The ReleaseNotesRemoteShareDirectory ('$(ReleaseNotesRemoteShareDirectory)') does not exist - probably remote directory not reachable or new minor version created without creating the corresponding ReleaseNotesRemoteShareDirectory."
+           Condition="!Exists('$ReleaseNotesRemoteShareDirectory')"/>
+    
     <ItemGroup>
       <_releaseNoteFiles Remove="@(_releaseNoteFiles)"/>
       <_releaseNoteFiles Include="$(ReleaseNotesRemoteShareDirectory)*.*" />
     </ItemGroup>
-
-    <Error Text="Item group '_releaseNoteFiles' is empty - probably remote directory not reachable? (remote directory: '$(ReleaseNotesRemoteShareDirectory)')" Condition="@(_releaseNoteFiles) == ''"/>
     
     <Copy SourceFiles="@(_releaseNoteFiles)" DestinationFolder="$(ReleaseNotesLocalTempDirectory)"/>
 
