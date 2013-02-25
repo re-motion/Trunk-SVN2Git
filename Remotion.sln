@@ -72,6 +72,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		build\Remotion.Server.build = build\Remotion.Server.build
 		build\Remotion.Tasks.include.build = build\Remotion.Tasks.include.build
 		build\SandcastleProjectTemplate.shfbproj = build\SandcastleProjectTemplate.shfbproj
+		build\SecureFileLoggerRules.rules = build\SecureFileLoggerRules.rules
 	EndProjectSection
 	ProjectSection(FolderStartupServices) = postProject
 		{B4F97281-0DBD-4835-9ED8-7DFB966E87FF} = {B4F97281-0DBD-4835-9ED8-7DFB966E87FF}
