@@ -32,6 +32,7 @@ namespace Remotion.Development.UnitTesting.Reflection
     private static readonly Type[] s_nonGenericTypes = EnsureNoNulls (new[] { typeof (DateTime), typeof (Random) });
     private static readonly Type[] s_otherTypes = EnsureNoNulls (new[] { typeof (decimal), typeof (StringBuilder) });
     private static readonly Type[] s_genericTypes = EnsureNoNulls (new[] { typeof (IComparable<>), typeof (Dictionary<,>) });
+    private static readonly Type[] s_genericParameters = EnsureNoNulls (typeof (Dictionary<,>).GetGenericArguments());
     private static readonly Type[] s_serializableTypes = EnsureNoNulls (new[] { typeof (object), typeof (string), typeof (List<int>) });
     private static readonly Type[] s_unsealedTypes = EnsureNoNulls (new[] { typeof (object), typeof (List<int>) });
     private static readonly Type[] s_delegateTypes = EnsureNoNulls (new[] { typeof (EventHandler), typeof (Action<,,>) });
@@ -82,6 +83,13 @@ namespace Remotion.Development.UnitTesting.Reflection
       var genericType = GetRandomElement (s_genericTypes);
       Assertion.IsTrue (genericType.IsGenericType);
       return genericType;
+    }
+
+    public static Type GetSomeGenericParameter ()
+    {
+      var genericParameter = GetRandomElement (s_genericParameters);
+      Assertion.IsTrue (genericParameter.IsGenericParameter);
+      return genericParameter;
     }
 
     public static Type GetSomeSerializableType ()
@@ -272,10 +280,10 @@ namespace Remotion.Development.UnitTesting.Reflection
       return method;
     }
 
-    public static MethodInfo GetSomeGenericMethod ()
+    public static MethodInfo GetSomeGenericMethodDefinition ()
     {
       var method = GetRandomElement (s_genericMethods);
-      Assertion.IsTrue (method.IsGenericMethod);
+      Assertion.IsTrue (method.IsGenericMethodDefinition);
       return method;
     }
 
@@ -387,6 +395,6 @@ namespace Remotion.Development.UnitTesting.Reflection
 #pragma warning disable 67
       public static event Action StaticEvent;
 #pragma warning restore 67
-    }    
+    }
   }
 }
