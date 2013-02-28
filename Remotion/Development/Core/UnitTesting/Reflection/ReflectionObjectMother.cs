@@ -31,7 +31,7 @@ namespace Remotion.Development.UnitTesting.Reflection
 
     private static readonly Type[] s_nonGenericTypes = EnsureNoNulls (new[] { typeof (DateTime), typeof (Random) });
     private static readonly Type[] s_otherTypes = EnsureNoNulls (new[] { typeof (decimal), typeof (StringBuilder) });
-    private static readonly Type[] s_genericTypes = EnsureNoNulls (new[] { typeof (IComparable<>), typeof (Dictionary<,>) });
+    private static readonly Type[] s_genericTypeDefinition = EnsureNoNulls (new[] { typeof (IComparable<>), typeof (Dictionary<,>) });
     private static readonly Type[] s_genericParameters = EnsureNoNulls (typeof (Dictionary<,>).GetGenericArguments());
     private static readonly Type[] s_serializableTypes = EnsureNoNulls (new[] { typeof (object), typeof (string), typeof (List<int>) });
     private static readonly Type[] s_unsealedTypes = EnsureNoNulls (new[] { typeof (object), typeof (List<int>) });
@@ -78,10 +78,10 @@ namespace Remotion.Development.UnitTesting.Reflection
       return type;
     }
 
-    public static Type GetSomeGenericType ()
+    public static Type GetSomeGenericTypeDefinition ()
     {
-      var genericType = GetRandomElement (s_genericTypes);
-      Assertion.IsTrue (genericType.IsGenericType);
+      var genericType = GetRandomElement (s_genericTypeDefinition);
+      Assertion.IsTrue (genericType.IsGenericTypeDefinition);
       return genericType;
     }
 
