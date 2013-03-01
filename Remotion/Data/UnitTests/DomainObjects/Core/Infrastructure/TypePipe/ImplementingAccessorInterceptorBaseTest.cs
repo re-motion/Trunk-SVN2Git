@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
           NormalizingMemberInfoFromExpressionUtility.GetGenericMethodDefinition ((PropertyAccessor a) => a.SetValue<object> (null));
       var arguments = new Expression[] { Expression.Parameter (typeof (int), "param") };
       var ctx = new MethodBodyModificationContext (
-          _proxyType, false, new ParameterExpression[0], typeof (int), null, null, MockRepository.GenerateStub<IMemberSelector>());
+          _proxyType, false, new ParameterExpression[0], Type.EmptyTypes, typeof (int), null, null, MockRepository.GenerateStub<IMemberSelector>());
       _interceptorPartialMock
           .Stub (stub => PrivateInvoke.GetNonPublicProperty (stub, "AccessorImplementationMethod"))
           .Return (accessorImplementationMethod);
