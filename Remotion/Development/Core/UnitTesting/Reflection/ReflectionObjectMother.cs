@@ -34,7 +34,7 @@ namespace Remotion.Development.UnitTesting.Reflection
     private static readonly Type[] s_genericTypeDefinition = EnsureNoNulls (new[] { typeof (IComparable<>), typeof (Dictionary<,>) });
     private static readonly Type[] s_genericParameters = EnsureNoNulls (typeof (Dictionary<,>).GetGenericArguments());
     private static readonly Type[] s_serializableTypes = EnsureNoNulls (new[] { typeof (object), typeof (string), typeof (List<int>) });
-    private static readonly Type[] s_unsealedTypes = EnsureNoNulls (new[] { typeof (object), typeof (List<int>) });
+    private static readonly Type[] s_unsealedTypes = EnsureNoNulls (new[] { typeof (Exception), typeof (List<int>) });
     private static readonly Type[] s_delegateTypes = EnsureNoNulls (new[] { typeof (EventHandler), typeof (Action<,,>) });
     private static readonly Type[] s_classTypes = EnsureNoNulls (new[] { typeof (StringBuilder), typeof (Exception) });
     private static readonly Type[] s_interfaceTypes = EnsureNoNulls (new[] { typeof (IDisposable), typeof (IServiceProvider) });
