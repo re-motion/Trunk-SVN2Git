@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       const int numberOfTests = 10;
 
-      Console.WriteLine ("Expected average duration of LoadObjectsOverRelationTest on reference system: ~230 ms");
+      Console.WriteLine ("Expected average duration of LoadObjectsOverRelationTest on reference system: ~230 ms (release build), ~313 ms (debug build)");
 
       Stopwatch stopwatch = new Stopwatch ();
       for (int i = 0; i < numberOfTests; i++)
@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       const int numberOfTests = 10;
 
-      Console.WriteLine ("Expected average duration of LoadObjectsOverRelationWithAbstractBaseClass on reference system: ~710 ms");
+      Console.WriteLine ("Expected average duration of LoadObjectsOverRelationWithAbstractBaseClass on reference system: ~193 ms (release build), ~262 ms (debug build)");
 
       Stopwatch stopwatch = new Stopwatch ();
       for (int i = 0; i < numberOfTests; i++)

@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
@@ -120,34 +119,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     }
 
     [Test]
-    public void SearchAvailableObjectsUsesCurrentTransaction_UnboundObject ()
+    public void SearchAvailableObjectsUsesAssociatedTransaction ()
     {
-      var outerTransaction = ClientTransaction.Current;
-
       var transaction = _searchServiceTestHelper.CreateTransactionWithStubbedQuery<ClientTransaction> (_stubbedQueryID);
-      using (transaction.EnterDiscardingScope ())
-      {
-        IBusinessObject[] results = _property.SearchAvailableObjects (_referencingBusinessObject, new DefaultSearchArguments (_stubbedQueryID));
 
-        Assert.That (results, Is.Not.Null);
-        Assert.That (results.Length > 0, Is.True);
-
-        var resultDomainObject = (DomainObject) results[0];
-        Assert.That (outerTransaction.IsEnlisted (resultDomainObject), Is.False);
-        Assert.That (ClientTransaction.Current.IsEnlisted (resultDomainObject), Is.True);
-      }
-    }
-
-    [Test]
-    public void SearchAvailableObjectsUsesBindingTransaction_BoundObject ()
-    {
-      var bindingTransaction = _searchServiceTestHelper.CreateTransactionWithStubbedQuery<BindingClientTransaction> (_stubbedQueryID);
-
-      IBusinessObject boundObject;
-      using (bindingTransaction.EnterNonDiscardingScope ())
-      {
-        boundObject = (IBusinessObject) SampleBindableMixinDomainObject.NewObject ();
-      }
+      IBusinessObject boundObject = (IBusinessObject) transaction.ExecuteInScope (() => SampleBindableMixinDomainObject.NewObject ());
 
       IBusinessObject[] results = _property.SearchAvailableObjects (boundObject, new DefaultSearchArguments (_stubbedQueryID));
       Assert.That (results, Is.Not.Null);
@@ -155,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 
       var resultDomainObject = (DomainObject) results[0];
       Assert.That (ClientTransaction.Current.IsEnlisted (resultDomainObject), Is.False);
-      Assert.That (bindingTransaction.IsEnlisted (resultDomainObject), Is.True);
+      Assert.That (transaction.IsEnlisted (resultDomainObject), Is.True);
     }
 
     [Test]

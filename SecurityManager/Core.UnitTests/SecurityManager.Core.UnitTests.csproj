@@ -93,6 +93,7 @@
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreatorTest.cs" />
     <Compile Include="AclTools\Expansion\Xrays\AclExpanderXray.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterFactoryBaseTest.cs" />
+    <Compile Include="ClientTransactionTestHelper.cs" />
     <Compile Include="DatabaseConfiguration.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\AccessControlEntryPropertiesEnumerationValueFilterTestBase.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\NotSupportedProperty.cs" />

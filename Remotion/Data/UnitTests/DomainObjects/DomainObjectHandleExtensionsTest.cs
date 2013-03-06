@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
     [Test]
     public void GetObject_IncludeDeletedTrue_LoadsDeletedObject ()
     {
-      _clientTransaction.Execute (() => _orderHandle1.GetObject().Delete());
+      _clientTransaction.ExecuteInScope (() => _orderHandle1.GetObject().Delete());
 
       var result = _orderHandle1.GetObject (_clientTransaction, includeDeleted: true);
 
@@ -80,14 +80,14 @@ namespace Remotion.Data.UnitTests.DomainObjects
     [Test]
     public void GetObject_IncludeDeletedFalse_ThrowsOnDeletedObject ()
     {
-      _clientTransaction.Execute (() => _orderHandle1.GetObject ().Delete ());
+      _clientTransaction.ExecuteInScope (() => _orderHandle1.GetObject ().Delete ());
       Assert.That (() => _orderHandle1.GetObject (_clientTransaction, includeDeleted: false), Throws.TypeOf<ObjectDeletedException>());
     }
 
     [Test]
     public void GetObject_IncludeDeletedUnspecified_ThrowsOnDeletedObject ()
     {
-      _clientTransaction.Execute (() => _orderHandle1.GetObject ().Delete ());
+      _clientTransaction.ExecuteInScope (() => _orderHandle1.GetObject ().Delete ());
       Assert.That (() => _orderHandle1.GetObject (_clientTransaction), Throws.TypeOf<ObjectDeletedException> ());
     }
 
@@ -228,7 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
       if (expectedID != null)
         Assert.That (result.ID, Is.EqualTo (expectedID));
       if (expectedState != null)
-        Assert.That (expectedClientTransaction.Execute (() => result.State), Is.EqualTo (expectedState));
+        Assert.That (expectedClientTransaction.ExecuteInScope (() => result.State), Is.EqualTo (expectedState));
     }
   }
 }

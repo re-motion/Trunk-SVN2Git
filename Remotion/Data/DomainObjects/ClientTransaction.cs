@@ -68,27 +68,6 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Creates a new root <see cref="ClientTransaction"/> that binds all <see cref="DomainObject"/> instances that are created in its context. A bound
-  /// <see cref="DomainObject"/> is always accessed in the context of its binding transaction, it never uses <see cref="Current"/>.
-  /// </summary>
-  /// <returns>A new binding <see cref="ClientTransaction"/> instance.</returns>
-  /// <remarks>
-  /// <para>
-  /// The object returned by this method can be extended with <b>Mixins</b> by configuring the <see cref="MixinConfiguration.ActiveConfiguration"/>
-  /// to include a mixin for type <see cref="RootPersistenceStrategy"/>. Declaratively, this can be achieved by attaching an
-  /// <see cref="ExtendsAttribute"/> instance for <see cref="ClientTransaction"/> or <see cref="RootPersistenceStrategy"/> to a mixin class.
-  /// </para>
-  /// <para>
-  /// Binding transactions cannot have subtransactions.
-  /// </para>
-  /// </remarks>
-  public static ClientTransaction CreateBindingTransaction ()
-  {
-    var componentFactory = RootClientTransactionComponentFactory.Create(); // binding transactions behave like root transactions
-    return ObjectFactory.Create<BindingClientTransaction> (true, ParamList.Create (componentFactory));
-  }
-
-  /// <summary>
   /// Gets the <see cref="ClientTransaction"/> currently associated with this thread, or <see langword="null"/> if no such transaction exists.
   /// </summary>
   /// <value>The current <see cref="ClientTransaction"/> for the active thread, or <see langword="null"/> if no transaction is associated with it.</value>
@@ -213,14 +192,7 @@ public class ClientTransaction
   /// <value>The root transaction of this <see cref="ClientTransaction"/>.</value>
   public ClientTransaction RootTransaction 
   { 
-    get
-    {
-      var current = this;
-      while (current.ParentTransaction != null)
-        current = current.ParentTransaction;
-
-      return current;
-    }
+    get { return _hierarchyManager.TransactionHierarchy.RootTransaction; }
   }
 
   /// <summary>
@@ -231,14 +203,17 @@ public class ClientTransaction
   /// <value>The leaf transaction of this <see cref="ClientTransaction"/>.</value>
   public ClientTransaction LeafTransaction
   {
-    get
-    {
-      var current = this;
-      while (current.SubTransaction != null)
-        current = current.SubTransaction;
+    get { return _hierarchyManager.TransactionHierarchy.LeafTransaction; }
+  }
 
-      return current;
-    }
+  /// <summary>
+  /// Gets the active transaction in the associated <see cref="ClientTransaction"/> hierarchy, i.e., the transaction that is currently being used
+  /// to execute <see cref="DomainObject"/> operations. The active transaction is usually the <see cref="LeafTransaction"/>, but can be explicitly
+  /// changed, e.g., using the <see cref="EnterNonDiscardingScope"/> API by passing in the <see cref="InactiveTransactionBehavior.MakeActive"/> flag.
+  /// </summary>
+  public ClientTransaction ActiveTransaction
+  {
+    get { return _hierarchyManager.TransactionHierarchy.ActiveTransaction; }
   }
 
   /// <summary>
@@ -261,15 +236,15 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Indicates whether this transaction is active, i.e., it has no <see cref="SubTransaction"/>.
-  /// Inactive transactions can only be used to read and load data, not change it.
+  /// Indicates whether this transaction can written, i.e., it has no <see cref="SubTransaction"/>.
+  /// Transactions with an open <see cref="SubTransaction"/> can only be used to read and load data, not change it.
   /// </summary>
-  /// <value><see langword="true" /> if this instance is active; otherwise, <see langword="false" />.</value>
+  /// <value><see langword="true" /> if this instance is writeable; otherwise, <see langword="false" />.</value>
   /// <remarks>
   /// <para>
-  /// Transactions are made inactive while there exist open subtransactions for them. An inactive transaction can only be used for
-  /// operations that do not cause any change of transaction state. Reading, loading, and querying objects is okay with inactive transactions,
-  /// but any method that would cause a state change will throw an exception.
+  /// Transactions are made read-only while there exist open subtransactions for them. Such a transaction can only be used for
+  /// operations that do not cause any change of transaction state. Reading, loading, and querying objects is allowed, but any method that would 
+  /// cause a state change will throw an exception.
   /// </para>
   /// <para>
   /// Most of the time, this property returns <see langword="true" /> as long as <see cref="SubTransaction"/> is <see langword="null" />. However,
@@ -280,9 +255,9 @@ public class ClientTransaction
   /// a <see cref="SubTransaction"/> exists.
   /// </para>
   /// </remarks>
-  public bool IsActive
+  public bool IsWriteable
   {
-    get { return _hierarchyManager.IsActive; }
+    get { return _hierarchyManager.IsWriteable; }
   }
 
   /// <summary>
@@ -389,6 +364,9 @@ public class ClientTransaction
   /// <see cref="ClientTransactionScope.Leave"/> method is called or the scope is disposed of, the previous scope is reactivated.
   /// </para>
   /// </remarks>
+  /// <exception cref="InvalidOperationException">
+  /// This <see cref="ClientTransaction"/> is not the <see cref="ActiveTransaction"/> of the hierarchy.
+  /// </exception>
   public virtual ClientTransactionScope EnterDiscardingScope ()
   {
     return EnterScope (AutoRollbackBehavior.Discard);
@@ -401,15 +379,37 @@ public class ClientTransaction
   /// <returns>A new <see cref="ClientTransactionScope"/> for this transaction.</returns>
   /// <param name="rollbackBehavior">The automatic rollback behavior to be performed when the scope's <see cref="ClientTransactionScope.Leave"/>
   /// method is called.</param>
+  /// <param name="inactiveTransactionBehavior">Defines what should happen when this <see cref="ClientTransaction"/> is currently not active, e.g., 
+  /// due to an active subtransaction. The default behavior is <see cref="InactiveTransactionBehavior.Throw"/>, i.e., to throw an exception.</param>
   /// <remarks>
   /// <para>
   /// The new <see cref="ClientTransactionScope"/> stores the previous <see cref="ClientTransactionScope.ActiveScope"/>. When this scope's
   /// <see cref="ClientTransactionScope.Leave"/> method is called or the scope is disposed of, the previous scope is reactivated.
   /// </para>
   /// </remarks>
-  public virtual ClientTransactionScope EnterScope (AutoRollbackBehavior rollbackBehavior)
+  /// <exception cref="InvalidOperationException">
+  /// This <see cref="ClientTransaction"/> is not the <see cref="ActiveTransaction"/> of the hierarchy and 
+  /// <paramref name="inactiveTransactionBehavior"/> is set to <see cref="InactiveTransactionBehavior.Throw"/>.
+  /// </exception>
+  public virtual ClientTransactionScope EnterScope (
+      AutoRollbackBehavior rollbackBehavior, 
+      InactiveTransactionBehavior inactiveTransactionBehavior = InactiveTransactionBehavior.Throw)
   {
-    return new ClientTransactionScope (this, rollbackBehavior);
+    IDisposable activationScope = null;
+
+    if (inactiveTransactionBehavior == InactiveTransactionBehavior.MakeActive)
+    {
+      activationScope = _hierarchyManager.TransactionHierarchy.ActivateTransaction (this);
+    }
+    else if (ActiveTransaction != this)
+    {
+      Assertion.IsTrue (inactiveTransactionBehavior == InactiveTransactionBehavior.Throw);
+      throw new InvalidOperationException (
+          "The Current transaction cannot be an inactive transaction. Specify InactiveTransactionBehavior.MakeActive in order to temporarily make "
+          + "this transaction active in order to use it as the Current transaction.");
+    }
+
+    return new ClientTransactionScope (this, rollbackBehavior, activationScope);
   }
 
   /// <summary>
@@ -417,6 +417,8 @@ public class ClientTransaction
   /// <see cref="ClientTransactionScope.ActiveScope"/> for the current thread. When the scope is left, this transaction is not discarded and the
   /// parent transaction (if any) is not made writeable.
   /// </summary>
+  /// <param name="inactiveTransactionBehavior">Defines what should happen when this <see cref="ClientTransaction"/> is currently not active, e.g., 
+  /// due to an active subtransaction. The default behavior is <see cref="InactiveTransactionBehavior.Throw"/>, i.e., to throw an exception.</param>
   /// <returns>A new <see cref="ClientTransactionScope"/> for this transaction with no automatic rollback behavior.</returns>
   /// <remarks>
   /// <para>
@@ -427,13 +429,24 @@ public class ClientTransaction
   /// transaction will be discarded and cannot be used for a second time.
   /// </para>
   /// <para>
+  /// By default, it is not possible to create a scope for an inactive transaction (e.g., a transaction with an active subtransaction), as it would
+  /// be strange to have an inactive transaction as the <see cref="Current"/> transaction. By specifying 
+  /// <see cref="InactiveTransactionBehavior.MakeActive"/> as the <paramref name="inactiveTransactionBehavior"/> parameter, however, the inactive
+  /// transaction is temporarily made active until the scope is left.
+  /// </para>
+  /// <para>
   /// The new <see cref="ClientTransactionScope"/> stores the previous <see cref="ClientTransactionScope.ActiveScope"/>. When this scope's
   /// <see cref="ClientTransactionScope.Leave"/> method is called or the scope is disposed of, the previous scope is reactivated.
   /// </para>
   /// </remarks>
-  public virtual ClientTransactionScope EnterNonDiscardingScope ()
+  /// <exception cref="InvalidOperationException">
+  /// This <see cref="ClientTransaction"/> is not the <see cref="ActiveTransaction"/> of the hierarchy and 
+  /// <paramref name="inactiveTransactionBehavior"/> is set to <see cref="InactiveTransactionBehavior.Throw"/>.
+  /// </exception>
+  public virtual ClientTransactionScope EnterNonDiscardingScope (
+      InactiveTransactionBehavior inactiveTransactionBehavior = InactiveTransactionBehavior.Throw)
   {
-    return EnterScope (AutoRollbackBehavior.None);
+    return EnterScope (AutoRollbackBehavior.None, inactiveTransactionBehavior);
   }
 
   /// <summary>
@@ -484,6 +497,11 @@ public class ClientTransaction
   /// <returns>
   /// <see langword="true" /> if the specified domain object can be used in the context of this transaction; otherwise, <see langword="false" />.
   /// </returns>
+  /// <remarks>
+  /// Note that comparing the <see cref="RootTransaction"/> to the <see cref="DomainObject.RootTransaction"/> of <paramref name="domainObject"/> is 
+  /// faster and usually yields the same result as this method. Only infrastructure code needing to guard against incorrectly setup 
+  /// <see cref="DomainObject"/> instances needs to use <see cref="IsEnlisted"/>.
+  /// </remarks>
   public bool IsEnlisted (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
@@ -769,10 +787,7 @@ public class ClientTransaction
   /// </remarks>
   public virtual void Commit ()
   {
-    using (EnterNonDiscardingScope ())
-    {
-      _commitRollbackAgent.CommitData();
-    }
+    _commitRollbackAgent.CommitData();
   }
 
   /// <summary>
@@ -819,10 +834,7 @@ public class ClientTransaction
   /// </remarks>
   public virtual void Rollback ()
   {
-    using (EnterNonDiscardingScope ())
-    {
-      _commitRollbackAgent.RollbackData();
-    }
+    _commitRollbackAgent.RollbackData();
   }
 
   /// <summary>
@@ -990,19 +1002,16 @@ public class ClientTransaction
     if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
       throw new ArgumentException ("The given end-point ID does not denote a related object (cardinality one).", "relationEndPointID");
 
-    using (EnterNonDiscardingScope ())
-    {
-      DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
+    DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Current);
+    _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Current);
 
-      var objectEndPoint = (IObjectEndPoint) DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
-      DomainObject relatedObject = objectEndPoint.GetOppositeObject ();
+    var objectEndPoint = (IObjectEndPoint) DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+    DomainObject relatedObject = objectEndPoint.GetOppositeObject ();
 
-      _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Current);
+    _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Current);
 
-      return relatedObject;
-    }
+    return relatedObject;
   }
 
   /// <summary>
@@ -1019,19 +1028,16 @@ public class ClientTransaction
     if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
       throw new ArgumentException ("The given end-point ID does not denote a related object (cardinality one).", "relationEndPointID");
 
-    using (EnterNonDiscardingScope ())
-    {
-      DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
+    DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Original);
+    _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Original);
 
-      var objectEndPoint = (IObjectEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
-      DomainObject relatedObject = objectEndPoint.GetOriginalOppositeObject ();
+    var objectEndPoint = (IObjectEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+    DomainObject relatedObject = objectEndPoint.GetOriginalOppositeObject ();
 
-      _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Original);
+    _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Original);
 
-      return relatedObject;
-    }
+    return relatedObject;
   }
 
   /// <summary>
@@ -1048,20 +1054,17 @@ public class ClientTransaction
     if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
       throw new ArgumentException ("The given end-point ID does not denote a related object collection (cardinality many).", "relationEndPointID");
 
-    using (EnterNonDiscardingScope ())
-    {
-      DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
+    DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Current);
+    _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Current);
 
-      var collectionEndPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
-      var relatedObjects = collectionEndPoint.Collection;
-      var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
+    var collectionEndPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+    var relatedObjects = collectionEndPoint.Collection;
+    var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
 
-      _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Current);
+    _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Current);
 
-      return relatedObjects;
-    }
+    return relatedObjects;
   }
 
   /// <summary>
@@ -1078,20 +1081,17 @@ public class ClientTransaction
     if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
       throw new ArgumentException ("The given end-point ID does not denote a related object collection (cardinality many).", "relationEndPointID");
 
-    using (EnterNonDiscardingScope ())
-    {
-      DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
+    DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Original);
+    _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Original);
 
-      var collectionEndPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
-      var relatedObjects = collectionEndPoint.GetCollectionWithOriginalData();
-      var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
+    var collectionEndPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+    var relatedObjects = collectionEndPoint.GetCollectionWithOriginalData();
+    var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
 
-      _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Original);
+    _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Original);
 
-      return relatedObjects;
-    }
+    return relatedObjects;
   }  
 
   /// <summary>
@@ -1295,6 +1295,18 @@ public class ClientTransaction
       + "(1.13.187)",
       true)]
   public void EnlistDomainObjects (params DomainObject[] domainObjects)
+  {
+    throw new NotImplementedException ();
+  }
+
+  [Obsolete ("This property was renamed to IsWriteable. (1.13.188)", true)]
+  public bool IsActive 
+  {
+    get { throw new NotImplementedException(); }
+  }
+
+  [Obsolete ("This API is obsolete, all ClientTransactions now bind their DomainObjects. Use CreateRootTransaction instead. (1.13.189.0)", true)]
+  public static ClientTransaction CreateBindingTransaction ()
   {
     throw new NotImplementedException ();
   }

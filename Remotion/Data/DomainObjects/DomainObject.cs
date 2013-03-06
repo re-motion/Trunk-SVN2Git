@@ -294,54 +294,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets the <see cref="DomainObjects.ClientTransaction"/> this <see cref="DomainObject"/> instance was bound to. If the object has not been 
-    /// bound, this method throws an exception. Use <see cref="HasBindingTransaction"/> to check whether the object has been bound to a 
-    /// <see cref="BindingClientTransaction"/> or not.
-    /// </summary>
-    /// <value>The <see cref="DomainObjects.ClientTransaction"/> this object was bound to.</value>
-    /// <exception cref="InvalidOperationException">The object has not been bound.</exception>
-    /// <remarks>
-    /// If a <see cref="DomainObject"/> has been bound to a <see cref="BindingClientTransaction"/>, its properties are always accessed in the context of that
-    /// <see cref="BindingClientTransaction"/> instead of the <see cref="DomainObjects.ClientTransaction.Current"/> transaction. See 
-    /// <see cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/> for more information.
-    /// </remarks>
-    /// <seealso cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/>
-    public ClientTransaction GetBindingTransaction ()
-    {
-      if (!HasBindingTransaction)
-      {
-        throw new InvalidOperationException (
-            "This object has not been bound to a specific transaction, it uses the current transaction when it is "
-            + "accessed. Use HasBindingTransaction to check whether an object has been bound or not.");
-      }
-      
-      return _rootTransaction;
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether this instance is bound to specific transaction. If it is, it will always use that transaction, otherwise,
-    /// it will always use <see cref="DomainObjects.ClientTransaction.Current"/> when it is accessed.
-    /// </summary>
-    /// <value>
-    /// 	<see langword="true"/> if this instance has binding transaction; otherwise, <see langword="false"/>.
-    /// </value>
-    /// <remarks>
-    /// <para>
-    /// To bind a <see cref="DomainObject"/> to a transaction, instantiate or load it in the scope of a transaction created via
-    /// <see cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/>. Such a transaction will automatically bind all objects created or loaded
-    /// in its scope to itself.
-    /// </para>
-    /// <para>
-    /// To retrieve the transaction the object is bound to, use the <see cref="GetBindingTransaction"/> method.
-    /// </para>
-    /// <seealso cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/>
-    /// </remarks>
-    public bool HasBindingTransaction
-    {
-      get { return _rootTransaction is BindingClientTransaction; }
-    }
-
-    /// <summary>
     /// Gets a <see cref="DomainObjectTransactionContextIndexer"/> object that can be used to select an <see cref="IDomainObjectTransactionContext"/>
     /// for a specific <see cref="DomainObjects.ClientTransaction"/>. To obtain the default context, use <see cref="DefaultTransactionContext"/>.
     /// </summary>
@@ -357,26 +309,13 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <value>The default transaction context.</value>
     /// <remarks>
-    /// When an object is bound to a <see cref="BindingClientTransaction"/>, the <see cref="DefaultTransactionContext"/> represents that transaction.
-    /// Otherwise, it represents the <see cref="DomainObjects.ClientTransaction.Current"/> transaction.
+    /// The default transaction for a <see cref="DomainObject"/> is the <see cref="ClientTransaction.ActiveTransaction"/> of the associated 
+    /// <see cref="RootTransaction"/>. The <see cref="ClientTransaction.ActiveTransaction"/> is usually the 
+    /// <see cref="ClientTransaction.LeafTransaction"/>, but it can be changed by using <see cref="ClientTransaction"/> APIs.
     /// </remarks>
-    /// <exception cref="InvalidOperationException">No <see cref="DomainObjects.ClientTransaction"/> has been associated with the current thread or 
-    /// this <see cref="DomainObject"/>.</exception>
     public IDomainObjectTransactionContext DefaultTransactionContext
     {
-      get 
-      {
-        return GetDefaultTransactionContext();
-      }
-    }
-
-    private IDomainObjectTransactionContext GetDefaultTransactionContext ()
-    {
-      var clientTransaction = HasBindingTransaction ? GetBindingTransaction() : ClientTransaction.Current;
-      if (clientTransaction == null)
-        throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread or this object.");
-
-      return TransactionContext[clientTransaction];
+      get  { return TransactionContext[RootTransaction.ActiveTransaction]; }
     }
 
     /// <summary>
@@ -711,8 +650,8 @@ namespace Remotion.Data.DomainObjects
     /// While this method is being executed, it is not possible to access any properties or methods of the DomainObject that read or modify the state 
     /// or data of the object in a <see cref="ClientTransaction"/>. All automatically implemented properties, <see cref="CurrentProperty"/>, 
     /// <see cref="Properties"/>, <see cref="State"/>, <see cref="Timestamp"/>, <see cref="RegisterForCommit"/>, <see cref="EnsureDataAvailable"/>, 
-    /// etc. will throw <see cref="InvalidOperationException"/>. It is possible to call <see cref="GetBindingTransaction"/> on the object (if the 
-    /// object is bound), and the object is guaranteed to be enlisted in the <see cref="ClientTransaction.Current"/> transaction.
+    /// etc. will throw <see cref="InvalidOperationException"/>. It is possible to inspect the <see cref="RootTransaction"/> of the object, and the 
+    /// object is guaranteed to be enlisted in the <see cref="ClientTransaction.Current"/> transaction.
     /// </para>
     /// <para>The reason why it is explicitly disallowed to access mapped properties from the notification method is that 
     /// <see cref="OnReferenceInitializing"/> is usually called when no data has yet been loaded for the object. Accessing a property would cause the 
@@ -891,6 +830,19 @@ namespace Remotion.Data.DomainObjects
     public void MarkAsChanged ()
     {
       throw new NotImplementedException ();
+    }
+
+    [Obsolete ("This API is obsolete, all ClientTransactions now bind their DomainObjects. Use the RootTransaction property instead. (1.13.189.0)",
+        true)]
+    public ClientTransaction GetBindingTransaction ()
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete ("This API is obsolete, all ClientTransactions now bind their DomainObjects. (1.13.189.0)", true)]
+    public bool HasBindingTransaction
+    {
+      get { throw new NotImplementedException (); }
     }
   }
 }

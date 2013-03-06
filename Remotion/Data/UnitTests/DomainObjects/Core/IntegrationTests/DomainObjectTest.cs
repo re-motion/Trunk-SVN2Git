@@ -25,10 +25,8 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.UnitTesting;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
-using Mocks_Property = Rhino.Mocks.Constraints.Property;
 using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
@@ -806,6 +804,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           //newOrder2.Delete ();
           extension.ObjectDeleting (TestableClientTransaction, newOrder2);
           newOrder2EventReceiver.Deleting (Arg.Is (newOrder2), Arg<EventArgs>.Is.NotNull);
+          newOrder2OrderItemsEventReceiver.Deleting();
 
           using (mockRepository.Unordered ())
           {
@@ -853,6 +852,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
                 TestableClientTransaction, newOrderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), newOrder2, null);
           }
 
+          newOrder2OrderItemsEventReceiver.Deleted ();
           newOrder2EventReceiver.Deleted (Arg.Is (newOrder2), Arg<EventArgs>.Is.NotNull);
           extension.ObjectDeleted (TestableClientTransaction, newOrder2);
 
@@ -891,7 +891,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           //newCustomer2.Delete ();
           extension.ObjectDeleting (TestableClientTransaction, newCustomer2);
           newCustomer2EventReceiver.Deleting (Arg.Is (newCustomer2), Arg<EventArgs>.Is.NotNull);
-          
+          newCustomer2OrdersEventReceiver.Deleting();
+
+          newCustomer2OrdersEventReceiver.Deleted ();
           newCustomer2EventReceiver.Deleted (Arg.Is (newCustomer2), Arg<EventArgs>.Is.NotNull);
           extension.ObjectDeleted (TestableClientTransaction, newCustomer2);
 

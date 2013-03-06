@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Tuple.Create (NewObject, NewObjectEventReceiverMock),
             Tuple.Create (DeletedObject, DeletedObjectEventReceiverMock))
              // This triggers _one_ (not two) additional run for _changedObject
-            .ExtensionOptions.WhenCalled (mi => Transaction.Execute (() =>
+            .ExtensionOptions.WhenCalled (mi => Transaction.ExecuteInScope (() =>
             {
               ((ICommittingEventRegistrar) mi.Arguments[2]).RegisterForAdditionalCommittingEvents (ChangedObject);
               ((ICommittingEventRegistrar) mi.Arguments[2]).RegisterForAdditionalCommittingEvents (ChangedObject);
@@ -45,13 +45,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             .ExtensionOptions
             // This triggers one additional run for _newObject
             .WhenCalled (
-                mi => Transaction.Execute (() => ((ICommittingEventRegistrar) mi.Arguments[2]).RegisterForAdditionalCommittingEvents (NewObject)));
+                mi => Transaction.ExecuteInScope (() => ((ICommittingEventRegistrar) mi.Arguments[2]).RegisterForAdditionalCommittingEvents (NewObject)));
 
         ExpectCommittingEventsWithCustomOptions (Tuple.Create (NewObject, NewObjectEventReceiverMock))
             .ExtensionOptions
             // This triggers one additional run for _newObject
             .WhenCalled (
-                mi => Transaction.Execute (() => ((ICommittingEventRegistrar) mi.Arguments[2]).RegisterForAdditionalCommittingEvents (NewObject)));
+                mi => Transaction.ExecuteInScope (() => ((ICommittingEventRegistrar) mi.Arguments[2]).RegisterForAdditionalCommittingEvents (NewObject)));
 
         // No more additional runs
         ExpectCommittingEvents (Tuple.Create (NewObject, NewObjectEventReceiverMock));
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
                 mi =>
                 {
                   var args = ((ClientTransactionCommittingEventArgs) mi.Arguments[1]);
-                  Transaction.Execute (() => args.EventRegistrar.RegisterForAdditionalCommittingEvents (ChangedObject));
+                  Transaction.ExecuteInScope (() => args.EventRegistrar.RegisterForAdditionalCommittingEvents (ChangedObject));
                 });
 
         // No more additional runs
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
                 mi =>
                 {
                   var args = ((DomainObjectCommittingEventArgs) mi.Arguments[1]);
-                  Transaction.Execute (() => args.EventRegistrar.RegisterForAdditionalCommittingEvents (DeletedObject));
+                  Transaction.ExecuteInScope (() => args.EventRegistrar.RegisterForAdditionalCommittingEvents (DeletedObject));
                 });
 
         // No more additional runs
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             .ExtensionOptions
             // This triggers _one_ (not two) additional run for _unchangedObject
             .WhenCalled (
-                mi => Transaction.Execute (
+                mi => Transaction.ExecuteInScope (
                     () =>
                     {
                       Assert.That (

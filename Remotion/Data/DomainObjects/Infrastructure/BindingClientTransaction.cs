@@ -19,6 +19,7 @@ using System;
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   [Serializable]
+  [Obsolete ("This class is obsolete, all ClientTransactions now bind their DomainObjects. Use an ordinary ClientTransaction instead. (1.13.189.0)", true)]
   public class BindingClientTransaction : ClientTransaction
   {
     protected BindingClientTransaction (IClientTransactionComponentFactory componentFactory)

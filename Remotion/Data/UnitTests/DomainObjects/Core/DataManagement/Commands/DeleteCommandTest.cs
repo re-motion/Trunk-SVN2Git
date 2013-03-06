@@ -22,13 +22,11 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects;
 using System.Linq;
-using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 {
@@ -40,8 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     private IClientTransactionEventSink _transactionEventSinkWithMock;
 
     private DeleteCommand _deleteOrder1Command;
-    
-    private ObjectList<OrderItem> _orderItemsCollection;
 
     public override void SetUp ()
     {
@@ -52,8 +48,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _transactionEventSinkWithMock = MockRepository.GenerateStrictMock<IClientTransactionEventSink>();
 
       _deleteOrder1Command = new DeleteCommand (_transaction, _order1, _transactionEventSinkWithMock);
-      
-      _orderItemsCollection = _transaction.Execute (() => _order1.OrderItems);
     }
 
     [Test]
@@ -65,8 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void Begin ()
     {
-      _transactionEventSinkWithMock.Expect (mock => mock.RaiseObjectDeletingEvent (_order1))
-          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
+      _transactionEventSinkWithMock.Expect (mock => mock.RaiseObjectDeletingEvent (_order1));
       _transactionEventSinkWithMock.Replay();
 
       _deleteOrder1Command.Begin ();
@@ -103,8 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void End ()
     {
-      _transactionEventSinkWithMock.Expect (mock => mock.RaiseObjectDeletedEvent (_order1))
-          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
+      _transactionEventSinkWithMock.Expect (mock => mock.RaiseObjectDeletedEvent (_order1));
       _transactionEventSinkWithMock.Replay();
 
       _deleteOrder1Command.End ();
@@ -143,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       _deleteOrder1Command.Perform ();
 
-      _transaction.Execute (() => Assert.That (_order1.OrderItems, Is.Empty));
+      _transaction.ExecuteInScope (() => Assert.That (_order1.OrderItems, Is.Empty));
     }
 
     [Test]
@@ -151,13 +143,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       _deleteOrder1Command.Perform ();
 
-      _transaction.Execute (() => Assert.That (_order1.State, Is.EqualTo (StateType.Deleted)));
+      _transaction.ExecuteInScope (() => Assert.That (_order1.State, Is.EqualTo (StateType.Deleted)));
     }
 
     [Test]
     public void Perform_DiscardsNewDataContainer ()
     {
-      var newOrder = _transaction.Execute (() => Order.NewObject ());
+      var newOrder = _transaction.ExecuteInScope (() => Order.NewObject ());
       var deleteNewOrderCommand = new DeleteCommand (_transaction, newOrder, _transactionEventSinkWithMock);
 
       deleteNewOrderCommand.Perform ();

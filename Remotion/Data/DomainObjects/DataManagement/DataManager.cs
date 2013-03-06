@@ -161,6 +161,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
+      // This uses IsEnlisted rather than a RootTransaction check because the DomainObject reference is used inside the ClientTransaction, and we
+      // explicitly want to allow only objects enlisted in the transaction.
       if (!_clientTransaction.IsEnlisted (domainObject))
       {
         throw CreateClientTransactionsDifferException (
@@ -331,6 +333,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
 
+      // This uses IsEnlisted rather than a RootTransaction check because the DomainObject reference is used inside the ClientTransaction, and we
+      // explicitly want to allow only objects enlisted in the transaction.
       if (!_clientTransaction.IsEnlisted (deletedObject))
       {
         throw CreateClientTransactionsDifferException (

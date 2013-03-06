@@ -46,12 +46,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ModifiedEndPoint.Touch();
     }
 
-    protected override void ScopedBegin ()
+    public override void Begin ()
     {
       // do not issue any change notifications, a same-set is not a change
     }
 
-    protected override void ScopedEnd ()
+    public override void End ()
     {
       // do not issue any change notifications, a same-set is not a change
     }

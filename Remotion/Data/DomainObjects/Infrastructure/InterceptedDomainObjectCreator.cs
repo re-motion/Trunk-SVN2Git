@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       instance.Initialize (objectID, objectInitializationContext.RootTransaction);
       objectInitializationContext.RegisterObject (instance);
 
-      using (clientTransaction.EnterNonDiscardingScope ())
+      using (clientTransaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive))
       {
         instance.RaiseReferenceInitializatingEvent ();
       }
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
       var constructorLookupInfo = GetConstructorLookupInfo (objectInitializationContext.ObjectID.ClassDefinition.ClassType);
-      using (clientTransaction.EnterNonDiscardingScope())
+      using (clientTransaction.EnterNonDiscardingScope ())
       {
         using (new ObjectInititalizationContextScope (objectInitializationContext))
         {

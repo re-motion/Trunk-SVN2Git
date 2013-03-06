@@ -28,8 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
     public void CompleteCloneStrategy ()
     {
       DomainObjectCloner cloner = new DomainObjectCloner ();
-      ClientTransaction bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-      cloner.CloneTransaction = bindingTransaction;
+      cloner.CloneTransaction = ClientTransaction.CreateRootTransaction ();
 
       Order source = DomainObjectIDs.Order1.GetObject<Order> ();
       Order clone = cloner.CreateClone (source, new CompleteCloneStrategy());

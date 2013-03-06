@@ -146,8 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var property = GetBusinessObjectProperty (typeof (OppositeBidirectionalBindableDomainObject), "OppositeSampleObject");
       var result = _service.Search (null, property, null);
       Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (((DomainObject) result[0]).HasBindingTransaction, Is.False);
-      Assert.That (TestableClientTransaction.Current.IsEnlisted ((DomainObject) result[0]), Is.True);
+      Assert.That (((DomainObject) result[0]).RootTransaction, Is.SameAs (ClientTransaction.Current));
     }
 
     [Test]
@@ -156,42 +155,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var property = GetBusinessObjectProperty (typeof (BindableNonDomainObjectReferencingDomainObject), "OppositeSampleObject");
       var result = _service.Search (new BindableNonDomainObjectReferencingDomainObject(), property, null);
       Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (((DomainObject) result[0]).HasBindingTransaction, Is.False);
-      Assert.That (TestableClientTransaction.Current.IsEnlisted (((DomainObject) result[0])), Is.True);
+      Assert.That (((DomainObject) result[0]).RootTransaction, Is.SameAs (ClientTransaction.Current));
     }
 
     [Test]
-    public void Search_UsesCurrentTransaction_WithUnboundObject ()
+    public void Search_UsesAssociatedTransaction_WithDomainObject ()
     {
-      var referencingObject = OppositeBidirectionalBindableDomainObject.NewObject();
+      var otherTransaction = ClientTransaction.CreateRootTransaction();
+      var referencingObject = otherTransaction.ExecuteInScope (() => OppositeBidirectionalBindableDomainObject.NewObject ());
 
       var property = GetBusinessObjectProperty (typeof (OppositeBidirectionalBindableDomainObject), "OppositeSampleObject");
       var result = _service.Search (referencingObject, property, null);
 
       Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (((DomainObject) result[0]).HasBindingTransaction, Is.False);
-      Assert.That (TestableClientTransaction.Current.IsEnlisted ((DomainObject) result[0]), Is.True);
-    }
-
-    [Test]
-    public void Search_UsesBindingTransaction_WithBoundObject ()
-    {
-      OppositeBidirectionalBindableDomainObject referencingObject;
-      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-      using (bindingTransaction.EnterNonDiscardingScope ())
-      {
-        referencingObject = OppositeBidirectionalBindableDomainObject.NewObject();
-      }
-
-      var property = GetBusinessObjectProperty (typeof (OppositeBidirectionalBindableDomainObject), "OppositeSampleObject");
-      var result = _service.Search (referencingObject, property, null);
-      Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (((DomainObject) result[0]).GetBindingTransaction(), Is.SameAs (bindingTransaction));
-      Assert.That (((DomainObject) result[1]).GetBindingTransaction(), Is.SameAs (bindingTransaction));
-      Assert.That (TestableClientTransaction.Current.IsEnlisted ((DomainObject) result[0]), Is.False);
-      Assert.That (TestableClientTransaction.Current.IsEnlisted ((DomainObject) result[1]), Is.False);
-      Assert.That (bindingTransaction.IsEnlisted ((DomainObject) result[0]), Is.True);
-      Assert.That (bindingTransaction.IsEnlisted ((DomainObject) result[1]), Is.True);
+      Assert.That (((DomainObject) result[0]).RootTransaction, Is.SameAs (otherTransaction));
     }
 
     [Test]

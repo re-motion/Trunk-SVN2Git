@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     {
       var middleTopTransaction = CreateSubTransactionAndClearListeners (_rootTransaction);
 
-      var domainObject = middleTopTransaction.Execute (() => Order.NewObject());
+      var domainObject = middleTopTransaction.ExecuteInScope (() => Order.NewObject());
       var dataContainer = DataManagementService.GetDataManager (middleTopTransaction).GetDataContainerWithoutLoading (domainObject.ID);
       Assert.That (dataContainer, Is.Not.Null);
 
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     {
       var middleTopTransaction = CreateSubTransactionAndClearListeners (_rootTransaction);
 
-      var domainObject = middleTopTransaction.Execute (() => DomainObjectIDs.Order1.GetObject<Order> ());
+      var domainObject = middleTopTransaction.ExecuteInScope (() => DomainObjectIDs.Order1.GetObject<Order> ());
       var dataContainer = DataManagementService.GetDataManager (middleTopTransaction).GetDataContainerWithoutLoading (domainObject.ID);
       Assert.That (dataContainer, Is.Not.Null);
 
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
       listener
           .Stub (stub => stub.ObjectMarkedInvalid (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything))
           .WhenCalled (
-              mi => Assert.That (((ClientTransaction) mi.Arguments[0]).IsActive, Is.True, "MarkInvalid requires the transaction to be unlocked."));
+              mi => Assert.That (((ClientTransaction) mi.Arguments[0]).IsWriteable, Is.True, "MarkInvalid requires the transaction to be unlocked."));
     }
   }
 }

@@ -159,7 +159,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      RelationEndPointValueChecker.CheckClientTransaction (GetAssociatedEndPoint(), domainObject, "Cannot insert DomainObject '{0}' into collection of property '{1}' of DomainObject '{2}'.");
+      CheckClientTransaction (domainObject, "Cannot insert DomainObject '{0}' into collection of property '{1}' of DomainObject '{2}'.");
       DomainObjectCheckUtility.EnsureNotDeleted (domainObject, GetAssociatedEndPoint().ClientTransaction);
       DomainObjectCheckUtility.EnsureNotDeleted (GetAssociatedEndPoint().GetDomainObjectReference(), GetAssociatedEndPoint().ClientTransaction);
 
@@ -174,7 +174,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      RelationEndPointValueChecker.CheckClientTransaction (GetAssociatedEndPoint(), domainObject, "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}'.");
+      CheckClientTransaction (domainObject, "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}'.");
       DomainObjectCheckUtility.EnsureNotDeleted (domainObject, GetAssociatedEndPoint().ClientTransaction);
       DomainObjectCheckUtility.EnsureNotDeleted (GetAssociatedEndPoint().GetDomainObjectReference (), GetAssociatedEndPoint().ClientTransaction);
 
@@ -209,7 +209,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
-      RelationEndPointValueChecker.CheckClientTransaction (GetAssociatedEndPoint(), value, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
+      CheckClientTransaction (value, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
       DomainObjectCheckUtility.EnsureNotDeleted (value, GetAssociatedEndPoint().ClientTransaction);
       DomainObjectCheckUtility.EnsureNotDeleted (GetAssociatedEndPoint().GetDomainObjectReference (), GetAssociatedEndPoint().ClientTransaction);
 
@@ -236,7 +236,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     private CompositeCommand GetClearCommand ()
     {
-      var removeCommands = new List<ExpandedCommand> ();
+      var removeCommands = new List<ExpandedCommand>();
 
       for (int i = Count - 1; i >= 0; --i)
       {
@@ -248,6 +248,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       }
 
       return new CompositeCommand (removeCommands.Cast<IDataManagementCommand> ()).CombineWith (new RelationEndPointTouchCommand (GetAssociatedEndPoint()));
+    }
+
+    private void CheckClientTransaction (DomainObject domainObject, string exceptionFormatString)
+    {
+      Assertion.DebugAssert (domainObject != null);
+      
+      var endPoint = GetAssociatedEndPoint();
+
+      // This uses IsEnlisted rather than a RootTransaction check because the DomainObject reference is used inside the ClientTransaction, and we
+      // explicitly want to allow only objects enlisted in the transaction.
+      if (!endPoint.ClientTransaction.IsEnlisted (domainObject))
+      {
+        var formattedMessage = String.Format (
+            exceptionFormatString, 
+            domainObject.ID, 
+            endPoint.Definition.PropertyName, 
+            endPoint.ObjectID);
+        throw new ClientTransactionsDifferException (formattedMessage + " The objects do not belong to the same ClientTransaction.");
+      }
     }
   }
 }

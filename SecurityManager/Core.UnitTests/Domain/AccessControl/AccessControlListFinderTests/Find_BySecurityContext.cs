@@ -72,5 +72,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
       aclFinder.Find (ClientTransaction.CreateRootTransaction (), context);
     }
+
+    [Test]
+    public void WithInactiveTransaction ()
+    {
+      AccessControlList expectedAccessControlList = _currentClassDefinitionTransaction.ExecuteInScope (() => _currentClassDefinition.StatelessAccessControlList);
+      SecurityContext context = SecurityContext.CreateStateless (typeof (Order));
+
+      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      var inactiveTransaction = CreateInactiveTransaction();
+
+      AccessControlList foundAcl = aclFinder.Find (inactiveTransaction, context);
+
+      Assert.That (foundAcl.ID, Is.EqualTo (expectedAccessControlList.ID));
+    }
+
+    private static ClientTransaction CreateInactiveTransaction ()
+    {
+      var inactiveTransaction = ClientTransaction.CreateRootTransaction();
+
+      ClientTransactionTestHelper.MakeInactive (inactiveTransaction);
+      return inactiveTransaction;
+    }
   }
 }

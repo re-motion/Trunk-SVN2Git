@@ -251,6 +251,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     }
 
     [Test]
+    public void FinishTransport_WithInactiveTTransaction ()
+    {
+      var dataTransaction = ClientTransaction.CreateRootTransaction();
+      var transportedObjects = new TransportedDomainObjects (dataTransaction, new List<DomainObject>());
+
+      ClientTransactionTestHelper.MakeInactive (dataTransaction);
+
+      Assert.That (
+          () => transportedObjects.FinishTransport(),
+          Throws.TypeOf<ClientTransactionReadOnlyException>());
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "FinishTransport can only be called once.")]
     public void FinishTransport_Twice ()
     {

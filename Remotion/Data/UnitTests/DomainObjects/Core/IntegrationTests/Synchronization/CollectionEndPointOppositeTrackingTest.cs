@@ -307,7 +307,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckCurrentData (_fileSystemItem1, _fileSystemItem2);
       CheckCurrentOppositeEndPoints (_fileSystemItem1EndPoint, _fileSystemItem2EndPoint);
 
-      using (ClientTransaction.Current.CreateSubTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         _folder1.FileSystemItems.Remove (_fileSystemItem1);
         _folder1.FileSystemItems.Add (_fileSystemItem3);

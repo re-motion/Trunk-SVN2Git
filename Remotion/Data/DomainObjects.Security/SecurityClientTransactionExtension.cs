@@ -65,8 +65,8 @@ namespace Remotion.Data.DomainObjects.Security
 
       var queryResultList = new List<T> (queryResult.AsEnumerable ());
       var securityClient = GetSecurityClient ();
-      
-      clientTransaction.Execute (() =>
+
+      using (CreateTransactionScope (clientTransaction))
       {
         for (int i = queryResultList.Count - 1; i >= 0; i--)
         {
@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Security
           if (!hasAccess)
             queryResultList.RemoveAt (i);
         }
-      });
+      }
 
       if (queryResultList.Count != queryResult.Count)
         return new QueryResult<T> (queryResult.Query, queryResultList.ToArray ());
@@ -112,7 +112,10 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        clientTransaction.Execute (() => securityClient.CheckConstructorAccess (type));
+        using (CreateTransactionScope (clientTransaction))
+        {
+          securityClient.CheckConstructorAccess (type);
+        }
       }
       finally
       {
@@ -141,7 +144,11 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        clientTransaction.Execute (() => securityClient.CheckAccess (securableObject, AccessType.Get (GeneralAccessTypes.Delete)));
+
+        using (CreateTransactionScope (clientTransaction))
+        {
+          securityClient.CheckAccess (securableObject, AccessType.Get (GeneralAccessTypes.Delete));
+        }
       }
       finally
       {
@@ -186,7 +193,10 @@ namespace Remotion.Data.DomainObjects.Security
       {
         _isActive = true;
         var methodInformation = propertyInfo.GetGetMethod (true) ?? new NullMethodInformation();
-        clientTransaction.Execute (() => securityClient.CheckPropertyReadAccess (securableObject, methodInformation));
+        using (CreateTransactionScope (clientTransaction))
+        {
+          securityClient.CheckPropertyReadAccess (securableObject, methodInformation);
+        }
       }
       finally
       {
@@ -240,7 +250,10 @@ namespace Remotion.Data.DomainObjects.Security
       {
         _isActive = true;
         var methodInformation = propertyInfo.GetSetMethod (true) ?? new NullMethodInformation ();
-        clientTransaction.Execute (() => securityClient.CheckPropertyWriteAccess (securableObject, methodInformation));
+        using (CreateTransactionScope (clientTransaction))
+        {
+          securityClient.CheckPropertyWriteAccess (securableObject, methodInformation);
+        }
       }
       finally
       {
@@ -253,6 +266,11 @@ namespace Remotion.Data.DomainObjects.Security
       if (_securityClient == null)
         _securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
       return _securityClient;
+    }
+
+    private IDisposable CreateTransactionScope (ClientTransaction clientTransaction)
+    {
+      return clientTransaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive);
     }
   }
 }

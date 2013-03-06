@@ -71,26 +71,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void Serializable_WithISerializable_AndBindingTransaction ()
-    {
-      ClassWithAllDataTypes instance;
-      
-      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
-      {
-        instance = ClassWithAllDataTypes.NewObject();
-      }
-
-      instance.Int32Property = 5;
-      Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
-          Serializer.SerializeAndDeserialize (Tuple.Create (instance.GetBindingTransaction(), instance));
-      
-      ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
-      Assert.That (deserializedInstance.HasBindingTransaction, Is.True);
-      Assert.That (deserializedInstance.GetBindingTransaction(), Is.SameAs (deserializedData.Item1));
-      Assert.That (deserializedInstance.Int32Property, Is.EqualTo (5));
-    }
-
-    [Test]
     public void Serializable_LoadCount ()
     {
       ClassWithAllDataTypes instance = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();

@@ -213,6 +213,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       aclFinder.Find (ClientTransactionScope.CurrentTransaction, premiumOrderClass, context);
     }
 
+    [Test]
+    public void WithInactiveTransaction ()
+    {
+      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition ();
+      StatefulAccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
+      _testHelper.CreateStatelessAcl (classDefinition);
+      SecurityContext context = CreateContextWithoutStates ();
+
+      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      ClientTransactionTestHelper.MakeInactive (ClientTransactionScope.CurrentTransaction);
+
+      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
+
+      Assert.That (foundAcl, Is.SameAs (acl));
+    }
+
     private SecurityContext CreateStatelessContext ()
     {
       return SecurityContext.CreateStateless (typeof (Order));
@@ -253,6 +269,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       states.Add ("State", OrderState.Delivered);
 
       return SecurityContext.Create (typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
+    }
+
+    private static ClientTransaction CreateInactiveTransaction ()
+    {
+      var inactiveTransaction = ClientTransaction.CreateRootTransaction ();
+
+      inactiveTransaction.CreateSubTransaction ();
+      Assert.That (inactiveTransaction.ActiveTransaction, Is.Not.SameAs (inactiveTransaction));
+      return inactiveTransaction;
     }
   }
 }

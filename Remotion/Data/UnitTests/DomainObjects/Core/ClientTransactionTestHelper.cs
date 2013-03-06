@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -172,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static IClientTransactionListener CreateAndAddListenerStrictMock (ClientTransaction clientTransaction)
     {
-      var listenerMock = MockRepository.GenerateStrictMock<IClientTransactionListener> ();
+      var listenerMock = MockRepository.GenerateStrictMock<IClientTransactionListener>();
       AddListener (clientTransaction, listenerMock);
       return listenerMock;
     }
@@ -189,13 +190,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       dataManager.RegisterDataContainer (dataContainer);
     }
 
-    public static void SetIsActive (ClientTransaction transaction, bool value)
+    public static void SetIsWriteable (ClientTransaction transaction, bool value)
     {
       var hierarchyManager = (TransactionHierarchyManager) GetHierarchyManager (transaction);
-      TransactionHierarchyManagerTestHelper.SetIsActive (hierarchyManager, value);
+      TransactionHierarchyManagerTestHelper.SetIsWriteable (hierarchyManager, value);
     }
 
-    public static void SetActiveSubTransaction (ClientTransaction clientTransaction, ClientTransaction subTransaction)
+    public static void SetSubTransaction (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       var hierarchyManager = (TransactionHierarchyManager) GetHierarchyManager (clientTransaction);
       TransactionHierarchyManagerTestHelper.SetSubtransaction(hierarchyManager, subTransaction);
@@ -214,5 +215,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return listenerManager.Listeners;
     }
 
+    public static void MakeInactive (ClientTransaction inactiveTransaction)
+    {
+      inactiveTransaction.CreateSubTransaction();
+      Assert.That (inactiveTransaction.ActiveTransaction, Is.Not.SameAs (inactiveTransaction));
+    }
   }
 }

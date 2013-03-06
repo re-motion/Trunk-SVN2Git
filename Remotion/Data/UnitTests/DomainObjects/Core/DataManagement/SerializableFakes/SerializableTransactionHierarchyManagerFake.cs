@@ -27,12 +27,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableTransactionHierarchyManagerFake : ITransactionHierarchyManager
   {
+    public IClientTransactionHierarchy TransactionHierarchy
+    {
+      get { return new SerializableClientTransactionHierarchyFake(); }
+    }
+
     public ClientTransaction ParentTransaction
     {
       get { throw new NotImplementedException(); }
     }
 
-    public bool IsActive
+    public bool IsWriteable
     {
       get { throw new NotImplementedException(); }
     }

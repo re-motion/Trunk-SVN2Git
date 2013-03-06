@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     private ClientTransaction _rootTransactionWithSub;
     private ClientTransaction _leafSubTransaction;
 
-    private TestableClientTransaction _inactiveTransaction;
+    private TestableClientTransaction _readOnlyTransaction;
 
     private MockRepository _mockRepository;
     private ICommandFactory _commandFactoryMock;
@@ -53,8 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _rootTransactionWithSub = ClientTransaction.CreateRootTransaction ();
       _leafSubTransaction = _rootTransactionWithSub.CreateSubTransaction();
 
-      _inactiveTransaction = new TestableClientTransaction();
-      ClientTransactionTestHelper.SetIsActive (_inactiveTransaction, false);
+      _readOnlyTransaction = new TestableClientTransaction();
+      ClientTransactionTestHelper.SetIsWriteable (_readOnlyTransaction, false);
 
       _mockRepository = new MockRepository();
       _commandFactoryMock = _mockRepository.StrictMock<ICommandFactory>();
@@ -215,22 +215,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void TryExecuteCommandForTransactionHierarchy_UnlocksReadOnlyTransaction ()
     {
       _commandFactoryMock
-          .Expect (mock => mock.Create (_inactiveTransaction))
+          .Expect (mock => mock.Create (_readOnlyTransaction))
           .Return (_commandMock1);
       _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
 
       using (_mockRepository.Ordered ())
       {
-        _commandMock1.Expect (mock => mock.Begin ()).WhenCalled (mi => Assert.That (_inactiveTransaction.IsActive, Is.False));
-        _commandMock1.Expect (mock => mock.Perform ()).WhenCalled (mi => Assert.That (_inactiveTransaction.IsActive, Is.True));
-        _commandMock1.Expect (mock => mock.End ()).WhenCalled (mi => Assert.That (_inactiveTransaction.IsActive, Is.False));
+        _commandMock1.Expect (mock => mock.Begin ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsWriteable, Is.False));
+        _commandMock1.Expect (mock => mock.Perform ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsWriteable, Is.True));
+        _commandMock1.Expect (mock => mock.End ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsWriteable, Is.False));
       }
 
       _mockRepository.ReplayAll ();
 
-      Assert.That (_inactiveTransaction.IsActive, Is.False);
-      _executor.TryExecuteCommandForTransactionHierarchy (_inactiveTransaction);
-      Assert.That (_inactiveTransaction.IsActive, Is.False);
+      Assert.That (_readOnlyTransaction.IsWriteable, Is.False);
+      _executor.TryExecuteCommandForTransactionHierarchy (_readOnlyTransaction);
+      Assert.That (_readOnlyTransaction.IsWriteable, Is.False);
 
       _mockRepository.VerifyAll ();
     }
@@ -367,22 +367,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void ExecuteCommandForTransactionHierarchy_UnlocksReadOnlyTransaction ()
     {
       _commandFactoryMock
-          .Expect (mock => mock.Create (_inactiveTransaction))
+          .Expect (mock => mock.Create (_readOnlyTransaction))
           .Return (_commandMock1);
       _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
 
       using (_mockRepository.Ordered ())
       {
-        _commandMock1.Expect (mock => mock.Begin ()).WhenCalled (mi => Assert.That (_inactiveTransaction.IsActive, Is.False));
-        _commandMock1.Expect (mock => mock.Perform ()).WhenCalled (mi => Assert.That (_inactiveTransaction.IsActive, Is.True));
-        _commandMock1.Expect (mock => mock.End ()).WhenCalled (mi => Assert.That (_inactiveTransaction.IsActive, Is.False));
+        _commandMock1.Expect (mock => mock.Begin ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsWriteable, Is.False));
+        _commandMock1.Expect (mock => mock.Perform ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsWriteable, Is.True));
+        _commandMock1.Expect (mock => mock.End ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsWriteable, Is.False));
       }
 
       _mockRepository.ReplayAll ();
 
-      Assert.That (_inactiveTransaction.IsActive, Is.False);
-      _executor.ExecuteCommandForTransactionHierarchy (_inactiveTransaction);
-      Assert.That (_inactiveTransaction.IsActive, Is.False);
+      Assert.That (_readOnlyTransaction.IsWriteable, Is.False);
+      _executor.ExecuteCommandForTransactionHierarchy (_readOnlyTransaction);
+      Assert.That (_readOnlyTransaction.IsWriteable, Is.False);
 
       _mockRepository.VerifyAll ();
     }

@@ -184,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       SecurableObject newObject = _testHelper.CreateSecurableObject ();
-      _testHelper.Transaction.Execute (() => securableObject.OtherParent = _testHelper.CreateSecurableObject ());
+      _testHelper.Transaction.ExecuteInScope (() => securableObject.OtherParent = _testHelper.CreateSecurableObject ());
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
 
@@ -220,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       }
       _testHelper.ReplayAll ();
 
-      _testHelper.Transaction.Execute (() => securableObject.Parent = newObject);
+      _testHelper.Transaction.ExecuteInScope (() => securableObject.Parent = newObject);
 
       _testHelper.VerifyAll ();
     }
@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       SecurableObject oldObject = _testHelper.CreateSecurableObject ();
-      _testHelper.Transaction.Execute (() => securableObject.Parent = oldObject);
+      _testHelper.Transaction.ExecuteInScope (() => securableObject.Parent = oldObject);
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered ())
       {
@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       }
       _testHelper.ReplayAll ();
 
-      _testHelper.Transaction.Execute (() => securableObject.Parent = null);
+      _testHelper.Transaction.ExecuteInScope (() => securableObject.Parent = null);
 
       _testHelper.VerifyAll ();
     }
@@ -269,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       }
       _testHelper.ReplayAll ();
 
-      _testHelper.Transaction.Execute (() => securableObject.Children.Add (newObject));
+      _testHelper.Transaction.ExecuteInScope (() => securableObject.Children.Add (newObject));
 
       _testHelper.VerifyAll ();
     }
@@ -281,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SecurableObject oldObject = _testHelper.CreateSecurableObject ();
       var childrenPropertyInfo = typeof (SecurableObject).GetProperty ("Children");
       
-      _testHelper.Transaction.Execute (() => securableObject.Children.Add (oldObject));
+      _testHelper.Transaction.ExecuteInScope (() => securableObject.Children.Add (oldObject));
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered ())
       {
@@ -297,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       }
       _testHelper.ReplayAll ();
 
-      _testHelper.Transaction.Execute (() => securableObject.Children.Remove (oldObject));
+      _testHelper.Transaction.ExecuteInScope (() => securableObject.Children.Remove (oldObject));
 
       _testHelper.VerifyAll ();
     }

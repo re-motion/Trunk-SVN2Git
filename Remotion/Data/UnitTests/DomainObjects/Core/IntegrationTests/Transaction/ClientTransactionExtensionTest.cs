@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
       
-      _transaction.Execute (() => Order.NewObject());
+      _transaction.ExecuteInScope (() => Order.NewObject());
 
       _mockRepository.VerifyAll();
     }
@@ -335,10 +335,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
                         Arg.Is (_transaction),
                         Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.ClassWithAllDataTypes1 })));
 
-        clientTransactionEventReceiver.Loaded (null, null);
-        LastCall.Constraints (
-            Rhino_Is.Same (_transaction),
-            Property.ValueConstraint ("DomainObjects", Property.Value ("Count", 1)));
+        clientTransactionEventReceiver.Expect (
+            mock => mock.Loaded (Arg.Is (_transaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.Count == 1)));
         _extensionMock.Expect (
             mock => mock.ObjectsLoaded (
                 Arg.Is (_transaction),
@@ -368,7 +366,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      _transaction.Execute (() => _computerWithoutRelatedObjects.Delete ());
+      _transaction.ExecuteInScope (() => _computerWithoutRelatedObjects.Delete ());
 
       _mockRepository.VerifyAll();
     }
@@ -463,7 +461,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      _transaction.Execute (() => _order1.Delete());
+      _transaction.ExecuteInScope (() => _order1.Delete());
       
       _mockRepository.VerifyAll();
     }
@@ -493,7 +491,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      _transaction.Execute (() => location.Client = newClient);
+      _transaction.ExecuteInScope (() => location.Client = newClient);
 
       _mockRepository.VerifyAll();
     }
@@ -526,7 +524,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      _transaction.Execute (() => location.Client = newClient);
+      _transaction.ExecuteInScope (() => location.Client = newClient);
 
       _mockRepository.VerifyAll();
     }
@@ -545,8 +543,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      _transaction.Execute (computer.Delete);
-      _transaction.Execute (computer.Delete);
+      _transaction.ExecuteInScope (computer.Delete);
+      _transaction.ExecuteInScope (computer.Delete);
 
       _mockRepository.VerifyAll();
     }
@@ -554,7 +552,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertyRead ()
     {
-      int orderNumber = _transaction.Execute (() => _order1.OrderNumber);
+      int orderNumber = _transaction.ExecuteInScope (() => _order1.OrderNumber);
       _mockRepository.BackToRecord (_extensionMock);
 
       var propertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
@@ -568,8 +566,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      _transaction.Execute (() => Dev.Null = _order1.OrderNumber);
-      _transaction.Execute (() => Dev.Null = _order1.Properties[propertyDefinition.PropertyName].GetOriginalValueWithoutTypeCheck());
+      _transaction.ExecuteInScope (() => Dev.Null = _order1.OrderNumber);
+      _transaction.ExecuteInScope (() => Dev.Null = _order1.Properties[propertyDefinition.PropertyName].GetOriginalValueWithoutTypeCheck());
 
       _mockRepository.VerifyAll();
     }
@@ -590,7 +588,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      _transaction.Execute (() => Dev.Null = _order1.Properties[customerPropertyDefinition.PropertyName, _transaction].GetRelatedObjectID ());
+      _transaction.ExecuteInScope (() => Dev.Null = _order1.Properties[customerPropertyDefinition.PropertyName, _transaction].GetRelatedObjectID ());
 
       _mockRepository.VerifyAll();
     }
@@ -598,13 +596,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertySetToSameValue ()
     {
-      int orderNumber = _transaction.Execute (() => _order1.OrderNumber);
+      int orderNumber = _transaction.ExecuteInScope (() => _order1.OrderNumber);
 
       _mockRepository.BackToRecord (_extensionMock);
       // Note: No method call on the extension is expected.
       _mockRepository.ReplayAll();
 
-      _transaction.Execute (() => _order1.OrderNumber = orderNumber);
+      _transaction.ExecuteInScope (() => _order1.OrderNumber = orderNumber);
 
       _mockRepository.VerifyAll();
     }
@@ -612,7 +610,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ChangeAndReadProperty ()
     {
-      int oldOrderNumber = _transaction.Execute (() => _order1.OrderNumber);
+      int oldOrderNumber = _transaction.ExecuteInScope (() => _order1.OrderNumber);
       int newOrderNumber = oldOrderNumber + 1;
 
       var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
@@ -672,7 +670,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertyChange ()
     {
-      int oldOrderNumber = _transaction.Execute (() => _order1.OrderNumber);
+      int oldOrderNumber = _transaction.ExecuteInScope (() => _order1.OrderNumber);
       _mockRepository.BackToRecord (_extensionMock);
 
       var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
@@ -706,7 +704,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertyChangeWithEvents ()
     {
-      int oldOrderNumber = _transaction.Execute (() => _order1.OrderNumber);
+      int oldOrderNumber = _transaction.ExecuteInScope (() => _order1.OrderNumber);
       _mockRepository.BackToRecord (_extensionMock);
 
       var domainObjectMockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
@@ -35,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp ();
 
-      _replacedRelatedObject = DomainObjectIDs.Order1.GetObject<Order> ();
+      _replacedRelatedObject = DomainObjectIDs.Order1.GetObject<Order> (Transaction);
 
-      _command = new CollectionEndPointReplaceSameCommand (CollectionEndPoint, _replacedRelatedObject, TransactionEventSinkWithMock);
+      _command = new CollectionEndPointReplaceSameCommand (CollectionEndPoint, _replacedRelatedObject, TransactionEventSinkMock);
     }
 
     [Test]
@@ -53,14 +54,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
-      var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
-      new CollectionEndPointReplaceSameCommand (endPoint, _replacedRelatedObject, TransactionEventSinkWithMock);
+      var endPoint = new NullCollectionEndPoint (Transaction, RelationEndPointID.Definition);
+      Dev.Null = new CollectionEndPointReplaceSameCommand (endPoint, _replacedRelatedObject, TransactionEventSinkMock);
     }
 
     [Test]
     public void Begin_NoEvents ()
     {
-      TransactionEventSinkWithMock.Replay();
+      TransactionEventSinkMock.Replay();
 
       _command.Begin ();
     }
@@ -68,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void End_NoEvents ()
     {
-      TransactionEventSinkWithMock.Replay();
+      TransactionEventSinkMock.Replay();
 
       _command.End ();
     }
@@ -91,10 +92,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
-      Assert.That (CollectionEventReceiver.AddingDomainObject, Is.Null); // operation was not started
-      Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // operation was not finished
-      Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty); // operation was not started
-      Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // operation was not finished
+
+      CollectionMockEventReceiver.AssertWasNotCalled (mock => mock.Adding());
+      CollectionMockEventReceiver.AssertWasNotCalled (mock => mock.Added());
+      CollectionMockEventReceiver.AssertWasNotCalled (mock => mock.Removing ());
+      CollectionMockEventReceiver.AssertWasNotCalled (mock => mock.Removed());
+
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
     }
 
@@ -104,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
       var relationEndPointID = RelationEndPointID.Create(_replacedRelatedObject.ID, CollectionEndPoint.Definition.GetOppositeEndPointDefinition());
-      var oppositeEndPoint = TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      var oppositeEndPoint = DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
 
       var steps = bidirectionalModification.GetNestedCommands ();
       Assert.That (steps.Count, Is.EqualTo (2));

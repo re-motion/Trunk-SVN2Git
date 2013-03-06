@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Rhino.Mocks;
 
@@ -293,11 +294,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     }
 
     [Test]
-    public void GetTransportedObject_ReturnsBoundObject ()
+    public void GetTransportedObject_ReturnsObjectBoundToTransportTransaction ()
     {
       _transporter.Load (DomainObjectIDs.Order1);
       var order = (Order) _transporter.GetTransportedObject (DomainObjectIDs.Order1);
-      Assert.That (order.HasBindingTransaction, Is.True);
+      Assert.That (order.RootTransaction, Is.SameAs (PrivateInvoke.GetNonPublicField (_transporter, "_transportTransaction")));
     }
 
     [Test]

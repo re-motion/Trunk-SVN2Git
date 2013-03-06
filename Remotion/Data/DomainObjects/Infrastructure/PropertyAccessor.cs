@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.DataManagement;
 
@@ -302,6 +303,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return PropertyData.PropertyIdentifier;
     }
 
+    [AssertionMethod]
     private void CheckTransactionalStatus (ClientTransaction transaction)
     {
       DomainObjectCheckUtility.EnsureNotInvalid (_domainObject, transaction);
@@ -311,7 +313,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private void CheckType (Type typeToCheck)
     {
       ArgumentUtility.CheckNotNull ("typeToCheck", typeToCheck);
-      if (!PropertyData.PropertyType.Equals (typeToCheck))
+      if (PropertyData.PropertyType != typeToCheck)
         throw new InvalidTypeException (PropertyData.PropertyIdentifier, typeToCheck, PropertyData.PropertyType);
     }
   }

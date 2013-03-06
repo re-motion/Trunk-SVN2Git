@@ -521,7 +521,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
                     Assert.That (orderItemA.TransactionContext[rootTransaction].State, Is.EqualTo (StateType.Unchanged));
                     Assert.That (orderItemB.TransactionContext[rootTransaction].State, Is.EqualTo (StateType.Unchanged));
 
-                    Assert.That (rootTransaction.IsActive, Is.False);
+                    Assert.That (rootTransaction.IsWriteable, Is.False);
                   });
 
           subListenerMock.Expect (mock => mock.RelationEndPointBecomingIncomplete (_subTransaction, endPointID));
@@ -552,7 +552,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
                     Assert.That (orderItemA.TransactionContext[_subTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
                     Assert.That (orderItemB.TransactionContext[_subTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
 
-                    Assert.That (rootTransaction.IsActive, Is.False);
+                    Assert.That (rootTransaction.IsWriteable, Is.False);
                   });
           subListenerMock
               .Expect (

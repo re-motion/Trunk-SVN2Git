@@ -328,6 +328,7 @@
     <Compile Include="Utilities\CustomAttributeTypedArgumentUtilityTest.cs" />
     <Compile Include="Utilities\DefaultConverterTest.cs" />
     <Compile Include="Utilities\DelegateBasedComparerTest.cs" />
+    <Compile Include="Utilities\DelegateBasedDisposableTest.cs" />
     <Compile Include="Utilities\DelegateBasedEqualityComparerTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\FilteringAssemblyLoaderTest.cs" />

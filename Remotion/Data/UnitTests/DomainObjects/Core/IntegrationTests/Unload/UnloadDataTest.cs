@@ -529,14 +529,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Dev.Null = order1.ID;
       Dev.Null = order1.IsInvalid;
       Dev.Null = order1.State;
-      try
-      {
-        Dev.Null = order1.GetBindingTransaction ();
-        Assert.Fail ("Expected InvalidOperationException");
-      }
-      catch (InvalidOperationException)
-      {
-      }
+      Dev.Null = order1.RootTransaction;
 
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
     }

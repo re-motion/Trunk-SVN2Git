@@ -44,11 +44,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CheckIfRightTransaction_Works ()
+    public void CheckIfRightTransaction_Works_ForSameRootTransaction ()
     {
       var order = Order.NewObject ();
 
       DomainObjectCheckUtility.CheckIfRightTransaction (order, ClientTransaction.Current);
+    }
+
+    [Test]
+    public void CheckIfRightTransaction_Works_ForLeftSubTransaction ()
+    {
+      var order = TestableClientTransaction.CreateSubTransaction().ExecuteInScope (() => Order.NewObject());
+
+      DomainObjectCheckUtility.CheckIfRightTransaction (order, TestableClientTransaction);
+    }
+
+    [Test]
+    public void CheckIfRightTransaction_Works_ForRightSubTransaction ()
+    {
+      var order = Order.NewObject ();
+
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
+      DomainObjectCheckUtility.CheckIfRightTransaction (order, subTransaction);
     }
 
     [Test]

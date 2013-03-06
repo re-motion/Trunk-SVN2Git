@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test.Domain
 
     public static File NewObject (ClientTransaction clientTransaction)
     {
-      using (clientTransaction.EnterNonDiscardingScope())
+      using (clientTransaction.EnterNonDiscardingScope ())
       {
         return DomainObject.NewObject<File> ();
       }

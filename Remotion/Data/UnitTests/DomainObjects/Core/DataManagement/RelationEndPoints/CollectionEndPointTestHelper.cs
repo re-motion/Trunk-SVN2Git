@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     public static void FillCollectionEndPointWithInitialContents (CollectionEndPoint endPoint, IEnumerable<DomainObject> initialContents)
     {
-      var dataManager = ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current);
+      var dataManager = ClientTransactionTestHelper.GetDataManager (endPoint.ClientTransaction);
       var domainObjects = initialContents.ToArray ();
       foreach (var domainObject in domainObjects)
       {

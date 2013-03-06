@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void GetObjectReference ()
     {
-      Console.WriteLine ("Expected average duration of GetObjectReference on reference system: ~22 µs");
+      Console.WriteLine ("Expected average duration of GetObjectReference on reference system: ~15 µs (release build), ~20 µs (debug build)");
 
       bool found = true;
       var stopwatch = new Stopwatch ();

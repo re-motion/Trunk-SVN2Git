@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
@@ -31,10 +32,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="domainObject">The domain object to check.</param>
     /// <param name="clientTransaction">The transaction to check the object against.</param>
     /// <exception cref="ObjectInvalidException">The object is invalid in the given <see cref="ClientTransaction"/>.</exception>
+    [AssertionMethod]
     public static void EnsureNotInvalid (DomainObject domainObject, ClientTransaction clientTransaction)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      // For performance reasons, because this API is used a lot, use debug assertions rather than argument checks.
+      Assertion.DebugAssert (domainObject != null);
+      Assertion.DebugAssert (clientTransaction != null);
 
       if (domainObject.TransactionContext[clientTransaction].IsInvalid)
         throw new ObjectInvalidException (domainObject.ID);
@@ -47,10 +50,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="domainObject">The domain object to check.</param>
     /// <param name="clientTransaction">The transaction to check the object against.</param>
     /// <exception cref="ObjectDeletedException">The object has been deleted in the given <see cref="ClientTransaction"/>.</exception>
+    [AssertionMethod]
     public static void EnsureNotDeleted (DomainObject domainObject, ClientTransaction clientTransaction)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      // For performance reasons, because this API is used a lot, use debug assertions rather than argument checks.
+      Assertion.DebugAssert (domainObject != null);
+      Assertion.DebugAssert (clientTransaction != null);
 
       if (domainObject.TransactionContext[clientTransaction].State == StateType.Deleted)
         throw new ObjectDeletedException (domainObject.ID);
@@ -66,12 +71,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>Returns <see langword="true"/> if the method succeeds without throwing an exception. This return value is available so that the 
     /// method can be used from within an expression.</returns>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
+    [AssertionMethod]
     public static void CheckIfRightTransaction (DomainObject domainObject, ClientTransaction clientTransaction)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      // For performance reasons, because this API is used a lot, use debug assertions rather than argument checks.
+      Assertion.DebugAssert (domainObject != null);
+      Assertion.DebugAssert (clientTransaction != null);
 
-      if (!clientTransaction.IsEnlisted (domainObject))
+      if (clientTransaction.RootTransaction != domainObject.RootTransaction)
       {
         string message = String.Format (
             "Domain object '{0}' cannot be used in the given transaction as it was loaded or created in another "

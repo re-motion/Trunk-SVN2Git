@@ -315,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     private DomainObject GetDeletedObject ()
     {
-      return _transaction.Execute (
+      return _transaction.ExecuteInScope (
           () =>
           {
             var instance = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
@@ -326,12 +326,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     private DomainObject GetNewObject ()
     {
-      return _transaction.Execute (() => ClassWithAllDataTypes.NewObject ());
+      return _transaction.ExecuteInScope (() => ClassWithAllDataTypes.NewObject ());
     }
 
     private DomainObject GetChangedObject ()
     {
-      return _transaction.Execute (
+      return _transaction.ExecuteInScope (
           () =>
           {
             var instance = DomainObjectIDs.Order1.GetObject<Order> ();
@@ -342,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     private DomainObject GetUnchangedObject ()
     {
-      return _transaction.Execute (() => DomainObjectIDs.Customer1.GetObject<Customer> ());
+      return _transaction.ExecuteInScope (() => DomainObjectIDs.Customer1.GetObject<Customer> ());
     }
 
     protected ReadOnlyCollection<DomainObject> ArgIsDomainObjectSet (params DomainObject[] domainObjects)
@@ -366,7 +366,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       // (Yes, the listener is a dynamic mock, but due to a bug in Rhino.Mocks, triggering an unexpected mocked method method will destroy the
       // MockRepository's replay state...)
       ClientTransactionTestHelper.RemoveListener (Transaction, ListenerMock);
-      Transaction.Execute (domainObject.RegisterForCommit);
+      Transaction.ExecuteInScope (domainObject.RegisterForCommit);
       ClientTransactionTestHelper.AddListener (Transaction, ListenerMock);
     }
   }

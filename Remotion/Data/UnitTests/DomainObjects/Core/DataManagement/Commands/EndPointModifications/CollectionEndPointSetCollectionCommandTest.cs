@@ -20,10 +20,9 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
@@ -46,9 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp();
 
-      _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _orderWithoutOrderItem = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
-      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      _order1 = DomainObjectIDs.Order1.GetObject<Order> (Transaction);
+      _orderWithoutOrderItem = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> (Transaction);
+      _order2 = DomainObjectIDs.Order2.GetObject<Order> (Transaction);
 
       // Collection currently contains _order1, _orderWithoutOrderItem
       _modifiedCollectionData = new DomainObjectCollectionData (new[] { _order1, _orderWithoutOrderItem });
@@ -64,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           _newCollection,
           _modifiedCollectionData,
           _collectionManagerMock,
-          TransactionEventSinkWithMock);
+          TransactionEventSinkMock);
     }
 
     public override void TearDown ()
@@ -88,55 +87,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
-      var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
-      new CollectionEndPointSetCollectionCommand (endPoint, _newCollection, CollectionDataMock, _collectionManagerMock, TransactionEventSinkWithMock);
+      var endPoint = new NullCollectionEndPoint (Transaction, RelationEndPointID.Definition);
+      Dev.Null = new CollectionEndPointSetCollectionCommand (
+          endPoint, _newCollection, CollectionDataMock, _collectionManagerMock, TransactionEventSinkMock);
     }
 
     [Test]
     public void Begin ()
     {
-      using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())
+      using (TransactionEventSinkMock.GetMockRepository ().Ordered ())
       {
-        TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangingEvent (
+        TransactionEventSinkMock.Expect (mock => mock.RaiseRelationChangingEvent (
             DomainObject,
             CollectionEndPoint.Definition,
             _orderWithoutOrderItem,
             null));
-        TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangingEvent (
+        TransactionEventSinkMock.Expect (mock => mock.RaiseRelationChangingEvent (
             DomainObject,
             CollectionEndPoint.Definition,
             null,
             _order2));
       }
-      TransactionEventSinkWithMock.Replay();
+      TransactionEventSinkMock.Replay();
 
       _command.Begin ();
 
-      TransactionEventSinkWithMock.VerifyAllExpectations();
+      TransactionEventSinkMock.VerifyAllExpectations();
     }
 
     [Test]
     public void End ()
     {
-      using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())
+      using (TransactionEventSinkMock.GetMockRepository ().Ordered ())
       {
-        TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangedEvent (
+        TransactionEventSinkMock.Expect (mock => mock.RaiseRelationChangedEvent (
             DomainObject,
             CollectionEndPoint.Definition,
             null,
             _order2));
-        TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangedEvent (
+        TransactionEventSinkMock.Expect (mock => mock.RaiseRelationChangedEvent (
             DomainObject,
             CollectionEndPoint.Definition,
             _orderWithoutOrderItem,
             null));
       }
 
-      TransactionEventSinkWithMock.Replay();
+      TransactionEventSinkMock.Replay();
 
       _command.End();
 
-      TransactionEventSinkWithMock.VerifyAllExpectations();
+      TransactionEventSinkMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (_order1.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
       Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
 
-      var customer3 = DomainObjectIDs.Customer3.GetObject<Customer> ();
+      var customer3 = DomainObjectIDs.Customer3.GetObject<Customer> (Transaction);
       Assert.That (_order2.Customer, Is.SameAs (customer3));
 
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();

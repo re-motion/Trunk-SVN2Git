@@ -116,16 +116,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         ICommitRollbackAgent commitRollbackAgent = null,
         IEnumerable<IClientTransactionExtension> extensions = null)
     {
-      applicationData = applicationData ?? new Dictionary<Enum, object> ();
-      transactionHierarchyManager = transactionHierarchyManager ?? MockRepository.GenerateStub<ITransactionHierarchyManager> ();
-      enlistedDomainObjectManager = enlistedDomainObjectManager ?? MockRepository.GenerateStub<IEnlistedDomainObjectManager> ();
-      invalidDomainObjectManager = invalidDomainObjectManager ?? MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      persistenceStrategy = persistenceStrategy ?? MockRepository.GenerateStub<IPersistenceStrategy> ();
-      dataManager = dataManager ?? MockRepository.GenerateStub<IDataManager> ();
-      objectLifetimeAgent = objectLifetimeAgent ?? MockRepository.GenerateStub<IObjectLifetimeAgent> ();
-      eventBroker = eventBroker ?? MockRepository.GenerateStub<IClientTransactionEventBroker> ();
-      queryManager = queryManager ?? MockRepository.GenerateStub<IQueryManager> ();
-      commitRollbackAgent = commitRollbackAgent ?? MockRepository.GenerateStub<ICommitRollbackAgent> ();
+      applicationData = applicationData ?? new Dictionary<Enum, object>();
+      transactionHierarchyManager = transactionHierarchyManager ?? MockRepository.GenerateStub<ITransactionHierarchyManager>();
+      enlistedDomainObjectManager = enlistedDomainObjectManager ?? MockRepository.GenerateStub<IEnlistedDomainObjectManager>();
+      invalidDomainObjectManager = invalidDomainObjectManager ?? MockRepository.GenerateStub<IInvalidDomainObjectManager>();
+      persistenceStrategy = persistenceStrategy ?? MockRepository.GenerateStub<IPersistenceStrategy>();
+      dataManager = dataManager ?? MockRepository.GenerateStub<IDataManager>();
+      objectLifetimeAgent = objectLifetimeAgent ?? MockRepository.GenerateStub<IObjectLifetimeAgent>();
+      eventBroker = eventBroker ?? MockRepository.GenerateStub<IClientTransactionEventBroker>();
+      queryManager = queryManager ?? MockRepository.GenerateStub<IQueryManager>();
+      commitRollbackAgent = commitRollbackAgent ?? MockRepository.GenerateStub<ICommitRollbackAgent>();
       extensions = extensions ?? Enumerable.Empty<IClientTransactionExtension>();
       
       var componentFactoryStub = MockRepository.GenerateStub<IClientTransactionComponentFactory>();
@@ -200,15 +200,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static ClientTransaction CreateWithSub (ClientTransaction sub)
     {
-      var hierarchyManagerStub = MockRepository.GenerateStub<ITransactionHierarchyManager> ();
+      var hierarchyManagerStub = MockRepository.GenerateStub<ITransactionHierarchyManager>();
       hierarchyManagerStub.Stub (stub => stub.SubTransaction).Return (sub);
-      hierarchyManagerStub.Stub (stub => stub.IsActive).Return (false);
+      hierarchyManagerStub.Stub (stub => stub.IsWriteable).Return (false);
       return CreateWithComponents<ClientTransaction> (transactionHierarchyManager: hierarchyManagerStub);
     }
 
-    public static BindingClientTransaction CreateBinding ()
+    public static ClientTransaction CreateInactiveTransaction ()
     {
-      return (BindingClientTransaction) ClientTransaction.CreateBindingTransaction();
+      var inactiveTransaction = ClientTransaction.CreateRootTransaction();
+      ClientTransactionTestHelper.MakeInactive (inactiveTransaction);
+      return inactiveTransaction;
     }
   }
 }

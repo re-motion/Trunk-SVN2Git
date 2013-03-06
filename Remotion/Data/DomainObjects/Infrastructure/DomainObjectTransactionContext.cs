@@ -115,16 +115,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ClientTransaction.TryEnsureDataAvailable (DomainObject.ID);
     }
 
+    [Obsolete ("This method has been removed. Use ClientTransaction.ExecuteInScope instead. (1.13.189.0)", true)]
     public T Execute<T> (Func<DomainObject, ClientTransaction, T> func)
     {
-      ArgumentUtility.CheckNotNull ("func", func);
-      return ClientTransaction.Execute (() => func (_domainObject, _associatedTransaction));
+      throw new NotImplementedException ();
     }
 
+    [Obsolete ("This method has been removed. Use ClientTransaction.ExecuteInScope instead. (1.13.189.0)", true)]
     public void Execute (Action<DomainObject, ClientTransaction> action)
     {
-      ArgumentUtility.CheckNotNull ("action", action);
-      ClientTransaction.Execute (() => action (_domainObject, _associatedTransaction));
+      throw new NotImplementedException ();
     }
 
     [Obsolete ("This method has been replaced by RegisterForCommit. (1.13.181.0)", true)]

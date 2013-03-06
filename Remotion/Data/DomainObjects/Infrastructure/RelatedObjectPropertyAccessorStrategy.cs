@@ -98,10 +98,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var endPointID = CreateRelationEndPointID (propertyAccessor);
       var endPoint = (IObjectEndPoint) transaction.DataManager.GetRelationEndPointWithLazyLoad (endPointID);
 
-      RelationEndPointValueChecker.CheckClientTransaction (
-          endPoint,
-          newRelatedObject,
-          "Property '{1}' of DomainObject '{2}' cannot be set to DomainObject '{0}'.");
+      if (newRelatedObject != null && transaction.RootTransaction != newRelatedObject.RootTransaction)
+      {
+        var formattedMessage = String.Format (
+            "Property '{1}' of DomainObject '{2}' cannot be set to DomainObject '{0}'.", 
+            newRelatedObject.ID, 
+            endPoint.Definition.PropertyName, 
+            endPoint.ObjectID);
+        throw new ClientTransactionsDifferException (formattedMessage + " The objects do not belong to the same ClientTransaction.");
+      }
 
       DomainObjectCheckUtility.EnsureNotDeleted (endPoint.GetDomainObjectReference (), endPoint.ClientTransaction);
       if (newRelatedObject != null)

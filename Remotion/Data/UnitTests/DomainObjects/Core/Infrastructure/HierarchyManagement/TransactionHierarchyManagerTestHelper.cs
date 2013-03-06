@@ -24,10 +24,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
 {
   public static class TransactionHierarchyManagerTestHelper
   {
-    public static void SetIsActive (TransactionHierarchyManager transactionHierarchyManager, bool value)
+    public static void SetIsWriteable (TransactionHierarchyManager transactionHierarchyManager, bool value)
     {
       ArgumentUtility.CheckNotNull ("transactionHierarchyManager", transactionHierarchyManager);
-      PrivateInvoke.SetNonPublicField (transactionHierarchyManager, "_isActive", value);
+      PrivateInvoke.SetNonPublicField (transactionHierarchyManager, "_isWriteable", value);
     }
 
     public static void SetSubtransaction (TransactionHierarchyManager hierarchyManager, ClientTransaction subTransaction)

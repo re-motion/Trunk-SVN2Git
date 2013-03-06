@@ -44,10 +44,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _transaction = ClientTransaction.CreateRootTransaction();
       _interceptedDomainObjectCreator = InterceptedDomainObjectCreator.Instance;
 
-      _order1InitializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, _transaction, null);
+      _order1InitializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, _transaction);
 
       var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid ());
-      _targetClassForPersistentMixinInitializationContext = CreateFakeInitializationContext (objectID, _transaction, null);
+      _targetClassForPersistentMixinInitializationContext = CreateFakeInitializationContext (objectID, _transaction);
     }
 
     [Test]
@@ -98,7 +98,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var initializationContextMock = MockRepository.GenerateStrictMock<IObjectInitializationContext>();
       initializationContextMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       initializationContextMock.Stub (stub => stub.RootTransaction).Return (_transaction);
-      initializationContextMock.Stub (stub => stub.BindingTransaction).Return (null);
       initializationContextMock
           .Expect (mock => mock.RegisterObject (Arg<DomainObject>.Matches (obj => obj.ID == DomainObjectIDs.Order1)))
           .WhenCalled (mi => registeredObject = (DomainObject) mi.Arguments[0]);
@@ -134,6 +133,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void CreateObjectReference_CallsReferenceInitializing_InRightTransaction_WithActivatedInactiveTransaction ()
+    {
+      ClientTransactionTestHelper.MakeInactive (_transaction);
+
+      var domainObject = (Order) _interceptedDomainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
+      Assert.That (domainObject.OnReferenceInitializingTx, Is.SameAs (_transaction));
+      Assert.That (domainObject.OnReferenceInitializingActiveTx, Is.SameAs (_transaction));
+    }
+
+    [Test]
     public void CreateNewObject ()
     {
       var initializationContext = CreateNewObjectInitializationContext (_transaction, DomainObjectIDs.OrderItem1);
@@ -145,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (result.RootTransaction, Is.SameAs (_transaction));
       Assert.That (_transaction.IsDiscarded, Is.False);
       Assert.That (_transaction.IsEnlisted (result), Is.True);
-      Assert.That (_transaction.Execute (() => ((OrderItem) result).Product), Is.EqualTo ("A product"));
+      Assert.That (_transaction.ExecuteInScope (() => ((OrderItem) result).Product), Is.EqualTo ("A product"));
       Assert.That (ObjectInititalizationContextScope.CurrentObjectInitializationContext, Is.Null);
     }
 
@@ -188,13 +197,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           Is.Not.Null);
     }
 
-    private IObjectInitializationContext CreateFakeInitializationContext (ObjectID objectID, ClientTransaction rootTransaction, ClientTransaction bindingTransaction)
+    private IObjectInitializationContext CreateFakeInitializationContext (ObjectID objectID, ClientTransaction rootTransaction)
     {
       var initializationContextStub = MockRepository.GenerateStub<IObjectInitializationContext> ();
 
       initializationContextStub.Stub (stub => stub.ObjectID).Return (objectID);
       initializationContextStub.Stub (stub => stub.RootTransaction).Return (rootTransaction);
-      initializationContextStub.Stub (stub => stub.BindingTransaction).Return (bindingTransaction);
       return initializationContextStub;
     }
 

@@ -73,7 +73,7 @@ namespace Remotion.Data
     bool IsReadOnly { get; }
 
     /// <summary>
-    /// Enters a new scope for the given transaction, making it the active transaction while the scope exists.
+    /// Enters a new scope for the given transaction, making it the current transaction while the scope exists.
     /// </summary>
     /// <returns>The scope keeping the transaction active.</returns>
     /// <remarks>The scope must not discard the transaction when it is left.</remarks>

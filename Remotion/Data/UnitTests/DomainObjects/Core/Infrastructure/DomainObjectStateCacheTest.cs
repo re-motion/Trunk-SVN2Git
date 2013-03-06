@@ -77,14 +77,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void GetState_FromDataContainer_Changed ()
     {
-      _transaction.Execute (() => _existingOrder.OrderNumber++);
+      _transaction.ExecuteInScope (() => _existingOrder.OrderNumber++);
       Assert.That (_cachingListener.GetState (_existingOrder.ID), Is.EqualTo (StateType.Changed));
     }
 
     [Test]
     public void GetState_FromDataContainer_ChangedRelation ()
     {
-      _transaction.Execute (() => _existingOrder.OrderItems.Clear ());
+      _transaction.ExecuteInScope (() => _existingOrder.OrderItems.Clear ());
       Assert.That (_cachingListener.GetState (_existingOrder.ID), Is.EqualTo (StateType.Changed));
     }
 
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var dataManager = ClientTransactionTestHelper.GetIDataManager (_transaction);
       Assert.That (dataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Resolve (_existingOrder, o => o.OrderTicket)), Is.Null);
 
-      _transaction.Execute (() => _existingOrder.OrderItems.Clear ());
+      _transaction.ExecuteInScope (() => _existingOrder.OrderItems.Clear ());
 
       Assert.That (dataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Resolve (_existingOrder, o => o.OrderTicket)), Is.Null);
     }
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var stateBeforeChange = _cachingListener.GetState (_existingOrder.ID);
 
-      _transaction.Execute (() => _existingOrder.OrderNumber++);
+      _transaction.ExecuteInScope (() => _existingOrder.OrderNumber++);
       var stateAfterChange = _cachingListener.GetState (_existingOrder.ID);
 
       Assert.That (stateBeforeChange, Is.EqualTo (StateType.Unchanged));
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var stateBeforeChange = _cachingListener.GetState (_existingOrder.ID);
 
-      _transaction.Execute (() => _existingOrder.Customer = null);
+      _transaction.ExecuteInScope (() => _existingOrder.Customer = null);
       var stateAfterChange = _cachingListener.GetState (_existingOrder.ID);
 
       Assert.That (stateBeforeChange, Is.EqualTo (StateType.Unchanged));
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var stateBeforeChange = _cachingListener.GetState (_existingOrder.ID);
 
-      _transaction.Execute (() => _existingOrder.OrderTicket = null);
+      _transaction.ExecuteInScope (() => _existingOrder.OrderTicket = null);
       var stateAfterChange = _cachingListener.GetState (_existingOrder.ID);
 
       Assert.That (stateBeforeChange, Is.EqualTo (StateType.Unchanged));
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var stateBeforeChange = _cachingListener.GetState (_existingOrder.ID);
 
-      _transaction.Execute (() => _existingOrder.OrderItems.RemoveAt (0));
+      _transaction.ExecuteInScope (() => _existingOrder.OrderItems.RemoveAt (0));
       var stateAfterChange = _cachingListener.GetState (_existingOrder.ID);
 
       Assert.That (stateBeforeChange, Is.EqualTo (StateType.Unchanged));
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void GetState_Invalidated_AfterRollback ()
     {
-      _transaction.Execute (() => _existingOrder.OrderNumber++);
+      _transaction.ExecuteInScope (() => _existingOrder.OrderNumber++);
 
       var stateBeforeChange = _cachingListener.GetState (_existingOrder.ID);
 
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var subTransaction = _transaction.CreateSubTransaction ();
       subTransaction.EnsureDataAvailable (_existingOrder.ID);
-      subTransaction.Execute (() => _existingOrder.OrderNumber++);
+      subTransaction.ExecuteInScope (() => _existingOrder.OrderNumber++);
 
       var cachingListener = new DomainObjectStateCache (subTransaction);
       var stateBeforeChange = cachingListener.GetState (_existingOrder.ID);
@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var subTransaction = _transaction.CreateSubTransaction ();
       subTransaction.EnsureDataAvailable (_existingOrder.ID);
-      subTransaction.Execute (() => _existingOrder.OrderNumber++);
+      subTransaction.ExecuteInScope (() => _existingOrder.OrderNumber++);
 
       var stateBeforeChange = _cachingListener.GetState (_existingOrder.ID);
 
@@ -265,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var stateBeforeChange = _cachingListener.GetState (_notYetLoadedOrder.ID);
 
-      _transaction.Execute (() => DataManagementService.GetDataManager (_transaction).MarkInvalid (_notYetLoadedOrder));
+      _transaction.ExecuteInScope (() => DataManagementService.GetDataManager (_transaction).MarkInvalid (_notYetLoadedOrder));
       var stateAfterChange = _cachingListener.GetState (_notYetLoadedOrder.ID);
 
       Assert.That (stateBeforeChange, Is.EqualTo (StateType.NotLoadedYet));
@@ -275,10 +275,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void GetState_Invalidated_AfterMarkNotInvalid ()
     {
-      _transaction.Execute (() => _newOrder.Delete());
+      _transaction.ExecuteInScope (() => _newOrder.Delete());
       var stateBeforeChange = _cachingListener.GetState (_newOrder.ID);
 
-      _transaction.Execute (() => DataManagementService.GetDataManager (_transaction).MarkNotInvalid (_newOrder.ID));
+      _transaction.ExecuteInScope (() => DataManagementService.GetDataManager (_transaction).MarkNotInvalid (_newOrder.ID));
       var stateAfterChange = _cachingListener.GetState (_newOrder.ID);
 
       Assert.That (stateBeforeChange, Is.EqualTo (StateType.Invalid));
@@ -299,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var deserializedDomainObject = deserializedTuple.Item3;
 
       Assert.That (deserializedCache.GetState (deserializedDomainObject.ID), Is.EqualTo (StateType.Unchanged));
-      deserializedTx.Execute (() => deserializedDomainObject.OrderNumber++);
+      deserializedTx.ExecuteInScope (() => deserializedDomainObject.OrderNumber++);
       Assert.That (deserializedCache.GetState (deserializedDomainObject.ID), Is.EqualTo (StateType.Changed));
     }
   }

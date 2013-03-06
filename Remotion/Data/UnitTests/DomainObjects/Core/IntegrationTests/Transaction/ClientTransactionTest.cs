@@ -347,21 +347,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void IsActive ()
-    {
-      var clientTransaction = new TestableClientTransaction ();
-      Assert.That (clientTransaction.IsActive, Is.True);
-      ClientTransactionTestHelper.SetIsActive (clientTransaction, false);
-      Assert.That (clientTransaction.IsActive, Is.False);
-    }
-
-    [Test]
-    public void IsDiscardedReturnsFalse ()
-    {
-      Assert.That (TestableClientTransaction.IsDiscarded, Is.False);
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The transaction can no longer be used because it has been discarded.")]
     public void DiscardRendersTransactionUnusable ()
     {

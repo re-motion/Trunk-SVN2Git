@@ -58,11 +58,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _rootTransaction; }
     }
 
-    public ClientTransaction BindingTransaction
-    {
-      get { return _rootTransaction as BindingClientTransaction; }
-    }
-
     public IEnlistedDomainObjectManager EnlistedDomainObjectManager
     {
       get { return _enlistedDomainObjectManager; }
@@ -79,13 +74,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 
       if (domainObject.ID != _objectID)
         throw new ArgumentException (string.Format ("The given DomainObject must have ID '{0}'.", _objectID), "domainObject");
-
-      var bindingTransaction = BindingTransaction;
-      if (bindingTransaction != null && (!domainObject.HasBindingTransaction || domainObject.GetBindingTransaction () != bindingTransaction))
-        throw new ArgumentException (string.Format ("The given DomainObject must have BindingClientTransaction '{0}'.", bindingTransaction), "domainObject");
-
-      if (bindingTransaction == null && domainObject.HasBindingTransaction)
-        throw new ArgumentException ("The given DomainObject must not have a BindingClientTransaction.", "domainObject");
 
       if (_registeredObject != null)
         throw new InvalidOperationException ("Only one object can be registered using this context.");

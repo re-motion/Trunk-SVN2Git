@@ -20,7 +20,6 @@ using System.Linq;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
 using Remotion.Security.Configuration;
@@ -39,9 +38,9 @@ namespace Remotion.SecurityManager.Domain
   /// applications and request-local (HttpContext) in applications using Remotion.Web.
   /// </para>
   /// <para>
-  /// The domain objects held by a <see cref="SecurityManagerPrincipal"/> instance are stored in a dedicated <see cref="BindingClientTransaction"/>.
+  /// The domain objects held by a <see cref="SecurityManagerPrincipal"/> instance are stored in a dedicated <see cref="ClientTransaction"/>.
   /// Changes made to those objects are only saved when that transaction is committed, eg. via 
-  /// <code>SecurityManagerPrincipal.Current.User.BindingTransaction.CommitAllEndPoints()</code>.
+  /// <code>SecurityManagerPrincipal.Current.User.RootTransaction.Commit()</code>.
   /// </para>
   /// </remarks>
   /// <threadsafety static="true" instance="false"/>
@@ -217,7 +216,7 @@ namespace Remotion.SecurityManager.Domain
 
     private ClientTransaction CreateClientTransaction ()
     {
-      var transaction = ClientTransaction.CreateBindingTransaction ();
+      var transaction = ClientTransaction.CreateRootTransaction ();
 
       if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
         transaction.Extensions.Add (new SecurityClientTransactionExtension ());

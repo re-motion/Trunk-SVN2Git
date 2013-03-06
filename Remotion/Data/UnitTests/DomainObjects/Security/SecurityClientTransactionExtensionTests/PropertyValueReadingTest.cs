@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Security;
+using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -203,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      Dev.Null = _testHelper.Transaction.Execute(() => securableObject.StringProperty);
+      Dev.Null = _testHelper.Transaction.ExecuteInScope(() => securableObject.StringProperty);
 
       _testHelper.VerifyAll ();
     }
@@ -215,7 +216,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      Dev.Null = _testHelper.Transaction.Execute (() => securableObject.ID);
+      Dev.Null = _testHelper.Transaction.ExecuteInScope (() => securableObject.ID);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    public void Test_WithInactiveTransaction ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject ();
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_getMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+      _testHelper.ReplayAll ();
+
+      ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction);
+
+      _extension.PropertyValueReading (_testHelper.Transaction, securableObject, _stringPropertyDefinition, ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }

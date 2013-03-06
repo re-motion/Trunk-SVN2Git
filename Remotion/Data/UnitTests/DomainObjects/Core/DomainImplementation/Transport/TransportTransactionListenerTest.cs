@@ -67,8 +67,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       _transporter.Load (DomainObjectIDs.Computer2);
 
-      var bindingTransaction = _transporter.GetTransportedObject (DomainObjectIDs.Computer2).GetBindingTransaction();
-      var source = LifetimeService.GetObject (bindingTransaction, DomainObjectIDs.Computer1, false);
+      var transportTransaction = _transporter.GetTransportedObject (DomainObjectIDs.Computer2).RootTransaction;
+      var source = LifetimeService.GetObject (transportTransaction, DomainObjectIDs.Computer1, false);
       _listener.PropertyValueChanging (TestableClientTransaction, source, GetPropertyDefinition (typeof (Computer), "SerialNumber"), null, null);
     }
 
@@ -76,14 +76,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The transport transaction cannot be committed.")]
     public void CommitingTransaction ()
     {
-      _transporter.Load (DomainObjectIDs.Computer2).GetBindingTransaction().Commit ();
+      _transporter.Load (DomainObjectIDs.Computer2).RootTransaction.Commit ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The transport transaction cannot be rolled back.")]
     public void RollingBackTransaction ()
     {
-      _transporter.Load (DomainObjectIDs.Computer2).GetBindingTransaction().Rollback ();
+      _transporter.Load (DomainObjectIDs.Computer2).RootTransaction.Rollback ();
     }
   }
 }

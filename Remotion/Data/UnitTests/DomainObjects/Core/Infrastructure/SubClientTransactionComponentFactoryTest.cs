@@ -57,6 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _parentInvalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       _parentEnlistedDomainObjectManagerStub = MockRepository.GenerateStub<IEnlistedDomainObjectManager> ();
       _parentTransactionHierarchyManagerStub = MockRepository.GenerateStub<ITransactionHierarchyManager> ();
+      _parentTransactionHierarchyManagerStub
+          .Stub (stub => stub.TransactionHierarchy)
+          .Return (MockRepository.GenerateStub<IClientTransactionHierarchy>());
       _parentEventSink = MockRepository.GenerateStub<IClientTransactionEventSink>();
     
       _factory = SubClientTransactionComponentFactory.Create (
@@ -111,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateInvalidDomainObjectManager_AutomaticallyMarksInvalid_ObjectsInvalidOrDeletedInParentTransaction ()
     {
-      var objectInvalidInParent = _parentTransaction.Execute (() => Order.NewObject ());
+      var objectInvalidInParent = _parentTransaction.ExecuteInScope (() => Order.NewObject ());
       var objectDeletedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order2, false);
       var objectLoadedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order3, false);
 
@@ -131,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreatePersistenceStrategy ()
     {
-      ClientTransactionTestHelper.SetIsActive (_parentTransaction, false);
+      ClientTransactionTestHelper.SetIsWriteable (_parentTransaction, false);
 
       var result = _factory.CreatePersistenceStrategy (_fakeConstructedTransaction);
 
@@ -147,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreatePersistenceStrategy_CanBeMixed ()
     {
-      ClientTransactionTestHelper.SetIsActive (_parentTransaction, false);
+      ClientTransactionTestHelper.SetIsWriteable (_parentTransaction, false);
 
       using (MixinConfiguration.BuildNew ().ForClass<SubPersistenceStrategy> ().AddMixin<NullMixin> ().EnterScope ())
       {

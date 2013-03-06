@@ -20,11 +20,11 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
+using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
@@ -38,10 +38,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp();
 
-      _insertedRelatedObject = DomainObjectIDs.Order2.GetObject<Order> ();
+      _insertedRelatedObject = DomainObjectIDs.Order2.GetObject<Order> (Transaction);
 
       _command = new CollectionEndPointInsertCommand (
-          CollectionEndPoint, 12, _insertedRelatedObject, CollectionDataMock, EndPointProviderStub, TransactionEventSinkWithMock);
+          CollectionEndPoint, 12, _insertedRelatedObject, CollectionDataMock, EndPointProviderStub, TransactionEventSinkMock);
     }
 
     [Test]
@@ -60,35 +60,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
-      var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
-      new CollectionEndPointInsertCommand (endPoint, 0, _insertedRelatedObject, CollectionDataMock, EndPointProviderStub, TransactionEventSinkWithMock);
+      var endPoint = new NullCollectionEndPoint (Transaction, RelationEndPointID.Definition);
+      Dev.Null = 
+          new CollectionEndPointInsertCommand (endPoint, 0, _insertedRelatedObject, CollectionDataMock, EndPointProviderStub, TransactionEventSinkMock);
     }
 
     [Test]
     public void Begin ()
     {
-      TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangingEvent (DomainObject, CollectionEndPoint.Definition, null, _insertedRelatedObject))
-          .WhenCalled (
-              mock => Assert.That (CollectionEventReceiver.AddingDomainObject, Is.SameAs (_insertedRelatedObject))); // collection got event first
+      var counter = new OrderedExpectationCounter();
+      CollectionMockEventReceiver
+          .Expect (mock => mock.Adding (_insertedRelatedObject))
+          .WhenCalledOrdered (counter, mi => Assert.That (ClientTransaction.Current, Is.SameAs (Transaction)));
+      TransactionEventSinkMock
+          .Expect (mock => mock.RaiseRelationChangingEvent (DomainObject, CollectionEndPoint.Definition, null, _insertedRelatedObject))
+          .Ordered (counter);
 
       _command.Begin ();
 
-      TransactionEventSinkWithMock.VerifyAllExpectations();
-      Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // operation was not finished
+      CollectionMockEventReceiver.VerifyAllExpectations ();
+      TransactionEventSinkMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void End ()
     {
-      TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangedEvent (DomainObject, CollectionEndPoint.Definition, null, _insertedRelatedObject))
-          .WhenCalled (
-              mock => Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null)); // collection gets event later
+      var counter = new OrderedExpectationCounter ();
+      TransactionEventSinkMock
+          .Expect (mock => mock.RaiseRelationChangedEvent (DomainObject, CollectionEndPoint.Definition, null, _insertedRelatedObject))
+          .Ordered (counter);
+      CollectionMockEventReceiver
+          .Expect (mock => mock.Added (_insertedRelatedObject))
+          .WhenCalledOrdered (counter, mi => Assert.That (ClientTransaction.Current, Is.SameAs (Transaction)));
 
       _command.End ();
 
-      TransactionEventSinkWithMock.VerifyAllExpectations();
-      Assert.That (CollectionEventReceiver.AddedDomainObject, Is.SameAs (_insertedRelatedObject)); // collection got event later
-      Assert.That (CollectionEventReceiver.AddingDomainObject, Is.Null); // operation was not started
+      TransactionEventSinkMock.VerifyAllExpectations();
+      CollectionMockEventReceiver.VerifyAllExpectations();
     }
 
     [Test]
@@ -102,8 +110,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       CollectionDataMock.VerifyAllExpectations ();
 
-      Assert.That (CollectionEventReceiver.AddingDomainObject, Is.Null); // operation was not started
-      Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // operation was not finished
+      CollectionMockEventReceiver.AssertWasNotCalled (mock => mock.Adding());
+      CollectionMockEventReceiver.AssertWasNotCalled (mock => mock.Added());
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
     }
 
@@ -111,14 +119,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void ExpandToAllRelatedObjects ()
     {
       var insertedEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_insertedRelatedObject.ID, "Customer");
-      var insertedEndPoint = (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (insertedEndPointID);
+      var insertedEndPoint = (IObjectEndPoint) DataManager.GetRelationEndPointWithoutLoading (insertedEndPointID);
       Assert.That (insertedEndPoint, Is.Not.Null);
       
       EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (insertedEndPoint.ID)).Return (insertedEndPoint);
       
       var oldCustomer = _insertedRelatedObject.Customer;
-      var oldRelatedEndPointOfInsertedObject =
-          TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Resolve (oldCustomer, c => c.Orders));
+      var oldRelatedEndPointOfInsertedObject = DataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Resolve (oldCustomer, c => c.Orders));
       EndPointProviderStub
           .Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldRelatedEndPointOfInsertedObject.ID))
           .Return (oldRelatedEndPointOfInsertedObject);

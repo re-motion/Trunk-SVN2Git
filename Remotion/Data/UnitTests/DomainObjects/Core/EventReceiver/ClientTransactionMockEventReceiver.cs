@@ -47,6 +47,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     public abstract void RolledBack (object sender, ClientTransactionEventArgs args);
     public abstract void SubTransactionCreated (object sender, SubTransactionCreatedEventArgs args);
 
+    public void Loaded (params DomainObject[] domainObjects)
+    {
+      Loaded (Arg.Is (_clientTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
+    }
+
     public void RollingBack (params DomainObject[] domainObjects)
     {
       RollingBack (Arg.Is (_clientTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));

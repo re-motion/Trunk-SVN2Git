@@ -214,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckCurrentData (_computer1);
       CheckCurrentOppositeEndPoint (_computer1EndPoint);
 
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         _employee1.Computer = _computer2;
 

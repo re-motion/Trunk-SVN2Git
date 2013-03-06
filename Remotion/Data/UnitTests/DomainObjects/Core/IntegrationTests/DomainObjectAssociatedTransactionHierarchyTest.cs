@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void NewObject_InRootTransaction_AssociatesThatRootTransaction ()
     {
-      var order = _rootTransaction.Execute (() => Order.NewObject());
+      var order = _rootTransaction.ExecuteInScope (() => Order.NewObject());
 
       Assert.That (order.RootTransaction, Is.SameAs (_rootTransaction));
     }
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var subTransaction = _rootTransaction.CreateSubTransaction();
 
-      var order = subTransaction.Execute (() => Order.NewObject ());
+      var order = subTransaction.ExecuteInScope (() => Order.NewObject ());
 
       Assert.That (order.RootTransaction, Is.SameAs (_rootTransaction));
       Assert.That (order.TransactionContext[_rootTransaction].State, Is.EqualTo (StateType.Invalid));
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void AssociatedRootTransaction_InTheContextOfSubtransactions_StaysTheSame ()
     {
-      var order = _rootTransaction.Execute (() => Order.NewObject ());
+      var order = _rootTransaction.ExecuteInScope (() => Order.NewObject ());
 
       using (_rootTransaction.CreateSubTransaction().EnterDiscardingScope())
       {

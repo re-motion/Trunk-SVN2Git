@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _testHelper.Transaction.Execute (() => securableObject.StringProperty = "new");
+      _testHelper.Transaction.ExecuteInScope (() => securableObject.StringProperty = "new");
 
       _testHelper.VerifyAll ();
     }

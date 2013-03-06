@@ -36,6 +36,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
     {
       // Rollback the state of all objects not matched by the filter - we don't want those objects to be committed to the transaction
 
+      Assertion.IsTrue (
+          clientTransaction.ActiveTransaction == clientTransaction, "It's not possible to invoke FinishTransport on an inactive transaction.");
       using (clientTransaction.EnterNonDiscardingScope ()) // filter must be executed in scope of clientTransaction
       {
         foreach (var domainObject in domainObjects)

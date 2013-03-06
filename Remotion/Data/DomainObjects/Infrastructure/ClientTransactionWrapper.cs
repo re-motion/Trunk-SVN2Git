@@ -121,17 +121,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <remarks>Implementations that do not support read-only transactions should always return false.</remarks>
     public virtual bool IsReadOnly
     {
-      get { return !_wrappedInstance.IsActive; }
+      get { return !_wrappedInstance.IsWriteable; }
     }
 
     /// <summary>
-    /// Enters a new scope for the given transaction, making it the active transaction while the scope exists.
+    /// Enters a new scope for the given transaction, making it the current transaction while the scope exists.
     /// </summary>
     /// <returns>The scope keeping the transaction active.</returns>
     /// <remarks>The scope must not discard the transaction when it is left.</remarks>
     public virtual ITransactionScope EnterScope ()
     {
-      return _wrappedInstance.EnterNonDiscardingScope();
+      return _wrappedInstance.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive);
     }
 
     /// <summary>Registers the <paramref name="objects"/> with the transaction.</summary>
@@ -142,7 +142,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("objects", objects);
 
       var domainObjects = objects.OfType<DomainObject>().Distinct();
-      var incompatibleObjects = domainObjects.Where (obj => !_wrappedInstance.IsEnlisted (obj)).ToArray();
+      var incompatibleObjects = domainObjects.Where (obj => _wrappedInstance.RootTransaction != obj.RootTransaction).ToArray();
       if (incompatibleObjects.Length > 0)
       {
         var message = string.Format (

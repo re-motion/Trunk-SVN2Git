@@ -62,8 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       TransportedDomainObjects transportedObjects = DomainObjectTransporterTestHelper.Import (data);
       foreach (DomainObject domainObject in transportedObjects.TransportedObjects)
       {
-        Assert.That (domainObject.HasBindingTransaction, Is.True);
-        Assert.That (domainObject.GetBindingTransaction (), Is.SameAs (transportedObjects.DataTransaction));
+        Assert.That (domainObject.RootTransaction, Is.SameAs (transportedObjects.DataTransaction));
       }
     }
 
@@ -87,9 +86,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       var importedInstance = (ClassWithAllDataTypes) imported[0];
       Assert.That (creator.Factory.WasCreatedByFactory (((object) importedInstance).GetType ()), Is.True, "creator should be used");
       Assert.That (importedInstance.ID, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1), "ID should be copied");
-      Assert.That (importedInstance.HasBindingTransaction, Is.True, "Object should be bound");
 
-      var importTransaction = importedInstance.GetBindingTransaction ();
+      var importTransaction = importedInstance.RootTransaction;
       Assert.That (importedInstance.InternalDataContainer.ClientTransaction, Is.SameAs (importTransaction), "DataContainer should be registered");
       Assert.That (importedInstance.InternalDataContainer.DomainObject, Is.SameAs (importedInstance), "DataContainer should have DomainObject set");
 
@@ -200,12 +198,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       Assert.That (loadedObject2.Properties[typeof (Computer), "Employee"].HasChanged, Is.True);
       Assert.That (loadedObject3.Properties[typeof (Computer), "Employee"].HasChanged, Is.False);
 
-      using (loadedObject1.GetBindingTransaction().EnterNonDiscardingScope())
-      {
-        Assert.That (loadedObject1.Employee, Is.EqualTo (DomainObjectIDs.Employee3.GetObject<Employee> ()));
-        Assert.That (loadedObject2.Employee, Is.EqualTo (DomainObjectIDs.Employee4.GetObject<Employee> ()));
-        Assert.That (loadedObject3.Employee, Is.EqualTo (DomainObjectIDs.Employee5.GetObject<Employee> ()));
-      }
+      Assert.That (loadedObject1.Employee, Is.EqualTo (DomainObjectIDs.Employee3.GetObject<Employee> (loadedObject1.RootTransaction)));
+      Assert.That (loadedObject2.Employee, Is.EqualTo (DomainObjectIDs.Employee4.GetObject<Employee> (loadedObject1.RootTransaction)));
+      Assert.That (loadedObject3.Employee, Is.EqualTo (DomainObjectIDs.Employee5.GetObject<Employee> (loadedObject1.RootTransaction)));
     }
 
     [Test]
@@ -266,11 +261,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       Assert.That (loadedObject1.Properties[typeof (OrderItem), "Order"].HasChanged, Is.True);
       Assert.That (loadedObject2.Properties[typeof (OrderItem), "Order"].HasChanged, Is.False);
 
-      using (loadedObject1.GetBindingTransaction().EnterNonDiscardingScope())
-      {
-        Assert.That (loadedObject1.Order, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ()));
-        Assert.That (loadedObject2.Order, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ()));
-      }
+      Assert.That (loadedObject1.Order, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> (loadedObject1.RootTransaction)));
+      Assert.That (loadedObject2.Order, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> (loadedObject1.RootTransaction)));
     }
 
     [Test]
@@ -396,7 +388,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
         var importedInstance = (DomainObjectWithImportCallback) imported.Single();
         Assert.That (importedInstance.CallbackCalled, Is.True);
         Assert.That (importedInstance.PropertyValueInCallback, Is.EqualTo (17));
-        Assert.That (importedInstance.CallbackTransaction, Is.SameAs (importedInstance.GetBindingTransaction()));
+        Assert.That (importedInstance.CallbackTransaction, Is.SameAs (importedInstance.RootTransaction));
       }
     }
 

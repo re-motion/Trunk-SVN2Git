@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _addedObjects; }
     }
 
-    protected override void ScopedBegin ()
+    public override void Begin ()
     {
       for (int i = 0; i < RemovedObjects.Length; i++)
         RaiseClientTransactionBeginNotification (RemovedObjects[i], null);
@@ -117,7 +117,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ModifiedEndPoint.Touch();
     }
 
-    protected override void ScopedEnd ()
+    public override void End ()
     {
       for (int i = AddedObjects.Length - 1; i >= 0; i--)
         RaiseClientTransactionEndNotification (null, AddedObjects[i]);

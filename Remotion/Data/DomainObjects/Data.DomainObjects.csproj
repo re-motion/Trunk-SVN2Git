@@ -160,8 +160,11 @@
     <Compile Include="ClientTransactionExtensionBase.cs" />
     <Compile Include="ClientTransactionExtensions.cs" />
     <Compile Include="ClientTransactionFactory.cs" />
+    <Compile Include="InactiveTransactionBehavior.cs" />
     <Compile Include="DomainObjectHandleConverter.cs" />
     <Compile Include="Infrastructure\DomainObjectHandleAttribute.cs" />
+    <Compile Include="Infrastructure\HierarchyManagement\ClientTransactionHierarchy.cs" />
+    <Compile Include="Infrastructure\HierarchyManagement\IClientTransactionHierarchy.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\ObjectInititalizationContextScope.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\ObjectReferenceInitializationContext.cs" />
     <Compile Include="Infrastructure\TypePipe\IAccessorInterceptor.cs" />
@@ -226,7 +229,7 @@
     <Compile Include="Infrastructure\ClientTransactionEventBroker.cs" />
     <Compile Include="Infrastructure\CommittingEventRegistrar.cs" />
     <Compile Include="Infrastructure\HierarchyManagement\ITransactionHierarchyManager.cs" />
-    <Compile Include="Infrastructure\HierarchyManagement\InactiveClientTransactionListenerWithLoadRules.cs" />
+    <Compile Include="Infrastructure\HierarchyManagement\ReadOnlyClientTransactionListenerWithLoadRules.cs" />
     <Compile Include="Infrastructure\HierarchyManagement\TransactionHierarchyManager.cs" />
     <Compile Include="Infrastructure\HierarchyManagement\TransactionHierarchyManagerService.cs" />
     <Compile Include="Infrastructure\ICommitRollbackAgent.cs" />
@@ -532,7 +535,6 @@
     <Compile Include="DataManagement\RelationEndPoints\IObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointExtensions.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RealObjectEndPoint.cs" />
-    <Compile Include="DataManagement\RelationEndPoints\RelationEndPointValueChecker.cs" />
     <Compile Include="DataManagement\StateValueSet.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualObjectEndPoint.cs" />
     <Compile Include="DomainImplementation\RepositoryAccessor.cs" />
@@ -732,7 +734,7 @@
     <Compile Include="DomainImplementation\Transport\DomainObjectImporter.cs" />
     <Compile Include="DomainImplementation\Transport\DomainObjectTransporter.cs" />
     <Compile Include="IDomainObjectMixin.cs" />
-    <Compile Include="Infrastructure\ClientTransactionInactiveException.cs" />
+    <Compile Include="Infrastructure\ClientTransactionReadOnlyException.cs" />
     <Compile Include="Infrastructure\CompoundClientTransactionListener.cs" />
     <Compile Include="Infrastructure\DomainObjectMixinCodeGenerationBridge.cs" />
     <Compile Include="Infrastructure\IClientTransactionListener.cs" />
@@ -744,7 +746,7 @@
     <Compile Include="Infrastructure\Interception\ModuleManager.cs" />
     <Compile Include="Infrastructure\InvalidatedTransactionListener.cs" />
     <Compile Include="Infrastructure\LoggingClientTransactionListener.cs" />
-    <Compile Include="Infrastructure\HierarchyManagement\InactiveClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\HierarchyManagement\ReadOnlyClientTransactionListener.cs" />
     <Compile Include="Infrastructure\RelatedObjectCollectionPropertyAccessorStrategy.cs" />
     <Compile Include="Infrastructure\IPropertyAccessorStrategy.cs" />
     <Compile Include="Infrastructure\PropertyIndexer.cs" />

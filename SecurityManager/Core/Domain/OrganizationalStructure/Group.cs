@@ -158,7 +158,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       base.OnDeleting (args);
 
-      using (DefaultTransactionContext.ClientTransaction.EnterNonDiscardingScope())
+      using (DefaultTransactionContext.ClientTransaction.EnterNonDiscardingScope ())
       {
         var aces = QueryFactory.CreateLinqQuery<AccessControlEntry>().Where (ace => ace.SpecificGroup == this);
 

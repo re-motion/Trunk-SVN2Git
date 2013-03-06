@@ -37,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
       _mockRepository = new MockRepository ();
       _cloner = new DomainObjectCloner ();
       _contextMock = MockRepository.StrictMock<CloneContext>(Cloner);
-      _sourceTransaction = ClientTransaction.CreateBindingTransaction ();
-      _cloneTransaction = ClientTransaction.CreateBindingTransaction ();
+      _sourceTransaction = ClientTransaction.CreateRootTransaction ();
+      _cloneTransaction = ClientTransaction.CreateRootTransaction ();
     }
 
     protected MockRepository MockRepository

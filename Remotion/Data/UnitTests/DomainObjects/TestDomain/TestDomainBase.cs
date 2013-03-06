@@ -60,9 +60,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [NonSerialized]
     public ClientTransaction OnReferenceInitializingTx;
     [NonSerialized]
-    public ObjectID OnReferenceInitializingID;
+    public ClientTransaction OnReferenceInitializingActiveTx;
     [NonSerialized]
-    public ClientTransaction OnReferenceInitializingBindingTransaction;
+    public ObjectID OnReferenceInitializingID;
 
     [NonSerialized]
     public bool OnLoadedCalled;
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     {
       get 
       {
-        var transaction = HasBindingTransaction ? GetBindingTransaction () : ClientTransaction.Current;
+        var transaction = RootTransaction.ActiveTransaction;
         return GetInternalDataContainerForTransaction (transaction);
       }
     }
@@ -169,8 +169,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
       OnReferenceInitializingCalled = true;
       OnReferenceInitializingTx = ClientTransaction.Current;
+      OnReferenceInitializingActiveTx = ClientTransaction.Current.ActiveTransaction;
       OnReferenceInitializingID = ID;
-      OnReferenceInitializingBindingTransaction = HasBindingTransaction ? GetBindingTransaction() : null;
 
       if (StaticInitializationHandler != null)
         StaticInitializationHandler (this, EventArgs.Empty);

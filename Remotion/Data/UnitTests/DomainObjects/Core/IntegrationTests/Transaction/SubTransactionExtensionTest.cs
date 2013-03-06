@@ -27,7 +27,6 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.RhinoMocks.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Remotion.FunctionalProgramming;
@@ -426,11 +425,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             mock => mock.ObjectsLoading (
                         Arg.Is (_subTransaction),
                         Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.ClassWithAllDataTypes1 })));
-        
-        clientTransactionEventReceiver.Loaded (null, null);
-        LastCall.Constraints (
-            Mocks_Is.Same (_subTransaction),
-            Property.ValueConstraint ("DomainObjects", Property.Value ("Count", 1)));
+
+        clientTransactionEventReceiver.Expect (
+            mock => mock.Loaded (Arg.Is (_subTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.Count == 1)));
         _extensionMock.Expect (mock => mock.ObjectsLoaded (
             Arg.Is (_subTransaction),
             Arg<ReadOnlyCollection<DomainObject>>.Matches (list => list.Count == 1)));
@@ -1124,9 +1121,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       QueryResult<DomainObject> subFilteredQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
 
       UnloadService.UnloadData (_subTransaction, _order1.ID); // unload _order1 to force Load events
-      ClientTransactionTestHelper.SetIsActive (TestableClientTransaction, true);
+      ClientTransactionTestHelper.SetIsWriteable (TestableClientTransaction, true);
       TestableClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // we only want Load events in the sub-transaction
-      ClientTransactionTestHelper.SetIsActive (TestableClientTransaction, false);
+      ClientTransactionTestHelper.SetIsWriteable (TestableClientTransaction, false);
 
       _mockRepository.BackToRecordAll ();
 

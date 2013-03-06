@@ -51,19 +51,19 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
 
     public TransportedDomainObjects GetImportedObjects ()
     {
-      var bindingTargetTransaction = ClientTransaction.CreateBindingTransaction ();
-      var dataContainerMapping = GetTargetDataContainersForSourceObjects (bindingTargetTransaction);
+      var targetTransaction = ClientTransaction.CreateRootTransaction ();
+      var dataContainerMapping = GetTargetDataContainersForSourceObjects (targetTransaction);
 
       // grab enlisted objects _before_ properties are synchronized, as synchronizing might load some additional objects
-      var transportedObjects = bindingTargetTransaction.GetEnlistedDomainObjects().ToList();
-      SynchronizeData (bindingTargetTransaction, dataContainerMapping);
+      var transportedObjects = targetTransaction.GetEnlistedDomainObjects().ToList();
+      SynchronizeData (targetTransaction, dataContainerMapping);
 
       foreach (var transportedObject in transportedObjects.OfType<IDomainObjectImporterCallback>())
       {
-        transportedObject.OnDomainObjectImported (bindingTargetTransaction);
+        transportedObject.OnDomainObjectImported (targetTransaction);
       }
 
-      return new TransportedDomainObjects (bindingTargetTransaction, transportedObjects);
+      return new TransportedDomainObjects (targetTransaction, transportedObjects);
     }
 
     private List<Tuple<TransportItem, DataContainer>> GetTargetDataContainersForSourceObjects (ClientTransaction bindingTargetTransaction)

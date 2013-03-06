@@ -31,12 +31,25 @@ using Remotion.Reflection;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
   [TestFixture]
-  public class PropertyIndexerTest : ClientTransactionBaseTest
+  public class PropertyIndexerTest : StandardMappingTest
   {
+    private ClientTransaction _transaction;
+    private IndustrialSector _industrialSector;
+    private Order _order;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _transaction = ClientTransaction.CreateRootTransaction();
+      _industrialSector = _transaction.ExecuteInScope (() => IndustrialSector.NewObject());
+      _order = _transaction.ExecuteInScope (() => Order.NewObject());
+    }
+
     [Test]
     public void Item()
     {
-      var indexer = new PropertyIndexer (IndustrialSector.NewObject());
+      var indexer = new PropertyIndexer (_industrialSector);
       var accessor = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
       Assert.That (accessor, Is.Not.Null);
       Assert.That (
@@ -47,59 +60,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void Item_UsesCurrentTransaction()
+    public void Item_UsesAssociatedActiveTransactionByDefault()
     {
-      var indexer = new PropertyIndexer (IndustrialSector.NewObject ());
-      var accessor = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
-      Assert.That (accessor.ClientTransaction, Is.SameAs (ClientTransaction.Current));
-    }
-
-    [Test]
-    public void Item_UsesBindingTransaction ()
-    {
-      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-      IndustrialSector sector;
-      using (bindingTransaction.EnterNonDiscardingScope ())
-      {
-        sector = IndustrialSector.NewObject ();
-      }
-
-      var indexer = new PropertyIndexer (sector);
-      var accessor = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
-      Assert.That (accessor.ClientTransaction, Is.SameAs (bindingTransaction));
-    }
-
-    [Test]
-    public void Item_WithSpecificTransaction ()
-    {
-      var transaction = ClientTransaction.CreateRootTransaction ();
-      IndustrialSector sector;
-      using (transaction.EnterNonDiscardingScope ())
-      {
-        sector = IndustrialSector.NewObject ();
-      }
-
-      var indexer = new PropertyIndexer (sector);
+      var indexer = new PropertyIndexer (_industrialSector);
       var accessor1 = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
-      Assert.That (accessor1.ClientTransaction, Is.Not.SameAs (transaction));
+      Assert.That (accessor1.ClientTransaction, Is.SameAs (_transaction));
 
-      var accessor2 = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name", transaction];
-      Assert.That (accessor2.ClientTransaction, Is.SameAs (transaction));
+      var subTransaction = _transaction.CreateSubTransaction();
+      var accessor2 = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
+      Assert.That (accessor2.ClientTransaction, Is.SameAs (subTransaction));
+    }
+
+    [Test]
+    public void Item_WithSpecificTransaction_AllowsPassingAnInactiveParentTransaction ()
+    {
+      var indexer = new PropertyIndexer (_industrialSector);
+      var subTransaction = _transaction.CreateSubTransaction();
+      var accessor = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name", _transaction];
+      Assert.That (accessor.ClientTransaction, Is.Not.SameAs (subTransaction));
+      Assert.That (accessor.ClientTransaction, Is.SameAs (_transaction));
     }
 
     [Test]
     public void Item_WithShortNotation ()
     {
-      var bindingTransaction = ClientTransaction.CreateBindingTransaction();
-      IndustrialSector sector;
-      using (bindingTransaction.EnterNonDiscardingScope())
-      {
-        sector = IndustrialSector.NewObject();
-      }
-
-      var indexer = new PropertyIndexer (sector);
+      var indexer = new PropertyIndexer (_industrialSector);
       var accessor = indexer[typeof (IndustrialSector), "Name"];
-      Assert.That (accessor.ClientTransaction, Is.SameAs (bindingTransaction));
+      Assert.That (accessor.ClientTransaction, Is.SameAs (_transaction));
       Assert.That (
           accessor.PropertyData.PropertyDefinition,
           Is.SameAs (
@@ -111,13 +98,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Item_WithShortNotation_WithSpecificTransaction ()
     {
       var transaction = ClientTransaction.CreateRootTransaction ();
-      IndustrialSector sector;
-      using (transaction.EnterNonDiscardingScope ())
-      {
-        sector = IndustrialSector.NewObject ();
-      }
 
-      var indexer = new PropertyIndexer (sector);
+      var indexer = new PropertyIndexer (_industrialSector);
       var accessor1 = indexer[typeof (IndustrialSector), "Name"];
       Assert.That (accessor1.ClientTransaction, Is.Not.SameAs (transaction));
 
@@ -130,42 +112,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector' does not have a mapping property named 'Bla'.")]
     public void Item_ThrowsForNonExistingProperty ()
     {
-      var indexer = new PropertyIndexer (IndustrialSector.NewObject ());
+      var indexer = new PropertyIndexer (_industrialSector);
       Dev.Null = indexer["Bla"];
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), 
-        ExpectedMessage = "No ClientTransaction has been associated with the current thread or this object.")]
-    public void Item_ThrowsForNullCurrentTransaction ()
-    {
-      IndustrialSector sector = IndustrialSector.NewObject ();
-      var indexer = new PropertyIndexer (sector);
-
-      using (ClientTransactionScope.EnterNullScope ())
-      {
-        Dev.Null = indexer[typeof (IndustrialSector), "Name"];
-      }
     }
 
     [Test]
     public void Count ()
     {
-      Order order = Order.NewObject ();
-      Assert.That (order.Properties.GetPropertyCount (), Is.EqualTo (6));
+      Assert.That (_order.Properties.GetPropertyCount (), Is.EqualTo (6));
 
-      OrderItem orderItem = OrderItem.NewObject ();
+      OrderItem orderItem = _transaction.ExecuteInScope (() => OrderItem.NewObject ());
       Assert.That (orderItem.Properties.GetPropertyCount (), Is.EqualTo (3));
 
-      ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.NewObject ();
+      ClassWithAllDataTypes cwadt = _transaction.ExecuteInScope (() =>ClassWithAllDataTypes.NewObject ());
       Assert.That (cwadt.Properties.GetPropertyCount (), Is.EqualTo (46));
     }
 
     [Test]
     public void AsEnumerable_GetsAllProperties ()
     {
-      Order order = Order.NewObject ();
-      var propertyNames = (from propertyAccessor in order.Properties.AsEnumerable()
+      var propertyNames = (from propertyAccessor in _order.Properties.AsEnumerable()
                            select propertyAccessor.PropertyData.PropertyIdentifier).ToArray ();
 
       Assert.That (propertyNames, Is.EquivalentTo (new[] {
@@ -179,70 +145,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void AsEnumerable_DefaultTransaction_Current ()
+    public void AsEnumerable_UsesAssociatedActiveTransaction ()
     {
-      Order order = Order.NewObject();
-
-      var transactions = (from propertyAccessor in order.Properties.AsEnumerable ()
+      var transactions1 = (from propertyAccessor in _order.Properties.AsEnumerable ()
                           select propertyAccessor.ClientTransaction).Distinct ().ToArray ();
-      Assert.That (transactions, Is.EqualTo (new[] { ClientTransaction.Current }));
+      Assert.That (transactions1, Is.EqualTo (new[] { _transaction }));
+
+      var subTransaction = _transaction.CreateSubTransaction();
+
+      var transactions2 = (from propertyAccessor in _order.Properties.AsEnumerable ()
+                           select propertyAccessor.ClientTransaction).Distinct ().ToArray ();
+      Assert.That (transactions2, Is.EqualTo (new[] { subTransaction }));
     }
 
     [Test]
-    public void AsEnumerable_DefaultTransaction_Binding ()
+    public void AsEnumerable_SpecificTransaction_AllowsPassingAnInactiveParentTransaction ()
     {
-      Order order;
-      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
-      {
-        order = Order.NewObject();
-      }
+      var subTransaction = _transaction.CreateSubTransaction ();
 
-      var transactions = (from propertyAccessor in order.Properties.AsEnumerable ()
+      var transactions = (from propertyAccessor in _order.Properties.AsEnumerable (_transaction)
                           select propertyAccessor.ClientTransaction).Distinct ().ToArray ();
-      Assert.That (transactions, Is.EqualTo (new[] { order.GetBindingTransaction() }));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), MatchType = MessageMatch.Contains,
-        ExpectedMessage = "cannot be used in the given transaction ")]
-    public void AsEnumerable_DefaultTransaction_WrongTransaction ()
-    {
-      Order order;
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-      {
-        order = Order.NewObject ();
-      }
-
-      (from propertyAccessor in order.Properties.AsEnumerable ()
-       select propertyAccessor.ClientTransaction).ToArray ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), 
-        ExpectedMessage = "No ClientTransaction has been associated with the current thread or this object.")]
-    public void AsEnumerable_DefaultTransaction_NullTransaction ()
-    {
-      Order order = Order.NewObject ();
-      using (ClientTransactionScope.EnterNullScope())
-      {
-        (from propertyAccessor in order.Properties.AsEnumerable ()
-         select propertyAccessor.ClientTransaction).ToArray ();
-      }
-    }
-
-    [Test]
-    public void AsEnumerable_SpecificTransaction ()
-    {
-      Order order;
-      ClientTransaction transaction = ClientTransaction.CreateRootTransaction ();
-      using (transaction.EnterNonDiscardingScope ())
-      {
-        order = Order.NewObject();
-      }
-
-      var transactions = (from propertyAccessor in order.Properties.AsEnumerable (transaction)
-                          select propertyAccessor.ClientTransaction).Distinct ().ToArray ();
-      Assert.That (transactions, Is.EqualTo (new[] { transaction }));
+      Assert.That (transactions, Is.Not.EqualTo (new[] { subTransaction }));
+      Assert.That (transactions, Is.EqualTo (new[] { _transaction }));
     }
 
     [Test]
@@ -250,64 +174,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         ExpectedMessage = "cannot be used in the given transaction ")]
     public void AsEnumerable_InvalidTransaction ()
     {
-      Order order = Order.NewObject ();
-
-      (from propertyAccessor in order.Properties.AsEnumerable (ClientTransaction.CreateRootTransaction ())
+      (from propertyAccessor in _order.Properties.AsEnumerable (ClientTransaction.CreateRootTransaction ())
        select propertyAccessor.ClientTransaction).ToArray ();
     }
 
     [Test]
     public void Contains ()
     {
-      Order order = Order.NewObject ();
-      Assert.That (order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"), Is.True);
-      Assert.That (order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"), Is.True);
-      Assert.That (order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"), Is.True);
-      Assert.That (order.Properties.Contains ("OrderTicket"), Is.False);
-      Assert.That (order.Properties.Contains ("Bla"), Is.False);
+      Assert.That (_order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"), Is.True);
+      Assert.That (_order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"), Is.True);
+      Assert.That (_order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"), Is.True);
+      Assert.That (_order.Properties.Contains ("OrderTicket"), Is.False);
+      Assert.That (_order.Properties.Contains ("Bla"), Is.False);
     }
 
     [Test]
     public void ShortNameAndType ()
     {
-      Order order = Order.NewObject ();
       Assert.That (
-                  order.Properties[typeof (Order), "OrderNumber"], Is.EqualTo (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]));
+          _order.Properties[typeof (Order), "OrderNumber"],
+          Is.EqualTo (_order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]));
     }
 
     [Test]
     public void ShortNameAndTypeWithShadowedProperties ()
     {
-      var classWithMixedProperties = (DerivedClassWithDifferentProperties) 
-          LifetimeService.NewObject (TestableClientTransaction, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
+      var classWithDifferentProperties = (DerivedClassWithDifferentProperties) 
+          LifetimeService.NewObject (_transaction, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
 
-      var indexer = new PropertyIndexer(classWithMixedProperties);
+      var indexer = new PropertyIndexer(classWithDifferentProperties);
       Assert.That (
-                  indexer[typeof (DerivedClassWithDifferentProperties), "String"], Is.EqualTo (indexer[typeof (DerivedClassWithDifferentProperties).FullName + ".String"]));
+          indexer[typeof (DerivedClassWithDifferentProperties), "String"],
+          Is.EqualTo (indexer[typeof (DerivedClassWithDifferentProperties).FullName + ".String"]));
       Assert.That (
-                  indexer[typeof (ClassWithDifferentProperties), "String"], Is.EqualTo (indexer[typeof (ClassWithDifferentProperties).FullName + ".String"]));
+          indexer[typeof (ClassWithDifferentProperties), "String"], Is.EqualTo (indexer[typeof (ClassWithDifferentProperties).FullName + ".String"]));
     }
 
     [Test]
     public void Find_Property ()
     {
-      Order order = Order.NewObject ();
-      var result = order.Properties.Find (typeof (Order), "OrderNumber");
-      Assert.That (result, Is.EqualTo (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]));
+      var result = _order.Properties.Find (typeof (Order), "OrderNumber");
+      Assert.That (result, Is.EqualTo (_order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]));
     }
 
     [Test]
     public void Find_VirtualRelationEndPoint ()
     {
-      Order order = Order.NewObject ();
-      var result = order.Properties.Find (typeof (Order), "OrderItems");
-      Assert.That (result, Is.EqualTo (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"]));
+      var result = _order.Properties.Find (typeof (Order), "OrderItems");
+      Assert.That (result, Is.EqualTo (_order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"]));
     }
 
     [Test]
     public void Find_WithoutExplicitType ()
     {
-      Distributor distributor = Distributor.NewObject ();
+      Distributor distributor = _transaction.ExecuteInScope (() => Distributor.NewObject ());
       Assert.That (distributor.Properties.Contains (typeof (Distributor).FullName + ".ContactPerson"), Is.False);
       Assert.That (distributor.Properties.Find ("ContactPerson"), Is.EqualTo (distributor.Properties[typeof (Partner), "ContactPerson"]));
     }
@@ -315,14 +235,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Find_Generic_WithInferredType ()
     {
-      var classWithMixedProperties =
-          (DerivedClassWithDifferentProperties) LifetimeService.NewObject (TestableClientTransaction, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
-      var indexer = new PropertyIndexer (classWithMixedProperties);
+      var classWithDifferentProperties =
+          (DerivedClassWithDifferentProperties) LifetimeService.NewObject (_transaction, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
+      var indexer = new PropertyIndexer (classWithDifferentProperties);
       
-      var resultOnDerived = indexer.Find (classWithMixedProperties, "String");
+      var resultOnDerived = indexer.Find (classWithDifferentProperties, "String");
       Assert.That (resultOnDerived, Is.EqualTo (indexer[typeof (DerivedClassWithDifferentProperties).FullName + ".String"]));
 
-      var resultOnBase = indexer.Find ((ClassWithDifferentProperties) classWithMixedProperties, "String");
+      var resultOnBase = indexer.Find ((ClassWithDifferentProperties) classWithDifferentProperties, "String");
       Assert.That (resultOnBase, Is.EqualTo (indexer[typeof (ClassWithDifferentProperties).FullName + ".String"]));
     }
 
@@ -332,14 +252,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         + "short name 'Frobbers'.", MatchType = MessageMatch.Contains)]
     public void Find_NonExistingProperty ()
     {
-      Distributor distributor = Distributor.NewObject ();
+      Distributor distributor = _transaction.ExecuteInScope (() => Distributor.NewObject ());
       distributor.Properties.Find (typeof (Distributor), "Frobbers");
     }
 
     [Test]
     public void GetAllRelatedObjects_DoesNotContainRoot ()
     {
-      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+      Order order = DomainObjectIDs.Order1.GetObject<Order> (_transaction);
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.No.Member(order));
     }
@@ -347,7 +267,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_DoesNotContainIndirectRelatedObjects ()
     {
-      Ceo ceo = DomainObjectIDs.Ceo1.GetObject<Ceo> ();
+      Ceo ceo = DomainObjectIDs.Ceo1.GetObject<Ceo> (_transaction);
       var relatedObjects = new List<DomainObject> (ceo.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.No.Member(ceo.Company.IndustrialSector));
     }
@@ -355,23 +275,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_DoesNotContainDuplicates ()
     {
-      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+      Order order = DomainObjectIDs.Order1.GetObject<Order> (_transaction);
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
-      Assert.That (relatedObjects, Is.EquivalentTo (relatedObjects.Distinct()));
+      Assert.That (relatedObjects, Is.Unique);
     }
 
     [Test]
     public void GetAllRelatedObjects_DoesNotContainNulls ()
     {
-      Order order = Order.NewObject ();
-      var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
+      var relatedObjects = new List<DomainObject> (_order.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.No.Member(null));
     }
 
     [Test]
     public void GetAllRelatedObjects_ContainsSimpleRelatedObject ()
     {
-      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+      Order order = DomainObjectIDs.Order1.GetObject<Order> (_transaction);
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.Member (order.Official));
       Assert.That (relatedObjects, Has.Member (order.OrderTicket));
@@ -380,20 +299,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_ContainsSimpleRelatedObjectBothSides ()
     {
-      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
+      Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> (_transaction);
       var relatedObjects = new List<DomainObject> (computer.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.Member (computer.Employee));
 
-      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
+      Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> (_transaction);
       relatedObjects = new List<DomainObject> (employee.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.Member (employee.Computer));
-
     }
 
     [Test]
     public void GetAllRelatedObjects_ContainsSimpleRelatedObjectUnidirectional ()
     {
-      Client client = DomainObjectIDs.Client2.GetObject<Client> ();
+      Client client = DomainObjectIDs.Client2.GetObject<Client> (_transaction);
       var relatedObjects = new List<DomainObject> (client.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Has.Member (client.ParentClient));
     }
@@ -401,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetAllRelatedObjects_ContainsRelatedObjects ()
     {
-      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+      Order order = DomainObjectIDs.Order1.GetObject<Order> (_transaction);
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (order.OrderItems, Is.SubsetOf (relatedObjects));
     }
@@ -409,7 +327,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void PropertyIndexer_CachesPropertyData()
     {
-      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+      Order order = DomainObjectIDs.Order1.GetObject<Order> (_transaction);
       var indexer = new PropertyIndexer (order);
       Assert.That (indexer[typeof (Order), "OrderNumber"].PropertyData, Is.SameAs (indexer[typeof (Order), "OrderNumber"].PropertyData));
     }
@@ -417,7 +335,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void DomainObject_CachesPropertyIndexer()
     {
-      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+      Order order = DomainObjectIDs.Order1.GetObject<Order> (_transaction);
       Assert.That (order.Properties, Is.SameAs (order.Properties));
     }
   }

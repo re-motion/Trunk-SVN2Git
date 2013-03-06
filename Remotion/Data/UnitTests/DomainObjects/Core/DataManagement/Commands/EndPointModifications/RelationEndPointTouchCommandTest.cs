@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _transaction = new TestableClientTransaction ();
 
       var id = RelationEndPointID.Create(DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
-      _endPoint = _transaction.Execute (() => RelationEndPointObjectMother.CreateObjectEndPoint (id, null));
+      _endPoint = _transaction.ExecuteInScope (() => RelationEndPointObjectMother.CreateObjectEndPoint (id, null));
 
       _command = new RelationEndPointTouchCommand (_endPoint);
     }

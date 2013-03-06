@@ -222,6 +222,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       }
     }
 
+    [Test]
+    public void Import_WithInactiveTransaction ()
+    {
+      string cultureXml =
+          @"
+          <localizedNames xmlns=""http://www.re-motion.org/Security/Metadata/Localization/1.0"" culture=""de"" />
+          ";
+
+      ClientTransactionTestHelper.MakeInactive (_transaction);
+
+      Assert.That (
+          () => _importer.Import (GetXmlDocument (cultureXml)),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "Cannot import into an inactive transaction (e.g., a transaction that has an active subtransaction)."));
+    }
+
     private XmlDocument GetXmlDocument (string xml)
     {
       XmlDocument xmlDocument = new XmlDocument ();

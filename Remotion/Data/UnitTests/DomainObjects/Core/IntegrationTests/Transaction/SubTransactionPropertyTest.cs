@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         newChangedOrder.OrderNumber = 17;
         loadedChangedOrder.OrderNumber = 4;
 
-        using (TestableClientTransaction.EnterDiscardingScope ())
+        using (TestableClientTransaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive))
         {
           Assert.That (newChangedOrder.OrderNumber, Is.EqualTo (4711));
           Assert.That (loadedChangedOrder.OrderNumber, Is.EqualTo (13));

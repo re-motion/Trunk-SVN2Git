@@ -18,12 +18,9 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
@@ -96,10 +93,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void Release ()
     {
       ITransaction child = _transaction.CreateChild();
-      Assert.That (((ClientTransactionWrapper) _transaction).WrappedInstance.IsActive, Is.False);
+      Assert.That (((ClientTransactionWrapper) _transaction).WrappedInstance.IsWriteable, Is.False);
       Assert.That (((ClientTransactionWrapper) child).WrappedInstance.IsDiscarded, Is.False);
       child.Release();
-      Assert.That (((ClientTransactionWrapper) _transaction).WrappedInstance.IsActive, Is.True);
+      Assert.That (((ClientTransactionWrapper) _transaction).WrappedInstance.IsWriteable, Is.True);
       Assert.That (((ClientTransactionWrapper) child).WrappedInstance.IsDiscarded, Is.True);
     }
 
@@ -117,6 +114,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (ClientTransactionScope.ActiveScope.ScopedTransaction, Is.SameAs (((ClientTransactionWrapper) transaction).WrappedInstance));
       Assert.That (ClientTransactionScope.ActiveScope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.None));
       ClientTransactionScope.ResetActiveScope();
+    }
+
+    [Test]
+    public void EnterScope_WithInactiveTransaction ()
+    {
+      var inactiveTransaction = ClientTransactionObjectMother.CreateInactiveTransaction();
+      ITransaction transaction = inactiveTransaction.ToITransaction ();
+
+      var scope = transaction.EnterScope();
+
+      scope.Leave();
     }
 
     [Test]

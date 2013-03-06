@@ -19,9 +19,9 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Rhino.Mocks;
+using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp();
 
-      _command = new CollectionEndPointDeleteCommand (CollectionEndPoint, CollectionDataMock, TransactionEventSinkWithMock);
+      _command = new CollectionEndPointDeleteCommand (CollectionEndPoint, CollectionDataMock, TransactionEventSinkMock);
     }
 
     [Test]
@@ -52,42 +52,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
-      var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
-      new CollectionEndPointDeleteCommand (endPoint, CollectionDataMock, TransactionEventSinkWithMock);
+      var endPoint = new NullCollectionEndPoint (Transaction, RelationEndPointID.Definition);
+      new CollectionEndPointDeleteCommand (endPoint, CollectionDataMock, TransactionEventSinkMock);
     }
 
     [Test]
     public void Begin()
     {
-      TransactionEventSinkWithMock.Replay();
+      CollectionMockEventReceiver.Expect (mock => mock.Deleting ()).WithCurrentTransaction (Transaction);
 
       _command.Begin();
 
-      TransactionEventSinkWithMock.AssertWasNotCalled (mock => mock.RaiseRelationChangingEvent (
+      TransactionEventSinkMock.AssertWasNotCalled (mock => mock.RaiseRelationChangingEvent (
           Arg<DomainObject>.Is.Anything,
           Arg<IRelationEndPointDefinition>.Is.Anything,
           Arg<DomainObject>.Is.Anything,
           Arg<DomainObject>.Is.Anything));
 
-      Assert.That (CollectionEventReceiver.HasDeletingEventBeenCalled, Is.True);
-      Assert.That (CollectionEventReceiver.HasDeletedEventBeenCalled, Is.False);
+      CollectionMockEventReceiver.VerifyAllExpectations();
     }
 
     [Test]
     public void End ()
     {
-      TransactionEventSinkWithMock.Replay();
+      CollectionMockEventReceiver.Expect (mock => mock.Deleted ()).WithCurrentTransaction (Transaction);
 
       _command.End ();
 
-      TransactionEventSinkWithMock.AssertWasNotCalled (mock => mock.RaiseRelationChangedEvent (
+      TransactionEventSinkMock.AssertWasNotCalled (mock => mock.RaiseRelationChangedEvent (
           Arg<DomainObject>.Is.Anything,
           Arg<IRelationEndPointDefinition>.Is.Anything,
           Arg<DomainObject>.Is.Anything,
           Arg<DomainObject>.Is.Anything));
 
-      Assert.That (CollectionEventReceiver.HasDeletingEventBeenCalled, Is.False);
-      Assert.That (CollectionEventReceiver.HasDeletedEventBeenCalled, Is.True);
+      CollectionMockEventReceiver.VerifyAllExpectations ();
     }
 
     [Test]
@@ -103,8 +101,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       CollectionDataMock.VerifyAllExpectations ();
 
-      Assert.That (CollectionEventReceiver.HasDeletingEventBeenCalled, Is.False); // operation was not started
-      Assert.That (CollectionEventReceiver.HasDeletedEventBeenCalled, Is.False); // operation was not finished
+      CollectionMockEventReceiver.AssertWasNotCalled (mock => mock.Deleting ());
+      CollectionMockEventReceiver.AssertWasNotCalled (mock => mock.Deleted ());
+
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
     }
 

@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Security;
+using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Security;
 
@@ -229,6 +230,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.Transaction.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("GetSecurableObjects"));
 
       _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    public void Test_WithInactiveClientTransaction ()
+    {
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { null });
+      _testHelper.AddExtension (_extension);
+      _testHelper.ReplayAll ();
+
+      ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction);
+
+      var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
+
+      _testHelper.VerifyAll ();
+      Assert.That (finalResult, Is.SameAs (queryResult));
     }
   }
 }

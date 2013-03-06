@@ -272,6 +272,26 @@ namespace Remotion.SecurityManager.UnitTests
       Assert.That (((IRevisionBasedSecurityProvider) _service).IsNull, Is.False);
     }
 
+    [Test]
+    public void GetAccess_WithInactiveTransaction ()
+    {
+      using (_clientTransaction.EnterNonDiscardingScope ())
+      {
+        SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, new AbstractRoleDefinition[0]);
+
+        Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
+        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Return (token);
+      }
+      _mocks.ReplayAll ();
+
+      ClientTransactionTestHelper.MakeInactive (_clientTransaction);
+
+      Assert.That (() => _service.GetAccess (_clientTransaction, _context, _principalStub), Throws.Nothing);
+
+      _mocks.VerifyAll ();
+    }
+
+
     private AccessControlList CreateAcl (AccessControlEntry ace)
     {
       AccessControlList acl = StatefulAccessControlList.NewObject ();

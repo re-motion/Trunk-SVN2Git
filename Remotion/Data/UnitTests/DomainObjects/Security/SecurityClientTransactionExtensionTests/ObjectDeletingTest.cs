@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Delete, true);
       _testHelper.ReplayAll ();
 
-      _testHelper.Transaction.Execute (securableObject.Delete);
+      _testHelper.Transaction.ExecuteInScope (securableObject.Delete);
 
       _testHelper.VerifyAll ();
     }
