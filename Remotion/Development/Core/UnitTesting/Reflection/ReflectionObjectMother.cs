@@ -52,6 +52,7 @@ namespace Remotion.Development.UnitTesting.Reflection
     private static readonly MethodInfo[] s_finalMethods = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("FinalMethod") });
     private static readonly MethodInfo[] s_nonGenericMethods = EnsureNoNulls (new[] { typeof (object).GetMethod ("ToString"), typeof (string).GetMethod ("Concat", new[] { typeof (object) }) });
     private static readonly MethodInfo[] s_genericMethods = EnsureNoNulls (new[] { typeof (Enumerable).GetMethod ("Empty"), typeof (ReflectionObjectMother).GetMethod ("GetRandomElement", BindingFlags.NonPublic | BindingFlags.Static) });
+    private static readonly MethodInfo[] s_methodInstantiations = EnsureNoNulls (new[] { typeof (Enumerable).GetMethod ("Empty").MakeGenericMethod(typeof(int)), typeof (ReflectionObjectMother).GetMethod ("GetRandomElement", BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(typeof(string)) });
     private static readonly MethodInfo[] s_abstractMethodInfos = EnsureNoNulls (new[] { typeof (MethodInfo).GetMethod ("GetBaseDefinition"), typeof (Type).GetMethod ("GetMethods", new[] { typeof (BindingFlags) }) });
     private static readonly MethodInfo[] s_nonPublicMethodInfos = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("PrivateMethod", BindingFlags.NonPublic | BindingFlags.Instance), typeof (DomainType).GetMethod ("ProtectedMethod", BindingFlags.NonPublic | BindingFlags.Instance) });
     private static readonly MethodInfo[] s_publicMethodInfos = EnsureNoNulls (new[] { typeof (DomainType).GetMethod ("FinalMethod"), typeof (DomainType).GetMethod ("Override") });
@@ -284,6 +285,14 @@ namespace Remotion.Development.UnitTesting.Reflection
     {
       var method = GetRandomElement (s_genericMethods);
       Assertion.IsTrue (method.IsGenericMethodDefinition);
+      return method;
+    }
+
+    public static MethodInfo GetSomeMethodInstantiation ()
+    {
+      var method = GetRandomElement (s_methodInstantiations);
+      Assertion.IsTrue (method.IsGenericMethod);
+      Assertion.IsFalse (method.IsGenericMethodDefinition);
       return method;
     }
 
