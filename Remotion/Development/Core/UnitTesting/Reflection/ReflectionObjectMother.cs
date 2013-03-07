@@ -33,9 +33,11 @@ namespace Remotion.Development.UnitTesting.Reflection
     private static readonly Type[] s_otherTypes = EnsureNoNulls (new[] { typeof (decimal), typeof (StringBuilder) });
     private static readonly Type[] s_genericTypeDefinition = EnsureNoNulls (new[] { typeof (IComparable<>), typeof (Dictionary<,>) });
     private static readonly Type[] s_genericParameters = EnsureNoNulls (typeof (Dictionary<,>).GetGenericArguments());
+    private static readonly Type[] s_otherGenericParameters = EnsureNoNulls (typeof (Lookup<,>).GetGenericArguments());
     private static readonly Type[] s_serializableTypes = EnsureNoNulls (new[] { typeof (object), typeof (string), typeof (List<int>) });
     private static readonly Type[] s_unsealedTypes = EnsureNoNulls (new[] { typeof (Exception), typeof (List<int>) });
     private static readonly Type[] s_delegateTypes = EnsureNoNulls (new[] { typeof (EventHandler), typeof (Action<,,>) });
+    private static readonly Type[] s_valueTypes = EnsureNoNulls (new[] { typeof (double), typeof (DateTime) });
     private static readonly Type[] s_classTypes = EnsureNoNulls (new[] { typeof (StringBuilder), typeof (Exception) });
     private static readonly Type[] s_interfaceTypes = EnsureNoNulls (new[] { typeof (IDisposable), typeof (IServiceProvider) });
     private static readonly Type[] s_otherInterfaceTypes = EnsureNoNulls (new[] { typeof (IComparable), typeof (ICloneable) });
@@ -93,29 +95,54 @@ namespace Remotion.Development.UnitTesting.Reflection
       return genericParameter;
     }
 
+    public static Type GetSomeOtherGenericParameter ()
+    {
+      var genericParameter = GetRandomElement (s_otherGenericParameters);
+      Assertion.IsTrue (genericParameter.IsGenericParameter);
+      return genericParameter;
+    }
+
     public static Type GetSomeSerializableType ()
     {
-      return GetRandomElement (s_serializableTypes);
+      var type = GetRandomElement (s_serializableTypes);
+      Assertion.IsTrue (type.IsSerializable);
+      return type;
     }
 
     public static Type GetSomeSubclassableType ()
     {
-      return GetRandomElement (s_unsealedTypes);
+      var type = GetRandomElement (s_unsealedTypes);
+      Assertion.IsTrue (type.IsClass);
+      Assertion.IsFalse (type.IsSealed);
+      return type;
     }
 
     public static Type GetSomeDelegateType ()
     {
-      return GetRandomElement (s_delegateTypes);
+      var type = GetRandomElement (s_delegateTypes);
+      Assertion.IsTrue (typeof (Delegate).IsAssignableFrom (type));
+      return type;
+    }
+
+    public static Type GetSomeValueType ()
+    {
+      var type = GetRandomElement (s_valueTypes);
+      Assertion.IsTrue (type.IsValueType);
+      return type;
     }
 
     public static Type GetSomeClassType ()
     {
-      return GetRandomElement (s_classTypes);
+      var type = GetRandomElement (s_classTypes);
+      Assertion.IsTrue (type.IsClass);
+      return type;
     }
 
     public static Type GetSomeInterfaceType ()
     {
-      return GetRandomElement (s_interfaceTypes);
+      var type = GetRandomElement (s_interfaceTypes);
+      Assertion.IsTrue (type.IsInterface);
+      return type;
     }
 
     public static Type GetSomeOtherInterfaceType ()
