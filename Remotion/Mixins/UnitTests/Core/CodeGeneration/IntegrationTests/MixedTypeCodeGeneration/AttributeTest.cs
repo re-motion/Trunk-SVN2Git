@@ -177,7 +177,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     }
 
     [Test]
-    [Ignore ("TODO: This does not work on the build server, check why.")]
     public void AttributesOnDerivedPropertiesBehaveLikeMethods ()
     {
       object[] attributes =
@@ -197,29 +196,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
                                                       new NonMultiInheritedAttribute()
                                                   }));
     }
-
-    [Test]
-    public void AttributesOnDerivedPropertiesBehaveLikeMethodsTemp()
-    {
-      const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly;
-      object[] attributes =
-          GetRelevantAttributes (CreateMixedType (typeof (TargetWithoutAttributes), typeof (MixinWithAttributes)).GetProperty ("Property",
-                                                                                                                               bindingFlags));
-      Assert.That (attributes.Length, Is.EqualTo (2));
-      Assert.That (attributes, Is.EquivalentTo (new object[] {new MultiInheritedAttribute(), new NonMultiInheritedAttribute()}));
-
-      attributes =
-          GetRelevantAttributes (CreateMixedType (typeof (TargetWithAttributes), typeof (MixinWithAttributes)).GetProperty ("Property", bindingFlags));
-      Assert.That (attributes.Length, Is.EqualTo (5));
-
-      Assert.That (attributes, Is.EquivalentTo (new object[]
-                                                  {
-                                                      new MultiInheritedAttribute(), new MultiInheritedAttribute(),
-                                                      new NonMultiNonInheritedAttribute(), new MultiNonInheritedAttribute(),
-                                                      new NonMultiInheritedAttribute()
-                                                  }));
-    }
-
+    
     [Test]
     public void AttributesOnDerivedEventsBehaveLikeMethods()
     {

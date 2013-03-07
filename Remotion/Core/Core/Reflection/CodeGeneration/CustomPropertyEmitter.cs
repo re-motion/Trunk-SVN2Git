@@ -55,11 +55,9 @@ namespace Remotion.Reflection.CodeGeneration
       _propertyType = propertyType;
       _indexParameters = indexParameters;
     
-      // TODO: As soon as the overload below is publicly available, use it
-      // CallingConventions callingConvention = propertyKind == PropertyKind.Instance ? CallingConventions.HasThis : CallingConventions.Standard;
-      // PropertyBuilder = DeclaringType.TypeBuilder.DefineProperty (name, attributes, callingConvention, propertyType, null, null, indexParameters,
-      //    null, null);
-      _propertyBuilder = _declaringType.TypeBuilder.DefineProperty (name, attributes, propertyType, indexParameters);
+      CallingConventions callingConvention = propertyKind == PropertyKind.Instance ? CallingConventions.HasThis : CallingConventions.Standard;
+      _propertyBuilder = _declaringType.TypeBuilder.DefineProperty (
+           name, attributes, callingConvention, propertyType, null, null, indexParameters, null, null);
     }
 
     public Type PropertyType

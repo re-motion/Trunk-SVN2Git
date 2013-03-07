@@ -19,8 +19,10 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Reflection.CodeGeneration.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
@@ -43,43 +45,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       base.TearDown();
     }
 
-    private object BuildInstance ()
-    {
-      return Activator.CreateInstance (_classEmitter.BuildType ());
-    }
-
-    private object GetPropertyValue (object instance, CustomPropertyEmitter property, params object[] arguments)
-    {
-      return GetProperty(instance, property).GetValue (instance, arguments);
-    }
-
-    private object GetPropertyValue (Type type, CustomPropertyEmitter property, params object[] arguments)
-    {
-      return GetProperty (type, property).GetValue (null, arguments);
-    }
-
-    private void SetPropertyValue (object value, object instance, CustomPropertyEmitter property, params object[] arguments)
-    {
-      GetProperty (instance, property).SetValue (instance, value, arguments);
-    }
-
-    private void SetPropertyValue (object value, Type type, CustomPropertyEmitter property, params object[] arguments)
-    {
-      GetProperty (type, property).SetValue (null, value, arguments);
-    }
-
-    private PropertyInfo GetProperty (Type builtType, CustomPropertyEmitter property)
-    {
-      return builtType.GetProperty (property.Name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-    }
-
-    private PropertyInfo GetProperty (object instance, CustomPropertyEmitter property)
-    {
-      return GetProperty (instance.GetType (), property);
-    }
-
     [Test]
-    public void SimpleProperty ()
+    public void SimpleInstanceProperty ()
     {
       CustomPropertyEmitter property = _classEmitter.CreateProperty ("SimpleProperty", PropertyKind.Instance, typeof (int));
 
@@ -96,7 +63,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Assert.That (GetPropertyValue (instance, property), Is.EqualTo (0));
       SetPropertyValue (17, instance, property);
       Assert.That (GetPropertyValue (instance, property), Is.EqualTo (17));
+
+      var generatedPropertyInfo = GetProperty (instance, property);
+      CheckCallingConvention (generatedPropertyInfo, CallingConventions.Standard | CallingConventions.HasThis);
     }
+
+    public int I { get; set;  }
 
     [Test]
     public void StaticProperty ()
@@ -116,6 +88,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Assert.That (GetPropertyValue (type, property), Is.EqualTo (null));
       SetPropertyValue ("bla", type, property);
       Assert.That (GetPropertyValue (type, property), Is.EqualTo ("bla"));
+
+      var generatedPropertyInfo = GetProperty (type, property);
+      CheckCallingConvention (generatedPropertyInfo, CallingConventions.Standard);
     }
 
     [Test]
@@ -352,5 +327,50 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Assert.That (GetProperty (type, property).GetCustomAttributes (false).Length, Is.EqualTo (1));
       Assert.That (GetProperty (type, property).GetCustomAttributes (false)[0], Is.EqualTo (new SimpleAttribute()));
     }
+
+    private void CheckCallingConvention (PropertyInfo generatedPropertyInfo, CallingConventions expectedCallingConventions)
+    {
+      // Note: There doesn't seem to be any visible effect of choosing the right calling convention, so we'll check the internal Signature property.
+      var signature = PrivateInvoke.GetNonPublicProperty (generatedPropertyInfo, "Signature");
+      Assertion.IsNotNull (signature, "Internal Signature member on PropertyInfo has been removed - adapt test");
+      var callingConvention = (CallingConventions) PrivateInvoke.GetNonPublicProperty (signature, "CallingConvention");
+      Assert.That (callingConvention, Is.EqualTo (expectedCallingConventions));
+    }
+
+    private object BuildInstance ()
+    {
+      return Activator.CreateInstance (_classEmitter.BuildType ());
+    }
+
+    private object GetPropertyValue (object instance, CustomPropertyEmitter property, params object[] arguments)
+    {
+      return GetProperty (instance, property).GetValue (instance, arguments);
+    }
+
+    private object GetPropertyValue (Type type, CustomPropertyEmitter property, params object[] arguments)
+    {
+      return GetProperty (type, property).GetValue (null, arguments);
+    }
+
+    private void SetPropertyValue (object value, object instance, CustomPropertyEmitter property, params object[] arguments)
+    {
+      GetProperty (instance, property).SetValue (instance, value, arguments);
+    }
+
+    private void SetPropertyValue (object value, Type type, CustomPropertyEmitter property, params object[] arguments)
+    {
+      GetProperty (type, property).SetValue (null, value, arguments);
+    }
+
+    private PropertyInfo GetProperty (Type builtType, CustomPropertyEmitter property)
+    {
+      return builtType.GetProperty (property.Name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+    }
+
+    private PropertyInfo GetProperty (object instance, CustomPropertyEmitter property)
+    {
+      return GetProperty (instance.GetType (), property);
+    }
+
   }
 }
