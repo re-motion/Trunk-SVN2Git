@@ -54,7 +54,7 @@ extensions: .xml
  ! 
  ! Additional permissions are listed in the file re-motion_exceptions.txt.
  ! 
---!>
+-->
 extensions: .vb
 ' This file is part of re-strict (www.re-motion.org)
 ' Copyright (c) rubicon IT GmbH, www.rubicon.eu
