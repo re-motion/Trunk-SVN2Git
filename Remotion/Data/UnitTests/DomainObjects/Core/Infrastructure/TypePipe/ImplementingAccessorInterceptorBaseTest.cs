@@ -26,7 +26,6 @@ using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
-using Remotion.TypePipe.MutableReflection.Implementation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
@@ -61,8 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       var accessorImplementationMethod =
           NormalizingMemberInfoFromExpressionUtility.GetGenericMethodDefinition ((PropertyAccessor a) => a.SetValue<object> (null));
       var arguments = new Expression[] { Expression.Parameter (typeof (int), "param") };
-      var ctx = new MethodBodyModificationContext (
-          _proxyType, false, new ParameterExpression[0], Type.EmptyTypes, typeof (int), null, null, MockRepository.GenerateStub<IMemberSelector>());
+      var ctx = new MethodBodyModificationContext (_proxyType, false, new ParameterExpression[0], Type.EmptyTypes, typeof (int), null, null);
       _interceptorPartialMock
           .Stub (stub => PrivateInvoke.GetNonPublicProperty (stub, "AccessorImplementationMethod"))
           .Return (accessorImplementationMethod);
