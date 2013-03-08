@@ -26,41 +26,28 @@ namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Expressions
   /// <summary>
   /// Represents a <see cref="OpCodes.Box"/> operation followed by a <see cref="OpCodes.Castclass"/> to the correct type.
   /// </summary>
-  public class BoxExpression : PrimitiveTypePipeExpressionBase
+  public class BoxExpression : UnaryExpressionBase
   {
-    private readonly Expression _operand;
-
     public BoxExpression (Expression operand, Type toType)
-        : base (toType)
+        : base (operand, toType)
+    {
+    }
+
+    public override UnaryExpressionBase Update (Expression operand)
     {
       ArgumentUtility.CheckNotNull ("operand", operand);
 
-      _operand = operand;
-    }
+      if (operand == Operand)
+        return this;
 
-    public Expression Operand
-    {
-      get { return _operand; }
-    }
-
-    public Type FromType
-    {
-      get { return null; }
-    }
-
-    public Type ToType
-    {
-      get { return null; }
+      return new BoxExpression (operand, Type);
     }
 
     public override Expression Accept (IPrimitiveTypePipeExpressionVisitor visitor)
     {
-      return this;
-    }
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-    protected internal override Expression VisitChildren (ExpressionVisitor visitor)
-    {
-      return this;
+      return visitor.VisitBox (this);
     }
   }
 }

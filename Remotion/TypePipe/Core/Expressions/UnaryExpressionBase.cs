@@ -16,38 +16,41 @@
 // 
 
 using System;
-using System.Reflection.Emit;
 using Microsoft.Scripting.Ast;
-using Remotion.TypePipe.Expressions;
 using Remotion.Utilities;
 
-namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Expressions
+namespace Remotion.TypePipe.Expressions
 {
   /// <summary>
-  /// Represents an <see cref="OpCodes.Unbox_Any"/> operation.
+  /// A base class for expressions representing unary operations, that is, an operation that has a single <see cref="Operand"/>.
   /// </summary>
-  public class UnboxExpression : UnaryExpressionBase
+  public abstract class UnaryExpressionBase : PrimitiveTypePipeExpressionBase
   {
-    public UnboxExpression (Expression operand, Type toType)
-        : base (operand, toType)
-    {
-    }
+    private readonly Expression _operand;
 
-    public override UnaryExpressionBase Update (Expression operand)
+    protected UnaryExpressionBase (Expression operand, Type toType)
+        : base (toType)
     {
       ArgumentUtility.CheckNotNull ("operand", operand);
 
-      if (operand == Operand)
-        return this;
-
-      return new UnboxExpression (operand, Type);
+      _operand = operand;
     }
 
-    public override Expression Accept (IPrimitiveTypePipeExpressionVisitor visitor)
+    public Expression Operand
+    {
+      get { return _operand; }
+    }
+
+    public abstract UnaryExpressionBase Update (Expression operand);
+
+    public abstract override Expression Accept (IPrimitiveTypePipeExpressionVisitor visitor);
+
+    protected internal override Expression VisitChildren (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      return visitor.VisitUnbox (this);
+      var operand = visitor.Visit (_operand);
+      return Update (operand);
     }
   }
 }
