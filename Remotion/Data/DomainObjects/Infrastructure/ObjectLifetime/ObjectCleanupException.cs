@@ -41,23 +41,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
   public class ObjectCleanupException : DomainObjectException
   {
     private readonly ObjectID _objectID;
-    private readonly Exception _originalException;
+    private readonly Exception _cleanupException;
 
-    public ObjectCleanupException (string message, ObjectID objectID, Exception innerException, Exception originalException)
+    public ObjectCleanupException (string message, ObjectID objectID, Exception innerException, Exception cleanupException)
         : base (message, ArgumentUtility.CheckNotNull ("innerException", innerException))
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      ArgumentUtility.CheckNotNull ("originalException", originalException);
+      ArgumentUtility.CheckNotNull ("cleanupException", cleanupException);
 
       _objectID = objectID;
-      _originalException = originalException;
+      _cleanupException = cleanupException;
     }
 
     protected ObjectCleanupException ([NotNull] SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
       _objectID = (ObjectID) info.GetValue ("_objectID", typeof (ObjectID));
-      _originalException = (Exception) info.GetValue ("_originalException", typeof (Exception));
+      _cleanupException = (Exception) info.GetValue ("_cleanupException", typeof (Exception));
     }
 
     public ObjectID ObjectID
@@ -65,9 +65,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _objectID; }
     }
 
-    public Exception OriginalException
+    public Exception CleanupException
     {
-      get { return _originalException; }
+      get { return _cleanupException; }
     }
 
     public override void GetObjectData (SerializationInfo info, StreamingContext context)
@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       base.GetObjectData (info, context);
 
       info.AddValue ("_objectID", _objectID);
-      info.AddValue ("_originalException", _originalException);
+      info.AddValue ("_cleanupException", _cleanupException);
     }
   }
 }

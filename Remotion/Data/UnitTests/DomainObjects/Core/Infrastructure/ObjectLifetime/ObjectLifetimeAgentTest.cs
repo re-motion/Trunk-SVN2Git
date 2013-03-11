@@ -218,8 +218,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
                   + "'. Rollback the transaction to get rid of the partially constructed instance." + Environment.NewLine
                   + "Message of original exception: Test" + Environment.NewLine
                   + "Message of exception occurring during cleanup: Cancelled")
-              .And.InnerException.SameAs (exceptionInDelete)
-              .And.Property ("OriginalException").SameAs (exceptionInCreate));
+              .And.InnerException.SameAs (exceptionInCreate)
+              .And.Property ("CleanupException").SameAs (exceptionInDelete));
 
       _domainObjectCreatorMock.VerifyAllExpectations ();
       _dataManagerMock.VerifyAllExpectations ();

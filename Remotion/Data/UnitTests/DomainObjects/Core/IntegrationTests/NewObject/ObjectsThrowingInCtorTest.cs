@@ -97,8 +97,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.NewObject
                   + "Message of original exception: Test exception." + Environment.NewLine
                   + "Message of exception occurring during cleanup: Thrown from Deleting!")
               .And.Property ("ObjectID").Matches<ObjectID> (id => throwingInstance != null && id == throwingInstance.ID)
-              .And.InnerException.SameAs (_deleteException)
-              .And.Property ("OriginalException").SameAs (_exception));
+              .And.InnerException.SameAs (_exception)
+              .And.Property ("CleanupException").SameAs (_deleteException));
       }
 
       Assert.That (throwingInstance.State, Is.EqualTo (StateType.New));

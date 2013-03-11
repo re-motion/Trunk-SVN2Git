@@ -242,7 +242,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
             _clientTransaction,
             creationException.Message,
             deleteException.Message);
-        throw new ObjectCleanupException (message, objectID, deleteException, creationException);
+        throw new ObjectCleanupException (message, objectID, creationException, deleteException);
       }
 
       _enlistedDomainObjectManager.DisenlistDomainObject (domainObject);
