@@ -27,7 +27,7 @@
       <AssemblyInfoFile>Relinq\AssemblyInfoShared.*</AssemblyInfoFile>
       <CompanyName>rubicon IT GmbH</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
-      <Copyright>(c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
+      <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
       <ProductName>re-linq project (relinq.codeplex.com)</ProductName>
       <ProductNameShort>re-linq</ProductNameShort>
     </AllPackages>
@@ -38,7 +38,7 @@
       <AssemblyInfoFile>Remotion\AssemblyInfoShared.*</AssemblyInfoFile>
       <CompanyName>rubicon IT GmbH</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
-      <Copyright>(c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
+      <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
       <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
       <ProductNameShort>re-motion</ProductNameShort>
     </AllPackages>
@@ -49,7 +49,7 @@
       <AssemblyInfoFile>Dms\AssemblyInfoShared.*</AssemblyInfoFile>
       <CompanyName>rubicon IT GmbH</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
-      <Copyright>(c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
+      <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
       <ProductName>re-vision (www.re-motion.org)</ProductName>
       <ProductNameShort>re-vision</ProductNameShort>
     </AllPackages>
@@ -60,7 +60,7 @@
       <AssemblyInfoFile>SecurityManager\AssemblyInfoShared.*</AssemblyInfoFile>
       <CompanyName>rubicon IT GmbH</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
-      <Copyright>(c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
+      <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
       <ProductName>re-strict (www.re-motion.org)</ProductName>
       <ProductNameShort>re-strict</ProductNameShort>
     </AllPackages>
@@ -71,7 +71,7 @@
       <AssemblyInfoFile>Remotion\AssemblyInfoShared.*</AssemblyInfoFile>
       <CompanyName>rubicon IT GmbH</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
-      <Copyright>(c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
+      <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
       <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
       <ProductNameShort>re-mix</ProductNameShort>
     </AllPackages>
