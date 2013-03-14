@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
     public void ModifyType (ProxyType proxyType)
     {
       ArgumentUtility.CheckNotNull ("proxyType", proxyType);
-      Assertion.IsTrue (typeof (DomainObject).IsAssignableFromFast (proxyType));
+      Assertion.IsTrue (typeof (DomainObject).IsTypePipeAssignableFrom (proxyType));
 
       // TODO 5370: This will change when TypePipe is integrated with re-mix.
       var concreteBaseType = proxyType.BaseType;
