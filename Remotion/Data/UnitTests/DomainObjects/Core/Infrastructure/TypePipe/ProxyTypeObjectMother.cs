@@ -24,12 +24,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 {
   public static class ProxyTypeObjectMother
   {
-    public static ProxyType Create (Type baseType = null, IUnderlyingTypeFactory underlyingTypeFactory = null)
+    public static ProxyType Create (Type baseType = null)
     {
       baseType = baseType ?? typeof (UnspecifiedType);
-      underlyingTypeFactory = underlyingTypeFactory ?? new ThrowingUnderlyingTypeFactory ();
 
-      return new ProxyTypeModelFactory (underlyingTypeFactory).CreateProxyType (baseType);
+      return new ProxyTypeModelFactory ().CreateProxyType (baseType);
     }
 
     public class UnspecifiedType { }
