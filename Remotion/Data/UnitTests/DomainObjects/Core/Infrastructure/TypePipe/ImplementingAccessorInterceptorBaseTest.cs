@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
     private ImplementingAccessorInterceptorBase _interceptorPartialMock;
 
-    private ProxyType _proxyType;
+    private MutableType _proxyType;
 
     [SetUp]
     public void SetUp ()
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       _interceptorPartialMock = MockRepository.GeneratePartialMock<ImplementingAccessorInterceptorBase> (
           _interceptedMethod, _propertyName, _propertyType);
 
-      _proxyType = ProxyTypeObjectMother.Create (typeof (DomainObject));
+      _proxyType = MutableTypeObjectMother.Create (typeof (DomainObject));
     }
 
     [Test]

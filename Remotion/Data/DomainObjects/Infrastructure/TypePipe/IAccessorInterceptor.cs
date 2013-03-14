@@ -24,6 +24,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// </summary>
   public interface IAccessorInterceptor
   {
-    void Intercept (ProxyType proxyType);
+    void Intercept (MutableType proxyType);
   }
 }

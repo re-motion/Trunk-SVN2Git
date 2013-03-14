@@ -274,7 +274,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\GenericHandleTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\ExpressionTreeComparer.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\DomainObjectParticipantTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\ProxyTypeObjectMother.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\MutableTypeObjectMother.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\RegisterForCommitTest.cs" />
     <Compile Include="DomainObjects\Core\VariableTypeInferrer.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryObjectMother.cs" />

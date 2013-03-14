@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     private IInterceptedPropertyFinder _interceptedPropertyFinderMock;
 
     private TypeContext _typeContext;
-    private ProxyType _proxyType;
+    private MutableType _proxyType;
 
     [SetUp]
     public void SetUp ()

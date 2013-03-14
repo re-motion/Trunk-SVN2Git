@@ -120,17 +120,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       // TODO 5370: Use TypePipe serialization capabilities, after TypePipe is integrated with re-mix.
     }
 
-    private void OverridePerformConstructorCheck (ProxyType proxyType)
+    private void OverridePerformConstructorCheck (MutableType proxyType)
     {
       proxyType.GetOrAddOverride (s_performConstructorCheck).SetBody (ctx => Expression.Empty());
     }
 
-    private void OverrideGetPublicDomainObjectType (ProxyType proxyType, Type publicDomainObjectType)
+    private void OverrideGetPublicDomainObjectType (MutableType proxyType, Type publicDomainObjectType)
     {
       proxyType.GetOrAddOverride (s_getPublicDomainObjectTypeImplementation).SetBody (ctx => Expression.Constant (publicDomainObjectType));
     }
 
-    private void InterceptProperties (ProxyType proxyType, Type domainObjectType, Type concreteBaseType)
+    private void InterceptProperties (MutableType proxyType, Type domainObjectType, Type concreteBaseType)
     {
       var classDefinition = _typeDefinitionProvider.GetTypeDefinition (domainObjectType);
       var accessorInterceptors = _interceptedPropertyFinder.GetPropertyInterceptors (classDefinition, concreteBaseType);

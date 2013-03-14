@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       _propertyName = propertyName;
     }
 
-    public void Intercept (ProxyType proxyType)
+    public void Intercept (MutableType proxyType)
     {
       ArgumentUtility.CheckNotNull ("proxyType", proxyType);
 

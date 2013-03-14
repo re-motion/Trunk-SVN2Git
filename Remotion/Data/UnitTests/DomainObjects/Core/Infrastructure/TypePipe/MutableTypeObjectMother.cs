@@ -22,9 +22,9 @@ using Remotion.TypePipe.MutableReflection.Implementation;
 // This class was copied from Remotion.TypePipe.IntegrationTests.MutableReflection.
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 {
-  public static class ProxyTypeObjectMother
+  public static class MutableTypeObjectMother
   {
-    public static ProxyType Create (Type baseType = null)
+    public static MutableType Create (Type baseType = null)
     {
       baseType = baseType ?? typeof (UnspecifiedType);
 

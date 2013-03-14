@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
     private WrappingAccessorInterceptor _interceptor;
 
-    private ProxyType _proxyType;
+    private MutableType _proxyType;
 
     [SetUp]
     public void SetUp ()
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
       _interceptor = new WrappingAccessorInterceptor (_interceptedMethod, _propertyName);
 
-      _proxyType = ProxyTypeObjectMother.Create();
+      _proxyType = MutableTypeObjectMother.Create();
     }
 
     [Test]
