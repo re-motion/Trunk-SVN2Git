@@ -24,6 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.MutableReflection.Implementation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
@@ -36,6 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     private DomainObjectParticipant _participant;
     private IInterceptedPropertyFinder _interceptedPropertyFinderMock;
 
+    private TypeContext _typeContext;
     private ProxyType _proxyType;
 
     [SetUp]
@@ -46,7 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
       _participant = new DomainObjectParticipant (_typeDefinitionProviderMock, _interceptedPropertyFinderMock);
 
-      _proxyType = ProxyTypeObjectMother.Create (typeof (Order));
+      _typeContext = new TypeContext (new MutableTypeFactory(), typeof (Order));
+      _proxyType = _typeContext.ProxyType;
     }
 
     [Test]
@@ -77,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       _typeDefinitionProviderMock.Expect (mock => mock.GetTypeDefinition (fakeDomainObjectType)).Return (fakeClassDefinition);
       _interceptedPropertyFinderMock.Expect (mock => mock.GetPropertyInterceptors (fakeClassDefinition, _proxyType.BaseType)).Return (fakeInterceptors);
 
-      _participant.ModifyType (_proxyType);
+      _participant.Modify (_typeContext);
 
       _typeDefinitionProviderMock.VerifyAllExpectations();
       _interceptedPropertyFinderMock.VerifyAllExpectations();
@@ -89,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       var fakeDomainObjectType = ReflectionObjectMother.GetSomeType();
       StubGetPropertyInterceptors (fakeDomainObjectType);
 
-      _participant.ModifyType (_proxyType);
+      _participant.Modify (_typeContext);
 
       Assert.That (_proxyType.AddedInterfaces, Is.EqualTo (new[] { typeof (IInterceptedDomainObject) }));
       Assert.That (_proxyType.AddedMethods, Has.Count.EqualTo (2));
@@ -108,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       accessorInterceptor.Expect (mock => mock.Intercept (_proxyType));
       StubGetPropertyInterceptors (accessorInterceptors: new[] { accessorInterceptor });
 
-      _participant.ModifyType (_proxyType);
+      _participant.Modify (_typeContext);
 
       accessorInterceptor.VerifyAllExpectations();
     }

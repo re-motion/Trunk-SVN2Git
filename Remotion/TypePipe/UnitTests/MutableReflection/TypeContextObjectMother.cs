@@ -16,34 +16,31 @@
 // 
 
 using System;
-using Remotion.TypePipe.Caching;
+using System.Runtime.Serialization;
+using Remotion.Development.UnitTesting;
 using Remotion.TypePipe.MutableReflection;
-using Remotion.Utilities;
+using Remotion.TypePipe.MutableReflection.Implementation;
 
-namespace Remotion.TypePipe.IntegrationTests
+namespace Remotion.TypePipe.UnitTests.MutableReflection
 {
-  public class ParticipantStub : IParticipant
+  public static class TypeContextObjectMother
   {
-    private readonly Action<TypeContext> _typeContextModification;
-    private readonly ICacheKeyProvider _cacheKeyProvider;
-
-    public ParticipantStub (Action<TypeContext> typeContextModification, ICacheKeyProvider cacheKeyProvider)
+    public static TypeContext Create (Type requestedType = null, IMutableTypeFactory mutableTypeFactory = null)
     {
-      ArgumentUtility.CheckNotNull ("typeContextModification", typeContextModification);
-      // Cache key provider may be null.
+      requestedType = requestedType ?? typeof (UnspecifiedType);
+      mutableTypeFactory = mutableTypeFactory ?? new MutableTypeFactory();
 
-      _typeContextModification = typeContextModification;
-      _cacheKeyProvider = cacheKeyProvider;
+      return new TypeContext (mutableTypeFactory, requestedType);
     }
 
-    public ICacheKeyProvider PartialCacheKeyProvider
+    public static TypeContext Create (ProxyType proxyType)
     {
-      get { return _cacheKeyProvider; }
+      var typeContext = (TypeContext) FormatterServices.GetUninitializedObject (typeof (TypeContext));
+      PrivateInvoke.SetNonPublicField (typeContext, "_proxyType", proxyType);
+
+      return typeContext;
     }
 
-    public void Modify (TypeContext typeContext)
-    {
-      _typeContextModification (typeContext);
-    }
+    public class UnspecifiedType {}
   }
 }

@@ -96,9 +96,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       get { return new CacheKeyProvider (_typeDefinitionProvider); }
     }
 
-    public void ModifyType (ProxyType proxyType)
+    public void Modify (TypeContext typeContext)
     {
-      ArgumentUtility.CheckNotNull ("proxyType", proxyType);
+      ArgumentUtility.CheckNotNull ("typeContext", typeContext);
+      var proxyType = typeContext.ProxyType;
       Assertion.IsTrue (typeof (DomainObject).IsTypePipeAssignableFrom (proxyType));
 
       // TODO 5370: This will change when TypePipe is integrated with re-mix.
