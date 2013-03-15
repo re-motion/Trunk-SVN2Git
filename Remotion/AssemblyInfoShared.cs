@@ -25,9 +25,9 @@ using System.Reflection;
 [assembly: AssemblyConfiguration(".NET Framework: net-3.5, build type: Debug")]
 [assembly: AssemblyCompany("rubicon IT GmbH")]
 [assembly: AssemblyProduct("re-motion core framework (www.re-motion.org)")]
-[assembly: AssemblyCopyright ("(c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)")]
+[assembly: AssemblyCopyright ("Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)")]
 [assembly: AssemblyTrademark ("")]
-[assembly: AssemblyInformationalVersion ("1.13.189.1")]
+[assembly: AssemblyInformationalVersion ("1.13.190.1")]
 
 //
 // Version information for an assembly consists of the following four values:
@@ -40,5 +40,5 @@ using System.Reflection;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.13.189.1")]
-[assembly: AssemblyFileVersion ("1.13.189.1")]
+[assembly: AssemblyVersion("1.13.190.1")]
+[assembly: AssemblyFileVersion ("1.13.190.1")]
