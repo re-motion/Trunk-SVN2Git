@@ -25,7 +25,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   /// </summary>
   public interface ILoadedObjectDataRegistrationAgent
   {
-    void RegisterIfRequired (ILoadedObjectData loadedObjectData, bool throwOnNotFound);
     void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, bool throwOnNotFound);
   }
 }

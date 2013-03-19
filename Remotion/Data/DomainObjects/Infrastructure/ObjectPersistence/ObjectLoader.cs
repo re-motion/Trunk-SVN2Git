@@ -17,10 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -78,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("id", id);
 
       var loadedObjectData = _persistenceStrategy.LoadObjectData (id);
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, throwOnNotFound);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (new[] { loadedObjectData }, throwOnNotFound);
       return loadedObjectData;
     }
 
@@ -110,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("GetOrLoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
 
       var loadedObjectData = _persistenceStrategy.ResolveObjectRelationData (relationEndPointID, _loadedObjectDataProvider);
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, true);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (new[] { loadedObjectData }, true);
       return loadedObjectData;
     }
 

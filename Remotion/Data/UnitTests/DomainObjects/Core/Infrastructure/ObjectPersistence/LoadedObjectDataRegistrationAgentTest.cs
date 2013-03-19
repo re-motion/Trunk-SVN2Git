@@ -55,20 +55,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void RegisterIfRequired_Single_AlreadyExistingLoadedObject ()
+    public void RegisterIfRequired_AlreadyExistingLoadedObject ()
     {
       var alreadyExistingLoadedObject = GetAlreadyExistingLoadedObject();
 
       _mockRepository.ReplayAll();
 
-      _agent.RegisterIfRequired (alreadyExistingLoadedObject, true);
+      _agent.RegisterIfRequired (new[] { alreadyExistingLoadedObject }, true);
 
       _registrationListenerMock.AssertWasNotCalled (mock => mock.OnBeforeObjectRegistration (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
     }
 
     [Test]
-    public void RegisterIfRequired_Single_FreshlyLoadedObject ()
+    public void RegisterIfRequired_FreshlyLoadedObject ()
     {
       var freshlyLoadedObject = GetFreshlyLoadedObject();
       var dataContainer = freshlyLoadedObject.FreshlyLoadedDataContainer;
@@ -89,40 +89,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       }
       _mockRepository.ReplayAll();
 
-      _agent.RegisterIfRequired (freshlyLoadedObject, true);
+      _agent.RegisterIfRequired (new[] { freshlyLoadedObject }, true);
 
       _mockRepository.VerifyAll();
       Assert.That (_clientTransaction.IsDiscarded, Is.False);
     }
 
     [Test]
-    public void RegisterIfRequired_Single_NullLoadedObject ()
+    public void RegisterIfRequired_NullLoadedObject ()
     {
       var nullLoadedObject = GetNullLoadedObject ();
 
       _mockRepository.ReplayAll ();
 
-      _agent.RegisterIfRequired (nullLoadedObject, true);
+      _agent.RegisterIfRequired (new[] { nullLoadedObject }, true);
 
       _registrationListenerMock.AssertWasNotCalled (mock => mock.OnBeforeObjectRegistration (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
     }
 
     [Test]
-    public void RegisterIfRequired_Single_InvalidLoadedObject ()
+    public void RegisterIfRequired_InvalidLoadedObject ()
     {
       var alreadyExistingLoadedObject = GetInvalidLoadedObject ();
 
       _mockRepository.ReplayAll ();
 
-      _agent.RegisterIfRequired (alreadyExistingLoadedObject, true);
+      _agent.RegisterIfRequired (new[] { alreadyExistingLoadedObject }, true);
 
       _registrationListenerMock.AssertWasNotCalled (mock => mock.OnBeforeObjectRegistration (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
     }
 
     [Test]
-    public void RegisterIfRequired_Single_NotFoundLoadedObject_ThrowOnNotFoundFalse ()
+    public void RegisterIfRequired_NotFoundLoadedObject_ThrowOnNotFoundFalse ()
     {
       var notFoundLoadedObject = GetNotFoundLoadedObject ();
 
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
             .Expect (mock => mock.OnObjectsNotFound (Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { notFoundLoadedObject.ObjectID })));
       _mockRepository.ReplayAll ();
 
-      Assert.That (() => _agent.RegisterIfRequired (notFoundLoadedObject, false), Throws.Nothing);
+      Assert.That (() => _agent.RegisterIfRequired (new[] { notFoundLoadedObject }, false), Throws.Nothing);
 
       _registrationListenerMock.AssertWasNotCalled (mock => mock.OnBeforeObjectRegistration (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _registrationListenerMock.VerifyAllExpectations();
@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void RegisterIfRequired_Single_NotFoundLoadedObject_ThrowOnNotFoundTrue ()
+    public void RegisterIfRequired_NotFoundLoadedObject_ThrowOnNotFoundTrue ()
     {
       var notFoundLoadedObject = GetNotFoundLoadedObject ();
 
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _mockRepository.ReplayAll ();
 
       Assert.That (
-          () => _agent.RegisterIfRequired (notFoundLoadedObject, true),
+          () => _agent.RegisterIfRequired (new[] { notFoundLoadedObject }, true),
           Throws.TypeOf<ObjectsNotFoundException> ().With.Message.EqualTo (
               string.Format ("Object(s) could not be found: '{0}'.", notFoundLoadedObject.ObjectID)));
 
@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void RegisterIfRequired_Many_MultipleObjects_ThrowOnNotFoundFalse ()
+    public void RegisterIfRequired_MultipleObjects_ThrowOnNotFoundFalse ()
     {
       var freshlyLoadedObject1 = GetFreshlyLoadedObject ();
       var registerableDataContainer1 = freshlyLoadedObject1.FreshlyLoadedDataContainer;
@@ -217,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void RegisterIfRequired_Many_MultipleObjects_ThrowOnNotFoundTrue ()
+    public void RegisterIfRequired_MultipleObjects_ThrowOnNotFoundTrue ()
     {
       var freshlyLoadedObject1 = GetFreshlyLoadedObject ();
       var registerableDataContainer1 = freshlyLoadedObject1.FreshlyLoadedDataContainer;
@@ -262,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void RegisterIfRequired_Many_NoObjects ()
+    public void RegisterIfRequired_NoObjects ()
     {
       _mockRepository.ReplayAll ();
 
@@ -273,7 +273,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void RegisterIfRequired_Many_ExceptionWhenRegisteringObject_SomeObjectsSucceeded ()
+    public void RegisterIfRequired_ExceptionWhenRegisteringObject_SomeObjectsSucceeded ()
     {
       var exception = new Exception ("Test");
       
@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void RegisterIfRequired_Many_ExceptionWhenRegisteringObject_NoObjectsSucceeded ()
+    public void RegisterIfRequired_ExceptionWhenRegisteringObject_NoObjectsSucceeded ()
     {
       var exception = new Exception ("Test");
 

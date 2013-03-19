@@ -108,13 +108,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _registrationListener; }
     }
 
-    public void RegisterIfRequired (ILoadedObjectData loadedObjectData, bool throwOnNotFound)
-    {
-      ArgumentUtility.CheckNotNull ("loadedObjectData", loadedObjectData);
-
-      RegisterIfRequired (new[] { loadedObjectData }, throwOnNotFound);
-    }
-
     public void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);

@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     {
       _persistenceStrategyMock.Expect (mock => mock.LoadObjectData (DomainObjectIDs.Order1)).Return (_loadedObjectDataStub1);
       var throwOnNotFound = BooleanObjectMother.GetRandomBoolean();
-      _loadedObjectDataRegistrationAgentMock.Expect (mock => mock.RegisterIfRequired (Arg.Is (_loadedObjectDataStub1), Arg.Is (throwOnNotFound)));
+      _loadedObjectDataRegistrationAgentMock.Expect (mock => mock.RegisterIfRequired (Arg.Is (new[] { _loadedObjectDataStub1 }), Arg.Is (throwOnNotFound)));
 
       _mockRepository.ReplayAll();
 
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           .Expect (mock => mock.ResolveObjectRelationData (endPointID, _loadedObjectDataProviderStub))
           .Return (_loadedObjectDataStub1);
       _loadedObjectDataRegistrationAgentMock
-          .Expect (mock => mock.RegisterIfRequired (_loadedObjectDataStub1, true));
+          .Expect (mock => mock.RegisterIfRequired (new[] { _loadedObjectDataStub1 }, true));
       _mockRepository.ReplayAll();
 
       var result = _objectLoader.GetOrLoadRelatedObject (endPointID);
