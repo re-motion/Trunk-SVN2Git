@@ -14,13 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetching
 {
@@ -100,6 +105,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
 
       Assert.That (orderItem2.Order, Is.Not.SameAs (order1));
       Assert.That (BidirectionalRelationSyncService.IsSynchronized (TestableClientTransaction, orderItemsEndPointID), Is.False);
+    }
+
+    [Test]
+    [Ignore ("TODO 5397")]
+    public void EagerFetching_OnLoadedMethod_CanAlreadyAccessFetchedRelation_WithoutGoingToThePersistenceLayer ()
+    {
+      var ordersQuery = CreateOrdersQuery ("OrderNo IN (1)");
+      AddOrderItemsFetchQuery (ordersQuery, "o.OrderNo IN (1)");
+
+      var id1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+
+      bool onLoadedRaised = false;
+
+      var order1Reference = DomainObjectIDs.Order1.GetObjectReference<Order>();
+      order1Reference.ProtectedLoaded += (sender, args) =>
+      {
+        var persistenceExtensionMock = MockRepository.GenerateStrictMock<IPersistenceExtension>();
+        var persistenceExtensionFactoryStub = MockRepository.GenerateStub<IPersistenceExtensionFactory>();
+        persistenceExtensionFactoryStub
+            .Stub (stub => stub.CreatePersistenceExtensions (Arg<Guid>.Is.Anything))
+            .Return (new[] { persistenceExtensionMock });
+        using (new ServiceLocatorScope (typeof (IPersistenceExtensionFactory), () => persistenceExtensionFactoryStub))
+        {
+          Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Not.Null);
+          Assert.That (
+              order1Reference.OrderItems,
+              Is.EquivalentTo (
+                  new[] { DomainObjectIDs.OrderItem1.GetObjectReference<OrderItem>(), DomainObjectIDs.OrderItem2.GetObjectReference<OrderItem>() }));
+
+          persistenceExtensionMock.AssertWasNotCalled (mock => mock.ConnectionOpened (Arg<Guid>.Is.Anything));
+        }
+        onLoadedRaised = true;
+      };
+
+      Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Null);
+
+      TestableClientTransaction.QueryManager.GetCollection (ordersQuery);
+
+      Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Not.Null);
+      Assert.That (onLoadedRaised, Is.True);
     }
 
     private OrderItem RegisterFakeOrderItem (ObjectID objectID, ObjectID fakeOrderID)
