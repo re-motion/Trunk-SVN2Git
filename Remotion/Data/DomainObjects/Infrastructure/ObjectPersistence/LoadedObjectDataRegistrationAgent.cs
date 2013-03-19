@@ -124,10 +124,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           throw new ObjectsNotFoundException (visitor.NotFoundObjectIDs);
       }
 
-      RegisterAllDataContainers (visitor.DataContainersToBeRegistered);
+      PrepareDataContainers (visitor.DataContainersToBeRegistered);
+
+      // TODO 5397: Split operation here.
+      RegisterPreparedDataContainers (visitor.DataContainersToBeRegistered);
     }
 
-    private void RegisterAllDataContainers (IList<DataContainer> dataContainersToBeRegistered)
+    private void PrepareDataContainers (IList<DataContainer> dataContainersToBeRegistered)
+    {
+      if (dataContainersToBeRegistered.Count == 0)
+        return;
+      
+      // Note: After this event, OnAfterObjectRegistration _must_ be raised for the same ObjectIDs! Otherwise, we'll leak "objects currently loading".
+      var objectIDs = ListAdapter.AdaptReadOnly (dataContainersToBeRegistered, dc => dc.ID);
+      _registrationListener.OnBeforeObjectRegistration (objectIDs);
+
+      foreach (var dataContainer in dataContainersToBeRegistered)
+      {
+        var domainObject = _clientTransaction.GetObjectReference (dataContainer.ID);
+        dataContainer.SetDomainObject (domainObject);
+      }
+    }
+
+    private void RegisterPreparedDataContainers (IList<DataContainer> dataContainersToBeRegistered)
     {
       if (dataContainersToBeRegistered.Count == 0)
         return;
@@ -135,22 +154,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       var objectIDs = ListAdapter.AdaptReadOnly (dataContainersToBeRegistered, dc => dc.ID);
       var loadedDomainObjects = new List<DomainObject> (dataContainersToBeRegistered.Count);
 
-      _registrationListener.OnBeforeObjectRegistration (objectIDs);
       try
       {
         foreach (var dataContainer in dataContainersToBeRegistered)
         {
-          var domainObject = _clientTransaction.GetObjectReference (dataContainer.ID);
-          dataContainer.SetDomainObject (domainObject);
+          Assertion.IsTrue (dataContainer.HasDomainObject);
 
-          // TODO 5397: Operation must be split here! The part above must be performed before eager fetch results are evaluated, the part below should be performed later.
           _dataManager.RegisterDataContainer (dataContainer);
-          loadedDomainObjects.Add (domainObject);
+          loadedDomainObjects.Add (dataContainer.DomainObject);
         }
       }
       finally
       {
-        _registrationListener.OnAfterObjectRegistration (objectIDs, loadedDomainObjects.AsReadOnly());
+        _registrationListener.OnAfterObjectRegistration (objectIDs, loadedDomainObjects.AsReadOnly ());
       }
     }
   }
