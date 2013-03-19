@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -33,15 +34,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   {
     private class RegisteredDataContainerGatheringVisitor : ILoadedObjectVisitor
     {
-      private readonly ILoadedObjectDataRegistrationListener _registrationListener;
-
       private readonly List<DataContainer> _dataContainersToBeRegistered = new List<DataContainer> ();
       private readonly List<ObjectID> _notFoundObjectIDs = new List<ObjectID> ();
 
-      public RegisteredDataContainerGatheringVisitor (ILoadedObjectDataRegistrationListener registrationListener)
+      public ReadOnlyCollection<ObjectID> NotFoundObjectIDs
       {
-        ArgumentUtility.CheckNotNull ("registrationListener", registrationListener);
-        _registrationListener = registrationListener;
+        get { return _notFoundObjectIDs.AsReadOnly(); }
+      }
+
+      public ReadOnlyCollection<DataContainer> DataContainersToBeRegistered
+      {
+        get { return _dataContainersToBeRegistered.AsReadOnly (); }
       }
 
       public void VisitFreshlyLoadedObject (FreshlyLoadedObjectData freshlyLoadedObjectData)
@@ -69,45 +72,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       {
         ArgumentUtility.CheckNotNull ("notFoundLoadedObjectData", notFoundLoadedObjectData);
         _notFoundObjectIDs.Add (notFoundLoadedObjectData.ObjectID);
-      }
-
-      public void RegisterAllDataContainers (ClientTransaction clientTransaction, IDataManager dataManager, bool throwOnNotFound)
-      {
-        ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-        ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-
-        if (_notFoundObjectIDs.Any ())
-        {
-          _registrationListener.OnObjectsNotFound (_notFoundObjectIDs.AsReadOnly ());
-
-          if (throwOnNotFound)
-            throw new ObjectsNotFoundException (_notFoundObjectIDs);
-        }
-
-        if (_dataContainersToBeRegistered.Count == 0)
-          return;
-
-
-        var objectIDs = ListAdapter.AdaptReadOnly (_dataContainersToBeRegistered, dc => dc.ID);
-        var loadedDomainObjects = new List<DomainObject> (_dataContainersToBeRegistered.Count);
-
-        _registrationListener.OnBeforeObjectRegistration (objectIDs);
-        try
-        {
-          foreach (var dataContainer in _dataContainersToBeRegistered)
-          {
-            var domainObject = clientTransaction.GetObjectReference (dataContainer.ID);
-            dataContainer.SetDomainObject (domainObject);
-
-            dataManager.RegisterDataContainer (dataContainer);
-            loadedDomainObjects.Add (domainObject);
-          }
-        }
-        // TODO 5397: Operation must be split here! The part above must be performed before eager fetch results are evaluated, the part below should be performed later.
-        finally
-        {
-          _registrationListener.OnAfterObjectRegistration (objectIDs, loadedDomainObjects.AsReadOnly ());
-        }
       }
     }
 
@@ -155,11 +119,46 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);
 
-      var visitor = new RegisteredDataContainerGatheringVisitor (_registrationListener);
+      var visitor = new RegisteredDataContainerGatheringVisitor ();
       foreach (var loadedObject in loadedObjects)
         loadedObject.Accept (visitor);
 
-      visitor.RegisterAllDataContainers (_clientTransaction, _dataManager, throwOnNotFound);
+      if (visitor.NotFoundObjectIDs.Any ())
+      {
+        _registrationListener.OnObjectsNotFound (visitor.NotFoundObjectIDs);
+
+        if (throwOnNotFound)
+          throw new ObjectsNotFoundException (visitor.NotFoundObjectIDs);
+      }
+
+      RegisterAllDataContainers (visitor.DataContainersToBeRegistered);
+    }
+
+    private void RegisterAllDataContainers (IList<DataContainer> dataContainersToBeRegistered)
+    {
+      if (dataContainersToBeRegistered.Count == 0)
+        return;
+
+      var objectIDs = ListAdapter.AdaptReadOnly (dataContainersToBeRegistered, dc => dc.ID);
+      var loadedDomainObjects = new List<DomainObject> (dataContainersToBeRegistered.Count);
+
+      _registrationListener.OnBeforeObjectRegistration (objectIDs);
+      try
+      {
+        foreach (var dataContainer in dataContainersToBeRegistered)
+        {
+          var domainObject = _clientTransaction.GetObjectReference (dataContainer.ID);
+          dataContainer.SetDomainObject (domainObject);
+
+          // TODO 5397: Operation must be split here! The part above must be performed before eager fetch results are evaluated, the part below should be performed later.
+          _dataManager.RegisterDataContainer (dataContainer);
+          loadedDomainObjects.Add (domainObject);
+        }
+      }
+      finally
+      {
+        _registrationListener.OnAfterObjectRegistration (objectIDs, loadedDomainObjects.AsReadOnly());
+      }
     }
   }
 }
