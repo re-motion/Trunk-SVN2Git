@@ -720,7 +720,6 @@
     </Compile>
     <Compile Include="Tracing\TracingDataReader.cs" />
     <Compile Include="Tracing\TracingDbCommand.cs" />
-    <Compile Include="Queries\EagerFetching\EagerFetchingObjectLoaderDecorator.cs" />
     <Compile Include="Queries\EagerFetching\EagerFetchQueryCollection.cs" />
     <Compile Include="Queries\UnexpectedQueryResultException.cs" />
     <Compile Include="Queries\QueryResult.cs" />

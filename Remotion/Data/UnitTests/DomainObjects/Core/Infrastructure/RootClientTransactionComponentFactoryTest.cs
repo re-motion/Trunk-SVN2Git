@@ -217,23 +217,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
       var hierarchyManager = MockRepository.GenerateStub<ITransactionHierarchyManager> ();
 
-      var fakeBasicObjectLoader = MockRepository.GenerateStub<IFetchEnabledObjectLoader> ();
-
-      var factoryPartialMock = MockRepository.GeneratePartialMock<RootClientTransactionComponentFactory> ();
-      factoryPartialMock
-          .Expect (mock => CallCreateBasicObjectLoader (
-              mock, 
-              _fakeConstructedTransaction,
-              eventSink,
-              persistenceStrategy,
-              invalidDomainObjectManager,
-              dataManager, 
-              hierarchyManager))
-          .Return (fakeBasicObjectLoader);
-      factoryPartialMock.Replay ();
-
       var result = PrivateInvoke.InvokeNonPublicMethod (
-          factoryPartialMock, 
+          _factory,
           "CreateObjectLoader",
           _fakeConstructedTransaction,
           eventSink,
@@ -242,46 +227,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           dataManager,
           hierarchyManager);
 
-      Assert.That (result, Is.TypeOf (typeof (EagerFetchingObjectLoaderDecorator)));
-      var objectLoader = (EagerFetchingObjectLoaderDecorator) result;
-      Assert.That (objectLoader.DecoratedObjectLoader, Is.SameAs (fakeBasicObjectLoader));
-      Assert.That (objectLoader.EagerFetcher, Is.TypeOf<EagerFetcher> ());
-
-      var eagerFetcher = (EagerFetcher) objectLoader.EagerFetcher;
-      Assert.That (eagerFetcher.RegistrationAgent, Is.TypeOf<DelegatingFetchedRelationDataRegistrationAgent> ());
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).RealObjectDataRegistrationAgent,
-          Is.TypeOf<FetchedRealObjectRelationDataRegistrationAgent> ());
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).VirtualObjectDataRegistrationAgent,
-          Is.TypeOf<FetchedVirtualObjectRelationDataRegistrationAgent> ()
-              .With.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).CollectionDataRegistrationAgent,
-          Is.TypeOf<FetchedCollectionRelationDataRegistrationAgent> ()
-              .With.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
-    }
-
-    [Test]
-    public void CreateBasicObjectLoader ()
-    {
-      var persistenceStrategy = MockRepository.GenerateStub<IFetchEnabledPersistenceStrategy> ();
-      var dataManager = MockRepository.GenerateStub<IDataManager> ();
-      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
-      var hierarchyManager = MockRepository.GenerateStub<ITransactionHierarchyManager>();
-
-      var result = CallCreateBasicObjectLoader (
-          _factory,
-          _fakeConstructedTransaction,
-          eventSink,
-          persistenceStrategy,
-          invalidDomainObjectManager,
-          dataManager,
-          hierarchyManager);
-
       Assert.That (result, Is.TypeOf (typeof (FetchEnabledObjectLoader)));
-      var objectLoader = (ObjectLoader) result;
+      var objectLoader = (FetchEnabledObjectLoader) result;
       Assert.That (objectLoader.PersistenceStrategy, Is.SameAs (persistenceStrategy));
       Assert.That (
           objectLoader.LoadedObjectDataRegistrationAgent,
@@ -298,26 +245,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var loadedObjectDataProvider = (LoadedObjectDataProvider) objectLoader.LoadedObjectDataProvider;
       Assert.That (loadedObjectDataProvider.LoadedDataContainerProvider, Is.SameAs (dataManager));
       Assert.That (loadedObjectDataProvider.InvalidDomainObjectManager, Is.SameAs (invalidDomainObjectManager));
-    }
 
-    private object CallCreateBasicObjectLoader (
-        RootClientTransactionComponentFactory factory,
-        TestableClientTransaction constructedTransaction,
-        IClientTransactionEventSink eventSink,
-        IFetchEnabledPersistenceStrategy persistenceStrategy,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IDataManager dataManager,
-        ITransactionHierarchyManager hierarchyManager)
-    {
-      return PrivateInvoke.InvokeNonPublicMethod (
-          factory,
-          "CreateBasicObjectLoader",
-          constructedTransaction,
-          eventSink,
-          persistenceStrategy,
-          invalidDomainObjectManager,
-          dataManager,
-          hierarchyManager);
+      Assert.That (objectLoader.EagerFetcher, Is.TypeOf<EagerFetcher> ());
+
+      var eagerFetcher = (EagerFetcher) objectLoader.EagerFetcher;
+      Assert.That (eagerFetcher.RegistrationAgent, Is.TypeOf<DelegatingFetchedRelationDataRegistrationAgent> ());
+      Assert.That (
+          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).RealObjectDataRegistrationAgent,
+          Is.TypeOf<FetchedRealObjectRelationDataRegistrationAgent> ());
+      Assert.That (
+          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).VirtualObjectDataRegistrationAgent,
+          Is.TypeOf<FetchedVirtualObjectRelationDataRegistrationAgent> ()
+              .With.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
+      Assert.That (
+          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).CollectionDataRegistrationAgent,
+          Is.TypeOf<FetchedCollectionRelationDataRegistrationAgent> ()
+              .With.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
     }
   }
 }

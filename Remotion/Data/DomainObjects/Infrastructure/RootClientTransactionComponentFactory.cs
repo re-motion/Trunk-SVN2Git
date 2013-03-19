@@ -168,40 +168,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
-      var fetchEnabledPersistenceStrategy = 
+      var fetchEnabledPersistenceStrategy =
           ArgumentUtility.CheckNotNullAndType<IFetchEnabledPersistenceStrategy> ("persistenceStrategy", persistenceStrategy);
-      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      ArgumentUtility.CheckNotNull ("hierarchyManager", hierarchyManager);
-
-      var objectLoader = CreateBasicObjectLoader (
-          constructedTransaction,
-          eventSink,
-          fetchEnabledPersistenceStrategy,
-          invalidDomainObjectManager,
-          dataManager,
-          hierarchyManager);
-
-      IFetchedRelationDataRegistrationAgent registrationAgent =
-          new DelegatingFetchedRelationDataRegistrationAgent (
-              new FetchedRealObjectRelationDataRegistrationAgent(),
-              new FetchedVirtualObjectRelationDataRegistrationAgent (dataManager),
-              new FetchedCollectionRelationDataRegistrationAgent (dataManager));
-      var eagerFetcher = new EagerFetcher (registrationAgent);
-      return new EagerFetchingObjectLoaderDecorator (objectLoader, eagerFetcher);
-    }
-
-    protected virtual IFetchEnabledObjectLoader CreateBasicObjectLoader (
-        ClientTransaction constructedTransaction,
-        IClientTransactionEventSink eventSink,
-        IFetchEnabledPersistenceStrategy persistenceStrategy,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IDataManager dataManager,
-        ITransactionHierarchyManager hierarchyManager)
-    {
-      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
-      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("hierarchyManager", hierarchyManager);
@@ -209,10 +177,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var loadedObjectDataProvider = new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager);
       var registrationListener = new LoadedObjectDataRegistrationListener (eventSink, hierarchyManager);
       var loadedObjectDataRegistrationAgent = new LoadedObjectDataRegistrationAgent (constructedTransaction, dataManager, registrationListener);
+
+      IFetchedRelationDataRegistrationAgent registrationAgent =
+          new DelegatingFetchedRelationDataRegistrationAgent (
+              new FetchedRealObjectRelationDataRegistrationAgent(),
+              new FetchedVirtualObjectRelationDataRegistrationAgent (dataManager),
+              new FetchedCollectionRelationDataRegistrationAgent (dataManager));
+      var eagerFetcher = new EagerFetcher (registrationAgent);
+
       return new FetchEnabledObjectLoader (
-          persistenceStrategy,
+          fetchEnabledPersistenceStrategy,
           loadedObjectDataRegistrationAgent,
-          loadedObjectDataProvider);
+          loadedObjectDataProvider,
+          eagerFetcher);
     }
   }
 }

@@ -17,9 +17,15 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.EagerFetching;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
@@ -32,13 +38,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     private IFetchEnabledPersistenceStrategy _persistenceStrategyMock;
     private ILoadedObjectDataRegistrationAgent _loadedObjectDataRegistrationAgentMock;
     private ILoadedObjectDataProvider _loadedObjectDataProviderStub;
+    private IEagerFetcher _eagerFetcherMock;
 
     private FetchEnabledObjectLoader _fetchEnabledObjectLoader;
     
-    private IQuery _fakeQuery;
-
-    private LoadedObjectDataWithDataSourceData _resultItem1;
-    private LoadedObjectDataWithDataSourceData _resultItem2;
+    private ILoadedObjectData _resultItem1;
+    private ILoadedObjectData _resultItem2;
+    private LoadedObjectDataWithDataSourceData _resultItemWithSourceData1;
+    private LoadedObjectDataWithDataSourceData _resultItemWithSourceData2;
+    private IRelationEndPointDefinition _orderTicketEndPointDefinition;
+    private IRelationEndPointDefinition _customerEndPointDefinition;
 
     public override void SetUp ()
     {
@@ -49,45 +58,105 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _persistenceStrategyMock = _mockRepository.StrictMock<IFetchEnabledPersistenceStrategy> ();
       _loadedObjectDataRegistrationAgentMock = _mockRepository.StrictMock<ILoadedObjectDataRegistrationAgent> ();
       _loadedObjectDataProviderStub = _mockRepository.Stub<ILoadedObjectDataProvider> ();
+      _eagerFetcherMock = _mockRepository.StrictMock<IEagerFetcher> ();
 
       _fetchEnabledObjectLoader = new FetchEnabledObjectLoader (
           _persistenceStrategyMock,
           _loadedObjectDataRegistrationAgentMock,
-          _loadedObjectDataProviderStub);
+          _loadedObjectDataProviderStub,
+          _eagerFetcherMock);
 
-      _fakeQuery = CreateFakeQuery ();
+      _resultItem1 = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (DomainObjectIDs.Order1);
+      _resultItem2 = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (DomainObjectIDs.Order2);
+      _resultItemWithSourceData1 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (DomainObjectIDs.Order1);
+      _resultItemWithSourceData2 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (DomainObjectIDs.Order2);
 
-      _resultItem1 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (DomainObjectIDs.Order1);
-      _resultItem2 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (DomainObjectIDs.Order2);
+      _orderTicketEndPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
+      _customerEndPointDefinition = GetEndPointDefinition (typeof (Order), "Customer");
+    }
+
+    [Test]
+    public void GetOrLoadCollectionQueryResult_PerformsEagerFetching ()
+    {
+      var fetchQuery1 = CreateFakeQuery ();
+      var fetchQuery2 = CreateFakeQuery ();
+      var fakeQuery = CreateFakeQuery (
+          Tuple.Create (_orderTicketEndPointDefinition, fetchQuery1),
+          Tuple.Create (_customerEndPointDefinition, fetchQuery2));
+
+      _persistenceStrategyMock
+          .Expect (mock => mock.ExecuteCollectionQuery (fakeQuery, _loadedObjectDataProviderStub))
+          .Return (new[] { _resultItem1, _resultItem2 });
+      _loadedObjectDataRegistrationAgentMock
+          .Expect (
+              mock => mock.RegisterIfRequired (
+                  Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _resultItem1, _resultItem2 }), 
+                  Arg.Is (true)));
+      _eagerFetcherMock.Expect (
+          mock => mock.PerformEagerFetching (new[] { _resultItem1, _resultItem2 }, fakeQuery.EagerFetchQueries, _fetchEnabledObjectLoader));
+      _mockRepository.ReplayAll();
+
+      var result = _fetchEnabledObjectLoader.GetOrLoadCollectionQueryResult (fakeQuery);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (new[] {_resultItem1, _resultItem2 }));
     }
 
     [Test]
     public void GetOrLoadFetchQueryResult ()
     {
+      var fetchQuery1 = CreateFakeQuery();
+      var fetchQuery2 = CreateFakeQuery();
+      var fakeQuery = CreateFakeQuery (
+          Tuple.Create (_orderTicketEndPointDefinition, fetchQuery1), 
+          Tuple.Create (_customerEndPointDefinition, fetchQuery2));
+
       _persistenceStrategyMock
-          .Expect (mock => mock.ExecuteFetchQuery (_fakeQuery, _loadedObjectDataProviderStub))
-          .Return (new[] { _resultItem1, _resultItem2 });
+          .Expect (mock => mock.ExecuteFetchQuery (fakeQuery, _loadedObjectDataProviderStub))
+          .Return (new[] { _resultItemWithSourceData1, _resultItemWithSourceData2 });
       _loadedObjectDataRegistrationAgentMock
           .Expect (mock => mock.RegisterIfRequired (
-              Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _resultItem1.LoadedObjectData, _resultItem2.LoadedObjectData }),
+              Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _resultItemWithSourceData1.LoadedObjectData, _resultItemWithSourceData2.LoadedObjectData }),
               Arg.Is (true)));
+      _eagerFetcherMock
+          .Expect (mock => mock.PerformEagerFetching (
+              Arg<ICollection<ILoadedObjectData>>.List.Equal (new[] { _resultItemWithSourceData1.LoadedObjectData, _resultItemWithSourceData2.LoadedObjectData }),
+              Arg.Is (fakeQuery.EagerFetchQueries),
+              Arg.Is (_fetchEnabledObjectLoader)));
 
       _mockRepository.ReplayAll ();
 
-      var result = _fetchEnabledObjectLoader.GetOrLoadFetchQueryResult (_fakeQuery);
+      var result = _fetchEnabledObjectLoader.GetOrLoadFetchQueryResult (fakeQuery);
 
       _mockRepository.VerifyAll ();
-      Assert.That (result, Is.EqualTo (new[] { _resultItem1, _resultItem2 }));
+      Assert.That (result, Is.EqualTo (new[] { _resultItemWithSourceData1, _resultItemWithSourceData2 }));
     }
 
-    private IQuery CreateFakeQuery ()
+    [Test]
+    public void Serializable ()
     {
-      return QueryFactory.CreateCollectionQuery (
-          "test",
-          TestDomainStorageProviderDefinition,
-          "TEST",
-          new QueryParameterCollection (),
-          typeof (DomainObjectCollection));
+      var instance = new FetchEnabledObjectLoader (
+          new SerializableFetchEnabledPersistenceStrategyFake(),
+          new SerializableLoadedObjectDataRegistrationAgentFake(),
+          new SerializableLoadedObjectDataProviderFake(),
+          new SerializableEagerFetcherFake());
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
+
+      Assert.That (deserializedInstance.PersistenceStrategy, Is.Not.Null);
+      Assert.That (deserializedInstance.LoadedObjectDataRegistrationAgent, Is.Not.Null);
+      Assert.That (deserializedInstance.LoadedObjectDataProvider, Is.Not.Null);
+      Assert.That (deserializedInstance.EagerFetcher, Is.Not.Null);
+    }
+
+    private IQuery CreateFakeQuery (params Tuple<IRelationEndPointDefinition, IQuery>[] fetchQueries)
+    {
+      var query = QueryFactory.CreateCollectionQuery (
+          "test", TestDomainStorageProviderDefinition, "TEST", new QueryParameterCollection(), typeof (DomainObjectCollection));
+      foreach (var fetchQuery in fetchQueries)
+        query.EagerFetchQueries.Add (fetchQuery.Item1, fetchQuery.Item2);
+
+      return query;
     }
   }
 }

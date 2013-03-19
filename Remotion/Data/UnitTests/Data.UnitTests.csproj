@@ -210,6 +210,9 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionHierarchyFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableFetchEnabledPersistenceStrategyFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLoadedObjectDataProviderFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLoadedObjectDataRegistrationAgentFake.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectHandleAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\ClientTransactionHierarchyTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectInititalizationContextScopeHelper.cs" />
@@ -1253,7 +1256,6 @@
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail_Detail.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\DbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\TestableDbCommandBuilder.cs" />
-    <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetchingObjectLoaderDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetchQueryCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryResultTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryCacheTest.cs" />

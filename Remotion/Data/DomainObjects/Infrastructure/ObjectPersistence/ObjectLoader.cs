@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _loadedObjectDataProvider; }
     }
 
-    public ILoadedObjectData LoadObject (ObjectID id, bool throwOnNotFound)
+    public virtual ILoadedObjectData LoadObject (ObjectID id, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return loadedObjectData;
     }
 
-    public ICollection<ILoadedObjectData> LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+    public virtual ICollection<ILoadedObjectData> LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
 
@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return loadedObjectData;
     }
 
-    public ILoadedObjectData GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
+    public virtual ILoadedObjectData GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       
@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return loadedObjectData;
     }
 
-    public ICollection<ILoadedObjectData> GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
+    public virtual ICollection<ILoadedObjectData> GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return loadedObjectData;
     }
 
-    public ICollection<ILoadedObjectData> GetOrLoadCollectionQueryResult (IQuery query)
+    public virtual ICollection<ILoadedObjectData> GetOrLoadCollectionQueryResult (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using System.Linq;
@@ -30,16 +31,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   public class FetchEnabledObjectLoader : ObjectLoader, IFetchEnabledObjectLoader
   {
     private readonly IFetchEnabledPersistenceStrategy _persistenceStrategy;
+    private readonly IEagerFetcher _eagerFetcher;
 
     public FetchEnabledObjectLoader (
         IFetchEnabledPersistenceStrategy persistenceStrategy,
         ILoadedObjectDataRegistrationAgent loadedObjectDataRegistrationAgent,
-        ILoadedObjectDataProvider loadedObjectDataProvider)
+        ILoadedObjectDataProvider loadedObjectDataProvider,
+        IEagerFetcher eagerFetcher)
         : base (persistenceStrategy, loadedObjectDataRegistrationAgent, loadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
-
+      ArgumentUtility.CheckNotNull ("eagerFetcher", eagerFetcher);
+      
       _persistenceStrategy = persistenceStrategy;
+      _eagerFetcher = eagerFetcher;
     }
 
     public new IFetchEnabledPersistenceStrategy PersistenceStrategy
@@ -47,13 +52,46 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _persistenceStrategy; }
     }
 
-    public ICollection<LoadedObjectDataWithDataSourceData> GetOrLoadFetchQueryResult (IQuery query)
+    public IEagerFetcher EagerFetcher
+    {
+      get { return _eagerFetcher; }
+    }
+
+    public override ICollection<ILoadedObjectData> GetOrLoadCollectionQueryResult (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      var loadedObjectData = _persistenceStrategy.ExecuteFetchQuery (query, LoadedObjectDataProvider).ConvertToCollection();
-      LoadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData.Select (data => data.LoadedObjectData), true);
-      return loadedObjectData;
+      // TODO 5397: Create empty loaded objects context - this will track the data of objects loaded during this operation.
+
+      // TODO 5397: This operation must not cause any loaded events to be raised. While object loading usually involves the full registration process,
+      // in this case, only the first half (ObjectsLoading events and associating the DataContainers with DomainObjects) must be performed. Keep track 
+      // of the second half in the context. This is probably most easily solved by overriding the ObjectLoader.GetOrLoadCollectionQueryResult method.
+      var queryResult = base.GetOrLoadCollectionQueryResult (query);
+
+      // TODO 5397: Pass in context.
+      _eagerFetcher.PerformEagerFetching (queryResult, query.EagerFetchQueries, this);
+
+      // TODO 5397: Finish second half of registration for all objects in the context.
+
+      return queryResult;
+    }
+
+    // TODO 5397: Add context parameter.
+    public ICollection<LoadedObjectDataWithDataSourceData> GetOrLoadFetchQueryResult (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+      // TODO 5397: Unify the GetOrLoadFetchQueryResult implementation with this operation. Only perform first half of register operation. Add second 
+      // half to context.
+
+      var loadedObjectDataWithSource = _persistenceStrategy.ExecuteFetchQuery (query, LoadedObjectDataProvider).ConvertToCollection();
+      var loadedObjectData = loadedObjectDataWithSource.Select (data => data.LoadedObjectData).ConvertToCollection ();
+
+      LoadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, true);
+
+      // TODO 5397: Pass in context.
+      _eagerFetcher.PerformEagerFetching (loadedObjectData, query.EagerFetchQueries, this);
+
+      return loadedObjectDataWithSource;
     }
   }
 }
