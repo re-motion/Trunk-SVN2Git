@@ -98,10 +98,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           {
             var domainObject = clientTransaction.GetObjectReference (dataContainer.ID);
             dataContainer.SetDomainObject (domainObject);
+
             dataManager.RegisterDataContainer (dataContainer);
             loadedDomainObjects.Add (domainObject);
           }
         }
+        // TODO 5397: Operation must be split here! The part above must be performed before eager fetch results are evaluated, the part below should be performed later.
         finally
         {
           _registrationListener.OnAfterObjectRegistration (objectIDs, loadedDomainObjects.AsReadOnly ());
