@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       foreach (var relatedObject in relatedObjects)
       {
         if (!relatedObject.IsNull)
-          CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition, relatedObject.LoadedObjectData.ObjectID);
+          CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, oppositeEndPointDefinition, relatedObject.LoadedObjectData.ObjectID);
       }
     }
 
@@ -80,12 +80,13 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
     protected void CheckClassDefinitionOfRelatedObject (
         IRelationEndPointDefinition relationEndPointDefinition,
-        LoadedObjectDataWithDataSourceData relatedObject,
-        IRelationEndPointDefinition oppositeEndPointDefinition, ObjectID relatedObjectID)
+        IRelationEndPointDefinition oppositeEndPointDefinition, 
+        ObjectID relatedObjectID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
-      ArgumentUtility.CheckNotNull ("relatedObject", relatedObject);
       ArgumentUtility.CheckNotNull ("oppositeEndPointDefinition", oppositeEndPointDefinition);
+      ArgumentUtility.CheckNotNull ("relatedObjectID", relatedObjectID);
+      
 
       if (!oppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (relatedObjectID.ClassDefinition))
       {
@@ -122,7 +123,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         IRelationEndPointDefinition relationEndPointDefinition, 
         IRelationEndPointDefinition oppositeEndPointDefinition)
     {
-      CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition, relatedObject.LoadedObjectData.ObjectID);
+      CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, oppositeEndPointDefinition, relatedObject.LoadedObjectData.ObjectID);
       return relatedObject.DataSourceData;
     }
   }
