@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
@@ -48,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
       _participant = new DomainObjectParticipant (_typeDefinitionProviderMock, _interceptedPropertyFinderMock);
 
-      _typeContext = new TypeContext (new MutableTypeFactory(), typeof (Order));
+      _typeContext = new TypeContext (new MutableTypeFactory(), typeof (Order), new Dictionary<string, object>());
       _proxyType = _typeContext.ProxyType;
     }
 
