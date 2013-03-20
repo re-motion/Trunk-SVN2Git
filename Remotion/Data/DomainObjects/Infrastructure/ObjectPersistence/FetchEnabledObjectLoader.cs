@@ -61,31 +61,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      // TODO 5397: Create empty loaded objects context - this will track the data of objects loaded during this operation.
+      var loadedObjectData = _persistenceStrategy.ExecuteCollectionQuery (query, LoadedObjectDataProvider).ConvertToCollection();
 
-      // TODO 5397: This operation must not cause any loaded events to be raised. While object loading usually involves the full registration process,
-      // in this case, only the first half (ObjectsLoading events and associating the DataContainers with DomainObjects) must be performed. Keep track 
-      // of the second half in the context. This is probably most easily solved by overriding the ObjectLoader.GetOrLoadCollectionQueryResult method.
-      var queryResult = base.GetOrLoadCollectionQueryResult (query);
+      // TODO 5397: var context = new PendingLoadedObjectDataRegistrationContext();
+      // TODO 5397: context.AddObjectsPendingRegistration (loadedObjectData);
+      LoadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, true); // TODO 5397: Remove this.
 
-      // TODO 5397: Pass in context.
-      _eagerFetcher.PerformEagerFetching (queryResult, query.EagerFetchQueries, this);
+      // TODO 5397: Pass in the context.
+      _eagerFetcher.PerformEagerFetching (loadedObjectData, query.EagerFetchQueries, this);
+      // TODO 5397: LoadedObjectDataRegistrationAgent.RegisterIfRequired (context.ObjectsPendingRegistration, true);
 
-      // TODO 5397: Finish second half of registration for all objects in the context.
-
-      return queryResult;
+      return loadedObjectData;
     }
 
     // TODO 5397: Add context parameter.
     public ICollection<LoadedObjectDataWithDataSourceData> GetOrLoadFetchQueryResult (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
-      // TODO 5397: Unify the GetOrLoadFetchQueryResult implementation with this operation. Only perform first half of register operation. Add second 
-      // half to context.
 
       var loadedObjectDataWithSource = _persistenceStrategy.ExecuteFetchQuery (query, LoadedObjectDataProvider).ConvertToCollection();
       var loadedObjectData = loadedObjectDataWithSource.Select (data => data.LoadedObjectData).ConvertToCollection ();
 
+      // TODO 5397: context.AddObjectsPendingRegistration (loadedObjectData);
       LoadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, true);
 
       // TODO 5397: Pass in context.
