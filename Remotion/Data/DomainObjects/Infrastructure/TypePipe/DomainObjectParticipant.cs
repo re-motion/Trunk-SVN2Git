@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       get { return new CacheKeyProvider (_typeDefinitionProvider); }
     }
 
-    public void Modify (TypeContext typeContext)
+    public void Modify (ITypeContext typeContext)
     {
       ArgumentUtility.CheckNotNull ("typeContext", typeContext);
       var proxyType = typeContext.ProxyType;
