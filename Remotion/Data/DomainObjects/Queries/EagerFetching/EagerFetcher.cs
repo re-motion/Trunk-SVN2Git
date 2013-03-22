@@ -49,11 +49,14 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     public void PerformEagerFetching (
         ICollection<ILoadedObjectData> originatingObjects,
         IEnumerable<KeyValuePair<IRelationEndPointDefinition, IQuery>> fetchQueries,
-        IFetchEnabledObjectLoader fetchResultLoader)
+        IFetchEnabledObjectLoader fetchResultLoader,
+        LoadedObjectDataPendingRegistrationCollector pendingRegistrationCollector)
     {
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
       ArgumentUtility.CheckNotNull ("fetchQueries", fetchQueries);
-
+      ArgumentUtility.CheckNotNull ("fetchResultLoader", fetchResultLoader);
+      ArgumentUtility.CheckNotNull ("pendingRegistrationCollector", pendingRegistrationCollector);
+      
       if (originatingObjects.Count <= 0)
         return;
 
@@ -68,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
             fetchQuery.ID,
             fetchQuery.Statement);
 
-        var fetchedObjects = fetchResultLoader.GetOrLoadFetchQueryResult (fetchQuery);
+        var fetchedObjects = fetchResultLoader.GetOrLoadFetchQueryResult (fetchQuery, pendingRegistrationCollector);
         s_log.DebugFormat (
             "The eager fetch query for {0} yielded {1} related objects for {2} original objects.",
             relationEndPointDefinition.PropertyName,

@@ -167,7 +167,7 @@
     <Compile Include="Infrastructure\HierarchyManagement\IClientTransactionHierarchy.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\ObjectInititalizationContextScope.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\ObjectReferenceInitializationContext.cs" />
-    <Compile Include="Infrastructure\ObjectPersistence\PendingLoadedObjectDataRegistrationContext.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectDataPendingRegistrationCollector.cs" />
     <Compile Include="Infrastructure\TypePipe\IAccessorInterceptor.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingAccessorInterceptorBase.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingGetAccessorInterceptor.cs" />

@@ -34,44 +34,74 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   {
     private class RegisteredDataContainerGatheringVisitor : ILoadedObjectVisitor
     {
-      private readonly List<DataContainer> _dataContainersToBeRegistered = new List<DataContainer> ();
+      private readonly LoadedObjectDataPendingRegistrationCollector _dataPendingRegistrationCollector;
+      private readonly ClientTransaction _clientTransaction;
       private readonly List<ObjectID> _notFoundObjectIDs = new List<ObjectID> ();
+
+      private readonly List<ILoadedObjectData> _loadedObjectData = new List<ILoadedObjectData>();
+
+      public RegisteredDataContainerGatheringVisitor (
+          LoadedObjectDataPendingRegistrationCollector dataPendingRegistrationCollector, 
+          ClientTransaction clientTransaction)
+      {
+        ArgumentUtility.CheckNotNull ("dataPendingRegistrationCollector", dataPendingRegistrationCollector);
+        ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+        
+        _dataPendingRegistrationCollector = dataPendingRegistrationCollector;
+        _clientTransaction = clientTransaction;
+      }
 
       public ReadOnlyCollection<ObjectID> NotFoundObjectIDs
       {
         get { return _notFoundObjectIDs.AsReadOnly(); }
       }
 
-      public ReadOnlyCollection<DataContainer> DataContainersToBeRegistered
+      public ReadOnlyCollection<ILoadedObjectData> LoadedObjectData
       {
-        get { return _dataContainersToBeRegistered.AsReadOnly (); }
+        get { return _loadedObjectData.AsReadOnly(); }
       }
 
       public void VisitFreshlyLoadedObject (FreshlyLoadedObjectData freshlyLoadedObjectData)
       {
         ArgumentUtility.CheckNotNull ("freshlyLoadedObjectData", freshlyLoadedObjectData);
-        _dataContainersToBeRegistered.Add (freshlyLoadedObjectData.FreshlyLoadedDataContainer);
+
+        var consolidatedData = _dataPendingRegistrationCollector.Add (freshlyLoadedObjectData);
+        _loadedObjectData.Add (consolidatedData);
+
+        if (consolidatedData == freshlyLoadedObjectData)
+        {
+          var domainObject = _clientTransaction.GetObjectReference (freshlyLoadedObjectData.FreshlyLoadedDataContainer.ID);
+          freshlyLoadedObjectData.FreshlyLoadedDataContainer.SetDomainObject (domainObject);
+        }
       }
 
       public void VisitAlreadyExistingLoadedObject (AlreadyExistingLoadedObjectData alreadyExistingLoadedObjectData)
       {
         ArgumentUtility.CheckNotNull ("alreadyExistingLoadedObjectData", alreadyExistingLoadedObjectData);
+
+        _loadedObjectData.Add (alreadyExistingLoadedObjectData);
       }
 
       public void VisitNullLoadedObject (NullLoadedObjectData nullLoadedObjectData)
       {
         ArgumentUtility.CheckNotNull ("nullLoadedObjectData", nullLoadedObjectData);
+
+        _loadedObjectData.Add (nullLoadedObjectData);
       }
 
       public void VisitInvalidLoadedObject (InvalidLoadedObjectData invalidLoadedObjectData)
       {
         ArgumentUtility.CheckNotNull ("invalidLoadedObjectData", invalidLoadedObjectData);
+
+        _loadedObjectData.Add (invalidLoadedObjectData);
       }
 
       public void VisitNotFoundLoadedObject (NotFoundLoadedObjectData notFoundLoadedObjectData)
       {
         ArgumentUtility.CheckNotNull ("notFoundLoadedObjectData", notFoundLoadedObjectData);
         _notFoundObjectIDs.Add (notFoundLoadedObjectData.ObjectID);
+
+        _loadedObjectData.Add (notFoundLoadedObjectData);
       }
     }
 
@@ -108,56 +138,53 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _registrationListener; }
     }
 
-    public void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, bool throwOnNotFound)
+    public IEnumerable<ILoadedObjectData> RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, bool throwOnNotFound)
+    {
+      var collector = new LoadedObjectDataPendingRegistrationCollector();
+      var result = BeginRegisterIfRequired (loadedObjects, throwOnNotFound, collector);
+      EndRegisterIfRequired (collector);
+      return result;
+    }
+
+    public IEnumerable<ILoadedObjectData> BeginRegisterIfRequired (
+        IEnumerable<ILoadedObjectData> loadedObjects, bool throwOnNotFound, LoadedObjectDataPendingRegistrationCollector pendingLoadedObjectDataCollector)
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);
 
-      var visitor = new RegisteredDataContainerGatheringVisitor ();
+      var visitor = new RegisteredDataContainerGatheringVisitor (pendingLoadedObjectDataCollector, _clientTransaction);
       foreach (var loadedObject in loadedObjects)
         loadedObject.Accept (visitor);
 
-      if (visitor.NotFoundObjectIDs.Any ())
+      if (visitor.NotFoundObjectIDs.Any())
       {
         _registrationListener.OnObjectsNotFound (visitor.NotFoundObjectIDs);
 
+        // Note: If this exception is thrown, we have already set the DomainObjects of the freshly loaded DataContainer, and we've also added them to 
+        // the collector. This shouldn't make any difference, and it's easier to implement.
         if (throwOnNotFound)
           throw new ObjectsNotFoundException (visitor.NotFoundObjectIDs);
       }
 
-      PrepareDataContainers (visitor.DataContainersToBeRegistered);
-
-      // TODO 5397: Split operation here.
-      RegisterPreparedDataContainers (visitor.DataContainersToBeRegistered);
+      return visitor.LoadedObjectData;
     }
 
-    private void PrepareDataContainers (IList<DataContainer> dataContainersToBeRegistered)
+    public void EndRegisterIfRequired (LoadedObjectDataPendingRegistrationCollector pendingLoadedObjectDataCollector)
     {
-      if (dataContainersToBeRegistered.Count == 0)
+      ArgumentUtility.CheckNotNull ("pendingLoadedObjectDataCollector", pendingLoadedObjectDataCollector);
+
+      if (pendingLoadedObjectDataCollector.DataPendingRegistration.Count == 0)
         return;
-      
+
       // Note: After this event, OnAfterObjectRegistration _must_ be raised for the same ObjectIDs! Otherwise, we'll leak "objects currently loading".
-      var objectIDs = ListAdapter.AdaptReadOnly (dataContainersToBeRegistered, dc => dc.ID);
+      var objectIDs = pendingLoadedObjectDataCollector.DataPendingRegistration.Select (data => data.ObjectID).ToList().AsReadOnly();
       _registrationListener.OnBeforeObjectRegistration (objectIDs);
 
-      foreach (var dataContainer in dataContainersToBeRegistered)
-      {
-        var domainObject = _clientTransaction.GetObjectReference (dataContainer.ID);
-        dataContainer.SetDomainObject (domainObject);
-      }
-    }
-
-    private void RegisterPreparedDataContainers (IList<DataContainer> dataContainersToBeRegistered)
-    {
-      if (dataContainersToBeRegistered.Count == 0)
-        return;
-
-      var objectIDs = ListAdapter.AdaptReadOnly (dataContainersToBeRegistered, dc => dc.ID);
-      var loadedDomainObjects = new List<DomainObject> (dataContainersToBeRegistered.Count);
-
+      var loadedDomainObjects = new List<DomainObject> (pendingLoadedObjectDataCollector.DataPendingRegistration.Count);
       try
       {
-        foreach (var dataContainer in dataContainersToBeRegistered)
+        foreach (var data in pendingLoadedObjectDataCollector.DataPendingRegistration)
         {
+          var dataContainer = data.FreshlyLoadedDataContainer;
           Assertion.IsTrue (dataContainer.HasDomainObject);
 
           _dataManager.RegisterDataContainer (dataContainer);
@@ -168,6 +195,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       {
         _registrationListener.OnAfterObjectRegistration (objectIDs, loadedDomainObjects.AsReadOnly ());
       }
+
+      // TODO 5397: Clear the collector.
     }
   }
 }

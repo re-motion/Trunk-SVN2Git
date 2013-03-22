@@ -134,6 +134,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     }
 
     [Test]
+    public void LoadDataContainers_DuplicatesAreReplacedBySingleDataContainer ()
+    {
+      Assert.AreNotEqual (DomainObjectIDs.Order1.StorageProviderDefinition.Name, DomainObjectIDs.Official1, "Different storage providers");
+
+      var mockRepository = new MockRepository ();
+      var storageProviderMock = mockRepository.StrictMock<StorageProvider> (
+          UnitTestStorageProviderDefinition,
+          NullPersistenceExtension.Instance);
+
+      var officialDC1a = DataContainer.CreateNew (DomainObjectIDs.Official1);
+      var officialDC1b = DataContainer.CreateNew (DomainObjectIDs.Official1);
+
+      var officialResults = new List<ObjectLookupResult<DataContainer>> ();
+      officialResults.Add (new ObjectLookupResult<DataContainer> (DomainObjectIDs.Official1, officialDC1a));
+      officialResults.Add (new ObjectLookupResult<DataContainer> (DomainObjectIDs.Official1, officialDC1b));
+
+      storageProviderMock
+          .Expect (mock => mock.LoadDataContainers (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Official1, DomainObjectIDs.Official1 })))
+          .Return (officialResults);
+
+      mockRepository.ReplayAll ();
+
+      ObjectLookupResult<DataContainer>[] actualResults;
+      using (UnitTestStorageProviderStub.EnterMockStorageProviderScope (storageProviderMock))
+      {
+        actualResults = _persistenceManager.LoadDataContainers (
+            new[]
+            {
+                DomainObjectIDs.Official1, DomainObjectIDs.Official1
+            }).ToArray ();
+      }
+
+      mockRepository.VerifyAll ();
+
+      Assert.That (actualResults, Has.Length.EqualTo (2));
+      Assert.That (actualResults[0].ObjectID, Is.EqualTo (DomainObjectIDs.Official1));
+      Assert.That (actualResults[0].LocatedObject, Is.SameAs (officialDC1a));
+      Assert.That (actualResults[1].ObjectID, Is.EqualTo (DomainObjectIDs.Official1));
+      Assert.That (actualResults[1].LocatedObject, Is.SameAs (officialDC1a));
+    }
+
+    [Test]
     public void LoadDataContainers_NotFound ()
     {
       var objectIds = new[] { _invalidOrderID1, _invalidOrderID2, DomainObjectIDs.Order1 };

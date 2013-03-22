@@ -108,7 +108,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
     }
 
     [Test]
-    [Ignore ("TODO 5397")]
     public void EagerFetching_OnLoadedMethod_CanAlreadyAccessFetchedRelation_WithoutGoingToThePersistenceLayer ()
     {
       var ordersQuery = CreateOrdersQuery ("OrderNo IN (1)");
@@ -122,11 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       order1Reference.ProtectedLoaded += (sender, args) =>
       {
         var persistenceExtensionMock = MockRepository.GenerateStrictMock<IPersistenceExtension>();
-        var persistenceExtensionFactoryStub = MockRepository.GenerateStub<IPersistenceExtensionFactory>();
-        persistenceExtensionFactoryStub
-            .Stub (stub => stub.CreatePersistenceExtensions (Arg<Guid>.Is.Anything))
-            .Return (new[] { persistenceExtensionMock });
-        using (new ServiceLocatorScope (typeof (IPersistenceExtensionFactory), () => persistenceExtensionFactoryStub))
+        using (ScopeWithPersistenceExtension (persistenceExtensionMock))
         {
           Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Not.Null);
           Assert.That (
@@ -147,6 +142,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       Assert.That (onLoadedRaised, Is.True);
     }
 
+    [Test]
+    public void EagerFetching_FetchingSameObjectsMultipleTimes_DoesntThrow ()
+    {
+      var ordersQuery = CreateOrdersQuery ("o.OrderNo IN (1)");
+      var orderItemsFetchQuery = AddOrderItemsFetchQuery (ordersQuery, "o.OrderNo IN (1)");
+      AddOrderFetchAgainQuery (orderItemsFetchQuery, "o.OrderNo IN (1)");
+
+      Assert.That (() => TestableClientTransaction.QueryManager.GetCollection (ordersQuery), Throws.Nothing);
+    }
+
     private OrderItem RegisterFakeOrderItem (ObjectID objectID, ObjectID fakeOrderID)
     {
       var orderItem = (OrderItem) LifetimeService.GetObjectReference (TestableClientTransaction, objectID);
@@ -164,12 +169,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       return QueryFactory.CreateCollectionQuery (
           "test",
           TestDomainStorageProviderDefinition,
-          "SELECT * FROM [Order] WHERE " + whereCondition,
+          "SELECT * FROM [Order] o WHERE " + whereCondition,
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));
     }
 
-    private void AddOrderItemsFetchQuery (IQuery ordersQuery, string whereCondition)
+    private IQuery AddOrderItemsFetchQuery (IQuery ordersQuery, string whereCondition)
     {
       var relationEndPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
 
@@ -180,7 +185,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));
       ordersQuery.EagerFetchQueries.Add (relationEndPointDefinition, orderItemsFetchQuery);
+      return orderItemsFetchQuery;
     }
 
+    private void AddOrderFetchAgainQuery (IQuery orderItemsFetchQuery, string originalOrderWhereCondition)
+    {
+      var relationEndPointDefinition = GetEndPointDefinition (typeof (OrderItem), "Order");
+
+      var ordersFetchQuery = QueryFactory.CreateCollectionQuery (
+          "test fetch",
+          TestDomainStorageProviderDefinition,
+          "SELECT DISTINCT o2.* FROM [Order] o LEFT OUTER JOIN OrderItem oi ON o.ID = oi.OrderID LEFT OUTER JOIN [Order] o2 ON o2.ID = oi.OrderID WHERE " + originalOrderWhereCondition,
+          new QueryParameterCollection (),
+          typeof (DomainObjectCollection));
+      orderItemsFetchQuery.EagerFetchQueries.Add (relationEndPointDefinition, ordersFetchQuery);
+    }
+
+    private static ServiceLocatorScope ScopeWithPersistenceExtension (IPersistenceExtension persistenceExtensionMock)
+    {
+      var persistenceExtensionFactoryStub = MockRepository.GenerateStub<IPersistenceExtensionFactory> ();
+      persistenceExtensionFactoryStub
+          .Stub (stub => stub.CreatePersistenceExtensions (Arg<Guid>.Is.Anything))
+          .Return (new[] { persistenceExtensionMock });
+      return new ServiceLocatorScope (typeof (IPersistenceExtensionFactory), () => persistenceExtensionFactoryStub);
+    }
   }
 }

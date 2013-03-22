@@ -24,6 +24,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   /// </summary>
   public interface IFetchEnabledObjectLoader : IObjectLoader
   {
-    ICollection<LoadedObjectDataWithDataSourceData> GetOrLoadFetchQueryResult (IQuery query);
+    ICollection<LoadedObjectDataWithDataSourceData> GetOrLoadFetchQueryResult (IQuery query, LoadedObjectDataPendingRegistrationCollector pendingRegistrationCollector);
   }
 }

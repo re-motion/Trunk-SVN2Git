@@ -218,8 +218,9 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectInititalizationContextScopeHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectInititalizationContextScopeTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectReferenceInitializationContextTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\PendingLoadedObjectDataRegistrationContextTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataPendingRegistrationCollectorTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectAssociatedTransactionHierarchyTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\LoadEventsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\ExecuteInScopeTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\EnterScopeTest.cs" />

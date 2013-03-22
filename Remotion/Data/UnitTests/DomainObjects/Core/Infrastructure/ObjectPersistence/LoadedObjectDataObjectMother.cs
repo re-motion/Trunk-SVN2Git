@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -25,8 +26,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 {
   public static class LoadedObjectDataObjectMother
   {
-    public static ILoadedObjectData CreateLoadedObjectDataStub (DomainObject domainObjectReference)
+    public static ILoadedObjectData CreateLoadedObjectDataStub (DomainObject domainObjectReference = null)
     {
+      domainObjectReference = domainObjectReference ?? DomainObjectMother.CreateFakeObject<Order>();
       var loadedObjectDataStub = CreateLoadedObjectDataStub (domainObjectReference.ID);
       loadedObjectDataStub.Stub (stub => stub.GetDomainObjectReference ()).Return (domainObjectReference);
       return loadedObjectDataStub;
@@ -64,6 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     public static LoadedObjectDataWithDataSourceData CreateNullLoadedObjectDataWithDataSourceData ()
     {
       return new LoadedObjectDataWithDataSourceData (new NullLoadedObjectData(), null);
+    }
+
+    public static FreshlyLoadedObjectData CreateFreshlyLoadedObjectData (ObjectID objectID)
+    {
+      return new FreshlyLoadedObjectData (DataContainerObjectMother.Create (objectID));
     }
   }
 }

@@ -58,6 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     private Customer _fetchedCustomer;
     private LoadedObjectDataWithDataSourceData _fetchedCustomerData;
 
+    private LoadedObjectDataPendingRegistrationCollector _pendingRegistrationCollector;
+
     public override void SetUp ()
     {
       base.SetUp();
@@ -90,6 +92,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _fetchedCustomer = DomainObjectMother.CreateFakeObject<Customer>();
       _fetchedCustomerData = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (_fetchedCustomer);
+
+      _pendingRegistrationCollector = new LoadedObjectDataPendingRegistrationCollector();
     }
 
     [Test]
@@ -106,10 +110,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var relatedObjectsData2 = new[] { _fetchedCustomerData };
 
       _fetchResultLoaderMock
-          .Expect (mock => mock.GetOrLoadFetchQueryResult (_fetchQueryStub1))
+          .Expect (mock => mock.GetOrLoadFetchQueryResult (_fetchQueryStub1, _pendingRegistrationCollector))
           .Return (relatedObjectsData1);
       _fetchResultLoaderMock
-          .Expect (mock => mock.GetOrLoadFetchQueryResult (_fetchQueryStub2))
+          .Expect (mock => mock.GetOrLoadFetchQueryResult (_fetchQueryStub2, _pendingRegistrationCollector))
           .Return (relatedObjectsData2);
       _fetchResultLoaderMock.Replay();
 
@@ -119,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
           .Expect (mock => mock.GroupAndRegisterRelatedObjects (_customerEndPointDefinition, originatingObjectsData, relatedObjectsData2));
       _registrationAgentMock.Replay();
 
-      _eagerFetcher.PerformEagerFetching (originatingObjectsData, fetchQueries, _fetchResultLoaderMock);
+      _eagerFetcher.PerformEagerFetching (originatingObjectsData, fetchQueries, _fetchResultLoaderMock, _pendingRegistrationCollector);
 
       _fetchResultLoaderMock.VerifyAllExpectations();
       _registrationAgentMock.VerifyAllExpectations();
@@ -137,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var relatedObjectsData = new[] { _fetchedCustomerData };
 
       _fetchResultLoaderMock
-          .Expect (mock => mock.GetOrLoadFetchQueryResult (_fetchQueryStub1))
+          .Expect (mock => mock.GetOrLoadFetchQueryResult (_fetchQueryStub1, _pendingRegistrationCollector))
           .Return (relatedObjectsData);
       _fetchResultLoaderMock.Replay ();
 
@@ -145,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
           .Expect (mock => mock.GroupAndRegisterRelatedObjects (_customerEndPointDefinition, originatingObjectsData, relatedObjectsData));
       _registrationAgentMock.Replay ();
 
-      _eagerFetcher.PerformEagerFetching (originatingObjectsData, fetchQueries, _fetchResultLoaderMock);
+      _eagerFetcher.PerformEagerFetching (originatingObjectsData, fetchQueries, _fetchResultLoaderMock, _pendingRegistrationCollector);
 
       _fetchResultLoaderMock.VerifyAllExpectations ();
       _registrationAgentMock.VerifyAllExpectations ();
@@ -160,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var relatedObjectsData = new[] { _fetchedOrderItemData1, _fetchedOrderItemData2, _fetchedOrderItemData3 };
 
       _fetchResultLoaderMock
-          .Expect (mock => mock.GetOrLoadFetchQueryResult (_fetchQueryStub1))
+          .Expect (mock => mock.GetOrLoadFetchQueryResult (_fetchQueryStub1, _pendingRegistrationCollector))
           .Return (relatedObjectsData);
       _fetchResultLoaderMock.Replay();
 
@@ -172,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       Assert.That (
           () =>
-          _eagerFetcher.PerformEagerFetching (originatingObjectsData, fetchQueries, _fetchResultLoaderMock),
+          _eagerFetcher.PerformEagerFetching (originatingObjectsData, fetchQueries, _fetchResultLoaderMock, _pendingRegistrationCollector),
           Throws.Exception.TypeOf<UnexpectedQueryResultException> ()
               .And.With.InnerException.SameAs (invalidOperationException)
               .And.With.Message.EqualTo ("Eager fetching encountered an unexpected query result: There was a problem registering stuff."));
@@ -191,9 +195,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _fetchResultLoaderMock.Replay ();
       _registrationAgentMock.Replay ();
 
-      _eagerFetcher.PerformEagerFetching (originatingObjectsData, fetchQueries, _fetchResultLoaderMock);
+      _eagerFetcher.PerformEagerFetching (originatingObjectsData, fetchQueries, _fetchResultLoaderMock, _pendingRegistrationCollector);
 
-      _fetchResultLoaderMock.AssertWasNotCalled (mock => mock.GetOrLoadFetchQueryResult (_fetchQueryStub1));
+      _fetchResultLoaderMock.AssertWasNotCalled (mock => mock.GetOrLoadFetchQueryResult (_fetchQueryStub1, _pendingRegistrationCollector));
 
       _fetchResultLoaderMock.VerifyAllExpectations ();
       _registrationAgentMock.VerifyAllExpectations ();

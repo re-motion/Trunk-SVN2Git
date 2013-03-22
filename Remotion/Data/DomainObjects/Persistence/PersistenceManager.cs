@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
@@ -124,12 +125,13 @@ namespace Remotion.Data.DomainObjects.Persistence
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("ids", ids);
 
-      var idsByProvider = GroupIDsByProvider (ids);
+      var idCollection = ids.ConvertToCollection();
+      var idsByProvider = GroupIDsByProvider (idCollection);
 
       var unorderedResultDictionary = idsByProvider
           .SelectMany (idGroup => _storageProviderManager.GetMandatory (idGroup.Key).LoadDataContainers (idGroup.Value))
-          .ToDictionary (dataContainerLookupResult => dataContainerLookupResult.ObjectID);
-      return ids.Select (id => unorderedResultDictionary[id]);
+          .ToLookup (dataContainerLookupResult => dataContainerLookupResult.ObjectID);
+      return idCollection.Select (id => unorderedResultDictionary[id].First());
     }
 
     public DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)

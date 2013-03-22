@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,18 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Remotion.Data.DomainObjects.Queries;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
-  [Serializable]
-  public class SerializableFetchEnabledObjectLoaderFake : SerializableObjectLoaderFake, IFetchEnabledObjectLoader
+  [TestFixture]
+  public class GetObjectsTest : ClientTransactionBaseTest
   {
-    public ICollection<LoadedObjectDataWithDataSourceData> GetOrLoadFetchQueryResult (IQuery query, LoadedObjectDataPendingRegistrationCollector pendingRegistrationCollector)
+    [Test]
+    public void GettingSameObjectID_MultipleTimes ()
     {
-      throw new NotImplementedException();
-    }
+      var domainObjects = LifetimeService.GetObjects<DomainObject> (TestableClientTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order1);
+
+      Assert.That (domainObjects, Is.EqualTo (new[] { DomainObjectIDs.Order1.GetObject<Order>(), DomainObjectIDs.Order1.GetObject<Order>() }));
+    } 
   }
 }
