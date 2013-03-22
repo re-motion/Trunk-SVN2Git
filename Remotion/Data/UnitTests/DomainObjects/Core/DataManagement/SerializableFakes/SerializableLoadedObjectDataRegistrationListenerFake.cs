@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public void OnAfterObjectRegistration (ReadOnlyCollection<ObjectID> objectIDsToBeLoaded, ReadOnlyCollection<DomainObject> actuallyLoadedDomainObjects)
+    public void OnAfterObjectRegistration (ReadOnlyCollection<ObjectID> loadedObjectIDs, ReadOnlyCollection<DomainObject> actuallyLoadedDomainObjects)
     {
       throw new NotImplementedException();
     }

@@ -83,6 +83,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
+    public void OnBeforeObjectRegistration_ExceptionInEventSink_CausesHierarchyManagerToBeNotifiedOfEnd ()
+    {
+      var loadedObjectIDs = Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+
+      var exception = new Exception ("Test");
+      using (_mockRepository.Ordered ())
+      {
+        _hierarchyManagerMock.Expect (mock => mock.OnBeforeObjectRegistration (loadedObjectIDs));
+        _eventSinkWithMock.Expect (mock => mock.RaiseObjectsLoadingEvent (loadedObjectIDs)).Throw (exception);
+        _hierarchyManagerMock.Expect (mock => mock.OnAfterObjectRegistration (loadedObjectIDs));
+      }
+      _mockRepository.ReplayAll ();
+
+      Assert.That (() => _decorator.OnBeforeObjectRegistration (loadedObjectIDs), Throws.Exception.SameAs (exception));
+
+      _mockRepository.VerifyAll();
+    }
+
+    [Test]
     public void OnAfterObjectRegistration ()
     {
       var loadedObjectIDs = Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
@@ -101,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void OnAfterObjectRegistration_ExceptionInEventSink ()
+    public void OnAfterObjectRegistration_ExceptionInEventSink_HierarchyManager_IsStillNotified ()
     {
       var loadedObjectIDs = Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
       var actuallyLoadedDomainObjects = Array.AsReadOnly (new[] { DomainObjectMother.CreateFakeObject (), DomainObjectMother.CreateFakeObject () });

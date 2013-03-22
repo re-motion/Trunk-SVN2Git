@@ -56,13 +56,24 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       ArgumentUtility.CheckNotNull ("loadedObjectIDs", loadedObjectIDs);
 
+      // The ObjectsLoadingEvent is allowed to cancel; therefore, we execute it before indicating that we're starting to register objects.
+      // _eventSink.RaiseObjectsLoadingEvent (loadedObjectIDs);
+
       _hierarchyManager.OnBeforeObjectRegistration (loadedObjectIDs);
-      _eventSink.RaiseObjectsLoadingEvent (loadedObjectIDs);
+      try
+      {
+        _eventSink.RaiseObjectsLoadingEvent (loadedObjectIDs);
+      }
+      catch
+      {
+        _hierarchyManager.OnAfterObjectRegistration (loadedObjectIDs);
+        throw;
+      }
     }
 
-    public void OnAfterObjectRegistration (ReadOnlyCollection<ObjectID> objectIDsToBeLoaded, ReadOnlyCollection<DomainObject> actuallyLoadedDomainObjects)
+    public void OnAfterObjectRegistration (ReadOnlyCollection<ObjectID> loadedObjectIDs, ReadOnlyCollection<DomainObject> actuallyLoadedDomainObjects)
     {
-      ArgumentUtility.CheckNotNull ("objectIDsToBeLoaded", objectIDsToBeLoaded);
+      ArgumentUtility.CheckNotNull ("loadedObjectIDs", loadedObjectIDs);
       ArgumentUtility.CheckNotNull ("actuallyLoadedDomainObjects", actuallyLoadedDomainObjects);
 
       try
@@ -72,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       }
       finally
       {
-        _hierarchyManager.OnAfterObjectRegistration (objectIDsToBeLoaded);
+        _hierarchyManager.OnAfterObjectRegistration (loadedObjectIDs);
       }
     }
 
