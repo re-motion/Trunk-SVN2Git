@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Linq;
+using JetBrains.Annotations;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -49,6 +50,7 @@ namespace Remotion.SecurityManager.Domain
   {
     public static readonly ISecurityManagerPrincipal Null = new NullSecurityManagerPrincipal();
 
+    [NotNull]
     public static ISecurityManagerPrincipal Current
     {
       get { return (ISecurityManagerPrincipal) SafeContext.Instance.GetData (SafeContextKeys.SecurityManagerPrincipalCurrent) ?? Null; }
