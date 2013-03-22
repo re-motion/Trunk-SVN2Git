@@ -21,6 +21,7 @@ using Microsoft.Scripting.Ast;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Caching;
+using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
@@ -96,10 +97,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       get { return new CacheKeyProvider (_typeDefinitionProvider); }
     }
 
-    public void Modify (ITypeContext typeContext)
+    public void Participate (ITypeAssemblyContext typeAssemblyContext)
     {
-      ArgumentUtility.CheckNotNull ("typeContext", typeContext);
-      var proxyType = typeContext.ProxyType;
+      ArgumentUtility.CheckNotNull ("typeAssemblyContext", typeAssemblyContext);
+      var proxyType = typeAssemblyContext.ProxyType;
       Assertion.IsTrue (typeof (DomainObject).IsTypePipeAssignableFrom (proxyType));
 
       // TODO 5370: This will change when TypePipe is integrated with re-mix.
