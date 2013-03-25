@@ -334,6 +334,30 @@ namespace Remotion.UnitTests.FunctionalProgramming
     }
 
     [Test]
+    public void Interleave ()
+    {
+      IEnumerable<string> first = new[] { "a", "b" };
+      IEnumerable<string> second = new[] { "x", "y" };
+
+      var result = first.Interleave (second);
+
+      Assert.That (result, Is.EqualTo (new[] { "a", "x", "b", "y" }));
+    }
+
+    [Test]
+    public void Interleave_DifferentLength ()
+    {
+      IEnumerable<string> first = new[] { "a", "b" };
+      IEnumerable<string> second = new[] { "x" };
+
+      var result1 = first.Interleave (second).ToArray ();
+      var result2 = second.Interleave (first);
+
+      Assert.That (result1, Is.EqualTo (new[] { "a", "x", "b" }));
+      Assert.That (result2, Is.EqualTo (new[] { "x", "a", "b" }));
+    }
+
+    [Test]
     public void ConvertToCollection_WithCollection ()
     {
       var collection = new[] { 1, 2, 3 };

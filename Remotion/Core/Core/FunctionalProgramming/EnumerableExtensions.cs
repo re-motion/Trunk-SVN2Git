@@ -240,7 +240,7 @@ namespace Remotion.FunctionalProgramming
       ArgumentUtility.CheckNotNull ("second", second);
       ArgumentUtility.CheckNotNull ("resultSelector", resultSelector);
 
-      using (var enumerator1 = first.GetEnumerator ())
+      using (var enumerator1 = first.GetEnumerator())
       using (var enumerator2 = second.GetEnumerator())
       {
         while (enumerator1.MoveNext() && enumerator2.MoveNext())
@@ -269,6 +269,37 @@ namespace Remotion.FunctionalProgramming
       ArgumentUtility.CheckNotNull ("second", second);
 
       return first.Zip (second, Tuple.Create);
+    }
+
+    /// <summary>
+    /// Interleaves the elements of two sequences.
+    /// </summary>
+    /// <typeparam name="T">The item type of the sequences.</typeparam>
+    /// <param name="first">The first sequence.</param>
+    /// <param name="second">The second sequence.</param>
+    /// <returns>
+    /// An "interleaved" sequence, consisting of alternating elements of the <paramref name="first"/> and the <paramref name="second"/> sequence.
+    /// </returns>
+    /// <remarks>
+    /// If the input sequences do not have the same number of arguments, the remaining items in the longer sequence will be appended.
+    /// </remarks>
+    public static IEnumerable<T> Interleave<T> (this IEnumerable<T> first, IEnumerable<T> second)
+    {
+      using (var enumerator1 = first.GetEnumerator ())
+      using (var enumerator2 = second.GetEnumerator ())
+      {
+        bool firstHasMore;
+        bool secondHasMore;
+
+        while ((firstHasMore = enumerator1.MoveNext()) | (secondHasMore = enumerator2.MoveNext()))
+        {
+          if (firstHasMore)
+            yield return enumerator1.Current;
+
+          if (secondHasMore)
+            yield return enumerator2.Current;
+        }
+      }
     }
 
     /// <summary>
