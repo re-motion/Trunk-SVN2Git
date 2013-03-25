@@ -178,8 +178,9 @@ namespace OBWTest.IndividualControlTests
       foreach (string value in s_values)
         persons.Add (new BusinessObjectWithIdentityProxy { UniqueIdentifier = "invalid", DisplayName = value, IconUrl = GetUrl (IconInfo.Spacer) });
 
-      List<BusinessObjectWithIdentityProxy> filteredPersons =
-          persons.FindAll (person => person.DisplayName.StartsWith (searchString, StringComparison.OrdinalIgnoreCase));
+      var filteredPersons = persons.FindAll (person => person.DisplayName.StartsWith (searchString, StringComparison.OrdinalIgnoreCase));
+      if (filteredPersons.Count == 0)
+        filteredPersons = persons.FindAll (person => person.DisplayName.IndexOf (searchString, StringComparison.OrdinalIgnoreCase) != -1);
 
       filteredPersons.Sort ((left, right) => string.Compare (left.DisplayName, right.DisplayName, StringComparison.OrdinalIgnoreCase));
 
