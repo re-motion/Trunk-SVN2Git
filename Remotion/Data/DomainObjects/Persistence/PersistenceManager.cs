@@ -161,8 +161,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       if (virtualEndPointDefinition.IsMandatory && oppositeDataContainers.Count == 0)
       {
         throw CreatePersistenceException (
-            "Collection for mandatory relation '{0}' (property: '{1}', object: '{2}') contains no items.",
-            virtualEndPointDefinition.RelationDefinition.ID,
+            "Collection for mandatory relation property '{0}' on object '{1}' contains no items.",
             virtualEndPointDefinition.PropertyName,
             relationEndPointID.ObjectID);
       }
@@ -201,7 +200,17 @@ namespace Remotion.Data.DomainObjects.Persistence
       }
 
       if (oppositeDataContainers.Count == 0)
-        return GetNullDataContainerWithRelationCheck (relationEndPointID);
+      {
+        if (relationEndPointID.Definition.IsMandatory)
+        {
+          throw CreatePersistenceException (
+            "Mandatory relation property '{0}' on object '{1}' contains no item.",
+            virtualEndPointDefinition.PropertyName,
+            relationEndPointID.ObjectID);
+        }
+
+        return null;
+      }
 
       return oppositeDataContainers[0];
     }
@@ -244,19 +253,6 @@ namespace Remotion.Data.DomainObjects.Persistence
             objectID.ClassID,
             relationEndPointID.ObjectID.ClassID);
       }
-    }
-
-    private DataContainer GetNullDataContainerWithRelationCheck (RelationEndPointID relationEndPointID)
-    {
-      if (relationEndPointID.Definition.IsMandatory)
-      {
-        throw CreatePersistenceException (
-            "Cannot load related DataContainer of object '{0}' over mandatory relation '{1}'.",
-            relationEndPointID.ObjectID,
-            relationEndPointID.Definition.RelationDefinition.ID);
-      }
-
-      return null;
     }
 
     private PersistenceException CreatePersistenceException (string message, params object[] args)

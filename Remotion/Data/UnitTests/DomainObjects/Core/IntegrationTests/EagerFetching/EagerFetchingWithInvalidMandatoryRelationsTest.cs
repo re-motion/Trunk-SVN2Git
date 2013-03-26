@@ -36,11 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       Assert.That (
           () => query.ToArray(),
           Throws.TypeOf<PersistenceException> ().With.Message.EqualTo (
-              "Collection for mandatory relation 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem:"
-              + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order->"
-              + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' (property: "
-              + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems', "
-              + "object: 'Order|f4016f41-f4e4-429e-b8d1-659c8c480a67|System.Guid') contains no items."));
+              "Collection for mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' "
+              + "on object 'Order|f4016f41-f4e4-429e-b8d1-659c8c480a67|System.Guid' contains no items."));
     }
 
     [Test]
@@ -52,9 +49,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       Assert.That (
           () => query.ToArray(),
           Throws.TypeOf<PersistenceException> ().With.Message.EqualTo (
-              "Cannot load related DataContainer of object 'Partner|a65b123a-6e17-498e-a28e-946217c0ae30|System.Guid' over mandatory relation "
-              + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo:Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company->"
-              + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo'."));
+              "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo' on object "
+              + "'Partner|a65b123a-6e17-498e-a28e-946217c0ae30|System.Guid' contains no item."));
     }
     
     [Test]
