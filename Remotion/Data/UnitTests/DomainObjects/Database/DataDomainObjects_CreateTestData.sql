@@ -254,6 +254,11 @@ insert into [OrderItem] (ID, ClassID, OrderID, [Position], [Product])
     values ('{EA505094-770A-4505-82C1-5A4F94F56FE2}', 'OrderItem', 
     '{90E26C86-611F-4735-8D1B-E1D0918515C2}', 1, 'Blumentopf')
 
+-- This OrderItem does not have an Order (which does not conform to the mapping)
+insert into [OrderItem] (ID, ClassID, OrderID, [Position], [Product]) 
+    values ('{386D99F9-B0BA-4C55-8F22-BF194A3D745A}', 'OrderItem', 
+    NULL, 1, 'Rubik''s Cube')
+
 -- OrderWithNewPropertyAccess
 insert into [OrderWithNewPropertyAccess] (ID, ClassID, OrderNo, DeliveryDate, CustomerID, CustomerIDClassID) 
     values ('{5682F032-2F0B-494b-A31C-C97F02B89C36}', 'OrderWithNewPropertyAccess', 1, '2005/01/01', 

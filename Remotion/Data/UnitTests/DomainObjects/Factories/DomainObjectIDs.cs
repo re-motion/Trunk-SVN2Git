@@ -430,6 +430,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       get { return CreateObjectID ("OrderItem", new Guid ("{EA505094-770A-4505-82C1-5A4F94F56FE2}")); }
     }
 
+    // Order: -
+    // Product: Rubik's Cube
+    public ObjectID OrderItemWithoutOrder
+    {
+      get { return CreateObjectID ("OrderItem", new Guid ("{386D99F9-B0BA-4C55-8F22-BF194A3D745A}")); }
+    }
+
     #endregion
 
     #region OrderWithNewPropertyAccess

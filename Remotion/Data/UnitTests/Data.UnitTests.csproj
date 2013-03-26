@@ -220,6 +220,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectReferenceInitializationContextTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataPendingRegistrationCollectorTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectAssociatedTransactionHierarchyTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\EagerFetching\EagerFetchingWithInvalidMandatoryRelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Loading\CanceledLoadOperationTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Loading\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\LoadEventsTest.cs" />
@@ -229,6 +230,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\OperationsInLeafTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\NewObject\RecursiveNewObjectCallTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\OperationsInRootTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Relations\LoadingRelationsWithInvalidMandatoryRelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\AllowedOperations\CollectionQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\AllowedOperations\CustomQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\AllowedOperations\DiscardTest.cs" />

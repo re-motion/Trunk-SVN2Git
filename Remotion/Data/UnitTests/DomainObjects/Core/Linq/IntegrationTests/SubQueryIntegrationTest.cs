@@ -159,7 +159,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void OrderingsInSubQuery_WithDistinct ()
     {
       var query = from o in (
-                    from oi in QueryFactory.CreateLinqQuery<OrderItem>() orderby oi.Order.OrderNumber select oi.Order).Distinct () 
+                    from oi in QueryFactory.CreateLinqQuery<OrderItem>() 
+                    where oi.Order != null 
+                    orderby oi.Order.OrderNumber 
+                    select oi.Order).Distinct () 
                   select o;
       CheckQueryResult (
           query, 
