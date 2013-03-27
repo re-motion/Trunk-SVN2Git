@@ -28,13 +28,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     [Test]
     public void LoadingMandatoryCollectionEndPoint_WithNoRelatedObjects_Throws ()
     {
-      var order = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order>();
+      var order = DomainObjectIDs.OrderWithoutOrderItems.GetObject<Order>();
 
       Assert.That (
           () => order.OrderItems.EnsureDataComplete (), 
           Throws.TypeOf<PersistenceException> ().With.Message.EqualTo (
               "Collection for mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' "
-              + "on object 'Order|f4016f41-f4e4-429e-b8d1-659c8c480a67|System.Guid' contains no items."));
+              + "on object 'Order|f7607cbc-ab34-465c-b282-0531d51f3b04|System.Guid' contains no items."));
     }
 
     [Test]

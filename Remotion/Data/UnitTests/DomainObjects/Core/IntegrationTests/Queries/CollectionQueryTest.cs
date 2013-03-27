@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       {
         DomainObjectIDs.Order1.GetObject<Order> (),
         DomainObjectIDs.Order2.GetObject<Order> (),
-        DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> (),
+        DomainObjectIDs.Order5.GetObject<Order> (),
         DomainObjectIDs.Order3.GetObject<Order> (),
         DomainObjectIDs.Order4.GetObject<Order> (),
       }));
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       Assert.IsNotNull (orders, "OrderCollection is null");
       Assert.AreEqual (2, orders.Count, "Order count");
       Assert.AreEqual (DomainObjectIDs.Order1, orders[0].ID, "Order1");
-      Assert.AreEqual (DomainObjectIDs.OrderWithoutOrderItem, orders[1].ID, "OrderWithoutOrderItem");
+      Assert.AreEqual (DomainObjectIDs.Order5, orders[1].ID, "Order5");
     }
 
     [Test]

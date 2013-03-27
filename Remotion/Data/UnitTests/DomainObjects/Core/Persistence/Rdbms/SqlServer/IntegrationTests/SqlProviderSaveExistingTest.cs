@@ -473,12 +473,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void SaveForeignKeyInOtherStorageProvider ()
     {
-      DataContainer savedOrderContainer = LoadDataContainer (DomainObjectIDs.OrderWithoutOrderItem);
+      DataContainer savedOrderContainer = LoadDataContainer (DomainObjectIDs.Order5);
       SetPropertyValue (savedOrderContainer, typeof (Order), "Official", DomainObjectIDs.Official2);
 
       Provider.Save (new[] { savedOrderContainer });
 
-      DataContainer reloadedOrderContainer = ReloadDataContainer (DomainObjectIDs.OrderWithoutOrderItem);
+      DataContainer reloadedOrderContainer = ReloadDataContainer (DomainObjectIDs.Order5);
       Assert.That (GetPropertyValue (reloadedOrderContainer, typeof (Order), "Official"), Is.EqualTo (DomainObjectIDs.Official2));
     }
 

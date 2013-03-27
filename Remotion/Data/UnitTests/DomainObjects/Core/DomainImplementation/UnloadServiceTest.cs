@@ -512,7 +512,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var orderA = (Order) ordersEndPoint.Collection[0];
       var orderB = (Order) ordersEndPoint.Collection[1];
       
-      // this will cause the orderB to be rejected for unload; orderA won't be unloaded either although it comes before orderWithoutOrderItem
+      // this will cause the orderB to be rejected for unload; orderA won't be unloaded either although it comes before orderB
       ++orderB.OrderNumber;
       
       Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
@@ -714,7 +714,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var orderA = (Order) ordersEndPoint.Collection[0];
       var orderB = (Order) ordersEndPoint.Collection[1];
 
-      // this will cause the orderB to be rejected for unload; orderA won't be unloaded either although it comes before orderWithoutOrderItem
+      // this will cause the orderB to be rejected for unload; orderA won't be unloaded either although it comes before orderB
       ++orderB.OrderNumber;
 
       Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));

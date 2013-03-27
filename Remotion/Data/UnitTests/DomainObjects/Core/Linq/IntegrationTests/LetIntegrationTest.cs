@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    select x;
 
       CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItem);
+                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order5, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]
@@ -41,12 +41,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var orders = from o in QueryFactory.CreateLinqQuery<Order>()
                    let y = o.OrderNumber
-                   where y > 1
+                   where y > 1 && y < 6
                    select o;
 
       CheckQueryResult (orders,
-                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order3, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.Order2,
-                        DomainObjectIDs.Order4);
+                        DomainObjectIDs.Order3, DomainObjectIDs.Order5, DomainObjectIDs.Order2, DomainObjectIDs.Order4);
     }
 
     [Test]
@@ -56,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    let x = o.Customer.Name
                    where x == "Kunde 1"
                    select o;
-      CheckQueryResult (orders, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.Order1);
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order5);
     }
 
     [Test]
@@ -79,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    select x;
 
       CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4, 
-                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItem);
+                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order5, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]

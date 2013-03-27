@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                            Min = ordersByClassID.Min (o => o.OrderNumber)
                        };
 
-      Assert.That (result.ToArray(), Is.EqualTo (new[] { new { ClassID = "Order", Count = 6, Sum = 21, Min = 1 } }));
+      Assert.That (result.ToArray(), Is.EqualTo (new[] { new { ClassID = "Order", Count = 7, Sum = 120, Min = 1 } }));
     }
 
     [Test]

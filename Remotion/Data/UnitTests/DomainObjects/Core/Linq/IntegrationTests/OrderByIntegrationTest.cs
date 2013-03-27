@@ -35,11 +35,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (
           query,
           DomainObjectIDs.Order1,
-          DomainObjectIDs.OrderWithoutOrderItem,
           DomainObjectIDs.Order2,
           DomainObjectIDs.Order3,
           DomainObjectIDs.Order4,
-          DomainObjectIDs.InvalidOrder);
+          DomainObjectIDs.Order5,
+          DomainObjectIDs.InvalidOrder,
+          DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]
@@ -54,7 +55,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.OrderItem2,
           DomainObjectIDs.OrderItem3,
           DomainObjectIDs.OrderItem4,
-          DomainObjectIDs.OrderItem5
+          DomainObjectIDs.OrderItem5,
+          DomainObjectIDs.OrderItem6
           );
     }
 
@@ -70,7 +72,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.OrderItem2,
           DomainObjectIDs.OrderItem3,
           DomainObjectIDs.OrderItem4,
-          DomainObjectIDs.OrderItem5
+          DomainObjectIDs.OrderItem5,
+          DomainObjectIDs.OrderItem6
           );
     }
 
@@ -81,14 +84,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from o in QueryFactory.CreateLinqQuery<Order>()
           where
               (from so in QueryFactory.CreateLinqQuery<Order>() orderby so.OrderNumber where so.ID == DomainObjectIDs.Order1 select so.OrderNumber).
-                  Single() != null
+                  Single() != null && o.OrderNumber < 6
           select o,
           DomainObjectIDs.Order1,
           DomainObjectIDs.Order2,
           DomainObjectIDs.Order3,
           DomainObjectIDs.Order4,
-          DomainObjectIDs.OrderWithoutOrderItem,
-          DomainObjectIDs.InvalidOrder);
+          DomainObjectIDs.Order5);
     }
 
     [Test]
@@ -97,14 +99,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (
           from o in QueryFactory.CreateLinqQuery<Order>()
           where (from so in QueryFactory.CreateLinqQuery<Order> () orderby so.OrderNumber where so.ID == DomainObjectIDs.Order1 select so.OrderNumber).
-                  Count() > 0
+                  Count () > 0 && o.OrderNumber < 6
           select o,
           DomainObjectIDs.Order1,
-          DomainObjectIDs.OrderWithoutOrderItem,
           DomainObjectIDs.Order2,
           DomainObjectIDs.Order3,
           DomainObjectIDs.Order4,
-          DomainObjectIDs.InvalidOrder);
+          DomainObjectIDs.Order5);
     }
   }
 }

@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects.Linq;
@@ -28,29 +27,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
   public class EagerFetchingWithInvalidMandatoryRelationsTest : ClientTransactionBaseTest
   {
     [Test]
-    [Ignore ("TODO 3998")]
     public void FetchingMandatoryCollectionEndPoint_WithNoRelatedObjects_Throws ()
     {
-      var query = QueryFactory.CreateLinqQuery<Order>().Where (o => o.ID == DomainObjectIDs.OrderWithoutOrderItem).FetchMany (o => o.OrderItems);
+      var query = QueryFactory.CreateLinqQuery<Order>().Where (o => o.ID == DomainObjectIDs.OrderWithoutOrderItems).FetchMany (o => o.OrderItems);
 
       Assert.That (
           () => query.ToArray(),
-          Throws.TypeOf<PersistenceException> ().With.Message.EqualTo (
-              "Collection for mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' "
-              + "on object 'Order|f4016f41-f4e4-429e-b8d1-659c8c480a67|System.Guid' contains no items."));
+          Throws.TypeOf<UnexpectedQueryResultException> ().With.Message.EqualTo (
+              "Eager fetching encountered an unexpected query result: The fetched mandatory collection property "
+              + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' "
+              + "on object 'Order|f7607cbc-ab34-465c-b282-0531d51f3b04|System.Guid' contains no items."));
     }
 
     [Test]
-    [Ignore ("TODO 3998")]
     public void FetchingMandatoryVirtualObjectEndPoint_WithNoRelatedObject_Throws ()
     {
       var query = QueryFactory.CreateLinqQuery<Partner> ().Where (o => o.ID == DomainObjectIDs.PartnerWithoutCeo).FetchOne (p => p.Ceo);
 
       Assert.That (
           () => query.ToArray(),
-          Throws.TypeOf<PersistenceException> ().With.Message.EqualTo (
-              "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo' on object "
-              + "'Partner|a65b123a-6e17-498e-a28e-946217c0ae30|System.Guid' contains no item."));
+          Throws.TypeOf<UnexpectedQueryResultException> ().With.Message.EqualTo (
+              "Eager fetching encountered an unexpected query result: The fetched mandatory relation property "
+              + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo' on object "
+              + "'Partner|a65b123a-6e17-498e-a28e-946217c0ae30|System.Guid' contains no related object."));
     }
     
     [Test]

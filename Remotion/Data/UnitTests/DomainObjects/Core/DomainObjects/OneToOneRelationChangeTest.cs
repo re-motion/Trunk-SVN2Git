@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _order = DomainObjectIDs.Order1.GetObject<Order> ();
       _oldOrderTicket = _order.OrderTicket;
       _newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
-      _oldOrderOfNewOrderTicket = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
+      _oldOrderOfNewOrderTicket = DomainObjectIDs.Order5.GetObject<Order> ();
 
       _orderEventReceiver = new DomainObjectEventReceiver (_order);
       _oldOrderTicketEventReceiver = new DomainObjectEventReceiver (_oldOrderTicket);

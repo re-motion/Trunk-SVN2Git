@@ -315,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Assert.That (collection, Is.Not.Null);
       Assert.AreEqual (2, collection.Count, "DataContainerCollection.Count");
       Assert.IsNotNull (collection[DomainObjectIDs.Order1], "ID of Order with OrdnerNo 1");
-      Assert.IsNotNull (collection[DomainObjectIDs.OrderWithoutOrderItem], "ID of Order with OrdnerNo 2");
+      Assert.IsNotNull (collection[DomainObjectIDs.Order5], "ID of Order with OrdnerNo 2");
     }
 
     [Test]
@@ -333,11 +333,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     [ExpectedException (typeof (PersistenceException), ExpectedMessage =
         "Collection for mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' on object "
-        + "'Order|f4016f41-f4e4-429e-b8d1-659c8c480a67|System.Guid' contains no items.")]
+        + "'Order|f7607cbc-ab34-465c-b282-0531d51f3b04|System.Guid' contains no items.")]
     public void LoadRelatedDataContainers_Empty_ForMandatoryRelation ()
     {
       _persistenceManager.LoadRelatedDataContainers (
-          RelationEndPointID.Create (DomainObjectIDs.OrderWithoutOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+          RelationEndPointID.Create (DomainObjectIDs.OrderWithoutOrderItems, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
     }
 
     [Test]

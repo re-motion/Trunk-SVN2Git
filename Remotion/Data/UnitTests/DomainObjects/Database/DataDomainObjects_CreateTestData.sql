@@ -213,11 +213,6 @@ insert into [Order] (ID, ClassID, OrderNo, DeliveryDate, CustomerID, CustomerIDC
     values ('{83445473-844A-4d3f-A8C3-C27F8D98E8BA}', 'Order', 3, '2005/03/01', 
     '{DD3E3D55-C16F-497f-A3E1-384D08DE0D66}', 'Customer', 'Official|1|System.Int32')
 
--- No OrderItem points to this Order => This leads to a PersistenceException when navigating over relation
-insert into [Order] (ID, ClassID, OrderNo, DeliveryDate, CustomerID, CustomerIDClassID, OfficialID) 
-    values ('{F4016F41-F4E4-429e-B8D1-659C8C480A67}', 'Order', 2, '2005/02/01', 
-    '{55B52E75-514B-4e82-A91B-8F0BB59B80AD}', 'Customer', 'Official|1|System.Int32')
-
 insert into [Order] (ID, ClassID, OrderNo, DeliveryDate, CustomerID, CustomerIDClassID, OfficialID) 
     values ('{3C0FB6ED-DE1C-4e70-8D80-218E0BF58DF3}', 'Order', 4, '2006/02/01', 
     '{B3F0A333-EC2A-4ddd-9035-9ADA34052450}', 'Customer', 'Official|1|System.Int32')
@@ -225,6 +220,15 @@ insert into [Order] (ID, ClassID, OrderNo, DeliveryDate, CustomerID, CustomerIDC
 insert into [Order] (ID, ClassID, OrderNo, DeliveryDate, CustomerID, CustomerIDClassID, OfficialID) 
     values ('{90E26C86-611F-4735-8D1B-E1D0918515C2}', 'Order', 5, '2006/03/01', 
     '{B3F0A333-EC2A-4ddd-9035-9ADA34052450}', 'Customer', 'Official|1|System.Int32')
+
+insert into [Order] (ID, ClassID, OrderNo, DeliveryDate, CustomerID, CustomerIDClassID, OfficialID) 
+    values ('{F4016F41-F4E4-429e-B8D1-659C8C480A67}', 'Order', 2, '2005/02/01', 
+    '{55B52E75-514B-4e82-A91B-8F0BB59B80AD}', 'Customer', 'Official|1|System.Int32')
+
+-- No OrderItem points to this Order => This leads to a PersistenceException when navigating over relation
+insert into [Order] (ID, ClassID, OrderNo, DeliveryDate, CustomerID, CustomerIDClassID, OfficialID) 
+    values ('{F7607CBC-AB34-465C-B282-0531D51F3B04}', 'Order', 99, '2013/03/07', 
+    '{DA658F26-8107-44CE-9DD0-1804503ECCAF}', 'Customer', 'Official|2|System.Int32')
 
 -- This order does not conform to mapping: CustomerIDClassID is invalid, no OrderTicket points to this Order and
 -- this Order has no OrderItems and the Official does not exist
@@ -253,6 +257,10 @@ insert into [OrderItem] (ID, ClassID, OrderID, [Position], [Product])
 insert into [OrderItem] (ID, ClassID, OrderID, [Position], [Product]) 
     values ('{EA505094-770A-4505-82C1-5A4F94F56FE2}', 'OrderItem', 
     '{90E26C86-611F-4735-8D1B-E1D0918515C2}', 1, 'Blumentopf')
+
+insert into [OrderItem] (ID, ClassID, OrderID, [Position], [Product]) 
+    values ('{5A33809B-06F5-4F62-B103-C8E1869D36EF}', 'OrderItem', 
+    '{F4016F41-F4E4-429e-B8D1-659C8C480A67}', 1, 'Solar Panel')
 
 -- This OrderItem does not have an Order (which does not conform to the mapping)
 insert into [OrderItem] (ID, ClassID, OrderID, [Position], [Product]) 
@@ -288,6 +296,9 @@ insert into [OrderTicket] (ID, ClassID, FileName, OrderID)
 
 insert into [OrderTicket] (ID, ClassID, FileName, OrderID) 
     values ('{DC20E0EB-4B55-4f23-89CF-6D6478F96D3B}', 'OrderTicket', 'C:\order5.png', '{90E26C86-611F-4735-8D1B-E1D0918515C2}')
+
+insert into [OrderTicket] (ID, ClassID, FileName, OrderID) 
+    values ('{87E9C075-B208-4475-923D-7BF3B50AB18E}', 'OrderTicket', 'C:\order99.png', '{F7607CBC-AB34-465C-B282-0531D51F3B04}')
 
 
 -- Ceo

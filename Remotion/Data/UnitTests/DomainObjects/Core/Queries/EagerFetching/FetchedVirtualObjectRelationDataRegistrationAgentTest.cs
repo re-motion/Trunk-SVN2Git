@@ -39,19 +39,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
     private FetchedVirtualObjectRelationDataRegistrationAgent _agent;
 
-    private Order _originatingOrder1;
-    private Order _originatingOrder2;
+    private Employee _originatingEmployee1;
+    private Employee _originatingEmployee2;
 
-    private ILoadedObjectData _originatingOrderData1;
-    private ILoadedObjectData _originatingOrderData2;
+    private ILoadedObjectData _originatingEmployeeData1;
+    private ILoadedObjectData _originatingEmployeeData2;
 
-    private OrderTicket _fetchedOrderTicket1;
-    private OrderTicket _fetchedOrderTicket2;
-    private OrderTicket _fetchedOrderTicket3;
+    private Computer _fetchedComputer1;
+    private Computer _fetchedComputer2;
+    private Computer _fetchedComputer3;
 
-    private LoadedObjectDataWithDataSourceData _fetchedOrderTicketData1;
-    private LoadedObjectDataWithDataSourceData _fetchedOrderTicketData2;
-    private LoadedObjectDataWithDataSourceData _fetchedOrderTicketData3;
+    private LoadedObjectDataWithDataSourceData _fetchedComputerData1;
+    private LoadedObjectDataWithDataSourceData _fetchedComputerData2;
+    private LoadedObjectDataWithDataSourceData _fetchedComputerData3;
 
     private IRelationEndPointDefinition _endPointDefinition;
 
@@ -64,37 +64,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _agent = new FetchedVirtualObjectRelationDataRegistrationAgent (_virtualEndPointProviderMock);
 
-      _originatingOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      _originatingOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
+      _originatingEmployee1 = DomainObjectMother.CreateFakeObject<Employee> (DomainObjectIDs.Employee1);
+      _originatingEmployee2 = DomainObjectMother.CreateFakeObject<Employee> (DomainObjectIDs.Employee2);
 
-      _originatingOrderData1 = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (_originatingOrder1);
-      _originatingOrderData2 = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (_originatingOrder2);
+      _originatingEmployeeData1 = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (_originatingEmployee1);
+      _originatingEmployeeData2 = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (_originatingEmployee2);
 
-      _fetchedOrderTicket1 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
-      _fetchedOrderTicket2 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2);
-      _fetchedOrderTicket3 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket3);
+      _fetchedComputer1 = DomainObjectMother.CreateFakeObject<Computer> (DomainObjectIDs.Computer1);
+      _fetchedComputer2 = DomainObjectMother.CreateFakeObject<Computer> (DomainObjectIDs.Computer2);
+      _fetchedComputer3 = DomainObjectMother.CreateFakeObject<Computer> (DomainObjectIDs.Computer3);
 
-      _fetchedOrderTicketData1 = CreateFetchedOrderTicketData (_fetchedOrderTicket1, _originatingOrder1.ID);
-      _fetchedOrderTicketData2 = CreateFetchedOrderTicketData (_fetchedOrderTicket2, _originatingOrder2.ID);
-      _fetchedOrderTicketData3 = CreateFetchedOrderTicketData (_fetchedOrderTicket3, DomainObjectIDs.Order3);
+      _fetchedComputerData1 = CreateFetchedComputerData (_fetchedComputer1, _originatingEmployee1.ID);
+      _fetchedComputerData2 = CreateFetchedComputerData (_fetchedComputer2, _originatingEmployee2.ID);
+      _fetchedComputerData3 = CreateFetchedComputerData (_fetchedComputer3, DomainObjectIDs.Employee3);
 
-      _endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
+      _endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
     }
 
     [Test]
     public void GroupAndRegisterRelatedObjects ()
     {
-      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (_fetchedOrderTicketData1.DataSourceData);
-      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket2.ID)).Return (_fetchedOrderTicketData2.DataSourceData);
-      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket3.ID)).Return (_fetchedOrderTicketData3.DataSourceData);
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer1.ID)).Return (_fetchedComputerData1.DataSourceData);
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer2.ID)).Return (_fetchedComputerData2.DataSourceData);
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer3.ID)).Return (_fetchedComputerData3.DataSourceData);
 
       var endPointMock1 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock1, false);
-      endPointMock1.Expect (mock => mock.MarkDataComplete (_fetchedOrderTicket1));
+      ExpectGetEndPoint(_originatingEmployee1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock1, false);
+      endPointMock1.Expect (mock => mock.MarkDataComplete (_fetchedComputer1));
 
       var endPointMock2 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint (_originatingOrder2.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock2, false);
-      endPointMock2.Expect (mock => mock.MarkDataComplete (_fetchedOrderTicket2));
+      ExpectGetEndPoint (_originatingEmployee2.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock2, false);
+      endPointMock2.Expect (mock => mock.MarkDataComplete (_fetchedComputer2));
 
       _virtualEndPointProviderMock.Replay ();
       endPointMock1.Replay ();
@@ -102,8 +102,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _agent.GroupAndRegisterRelatedObjects(
           _endPointDefinition,
-          new[] { _originatingOrderData1, _originatingOrderData2 },
-          new[] { _fetchedOrderTicketData1, _fetchedOrderTicketData2, _fetchedOrderTicketData3 });
+          new[] { _originatingEmployeeData1, _originatingEmployeeData2 },
+          new[] { _fetchedComputerData1, _fetchedComputerData2, _fetchedComputerData3 });
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
       endPointMock1.VerifyAllExpectations ();
@@ -114,13 +114,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     public void GroupAndRegisterRelatedObjects_WithOriginatingWithoutRelated ()
     {
       var endPointMock1 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint (_originatingOrder1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock1, false);
+      ExpectGetEndPoint (_originatingEmployee1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock1, false);
       endPointMock1.Expect (mock => mock.MarkDataComplete (null));
 
       _virtualEndPointProviderMock.Replay ();
       endPointMock1.Replay ();
 
-      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _originatingOrderData1 }, new LoadedObjectDataWithDataSourceData[0]);
+      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _originatingEmployeeData1 }, new LoadedObjectDataWithDataSourceData[0]);
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
       endPointMock1.VerifyAllExpectations ();
@@ -140,10 +140,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     }
 
     [Test]
-    public void GroupAndRegisterRelatedObjects_WithNullRelatedObject ()
+    public void GroupAndRegisterRelatedObjects_WithNullRelatedObject_AndNonMandatoryRelation ()
     {
+      Assert.That (_endPointDefinition.IsMandatory, Is.False);
+
       var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock, false);
+      ExpectGetEndPoint(_originatingEmployee1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock, false);
       endPointMock.Expect (mock => mock.MarkDataComplete (null));
 
       _virtualEndPointProviderMock.Replay ();
@@ -151,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition, 
-          new[] { _originatingOrderData1 }, 
+          new[] { _originatingEmployeeData1 }, 
           new[] { LoadedObjectDataObjectMother.CreateNullLoadedObjectDataWithDataSourceData() });
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
@@ -159,19 +161,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The fetched mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' on object "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' contains no related object.")]
+    public void GroupAndRegisterRelatedObjects_WithNullRelatedObject_AndMandatoryRelation ()
+    {
+      var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
+      Assert.That (endPointDefinition.IsMandatory, Is.True);
+      var originatingOrderData = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (DomainObjectIDs.Order1);
+
+      _agent.GroupAndRegisterRelatedObjects (
+          endPointDefinition,
+          new[] { originatingOrderData },
+          new[] { LoadedObjectDataObjectMother.CreateNullLoadedObjectDataWithDataSourceData () });
+    }
+
+    [Test]
     public void GroupAndRegisterRelatedObjects_WithRelatedObjectPointingToNull ()
     {
-      var fetchedOrderTicketDataPointingToNull = CreateFetchedOrderTicketData (_fetchedOrderTicket1, null);
-      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (fetchedOrderTicketDataPointingToNull.LoadedObjectData.ObjectID)).Return (fetchedOrderTicketDataPointingToNull.DataSourceData);
+      var fetchedComputerDataPointingToNull = CreateFetchedComputerData (_fetchedComputer1, null);
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (fetchedComputerDataPointingToNull.LoadedObjectData.ObjectID)).Return (fetchedComputerDataPointingToNull.DataSourceData);
 
       var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock, false);
+      ExpectGetEndPoint(_originatingEmployee1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock, false);
       endPointMock.Expect (mock => mock.MarkDataComplete (null));
 
       _virtualEndPointProviderMock.Replay ();
       endPointMock.Replay();
 
-      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _originatingOrderData1 }, new[] { fetchedOrderTicketDataPointingToNull });
+      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _originatingEmployeeData1 }, new[] { fetchedComputerDataPointingToNull });
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
       endPointMock.VerifyAllExpectations();
@@ -180,16 +198,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithEndPointAlreadyComplete ()
     {
-      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (_fetchedOrderTicketData1.DataSourceData);
-      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket2.ID)).Return (_fetchedOrderTicketData2.DataSourceData);
-      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket3.ID)).Return (_fetchedOrderTicketData3.DataSourceData);
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer1.ID)).Return (_fetchedComputerData1.DataSourceData);
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer2.ID)).Return (_fetchedComputerData2.DataSourceData);
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer3.ID)).Return (_fetchedComputerData3.DataSourceData);
 
       var endPointMock1 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock1, true);
+      ExpectGetEndPoint(_originatingEmployee1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock1, true);
 
       var endPointMock2 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint (_originatingOrder2.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock2, false);
-      endPointMock2.Expect (mock => mock.MarkDataComplete (_fetchedOrderTicket2));
+      ExpectGetEndPoint (_originatingEmployee2.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock2, false);
+      endPointMock2.Expect (mock => mock.MarkDataComplete (_fetchedComputer2));
 
       _virtualEndPointProviderMock.Replay ();
       endPointMock1.Replay ();
@@ -197,8 +215,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
-          new[] { _originatingOrderData1, _originatingOrderData2 },
-          new[] { _fetchedOrderTicketData1, _fetchedOrderTicketData2 });
+          new[] { _originatingEmployeeData1, _originatingEmployeeData2 },
+          new[] { _fetchedComputerData1, _fetchedComputerData2 });
 
       _virtualEndPointProviderMock.VerifyAllExpectations();
       endPointMock1.VerifyAllExpectations();
@@ -208,22 +226,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithInvalidDuplicateForeignKey ()
     {
-      var fetchedOrderTicketWithDuplicateKey = CreateFetchedOrderTicketData (_fetchedOrderTicket2, _originatingOrder1.ID);
-      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (_fetchedOrderTicketData1.DataSourceData);
-      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (fetchedOrderTicketWithDuplicateKey.LoadedObjectData.ObjectID)).Return (fetchedOrderTicketWithDuplicateKey.DataSourceData);
+      var fetchedComputerWithDuplicateKey = CreateFetchedComputerData (_fetchedComputer2, _originatingEmployee1.ID);
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer1.ID)).Return (_fetchedComputerData1.DataSourceData);
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (fetchedComputerWithDuplicateKey.LoadedObjectData.ObjectID)).Return (fetchedComputerWithDuplicateKey.DataSourceData);
 
       _virtualEndPointProviderMock.Replay ();
 
       Assert.That (
           () => _agent.GroupAndRegisterRelatedObjects (
               _endPointDefinition,
-              new[] { _originatingOrderData1 },
-              new[] { _fetchedOrderTicketData1, fetchedOrderTicketWithDuplicateKey }),
+              new[] { _originatingEmployeeData1 },
+              new[] { _fetchedComputerData1, fetchedComputerWithDuplicateKey }),
           Throws.InvalidOperationException.With.Message.EqualTo (
               "Two items in the related object result set point back to the same object. This is not allowed in a 1:1 relation. "
-              + "Object 1: 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. "
-              + "Object 2: 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid'. "
-              + "Foreign key property: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'"));
+              + "Object 1: 'Computer|c7c26bf5-871d-48c7-822a-e9b05aac4e5a|System.Guid'. "
+              + "Object 2: 'Computer|176a0ff6-296d-4934-bd1a-23cf52c22411|System.Guid'. "
+              + "Foreign key property: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee'"));
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
     }
@@ -231,45 +249,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Cannot register relation end-point "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' for domain object "
-        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. The end-point belongs to an object of class 'Order' but the domain object "
-        + "has class 'OrderTicket'.")]
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' for domain object "
+        + "'Computer|c7c26bf5-871d-48c7-822a-e9b05aac4e5a|System.Guid'. The end-point belongs to an object of class 'Employee' but the domain object "
+        + "has class 'Computer'.")]
     public void GroupAndRegisterRelatedObjects_InvalidOriginalObject ()
     {
       _virtualEndPointProviderMock.Replay();
 
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition, 
-          new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (DomainObjectIDs.OrderTicket1) }, 
+          new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (DomainObjectIDs.Computer1) }, 
           new LoadedObjectDataWithDataSourceData[0]);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot associate object 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid' with the relation end-point "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket'. An object of type "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket' was expected.")]
+        "Cannot associate object 'Employee|c3b2bbc3-e083-4974-bac7-9cee1fb85a5e|System.Guid' with the relation end-point "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer'. An object of type "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer' was expected.")]
     public void GroupAndRegisterRelatedObjects_InvalidRelatedObject ()
     {
       _virtualEndPointProviderMock.Replay();
 
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition, 
-          new[] { _originatingOrderData1 },  
-          new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (DomainObjectIDs.Order2) });
+          new[] { _originatingEmployeeData1 },  
+          new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (DomainObjectIDs.Employee2) });
     }
 
     [Test]
     public void GroupAndRegisterRelatedObjects_WrongCardinality ()
     {
-      var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
+      var endPointDefinition = GetEndPointDefinition (typeof (Employee), "Subordinates");
 
       Assert.That (
           () =>
           _agent.GroupAndRegisterRelatedObjects (
               endPointDefinition,
-              new[] { _originatingOrderData1 },
-              new[] { _fetchedOrderTicketData1 }), 
+              new[] { _originatingEmployeeData1 },
+              new[] { _fetchedComputerData1 }), 
           Throws.ArgumentException.With.Message.EqualTo (
               "Only virtual object-valued relation end-points can be handled by this registration agent.\r\nParameter name: relationEndPointDefinition"));
     }
@@ -284,11 +302,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       Assert.That (deserializedInstance.VirtualEndPointProvider, Is.Not.Null);
     }
 
-    private LoadedObjectDataWithDataSourceData CreateFetchedOrderTicketData (OrderTicket fetchedObject, ObjectID orderID)
+    private LoadedObjectDataWithDataSourceData CreateFetchedComputerData (Computer fetchedObject, ObjectID EmployeeID)
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (fetchedObject.ID, "Order");
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (fetchedObject.ID, "Employee");
       var loadedObjectDataStub = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (fetchedObject);
-      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, orderID);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, EmployeeID);
       return new LoadedObjectDataWithDataSourceData (loadedObjectDataStub, dataContainer);
     }
 

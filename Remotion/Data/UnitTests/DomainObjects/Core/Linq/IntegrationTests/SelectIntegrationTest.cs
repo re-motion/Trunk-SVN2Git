@@ -41,10 +41,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void SimpleQuery_WithRelatedEntity ()
     {
       var query =
-          from o in QueryFactory.CreateLinqQuery<OrderTicket> ()
-          select o.Order;
+          from ot in QueryFactory.CreateLinqQuery<OrderTicket> ()
+          select ot.Order;
       CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-                        DomainObjectIDs.OrderWithoutOrderItem);
+                        DomainObjectIDs.Order5, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]

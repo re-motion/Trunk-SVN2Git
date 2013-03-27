@@ -30,9 +30,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void SequenceOfDomainObjectProperties ()
     {
-      var result = from o in QueryFactory.CreateLinqQuery<Order>() select o.OrderNumber;
+      var result = from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber <= 5 select o.OrderNumber;
 
-      Assert.That (result, Is.EquivalentTo (new[] { 1, 2, 3, 4, 5, 6 }));
+      Assert.That (result, Is.EquivalentTo (new[] { 1, 2, 3, 4, 5 }));
     }
 
     [Test]
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var result =
           (from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber < 3 select new ObjectID(o.ID.ClassID, o.ID.Value)).ToArray();
 
-      Assert.That (result, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem }));
+      Assert.That (result, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order5 }));
     }
 
     [Test]

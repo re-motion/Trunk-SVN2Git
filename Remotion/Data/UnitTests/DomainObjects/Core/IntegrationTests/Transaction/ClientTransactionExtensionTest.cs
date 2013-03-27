@@ -230,11 +230,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            Official official = DomainObjectIDs.Official2.GetObject<Official>();
-            int count = official.Orders.Count;
+            Customer customer = DomainObjectIDs.Customer2.GetObject<Customer>();
+            int count = customer.Orders.Count;
             Assert.That (count, Is.EqualTo (0));
           },
-          DomainObjectIDs.Official2,
+          DomainObjectIDs.Customer2,
           true,
           false,
           new ObjectID[] { });

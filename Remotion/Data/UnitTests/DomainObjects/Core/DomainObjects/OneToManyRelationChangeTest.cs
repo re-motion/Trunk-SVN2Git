@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     private Customer _oldCustomer;
     private Customer _newCustomer;
     private Order _order1;
-    private Order _orderWithoutOrderItem;
+    private Order _order5;
 
     public override void SetUp ()
     {
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _oldCustomer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       _newCustomer = DomainObjectIDs.Customer2.GetObject<Customer> ();
       _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _orderWithoutOrderItem = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
+      _order5 = DomainObjectIDs.Order5.GetObject<Order> ();
     }
 
     [Test]
@@ -458,19 +458,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Clear_Events ()
     {
-      Assert.That (_oldCustomer.Orders, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
+      Assert.That (_oldCustomer.Orders, Is.EqualTo (new[] { _order1, _order5 }));
 
       var eventReceiver = new SequenceEventReceiver (
-          new DomainObject[] { _oldCustomer, _order1, _orderWithoutOrderItem }, 
+          new DomainObject[] { _oldCustomer, _order1, _order5 }, 
           new[] { _oldCustomer.Orders });
 
       _oldCustomer.Orders.Clear ();
 
       var expectedStates = new ChangeState[]
       {
-        new RelationChangeState (_orderWithoutOrderItem, typeof (Order).FullName + ".Customer", _oldCustomer, null, "1. Setting _orderWithoutOrderItem.Customer to null"),
-        new CollectionChangeState (_oldCustomer.Orders, _orderWithoutOrderItem, "2. Removing _orderWithoutOrderItem from _oldCustomer.Orders"),
-        new RelationChangeState  (_oldCustomer, typeof (Customer).FullName + ".Orders", _orderWithoutOrderItem, null, "3. Removing _orderWithoutOrderItem from _oldCustomer"),
+        new RelationChangeState (_order5, typeof (Order).FullName + ".Customer", _oldCustomer, null, "1. Setting _order5.Customer to null"),
+        new CollectionChangeState (_oldCustomer.Orders, _order5, "2. Removing _order5 from _oldCustomer.Orders"),
+        new RelationChangeState  (_oldCustomer, typeof (Customer).FullName + ".Orders", _order5, null, "3. Removing _order5 from _oldCustomer"),
 
         new RelationChangeState (_order1, typeof (Order).FullName + ".Customer", _oldCustomer, null, "4. Setting _order1.Customer to null"),
         new CollectionChangeState (_oldCustomer.Orders, _order1, "5. Removing _order1 from _oldCustomer.Orders"),
@@ -480,15 +480,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         new CollectionChangeState (_oldCustomer.Orders, _order1, "8. Removed _order1 from _oldCustomer.Orders"),
         new RelationChangeState (_order1, typeof (Order).FullName + ".Customer", null, null, "9. Setting _order1.Customer to null"),
 
-        new RelationChangeState  (_oldCustomer, typeof (Customer).FullName + ".Orders", null, null, "10. Removed _orderWithoutOrderItem from _oldCustomer"),
-        new CollectionChangeState (_oldCustomer.Orders, _orderWithoutOrderItem, "11. Removed _orderWithoutOrderItem from _oldCustomer.Orders"),
-        new RelationChangeState (_orderWithoutOrderItem, typeof (Order).FullName + ".Customer", null, null, "12. Set _orderWithoutOrderItem.Customer to null"),
+        new RelationChangeState  (_oldCustomer, typeof (Customer).FullName + ".Orders", null, null, "10. Removed _order5 from _oldCustomer"),
+        new CollectionChangeState (_oldCustomer.Orders, _order5, "11. Removed _order5 from _oldCustomer.Orders"),
+        new RelationChangeState (_order5, typeof (Order).FullName + ".Customer", null, null, "12. Set _order5.Customer to null"),
       };
 
       eventReceiver.Check (expectedStates);
 
       Assert.That (_oldCustomer.Orders, Is.Empty);
-      Assert.That (_orderWithoutOrderItem.Customer, Is.Null);
+      Assert.That (_order5.Customer, Is.Null);
       Assert.That (_order1.Customer, Is.Null);
       Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (_oldCustomer.Orders).HasBeenTouched, Is.True);
     }
@@ -496,10 +496,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Clear_CancelAtSecondObject ()
     {
-      Assert.That (_oldCustomer.Orders, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
+      Assert.That (_oldCustomer.Orders, Is.EqualTo (new[] { _order1, _order5 }));
 
       var eventReceiver = new SequenceEventReceiver (
-          new DomainObject[] { _oldCustomer, _order1, _orderWithoutOrderItem },
+          new DomainObject[] { _oldCustomer, _order1, _order5 },
           new[] { _oldCustomer.Orders });
 
       eventReceiver.CancelEventNumber = 6;
@@ -516,9 +516,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var expectedStates = new ChangeState[]
       {
-        new RelationChangeState (_orderWithoutOrderItem, typeof (Order).FullName + ".Customer", _oldCustomer, null, "1. Setting _orderWithoutOrderItem.Customer to null"),
-        new CollectionChangeState (_oldCustomer.Orders, _orderWithoutOrderItem, "2. Removing _orderWithoutOrderItem from _oldCustomer.Orders"),
-        new RelationChangeState  (_oldCustomer, typeof (Customer).FullName + ".Orders", _orderWithoutOrderItem, null, "3. Removing _orderWithoutOrderItem from _oldCustomer"),
+        new RelationChangeState (_order5, typeof (Order).FullName + ".Customer", _oldCustomer, null, "1. Setting _order5.Customer to null"),
+        new CollectionChangeState (_oldCustomer.Orders, _order5, "2. Removing _order5 from _oldCustomer.Orders"),
+        new RelationChangeState  (_oldCustomer, typeof (Customer).FullName + ".Orders", _order5, null, "3. Removing _order5 from _oldCustomer"),
 
         new RelationChangeState (_order1, typeof (Order).FullName + ".Customer", _oldCustomer, null, "4. Setting _order1.Customer to null"),
         new CollectionChangeState (_oldCustomer.Orders, _order1, "5. Removing _order1 from _oldCustomer.Orders"),
@@ -527,8 +527,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       eventReceiver.Check (expectedStates);
 
-      Assert.That (_oldCustomer.Orders, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
-      Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (_oldCustomer));
+      Assert.That (_oldCustomer.Orders, Is.EqualTo (new[] { _order1, _order5 }));
+      Assert.That (_order5.Customer, Is.SameAs (_oldCustomer));
       Assert.That (_order1.Customer, Is.SameAs (_oldCustomer));
       Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (_oldCustomer.Orders).HasBeenTouched, Is.False);
     }

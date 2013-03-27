@@ -63,13 +63,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
               mock => mock.FilterCustomQueryResult (
                   Arg.Is (TestableClientTransaction),
                   Arg<IQuery>.Is.Anything,
-                  Arg<IEnumerable<int>>.List.Equal (new[] { 1, 2, 3, 4, 5, 6 })))
+                  Arg<IEnumerable<int>>.List.Equal (new[] { 1, 2, 3, 4, 5 })))
           .Return (new[] { 1, 2, 3 });
 
       TestableClientTransaction.AddListener (listenerMock);
       try
       {
-        var query = from o in QueryFactory.CreateLinqQuery<Order>() orderby o.OrderNumber select o.OrderNumber;
+        var query = from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber <= 5 orderby o.OrderNumber select o.OrderNumber;
         var result = query.ToArray();
 
         listenerMock.VerifyAllExpectations ();

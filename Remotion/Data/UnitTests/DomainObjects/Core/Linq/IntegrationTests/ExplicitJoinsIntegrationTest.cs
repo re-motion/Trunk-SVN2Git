@@ -43,7 +43,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           join i in QueryFactory.CreateLinqQuery<OrderItem> () on o equals i.Order into goi
           from oi in goi
           select oi,
-          DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem3, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem5);
+          DomainObjectIDs.OrderItem1,
+          DomainObjectIDs.OrderItem2,
+          DomainObjectIDs.OrderItem3,
+          DomainObjectIDs.OrderItem4,
+          DomainObjectIDs.OrderItem5,
+          DomainObjectIDs.OrderItem6);
     }
 
     [Test]
@@ -56,7 +61,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from oi in goi
           from oc in goc
           select oi,
-          DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem3, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem5);
+          DomainObjectIDs.OrderItem1,
+          DomainObjectIDs.OrderItem2,
+          DomainObjectIDs.OrderItem3,
+          DomainObjectIDs.OrderItem4,
+          DomainObjectIDs.OrderItem5,
+          DomainObjectIDs.OrderItem6);
     }
 
     [Test]
@@ -131,7 +141,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           join i in QueryFactory.CreateLinqQuery<OrderItem> ().OrderBy(oi => oi.Product) on o equals i.Order into goi
           from oi in goi
           select oi,
-          DomainObjectIDs.OrderItem5, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem3, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem1);
+          DomainObjectIDs.OrderItem5,
+          DomainObjectIDs.OrderItem2,
+          DomainObjectIDs.OrderItem3,
+          DomainObjectIDs.OrderItem4,
+          DomainObjectIDs.OrderItem1,
+          DomainObjectIDs.OrderItem6);
     }
     
   }

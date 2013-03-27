@@ -181,23 +181,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       return dataContainer;
     }
 
-    public DataContainer CreateOrderWithoutOrderItemDataContainer ()
-    {
-      ObjectID id = _domainObjectIDs.OrderWithoutOrderItem;
-
-      ClassDefinition classDefinition = id.ClassDefinition;
-      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
-      
-      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"], 2);
-      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate"], new DateTime (2005, 2, 1));
-      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"], _domainObjectIDs.Official1);
-      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"], _domainObjectIDs.Customer1);
-
-      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-
-      return dataContainer;
-    }
-
     public DataContainer CreateOrderTicket1DataContainer ()
     {
       ObjectID id = _domainObjectIDs.OrderTicket1;
@@ -221,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"], @"C:\order2.png");
-      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"], _domainObjectIDs.OrderWithoutOrderItem);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"], _domainObjectIDs.Order5);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
 

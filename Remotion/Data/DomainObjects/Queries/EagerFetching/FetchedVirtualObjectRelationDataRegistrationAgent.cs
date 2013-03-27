@@ -20,6 +20,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Logging;
 using Remotion.Utilities;
 using Remotion.Collections;
@@ -108,8 +109,17 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         if (!originalObject.IsNull)
         {
           var relationEndPointID = RelationEndPointID.Create (originalObject.ObjectID, relationEndPointDefinition);
-          var relatedObject = relatedObjectsByOriginalObject.GetValueOrDefault (originalObject.ObjectID) ?? new NullLoadedObjectData();
-          if (!TrySetVirtualObjectEndPointData (relationEndPointID, relatedObject.GetDomainObjectReference()))
+          var relatedObjectData = relatedObjectsByOriginalObject.GetValueOrDefault (originalObject.ObjectID) ?? new NullLoadedObjectData();
+          var relatedObject = relatedObjectData.GetDomainObjectReference();
+          if (relationEndPointDefinition.IsMandatory && relatedObject == null)
+          {
+            var message = string.Format (
+                "The fetched mandatory relation property '{0}' on object '{1}' contains no related object.",
+                relationEndPointDefinition.PropertyName,
+                relationEndPointID.ObjectID);
+            throw new InvalidOperationException (message);
+          }
+          if (!TrySetVirtualObjectEndPointData (relationEndPointID, relatedObject))
             s_log.DebugFormat ("Relation data for relation end-point '{0}' is discarded; the end-point has already been loaded.", relationEndPointID);
         }
       }

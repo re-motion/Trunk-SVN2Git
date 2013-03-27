@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                        from oi in o.OrderItems
                        select oi;
 
-      CheckQueryResult (orders, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckQueryResult (orders, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem6);
     }
 
     [Test]

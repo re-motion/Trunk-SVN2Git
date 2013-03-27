@@ -293,11 +293,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            Official official = DomainObjectIDs.Official2.GetObject<Official>();
-            int count = official.Orders.Count;
+            Customer customer = DomainObjectIDs.Customer2.GetObject<Customer> ();
+            int count = customer.Orders.Count;
             Assert.That (count, Is.EqualTo (0));
           },
-          DomainObjectIDs.Official2,
+          DomainObjectIDs.Customer2,
           true,
           false,
           new ObjectID[] { });
@@ -1085,7 +1085,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       // preload query results to avoid Load notifications later on
       LifetimeService.GetObject (_subTransaction, DomainObjectIDs.Order1, true);
-      LifetimeService.GetObject (_subTransaction, DomainObjectIDs.OrderWithoutOrderItem, true);
+      LifetimeService.GetObject (_subTransaction, DomainObjectIDs.Order5, true);
 
       _mockRepository.BackToRecord (_extensionMock);
 

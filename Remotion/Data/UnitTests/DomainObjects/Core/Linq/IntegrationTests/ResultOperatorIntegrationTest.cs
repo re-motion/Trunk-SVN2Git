@@ -87,9 +87,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void QueryWithFirst ()
     {
       var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
-                         orderby o.ID
+                         orderby o.OrderNumber
                          select o).First();
-      Assert.That (queryResult, Is.EqualTo (DomainObjectIDs.InvalidOrder.GetObject<Order> ()));
+      Assert.That (queryResult, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ()));
     }
 
     [Test]
@@ -114,9 +114,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void QueryWithFirstOrDefault ()
     {
       var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
-                         orderby o.ID
+                         orderby o.OrderNumber
                          select o).FirstOrDefault();
-      Assert.That (queryResult, Is.EqualTo (DomainObjectIDs.InvalidOrder.GetObject<Order> ()));
+      Assert.That (queryResult, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ()));
     }
 
     [Test]
@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var number = (from o in QueryFactory.CreateLinqQuery<Order>()
                     select o).Count();
-      Assert.That (6, Is.EqualTo (number));
+      Assert.That (7, Is.EqualTo (number));
     }
 
     [Test]
@@ -230,8 +230,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithTake ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order>() select o).Take (3);
-      CheckQueryResult (query, DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order3, DomainObjectIDs.OrderWithoutOrderItem);
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>() orderby o.OrderNumber select o).Take (3);
+      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order5);
     }
 
     [Test]
@@ -265,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
            where oi.Order == o
            select o).Distinct();
 
-      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4);
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5);
     }
 
     [Test]
@@ -342,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                   where !o.OrderItems.Any()
                   select o;
 
-      CheckQueryResult (query, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+      CheckQueryResult (query, DomainObjectIDs.OrderWithoutOrderItems, DomainObjectIDs.InvalidOrder);
     }
 
     [Test]
@@ -396,11 +396,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (
           query1,
-          DomainObjectIDs.OrderWithoutOrderItem,
           DomainObjectIDs.Order2,
           DomainObjectIDs.Order3,
           DomainObjectIDs.Order4,
-          DomainObjectIDs.InvalidOrder);
+          DomainObjectIDs.Order5,
+          DomainObjectIDs.InvalidOrder,
+          DomainObjectIDs.OrderWithoutOrderItems);
 
       var query2 = from c in QueryFactory.CreateLinqQuery<Customer> ()
                   where c.Orders.All (o => o.OrderItems.Count() > 0)
@@ -408,6 +409,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (
           query2,
+          DomainObjectIDs.Customer1,
           DomainObjectIDs.Customer2,
           DomainObjectIDs.Customer3,
           DomainObjectIDs.Customer4);
@@ -450,7 +452,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o.OrderNumber).Max();
 
-      Assert.That(query, Is.EqualTo(6));
+      Assert.That(query, Is.EqualTo(99));
     }
 
     [Test]
@@ -458,11 +460,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query =
           (from o in QueryFactory.CreateLinqQuery<Order>()
-           where (from s2 in QueryFactory.CreateLinqQuery<Order>() select s2.OrderNumber).Max()== 6
+           where (from s2 in QueryFactory.CreateLinqQuery<Order>() select s2.OrderNumber).Max() == o.OrderNumber
            select o);
 
-      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-        DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);   
+      CheckQueryResult (query, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]
@@ -478,7 +479,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var result = QueryFactory.CreateLinqQuery<Order> ().Max (o => o.DeliveryDate);
 
-      Assert.That (result, Is.EqualTo (new DateTime (2006, 3, 1)));
+      Assert.That (result, Is.EqualTo (new DateTime (2013, 3, 7)));
     }
 
     [Test]
@@ -486,7 +487,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       int? result = QueryFactory.CreateLinqQuery<Order> ().Max (o => (int?) o.OrderNumber);
 
-      Assert.That (result, Is.EqualTo (6));
+      Assert.That (result, Is.EqualTo (99));
     }
 
     [Test]
@@ -502,17 +503,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query =
           (from o in QueryFactory.CreateLinqQuery<Order> ()
-           where (from s2 in QueryFactory.CreateLinqQuery<Order> () select s2.OrderNumber).Min () == 1
+           where (from s2 in QueryFactory.CreateLinqQuery<Order> () select s2.OrderNumber).Min () == o.OrderNumber
            select o);
 
-      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-        DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+      CheckQueryResult (query, DomainObjectIDs.Order1);
     }
 
     [Test]
     public void Average_OnTopLevel_WithIntProperty ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order>() select o).Average (o => o.OrderNumber);
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber <= 6 select o).Average (o => o.OrderNumber);
 
       Assert.That (query, Is.EqualTo (3.5));
     }
@@ -533,7 +533,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Sum(o => o.OrderNumber);
 
-      Assert.That (query, Is.EqualTo (21));
+      Assert.That (query, Is.EqualTo (120));
     }
 
     [Test]
@@ -541,27 +541,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query =
           (from o in QueryFactory.CreateLinqQuery<Order> ()
-           where (from s2 in QueryFactory.CreateLinqQuery<Order> () select s2.OrderNumber).Sum () == 21
+           where (from s2 in QueryFactory.CreateLinqQuery<Order> () select s2.OrderNumber).Sum () == 120
            select o);
 
       CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-        DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+        DomainObjectIDs.Order5, DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]
     public void Skip_WithEntity ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order>() orderby o.OrderNumber select o).Skip (5);
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>() orderby o.OrderNumber select o).Skip (6);
 
-      CheckQueryResult (query, DomainObjectIDs.InvalidOrder);
+      CheckQueryResult (query, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]
     public void Skip_WithEntity_WithoutExplicitOrdering ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order>() select o).Skip (5);
-
-      CheckQueryResult (query, DomainObjectIDs.Order4);
+      Assert.That ((from o in QueryFactory.CreateLinqQuery<Order>() select o).Skip (6).Count(), Is.EqualTo (1));
     }
 
     [Test]
@@ -613,7 +611,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    group o by o.Customer into ordersByCustomer
                    select ordersByCustomer.Key;
 
-      CheckQueryResult (query1, DomainObjectIDs.Customer1, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4);
+      CheckQueryResult (query1, DomainObjectIDs.Customer1, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4, DomainObjectIDs.Customer5);
 
       var query2 =
           from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -621,7 +619,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           where ordersByOrderTicket.Key != null
           select ordersByOrderTicket.Key.FileName;
 
-      Assert.That (query2.Count (), Is.EqualTo (5));
+      Assert.That (query2.Count (), Is.EqualTo (6));
 
       var query3 = from r in QueryFactory.CreateLinqQuery<Order> ()
                    from c in r.OrderItems
@@ -658,7 +656,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                   group o.ID by o.OrderNumber into orderByOrderNo
                   from id in orderByOrderNo
                   select new { orderByOrderNo.Key, OrderID = id };
-      Assert.That (query.Count(), Is.EqualTo (6));
+      Assert.That (query.Count(), Is.EqualTo (7));
 
       var query2 =
           from o in QueryFactory.CreateLinqQuery<Order>()
@@ -667,7 +665,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from o in orderByOrderNo
           where o != null
           select new { orderByOrderNo.Key, Order = o };
-      Assert.That (query2.Count (), Is.EqualTo (6));
+      Assert.That (query2.Count (), Is.EqualTo (7));
       
       var query3 =
           from o in QueryFactory.CreateLinqQuery<Order>()
@@ -677,7 +675,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
               from so in orderByOrderNo
               select so).Distinct ()
           select new { orderByOrderNo.Key, Order = o };
-      Assert.That (query3.Count (), Is.EqualTo (6));
+      Assert.That (query3.Count (), Is.EqualTo (7));
     }
 
     [Test]

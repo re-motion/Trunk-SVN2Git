@@ -262,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (customer.Orders, Is.Not.Null);
       Assert.That (customer.Orders.Count, Is.EqualTo (2));
       Assert.That (customer.Orders[DomainObjectIDs.Order1].ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (customer.Orders[DomainObjectIDs.OrderWithoutOrderItem].ID, Is.EqualTo (DomainObjectIDs.OrderWithoutOrderItem));
+      Assert.That (customer.Orders[DomainObjectIDs.Order5].ID, Is.EqualTo (DomainObjectIDs.Order5));
     }
 
     [Test]
@@ -642,7 +642,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       Assert.That (customer.Orders[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.OrderWithoutOrderItem));
+      Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.Order5));
     }
 
     [Test]
@@ -650,10 +650,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
-      Dev.Null = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
+      Dev.Null = DomainObjectIDs.Order5.GetObject<Order> ();
 
       Assert.That (customer.Orders[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.OrderWithoutOrderItem));
+      Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.Order5));
     }
 
     

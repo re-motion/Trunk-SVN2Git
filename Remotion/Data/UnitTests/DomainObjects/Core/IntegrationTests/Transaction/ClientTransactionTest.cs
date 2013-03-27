@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       OrderTicket oldOrderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       OrderTicket newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
-      Order oldOrderOfNewOrderTicket = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
+      Order oldOrderOfNewOrderTicket = DomainObjectIDs.Order5.GetObject<Order> ();
 
       oldOrderTicket.Order = newOrderTicket.Order;
       order.OrderTicket = newOrderTicket;

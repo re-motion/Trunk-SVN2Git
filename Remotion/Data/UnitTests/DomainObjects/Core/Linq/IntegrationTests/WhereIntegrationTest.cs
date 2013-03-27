@@ -245,7 +245,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           where o.OrderNumber <= 3
           select o;
 
-      CheckQueryResult (orders, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.Order2, DomainObjectIDs.Order1);
+      CheckQueryResult (orders, DomainObjectIDs.Order5, DomainObjectIDs.Order2, DomainObjectIDs.Order1);
     }
 
     [Test]
@@ -395,8 +395,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.Order2,
           DomainObjectIDs.Order3,
           DomainObjectIDs.Order4,
-          DomainObjectIDs.OrderWithoutOrderItem,
-          DomainObjectIDs.InvalidOrder);
+          DomainObjectIDs.Order5,
+          DomainObjectIDs.InvalidOrder,
+          DomainObjectIDs.OrderWithoutOrderItems);
       CheckQueryResult (query3, DomainObjectIDs.Order2);
     }
 

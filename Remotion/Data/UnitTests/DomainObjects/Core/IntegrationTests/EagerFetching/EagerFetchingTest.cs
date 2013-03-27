@@ -60,21 +60,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
     public void EagerFetching_WithExistingRelationData ()
     {
       // Load relation data prior to executing the query.
-      var order = DomainObjectIDs.Order1.GetObject<Order> ();
+      var customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       Assert.That (
-          order.OrderItems,
-          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), DomainObjectIDs.OrderItem2.GetObject<OrderItem>() }));
+          customer.Orders,
+          Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order>(), DomainObjectIDs.Order5.GetObject<Order>() }));
 
-      var ordersQuery = CreateOrdersQuery ("OrderNo = 1");
-      // This will return a different relation collection (an empty one).
-      AddOrderItemsFetchQuery (ordersQuery, "1 = 0");
+      var customerQuery = CreateCustomerQuery ("ID = '" + DomainObjectIDs.Customer1.Value + "'");
+      // This will return a different (empty) relation collection.
+      AddOrderFetchQuery (customerQuery, "1 = 0");
 
       // This executes the fetch query, but should discard the result (since the relation data already exists).
-      TestableClientTransaction.QueryManager.GetCollection (ordersQuery);
+      TestableClientTransaction.QueryManager.GetCollection (customerQuery);
 
       Assert.That (
-          order.OrderItems,
-          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), DomainObjectIDs.OrderItem2.GetObject<OrderItem>() }));
+          customer.Orders,
+          Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order>(), DomainObjectIDs.Order5.GetObject<Order>() }));
     }
 
     [Test]
@@ -174,6 +174,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
           typeof (DomainObjectCollection));
     }
 
+    private IQuery CreateCustomerQuery (string whereCondition)
+    {
+      return QueryFactory.CreateCollectionQuery (
+          "test",
+          TestDomainStorageProviderDefinition,
+          "SELECT * FROM [Company] c WHERE c.ClassID='Customer' AND " + whereCondition,
+          new QueryParameterCollection (),
+          typeof (DomainObjectCollection));
+    }
+
     private IQuery AddOrderItemsFetchQuery (IQuery ordersQuery, string whereCondition)
     {
       var relationEndPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
@@ -185,6 +195,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));
       ordersQuery.EagerFetchQueries.Add (relationEndPointDefinition, orderItemsFetchQuery);
+      return orderItemsFetchQuery;
+    }
+
+    private IQuery AddOrderFetchQuery (IQuery customerQuery, string whereCondition)
+    {
+      var relationEndPointDefinition = GetEndPointDefinition (typeof (Customer), "Orders");
+
+      var orderItemsFetchQuery = QueryFactory.CreateCollectionQuery (
+          "test fetch",
+          TestDomainStorageProviderDefinition,
+          "SELECT o.* FROM [Company] c LEFT OUTER JOIN [Order] o ON c.ID = o.CustomerID WHERE " + whereCondition,
+          new QueryParameterCollection (),
+          typeof (DomainObjectCollection));
+      customerQuery.EagerFetchQueries.Add (relationEndPointDefinition, orderItemsFetchQuery);
       return orderItemsFetchQuery;
     }
 

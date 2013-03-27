@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _eventReceiverMock = MockRepository.GenerateStrictMock<OrderCollection.ICollectionEventReceiver>();
 
       _itemA = DomainObjectIDs.Order1.GetObject<Order> ();
-      _itemB = DomainObjectIDs.OrderWithoutOrderItem.GetObject<Order> ();
+      _itemB = DomainObjectIDs.Order5.GetObject<Order> ();
     }
 
     [Test]
