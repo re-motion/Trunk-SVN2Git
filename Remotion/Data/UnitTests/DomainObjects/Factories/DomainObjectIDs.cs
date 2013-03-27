@@ -456,33 +456,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     #endregion
 
-    #region OrderWithNewPropertyAccess
-
-    // OrderItems: OrderItemWithNewPropertyAccess1, OrderItemWithNewPropertyAccess2
-    // Customer: Customer1
-    public ObjectID OrderWithNewPropertyAccess1
-    {
-      get { return CreateObjectID ("OrderWithNewPropertyAccess", new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}")); }
-    }
-
-    #endregion
-
-    #region OrderItemWithNewPropertyAccess
-
-    // Order: OrderWithNewPropertyAccess1
-    public ObjectID OrderItemWithNewPropertyAccess1
-    {
-      get { return CreateObjectID ("OrderItemWithNewPropertyAccess", new Guid ("{2F4D42C7-7FFA-490d-BFCD-A9101BBF4E1A}")); }
-    }
-
-    // Order: OrderWithNewPropertyAccess1
-    public ObjectID OrderItemWithNewPropertyAccess2
-    {
-      get { return CreateObjectID ("OrderItemWithNewPropertyAccess", new Guid ("{AD620A11-4BC4-4791-BCF4-A0770A08C5B0}")); }
-    }
-
-    #endregion
-
     #region OrderTicket
 
     // Order: Order1

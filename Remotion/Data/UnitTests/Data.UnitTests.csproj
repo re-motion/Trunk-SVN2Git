@@ -1897,7 +1897,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\TestDomain\ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.cs" />
-    <Compile Include="DomainObjects\TestDomain\OrderWithNewPropertyAccessBase.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithBothEndPointsOnSameClass.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithoutStorageGroupWithDifferentProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\BaseClassWithoutStorageSpecificIdentifierAttribute.cs" />
@@ -1914,8 +1913,6 @@
     <Compile Include="DomainObjects\TestDomain\SpecificOrderCollection.cs" />
     <Compile Include="DomainObjects\TestDomain\StorageProviderStubAttribute.cs" />
     <Compile Include="DomainObjects\TestDomain\StorageProviderStubDomainBase.cs" />
-    <Compile Include="DomainObjects\TestDomain\OrderItemWithNewPropertyAccess.cs" />
-    <Compile Include="DomainObjects\TestDomain\OrderWithNewPropertyAccess.cs" />
     <Compile Include="DomainObjects\TestDomain\Customer.cs">
       <SubType>Code</SubType>
     </Compile>
