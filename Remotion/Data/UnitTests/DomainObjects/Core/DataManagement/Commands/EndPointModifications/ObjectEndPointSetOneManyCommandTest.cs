@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _domainObject = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
       _oldRelatedObject = _domainObject.Order;
-      _newRelatedObject = DomainObjectIDs.Order2.GetObject<Order> ();
+      _newRelatedObject = DomainObjectIDs.Order3.GetObject<Order> ();
 
       _endPointID = RelationEndPointID.Resolve (_domainObject, oi => oi.Order);
       _endPoint = (RealObjectEndPoint) RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);

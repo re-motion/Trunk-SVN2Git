@@ -34,9 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private TestableObservableCollectionDataDecorator _observableDecoratorWithRealContent;
 
     private Order _order1;
-    private Order _order2;
     private Order _order3;
     private Order _order4;
+    private Order _order5;
 
     public override void SetUp ()
     {
@@ -45,11 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _mockRepository = new MockRepository();
 
       _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
       _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
       _order4 = DomainObjectIDs.Order4.GetObject<Order> ();
+      _order5 = DomainObjectIDs.Order5.GetObject<Order> ();
 
-      var realContent = new DomainObjectCollectionData (new[] { _order1, _order2, _order3 });
+      var realContent = new DomainObjectCollectionData (new[] { _order1, _order3, _order4 });
 
       _eventSinkMock = _mockRepository.StrictMock<TestableObservableCollectionDataDecorator.IEventSink>();
       _observableDecoratorWithRealContent = new TestableObservableCollectionDataDecorator (realContent, _eventSinkMock);
@@ -70,23 +70,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order2, 1))
+                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order3, 1))
             .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.Count, Is.EqualTo (3)));
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order3, 2))
+                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order4, 2))
             .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.Count, Is.EqualTo (3)));
 
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order3, 2))
+                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order4, 2))
             .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.Count, Is.EqualTo (0)));
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order2, 1))
+                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order3, 1))
             .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.Count, Is.EqualTo (0)));
         _eventSinkMock
             .Expect (
@@ -110,18 +110,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Insert, _order4, 2))
+                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Insert, _order5, 2))
             .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.Count, Is.EqualTo (3)));
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Insert, _order4, 2))
+                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Insert, _order5, 2))
             .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.Count, Is.EqualTo (4)));
       }
 
       _eventSinkMock.Replay();
 
-      _observableDecoratorWithRealContent.Insert (2, _order4);
+      _observableDecoratorWithRealContent.Insert (2, _order5);
 
       _eventSinkMock.VerifyAllExpectations();
     }
@@ -134,18 +134,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order2, 1))
+                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order3, 1))
             .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.Count, Is.EqualTo (3)));
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order2, 1))
+                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order3, 1))
             .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.Count, Is.EqualTo (2)));
       }
 
       _eventSinkMock.Replay();
 
-      var result = _observableDecoratorWithRealContent.Remove (_order2);
+      var result = _observableDecoratorWithRealContent.Remove (_order3);
 
       _eventSinkMock.VerifyAllExpectations();
 
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _eventSinkMock.Replay();
 
-      var result = _observableDecoratorWithRealContent.Remove (_order4);
+      var result = _observableDecoratorWithRealContent.Remove (_order5);
 
       _eventSinkMock.AssertWasNotCalled (
           mock =>
@@ -183,18 +183,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order2, 1))
+                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order3, 1))
             .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.Count, Is.EqualTo (3)));
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order2, 1))
+                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order3, 1))
             .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.Count, Is.EqualTo (2)));
       }
 
       _eventSinkMock.Replay();
 
-      var result = _observableDecoratorWithRealContent.Remove (_order2.ID);
+      var result = _observableDecoratorWithRealContent.Remove (_order3.ID);
 
       _eventSinkMock.VerifyAllExpectations();
 
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _eventSinkMock.Replay();
 
-      var result = _observableDecoratorWithRealContent.Remove (_order4.ID);
+      var result = _observableDecoratorWithRealContent.Remove (_order5.ID);
 
       _eventSinkMock.AssertWasNotCalled (
           mock =>
@@ -232,28 +232,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order2, 1))
-            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.GetObject (1), Is.SameAs (_order2)));
+                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order3, 1))
+            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.GetObject (1), Is.SameAs (_order3)));
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Insert, _order4, 1))
-            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.GetObject (1), Is.SameAs (_order2)));
+                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Insert, _order5, 1))
+            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.GetObject (1), Is.SameAs (_order3)));
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order2, 1))
-            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.GetObject (1), Is.SameAs (_order4)));
+                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Remove, _order3, 1))
+            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.GetObject (1), Is.SameAs (_order5)));
         _eventSinkMock
             .Expect (
                 mock =>
-                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Insert, _order4, 1))
-            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.GetObject (1), Is.SameAs (_order4)));
+                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Insert, _order5, 1))
+            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent.GetObject (1), Is.SameAs (_order5)));
       }
 
       _eventSinkMock.Replay();
 
-      _observableDecoratorWithRealContent.Replace (1, _order4);
+      _observableDecoratorWithRealContent.Replace (1, _order5);
 
       _eventSinkMock.VerifyAllExpectations();
     }
@@ -263,7 +263,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _eventSinkMock.Replay();
 
-      _observableDecoratorWithRealContent.Replace (1, _order2);
+      _observableDecoratorWithRealContent.Replace (1, _order3);
 
       _eventSinkMock.AssertWasNotCalled (
           mock =>
@@ -300,17 +300,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
             .Expect (
                 mock =>
                 mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Sort, null, -1))
-            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent, Is.EqualTo (new[] { _order1, _order2, _order3 })));
+            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent, Is.EqualTo (new[] { _order1, _order3, _order4 })));
         _eventSinkMock
             .Expect (
                 mock =>
                 mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Sort, null, -1))
-            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent, Is.EqualTo (new[] { _order3, _order2, _order1 })));
+            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent, Is.EqualTo (new[] { _order4, _order3, _order1 })));
       }
 
       _eventSinkMock.Replay ();
 
-      var weights = new Dictionary<DomainObject, int> { { _order1, 3 }, { _order2, 2 }, { _order3, 1 } };
+      var weights = new Dictionary<DomainObject, int> { { _order1, 3 }, { _order3, 2 }, { _order4, 1 } };
       Comparison<DomainObject> comparison = (one, two) => weights[one].CompareTo (weights[two]);
 
       _observableDecoratorWithRealContent.Sort (comparison);
@@ -341,8 +341,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       var source = new TestableObservableCollectionDataDecorator (new DomainObjectCollectionData(), null);
       source.Insert (0, _order1);
-      source.Insert (1, _order2);
-      source.Insert (2, _order3);
+      source.Insert (1, _order3);
+      source.Insert (2, _order4);
 
       var result = Serializer.SerializeAndDeserialize (source);
       Assert.That (result.Count, Is.EqualTo (3));

@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void Export_SerializesData ()
     {
       DataContainer container1 = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
-      DataContainer container2 = DomainObjectIDs.Order2.GetObject<Order> ().InternalDataContainer;
+      DataContainer container2 = DomainObjectIDs.Order3.GetObject<Order> ().InternalDataContainer;
 
       TransportItem item1 = TransportItem.PackageDataContainer (container1);
       TransportItem item2 = TransportItem.PackageDataContainer (container2);

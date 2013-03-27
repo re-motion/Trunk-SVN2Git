@@ -29,9 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
   public class FilterQueryResultEventsTest : ReadOnlyTransactionsTestBase
   {
     private Order _order1;
-    private Order _order2;
     private Order _order3;
     private Order _order4;
+    private Order _order5;
     private IQuery _queryStub;
 
     public override void SetUp ()
@@ -39,9 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       base.SetUp ();
 
       _order1 = ExecuteInWriteableSubTransaction (() => DomainObjectIDs.Order1.GetObject<Order> ());
-      _order2 = ExecuteInWriteableSubTransaction (() => DomainObjectIDs.Order2.GetObject<Order> ());
       _order3 = ExecuteInWriteableSubTransaction (() => DomainObjectIDs.Order3.GetObject<Order> ());
       _order4 = ExecuteInWriteableSubTransaction (() => DomainObjectIDs.Order4.GetObject<Order> ());
+      _order5 = ExecuteInWriteableSubTransaction (() => DomainObjectIDs.Order5.GetObject<Order> ());
 
       _queryStub = MockRepository.GenerateStub<IQuery>();
 
@@ -58,30 +58,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
                 mock => mock.FilterQueryResult (
                     Arg.Is (ReadOnlyRootTransaction),
                     Arg<QueryResult<DomainObject>>.Matches (qr => qr.ToArray().SequenceEqual (new[] { _order1 }))))
-            .Return (new QueryResult<DomainObject> (_queryStub, new[] { _order2 }))
+            .Return (new QueryResult<DomainObject> (_queryStub, new[] { _order3 }))
             .WhenCalled (mi => Assert.That (ReadOnlyRootTransaction.IsWriteable, Is.False));
 
         ExtensionStrictMock
             .Expect (
                 mock => mock.FilterQueryResult (
                     Arg.Is (ReadOnlyMiddleTransaction),
-                    Arg<QueryResult<DomainObject>>.Matches (qr => qr.ToArray ().SequenceEqual (new[] { _order2 }))))
-            .Return (new QueryResult<DomainObject> (_queryStub, new[] { _order3 }))
+                    Arg<QueryResult<DomainObject>>.Matches (qr => qr.ToArray ().SequenceEqual (new[] { _order3 }))))
+            .Return (new QueryResult<DomainObject> (_queryStub, new[] { _order4 }))
             .WhenCalled (mi => Assert.That (ReadOnlyMiddleTransaction.IsWriteable, Is.False));
 
         ExtensionStrictMock
             .Expect (
                 mock => mock.FilterQueryResult (
                     Arg.Is (WriteableSubTransaction),
-                    Arg<QueryResult<DomainObject>>.Matches (qr => qr.ToArray ().SequenceEqual (new[] { _order3 }))))
-            .Return (new QueryResult<DomainObject> (_queryStub, new[] { _order4 }))
+                    Arg<QueryResult<DomainObject>>.Matches (qr => qr.ToArray ().SequenceEqual (new[] { _order4 }))))
+            .Return (new QueryResult<DomainObject> (_queryStub, new[] { _order5 }))
             .WhenCalled (mi => Assert.That (WriteableSubTransaction.IsWriteable, Is.True));
       }
 
       var result = ExecuteInWriteableSubTransaction (() => QueryFactory.CreateLinqQuery<Order>().Where (obj => obj.ID == _order1.ID).ToList());
 
       ExtensionStrictMock.VerifyAllExpectations();
-      Assert.That (result, Is.EqualTo (new[] { _order4 }));
+      Assert.That (result, Is.EqualTo (new[] { _order5 }));
     }
 
     [Test]

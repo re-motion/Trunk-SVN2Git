@@ -34,9 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private IDomainObjectCollectionData _wrappedDataStub;
 
     private Order _order1;
-    private Order _order2;
     private Order _order3;
     private Order _order4;
+    private Order _order5;
 
     public override void SetUp ()
     {
@@ -45,22 +45,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _readOnlyDecorator = new ReadOnlyCollectionDataDecorator (_wrappedDataStub);
 
       _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
       _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
       _order4 = DomainObjectIDs.Order4.GetObject<Order> ();
+      _order5 = DomainObjectIDs.Order5.GetObject<Order> ();
     }
 
     [Test]
     public void Enumeration ()
     {
-      StubInnerData (_order1, _order2, _order3);
-      Assert.That (_readOnlyDecorator.ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      StubInnerData (_order1, _order3, _order4);
+      Assert.That (_readOnlyDecorator.ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4 }));
     }
 
     [Test]
     public void Count ()
     {
-      StubInnerData (_order1, _order2, _order3);
+      StubInnerData (_order1, _order3, _order4);
       Assert.That (_readOnlyDecorator.Count, Is.EqualTo (3));
     }
 
@@ -100,16 +100,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void ContainsObjectID ()
     {
-      StubInnerData (_order1, _order2, _order3);
+      StubInnerData (_order1, _order3, _order4);
 
       Assert.That (_readOnlyDecorator.ContainsObjectID (_order1.ID), Is.True);
-      Assert.That (_readOnlyDecorator.ContainsObjectID (_order4.ID), Is.False);
+      Assert.That (_readOnlyDecorator.ContainsObjectID (_order5.ID), Is.False);
     }
 
     [Test]
     public void GetObject_ByIndex ()
     {
-      StubInnerData (_order1, _order2, _order3);
+      StubInnerData (_order1, _order3, _order4);
 
       Assert.That (_readOnlyDecorator.GetObject (0), Is.SameAs (_order1));
     }
@@ -117,17 +117,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void GetObject_ByID ()
     {
-      StubInnerData (_order1, _order2, _order3);
+      StubInnerData (_order1, _order3, _order4);
 
-      Assert.That (_readOnlyDecorator.GetObject (_order2.ID), Is.SameAs (_order2));
+      Assert.That (_readOnlyDecorator.GetObject (_order3.ID), Is.SameAs (_order3));
     }
 
     [Test]
     public void IndexOf ()
     {
-      StubInnerData (_order1, _order2, _order3);
+      StubInnerData (_order1, _order3, _order4);
 
-      Assert.That (_readOnlyDecorator.IndexOf (_order2.ID), Is.EqualTo (1));
+      Assert.That (_readOnlyDecorator.IndexOf (_order3.ID), Is.EqualTo (1));
     }
 
     [Test]
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot insert an item into a read-only collection.")]
     public void Insert_Throws ()
     {
-      _readOnlyDecorator.Insert (0, _order4);
+      _readOnlyDecorator.Insert (0, _order5);
     }
 
     [Test]
@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       //TODO 5370: Remove
       SetUp();
 
-      var decorator = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (new[] { _order1, _order2, _order3 }));
+      var decorator = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (new[] { _order1, _order3, _order4 }));
       var result = Serializer.SerializeAndDeserialize (decorator);
       Assert.That (result.Count, Is.EqualTo (3));
     }

@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _fakeResult = new ObjectLookupResult<DataContainer>[0];
       _objectID1 = DomainObjectIDs.Order1;
-      _objectID2 = DomainObjectIDs.Order2;
+      _objectID2 = DomainObjectIDs.Order3;
       _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
       _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
 

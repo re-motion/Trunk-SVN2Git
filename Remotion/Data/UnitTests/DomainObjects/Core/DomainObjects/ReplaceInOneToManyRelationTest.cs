@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
       _oldCustomerOfNewOrder = DomainObjectIDs.Customer3.GetObject<Customer> ();
       _oldOrder = DomainObjectIDs.Order1.GetObject<Order> ();
-      _newOrder = DomainObjectIDs.Order2.GetObject<Order> ();
+      _newOrder = DomainObjectIDs.Order3.GetObject<Order> ();
     }
 
     [Test]
@@ -447,7 +447,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void ChangeEventsWithOldRelatedObjectNotLoaded ()
     {
-      Order newOrder = DomainObjectIDs.Order3.GetObject<Order> ();
+      Order newOrder = DomainObjectIDs.Order4.GetObject<Order> ();
 
       SequenceEventReceiver eventReceiver = new SequenceEventReceiver (
           new DomainObject[] { _oldOrder, newOrder, _customer },

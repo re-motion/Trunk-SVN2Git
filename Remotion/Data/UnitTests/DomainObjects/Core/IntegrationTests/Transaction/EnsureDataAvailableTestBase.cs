@@ -36,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       base.SetUp ();
 
       _loadedObject1 = DomainObjectMother.GetUnchangedObject (TestableClientTransaction, DomainObjectIDs.Order1);
-      _loadedObject2 = DomainObjectMother.GetUnchangedObject (TestableClientTransaction, DomainObjectIDs.Order2);
-      _notLoadedObject1 = DomainObjectMother.GetNotLoadedObject (TestableClientTransaction, DomainObjectIDs.Order3);
-      _notLoadedObject2 = DomainObjectMother.GetNotLoadedObject (TestableClientTransaction, DomainObjectIDs.Order4);
+      _loadedObject2 = DomainObjectMother.GetUnchangedObject (TestableClientTransaction, DomainObjectIDs.Order3);
+      _notLoadedObject1 = DomainObjectMother.GetNotLoadedObject (TestableClientTransaction, DomainObjectIDs.Order4);
+      _notLoadedObject2 = DomainObjectMother.GetNotLoadedObject (TestableClientTransaction, DomainObjectIDs.Order5);
       _invalidObject = DomainObjectMother.GetInvalidObject (TestableClientTransaction);
       _notLoadedNonExistingObject = DomainObjectMother.GetNotLoadedNonExistingObject (TestableClientTransaction);
 

@@ -298,9 +298,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void CreateForSave_Unchanged ()
     {
-      var dataContainerUnchanged = DataContainer.CreateForExisting (DomainObjectIDs.Order3, null, pd => pd.DefaultValue);
+      var dataContainerUnchanged = DataContainer.CreateForExisting (DomainObjectIDs.Order4, null, pd => pd.DefaultValue);
 
-      StubTableDefinitionFinder (DomainObjectIDs.Order3, _tableDefinition1);
+      StubTableDefinitionFinder (DomainObjectIDs.Order4, _tableDefinition1);
       _tableDefinitionFinderStrictMock.Replay();
 
       var result = _factory.CreateForSave (new[] { dataContainerUnchanged });

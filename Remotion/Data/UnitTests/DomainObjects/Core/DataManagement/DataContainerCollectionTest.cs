@@ -202,8 +202,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MergeTwoCollections ()
     {
       _collection.Add (_dataContainer);
-      DataContainer order2 = TestDataContainerObjectMother.CreateOrder2DataContainer ();
-      _collection.Add (order2);
+      DataContainer order3 = TestDataContainerObjectMother.CreateOrder2DataContainer ();
+      _collection.Add (order3);
 
       DataContainerCollection secondCollection = new DataContainerCollection ();
       DataContainer order1 = TestDataContainerObjectMother.CreateOrder1DataContainer ();
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (mergedCollection.Count, Is.EqualTo (2));
       Assert.That (mergedCollection[_dataContainer.ID], Is.SameAs (order1));
-      Assert.That (mergedCollection[order2.ID], Is.SameAs (order2));
+      Assert.That (mergedCollection[order3.ID], Is.SameAs (order3));
     }
 
     [Test]

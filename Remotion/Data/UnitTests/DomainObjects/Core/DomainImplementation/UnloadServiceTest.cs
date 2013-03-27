@@ -803,18 +803,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope())
       {
         var middleTransaction = ClientTransaction.Current;
-        middleTransaction.EnsureDataAvailable (DomainObjectIDs.Order2);
-        Assert.That (DataManagementService.GetDataManager (middleTransaction).DataContainers[DomainObjectIDs.Order2], Is.Not.Null);
+        middleTransaction.EnsureDataAvailable (DomainObjectIDs.Order3);
+        Assert.That (DataManagementService.GetDataManager (middleTransaction).DataContainers[DomainObjectIDs.Order3], Is.Not.Null);
 
         using (middleTransaction.CreateSubTransaction ().EnterDiscardingScope ())
         {
-          ClientTransaction.Current.EnsureDataAvailable (DomainObjectIDs.Order3);
-          Assert.That (DataManagementService.GetDataManager (ClientTransaction.Current).DataContainers[DomainObjectIDs.Order3], Is.Not.Null);
+          ClientTransaction.Current.EnsureDataAvailable (DomainObjectIDs.Order4);
+          Assert.That (DataManagementService.GetDataManager (ClientTransaction.Current).DataContainers[DomainObjectIDs.Order4], Is.Not.Null);
 
           UnloadService.UnloadAll (middleTransaction);
 
-          Assert.That (DataManagementService.GetDataManager (ClientTransaction.Current).DataContainers[DomainObjectIDs.Order3], Is.Null);
-          Assert.That (DataManagementService.GetDataManager (middleTransaction).DataContainers[DomainObjectIDs.Order2], Is.Null);
+          Assert.That (DataManagementService.GetDataManager (ClientTransaction.Current).DataContainers[DomainObjectIDs.Order4], Is.Null);
+          Assert.That (DataManagementService.GetDataManager (middleTransaction).DataContainers[DomainObjectIDs.Order3], Is.Null);
           Assert.That (TestableClientTransaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
         }
       }

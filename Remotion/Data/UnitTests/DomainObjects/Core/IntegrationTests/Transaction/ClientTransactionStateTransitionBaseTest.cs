@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     public Order GetDeleted ()
     {
-      Order deleted = DomainObjectIDs.Order4.GetObject<Order> ();
+      Order deleted = DomainObjectIDs.Order5.GetObject<Order> ();
       FullyDeleteOrder (deleted);
       return deleted;
     }
@@ -80,14 +80,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     public Order GetChangedThroughRelatedObjects ()
     {
-      Order changedThroughRelatedObjects = DomainObjectIDs.Order3.GetObject<Order> ();
+      Order changedThroughRelatedObjects = DomainObjectIDs.Order4.GetObject<Order> ();
       changedThroughRelatedObjects.OrderItems.Clear ();
       return changedThroughRelatedObjects;
     }
 
     public Order GetChangedThroughPropertyValue ()
     {
-      Order changedThroughPropertyValue = DomainObjectIDs.Order2.GetObject<Order> ();
+      Order changedThroughPropertyValue = DomainObjectIDs.Order3.GetObject<Order> ();
       changedThroughPropertyValue.OrderNumber = 74;
       return changedThroughPropertyValue;
     }

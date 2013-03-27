@@ -138,10 +138,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _serializedIDPropertyStub
           .Stub (stub => stub.SplitValuesForComparison (Arg<IEnumerable<object>>.List.Equal (
-              new[] { DomainObjectIDs.Order1.ToString (), DomainObjectIDs.Order2.ToString () })))
+              new[] { DomainObjectIDs.Order1.ToString (), DomainObjectIDs.Order3.ToString () })))
           .Return (columnValueTable);
 
-      var result = _serializedObjectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      var result = _serializedObjectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 });
 
       ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
     }
@@ -156,10 +156,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       // Bug in Rhino Mocks: List.Equal constraint cannot handle nulls within the sequence
       _serializedIDPropertyStub
           .Stub (stub => stub.SplitValuesForComparison (
-              Arg<IEnumerable<object>>.Matches (seq => seq.SequenceEqual (new[] { null, DomainObjectIDs.Order2.ToString () }))))
+              Arg<IEnumerable<object>>.Matches (seq => seq.SequenceEqual (new[] { null, DomainObjectIDs.Order3.ToString () }))))
           .Return (columnValueTable);
 
-      var result = _serializedObjectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { null, DomainObjectIDs.Order2 });
+      var result = _serializedObjectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { null, DomainObjectIDs.Order3 });
 
       ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
     }

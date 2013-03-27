@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       base.SetUp ();
 
-      _order = DomainObjectIDs.Order2.GetObject<Order> ();
+      _order = DomainObjectIDs.Order3.GetObject<Order> ();
       _orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
     }
 
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
     {
       _order.Delete ();
 
-      Assert.That (_order.ID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (_order.ID, Is.EqualTo (DomainObjectIDs.Order3));
       Assert.That (_order.OrderNumber, Is.EqualTo (3));
       Assert.That (_order.DeliveryDate, Is.EqualTo (new DateTime (2005, 3, 1)));
       Assert.That (_order.InternalDataContainer.Timestamp, Is.Not.Null);

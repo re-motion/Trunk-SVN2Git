@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
 
       _rootTransaction = ClientTransaction.CreateRootTransaction();
       _order1LoadedInRootTransaction = DomainObjectIDs.Order1.GetObject<Order> (_rootTransaction);
-      _objectReferenceFromRootTransaction = DomainObjectIDs.Order2.GetObjectReference<Order> (_rootTransaction);
+      _objectReferenceFromRootTransaction = DomainObjectIDs.Order3.GetObjectReference<Order> (_rootTransaction);
     }
 
     [Test]

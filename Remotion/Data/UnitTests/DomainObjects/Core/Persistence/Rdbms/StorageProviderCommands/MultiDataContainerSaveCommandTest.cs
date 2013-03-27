@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       base.SetUp ();
 
       _objectID1 = DomainObjectIDs.Order1;
-      _objectID2 = DomainObjectIDs.Order2;
+      _objectID2 = DomainObjectIDs.Order3;
 
       _mockRepository = new MockRepository();
 

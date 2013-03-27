@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void RegisterEndPointsForDataContainer_Existing_RegistersRealObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order3);
       var foreignKeyProperty = GetPropertyDefinition (typeof (OrderTicket), "Order");
 
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
@@ -89,18 +89,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPoint = (RealObjectEndPoint) _relationEndPointManager.RelationEndPoints[endPointID];
       Assert.That (endPoint, Is.Not.Null);
       Assert.That (endPoint.PropertyDefinition, Is.EqualTo (foreignKeyProperty));
-      Assert.That (endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order3));
     }
 
     [Test]
     public void RegisterEndPointsForDataContainer_Existing_RegistersOppositeVirtualObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order3);
 
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
 
-      var oppositeID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order2, "OrderTicket");
+      var oppositeID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order3, "OrderTicket");
       var oppositeEndPoint = (IVirtualObjectEndPoint) _relationEndPointManager.RelationEndPoints[oppositeID];
 
       Assert.That (oppositeEndPoint, Is.Not.Null);
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateUnregisterCommandForDataContainer_Existing_IncludesRealObjectEndPoints_IgnoresVirtualEndPoints ()
     {
       var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
-      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (realEndPointID, DomainObjectIDs.Order2);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (realEndPointID, DomainObjectIDs.Order3);
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
       var realEndPoint = _relationEndPointManager.RelationEndPoints[realEndPointID];
 
@@ -352,7 +352,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateUnloadVirtualEndPointsCommand ()
     {
       var endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
-      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
+      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
 
       var endPointStub1 = MockRepository.GenerateStub<IVirtualEndPoint> ();
       endPointStub1.Stub (stub => stub.ID).Return (endPointID1);
@@ -388,7 +388,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateUnloadVirtualEndPointsCommand_SomeNonLoadedEndPoints ()
     {
       var endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
-      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
+      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
 
       var endPointStub2 = MockRepository.GenerateStub<IVirtualEndPoint> ();
       endPointStub2.Stub (stub => stub.ID).Return (endPointID2);
@@ -404,8 +404,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateUnloadVirtualEndPointsCommand_NonUnloadableEndPoints ()
     {
       var endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
-      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
-      var endPointID3 = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
+      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
+      var endPointID3 = RelationEndPointID.Create (DomainObjectIDs.Order4, typeof (Order), "OrderItems");
 
       var endPointStub1 = MockRepository.GenerateStub<IVirtualEndPoint> ();
       endPointStub1.Stub (stub => stub.ID).Return (endPointID1);

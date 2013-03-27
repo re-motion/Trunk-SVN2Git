@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       OrderTicket oldOrderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       OrderTicket newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
-      Order oldOrderOfNewOrderTicket = DomainObjectIDs.Order5.GetObject<Order> ();
+      Order oldOrderOfNewOrderTicket = DomainObjectIDs.Order2.GetObject<Order> ();
 
       oldOrderTicket.Order = newOrderTicket.Order;
       order.OrderTicket = newOrderTicket;
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
-      customer.Orders.Add (DomainObjectIDs.Order2.GetObject<Order> ());
+      customer.Orders.Add (DomainObjectIDs.Order3.GetObject<Order> ());
       TestableClientTransaction.Commit ();
 
       DomainObjectCollection originalOrders = customer.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RollbackReadOnlyOppositeDomainObjects ()
     {
       Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
-      customer.Orders.Add (DomainObjectIDs.Order2.GetObject<Order> ());
+      customer.Orders.Add (DomainObjectIDs.Order3.GetObject<Order> ());
 
       DomainObjectCollectionDataTestHelper.MakeCollectionReadOnly (customer.Orders);
       TestableClientTransaction.Rollback ();
@@ -200,11 +200,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order1.OrderNumber = 50;
       }
 
-      Order order2;
+      Order order3;
       using (clientTransaction2.EnterNonDiscardingScope ())
       {
-        order2 = DomainObjectIDs.Order2.GetObject<Order> ();
-        order2.OrderNumber = 60;
+        order3 = DomainObjectIDs.Order3.GetObject<Order> ();
+        order3.OrderNumber = 60;
       }
 
       clientTransaction1.Commit ();
@@ -214,10 +214,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (clientTransaction3.EnterNonDiscardingScope ())
       {
         Order changedOrder1 = DomainObjectIDs.Order1.GetObject<Order> ();
-        Order changedOrder2 = DomainObjectIDs.Order2.GetObject<Order> ();
+        Order changedOrder2 = DomainObjectIDs.Order3.GetObject<Order> ();
 
         Assert.That (ReferenceEquals (order1, changedOrder1), Is.False);
-        Assert.That (ReferenceEquals (order2, changedOrder2), Is.False);
+        Assert.That (ReferenceEquals (order3, changedOrder2), Is.False);
 
         Assert.That (changedOrder1.OrderNumber, Is.EqualTo (50));
         Assert.That (changedOrder2.OrderNumber, Is.EqualTo (60));
@@ -561,8 +561,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void LinqToClientTransaction ()
     {
       Order o1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      Order o2 = DomainObjectIDs.Order2.GetObject<Order> ();
-      Order o3 = DomainObjectIDs.Order3.GetObject<Order> ();
+      Order o2 = DomainObjectIDs.Order3.GetObject<Order> ();
+      Order o3 = DomainObjectIDs.Order4.GetObject<Order> ();
 
       var loadedOrders = from o in TestableClientTransaction.GetEnlistedDomainObjects().OfType<Order>()
                          select o;

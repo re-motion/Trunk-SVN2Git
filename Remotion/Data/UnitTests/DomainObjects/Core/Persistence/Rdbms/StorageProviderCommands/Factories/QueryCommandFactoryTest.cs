@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _resultRowReaderStub = MockRepository.GenerateStub<IObjectReader<IQueryResultRow>>();
 
       _queryParameter1 = new QueryParameter ("first", DomainObjectIDs.Order1);
-      _queryParameter2 = new QueryParameter ("second", DomainObjectIDs.Order2.Value);
+      _queryParameter2 = new QueryParameter ("second", DomainObjectIDs.Order3.Value);
       _queryParameter3 = new QueryParameter ("third", DomainObjectIDs.Official1);
       var collection = new QueryParameterCollection { _queryParameter1, _queryParameter2, _queryParameter3 };
 
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order1))
           .Return (_property1);
       _dataStoragePropertyDefinitionFactoryStrictMock
-          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order2.Value))
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order3.Value))
           .Return (_property2);
       _dataStoragePropertyDefinitionFactoryStrictMock
           .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Official1))
@@ -164,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order1))
           .Return (_property1);
       _dataStoragePropertyDefinitionFactoryStrictMock
-          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order2.Value))
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order3.Value))
           .Return (_property2);
       _dataStoragePropertyDefinitionFactoryStrictMock
           .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Official1))
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order1))
           .Return (_property1);
       _dataStoragePropertyDefinitionFactoryStrictMock
-          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order2.Value))
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order3.Value))
           .Return (_property2);
       _dataStoragePropertyDefinitionFactoryStrictMock
           .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Official1))

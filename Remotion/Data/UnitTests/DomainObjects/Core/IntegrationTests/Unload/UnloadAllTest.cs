@@ -35,15 +35,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       var unchangedObject = LoadOrderWithRelations (DomainObjectIDs.Order1);
       
-      var changedObjectDueToDataState = LoadOrderWithRelations (DomainObjectIDs.Order2);
+      var changedObjectDueToDataState = LoadOrderWithRelations (DomainObjectIDs.Order3);
       ++changedObjectDueToDataState.OrderNumber;
 
-      var changedObjectDueToVirtualRelationState = LoadOrderWithRelations (DomainObjectIDs.Order3);
+      var changedObjectDueToVirtualRelationState = LoadOrderWithRelations (DomainObjectIDs.Order4);
       changedObjectDueToVirtualRelationState.OrderTicket = null;
       
       var newObject = Order.NewObject();
       
-      var deletedObject = LoadOrderWithRelations (DomainObjectIDs.Order4);
+      var deletedObject = LoadOrderWithRelations (DomainObjectIDs.Order5);
       deletedObject.Delete();
 
       var invalidObject = Order.NewObject();
@@ -73,15 +73,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       var unchangedObject = LoadOrderWithRelations (DomainObjectIDs.Order1);
 
-      var changedObjectDueToDataState = LoadOrderWithRelations (DomainObjectIDs.Order2);
+      var changedObjectDueToDataState = LoadOrderWithRelations (DomainObjectIDs.Order3);
       ++changedObjectDueToDataState.OrderNumber;
 
-      var changedObjectDueToVirtualRelationState = LoadOrderWithRelations (DomainObjectIDs.Order3);
+      var changedObjectDueToVirtualRelationState = LoadOrderWithRelations (DomainObjectIDs.Order4);
       changedObjectDueToVirtualRelationState.OrderTicket = null;
 
       var newObject = Order.NewObject ();
 
-      var deletedObject = LoadOrderWithRelations (DomainObjectIDs.Order4);
+      var deletedObject = LoadOrderWithRelations (DomainObjectIDs.Order5);
       deletedObject.Delete ();
 
       var invalidObject = Order.NewObject ();
@@ -112,15 +112,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       var unchangedObject = LoadOrderWithRelations (DomainObjectIDs.Order1);
 
-      var changedObjectDueToDataState = LoadOrderWithRelations (DomainObjectIDs.Order2);
+      var changedObjectDueToDataState = LoadOrderWithRelations (DomainObjectIDs.Order3);
       ++changedObjectDueToDataState.OrderNumber;
 
-      var changedObjectDueToVirtualRelationState = LoadOrderWithRelations (DomainObjectIDs.Order3);
+      var changedObjectDueToVirtualRelationState = LoadOrderWithRelations (DomainObjectIDs.Order4);
       changedObjectDueToVirtualRelationState.OrderTicket = null;
 
       var newObject = Order.NewObject ();
 
-      var deletedObject = LoadOrderWithRelations (DomainObjectIDs.Order4);
+      var deletedObject = LoadOrderWithRelations (DomainObjectIDs.Order5);
       deletedObject.Delete ();
 
       var invalidObject = Order.NewObject ();
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var object1 = LoadOrderWithRelations (DomainObjectIDs.Order1);
       var collection1 = object1.OrderItems;
 
-      var object2 = LoadOrderWithRelations (DomainObjectIDs.Order2);
+      var object2 = LoadOrderWithRelations (DomainObjectIDs.Order3);
       var collection2 = object2.OrderItems;
       collection2.Clear();
 
@@ -206,14 +206,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         var middleTransaction = ClientTransaction.Current;
-        var orderChangedInMiddle = LoadOrderWithRelations (DomainObjectIDs.Order2);
+        var orderChangedInMiddle = LoadOrderWithRelations (DomainObjectIDs.Order3);
         orderChangedInMiddle.OrderTicket = null;
         orderChangedInMiddle.OrderItems.Clear();
         orderChangedInMiddle.OrderNumber = 0;
 
         using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
         {
-          var orderChangedInSubSub = LoadOrderWithRelations (DomainObjectIDs.Order3);
+          var orderChangedInSubSub = LoadOrderWithRelations (DomainObjectIDs.Order4);
           orderChangedInSubSub.OrderTicket = null;
           orderChangedInSubSub.OrderItems.Clear();
           orderChangedInSubSub.OrderNumber = 0;
@@ -309,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void Events ()
     {
       var order1 = LoadOrderWithRelations (DomainObjectIDs.Order1);
-      var order2 = LoadOrderWithRelations (DomainObjectIDs.Order2);
+      var order3 = LoadOrderWithRelations (DomainObjectIDs.Order3);
       
       var mockRepository = new MockRepository();
       // Actual events are more comprehensive, since all opposite objects are also unloaded. We only test for some of them, so use a dynamic mock.
@@ -317,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var unloadEventReceiver = mockRepository.StrictMock<IUnloadEventReceiver>();
 
       order1.SetUnloadEventReceiver (unloadEventReceiver);
-      order2.SetUnloadEventReceiver (unloadEventReceiver);
+      order3.SetUnloadEventReceiver (unloadEventReceiver);
 
       using (mockRepository.Ordered ())
       {
@@ -325,9 +325,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
             .Expect (
                 mock => mock.ObjectsUnloading (
                     Arg.Is (TestableClientTransaction),
-                    Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { order1, order2 })));
+                    Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { order1, order3 })));
         unloadEventReceiver.Expect (mock => mock.OnUnloading (order1));
-        unloadEventReceiver.Expect (mock => mock.OnUnloading (order2));
+        unloadEventReceiver.Expect (mock => mock.OnUnloading (order3));
 
         using (mockRepository.Unordered ())
         {
@@ -338,23 +338,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
           clientTransactionListener.Expect (
               mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order1, o => o.OrderTicket)));
           clientTransactionListener.Expect (
-              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order2, o => o.Customer)));
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order3, o => o.Customer)));
           clientTransactionListener.Expect (
-              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order2, o => o.Official)));
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order3, o => o.Official)));
           clientTransactionListener.Expect (
-              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order2, o => o.OrderTicket)));
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order3, o => o.OrderTicket)));
 
           clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order1.InternalDataContainer));
-          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order2.InternalDataContainer));
+          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order3.InternalDataContainer));
         }
 
-        unloadEventReceiver.Expect (mock => mock.OnUnloaded (order2));
+        unloadEventReceiver.Expect (mock => mock.OnUnloaded (order3));
         unloadEventReceiver.Expect (mock => mock.OnUnloaded (order1));
         clientTransactionListener
             .Expect (
                 mock => mock.ObjectsUnloaded (
                     Arg.Is (TestableClientTransaction),
-                    Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { order1, order2 })));
+                    Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { order1, order3 })));
       }
       mockRepository.ReplayAll();
 
@@ -519,8 +519,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void Events_Recalculation ()
     {
       var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      var order2 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order2);
       var order3 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order3);
+      var order4 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order4);
 
       var mockRepository = new MockRepository ();
       // Actual events are more comprehensive, since all opposite objects are also unloaded. We only test for some of them, so use a dynamic mock.
@@ -528,8 +528,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var unloadEventReceiver = mockRepository.StrictMock<IUnloadEventReceiver> ();
 
       order1.SetUnloadEventReceiver (unloadEventReceiver);
-      order2.SetUnloadEventReceiver (unloadEventReceiver);
       order3.SetUnloadEventReceiver (unloadEventReceiver);
+      order4.SetUnloadEventReceiver (unloadEventReceiver);
 
       using (mockRepository.Ordered ())
       {
@@ -538,41 +538,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
                 mock => mock.ObjectsUnloading (
                     Arg.Is (TestableClientTransaction),
                     Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1 })))
-            .WhenCalled (mi => order2.EnsureDataAvailable());
+            .WhenCalled (mi => order3.EnsureDataAvailable());
         unloadEventReceiver.Expect (mock => mock.OnUnloading (order1));
         clientTransactionListener
             .Expect (
                 mock => mock.ObjectsUnloading (
                     Arg.Is (TestableClientTransaction),
-                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order2 })));
+                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order3 })));
         unloadEventReceiver
-            .Expect (mock => mock.OnUnloading (order2))
-            .WhenCalled (mi => order3.EnsureDataAvailable ());
+            .Expect (mock => mock.OnUnloading (order3))
+            .WhenCalled (mi => order4.EnsureDataAvailable ());
         clientTransactionListener
             .Expect (
                 mock => mock.ObjectsUnloading (
                     Arg.Is (TestableClientTransaction),
-                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order3 })));
-        unloadEventReceiver.Expect (mock => mock.OnUnloading (order3));
+                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order4 })));
+        unloadEventReceiver.Expect (mock => mock.OnUnloading (order4));
 
         using (mockRepository.Unordered ())
         {
           clientTransactionListener.Expect (
               mock => mock.DataContainerMapUnregistering (Arg.Is (TestableClientTransaction), Arg<DataContainer>.Matches (dc => dc.ID == order1.ID)));
           clientTransactionListener.Expect (
-              mock => mock.DataContainerMapUnregistering (Arg.Is (TestableClientTransaction), Arg<DataContainer>.Matches (dc => dc.ID == order2.ID)));
-          clientTransactionListener.Expect (
               mock => mock.DataContainerMapUnregistering (Arg.Is (TestableClientTransaction), Arg<DataContainer>.Matches (dc => dc.ID == order3.ID)));
+          clientTransactionListener.Expect (
+              mock => mock.DataContainerMapUnregistering (Arg.Is (TestableClientTransaction), Arg<DataContainer>.Matches (dc => dc.ID == order4.ID)));
         }
 
+        unloadEventReceiver.Expect (mock => mock.OnUnloaded (order4));
         unloadEventReceiver.Expect (mock => mock.OnUnloaded (order3));
-        unloadEventReceiver.Expect (mock => mock.OnUnloaded (order2));
         unloadEventReceiver.Expect (mock => mock.OnUnloaded (order1));
         clientTransactionListener
             .Expect (
                 mock => mock.ObjectsUnloaded (
                     Arg.Is (TestableClientTransaction),
-                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2, order3 })));
+                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order3, order4 })));
       }
       mockRepository.ReplayAll ();
 

@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void Wrap ()
     {
       TransportItem item1 = new TransportItem (DomainObjectIDs.Order1);
-      TransportItem item2 = new TransportItem (DomainObjectIDs.Order2);
+      TransportItem item2 = new TransportItem (DomainObjectIDs.Order3);
 
       XmlTransportItem[] xmlItems = XmlTransportItem.Wrap (new[] { item1, item2 });
       Assert.That (xmlItems.Length, Is.EqualTo (2));
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void Unwrap ()
     {
       TransportItem item1 = new TransportItem (DomainObjectIDs.Order1);
-      TransportItem item2 = new TransportItem (DomainObjectIDs.Order2);
+      TransportItem item2 = new TransportItem (DomainObjectIDs.Order3);
 
       TransportItem[] items = XmlTransportItem.Unwrap (new[] { new XmlTransportItem  (item1), new XmlTransportItem (item2)});
       Assert.That (items.Length, Is.EqualTo (2));
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void XmlSerialize_WithCustomObjectIDProperty ()
     {
       TransportItem item = new TransportItem (DomainObjectIDs.Computer1);
-      item.Properties.Add ("CustomReference", DomainObjectIDs.Order2);
+      item.Properties.Add ("CustomReference", DomainObjectIDs.Order3);
       byte[] serializedArray = Serializer.XmlSerialize (new XmlTransportItem (item));
       string serializedString = Encoding.UTF8.GetString (serializedArray);
 
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForCustomObjectIDProperty);
       XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
-      Assert.That (item.TransportItem.Properties["CustomReference"], Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (item.TransportItem.Properties["CustomReference"], Is.EqualTo (DomainObjectIDs.Order3));
     }
 
     [Test]

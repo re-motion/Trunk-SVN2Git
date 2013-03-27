@@ -71,26 +71,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
       Assert.That (_listener.CurrentlyLoadingObjectIDs, Is.EquivalentTo(new[] { DomainObjectIDs.Order1 }));
       Assert.That (_listener.IsInLoadMode, Is.True);
 
-      _listener.AddCurrentlyLoadingObjectIDs (new[] { DomainObjectIDs.Order2, DomainObjectIDs.Order3 });
+      _listener.AddCurrentlyLoadingObjectIDs (new[] { DomainObjectIDs.Order3, DomainObjectIDs.Order4 });
 
-      Assert.That (_listener.CurrentlyLoadingObjectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }));
+      Assert.That (_listener.CurrentlyLoadingObjectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4 }));
       Assert.That (_listener.IsInLoadMode, Is.True);
     }
 
     [Test]
     public void RemoveCurrentlyLoadingObjectIDs ()
     {
-      _listener.AddCurrentlyLoadingObjectIDs (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 });
+      _listener.AddCurrentlyLoadingObjectIDs (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4 });
 
-      Assert.That (_listener.CurrentlyLoadingObjectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }));
+      Assert.That (_listener.CurrentlyLoadingObjectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4 }));
       Assert.That (_listener.IsInLoadMode, Is.True);
 
       _listener.RemoveCurrentlyLoadingObjectIDs (new[] { DomainObjectIDs.Order1 });
 
-      Assert.That (_listener.CurrentlyLoadingObjectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.Order2, DomainObjectIDs.Order3 }));
+      Assert.That (_listener.CurrentlyLoadingObjectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.Order3, DomainObjectIDs.Order4 }));
       Assert.That (_listener.IsInLoadMode, Is.True);
 
-      _listener.RemoveCurrentlyLoadingObjectIDs (new[] { DomainObjectIDs.Order2, DomainObjectIDs.Order3 });
+      _listener.RemoveCurrentlyLoadingObjectIDs (new[] { DomainObjectIDs.Order3, DomainObjectIDs.Order4 });
 
       Assert.That (_listener.CurrentlyLoadingObjectIDs, Is.Empty);
       Assert.That (_listener.IsInLoadMode, Is.False);
@@ -346,11 +346,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     [Test]
     public void Serializability ()
     {
-      _listener.AddCurrentlyLoadingObjectIDs (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      _listener.AddCurrentlyLoadingObjectIDs (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 });
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (_listener);
 
-      Assert.That (deserializedInstance.CurrentlyLoadingObjectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }));
+      Assert.That (deserializedInstance.CurrentlyLoadingObjectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }));
     }
 
     private void CheckForbiddenOperationWithLoadMode (TestDelegate forbiddenOperation, string specificMessage)

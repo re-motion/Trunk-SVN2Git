@@ -262,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (customer.Orders, Is.Not.Null);
       Assert.That (customer.Orders.Count, Is.EqualTo (2));
       Assert.That (customer.Orders[DomainObjectIDs.Order1].ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (customer.Orders[DomainObjectIDs.Order5].ID, Is.EqualTo (DomainObjectIDs.Order5));
+      Assert.That (customer.Orders[DomainObjectIDs.Order2].ID, Is.EqualTo (DomainObjectIDs.Order2));
     }
 
     [Test]
@@ -428,28 +428,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void TestAllOperations ()
     {
       Order order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      Order order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      Order order3 = DomainObjectIDs.Order3.GetObject<Order> ();
 
       Customer customer1 = order1.Customer;
       Customer customer4 = DomainObjectIDs.Customer4.GetObject<Customer> ();
 
-      Order order3 = customer4.Orders[DomainObjectIDs.Order3];
-      Dev.Null = customer4.Orders[DomainObjectIDs.Order4];
+      Order order4 = customer4.Orders[DomainObjectIDs.Order4];
+      Dev.Null = customer4.Orders[DomainObjectIDs.Order5];
 
       OrderTicket orderTicket1 = order1.OrderTicket;
-      OrderTicket orderTicket3 = order2.OrderTicket;
+      OrderTicket orderTicket3 = order3.OrderTicket;
 
       Official official1 = order1.Official;
 
       var orderItem1 = order1.OrderItems[DomainObjectIDs.OrderItem1];
       var orderItem2 = order1.OrderItems[DomainObjectIDs.OrderItem2];
-      Dev.Null = order3.OrderItems[DomainObjectIDs.OrderItem4];
+      Dev.Null = order4.OrderItems[DomainObjectIDs.OrderItem4];
 
       order1.Delete ();
       orderItem1.Delete ();
       orderItem2.Delete ();
 
-      order3.OrderNumber = 7;
+      order4.OrderNumber = 7;
 
       Order newOrder = Order.NewObject ();
       ObjectID newOrderID = newOrder.ID;
@@ -469,7 +469,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       OrderItem newOrderItem2 = OrderItem.NewObject ();
       ObjectID newOrderItem2ID = newOrderItem2.ID;
       newOrderItem2.Position = 2;
-      order3.OrderItems.Add (newOrderItem2);
+      order4.OrderItems.Add (newOrderItem2);
 
       Customer newCustomer = Customer.NewObject ();
       ObjectID newCustomerID = newCustomer.ID;
@@ -477,7 +477,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Ceo newCeo = Ceo.NewObject ();
       ObjectID newCeoID = newCeo.ID;
       newCustomer.Ceo = newCeo;
-      order2.Customer = newCustomer;
+      order3.Customer = newCustomer;
 
       orderTicket3.FileName = @"C:\NewFile.gif";
 
@@ -491,8 +491,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       CheckIfObjectIsDeleted (DomainObjectIDs.OrderItem1);
       CheckIfObjectIsDeleted (DomainObjectIDs.OrderItem2);
 
-      order3 = DomainObjectIDs.Order3.GetObject<Order> ();
-      Assert.That (order3.OrderNumber, Is.EqualTo (7));
+      order4 = DomainObjectIDs.Order4.GetObject<Order> ();
+      Assert.That (order4.OrderNumber, Is.EqualTo (7));
 
       newOrder = newOrderID.GetObject<Order> ();
       Assert.That (newOrder, Is.Not.Null);
@@ -516,16 +516,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       newOrderItem2 = newOrderItem2ID.GetObject<OrderItem>();
       Assert.That (newOrderItem2, Is.Not.Null);
       Assert.That (newOrderItem2.Position, Is.EqualTo (2));
-      Assert.That (newOrderItem2.Order, Is.SameAs (order3));
-      Assert.That (order3.OrderItems[newOrderItem2ID], Is.Not.Null);
+      Assert.That (newOrderItem2.Order, Is.SameAs (order4));
+      Assert.That (order4.OrderItems[newOrderItem2ID], Is.Not.Null);
 
       newCustomer = newCustomerID.GetObject<Customer> ();
       newCeo = newCeoID.GetObject<Ceo> ();
 
       Assert.That (newCeo.Company, Is.SameAs (newCustomer));
       Assert.That (newCustomer.Ceo, Is.SameAs (newCeo));
-      Assert.That (newCustomer.Orders.Contains (DomainObjectIDs.Order2), Is.True);
-      Assert.That (newCustomer.Orders[DomainObjectIDs.Order2].Customer, Is.SameAs (newCustomer));
+      Assert.That (newCustomer.Orders.Contains (DomainObjectIDs.Order3), Is.True);
+      Assert.That (newCustomer.Orders[DomainObjectIDs.Order3].Customer, Is.SameAs (newCustomer));
 
       orderTicket3 = DomainObjectIDs.OrderTicket3.GetObject<OrderTicket> ();
       Assert.That (orderTicket3.FileName, Is.EqualTo (@"C:\NewFile.gif"));
@@ -642,7 +642,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       Assert.That (customer.Orders[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.Order5));
+      Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.Order2));
     }
 
     [Test]
@@ -650,10 +650,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
-      Dev.Null = DomainObjectIDs.Order5.GetObject<Order> ();
+      Dev.Null = DomainObjectIDs.Order2.GetObject<Order> ();
 
       Assert.That (customer.Orders[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.Order5));
+      Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.Order2));
     }
 
     

@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void LoadDataContainers_Multiple ()
     {
-      var ids = new[] { DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1, DomainObjectIDs.Order1, DomainObjectIDs.OrderItem2 };
+      var ids = new[] { DomainObjectIDs.Order3, DomainObjectIDs.OrderItem1, DomainObjectIDs.Order1, DomainObjectIDs.OrderItem2 };
 
       var containers = Provider.LoadDataContainers (ids).ToArray ();
 

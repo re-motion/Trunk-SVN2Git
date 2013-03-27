@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
 
       DataContainer expectedContainer1 = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
-      DataContainer expectedContainer2 = DomainObjectIDs.Order2.GetObject<Order> ().InternalDataContainer;
+      DataContainer expectedContainer2 = DomainObjectIDs.Order3.GetObject<Order> ().InternalDataContainer;
 
       byte[] data = Serialize(expectedContainer1, expectedContainer2);
       TransportItem[] items = Import (data);
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       var item1 = new TransportItem (DomainObjectIDs.Order1);
       item1.Properties.Add ("Foo", 12);
-      var item2 = new TransportItem (DomainObjectIDs.Order2);
+      var item2 = new TransportItem (DomainObjectIDs.Order3);
       item2.Properties.Add ("Bar", "42");
 
       byte[] package = BinaryExportStrategyTest.Export (item1, item2);

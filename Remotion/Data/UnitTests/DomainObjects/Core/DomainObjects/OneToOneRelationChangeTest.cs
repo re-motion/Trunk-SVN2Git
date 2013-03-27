@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _order = DomainObjectIDs.Order1.GetObject<Order> ();
       _oldOrderTicket = _order.OrderTicket;
       _newOrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
-      _oldOrderOfNewOrderTicket = DomainObjectIDs.Order5.GetObject<Order> ();
+      _oldOrderOfNewOrderTicket = DomainObjectIDs.Order2.GetObject<Order> ();
 
       _orderEventReceiver = new DomainObjectEventReceiver (_order);
       _oldOrderTicketEventReceiver = new DomainObjectEventReceiver (_oldOrderTicket);
@@ -471,7 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetOriginalRelatedObjectWithLazyLoad ()
     {
-      Order order = DomainObjectIDs.Order2.GetObject<Order> ();
+      Order order = DomainObjectIDs.Order3.GetObject<Order> ();
 
       Assert.That (order.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket").ID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
     }

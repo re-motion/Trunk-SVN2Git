@@ -118,10 +118,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       Assert.That (orders, Is.EquivalentTo (new object[]
       {
         DomainObjectIDs.Order1.GetObject<Order> (),
-        DomainObjectIDs.Order2.GetObject<Order> (),
-        DomainObjectIDs.Order5.GetObject<Order> (),
         DomainObjectIDs.Order3.GetObject<Order> (),
+        DomainObjectIDs.Order2.GetObject<Order> (),
         DomainObjectIDs.Order4.GetObject<Order> (),
+        DomainObjectIDs.Order5.GetObject<Order> (),
       }));
       Assert.That (query.CollectionType.IsAssignableFrom (orders.GetType ()), Is.True);
     }
@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       Assert.IsNotNull (orders, "OrderCollection is null");
       Assert.AreEqual (2, orders.Count, "Order count");
       Assert.AreEqual (DomainObjectIDs.Order1, orders[0].ID, "Order1");
-      Assert.AreEqual (DomainObjectIDs.Order2, orders[1].ID, "Order2");
+      Assert.AreEqual (DomainObjectIDs.Order3, orders[1].ID, "Order3");
     }
 
     [Test]
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       Assert.IsNotNull (orders, "OrderCollection is null");
       Assert.AreEqual (2, orders.Count, "Order count");
       Assert.AreEqual (DomainObjectIDs.Order1, orders[0].ID, "Order1");
-      Assert.AreEqual (DomainObjectIDs.Order5, orders[1].ID, "Order5");
+      Assert.AreEqual (DomainObjectIDs.Order2, orders[1].ID, "Order2");
     }
 
     [Test]
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
 
       int orderNumberSum = orders.Sum (order => order.OrderNumber);
 
-      Assert.That (orderNumberSum, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ().OrderNumber + DomainObjectIDs.Order2.GetObject<Order> ().OrderNumber));
+      Assert.That (orderNumberSum, Is.EqualTo (DomainObjectIDs.Order1.GetObject<Order> ().OrderNumber + DomainObjectIDs.Order3.GetObject<Order> ().OrderNumber));
     }
 
     [Test]
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     {
       var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       order1.Delete (); // mark as deleted
-      var order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      var order3 = DomainObjectIDs.Order3.GetObject<Order> ();
 
       var query = QueryFactory.CreateCollectionQuery (
           "test",
@@ -204,9 +204,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       var result = ClientTransaction.Current.QueryManager.GetCollection (query);
 
       Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result.ToArray (), Is.EqualTo (new[] { order1, order2 }));
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { order1, order3 }));
       Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
-      Assert.That (order2.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (order3.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]

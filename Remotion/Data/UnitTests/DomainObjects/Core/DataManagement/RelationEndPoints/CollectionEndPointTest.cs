@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   {
     private RelationEndPointID _customerEndPointID;
     private Order _order1; // Customer1
-    private Order _order2; // Customer3
+    private Order _order3; // Customer3
 
     private OrderCollection _fakeCollection;
     private ICollectionEndPointCollectionManager _collectionManagerMock;
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _customerEndPointID = RelationEndPointID.Create(DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
 
       _fakeCollection = new OrderCollection ();
       _collectionManagerMock = MockRepository.GenerateStrictMock<ICollectionEndPointCollectionManager> ();
@@ -756,7 +756,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SetDataFromSubTransaction ()
     {
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order3 });
 
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
       _loadStateMock.Expect (mock => mock.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
@@ -772,7 +772,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SetDataFromSubTransaction_TouchesEndPoint_WhenSourceHasBeenTouched ()
     {
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order3 });
       source.Touch ();
 
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
@@ -791,7 +791,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SetDataFromSubTransaction_TouchesEndPoint_WhenTargetLoadStateHasChanged ()
     {
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order3 });
 
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (true);
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
@@ -809,7 +809,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SetDataFromSubTransaction_TouchesEndPoint_WhenTargetCollectionReferenceHasChanged ()
     {
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order3 });
 
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
@@ -827,7 +827,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SetDataFromSubTransaction_DoesNotTouchEndPoint_WhenSourceUntouched_AndTargetUnchanged ()
     {
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order3 });
 
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));

@@ -589,7 +589,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateUnloadCommand_NoLoadedObjects ()
     {
-      var result = _dataManager.CreateUnloadCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+      var result = _dataManager.CreateUnloadCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order3);
 
       Assert.That (result, Is.TypeOf<NopCommand> ());
     }
@@ -598,12 +598,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateUnloadCommand_WithLoadedObjects ()
     {
       var loadedDataContainer1 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1, true);
-      var loadedDataContainer2 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order2, true);
+      var loadedDataContainer2 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order3, true);
 
       var loadedObject1 = loadedDataContainer1.DomainObject;
       var loadedObject2 = loadedDataContainer2.DomainObject;
 
-      var result = _dataManager.CreateUnloadCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
+      var result = _dataManager.CreateUnloadCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4);
 
       Assert.That (result, Is.TypeOf<UnloadCommand>());
       var unloadCommand = (UnloadCommand) result;
@@ -623,7 +623,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (unloadDataCommandSteps[2], Is.TypeOf<UnregisterDataContainerCommand> ());
       Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[2]).Map, Is.SameAs (_dataManager.DataContainers));
-      Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[2]).ObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[2]).ObjectID, Is.EqualTo (DomainObjectIDs.Order3));
 
       Assert.That (unloadDataCommandSteps[3], Is.TypeOf<UnregisterEndPointsCommand> ());
       Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).EndPoints, Has.Count.EqualTo (2));
@@ -633,13 +633,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateUnloadCommand_WithChangedObjects ()
     {
       _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1, true);
-      var loadedDataContainer2 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order2, true);
-      var loadedDataContainer3 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order3, true);
+      var loadedDataContainer2 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order3, true);
+      var loadedDataContainer3 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order4, true);
 
       loadedDataContainer2.MarkAsChanged ();
       loadedDataContainer3.Delete();
 
-      var result = _dataManager.CreateUnloadCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
+      var result = _dataManager.CreateUnloadCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4);
 
       Assert.That (result, Is.TypeOf<ExceptionCommand> ());
       var exceptionCommand = (ExceptionCommand) result;
@@ -652,8 +652,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateUnloadVirtualEndPointCommand ()
     {
       var endPointIDOfUnloadedObject = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
-      var endPointIDOfUnchangedObject = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
-      var endPointIDOfChangedObject = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
+      var endPointIDOfUnchangedObject = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
+      var endPointIDOfChangedObject = RelationEndPointID.Create (DomainObjectIDs.Order4, typeof (Order), "OrderItems");
 
       PrepareLoadedDataContainer (_dataManagerWithMocks, endPointIDOfUnchangedObject.ObjectID);
 
@@ -677,8 +677,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateUnloadVirtualEndPointCommand_NewAndDeletedObjects ()
     {
       var endPointIDOfUnloadedObject = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
-      var endPointIDOfNewObject = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
-      var endPointIDOfDeletedObject = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
+      var endPointIDOfNewObject = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
+      var endPointIDOfDeletedObject = RelationEndPointID.Create (DomainObjectIDs.Order4, typeof (Order), "OrderItems");
 
       PrepareNewDataContainer (_dataManagerWithMocks, endPointIDOfNewObject.ObjectID);
       var dataContainerOfDeletedObject = PrepareLoadedDataContainer (_dataManagerWithMocks, endPointIDOfDeletedObject.ObjectID);
@@ -845,7 +845,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (
           () =>
           _dataManagerWithMocks.GetDataContainersWithLazyLoad (
-              new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, BooleanObjectMother.GetRandomBoolean()),
+              new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }, BooleanObjectMother.GetRandomBoolean()),
           Throws.TypeOf<ObjectInvalidException>());
     }
 

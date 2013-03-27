@@ -67,8 +67,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           dataStoragePropertyDefinitionFactory);
 
       _objectID1 = DomainObjectIDs.Order1;
-      _objectID2 = DomainObjectIDs.Order2;
-      _objectID3 = DomainObjectIDs.Order3;
+      _objectID2 = DomainObjectIDs.Order3;
+      _objectID3 = DomainObjectIDs.Order4;
     }
 
     [Test]

@@ -52,8 +52,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relatedEndPointStub1.Stub (stub => stub.ID).Return (RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer"));
 
       _relatedEndPointStub2 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      _relatedEndPointStub2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order2);
-      _relatedEndPointStub2.Stub (stub => stub.ID).Return (RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "Customer"));
+      _relatedEndPointStub2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order3);
+      _relatedEndPointStub2.Stub (stub => stub.ID).Return (RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "Customer"));
     }
 
     [Test]

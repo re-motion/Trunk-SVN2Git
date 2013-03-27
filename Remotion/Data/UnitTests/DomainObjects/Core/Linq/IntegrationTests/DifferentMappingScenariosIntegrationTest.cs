@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                       where c.Name=="Kunde 3"
                       select o);
       
-      CheckQueryResult (orders, DomainObjectIDs.Order2);
+      CheckQueryResult (orders, DomainObjectIDs.Order3);
     }
 
     [Test]

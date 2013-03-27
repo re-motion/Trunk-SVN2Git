@@ -513,7 +513,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     public void EndRegisterIfRequired_RegistersDataContainers_AndRaisesEvents ()
     {
       var dataContainer1 = DataContainerObjectMother.Create (DomainObjectIDs.Order1);
-      var dataContainer2 = DataContainerObjectMother.Create (DomainObjectIDs.Order2);
+      var dataContainer2 = DataContainerObjectMother.Create (DomainObjectIDs.Order3);
       var collector = CreateCollectorAndPrepare (dataContainer1, dataContainer2);
 
       using (_mockRepository.Ordered ())
@@ -540,7 +540,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     public void EndRegisterIfRequired_RaisesEndEvent_EvenWhenRegistrationThrows ()
     {
       var dataContainer1 = DataContainerObjectMother.Create (DomainObjectIDs.Order1);
-      var dataContainer2 = DataContainerObjectMother.Create (DomainObjectIDs.Order2);
+      var dataContainer2 = DataContainerObjectMother.Create (DomainObjectIDs.Order3);
       var collector = CreateCollectorAndPrepare (dataContainer1, dataContainer2);
 
       var exception = new Exception ("Test");

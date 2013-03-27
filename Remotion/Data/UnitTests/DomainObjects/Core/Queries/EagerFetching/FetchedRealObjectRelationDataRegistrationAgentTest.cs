@@ -56,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _originatingOrderTicketData2 = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingOrderTicket2);
 
       var fetchedOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      var fetchedOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
-      var fetchedOrder3 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order3);
+      var fetchedOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order3);
+      var fetchedOrder3 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order4);
 
       _fetchedOrderData1 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedOrder1);
       _fetchedOrderData2 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedOrder2);

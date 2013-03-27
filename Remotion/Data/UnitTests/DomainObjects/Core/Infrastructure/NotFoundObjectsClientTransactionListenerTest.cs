@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void ObjectsNotFound ()
     {
       var objectID1 = DomainObjectIDs.Order1;
-      var objectID2 = DomainObjectIDs.Order2;
+      var objectID2 = DomainObjectIDs.Order3;
       var objectIDs = new[] { objectID1, objectID2 };
 
       var parentTransaction = ClientTransaction.CreateRootTransaction();

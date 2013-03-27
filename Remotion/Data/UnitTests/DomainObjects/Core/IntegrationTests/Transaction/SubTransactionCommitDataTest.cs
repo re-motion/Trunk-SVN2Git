@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitDeletedObject_DoesNotInfluencePreviouslyRelatedObjects_OneToMany ()
     {
-      var originalOrder = DomainObjectIDs.Order2.GetObject<Order> ();
+      var originalOrder = DomainObjectIDs.Order3.GetObject<Order> ();
       Assert.That (originalOrder.OrderItems.Count, Is.EqualTo (1));
 
       var originalTicket = originalOrder.OrderTicket;
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order newOrder;
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        newOrder = DomainObjectIDs.Order3.GetObject<Order> ();
+        newOrder = DomainObjectIDs.Order4.GetObject<Order> ();
         newOrder.OrderItems.Add (orderItem);
         originalTicket.Delete (); // dependent object
         originalOrder.Delete ();
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitDeletedObject_DoesNotInfluencePreviouslyRelatedObjects_OneToOne ()
     {
-      var originalOrder = DomainObjectIDs.Order2.GetObject<Order> ();
+      var originalOrder = DomainObjectIDs.Order3.GetObject<Order> ();
       Assert.That (originalOrder.OrderItems.Count, Is.EqualTo (1));
       var originalItem = originalOrder.OrderItems[0];
       var originalOfficial = originalOrder.Official;
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order newOrder;
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        newOrder = DomainObjectIDs.Order3.GetObject<Order> ();
+        newOrder = DomainObjectIDs.Order4.GetObject<Order> ();
         newOrder.OrderTicket.Delete (); // delete old ticket
         newOrder.OrderTicket = orderTicket;
         
@@ -539,10 +539,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       OrderTicket orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
       Order oldOrder = orderTicket.Order;
       
-      Order newOrder = DomainObjectIDs.Order2.GetObject<Order> ();
+      Order newOrder = DomainObjectIDs.Order3.GetObject<Order> ();
       OrderTicket oldOrderTicket = newOrder.OrderTicket;
 
-      Order newOrder2 = DomainObjectIDs.Order3.GetObject<Order> ();
+      Order newOrder2 = DomainObjectIDs.Order4.GetObject<Order> ();
       OrderTicket oldOrderTicket2 = newOrder2.OrderTicket;
 
 
@@ -598,16 +598,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order1 = orderTicket1.Order;
 
       OrderTicket orderTicket2 = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ();
-      Order order2 = orderTicket2.Order;
+      Order order3 = orderTicket2.Order;
 
-      Order order3 = DomainObjectIDs.Order2.GetObject<Order> ();
-      OrderTicket orderTicket3 = order3.OrderTicket;
+      Order order4 = DomainObjectIDs.Order3.GetObject<Order> ();
+      OrderTicket orderTicket3 = order4.OrderTicket;
 
-      RelationEndPointID propertyID = RelationEndPointID.Create(order3.ID, typeof (Order).FullName + ".OrderTicket");
+      RelationEndPointID propertyID = RelationEndPointID.Create(order4.ID, typeof (Order).FullName + ".OrderTicket");
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        order3.OrderTicket = orderTicket1;
+        order4.OrderTicket = orderTicket1;
         orderTicket3.Order = order1;
 
         Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
@@ -615,13 +615,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
-          Assert.That (order3.OrderTicket, Is.EqualTo (orderTicket1));
+          Assert.That (order4.OrderTicket, Is.EqualTo (orderTicket1));
 
           Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.False);
           Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (orderTicket1.ID));
 
-          order3.OrderTicket = orderTicket2;
-          orderTicket1.Order = order2;
+          order4.OrderTicket = orderTicket2;
+          orderTicket1.Order = order3;
 
           Assert.That (GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID).HasChanged, Is.True);
           Assert.That (((IObjectEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).OriginalOppositeObjectID, Is.EqualTo (orderTicket1.ID));

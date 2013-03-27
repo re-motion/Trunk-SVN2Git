@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CreateRemoveCommand ()
     {
-      var removedRelatedObject = DomainObjectIDs.Order3.GetObject<Order> ();
+      var removedRelatedObject = DomainObjectIDs.Order4.GetObject<Order> ();
       var command = (NullEndPointModificationCommand) _nullEndPoint.CreateRemoveCommand (removedRelatedObject);
       Assert.That (command.AffectedEndPoint, Is.SameAs (_nullEndPoint));
     }
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CreateSetCommand ()
     {
-      var newRelatedObject = DomainObjectIDs.Order3.GetObject<Order> ();
+      var newRelatedObject = DomainObjectIDs.Order4.GetObject<Order> ();
       var command = (NullEndPointModificationCommand) _nullEndPoint.CreateSetCommand (newRelatedObject);
       Assert.That (command.AffectedEndPoint, Is.SameAs (_nullEndPoint));
     }

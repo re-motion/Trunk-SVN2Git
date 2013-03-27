@@ -45,14 +45,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.StorageProvider
       _executionContext = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
 
       _order1Container = DataContainerObjectMother.Create (DomainObjectIDs.Order1);
-      _order2Container = DataContainerObjectMother.Create (DomainObjectIDs.Order2);
-      _order3Container = DataContainerObjectMother.Create (DomainObjectIDs.Order3);
+      _order2Container = DataContainerObjectMother.Create (DomainObjectIDs.Order3);
+      _order3Container = DataContainerObjectMother.Create (DomainObjectIDs.Order4);
     }
 
     [Test]
     public void Execute ()
     {
-      var command = new MultiDataContainerAssociateWithIDsCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 }, _commandStub);
+      var command = new MultiDataContainerAssociateWithIDsCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.OrderItem1 }, _commandStub);
       _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order2Container, _order1Container });
 
       var result = command.Execute (_executionContext).ToList ();
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.StorageProvider
       Assert.That (result[0].LocatedObject, Is.SameAs (_order1Container));
       Assert.That (result[0].ObjectID, Is.EqualTo(DomainObjectIDs.Order1));
       Assert.That (result[1].LocatedObject, Is.SameAs (_order2Container));
-      Assert.That (result[1].ObjectID, Is.EqualTo(DomainObjectIDs.Order2));
+      Assert.That (result[1].ObjectID, Is.EqualTo(DomainObjectIDs.Order3));
       Assert.That (result[2].LocatedObject, Is.Null);
       Assert.That (result[2].ObjectID, Is.EqualTo(DomainObjectIDs.OrderItem1));
     }

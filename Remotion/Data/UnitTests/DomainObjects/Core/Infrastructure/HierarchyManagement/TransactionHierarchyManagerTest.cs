@@ -158,17 +158,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     {
       Assert.That (_managerWithoutParent.ReadOnlyClientTransactionListener.CurrentlyLoadingObjectIDs, Is.Empty);
 
-      _managerWithoutParent.OnBeforeObjectRegistration (Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }));
+      _managerWithoutParent.OnBeforeObjectRegistration (Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }));
 
       Assert.That (
           _managerWithoutParent.ReadOnlyClientTransactionListener.CurrentlyLoadingObjectIDs, 
-          Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }));
 
-      _managerWithoutParent.OnBeforeObjectRegistration (Array.AsReadOnly (new[] { DomainObjectIDs.Order3 }));
+      _managerWithoutParent.OnBeforeObjectRegistration (Array.AsReadOnly (new[] { DomainObjectIDs.Order4 }));
 
       Assert.That (
           _managerWithoutParent.ReadOnlyClientTransactionListener.CurrentlyLoadingObjectIDs,
-          Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4 }));
     }
 
     [Test]
@@ -177,35 +177,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
       Assert.That (_manager.ReadOnlyClientTransactionListener.CurrentlyLoadingObjectIDs, Is.Empty);
 
       _parentHierarchyManagerStrictMock
-          .Expect (mock => mock.OnBeforeSubTransactionObjectRegistration (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }))
+          .Expect (mock => mock.OnBeforeSubTransactionObjectRegistration (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }))
           .WhenCalled (mi => Assert.That (_manager.ReadOnlyClientTransactionListener.CurrentlyLoadingObjectIDs, Is.Empty));
 
-      _manager.OnBeforeObjectRegistration (Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }));
+      _manager.OnBeforeObjectRegistration (Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }));
 
       _parentHierarchyManagerStrictMock.VerifyAllExpectations();
       Assert.That (
           _manager.ReadOnlyClientTransactionListener.CurrentlyLoadingObjectIDs,
-          Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }));
     }
 
     [Test]
     public void OnAfterObjectRegistration ()
     {
       _managerWithoutParent.OnBeforeObjectRegistration (
-          Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }));
+          Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4 }));
       Assert.That (
           _managerWithoutParent.ReadOnlyClientTransactionListener.CurrentlyLoadingObjectIDs,
-          Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4 }));
 
       _managerWithoutParent.OnAfterObjectRegistration (
-          Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }));
+          Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }));
 
       Assert.That (
           _managerWithoutParent.ReadOnlyClientTransactionListener.CurrentlyLoadingObjectIDs,
-          Is.EquivalentTo (new[] { DomainObjectIDs.Order3 }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.Order4 }));
 
       _managerWithoutParent.OnAfterObjectRegistration (
-          Array.AsReadOnly (new[] { DomainObjectIDs.Order3 }));
+          Array.AsReadOnly (new[] { DomainObjectIDs.Order4 }));
 
       Assert.That (_managerWithoutParent.ReadOnlyClientTransactionListener.CurrentlyLoadingObjectIDs, Is.Empty);
     }
@@ -214,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     public void OnBeforeSubTransactionObjectRegistration_NoConflicts ()
     {
       Assert.That (
-          () =>_manager.OnBeforeSubTransactionObjectRegistration (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }),
+          () =>_manager.OnBeforeSubTransactionObjectRegistration (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }),
           Throws.Nothing);
     }
 
@@ -222,11 +222,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     public void OnBeforeSubTransactionObjectRegistration_Conflicts ()
     {
       _managerWithoutParent.OnBeforeObjectRegistration (
-          Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }));
+          Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4 }));
 
       Assert.That (
           () => _managerWithoutParent.OnBeforeSubTransactionObjectRegistration (
-              new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order4 }),
+              new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order5 }),
           Throws.InvalidOperationException.With.Message.EqualTo (
               "It's not possible to load objects into a subtransaction while they are being loaded into a parent transaction: "
               + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'."));

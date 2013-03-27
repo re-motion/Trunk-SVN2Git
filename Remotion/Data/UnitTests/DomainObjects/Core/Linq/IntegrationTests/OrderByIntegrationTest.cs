@@ -35,10 +35,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (
           query,
           DomainObjectIDs.Order1,
-          DomainObjectIDs.Order2,
           DomainObjectIDs.Order3,
           DomainObjectIDs.Order4,
           DomainObjectIDs.Order5,
+          DomainObjectIDs.Order2,
           DomainObjectIDs.InvalidOrder,
           DomainObjectIDs.OrderWithoutOrderItems);
     }
@@ -87,10 +87,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                   Single() != null && o.OrderNumber < 6
           select o,
           DomainObjectIDs.Order1,
-          DomainObjectIDs.Order2,
           DomainObjectIDs.Order3,
           DomainObjectIDs.Order4,
-          DomainObjectIDs.Order5);
+          DomainObjectIDs.Order5,
+          DomainObjectIDs.Order2);
     }
 
     [Test]
@@ -102,10 +102,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                   Count () > 0 && o.OrderNumber < 6
           select o,
           DomainObjectIDs.Order1,
-          DomainObjectIDs.Order2,
           DomainObjectIDs.Order3,
           DomainObjectIDs.Order4,
-          DomainObjectIDs.Order5);
+          DomainObjectIDs.Order5,
+          DomainObjectIDs.Order2);
     }
   }
 }

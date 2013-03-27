@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     public DataContainer CreateOrder2DataContainer ()
     {
-      ObjectID id = _domainObjectIDs.Order2;
+      ObjectID id = _domainObjectIDs.Order3;
 
       ClassDefinition classDefinition = id.ClassDefinition;
       Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
@@ -203,8 +203,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       ClassDefinition classDefinition = id.ClassDefinition;
       Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 
-      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"], @"C:\order2.png");
-      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"], _domainObjectIDs.Order5);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"], @"C:\order3.png");
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"], _domainObjectIDs.Order2);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
 

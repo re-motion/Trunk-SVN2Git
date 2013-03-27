@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       ordersQuery.EagerFetchQueries.Add (relationEndPointDefinition, orderItemsFetchQuery);
 
       var id1 = RelationEndPointID.Create (DomainObjectIDs.Order1, relationEndPointDefinition);
-      var id2 = RelationEndPointID.Create (DomainObjectIDs.Order2, relationEndPointDefinition);
+      var id2 = RelationEndPointID.Create (DomainObjectIDs.Order3, relationEndPointDefinition);
 
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Null);
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id2), Is.Null);
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       {
         var result = ClientTransaction.Current.QueryManager.GetCollection (ordersQuery);
         Assert.That (
-            result.ToArray(), Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order>(), DomainObjectIDs.Order2.GetObject<Order>() }));
+            result.ToArray(), Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order>(), DomainObjectIDs.Order3.GetObject<Order>() }));
 
         var subDataManager = ClientTransactionTestHelper.GetIDataManager (ClientTransaction.Current);
         Assert.That (subDataManager.GetRelationEndPointWithoutLoading (id1), Is.Null);
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       var customer = DomainObjectIDs.Customer1.GetObject<Customer>();
       Assert.That (
           customer.Orders,
-          Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order>(), DomainObjectIDs.Order5.GetObject<Order>() }));
+          Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order>(), DomainObjectIDs.Order2.GetObject<Order>() }));
 
       var customersQuery = QueryFactory.CreateCollectionQuery (
           "test",
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
 
         Assert.That (
             customer.Orders,
-            Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order>(), DomainObjectIDs.Order5.GetObject<Order>() }));
+            Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order>(), DomainObjectIDs.Order2.GetObject<Order>() }));
       }
     }
   }

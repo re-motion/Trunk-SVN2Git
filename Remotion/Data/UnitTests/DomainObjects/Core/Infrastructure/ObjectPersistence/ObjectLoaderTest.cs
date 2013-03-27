@@ -78,11 +78,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     public void LoadObjects ()
     {
       _loadedObjectDataStub1.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
-      _loadedObjectDataStub2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order2);
+      _loadedObjectDataStub2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order3);
 
       _persistenceStrategyMock
           .Expect (mock => mock.LoadObjectData (
-              Arg<ICollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })))
+              Arg<ICollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 })))
           .Return (new[] { _loadedObjectDataStub1, _loadedObjectDataStub2 });
       _loadedObjectDataRegistrationAgentMock
           .Expect (mock => mock.RegisterIfRequired (
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.LoadObjects (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true);
+      var result = _objectLoader.LoadObjects (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }, true);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _loadedObjectDataStub1, _loadedObjectDataStub2 }));
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     [Test]
     public void GetOrLoadRelatedObject ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order3, "OrderTicket");
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order4, "OrderTicket");
 
       _persistenceStrategyMock
           .Expect (mock => mock.ResolveObjectRelationData (endPointID, _loadedObjectDataProviderStub))

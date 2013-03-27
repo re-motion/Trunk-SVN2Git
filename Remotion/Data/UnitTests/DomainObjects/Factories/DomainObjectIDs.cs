@@ -215,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     // IndustrialSector: IndustrialSector1
     // Ceo: Ceo3
-    // Orders: Order1, Order5
+    // Orders: Order1, Order2
     public ObjectID Customer1
     {
       get { return CreateObjectID ("Customer", new Guid ("{55B52E75-514B-4e82-A91B-8F0BB59B80AD}")); }
@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     // IndustrialSector: IndustrialSector2
     // Ceo: Ceo5
-    // Orders: Order2
+    // Orders: Order3
     public ObjectID Customer3
     {
       get { return CreateObjectID ("Customer", new Guid ("{DD3E3D55-C16F-497f-A3E1-384D08DE0D66}")); }
@@ -240,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     // IndustrialSector: -
     // Ceo: Ceo12
-    // Orders: Order3, Order4
+    // Orders: Order4, Order5
     public ObjectID Customer4
     {
       get { return CreateObjectID ("Customer", new Guid ("{B3F0A333-EC2A-4ddd-9035-9ADA34052450}")); }
@@ -340,13 +340,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     {
       get { return CreateObjectID ("Order", new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}")); }
     }
+    
+    // OrderTicket: OrderTicket2
+    // OrderItems: OrderItem6
+    // Customer: Customer1
+    // Official: Official1
+    // OrderNumber: 2
+    public ObjectID Order2
+    {
+      get { return CreateObjectID ("Order", new Guid ("{F4016F41-F4E4-429e-B8D1-659C8C480A67}")); }
+    }
 
     // OrderTicket: OrderTicket3
     // OrderItems: OrderItem3
     // Customer: Customer3
     // Official: Official1
     // OrderNumber: 3
-    public ObjectID Order2
+    public ObjectID Order3
     {
       get { return CreateObjectID ("Order", new Guid ("{83445473-844A-4d3f-A8C3-C27F8D98E8BA}")); }
     }
@@ -356,7 +366,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // Customer: Customer4
     // Official: Official1
     // OrderNumber: 4
-    public ObjectID Order3
+    public ObjectID Order4
     {
       get { return CreateObjectID ("Order", new Guid ("{3C0FB6ED-DE1C-4e70-8D80-218E0BF58DF3}")); }
     }
@@ -366,19 +376,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // Customer: Customer4
     // Official: Official1
     // OrderNumber: 5
-    public ObjectID Order4
-    {
-      get { return CreateObjectID ("Order", new Guid ("{90E26C86-611F-4735-8D1B-E1D0918515C2}")); }
-    }
-
-    // OrderTicket: OrderTicket2
-    // OrderItems: OrderItem6
-    // Customer: Customer1
-    // Official: Official1
-    // OrderNumber: 2
     public ObjectID Order5
     {
-      get { return CreateObjectID ("Order", new Guid ("{F4016F41-F4E4-429e-B8D1-659C8C480A67}")); }
+      get { return CreateObjectID ("Order", new Guid ("{90E26C86-611F-4735-8D1B-E1D0918515C2}")); }
     }
 
     // OrderTicket: OrderTicket6
@@ -419,28 +419,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       get { return CreateObjectID ("OrderItem", new Guid ("{AD620A11-4BC4-4791-BCF4-A0770A08C5B0}")); }
     }
 
-    // Order: Order2
+    // Order: Order3
     // Product: Harddisk
     public ObjectID OrderItem3
     {
       get { return CreateObjectID ("OrderItem", new Guid ("{0D7196A5-8161-4048-820D-B1BBDABE3293}")); }
     }
 
-    // Order: Order3
+    // Order: Order4
     // Product: Hitchhiker's guide
     public ObjectID OrderItem4
     {
       get { return CreateObjectID ("OrderItem", new Guid ("{DC20E0EB-4B55-4f23-89CF-6D6478F96D3B}")); }
     }
 
-    // Order: Order4
+    // Order: Order5
     // Product: Blumentopf
     public ObjectID OrderItem5
     {
       get { return CreateObjectID ("OrderItem", new Guid ("{EA505094-770A-4505-82C1-5A4F94F56FE2}")); }
     }
 
-    // Order: Order5
+    // Order: Order2
     // Product: Solar panel
     public ObjectID OrderItem6
     {
@@ -491,25 +491,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       get { return CreateObjectID ("OrderTicket", new Guid ("{058EF259-F9CD-4cb1-85E5-5C05119AB596}")); }
     }
 
-    // Order: Order5
+    // Order: Order2
     public ObjectID OrderTicket2
     {
       get { return CreateObjectID ("OrderTicket", new Guid ("{0005BDF4-4CCC-4a41-B9B5-BAAB3EB95237}")); }
     }
 
-    // Order: Order2
+    // Order: Order3
     public ObjectID OrderTicket3
     {
       get { return CreateObjectID ("OrderTicket", new Guid ("{BCF6C5F6-323F-4471-9CA5-7DF0A48C7A59}")); }
     }
 
-    // Order: Order3
+    // Order: Order4
     public ObjectID OrderTicket4
     {
       get { return CreateObjectID ("OrderTicket", new Guid ("{6768DB2B-9C66-4e2f-BBA2-89C56718FF2B}")); }
     }
 
-    // Order: Order4
+    // Order: Order5
     public ObjectID OrderTicket5
     {
       get { return CreateObjectID ("OrderTicket", new Guid ("{DC20E0EB-4B55-4f23-89CF-6D6478F96D3B}")); }
@@ -601,7 +601,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     #region Official
 
-    // Orders: Order1, Order2, Order5, Order3, Order4
+    // Orders: Order1, Order3, Order2, Order4, Order5
     public ObjectID Official1
     {
       get { return CreateObjectID ("Official", 1); }

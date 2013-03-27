@@ -88,11 +88,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       _transporter.Load (DomainObjectIDs.Order1);
       Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (1));
-      _transporter.Load (DomainObjectIDs.Order2);
+      _transporter.Load (DomainObjectIDs.Order3);
       Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (2));
       _transporter.Load (DomainObjectIDs.OrderItem1);
       Assert.That (_transporter.ObjectIDs.Count, Is.EqualTo (3));
-      Assert.That (_transporter.ObjectIDs, Is.EqualTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 }));
+      Assert.That (_transporter.ObjectIDs, Is.EqualTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.OrderItem1 }));
     }
 
     [Test]
@@ -259,7 +259,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public void Export_SpecialStrategy ()
     {
       DomainObject loadedObject1 = _transporter.Load (DomainObjectIDs.Order1);
-      DomainObject loadedObject2 = _transporter.Load (DomainObjectIDs.Order2);
+      DomainObject loadedObject2 = _transporter.Load (DomainObjectIDs.Order3);
 
       var repository = new MockRepository();
       var strategyMock = repository.StrictMock<IExportStrategy>();

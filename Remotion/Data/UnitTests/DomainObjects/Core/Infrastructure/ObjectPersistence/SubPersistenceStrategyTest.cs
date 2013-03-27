@@ -180,8 +180,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     public void LoadObjectData_Multiple ()
     {
       var objectID1 = DomainObjectIDs.Order1;
-      var objectID2 = DomainObjectIDs.Order2;
-      var objectID3 = DomainObjectIDs.Order3;
+      var objectID2 = DomainObjectIDs.Order3;
+      var objectID3 = DomainObjectIDs.Order4;
 
       var parentObject1 = DomainObjectMother.CreateFakeObject<Order> (objectID1);
       var parentDataContainer1 = CreateChangedDataContainer (objectID1, 4711, _orderNumberPropertyDefinition, 17);

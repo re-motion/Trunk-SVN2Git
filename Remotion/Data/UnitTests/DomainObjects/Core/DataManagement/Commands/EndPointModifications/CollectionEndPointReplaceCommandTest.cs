@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       base.SetUp();
 
       _replacedRelatedObject = DomainObjectIDs.Order1.GetObject<Order> (Transaction);
-      _replacementRelatedObject = DomainObjectIDs.Order2.GetObject<Order> (Transaction);
+      _replacementRelatedObject = DomainObjectIDs.Order3.GetObject<Order> (Transaction);
 
       _command =
           new CollectionEndPointReplaceCommand (

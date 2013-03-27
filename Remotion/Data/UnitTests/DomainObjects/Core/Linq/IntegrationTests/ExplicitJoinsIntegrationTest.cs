@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from c in QueryFactory.CreateLinqQuery<Order>()
           join k in QueryFactory.CreateLinqQuery<Customer>() on c.Customer equals k
           where c.OrderNumber == 5
-          select c , DomainObjectIDs.Order4);
+          select c , DomainObjectIDs.Order5);
     }
 
     [Test]
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
              from oi in goi
              select oi.Order.OrderNumber).First ()
           select o,
-          DomainObjectIDs.Order4);
+          DomainObjectIDs.Order5);
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
              from oc in goc
              select oi.Order.OrderNumber).First ()
           select o,
-          DomainObjectIDs.Order4);
+          DomainObjectIDs.Order5);
     }
 
     [Test]

@@ -62,8 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         instance.Delete ();
         return instance;
       });
-      _unchangedObject = _clientTransaction.ExecuteInScope (() => DomainObjectIDs.Order3.GetObject<Order> ());
-      _notLoadedYetObject = LifetimeService.GetObjectReference (_clientTransaction, DomainObjectIDs.Order4);
+      _unchangedObject = _clientTransaction.ExecuteInScope (() => DomainObjectIDs.Order4.GetObject<Order> ());
+      _notLoadedYetObject = LifetimeService.GetObjectReference (_clientTransaction, DomainObjectIDs.Order5);
 
       _registrar = new CommittingEventRegistrar (_clientTransaction);
     }

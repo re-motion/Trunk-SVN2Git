@@ -463,7 +463,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void SaveForeignKeyInSameStorageProvider ()
     {
       DataContainer orderTicketContainer = LoadDataContainer (DomainObjectIDs.OrderTicket1);
-      SetPropertyValue (orderTicketContainer, typeof (OrderTicket), "Order", DomainObjectIDs.Order2);
+      SetPropertyValue (orderTicketContainer, typeof (OrderTicket), "Order", DomainObjectIDs.Order3);
 
       Provider.Save (new[] { orderTicketContainer });
 
@@ -473,12 +473,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void SaveForeignKeyInOtherStorageProvider ()
     {
-      DataContainer savedOrderContainer = LoadDataContainer (DomainObjectIDs.Order5);
+      DataContainer savedOrderContainer = LoadDataContainer (DomainObjectIDs.Order2);
       SetPropertyValue (savedOrderContainer, typeof (Order), "Official", DomainObjectIDs.Official2);
 
       Provider.Save (new[] { savedOrderContainer });
 
-      DataContainer reloadedOrderContainer = ReloadDataContainer (DomainObjectIDs.Order5);
+      DataContainer reloadedOrderContainer = ReloadDataContainer (DomainObjectIDs.Order2);
       Assert.That (GetPropertyValue (reloadedOrderContainer, typeof (Order), "Official"), Is.EqualTo (DomainObjectIDs.Official2));
     }
 

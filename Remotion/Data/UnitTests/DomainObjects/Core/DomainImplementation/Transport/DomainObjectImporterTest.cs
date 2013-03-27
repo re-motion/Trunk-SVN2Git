@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void NonEmptyTransport ()
     {
-      var loadedIDs = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Company1 };
+      var loadedIDs = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Company1 };
       var imported = DomainObjectTransporterTestHelper.ImportObjects (loadedIDs);
 
       Assert.IsNotEmpty (imported);
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void NonEmptyTransport_ObjectsBoundToTransaction ()
     {
-      var loadedIDs = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Company1 };
+      var loadedIDs = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Company1 };
       var data = DomainObjectTransporterTestHelper.GetBinaryDataFor (loadedIDs);
 
       TransportedDomainObjects transportedObjects = DomainObjectTransporterTestHelper.Import (data);
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void ExistingObjects_ChangedIfNecessary ()
     {
-      byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+      byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.Order1, DomainObjectIDs.Order3);
       ModifyDatabase (delegate { DomainObjectIDs.Order1.GetObject<Order> ().OrderNumber++; });
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
@@ -251,7 +251,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
       ModifyDatabase (delegate
       {
-        DomainObjectIDs.OrderItem1.GetObject<OrderItem>().Order = DomainObjectIDs.Order2.GetObject<Order> ();
+        DomainObjectIDs.OrderItem1.GetObject<OrderItem>().Order = DomainObjectIDs.Order3.GetObject<Order> ();
       });
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
@@ -271,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.Order1);
       ModifyDatabase (delegate
       {
-        DomainObjectIDs.Order1.GetObject<Order> ().OrderItems[0].Order = DomainObjectIDs.Order2.GetObject<Order> ();
+        DomainObjectIDs.Order1.GetObject<Order> ().OrderItems[0].Order = DomainObjectIDs.Order3.GetObject<Order> ();
       });
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);

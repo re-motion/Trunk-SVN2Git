@@ -55,15 +55,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.ExecutableQueries
       var queryAdapter = new DomainObjectSequenceQueryAdapter<object> (_queryStub);
 
       var order1 = DomainObjectMother.CreateFakeObject<Order> ();
-      var order2 = DomainObjectMother.CreateFakeObject<Order> ();
-      var fakeResult = new QueryResult<DomainObject> (_queryStub, new[] { order1, order2 });
+      var order3 = DomainObjectMother.CreateFakeObject<Order> ();
+      var fakeResult = new QueryResult<DomainObject> (_queryStub, new[] { order1, order3 });
 
       var queryManagerMock = MockRepository.GenerateStrictMock<IQueryManager>();
       queryManagerMock.Expect (mock => mock.GetCollection (queryAdapter)).Return (fakeResult);
 
       var result = queryAdapter.Execute (queryManagerMock);
 
-      Assert.That (result, Is.EqualTo (new[] { order1, order2 }));
+      Assert.That (result, Is.EqualTo (new[] { order1, order3 }));
     }
   }
 }

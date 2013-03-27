@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           CommandBehavior.SingleResult,
           "SELECT * FROM [Order] WHERE OrderNo=@p1 OR ID=@p2 OR OfficialID=@p3 OR OfficialID=@p4",
           Tuple.Create ("@p1", DbType.Int32, (object) 1),
-          Tuple.Create ("@p2", DbType.Guid, DomainObjectIDs.Order2.Value),
+          Tuple.Create ("@p2", DbType.Guid, DomainObjectIDs.Order3.Value),
           Tuple.Create ("@p3", DbType.String, (object) DomainObjectIDs.Official1.ToString()),
           Tuple.Create ("@p4", DbType.String, (object) DBNull.Value)
           );
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new QueryParameterCollection
               {
                   { "@p1", 1 }, 
-                  { "@p2", DomainObjectIDs.Order2 }, 
+                  { "@p2", DomainObjectIDs.Order3 }, 
                   { "@p3", DomainObjectIDs.Official1 },
                   { "@p4", null }
               });
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _testHelper.ExpectExecuteScalar (
           "SELECT COUNT(*) FROM [Order] WHERE OrderNo=@p1 OR ID=@p2 OR OfficialID=@p3 OR OfficialID=@p4",
           Tuple.Create ("@p1", DbType.Int32, (object) 1),
-          Tuple.Create ("@p2", DbType.Guid, DomainObjectIDs.Order2.Value),
+          Tuple.Create ("@p2", DbType.Guid, DomainObjectIDs.Order3.Value),
           Tuple.Create ("@p3", DbType.String, (object) DomainObjectIDs.Official1.ToString()),
           Tuple.Create ("@p4", DbType.String, (object) DBNull.Value)
           );
@@ -204,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new QueryParameterCollection
               {
                   { "@p1", 1 }, 
-                  { "@p2", DomainObjectIDs.Order2 }, 
+                  { "@p2", DomainObjectIDs.Order3 }, 
                   { "@p3", DomainObjectIDs.Official1 },
                   { "@p4", null }
               });

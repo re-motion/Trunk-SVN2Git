@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             ThrowsObjectInvalidException (_nonExistingObjectIDForSubtransaction));
 
         Assert.That (
-            () => ClientTransaction.Current.EnsureDataAvailable (new[] { _nonExistingObjectID, DomainObjectIDs.Order2 }),
+            () => ClientTransaction.Current.EnsureDataAvailable (new[] { _nonExistingObjectID, DomainObjectIDs.Order3 }),
             ThrowsObjectNotFoundException (_nonExistingObjectID));
         CheckObjectIsMarkedInvalid (_nonExistingObjectID);
       }

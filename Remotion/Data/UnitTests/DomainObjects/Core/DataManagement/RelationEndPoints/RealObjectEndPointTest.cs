@@ -108,10 +108,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void OppositeObjectID_Get_FromProperty ()
     {
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
-      RealObjectEndPointTestHelper.SetValueViaDataContainer(_endPoint, DomainObjectIDs.Order2);
+      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order3));
+      RealObjectEndPointTestHelper.SetValueViaDataContainer(_endPoint, DomainObjectIDs.Order3);
 
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order3));
     }
 
     [Test]
@@ -138,22 +138,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void OppositeObjectID_Set_ToProperty ()
     {
-      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer(_endPoint), Is.Not.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer(_endPoint), Is.Not.EqualTo (DomainObjectIDs.Order3));
 
-      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order2);
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order3);
 
-      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer(_endPoint), Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer(_endPoint), Is.EqualTo (DomainObjectIDs.Order3));
     }
 
     [Test]
     public void OriginalOppositeObjectID_Get_FromProperty ()
     {
-      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order2);
-      Assert.That (_endPoint.OriginalOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order3);
+      Assert.That (_endPoint.OriginalOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order3));
 
       _endPoint.ForeignKeyDataContainer.CommitState();
 
-      Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.Order3));
     }
 
     [Test]
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       Assert.That (_endPoint.HasChanged, Is.False);
 
-      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order2);
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order3);
 
       Assert.That (_endPoint.HasChanged, Is.True);
     }
@@ -248,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void GetOriginalOppositeObject_Null ()
     {
-      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order4);
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order5);
 
       Assert.That (_endPoint.GetOriginalOppositeObject (), Is.Null);
     }
@@ -343,7 +343,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _syncStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
 
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order3));
       var newRelatedObject = DomainObjectMother.CreateFakeObject<Order> ();
       oppositeObjectSetter (newRelatedObject);
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (newRelatedObject.ID));
@@ -388,13 +388,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer (_endPoint), Is.Null);
 
-      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order2);
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order3);
       Assert.That (RealObjectEndPointTestHelper.HasChangedViaDataContainer(_endPoint), Is.True);
 
       _endPoint.Commit ();
 
       Assert.That (RealObjectEndPointTestHelper.HasChangedViaDataContainer (_endPoint), Is.False);
-      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer (_endPoint), Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer (_endPoint), Is.EqualTo (DomainObjectIDs.Order3));
     }
 
     [Test]
@@ -402,7 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer (_endPoint), Is.Null);
 
-      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order2);
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order3);
       Assert.That (RealObjectEndPointTestHelper.HasChangedViaDataContainer (_endPoint), Is.True);
 
       _endPoint.Rollback ();
@@ -414,15 +414,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SetOppositeObjectDataFromSubTransaction ()
     {
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order3));
       var sourceDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
       
       var source = new RealObjectEndPoint (TestableClientTransaction, _endPointID, sourceDataContainer, _endPointProviderStub, _transactionEventSinkStub);
-      RealObjectEndPointTestHelper.SetValueViaDataContainer (source, DomainObjectIDs.Order2);
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (source, DomainObjectIDs.Order3);
 
       PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
 
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order3));
       Assert.That (_endPoint.HasChanged, Is.True);
     }
   }

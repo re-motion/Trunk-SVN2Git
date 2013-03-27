@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
         orderInOtherTx.OrderItems.Add (newOrderItem);
         orderInOtherTx.OrderItems.Remove (orderItem1InOtherTx);
 
-        orderItem1InOtherTx.Order = DomainObjectIDs.Order2.GetObject<Order> ();
+        orderItem1InOtherTx.Order = DomainObjectIDs.Order3.GetObject<Order> ();
 
         ClientTransaction.Current.Commit ();
       }
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, orderItems.AssociatedEndPointID);
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem2, newOrderItemID.GetObject<OrderItem>() }));
-      Assert.That (orderItem1.Order, Is.SameAs (DomainObjectIDs.Order2.GetObject<Order> ()));
+      Assert.That (orderItem1.Order, Is.SameAs (DomainObjectIDs.Order3.GetObject<Order> ()));
     }
 
     [Test]

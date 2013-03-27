@@ -146,16 +146,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _extensionMock.Expect (mock => mock.ObjectsLoading (
             Arg.Is (_transaction), 
-            Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2 })));
+            Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order3 })));
         _extensionMock.Expect (mock => mock.ObjectsLoaded (
             Arg.Is (_transaction), 
-            Arg<ReadOnlyCollection<DomainObject>>.Matches (loadedObjects => loadedObjects.Count == 1 && loadedObjects[0].ID == DomainObjectIDs.Order2)));
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (loadedObjects => loadedObjects.Count == 1 && loadedObjects[0].ID == DomainObjectIDs.Order3)));
       }
 
       _mockRepository.ReplayAll();
 
-      Dev.Null = DomainObjectIDs.Order2.GetObject<Order> (_transaction);
-      Dev.Null = DomainObjectIDs.Order2.GetObject<Order> (_transaction);
+      Dev.Null = DomainObjectIDs.Order3.GetObject<Order> (_transaction);
+      Dev.Null = DomainObjectIDs.Order3.GetObject<Order> (_transaction);
 
       _mockRepository.VerifyAll();
     }
@@ -166,11 +166,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestObjectLoadingWithRelatedObjects (
           delegate
           {
-            Order order = DomainObjectIDs.Order2.GetObject<Order> ();
+            Order order = DomainObjectIDs.Order3.GetObject<Order> ();
             int orderItemCount = order.OrderItems.Count;
             Assert.That (orderItemCount, Is.EqualTo (1));
           },
-          DomainObjectIDs.Order2,
+          DomainObjectIDs.Order3,
           true,
           true,
           new[] { DomainObjectIDs.OrderItem3 });
@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           DomainObjectIDs.OrderItem3,
           false,
           true,
-          new[] { DomainObjectIDs.Order2 });
+          new[] { DomainObjectIDs.Order3 });
     }
 
     [Test]
@@ -310,14 +310,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       _extensionMock.Expect (mock => mock.ObjectsLoading (
             Arg.Is (_transaction),
-            Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2 })));
+            Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order3 })));
       _extensionMock.Expect (mock => mock.ObjectsLoaded (
             Arg.Is (_transaction),
             Arg<ReadOnlyCollection<DomainObject>>.Matches (collection => collection.Count == 1)));
 
       _mockRepository.ReplayAll();
 
-      DomainObjectIDs.Order2.GetObject<Order> (_transaction);
+      DomainObjectIDs.Order3.GetObject<Order> (_transaction);
 
       _mockRepository.VerifyAll();
     }
@@ -1370,7 +1370,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _extensionMock.Expect (mock => mock.ObjectsLoading (
             Arg.Is (_transaction),
-            Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2, DomainObjectIDs.Order3 })));
+            Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order3, DomainObjectIDs.Order4 })));
 
         _extensionMock.ObjectsLoaded (null, null);
         LastCall.Constraints (Rhino_Is.Same (_transaction), Rhino.Mocks.Constraints.List.Count (Rhino_Is.Equal (2)));
@@ -1380,7 +1380,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_transaction.EnterNonDiscardingScope())
       {
-        LifetimeService.GetObjects<DomainObject> (_transaction, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
+        LifetimeService.GetObjects<DomainObject> (_transaction, DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4);
       }
 
       _mockRepository.VerifyAll();

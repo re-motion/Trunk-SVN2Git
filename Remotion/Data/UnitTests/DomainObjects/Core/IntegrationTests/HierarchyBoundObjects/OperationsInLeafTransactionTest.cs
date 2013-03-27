@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
       _leafTransaction = _middleTransaction.CreateSubTransaction ();
 
       _order1LoadedInMiddleTransaction = DomainObjectIDs.Order1.GetObject<Order> (_middleTransaction);
-      _objectReferenceFromMiddleTransaction = DomainObjectIDs.Order2.GetObjectReference<Order> (_rootTransaction);
+      _objectReferenceFromMiddleTransaction = DomainObjectIDs.Order3.GetObjectReference<Order> (_rootTransaction);
     }
 
     [Test]

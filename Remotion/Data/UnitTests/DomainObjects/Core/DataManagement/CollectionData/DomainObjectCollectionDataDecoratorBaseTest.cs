@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
 
     private Order _order1;
-    private Order _order2;
+    private Order _order3;
 
     public override void SetUp ()
     {
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _decorator = new TestDomainObjectCollectionDecorator (_wrappedDataMock);
 
       _order1 = DomainObjectMother.CreateFakeObject<Order> ();
-      _order2 = DomainObjectMother.CreateFakeObject<Order> ();
+      _order3 = DomainObjectMother.CreateFakeObject<Order> ();
     }
 
     [Test]
@@ -166,22 +166,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void GetObject_ByID ()
     {
-      _wrappedDataMock.Expect (mock => mock.GetObject (_order2.ID)).Return (_order2);
+      _wrappedDataMock.Expect (mock => mock.GetObject (_order3.ID)).Return (_order3);
       _wrappedDataMock.Replay ();
 
-      var result = _decorator.GetObject (_order2.ID);
+      var result = _decorator.GetObject (_order3.ID);
 
       _wrappedDataMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (_order2));
+      Assert.That (result, Is.SameAs (_order3));
     }
 
     [Test]
     public void IndexOf ()
     {
-      _wrappedDataMock.Expect (mock => mock.IndexOf (_order2.ID)).Return (47);
+      _wrappedDataMock.Expect (mock => mock.IndexOf (_order3.ID)).Return (47);
       _wrappedDataMock.Replay ();
 
-      var result = _decorator.IndexOf (_order2.ID);
+      var result = _decorator.IndexOf (_order3.ID);
 
       _wrappedDataMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (47));
@@ -212,10 +212,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Remove ()
     {
-      _wrappedDataMock.Expect (mock => mock.Remove (_order2)).Return (false);
+      _wrappedDataMock.Expect (mock => mock.Remove (_order3)).Return (false);
       _wrappedDataMock.Replay ();
 
-      var result = _decorator.Remove (_order2);
+      var result = _decorator.Remove (_order3);
 
       _wrappedDataMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo(false));
@@ -224,10 +224,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Remove_ID ()
     {
-      _wrappedDataMock.Expect (mock => mock.Remove (_order2.ID)).Return (false);
+      _wrappedDataMock.Expect (mock => mock.Remove (_order3.ID)).Return (false);
       _wrappedDataMock.Replay ();
 
-      var result = _decorator.Remove (_order2.ID);
+      var result = _decorator.Remove (_order3.ID);
 
       _wrappedDataMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (false));
@@ -236,10 +236,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Replace ()
     {
-      _wrappedDataMock.Expect (mock => mock.Replace (10, _order2));
+      _wrappedDataMock.Expect (mock => mock.Replace (10, _order3));
       _wrappedDataMock.Replay ();
 
-      _decorator.Replace (10, _order2);
+      _decorator.Replace (10, _order3);
 
       _wrappedDataMock.VerifyAllExpectations ();
     }
@@ -263,7 +263,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       //TODO 5370: Remove
       SetUp();
 
-      var source = new TestDomainObjectCollectionDecorator (new DomainObjectCollectionData (new[] { _order1, _order2 }));
+      var source = new TestDomainObjectCollectionDecorator (new DomainObjectCollectionData (new[] { _order1, _order3 }));
 
       var result = Serializer.SerializeAndDeserialize (source);
       Assert.That (result.Count, Is.EqualTo (2));

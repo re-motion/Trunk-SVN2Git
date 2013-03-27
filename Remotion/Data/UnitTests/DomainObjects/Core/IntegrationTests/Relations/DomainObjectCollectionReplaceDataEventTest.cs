@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _eventReceiverMock = MockRepository.GenerateStrictMock<OrderCollection.ICollectionEventReceiver>();
 
       _itemA = DomainObjectIDs.Order1.GetObject<Order> ();
-      _itemB = DomainObjectIDs.Order5.GetObject<Order> ();
+      _itemB = DomainObjectIDs.Order2.GetObject<Order> ();
     }
 
     [Test]
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     public void SynchronizeOppositeEndPoint ()
     {
       // Prepare an item in unsynchronized state
-      Order unsynchronizedOrder = PrepareUnsynchronizedOrder(DomainObjectIDs.Order3, _customer.ID);
+      Order unsynchronizedOrder = PrepareUnsynchronizedOrder(DomainObjectIDs.Order4, _customer.ID);
 
       var orderCollection = _customer.Orders;
       orderCollection.EnsureDataComplete();

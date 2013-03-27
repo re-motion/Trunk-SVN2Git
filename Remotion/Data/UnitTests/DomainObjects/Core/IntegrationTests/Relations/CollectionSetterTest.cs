@@ -141,9 +141,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     {
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        var customer1 = DomainObjectIDs.Customer1.GetObject<Customer> (); // Order1, Order5
-        var customer3 = DomainObjectIDs.Customer3.GetObject<Customer> (); // Order2
-        var newCollection = new OrderCollection { DomainObjectIDs.Order4.GetObject<Order> () };
+        var customer1 = DomainObjectIDs.Customer1.GetObject<Customer> (); // Order1, Order2
+        var customer3 = DomainObjectIDs.Customer3.GetObject<Customer> (); // Order3
+        var newCollection = new OrderCollection { DomainObjectIDs.Order5.GetObject<Order> () };
 
         var oldCollectionReferenceOfCustomer1 = customer1.Orders;
         var oldCollectionContentOfCustomer1 = customer1.Orders.ToArray();

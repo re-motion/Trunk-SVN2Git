@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _domainObject1 = DomainObjectMother.CreateFakeObject (_objectID1);
       _dataContainer1 = DataContainerObjectMother.CreateExisting (_domainObject1);
 
-      _objectID2 = DomainObjectIDs.Order2;
+      _objectID2 = DomainObjectIDs.Order3;
       _domainObject2 = DomainObjectMother.CreateFakeObject (_objectID2);
       _dataContainer2 = DataContainerObjectMother.CreateExisting (_domainObject2);
 
@@ -402,7 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { _objectID1, _objectID2 }, true))
           .Return (new[] { _dataContainer1, _dataContainer2 });
 
-      var result = _agent.GetObjects<Order> (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      var result = _agent.GetObjects<Order> (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 });
 
       _dataManagerMock.VerifyAllExpectations ();
       Assert.That (result, Is.TypeOf<Order[]>().And.EqualTo (new[] { _domainObject1, _domainObject2 }));
@@ -416,7 +416,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           .Return (new[] { _dataContainer1, _dataContainer2 });
 
       Assert.That (
-          () => _agent.GetObjects<ClassWithAllDataTypes> (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }), 
+          () => _agent.GetObjects<ClassWithAllDataTypes> (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }), 
           Throws.TypeOf<InvalidCastException>());
     }
 
@@ -477,7 +477,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           .Return (new[] { _dataContainer1, _dataContainer2 });
 
       Assert.That (
-          () => _agent.TryGetObjects<ClassWithAllDataTypes> (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }),
+          () => _agent.TryGetObjects<ClassWithAllDataTypes> (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 }),
           Throws.TypeOf<InvalidCastException> ());
     }
 

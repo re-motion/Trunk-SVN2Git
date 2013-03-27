@@ -156,8 +156,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       StubPersistenceModelProviderForProperty (typeof (OrderTicket), "Order", _orderPropertyStrictMock);
 
       ExpectPropertyCombinesForOrderTicket (DomainObjectIDs.OrderTicket1, 0, "first", DomainObjectIDs.Order1);
-      ExpectPropertyCombinesForOrderTicket (DomainObjectIDs.OrderTicket2, 1, "second", DomainObjectIDs.Order2);
-      ExpectPropertyCombinesForOrderTicket (DomainObjectIDs.OrderTicket3, 2, "third", DomainObjectIDs.Order3);
+      ExpectPropertyCombinesForOrderTicket (DomainObjectIDs.OrderTicket2, 1, "second", DomainObjectIDs.Order3);
+      ExpectPropertyCombinesForOrderTicket (DomainObjectIDs.OrderTicket3, 2, "third", DomainObjectIDs.Order4);
 
       _dataReaderStrictMock.Expect (mock => mock.Read()).Return (true).Repeat.Times (3);
       _dataReaderStrictMock.Expect (mock => mock.Read()).Return (false);
@@ -169,8 +169,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       Assert.That (result.Length, Is.EqualTo (3));
 
       CheckLoadedDataContainer (result[0], DomainObjectIDs.OrderTicket1, 0, "first", DomainObjectIDs.Order1);
-      CheckLoadedDataContainer (result[1], DomainObjectIDs.OrderTicket2, 1, "second", DomainObjectIDs.Order2);
-      CheckLoadedDataContainer (result[2], DomainObjectIDs.OrderTicket3, 2, "third", DomainObjectIDs.Order3);
+      CheckLoadedDataContainer (result[1], DomainObjectIDs.OrderTicket2, 1, "second", DomainObjectIDs.Order3);
+      CheckLoadedDataContainer (result[2], DomainObjectIDs.OrderTicket3, 2, "third", DomainObjectIDs.Order4);
     }
 
     [Test]

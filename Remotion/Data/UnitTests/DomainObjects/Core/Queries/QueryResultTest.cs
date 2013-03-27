@@ -28,8 +28,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   public class QueryResultTest : ClientTransactionBaseTest
   {
     private Order _order1;
-    private Order _order2;
     private Order _order3;
+    private Order _order4;
 
     private IQuery _query;
     private IQuery _queryWithCustomType;
@@ -44,17 +44,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       base.SetUp();
 
       _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
       _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
+      _order4 = DomainObjectIDs.Order4.GetObject<Order> ();
 
       _query = MockRepository.GenerateStub<IQuery>();
       _queryWithCustomType = MockRepository.GenerateStub<IQuery>();
       _queryWithCustomType.Stub (stub => stub.CollectionType).Return (typeof (OrderCollection));
 
-      _result = new QueryResult<Order> (_query, new[] { _order1, _order2, _order3 });
-      _resultWithDuplicates = new QueryResult<Order> (_query, new[] { _order1, _order2, _order3, _order1 });
-      _resultWithNulls = new QueryResult<Order> (_query, new[] { _order1, _order2, _order3, null });
-      _resultWithCustomType = new QueryResult<Order> (_queryWithCustomType, new[] { _order1, _order2, _order3 });
+      _result = new QueryResult<Order> (_query, new[] { _order1, _order3, _order4 });
+      _resultWithDuplicates = new QueryResult<Order> (_query, new[] { _order1, _order3, _order4, _order1 });
+      _resultWithNulls = new QueryResult<Order> (_query, new[] { _order1, _order3, _order4, null });
+      _resultWithCustomType = new QueryResult<Order> (_queryWithCustomType, new[] { _order1, _order3, _order4 });
     }
 
     [Test]
@@ -98,25 +98,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void AsEnumerable ()
     {
-      Assert.That (_result.AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-      Assert.That (_resultWithDuplicates.AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3, _order1 }));
-      Assert.That (_resultWithNulls.AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3, null }));
+      Assert.That (_result.AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4 }));
+      Assert.That (_resultWithDuplicates.AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4, _order1 }));
+      Assert.That (_resultWithNulls.AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4, null }));
     }
 
     [Test]
     public void AsEnumerable_Interface ()
     {
-      Assert.That (((IQueryResult) _result).AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-      Assert.That (((IQueryResult) _resultWithDuplicates).AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3, _order1 }));
-      Assert.That (((IQueryResult) _resultWithNulls).AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3, null }));
+      Assert.That (((IQueryResult) _result).AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4 }));
+      Assert.That (((IQueryResult) _resultWithDuplicates).AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4, _order1 }));
+      Assert.That (((IQueryResult) _resultWithNulls).AsEnumerable().ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4, null }));
     }
 
     [Test]
     public void ToArray ()
     {
-      Assert.That (_result.ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-      Assert.That (_resultWithDuplicates.ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3, _order1 }));
-      Assert.That (_resultWithNulls.ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3, null }));
+      Assert.That (_result.ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4 }));
+      Assert.That (_resultWithDuplicates.ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4, _order1 }));
+      Assert.That (_resultWithNulls.ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4, null }));
     }
 
     [Test]
@@ -134,16 +134,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void ToArray_Interface ()
     {
-      Assert.That (((IQueryResult) _result).ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-      Assert.That (((IQueryResult) _resultWithDuplicates).ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3, _order1 }));
-      Assert.That (((IQueryResult) _resultWithNulls).ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3, null }));
+      Assert.That (((IQueryResult) _result).ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4 }));
+      Assert.That (((IQueryResult) _resultWithDuplicates).ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4, _order1 }));
+      Assert.That (((IQueryResult) _resultWithNulls).ToArray(), Is.EqualTo (new[] { _order1, _order3, _order4, null }));
     }
 
     [Test]
     public void ToObjectList ()
     {
       var list = _result.ToObjectList();
-      Assert.That (list, Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (list, Is.EqualTo (new[] { _order1, _order3, _order4 }));
       Assert.That (list.IsReadOnly, Is.False);
     }
 
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void Interface_ToObjectList ()
     {
       var list = ((IQueryResult) _result).ToObjectList();
-      Assert.That (list, Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (list, Is.EqualTo (new[] { _order1, _order3, _order4 }));
       Assert.That (list.IsReadOnly, Is.False);
     }
 
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       var collection = _resultWithCustomType.ToCustomCollection();
       Assert.That (collection, Is.InstanceOf (typeof (OrderCollection)));
-      Assert.That (collection, Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (collection, Is.EqualTo (new[] { _order1, _order3, _order4 }));
     }
 
     [Test]
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       var collection = _result.ToCustomCollection();
       Assert.That (collection, Is.InstanceOf (typeof (DomainObjectCollection)));
-      Assert.That (collection, Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (collection, Is.EqualTo (new[] { _order1, _order3, _order4 }));
     }
 
     [Test]
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       {
         var collection = _resultWithCustomType.ToCustomCollection();
         Assert.That (collection, Is.InstanceOf (typeof (OrderCollection)));
-        Assert.That (collection, Is.EqualTo (new[] { _order1, _order2, _order3 }));
+        Assert.That (collection, Is.EqualTo (new[] { _order1, _order3, _order4 }));
       }
     }
   }

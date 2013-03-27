@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _compoundListener.AddListener (_listener2);
 
       var order = Order.NewObject();
-      var order2 = Order.NewObject();
+      var order3 = Order.NewObject();
       var domainObjects = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       var persistableData = new ReadOnlyCollection<PersistableData> (new PersistableData[0]);
       var relatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection ());
@@ -147,8 +147,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckNotification (listener => listener.RelationRead (TestableClientTransaction, order, realtionEndPointDefinitionMock, relatedObjects, ValueAccess.Original));
       CheckNotification (listener => listener.RelationReading (TestableClientTransaction, order, realtionEndPointDefinitionMock, ValueAccess.Current));
       
-      CheckNotification (listener => listener.RelationChanging (TestableClientTransaction, order, realtionEndPointDefinitionMock, order, order2));
-      CheckNotification (listener => listener.RelationChanged (TestableClientTransaction, order, realtionEndPointDefinitionMock, order, order2));
+      CheckNotification (listener => listener.RelationChanging (TestableClientTransaction, order, realtionEndPointDefinitionMock, order, order3));
+      CheckNotification (listener => listener.RelationChanged (TestableClientTransaction, order, realtionEndPointDefinitionMock, order, order3));
 
       var eventRegistrar = MockRepository.GenerateStub<ICommittingEventRegistrar>();
       CheckNotification (listener => listener.TransactionCommitting (TestableClientTransaction, domainObjects, eventRegistrar));
@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var queryStub = MockRepository.GenerateStub<IQuery>();
       var originalResult = new QueryResult<Order> (queryStub, new Order[0]);
       var newResult1 = new QueryResult<Order> (queryStub, new[] { DomainObjectIDs.Order1.GetObject<Order> ()});
-      var newResult2 = new QueryResult<Order> (queryStub, new[] { DomainObjectIDs.Order2.GetObject<Order> ()});
+      var newResult2 = new QueryResult<Order> (queryStub, new[] { DomainObjectIDs.Order3.GetObject<Order> ()});
 
       listenerMock1.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, originalResult)).Return (newResult1);
       listenerMock2.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, newResult1)).Return (newResult2);

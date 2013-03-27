@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _map = new RelationEndPointMap (_transactionEventSinkWithMock);
 
       _endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer");
-      _endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "Customer");
+      _endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "Customer");
 
       _endPointMock1 = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
       _endPointMock1.Stub (stub => stub.ID).Return (_endPointID1);

@@ -38,21 +38,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Loading
     public void OnLoadedAccessingObject_LoadedLaterInSameBatch_IsSupported_AndDoesNotThrow ()
     {
       var order1 = DomainObjectIDs.Order1.GetObjectReference<Order> ();
-      var order2 = DomainObjectIDs.Order2.GetObjectReference<Order> ();
+      var order3 = DomainObjectIDs.Order3.GetObjectReference<Order> ();
 
       bool order1LoadedCalled = false;
       order1.ProtectedLoaded += (sender, args) =>
       {
-        order2.EnsureDataAvailable();
+        order3.EnsureDataAvailable();
         order1LoadedCalled = true;
       };
 
       int order2LoadedCount = 0;
-      order2.ProtectedLoaded += (sender, args) => { order2LoadedCount++; };
+      order3.ProtectedLoaded += (sender, args) => { order2LoadedCount++; };
 
-      var domainObjects = LifetimeService.GetObjects<DomainObject> (TestableClientTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+      var domainObjects = LifetimeService.GetObjects<DomainObject> (TestableClientTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order3);
 
-      Assert.That (domainObjects, Is.EqualTo (new[] { order1, order2 }));
+      Assert.That (domainObjects, Is.EqualTo (new[] { order1, order3 }));
       Assert.That (order1LoadedCalled, Is.True);
       Assert.That (order2LoadedCount, Is.EqualTo (1));
     }

@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var orderContainerIDs = Provider.ExecuteCollectionQuery (query).Select (dc => dc.ID).ToArray();
 
       Assert.That (orderContainerIDs.Contains (DomainObjectIDs.Order1), Is.True);
-      Assert.That (orderContainerIDs.Contains (DomainObjectIDs.Order5), Is.True);
+      Assert.That (orderContainerIDs.Contains (DomainObjectIDs.Order2), Is.True);
     }
 
     [Test]
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var orderContainerIDs = Provider.ExecuteCollectionQuery (query).Select (dc => dc.ID);
 
-      Assert.That (orderContainerIDs.ToArray(), Is.EquivalentTo (new[] {DomainObjectIDs.Order1, DomainObjectIDs.Order5}));
+      Assert.That (orderContainerIDs.ToArray(), Is.EquivalentTo (new[] {DomainObjectIDs.Order1, DomainObjectIDs.Order2}));
     }
 
     [Test]
@@ -165,10 +165,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (orderContainerIDs.ToArray(), Is.EquivalentTo (
           new[] { 
               DomainObjectIDs.Order1, 
-              DomainObjectIDs.Order2, 
               DomainObjectIDs.Order3, 
               DomainObjectIDs.Order4, 
-              DomainObjectIDs.Order5}));
+              DomainObjectIDs.Order5, 
+              DomainObjectIDs.Order2}));
 
     }
   }

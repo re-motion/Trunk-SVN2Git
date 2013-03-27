@@ -32,8 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    let x = o
                    select x;
 
-      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order5, DomainObjectIDs.OrderWithoutOrderItems);
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5,
+                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order2, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    select o;
 
       CheckQueryResult (orders,
-                        DomainObjectIDs.Order3, DomainObjectIDs.Order5, DomainObjectIDs.Order2, DomainObjectIDs.Order4);
+                        DomainObjectIDs.Order4, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order5);
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    let x = o.Customer.Name
                    where x == "Kunde 1"
                    select o;
-      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order5);
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
     }
 
     [Test]
@@ -77,8 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    let y = o.Customer
                    select x;
 
-      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4, 
-                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order5, DomainObjectIDs.OrderWithoutOrderItems);
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5, 
+                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order2, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]

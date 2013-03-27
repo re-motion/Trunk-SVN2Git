@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void UpdateTimestamps ()
     {
       var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order3);
       var timestamp1 = new object();
       var timestamp2 = new object();
 
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);
         _commandFactoryMock
             .Expect (mock => mock.CreateForMultiTimestampLookup (
-                Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })))
+                Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 })))
             .Return (commandMock);
         commandMock
             .Expect (stub => stub.Execute (_provider))
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                 new[]
                 {
                     new ObjectLookupResult<object> (DomainObjectIDs.Order1, timestamp1),
-                    new ObjectLookupResult<object> (DomainObjectIDs.Order2, timestamp2)
+                    new ObjectLookupResult<object> (DomainObjectIDs.Order3, timestamp2)
                 });
       }
 
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           .Return (commandMock);
       commandMock
           .Expect (stub => stub.Execute (_provider))
-          .Return (new[] { new ObjectLookupResult<object> (DomainObjectIDs.Order2, timestamp2) });
+          .Return (new[] { new ObjectLookupResult<object> (DomainObjectIDs.Order3, timestamp2) });
 
       _mockRepository.ReplayAll ();
 
@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void ExecuteCollectionQuery ()
     {
       var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order3);
 
       var queryStub = MockRepository.GenerateStub<IQuery>();
       queryStub.Stub (stub => stub.StorageProviderDefinition).Return (TestDomainStorageProviderDefinition);
@@ -337,8 +337,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainers ()
     {
       var objectID1 = DomainObjectIDs.Order1;
-      var objectID2 = DomainObjectIDs.Order2;
-      var objectID3 = DomainObjectIDs.Order3;
+      var objectID2 = DomainObjectIDs.Order3;
+      var objectID3 = DomainObjectIDs.Order4;
 
       var lookupResult1 = new ObjectLookupResult<DataContainer> (objectID1, DataContainer.CreateNew (objectID1));
       var lookupResult2 = new ObjectLookupResult<DataContainer> (objectID2, DataContainer.CreateNew (objectID2));
@@ -524,7 +524,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void Save ()
     {
       var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order3);
 
       var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IRdbmsProviderCommandExecutionContext>>();
       using (_mockRepository.Ordered())

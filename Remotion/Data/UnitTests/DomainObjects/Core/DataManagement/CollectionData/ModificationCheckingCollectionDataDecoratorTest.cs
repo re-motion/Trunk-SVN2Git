@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private ModificationCheckingCollectionDataDecorator _modificationCheckingDecoratorWithoutRequiredItemType;
 
     private Order _order1;
-    private Order _order2;
+    private Order _order3;
     private OrderItem _orderItem1;
 
     public override void SetUp ()
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _modificationCheckingDecoratorWithoutRequiredItemType = new ModificationCheckingCollectionDataDecorator (null, _wrappedDataMock);
 
       _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
       _orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
     }
 
@@ -62,9 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       StubInnerData (_order1);
 
-      _modificationCheckingDecorator.Insert (0, _order2);
+      _modificationCheckingDecorator.Insert (0, _order3);
 
-      _wrappedDataMock.AssertWasCalled (mock => mock.Insert (0, _order2));
+      _wrappedDataMock.AssertWasCalled (mock => mock.Insert (0, _order3));
     }
 
     [Test]
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Remove_HoldsObjectFromOtherTransaction ()
     {
-      _wrappedDataMock.Stub (stub => stub.GetObject (DomainObjectIDs.Order1)).Return (_order2);
+      _wrappedDataMock.Stub (stub => stub.GetObject (DomainObjectIDs.Order1)).Return (_order3);
 
       CheckThrows<ArgumentException> (
           () => _modificationCheckingDecorator.Remove (_order1),
@@ -148,9 +148,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       StubInnerData (_order1);
 
-      _modificationCheckingDecorator.Replace (0, _order2);
+      _modificationCheckingDecorator.Replace (0, _order3);
 
-      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _order2));
+      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _order3));
     }
 
     [Test]
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Replace_WithDuplicate ()
     {
-      StubInnerData (_order1, _order2);
+      StubInnerData (_order1, _order3);
 
       CheckThrows<InvalidOperationException> (
           () => _modificationCheckingDecorator.Replace (1, _order1),
@@ -218,10 +218,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       StubInnerData (_order1);
 
-      _modificationCheckingDecoratorWithoutRequiredItemType.Replace (0, _order2);
+      _modificationCheckingDecoratorWithoutRequiredItemType.Replace (0, _order3);
       _modificationCheckingDecoratorWithoutRequiredItemType.Replace (0, _orderItem1);
 
-      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _order2));
+      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _order3));
       _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _orderItem1));
     }
 
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       //TODO 5370: Remove
       SetUp();
 
-      var decorator = new ModificationCheckingCollectionDataDecorator (typeof (Order), new DomainObjectCollectionData(new[] { _order1, _order2 }));
+      var decorator = new ModificationCheckingCollectionDataDecorator (typeof (Order), new DomainObjectCollectionData(new[] { _order1, _order3 }));
       var deserializedDecorator = Serializer.SerializeAndDeserialize (decorator);
 
       Assert.That (deserializedDecorator.Count(), Is.EqualTo (2));

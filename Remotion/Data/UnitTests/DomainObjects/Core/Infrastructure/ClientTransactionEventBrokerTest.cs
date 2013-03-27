@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _eventBroker = new ClientTransactionEventBroker (_clientTransaction);
 
       _domainObject1 = _clientTransaction.ExecuteInScope (() => DomainObjectIDs.Order1.GetObject<Order> ());
-      _domainObject2 = _clientTransaction.ExecuteInScope (() => DomainObjectIDs.Order2.GetObject<Order> ());
+      _domainObject2 = _clientTransaction.ExecuteInScope (() => DomainObjectIDs.Order3.GetObject<Order> ());
       _invalidDomainObject = _clientTransaction.ExecuteInScope (
           () =>
           {
@@ -245,7 +245,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void RaiseObjectsNotFoundEvent ()
     {
-      var domainObjects = Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      var domainObjects = Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 });
       CheckEventWithListenersOnly (
           s => s.RaiseObjectsNotFoundEvent (domainObjects),
           l => l.ObjectsNotFound (_clientTransaction, domainObjects));

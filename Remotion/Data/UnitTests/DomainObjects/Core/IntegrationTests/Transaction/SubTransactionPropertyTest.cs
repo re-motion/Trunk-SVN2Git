@@ -57,13 +57,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order loadedUnchangedOrder = DomainObjectIDs.Order1.GetObject<Order> ();
       int loadedUnchangedOrderNumber = loadedUnchangedOrder.OrderNumber;
 
-      Order loadedChangedOrder = DomainObjectIDs.Order2.GetObject<Order> ();
+      Order loadedChangedOrder = DomainObjectIDs.Order3.GetObject<Order> ();
       loadedChangedOrder.OrderNumber = 13;
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (DomainObjectIDs.Order1.GetObject<Order> (), Is.SameAs (loadedUnchangedOrder));
-        Assert.That (DomainObjectIDs.Order2.GetObject<Order> (), Is.SameAs (loadedChangedOrder));
+        Assert.That (DomainObjectIDs.Order3.GetObject<Order> (), Is.SameAs (loadedChangedOrder));
 
         Assert.That (newUnchangedOrder.OrderNumber, Is.EqualTo (newUnchangedOrderNumber));
         Assert.That (newChangedOrder.OrderNumber, Is.EqualTo (4711));
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order newChangedOrder = Order.NewObject ();
       newChangedOrder.OrderNumber = 4711;
 
-      Order loadedChangedOrder = DomainObjectIDs.Order2.GetObject<Order> ();
+      Order loadedChangedOrder = DomainObjectIDs.Order3.GetObject<Order> ();
       loadedChangedOrder.OrderNumber = 13;
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())

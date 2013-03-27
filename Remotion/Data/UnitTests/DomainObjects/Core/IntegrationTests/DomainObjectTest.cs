@@ -1101,12 +1101,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void PropertyEventsOfExistingObjectPropertyChangeTest ()
     {
-      Order order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      Order order3 = DomainObjectIDs.Order3.GetObject<Order> ();
 
-      var eventReceiver = new DomainObjectEventReceiver (order2);
+      var eventReceiver = new DomainObjectEventReceiver (order3);
       CheckNoEvents(eventReceiver);
 
-      order2.DeliveryDate = DateTime.Now;
+      order3.DeliveryDate = DateTime.Now;
 
       CheckEvents (eventReceiver, _orderDeliveryDateProperty);
     }
@@ -1114,12 +1114,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void PropertyEventsOfExistingObjectRelationChangeTest ()
     {
-      Order order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      Order order3 = DomainObjectIDs.Order3.GetObject<Order> ();
 
-      var eventReceiver = new DomainObjectEventReceiver (order2);
+      var eventReceiver = new DomainObjectEventReceiver (order3);
       CheckNoEvents(eventReceiver);
 
-      order2.Customer = null;
+      order3.Customer = null;
 
       CheckNoEvents(eventReceiver);
     }

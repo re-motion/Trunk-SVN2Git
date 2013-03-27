@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void EqualsForObjectID ()
     {
       var endPointID2 = RelationEndPointID.Create(ObjectID.Parse (_objectID.ToString()), _propertyName);
-      var endPointID3 = RelationEndPointID.Create(DomainObjectIDs.Order2, _propertyName);
+      var endPointID3 = RelationEndPointID.Create(DomainObjectIDs.Order3, _propertyName);
 
       Assert.That (_endPointID.Equals (endPointID2), Is.True);
       Assert.That (endPointID2.Equals (_endPointID), Is.True);

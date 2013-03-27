@@ -611,8 +611,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void GetEnlistedDomainObjects ()
     {
       var order1 = _transaction.ExecuteInScope(() => Order.NewObject ());
-      var order2 = _transaction.ExecuteInScope (() => Order.NewObject ());
-      Assert.That (_transaction.GetEnlistedDomainObjects ().ToArray (), Is.EquivalentTo (new[] { order1, order2 }));
+      var order3 = _transaction.ExecuteInScope (() => Order.NewObject ());
+      Assert.That (_transaction.GetEnlistedDomainObjects ().ToArray (), Is.EquivalentTo (new[] { order1, order3 }));
     }
 
     [Test]

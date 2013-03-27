@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private DomainObjectCollectionMockEventReceiver _collectionMockEventReceiver;
     private RelationEndPointID _relationEndPointID;
     private Order _order1;
-    private Order _order5;
+    private Order _order2;
     private IClientTransactionEventSink _transactionEventSinkMock;
 
     public ClientTransaction Transaction
@@ -94,11 +94,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _domainObject = DomainObjectIDs.Customer1.GetObject<Customer> (_transaction);
 
       _order1 = DomainObjectIDs.Order1.GetObject<Order> (_transaction);
-      _order5 = DomainObjectIDs.Order5.GetObject<Order> (_transaction);
+      _order2 = DomainObjectIDs.Order2.GetObject<Order> (_transaction);
 
       _relationEndPointID = RelationEndPointID.Create(DomainObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       _collectionEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          _relationEndPointID, new[] { _order1, _order5 }, _transaction);
+          _relationEndPointID, new[] { _order1, _order2 }, _transaction);
       _collectionMockEventReceiver = MockRepository.GenerateStrictMock<DomainObjectCollectionMockEventReceiver> (_collectionEndPoint.Collection);
 
       _collectionDataMock = new MockRepository ().StrictMock<IDomainObjectCollectionData> ();

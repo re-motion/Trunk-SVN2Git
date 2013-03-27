@@ -821,17 +821,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void AddingToCollectionEndPoint_ReloadsObjectBeingAdded ()
     {
       var customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
-      var order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      var order3 = DomainObjectIDs.Order3.GetObject<Order> ();
 
-      UnloadService.UnloadData (TestableClientTransaction, order2.ID);
-      Assert.That (order2.State, Is.EqualTo (StateType.NotLoadedYet));
+      UnloadService.UnloadData (TestableClientTransaction, order3.ID);
+      Assert.That (order3.State, Is.EqualTo (StateType.NotLoadedYet));
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
 
-      customer.Orders.Add (order2); // reloads order2 because order2's foreign key is changed
+      customer.Orders.Add (order3); // reloads order3 because order3's foreign key is changed
 
-      AssertObjectWasLoaded (listenerMock, order2);
-      Assert.That (order2.State, Is.EqualTo (StateType.Changed));
+      AssertObjectWasLoaded (listenerMock, order3);
+      Assert.That (order3.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]

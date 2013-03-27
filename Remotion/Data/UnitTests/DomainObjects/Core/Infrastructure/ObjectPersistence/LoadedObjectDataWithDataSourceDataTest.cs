@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     [Test]
     public void Initialization_IDsDontMatch ()
     {
-      var loadedObjectDataStub = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (DomainObjectIDs.Order2);
+      var loadedObjectDataStub = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (DomainObjectIDs.Order3);
       Assert.That (
           () => new LoadedObjectDataWithDataSourceData (loadedObjectDataStub, _dataSourceData),
           Throws.ArgumentException.With.Message.EqualTo (

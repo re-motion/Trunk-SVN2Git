@@ -43,8 +43,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var query =
           from ot in QueryFactory.CreateLinqQuery<OrderTicket> ()
           select ot.Order;
-      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-                        DomainObjectIDs.Order5, DomainObjectIDs.OrderWithoutOrderItems);
+      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5,
+                        DomainObjectIDs.Order2, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]

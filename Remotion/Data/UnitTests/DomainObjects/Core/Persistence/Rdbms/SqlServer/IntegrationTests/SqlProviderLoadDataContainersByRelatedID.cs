@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (collection, Is.Not.Null);
       Assert.AreEqual (2, collection.Count, "DataContainerCollection.Count");
       Assert.IsNotNull (collection.SingleOrDefault(o=>o.ID==DomainObjectIDs.Order1), "ID of Order with OrdnerNo 1");
-      Assert.IsNotNull (collection.SingleOrDefault(o=>o.ID==DomainObjectIDs.Order5), "ID of Order with OrdnerNo 2");
+      Assert.IsNotNull (collection.SingleOrDefault(o=>o.ID==DomainObjectIDs.Order2), "ID of Order with OrdnerNo 2");
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (orderContainers.Count, Is.EqualTo (2));
       Assert.That (orderContainers[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (orderContainers[1].ID, Is.EqualTo (DomainObjectIDs.Order5));
+      Assert.That (orderContainers[1].ID, Is.EqualTo (DomainObjectIDs.Order2));
     }
 
     [Test]

@@ -652,10 +652,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Clone_SetsID ()
     {
       var original = _existingDataContainer;
-      Assert.That (original.ID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (original.ID, Is.Not.EqualTo (DomainObjectIDs.Order3));
 
-      var clone = original.Clone (DomainObjectIDs.Order2);
-      Assert.That (clone.ID, Is.EqualTo (DomainObjectIDs.Order2));
+      var clone = original.Clone (DomainObjectIDs.Order3);
+      Assert.That (clone.ID, Is.EqualTo (DomainObjectIDs.Order3));
     }
 
     [Test]
@@ -667,10 +667,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var originalExisting = _existingDataContainer;
       Assert.That (originalExisting.State, Is.EqualTo (StateType.Unchanged));
 
-      var clonedNew = originalNew.Clone (DomainObjectIDs.Order3);
+      var clonedNew = originalNew.Clone (DomainObjectIDs.Order4);
       Assert.That (clonedNew.State, Is.EqualTo (StateType.New));
 
-      var clonedExisting = originalExisting.Clone (DomainObjectIDs.Order4);
+      var clonedExisting = originalExisting.Clone (DomainObjectIDs.Order5);
       Assert.That (clonedExisting.State, Is.EqualTo (StateType.Unchanged));
     }
 
@@ -680,7 +680,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var original = _newDataContainer;
       original.SetTimestamp (12);
 
-      var clone = original.Clone (DomainObjectIDs.Order2);
+      var clone = original.Clone (DomainObjectIDs.Order3);
       Assert.That (clone.Timestamp, Is.EqualTo (12));
     }
 
@@ -689,7 +689,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var original = _existingDataContainer;
 
-      var clone = original.Clone (DomainObjectIDs.Order2);
+      var clone = original.Clone (DomainObjectIDs.Order3);
 
       Assert.That (
           clone.ClassDefinition.GetPropertyDefinitions().Select (pd => clone.GetValue (pd)),
@@ -706,7 +706,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       original.MarkAsChanged();
       Assert.That (original.HasBeenMarkedChanged, Is.True);
 
-      var clone = original.Clone (DomainObjectIDs.Order2);
+      var clone = original.Clone (DomainObjectIDs.Order3);
       Assert.That (clone.HasBeenMarkedChanged, Is.True);
     }
 
@@ -717,7 +717,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       original.SetValue (_orderNumberProperty, 10);
       Assert.That (original.State, Is.EqualTo (StateType.Changed));
 
-      var clone = original.Clone (DomainObjectIDs.Order2);
+      var clone = original.Clone (DomainObjectIDs.Order3);
       Assert.That (clone.State, Is.EqualTo (StateType.Changed));
     }
 
@@ -950,7 +950,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetDataFromSubTransaction_SetsValues ()
     {
       var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
-      var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order3);
       Assert.That (newDataContainer.GetValue (_orderNumberProperty), Is.Not.EqualTo (1));
 
       newDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
@@ -975,7 +975,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetDataFromSubTransaction_SetsChangedFlag_IfChanged ()
     {
       var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
-      var existingDataContainer = DomainObjectIDs.Order2.GetObject<Order> ().InternalDataContainer;
+      var existingDataContainer = DomainObjectIDs.Order3.GetObject<Order> ().InternalDataContainer;
       Assert.That (existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
       existingDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
@@ -1012,7 +1012,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetDataFromSubTransaction_RaisesStateUpdated_Unchanged ()
     {
       var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
-      var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
+      var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order3);
       targetDataContainer.SetValue (_orderNumberProperty, 10);
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
 
@@ -1023,7 +1023,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetDataFromSubTransaction_RaisesStateUpdated_OtherState ()
     {
       var sourceDataContainer = DomainObjectIDs.Order1.GetObject<Order> ().InternalDataContainer;
-      var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
+      var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order3);
       targetDataContainer.Delete ();
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Deleted));
 
@@ -1169,7 +1169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
                                                                       + "Parameter name: domainObject")]
     public void SetDomainObject_InvalidID ()
     {
-      var domainObject = DomainObjectIDs.Order2.GetObject<Order> ();
+      var domainObject = DomainObjectIDs.Order3.GetObject<Order> ();
 
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       dc.SetDomainObject (domainObject);

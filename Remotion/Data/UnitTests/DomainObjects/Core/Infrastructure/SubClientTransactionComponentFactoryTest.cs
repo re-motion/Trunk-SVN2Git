@@ -115,8 +115,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateInvalidDomainObjectManager_AutomaticallyMarksInvalid_ObjectsInvalidOrDeletedInParentTransaction ()
     {
       var objectInvalidInParent = _parentTransaction.ExecuteInScope (() => Order.NewObject ());
-      var objectDeletedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order2, false);
-      var objectLoadedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order3, false);
+      var objectDeletedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order3, false);
+      var objectLoadedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order4, false);
 
       _parentInvalidDomainObjectManagerStub.Stub (stub => stub.InvalidObjectIDs).Return (new[] { objectInvalidInParent.ID });
       _parentInvalidDomainObjectManagerStub.Stub (stub => stub.GetInvalidObjectReference (objectInvalidInParent.ID)).Return (objectInvalidInParent);

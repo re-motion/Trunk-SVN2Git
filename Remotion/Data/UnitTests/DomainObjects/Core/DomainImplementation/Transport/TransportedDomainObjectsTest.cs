@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       using (newTransaction.EnterNonDiscardingScope())
       {
         transportedObjectList.Add (DomainObjectIDs.Order1.GetObject<Order> ());
-        transportedObjectList.Add (DomainObjectIDs.Order2.GetObject<Order> ());
+        transportedObjectList.Add (DomainObjectIDs.Order3.GetObject<Order> ());
         transportedObjectList.Add (DomainObjectIDs.Company1.GetObject<Company> ());
       }
 
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       Assert.That (transportedObjects.DataTransaction, Is.Not.Null);
       Assert.IsNotEmpty (GetTransportedObjects (transportedObjects));
       List<ObjectID> ids = GetTransportedObjects (transportedObjects).ConvertAll (obj => obj.ID);
-      Assert.That (ids, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Company1 }));
+      Assert.That (ids, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Company1 }));
     }
 
     [Test]

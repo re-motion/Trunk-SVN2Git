@@ -33,9 +33,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private EventRaisingCollectionDataDecorator _eventRaisingDecoratorWithRealContent;
 
     private Order _order1;
-    private Order _order2;
     private Order _order3;
     private Order _order4;
+    private Order _order5;
 
     public override void SetUp ()
     {
@@ -45,11 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _eventRaiserMock = _mockRepository.StrictMock<IDomainObjectCollectionEventRaiser> ();
 
       _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
       _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
       _order4 = DomainObjectIDs.Order4.GetObject<Order> ();
+      _order5 = DomainObjectIDs.Order5.GetObject<Order> ();
 
-      var realContent = new DomainObjectCollectionData (new[] { _order1, _order2, _order3 });
+      var realContent = new DomainObjectCollectionData (new[] { _order1, _order3, _order4 });
       _eventRaisingDecoratorWithRealContent = new EventRaisingCollectionDataDecorator (_eventRaiserMock, realContent);
 
       _eventRaiserMock.BackToRecord ();
@@ -62,11 +62,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       using (_mockRepository.Ordered ())
       {
         _eventRaiserMock.Expect (mock => mock.BeginRemove (0, _order1)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
-        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
-        _eventRaiserMock.Expect (mock => mock.BeginRemove (2, _order3)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order3)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (2, _order4)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
 
-        _eventRaiserMock.Expect (mock => mock.EndRemove (2, _order3)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (0)));
-        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (0)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (2, _order4)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (0)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order3)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (0)));
         _eventRaiserMock.Expect (mock => mock.EndRemove (0, _order1)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (0)));
       }
 
@@ -82,13 +82,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       using (_mockRepository.Ordered ())
       {
-        _eventRaiserMock.Expect (mock => mock.BeginAdd (2, _order4)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
-        _eventRaiserMock.Expect (mock => mock.EndAdd (2, _order4)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (4)));
+        _eventRaiserMock.Expect (mock => mock.BeginAdd (2, _order5)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.EndAdd (2, _order5)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (4)));
       }
 
       _eventRaiserMock.Replay ();
 
-      _eventRaisingDecoratorWithRealContent.Insert (2, _order4);
+      _eventRaisingDecoratorWithRealContent.Insert (2, _order5);
 
       _eventRaiserMock.VerifyAllExpectations ();
     }
@@ -98,13 +98,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       using (_mockRepository.Ordered ())
       {
-        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
-        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (2)));
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order3)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order3)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (2)));
       }
 
       _eventRaiserMock.Replay ();
 
-      var result = _eventRaisingDecoratorWithRealContent.Remove (_order2);
+      var result = _eventRaisingDecoratorWithRealContent.Remove (_order3);
 
       _eventRaiserMock.VerifyAllExpectations ();
 
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _eventRaiserMock.Replay ();
 
-      var result = _eventRaisingDecoratorWithRealContent.Remove (_order4);
+      var result = _eventRaisingDecoratorWithRealContent.Remove (_order5);
 
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
@@ -129,13 +129,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       using (_mockRepository.Ordered ())
       {
-        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
-        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (2)));
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order3)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order3)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (2)));
       }
 
       _eventRaiserMock.Replay ();
 
-      var result = _eventRaisingDecoratorWithRealContent.Remove (_order2.ID);
+      var result = _eventRaisingDecoratorWithRealContent.Remove (_order3.ID);
 
       _eventRaiserMock.VerifyAllExpectations ();
 
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _eventRaiserMock.Replay ();
 
-      var result = _eventRaisingDecoratorWithRealContent.Remove (_order4.ID);
+      var result = _eventRaisingDecoratorWithRealContent.Remove (_order5.ID);
 
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
@@ -160,15 +160,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       using (_mockRepository.Ordered ())
       {
-        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.GetObject (1), Is.SameAs (_order2)));
-        _eventRaiserMock.Expect (mock => mock.BeginAdd (1, _order4)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.GetObject (1), Is.SameAs (_order2)));
-        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.GetObject (1), Is.SameAs (_order4)));
-        _eventRaiserMock.Expect (mock => mock.EndAdd (1, _order4)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.GetObject (1), Is.SameAs (_order4)));
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order3)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.GetObject (1), Is.SameAs (_order3)));
+        _eventRaiserMock.Expect (mock => mock.BeginAdd (1, _order5)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.GetObject (1), Is.SameAs (_order3)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order3)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.GetObject (1), Is.SameAs (_order5)));
+        _eventRaiserMock.Expect (mock => mock.EndAdd (1, _order5)).WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent.GetObject (1), Is.SameAs (_order5)));
       }
 
       _eventRaiserMock.Replay ();
 
-      _eventRaisingDecoratorWithRealContent.Replace (1, _order4);
+      _eventRaisingDecoratorWithRealContent.Replace (1, _order5);
 
       _eventRaiserMock.VerifyAllExpectations ();
     }
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _eventRaiserMock.Replay ();
 
-      _eventRaisingDecoratorWithRealContent.Replace (1, _order2);
+      _eventRaisingDecoratorWithRealContent.Replace (1, _order3);
 
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
@@ -191,10 +191,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _eventRaiserMock
           .Expect (mock => mock.WithinReplaceData())
-          .WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent, Is.EqualTo (new[] { _order3, _order2, _order1 })));
+          .WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent, Is.EqualTo (new[] { _order4, _order3, _order1 })));
       _eventRaiserMock.Replay();
 
-      var weight = new Dictionary<DomainObject, int> { { _order1, 3 }, { _order2, 2 }, { _order3, 1 } };
+      var weight = new Dictionary<DomainObject, int> { { _order1, 3 }, { _order3, 2 }, { _order4, 1 } };
       _eventRaisingDecoratorWithRealContent.Sort ((one, two) => weight[one].CompareTo (weight[two]));
 
       _eventRaiserMock.VerifyAllExpectations();
@@ -209,8 +209,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       var source = new EventRaisingCollectionDataDecorator (new SerializableDomainObjectCollectionEventRaiserFake (), new DomainObjectCollectionData ());
       source.Insert (0, _order1);
-      source.Insert (1, _order2);
-      source.Insert (2, _order3);
+      source.Insert (1, _order3);
+      source.Insert (2, _order4);
 
       var result = Serializer.SerializeAndDeserialize (source);
       Assert.That (result.Count, Is.EqualTo (3));

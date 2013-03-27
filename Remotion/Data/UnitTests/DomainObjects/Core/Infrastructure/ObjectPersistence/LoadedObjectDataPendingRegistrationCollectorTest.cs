@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       base.SetUp ();
 
       _data1 = LoadedObjectDataObjectMother.CreateFreshlyLoadedObjectData (DomainObjectIDs.Order1);
-      _data2 = LoadedObjectDataObjectMother.CreateFreshlyLoadedObjectData (DomainObjectIDs.Order2);
+      _data2 = LoadedObjectDataObjectMother.CreateFreshlyLoadedObjectData (DomainObjectIDs.Order3);
       _collector = new LoadedObjectDataPendingRegistrationCollector();
     }
 

@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       base.SetUp ();
 
       _loadedOrder1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _notYetLoadedOrder2 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order2);
+      _notYetLoadedOrder2 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order3);
       _newOrder = Order.NewObject();
 
       _loadedOrder1Context = new DomainObjectTransactionContext (_loadedOrder1, TestableClientTransaction);

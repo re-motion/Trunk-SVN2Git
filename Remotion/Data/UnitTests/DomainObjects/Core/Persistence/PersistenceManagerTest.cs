@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
         actualResults = _persistenceManager.LoadDataContainers (
             new[]
             {
-                DomainObjectIDs.Order1, DomainObjectIDs.Official1, DomainObjectIDs.Order2,
+                DomainObjectIDs.Order1, DomainObjectIDs.Official1, DomainObjectIDs.Order3,
                 DomainObjectIDs.Official2
             }).ToArray();
       }
@@ -127,8 +127,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Assert.That (actualResults[0].LocatedObject.ID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (actualResults[1].ObjectID, Is.EqualTo (officialDC1.ID));
       Assert.That (actualResults[1].LocatedObject, Is.SameAs (officialDC1));
-      Assert.That (actualResults[2].ObjectID, Is.EqualTo (DomainObjectIDs.Order2));
-      Assert.That (actualResults[2].LocatedObject.ID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (actualResults[2].ObjectID, Is.EqualTo (DomainObjectIDs.Order3));
+      Assert.That (actualResults[2].LocatedObject.ID, Is.EqualTo (DomainObjectIDs.Order3));
       Assert.That (actualResults[3].ObjectID, Is.EqualTo (officialDC2.ID));
       Assert.That (actualResults[3].LocatedObject, Is.SameAs (officialDC2));
     }
@@ -315,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Assert.That (collection, Is.Not.Null);
       Assert.AreEqual (2, collection.Count, "DataContainerCollection.Count");
       Assert.IsNotNull (collection[DomainObjectIDs.Order1], "ID of Order with OrdnerNo 1");
-      Assert.IsNotNull (collection[DomainObjectIDs.Order5], "ID of Order with OrdnerNo 2");
+      Assert.IsNotNull (collection[DomainObjectIDs.Order2], "ID of Order with OrdnerNo 2");
     }
 
     [Test]

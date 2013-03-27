@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _existingOrder = (Order) LifetimeService.GetObject (_transaction, DomainObjectIDs.Order1, false);
       _newOrder = (Order) LifetimeService.NewObject (_transaction, typeof (Order), ParamList.Empty);
-      _notYetLoadedOrder = (Order) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.Order2);
+      _notYetLoadedOrder = (Order) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.Order3);
     }
 
     [Test]
@@ -102,8 +102,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void GetState_IDWithoutDomainObject ()
     {
-      Assert.That (_transaction.GetEnlistedDomainObject (DomainObjectIDs.Order3), Is.Null);
-      Assert.That (_cachingListener.GetState (DomainObjectIDs.Order3), Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (_transaction.GetEnlistedDomainObject (DomainObjectIDs.Order4), Is.Null);
+      Assert.That (_cachingListener.GetState (DomainObjectIDs.Order4), Is.EqualTo (StateType.NotLoadedYet));
     }
     
     [Test]

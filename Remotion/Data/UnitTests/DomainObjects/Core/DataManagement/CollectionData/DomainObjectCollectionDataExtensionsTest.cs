@@ -77,8 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentItemDuplicateException), ExpectedMessage = 
-        "Item 1 of argument domainObjects is a duplicate ('Order|3c0fb6ed-de1c-4e70-8d80-218e0bf58df3|System.Guid').")]
+    [ExpectedException (typeof (ArgumentItemDuplicateException), ExpectedMessage =
+        "Item 1 of argument domainObjects is a duplicate ('Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid').")]
     public void AddRangeAndCheckItems_DuplicateItem ()
     {
       _data.AddRangeAndCheckItems (new[] { _order3, _order3 }, typeof (Order));

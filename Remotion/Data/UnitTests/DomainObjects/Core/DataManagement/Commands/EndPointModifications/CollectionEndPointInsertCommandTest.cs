@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp();
 
-      _insertedRelatedObject = DomainObjectIDs.Order2.GetObject<Order> (Transaction);
+      _insertedRelatedObject = DomainObjectIDs.Order3.GetObject<Order> (Transaction);
 
       _command = new CollectionEndPointInsertCommand (
           CollectionEndPoint, 12, _insertedRelatedObject, CollectionDataMock, EndPointProviderStub, TransactionEventSinkMock);

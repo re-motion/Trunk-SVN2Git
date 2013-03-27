@@ -56,9 +56,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _changeDetectionStrategyMock = MockRepository.GenerateStrictMock<ICollectionEndPointChangeDetectionStrategy> ();
 
       _domainObject1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      _domainObject2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
-      _domainObject3 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order3);
-      _domainObject4 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order4);
+      _domainObject2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order3);
+      _domainObject3 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order4);
+      _domainObject4 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order5);
 
       _domainObjectEndPoint1 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       _domainObjectEndPoint1.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject1);

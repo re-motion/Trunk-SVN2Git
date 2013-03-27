@@ -32,8 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   public class CollectionEndPointIntegrationTest : ClientTransactionBaseTest
   {
     private Order _order1; // belongs to customer1
-    private Order _order5; // belongs to customer1
-    private Order _order2; // belongs to customer3
+    private Order _order2; // belongs to customer1
+    private Order _order3; // belongs to customer3
 
     private CollectionEndPoint _customerEndPoint;
     
@@ -42,8 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp ();
 
       _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _order5 = DomainObjectIDs.Order5.GetObject<Order> ();
       _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
+      _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
 
       var stateUpdateRaisingEndPointDecorator = (StateUpdateRaisingCollectionEndPointDecorator) 
           TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _customerEndPoint.Collection.Add (newOrder);
 
-      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _order5, newOrder }), "changes go down to actual data store");
+      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _order2, newOrder }), "changes go down to actual data store");
       Assert.That (newOrder.Customer, Is.SameAs (_customerEndPoint.GetDomainObject()), "bidirectional modification");
     }
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _customerEndPoint.Collection.Remove (_order1.ID);
 
-      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order5 }), "changes go down to actual data store");
+      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order2 }), "changes go down to actual data store");
       Assert.That (_order1.Customer, Is.Null, "bidirectional modification");
     }
 
@@ -88,13 +88,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void SetCollection ()
     {
       var oldOpposites = _customerEndPoint.Collection;
-      var newOpposites = new OrderCollection { _order5 };
+      var newOpposites = new OrderCollection { _order2 };
 
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (newOpposites));
-      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order5 }));
-      Assert.That (oldOpposites, Is.EqualTo (new[] { _order1, _order5 }));
+      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order2 }));
+      Assert.That (oldOpposites, Is.EqualTo (new[] { _order1, _order2 }));
 
       Assert.That (newOpposites.AssociatedEndPointID, Is.EqualTo (_customerEndPoint.ID));
       Assert.That (oldOpposites.AssociatedEndPointID, Is.Null);
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var oldOpposites = _customerEndPoint.Collection;
 
-      var newOpposites = new OrderCollection { _order5 };
+      var newOpposites = new OrderCollection { _order2 };
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
       // old collection got a stand-alone strategy...
@@ -113,41 +113,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var dataStrategyOfOldOpposites = DomainObjectCollectionDataTestHelper.GetDataStrategy (oldOpposites);
       // with the data it had before!
-      Assert.That (dataStrategyOfOldOpposites.ToArray (), Is.EqualTo (new[] { _order1, _order5 }));
+      Assert.That (dataStrategyOfOldOpposites.ToArray (), Is.EqualTo (new[] { _order1, _order2 }));
     }
 
     [Test]
     public void SetCollection_DataStrategy_OfNewOpposites ()
     {
-      var newOpposites = new OrderCollection { _order5 };
+      var newOpposites = new OrderCollection { _order2 };
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
       // New collection now has a delegating data store...
       DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newOpposites, typeof (Order), _customerEndPoint.ID);
 
       // ... and the end-point now has data newOpposites had before!
-      Assert.That (_customerEndPoint.GetData(), Is.EqualTo (new[] { _order5 }));
-      Assert.That (newOpposites, Is.EqualTo (new[] { _order5 }));
+      Assert.That (_customerEndPoint.GetData(), Is.EqualTo (new[] { _order2 }));
+      Assert.That (newOpposites, Is.EqualTo (new[] { _order2 }));
     }
 
     [Test]
     public void SetCollection_PerformsAllBidirectionalChanges ()
     {
-      var newOpposites = new OrderCollection { _order5, _order2};
+      var newOpposites = new OrderCollection { _order2, _order3};
 
       var customer3 = DomainObjectIDs.Customer3.GetObject<Customer> ();
       
       Assert.That (_order1.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
-      Assert.That (_order5.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
-      Assert.That (_order2.Customer, Is.SameAs (customer3));
-      Assert.That (customer3.Orders, Has.Member(_order2));
+      Assert.That (_order2.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
+      Assert.That (_order3.Customer, Is.SameAs (customer3));
+      Assert.That (customer3.Orders, Has.Member(_order3));
 
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
       Assert.That (_order1.Customer, Is.Null);
-      Assert.That (_order5.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
-      Assert.That (_order2.Customer, Is.SameAs (_customerEndPoint.GetDomainObject()));
-      Assert.That (customer3.Orders, Has.No.Member(_order2));
+      Assert.That (_order2.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
+      Assert.That (_order3.Customer, Is.SameAs (_customerEndPoint.GetDomainObject()));
+      Assert.That (customer3.Orders, Has.No.Member(_order3));
     }
 
     [Test]
@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var oldOpposites = _customerEndPoint.Collection;
       var oldEventListener = new DomainObjectCollectionEventReceiver (oldOpposites);
 
-      var newOpposites = new OrderCollection { _order5 };
+      var newOpposites = new OrderCollection { _order2 };
       var newEventListener = new DomainObjectCollectionEventReceiver (newOpposites);
 
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       DomainObjectCollectionDataTestHelper.MakeCollectionReadOnly (_customerEndPoint.Collection);
 
-      var newOpposites = new OrderCollection { _order5, _order2 };
+      var newOpposites = new OrderCollection { _order2, _order3 };
       var oldOpposites = _customerEndPoint.Collection;
       Assert.That (oldOpposites.IsReadOnly, Is.True);
 
@@ -190,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SetCollection_TargetCollection_IsReadOnly ()
     {
-      var newOpposites = new OrderCollection { _order5, _order2 }.Clone (true);
+      var newOpposites = new OrderCollection { _order2, _order3 }.Clone (true);
       Assert.That (newOpposites.IsReadOnly, Is.True);
       var oldOpposites = _customerEndPoint.Collection;
 
@@ -208,7 +208,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       SetCollectionAndNotify (_customerEndPoint, _customerEndPoint.Collection);
       Assert.That (_customerEndPoint.HasChanged, Is.False);
 
-      var newOpposites = new OrderCollection { _order5 };
+      var newOpposites = new OrderCollection { _order2 };
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
       Assert.That (_customerEndPoint.HasChanged, Is.True);
     }
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       Assert.That (_customerEndPoint.HasChanged, Is.False);
 
-      var newOpposites = new OrderCollection { _order1, _order5 };
+      var newOpposites = new OrderCollection { _order1, _order2 };
       Assert.That (newOpposites, Is.EqualTo (_customerEndPoint.Collection));
       Assert.That (newOpposites, Is.Not.SameAs (_customerEndPoint.Collection));
 
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var oldOpposites = _customerEndPoint.Collection;
       var oldOriginalOpposites = _customerEndPoint.GetCollectionWithOriginalData();
 
-      var newOpposites = new OrderCollection { _order2 };
+      var newOpposites = new OrderCollection { _order3 };
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
       Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), Is.EqualTo (oldOriginalOpposites));
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
 
-      var newOpposites = new OrderCollection { _order2 };
+      var newOpposites = new OrderCollection { _order3 };
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
@@ -286,20 +286,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var oldOpposites = _customerEndPoint.Collection;
 
-      var newOpposites = new OrderCollection { _order2 };
+      var newOpposites = new OrderCollection { _order3 };
       SetCollectionAndNotify (_customerEndPoint, newOpposites); // replace collection
 
       _customerEndPoint.Rollback ();
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (oldOpposites));
-      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _order5 }));
+      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _order2 }));
     }
 
     [Test]
     public void Rollback_AfterReplace_RestoresDelegationChain ()
     {
       var oldCollection = _customerEndPoint.Collection;
-      var newCollection = new OrderCollection { _order2 };
+      var newCollection = new OrderCollection { _order3 };
       DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (oldCollection, typeof (Order), _customerEndPoint.ID);
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (newCollection, typeof (Order));
 
@@ -321,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _customerEndPoint.Collection.Clear (); // modify collection
       var oldOpposites = _customerEndPoint.Collection;
 
-      var newOpposites = new OrderCollection { _order5 };
+      var newOpposites = new OrderCollection { _order2 };
       SetCollectionAndNotify (_customerEndPoint, newOpposites); // replace collection
 
       newOpposites.Add (_order1);
@@ -329,22 +329,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _customerEndPoint.Rollback ();
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (oldOpposites));
-      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _order5 }));
-      Assert.That (newOpposites, Is.EqualTo (new[] { _order5, _order1 })); // does not undo changes on detached collection
+      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _order2 }));
+      Assert.That (newOpposites, Is.EqualTo (new[] { _order2, _order1 })); // does not undo changes on detached collection
     }
 
     [Test]
     public void Rollback_ReadOnly ()
     {
-      _customerEndPoint.Collection.Add (_order2);
+      _customerEndPoint.Collection.Add (_order3);
       DomainObjectCollectionDataTestHelper.MakeCollectionReadOnly(_customerEndPoint.Collection);
 
       Assert.That (_customerEndPoint.Collection.IsReadOnly, Is.True);
 
       _customerEndPoint.Rollback();
 
-      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _order5 }));
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), Is.EqualTo (new[] { _order1, _order5 }));
+      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _order2 }));
+      Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), Is.EqualTo (new[] { _order1, _order2 }));
       Assert.That (_customerEndPoint.OriginalCollection, Is.SameAs (_customerEndPoint.Collection));
       Assert.That (_customerEndPoint.Collection.IsReadOnly, Is.True);
     }
@@ -368,17 +368,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       oldOpposites.Clear (); // modify collection
 
-      var newOpposites = new OrderCollection { _order5 };
+      var newOpposites = new OrderCollection { _order2 };
       SetCollectionAndNotify (_customerEndPoint, newOpposites); // replace collection
       _customerEndPoint.Commit ();
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (newOpposites));
-      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order5 }));
+      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order2 }));
 
       _customerEndPoint.Rollback ();
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (newOpposites));
-      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order5 }));
+      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order2 }));
     }
 
     [Test]
@@ -386,7 +386,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var oldCollection = _customerEndPoint.Collection;
 
-      var newCollection = new OrderCollection { _order2 };
+      var newCollection = new OrderCollection { _order3 };
       SetCollectionAndNotify (_customerEndPoint, newCollection);
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (newCollection));
@@ -402,13 +402,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Commit_ReadOnly ()
     {
-      _customerEndPoint.Collection.Add (_order2);
+      _customerEndPoint.Collection.Add (_order3);
       DomainObjectCollectionDataTestHelper.MakeCollectionReadOnly(_customerEndPoint.Collection);
 
       _customerEndPoint.Commit ();
 
-      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _order5, _order2 }));
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), Is.EqualTo (new[] { _order1, _order5, _order2 }));
+      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), Is.EqualTo (new[] { _order1, _order2, _order3 }));
       Assert.That (_customerEndPoint.OriginalCollection, Is.SameAs (_customerEndPoint.Collection));
       Assert.That (_customerEndPoint.Collection.IsReadOnly, Is.True);
     }
@@ -418,7 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (_customerEndPoint.ClientTransaction);
 
-      _customerEndPoint.Collection.Add (_order2);
+      _customerEndPoint.Collection.Add (_order3);
 
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, null));
     }

@@ -28,8 +28,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class RootCollectionEndPointChangeDetectionStrategyTest : ClientTransactionBaseTest
   {
     private Order _order1;
-    private Order _order2;
     private Order _order3;
+    private Order _order4;
 
     private RootCollectionEndPointChangeDetectionStrategy _strategy;
     private IDomainObjectCollectionData _currentData;
@@ -39,10 +39,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       base.SetUp ();
 
       _order1 = DomainObjectIDs.Order1.GetObject<Order> ();
-      _order2 = DomainObjectIDs.Order2.GetObject<Order> ();
       _order3 = DomainObjectIDs.Order3.GetObject<Order> ();
+      _order4 = DomainObjectIDs.Order4.GetObject<Order> ();
 
-      _currentData = new DomainObjectCollectionData (new[] { _order1, _order2 });
+      _currentData = new DomainObjectCollectionData (new[] { _order1, _order3 });
 
       _strategy = new RootCollectionEndPointChangeDetectionStrategy ();
     }
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void HasDataChanged_True_Content ()
     {
-      var originalData = new DomainObjectCollectionData (new[] { _order1, _order2, _order3 });
+      var originalData = new DomainObjectCollectionData (new[] { _order1, _order3, _order4 });
       Assert.That (_strategy.HasDataChanged (_currentData, originalData), Is.True);
     }
   }

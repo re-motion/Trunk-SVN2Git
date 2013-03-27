@@ -179,13 +179,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void GetObjects ()
     {
-      var deletedObjectID = DomainObjectIDs.Order3;
+      var deletedObjectID = DomainObjectIDs.Order4;
       var deletedObject = deletedObjectID.GetObject<Order> ();
       deletedObject.Delete();
 
-      Order[] orders = LifetimeService.GetObjects<Order> (TestableClientTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order2, deletedObjectID);
+      Order[] orders = LifetimeService.GetObjects<Order> (TestableClientTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order3, deletedObjectID);
 
-      Assert.That (orders, Is.EqualTo (new[] { DomainObjectIDs.Order1.GetObject<Order> (), DomainObjectIDs.Order2.GetObject<Order> (), deletedObject }));
+      Assert.That (orders, Is.EqualTo (new[] { DomainObjectIDs.Order1.GetObject<Order> (), DomainObjectIDs.Order3.GetObject<Order> (), deletedObject }));
     }
 
     [Test]
@@ -203,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var notFoundObjectID = new ObjectID (typeof (Order), Guid.NewGuid());
 
-      var deletedObjectID = DomainObjectIDs.Order3;
+      var deletedObjectID = DomainObjectIDs.Order4;
       var deletedObject = deletedObjectID.GetObject<Order> ();
       deletedObject.Delete ();
 

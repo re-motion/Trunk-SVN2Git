@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>()
                    select o).Single (i => i.OrderNumber == 5);
-      Assert.That (query, Is.EqualTo (DomainObjectIDs.Order4.GetObject<TestDomainBase> ()));
+      Assert.That (query, Is.EqualTo (DomainObjectIDs.Order5.GetObject<TestDomainBase> ()));
     }
 
     [Test]
@@ -45,10 +45,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
 
-      CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.Order5, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem6);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.Order5);
+      CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem6);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
       CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Order5, "OrderItems", false, DomainObjectIDs.OrderItem6);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order2, "OrderItems", false, DomainObjectIDs.OrderItem6);
     }
 
     [Test]
@@ -60,10 +60,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    select c1).Distinct().FetchMany (x => x.Orders).ThenFetchMany (y => y.OrderItems);
 
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
-      CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.Order5, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem6);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.Order5);
+      CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem6);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
       CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Order5, "OrderItems", false, DomainObjectIDs.OrderItem6);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order2, "OrderItems", false, DomainObjectIDs.OrderItem6);
     }
 
     [Test]
@@ -74,11 +74,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    where o1.OrderNumber < 6
                    select o1).Distinct ().FetchMany (x => x.OrderItems);
 
-      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4, 
-                        DomainObjectIDs.Order5);
+      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5, 
+                        DomainObjectIDs.Order2);
 
-      CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-                                     DomainObjectIDs.Order5);
+      CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5,
+                                     DomainObjectIDs.Order2);
       CheckDataContainersRegistered (
           DomainObjectIDs.OrderItem1,
           DomainObjectIDs.OrderItem2,
@@ -88,10 +88,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.OrderItem6);
 
       CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Order2, "OrderItems", false, DomainObjectIDs.OrderItem3);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Order3, "OrderItems", false, DomainObjectIDs.OrderItem4);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Order4, "OrderItems", false, DomainObjectIDs.OrderItem5);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Order5, "OrderItems", false, DomainObjectIDs.OrderItem6);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order3, "OrderItems", false, DomainObjectIDs.OrderItem3);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order4, "OrderItems", false, DomainObjectIDs.OrderItem4);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order5, "OrderItems", false, DomainObjectIDs.OrderItem5);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order2, "OrderItems", false, DomainObjectIDs.OrderItem6);
     }
 
     [Test]
@@ -119,13 +119,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckDataContainersRegistered (
           DomainObjectIDs.Customer1, DomainObjectIDs.Customer2,
-          DomainObjectIDs.Order1, DomainObjectIDs.Order5,
+          DomainObjectIDs.Order1, DomainObjectIDs.Order2,
           DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2);
 
-      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", false, DomainObjectIDs.Order1, DomainObjectIDs.Order5);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", false, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
       CheckCollectionRelationRegistered (DomainObjectIDs.Customer2, "Orders", false);
       CheckObjectRelationRegistered (DomainObjectIDs.Order1, "OrderTicket", DomainObjectIDs.OrderTicket1);
-      CheckObjectRelationRegistered (DomainObjectIDs.Order5, "OrderTicket", DomainObjectIDs.OrderTicket2);
+      CheckObjectRelationRegistered (DomainObjectIDs.Order2, "OrderTicket", DomainObjectIDs.OrderTicket2);
     }
 
     [Test]
@@ -144,12 +144,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.Order1, // the original order
           DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, // their items
           DomainObjectIDs.Customer1, // their customers
-          DomainObjectIDs.Order1, DomainObjectIDs.Order5, // their customer's orders
+          DomainObjectIDs.Order1, DomainObjectIDs.Order2, // their customer's orders
           DomainObjectIDs.Customer1, // their customer's orders' customers
           DomainObjectIDs.Ceo3); // their customer's orders' customers' ceos
       CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
       CheckObjectRelationRegistered (DomainObjectIDs.Order1, "Customer", DomainObjectIDs.Customer1);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.Order5);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
       CheckObjectRelationRegistered (DomainObjectIDs.Customer1, typeof (Company), "Ceo", DomainObjectIDs.Ceo3);
     }
 
@@ -170,23 +170,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckDataContainersRegistered (
           DomainObjectIDs.Order1, // the original order
           DomainObjectIDs.Customer1, // the customer
-          DomainObjectIDs.Order1, DomainObjectIDs.Order5, // the customer's orders
+          DomainObjectIDs.Order1, DomainObjectIDs.Order2, // the customer's orders
           DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2, // the customer's orders' tickets
           DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem6 // the customer's orders' items
           );
       
       CheckObjectRelationRegistered (DomainObjectIDs.Order1, "Customer", DomainObjectIDs.Customer1);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.Order5);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
 
       CheckObjectRelationRegistered (DomainObjectIDs.Order1, "OrderTicket", DomainObjectIDs.OrderTicket1);
       CheckObjectRelationRegistered (DomainObjectIDs.OrderTicket1, "Order", DomainObjectIDs.Order1);
-      CheckObjectRelationRegistered (DomainObjectIDs.Order5, "OrderTicket", DomainObjectIDs.OrderTicket2);
-      CheckObjectRelationRegistered (DomainObjectIDs.OrderTicket2, "Order", DomainObjectIDs.Order5);
+      CheckObjectRelationRegistered (DomainObjectIDs.Order2, "OrderTicket", DomainObjectIDs.OrderTicket2);
+      CheckObjectRelationRegistered (DomainObjectIDs.OrderTicket2, "Order", DomainObjectIDs.Order2);
 
       CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
       CheckObjectRelationRegistered (DomainObjectIDs.OrderItem1, "Order", DomainObjectIDs.Order1);
       CheckObjectRelationRegistered (DomainObjectIDs.OrderItem2, "Order", DomainObjectIDs.Order1);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Order5, "OrderItems", false, DomainObjectIDs.OrderItem6);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order2, "OrderItems", false, DomainObjectIDs.OrderItem6);
     }
 
     [Test]
@@ -285,8 +285,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.Customer1);
 
-      CheckDataContainersRegistered (DomainObjectIDs.Customer1, DomainObjectIDs.Order1, DomainObjectIDs.Order5);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", false, DomainObjectIDs.Order1, DomainObjectIDs.Order5);
+      CheckDataContainersRegistered (DomainObjectIDs.Customer1, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", false, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
     }
 
     [Test]

@@ -469,7 +469,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Order deletedOwningObject;
       using (_delegatingData.GetAssociatedEndPoint().ClientTransaction.EnterNonDiscardingScope())
       {
-        deletedOwningObject = DomainObjectIDs.Order4.GetObject<Order> ();
+        deletedOwningObject = DomainObjectIDs.Order5.GetObject<Order> ();
       }
 
       var endPointStub = CreateCollectionEndPointStub (TestableClientTransaction, deletedOwningObject);

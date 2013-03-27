@@ -34,8 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           where (from c in QueryFactory.CreateLinqQuery<Customer>() select c).Contains (o.Customer)
           select o;
 
-      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-                        DomainObjectIDs.Order5, DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItems);
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5,
+                        DomainObjectIDs.Order2, DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]
@@ -56,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           where (from c in QueryFactory.CreateLinqQuery<OrderTicket>() select c.Order).Contains (o)
           select o;
 
-      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-                        DomainObjectIDs.Order5, DomainObjectIDs.OrderWithoutOrderItems);
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5,
+                        DomainObjectIDs.Order2, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]
@@ -174,10 +174,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (
           query, 
           DomainObjectIDs.Order1, 
-          DomainObjectIDs.Order2, 
-          DomainObjectIDs.Order3,
+          DomainObjectIDs.Order3, 
           DomainObjectIDs.Order4,
-          DomainObjectIDs.Order5);
+          DomainObjectIDs.Order5,
+          DomainObjectIDs.Order2);
     }
 
     [Test]
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckOrderedQueryResult (
           query,
           DomainObjectIDs.Order1,
-          DomainObjectIDs.Order5);
+          DomainObjectIDs.Order2);
   }
 
     [Test]
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckOrderedQueryResult (
           query,
           DomainObjectIDs.Order1,
-          DomainObjectIDs.Order5);
+          DomainObjectIDs.Order2);
     }
 
     [Test]

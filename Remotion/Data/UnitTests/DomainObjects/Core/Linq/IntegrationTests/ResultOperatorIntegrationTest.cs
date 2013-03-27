@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void QueryWithTake ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>() orderby o.OrderNumber select o).Take (3);
-      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order5);
+      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order2);
     }
 
     [Test]
@@ -247,13 +247,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithContainsInWhere_OnCollection ()
     {
-      var possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 };
+      var possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 };
       var orders =
           from o in QueryFactory.CreateLinqQuery<Order>()
           where possibleItems.Contains (o.ID)
           select o;
 
-      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order3);
     }
 
     [Test]
@@ -265,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
            where oi.Order == o
            select o).Distinct();
 
-      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5);
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5, DomainObjectIDs.Order2);
     }
 
     [Test]
@@ -396,10 +396,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (
           query1,
-          DomainObjectIDs.Order2,
           DomainObjectIDs.Order3,
           DomainObjectIDs.Order4,
           DomainObjectIDs.Order5,
+          DomainObjectIDs.Order2,
           DomainObjectIDs.InvalidOrder,
           DomainObjectIDs.OrderWithoutOrderItems);
 
@@ -544,8 +544,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
            where (from s2 in QueryFactory.CreateLinqQuery<Order> () select s2.OrderNumber).Sum () == 120
            select o);
 
-      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-        DomainObjectIDs.Order5, DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItems);
+      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order5,
+        DomainObjectIDs.Order2, DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItems);
     }
 
     [Test]
@@ -567,7 +567,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>() orderby o.OrderNumber select o).Skip (3).Take (2);
 
-      CheckQueryResult (query, DomainObjectIDs.Order3, DomainObjectIDs.Order4);
+      CheckQueryResult (query, DomainObjectIDs.Order4, DomainObjectIDs.Order5);
     }
 
     [Test]
