@@ -50,8 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
       _participant = new DomainObjectParticipant (_typeDefinitionProviderMock, _interceptedPropertyFinderMock);
 
-      _typeAssemblyContext = new TypeAssemblyContext (typeof (Order), new MutableTypeFactory(), new Dictionary<string, object>());
-      _proxyType = _typeAssemblyContext.ProxyType;
+      _proxyType = MutableTypeObjectMother.Create (typeof (Order));
+      _typeAssemblyContext = new TypeAssemblyContext (typeof (Order), _proxyType, new MutableTypeFactory(), new Dictionary<string, object>());
     }
 
     [Test]

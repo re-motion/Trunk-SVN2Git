@@ -100,11 +100,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
     public void Participate (ITypeAssemblyContext typeAssemblyContext)
     {
       ArgumentUtility.CheckNotNull ("typeAssemblyContext", typeAssemblyContext);
-      var proxyType = typeAssemblyContext.ProxyType;
-      Assertion.IsTrue (typeof (DomainObject).IsTypePipeAssignableFrom (proxyType));
+      Assertion.IsTrue (typeof (DomainObject).IsTypePipeAssignableFrom (typeAssemblyContext.ProxyType.BaseType));
 
       // TODO 5370: This will change when TypePipe is integrated with re-mix.
-      var concreteBaseType = proxyType.BaseType;
+      var proxyType = typeAssemblyContext.ProxyType;
+      var concreteBaseType = typeAssemblyContext.RequestedType;
       var domainObjectType = _typeDefinitionProvider.GetPublicDomainObjectType (concreteBaseType);
 
       // Add marker interface.
