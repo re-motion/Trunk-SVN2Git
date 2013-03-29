@@ -1255,10 +1255,7 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\SelectIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\SubQueryIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\WhereIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\TestDomain\IndustrialSector.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student.cs" />
-    <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail.cs" />
-    <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail_Detail.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\DbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\TestableDbCommandBuilder.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetchQueryCollectionTest.cs" />
