@@ -18,9 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.ConcreteInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.SingleInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -63,21 +61,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void AccessingMixinProperties_OfDerivedClass ()
     {
+      SetDatabaseModifyable();
+
+      var singleInheritanceFirstDerivedClass1 = SingleInheritanceFirstDerivedClass.NewObject ();
+      ((ISingleInheritancePersistentMixin) singleInheritanceFirstDerivedClass1).PersistentProperty = "value 1";
+      var singleInheritanceFirstDerivedClass2 = SingleInheritanceFirstDerivedClass.NewObject ();
+      ((ISingleInheritancePersistentMixin) singleInheritanceFirstDerivedClass2).PersistentProperty = "value 2";
+
+      var singleInheritanceSecondDerivedClass1 = SingleInheritanceSecondDerivedClass.NewObject ();
+      ((ISingleInheritancePersistentMixin) singleInheritanceSecondDerivedClass1).PersistentProperty = "value 1";
+      var singleInheritanceSecondDerivedClass2 = SingleInheritanceSecondDerivedClass.NewObject ();
+      ((ISingleInheritancePersistentMixin) singleInheritanceSecondDerivedClass2).PersistentProperty = "value 2";
+
+      ClientTransaction.Current.Commit();
+
       var queryWithSingleTableInheritance =
           from obj in QueryFactory.CreateLinqQuery<SingleInheritanceBaseClass> ()
           where
               (obj is SingleInheritanceFirstDerivedClass || obj is SingleInheritanceSecondDerivedClass) 
-                  && (((ISingleInheritancePersistentMixin) obj).PersistentProperty == "dummy")
+                  && (((ISingleInheritancePersistentMixin) obj).PersistentProperty == "value 1")
           select obj;
-      CheckQueryResult (queryWithSingleTableInheritance);
+      CheckQueryResult (queryWithSingleTableInheritance, singleInheritanceFirstDerivedClass1.ID, singleInheritanceSecondDerivedClass1.ID);
+
+      var concreteInheritanceFirstDerivedClass1 = ConcreteInheritanceFirstDerivedClass.NewObject ();
+      ((IConcreteInheritancePersistentMixin) concreteInheritanceFirstDerivedClass1).PersistentProperty = "value 1";
+      var concreteInheritanceFirstDerivedClass2 = ConcreteInheritanceFirstDerivedClass.NewObject ();
+      ((IConcreteInheritancePersistentMixin) concreteInheritanceFirstDerivedClass2).PersistentProperty = "value 2";
+
+      var concreteInheritanceSecondDerivedClass1 = ConcreteInheritanceSecondDerivedClass.NewObject ();
+      ((IConcreteInheritancePersistentMixin) concreteInheritanceSecondDerivedClass1).PersistentProperty = "value 1";
+      var concreteInheritanceSecondDerivedClass2 = ConcreteInheritanceSecondDerivedClass.NewObject ();
+      ((IConcreteInheritancePersistentMixin) concreteInheritanceSecondDerivedClass2).PersistentProperty = "value 2";
+
+      ClientTransaction.Current.Commit ();
 
       var queryWithConcreteTableInheritance =
           from obj in QueryFactory.CreateLinqQuery<ConcreteInheritanceBaseClass> ()
           where
               (obj is ConcreteInheritanceFirstDerivedClass || obj is ConcreteInheritanceSecondDerivedClass)
-              && (((IConcreteInheritancePersistentMixin) obj).PersistentProperty == "dummy")
+              && (((IConcreteInheritancePersistentMixin) obj).PersistentProperty == "value 1")
           select obj;
-      CheckQueryResult (queryWithConcreteTableInheritance);
+      CheckQueryResult (queryWithConcreteTableInheritance, concreteInheritanceFirstDerivedClass1.ID, concreteInheritanceSecondDerivedClass1.ID);
     }
  }
 }
