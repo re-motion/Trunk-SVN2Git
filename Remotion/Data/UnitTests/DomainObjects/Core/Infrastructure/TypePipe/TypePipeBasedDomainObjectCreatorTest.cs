@@ -24,7 +24,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Rhino.Mocks;
 
@@ -44,7 +43,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       base.SetUp();
 
       _transaction = ClientTransaction.CreateRootTransaction();
-      _interceptedDomainObjectCreator = new TypePipeBasedDomainObjectCreator (SafeServiceLocator.Current.GetInstance<IObjectFactory>());
+      // TODO 5500: Refactor to be unit test.
+      var domainObjectParticipant = new DomainObjectParticipant(new TypeDefinitionProvider(), new InterceptedPropertyCollectorAdapter());
+      var objectFactory = Pipeline.Create ("TypePipeBasedDomainObjectCreatorTest", domainObjectParticipant);
+      _interceptedDomainObjectCreator = new TypePipeBasedDomainObjectCreator (objectFactory);
 
       _order1InitializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, _transaction);
 
