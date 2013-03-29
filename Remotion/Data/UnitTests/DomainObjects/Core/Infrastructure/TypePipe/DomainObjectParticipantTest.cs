@@ -28,6 +28,7 @@ using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.Implementation;
 using Rhino.Mocks;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 {
@@ -58,18 +59,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     public void PartialCacheKeyProvider ()
     {
       var cacheKeyProvider = _participant.PartialCacheKeyProvider;
-      // Retrieving the property does not cause any calls to the mock objects.
 
-      var requestedType = ReflectionObjectMother.GetSomeType();
-      var fakePublicDomainType = ReflectionObjectMother.GetSomeOtherType();
-      var fakeClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition();
-      _typeDefinitionProviderMock.Expect (mock => mock.GetPublicDomainObjectType (requestedType)).Return (fakePublicDomainType);
-      _typeDefinitionProviderMock.Expect (mock => mock.GetTypeDefinition (fakePublicDomainType)).Return (fakeClassDefinition);
-
-      var result = cacheKeyProvider.GetCacheKey (requestedType);
-
-      _typeDefinitionProviderMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (fakeClassDefinition));
+      Assert.That (cacheKeyProvider, Is.TypeOf<DomainObjectParticipantCacheKeyProvider>());
+      Assert.That (cacheKeyProvider.As<DomainObjectParticipantCacheKeyProvider>().TypeDefinitionProvider, Is.SameAs (_typeDefinitionProviderMock));
     }
 
     [Test]

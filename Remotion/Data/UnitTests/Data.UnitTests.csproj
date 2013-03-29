@@ -219,6 +219,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectInititalizationContextScopeTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectReferenceInitializationContextTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataPendingRegistrationCollectorTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\DomainObjectParticipantCacheKeyProviderTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectAssociatedTransactionHierarchyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\EagerFetching\EagerFetchingWithInvalidMandatoryRelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Loading\CanceledLoadOperationTest.cs" />

@@ -47,27 +47,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// </remarks>
   public class DomainObjectParticipant : IParticipant
   {
-    private class CacheKeyProvider : ICacheKeyProvider
-    {
-      private readonly ITypeDefinitionProvider _typeDefinitionProvider;
-
-      public CacheKeyProvider (ITypeDefinitionProvider typeDefinitionProvider)
-      {
-        _typeDefinitionProvider = typeDefinitionProvider;
-      }
-
-      public object GetCacheKey (Type requestedType)
-      {
-        ArgumentUtility.CheckNotNull ("requestedType", requestedType);
-
-        // TODO 5370: This will change when TypePipe is integrated with re-mix.
-        var domainObjectType = _typeDefinitionProvider.GetPublicDomainObjectType (requestedType);
-        var classDefinition = _typeDefinitionProvider.GetTypeDefinition (domainObjectType);
-
-        return classDefinition;
-      }
-    }
-
     private static readonly MethodInfo s_getPublicDomainObjectTypeImplementation = GetInfrastructureHook ("GetPublicDomainObjectTypeImplementation");
     private static readonly MethodInfo s_performConstructorCheck = GetInfrastructureHook ("PerformConstructorCheck");
 
@@ -94,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
 
     public ICacheKeyProvider PartialCacheKeyProvider
     {
-      get { return new CacheKeyProvider (_typeDefinitionProvider); }
+      get { return new DomainObjectParticipantCacheKeyProvider (_typeDefinitionProvider); }
     }
 
     public void Participate (ITypeAssemblyContext typeAssemblyContext)
