@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
@@ -118,8 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var property = typeof (Customer).GetProperty ("Orders");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, property, JoinCardinality.Many);
-      var leftEndPoint = MappingConfiguration.Current.GetTypeDefinition (typeof (Customer))
-          .GetMandatoryRelationEndPointDefinition (property.DeclaringType.FullName + "." + property.Name);
+      var leftEndPoint = GetEndPointDefinition (property);
 
       _storageSpecificExpressionResolverStub
           .Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, leftEndPoint.GetOppositeEndPointDefinition(), "t0"))
@@ -140,11 +140,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
       var memberInfo = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
-      var leftEndPoint = MappingConfiguration.Current.GetTypeDefinition (typeof (TargetClassForPersistentMixin))
-          .GetMandatoryRelationEndPointDefinition (typeof (MixinAddingPersistentProperties).FullName + "." + memberInfo.Name);
+      var leftEndPoint = GetEndPointDefinition (typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties), memberInfo.Name);
 
       _storageSpecificExpressionResolverStub
           .Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, leftEndPoint.GetOppositeEndPointDefinition(), "t0"))
+          .Return (_fakeJoinInfo);
+
+      var result = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
+
+      Assert.That (result, Is.SameAs (_fakeJoinInfo));
+    }
+
+    [Test]
+    public void ResolveJoinInfo_WithDerivedClassRelationProperty ()
+    {
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Company),
+          "m",
+          null,
+          new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
+      var memberInfo = typeof (Customer).GetProperty ("Orders");
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.Many);
+      var leftEndPoint = GetEndPointDefinition (memberInfo);
+
+      _storageSpecificExpressionResolverStub
+          .Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, leftEndPoint.GetOppositeEndPointDefinition (), "t0"))
           .Return (_fakeJoinInfo);
 
       var result = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
@@ -221,9 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var property = typeof (Order).GetProperty ("OrderNumber");
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var propertyDefinition =
-          MappingConfiguration.Current.GetClassDefinition ("Order").GetMandatoryPropertyDefinition (
-              property.DeclaringType.FullName + "." + property.Name);
+      var propertyDefinition = GetPropertyDefinition (property);
 
       _storageSpecificExpressionResolverStub
           .Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition))
@@ -240,9 +258,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var property = typeof (StorageGroupClass).GetProperty ("AboveInheritanceIdentifier");
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (StorageGroupClass), "s", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var propertyDefinition =
-          MappingConfiguration.Current.GetClassDefinition ("StorageGroupClass").GetMandatoryPropertyDefinition (
-              property.DeclaringType.FullName + "." + property.Name);
+      var propertyDefinition = GetPropertyDefinition (typeof (StorageGroupClass), property.DeclaringType, property.Name);
+
+      _storageSpecificExpressionResolverStub
+          .Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition))
+          .Return (_fakeColumnDefinitionExpression);
+
+      var result = _resolver.ResolveMemberExpression (entityExpression, property);
+
+      Assert.That (result, Is.SameAs (_fakeColumnDefinitionExpression));
+    }
+
+    [Test]
+    public void ResolveMemberExpression_PropertyFromDerivedClass ()
+    {
+      var property = typeof (Customer).GetProperty ("Type");
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Company), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var propertyDefinition = GetPropertyDefinition (property);
 
       _storageSpecificExpressionResolverStub
           .Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition))
@@ -458,6 +491,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
       var starColumn = new SqlColumnDefinitionExpression (classType, "o", "*", false);
       return new SqlEntityDefinitionExpression (classType, "o", null, primaryKeyColumn, starColumn);
+    }
+
+    private PropertyDefinition GetPropertyDefinition (PropertyInfo property)
+    {
+      return GetPropertyDefinition (property.DeclaringType, property.Name);
+    }
+
+    private IRelationEndPointDefinition GetEndPointDefinition (PropertyInfo property)
+    {
+      return GetEndPointDefinition (property.DeclaringType, property.Name);
     }
   }
 }

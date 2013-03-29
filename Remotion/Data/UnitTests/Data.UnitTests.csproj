@@ -259,6 +259,9 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\ReadOnlyTransactionsTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\LoadEventsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\RelationReadEventsTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\IntegrationTests\UpcastIntegrationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DomainObjects\DomainObjectHandleConverterTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\ImplementingAccessorInterceptorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\InterceptedPropertyCollectorAdapterTest.cs" />

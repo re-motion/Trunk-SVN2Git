@@ -15,18 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Linq;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.Utilities;
 using Remotion.Reflection;
+using Remotion.Utilities;
+using ArgumentUtility = Remotion.Linq.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -61,13 +62,18 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var classDefinition = GetClassDefinition (joinInfo.OriginatingEntity.Type);
+      var property = GetMemberAsPropertyInfo (joinInfo.OriginatingEntity, joinInfo.MemberInfo);
+      var entityClassDefinition = GetClassDefinition (joinInfo.OriginatingEntity.Type);
 
-      var property = joinInfo.MemberInfo as PropertyInfo;
-      var leftEndPointDefinition = property != null ? classDefinition.ResolveRelationEndPoint (PropertyInfoAdapter.Create(property)) : null;
+      var propertyInfoAdapter = PropertyInfoAdapter.Create (property);
+      var allClassDefinitions = new[] { entityClassDefinition }.Concat (entityClassDefinition.GetAllDerivedClasses ());
+      var leftEndPointDefinition = allClassDefinitions
+          .Select (cd => cd.ResolveRelationEndPoint (propertyInfoAdapter))
+          .FirstOrDefault (e => e != null);
 
       if (leftEndPointDefinition == null)
       {
+        Assertion.IsNotNull (joinInfo.MemberInfo.DeclaringType);
         string message =
             string.Format ("The member '{0}.{1}' does not identify a relation.", joinInfo.MemberInfo.DeclaringType.Name, joinInfo.MemberInfo.Name);
         throw new UnmappedItemException (message);
@@ -94,35 +100,27 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      var property = memberInfo as PropertyInfo;
-      if (property == null)
-      {
-        throw new UnmappedItemException (
-            string.Format (
-                "Field '{0}.{1}' cannot be used in a query because it is not a mapped member.",
-                originatingEntity.Type.Name,
-                memberInfo.Name));
-      }
-
-      var classDefinition = GetClassDefinition (originatingEntity.Type);
+      var property = GetMemberAsPropertyInfo (originatingEntity, memberInfo);
+      var entityClassDefinition = GetClassDefinition (originatingEntity.Type);
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
-        return _storageSpecificExpressionResolver.ResolveIDColumn (originatingEntity, classDefinition);
+        return _storageSpecificExpressionResolver.ResolveIDColumn (originatingEntity, entityClassDefinition);
 
-      var propertyInfoAdapter = PropertyInfoAdapter.Create(property);
-      var endPointDefinition = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter);
-      if (endPointDefinition != null)
-        return new SqlEntityRefMemberExpression (originatingEntity, property);
+      var propertyInfoAdapter = PropertyInfoAdapter.Create (property);
+      var allClassDefinitions = new[] { entityClassDefinition }.Concat (entityClassDefinition.GetAllDerivedClasses ());
+      var resolvedMember = allClassDefinitions
+          .Select (cd => ResolveMemberInClassDefinition (originatingEntity, propertyInfoAdapter, cd)).
+           FirstOrDefault (e => e != null);
 
-      var propertyDefinition = classDefinition.ResolveProperty (propertyInfoAdapter);
-      if (propertyDefinition == null)
+      if (resolvedMember == null)
       {
+        Assertion.IsNotNull (property.DeclaringType);
         string message = string.Format (
             "The member '{0}.{1}' does not have a queryable database mapping.", property.DeclaringType.Name, property.Name);
         throw new UnmappedItemException (message);
       }
 
-      return _storageSpecificExpressionResolver.ResolveColumn (originatingEntity, propertyDefinition);
+      return resolvedMember;
     }
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
@@ -144,13 +142,14 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
 
-      if (constantExpression.Value is DomainObject)
+      var domainObject = constantExpression.Value as DomainObject;
+      if (domainObject != null)
       {
-        var primaryKeyExpression = Expression.Constant (((DomainObject) constantExpression.Value).ID);
+        var primaryKeyExpression = Expression.Constant (domainObject.ID);
         return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, primaryKeyExpression);
       }
-      else
-        return constantExpression;
+      
+      return constantExpression;
     }
 
     public Expression ResolveTypeCheck (Expression checkedExpression, Type desiredType)
@@ -186,6 +185,34 @@ namespace Remotion.Data.DomainObjects.Linq
           type,
           t => new UnmappedItemException (string.Format ("The type '{0}' does not identify a queryable table.", t)));
       return classDefinition;
+    }
+
+    private static PropertyInfo GetMemberAsPropertyInfo (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
+    {
+      var property = memberInfo as PropertyInfo;
+      if (property == null)
+      {
+        throw new UnmappedItemException (
+            string.Format (
+                "Field '{0}.{1}' cannot be used in a query because it is not a mapped member.",
+                originatingEntity.Type.Name,
+                memberInfo.Name));
+      }
+      return property;
+    }
+
+    private Expression ResolveMemberInClassDefinition (
+        SqlEntityExpression originatingEntity, PropertyInfoAdapter propertyInfoAdapter, ClassDefinition classDefinition)
+    {
+      var endPointDefinition = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter);
+      if (endPointDefinition != null)
+        return new SqlEntityRefMemberExpression (originatingEntity, propertyInfoAdapter.PropertyInfo);
+
+      var propertyDefinition = classDefinition.ResolveProperty (propertyInfoAdapter);
+      if (propertyDefinition != null)
+        return _storageSpecificExpressionResolver.ResolveColumn (originatingEntity, propertyDefinition);
+
+      return null;
     }
   }
 }

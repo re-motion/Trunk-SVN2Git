@@ -216,6 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // IndustrialSector: IndustrialSector1
     // Ceo: Ceo3
     // Orders: Order1, Order2
+    // CustomerType: Standard
     public ObjectID Customer1
     {
       get { return CreateObjectID ("Customer", new Guid ("{55B52E75-514B-4e82-A91B-8F0BB59B80AD}")); }
@@ -224,6 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // IndustrialSector: IndustrialSector2
     // Ceo: Ceo4
     // Orders: -
+    // CustomerType: Premium
     public ObjectID Customer2
     {
       get { return CreateObjectID ("Customer", new Guid ("{F577F879-2DB4-4a3c-A18A-AFB4E57CE098}")); }
@@ -232,6 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // IndustrialSector: IndustrialSector2
     // Ceo: Ceo5
     // Orders: Order3
+    // CustomerType: Gold
     public ObjectID Customer3
     {
       get { return CreateObjectID ("Customer", new Guid ("{DD3E3D55-C16F-497f-A3E1-384D08DE0D66}")); }
@@ -241,6 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // IndustrialSector: -
     // Ceo: Ceo12
     // Orders: Order4, Order5
+    // CustomerType: Gold
     public ObjectID Customer4
     {
       get { return CreateObjectID ("Customer", new Guid ("{B3F0A333-EC2A-4ddd-9035-9ADA34052450}")); }
