@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       // TODO 5370: Use TypePipe serialization capabilities, after TypePipe is integrated with re-mix.
     }
 
-    public void RebuildState (LoadedTypeContext loadedTypeContext)
+    public void RebuildState (LoadedTypesContext loadedTypesContext)
     {
       // Do nothing.
     }
