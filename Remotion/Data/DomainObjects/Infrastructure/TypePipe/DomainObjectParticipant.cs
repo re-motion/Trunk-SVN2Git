@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Caching;
 using Remotion.TypePipe.CodeGeneration;
+using Remotion.TypePipe.Implementation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
@@ -98,6 +99,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
 
       // For now, serialization is not supported.
       // TODO 5370: Use TypePipe serialization capabilities, after TypePipe is integrated with re-mix.
+    }
+
+    public void RebuildState (LoadedTypeContext loadedTypeContext)
+    {
+      // Do nothing.
     }
 
     private void OverridePerformConstructorCheck (MutableType proxyType)

@@ -111,6 +111,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       accessorInterceptor.VerifyAllExpectations();
     }
 
+    [Test]
+    public void RebuildState ()
+    {
+      Assert.That (() => _participant.RebuildState (null), Throws.Nothing);
+    }
+
     private void StubGetPropertyInterceptors (Type publicDomainObjectType = null, params IAccessorInterceptor[] accessorInterceptors)
     {
       publicDomainObjectType = publicDomainObjectType ?? ReflectionObjectMother.GetSomeType();
