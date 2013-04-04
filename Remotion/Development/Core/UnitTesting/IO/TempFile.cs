@@ -45,9 +45,7 @@ namespace Remotion.Development.UnitTesting.IO
     {
       get
       {
-        //TODO: Use AssertNotDisposed once new DisposableBase is commited
-        if (Disposed)
-          throw new InvalidOperationException ("Object disposed.");
+        AssertNotDisposed();
         return _fileName;
       }
     }
