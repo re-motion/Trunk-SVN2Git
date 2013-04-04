@@ -32,9 +32,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
   [TestFixture]
   public class TypePipeBasedDomainObjectCreatorTest : StandardMappingTest
   {
-    private ClientTransaction _transaction;
     private TypePipeBasedDomainObjectCreator _interceptedDomainObjectCreator;
 
+    private ClientTransaction _transaction;
     private IObjectInitializationContext _order1InitializationContext;
     private IObjectInitializationContext _targetClassForPersistentMixinInitializationContext;
 
@@ -42,15 +42,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     {
       base.SetUp();
 
-      _transaction = ClientTransaction.CreateRootTransaction();
-      // TODO 5500: Refactor to be unit test.
       var domainObjectParticipant = new DomainObjectParticipant(new TypeDefinitionProvider(), new InterceptedPropertyCollectorAdapter());
       var objectFactory = Pipeline.Create ("TypePipeBasedDomainObjectCreatorTest", domainObjectParticipant);
       _interceptedDomainObjectCreator = new TypePipeBasedDomainObjectCreator (objectFactory);
 
+      _transaction = ClientTransaction.CreateRootTransaction();
       _order1InitializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, _transaction);
-
-      var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid ());
+      var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid());
       _targetClassForPersistentMixinInitializationContext = CreateFakeInitializationContext (objectID, _transaction);
     }
 
