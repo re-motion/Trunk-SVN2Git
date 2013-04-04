@@ -51,14 +51,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       return classDefinition;
     }
 
-    public object RebuildCacheKey (Type generatedType)
+    public object RebuildCacheKey (Type generatedProxyType)
     {
-      ArgumentUtility.CheckNotNull ("generatedType", generatedType);
+      ArgumentUtility.CheckNotNull ("generatedProxyType", generatedProxyType);
 
       // TODO Review!
 
       // TODO 5370: This will (maybe??) change when TypePipe is integrated with re-mix.
-      var domainObjectType = _typeDefinitionProvider.GetPublicDomainObjectType (generatedType);
+      var domainObjectType = _typeDefinitionProvider.GetPublicDomainObjectType (generatedProxyType);
       var classDefinition = _typeDefinitionProvider.GetTypeDefinition (domainObjectType);
 
       return classDefinition;
