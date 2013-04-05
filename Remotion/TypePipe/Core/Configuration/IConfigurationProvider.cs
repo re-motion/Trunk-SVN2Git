@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,29 +14,26 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
-using System.Configuration;
 
 namespace Remotion.TypePipe.Configuration
 {
-  // TODO 5502: docs
-  public class TypePipeConfigurationProvider : ITypePipeConfigurationProvider
+  /// <summary>
+  /// Defines an interface for classes that provide configuration values.
+  /// </summary>
+  public interface IConfigurationProvider
   {
-    private readonly TypePipeConfigurationSection _section;
+    /// <summary>
+    /// If <see langword="true"/>, the pipeline signs all generated assemblies or throws an <see cref="InvalidOperationException"/> if that is not
+    /// possible.
+    /// </summary>
+    bool ForceStrongNaming { get; }
 
-    public TypePipeConfigurationProvider ()
-    {
-      _section = (TypePipeConfigurationSection) ConfigurationManager.GetSection ("typePipe") ?? new TypePipeConfigurationSection();
-    }
-
-    public bool ForceStrongNaming
-    {
-      get { return _section.ForceStrongNaming.ElementInformation.IsPresent; }
-    }
-
-    public string KeyFilePath
-    {
-      get { return _section.ForceStrongNaming.KeyFilePath; }
-    }
+    /// <summary>
+    /// When <see cref="ForceStrongNaming"/> is enabled, the key file (<c>*.snk</c>) denoted by this property is used to sign generated assemblies.
+    /// If this property is <see langword="null"/> a default key file is used instead.
+    /// </summary>
+    string KeyFilePath { get; }
   }
 }
