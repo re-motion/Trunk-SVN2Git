@@ -161,6 +161,22 @@ CREATE TABLE [dbo].[FirstClass]
   [ThirdClassID] uniqueidentifier NULL,
   CONSTRAINT [PK_FirstClass] PRIMARY KEY CLUSTERED ([ID])
 )
+CREATE TABLE [dbo].[MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTable]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+  [Property] int NOT NULL,
+  CONSTRAINT [PK_MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTable] PRIMARY KEY CLUSTERED ([ID])
+)
+CREATE TABLE [dbo].[MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTable]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+  [Property] int NULL,
+  CONSTRAINT [PK_MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTable] PRIMARY KEY CLUSTERED ([ID])
+)
 CREATE TABLE [dbo].[Order]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -347,6 +363,33 @@ CREATE VIEW [dbo].[FirstClassView] ([ID], [ClassID], [Timestamp], [SecondClassID
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [SecondClassID], [ThirdClassID]
     FROM [dbo].[FirstClass]
+  WITH CHECK OPTION
+GO
+CREATE VIEW [dbo].[MixinAddedTwiceWithDifferentNullability_LayerSupertypeView] ([ID], [ClassID], [Timestamp], [Property])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Property]
+    FROM [dbo].[MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTable]
+  UNION ALL
+  SELECT [ID], [ClassID], [Timestamp], [Property]
+    FROM [dbo].[MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTable]
+GO
+CREATE VIEW [dbo].[MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTableView] ([ID], [ClassID], [Timestamp], [Property])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Property]
+    FROM [dbo].[MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTable]
+  WITH CHECK OPTION
+GO
+CREATE VIEW [dbo].[MixinAddedTwiceWithDifferentNullability_TargetClassBelowDBTableView] ([ID], [ClassID], [Timestamp], [Property])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Property]
+    FROM [dbo].[MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTable]
+    WHERE [ClassID] IN ('MixinAddedTwiceWithDifferentNullability_TargetClassBelowDBTable')
+  WITH CHECK OPTION
+GO
+CREATE VIEW [dbo].[MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTableView] ([ID], [ClassID], [Timestamp], [Property])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Property]
+    FROM [dbo].[MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTable]
   WITH CHECK OPTION
 GO
 CREATE VIEW [dbo].[OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])

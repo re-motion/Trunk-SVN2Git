@@ -40,6 +40,14 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'EmployeeVi
   DROP VIEW [dbo].[EmployeeView]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'FirstClassView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[FirstClassView]
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'MixinAddedTwiceWithDifferentNullability_LayerSupertypeView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[MixinAddedTwiceWithDifferentNullability_LayerSupertypeView]
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTableView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTableView]
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'MixinAddedTwiceWithDifferentNullability_TargetClassBelowDBTableView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[MixinAddedTwiceWithDifferentNullability_TargetClassBelowDBTableView]
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTableView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTableView]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[OrderView]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderItemView' AND TABLE_SCHEMA = 'dbo')
@@ -96,6 +104,10 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Employee'
   DROP TABLE [dbo].[Employee]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'FirstClass' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[FirstClass]
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTable' AND TABLE_SCHEMA = 'dbo')
+  DROP TABLE [dbo].[MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTable]
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTable' AND TABLE_SCHEMA = 'dbo')
+  DROP TABLE [dbo].[MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTable]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Order' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[Order]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'OrderItem' AND TABLE_SCHEMA = 'dbo')

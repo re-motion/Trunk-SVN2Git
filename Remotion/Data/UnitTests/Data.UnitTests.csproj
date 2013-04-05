@@ -263,6 +263,11 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\UpcastIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\BaseClassWithDBTable.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\TargetClassBelowDBTable.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\LayerSupertype.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\PersistentMixinAddedTwice.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\TargetClassWithDBTable.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleConverterTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\ImplementingAccessorInterceptorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\InterceptedPropertyCollectorAdapterTest.cs" />
@@ -652,8 +657,8 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\InheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ThirdStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Model\SqlSecondaryXmlIndexDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ScriptGeneratorDatabaseIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ScriptGeneratorIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\ScriptGeneratorDatabaseIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\ScriptGeneratorIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Sql2005\TestableSqlStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InlineRdbmsStorageEntityDefinitionVisitorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\RelationLookupCommandFactoryTest.cs" />
@@ -2065,15 +2070,15 @@
     <None Include="DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_FirstStorageProvider.sql" />
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_FirstStorageProviderWithoutTables.sql" />
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_SecondStorageProvider.sql" />
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SchemaGeneration_CreateDB.sql" />
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_ThirdStorageProvider.sql" />
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\TearDownDB_FirstStorageProviderWithoutTables.sql" />
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\TearDownDB_FirstStorageProvider.sql" />
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\TearDownDB_SecondStorageProvider.sql" />
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\TearDownDB_ThirdStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\SetupDB_FirstStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\SetupDB_FirstStorageProviderWithoutTables.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\SetupDB_SecondStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\SchemaGeneration_CreateDB.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\SetupDB_ThirdStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\TearDownDB_FirstStorageProviderWithoutTables.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\TearDownDB_FirstStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\TearDownDB_SecondStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\TearDownDB_ThirdStorageProvider.sql" />
     <Content Include="DomainObjects\Core\QueriesForStorageGroupTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
