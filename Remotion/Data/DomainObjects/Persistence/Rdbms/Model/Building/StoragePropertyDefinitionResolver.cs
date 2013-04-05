@@ -74,9 +74,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         // places within an inheritance hierarchy. In that case, we now need to choose one of those. We can assume that all storage properties 
         // are equivalent (same storage property type, equivalent columns, etc.). The only difference could be that non-nullable properties might be 
         // nullable due to mapping constraints. (See ValueStoragePropertyDefinitionFactory.MustBeNullable.)
-        // TODO 5511: Choosing the first one works for now because the nullability of properties resulting from such a property group with different 
-        // TODO 5511: inheritance requirements is not evaluated. But it would be better to generate a "combined" property.
-        // TODO 5511: Therefore, add an IRdbmsStoragePropertyDefinition.CombineEquivalent method that combines multiple storage properties into a single one.
+        // TODO 5512: Choosing the first one works for now because the nullability of properties resulting from such a property group with different 
+        // TODO 5512: inheritance requirements is not evaluated. But it would be better to generate a "combined" property.
+        // TODO 5512: Therefore, add an IRdbmsStoragePropertyDefinition.CombineEquivalent method that combines multiple storage properties into a single one.
 
         return storagePropertyGroup.First();
       }
