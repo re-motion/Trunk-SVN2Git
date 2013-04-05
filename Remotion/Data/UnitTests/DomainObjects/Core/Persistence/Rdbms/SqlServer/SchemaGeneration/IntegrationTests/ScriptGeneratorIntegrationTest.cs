@@ -69,15 +69,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO 5511")]
     public void GetScriptForFirstStorageProvider ()
     {
       var scripts = _standardScriptGenerator.GetScripts (MappingConfiguration.GetTypeDefinitions ())
           .Single (s => s.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition);
-
-      Console.WriteLine (scripts.SetUpScript);
-      Console.WriteLine ("--------------------");
-      Console.WriteLine (scripts.TearDownScript);
 
       Assert.That (scripts.SetUpScript, Is.EqualTo (_firstStorageProviderSetupDBScript));
       Assert.That (scripts.TearDownScript, Is.EqualTo (_firstStorageProviderTearDownDBScript));

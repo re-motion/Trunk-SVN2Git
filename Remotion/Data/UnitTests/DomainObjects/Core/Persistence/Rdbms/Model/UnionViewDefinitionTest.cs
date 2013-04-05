@@ -176,6 +176,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void CalculateFullColumnList_MatchesByNameRatherThanIdentity ()
+    {
+      var availableColumns = new[] { ColumnDefinitionObjectMother.CreateColumn (_property3.ColumnDefinition.Name) };
+
+      var result = _unionViewDefinition.CalculateFullColumnList (availableColumns).ToArray ();
+
+      Assert.That (result.Length, Is.EqualTo (6));
+      Assert.That (result[0], Is.Null);
+      Assert.That (result[1], Is.Null);
+      Assert.That (result[2], Is.Null);
+      Assert.That (result[3], Is.Null);
+      Assert.That (result[4], Is.Null);
+      Assert.That (result[5], Is.SameAs (availableColumns[0]));
+    }
+
+    [Test]
+    public void CalculateFullColumnList_DuplicateNames_FirstIsUsed ()
+    {
+      var availableColumns =
+          new[]
+          {
+              ColumnDefinitionObjectMother.CreateColumn (_property3.ColumnDefinition.Name),
+              ColumnDefinitionObjectMother.CreateColumn (_property3.ColumnDefinition.Name)
+          };
+
+      var result = _unionViewDefinition.CalculateFullColumnList (availableColumns).ToArray ();
+
+      Assert.That (result.Length, Is.EqualTo (6));
+      Assert.That (result[0], Is.Null);
+      Assert.That (result[1], Is.Null);
+      Assert.That (result[2], Is.Null);
+      Assert.That (result[3], Is.Null);
+      Assert.That (result[4], Is.Null);
+      Assert.That (result[5], Is.SameAs (availableColumns[0]));
+    }
+
+    [Test]
     public void CalculateFullColumnList_OneColumnNotFound ()
     {
       var unionViewDefinition = new UnionViewDefinition (

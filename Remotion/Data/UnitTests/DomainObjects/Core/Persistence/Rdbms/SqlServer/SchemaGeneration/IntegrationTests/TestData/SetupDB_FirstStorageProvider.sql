@@ -166,7 +166,7 @@ CREATE TABLE [dbo].[MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTable
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-  [Property] int NOT NULL,
+  [Property] int NULL,
   CONSTRAINT [PK_MixinAddedTwiceWithDifferentNullability_BaseClassWithDBTable] PRIMARY KEY CLUSTERED ([ID])
 )
 CREATE TABLE [dbo].[MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTable]
@@ -174,7 +174,7 @@ CREATE TABLE [dbo].[MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTab
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-  [Property] int NULL,
+  [Property] int NOT NULL,
   CONSTRAINT [PK_MixinAddedTwiceWithDifferentNullability_TargetClassWithDBTable] PRIMARY KEY CLUSTERED ([ID])
 )
 CREATE TABLE [dbo].[Order]

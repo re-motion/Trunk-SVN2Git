@@ -125,8 +125,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     {
       Assert.That (ordinalProvider, Is.TypeOf (typeof (DictionaryBasedColumnOrdinalProvider)));
       Assert.That (((DictionaryBasedColumnOrdinalProvider) ordinalProvider).Ordinals.Count, Is.EqualTo (2));
-      Assert.That (((DictionaryBasedColumnOrdinalProvider) ordinalProvider).Ordinals[_column1], Is.EqualTo (0));
-      Assert.That (((DictionaryBasedColumnOrdinalProvider) ordinalProvider).Ordinals[_column2], Is.EqualTo (1));
+      Assert.That (((DictionaryBasedColumnOrdinalProvider) ordinalProvider).Ordinals[_column1.Name], Is.EqualTo (0));
+      Assert.That (((DictionaryBasedColumnOrdinalProvider) ordinalProvider).Ordinals[_column2.Name], Is.EqualTo (1));
     }
   }
 }

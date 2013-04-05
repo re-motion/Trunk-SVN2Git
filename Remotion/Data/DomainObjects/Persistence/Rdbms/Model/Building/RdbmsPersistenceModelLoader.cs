@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.FunctionalProgramming;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
@@ -88,9 +87,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var allClassDefinitions = new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses());
+      ClassDefinition[] derivedClasses = classDefinition.GetAllDerivedClasses();
+      var allClassDefinitions = new[] { classDefinition }.Concat (derivedClasses);
+
+      // ReSharper disable PossibleMultipleEnumeration - multiple enumeration is okay here.
       EnsureAllStoragePropertiesCreated (allClassDefinitions);
       EnsureAllStorageEntitiesCreated (allClassDefinitions);
+      // ReSharper restore PossibleMultipleEnumeration
     }
 
     private void EnsureAllStorageEntitiesCreated (IEnumerable<ClassDefinition> classDefinitions)
@@ -120,27 +123,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     private void EnsureAllStoragePropertiesCreated (IEnumerable<ClassDefinition> classDefinitions)
     {
-      // The context is used to storage the PropertyInfo -> StorageProperty association. That way, if two PropertyDefinitions within an inheritance 
-      // hierarchy have the same PropertyInfo (currently only because of mixins), they will get the same storage property.
-      var storagePropertyContext = new Dictionary<IPropertyInformation, IRdbmsStoragePropertyDefinition> ();
       foreach (var classDefinition in classDefinitions)
-        EnsureStoragePropertiesCreated (classDefinition, storagePropertyContext);
+        EnsureStoragePropertiesCreated (classDefinition);
     }
 
-    private void EnsureStoragePropertiesCreated (
-        ClassDefinition classDefinition, 
-        Dictionary<IPropertyInformation, IRdbmsStoragePropertyDefinition> storagePropertyContext)
+    private void EnsureStoragePropertiesCreated (ClassDefinition classDefinition)
     {
       foreach (var propertyDefinition in classDefinition.MyPropertyDefinitions.Where (pd => pd.StorageClass == StorageClass.Persistent))
       {
         if (propertyDefinition.StoragePropertyDefinition == null)
         {
-          IRdbmsStoragePropertyDefinition storagePropertyDefinition;
-          if (!storagePropertyContext.TryGetValue (propertyDefinition.PropertyInfo, out storagePropertyDefinition))
-          {
-            storagePropertyDefinition = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
-            storagePropertyContext.Add (propertyDefinition.PropertyInfo, storagePropertyDefinition);
-          }
+          var storagePropertyDefinition = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
           propertyDefinition.SetStorageProperty (storagePropertyDefinition);
         }
         else if (!(propertyDefinition.StoragePropertyDefinition is IRdbmsStoragePropertyDefinition))

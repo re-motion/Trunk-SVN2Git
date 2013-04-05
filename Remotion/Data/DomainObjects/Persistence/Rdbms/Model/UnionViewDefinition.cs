@@ -79,9 +79,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);
 
-      var availableColumnsAsDictionary = availableColumns.ToDictionary (c => c);
-
-      return GetAllColumns().Select (columnDefinition => availableColumnsAsDictionary.GetValueOrDefault (columnDefinition)).ToArray();
+      // Since validation hasn't run yet, we can't be sure that all column names are unique. Therefore, choose the first column with matching name.
+      var availableColumnsAsDictionary = availableColumns.ToLookup (c => c.Name);
+      return GetAllColumns().Select (columnDefinition => availableColumnsAsDictionary[columnDefinition.Name].FirstOrDefault()).ToArray();
     }
 
     // Always returns at least one table

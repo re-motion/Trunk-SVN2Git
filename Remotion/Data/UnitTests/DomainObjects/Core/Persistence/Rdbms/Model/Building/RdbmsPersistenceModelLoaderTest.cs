@@ -260,49 +260,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_testModel.DerivedDerivedClassDefinition);
     }
-
-    [Test]
-    public void ApplyPersistenceModelToHierarchy_ReusesStoragePropertiesWithinHierarchy_WhenTwoPropertiesHaveTheSamePropertyInfo ()
-    {
-      var baseClass = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (BaseClass), baseClass: null);
-      var derivedClass1 = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Table1Class), baseClass: baseClass);
-      var derivedClass2 = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Table2Class), baseClass: baseClass);
-      baseClass.SetDerivedClasses (new[] { derivedClass1, derivedClass2 });
-      derivedClass1.SetDerivedClasses (new ClassDefinition[0]);
-      derivedClass2.SetDerivedClasses (new ClassDefinition[0]);
-
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (baseClass)).Return (null);
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (derivedClass1)).Return (new EntityNameDefinition(null, "Table1"));
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (derivedClass2)).Return (new EntityNameDefinition(null, "Table2"));
-
-      // In reality, this would be the PropertyInfo of some mixin that's applied to both subclasses
-      baseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      var propertyInformation = MockRepository.GenerateStub<IPropertyInformation>();
-      var propertyInClass1 = RdbmsPersistenceModelLoaderTestHelper.CreateAndAddPropertyDefinition (derivedClass1, "PropertyInClass1", propertyInformation);
-      var propertyInClass2 = RdbmsPersistenceModelLoaderTestHelper.CreateAndAddPropertyDefinition (derivedClass2, "PropertyInClass2", propertyInformation);
-
-      _dataStoragePropertyDefinitionFactoryMock
-          .Expect (mock => mock.CreateStoragePropertyDefinition (propertyInClass1))
-          .Return (_fakeColumnDefinition1);
-      _dataStoragePropertyDefinitionFactoryMock.Replay();
-
-      _entityDefinitionFactoryMock
-          .Expect (mock => mock.CreateUnionViewDefinition (Arg.Is (baseClass), Arg<IEnumerable<IRdbmsStorageEntityDefinition>>.Is.Anything))
-          .Return (_fakeEntityDefinitionBase);
-      _entityDefinitionFactoryMock
-          .Expect (mock => mock.CreateTableDefinition (derivedClass1))
-          .Return (_fakeEntityDefinitionTable1);
-      _entityDefinitionFactoryMock
-          .Expect (mock => mock.CreateTableDefinition (derivedClass2))
-          .Return (_fakeEntityDefinitionTable2);
-      _entityDefinitionFactoryMock.Replay();
-
-      _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (baseClass);
-
-      _dataStoragePropertyDefinitionFactoryMock.VerifyAllExpectations();
-      _entityDefinitionFactoryMock.VerifyAllExpectations();
-
-      Assert.That (propertyInClass1.StoragePropertyDefinition, Is.SameAs (propertyInClass2.StoragePropertyDefinition));
-    }
   }
 }

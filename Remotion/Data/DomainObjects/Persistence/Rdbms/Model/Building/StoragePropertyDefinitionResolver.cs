@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
@@ -52,13 +53,33 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           .Concat (classDefinition.GetAllDerivedClasses ());
 
       var storageProperties =
-          (from cd in allClassesInHierarchy
-           from PropertyDefinition pd in cd.MyPropertyDefinitions
-           where pd.StorageClass == StorageClass.Persistent
-           select _persistenceModelProvider.GetStoragePropertyDefinition (pd))
-           .Distinct ();
+          from cd in allClassesInHierarchy
+          from PropertyDefinition pd in cd.MyPropertyDefinitions
+          where pd.StorageClass == StorageClass.Persistent
+          group _persistenceModelProvider.GetStoragePropertyDefinition (pd) by pd.PropertyInfo into storagePropertyGroup
+          select Unify (storagePropertyGroup);
 
       return storageProperties;
+    }
+
+    private IRdbmsStoragePropertyDefinition Unify (IGrouping<IPropertyInformation, IRdbmsStoragePropertyDefinition> storagePropertyGroup)
+    {
+      var numberOfStorageProperties = storagePropertyGroup.Count();
+      Assertion.IsTrue (numberOfStorageProperties > 0);
+      if (numberOfStorageProperties == 1)
+        return storagePropertyGroup.Single();
+      else
+      {
+        // It is possible to have multiple StoragePropertyDefinitions for the same C# property when a mixin adds the same property to different
+        // places within an inheritance hierarchy. In that case, we now need to choose one of those. We can assume that all storage properties 
+        // are equivalent (same storage property type, equivalent columns, etc.). The only difference could be that non-nullable properties might be 
+        // nullable due to mapping constraints. (See ValueStoragePropertyDefinitionFactory.MustBeNullable.)
+        // TODO 5511: Choosing the first one works for now because the nullability of properties resulting from such a property group with different 
+        // TODO 5511: inheritance requirements is not evaluated. But it would be better to generate a "combined" property.
+        // TODO 5511: Therefore, add an IRdbmsStoragePropertyDefinition.CombineEquivalent method that combines multiple storage properties into a single one.
+
+        return storagePropertyGroup.First();
+      }
     }
   }
 }

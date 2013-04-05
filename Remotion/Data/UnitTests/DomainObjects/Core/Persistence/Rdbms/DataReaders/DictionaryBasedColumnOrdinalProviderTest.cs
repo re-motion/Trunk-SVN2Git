@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     private ColumnDefinition _columnDefinition;
     private DictionaryBasedColumnOrdinalProvider _dictionaryBasedColumnOrdinalProvider;
     private IDataReader _dataReaderStub;
-    private Dictionary<ColumnDefinition, int> _ordinals;
+    private Dictionary<string, int> _ordinals;
 
     [SetUp]
     public void SetUp ()
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("Testcolumn 1");
       var columnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("Testcolumn 2");
       _dataReaderStub = MockRepository.GenerateStub<IDataReader> ();
-      _ordinals = new Dictionary<ColumnDefinition, int> { { _columnDefinition, 5 }, { columnDefinition2, 3} };
+      _ordinals = new Dictionary<string, int> { { _columnDefinition.Name, 5 }, { columnDefinition2.Name, 3} };
       _dictionaryBasedColumnOrdinalProvider = new DictionaryBasedColumnOrdinalProvider (_ordinals);
     }
 
@@ -48,6 +48,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     public void GetOrdinal ()
     {
       var result = _dictionaryBasedColumnOrdinalProvider.GetOrdinal (_columnDefinition, _dataReaderStub);
+
+      Assert.That (result, Is.EqualTo (5));
+    }
+
+    [Test]
+    public void GetOrdinal_DifferentColumnOfSameName ()
+    {
+      var columnDefinition = ColumnDefinitionObjectMother.CreateColumn (_columnDefinition.Name);
+      var result = _dictionaryBasedColumnOrdinalProvider.GetOrdinal (columnDefinition, _dataReaderStub);
 
       Assert.That (result, Is.EqualTo (5));
     }

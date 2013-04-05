@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 
     private IColumnOrdinalProvider CreateOrdinalProviderForKnownProjection (IEnumerable<ColumnDefinition> selectedColumns)
     {
-      var columnOrdinalsDictionary = selectedColumns.Select ((column, index) => new { column, index }).ToDictionary (t => t.column, t => t.index);
+      var columnOrdinalsDictionary = selectedColumns.Select ((column, index) => new { column, index }).ToDictionary (t => t.column.Name, t => t.index);
       return new DictionaryBasedColumnOrdinalProvider (columnOrdinalsDictionary);
     }
   }

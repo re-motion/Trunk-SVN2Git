@@ -30,16 +30,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
   /// </summary>
   public class DictionaryBasedColumnOrdinalProvider : IColumnOrdinalProvider
   {
-    private readonly IDictionary<ColumnDefinition, int> _ordinals;
+    private readonly IDictionary<string, int> _ordinals;
 
-    public DictionaryBasedColumnOrdinalProvider (IDictionary<ColumnDefinition, int> ordinals)
+    public DictionaryBasedColumnOrdinalProvider (IDictionary<string, int> ordinals)
     {
       ArgumentUtility.CheckNotNull ("ordinals", ordinals);
 
       _ordinals = ordinals;
     }
 
-    public IDictionary<ColumnDefinition, int> Ordinals
+    public IDictionary<string, int> Ordinals
     {
       get { return _ordinals; }
     }
@@ -50,13 +50,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       int index;
-      if (_ordinals.TryGetValue (columnDefinition, out index))
+      if (_ordinals.TryGetValue (columnDefinition.Name, out index))
         return index;
 
       var message = string.Format (
           "The column '{0}' is not included in the query result and is not expected for this operation. The included and expected columns are: {1}.",
           columnDefinition.Name,
-          SeparatedStringBuilder.Build (", ", _ordinals.OrderBy (o => o.Value).Select (o => o.Key.Name)));
+          SeparatedStringBuilder.Build (", ", _ordinals.OrderBy (o => o.Value).Select (o => o.Key)));
       throw new RdbmsProviderException (message);
     }
   }
