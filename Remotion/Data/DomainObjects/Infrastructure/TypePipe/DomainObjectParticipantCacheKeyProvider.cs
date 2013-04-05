@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
     {
       ArgumentUtility.CheckNotNull ("generatedProxyType", generatedProxyType);
 
-      // TODO Review!
+      // TODO Review2!
 
       // TODO 5370: This will (maybe??) change when TypePipe is integrated with re-mix.
       var domainObjectType = _typeDefinitionProvider.GetPublicDomainObjectType (generatedProxyType);
