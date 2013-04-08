@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
       _storageTypeInformationStrictMock = MockRepository.GenerateStrictMock<IStorageTypeInformation>();
-      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn (_storageTypeInformationStrictMock);
+      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn (storageTypeInformation: _storageTypeInformationStrictMock);
 
       _columnValueReader = new ColumnValueReader (_dataReaderStub, _columnOrdinalProviderStub);
     }

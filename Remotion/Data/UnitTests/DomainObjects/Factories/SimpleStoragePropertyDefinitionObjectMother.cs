@@ -30,14 +30,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     public static readonly SimpleStoragePropertyDefinition TimestampProperty =
         new SimpleStoragePropertyDefinition (typeof (object), ColumnDefinitionObjectMother.TimestampColumn);
 
-    public static SimpleStoragePropertyDefinition CreateStorageProperty ()
+    public static SimpleStoragePropertyDefinition CreateStorageProperty (string columnName = null, ColumnDefinition column = null)
     {
-      return new SimpleStoragePropertyDefinition (typeof (object), ColumnDefinitionObjectMother.CreateColumn ());
-    }
-
-    public static SimpleStoragePropertyDefinition CreateStorageProperty (string columnName)
-    {
-      return new SimpleStoragePropertyDefinition (typeof (object), ColumnDefinitionObjectMother.CreateColumn (columnName));
+      return new SimpleStoragePropertyDefinition (typeof (object), column ?? ColumnDefinitionObjectMother.CreateColumn (columnName));
     }
   }
 }

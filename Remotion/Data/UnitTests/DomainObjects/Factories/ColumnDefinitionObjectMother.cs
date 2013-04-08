@@ -30,19 +30,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     public static readonly ColumnDefinition TimestampColumn =
         new ColumnDefinition ("Timestamp", StorageTypeInformationObjectMother.CreateDateTimeStorageTypeInformation (true), false);
 
-    public static ColumnDefinition CreateColumn ()
+    public static ColumnDefinition CreateColumn (string columnName = null, IStorageTypeInformation storageTypeInformation = null, bool isPartOfPrimaryKey = false)
     {
-      return new ColumnDefinition (GetUniqueColumnName(), StorageTypeInformationObjectMother.CreateStorageTypeInformation(), false);
-    }
-
-    public static ColumnDefinition CreateColumn (string columnName)
-    {
-      return new ColumnDefinition (columnName, StorageTypeInformationObjectMother.CreateStorageTypeInformation(), false);
-    }
-
-    public static ColumnDefinition CreateColumn (IStorageTypeInformation storageTypeInformation)
-    {
-      return new ColumnDefinition (GetUniqueColumnName(), storageTypeInformation, false);
+      return new ColumnDefinition (
+          columnName ?? GetUniqueColumnName(),
+          storageTypeInformation ?? StorageTypeInformationObjectMother.CreateStorageTypeInformation(),
+          isPartOfPrimaryKey);
     }
 
     private static string GetUniqueColumnName ()
