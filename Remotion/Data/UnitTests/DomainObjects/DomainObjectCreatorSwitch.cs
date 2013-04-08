@@ -30,13 +30,13 @@ namespace Remotion.Data.UnitTests.DomainObjects
   {
     public static bool UseLegacyCodeGeneration { get; set; }
 
-    private static IObjectFactory CreateObjectFactory ()
+    private static IPipeline CreateObjectFactory ()
     {
       var typeDefinitionProvider = new TypeDefinitionProvider();
       var interceptedPropertyCollectorAdapter = new InterceptedPropertyCollectorAdapter();
       var domainObjectParticipant = (IParticipant) new DomainObjectParticipant (typeDefinitionProvider, interceptedPropertyCollectorAdapter);
 
-      return Pipeline.Create ("restore integration tests", domainObjectParticipant);
+      return PipelineFactory.Create ("restore integration tests", domainObjectParticipant);
     }
 
     private readonly InterceptedDomainObjectCreator _legacyCreator = InterceptedDomainObjectCreator.Instance;

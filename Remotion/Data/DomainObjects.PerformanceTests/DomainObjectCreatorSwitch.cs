@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     private readonly InterceptedDomainObjectCreator _legacyCreator = InterceptedDomainObjectCreator.Instance;
     private readonly TypePipeBasedDomainObjectCreator _typePipeCreator =
-        new TypePipeBasedDomainObjectCreator (SafeServiceLocator.Current.GetInstance<IObjectFactory>());
+        new TypePipeBasedDomainObjectCreator (SafeServiceLocator.Current.GetInstance<IPipeline>());
 
     public DomainObject CreateObjectReference (IObjectInitializationContext objectInitializationContext, ClientTransaction clientTransaction)
     {

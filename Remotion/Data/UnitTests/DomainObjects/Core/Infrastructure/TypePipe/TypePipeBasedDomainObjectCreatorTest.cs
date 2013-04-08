@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       base.SetUp();
 
       var domainObjectParticipant = new DomainObjectParticipant(new TypeDefinitionProvider(), new InterceptedPropertyCollectorAdapter());
-      var objectFactory = Pipeline.Create ("TypePipeBasedDomainObjectCreatorTest", domainObjectParticipant);
+      var objectFactory = PipelineFactory.Create ("TypePipeBasedDomainObjectCreatorTest", domainObjectParticipant);
       _interceptedDomainObjectCreator = new TypePipeBasedDomainObjectCreator (objectFactory);
 
       _transaction = ClientTransaction.CreateRootTransaction();
