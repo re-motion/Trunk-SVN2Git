@@ -55,7 +55,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
     {
       ArgumentUtility.CheckNotNull ("generatedProxyType", generatedProxyType);
 
-      // TODO Review2!
+      // TODO Review:
+      // Add requested type to RebuildCachKey.
+      // Call GetCacheKey here!
 
       // TODO 5370: This will (maybe??) change when TypePipe is integrated with re-mix.
       var domainObjectType = _typeDefinitionProvider.GetPublicDomainObjectType (generatedProxyType);
