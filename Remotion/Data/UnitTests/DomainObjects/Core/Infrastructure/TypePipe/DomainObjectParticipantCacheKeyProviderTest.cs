@@ -56,13 +56,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     [Test]
     public void RebuildCacheKey ()
     {
-      var generatedType = ReflectionObjectMother.GetSomeType();
+      var requestedType = ReflectionObjectMother.GetSomeType();
+      var assembledType = ReflectionObjectMother.GetSomeOtherType();
       var fakePublicDomainType = ReflectionObjectMother.GetSomeOtherType();
       var fakeClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition();
-      _typeDefinitionProviderMock.Expect (mock => mock.GetPublicDomainObjectType (generatedType)).Return (fakePublicDomainType);
+      _typeDefinitionProviderMock.Expect (mock => mock.GetPublicDomainObjectType (requestedType)).Return (fakePublicDomainType);
       _typeDefinitionProviderMock.Expect (mock => mock.GetTypeDefinition (fakePublicDomainType)).Return (fakeClassDefinition);
 
-      var result = _provider.RebuildCacheKey (generatedType);
+      var result = _provider.RebuildCacheKey (requestedType, assembledType);
 
       _typeDefinitionProviderMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (fakeClassDefinition));
