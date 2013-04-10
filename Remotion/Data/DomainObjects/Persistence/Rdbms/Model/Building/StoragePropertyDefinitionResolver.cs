@@ -71,14 +71,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       else
       {
         // It is possible to have multiple StoragePropertyDefinitions for the same C# property when a mixin adds the same property to different
-        // places within an inheritance hierarchy. In that case, we now need to choose one of those. We can assume that all storage properties 
-        // are equivalent (same storage property type, equivalent columns, etc.). The only difference could be that non-nullable properties might be 
-        // nullable due to mapping constraints. (See ValueStoragePropertyDefinitionFactory.MustBeNullable.)
-        // TODO 5512: Choosing the first one works for now because the nullability of properties resulting from such a property group with different 
-        // TODO 5512: inheritance requirements is not evaluated. But it would be better to generate a "combined" property.
-        // TODO 5512: Therefore, add an IRdbmsStoragePropertyDefinition.CombineEquivalent method that combines multiple storage properties into a single one.
+        // places within an inheritance hierarchy. In that case, we need to combine those into a single property.
+        // We can assume that all storage properties are equivalent (same storage property type, equivalent columns, etc.). The only difference could 
+        // be that non-nullable properties might be nullable due to mapping constraints. (See ValueStoragePropertyDefinitionFactory.MustBeNullable.)
 
-        return storagePropertyGroup.First();
+        var first = storagePropertyGroup.First();
+        var rest = storagePropertyGroup.Skip (1);
+        try
+        {
+          return first.UnifyWithEquivalentProperties (rest);
+        }
+        catch (ArgumentException ex)
+        {
+          var message =
+              string.Format (
+                  "For property '{0}.{1}', storage properties with conflicting properties were created. This is not allowed, all storage properties "
+                  + "for a .NET property must be equivalent. This error indicates a bug in the IValueStoragePropertyDefinitionFactor implementation.",
+                  storagePropertyGroup.Key.DeclaringType,
+                  storagePropertyGroup.Key.Name);
+          throw new InvalidOperationException (message, ex);
+        }
       }
     }
   }

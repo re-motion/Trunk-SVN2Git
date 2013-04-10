@@ -167,5 +167,101 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (result, Is.EqualTo (new DateTime (2011, 5, 17)));
     }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_CombinesNestedProperties ()
+    {
+      var property1aMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition>();
+      var property1bMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition>();
+      var property1 = CreateDefinedCompoundStoragePropertyDefinition (property1aMock, property1bMock);
+
+      var property2aStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      var property2bStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      var property2 = CreateDefinedCompoundStoragePropertyDefinition (property2aStub, property2bStub);
+      
+      var property3aStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      var property3bStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      var property3 = CreateDefinedCompoundStoragePropertyDefinition (property3aStub, property3bStub);
+
+      var fakeUnifiedPropertyA = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      property1aMock
+          .Expect (
+              mock => mock.UnifyWithEquivalentProperties (
+                  Arg<IEnumerable<IRdbmsStoragePropertyDefinition>>.List.Equal (new[] { property2aStub, property3aStub })))
+          .Return (fakeUnifiedPropertyA);
+
+      var fakeUnifiedPropertyB = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      property1bMock
+          .Expect (
+              mock => mock.UnifyWithEquivalentProperties (
+                  Arg<IEnumerable<IRdbmsStoragePropertyDefinition>>.List.Equal (new[] { property2bStub, property3bStub })))
+          .Return (fakeUnifiedPropertyB);
+
+      var result = property1.UnifyWithEquivalentProperties (new[] { property2, property3 });
+
+      property1aMock.VerifyAllExpectations ();
+      property1bMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.TypeOf<CompoundStoragePropertyDefinition> ().With.Property ("PropertyType").SameAs (typeof (int)));
+      Assert.That (((CompoundStoragePropertyDefinition) result).ValueCombinator, Is.SameAs (property1.ValueCombinator));
+      Assert.That (((CompoundStoragePropertyDefinition) result).Properties, Has.Count.EqualTo (2));
+      Assert.That (((CompoundStoragePropertyDefinition) result).Properties[0].ValueAccessor, Is.SameAs (property1.Properties[0].ValueAccessor));
+      Assert.That (((CompoundStoragePropertyDefinition) result).Properties[0].StoragePropertyDefinition, Is.SameAs (fakeUnifiedPropertyA));
+      Assert.That (((CompoundStoragePropertyDefinition) result).Properties[1].ValueAccessor, Is.SameAs (property1.Properties[1].ValueAccessor));
+      Assert.That (((CompoundStoragePropertyDefinition) result).Properties[1].StoragePropertyDefinition, Is.SameAs (fakeUnifiedPropertyB));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentStoragePropertyType ()
+    {
+      var property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty();
+
+      Assert.That (
+          () => _compoundStoragePropertyDefinition.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has type 'CompoundStoragePropertyDefinition', and the given property has "
+              + "type 'SimpleStoragePropertyDefinition'.\r\nParameter name: equivalentProperties"));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentPropertyType ()
+    {
+      var property1 = new CompoundStoragePropertyDefinition (typeof (int), new[] { _monthProperty }, x => x);
+      var property2 = new CompoundStoragePropertyDefinition (typeof (string), new[] { _monthProperty }, x => x);
+
+      Assert.That (
+          () => property1.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has property type 'System.Int32', and the given property has "
+              + "property type 'System.String'.\r\nParameter name: equivalentProperties"));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentNumberOfNestedProperties ()
+    {
+      var property1 = new CompoundStoragePropertyDefinition (typeof (int), new[] { _monthProperty }, x => x);
+      var property2 = new CompoundStoragePropertyDefinition (typeof (int), new[] { _monthProperty, _dayProperty }, x => x);
+
+      Assert.That (
+          () => property1.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has nested property count '1', and the given property has "
+              + "nested property count '2'.\r\nParameter name: equivalentProperties"));
+    }
+
+    private static CompoundStoragePropertyDefinition CreateDefinedCompoundStoragePropertyDefinition (
+        IRdbmsStoragePropertyDefinition propertyA, IRdbmsStoragePropertyDefinition propertyB)
+    {
+      return new CompoundStoragePropertyDefinition (
+          typeof (int),
+          CreateNestedPropertyInfos (propertyA, propertyB), 
+          values => 7);
+    }
+
+    private static CompoundStoragePropertyDefinition.NestedPropertyInfo[] CreateNestedPropertyInfos (
+        params IRdbmsStoragePropertyDefinition[] properties)
+    {
+      return properties.Select (p => new CompoundStoragePropertyDefinition.NestedPropertyInfo (p, x => x)).ToArray();
+    }
   }
 }

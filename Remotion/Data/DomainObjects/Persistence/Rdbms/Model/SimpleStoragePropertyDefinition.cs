@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using System.Linq;
@@ -82,6 +83,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("columnValueProvider", columnValueProvider);
       return columnValueProvider.GetValueForColumn (_columnDefinition);
+    }
+
+    public IRdbmsStoragePropertyDefinition UnifyWithEquivalentProperties (IEnumerable<IRdbmsStoragePropertyDefinition> equivalentProperties)
+    {
+      ArgumentUtility.CheckNotNull ("equivalentProperties", equivalentProperties);
+      var checkedProperties = equivalentProperties.Select (property => StoragePropertyDefinitionUnificationUtility.CheckAndConvertEquivalentProperty (
+          this,
+          property,
+          "equivalentProperties",
+          prop => Tuple.Create<string, object> ("property type", prop.PropertyType),
+          prop => Tuple.Create<string, object> ("column name", prop.ColumnDefinition.Name),
+          prop => Tuple.Create<string, object> ("primary key flag", prop.ColumnDefinition.IsPartOfPrimaryKey)
+          )).ToArray ();
+
+      return new SimpleStoragePropertyDefinition (
+          _propertyType,
+          new ColumnDefinition (
+              _columnDefinition.Name,
+              _columnDefinition.StorageTypeInfo.UnifyForEquivalentProperties (checkedProperties.Select (p => p.ColumnDefinition.StorageTypeInfo)),
+              _columnDefinition.IsPartOfPrimaryKey));
     }
   }
 }

@@ -260,5 +260,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (result.ReferencingColumns, Is.EqualTo (new[] { _valueColumnDefinition }));
       Assert.That (result.ReferencedColumns, Is.EqualTo (new[] { referencedColumnDefinition }));
     }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_CombinesProperties ()
+    {
+      var valueProperty1Mock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition>();
+      var classIDProperty1Mock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition> ();
+      var property1 = new ObjectIDStoragePropertyDefinition (valueProperty1Mock, classIDProperty1Mock);
+
+      var valueProperty2Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      var classIDProperty2Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      var property2 = new ObjectIDStoragePropertyDefinition (valueProperty2Stub, classIDProperty2Stub);
+
+      var valueProperty3Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      var classIDProperty3Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      var property3 = new ObjectIDStoragePropertyDefinition (valueProperty3Stub, classIDProperty3Stub);
+
+      var fakeUnifiedValueProperty = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      valueProperty1Mock
+          .Expect (
+              mock => mock.UnifyWithEquivalentProperties (
+                  Arg<IEnumerable<IRdbmsStoragePropertyDefinition>>.List.Equal (new[] { valueProperty2Stub, valueProperty3Stub })))
+          .Return (fakeUnifiedValueProperty);
+      var fakeUnifiedClassIDProperty = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      classIDProperty1Mock
+          .Expect (
+              mock => mock.UnifyWithEquivalentProperties (
+                  Arg<IEnumerable<IRdbmsStoragePropertyDefinition>>.List.Equal (new[] { classIDProperty2Stub, classIDProperty3Stub })))
+          .Return (fakeUnifiedClassIDProperty);
+
+      var result = property1.UnifyWithEquivalentProperties (new[] { property2, property3 });
+
+      fakeUnifiedValueProperty.VerifyAllExpectations ();
+      fakeUnifiedClassIDProperty.VerifyAllExpectations ();
+
+      Assert.That (result, Is.TypeOf<ObjectIDStoragePropertyDefinition>());
+      Assert.That (((ObjectIDStoragePropertyDefinition) result).ValueProperty, Is.SameAs (fakeUnifiedValueProperty));
+      Assert.That (((ObjectIDStoragePropertyDefinition) result).ClassIDProperty, Is.SameAs (fakeUnifiedClassIDProperty));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentStoragePropertyType ()
+    {
+      var property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ();
+
+      Assert.That (
+          () => _objectIDStoragePropertyDefinition.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has type 'ObjectIDStoragePropertyDefinition', and the given property has "
+              + "type 'SimpleStoragePropertyDefinition'.\r\nParameter name: equivalentProperties"));
+    }
   }
 }

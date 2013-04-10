@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -24,22 +25,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class UnsupportedStoragePropertyDefinitionTest
   {
-    private UnsupportedStoragePropertyDefinition _columnDefinition;
+    private UnsupportedStoragePropertyDefinition _unsupportedStorageProperty;
     private Exception _innerException;
 
     [SetUp]
     public void SetUp ()
     {
       _innerException = new Exception ("Inner!");
-      _columnDefinition = new UnsupportedStoragePropertyDefinition (typeof (int), "Message", _innerException);
+      _unsupportedStorageProperty = new UnsupportedStoragePropertyDefinition (typeof (int), "Message", _innerException);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_columnDefinition.Message, Is.EqualTo ("Message"));
-      Assert.That (_columnDefinition.PropertyType, Is.SameAs (typeof (int)));
-      Assert.That (_columnDefinition.InnerException, Is.SameAs (_innerException));
+      Assert.That (_unsupportedStorageProperty.Message, Is.EqualTo ("Message"));
+      Assert.That (_unsupportedStorageProperty.PropertyType, Is.SameAs (typeof (int)));
+      Assert.That (_unsupportedStorageProperty.InnerException, Is.SameAs (_innerException));
     }
 
     [Test]
@@ -57,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumns ()
     {
       Assert.That (
-          () => _columnDefinition.GetColumns (),
+          () => _unsupportedStorageProperty.GetColumns (),
           Throws.TypeOf<NotSupportedException> ()
               .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
               .And.InnerException.SameAs (_innerException));
@@ -67,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumnsForComparison ()
     {
       Assert.That (
-          () => _columnDefinition.GetColumnsForComparison(), 
+          () => _unsupportedStorageProperty.GetColumnsForComparison(), 
           Throws.TypeOf<NotSupportedException>()
               .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
               .And.InnerException.SameAs (_innerException));
@@ -77,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SplitValue ()
     {
       Assert.That (
-          () => _columnDefinition.SplitValue (null),
+          () => _unsupportedStorageProperty.SplitValue (null),
           Throws.TypeOf<NotSupportedException> ()
               .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
               .And.InnerException.SameAs (_innerException));
@@ -87,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SplitValueForComparison ()
     {
       Assert.That (
-          () => { _columnDefinition.SplitValueForComparison (null); },
+          () => { _unsupportedStorageProperty.SplitValueForComparison (null); },
           Throws.TypeOf<NotSupportedException> ()
               .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
               .And.InnerException.SameAs (_innerException));
@@ -97,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SplitValuesForComparison ()
     {
       Assert.That (
-          () => _columnDefinition.SplitValuesForComparison (null),
+          () => _unsupportedStorageProperty.SplitValuesForComparison (null),
           Throws.TypeOf<NotSupportedException> ()
               .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
               .And.InnerException.SameAs (_innerException));
@@ -107,10 +108,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void CombineValue ()
     {
       Assert.That (
-          () => _columnDefinition.CombineValue (MockRepository.GenerateStub<IColumnValueProvider> ()),
+          () => _unsupportedStorageProperty.CombineValue (MockRepository.GenerateStub<IColumnValueProvider> ()),
           Throws.TypeOf<NotSupportedException> ()
               .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
               .And.InnerException.SameAs (_innerException));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_CombinesProperties ()
+    {
+      var property1 = new UnsupportedStoragePropertyDefinition (typeof (int), "x", new Exception());
+      var property2 = new UnsupportedStoragePropertyDefinition (typeof (int), "x", new Exception());
+      var property3 = new UnsupportedStoragePropertyDefinition (typeof (int), "x", new Exception());
+
+      var result = property1.UnifyWithEquivalentProperties (new[] { property2, property3 });
+
+      Assert.That (
+          result, Is.TypeOf<UnsupportedStoragePropertyDefinition>().With.Property ("PropertyType").SameAs (typeof (int)));
+      Assert.That (((UnsupportedStoragePropertyDefinition) result).Message, Is.EqualTo ("x"));
+      Assert.That (((UnsupportedStoragePropertyDefinition) result).InnerException, Is.SameAs (property1.InnerException));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentStoragePropertyType ()
+    {
+      var property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ();
+
+      Assert.That (
+          () => _unsupportedStorageProperty.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has type 'UnsupportedStoragePropertyDefinition', and the given property has "
+              + "type 'SimpleStoragePropertyDefinition'.\r\nParameter name: equivalentProperties"));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentPropertyType ()
+    {
+      var exception = new Exception();
+      var property1 = new UnsupportedStoragePropertyDefinition (typeof (int), "x", exception);
+      var property2 = new UnsupportedStoragePropertyDefinition (typeof (string), "x", exception);
+
+      Assert.That (
+          () => property1.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has property type 'System.Int32', and the given property has "
+              + "property type 'System.String'.\r\nParameter name: equivalentProperties"));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentMessage ()
+    {
+      var exception = new Exception ();
+      var property1 = new UnsupportedStoragePropertyDefinition (typeof (int), "x", exception);
+      var property2 = new UnsupportedStoragePropertyDefinition (typeof (int), "y", exception);
+      
+      Assert.That (
+          () => property1.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has message 'x', and the given property has "
+              + "message 'y'.\r\nParameter name: equivalentProperties"));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentExceptionType ()
+    {
+      var property1 = new UnsupportedStoragePropertyDefinition (typeof (int), "x", new InvalidOperationException());
+      var property2 = new UnsupportedStoragePropertyDefinition (typeof (int), "x", new ArgumentException());
+
+      Assert.That (
+          () => property1.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has inner exception type 'System.InvalidOperationException', and the "
+              + "given property has inner exception type 'System.ArgumentException'.\r\nParameter name: equivalentProperties"));
     }
   }
 }

@@ -19,6 +19,7 @@ using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Development.UnitTesting.ObjectMothers;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -112,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[]
           {
               new ColumnValueTable.Row (new[] { value1 }), 
-              new ColumnValueTable.Row (new[] { value2 }),
+              new ColumnValueTable.Row (new[] { value2 })
           });
       ColumnValueTableTestHelper.CheckTable (expectedTable, result);
     }
@@ -129,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[]
           {
               new ColumnValueTable.Row (new object[] { null }), 
-              new ColumnValueTable.Row (new[] { value2 }),
+              new ColumnValueTable.Row (new[] { value2 })
           });
       ColumnValueTableTestHelper.CheckTable (expectedTable, result);
     }
@@ -143,6 +144,87 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _storagePropertyDefinition.CombineValue (columnValueProviderStub);
 
       Assert.That (result, Is.EqualTo (12));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_CombinesPropertiesAndColumns ()
+    {
+      var isPartOfPrimaryKey = BooleanObjectMother.GetRandomBoolean();
+      var property1 = new SimpleStoragePropertyDefinition (
+          typeof (int),
+          ColumnDefinitionObjectMother.CreateColumn ("Col", CreateDefinedStorageTypeInformation (false), isPartOfPrimaryKey));
+      var property2 = new SimpleStoragePropertyDefinition (
+          typeof (int),
+          ColumnDefinitionObjectMother.CreateColumn ("Col", CreateDefinedStorageTypeInformation (false), isPartOfPrimaryKey));
+      var property3 = new SimpleStoragePropertyDefinition (
+          typeof (int),
+          ColumnDefinitionObjectMother.CreateColumn ("Col", CreateDefinedStorageTypeInformation (true), isPartOfPrimaryKey));
+
+      var result = property1.UnifyWithEquivalentProperties (new[] { property2, property3 });
+
+      Assert.That (result, Is.TypeOf<SimpleStoragePropertyDefinition> ().With.Property ("PropertyType").SameAs (typeof (int)));
+      Assert.That (((SimpleStoragePropertyDefinition) result).ColumnDefinition.Name, Is.EqualTo ("Col"));
+      Assert.That (((SimpleStoragePropertyDefinition) result).ColumnDefinition.StorageTypeInfo.IsStorageTypeNullable, Is.True);
+      Assert.That (((SimpleStoragePropertyDefinition) result).ColumnDefinition.IsPartOfPrimaryKey, Is.EqualTo (isPartOfPrimaryKey));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentStoragePropertyType ()
+    {
+      var property2 = CompoundStoragePropertyDefinitionObjectMother.CreateWithTwoProperties();
+
+      Assert.That (
+          () => _storagePropertyDefinition.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has type 'SimpleStoragePropertyDefinition', and the given property has "
+              + "type 'CompoundStoragePropertyDefinition'.\r\nParameter name: equivalentProperties"));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentPropertyType ()
+    {
+      var columnDefinition = ColumnDefinitionObjectMother.CreateColumn();
+      var property1 = new SimpleStoragePropertyDefinition (typeof (int), columnDefinition);
+      var property2 = new SimpleStoragePropertyDefinition (typeof (string), columnDefinition);
+
+      Assert.That (
+          () => property1.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has property type 'System.Int32', and the given property has "
+              + "property type 'System.String'.\r\nParameter name: equivalentProperties"));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentColumnName ()
+    {
+      var storageTypeInformation = StorageTypeInformationObjectMother.CreateStorageTypeInformation();
+      var property1 = new SimpleStoragePropertyDefinition (typeof (int), ColumnDefinitionObjectMother.CreateColumn ("Foo", storageTypeInformation, true));
+      var property2 = new SimpleStoragePropertyDefinition (typeof (int), ColumnDefinitionObjectMother.CreateColumn ("Bar", storageTypeInformation, true));
+
+      Assert.That (
+          () => property1.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has column name 'Foo', and the given property has "
+              + "column name 'Bar'.\r\nParameter name: equivalentProperties"));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentPrimaryKeyFlag ()
+    {
+      var storageTypeInformation = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
+      var property1 = new SimpleStoragePropertyDefinition (typeof (int), ColumnDefinitionObjectMother.CreateColumn ("Col", storageTypeInformation, true));
+      var property2 = new SimpleStoragePropertyDefinition (typeof (int), ColumnDefinitionObjectMother.CreateColumn ("Col", storageTypeInformation, false));
+
+      Assert.That (
+          () => property1.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has primary key flag 'True', and the given property has "
+              + "primary key flag 'False'.\r\nParameter name: equivalentProperties"));
+    }
+
+    private static StorageTypeInformation CreateDefinedStorageTypeInformation (bool isStorageTypeNullable = false)
+    {
+      return StorageTypeInformationObjectMother.CreateStorageTypeInformation (isStorageTypeNullable: isStorageTypeNullable);
     }
   }
 }

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
@@ -26,6 +27,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     public static StorageTypeInformation CreateStorageTypeInformation ()
     {
       return CreateVarchar100StorageTypeInformation (false);
+    }
+
+    public static StorageTypeInformation CreateStorageTypeInformation (
+        Type storageType = null,
+        string storageTypeName = null,
+        DbType? storageDbType = null,
+        bool? isStorageTypeNullable = null,
+        Type dotNetType = null,
+        TypeConverter dotNetTypeConverter = null)
+    {
+      return new StorageTypeInformation (
+          storageType ?? typeof (string),
+          storageTypeName ?? "nvarchar(max)",
+          storageDbType ?? DbType.String,
+          isStorageTypeNullable ?? true,
+          dotNetType ?? typeof (string),
+          dotNetTypeConverter ?? new DefaultConverter (typeof (string)));
     }
 
     public static StorageTypeInformation CreateUniqueIdentifierStorageTypeInformation (bool isNullable)

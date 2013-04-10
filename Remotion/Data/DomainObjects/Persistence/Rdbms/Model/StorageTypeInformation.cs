@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using Remotion.Collections;
 using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -139,5 +142,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return DotNetTypeConverter.ConvertFrom (storageValue);
     }
 
+    public IStorageTypeInformation UnifyForEquivalentProperties (IEnumerable<IStorageTypeInformation> equivalentStorageTypes)
+    {
+      ArgumentUtility.CheckNotNull ("equivalentStorageTypes", equivalentStorageTypes);
+      var castStorageTypes =
+          equivalentStorageTypes.Select (
+              equivalentInfo =>
+              StoragePropertyDefinitionUnificationUtility.CheckAndConvertEquivalentProperty (
+                  this,
+                  equivalentInfo,
+                  "equivalentStorageTypes",
+                  info => Tuple.Create<string, object> ("storage type", info.StorageType),
+                  info => Tuple.Create<string, object> ("storage type name", info.StorageTypeName),
+                  info => Tuple.Create<string, object> ("storage DbType", info.StorageDbType),
+                  info => Tuple.Create<string, object> (".NET type", info.DotNetType),
+                  info => Tuple.Create<string, object> (".NET type converter type", info.DotNetTypeConverter.GetType())));
+
+      return new StorageTypeInformation (
+          _storageType,
+          _storageTypeName,
+          _storageDbType,
+          castStorageTypes.Any (x => x._isStorageTypeNullable) || _isStorageTypeNullable,
+          _dotNetType,
+          _dotNetTypeConverter);
+    }
   }
 }

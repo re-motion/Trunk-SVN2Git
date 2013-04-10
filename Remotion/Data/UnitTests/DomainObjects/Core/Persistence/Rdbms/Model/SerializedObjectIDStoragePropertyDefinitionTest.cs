@@ -187,6 +187,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void UnifyWithEquivalentProperties_CombinesProperties ()
+    {
+      var serializedIDProperty1Mock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition> ();
+      var property1 = new SerializedObjectIDStoragePropertyDefinition (serializedIDProperty1Mock);
+
+      var serializedIDProperty2Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      var property2 = new SerializedObjectIDStoragePropertyDefinition (serializedIDProperty2Stub);
+
+      var serializedIDProperty3Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      var property3 = new SerializedObjectIDStoragePropertyDefinition (serializedIDProperty3Stub);
+
+      var fakeUnifiedSerializedIDProperty = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      serializedIDProperty1Mock
+          .Expect (
+              mock => mock.UnifyWithEquivalentProperties (
+                  Arg<IEnumerable<IRdbmsStoragePropertyDefinition>>.List.Equal (new[] { serializedIDProperty2Stub, serializedIDProperty3Stub })))
+          .Return (fakeUnifiedSerializedIDProperty);
+
+      var result = property1.UnifyWithEquivalentProperties (new[] { property2, property3 });
+
+      fakeUnifiedSerializedIDProperty.VerifyAllExpectations ();
+
+      Assert.That (result, Is.TypeOf<SerializedObjectIDStoragePropertyDefinition> ());
+      Assert.That (((SerializedObjectIDStoragePropertyDefinition) result).SerializedIDProperty, Is.SameAs (fakeUnifiedSerializedIDProperty));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentStoragePropertyType ()
+    {
+      var property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ();
+
+      Assert.That (
+          () => _serializedObjectIDStoragePropertyDefinition.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has type 'SerializedObjectIDStoragePropertyDefinition', and the "
+              + "given property has type 'SimpleStoragePropertyDefinition'.\r\nParameter name: equivalentProperties"));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "String-serialized ObjectID values cannot be used as foreign keys.")]
     public void CreateForeignKeyConstraint ()
     {

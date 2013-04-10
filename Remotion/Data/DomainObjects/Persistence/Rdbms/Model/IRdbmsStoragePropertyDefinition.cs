@@ -34,5 +34,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     IEnumerable<ColumnValue> SplitValueForComparison (object value);
     ColumnValueTable SplitValuesForComparison (IEnumerable<object> values);
     object CombineValue (IColumnValueProvider columnValueProvider);
+    IRdbmsStoragePropertyDefinition UnifyWithEquivalentProperties (IEnumerable<IRdbmsStoragePropertyDefinition> equivalentProperties);
   }
 }

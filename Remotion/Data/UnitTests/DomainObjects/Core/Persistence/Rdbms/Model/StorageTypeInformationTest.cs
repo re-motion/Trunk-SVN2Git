@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -183,6 +185,158 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       dataReaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo ("converted null value"));
+    }
+
+    [Test]
+    public void UnifyForEquivalentProperties_CombinesStorageTypes_AllNonNullable_CombinedIsAlsoNonNullable ()
+    {
+      var typeInfo1 = new StorageTypeInformation (typeof (string), "X", DbType.Int32, false, typeof (int), new DefaultConverter (typeof (string)));
+      var typeInfo2 = new StorageTypeInformation (typeof (string), "X", DbType.Int32, false, typeof (int), new DefaultConverter (typeof (string)));
+      var typeInfo3 = new StorageTypeInformation (typeof (string), "X", DbType.Int32, false, typeof (int), new DefaultConverter (typeof (string)));
+
+      var result = typeInfo1.UnifyForEquivalentProperties (new[] { typeInfo2, typeInfo3 });
+
+      Assert.That (result, Is.TypeOf<StorageTypeInformation> ());
+      Assert.That (((StorageTypeInformation) result).StorageType, Is.SameAs (typeof (string)));
+      Assert.That (((StorageTypeInformation) result).StorageTypeName, Is.EqualTo ("X"));
+      Assert.That (((StorageTypeInformation) result).StorageDbType, Is.EqualTo (DbType.Int32));
+      Assert.That (((StorageTypeInformation) result).IsStorageTypeNullable, Is.False);
+      Assert.That (((StorageTypeInformation) result).DotNetType, Is.SameAs (typeof (int)));
+      Assert.That (((StorageTypeInformation) result).DotNetTypeConverter, Is.SameAs (typeInfo1.DotNetTypeConverter));
+    }
+
+    [Test]
+    public void UnifyForEquivalentProperties_CombinesStorageTypes_SomeNullable_CombinedIsNullable ()
+    {
+      var typeInfo1 = new StorageTypeInformation (typeof (string), "X", DbType.Int32, false, typeof (int), new DefaultConverter (typeof (string)));
+      var typeInfo2 = new StorageTypeInformation (typeof (string), "X", DbType.Int32, false, typeof (int), new DefaultConverter (typeof (string)));
+      var typeInfo3 = new StorageTypeInformation (typeof (string), "X", DbType.Int32, true, typeof (int), new DefaultConverter (typeof (string)));
+
+      var result = typeInfo1.UnifyForEquivalentProperties (new[] { typeInfo2, typeInfo3 });
+
+      Assert.That (result, Is.TypeOf<StorageTypeInformation> ());
+      Assert.That (((StorageTypeInformation) result).IsStorageTypeNullable, Is.True);
+    }
+
+    [Test]
+    public void UnifyForEquivalentProperties_CombinesStorageTypes_FirstNullable_CombinedIsNullable ()
+    {
+      var typeInfo1 = new StorageTypeInformation (typeof (string), "X", DbType.Int32, true, typeof (int), new DefaultConverter (typeof (string)));
+      var typeInfo2 = new StorageTypeInformation (typeof (string), "X", DbType.Int32, false, typeof (int), new DefaultConverter (typeof (string)));
+      var typeInfo3 = new StorageTypeInformation (typeof (string), "X", DbType.Int32, false, typeof (int), new DefaultConverter (typeof (string)));
+
+      var result = typeInfo1.UnifyForEquivalentProperties (new[] { typeInfo2, typeInfo3 });
+
+      Assert.That (result, Is.TypeOf<StorageTypeInformation> ());
+      Assert.That (((StorageTypeInformation) result).IsStorageTypeNullable, Is.True);
+    }
+
+    [Test]
+    public void UnifyForEquivalentProperties_ThrowsForDifferentStorageTypeInfoType ()
+    {
+      var typeInfo2 = new FakeStorageTypeInformation ();
+      Assert.That (
+          () => _storageTypeInformation.UnifyForEquivalentProperties (new[] { typeInfo2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has type 'StorageTypeInformation', and the given property has "
+              + "type 'FakeStorageTypeInformation'.\r\nParameter name: equivalentStorageTypes"));
+    }
+
+    [Test]
+    public void UnifyForEquivalentProperties_ThrowsForDifferentStorageType ()
+    {
+      var typeInfo1 = new StorageTypeInformation (typeof (string), "X", DbType.Int32, true, typeof (string), new DefaultConverter (typeof (string)));
+      var typeInfo2 = new StorageTypeInformation (typeof (int), "X", DbType.Int32, true, typeof (string), new DefaultConverter (typeof (string)));
+      Assert.That (
+          () => typeInfo1.UnifyForEquivalentProperties (new[] { typeInfo2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has storage type 'System.String', and the given property has "
+              + "storage type 'System.Int32'.\r\nParameter name: equivalentStorageTypes"));
+    }
+
+    [Test]
+    public void UnifyForEquivalentProperties_ThrowsForDifferentStorageDbType ()
+    {
+      var typeInfo1 = new StorageTypeInformation (typeof (int), "X", DbType.String, true, typeof (string), new DefaultConverter (typeof (string)));
+      var typeInfo2 = new StorageTypeInformation (typeof (int), "X", DbType.Int32, true, typeof (string), new DefaultConverter (typeof (string)));
+      Assert.That (
+          () => typeInfo1.UnifyForEquivalentProperties (new[] { typeInfo2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has storage DbType 'String', and the given property has "
+              + "storage DbType 'Int32'.\r\nParameter name: equivalentStorageTypes"));
+    }
+
+    [Test]
+    public void UnifyForEquivalentProperties_ThrowsForDifferentDotNetType ()
+    {
+      var typeInfo1 = new StorageTypeInformation (typeof (int), "X", DbType.Int32, true, typeof (string), new DefaultConverter (typeof (string)));
+      var typeInfo2 = new StorageTypeInformation (typeof (int), "X", DbType.Int32, true, typeof (int), new DefaultConverter (typeof (string)));
+      Assert.That (
+          () => typeInfo1.UnifyForEquivalentProperties (new[] { typeInfo2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has .NET type 'System.String', and the given property has "
+              + ".NET type 'System.Int32'.\r\nParameter name: equivalentStorageTypes"));
+    }
+
+
+    [Test]
+    public void UnifyForEquivalentProperties_ThrowsForDifferentConverterType ()
+    {
+      var typeInfo1 = new StorageTypeInformation (typeof (int), "X", DbType.Int32, true, typeof (string), new DefaultConverter (typeof (string)));
+      var typeInfo2 = new StorageTypeInformation (typeof (int), "X", DbType.Int32, true, typeof (string), new AdvancedEnumConverter (typeof (DbType)));
+      Assert.That (
+          () => typeInfo1.UnifyForEquivalentProperties (new[] { typeInfo2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has .NET type converter type 'Remotion.Utilities.DefaultConverter', and "
+              + "the given property has .NET type converter type 'Remotion.Utilities.AdvancedEnumConverter'.\r\nParameter name: equivalentStorageTypes"));
+    }
+    
+    private class FakeStorageTypeInformation : IStorageTypeInformation
+    {
+      public Type StorageType
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public string StorageTypeName
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public bool IsStorageTypeNullable
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public Type DotNetType
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public IDbDataParameter CreateDataParameter (IDbCommand command, object value)
+      {
+        throw new NotImplementedException();
+      }
+
+      public object Read (IDataReader dataReader, int ordinal)
+      {
+        throw new NotImplementedException();
+      }
+
+      public object ConvertToStorageType (object dotNetValue)
+      {
+        throw new NotImplementedException();
+      }
+
+      public object ConvertFromStorageType (object storageValue)
+      {
+        throw new NotImplementedException();
+      }
+
+      public IStorageTypeInformation UnifyForEquivalentProperties (IEnumerable<IStorageTypeInformation> equivalentStorageTypes)
+      {
+        throw new NotImplementedException();
+      }
     }
   }
 }

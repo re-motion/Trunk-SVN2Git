@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -98,5 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     /// <returns>The converted value as it can be used in .NET code.</returns>
     /// <exception cref="NotSupportedException">The conversion cannot be performed.</exception>
     object ConvertFromStorageType (object storageValue);
+
+    IStorageTypeInformation UnifyForEquivalentProperties (IEnumerable<IStorageTypeInformation> equivalentStorageTypes);
   }
 }

@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Remotion.Collections;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -71,6 +73,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _propertyType; }
     }
 
+    public Func<object[], object> ValueCombinator
+    {
+      get { return _valueCombinator; }
+    }
+
+    public ReadOnlyCollection<NestedPropertyInfo> Properties
+    {
+      get { return Array.AsReadOnly (_properties); }
+    }
+
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       return _properties.SelectMany (p => p.StoragePropertyDefinition.GetColumns());
@@ -105,6 +117,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("columnValueProvider", columnValueProvider);
       var values = _properties.Select (p => p.StoragePropertyDefinition.CombineValue (columnValueProvider)).ToArray ();
       return _valueCombinator (values);
+    }
+
+    public IRdbmsStoragePropertyDefinition UnifyWithEquivalentProperties (IEnumerable<IRdbmsStoragePropertyDefinition> equivalentProperties)
+    {
+      ArgumentUtility.CheckNotNull ("equivalentProperties", equivalentProperties);
+      var checkedProperties = equivalentProperties.Select (property => StoragePropertyDefinitionUnificationUtility.CheckAndConvertEquivalentProperty (
+          this,
+          property,
+          "equivalentProperties",
+          prop => Tuple.Create<string, object> ("property type", prop.PropertyType),
+          prop => Tuple.Create<string, object> ("nested property count", prop._properties.Length)
+          )).ToArray ();
+
+      return new CompoundStoragePropertyDefinition (
+          _propertyType,
+          _properties.Select (
+              (p, i) =>
+              new NestedPropertyInfo (
+                  p.StoragePropertyDefinition.UnifyWithEquivalentProperties (
+                      checkedProperties.Select (other => other._properties[i].StoragePropertyDefinition)),
+                  p.ValueAccessor)),
+          _valueCombinator);
     }
   }
 }

@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -79,6 +81,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public object CombineValue (IColumnValueProvider columnValueProvider)
     {
       throw CreateNotSupportedException ();
+    }
+
+    public IRdbmsStoragePropertyDefinition UnifyWithEquivalentProperties (IEnumerable<IRdbmsStoragePropertyDefinition> equivalentProperties)
+    {
+      ArgumentUtility.CheckNotNull ("equivalentProperties", equivalentProperties);
+      equivalentProperties.Select (property => StoragePropertyDefinitionUnificationUtility.CheckAndConvertEquivalentProperty (
+          this,
+          property,
+          "equivalentProperties",
+          prop => Tuple.Create<string, object> ("property type", prop.PropertyType),
+          prop => Tuple.Create<string, object> ("message", prop.Message),
+          prop => Tuple.Create<string, object> ("inner exception type", prop.InnerException.GetType())
+          )).ToArray ();
+
+      return new UnsupportedStoragePropertyDefinition (_propertyType, _message, _innerException);
     }
 
     private NotSupportedException CreateNotSupportedException ()

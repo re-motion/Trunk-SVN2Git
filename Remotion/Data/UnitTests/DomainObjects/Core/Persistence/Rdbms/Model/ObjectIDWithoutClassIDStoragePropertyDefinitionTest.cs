@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 using Rhino.Mocks;
 
@@ -34,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ClassDefinition _classDefinition;
     private IRdbmsStoragePropertyDefinition _valuePropertyStub;
 
-    private ObjectIDWithoutClassIDStoragePropertyDefinition _objectIDWithoutClassIDStorageDefinition;
+    private ObjectIDWithoutClassIDStoragePropertyDefinition _objectIDWithoutClassIDStoragePropertyDefinition;
 
     private IColumnValueProvider _columnValueProviderStub;
     private IDbCommand _dbCommandStub;
@@ -50,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _valueColumnDefinition = ColumnDefinitionObjectMother.CreateColumn();
       _valuePropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
 
-      _objectIDWithoutClassIDStorageDefinition = new ObjectIDWithoutClassIDStoragePropertyDefinition (
+      _objectIDWithoutClassIDStoragePropertyDefinition = new ObjectIDWithoutClassIDStoragePropertyDefinition (
           _valuePropertyStub, _classDefinition);
 
       _columnValueProviderStub = MockRepository.GenerateStub<IColumnValueProvider> ();
@@ -62,8 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.ValueProperty, Is.SameAs (_valuePropertyStub));
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.ClassDefinition, Is.SameAs (_classDefinition));
+      Assert.That (_objectIDWithoutClassIDStoragePropertyDefinition.ValueProperty, Is.SameAs (_valuePropertyStub));
+      Assert.That (_objectIDWithoutClassIDStoragePropertyDefinition.ClassDefinition, Is.SameAs (_classDefinition));
     }
 
     [Test]
@@ -81,13 +82,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void PropertyType ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
+      Assert.That (_objectIDWithoutClassIDStoragePropertyDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
     }
 
     [Test]
     public void CanCreateForeignKeyConstraint ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.CanCreateForeignKeyConstraint, Is.True);
+      Assert.That (_objectIDWithoutClassIDStoragePropertyDefinition.CanCreateForeignKeyConstraint, Is.True);
     }
 
     [Test]
@@ -95,14 +96,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _valuePropertyStub.Stub (stub => stub.GetColumnsForComparison ()).Return (new[] { _valueColumnDefinition });
 
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnsForComparison(), Is.EqualTo (new[] { _valueColumnDefinition }));
+      Assert.That (_objectIDWithoutClassIDStoragePropertyDefinition.GetColumnsForComparison(), Is.EqualTo (new[] { _valueColumnDefinition }));
     }
 
     [Test]
     public void GetColumns ()
     {
       _valuePropertyStub.Stub (stub => stub.GetColumns()).Return (new[] { _valueColumnDefinition });
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumns(), Is.EqualTo (new[] { _valueColumnDefinition }));
+      Assert.That (_objectIDWithoutClassIDStoragePropertyDefinition.GetColumns(), Is.EqualTo (new[] { _valueColumnDefinition }));
     }
 
     [Test]
@@ -112,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _valuePropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue });
 
-      var result = _objectIDWithoutClassIDStorageDefinition.SplitValue (DomainObjectIDs.Order1);
+      var result = _objectIDWithoutClassIDStoragePropertyDefinition.SplitValue (DomainObjectIDs.Order1);
 
       Assert.That (result, Is.EqualTo (new[] { columnValue }));
     }
@@ -124,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _valuePropertyStub.Stub (stub => stub.SplitValue (null)).Return (new[] { columnValue });
 
-      var result = _objectIDWithoutClassIDStorageDefinition.SplitValue (null);
+      var result = _objectIDWithoutClassIDStoragePropertyDefinition.SplitValue (null);
 
       Assert.That (result, Is.EqualTo (new[] { columnValue }));
     }
@@ -137,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _valuePropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.OrderItem1.Value)).Return (new[] { columnValue });
 
-      _objectIDWithoutClassIDStorageDefinition.SplitValue (DomainObjectIDs.OrderItem1);
+      _objectIDWithoutClassIDStoragePropertyDefinition.SplitValue (DomainObjectIDs.OrderItem1);
     }
 
     [Test]
@@ -146,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var columnValue1 = new ColumnValue (_valueColumnDefinition, null);
       _valuePropertyStub.Stub (stub => stub.SplitValueForComparison (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue1 });
 
-      var result = _objectIDWithoutClassIDStorageDefinition.SplitValueForComparison (DomainObjectIDs.Order1).ToArray ();
+      var result = _objectIDWithoutClassIDStoragePropertyDefinition.SplitValueForComparison (DomainObjectIDs.Order1).ToArray ();
 
       Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
     }
@@ -157,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var columnValue1 = new ColumnValue (_valueColumnDefinition, null);
       _valuePropertyStub.Stub (stub => stub.SplitValueForComparison (null)).Return (new[] { columnValue1 });
 
-      var result = _objectIDWithoutClassIDStorageDefinition.SplitValueForComparison (null).ToArray ();
+      var result = _objectIDWithoutClassIDStoragePropertyDefinition.SplitValueForComparison (null).ToArray ();
 
       Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
     }
@@ -166,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The specified ObjectID has an invalid ClassDefinition.\r\nParameter name: value")]
     public void SplitValueForComparison_InvalidClassDefinition ()
     {
-      _objectIDWithoutClassIDStorageDefinition.SplitValueForComparison (DomainObjectIDs.OrderItem2);
+      _objectIDWithoutClassIDStoragePropertyDefinition.SplitValueForComparison (DomainObjectIDs.OrderItem2);
     }
 
     [Test]
@@ -181,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
               new[] { DomainObjectIDs.Order1.Value, DomainObjectIDs.Order3.Value })))
           .Return (columnValueTable);
 
-      var result = _objectIDWithoutClassIDStorageDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 });
+      var result = _objectIDWithoutClassIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 });
 
       ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
     }
@@ -199,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
               Arg<IEnumerable<object>>.Matches (seq => seq.SequenceEqual (new[] { null, DomainObjectIDs.Order3.Value }))))
           .Return (columnValueTable);
 
-      var result = _objectIDWithoutClassIDStorageDefinition.SplitValuesForComparison (new object[] { null, DomainObjectIDs.Order3 });
+      var result = _objectIDWithoutClassIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { null, DomainObjectIDs.Order3 });
 
       ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
     }
@@ -214,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           .WhenCalled (mi => ((IEnumerable<object>) mi.Arguments[0]).ToArray())
           .Return (new ColumnValueTable());
 
-      _objectIDWithoutClassIDStorageDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 })
+      _objectIDWithoutClassIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 })
           .Columns.ToArray();
     }
 
@@ -223,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _valuePropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (DomainObjectIDs.Order1.Value);
 
-      var result = _objectIDWithoutClassIDStorageDefinition.CombineValue (_columnValueProviderStub);
+      var result = _objectIDWithoutClassIDStoragePropertyDefinition.CombineValue (_columnValueProviderStub);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectID)));
       Assert.That (((ObjectID) result).Value.ToString (), Is.EqualTo (DomainObjectIDs.Order1.Value.ToString ()));
@@ -235,9 +236,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _valuePropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (null);
 
-      var result = _objectIDWithoutClassIDStorageDefinition.CombineValue (_columnValueProviderStub);
+      var result = _objectIDWithoutClassIDStoragePropertyDefinition.CombineValue (_columnValueProviderStub);
 
       Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_CombinesProperties ()
+    {
+      var valueProperty1Mock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition> ();
+      var property1 = new ObjectIDWithoutClassIDStoragePropertyDefinition (valueProperty1Mock, _classDefinition);
+
+      var valueProperty2Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      var property2 = new ObjectIDWithoutClassIDStoragePropertyDefinition (valueProperty2Stub, _classDefinition);
+
+      var valueProperty3Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      var property3 = new ObjectIDWithoutClassIDStoragePropertyDefinition (valueProperty3Stub, _classDefinition);
+
+      var fakeUnifiedValueProperty = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      valueProperty1Mock
+          .Expect (
+              mock => mock.UnifyWithEquivalentProperties (
+                  Arg<IEnumerable<IRdbmsStoragePropertyDefinition>>.List.Equal (new[] { valueProperty2Stub, valueProperty3Stub })))
+          .Return (fakeUnifiedValueProperty);
+
+      var result = property1.UnifyWithEquivalentProperties (new[] { property2, property3 });
+
+      fakeUnifiedValueProperty.VerifyAllExpectations ();
+
+      Assert.That (result, Is.TypeOf<ObjectIDWithoutClassIDStoragePropertyDefinition> ());
+      Assert.That (((ObjectIDWithoutClassIDStoragePropertyDefinition) result).ValueProperty, Is.SameAs (fakeUnifiedValueProperty));
+      Assert.That (((ObjectIDWithoutClassIDStoragePropertyDefinition) result).ClassDefinition, Is.SameAs (_classDefinition));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentStoragePropertyType ()
+    {
+      var property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ();
+
+      Assert.That (
+          () => _objectIDWithoutClassIDStoragePropertyDefinition.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has type 'ObjectIDWithoutClassIDStoragePropertyDefinition', and the "
+              + "given property has type 'SimpleStoragePropertyDefinition'.\r\nParameter name: equivalentProperties"));
+    }
+
+    [Test]
+    public void UnifyWithEquivalentProperties_ThrowsForDifferentClassDefinitions ()
+    {
+      var property2 = new ObjectIDWithoutClassIDStoragePropertyDefinition (_valuePropertyStub, GetTypeDefinition (typeof (OrderItem)));
+
+      Assert.That (
+          () => _objectIDWithoutClassIDStoragePropertyDefinition.UnifyWithEquivalentProperties (new[] { property2 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Only equivalent properties can be combined, but this property has class definition "
+              + "'Remotion.Data.DomainObjects.Mapping.ClassDefinition: Order', and the given property has "
+              + "class definition 'Remotion.Data.DomainObjects.Mapping.ClassDefinition: OrderItem'.\r\nParameter name: equivalentProperties"));
     }
 
     [Test]
@@ -256,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           .Stub (stub => stub.GetColumnsForComparison())
           .Return (new[] { _valueColumnDefinition });
       
-      var result = _objectIDWithoutClassIDStorageDefinition.CreateForeignKeyConstraint (
+      var result = _objectIDWithoutClassIDStoragePropertyDefinition.CreateForeignKeyConstraint (
           cols =>
           {
             Assert.That (cols, Is.EqualTo (new[] { _valueColumnDefinition }));

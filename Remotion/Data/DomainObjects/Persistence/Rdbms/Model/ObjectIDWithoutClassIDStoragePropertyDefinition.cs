@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using System.Linq;
@@ -116,6 +117,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (value == null)
         return null;
       return new ObjectID(_classDefinition, value);
+    }
+
+    public IRdbmsStoragePropertyDefinition UnifyWithEquivalentProperties (IEnumerable<IRdbmsStoragePropertyDefinition> equivalentProperties)
+    {
+      ArgumentUtility.CheckNotNull ("equivalentProperties", equivalentProperties);
+      var checkedProperties = equivalentProperties.Select (property => StoragePropertyDefinitionUnificationUtility.CheckAndConvertEquivalentProperty (
+          this,
+          property,
+          "equivalentProperties",
+          prop => Tuple.Create<string, object> ("class definition", prop.ClassDefinition)
+          )).ToArray ();
+
+      var unifiedValueProperty = _valueProperty.UnifyWithEquivalentProperties (checkedProperties.Select (p => p.ValueProperty));
+      return new ObjectIDWithoutClassIDStoragePropertyDefinition (unifiedValueProperty, _classDefinition);
     }
 
     public ForeignKeyConstraintDefinition CreateForeignKeyConstraint (

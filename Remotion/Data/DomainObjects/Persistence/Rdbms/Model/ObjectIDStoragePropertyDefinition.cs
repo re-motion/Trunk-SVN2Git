@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Text;
 using Remotion.Utilities;
 
@@ -59,7 +60,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       get { return true; }
     }
-
 
     public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
@@ -127,6 +127,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       }
 
       return new ObjectID(classID, value);
+    }
+
+    public IRdbmsStoragePropertyDefinition UnifyWithEquivalentProperties (IEnumerable<IRdbmsStoragePropertyDefinition> equivalentProperties)
+    {
+      ArgumentUtility.CheckNotNull ("equivalentProperties", equivalentProperties);
+      var checkedProperties = equivalentProperties.Select (property => StoragePropertyDefinitionUnificationUtility.CheckAndConvertEquivalentProperty (
+          this, property, "equivalentProperties")).ToArray ();
+
+      var unifiedValueProperty = _valueProperty.UnifyWithEquivalentProperties (checkedProperties.Select (p => p.ValueProperty));
+      var unifiedClassIDProperty = _classIDProperty.UnifyWithEquivalentProperties (checkedProperties.Select (p => p.ClassIDProperty));
+      return new ObjectIDStoragePropertyDefinition (unifiedValueProperty, unifiedClassIDProperty);
     }
 
     public ForeignKeyConstraintDefinition CreateForeignKeyConstraint (
