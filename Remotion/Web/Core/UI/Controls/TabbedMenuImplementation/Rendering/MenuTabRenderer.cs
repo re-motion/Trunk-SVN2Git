@@ -15,10 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Specialized;
-using System.Web.UI;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
