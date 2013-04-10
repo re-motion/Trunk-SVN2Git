@@ -75,40 +75,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void ExecuteInScope_Action_ThrowsForInactiveTransaction ()
+    public void ExecuteInScope_Action_ActivatesTransaction ()
     {
-      ClientTransactionTestHelper.MakeInactive (_transaction);
-
-      Action action = () => { throw new Exception ("Is not called."); };
-
-      Assert.That (() =>_transaction.ExecuteInScope (action), Throws.InvalidOperationException);
-    }
-
-    [Test]
-    public void ExecuteInScope_Action_WithMakeActiveFlag_ActivatesInactiveTransaction ()
-    {
-      ClientTransactionTestHelper.MakeInactive (_transaction);
-
-      var delegateRun = false;
-      Action action = () =>
+      using (ClientTransactionTestHelper.MakeInactive (_transaction))
       {
-        Assert.That (_transaction.ActiveTransaction, Is.SameAs (_transaction));
-        Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
-        delegateRun = true;
-      };
-
-      _transaction.ExecuteInScope (action, InactiveTransactionBehavior.MakeActive);
-
-      Assert.That (delegateRun, Is.True);
-    }
-
-    [Test]
-    public void ExecuteInScope_Action_WithMakeActiveFlag_ActivatesInactiveTransaction_EvenWhenAlreadyCurrent ()
-    {
-      using (_transaction.EnterNonDiscardingScope())
-      {
-        ClientTransactionTestHelper.MakeInactive (_transaction);
-
         var delegateRun = false;
         Action action = () =>
         {
@@ -117,9 +87,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           delegateRun = true;
         };
 
-        _transaction.ExecuteInScope (action, InactiveTransactionBehavior.MakeActive);
+        _transaction.ExecuteInScope (action);
 
         Assert.That (delegateRun, Is.True);
+      }
+    }
+
+    [Test]
+    public void ExecuteInScope_Action_ActivatesTransaction_EvenWhenAlreadyCurrent ()
+    {
+      using (_transaction.EnterNonDiscardingScope())
+      {
+        using (ClientTransactionTestHelper.MakeInactive (_transaction))
+        {
+          var delegateRun = false;
+          Action action = () =>
+          {
+            Assert.That (_transaction.ActiveTransaction, Is.SameAs (_transaction));
+            Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
+            delegateRun = true;
+          };
+
+          _transaction.ExecuteInScope (action);
+
+          Assert.That (delegateRun, Is.True);
+        }
       }
     }
 
@@ -172,42 +164,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void ExecuteInScope_Func_ThrowsForInactiveTransaction ()
+    public void ExecuteInScope_Func_ActivatesTransaction ()
     {
-      ClientTransactionTestHelper.MakeInactive (_transaction);
-
-      Func<int> func = () => { throw new Exception ("Is not called."); };
-
-      Assert.That (() => _transaction.ExecuteInScope (func), Throws.InvalidOperationException);
-    }
-
-    [Test]
-    public void ExecuteInScope_Func_WithMakeActiveFlag_ActivatesInactiveTransaction ()
-    {
-      ClientTransactionTestHelper.MakeInactive (_transaction);
-
-      var delegateRun = false;
-      Func<int> func = () =>
+      using (ClientTransactionTestHelper.MakeInactive (_transaction))
       {
-        Assert.That (_transaction.ActiveTransaction, Is.SameAs (_transaction));
-        Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
-        delegateRun = true;
-        return 7;
-      };
-
-      var result = _transaction.ExecuteInScope (func, InactiveTransactionBehavior.MakeActive);
-
-      Assert.That (delegateRun, Is.True);
-      Assert.That (result, Is.EqualTo (7));
-    }
-
-    [Test]
-    public void ExecuteInScope_Func_WithMakeActiveFlag_ActivatesInactiveTransaction_EvenWhenAlreadyCurrent ()
-    {
-      using (_transaction.EnterNonDiscardingScope ())
-      {
-        ClientTransactionTestHelper.MakeInactive (_transaction);
-
         var delegateRun = false;
         Func<int> func = () =>
         {
@@ -217,10 +177,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           return 7;
         };
 
-        var result = _transaction.ExecuteInScope (func, InactiveTransactionBehavior.MakeActive);
+        var result = _transaction.ExecuteInScope (func);
 
         Assert.That (delegateRun, Is.True);
         Assert.That (result, Is.EqualTo (7));
+      }
+    }
+
+    [Test]
+    public void ExecuteInScope_Func_ActivatesTransaction_EvenWhenAlreadyCurrent ()
+    {
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        using (ClientTransactionTestHelper.MakeInactive (_transaction))
+        {
+          var delegateRun = false;
+          Func<int> func = () =>
+          {
+            Assert.That (_transaction.ActiveTransaction, Is.SameAs (_transaction));
+            Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
+            delegateRun = true;
+            return 7;
+          };
+
+          var result = _transaction.ExecuteInScope (func);
+
+          Assert.That (delegateRun, Is.True);
+          Assert.That (result, Is.EqualTo (7));
+        }
       }
     }
   }

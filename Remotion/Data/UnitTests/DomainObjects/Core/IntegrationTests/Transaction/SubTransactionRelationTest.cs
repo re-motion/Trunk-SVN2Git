@@ -248,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         loadedOrder.OrderItems.Clear ();
         newOrder.OrderItems.Add (OrderItem.NewObject ());
 
-        using (TestableClientTransaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive))
+        using (TestableClientTransaction.EnterNonDiscardingScope())
         {
           Assert.That (loadedOrder.OrderItems.Count, Is.EqualTo (2));
           Assert.That (loadedOrder.OrderItems[0], Is.SameAs (loadedItem1));
@@ -304,7 +304,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         newComputer.Employee = Employee.NewObject ();
         newEmployee.Computer = Computer.NewObject ();
 
-        using (TestableClientTransaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive))
+        using (TestableClientTransaction.EnterNonDiscardingScope())
         {
           Assert.That (loadedEmployee.Computer, Is.SameAs (loadedComputer));
           Assert.That (loadedComputer.Employee, Is.SameAs (loadedEmployee));

@@ -215,10 +215,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return listenerManager.Listeners;
     }
 
-    public static void MakeInactive (ClientTransaction inactiveTransaction)
+    public static IDisposable MakeInactive (ClientTransaction inactiveTransaction)
     {
-      inactiveTransaction.CreateSubTransaction();
+      var scope = inactiveTransaction.CreateSubTransaction().EnterNonDiscardingScope();
       Assert.That (inactiveTransaction.ActiveTransaction, Is.Not.SameAs (inactiveTransaction));
+      return scope;
     }
   }
 }

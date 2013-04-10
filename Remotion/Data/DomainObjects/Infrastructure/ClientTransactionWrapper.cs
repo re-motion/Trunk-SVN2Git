@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <remarks>The scope must not discard the transaction when it is left.</remarks>
     public virtual ITransactionScope EnterScope ()
     {
-      return _wrappedInstance.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive);
+      return _wrappedInstance.EnterNonDiscardingScope();
     }
 
     /// <summary>Registers the <paramref name="objects"/> with the transaction.</summary>

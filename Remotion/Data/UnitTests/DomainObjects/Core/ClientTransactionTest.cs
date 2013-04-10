@@ -755,30 +755,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void EnterScope_ActiveTransaction ()
+    public void EnterScope_ActiveTransaction_ActivatesTransaction ()
     {
-      _hierarchyManagerMock.Stub (stub => stub.TransactionHierarchy.ActiveTransaction).Return (_transactionWithMocks);
+      var hierarchyMock = MockRepository.GenerateStrictMock<IClientTransactionHierarchy> ();
+      _hierarchyManagerMock.Stub (stub => stub.TransactionHierarchy).Return (hierarchyMock);
       _hierarchyManagerMock.Replay ();
 
-      var scope = _transactionWithMocks.EnterScope (AutoRollbackBehavior.Rollback);
+      hierarchyMock.Stub (stub => stub.ActiveTransaction).Return (_transactionWithMocks);
 
-      Assert.That (scope, Is.Not.Null);
-      Assert.That (scope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.Rollback));
-      Assert.That (scope.ScopedTransaction, Is.SameAs (_transactionWithMocks));
+      var activatedScopeStub = MockRepository.GenerateStub<IDisposable> ();
+      hierarchyMock.Expect (mock => mock.ActivateTransaction (_transactionWithMocks)).Return (activatedScopeStub);
+
+      _transactionWithMocks.EnterScope (AutoRollbackBehavior.Rollback);
+
+      hierarchyMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void EnterScope_InactiveTransaction_ThrowsByDefault ()
-    {
-      var fakeSub = ClientTransactionObjectMother.Create();
-      _hierarchyManagerMock.Stub (stub => stub.TransactionHierarchy.ActiveTransaction).Return (fakeSub);
-      _hierarchyManagerMock.Replay();
-
-      Assert.That (() => _transactionWithMocks.EnterScope (AutoRollbackBehavior.None), Throws.InvalidOperationException);
-    }
-
-    [Test]
-    public void EnterScope_InactiveTransaction_WithMakeActive_SetsTransactionActiveAndReturnsAScope_ThatUndoesActivation ()
+    public void EnterScope_InactiveTransaction_SetsTransactionActiveAndReturnsAScope_ThatUndoesActivation ()
     {
       var hierarchyMock = MockRepository.GenerateStrictMock<IClientTransactionHierarchy> ();
       _hierarchyManagerMock.Stub (stub => stub.TransactionHierarchy).Return (hierarchyMock);
@@ -790,7 +784,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var activatedScopeMock = MockRepository.GenerateStrictMock<IDisposable>();
       hierarchyMock.Expect (mock => mock.ActivateTransaction (_transactionWithMocks)).Return (activatedScopeMock);
 
-      var result = _transactionWithMocks.EnterScope (AutoRollbackBehavior.None, InactiveTransactionBehavior.MakeActive);
+      var result = _transactionWithMocks.EnterScope (AutoRollbackBehavior.None);
 
       hierarchyMock.VerifyAllExpectations();
 
@@ -801,23 +795,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       result.Leave();
 
       activatedScopeMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void EnterScope_ActiveTransaction_WithMakeActive_ActivatesTransaction ()
-    {
-      var hierarchyMock = MockRepository.GenerateStrictMock<IClientTransactionHierarchy> ();
-      _hierarchyManagerMock.Stub (stub => stub.TransactionHierarchy).Return (hierarchyMock);
-      _hierarchyManagerMock.Replay ();
-
-      hierarchyMock.Stub (stub => stub.ActiveTransaction).Return (_transactionWithMocks);
-      
-      var activatedScopeStub = MockRepository.GenerateStub<IDisposable> ();
-      hierarchyMock.Expect (mock => mock.ActivateTransaction (_transactionWithMocks)).Return (activatedScopeStub);
-
-      _transactionWithMocks.EnterScope (AutoRollbackBehavior.Rollback, InactiveTransactionBehavior.MakeActive);
-
-      hierarchyMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -836,31 +813,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void EnterNonDiscardingScope_ThrowsForInactiveTransaction ()
+    public void EnterNonDiscardingScope_ActivatesInactiveTransaction ()
     {
       Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-      ClientTransactionTestHelper.MakeInactive (_transaction);
+      using (ClientTransactionTestHelper.MakeInactive (_transaction))
+      {
+        var scope = _transaction.EnterNonDiscardingScope();
 
-      Assert.That (() => _transaction.EnterNonDiscardingScope (), Throws.InvalidOperationException);
+        Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
+        Assert.That (_transaction.ActiveTransaction, Is.SameAs (_transaction));
 
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-    }
+        scope.Leave();
 
-    [Test]
-    public void EnterNonDiscardingScope_WithMakeActive_ActivatesInactiveTransaction ()
-    {
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-      ClientTransactionTestHelper.MakeInactive (_transaction);
-
-      var scope = _transaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive);
-
-      Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
-      Assert.That (_transaction.ActiveTransaction, Is.SameAs (_transaction));
-
-      scope.Leave ();
-
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-      Assert.That (_transaction.ActiveTransaction, Is.Not.SameAs (_transaction));
+        Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
+        Assert.That (_transaction.ActiveTransaction, Is.Not.SameAs (_transaction));
+      }
     }
 
     [Test]
@@ -879,15 +846,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void EnterDiscardingScope_ThrowsForInactiveTransaction ()
+    public void EnterDiscardingScope_ActivatesInactiveTransaction ()
     {
       Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-      ClientTransactionTestHelper.MakeInactive (_transaction);
+      using (ClientTransactionTestHelper.MakeInactive (_transaction))
+      {
+        var scope = _transaction.EnterDiscardingScope();
 
-      Assert.That (() => _transaction.EnterDiscardingScope (), Throws.InvalidOperationException);
+        Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
+        Assert.That (_transaction.ActiveTransaction, Is.SameAs (_transaction));
 
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-      Assert.That (_transaction.IsDiscarded, Is.False);
+        scope.Leave();
+
+        Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
+        Assert.That (_transaction.ActiveTransaction, Is.Not.SameAs (_transaction));
+      }
     }
     
     [Test]

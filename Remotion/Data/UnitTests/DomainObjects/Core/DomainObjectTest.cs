@@ -182,15 +182,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (domainObject.OnReferenceInitializingID, Is.EqualTo (domainObject.ID));
       Assert.That (domainObject.OnReferenceInitializingActiveTx, Is.SameAs (_transaction));
 
-      ClientTransactionTestHelper.MakeInactive (_transaction);
+      using (ClientTransactionTestHelper.MakeInactive (_transaction))
+      {
+        Assert.That (_transaction.ActiveTransaction, Is.Not.SameAs (_transaction));
 
-      Assert.That (_transaction.ActiveTransaction, Is.Not.SameAs (_transaction));
-
-      // Note that GetObjectReference makes _transaction the active transaction.
-      var objectReference = (Order) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.Order1);
-      Assert.That (objectReference.OnReferenceInitializingCalled, Is.True);
-      Assert.That (objectReference.OnReferenceInitializingID, Is.EqualTo (objectReference.ID));
-      Assert.That (objectReference.OnReferenceInitializingActiveTx, Is.SameAs (_transaction));
+        // Note that GetObjectReference makes _transaction the active transaction.
+        var objectReference = (Order) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.Order1);
+        Assert.That (objectReference.OnReferenceInitializingCalled, Is.True);
+        Assert.That (objectReference.OnReferenceInitializingID, Is.EqualTo (objectReference.ID));
+        Assert.That (objectReference.OnReferenceInitializingActiveTx, Is.SameAs (_transaction));
+      }
     }
 
     [Test]
@@ -284,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _transaction.CreateSubTransaction ();
 
       Assert.That (
-          _transaction.ExecuteInScope (() => order.DefaultTransactionContext.ClientTransaction, InactiveTransactionBehavior.MakeActive),
+          _transaction.ExecuteInScope (() => order.DefaultTransactionContext.ClientTransaction),
           Is.SameAs (_transaction));
     }
 

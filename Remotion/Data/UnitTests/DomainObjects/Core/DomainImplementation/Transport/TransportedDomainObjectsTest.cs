@@ -256,11 +256,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       var dataTransaction = ClientTransaction.CreateRootTransaction();
       var transportedObjects = new TransportedDomainObjects (dataTransaction, new List<DomainObject>());
 
-      ClientTransactionTestHelper.MakeInactive (dataTransaction);
-
-      Assert.That (
-          () => transportedObjects.FinishTransport(),
-          Throws.TypeOf<ClientTransactionReadOnlyException>());
+      using (ClientTransactionTestHelper.MakeInactive (dataTransaction))
+      {
+        Assert.That (
+            () => transportedObjects.FinishTransport(),
+            Throws.TypeOf<ClientTransactionReadOnlyException>());
+      }
     }
 
     [Test]

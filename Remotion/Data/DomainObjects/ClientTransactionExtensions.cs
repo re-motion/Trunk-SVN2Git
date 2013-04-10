@@ -26,28 +26,19 @@ namespace Remotion.Data.DomainObjects
   {
     /// <summary>
     /// Executes the specified delegate in the context of the <see cref="ClientTransaction"/>, returning the result of the delegate. While the
-    /// delegate is being executed, the <see cref="ClientTransaction"/> is made the <see cref="ClientTransaction.Current"/> transaction, as if 
-    ///  <see cref="ClientTransaction.EnterNonDiscardingScope"/> had been called.
+    /// delegate is being executed, the <see cref="ClientTransaction"/> is made the <see cref="ClientTransaction.Current"/> transaction and 
+    /// <see cref="ClientTransaction.ActiveTransaction"/>, as if <see cref="ClientTransaction.EnterNonDiscardingScope"/> had been called.
     /// </summary>
     /// <typeparam name="T">The type of the value returned by the delegate.</typeparam>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> in whose context to execute the delegate.</param>
     /// <param name="func">The delegate to be executed.</param>
-    /// <param name="inactiveTransactionBehavior">Defines what should happen when this <see cref="ClientTransaction"/> is currently not active, e.g., 
-    /// due to an active subtransaction. The default behavior is <see cref="InactiveTransactionBehavior.Throw"/>, i.e., to throw an exception.</param>
     /// <returns>The result of <paramref name="func"/>.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// The <paramref name="clientTransaction"/> is not the <see cref="ClientTransaction.ActiveTransaction"/> of the hierarchy and 
-    /// <paramref name="inactiveTransactionBehavior"/> is set to <see cref="InactiveTransactionBehavior.Throw"/>.
-    /// </exception>
-    public static T ExecuteInScope<T> (
-        this ClientTransaction clientTransaction,
-        Func<T> func,
-        InactiveTransactionBehavior inactiveTransactionBehavior = InactiveTransactionBehavior.Throw)
+    public static T ExecuteInScope<T> (this ClientTransaction clientTransaction, Func<T> func)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("func", func);
 
-      using (CreateScopeIfRequired (clientTransaction, inactiveTransactionBehavior))
+      using (CreateScopeIfRequired (clientTransaction))
       {
         return func();
       }
@@ -55,37 +46,28 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Executes the specified delegate in the context of the <see cref="ClientTransaction"/>. While the
-    /// delegate is being executed, the <see cref="ClientTransaction"/> is made the <see cref="ClientTransaction.Current"/> transaction, as if 
-    ///  <see cref="ClientTransaction.EnterNonDiscardingScope"/> had been called.
+    /// delegate is being executed, the <see cref="ClientTransaction"/> is made the <see cref="ClientTransaction.Current"/> transaction and 
+    /// <see cref="ClientTransaction.ActiveTransaction"/>, as if <see cref="ClientTransaction.EnterNonDiscardingScope"/> had been called.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> in whose context to execute the delegate.</param>
     /// <param name="action">The delegate to be executed.</param>
-    /// <param name="inactiveTransactionBehavior">Defines what should happen when this <see cref="ClientTransaction"/> is currently not active, e.g., 
-    /// due to an active subtransaction. The default behavior is <see cref="InactiveTransactionBehavior.Throw"/>, i.e., to throw an exception.</param>
-    /// <exception cref="InvalidOperationException">
-    /// The <paramref name="clientTransaction"/> is not the <see cref="ClientTransaction.ActiveTransaction"/> of the hierarchy and 
-    /// <paramref name="inactiveTransactionBehavior"/> is set to <see cref="InactiveTransactionBehavior.Throw"/>.
-    /// </exception>
-    public static void ExecuteInScope (
-        this ClientTransaction clientTransaction,
-        Action action,
-        InactiveTransactionBehavior inactiveTransactionBehavior = InactiveTransactionBehavior.Throw)
+    public static void ExecuteInScope (this ClientTransaction clientTransaction, Action action)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("action", action);
 
-      using (CreateScopeIfRequired (clientTransaction, inactiveTransactionBehavior))
+      using (CreateScopeIfRequired (clientTransaction))
       {
         action();
       }
     }
 
-    private static IDisposable CreateScopeIfRequired (ClientTransaction clientTransaction, InactiveTransactionBehavior inactiveTransactionBehavior)
+    private static IDisposable CreateScopeIfRequired (ClientTransaction clientTransaction)
     {
       if (ClientTransaction.Current == clientTransaction && clientTransaction.ActiveTransaction == clientTransaction)
         return null;
 
-      return clientTransaction.EnterNonDiscardingScope (inactiveTransactionBehavior);
+      return clientTransaction.EnterNonDiscardingScope();
     }
 
     [Obsolete ("This API has been renamed to ExecuteInScope. (1.13.188.0)", true)]

@@ -207,22 +207,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     protected void ExecuteInReadOnlyMiddleTransaction (Action action)
     {
-      ReadOnlyMiddleTransaction.ExecuteInScope (action, InactiveTransactionBehavior.MakeActive);
+      ReadOnlyMiddleTransaction.ExecuteInScope (action);
     }
 
     protected T ExecuteInReadOnlyMiddleTransaction<T> (Func<T> func)
     {
-      return ReadOnlyMiddleTransaction.ExecuteInScope (func, InactiveTransactionBehavior.MakeActive);
+      return ReadOnlyMiddleTransaction.ExecuteInScope (func);
     }
 
     protected void ExecuteInReadOnlyRootTransaction (Action action)
     {
-      ReadOnlyRootTransaction.ExecuteInScope (action, InactiveTransactionBehavior.MakeActive);
+      ReadOnlyRootTransaction.ExecuteInScope (action);
     }
 
     protected T ExecuteInReadOnlyRootTransaction<T> (Func<T> func)
     {
-      return ReadOnlyRootTransaction.ExecuteInScope (func, InactiveTransactionBehavior.MakeActive);
+      return ReadOnlyRootTransaction.ExecuteInScope (func);
     }
 
     protected void ExecuteInWriteableSubTransaction (Action action)

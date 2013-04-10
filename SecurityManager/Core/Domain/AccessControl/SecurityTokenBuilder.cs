@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      using (transaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive))
+      using (transaction.EnterNonDiscardingScope())
       {
         Principal principalUser = CreatePrincipal (principal);
         Tenant owningTenant = GetTenant (context.OwnerTenant);

@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       ArgumentUtility.CheckNotNull ("context", context);
 
       SecurableClassDefinition classDefinition;
-      using (transaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive))
+      using (transaction.EnterNonDiscardingScope())
       {
         classDefinition = SecurableClassDefinition.FindByName (context.Class);
       }
@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      using (transaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive))
+      using (transaction.EnterNonDiscardingScope())
       {
         AccessControlList foundAccessControlList = null;
 

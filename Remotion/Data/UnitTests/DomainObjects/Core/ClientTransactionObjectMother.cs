@@ -205,12 +205,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       hierarchyManagerStub.Stub (stub => stub.IsWriteable).Return (false);
       return CreateWithComponents<ClientTransaction> (transactionHierarchyManager: hierarchyManagerStub);
     }
-
-    public static ClientTransaction CreateInactiveTransaction ()
-    {
-      var inactiveTransaction = ClientTransaction.CreateRootTransaction();
-      ClientTransactionTestHelper.MakeInactive (inactiveTransaction);
-      return inactiveTransaction;
-    }
   }
 }

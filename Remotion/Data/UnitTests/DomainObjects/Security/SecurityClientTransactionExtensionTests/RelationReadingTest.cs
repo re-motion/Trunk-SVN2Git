@@ -277,9 +277,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       var securableEndPointDefintion = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
 
-      ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction);
-
-      _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
+      using (ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction))
+      {
+        _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
+      }
 
       _testHelper.VerifyAll ();
     }

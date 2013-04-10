@@ -17,10 +17,8 @@
 // 
 using System;
 using System.Collections.Specialized;
-using System.Linq;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Logging;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
@@ -90,10 +88,10 @@ namespace Remotion.SecurityManager
           return new AccessType[0];
         }
 
-        using (transaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive))
+        using (transaction.EnterNonDiscardingScope())
         {
           AccessInformation accessInformation = acl.GetAccessTypes (token);
-          return Array.ConvertAll<AccessTypeDefinition, AccessType> (accessInformation.AllowedAccessTypes, ConvertToAccessType);
+          return Array.ConvertAll (accessInformation.AllowedAccessTypes, ConvertToAccessType);
         }
       }
     }

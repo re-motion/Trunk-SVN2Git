@@ -240,12 +240,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction);
+      using (ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction))
+      {
+        var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
-      var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
-
-      _testHelper.VerifyAll ();
-      Assert.That (finalResult, Is.SameAs (queryResult));
+        _testHelper.VerifyAll();
+        Assert.That (finalResult, Is.SameAs (queryResult));
+      }
     }
   }
 }

@@ -230,9 +230,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction);
-
-      _extension.PropertyValueReading (_testHelper.Transaction, securableObject, _stringPropertyDefinition, ValueAccess.Current);
+      using (ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction))
+      {
+        _extension.PropertyValueReading (_testHelper.Transaction, securableObject, _stringPropertyDefinition, ValueAccess.Current);
+      }
 
       _testHelper.VerifyAll ();
     }

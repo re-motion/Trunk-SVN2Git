@@ -149,24 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
     }
 
     [Test]
-    public void OpeningScopeForNonLeafTransaction_Throws ()
-    {
-      _rootTransaction.CreateSubTransaction ();
-
-      Assert.That (
-          () => _rootTransaction.EnterDiscardingScope(),
-          Throws.InvalidOperationException.With.Message.EqualTo (
-              "The Current transaction cannot be an inactive transaction. Specify InactiveTransactionBehavior.MakeActive in order to temporarily "
-              + "make this transaction active in order to use it as the Current transaction."));
-      Assert.That (
-          () => _rootTransaction.EnterNonDiscardingScope(),
-          Throws.InvalidOperationException.With.Message.EqualTo (
-              "The Current transaction cannot be an inactive transaction. Specify InactiveTransactionBehavior.MakeActive in order to temporarily "
-              + "make this transaction active in order to use it as the Current transaction."));
-    }
-
-    [Test]
-    public void OpeningScopeForNonLeafTransaction_AllowedWithRightBehaviorFlag_AndInfluencesDefaultContext ()
+    public void OpeningScopeForNonLeafTransaction_InfluencesDefaultContext ()
     {
       var subTransaction = _rootTransaction.CreateSubTransaction();
 
@@ -178,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
 
       _order1LoadedInRootTransaction.OrderNumber = 2;
 
-      using (_rootTransaction.EnterNonDiscardingScope (inactiveTransactionBehavior: InactiveTransactionBehavior.MakeActive))
+      using (_rootTransaction.EnterNonDiscardingScope())
       {
         Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (_rootTransaction));
         Assert.That (subTransaction.ActiveTransaction, Is.SameAs (_rootTransaction));
@@ -204,17 +187,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
       Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (subTransaction));
       Assert.That (_order1LoadedInRootTransaction.DefaultTransactionContext.ClientTransaction, Is.SameAs (subTransaction));
 
-      using (middleTransaction.EnterNonDiscardingScope (inactiveTransactionBehavior: InactiveTransactionBehavior.MakeActive))
+      using (middleTransaction.EnterNonDiscardingScope())
       {
         Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (middleTransaction));
         Assert.That (_order1LoadedInRootTransaction.DefaultTransactionContext.ClientTransaction, Is.SameAs (middleTransaction));
 
-        using (_rootTransaction.EnterNonDiscardingScope (inactiveTransactionBehavior: InactiveTransactionBehavior.MakeActive))
+        using (_rootTransaction.EnterNonDiscardingScope())
         {
           Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (_rootTransaction));
           Assert.That (_order1LoadedInRootTransaction.DefaultTransactionContext.ClientTransaction, Is.SameAs (_rootTransaction));
 
-          using (subTransaction.EnterNonDiscardingScope (inactiveTransactionBehavior: InactiveTransactionBehavior.MakeActive))
+          using (subTransaction.EnterNonDiscardingScope())  
           {
             Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (subTransaction));
             Assert.That (_order1LoadedInRootTransaction.DefaultTransactionContext.ClientTransaction, Is.SameAs (subTransaction));
@@ -233,31 +216,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
     }
 
     [Test]
-    public void CreatingSubTransaction_WithinOrdinaryScope_InfluencesActiveTransaction ()
+    public void CreatingSubTransaction_WithinScope_DoesNotInfluenceActiveTransaction ()
     {
       ClientTransaction subTransaction;
 
-      using (_rootTransaction.EnterNonDiscardingScope ())
-      {
-        Assert.That (ClientTransaction.Current, Is.SameAs (_rootTransaction));
-        Assert.That (ClientTransaction.Current.ActiveTransaction, Is.SameAs (_rootTransaction));
-
-        subTransaction = _rootTransaction.CreateSubTransaction();
-
-        Assert.That (ClientTransaction.Current, Is.SameAs (_rootTransaction));
-        Assert.That (ClientTransaction.Current.ActiveTransaction, Is.SameAs (subTransaction));
-      }
-
-      Assert.That (ClientTransaction.Current, Is.Null);
-      Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (subTransaction));
-    }
-
-    [Test]
-    public void CreatingSubTransaction_WithinMakeActiveScope_DoesNotInfluenceActiveTransaction ()
-    {
-      ClientTransaction subTransaction;
-
-      using (_rootTransaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive))
+      using (_rootTransaction.EnterNonDiscardingScope())
       {
         Assert.That (ClientTransaction.Current, Is.SameAs (_rootTransaction));
         Assert.That (ClientTransaction.Current.ActiveTransaction, Is.SameAs (_rootTransaction));
@@ -275,12 +238,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
     [Test]
     public void LeaveOuterScope_WithoutLeavingInnerScope_MakeActiveFlags_Throws ()
     {
-      var rootScope = _rootTransaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive);
+      var rootScope = _rootTransaction.EnterNonDiscardingScope();
         Assert.That (ClientTransaction.Current, Is.SameAs (_rootTransaction));
         Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (_rootTransaction));
 
       var subTransaction = _rootTransaction.CreateSubTransaction ();
-      subTransaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive);
+      subTransaction.EnterNonDiscardingScope();
 
       Assert.That (ClientTransaction.Current, Is.SameAs (subTransaction));
       Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (subTransaction));

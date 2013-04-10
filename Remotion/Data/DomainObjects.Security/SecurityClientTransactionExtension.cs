@@ -270,7 +270,7 @@ namespace Remotion.Data.DomainObjects.Security
 
     private IDisposable CreateTransactionScope (ClientTransaction clientTransaction)
     {
-      return clientTransaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive);
+      return clientTransaction.EnterNonDiscardingScope();
     }
   }
 }

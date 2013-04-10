@@ -118,24 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
     }
 
     [Test]
-    public void ExecuteInScope_ForNonLeafTransaction_Throws ()
-    {
-      _rootTransaction.CreateSubTransaction ();
-
-      Assert.That (
-          () => _rootTransaction.ExecuteInScope (() => { }),
-          Throws.InvalidOperationException.With.Message.EqualTo (
-              "The Current transaction cannot be an inactive transaction. Specify InactiveTransactionBehavior.MakeActive in order to temporarily "
-               + "make this transaction active in order to use it as the Current transaction."));
-      Assert.That (
-          () => _rootTransaction.ExecuteInScope (() => 7),
-          Throws.InvalidOperationException.With.Message.EqualTo (
-              "The Current transaction cannot be an inactive transaction. Specify InactiveTransactionBehavior.MakeActive in order to temporarily "
-              + "make this transaction active in order to use it as the Current transaction."));
-    }
-
-    [Test]
-    public void ExecuteInScope_ForNonLeafTransaction_AllowedWithRightBehaviorFlag_AndInfluencesDefaultContext ()
+    public void ExecuteInScope_ForNonLeafTransaction_InfluencesDefaultContext ()
     {
       var subTransaction = _rootTransaction.CreateSubTransaction();
 
@@ -160,8 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
             Assert.That (_order1LoadedInRootTransaction.State, Is.EqualTo (StateType.Unchanged));
 
             Assert.That (() => _order1LoadedInRootTransaction.OrderNumber = 3, Throws.TypeOf<ClientTransactionReadOnlyException>());
-          },
-          inactiveTransactionBehavior: InactiveTransactionBehavior.MakeActive);
+          });
 
       Assert.That (_order1LoadedInRootTransaction.OrderNumber, Is.EqualTo (2));
     }
@@ -191,17 +173,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
                   {
                     Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (subTransaction));
                     Assert.That (_order1LoadedInRootTransaction.DefaultTransactionContext.ClientTransaction, Is.SameAs (subTransaction));
-                  },
-                  inactiveTransactionBehavior: InactiveTransactionBehavior.MakeActive);
+                  });
 
               Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (_rootTransaction));
               Assert.That (_order1LoadedInRootTransaction.DefaultTransactionContext.ClientTransaction, Is.SameAs (_rootTransaction));
-            },
-            inactiveTransactionBehavior: InactiveTransactionBehavior.MakeActive);
+            });
 
         Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (middleTransaction));
         Assert.That (_order1LoadedInRootTransaction.DefaultTransactionContext.ClientTransaction, Is.SameAs (middleTransaction));
-      }, inactiveTransactionBehavior: InactiveTransactionBehavior.MakeActive);
+      });
 
       Assert.That (_rootTransaction.ActiveTransaction, Is.SameAs (subTransaction));
       Assert.That (_order1LoadedInRootTransaction.DefaultTransactionContext.ClientTransaction, Is.SameAs (subTransaction));

@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       instance.Initialize (objectID, objectInitializationContext.RootTransaction);
       objectInitializationContext.RegisterObject (instance);
 
-      using (clientTransaction.EnterNonDiscardingScope (InactiveTransactionBehavior.MakeActive))
+      using (clientTransaction.EnterNonDiscardingScope())
       {
         instance.RaiseReferenceInitializatingEvent();
       }

@@ -208,8 +208,8 @@ public class ClientTransaction
 
   /// <summary>
   /// Gets the active transaction in the associated <see cref="ClientTransaction"/> hierarchy, i.e., the transaction that is currently being used
-  /// to execute <see cref="DomainObject"/> operations. The active transaction is usually the <see cref="LeafTransaction"/>, but can be explicitly
-  /// changed, e.g., using the <see cref="EnterNonDiscardingScope"/> API by passing in the <see cref="InactiveTransactionBehavior.MakeActive"/> flag.
+  /// to execute <see cref="DomainObject"/> operations. The active transaction is controlled by the APIs such as <see cref="EnterNonDiscardingScope"/>,
+  /// <see cref="EnterDiscardingScope"/>, or <see cref="ClientTransactionExtensions.ExecuteInScope"/>.
   /// </summary>
   public ClientTransaction ActiveTransaction
   {
@@ -348,9 +348,10 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Creates a new <see cref="ClientTransactionScope"/> for this transaction and enters it, making it the
-  /// <see cref="ClientTransactionScope.ActiveScope"/> for the current thread. When the scope is left, <see cref="Discard"/> is executed. This will
-  /// discard this transaction and make the parent transaction (if any) writeable again.
+  /// Creates a new <see cref="ClientTransactionScope"/> for this transaction and enters it, 
+  /// making this <see cref="ClientTransaction"/> the <see cref="ClientTransaction.Current"/> transaction for the calling thread and the 
+  /// <see cref="ActiveTransaction"/> within its transaction hierarchy. 
+  /// When the scope is left, this transaction will be discarded. 
   /// </summary>
   /// <returns>A new <see cref="ClientTransactionScope"/> for this transaction with an automatic <see cref="AutoRollbackBehavior.Discard"/>
   /// behavior.</returns>
@@ -361,64 +362,54 @@ public class ClientTransaction
   /// </para>
   /// <para>
   /// The new <see cref="ClientTransactionScope"/> stores the previous <see cref="ClientTransactionScope.ActiveScope"/>. When this scope's
-  /// <see cref="ClientTransactionScope.Leave"/> method is called or the scope is disposed of, the previous scope is reactivated.
+  /// <see cref="ClientTransactionScope.Leave"/> method is called or the scope is disposed of, the previous scope is reactivated, and the 
+  /// <see cref="ClientTransaction.Current"/> property is restored to its previous value.
+  /// </para>
+  /// <para>
+  /// When a <see cref="DomainObject"/> is accessed, it will by default always use the <see cref="ActiveTransaction"/> of the associated 
+  /// <see cref="DomainObject.RootTransaction"/>. This method makes this <see cref="ClientTransaction"/> the <see cref="ActiveTransaction"/>,
+  /// causing <see cref="DomainObject"/> instances bound to its hierarchy to be accessed in the context of this transaction. When the scope is left, 
+  /// the <see cref="ActiveTransaction"/> is reverted to its previous value.
   /// </para>
   /// </remarks>
-  /// <exception cref="InvalidOperationException">
-  /// This <see cref="ClientTransaction"/> is not the <see cref="ActiveTransaction"/> of the hierarchy.
-  /// </exception>
   public virtual ClientTransactionScope EnterDiscardingScope ()
   {
     return EnterScope (AutoRollbackBehavior.Discard);
   }
 
   /// <summary>
-  /// Creates a new <see cref="ClientTransactionScope"/> for this transaction with the given automatic rollback behavior and enters it,
-  /// making it the <see cref="ClientTransactionScope.ActiveScope"/> for the current thread.
+  /// Creates a new <see cref="ClientTransactionScope"/> for this transaction with the given automatic rollback behavior and enters it, 
+  /// making this <see cref="ClientTransaction"/> the <see cref="ClientTransaction.Current"/> transaction for the calling thread and the 
+  /// <see cref="ActiveTransaction"/> within its transaction hierarchy. 
   /// </summary>
   /// <returns>A new <see cref="ClientTransactionScope"/> for this transaction.</returns>
   /// <param name="rollbackBehavior">The automatic rollback behavior to be performed when the scope's <see cref="ClientTransactionScope.Leave"/>
   /// method is called.</param>
-  /// <param name="inactiveTransactionBehavior">Defines what should happen when this <see cref="ClientTransaction"/> is currently not active, e.g., 
-  /// due to an active subtransaction. The default behavior is <see cref="InactiveTransactionBehavior.Throw"/>, i.e., to throw an exception.</param>
   /// <remarks>
   /// <para>
   /// The new <see cref="ClientTransactionScope"/> stores the previous <see cref="ClientTransactionScope.ActiveScope"/>. When this scope's
-  /// <see cref="ClientTransactionScope.Leave"/> method is called or the scope is disposed of, the previous scope is reactivated.
+  /// <see cref="ClientTransactionScope.Leave"/> method is called or the scope is disposed of, the previous scope is reactivated, and the 
+  /// <see cref="ClientTransaction.Current"/> property is restored to its previous value.
+  /// </para>
+  /// <para>
+  /// When a <see cref="DomainObject"/> is accessed, it will by default always use the <see cref="ActiveTransaction"/> of the associated 
+  /// <see cref="DomainObject.RootTransaction"/>. This method makes this <see cref="ClientTransaction"/> the <see cref="ActiveTransaction"/>,
+  /// causing <see cref="DomainObject"/> instances bound to its hierarchy to be accessed in the context of this transaction. When the scope is left, 
+  /// the <see cref="ActiveTransaction"/> is reverted to its previous value.
   /// </para>
   /// </remarks>
-  /// <exception cref="InvalidOperationException">
-  /// This <see cref="ClientTransaction"/> is not the <see cref="ActiveTransaction"/> of the hierarchy and 
-  /// <paramref name="inactiveTransactionBehavior"/> is set to <see cref="InactiveTransactionBehavior.Throw"/>.
-  /// </exception>
-  public virtual ClientTransactionScope EnterScope (
-      AutoRollbackBehavior rollbackBehavior, 
-      InactiveTransactionBehavior inactiveTransactionBehavior = InactiveTransactionBehavior.Throw)
+  public virtual ClientTransactionScope EnterScope (AutoRollbackBehavior rollbackBehavior)
   {
-    IDisposable activationScope = null;
-
-    if (inactiveTransactionBehavior == InactiveTransactionBehavior.MakeActive)
-    {
-      activationScope = _hierarchyManager.TransactionHierarchy.ActivateTransaction (this);
-    }
-    else if (ActiveTransaction != this)
-    {
-      Assertion.IsTrue (inactiveTransactionBehavior == InactiveTransactionBehavior.Throw);
-      throw new InvalidOperationException (
-          "The Current transaction cannot be an inactive transaction. Specify InactiveTransactionBehavior.MakeActive in order to temporarily make "
-          + "this transaction active in order to use it as the Current transaction.");
-    }
-
+    var activationScope = _hierarchyManager.TransactionHierarchy.ActivateTransaction (this);
     return new ClientTransactionScope (this, rollbackBehavior, activationScope);
   }
 
   /// <summary>
-  /// Creates a new <see cref="ClientTransactionScope"/> for this transaction and enters it, making it the
-  /// <see cref="ClientTransactionScope.ActiveScope"/> for the current thread. When the scope is left, this transaction is not discarded and the
-  /// parent transaction (if any) is not made writeable.
+  /// Creates a new <see cref="ClientTransactionScope"/> for this transaction and enters it, 
+  /// making this <see cref="ClientTransaction"/> the <see cref="ClientTransaction.Current"/> transaction for the calling thread and the 
+  /// <see cref="ActiveTransaction"/> within its transaction hierarchy. 
+  /// When the scope is left, this transaction is not discarded.
   /// </summary>
-  /// <param name="inactiveTransactionBehavior">Defines what should happen when this <see cref="ClientTransaction"/> is currently not active, e.g., 
-  /// due to an active subtransaction. The default behavior is <see cref="InactiveTransactionBehavior.Throw"/>, i.e., to throw an exception.</param>
   /// <returns>A new <see cref="ClientTransactionScope"/> for this transaction with no automatic rollback behavior.</returns>
   /// <remarks>
   /// <para>
@@ -426,27 +417,23 @@ public class ClientTransaction
   /// transaction is a subtransaction. You must explicitly call <see cref="Discard"/> if you want to continue working with
   /// the parent transaction. This method is useful if you want to temporarily open a scope for a transaction, then open a scope for another
   /// transaction, then open a new scope for the first transaction again. In this case, the first scope must be a non-discarding scope, otherwise the
-  /// transaction will be discarded and cannot be used for a second time.
-  /// </para>
-  /// <para>
-  /// By default, it is not possible to create a scope for an inactive transaction (e.g., a transaction with an active subtransaction), as it would
-  /// be strange to have an inactive transaction as the <see cref="Current"/> transaction. By specifying 
-  /// <see cref="InactiveTransactionBehavior.MakeActive"/> as the <paramref name="inactiveTransactionBehavior"/> parameter, however, the inactive
-  /// transaction is temporarily made active until the scope is left.
+  /// transaction will be discarded and cannot be used a second time.
   /// </para>
   /// <para>
   /// The new <see cref="ClientTransactionScope"/> stores the previous <see cref="ClientTransactionScope.ActiveScope"/>. When this scope's
-  /// <see cref="ClientTransactionScope.Leave"/> method is called or the scope is disposed of, the previous scope is reactivated.
+  /// <see cref="ClientTransactionScope.Leave"/> method is called or the scope is disposed of, the previous scope is reactivated, and the 
+  /// <see cref="ClientTransaction.Current"/> property is restored to its previous value.
+  /// </para>
+  /// <para>
+  /// When a <see cref="DomainObject"/> is accessed, it will by default always use the <see cref="ActiveTransaction"/> of the associated 
+  /// <see cref="DomainObject.RootTransaction"/>. This method makes this <see cref="ClientTransaction"/> the <see cref="ActiveTransaction"/>,
+  /// causing <see cref="DomainObject"/> instances bound to its hierarchy to be accessed in the context of this transaction. When the scope is left, 
+  /// the <see cref="ActiveTransaction"/> is reverted to its previous value.
   /// </para>
   /// </remarks>
-  /// <exception cref="InvalidOperationException">
-  /// This <see cref="ClientTransaction"/> is not the <see cref="ActiveTransaction"/> of the hierarchy and 
-  /// <paramref name="inactiveTransactionBehavior"/> is set to <see cref="InactiveTransactionBehavior.Throw"/>.
-  /// </exception>
-  public virtual ClientTransactionScope EnterNonDiscardingScope (
-      InactiveTransactionBehavior inactiveTransactionBehavior = InactiveTransactionBehavior.Throw)
+  public virtual ClientTransactionScope EnterNonDiscardingScope ()
   {
-    return EnterScope (AutoRollbackBehavior.None, inactiveTransactionBehavior);
+    return EnterScope (AutoRollbackBehavior.None);
   }
 
   /// <summary>

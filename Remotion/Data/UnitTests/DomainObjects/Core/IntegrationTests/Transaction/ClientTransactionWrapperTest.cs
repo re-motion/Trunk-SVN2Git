@@ -119,12 +119,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void EnterScope_WithInactiveTransaction ()
     {
-      var inactiveTransaction = ClientTransactionObjectMother.CreateInactiveTransaction();
-      ITransaction transaction = inactiveTransaction.ToITransaction ();
+      var inactiveTransaction = ClientTransaction.CreateRootTransaction();
+      using (ClientTransactionTestHelper.MakeInactive (inactiveTransaction))
+      {
+        ITransaction transaction = inactiveTransaction.ToITransaction();
+        Assert.That (inactiveTransaction.ActiveTransaction, Is.Not.SameAs (inactiveTransaction));
 
-      var scope = transaction.EnterScope();
+        var scope = transaction.EnterScope();
 
-      scope.Leave();
+        Assert.That (inactiveTransaction.ActiveTransaction, Is.SameAs (inactiveTransaction));
+        scope.Leave();
+      }
     }
 
     [Test]
