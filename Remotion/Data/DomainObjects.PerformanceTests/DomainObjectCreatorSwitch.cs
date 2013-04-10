@@ -20,19 +20,27 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
   // TODO 5370: This class is a temporary hack for using the old code generation in tests that need serialization/deserialization capabilities.
+  // Copied from Remotion.Data.UnitTests.DomainObjects.DomainObjectCreatorSwitch.
   public class DomainObjectCreatorSwitch : IDomainObjectCreator
   {
     public static bool UseLegacyCodeGeneration { get; set; }
 
+    private static IPipeline CreateObjectFactory ()
+    {
+      var typeDefinitionProvider = new TypeDefinitionProvider ();
+      var interceptedPropertyCollectorAdapter = new InterceptedPropertyCollectorAdapter ();
+      var domainObjectParticipant = (IParticipant) new DomainObjectParticipant (typeDefinitionProvider, interceptedPropertyCollectorAdapter);
+
+      return PipelineFactory.Create ("restore performance tests", domainObjectParticipant);
+    }
+
     private readonly InterceptedDomainObjectCreator _legacyCreator = InterceptedDomainObjectCreator.Instance;
-    private readonly TypePipeBasedDomainObjectCreator _typePipeCreator =
-        new TypePipeBasedDomainObjectCreator (SafeServiceLocator.Current.GetInstance<IPipeline>());
+    private readonly TypePipeBasedDomainObjectCreator _typePipeCreator = new TypePipeBasedDomainObjectCreator (CreateObjectFactory());
 
     public DomainObject CreateObjectReference (IObjectInitializationContext objectInitializationContext, ClientTransaction clientTransaction)
     {

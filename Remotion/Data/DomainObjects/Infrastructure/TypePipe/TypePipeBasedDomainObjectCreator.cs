@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       objectID.ClassDefinition.ValidateCurrentMixinConfiguration();
 
       var mixedType = DomainObjectMixinCodeGenerationBridge.GetConcreteType (objectID.ClassDefinition.ClassType);
-      var concreteType = _pipeline.GetAssembledType (mixedType);
+      var concreteType = _pipeline.ReflectionService.GetAssembledType (mixedType);
       var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
       _pipeline.PrepareExternalUninitializedObject (instance);
 
