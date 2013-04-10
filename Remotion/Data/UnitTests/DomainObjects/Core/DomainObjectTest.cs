@@ -271,22 +271,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void DefaultTransactionContext_SameAsAssociatedLeafTransaction ()
-    {
-      var order = _transaction.ExecuteInScope (() => Order.NewObject ());
-      var subTransaction = _transaction.CreateSubTransaction();
-      Assert.That (order.DefaultTransactionContext.ClientTransaction, Is.SameAs (subTransaction));
-    }
-
-    [Test]
     public void DefaultTransactionContext_SameAsActivatedTransaction ()
     {
       var order = _transaction.ExecuteInScope (() => Order.NewObject ());
-      _transaction.CreateSubTransaction ();
 
-      Assert.That (
-          _transaction.ExecuteInScope (() => order.DefaultTransactionContext.ClientTransaction),
-          Is.SameAs (_transaction));
+      var subTransaction = _transaction.CreateSubTransaction();
+      Assert.That (order.DefaultTransactionContext.ClientTransaction, Is.SameAs (_transaction));
+
+      using (subTransaction.EnterDiscardingScope ())
+      {
+        Assert.That (order.DefaultTransactionContext.ClientTransaction, Is.SameAs (subTransaction));
+      }
     }
 
     [Test]

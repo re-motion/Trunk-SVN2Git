@@ -37,6 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.HierarchyB
 
       _rootTransaction = ClientTransaction.CreateRootTransaction ();
       _subTransaction = _rootTransaction.CreateSubTransaction();
+      _subTransaction.EnterDiscardingScope();
+
       _orderReference = DomainObjectIDs.Order1.GetObjectReference<Order> (_rootTransaction);
     }
 

@@ -809,23 +809,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void InactiveTransactionIsActivated_ForEvents ()
     {
       var inactiveClientTransaction = ClientTransaction.CreateRootTransaction ();
+      using (ClientTransactionTestHelper.MakeInactive (inactiveClientTransaction))
+      {
+        Assert.That (inactiveClientTransaction.ActiveTransaction, Is.Not.SameAs (inactiveClientTransaction));
 
-      inactiveClientTransaction.CreateSubTransaction ();
-      Assert.That (inactiveClientTransaction.ActiveTransaction, Is.Not.SameAs (inactiveClientTransaction));
+        var transactionEventReceiverMock = MockRepository.GenerateStrictMock<ClientTransactionMockEventReceiver> (inactiveClientTransaction);
+        transactionEventReceiverMock
+            .Expect (mock => mock.SubTransactionCreated (Arg<ClientTransaction>.Is.Anything, Arg<SubTransactionCreatedEventArgs>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  Assert.That (ClientTransaction.Current, Is.SameAs (inactiveClientTransaction));
+                  Assert.That (ClientTransaction.Current.ActiveTransaction, Is.SameAs (inactiveClientTransaction));
+                });
 
-      var transactionEventReceiverMock = MockRepository.GenerateStrictMock<ClientTransactionMockEventReceiver> (inactiveClientTransaction);
-      transactionEventReceiverMock
-          .Expect (mock => mock.SubTransactionCreated (Arg<ClientTransaction>.Is.Anything, Arg<SubTransactionCreatedEventArgs>.Is.Anything))
-          .WhenCalled (mi =>
-          {
-            Assert.That (ClientTransaction.Current, Is.SameAs (inactiveClientTransaction));
-            Assert.That (ClientTransaction.Current.ActiveTransaction, Is.SameAs (inactiveClientTransaction));
-          });
+        var eventBroker = new ClientTransactionEventBroker (inactiveClientTransaction);
+        eventBroker.RaiseSubTransactionCreatedEvent (ClientTransactionObjectMother.Create());
 
-      var eventBroker = new ClientTransactionEventBroker (inactiveClientTransaction);
-      eventBroker.RaiseSubTransactionCreatedEvent (ClientTransactionObjectMother.Create ());
-
-      transactionEventReceiverMock.VerifyAllExpectations ();
+        transactionEventReceiverMock.VerifyAllExpectations();
+      }
     }
 
     [Test]

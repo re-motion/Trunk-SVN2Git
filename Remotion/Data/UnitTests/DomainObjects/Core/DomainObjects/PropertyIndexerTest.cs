@@ -60,16 +60,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void Item_UsesAssociatedActiveTransactionByDefault()
+    public void Item_UsesAssociatedActiveTransactionByDefault ()
     {
       var indexer = new PropertyIndexer (_industrialSector);
       var accessor1 = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
       Assert.That (accessor1.ClientTransaction, Is.SameAs (_transaction));
 
       var subTransaction = _transaction.CreateSubTransaction();
+
       var accessor2 = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
-      Assert.That (accessor2.ClientTransaction, Is.SameAs (subTransaction));
-    }
+      Assert.That (accessor2.ClientTransaction, Is.SameAs (_transaction));
+
+      using (subTransaction.EnterDiscardingScope())
+      {
+        var accessor3 = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
+        Assert.That (accessor3.ClientTransaction, Is.SameAs (subTransaction));
+      }
+  }
 
     [Test]
     public void Item_WithSpecificTransaction_AllowsPassingAnInactiveParentTransaction ()
@@ -155,7 +162,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var transactions2 = (from propertyAccessor in _order.Properties.AsEnumerable ()
                            select propertyAccessor.ClientTransaction).Distinct ().ToArray ();
-      Assert.That (transactions2, Is.EqualTo (new[] { subTransaction }));
+      Assert.That (transactions2, Is.EqualTo (new[] { _transaction }));
+
+      using (subTransaction.EnterDiscardingScope())
+      {
+        var transactions3 = (from propertyAccessor in _order.Properties.AsEnumerable()
+                             select propertyAccessor.ClientTransaction).Distinct().ToArray();
+        Assert.That (transactions3, Is.EqualTo (new[] { subTransaction }));
+      }
     }
 
     [Test]

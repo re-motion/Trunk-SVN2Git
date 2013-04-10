@@ -32,14 +32,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
     [NotNull]
     private ClientTransaction _leafTransaction;
 
-    [CanBeNull]
-    private ClientTransaction _activatedTransaction;
+    [NotNull]
+    private ClientTransaction _activeTransaction;
 
     public ClientTransactionHierarchy (ClientTransaction rootTransaction)
     {
       ArgumentUtility.CheckNotNull ("rootTransaction", rootTransaction);
       _rootTransaction = rootTransaction;
       _leafTransaction = rootTransaction;
+      _activeTransaction = rootTransaction;
     }
 
     public ClientTransaction RootTransaction
@@ -54,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 
     public ClientTransaction ActiveTransaction
     {
-      get { return _activatedTransaction ?? _leafTransaction; }
+      get { return _activeTransaction; }
     }
 
     public void AppendLeafTransaction (ClientTransaction leafTransaction)
@@ -84,8 +85,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
       if (clientTransaction.RootTransaction != _rootTransaction)
         throw new ArgumentException ("The activated transaction must be from this ClientTransactionHierarchy.", "clientTransaction");
 
-      var previousActivatedTransaction = _activatedTransaction;
-      _activatedTransaction = clientTransaction;
+      var previousActivatedTransaction = _activeTransaction;
+      _activeTransaction = clientTransaction;
 
       return new ActivationScope (this, clientTransaction, previousActivatedTransaction);
     }
@@ -99,6 +100,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
       public ActivationScope (
           ClientTransactionHierarchy hierarchy, ClientTransaction expectedActivatedTransaction, ClientTransaction previousActivatedTransaction)
       {
+        ArgumentUtility.CheckNotNull ("hierarchy", hierarchy);
+        ArgumentUtility.CheckNotNull ("expectedActivatedTransaction", expectedActivatedTransaction);
+        ArgumentUtility.CheckNotNull ("previousActivatedTransaction", previousActivatedTransaction);
+
         _hierarchy = hierarchy;
         _expectedActivatedTransaction = expectedActivatedTransaction;
         _previousActivatedTransaction = previousActivatedTransaction;
@@ -106,10 +111,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 
       public void Dispose ()
       {
-        if (_hierarchy._activatedTransaction != _expectedActivatedTransaction)
+        if (_hierarchy._activeTransaction != _expectedActivatedTransaction)
           throw new InvalidOperationException ("The scopes returned by ActivateTransaction must be disposed inside out.");
 
-        _hierarchy._activatedTransaction = _previousActivatedTransaction;
+        _hierarchy._activeTransaction = _previousActivatedTransaction;
       }
     }
   }
