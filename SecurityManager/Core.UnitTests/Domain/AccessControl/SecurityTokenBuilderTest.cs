@@ -461,12 +461,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = CreateTestPrincipal ();
 
-      ClientTransactionTestHelper.MakeInactive (ClientTransactionScope.CurrentTransaction);
+      using (ClientTransactionTestHelper.MakeInactive (ClientTransactionScope.CurrentTransaction))
+      {
+        SecurityTokenBuilder builder = new SecurityTokenBuilder();
+        SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
-
-      Assert.That (token.Principal.IsNull, Is.False);
+        Assert.That (token.Principal.IsNull, Is.False);
+      }
     }
 
     private ISecurityPrincipal CreateTestPrincipal ()

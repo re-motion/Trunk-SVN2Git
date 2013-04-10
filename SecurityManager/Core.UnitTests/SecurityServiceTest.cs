@@ -284,9 +284,10 @@ namespace Remotion.SecurityManager.UnitTests
       }
       _mocks.ReplayAll ();
 
-      ClientTransactionTestHelper.MakeInactive (_clientTransaction);
-
-      Assert.That (() => _service.GetAccess (_clientTransaction, _context, _principalStub), Throws.Nothing);
+      using (ClientTransactionTestHelper.MakeInactive (_clientTransaction))
+      {
+        Assert.That (() => _service.GetAccess (_clientTransaction, _context, _principalStub), Throws.Nothing);
+      }
 
       _mocks.VerifyAll ();
     }

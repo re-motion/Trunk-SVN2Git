@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 
@@ -23,10 +24,11 @@ namespace Remotion.SecurityManager.UnitTests
 {
   public static class ClientTransactionTestHelper
   {
-    public static void MakeInactive (ClientTransaction clientTransaction)
+    public static IDisposable MakeInactive (ClientTransaction clientTransaction)
     {
-      clientTransaction.CreateSubTransaction();
+      var scope = clientTransaction.CreateSubTransaction().EnterDiscardingScope();
       Assert.That (clientTransaction.ActiveTransaction, Is.Not.SameAs (clientTransaction));
+      return scope;
     }
   }
 }

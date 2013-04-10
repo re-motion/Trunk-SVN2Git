@@ -557,26 +557,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       _importer.Import (GetXmlDocument (metadataXml));
     }
 
-    [Test]
-    public void Import_WithInactiveTransaction ()
-    {
-      string metadataXml = @"
-          <securityMetadata xmlns=""http://www.re-motion.org/Security/Metadata/1.0"">
-            <classes />
-            <stateProperties />
-            <accessTypes />
-            <abstractRoles />
-          </securityMetadata>
-          ";
-
-      ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction);
-
-      Assert.That (
-          () => _importer.Import (GetXmlDocument (metadataXml)),
-          Throws.InvalidOperationException.With.Message.EqualTo (
-              "Cannot import into an inactive transaction (e.g., a transaction that has an active subtransaction)."));
-    }
-
     private XmlDocument GetXmlDocument (string metadataXml)
     {
       XmlDocument metadataXmlDocument = new XmlDocument ();

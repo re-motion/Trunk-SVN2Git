@@ -222,11 +222,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       SecurityContext context = CreateContextWithoutStates ();
 
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
-      ClientTransactionTestHelper.MakeInactive (ClientTransactionScope.CurrentTransaction);
+      using (ClientTransactionTestHelper.MakeInactive (ClientTransactionScope.CurrentTransaction))
+      {
+        AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
-      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
-
-      Assert.That (foundAcl, Is.SameAs (acl));
+        Assert.That (foundAcl, Is.SameAs (acl));
+      }
     }
 
     private SecurityContext CreateStatelessContext ()
