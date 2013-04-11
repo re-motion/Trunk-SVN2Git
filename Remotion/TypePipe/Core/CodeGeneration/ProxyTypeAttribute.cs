@@ -14,10 +14,9 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
 
-namespace Remotion.TypePipe.Implementation
+namespace Remotion.TypePipe.CodeGeneration
 {
   /// <summary>
   /// This is an infastructure <see cref="Attribute"/> and not meant to be used outside of TypePipe code.
