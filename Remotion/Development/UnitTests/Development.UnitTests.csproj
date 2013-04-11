@@ -173,6 +173,9 @@
     <Compile Include="Core\Mixins\TestDomain\MixedClass2.cs" />
     <Compile Include="Core\Mixins\TestDomain\MixedClass1.cs" />
     <Compile Include="Core\Mixins\TestDomain\NullMixin.cs" />
+    <Compile Include="Core\TypePipe\DebuggerWorkaroundIntegrationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Core\TypePipe\DebuggerWorkaroundCodeGeneratorTest.cs" />
     <Compile Include="Core\TypePipe\DebuggerWorkaroundPipelineFactoryTest.cs" />
     <Compile Include="Core\UnitTesting\Configuration\XmlSchemaValidationTest.cs" />

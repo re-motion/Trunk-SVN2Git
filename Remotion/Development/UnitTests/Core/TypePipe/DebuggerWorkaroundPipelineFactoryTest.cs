@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.TypePipe;
 using Remotion.Development.UnitTesting;
+using Remotion.Diagnostics;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.Configuration;
 using Rhino.Mocks;
@@ -37,6 +38,12 @@ namespace Remotion.Development.UnitTests.Core.TypePipe
       _maximumTypesPerAssembly = 7;
 
       _factory = new DebuggerWorkaroundPipelineFactory (_maximumTypesPerAssembly);
+    }
+
+    [Test]
+    public void Initialization ()
+    {
+      Assert.That (_factory.DebuggerInterface, Is.Not.Null.And.TypeOf<DebuggerInterface>());
     }
 
     [Test]
