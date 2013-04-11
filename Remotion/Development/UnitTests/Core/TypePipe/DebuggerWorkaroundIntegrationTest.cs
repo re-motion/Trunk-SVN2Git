@@ -38,10 +38,11 @@ namespace Remotion.Development.UnitTests.Core.TypePipe
     public void SetUp ()
     {
       _previousPipelineFactory = (IPipelineFactory) PrivateInvoke.GetNonPublicStaticField (typeof (PipelineFactory), "s_instance");
-      _maximumTypesPerAssembly = 2;
       _debuggerStub = MockRepository.GenerateStub<IDebuggerInterface>();
+      _maximumTypesPerAssembly = 2;
 
-      var debuggerWorkaroundPipelineFactory = new DebuggerWorkaroundPipelineFactory (_maximumTypesPerAssembly) { DebuggerInterface = _debuggerStub };
+      var debuggerWorkaroundPipelineFactory =
+          new DebuggerWorkaroundPipelineFactory { DebuggerInterface = _debuggerStub, MaximumTypesPerAssembly = _maximumTypesPerAssembly };
       PrivateInvoke.SetNonPublicStaticField (typeof (PipelineFactory), "s_instance", debuggerWorkaroundPipelineFactory);
 
       var dummyParticipant = MockRepository.GenerateStub<IParticipant>();

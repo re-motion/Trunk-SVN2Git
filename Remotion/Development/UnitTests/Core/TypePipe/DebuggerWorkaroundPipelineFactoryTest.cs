@@ -28,34 +28,32 @@ namespace Remotion.Development.UnitTests.Core.TypePipe
   [TestFixture]
   public class DebuggerWorkaroundPipelineFactoryTest
   {
-    private int _maximumTypesPerAssembly;
-
     private DebuggerWorkaroundPipelineFactory _factory;
 
     [SetUp]
     public void SetUp ()
     {
-      _maximumTypesPerAssembly = 7;
-
-      _factory = new DebuggerWorkaroundPipelineFactory (_maximumTypesPerAssembly);
+      _factory = new DebuggerWorkaroundPipelineFactory();
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_factory.DebuggerInterface, Is.Not.Null.And.TypeOf<DebuggerInterface>());
+      Assert.That (_factory.MaximumTypesPerAssembly, Is.EqualTo (11));
     }
 
     [Test]
     public void NewReflectionEmitCodeGenerator ()
     {
       var configurationProviderStub = MockRepository.GenerateStrictMock<IConfigurationProvider>();
+      _factory.MaximumTypesPerAssembly = 7;
 
       var result = _factory.Invoke<IReflectionEmitCodeGenerator> ("NewReflectionEmitCodeGenerator", configurationProviderStub);
 
       Assert.That (result, Is.TypeOf<DebuggerWorkaroundCodeGenerator>());
       var debuggerWorkaroundCodeGenerator = (DebuggerWorkaroundCodeGenerator) result;
-      Assert.That (debuggerWorkaroundCodeGenerator.MaximumTypesPerAssembly, Is.EqualTo (_maximumTypesPerAssembly));
+      Assert.That (debuggerWorkaroundCodeGenerator.MaximumTypesPerAssembly, Is.EqualTo (7));
     }
   }
 }
