@@ -102,6 +102,10 @@
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
       <Name>Mixins.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
+      <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
+      <Name>TypePipe.Core</Name>
+    </ProjectReference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\prereq\Assemblies\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -125,6 +129,7 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TypePipe\DebuggerWorkaroundCodeGenerator.cs" />
     <Compile Include="UnitTesting\AppDomainRunner.cs" />
     <Compile Include="UnitTesting\AssemblyCompiler.cs" />
     <Compile Include="UnitTesting\AssemblyCompilationException.cs" />

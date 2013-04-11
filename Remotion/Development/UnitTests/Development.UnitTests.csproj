@@ -136,6 +136,10 @@
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
       <Name>Mixins.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
+      <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
+      <Name>TypePipe.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Development.Core.csproj">
       <Name>Development.Core</Name>
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
@@ -169,6 +173,7 @@
     <Compile Include="Core\Mixins\TestDomain\MixedClass2.cs" />
     <Compile Include="Core\Mixins\TestDomain\MixedClass1.cs" />
     <Compile Include="Core\Mixins\TestDomain\NullMixin.cs" />
+    <Compile Include="Core\TypePipe\DebuggerWorkaroundCodeGeneratorTest.cs" />
     <Compile Include="Core\UnitTesting\Configuration\XmlSchemaValidationTest.cs" />
     <Compile Include="Core\UnitTesting\Enumerables\EnumerableExtensionsTest.cs" />
     <Compile Include="Core\UnitTesting\Enumerables\OneTimeEnumerableTest.cs" />
