@@ -275,6 +275,7 @@ namespace Remotion.SecurityManager.UnitTests
     [Test]
     public void GetAccess_WithInactiveTransaction ()
     {
+      Assert.Fail();
       using (_clientTransaction.EnterNonDiscardingScope ())
       {
         SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, new AbstractRoleDefinition[0]);
