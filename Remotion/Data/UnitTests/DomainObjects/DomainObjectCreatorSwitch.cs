@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Reflection;
-using Remotion.TypePipe;
 
 namespace Remotion.Data.UnitTests.DomainObjects
 {
@@ -30,17 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects
   {
     public static bool UseLegacyCodeGeneration { get; set; }
 
-    private static IPipeline CreateObjectFactory ()
-    {
-      var typeDefinitionProvider = new TypeDefinitionProvider();
-      var interceptedPropertyCollectorAdapter = new InterceptedPropertyCollectorAdapter();
-      var domainObjectParticipant = (IParticipant) new DomainObjectParticipant (typeDefinitionProvider, interceptedPropertyCollectorAdapter);
-
-      return PipelineFactory.Create ("restore integration tests", domainObjectParticipant);
-    }
-
     private readonly InterceptedDomainObjectCreator _legacyCreator = InterceptedDomainObjectCreator.Instance;
-    private readonly TypePipeBasedDomainObjectCreator _typePipeCreator = new TypePipeBasedDomainObjectCreator (CreateObjectFactory());
+    private readonly TypePipeBasedDomainObjectCreator _typePipeCreator = TypePipeBasedDomainObjectCreator.Instance;
 
     public DomainObject CreateObjectReference (IObjectInitializationContext objectInitializationContext, ClientTransaction clientTransaction)
     {

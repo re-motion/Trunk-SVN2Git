@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.Utilities;
 
@@ -31,6 +32,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// </summary>
   public class TypePipeBasedDomainObjectCreator : IDomainObjectCreator
   {
+    // TODO 5375: Remove if possible.
+    public static readonly TypePipeBasedDomainObjectCreator Instance = CreateInstance();
+
+    // TODO 5375: Refactor away and move to callers?
+    private static TypePipeBasedDomainObjectCreator CreateInstance ()
+    {
+      var pipelineRegistry = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>();
+      var defaultPipeline = pipelineRegistry.DefaultPipeline;
+
+      return new TypePipeBasedDomainObjectCreator (defaultPipeline);
+    }
+
     private readonly IPipeline _pipeline;
 
     public TypePipeBasedDomainObjectCreator (IPipeline pipeline)
