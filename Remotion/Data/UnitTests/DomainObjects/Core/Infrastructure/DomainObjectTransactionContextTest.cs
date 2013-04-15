@@ -177,9 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       DeleteOrder (_loadedOrder1);
       Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Deleted));
 
-      Assert.That (
-          () => _loadedOrder1Context.RegisterForCommit(),
-          Throws.TypeOf<ObjectDeletedException>().With.Message.StringContaining (_loadedOrder1.ID.ToString()));
+      Assert.That (() => _loadedOrder1Context.RegisterForCommit(), Throws.Nothing);
 
       Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Deleted));
       Assert.That (GetDataContainer (_loadedOrder1Context).HasBeenMarkedChanged, Is.False);

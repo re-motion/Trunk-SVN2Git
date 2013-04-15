@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var dataContainer = ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID, throwOnNotFound: true);
       if (dataContainer.State == StateType.Deleted)
-        throw new ObjectDeletedException (DomainObject.ID);
+        return;
 
       if (dataContainer.State == StateType.New)
         return;
