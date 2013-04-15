@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -407,27 +408,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
     }
 
     [Test]
-    public void GetChangedAt_AfterCreation ()
-    {
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-      {
-        SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
-
-        Assert.That (classDefinition.State, Is.EqualTo (StateType.New));
-      }
-    }
-
-    [Test]
     public void Touch_AfterCreation ()
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
+        SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
 
         Assert.That (classDefinition.State, Is.EqualTo (StateType.New));
 
-        classDefinition.Touch ();
-
+        Assert.That (() => classDefinition.Touch(), Throws.Nothing);
         Assert.That (classDefinition.State, Is.EqualTo (StateType.New));
       }
     }
@@ -442,10 +431,44 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         {
           Assert.That (classDefinition.State, Is.EqualTo (StateType.NotLoadedYet));
 
-          classDefinition.Touch();
-
+          Assert.That (() => classDefinition.Touch(), Throws.Nothing);
           Assert.That (classDefinition.State, Is.EqualTo (StateType.Changed));
         }
+      }
+    }
+    
+    [Test]
+    public void Touch_AfterDelete ()
+    {
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
+      {
+        SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
+
+        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+        {
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.NotLoadedYet));
+
+          classDefinition.Delete();
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.Deleted));
+
+          Assert.That (() => classDefinition.Touch(), Throws.Nothing);
+          Assert.That (classDefinition.State, Is.EqualTo (StateType.Deleted));
+        }
+      }
+    }
+
+    [Test]
+    public void Touch_AfterDiscard ()
+    {
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
+      {
+        SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
+
+        classDefinition.Delete();
+
+        Assert.That (classDefinition.State, Is.EqualTo (StateType.Invalid));
+
+        Assert.That (() => classDefinition.Touch(), Throws.TypeOf<ObjectInvalidException>());
       }
     }
 
