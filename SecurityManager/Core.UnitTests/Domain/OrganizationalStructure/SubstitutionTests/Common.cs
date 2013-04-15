@@ -17,6 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionTests
@@ -32,6 +33,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
       Assert.That (substitution.IsEnabled, Is.True);
       Assert.That (substitution.BeginDate, Is.Null);
       Assert.That (substitution.EndDate, Is.Null);
+    }
+
+    [Test]
+    public void DoesNotImplementISecurableObject ()
+    {
+      Substitution substitution = Substitution.NewObject();
+      Assert.That (substitution, Is.Not.InstanceOf<ISecurableObject>());
     }
   }
 }

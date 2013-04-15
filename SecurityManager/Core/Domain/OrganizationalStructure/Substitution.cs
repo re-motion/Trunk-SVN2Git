@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [Instantiable]
   [DBTable]
   [SecurityManagerStorageGroup]
-  public abstract class Substitution : OrganizationalStructureObject
+  public abstract class Substitution : BaseSecurityManagerObject
   {
     public static Substitution NewObject ()
     {
