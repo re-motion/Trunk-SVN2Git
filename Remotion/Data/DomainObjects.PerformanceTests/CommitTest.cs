@@ -103,6 +103,38 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       }
     }
 
+    [Test]
+    public void CommitTransactionToDatabase_NewProperties ()
+    {
+      Console.WriteLine ("Expected average duration of CommitTransactionToDatabase_NewProperties on reference system: ~3.5 ms");
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        TestDomainObjectMother.PrepareDatabaseObjectsWithValueProperties (TestSetSize);
+        ClientTransaction.Current.Commit();
+      }
+
+      var stopwatch = new Stopwatch();
+
+      for (int i = 0; i < TestRepititions; i++)
+      {
+        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+        {
+          TestDomainObjectMother.PrepareDatabaseObjectsWithValueProperties (TestSetSize);
+          stopwatch.Start();
+          ClientTransaction.Current.Commit();
+          stopwatch.Stop();
+        }
+      }
+
+      double averageMilliSeconds = stopwatch.Elapsed.TotalMilliseconds / TestRepititions;
+      Console.WriteLine (
+          "CommitTransactionToDatabase_NewProperties (executed {0} x Commit ({2} objects)): Average duration: {1} ms",
+          TestRepititions,
+          averageMilliSeconds.ToString ("n"),
+          TestSetSize);
+    }
+
     private void ChangeObjectsWithRelations (ClassWithRelationProperties[] objects)
     {
       for (int i = 0; i < objects.Length; i++)

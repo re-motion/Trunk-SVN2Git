@@ -90,7 +90,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       test.SetUp ();
       test.CommitSubTransaction_Relations();
-      test.CommitSubTransaction_ValueProperties();
+      test.CommitSubTransaction_ValueProperties ();
+      test.CommitTransactionToDatabase_NewProperties();
       test.TearDown ();
 
       test.TestFixtureTearDown ();
