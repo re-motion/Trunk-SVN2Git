@@ -46,7 +46,9 @@
     <DependDBUploadPath></DependDBUploadPath>
     <DependDBProjectVCSUrlTemplate>$(SvnBaseUri)/!svn/bc/$(SvnRevision)/$(SvnBranchFolder)/{0}</DependDBProjectVCSUrlTemplate>
     <DependDBProjectImportNotificationMailAddress></DependDBProjectImportNotificationMailAddress>
-    
+
+    <DebugSymbolsVCSUrl>$(SvnBaseUri)/$(SvnBranchFolder)/</DebugSymbolsVCSUrl>
+
     <VersionPattern>^1\.13\.\d+\.0$</VersionPattern>
   </PropertyGroup>
   
@@ -174,7 +176,7 @@
     </PropertyGroup>
   </Target>
   
-  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly" />
+  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly;UpdateDebugSymbols" />
   
   <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;CreateAdditionalBuildMetadata;BuildAll;DocumentAll;PackageAll" />
   

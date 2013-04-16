@@ -24,7 +24,8 @@
   <Import Project="Remotion.BuildTargets.include.build" />
   <Import Project="Remotion.BuildTargets.Testing.include.build" />
   <Import Project="Remotion.AssembleBuildOutput.include.build" />
-  
+  <Import Project="Remotion.DebugSymbols.include.build" />
+
   <PropertyGroup>
     <Version></Version>
     <ReleaseType></ReleaseType>
@@ -78,7 +79,43 @@
                  Version=$(Version);"/>
   </Target>
 
+  <Target Name="TestSymbols" >
+    <!-- temp target. delete after testing -->
+    <PropertyGroup>
+      <SvnRevision>26909</SvnRevision>
+      <SvnBaseUri>https://svn.re-motion.org/svn/Remotion</SvnBaseUri>
+      <SvnBranchFolder>trunk</SvnBranchFolder>
+      <DebugSymbolsVCSUrl>$(SvnBaseUri)/$(SvnBranchFolder)/</DebugSymbolsVCSUrl>
+    </PropertyGroup>
+    
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             BuildInParallel="false"
+             Targets="UpdateDebugSymbols"
+             Properties="SolutionDirectory=$(SolutionDirectory);
+                         BinariesDirectory=$(BinariesDirectory);
+                         DebugSymbolsVCSUrl=$(DebugSymbolsVCSUrl);
+                         SvnRevision=$(SvnRevision);"/>
+  </Target>
+  
   <Target Name="PackageAll">
+    <MSBuild Projects="%(NuGetPackages.PackageDeclaration)"
+             BuildInParallel="false"
+             Targets="CreateNuGetPackage"
+             Properties="SolutionDirectory=$(SolutionDirectory);
+                         BinariesDirectory=$(BinariesDirectory);
+                         OutputDirectory=$(OutputDirectory);
+                         ArchiveDirectory=$(ArchiveDirectory);
+                         TempDirectory=$(TempDirectory);
+                         Version=$(Version);"/>
+    
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             BuildInParallel="false"
+             Targets="UpdateDebugSymbols"
+             Properties="SolutionDirectory=$(SolutionDirectory);
+                         BinariesDirectory=$(BinariesDirectory);
+                         DebugSymbolsVCSUrl=$(DebugSymbolsVCSUrl);
+                         SvnRevision=$(SvnRevision);"/>
+    
     <MSBuild Projects="%(AllPackages.PackageDeclaration)"
              BuildInParallel="false"
              Targets="CreatePackages"
@@ -93,16 +130,6 @@
                  DependDBProjectVersion=$(Version);
                  DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
                  DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);"/>
-
-    <MSBuild Projects="%(NuGetPackages.PackageDeclaration)"
-             BuildInParallel="false"
-             Targets="CreateNuGetPackage"
-             Properties="SolutionDirectory=$(SolutionDirectory);
-                         BinariesDirectory=$(BinariesDirectory);
-                         OutputDirectory=$(OutputDirectory);
-                         ArchiveDirectory=$(ArchiveDirectory);
-                         TempDirectory=$(TempDirectory);
-                         Version=$(Version);"/>
   </Target>
   
   <Target Name="ZipPackageAll">
