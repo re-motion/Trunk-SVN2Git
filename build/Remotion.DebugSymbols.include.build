@@ -17,11 +17,11 @@
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <PropertyGroup>
-    <InsertSvnDataTool>$(SolutionDirectory)prereq\Tools\SymbolServer\InsertSvnData.exe</InsertSvnDataTool>
-  </PropertyGroup>
-
   <Target Name="UpdateDebugSymbols">
+    <PropertyGroup>
+      <InsertSvnDataTool>$(SolutionDirectory)prereq\Tools\SymbolServer\InsertSvnData.exe</InsertSvnDataTool>
+    </PropertyGroup>
+    
     <Error Text="The property 'SvnRevision' is not set." Condition="'$(SvnRevision)' == ''" />
     <Error Text="The property 'DebugSymbolsVCSUrl' is not set." Condition="'$(DebugSymbolsVCSUrl)' == ''" />
 
