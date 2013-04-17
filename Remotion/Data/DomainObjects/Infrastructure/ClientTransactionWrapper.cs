@@ -146,7 +146,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (incompatibleObjects.Length > 0)
       {
         var message = string.Format (
-            "The following objects are incompatible with the target transaction: {0}. Use variables of type '{1}' instead.",
+            "The following objects are incompatible with the target transaction: {0}. Objects of type '{1}' could be used instead.",
             SeparatedStringBuilder.Build (", ", incompatibleObjects, obj => obj.ID.ToString()),
             typeof (IDomainObjectHandle<>));
         throw new InvalidOperationException (message);

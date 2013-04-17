@@ -61,5 +61,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
       DelegateBatch.Add (action);
       Add (new WxeMethodStep (ctx => DelegateBatch[CurrentDelegateIndex++] (ctx, this)));
     }
+
+    public void Reset ()
+    {
+      TransactionStrategy.Reset();
+    }
   }
 }

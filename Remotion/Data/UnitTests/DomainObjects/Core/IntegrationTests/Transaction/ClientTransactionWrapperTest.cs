@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           Throws.TypeOf<InvalidOperationException>().With.Message.StringMatching (
               @"The following objects are incompatible with the target transaction\: "
               + @"ClassWithAllDataTypes\|.*\|System\.Guid, ClassWithAllDataTypes\|.*\|System\.Guid\. "
-              + @"Use variables of type \'Remotion\.Data\.DomainObjects\.IDomainObjectHandle\`1\[T\]\' instead\.")
+              + @"Objects of type \'Remotion\.Data\.DomainObjects\.IDomainObjectHandle\`1\[T\]\' could be used instead\.")
                 .And.Message.StringContaining ("ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid")
                 .And.Message.StringContaining ("ClassWithAllDataTypes|583ec716-8443-4b55-92bf-09f7c8768529|System.Guid"));
     }

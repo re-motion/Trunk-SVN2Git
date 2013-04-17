@@ -134,7 +134,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
       catch (InvalidOperationException ex)
       {
-        var message = "One or more of the variables of the WxeFunction are incompatible with the new transaction after the Reset. " + ex.Message;
+        var message = 
+            "One or more of the variables of the WxeFunction are incompatible with the new transaction after the Reset. " 
+            + ex.Message
+            + " (To avoid this exception, clear the Variables collection from incompatible objects before calling Reset and repopulate it "
+            + "afterwards.)";
         throw new WxeException (message, ex);
       }
     }

@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
         var transactionBefore = ClientTransaction.Current;
         Assert.That (transactionBefore, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction> ()));
 
-        f.Transaction.Reset ();
+        f.Reset ();
 
         Assert.That (transactionBefore, Is.Not.SameAs (ClientTransaction.Current));
         Assert.That (ClientTransaction.Current, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction> ()));
@@ -50,12 +50,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
         Assert.That (transactionBefore, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction>()));
 
         Assert.That (
-            () =>
-            f.Transaction.Reset(),
+            () => f.Reset(),
             Throws.TypeOf<WxeException>().With.Message.EqualTo (
                 "One or more of the variables of the WxeFunction are incompatible with the new transaction after the Reset. The following objects "
                 + "are incompatible with the target transaction: Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid. "
-                + "Use variables of type 'Remotion.Data.DomainObjects.IDomainObjectHandle`1[T]' instead."));
+                + "Objects of type 'Remotion.Data.DomainObjects.IDomainObjectHandle`1[T]' could be used instead. (To avoid this exception, clear the "
+                + "Variables collection from incompatible objects before calling Reset and repopulate it afterwards.)"));
 
         Assert.That (ClientTransaction.Current, Is.Not.Null.And.Not.SameAs (transactionBefore));
         Assert.That (ClientTransaction.Current, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction>()));
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
         var transactionBefore = ClientTransaction.Current;
         Assert.That (transactionBefore, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction> ()));
 
-        Assert.That (() => f.Transaction.Reset (), Throws.Nothing);
+        Assert.That (() => f.Reset (), Throws.Nothing);
 
         Assert.That (ClientTransaction.Current, Is.Not.Null.And.Not.SameAs (transactionBefore));
         Assert.That (ClientTransaction.Current, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction> ()));
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
       {
         var order = DomainObjectIDs.Order1.GetObject<Order> ();
 
-        Assert.That (() => f.Transaction.Reset (), Throws.Nothing);
+        Assert.That (() => f.Reset (), Throws.Nothing);
 
         var transactionAfter = f.Transaction.GetNativeTransaction<ClientTransaction> ();
         Assert.That (transactionAfter.IsEnlisted (order), Is.False);
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
         var order = DomainObjectIDs.Order1.GetObject<Order> ();
         f.Variables.Add ("Order", order);
 
-        f.Transaction.Reset();
+        f.Reset();
 
         var transactionAfter = f.Transaction.GetNativeTransaction<ClientTransaction>();
         Assert.That (transactionAfter, Is.Not.SameAs (transactionBefore));

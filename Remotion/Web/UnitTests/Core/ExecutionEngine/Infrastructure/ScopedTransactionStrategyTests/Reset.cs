@@ -197,7 +197,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
           () => _strategy.Reset(),
           Throws
               .TypeOf<WxeException>()
-              .With.Message.EqualTo ("One or more of the variables of the WxeFunction are incompatible with the new transaction after the Reset. Oh nos!")
+              .With.Message.EqualTo (
+                "One or more of the variables of the WxeFunction are incompatible with the new transaction after the Reset. Oh nos! "
+                + "(To avoid this exception, clear the Variables collection from incompatible objects before calling Reset and repopulate it "
+                + "afterwards.)")
               .And.InnerException.SameAs (invalidOperationException));
 
       Assert.That (_strategy.Scope, Is.Null);
