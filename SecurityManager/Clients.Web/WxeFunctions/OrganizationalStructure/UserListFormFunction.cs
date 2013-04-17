@@ -25,16 +25,8 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
 {
   [WxeDemandTargetStaticMethodPermission (User.Methods.Search)]
   [Serializable]
-  public class UserListFormFunction : BaseTransactedFunction
+  public class UserListFormFunction : BaseListTransactedFunction
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     public UserListFormFunction ()
     {
     }
@@ -44,8 +36,6 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
       : base (transactionMode, args)
     {
     }
-
-    // methods and properties
 
     WxeResourcePageStep Step1 = new WxeResourcePageStep (typeof (UserListForm), "UI/OrganizationalStructure/UserListForm.aspx");
   }

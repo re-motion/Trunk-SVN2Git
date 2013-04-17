@@ -565,6 +565,7 @@
     </Compile>
     <Compile Include="WxeFunctions\AccessControl\EditPermissionsFormFunction.cs" />
     <Compile Include="WxeFunctions\AccessControl\SecurableClassDefinitionListFormFunction.cs" />
+    <Compile Include="WxeFunctions\BaseListTransactedFunction.cs" />
     <Compile Include="WxeFunctions\BaseTransactedFunction.cs" />
     <Compile Include="WxeFunctions\FormFunction.cs" />
     <Compile Include="WxeFunctions\OrganizationalStructure\EditTenantFormFunction.cs" />

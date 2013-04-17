@@ -32,6 +32,11 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
     protected abstract IList GetValues ();
 
     protected abstract FormFunction<T> CreateEditFunction (ITransactionMode transactionMode, T editedObject);
+    
+    protected new BaseListTransactedFunction CurrentFunction
+    {
+      get { return (BaseListTransactedFunction) base.CurrentFunction; }
+    }
 
     protected void HandleEditItemClick (BocList sender, BocListItemCommandClickEventArgs e)
     {
@@ -46,7 +51,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
       {
         if (!((FormFunction<T>) Page.ReturningFunction).HasUserCancelled)
         {
-          CurrentFunction.Transaction.Reset();
+          CurrentFunction.Reset();
           sender.LoadUnboundValue (GetValues(), false);
         }
       }
@@ -65,7 +70,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
       {
         if (!((FormFunction<T>) Page.ReturningFunction).HasUserCancelled)
         {
-          CurrentFunction.Transaction.Reset();
+          CurrentFunction.Reset();
           sender.LoadUnboundValue (GetValues(), false);
         }
       }
@@ -77,7 +82,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 
       if (HasTenantChanged)
       {
-        CurrentFunction.Transaction.Reset ();
+        CurrentFunction.Reset ();
         list.LoadUnboundValue (GetValues (), false);
       }
     }

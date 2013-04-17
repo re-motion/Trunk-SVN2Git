@@ -16,27 +16,26 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Web.Security.ExecutionEngine;
-using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure
+namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 {
-  [WxeDemandTargetStaticMethodPermission (GroupType.Methods.Search)]
   [Serializable]
-  public class GroupTypeListFormFunction : BaseListTransactedFunction
+  public abstract class BaseListTransactedFunction : BaseTransactedFunction
   {
-    public GroupTypeListFormFunction ()
+    protected BaseListTransactedFunction ()
+        : this (WxeTransactionMode.CreateRootWithAutoCommit)
     {
     }
 
-    // TODO: Make protected once a way is found to solve the "WxeDemandTargetStaticMethodPermission being typed on fixed class" problem
-    public GroupTypeListFormFunction (ITransactionMode transactionMode, params object[] args)
-      : base (transactionMode, args)
+    protected BaseListTransactedFunction (ITransactionMode transactionMode, params object[] args)
+        : base (transactionMode, args)
     {
     }
 
-    WxeResourcePageStep Step1 = new WxeResourcePageStep (typeof (GroupTypeListForm), "UI/OrganizationalStructure/GroupTypeListForm.aspx");
+    public void Reset ()
+    {
+      TransactionStrategy.Reset();
+    }
   }
 }

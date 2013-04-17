@@ -25,16 +25,8 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
 {
   [WxeDemandTargetStaticMethodPermission (Tenant.Methods.Search)]
   [Serializable]
-  public class TenantListFormFunction : BaseTransactedFunction
+  public class TenantListFormFunction : BaseListTransactedFunction
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     public TenantListFormFunction ()
     {
     }
@@ -44,8 +36,6 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
       : base (transactionMode, args)
     {
     }
-
-    // methods and properties
 
     WxeResourcePageStep Step1 = new WxeResourcePageStep (typeof (TenantListForm), "UI/OrganizationalStructure/TenantListForm.aspx");
   }
