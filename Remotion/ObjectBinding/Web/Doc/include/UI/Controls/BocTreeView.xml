@@ -72,7 +72,6 @@
     <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
   </LoadValue>
   <LoadUnboundValue>
-    <param name="interim"> Not used. </param>
     <remarks>
       <para>
         The objects in <paramref name="value"/> will be used as the root nodes for the <see cref="BocTreeView"/>.

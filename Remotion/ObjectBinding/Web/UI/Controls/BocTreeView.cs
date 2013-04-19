@@ -17,8 +17,10 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -27,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 {
 
   /// <summary> Object bound tree view. </summary>
-  /// <include file='doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/Class/*' />
+  /// <include file='..\..\doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/Class/*' />
   [DefaultEvent ("Click")]
   public class BocTreeView : BusinessObjectBoundWebControl
   {
@@ -279,13 +281,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private void CreateAndAppendBusinessObjectNodeChildren (BusinessObjectTreeNode businessObjectNode)
     {
       IBusinessObjectWithIdentity businessObject = businessObjectNode.BusinessObject;
-      BusinessObjectPropertyTreeNodeInfo[] propertyNodeInfos = GetPropertyNodes (businessObject);
-      if (propertyNodeInfos != null && propertyNodeInfos.Length > 0)
+      BusinessObjectPropertyTreeNodeInfo[] propertyNodeInfos = GetPropertyNodes (businessObjectNode, businessObject);
+      if (propertyNodeInfos.Length > 0)
       {
         if (propertyNodeInfos.Length == 1)
-          CreateAndAppendBusinessObjectNodes (businessObjectNode.Children, businessObject, propertyNodeInfos[0].Property);
+          CreateAndAppendBusinessObjectNodes (businessObjectNode, businessObject, propertyNodeInfos[0].Property);
         else
-          CreateAndAppendPropertyNodes (businessObjectNode.Children, businessObject, propertyNodeInfos);
+          CreateAndAppendPropertyNodes (businessObjectNode, propertyNodeInfos);
       }
       businessObjectNode.IsEvaluated = true;
     }
@@ -293,30 +295,43 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private void CreateAndAppendPropertyNodeChildren (BusinessObjectPropertyTreeNode propertyNode)
     {
       if (propertyNode.ParentNode == null)
-        throw new ArgumentException ("BusinessObjectPropertyTreeNode with ItemID '" + propertyNode.ItemID + "' has no parent node but property nodes cannot be used as root nodes.");
+      {
+        throw new ArgumentException (
+            string.Format (
+                "BusinessObjectPropertyTreeNode with ItemID '{0}' has no parent node but property nodes cannot be used as root nodes.",
+                propertyNode.ItemID));
+      }
+      if (!(propertyNode.ParentNode is BusinessObjectTreeNode))
+      {
+        throw new ArgumentException (
+            string.Format (
+                "BusinessObjectPropertyTreeNode with ItemID '{0}' has parent node of type '{1}' but property node cannot be children of nodes of type '{2}'.",
+                propertyNode.ItemID,
+                propertyNode.ParentNode.GetType().Name,
+                typeof (BusinessObjectTreeNode).Name));
+      }
 
       BusinessObjectTreeNode parentNode = (BusinessObjectTreeNode) propertyNode.ParentNode;
-      CreateAndAppendBusinessObjectNodes (propertyNode.Children, parentNode.BusinessObject, propertyNode.Property);
+      CreateAndAppendBusinessObjectNodes (propertyNode, parentNode.BusinessObject, propertyNode.Property);
       propertyNode.IsEvaluated = true;
     }
 
     private void CreateAndAppendBusinessObjectNodes (
-        WebTreeNodeCollection businessObjectNodes,
+        BocTreeNode parentNode,
         IBusinessObjectWithIdentity parentBusinessObject,
-        IBusinessObjectReferenceProperty property)
+        IBusinessObjectReferenceProperty parentProperty)
     {
-      IList children = GetBusinessObjects (parentBusinessObject, property);
-      for (int i = 0; i < children.Count; i++)
+      var children = GetBusinessObjects (parentNode, parentBusinessObject, parentProperty);
+      for (int i = 0; i < children.Length; i++)
       {
-        IBusinessObjectWithIdentity childBusinessObject = (IBusinessObjectWithIdentity) children[i];
-        BusinessObjectTreeNode childNode = CreateBusinessObjectNode (property, childBusinessObject);
-        businessObjectNodes.Add (childNode);
+        IBusinessObjectWithIdentity childBusinessObject = children[i];
+        BusinessObjectTreeNode childNode = CreateBusinessObjectNode (parentProperty, childBusinessObject);
+        parentNode.Children.Add (childNode);
       }
     }
 
     private void CreateAndAppendPropertyNodes (
-        WebTreeNodeCollection propertyNodes,
-        IBusinessObjectWithIdentity parentBusinessObject,
+        BusinessObjectTreeNode parentNode,
         BusinessObjectPropertyTreeNodeInfo[] propertyNodeInfos)
     {
       for (int i = 0; i < propertyNodeInfos.Length; i++)
@@ -329,7 +344,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             propertyNodeInfo.Icon,
             propertyNodeInfo.Property);
         propertyNode.IsEvaluated = false;
-        propertyNodes.Add (propertyNode);
+        parentNode.Children.Add (propertyNode);
       }
     }
 
@@ -358,29 +373,41 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return BusinessObjectBoundWebControl.GetToolTip (businessObject, businessObject.BusinessObjectClass.BusinessObjectProvider);
     }
 
-    protected virtual IBusinessObjectWithIdentity[] GetBusinessObjects (IBusinessObjectWithIdentity parent, IBusinessObjectReferenceProperty property)
+    [NotNull]
+    protected virtual IBusinessObjectWithIdentity[] GetBusinessObjects (
+        BocTreeNode parentNode,
+        IBusinessObjectWithIdentity parentBusinessObject,
+        IBusinessObjectReferenceProperty parentProperty)
     {
-      ArgumentUtility.CheckNotNull ("parent", parent);
+      ArgumentUtility.CheckNotNull ("parentNode", parentNode);
+      ArgumentUtility.CheckNotNull ("parentBusinessObject", parentBusinessObject);
+      ArgumentUtility.CheckNotNull ("parentProperty", parentProperty);
 
-      IList children = (IList) parent.GetProperty (property);
-      ArrayList childrenList = new ArrayList (children);
-      return (IBusinessObjectWithIdentity[]) childrenList.ToArray (typeof (IBusinessObjectWithIdentity));
+      IList children = (IList) parentBusinessObject.GetProperty (parentProperty);
+      if (children == null)
+        return new IBusinessObjectWithIdentity[0];
+
+      return children.Cast<IBusinessObjectWithIdentity>().ToArray();
     }
 
-    protected virtual BusinessObjectPropertyTreeNodeInfo[] GetPropertyNodes (IBusinessObjectWithIdentity businessObject)
+    [NotNull]
+    protected virtual BusinessObjectPropertyTreeNodeInfo[] GetPropertyNodes (
+        BusinessObjectTreeNode parentNode,
+        IBusinessObjectWithIdentity parentBusinessObject)
     {
-      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+      ArgumentUtility.CheckNotNull ("parentNode", parentNode);
+      ArgumentUtility.CheckNotNull ("parentBusinessObject", parentBusinessObject);
       if (Property == null)
       {
         ArrayList referenceListPropertyInfos = new ArrayList ();
-        IBusinessObjectProperty[] properties = businessObject.BusinessObjectClass.GetPropertyDefinitions ();
+        IBusinessObjectProperty[] properties = parentBusinessObject.BusinessObjectClass.GetPropertyDefinitions ();
         for (int i = 0; i < properties.Length; i++)
         {
           IBusinessObjectReferenceProperty referenceProperty = properties[i] as IBusinessObjectReferenceProperty;
           if (referenceProperty != null
               && referenceProperty.IsList
               && referenceProperty.ReferenceClass is IBusinessObjectClassWithIdentity
-              && referenceProperty.IsAccessible (businessObject.BusinessObjectClass, businessObject))
+              && referenceProperty.IsAccessible (parentBusinessObject.BusinessObjectClass, parentBusinessObject))
           {
             referenceListPropertyInfos.Add (new BusinessObjectPropertyTreeNodeInfo (referenceProperty));
           }
@@ -388,12 +415,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return (BusinessObjectPropertyTreeNodeInfo[]) referenceListPropertyInfos.ToArray (typeof (BusinessObjectPropertyTreeNodeInfo));
       }
 
-      return new BusinessObjectPropertyTreeNodeInfo[] { new BusinessObjectPropertyTreeNodeInfo (Property) };
+      return new [] { new BusinessObjectPropertyTreeNodeInfo (Property) };
     }
 
 
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/LoadValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
       if (DataSource == null)
@@ -412,7 +439,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The <see cref="Array"/> of objects implementing <see cref="IBusinessObjectWithIdentity"/> to load,
     ///   or <see langword="null"/>. 
     /// </param>
-    /// <include file='doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/LoadUnboundValue/*' />
+    /// <param name="interim"> Not used. </param>
+    /// <include file='..\..\doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/LoadUnboundValue/*' />
     public void LoadUnboundValue (IBusinessObjectWithIdentity[] value, bool interim)
     {
       LoadValueInternal (value, interim);
@@ -423,7 +451,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The <see cref="IList"/> of objects implementing <see cref="IBusinessObjectWithIdentity"/> to load,
     ///   or <see langword="null"/>. 
     /// </param>
-    /// <include file='doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/LoadUnboundValue/*' />
+    /// <param name="interim"> Not used. </param>
+    /// <include file='..\..\doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/LoadUnboundValue/*' />
     public void LoadUnboundValue (IList value, bool interim)
     {
       LoadValueInternal (value, interim);
@@ -720,7 +749,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary>
     /// Gets or sets a flag that determines whether the post back from a node click must be executed synchronously when the tree is rendered within 
-    /// an <see cref="T:System.Web.UI.UpdatePanel"/>.
+    /// an <see cref="System.Web.UI.UpdatePanel"/>.
     /// </summary>
     [PersistenceMode (PersistenceMode.Attribute)]
     [Category ("Behavior")]
