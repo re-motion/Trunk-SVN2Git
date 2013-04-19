@@ -79,25 +79,8 @@
                  Version=$(Version);"/>
   </Target>
 
-  <Target Name="TestSymbols" >
-    <!-- temp target. delete after testing -->
-    <PropertyGroup>
-      <SvnRevision>26909</SvnRevision>
-      <SvnBaseUri>https://svn.re-motion.org/svn/Remotion</SvnBaseUri>
-      <SvnBranchFolder>trunk</SvnBranchFolder>
-      <DebugSymbolsVCSUrl>$(SvnBaseUri)/$(SvnBranchFolder)/</DebugSymbolsVCSUrl>
-    </PropertyGroup>
-    
-    <MSBuild Projects="$(MSBuildProjectFile)"
-             BuildInParallel="false"
-             Targets="UpdateDebugSymbols"
-             Properties="SolutionDirectory=$(SolutionDirectory);
-                         BinariesDirectory=$(BinariesDirectory);
-                         DebugSymbolsVCSUrl=$(DebugSymbolsVCSUrl);
-                         SvnRevision=$(SvnRevision);"/>
-  </Target>
-  
   <Target Name="PackageAll">
+    <!-- NuGet package must be created before modifying the debug symbols to allow the creation of proper NuGet source packages. -->
     <MSBuild Projects="%(NuGetPackages.PackageDeclaration)"
              BuildInParallel="false"
              Targets="CreateNuGetPackage"
