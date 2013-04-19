@@ -212,7 +212,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
 
-      _appenderProxy.StatementExecuted (_clientTransactionID, queryID, AppendParametersToCommandText (queryID, commandText, parameters));
+      _appenderProxy.StatementExecuted (_clientTransactionID, queryID, AppendParametersToCommandText (commandText, parameters));
     }
 
     public void TransactionBegan (Guid connectionID, IsolationLevel isolationLevel)
@@ -235,10 +235,9 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       _appenderProxy.TransactionRolledBack (_clientTransactionID);
     }
 
-    private string AppendParametersToCommandText (Guid queryID, string commandText, IDictionary<string, object> parameters)
+    private string AppendParametersToCommandText (string commandText, IDictionary<string, object> parameters)
     {
       StringBuilder builder = new StringBuilder();
-      builder.Append ("-- Statement ").Append (queryID).AppendLine();
       builder.AppendLine (commandText);
       builder.AppendLine ("-- Ignore unbounded result sets: TOP *"); // Format with space and asterisk is important to trigger RexEx in profiler.
       builder.AppendLine ("-- Parameters:");

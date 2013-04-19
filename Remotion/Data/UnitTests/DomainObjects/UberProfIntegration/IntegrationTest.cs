@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
           _tracingLinqToSqlAppender.TraceLog,
           Is.StringMatching (
               @"^ConnectionStarted \((?<connectionid>[^,]+)\)" + Environment.NewLine
-              + @"StatementExecuted \(\k<connectionid>, (?<statementid>[^,]+), -- Statement \k<statementid>" + Environment.NewLine
+              + @"StatementExecuted \(\k<connectionid>, (?<statementid>[^,]+), "
               + @"SELECT \[ID\], \[ClassID\], \[Timestamp\], \[OrderNo\], \[DeliveryDate\], \[OfficialID\], \[CustomerID\], \[CustomerIDClassID\] "
               + @"FROM \[Order\] WHERE \[ID\] = \@ID;" + Environment.NewLine
               + @"-- Ignore unbounded result sets: TOP \*" + Environment.NewLine
