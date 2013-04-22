@@ -21,13 +21,10 @@
     
     <SecureNetworkShare></SecureNetworkShare>
     <SolutionKeyFile>$(SecureNetworkShare)\remotion.snk</SolutionKeyFile>
-    <CodePlexPasswordFile>$(SecureNetworkShare)\Codeplex-user.password</CodePlexPasswordFile>
-    <NuGetApiKeyFile>$(SecureNetworkShare)\NuGet-user.apikey</NuGetApiKeyFile>
-    <JiraPasswordFile>$(SecureNetworkShare)\Remotion-builduser.password</JiraPasswordFile>
-    <SvnPasswordFile>$(SecureNetworkShare)\Remotion-builduser.password</SvnPasswordFile>
-    
+
     <!-- Passwords will be passed to MSBuild by TeamCity -->
     <CodeplexPassword></CodeplexPassword>
+    <NuGetApiKey></NuGetApiKey>
     <JiraPassword></JiraPassword>
     <SvnPassword></SvnPassword>
   
