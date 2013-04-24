@@ -419,7 +419,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void Query_ClassID_OnColumnOfReferencedEntity ()
+    public void Query_ClassID_OnPropertyOfReferencedEntity ()
     {
       var query = from x in
                     (from c in QueryFactory.CreateLinqQuery<Company> () select new { A = c, B = c.ID }).Distinct()
