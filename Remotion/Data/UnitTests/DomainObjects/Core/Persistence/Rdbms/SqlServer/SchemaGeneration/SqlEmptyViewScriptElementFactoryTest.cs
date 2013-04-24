@@ -37,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlEmptyViewScriptElementFactory();
 
-      var property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
-      var property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
+      var property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1", StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation());
+      var property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2", StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation ());
 
       _emptyViewDefinitionWithCustomSchema = EmptyViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,

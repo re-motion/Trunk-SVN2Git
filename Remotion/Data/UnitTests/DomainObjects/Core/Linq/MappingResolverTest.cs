@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"), JoinSemantics.Inner);
       _fakeSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "OrderTable", "o");
       _fakeColumnDefinitionExpression = new SqlColumnDefinitionExpression (typeof (int), "o", "ColumnName", false);
-      _fakeJoinInfo = new ResolvedJoinInfo (_fakeSimpleTableInfo, Expression.Constant ("left"), Expression.Constant ("right"));
+      _fakeJoinInfo = new ResolvedJoinInfo (_fakeSimpleTableInfo, Expression.Constant (true));
     }
 
     [Test]
@@ -112,11 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveJoinInfo ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Customer),
-          "c",
-          null,
-          new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Customer));
       var property = typeof (Customer).GetProperty ("Orders");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, property, JoinCardinality.Many);
       var leftEndPoint = GetEndPointDefinition (property);
@@ -133,11 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveJoinInfo_WithMixedRelationProperty ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (TargetClassForPersistentMixin),
-          "m",
-          null,
-          new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (TargetClassForPersistentMixin));
       var memberInfo = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
       var leftEndPoint = GetEndPointDefinition (typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties), memberInfo.Name);
@@ -154,11 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveJoinInfo_WithDerivedClassRelationProperty ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Company),
-          "m",
-          null,
-          new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Company));
       var memberInfo = typeof (Customer).GetProperty ("Orders");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.Many);
       var leftEndPoint = GetEndPointDefinition (memberInfo);
@@ -178,8 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         + "does not identify a queryable table.")]
     public void ResolveJoinInfo_UnknownType ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (IMixinAddingPersistentProperties), "m", null, new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (IMixinAddingPersistentProperties));
       var memberInfo = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
 
@@ -190,8 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The member 'Order.OrderNumber' does not identify a relation.")]
     public void ResolveJoinInfo_NoRelation_CardinalityOne_ThrowsException ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Order).GetProperty ("OrderNumber"), JoinCardinality.One);
 
       _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
@@ -201,8 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The member 'Student.Scores' does not identify a relation.")]
     public void ResolveJoinInfo_NoRelation_CardinalityMany_ThrowsExcpetion ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Student).GetProperty ("Scores"), JoinCardinality.Many);
 
       _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
@@ -239,12 +224,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_ReturnsSqlColumnDefinitionExpression ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
       var propertyDefinition = GetPropertyDefinition (property);
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition))
+          .Stub (stub => stub.ResolveProperty (entityExpression, propertyDefinition))
           .Return (_fakeColumnDefinitionExpression);
 
       var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);
@@ -256,12 +240,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_PropertyAboveInheritanceRoot ()
     {
       var property = typeof (StorageGroupClass).GetProperty ("AboveInheritanceIdentifier");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (StorageGroupClass), "s", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (StorageGroupClass));
       var propertyDefinition = GetPropertyDefinition (typeof (StorageGroupClass), property.DeclaringType, property.Name);
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition))
+          .Stub (stub => stub.ResolveProperty (entityExpression, propertyDefinition))
           .Return (_fakeColumnDefinitionExpression);
 
       var result = _resolver.ResolveMemberExpression (entityExpression, property);
@@ -273,12 +256,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_PropertyFromDerivedClass ()
     {
       var property = typeof (Customer).GetProperty ("Type");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Company), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Company));
       var propertyDefinition = GetPropertyDefinition (property);
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition))
+          .Stub (stub => stub.ResolveProperty (entityExpression, propertyDefinition))
           .Return (_fakeColumnDefinitionExpression);
 
       var result = _resolver.ResolveMemberExpression (entityExpression, property);
@@ -290,12 +272,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_IDMember ()
     {
       var property = typeof (Order).GetProperty ("ID");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
       var fakeIDColumnExpression = new SqlColumnDefinitionExpression (typeof (ObjectID), "c", "ID", true);
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveIDColumn (entityExpression, MappingConfiguration.Current.GetTypeDefinition (typeof (Order))))
+          .Stub (stub => stub.ResolveIDProperty (entityExpression, MappingConfiguration.Current.GetTypeDefinition (typeof (Order))))
           .Return (fakeIDColumnExpression);
 
       var result = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);
@@ -307,8 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_RelationMember_RealSide ()
     {
       var property = typeof (Order).GetProperty ("Customer");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
 
       var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (entityExpression, property);
 
@@ -321,8 +301,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_RelationMember_VirtualSide ()
     {
       var property = typeof (Employee).GetProperty ("Computer");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Employee), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Employee));
 
       var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (entityExpression, property);
 
@@ -335,8 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_MixedRelationProperty ()
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (TargetClassForPersistentMixin), "c", null, new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (TargetClassForPersistentMixin));
 
       var result = _resolver.ResolveMemberExpression (entityExpression, property);
 
@@ -351,8 +329,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_UnmappedDeclaringType_ThrowsUnmappedItemException ()
     {
       var property = typeof (Student).GetProperty ("First");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (DomainObject), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (DomainObject));
 
       _resolver.ResolveMemberExpression (entityExpression, property);
     }
@@ -363,8 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_UnmappedProperty_ThrowsUnmappedItemException ()
     {
       var property = typeof (Order).GetProperty ("NotInMapping");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
 
       _resolver.ResolveMemberExpression (entityExpression, property);
     }
@@ -375,38 +351,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_UnmappedRelationMember ()
     {
       var property = typeof (Order).GetProperty ("OriginalCustomer");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
 
       _resolver.ResolveMemberExpression (entityExpression, property);
-    }
-
-    [Test]
-    public void ResolveMemberExpression_OnColumnDefinition_WithValueProperty ()
-    {
-      var property = typeof (ObjectID).GetProperty ("Value");
-      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Name", false);
-      var fakeColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Name", false);
-
-      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveValueColumn (columnExpression)).Return (fakeColumnExpression);
-
-      var result = _resolver.ResolveMemberExpression (columnExpression, property);
-
-      Assert.That (result, Is.SameAs (fakeColumnExpression));
-    }
-
-    [Test]
-    public void ResolveMemberExpression_OnColumnDefinition_WithClassIDProperty ()
-    {
-      var property = typeof (ObjectID).GetProperty ("ClassID");
-      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Name", false);
-      var fakeColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Name", false);
-      
-      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveClassIDColumn (columnExpression)).Return (fakeColumnExpression);
-
-      var result = _resolver.ResolveMemberExpression (columnExpression, property);
-
-      Assert.That (result, Is.SameAs(fakeColumnExpression));
     }
 
     [Test]
@@ -432,8 +379,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveTypeCheck_NoDomainTypeWithSameDesiredType ()
     {
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (
-          typeof (Student), "t", null, new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false));
+      var sqlEntityExpression = CreateFakeEntityExpression (typeof (Student));
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (true));
@@ -443,8 +389,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (UnmappedItemException))]
     public void ResolveTypeCheck_NoDomainTypeWithDifferentDesiredType ()
     {
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (
-          typeof (object), "t", null, new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false));
+      var sqlEntityExpression = CreateFakeEntityExpression (typeof (object));
       _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
     }
 
@@ -486,11 +431,111 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
+    [Test]
+    public void TryResolveOptimizedIdentity_ForForeignKeyRelationProperty_ResolvesRelationEndPoint ()
+    {
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
+      var property = typeof (Order).GetProperty ("Customer");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, property);
+
+      var endPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (property);
+      var fakeResolvedIdentity = Expression.Constant (0);
+      _storageSpecificExpressionResolverStub
+          .Stub (stub => stub.ResolveEntityIdentityViaForeignKey (entityExpression, endPointDefinition))
+          .Return (fakeResolvedIdentity);
+
+      var result = _resolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
+
+      Assert.That (result, Is.SameAs (fakeResolvedIdentity));
+    }
+
+    [Test]
+    public void TryResolveOptimizedIdentity_ForVirtualRelationProperty_ReturnsNull ()
+    {
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
+      var property = typeof (Order).GetProperty ("OrderTicket");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, property);
+
+      var result = _resolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
+
+      _storageSpecificExpressionResolverStub.AssertWasNotCalled (
+          stub => stub.ResolveEntityIdentityViaForeignKey (Arg<SqlEntityExpression>.Is.Anything, Arg<RelationEndPointDefinition>.Is.Anything));
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void TryResolveOptimizedIdentity_WithMixedRelationProperty ()
+    {
+      var entityExpression = CreateFakeEntityExpression (typeof (TargetClassForPersistentMixin));
+      var memberInfo = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+
+      var endPointDefinition = GetEndPointDefinition (typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties), memberInfo.Name);
+      var fakeResolvedIdentity = Expression.Constant (0);
+      _storageSpecificExpressionResolverStub
+          .Stub (stub => stub.ResolveEntityIdentityViaForeignKey (entityExpression, (RelationEndPointDefinition) endPointDefinition))
+          .Return (fakeResolvedIdentity);
+
+      var result = _resolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
+
+      Assert.That (result, Is.SameAs (fakeResolvedIdentity));
+    }
+
+    [Test]
+    public void TryResolveOptimizedIdentity_WithDerivedClassRelationProperty ()
+    {
+      var entityExpression = CreateFakeEntityExpression (typeof (Partner));
+      var memberInfo = typeof (Partner).GetProperty ("ContactPerson");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+
+      var leftEndPoint = GetEndPointDefinition (memberInfo);
+      var fakeResolvedIdentity = Expression.Constant (0);
+      _storageSpecificExpressionResolverStub
+          .Stub (stub => stub.ResolveEntityIdentityViaForeignKey (entityExpression, (RelationEndPointDefinition) leftEndPoint))
+          .Return (fakeResolvedIdentity);
+
+      var result = _resolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
+
+      Assert.That (result, Is.SameAs (fakeResolvedIdentity));
+    }
+    
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
+        "The type 'Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.IMixinAddingPersistentProperties' "
+        + "does not identify a queryable table.")]
+    public void TryResolveOptimizedIdentity_UnknownType ()
+    {
+      var entityExpression = CreateFakeEntityExpression (typeof (IMixinAddingPersistentProperties));
+      var memberInfo = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+
+      _resolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The member 'Order.OrderNumber' does not identify a relation.")]
+    public void TryResolveOptimizedIdentity_NoRelation_CardinalityOne_ThrowsException ()
+    {
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, typeof (Order).GetProperty ("OrderNumber"));
+
+      _resolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The member 'Student.Scores' does not identify a relation.")]
+    public void TryResolveOptimizedIdentity_NoRelation_CardinalityMany_ThrowsExcpetion ()
+    {
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, typeof (Student).GetProperty ("Scores"));
+
+      _resolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
+    }
+
     private SqlEntityDefinitionExpression CreateFakeEntityExpression (Type classType)
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
       var starColumn = new SqlColumnDefinitionExpression (classType, "o", "*", false);
-      return new SqlEntityDefinitionExpression (classType, "o", null, primaryKeyColumn, starColumn);
+      return new SqlEntityDefinitionExpression (classType, "o", null, e => e.GetColumn (typeof (ObjectID), "ID", true), starColumn);
     }
 
     private PropertyDefinition GetPropertyDefinition (PropertyInfo property)

@@ -28,14 +28,13 @@ namespace Remotion.Data.DomainObjects.Linq
   public interface IStorageSpecificExpressionResolver
   {
     SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias);
-    Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition);
-    SqlColumnExpression ResolveIDColumn (SqlEntityExpression originatingEntity, ClassDefinition classDefinition);
-    Expression ResolveValueColumn (SqlColumnExpression idColumn);
-    Expression ResolveClassIDColumn (SqlColumnExpression idColumn);
+    Expression ResolveProperty (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition);
+    Expression ResolveIDProperty (SqlEntityExpression originatingEntity, ClassDefinition classDefinition);
 
     IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias);
 
     ResolvedJoinInfo ResolveJoin (
         SqlEntityExpression originatingEntity, IRelationEndPointDefinition leftEndPoint, IRelationEndPointDefinition rightEndPoint, string tableAlias);
+    Expression ResolveEntityIdentityViaForeignKey (SqlEntityExpression originatingEntity, RelationEndPointDefinition foreignKeyEndPoint);
   }
 }

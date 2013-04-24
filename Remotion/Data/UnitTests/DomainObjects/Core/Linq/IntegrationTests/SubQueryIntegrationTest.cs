@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithSubQuery_WithResultOperator_InMainFrom ()
     {
-      var orders = from c in (from ci in QueryFactory.CreateLinqQuery<Computer> () orderby ci.ID select ci).Take (1) select c;
+      var orders = from c in (from ci in QueryFactory.CreateLinqQuery<Computer> () orderby ci.ID.Value select ci).Take (1) select c;
       CheckQueryResult (orders, DomainObjectIDs.Computer5);
     }
 
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = from o in QueryFactory.CreateLinqQuery<Order> ()
                   where o.OrderItems.FirstOrDefault () != null
-                  select o.OrderItems.OrderBy(oi => oi.ID).FirstOrDefault ();
+                  select o.OrderItems.OrderBy (oi => oi.ID.Value).FirstOrDefault ();
 
       CheckQueryResult (
           query, 
@@ -222,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
                    where o.OrderNumber == 1
-                   select (from oi in o.OrderItems orderby oi.ID select oi).First ().Product).Single ();
+                   select (from oi in o.OrderItems orderby oi.ID.Value select oi).First ().Product).Single ();
       Assert.That (query, Is.EqualTo ("CPU Fan"));
     }
 
@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>()
                    where o.OrderNumber == 1
-                   select (from oi in o.OrderItems orderby oi.ID select oi.Product).First ().Length).Single();
+                   select (from oi in o.OrderItems orderby oi.ID.Value select oi.Product).First ().Length).Single();
       Assert.That (query, Is.EqualTo (7));
     }
   }

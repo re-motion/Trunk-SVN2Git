@@ -36,8 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                     {
                         DataInfo = new StreamedScalarValueInfo (typeof (string)),
                         SelectProjection =
-                            new SqlEntityDefinitionExpression (
-                                typeof (int), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false))
+                            new SqlEntityDefinitionExpression (typeof (int), "c", "CookTable", e => e.GetColumn (typeof (int), "ID", false))
                     };
       return builder.GetSqlStatement();
     }

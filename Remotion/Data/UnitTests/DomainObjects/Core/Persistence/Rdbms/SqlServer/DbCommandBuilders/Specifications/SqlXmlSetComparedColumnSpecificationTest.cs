@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("Column");
+      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("Column", StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation());
       _objectValue1 = "<Test1";
       _objectValue2 = 689;
       _objectValue3 = true;

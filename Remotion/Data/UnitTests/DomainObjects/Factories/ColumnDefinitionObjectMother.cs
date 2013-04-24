@@ -38,6 +38,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
           isPartOfPrimaryKey);
     }
 
+    public static ColumnDefinition CreateColumn (IStorageTypeInformation storageTypeInformation)
+    {
+      return new ColumnDefinition (GetUniqueColumnName(), storageTypeInformation, false);
+    }
+
+    public static ColumnDefinition CreateStringColumn (string columnName)
+    {
+      return CreateColumn (columnName, StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation());
+    }
+
+    public static ColumnDefinition CreateGuidColumn (string columnName)
+    {
+      return CreateColumn (columnName, StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation());
+    }
+
     private static string GetUniqueColumnName ()
     {
       return Guid.NewGuid().ToString();

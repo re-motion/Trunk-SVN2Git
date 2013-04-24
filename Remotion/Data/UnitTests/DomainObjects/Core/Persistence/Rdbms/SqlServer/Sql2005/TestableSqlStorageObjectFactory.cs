@@ -139,9 +139,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       return _relationStoragePropertyDefinitionFactory ?? base.CreateRelationStoragePropertyDefinitionFactory (storageProviderDefinition, storageTypeInformationProvider, storageNameProvider, providerDefinitionFinder);
     }
 
-    protected override ISqlQueryGenerator CreateSqlQueryGenerator (RdbmsProviderDefinition storageProviderDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry, IStorageTypeInformationProvider storageTypeInformationProvider, IRdbmsPersistenceModelProvider persistenceModelProvider)
+    protected override ISqlQueryGenerator CreateSqlQueryGenerator (RdbmsProviderDefinition storageProviderDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry, IRdbmsPersistenceModelProvider persistenceModelProvider)
     {
-      return _sqlQueryGenerator ?? base.CreateSqlQueryGenerator (storageProviderDefinition, methodCallTransformerProvider, resultOperatorHandlerRegistry, storageTypeInformationProvider, persistenceModelProvider);
+      return _sqlQueryGenerator ?? base.CreateSqlQueryGenerator (storageProviderDefinition, methodCallTransformerProvider, resultOperatorHandlerRegistry, persistenceModelProvider);
     }
 
     protected override IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageNameProvider storageNameProvider, IRdbmsPersistenceModelProvider persistenceModelProvider, IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)

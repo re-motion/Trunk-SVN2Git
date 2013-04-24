@@ -217,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private SqlEntityDefinitionExpression CreateEntityDefinitionExpression ()
     {
-      return new SqlEntityDefinitionExpression (typeof (Order), "t0", "o", new SqlColumnDefinitionExpression (typeof (int), "t0", "id", true));
+      return new SqlEntityDefinitionExpression (typeof (Order), "t0", "o", e => e.GetColumn (typeof (int), "id", true));
     }
   }
 }

@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
 
@@ -33,21 +33,12 @@ namespace Remotion.Data.DomainObjects.Linq
   public class StorageSpecificExpressionResolver : IStorageSpecificExpressionResolver
   {
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
-    private readonly IStorageNameProvider _storageNameProvider;
-    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
 
-    public StorageSpecificExpressionResolver (
-        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
-        IStorageNameProvider storageNameProvider,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
+    public StorageSpecificExpressionResolver (IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
     {
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
-      _storageNameProvider = storageNameProvider;
-      _storageTypeInformationProvider = storageTypeInformationProvider;
     }
 
     public SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias)
@@ -67,49 +58,35 @@ namespace Remotion.Data.DomainObjects.Linq
           classDefinition.ClassType,
           tableAlias,
           null,
-          tableColumns.Single (c => c.ColumnName == idColumnDefinition.Name),
+          e => GetColumnFromEntity (idColumnDefinition, e),
           tableColumns);
     }
 
-    public Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition)
+    public Expression ResolveProperty (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       var storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
-      var columns = storagePropertyDefinition.GetColumns().ToList();
-      if (columns.Count > 1)
-        throw new NotSupportedException ("Compound-column properties are not supported by this LINQ provider.");
-
-      var column = columns.Single();
-      return GetColumnFromEntity (storagePropertyDefinition.PropertyType, column, originatingEntity);
+      return ResolveStorageProperty (originatingEntity, storagePropertyDefinition);
     }
 
-    public SqlColumnExpression ResolveIDColumn (SqlEntityExpression originatingEntity, ClassDefinition classDefinition)
+    public Expression ResolveIDProperty (SqlEntityExpression originatingEntity, ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      // In ResolveEntity above, we defined that we take the ID column as the primary key.
-      return originatingEntity.PrimaryKeyColumn;
-    }
+      var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition);
+      var valueExpression = Expression.Convert (ResolveStorageProperty (originatingEntity, entityDefinition.ObjectIDProperty.ValueProperty), typeof (object));
+      var classIDExpression = ResolveStorageProperty (originatingEntity, entityDefinition.ObjectIDProperty.ClassIDProperty);
 
-    public Expression ResolveValueColumn (SqlColumnExpression idColumn)
-    {
-      ArgumentUtility.CheckNotNull ("idColumn", idColumn);
-
-      var storageTypeInfo = _storageTypeInformationProvider.GetStorageTypeForID (true);
-      var sqlColumnExpression = idColumn.Update (storageTypeInfo.DotNetType, idColumn.OwningTableAlias, idColumn.ColumnName, idColumn.IsPrimaryKey);
-      return Expression.Convert (sqlColumnExpression, typeof (object));
-    }
-
-    public Expression ResolveClassIDColumn (SqlColumnExpression idColumn)
-    {
-      ArgumentUtility.CheckNotNull ("idColumn", idColumn);
-
-      // Note: This will not work reliably because of the way ResolveIDColumn always returns a single column. We can't really detect scenarios where 
-      // this won't work, though. Waiting for RM-4878 for a fix.
-      return idColumn.Update (typeof (string), idColumn.OwningTableAlias, _storageNameProvider.GetClassIDColumnName(), false);
+      var objectIDCtor = typeof (ObjectID).GetConstructor (new[] { typeof (string), typeof (object) });
+      Assertion.IsNotNull (objectIDCtor);
+      var valueMember = typeof (ObjectID).GetProperty ("Value");
+      var classIDMember = typeof (ObjectID).GetProperty ("ClassID");
+      var objectIDConstruction = Expression.New (objectIDCtor, new[] { classIDExpression, valueExpression }, new[] { classIDMember, valueMember });
+      
+      return NamedExpression.CreateNewExpressionWithNamedArguments (objectIDConstruction);
     }
 
     public IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias)
@@ -141,19 +118,22 @@ namespace Remotion.Data.DomainObjects.Linq
 
       Expression rightKey = GetJoinColumn (rightEndPoint, rightEntity);
 
-      return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
+      return new ResolvedJoinInfo (resolvedSimpleTableInfo, Expression.Equal (leftKey, rightKey));
+    }
+
+    public Expression ResolveEntityIdentityViaForeignKey (SqlEntityExpression originatingEntity, RelationEndPointDefinition foreignKeyEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
+      ArgumentUtility.CheckNotNull ("foreignKeyEndPoint", foreignKeyEndPoint);
+
+      return GetJoinColumn (foreignKeyEndPoint, originatingEntity);
     }
 
     private IEnumerable<SqlColumnDefinitionExpression> CreateSqlColumnDefinitions (IRdbmsStoragePropertyDefinition storageProperty, string tableAlias)
     {
-      // HACK: re-linq currently doesn't support compound columns. Therefore, we can't represent compound re-store columns (e.g., ObjectIDs) as 
-      // compound columns with a common parent expression with the correct expression type. Instead, we represent compound columns as multiple unrelated 
-      // columns (e.g., ID and ClassID) and assign the outer expression type to the first column.
-      // This should be changed as soon as re-linq gets compound column support.
-
       return storageProperty.GetColumns().Select (
           (cd, i) => new SqlColumnDefinitionExpression (
-                         i == 0 ? storageProperty.PropertyType : cd.StorageTypeInfo.DotNetType,
+                         cd.StorageTypeInfo.DotNetType,
                          tableAlias,
                          cd.Name,
                          cd.IsPartOfPrimaryKey));
@@ -171,19 +151,22 @@ namespace Remotion.Data.DomainObjects.Linq
     private Expression GetJoinColumn (IRelationEndPointDefinition endPoint, SqlEntityExpression entityDefinition)
     {
       if (endPoint.IsVirtual)
-        return ResolveIDColumn (entityDefinition, endPoint.ClassDefinition);
+      {
+        // In ResolveEntity above, we defined that we take the ID column as the primary key.
+        return entityDefinition.GetIdentityExpression();
+      }
       else
       {
         var propertyDefinition = ((RelationEndPointDefinition) endPoint).PropertyDefinition;
         var storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
         var column = GetSingleColumnForLookup (storagePropertyDefinition);
-        return GetColumnFromEntity (storagePropertyDefinition.PropertyType, column, entityDefinition);
+        return GetColumnFromEntity (column, entityDefinition);
       }
     }
 
-    private SqlColumnExpression GetColumnFromEntity (Type propertyType, ColumnDefinition columnDefinition, SqlEntityExpression originatingEntity)
+    private SqlColumnExpression GetColumnFromEntity (ColumnDefinition columnDefinition, SqlEntityExpression originatingEntity)
     {
-      return originatingEntity.GetColumn (propertyType, columnDefinition.Name, columnDefinition.IsPartOfPrimaryKey);
+      return originatingEntity.GetColumn (columnDefinition.StorageTypeInfo.DotNetType, columnDefinition.Name, columnDefinition.IsPartOfPrimaryKey);
     }
 
     private ColumnDefinition GetSingleColumnForLookup (IRdbmsStoragePropertyDefinition storagePropertyDefinition)
@@ -194,5 +177,16 @@ namespace Remotion.Data.DomainObjects.Linq
 
       return columns.Single();
     }
+
+    private Expression ResolveStorageProperty (SqlEntityExpression originatingEntity, IRdbmsStoragePropertyDefinition storagePropertyDefinition)
+    {
+      var columns = storagePropertyDefinition.GetColumns ().ToList ();
+      if (columns.Count > 1)
+        throw new NotSupportedException ("Compound-column properties are not supported by this LINQ provider.");
+
+      var column = columns.Single ();
+      return GetColumnFromEntity (column, originatingEntity);
+    }
+
   }
 }

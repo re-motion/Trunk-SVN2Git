@@ -98,7 +98,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void ColumnMemberAccessOnCoalesceExpression ()
+    public void CoalesceExpression_ColumnMember ()
+    {
+      var query = from e in QueryFactory.CreateLinqQuery<Employee> ()
+                  where (e.Computer ?? (DomainObject) e).ID.Value == DomainObjectIDs.Employee2.Value
+                  select e;
+
+      CheckQueryResult (query, DomainObjectIDs.Employee2);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "There was an error preparing or resolving query "
+        + "'from Employee e in DomainObjectQueryable<Employee> "
+        + "where (([e].Computer ?? Convert([e])).ID = Employee|c3b2bbc3-e083-4974-bac7-9cee1fb85a5e|System.Guid) select [e]' for SQL generation. "
+        + "Cannot use a complex expression ('new ObjectID(ClassID = [t1].[ClassID] AS ClassID, Value = Convert([t1].[ID] AS Value))') in a place "
+        + "where SQL requires a single value.")]
+    public void CoalesceExpression_CompoundMember ()
     {
       var query = from e in QueryFactory.CreateLinqQuery<Employee> ()
                   where (e.Computer ?? (DomainObject) e).ID == DomainObjectIDs.Employee2
@@ -108,7 +124,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void ColumnMemberAccessOnConditionalExpression ()
+    public void ConditionalExpression_ColumnMember ()
+    {
+      var query = from e in QueryFactory.CreateLinqQuery<Employee> ()
+                  where (e.Computer.ID.Value == DomainObjectIDs.Computer1.Value ? e.Computer : (DomainObject) e).ID.Value == DomainObjectIDs.Computer1.Value
+                  select e;
+
+      CheckQueryResult (query, DomainObjectIDs.Employee3);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "There was an error preparing or resolving query "
+        + "'from Employee e in DomainObjectQueryable<Employee> "
+        + "where (IIF(([e].Computer.ID = Computer|c7c26bf5-871d-48c7-822a-e9b05aac4e5a|System.Guid), Convert([e].Computer), Convert([e])).ID = "
+        + "Computer|c7c26bf5-871d-48c7-822a-e9b05aac4e5a|System.Guid) select [e]' for SQL generation. Cannot use a complex expression "
+        + "('new ObjectID(ClassID = [t1].[ClassID] AS ClassID, Value = Convert([t1].[ID] AS Value))') in a place where SQL requires a single value.")]
+    public void ConditionalExpression_CompoundMember ()
     {
       var query = from e in QueryFactory.CreateLinqQuery<Employee> ()
                   where (e.Computer.ID == DomainObjectIDs.Computer1 ? e.Computer : (DomainObject) e).ID == DomainObjectIDs.Computer1
@@ -129,18 +161,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Type 'ObjectID' ist not supported by this storage provider.\r\n"
-        + "Please select the ID and ClassID values separately, then create an ObjectID with it in memory "
-        + "(e.g., 'select new ObjectID (o.ID.ClassID, o.ID.Value)').")]
     public void Query_WithObjectID ()
     {
-      var query =
-          from o in QueryFactory.CreateLinqQuery<Order> ()
-          where o.OrderNumber == 1
-          select o.ID;
+      var result =
+          (from o in QueryFactory.CreateLinqQuery<Order> ()
+           where o.OrderNumber == 1
+           select o.ID).Single();
 
-      query.ToArray ();
+      Assert.That (result, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
   }

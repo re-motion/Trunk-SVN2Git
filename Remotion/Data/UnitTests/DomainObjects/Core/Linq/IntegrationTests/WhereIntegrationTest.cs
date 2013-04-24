@@ -319,18 +319,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void QueryWithContainsInWhere_OnEmptyCollection ()
-    {
-      var possibleItems = new ObjectID[] {  };
-      var orders =
-          from o in QueryFactory.CreateLinqQuery<Order>()
-          where possibleItems.Contains (o.ID)
-          select o;
-
-      CheckQueryResult (orders);
-    }
-
-    [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void Query_WithUnsupportedType_NewObject ()
     {
@@ -448,7 +436,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3662: Invalid SQL is generated when the ClassID of an ID coming from a sub-query is used")]
     public void Query_ClassID_OnReferencedValue ()
     {
       var query = from x in

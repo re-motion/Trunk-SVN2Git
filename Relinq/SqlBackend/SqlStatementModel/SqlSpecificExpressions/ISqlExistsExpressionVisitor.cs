@@ -16,16 +16,15 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.SqlBackend.MappingResolution;
-using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.Parsing;
 
-namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
-  public class TestableGroupAggregateSimplifier : GroupAggregateSimplifier
+  /// <summary>
+  /// Implemented by <see cref="ExpressionTreeVisitor"/> subclasses handling <see cref="SqlExistsExpression"/> instances.
+  /// </summary>
+  public interface ISqlExistsExpressionVisitor
   {
-    public TestableGroupAggregateSimplifier (SqlTableBase oldElementSource, Expression elementExpressionToBeUsed)
-        : base (oldElementSource, elementExpressionToBeUsed)
-    {
-    }
+    Expression VisitSqlExistsExpression (SqlExistsExpression expression);
   }
 }

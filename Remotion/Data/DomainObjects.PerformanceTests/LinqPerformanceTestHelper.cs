@@ -19,9 +19,6 @@ using System.Linq;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Linq;
@@ -57,13 +54,10 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public bool GenerateQueryModelAndSQL ()
     {
       var generator = new UniqueIdentifierGenerator();
-      var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var sqlPreparationStage = new DefaultSqlPreparationStage (_methodCallTransformerProvider, _resultOperatorHandlerRegistry, generator);
-      var storageTypeInformationProvider = new SqlStorageTypeInformationProvider();
       var mappingResolutionStage =
           new DefaultMappingResolutionStage (
-              new MappingResolver (
-                  new StorageSpecificExpressionResolver (new RdbmsPersistenceModelProvider (), storageNameProvider, storageTypeInformationProvider)),
+              new MappingResolver (new StorageSpecificExpressionResolver (new RdbmsPersistenceModelProvider ())),
               generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       var mappingResolutionContext = new MappingResolutionContext();

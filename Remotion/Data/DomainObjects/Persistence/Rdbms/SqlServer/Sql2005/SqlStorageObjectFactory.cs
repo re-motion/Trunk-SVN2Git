@@ -148,8 +148,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       return new RdbmsPersistenceModelProvider();
     }
-
-
+    
     public ISqlQueryGenerator CreateSqlQueryGenerator (
         RdbmsProviderDefinition storageProviderDefinition,
         IMethodCallTransformerProvider methodCallTransformerProvider,
@@ -159,14 +158,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
-      var storageTypeInformationProvider = CreateStorageTypeInformationProvider (storageProviderDefinition);
       var persistenceModelProvider = CreateRdbmsPersistenceModelProvider (storageProviderDefinition);
 
       return CreateSqlQueryGenerator (
           storageProviderDefinition,
           methodCallTransformerProvider,
           resultOperatorHandlerRegistry,
-          storageTypeInformationProvider,
           persistenceModelProvider);
     }
 
@@ -417,22 +414,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
         RdbmsProviderDefinition storageProviderDefinition,
         IMethodCallTransformerProvider methodCallTransformerProvider,
         ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
-        IStorageTypeInformationProvider storageTypeInformationProvider,
         IRdbmsPersistenceModelProvider persistenceModelProvider)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("persistenceModelProvider", persistenceModelProvider);
 
       var generator = new UniqueIdentifierGenerator ();
-      var storageNameProvider = CreateStorageNameProvider (storageProviderDefinition);
       var resolver = new MappingResolver (
-          new StorageSpecificExpressionResolver (
-              persistenceModelProvider,
-              storageNameProvider,
-              storageTypeInformationProvider));
+          new StorageSpecificExpressionResolver (persistenceModelProvider));
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));

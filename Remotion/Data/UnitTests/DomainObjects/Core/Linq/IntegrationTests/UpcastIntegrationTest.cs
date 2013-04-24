@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from c in QueryFactory.CreateLinqQuery<Company>()
           where
               c is Customer
-              && (((Customer) c).Type == Customer.CustomerType.Standard || ((Customer) c).Orders.Select (o => o.ID).Contains (DomainObjectIDs.Order4))
+              && (((Customer) c).Type == Customer.CustomerType.Standard || ((Customer) c).Orders.Select (o => o.ID.Value).Contains (DomainObjectIDs.Order4.Value))
           select c;
       CheckQueryResult (queryWithSingleTableInheritance, DomainObjectIDs.Customer1, DomainObjectIDs.Customer4);
 

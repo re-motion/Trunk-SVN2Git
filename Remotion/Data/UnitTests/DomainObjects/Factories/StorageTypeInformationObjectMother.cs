@@ -24,10 +24,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
   public static class StorageTypeInformationObjectMother
   {
-    public static StorageTypeInformation CreateStorageTypeInformation ()
-    {
-      return CreateVarchar100StorageTypeInformation (false);
-    }
 
     public static StorageTypeInformation CreateStorageTypeInformation (
         Type storageType = null,
@@ -46,22 +42,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
           dotNetTypeConverter ?? new DefaultConverter (typeof (string)));
     }
 
-    public static StorageTypeInformation CreateUniqueIdentifierStorageTypeInformation (bool isNullable)
+    public static StorageTypeInformation CreateUniqueIdentifierStorageTypeInformation (bool isNullable = false)
     {
       return new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, isNullable, typeof (Guid), new DefaultConverter (typeof (Guid)));
     }
 
-    public static StorageTypeInformation CreateVarchar100StorageTypeInformation (bool isNullable)
+    public static StorageTypeInformation CreateVarchar100StorageTypeInformation (bool isNullable = false)
     {
       return new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, isNullable, typeof (string), new DefaultConverter (typeof (string)));
     }
 
-    public static StorageTypeInformation CreateDateTimeStorageTypeInformation (bool isNullable)
+    public static StorageTypeInformation CreateDateTimeStorageTypeInformation (bool isNullable = false)
     {
       return new StorageTypeInformation (typeof (DateTime), "datetime", DbType.DateTime, isNullable, typeof (DateTime), new DefaultConverter (typeof (DateTime)));
     }
 
-    public static IStorageTypeInformation CreateBitStorageTypeInformation (bool isNullable)
+    public static IStorageTypeInformation CreateBitStorageTypeInformation (bool isNullable = false)
     {
       return new StorageTypeInformation (typeof (bool), "bit", DbType.Boolean, isNullable, typeof (bool), new DefaultConverter (typeof (bool)));
     }

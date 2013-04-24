@@ -247,9 +247,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithContainsInWhere_OnCollection ()
     {
-      var possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 };
+      var possibleItems = new[] { DomainObjectIDs.Order1.Value, DomainObjectIDs.Order3.Value };
       var orders =
           from o in QueryFactory.CreateLinqQuery<Order>()
+          where possibleItems.Contains (o.ID.Value)
+          select o;
+
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order3);
+    }
+
+    [Test]
+    public void QueryWithContainsInWhere_OnEmptyCollection ()
+    {
+      var possibleItems = new object[0];
+      var orders =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          where possibleItems.Contains (o.ID.Value)
+          select o;
+
+      CheckQueryResult (orders);
+    }
+
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+      "There was an error preparing or resolving query "
+      + "'from Order o in DomainObjectQueryable<Order> where {value(Remotion.Data.DomainObjects.ObjectID[]) => Contains([o].ID)} select [o]' for "
+      + "SQL generation. The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following "
+      + "expression cannot be translated to SQL: "
+      + "'new ObjectID(ClassID = [t0].[ClassID] AS ClassID, Value = Convert([t0].[ID] AS Value)) IN value(Remotion.Data.DomainObjects.ObjectID[])'.")]
+    public void QueryWithContainsInWhere_OnCollection_WithObjectIDs ()
+    {
+      var possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 };
+      var orders =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
           where possibleItems.Contains (o.ID)
           select o;
 
