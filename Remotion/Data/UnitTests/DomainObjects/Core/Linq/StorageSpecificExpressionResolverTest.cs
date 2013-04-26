@@ -28,6 +28,7 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -356,8 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveJoin_LeftSideHoldsForeignKey ()
     {
       // Order.Customer
-      var propertyDefinition = CreatePropertyDefinition (_classDefinition, "Customer", "Customer");
-      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      var propertyDefinition = CreatePropertyDefinitionAndAssociateWithClass (_classDefinition, "Customer", "Customer");
 
       var columnDefinition = ColumnDefinitionObjectMother.CreateGuidColumn ("Customer");
       _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumnsForComparison ()).Return (new[] { columnDefinition });
@@ -399,8 +399,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveJoin_LeftSideHoldsNoForeignKey ()
     {
-      var propertyDefinition = CreatePropertyDefinition (_classDefinition, "Customer", "Customer");
-      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      var propertyDefinition = CreatePropertyDefinitionAndAssociateWithClass (_classDefinition, "Customer", "Customer");
 
       var leftEndPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
       var rightEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
@@ -432,8 +431,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveEntityIdentityViaForeignKey()
     {
       // Order.Customer
-      var propertyDefinition = CreatePropertyDefinition (_classDefinition, "Customer", "Customer");
-      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      var propertyDefinition = CreatePropertyDefinitionAndAssociateWithClass (_classDefinition, "Customer", "Customer");
 
       var columnDefinition = ColumnDefinitionObjectMother.CreateStringColumn ("Customer");
       _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumnsForComparison ()).Return (new[] { columnDefinition });
@@ -450,6 +448,89 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var expected = new SqlColumnDefinitionExpression (typeof (string), "o", "Customer", false);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void ResolveIDPropertyViaForeignKey_WithFullObjectID_ResolvesToCompound ()
+    {
+      var propertyDefinition = CreatePropertyDefinitionAndAssociateWithClass (_classDefinition, "Customer", "Customer");
+      var objectIDStorageProperty = ObjectIDStoragePropertyDefinitionObjectMother.Create (
+          "CustomerID",
+          "CustomerClassID",
+          StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation(),
+          StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation());
+
+      var foreignKeyEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (foreignKeyEndPointDefinition.PropertyDefinition))
+          .Return (objectIDStorageProperty);
+
+      var originatingEntity = CreateEntityDefinition (typeof (Order), "o");
+
+      var result = _storageSpecificExpressionResolver.ResolveIDPropertyViaForeignKey (originatingEntity, foreignKeyEndPointDefinition);
+
+      var expected = Expression.New (
+          MemberInfoFromExpressionUtility.GetConstructor (() => new ObjectID ("classID", "value")),
+          new[]
+          {
+              new NamedExpression ("ClassID", originatingEntity.GetColumn (typeof (string), "CustomerClassID", false)),
+              new NamedExpression ("Value", Expression.Convert (originatingEntity.GetColumn (typeof (Guid), "CustomerID", false), typeof (object)))
+          },
+          new[] { typeof (ObjectID).GetProperty ("ClassID"), typeof (ObjectID).GetProperty ("Value") });
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void ResolveIDPropertyViaForeignKey_WithObjectIDWithoutClassID_ResolvesToCompoundWithFixedConditionalClassID ()
+    {
+      var propertyDefinition = CreatePropertyDefinitionAndAssociateWithClass (_classDefinition, "Customer", "Customer");
+      var objectIDStorageProperty =
+          new ObjectIDWithoutClassIDStoragePropertyDefinition (
+              SimpleStoragePropertyDefinitionObjectMother.CreateGuidStorageProperty ("CustomerID"), 
+              GetTypeDefinition (typeof (Customer)));
+
+      var foreignKeyEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (foreignKeyEndPointDefinition.PropertyDefinition))
+          .Return (objectIDStorageProperty);
+
+      var originatingEntity = CreateEntityDefinition (typeof (Order), "o");
+
+      var result = _storageSpecificExpressionResolver.ResolveIDPropertyViaForeignKey (originatingEntity, foreignKeyEndPointDefinition);
+
+      var expectedValueColumn = originatingEntity.GetColumn (typeof (Guid), "CustomerID", false);
+      var expected = Expression.New (
+          MemberInfoFromExpressionUtility.GetConstructor (() => new ObjectID ("classID", "value")),
+          new Expression[]
+          {
+              new NamedExpression (
+                  "ClassID",
+                  SqlCaseExpression.CreateIfThenElse (
+                      typeof (string),
+                      new SqlIsNotNullExpression (expectedValueColumn),
+                      new SqlLiteralExpression ("Customer"),
+                      Expression.Constant (null, typeof (string)))),
+              new NamedExpression ("Value", Expression.Convert (expectedValueColumn, typeof (object)))
+          },
+          new[] { typeof (ObjectID).GetProperty ("ClassID"), typeof (ObjectID).GetProperty ("Value") });
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void ResolveIDPropertyViaForeignKey_WithSomeOtherStorageProperty_ReturnsNull ()
+    {
+      var propertyDefinition = CreatePropertyDefinitionAndAssociateWithClass (_classDefinition, "Customer", "Customer");
+
+      var foreignKeyEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (foreignKeyEndPointDefinition.PropertyDefinition))
+          .Return (_rdbmsStoragePropertyDefinitionStub);
+
+      var originatingEntity = CreateEntityDefinition (typeof (Order), "o");
+
+      var result = _storageSpecificExpressionResolver.ResolveIDPropertyViaForeignKey (originatingEntity, foreignKeyEndPointDefinition);
+
+      Assert.That (result, Is.Null);
     }
 
     private PropertyDefinition CreatePropertyDefinition (ClassDefinition classDefinition, string propertyName, string columnName)
@@ -469,6 +550,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private SqlEntityDefinitionExpression CreateEntityDefinition (Type itemType, string tableAlias)
     {
       return new SqlEntityDefinitionExpression (itemType, tableAlias, null, e => e.GetColumn (typeof (Guid), "ID", true));
+    }
+
+    private PropertyDefinition CreatePropertyDefinitionAndAssociateWithClass (ClassDefinition classDefinition, string propertyName, string columnName)
+    {
+      var pd = CreatePropertyDefinition (classDefinition, propertyName, columnName);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection(new[] { pd }, true));
+      return pd;
     }
   }
 }

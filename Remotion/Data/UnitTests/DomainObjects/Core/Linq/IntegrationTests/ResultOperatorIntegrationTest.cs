@@ -712,7 +712,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void GroupBy_ResultSelector ()
     {
-      var query = QueryFactory.CreateLinqQuery<Order> ().GroupBy (o => o.Customer.ID, (key, group) => key);
+      var query = QueryFactory.CreateLinqQuery<Order>()
+                              .Where (o => o.ID != DomainObjectIDs.InvalidOrder)
+                              .GroupBy (o => o.Customer.ID, (key, group) => key);
 
       Assert.That (query.Count (), Is.EqualTo (4));
     }

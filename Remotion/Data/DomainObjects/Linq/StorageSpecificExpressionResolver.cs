@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Linq
@@ -77,16 +78,10 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition);
-      var valueExpression = Expression.Convert (ResolveStorageProperty (originatingEntity, entityDefinition.ObjectIDProperty.ValueProperty), typeof (object));
+      var valueExpression = ResolveStorageProperty (originatingEntity, entityDefinition.ObjectIDProperty.ValueProperty);
       var classIDExpression = ResolveStorageProperty (originatingEntity, entityDefinition.ObjectIDProperty.ClassIDProperty);
 
-      var objectIDCtor = typeof (ObjectID).GetConstructor (new[] { typeof (string), typeof (object) });
-      Assertion.IsNotNull (objectIDCtor);
-      var valueMember = typeof (ObjectID).GetProperty ("Value");
-      var classIDMember = typeof (ObjectID).GetProperty ("ClassID");
-      var objectIDConstruction = Expression.New (objectIDCtor, new[] { classIDExpression, valueExpression }, new[] { classIDMember, valueMember });
-      
-      return NamedExpression.CreateNewExpressionWithNamedArguments (objectIDConstruction);
+      return CreateCompoundObjectIDExpression (classIDExpression, valueExpression);
     }
 
     public IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias)
@@ -127,6 +122,39 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("foreignKeyEndPoint", foreignKeyEndPoint);
 
       return GetJoinColumn (foreignKeyEndPoint, originatingEntity);
+    }
+
+    public Expression ResolveIDPropertyViaForeignKey (SqlEntityExpression originatingEntity, RelationEndPointDefinition foreignKeyEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
+      ArgumentUtility.CheckNotNull ("foreignKeyEndPoint", foreignKeyEndPoint);
+
+      var foreignKeyStorageProperty = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition);
+
+      var fullObjectIDStoragePropertyDefinition = foreignKeyStorageProperty as ObjectIDStoragePropertyDefinition;
+      if (fullObjectIDStoragePropertyDefinition != null)
+      {
+        var classIDExpression = ResolveStorageProperty (originatingEntity, fullObjectIDStoragePropertyDefinition.ClassIDProperty);
+        var valueExpression = ResolveStorageProperty (originatingEntity, fullObjectIDStoragePropertyDefinition.ValueProperty);
+        return CreateCompoundObjectIDExpression (classIDExpression, valueExpression);
+      }
+
+      var objectIDWithoutClassIDStoragePropertyDefinition = foreignKeyStorageProperty as ObjectIDWithoutClassIDStoragePropertyDefinition;
+      if (objectIDWithoutClassIDStoragePropertyDefinition != null)
+      {
+        // If the foreign key has no ClassID because the related object's class is always the same one, we still need to provide a full ObjectID,
+        // including ClassID; otherwise, access to the ClassID property wouldn't work later on. (I.e., where o.Customer.ID.ClassID == ...)
+        // We'll therefore use a literal as the ClassID. However, if the value property is null, we must also make the ClassID null.
+        var valueExpression = ResolveStorageProperty (originatingEntity, objectIDWithoutClassIDStoragePropertyDefinition.ValueProperty);
+        var classIDExpression = SqlCaseExpression.CreateIfThenElse (
+            typeof (string),
+            new SqlIsNotNullExpression (valueExpression),
+            new SqlLiteralExpression (objectIDWithoutClassIDStoragePropertyDefinition.ClassDefinition.ID),
+            Expression.Constant (null, typeof (string)));
+        return CreateCompoundObjectIDExpression (classIDExpression, valueExpression);
+      }
+
+      return null;
     }
 
     private IEnumerable<SqlColumnDefinitionExpression> CreateSqlColumnDefinitions (IRdbmsStoragePropertyDefinition storageProperty, string tableAlias)
@@ -188,5 +216,18 @@ namespace Remotion.Data.DomainObjects.Linq
       return GetColumnFromEntity (column, originatingEntity);
     }
 
+    private static Expression CreateCompoundObjectIDExpression (Expression classIDExpression, Expression valueExpression)
+    {
+      var objectIDCtor = typeof (ObjectID).GetConstructor (new[] { typeof (string), typeof (object) });
+      Assertion.IsNotNull (objectIDCtor);
+      var valueMember = typeof (ObjectID).GetProperty ("Value");
+      var classIDMember = typeof (ObjectID).GetProperty ("ClassID");
+      var objectIDConstruction = Expression.New (
+          objectIDCtor, 
+          new[] { classIDExpression, Expression.Convert (valueExpression, typeof (object)) }, 
+          new[] { classIDMember, valueMember });
+
+      return NamedExpression.CreateNewExpressionWithNamedArguments (objectIDConstruction);
+    }
   }
 }

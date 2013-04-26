@@ -169,6 +169,22 @@ namespace Remotion.Data.DomainObjects.Linq
       return _storageSpecificExpressionResolver.ResolveEntityIdentityViaForeignKey (entityRefMemberExpression.OriginatingEntity, foreignKeyEndPoint);
     }
 
+    public Expression TryResolveOptimizedMemberExpression (SqlEntityRefMemberExpression entityRefMemberExpression, MemberInfo memberInfo)
+    {
+      ArgumentUtility.CheckNotNull ("entityRefMemberExpression", entityRefMemberExpression);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+
+      if (memberInfo.DeclaringType != typeof (DomainObject) || memberInfo.Name != "ID")
+        return null;
+
+      var endPointDefinition = GetEndPointDefinition (entityRefMemberExpression.OriginatingEntity, entityRefMemberExpression.MemberInfo);
+      var foreignKeyEndPoint = endPointDefinition as RelationEndPointDefinition;
+      if (foreignKeyEndPoint == null)
+        return null;
+
+      return _storageSpecificExpressionResolver.ResolveIDPropertyViaForeignKey (entityRefMemberExpression.OriginatingEntity, foreignKeyEndPoint);
+    }
+
     private ClassDefinition GetClassDefinition (Type type)
     {
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (

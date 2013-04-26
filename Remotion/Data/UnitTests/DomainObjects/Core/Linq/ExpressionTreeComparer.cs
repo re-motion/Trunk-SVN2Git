@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Collections;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -75,8 +76,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         Expression subNode2 = (Expression) value2;
         CheckAreEqualNodes (subNode1, subNode2);
       }
-      else if (typeof (MemberBinding).IsAssignableFrom (valueType) || typeof (ElementInit).IsAssignableFrom (valueType))
+      else if (typeof (MemberBinding).IsAssignableFrom (valueType) || typeof (ElementInit).IsAssignableFrom (valueType)
+               || typeof (SqlCaseExpression.CaseWhenPair).IsAssignableFrom (valueType))
+      {
         CheckAreEqualObjects (value1, value2);
+      }
       else if (typeof (IList).IsAssignableFrom (valueType))
       {
         IList list1 = (IList) value1;
