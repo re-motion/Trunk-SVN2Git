@@ -16,14 +16,26 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Definitions.Building
 {
   public class AttributeDefinitionBuilder
   {
+    private static readonly ICache<MemberInfo, ReadOnlyCollection<ICustomAttributeData>> s_attributeCache =
+    CacheFactory.CreateWithLocking<MemberInfo, ReadOnlyCollection<ICustomAttributeData>> ();
+
+    private static ReadOnlyCollection<ICustomAttributeData> GetCustomAttributesWithInheritanceFromCache (MemberInfo attributeSource)
+    {
+      ArgumentUtility.CheckNotNull ("attributeSource", attributeSource);
+      return s_attributeCache.GetOrCreateValue (attributeSource, i => TypePipeCustomAttributeData.GetCustomAttributes (i, true).ToList ().AsReadOnly ());
+    }
+
     private readonly IAttributableDefinition _attributableDefinition;
 
     public AttributeDefinitionBuilder (IAttributableDefinition attributableDefinition)
@@ -36,7 +48,7 @@ namespace Remotion.Mixins.Definitions.Building
     {
       ArgumentUtility.CheckNotNull ("attributeSource", attributeSource);
 
-      Apply (attributeSource, TypePipeCustomAttributeData.GetCustomAttributes (attributeSource, true), false);
+      Apply (attributeSource, GetCustomAttributesWithInheritanceFromCache (attributeSource), false);
     }
 
     public void Apply (MemberInfo attributeSource, IEnumerable<ICustomAttributeData> attributes, bool isCopyTemplate)
@@ -115,7 +127,7 @@ namespace Remotion.Mixins.Definitions.Building
         bool includeCopyAttributes, 
         bool includeInheritableAttributes)
     {
-      foreach (var attributeData in TypePipeCustomAttributeData.GetCustomAttributes (copiedAttributesSource, true))
+      foreach (var attributeData in GetCustomAttributesWithInheritanceFromCache (copiedAttributesSource))
       {
         Type attributeType = attributeData.Constructor.DeclaringType;
         if (typeof (CopyCustomAttributesAttribute).IsAssignableFrom (attributeType))
