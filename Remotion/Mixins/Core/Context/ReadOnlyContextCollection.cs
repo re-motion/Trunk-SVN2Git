@@ -32,10 +32,17 @@ namespace Remotion.Mixins.Context
       _internalCollection = new Dictionary<TKey, TValue>();
       _keyGenerator = keyGenerator;
 
+      // Workaround: For some reason, NCover and Visual Studio Coverage will produce invalid programs when the content of Initialize is inlined 
+      // within this ctor.
+      Initialize(values);
+    }
+
+    private void Initialize (IEnumerable<TValue> values)
+    {
       foreach (TValue value in values)
       {
         ArgumentUtility.CheckNotNull ("values[" + _internalCollection.Count + "]", value);
-        
+
         TKey key = _keyGenerator (value);
         TValue existingValue;
         if (_internalCollection.TryGetValue (key, out existingValue))
