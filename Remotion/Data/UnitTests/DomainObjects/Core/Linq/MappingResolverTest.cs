@@ -311,6 +311,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ResolveMemberExpression_RelationMember_VirtualSide_Collection ()
+    {
+      var property = typeof (Order).GetProperty ("OrderItems");
+      var entityExpression = CreateFakeEntityExpression (typeof (Order));
+
+      Assert.That (
+          () => _resolver.ResolveMemberExpression (entityExpression, property), 
+          Throws.TypeOf<NotSupportedException>().With.Message.EqualTo (
+              "Cannot resolve a collection-valued end-point definition. ('Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems')"));
+    }
+
+    [Test]
     public void ResolveMemberExpression_MixedRelationProperty ()
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");

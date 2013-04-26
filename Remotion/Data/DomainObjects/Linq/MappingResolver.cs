@@ -212,7 +212,15 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       var endPointDefinition = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter);
       if (endPointDefinition != null)
+      {
+        if (endPointDefinition.Cardinality != CardinalityType.One)
+        {
+          var message = string.Format (
+              "Cannot resolve a collection-valued end-point definition. ('{0}.{1}')", originatingEntity.Type, propertyInfoAdapter.Name);
+          throw new NotSupportedException (message);
+        }
         return new SqlEntityRefMemberExpression (originatingEntity, propertyInfoAdapter.PropertyInfo);
+      }
 
       var propertyDefinition = classDefinition.ResolveProperty (propertyInfoAdapter);
       if (propertyDefinition != null)
