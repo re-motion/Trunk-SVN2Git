@@ -27,8 +27,9 @@ namespace Remotion.Mixins.Definitions.Building
 {
   public class AttributeDefinitionBuilder
   {
+    // Cache custom attribute data. This tremendously improves the performance of the TypeMixer.
     private static readonly ICache<MemberInfo, ReadOnlyCollection<ICustomAttributeData>> s_attributeCache =
-    CacheFactory.CreateWithLocking<MemberInfo, ReadOnlyCollection<ICustomAttributeData>> ();
+        CacheFactory.CreateWithLocking<MemberInfo, ReadOnlyCollection<ICustomAttributeData>>();
 
     private static ReadOnlyCollection<ICustomAttributeData> GetCustomAttributesWithInheritanceFromCache (MemberInfo attributeSource)
     {
