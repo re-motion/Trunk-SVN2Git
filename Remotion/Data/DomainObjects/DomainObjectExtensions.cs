@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -32,7 +33,7 @@ namespace Remotion.Data.DomainObjects
     /// <see langword="null" />, the method returns <see langword="null" />.</param>
     /// <returns>The <paramref name="domainObjectOrNull"/>'s <see cref="DomainObject.ID"/>, or <see langword="null" /> if <paramref name="domainObjectOrNull"/>
     /// is <see langword="null" />.</returns>
-    public static ObjectID GetSafeID (this DomainObject domainObjectOrNull)
+    public static ObjectID GetSafeID ([CanBeNull] this DomainObject domainObjectOrNull)
     {
       return domainObjectOrNull != null ? domainObjectOrNull.ID : null;
     }
@@ -42,9 +43,9 @@ namespace Remotion.Data.DomainObjects
     /// static type of the value passed as <paramref name="domainObject"/>.
     /// </summary>
     /// <typeparam name="T">The type to be used for the returned <see cref="IDomainObjectHandle{T}"/>.</typeparam>
-    /// <param name="domainObject">The <see cref="DomainObject"/> to get a handle for.</param>
+    /// <param name="domainObject">The <see cref="DomainObject"/> to get a handle for. Must not be <see langword="null" />.</param>
     /// <returns>A typed handle to the given <paramref name="domainObject"/>.</returns>
-    public static IDomainObjectHandle<T> GetHandle<T> (this T domainObject) where T : DomainObject
+    public static IDomainObjectHandle<T> GetHandle<T> ([NotNull] this T domainObject) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       return domainObject.ID.GetHandle<T>();
@@ -61,7 +62,7 @@ namespace Remotion.Data.DomainObjects
     /// <see langword="null" />, the method returns <see langword="null" />.</param>
     /// <returns>A typed handle to the given <paramref name="domainObjectOrNull"/>, or <see langword="null" /> if <paramref name="domainObjectOrNull"/>
     /// is <see langword="null" />.</returns>
-    public static IDomainObjectHandle<T> GetSafeHandle<T> (this T domainObjectOrNull) where T : DomainObject
+    public static IDomainObjectHandle<T> GetSafeHandle<T> ([CanBeNull] this T domainObjectOrNull) where T : DomainObject
     {
       return domainObjectOrNull != null ?domainObjectOrNull.GetHandle() : null;
     }
