@@ -15,21 +15,22 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Collections;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
+using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Globalization;
-using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
@@ -52,8 +53,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       }
       GroupList.LoadUnboundValue (GetValues(), IsPostBack);
 
-      SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      Type groupType = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.GetGroupType ();
+      SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
+      Type groupType = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.GetGroupType();
       NewGroupButton.Visible = securityClient.HasConstructorAccess (groupType);
     }
 
@@ -79,9 +80,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       return Group.FindByTenant (CurrentFunction.TenantHandle).ToArray();
     }
 
-    protected override FormFunction<Group> CreateEditFunction (ITransactionMode transactionMode, Group editedObject)
+    protected override FormFunction<Group> CreateEditFunction (ITransactionMode transactionMode, IDomainObjectHandle<Group> editedObject)
     {
-      return new EditGroupFormFunction (transactionMode, editedObject.GetHandle());
+      ArgumentUtility.CheckNotNull ("transactionMode", transactionMode);
+
+      return new EditGroupFormFunction (transactionMode, editedObject);
     }
   }
 }

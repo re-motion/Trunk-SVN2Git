@@ -17,6 +17,7 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -36,7 +37,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
     {
     }
 
-    public EditGroupTypeFormFunction (ITransactionMode transactionMode, IDomainObjectHandle<GroupType> currentObjectHandle)
+    public EditGroupTypeFormFunction (ITransactionMode transactionMode, [CanBeNull] IDomainObjectHandle<GroupType> currentObjectHandle)
         : base (transactionMode, currentObjectHandle)
     {
     }

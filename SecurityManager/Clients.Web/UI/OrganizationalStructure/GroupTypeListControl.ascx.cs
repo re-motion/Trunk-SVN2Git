@@ -27,6 +27,7 @@ using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStruct
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Globalization;
 
@@ -77,9 +78,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       return GroupType.FindAll().ToArray();
     }
 
-    protected override FormFunction<GroupType> CreateEditFunction (ITransactionMode transactionMode, GroupType editedObject)
+    protected override FormFunction<GroupType> CreateEditFunction (ITransactionMode transactionMode, IDomainObjectHandle<GroupType> editedObject)
     {
-      return new EditGroupTypeFormFunction (transactionMode, editedObject.GetHandle());
+      ArgumentUtility.CheckNotNull ("transactionMode", transactionMode);
+
+      return new EditGroupTypeFormFunction (transactionMode, editedObject);
     }
   }
 }

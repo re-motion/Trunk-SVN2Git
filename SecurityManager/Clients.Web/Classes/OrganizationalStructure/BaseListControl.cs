@@ -15,8 +15,10 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Collections;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
@@ -27,12 +29,12 @@ using Remotion.Web.ExecutionEngine;
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 {
   public abstract class BaseListControl<T> : BaseControl
-    where T : BaseSecurityManagerObject, ISupportsGetObject
+      where T : BaseSecurityManagerObject, ISupportsGetObject
   {
     protected abstract IList GetValues ();
 
-    protected abstract FormFunction<T> CreateEditFunction (ITransactionMode transactionMode, T editedObject);
-    
+    protected abstract FormFunction<T> CreateEditFunction (ITransactionMode transactionMode, [CanBeNull] IDomainObjectHandle<T> editedObject);
+
     protected new BaseListTransactedFunction CurrentFunction
     {
       get { return (BaseListTransactedFunction) base.CurrentFunction; }
@@ -44,7 +46,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 
       if (!Page.IsReturningPostBack)
       {
-        var editUserFormFunction = CreateEditFunction (WxeTransactionMode.CreateRootWithAutoCommit, ((T) e.BusinessObject));
+        var editUserFormFunction = CreateEditFunction (WxeTransactionMode.CreateRootWithAutoCommit, ((T) e.BusinessObject).GetHandle());
         Page.ExecuteFunction (editUserFormFunction, WxeCallArguments.Default);
       }
       else
@@ -82,8 +84,8 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 
       if (HasTenantChanged)
       {
-        CurrentFunction.Reset ();
-        list.LoadUnboundValue (GetValues (), false);
+        CurrentFunction.Reset();
+        list.LoadUnboundValue (GetValues(), false);
       }
     }
   }

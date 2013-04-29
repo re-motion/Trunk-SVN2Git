@@ -27,6 +27,7 @@ using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Globalization;
 
@@ -78,9 +79,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       return Position.FindAll().ToArray();
     }
 
-    protected override FormFunction<Position> CreateEditFunction (ITransactionMode transactionMode, Position editedObject)
+    protected override FormFunction<Position> CreateEditFunction (ITransactionMode transactionMode, IDomainObjectHandle<Position> editedObject)
     {
-      return new EditPositionFormFunction (transactionMode, editedObject.GetHandle());
+      ArgumentUtility.CheckNotNull ("transactionMode", transactionMode);
+
+      return new EditPositionFormFunction (transactionMode, editedObject);
     }
   }
 }

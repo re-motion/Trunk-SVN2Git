@@ -17,6 +17,7 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -36,7 +37,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl
     {
     }
 
-    public EditPermissionsFormFunction (ITransactionMode transactionMode, IDomainObjectHandle<SecurableClassDefinition> currentObjectHandle)
+    public EditPermissionsFormFunction (ITransactionMode transactionMode, [NotNull] IDomainObjectHandle<SecurableClassDefinition> currentObjectHandle)
         : base (transactionMode, currentObjectHandle)
     {
     }

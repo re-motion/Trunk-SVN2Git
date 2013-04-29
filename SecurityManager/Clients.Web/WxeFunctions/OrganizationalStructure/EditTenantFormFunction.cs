@@ -17,6 +17,7 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Configuration;
@@ -37,7 +38,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
     {
     }
 
-    public EditTenantFormFunction (ITransactionMode transactionMode, IDomainObjectHandle<Tenant> currentObjectHandle)
+    public EditTenantFormFunction (ITransactionMode transactionMode, [CanBeNull] IDomainObjectHandle<Tenant> currentObjectHandle)
         : base (transactionMode, currentObjectHandle)
     {
     }
