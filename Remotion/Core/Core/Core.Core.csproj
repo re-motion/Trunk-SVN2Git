@@ -146,6 +146,7 @@
     <Compile Include="Collections\LazyLockingDataStoreAdapter.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecorator.cs" />
     <Compile Include="Collections\TimeSpanBasedExpirationPolicy.cs" />
+    <Compile Include="Configuration\ServiceLocation\IServiceLocationConfiguration.cs" />
     <Compile Include="Configuration\ServiceLocation\ServiceLocationConfiguration.cs" />
     <Compile Include="Context\ISafeContextStorageProvider.cs" />
     <Compile Include="Context\SafeContext.cs" />
@@ -166,8 +167,10 @@
     <Compile Include="Diagnostics\DebuggerInterface.cs" />
     <Compile Include="Diagnostics\IDebuggerInterface.cs" />
     <Compile Include="IAdapter.cs" />
+    <Compile Include="ServiceLocation\BootstrapServiceConfiguration.cs" />
     <Compile Include="ServiceLocation\ConcreteImplementationAttribute.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocatorProvider.cs" />
+    <Compile Include="ServiceLocation\IBootstrapServiceConfiguration.cs" />
     <Compile Include="ServiceLocation\IServiceLocatorProvider.cs" />
     <Compile Include="ServiceLocation\LifetimeKind.cs" />
     <Compile Include="ServiceLocation\ServiceImplementationInfo.cs" />

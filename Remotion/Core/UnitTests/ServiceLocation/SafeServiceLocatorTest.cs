@@ -15,12 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Configuration;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Configuration.ServiceLocation;
 using Remotion.Development.UnitTesting;
-using Remotion.Development.UnitTesting.Configuration;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
@@ -30,12 +28,13 @@ namespace Remotion.UnitTests.ServiceLocation
   public class SafeServiceLocatorTest
   {
     private ServiceLocatorProvider _serviceLocatorProviderBackup;
-    private ServiceLocationConfiguration _previousConfiguration;
+    private IServiceLocationConfiguration _previousConfiguration;
 
     [TestFixtureSetUp]
     public void TestFixtureSetUp ()
     {
       _serviceLocatorProviderBackup = (ServiceLocatorProvider) PrivateInvoke.GetNonPublicStaticField (typeof (ServiceLocator), "currentProvider");
+      PrivateInvoke.SetNonPublicStaticField (typeof (ServiceLocator), "currentProvider", null);
     }
 
     [TestFixtureTearDown]
@@ -72,7 +71,7 @@ namespace Remotion.UnitTests.ServiceLocation
       var serviceLocatorStub = MockRepository.GenerateStub<IServiceLocator> ();
       ServiceLocator.SetLocatorProvider (() => serviceLocatorStub);
 
-      ConfigureFakeServiceLocatorProvider ();
+      ConfigureServiceLocatorProvider (MockRepository.GenerateStrictMock<IServiceLocatorProvider>());
 
       Assert.That (SafeServiceLocator.Current, Is.SameAs (serviceLocatorStub));
     }
@@ -90,9 +89,13 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       ServiceLocator.SetLocatorProvider (null);
 
-      ConfigureFakeServiceLocatorProvider ();
+      var serviceLocatorProvider = MockRepository.GenerateStub<IServiceLocatorProvider> ();
+      var fakeServiceLocator = MockRepository.GenerateStub<IServiceLocator> ();
+      serviceLocatorProvider.Stub (stub => stub.GetServiceLocator()).Return (fakeServiceLocator);
+      
+      ConfigureServiceLocatorProvider (serviceLocatorProvider);
 
-      Assert.That (SafeServiceLocator.Current, Is.SameAs (FakeServiceLocatorProvider.Instance));
+      Assert.That (SafeServiceLocator.Current, Is.SameAs (fakeServiceLocator));
     }
 
     [Test]
@@ -117,9 +120,13 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       ServiceLocator.SetLocatorProvider (() => null);
 
-      ConfigureFakeServiceLocatorProvider();
+      var serviceLocatorProvider = MockRepository.GenerateStub<IServiceLocatorProvider> ();
+      var fakeServiceLocator = MockRepository.GenerateStub<IServiceLocator> ();
+      serviceLocatorProvider.Stub (stub => stub.GetServiceLocator ()).Return (fakeServiceLocator);
 
-      Assert.That (SafeServiceLocator.Current, Is.SameAs (FakeServiceLocatorProvider.Instance));
+      ConfigureServiceLocatorProvider (serviceLocatorProvider);
+
+      Assert.That (SafeServiceLocator.Current, Is.SameAs (fakeServiceLocator));
     }
 
     [Test]
@@ -136,37 +143,43 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       ServiceLocator.SetLocatorProvider (() => null);
 
-      ConfigureServiceLocatorProvider ("Blah");
+      var exception = new Exception ();
+      var serviceLocatorProvider = MockRepository.GenerateMock<IServiceLocatorProvider> ();
+      serviceLocatorProvider.Expect (mock => mock.GetServiceLocator()).Throw (exception);
 
-      Assert.That (
-          () => SafeServiceLocator.Current,
-          Throws.InstanceOf<ConfigurationException>().With.Message.StartsWith (
-              "The value of the property 'type' cannot be parsed. The error is: Could not load type 'Blah'"));
+      ConfigureServiceLocatorProvider (serviceLocatorProvider);
+
+      Assert.That (() => SafeServiceLocator.Current, Throws.Exception.SameAs (exception));
     }
 
-    private class FakeServiceLocatorProvider : IServiceLocatorProvider
+    [Test]
+    public void GetCurrent_ProvidesAccessToBootstrapLocator_WhileConfiguredLocatorIsConstructed ()
     {
-      public static readonly IServiceLocator Instance = MockRepository.GenerateStub<IServiceLocator>();
+      var serviceLocatorProvider = MockRepository.GenerateStub<IServiceLocatorProvider> ();
+      var fakeServiceLocator = MockRepository.GenerateStub<IServiceLocator> ();
+      serviceLocatorProvider
+          .Stub (stub => stub.GetServiceLocator())
+          .Return (null)
+          .WhenCalled (
+              mi =>
+              {
+                Assert.That (
+                    SafeServiceLocator.Current,
+                    Is.Not.Null.And.SameAs (((BootstrapServiceConfiguration) SafeServiceLocator.BootstrapConfiguration).BootstrapServiceLocator));
+                mi.ReturnValue = fakeServiceLocator;
+              });
+      
+      ConfigureServiceLocatorProvider (serviceLocatorProvider);
 
-      public IServiceLocator GetServiceLocator ()
-      {
-        return Instance;
-      }
+      var result = SafeServiceLocator.Current;
+
+      Assert.That (result, Is.SameAs (fakeServiceLocator));
     }
 
-    private void ConfigureFakeServiceLocatorProvider ()
+    private void ConfigureServiceLocatorProvider (IServiceLocatorProvider serviceLocatorProvider)
     {
-      var serviceLocatorTypeName = typeof (FakeServiceLocatorProvider).AssemblyQualifiedName;
-      ConfigureServiceLocatorProvider(serviceLocatorTypeName);
-    }
-
-    private void ConfigureServiceLocatorProvider (string serviceLocatorTypeName)
-    {
-      var serviceLocationConfiguration = new ServiceLocationConfiguration();
-      var xmlFragment = string.Format (@"<serviceLocation xmlns=""..."">
-        <serviceLocatorProvider type=""{0}"" />
-      </serviceLocation>", serviceLocatorTypeName);
-      ConfigurationHelper.DeserializeSection (serviceLocationConfiguration, xmlFragment);
+      var serviceLocationConfiguration = MockRepository.GenerateStub<IServiceLocationConfiguration>();
+      serviceLocationConfiguration.Stub (stub => stub.CreateServiceLocatorProvider()).Return (serviceLocatorProvider);
       ServiceLocationConfiguration.SetCurrent (serviceLocationConfiguration);
       ResetDefaultServiceLocator();
     }

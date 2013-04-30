@@ -24,27 +24,27 @@ namespace Remotion.Configuration.ServiceLocation
   /// <summary>
   /// Configures the service location performed by <see cref="SafeServiceLocator"/>.
   /// </summary>
-  public sealed class ServiceLocationConfiguration : ConfigurationSection
+  public sealed class ServiceLocationConfiguration : ConfigurationSection, IServiceLocationConfiguration
   {
-    private static readonly DoubleCheckedLockingContainer<ServiceLocationConfiguration> s_current =
-        new DoubleCheckedLockingContainer<ServiceLocationConfiguration> (GetServiceLocationConfiguration);
+    private static readonly DoubleCheckedLockingContainer<IServiceLocationConfiguration> s_current =
+        new DoubleCheckedLockingContainer<IServiceLocationConfiguration> (GetServiceLocationConfiguration);
 
     /// <summary>
-    /// Gets the current <see cref="ServiceLocationConfiguration"/> instance. This is used by 
+    /// Gets the current <see cref="IServiceLocationConfiguration"/> instance. This is used by 
     /// <see cref="SafeServiceLocator.Current"/> to retrieve an <see cref="IServiceLocatorProvider"/> instance if no specific 
     /// <see cref="IServiceLocator"/> was configured via <see cref="ServiceLocator.SetLocatorProvider"/>.
     /// </summary>
-    /// <value>The current <see cref="ServiceLocationConfiguration"/>.</value>
-    public static ServiceLocationConfiguration Current
+    /// <value>The current <see cref="IServiceLocationConfiguration"/>.</value>
+    public static IServiceLocationConfiguration Current
     {
       get { return s_current.Value; }
     }
 
     /// <summary>
-    /// Sets the <see cref="Current"/> <see cref="ServiceLocationConfiguration"/> instance.
+    /// Sets the <see cref="Current"/> <see cref="IServiceLocationConfiguration"/> instance.
     /// </summary>
     /// <param name="configuration">The new configuration to set as the <see cref="Current"/> configuration.</param>
-    public static void SetCurrent (ServiceLocationConfiguration configuration)
+    public static void SetCurrent (IServiceLocationConfiguration configuration)
     {
       s_current.Value = configuration;
     }
