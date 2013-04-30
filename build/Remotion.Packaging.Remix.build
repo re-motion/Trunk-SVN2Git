@@ -56,6 +56,8 @@
                    Exclude="$(SolutionDirectory)Remotion\TypePipe\**\bin\**;$(SolutionDirectory)Remotion\TypePipe\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Development\Core\**"
                    Exclude="$(SolutionDirectory)Remotion\Development\Core\**\bin\**;$(SolutionDirectory)Remotion\Development\Core\**\obj\**;@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)Remotion\Development\RhinoMocks\**"
+                   Exclude="$(SolutionDirectory)Remotion\Development\RhinoMocks\**\bin\**;$(SolutionDirectory)Remotion\Development\RhinoMocks\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Mixins\**"
                    Exclude="$(SolutionDirectory)Remotion\Mixins\**\bin\**;$(SolutionDirectory)Remotion\Mixins\**\obj\**;@(StandardExcludes)" />
     </ItemGroup>
