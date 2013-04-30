@@ -30,6 +30,7 @@ using Remotion.Text;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 using System.Linq;
+using Remotion.TypePipe.MutableReflection;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
@@ -435,7 +436,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       var declaringEntity = attribute.DeclaringDefinition.CustomAttributeProvider;
       var suppressAttributesAttributes =
           from suppressAttribute in Configuration.ReceivedAttributes[typeof (SuppressAttributesAttribute)]
-          let suppressAttributeInstance = (SuppressAttributesAttribute) suppressAttribute.Attribute.Instance
+          let suppressAttributeInstance = (SuppressAttributesAttribute) suppressAttribute.Attribute.Data.CreateInstance()
           let suppressingEntity = suppressAttribute.Attribute.DeclaringDefinition.CustomAttributeProvider
           where suppressAttributeInstance.IsSuppressed (attribute.AttributeType, declaringEntity, suppressingEntity)
           select suppressAttributeInstance;

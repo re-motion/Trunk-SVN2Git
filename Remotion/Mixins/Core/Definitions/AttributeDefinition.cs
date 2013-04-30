@@ -26,7 +26,6 @@ namespace Remotion.Mixins.Definitions
   {
     private readonly IAttributableDefinition _declaringDefinition;
     private readonly ICustomAttributeData _data;
-    private readonly object _instance;
     private readonly bool _isCopyTemplate;
 
     public AttributeDefinition (IAttributableDefinition declaringDefinition, ICustomAttributeData data, bool isCopyTemplate)
@@ -34,17 +33,11 @@ namespace Remotion.Mixins.Definitions
       _declaringDefinition = declaringDefinition;
       _data = data;
       _isCopyTemplate = isCopyTemplate;
-      _instance = data.CreateInstance();
     }
 
     public ICustomAttributeData Data
     {
       get { return _data;}
-    }
-
-    public object Instance
-    {
-      get { return _instance; }
     }
 
     public Type AttributeType

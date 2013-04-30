@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions.Building
@@ -71,7 +72,7 @@ namespace Remotion.Mixins.Definitions.Building
     {
       ICustomAttributeProvider declaringEntity = attribute.DeclaringDefinition.CustomAttributeProvider;
       var suppressors = from s in Suppressors
-                        let instance = (SuppressAttributesAttribute) s.Instance
+                        let instance = (SuppressAttributesAttribute) s.Data.CreateInstance()
                         let suppressingEntity = s.DeclaringDefinition.CustomAttributeProvider
                         where instance.IsSuppressed (attribute.AttributeType, declaringEntity, suppressingEntity)
                         select s;
