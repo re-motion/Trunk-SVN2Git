@@ -70,19 +70,6 @@ namespace Remotion.ServiceLocation
               select CreateServiceConfigurationEntry (type, concreteImplementationAttributes));
     }
 
-    private static ServiceConfigurationEntry CreateServiceConfigurationEntry (Type type, ConcreteImplementationAttribute[] concreteImplementationAttributes)
-    {
-      try
-      {
-        return ServiceConfigurationEntry.CreateFromAttributes (type, concreteImplementationAttributes);
-      }
-      catch (InvalidOperationException ex)
-      {
-        var message = string.Format ("Invalid configuration of service type '{0}'. {1}", type, ex.Message);
-        throw new InvalidOperationException (message, ex);
-      }
-    }
-
     /// <summary>
     /// Gets the default service configuration for the types in the given assemblies.
     /// </summary>
@@ -94,6 +81,19 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("assemblies", assemblies);
 
       return assemblies.SelectMany (a => GetDefaultConfiguration (a.GetTypes()));
+    }
+
+    private static ServiceConfigurationEntry CreateServiceConfigurationEntry (Type type, ConcreteImplementationAttribute[] concreteImplementationAttributes)
+    {
+      try
+      {
+        return ServiceConfigurationEntry.CreateFromAttributes (type, concreteImplementationAttributes);
+      }
+      catch (InvalidOperationException ex)
+      {
+        var message = string.Format ("Invalid configuration of service type '{0}'. {1}", type, ex.Message);
+        throw new InvalidOperationException (message, ex);
+      }
     }
   }
 }
