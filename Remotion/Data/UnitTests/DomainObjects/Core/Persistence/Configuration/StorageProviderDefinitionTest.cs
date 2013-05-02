@@ -144,8 +144,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
           () => new TestableStorageProviderDefinition ("TestProvider", nameValueCollection),
           Throws.TypeOf<ConfigurationErrorsException> ().With.Message.EqualTo (
               "The factory type 'Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StorageProviderDefinitionTest+StorageObjectFactoryFake' "
-              + "specified in the configuration of the 'TestProvider' StorageProvider definition cannot be resolved: "
-              + "ActivationException: Cannot get a concrete implementation of type 'System.String': Expected 'ConcreteImplementationAttribute' could not be found."));
+              + "specified in the configuration of the 'TestProvider' StorageProvider definition cannot be resolved: Could not resolve type "
+              + "'Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StorageProviderDefinitionTest+StorageObjectFactoryFake': "
+              + "Error resolving indirect dependendency of constructor parameter 's' of type "
+              + "'Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StorageProviderDefinitionTest+DerivedStorageObjectFactoryFakeWithUnresolvedCtorParameter': "
+              + "Cannot get a concrete implementation of type 'System.String': Expected 'ConcreteImplementationAttribute' could not be found."));
       }
     }
 
