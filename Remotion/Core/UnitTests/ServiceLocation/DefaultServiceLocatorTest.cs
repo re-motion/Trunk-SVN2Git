@@ -523,6 +523,29 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (instances[1], Is.TypeOf<TestMultipleRegistrationType2> ());
     }
 
+    [Test]
+    [ExpectedException (typeof (ActivationException), ExpectedMessage =
+        "Could not resolve type 'Remotion.UnitTests.ServiceLocation.TestDomain.IInterfaceWithIndirectActivationException': "
+        + "Error resolving indirect dependendency of constructor parameter 'innerDependency' of type "
+        + "'Remotion.UnitTests.ServiceLocation.TestDomain.ClassWithIndirectActivationException': Cannot get a concrete implementation of type "
+        + "'Remotion.UnitTests.ServiceLocation.TestDomain.IInterfaceWithoutImplementation': "
+        + "Expected 'ConcreteImplementationAttribute' could not be found.")]
+    public void GetInstance_IndirectActivationException_CausesFullMessageToBeBuilt ()
+    {
+      _serviceLocator.GetInstance<IInterfaceWithIndirectActivationException>();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ActivationException), ExpectedMessage =
+        "Could not resolve type 'Remotion.UnitTests.ServiceLocation.TestDomain.IInterfaceWithIndirectActivationExceptionForCollectionParameter': "
+        + "Error resolving indirect collection dependendency of constructor parameter 'innerDependency' of type "
+        + "'Remotion.UnitTests.ServiceLocation.TestDomain.ClassWithIndirectActivationExceptionForCollectionParameter': "
+        + "InvalidOperationException: This exception comes from the ctor.")]
+    public void GetInstance_IndirectActivationException_ForCollectionParameter_CausesFullMessageToBeBuilt ()
+    {
+      _serviceLocator.GetInstance<IInterfaceWithIndirectActivationExceptionForCollectionParameter> ();
+    }
+
     class DomainType
     {
       public readonly IEnumerable<ITestMultipleRegistrationsType> AllInstances;

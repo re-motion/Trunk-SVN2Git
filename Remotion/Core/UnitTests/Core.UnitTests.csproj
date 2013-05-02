@@ -227,6 +227,9 @@
     <Compile Include="ServiceLocation\BootstrapServiceConfigurationTest.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocatorProviderTest.cs" />
     <Compile Include="ServiceLocation\ServiceImplementationInfoTest.cs" />
+    <Compile Include="ServiceLocation\TestDomain\IInterfaceWithIndirectActivationExceptionForCollectionParameter.cs" />
+    <Compile Include="ServiceLocation\TestDomain\IInterfaceWithIndirectActivationException.cs" />
+    <Compile Include="ServiceLocation\TestDomain\IInterfaceWithoutImplementation.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestConcreteImplementationAttributeWithUnresolvableImplementationType.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestConcreteImplementationAttributeWithUnresolvableAndResolvableImplementationTypes.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestMultipleConcreteImplementationAttributesWithDuplicateImplementationType.cs" />

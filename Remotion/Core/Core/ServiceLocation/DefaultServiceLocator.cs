@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using JetBrains.Annotations;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -64,8 +65,12 @@ namespace Remotion.ServiceLocation
   /// <threadsafety static="true" instance="true" />
   public class DefaultServiceLocator : IServiceLocator
   {
-    private static readonly MethodInfo s_genericGetInstanceMethod = typeof (IServiceLocator).GetMethod ("GetInstance", Type.EmptyTypes);
-    private static readonly MethodInfo s_genericGetAllInstancesMethod = typeof (IServiceLocator).GetMethod ("GetAllInstances", Type.EmptyTypes);
+    private static readonly MethodInfo s_resolveIndirectDependencyMethod =
+        MemberInfoFromExpressionUtility.GetMethod ((DefaultServiceLocator sl) => sl.ResolveIndirectDependency<object> (null))
+        .GetGenericMethodDefinition();
+    private static readonly MethodInfo s_resolveIndirectCollectionDependencyMethod =
+        MemberInfoFromExpressionUtility.GetMethod ((DefaultServiceLocator sl) => sl.ResolveIndirectCollectionDependency<object> (null))
+        .GetGenericMethodDefinition();
 
     private readonly IDataStore<Type, Func<object>[]> _dataStore = DataStoreFactory.CreateWithLocking<Type, Func<object>[]> ();
 
@@ -300,11 +305,16 @@ namespace Remotion.ServiceLocation
       object instance;
       try
       {
-        instance = factory ();
+        instance = factory();
+      }
+      catch (ActivationException ex)
+      {
+        var message = string.Format ("Could not resolve type '{0}': {1}", serviceType, ex.Message);
+        throw new ActivationException (message, ex);
       }
       catch (Exception ex)
       {
-        var message = string.Format ("{0}: {1}", ex.GetType ().Name, ex.Message);
+        var message = string.Format ("{0}: {1}", ex.GetType().Name, ex.Message);
         throw new ActivationException (message, ex);
       }
 
@@ -377,24 +387,67 @@ namespace Remotion.ServiceLocation
       var serviceLocator = Expression.Constant (this);
 
       var parameterInfos = ctorInfo.GetParameters();
-      var ctorArgExpressions = parameterInfos.Select (x => GetResolutionCall (serviceLocator, x.ParameterType));
+      var ctorArgExpressions = parameterInfos.Select (x => GetIndirectResolutionCall (serviceLocator, x));
 
       var factoryLambda = Expression.Lambda<Func<object>> (Expression.New (ctorInfo, ctorArgExpressions));
       return factoryLambda.Compile();
     }
 
-    private Expression GetResolutionCall (Expression serviceLocator, Type parameterType)
+    private Expression GetIndirectResolutionCall (Expression serviceLocator, ParameterInfo parameterInfo)
     {
       MethodInfo resolutionMethod;
-      if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
+      if (parameterInfo.ParameterType.IsGenericType && parameterInfo.ParameterType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
       {
-        var elementType = parameterType.GetGenericArguments().Single();
-        resolutionMethod = s_genericGetAllInstancesMethod.MakeGenericMethod (elementType);
+        var elementType = parameterInfo.ParameterType.GetGenericArguments().Single();
+        resolutionMethod = s_resolveIndirectCollectionDependencyMethod.MakeGenericMethod (elementType);
       }
       else
-        resolutionMethod = s_genericGetInstanceMethod.MakeGenericMethod (parameterType);
+        resolutionMethod = s_resolveIndirectDependencyMethod.MakeGenericMethod (parameterInfo.ParameterType);
 
-      return Expression.Call (serviceLocator, resolutionMethod);
+      var context = string.Format (
+          "constructor parameter '{0}' of type '{1}'",
+          parameterInfo.Name,
+          parameterInfo.Member.DeclaringType);
+      return Expression.Call (serviceLocator, resolutionMethod, Expression.Constant (context));
+    }
+
+    private T ResolveIndirectDependency<T> (string context)
+    {
+      try
+      {
+        return GetInstance<T>();
+      }
+      catch (ActivationException ex)
+      {
+        var message = string.Format ("Error resolving indirect dependendency of {0}: {1}", context, ex.Message);
+        throw new ActivationException (message, ex);
+      }
+    }
+
+    private IEnumerable<T> ResolveIndirectCollectionDependency<T> (string context)
+    {
+      // To keep the lazy sequence semantics of GetAllInstances, and still be able to catch the ActivationException, we need to manually iterate
+      // the input sequence from within a try/catch block and yield return from outside the try/catch block. (Yield return is not allowed to stand
+      // within a try/catch block.)
+      using (var enumerator = GetAllInstances<T>().GetEnumerator())
+      {
+        while (true)
+        {
+          T current;
+          try
+          {
+            if (!enumerator.MoveNext())
+              yield break;
+            current = enumerator.Current;
+          }
+          catch (ActivationException ex)
+          {
+            var message = string.Format ("Error resolving indirect collection dependendency of {0}: {1}", context, ex.Message);
+            throw new ActivationException (message, ex);
+          }
+          yield return current;
+        }
+      }
     }
   }
 }
