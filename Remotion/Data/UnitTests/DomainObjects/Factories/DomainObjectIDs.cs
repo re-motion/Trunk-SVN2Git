@@ -217,6 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // Ceo: Ceo3
     // Orders: Order1, Order2
     // CustomerType: Standard
+    // Name: Kunde 1
     public ObjectID Customer1
     {
       get { return CreateObjectID ("Customer", new Guid ("{55B52E75-514B-4e82-A91B-8F0BB59B80AD}")); }

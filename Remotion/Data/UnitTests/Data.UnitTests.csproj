@@ -229,6 +229,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\EnterScopeTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\HierarchyBoundObjectsTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\OperationsInActivatedLeafTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Loading\LazyRelationLoadingTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\NewObject\RecursiveNewObjectCallTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\OperationsInRootTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\LoadingRelationsWithInvalidMandatoryRelationsTest.cs" />
