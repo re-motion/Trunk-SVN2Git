@@ -50,7 +50,7 @@ namespace Remotion.UnitTests.ServiceLocation
       _previousConfiguration = ServiceLocationConfiguration.Current;
       ServiceLocationConfiguration.SetCurrent (null);
       ResetDefaultServiceLocator ();
-      ResetBootstrapConfiguration ();
+      SafeServiceLocator.BootstrapConfiguration.Reset();
     }
 
     [TearDown]
@@ -58,7 +58,7 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       ServiceLocationConfiguration.SetCurrent (_previousConfiguration);
       ResetDefaultServiceLocator();
-      ResetBootstrapConfiguration();
+      SafeServiceLocator.BootstrapConfiguration.Reset();
     }
 
     [Test]
@@ -234,11 +234,6 @@ namespace Remotion.UnitTests.ServiceLocation
       var defaultServiceLocatorContainer = 
           (DoubleCheckedLockingContainer<IServiceLocator>) PrivateInvoke.GetNonPublicStaticField (typeof (SafeServiceLocator), "s_defaultServiceLocator");
       defaultServiceLocatorContainer.Value = null;
-    }
-
-    private void ResetBootstrapConfiguration ()
-    {
-      PrivateInvoke.SetNonPublicStaticField (typeof (SafeServiceLocator), "s_bootstrapServiceConfiguration", new BootstrapServiceConfiguration());
     }
 
     interface IService1 { }

@@ -44,5 +44,10 @@ namespace Remotion.ServiceLocation
     /// <param name="implementationType">The concrete implementation of the service type.</param>
     /// <param name="lifetime">The lifetime of the instances of <paramref name="implementationType"/>.</param>
     void Register (Type serviceType, Type implementationType, LifetimeKind lifetime);
+
+    /// <summary>
+    /// Removes all registered <see cref="ServiceConfigurationEntry"/> data.
+    /// </summary>
+    void Reset();
   }
 }

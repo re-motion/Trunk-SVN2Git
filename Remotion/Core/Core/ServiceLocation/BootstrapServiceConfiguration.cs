@@ -29,8 +29,9 @@ namespace Remotion.ServiceLocation
   public class BootstrapServiceConfiguration : IBootstrapServiceConfiguration
   {
     private readonly object _lock = new object();
-    private readonly DefaultServiceLocator _bootstrapServiceLocator = new DefaultServiceLocator();
     private readonly List<ServiceConfigurationEntry> _registrations = new List<ServiceConfigurationEntry>();
+
+    private DefaultServiceLocator _bootstrapServiceLocator = new DefaultServiceLocator ();
 
     public IServiceLocator BootstrapServiceLocator
     {
@@ -66,6 +67,15 @@ namespace Remotion.ServiceLocation
 
       var entry = new ServiceConfigurationEntry (serviceType, new ServiceImplementationInfo (implementationType, lifetime));
       Register (entry);
+    }
+
+    public void Reset ()
+    {
+      lock (_lock)
+      {
+        _bootstrapServiceLocator = new DefaultServiceLocator ();
+        _registrations.Clear ();
+      }
     }
   }
 }
