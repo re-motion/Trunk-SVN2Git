@@ -64,7 +64,7 @@ public sealed class WebTypeUtility
     ArgumentUtility.CheckNotNull ("type", type);
     if (IsCompiledType (type))
       return type.FullName;
-    return type.FullName + "," + type.Assembly.GetName().Name;
+    return TypeUtility.GetPartialAssemblyQualifiedName (type);
   }
 
   public static bool IsCompiledType (Type type)
