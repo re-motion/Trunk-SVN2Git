@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System.Collections.ObjectModel;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
 {
@@ -24,9 +26,15 @@ namespace Remotion.ServiceLocation
   /// </summary>
   public class DefaultServiceLocatorProvider : IServiceLocatorProvider
   {
-    public IServiceLocator GetServiceLocator ()
+    public IServiceLocator GetServiceLocator (ReadOnlyCollection<ServiceConfigurationEntry> serviceConfigurationEntries)
     {
-      return new DefaultServiceLocator();
+      ArgumentUtility.CheckNotNull ("serviceConfigurationEntries", serviceConfigurationEntries);
+
+      var defaultServiceLocator = new DefaultServiceLocator();
+      foreach (var serviceConfigurationEntry in serviceConfigurationEntries)
+        defaultServiceLocator.Register (serviceConfigurationEntry);
+
+      return defaultServiceLocator;
     }
   }
 }

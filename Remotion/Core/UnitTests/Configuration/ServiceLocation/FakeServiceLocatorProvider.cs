@@ -16,15 +16,15 @@
 // 
 
 using System;
+using System.Collections.ObjectModel;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ServiceLocation;
-using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Configuration.ServiceLocation
 {
   public class FakeServiceLocatorProvider : IServiceLocatorProvider
   {
-    public IServiceLocator GetServiceLocator ()
+    public IServiceLocator GetServiceLocator (ReadOnlyCollection<ServiceConfigurationEntry> bootstrapConfiguration)
     {
       throw new NotImplementedException();
     }
