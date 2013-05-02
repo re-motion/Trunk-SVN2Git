@@ -62,7 +62,7 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       _configuration.Register (typeof (IService), typeof (Service), LifetimeKind.Instance);
 
-      Assert.That (_configuration.Registrations, Has.Count.EqualTo (1));
+      Assert.That (_configuration.Registrations, Has.Length.EqualTo (1));
       Assert.That (_configuration.Registrations[0].ServiceType, Is.SameAs (typeof (IService)));
       Assert.That (_configuration.Registrations[0].ImplementationInfos, Is.EqualTo (new[] { new ServiceImplementationInfo(typeof (Service), LifetimeKind.Instance) }));
 

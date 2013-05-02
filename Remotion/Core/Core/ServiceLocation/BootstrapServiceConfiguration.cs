@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 
@@ -26,8 +25,10 @@ namespace Remotion.ServiceLocation
   /// <summary>
   /// Allows users to register services before an actual container or <see cref="IServiceLocator"/> has been built.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public class BootstrapServiceConfiguration : IBootstrapServiceConfiguration
   {
+    private readonly object _lock = new object();
     private readonly DefaultServiceLocator _bootstrapServiceLocator = new DefaultServiceLocator();
     private readonly List<ServiceConfigurationEntry> _registrations = new List<ServiceConfigurationEntry>();
 
@@ -36,17 +37,26 @@ namespace Remotion.ServiceLocation
       get { return _bootstrapServiceLocator; }
     }
 
-    public ReadOnlyCollection<ServiceConfigurationEntry> Registrations
+    public ServiceConfigurationEntry[] Registrations
     {
-      get { return _registrations.AsReadOnly(); }
+      get
+      {
+        lock (_lock)
+        {
+          return _registrations.ToArray();
+        }
+      }
     }
 
     public void Register (ServiceConfigurationEntry entry)
     {
       ArgumentUtility.CheckNotNull ("entry", entry);
 
-      _bootstrapServiceLocator.Register (entry);
-      _registrations.Add (entry);
+      lock (_lock)
+      {
+        _bootstrapServiceLocator.Register (entry);
+        _registrations.Add (entry);
+      }
     }
 
     public void Register (Type serviceType, Type implementationType, LifetimeKind lifetime)
