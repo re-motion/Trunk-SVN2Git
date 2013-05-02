@@ -66,11 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Assert.That (order, Is.Not.Null);
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
-
-      var domainObjects = _eventReceiver.LoadedDomainObjectLists[0];
-      Assert.That (domainObjects.Count, Is.EqualTo (1));
-      Assert.That (domainObjects[0], Is.SameAs (order));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
     }
 
     [Test]

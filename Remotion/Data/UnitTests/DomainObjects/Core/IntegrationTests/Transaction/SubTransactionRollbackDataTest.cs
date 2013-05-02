@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         Assert.That (computer.State, Is.EqualTo (StateType.Unchanged));
         Assert.That (employee.State, Is.EqualTo (StateType.Unchanged));
         Assert.That (location.State, Is.EqualTo (StateType.Unchanged));
-        Assert.That (client.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (client.State, Is.EqualTo (StateType.NotLoadedYet));
 
         Assert.That (computer.Employee, Is.SameAs (employee));
         Assert.That (employee.Computer, Is.SameAs (computer));

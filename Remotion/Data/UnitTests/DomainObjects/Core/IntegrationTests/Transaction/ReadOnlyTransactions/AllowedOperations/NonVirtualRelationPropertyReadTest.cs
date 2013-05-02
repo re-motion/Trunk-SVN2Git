@@ -82,6 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckEndPointNull (WriteableSubTransaction, _oppositeRelationEndPointID);
 
       var customer = ExecuteInReadOnlyRootTransaction (() => _order1.Customer);
+      ExecuteInReadOnlyRootTransaction (customer.EnsureDataAvailable);
       
       Assert.That (customer.ID, Is.EqualTo (DomainObjectIDs.Customer1));
 
@@ -122,6 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckEndPointNull (WriteableSubTransaction, _oppositeRelationEndPointID);
 
       var customer = ExecuteInReadOnlyMiddleTransaction (() => _order1.Customer);
+      ExecuteInReadOnlyMiddleTransaction (customer.EnsureDataAvailable);
 
       Assert.That (customer.ID, Is.EqualTo (DomainObjectIDs.Customer1));
 

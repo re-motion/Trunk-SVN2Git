@@ -173,6 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           DomainObjectIDs.Order3,
           true,
           true,
+          true,
           new[] { DomainObjectIDs.OrderItem3 });
     }
 
@@ -188,7 +189,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           },
           DomainObjectIDs.OrderItem3,
           false,
-          true,
+          false,
+          false,
           new[] { DomainObjectIDs.Order3 });
     }
 
@@ -204,7 +206,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           },
           DomainObjectIDs.Computer1,
           false,
-          true,
+          false,
+          false,
           new[] { DomainObjectIDs.Employee3 });
     }
 
@@ -219,9 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Assert.That (computer, Is.Not.Null);
           },
           DomainObjectIDs.Employee3,
-          false,
-          true,
-          new[] { DomainObjectIDs.Computer1 });
+          false, true, true, new[] { DomainObjectIDs.Computer1 });
     }
 
     [Test]
@@ -235,9 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Assert.That (count, Is.EqualTo (0));
           },
           DomainObjectIDs.Customer2,
-          true,
-          false,
-          new ObjectID[] { });
+          true, true, false, new ObjectID[] { });
     }
 
     [Test]
@@ -251,9 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Assert.That (parent, Is.Null);
           },
           DomainObjectIDs.Client1,
-          false,
-          false,
-          new ObjectID[] { });
+          false, true, false, new ObjectID[] { });
     }
 
     [Test]
@@ -267,9 +264,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Assert.That (employee, Is.Null);
           },
           DomainObjectIDs.Computer4,
-          false,
-          false,
-          new ObjectID[] { });
+          false, true, false, new ObjectID[] { });
     }
 
     [Test]
@@ -283,9 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Assert.That (computer, Is.Null);
           },
           DomainObjectIDs.Employee7,
-          false,
-          false,
-          new ObjectID[] { });
+          false, true, false, new ObjectID[] { });
     }
 
     [Test]
@@ -1411,11 +1404,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     private void RecordObjectLoadingCalls (
-    ClientTransaction transaction,
-    ObjectID expectedMainObjectID,
-    bool expectingCollection,
-    bool expectLoadedEvent,
-    ObjectID[] expectedRelatedObjectIDs)
+        ClientTransaction transaction,
+        ObjectID expectedMainObjectID,
+        bool expectingCollection,
+        bool expectLoadingEvent,
+        bool expectLoadedEvent,
+        ObjectID[] expectedRelatedObjectIDs)
     {
       using (_mockRepository.Ordered ())
       {
@@ -1429,8 +1423,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.RelationReading (null, null, null, ValueAccess.Current);
         LastCall.IgnoreArguments ();
 
-        if (expectedRelatedObjectIDs.Any())
+        if (expectedRelatedObjectIDs.Any() && expectLoadingEvent)
+        {
           _extensionMock.ObjectsLoading (Arg.Is (transaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (expectedRelatedObjectIDs));
+        }
 
         if (expectLoadedEvent)
         {
@@ -1464,11 +1460,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         Action accessCode,
         ObjectID expectedMainObjectID,
         bool expectCollection,
+        bool expectLoadingEvent,
         bool expectLoadedEvent,
         ObjectID[] expectedRelatedIDs)
     {
       _mockRepository.BackToRecordAll ();
-      RecordObjectLoadingCalls (_transaction, expectedMainObjectID, expectCollection, expectLoadedEvent, expectedRelatedIDs);
+      RecordObjectLoadingCalls (_transaction, expectedMainObjectID, expectCollection, expectLoadingEvent, expectLoadedEvent, expectedRelatedIDs);
 
       using (_transaction.EnterNonDiscardingScope ())
       {

@@ -353,6 +353,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         var client = clientID.GetObject<Client> ();
         Client instance = null;
         Assert.That (() => instance = client.ParentClient, Throws.Nothing);
+        Assert.That (instance.State, Is.EqualTo (StateType.NotLoadedYet));
+
+        Assert.That (() => instance.EnsureDataAvailable(), Throws.TypeOf<ObjectsNotFoundException>());
         CheckObjectIsMarkedInvalid (instance.ID);
       }
       finally
@@ -384,7 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void BidirectionalForeignKeyRelationProperty_ShouldReturnInvalidObject ()
+    public void BidirectionalForeignKeyRelationProperty_ShouldReturnNotLoadedObject ()
     {
       var id = new ObjectID(typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
       var objectWithInvalidRelation = (ClassWithInvalidRelation) id.GetObject<TestDomainBase> ();
@@ -392,6 +395,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       DomainObject instance = null;
       
       Assert.That (() => instance = objectWithInvalidRelation.ClassWithGuidKey, Throws.Nothing);
+
+      Assert.That (instance.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      Assert.That (() => instance.EnsureDataAvailable(), Throws.TypeOf<ObjectsNotFoundException>());
       CheckObjectIsMarkedInvalid (instance.ID);
 
       // Note: See also ObjectWithInvalidForeignKeyTest
@@ -408,6 +415,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         var objectWithInvalidRelation = (ClassWithInvalidRelation) id.GetObject<TestDomainBase> ();
 
         Assert.That (() => instance = objectWithInvalidRelation.ClassWithGuidKey, Throws.Nothing);
+        Assert.That (instance.State, Is.EqualTo (StateType.NotLoadedYet));
+
+        Assert.That (() => instance.EnsureDataAvailable (), Throws.TypeOf<ObjectsNotFoundException> ());
         CheckObjectIsMarkedInvalid (instance.ID);
       }
       CheckObjectIsMarkedInvalid (instance.ID);

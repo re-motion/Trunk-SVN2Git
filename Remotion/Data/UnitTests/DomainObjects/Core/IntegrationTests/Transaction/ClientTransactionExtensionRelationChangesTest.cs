@@ -154,6 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       OrderTicket orderTicket3 = DomainObjectIDs.OrderTicket3.GetObject<OrderTicket> ();
       Order oldOrderOfOrderTicket3 = orderTicket3.Order;
+      oldOrderOfOrderTicket3.EnsureDataAvailable ();
 
       var orderTicket3EventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (orderTicket3);
       var oldOrderOfOrderTicket3EventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (oldOrderOfOrderTicket3);
@@ -215,6 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       OrderTicket orderTicket3 = DomainObjectIDs.OrderTicket3.GetObject<OrderTicket> ();
       Order oldOrderOfOrderTicket3 = orderTicket3.Order;
+      oldOrderOfOrderTicket3.EnsureDataAvailable();
 
       var orderTicket3EventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (orderTicket3);
       var oldOrderOfOrderTicket3EventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (oldOrderOfOrderTicket3);
@@ -430,8 +432,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void AddToOneToManyRelationWithOldRelatedObject ()
     {
       DomainObjectCollection preloadedOrderItemsOfOrder1 = _order1.OrderItems;
+
       OrderItem newOrderItem = DomainObjectIDs.OrderItem3.GetObject<OrderItem>();
       Order oldOrderOfNewOrderItem = newOrderItem.Order;
+      oldOrderOfNewOrderItem.EnsureDataAvailable();
 
       _mockRepository.BackToRecord (_extension);
       var newOrderItemEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrderItem);

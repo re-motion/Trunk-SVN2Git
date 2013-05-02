@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -21,10 +22,9 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Loading
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 {
   [TestFixture]
-  [Ignore ("TODO 2264")]
   public class LazyRelationLoadingTest : ClientTransactionBaseTest
   {
     private Order _order;
@@ -33,14 +33,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Loading
     {
       base.SetUp ();
 
-      _order = DomainObjectIDs.Order1.GetObject<Order>();
+      _order = DomainObjectIDs.Order1.GetObjectReference<Order>();
     }
 
     [Test]
-    public void AccessingRelatedObject_ForeignKeySide_ReturnsNonloadedReference ()
+    public void AccessingRelatedObject_ForeignKeySide_ReturnsNonloadedReference_ButLoadsObjectCOntainingForeignKey ()
     {
-      Assert.That (_order.Customer.ID, Is.EqualTo (DomainObjectIDs.Customer1));
-      Assert.That (_order.Customer.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (_order.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var customer = _order.Customer;
+
+      Assert.That (customer.ID, Is.EqualTo (DomainObjectIDs.Customer1));
+      Assert.That (customer.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (_order.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -72,13 +77,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Loading
     }
 
     [Test]
-    public void AccessingRelatedObject_ForeignKeySide_ExceptionOnLoading_IsTriggeredOnDemand ()
+    public void AccessingRelatedObject_ForeignKeySide_InvalidType_IsImmediatelyNoticed ()
     {
       var orderWithInvalidCustomer = DomainObjectIDs.InvalidOrder.GetObject<Order>();
 
-      Assert.That (orderWithInvalidCustomer.Customer.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (
+          () => orderWithInvalidCustomer.Customer,
+          Throws.TypeOf<InvalidTypeException>().With.Message.StringStarting (
+              "The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' was expected to hold an object of type "
+              + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer', but it returned an object of type "
+              + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Company"));
+    }
 
-      Assert.That (() => orderWithInvalidCustomer.Customer.Name, Throws.TypeOf<PersistenceException>());
+    [Test]
+    public void AccessingRelatedObject_ForeignKeySide_NotFoundKeyException_IsTriggeredOnDemand ()
+    {
+      var id = new ObjectID (typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
+      var objectWithInvalidRelation = (ClassWithInvalidRelation) id.GetObject<TestDomainBase> ();
+
+      Assert.That (objectWithInvalidRelation.ClassWithGuidKey.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      Assert.That (() => objectWithInvalidRelation.ClassWithGuidKey.EnsureDataAvailable(), Throws.TypeOf<ObjectsNotFoundException> ());
     }
 
     [Test]
@@ -91,20 +110,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Loading
     }
 
     [Test]
-    public void AccessingRelatedObject_VirtualSide_ReturnsLoadedObject ()
+    public void AccessingRelatedObject_ForeignKeySide_OriginalObjectIsAlsoNotLoadedOnAccess ()
     {
-      Assert.That (_order.OrderTicket.ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      Assert.That (_order.OrderTicket.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_order.Properties[typeof (Order), "Customer"].GetOriginalValue<Customer>().ID, Is.EqualTo (DomainObjectIDs.Customer1));
+      Assert.That (_order.Properties[typeof (Order), "Customer"].GetOriginalValue<Customer> ().State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
-    public void AccessingRelatedCollection_ReturnsCollectionWithIncompleteContents ()
+    [Ignore ("TODO 2264")]
+    public void AccessingRelatedObject_VirtualSide_ReturnsLoadedObject_ButDoesNotLoadOriginatingObject ()
     {
-      Assert.That (_order.OrderItems.AssociatedEndPointID, Is.EqualTo (RelationEndPointID.Resolve (_order, o => o.OrderItems)));
-      Assert.That (_order.OrderItems.IsDataComplete, Is.False);
+      Assert.That (_order.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var orderTicket = _order.OrderTicket;
+
+      Assert.That (orderTicket.ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (orderTicket.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_order.State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
+    [Ignore ("TODO 2264")]
+    public void AccessingRelatedCollection_ReturnsCollectionWithIncompleteContents_AndDoesNotLoadOriginatingObject ()
+    {
+      Assert.That (_order.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var orderItems = _order.OrderItems;
+
+      Assert.That (orderItems.AssociatedEndPointID, Is.EqualTo (RelationEndPointID.Resolve (_order, o => o.OrderItems)));
+      Assert.That (orderItems.IsDataComplete, Is.False);
+      Assert.That (_order.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    [Ignore ("TODO 2264")]
     public void AccessingRelatedCollection_ReturnsCollectionWithIncompleteContents_ContentsIsLoadedWhenNeeded ()
     {
       Assert.That (_order.OrderItems.IsDataComplete, Is.False);
@@ -115,6 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Loading
     }
 
     [Test]
+    [Ignore ("TODO 2264")]
     public void AccessingRelatedCollection_CollectionWithIncompleteContents_CanBeUsedToRegisterEvents ()
     {
       bool itemAdded = false;
@@ -133,6 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Loading
     }
 
     [Test]
+    [Ignore ("TODO 2264")]
     public void AccessingRelatedCollection_ExceptionOnLoading_IsTriggeredOnDemand ()
     {
       var orderWithoutOrderItems = DomainObjectIDs.OrderWithoutOrderItems.GetObject<Order>();
@@ -143,6 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Loading
     }
 
     [Test]
+    [Ignore ("TODO 2264")]
     public void AccessingRelatedCollection_ReturnsAlreadyLoadedCollection_IfAlreadyLoaded ()
     {
       TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (_order, o => o.OrderItems));

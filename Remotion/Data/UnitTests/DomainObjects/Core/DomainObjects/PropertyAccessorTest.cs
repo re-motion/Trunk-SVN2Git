@@ -97,6 +97,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidTypeException), ExpectedMessage =
+        @"^The property 'Remotion\.Data\.UnitTests\.DomainObjects\.TestDomain\.Order\.Customer' was expected to hold an object of type "
+        + @"'Remotion\.Data\.UnitTests\.DomainObjects\.TestDomain\.Customer', but it returned an object of type "
+        + @"'Remotion\.Data\.UnitTests\.DomainObjects\.TestDomain\.Company.*'\.$",
+        MatchType = MessageMatch.Regex)]
+    public void GetValue_ThrowsIfUnexpectedTypeOfResult ()
+    {
+      var invalidOrder = DomainObjectIDs.InvalidOrder.GetObject<Order>();
+      CreateAccessor (invalidOrder, "Customer").GetValue<Customer> ();
+    }
+
+    [Test]
     public void SetValue_WithObjectList ()
     {
       IndustrialSector sector = IndustrialSector.NewObject ();
@@ -479,9 +491,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.That (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull, Is.False);
       Assert.AreEqual (0, eventReceiver.LoadedDomainObjectLists.Count, "The IsNull check did not cause the object to be loaded.");
-
-      Assert.That (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetValue<Customer> () == null, Is.False);
-      Assert.AreEqual (1, eventReceiver.LoadedDomainObjectLists.Count, "An ordinary check does cause the object to be loaded.");
     }
 
     [Test]

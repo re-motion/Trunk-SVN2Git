@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Assert.That (orderItemA.Order, Is.SameAs (order1));
       Assert.That (orderItemB.Order, Is.SameAs (order1));
 
-      CheckDataContainerExists (order1, true); // Relation access reloads object, although this is not really necessary
+      CheckDataContainerExists (order1, false); // Relation access does not reload object
       CheckDataContainerExists (orderItemA, true);
       CheckDataContainerExists (orderItemB, true);
 
@@ -795,7 +795,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Assert.That (customer.Orders, Has.Member (order1)); // enumerating reloads the relation contents because the foreign key is stored in order1
 
       AssertObjectWasLoadedAmongOthers (listenerMock, order1);
-      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]

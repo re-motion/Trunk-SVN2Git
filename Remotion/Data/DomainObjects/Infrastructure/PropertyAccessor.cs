@@ -154,9 +154,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           value != null || NullableTypeUtility.IsNullableType (PropertyData.PropertyType),
           "Property '{0}' is a value type but the DataContainer returned null.",
           PropertyData.PropertyIdentifier);
-      Assertion.DebugAssert (value == null || value is T);
 
-      return (T) value;
+      try
+      {
+        return (T) value;
+      }
+      catch (InvalidCastException ex)
+      {
+        Assertion.IsNotNull (value, "Otherwise, the cast would have succeeded (ref type) or thrown a NullReferenceException (value type).");
+        var message = string.Format (
+            "The property '{0}' was expected to hold an object of type '{1}', but it returned an object of type '{2}'.",
+            PropertyData.PropertyIdentifier,
+            PropertyData.PropertyType,
+            value.GetType());
+        throw new InvalidTypeException (message, ex);
+      }
     }
 
     /// <summary>

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -22,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjectEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -62,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      new RealObjectEndPoint (TestableClientTransaction, id, foreignKeyDataContainer, _endPointProviderStub, _transactionEventSinkStub);
+      Dev.Null = new RealObjectEndPoint (TestableClientTransaction, id, foreignKeyDataContainer, _endPointProviderStub, _transactionEventSinkStub);
     }
 
     [Test]
@@ -72,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      new RealObjectEndPoint (TestableClientTransaction, id, foreignKeyDataContainer, _endPointProviderStub, _transactionEventSinkStub);
+      Dev.Null = new RealObjectEndPoint (TestableClientTransaction, id, foreignKeyDataContainer, _endPointProviderStub, _transactionEventSinkStub);
     }
 
     [Test]
@@ -188,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
 
       Assert.That (oppositeObject, Is.SameAs (LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order1)));
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Unchanged), "Data has been loaded");
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.NotLoadedYet), "Data has not been loaded");
     }
 
     [Test]
@@ -233,7 +235,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var oppositeObject = _endPoint.GetOppositeObject ();
       Assert.That (oppositeObject.ID, Is.EqualTo (objectID));
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid), "Data has not been found");
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.NotLoadedYet), "Data has not been loaded");
+
+      Assert.That (() => oppositeObject.EnsureDataAvailable(), Throws.TypeOf<ObjectsNotFoundException>());
+
+      var oppositeObject2 = _endPoint.GetOppositeObject ();
+      Assert.That (oppositeObject2.ID, Is.EqualTo (objectID));
+      Assert.That (oppositeObject2.State, Is.EqualTo (StateType.Invalid), "Data has not been found");
     }
 
     [Test]
@@ -242,7 +250,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order1);
       _foreignKeyDataContainer.CommitState();
 
-      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (DomainObjectIDs.Order1.GetObject<Order> ()));
+      var originalOppositeObject = _endPoint.GetOriginalOppositeObject();
+
+      Assert.That (originalOppositeObject, Is.SameAs (DomainObjectIDs.Order1.GetObjectReference<Order> ()));
+      Assert.That (originalOppositeObject.State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
