@@ -32,9 +32,6 @@ namespace Remotion.ServiceLocation
   /// </summary>
   public class ServiceConfigurationEntry
   {
-    private readonly Type _serviceType;
-    private readonly ReadOnlyCollection<ServiceImplementationInfo> _implementationInfos;
-
     /// <summary>
     /// Creates a <see cref="ServiceConfigurationEntry"/> from a <see cref="ConcreteImplementationAttribute"/>.
     /// </summary>
@@ -106,6 +103,9 @@ namespace Remotion.ServiceLocation
         visitedValues.Add (value);
       }
     }
+
+    private readonly Type _serviceType;
+    private readonly ReadOnlyCollection<ServiceImplementationInfo> _implementationInfos;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ServiceConfigurationEntry"/> class.
