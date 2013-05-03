@@ -20,7 +20,6 @@ using Remotion.ServiceLocation;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.Factories;
 using Remotion.Web.Legacy.Infrastructure;
-using Remotion.Web.Legacy.Infrastructure.Factories;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
@@ -46,7 +45,7 @@ namespace Remotion.Web.Legacy
           typeof (IClientScriptBehavior), CreateSingletonImplementationInfo<QuirksModeClientScriptBehavior>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IResourceUrlFactory), CreateSingletonImplementationInfo<QuirksModeResourceUrlFactory>());
+          typeof (IResourceUrlFactory), CreateSingletonImplementationInfo<Factories.QuirksModeResourceUrlFactory>());
 
       yield return new ServiceConfigurationEntry (
           typeof (IDatePickerButtonRenderer), CreateSingletonImplementationInfo<DatePickerButtonQuirksModeRenderer>());
@@ -79,10 +78,7 @@ namespace Remotion.Web.Legacy
           typeof (IWebTreeViewRenderer), CreateSingletonImplementationInfo<WebTreeViewQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IThemedResourceUrlResolver), CreateSingletonImplementationInfo<QuirksModeResourceUrlResolver>());
-
-      yield return new ServiceConfigurationEntry (
-          typeof (IThemedResourceUrlResolverFactory), CreateSingletonImplementationInfo<QuirksModeResourceUrlResolverFactory>());
+          typeof (IThemedResourceUrlFactory), CreateSingletonImplementationInfo<QuirksModeThemedResourceUrlFactory>());
     }
 
     private static ServiceImplementationInfo CreateSingletonImplementationInfo<T> ()

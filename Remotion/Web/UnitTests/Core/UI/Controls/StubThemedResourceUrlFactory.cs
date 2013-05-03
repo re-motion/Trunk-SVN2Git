@@ -17,16 +17,13 @@
 using System;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.Legacy.Infrastructure.Factories
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
-  /// <summary>
-  /// Responsible for creating a <see cref="QuirksModeResourceUrlResolver"/> used for resolving the themed resources provided by the <b>Remotion.Web.Legacy</b> assembly.
-  /// </summary>
-  public class QuirksModeResourceUrlResolverFactory : IThemedResourceUrlResolverFactory
+  public class StubThemedResourceUrlFactory : IThemedResourceUrlFactory
   {
-    public IThemedResourceUrlResolver CreateResourceUrlResolver ()
+    public IResourceUrl CreateResourceUrl (ResourceType resourceType, string relativeUrl)
     {
-      return new QuirksModeResourceUrlResolver();
+      return new StaticResourceUrl ("/" + relativeUrl);
     }
   }
 }

@@ -60,7 +60,7 @@ namespace OBWTest
       //  A call to the ResourceDispatcher to get have the automatic resources dispatched
       ResourceDispatcher.Dispatch (this, ResourceManagerUtility.GetResourceManager (this));
 
-      HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
+      HtmlHeadAppender.Current.RegisterPageStylesheetLink ();
 
       var key = GetType().FullName + "_Global";
       if (! HtmlHeadAppender.Current.IsRegistered (key))

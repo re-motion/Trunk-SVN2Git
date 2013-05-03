@@ -501,8 +501,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Web\UI\Controls\StubResourceUrl.cs" />
-    <Compile Include="Web\UI\Controls\StubResourceUrlResolver.cs" />
-    <Compile Include="Web\UI\Controls\StubResourceUrlResolverFactory.cs" />
+    <Compile Include="Web\UI\Controls\StubThemedResourceUrlFactory.cs" />
     <Compile Include="Web\UI\Controls\StubServiceLocator.cs" />
     <Compile Include="Web\UI\Controls\RendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\XmlNodeExtensions.cs" />

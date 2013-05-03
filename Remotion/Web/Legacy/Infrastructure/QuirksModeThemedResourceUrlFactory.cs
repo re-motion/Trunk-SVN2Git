@@ -16,30 +16,30 @@
 // 
 using System;
 using Remotion.Utilities;
-using Remotion.Web.UI.Controls;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.Infrastructure
+namespace Remotion.Web.Legacy.Infrastructure
 {
   /// <summary>
   /// Responsible for resolving resource urls for the current <see cref="ResourceTheme"/>.
-  /// The <see cref="ThemedResourceUrlResolver"/> is only intended for use with controls located in <b>Remotion.Web</b> that do not have their own renderers.
+  /// The <see cref="QuirksModeThemedResourceUrlFactory"/> is only intended for use with controls located <b>Remotion.Web</b> that do not have their own renderers.
   /// </summary>
-  public class ThemedResourceUrlResolver : IThemedResourceUrlResolver
+  public class QuirksModeThemedResourceUrlFactory : IThemedResourceUrlFactory
   {
-    private readonly ResourceTheme _resourceTheme;
+    private readonly IResourceUrlFactory _resourceUrlFactory;
 
-    public ThemedResourceUrlResolver (ResourceTheme resourceTheme)
+    public QuirksModeThemedResourceUrlFactory (IResourceUrlFactory resourceUrlFactory)
     {
-      ArgumentUtility.CheckNotNull ("resourceTheme", resourceTheme);
-
-      _resourceTheme = resourceTheme;
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
+      
+      _resourceUrlFactory = resourceUrlFactory;
     }
 
-    public string GetResourceUrl (IControl control, ResourceType resourceType, string relativeUrl)
+    public IResourceUrl CreateResourceUrl (ResourceType resourceType, string relativeUrl)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
 
-      return ResourceUrlResolver.GetResourceUrl (control, typeof (ThemedResourceUrlResolver), resourceType, _resourceTheme, relativeUrl);
+      return _resourceUrlFactory.CreateResourceUrl (typeof (QuirksModeThemedResourceUrlFactory), resourceType, relativeUrl);
     }
   }
 }

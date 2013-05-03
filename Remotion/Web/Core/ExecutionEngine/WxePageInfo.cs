@@ -174,8 +174,8 @@ namespace Remotion.Web.ExecutionEngine
       var scriptUrl = resourceUrlFactory.CreateResourceUrl (typeof (WxePageInfo), ResourceType.Html, c_scriptFileUrl);
       HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
 
-      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
-      var styleUrl = themedResourceUrlResolver.GetResourceUrl (_page, ResourceType.Html, c_styleFileUrl);
+      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlFactory>();
+      var styleUrl = themedResourceUrlResolver.CreateResourceUrl (ResourceType.Html, c_styleFileUrl);
       HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 

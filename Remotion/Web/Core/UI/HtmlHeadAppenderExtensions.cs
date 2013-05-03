@@ -57,22 +57,25 @@ namespace Remotion.Web.UI
     /// <summary>
     /// Registeres style.css in themed HTML folder of Remotion.Web.dll with priority level <see cref="HtmlHeadAppender.Priority.Page"/>.
     /// </summary>
-    public static void RegisterPageStylesheetLink (this HtmlHeadAppender htmlHeadAppender, IPage page)
+    public static void RegisterPageStylesheetLink (this HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-      ArgumentUtility.CheckNotNull ("page", page);
 
-      var factory = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>();
-      var resolver = factory.CreateResourceUrlResolver();
+      var resolver = ThemedResourceUrlFactory;
 
       string key = typeof (HtmlHeadContents).FullName + "_Style";
-      string url = resolver.GetResourceUrl (page, ResourceType.Html, "Style.css");
+      var url = resolver.CreateResourceUrl (ResourceType.Html, "Style.css");
       htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Page);
     }
 
     private static IResourceUrlFactory ResourceUrlFactory
     {
       get { return SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(); }
+    }
+
+    private static IThemedResourceUrlFactory ThemedResourceUrlFactory
+    {
+      get { return SafeServiceLocator.Current.GetInstance<IThemedResourceUrlFactory>(); }
     }
   }
 }

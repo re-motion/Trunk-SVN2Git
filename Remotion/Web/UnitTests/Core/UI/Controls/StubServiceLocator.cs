@@ -36,7 +36,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
     public StubServiceLocator ()
     {
-      _instances.Add (typeof (IThemedResourceUrlResolverFactory), new StubResourceUrlResolverFactory());
+      _instances.Add (typeof (IThemedResourceUrlFactory), new StubThemedResourceUrlFactory());
       _instances.Add (typeof (IScriptUtility), MockRepository.GenerateStub<IScriptUtility>());
       _instances.Add (typeof (ILogManager), new Log4NetLogManager());
       _instances.Add (typeof (IAdapterRegistryImplementation), MockRepository.GenerateStub<IAdapterRegistryImplementation> ());

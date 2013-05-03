@@ -1227,8 +1227,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual Image GetRequiredMarker ()
     {
       Image requiredIcon = new Image();
-      var themedResourceUrlResolver = ServiceLocator.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
-      requiredIcon.ImageUrl = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_rowEditModeRequiredFieldIcon);
+      var themedResourceUrlResolver = ServiceLocator.GetInstance<IThemedResourceUrlFactory>();
+      requiredIcon.ImageUrl = themedResourceUrlResolver.CreateResourceUrl (ResourceType.Image, c_rowEditModeRequiredFieldIcon).GetUrl();
 
       IResourceManager resourceManager = GetResourceManager();
       requiredIcon.AlternateText = resourceManager.GetString (ResourceIdentifier.RequiredFieldAlternateText);
@@ -1242,8 +1242,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual Image GetValidationErrorMarker ()
     {
       Image validationErrorIcon = new Image();
-      var themedResourceUrlResolver = ServiceLocator.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
-      validationErrorIcon.ImageUrl = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_rowEditModeValidationErrorIcon);
+      var themedResourceUrlResolver = ServiceLocator.GetInstance<IThemedResourceUrlFactory>();
+      validationErrorIcon.ImageUrl = themedResourceUrlResolver.CreateResourceUrl (ResourceType.Image, c_rowEditModeValidationErrorIcon).GetUrl();
 
       IResourceManager resourceManager = GetResourceManager();
       validationErrorIcon.AlternateText = resourceManager.GetString (ResourceIdentifier.ValidationErrorInfoAlternateText);

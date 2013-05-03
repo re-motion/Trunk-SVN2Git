@@ -96,7 +96,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-      HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
+      HtmlHeadAppender.Current.RegisterPageStylesheetLink ();
     }
 
     override protected void OnInit(EventArgs e)

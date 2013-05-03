@@ -26,7 +26,7 @@ namespace Remotion.Web.Test.UpdatePanelTests
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-      HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
+      HtmlHeadAppender.Current.RegisterPageStylesheetLink ();
     }
   }
 }

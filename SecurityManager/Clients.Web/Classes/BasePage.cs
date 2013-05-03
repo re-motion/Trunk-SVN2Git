@@ -77,7 +77,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       var globalStyleFileUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BasePage), ResourceType.Html, c_globalStyleFileUrl);
       HtmlHeadAppender.Current.RegisterStylesheetLink (c_globalStyleFileKey, globalStyleFileUrl, HtmlHeadAppender.Priority.Library);
 
-      HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
+      HtmlHeadAppender.Current.RegisterPageStylesheetLink ();
     }
 
     IResourceManager IObjectWithResources.GetResourceManager ()

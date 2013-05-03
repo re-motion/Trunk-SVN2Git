@@ -16,17 +16,16 @@
 // 
 using System;
 using Remotion.ServiceLocation;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Infrastructure
 {
   /// <summary>
   /// Defines a method for resolving resource urls for the current <see cref="ResourceTheme"/>.
-  /// The <see cref="IThemedResourceUrlResolver"/> is only intended for use with controls located in <b>Remotion.Web</b> that do not have their own renderers.
+  /// The <see cref="IThemedResourceUrlFactory"/> is only intended for use with controls located in <b>Remotion.Web</b> that do not have their own renderers.
   /// </summary>
-  [ConcreteImplementation(typeof(ThemedResourceUrlResolver),Lifetime = LifetimeKind.Singleton)]
-  public interface IThemedResourceUrlResolver
+  [ConcreteImplementation(typeof(ThemedResourceUrlFactory), Lifetime = LifetimeKind.Singleton)]
+  public interface IThemedResourceUrlFactory
   {
-    string GetResourceUrl (IControl control, ResourceType resourceType, string relativeUrl);
+    IResourceUrl CreateResourceUrl (ResourceType resourceType, string relativeUrl);
   }
 }

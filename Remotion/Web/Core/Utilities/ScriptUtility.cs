@@ -30,6 +30,8 @@ namespace Remotion.Web.Utilities
   /// <summary> Utility class for client-side scripts. </summary>
   public class ScriptUtility : IScriptUtility
   {
+    private readonly IThemedResourceUrlFactory _themedResourceUrlFactory;
+
     #region Obsolete
 
     /// <summary>
@@ -201,8 +203,11 @@ namespace Remotion.Web.Utilities
       return output.ToString ();
     }
 
-    public ScriptUtility ()
+    public ScriptUtility (IThemedResourceUrlFactory themedResourceUrlFactory)
     {
+      ArgumentUtility.CheckNotNull ("themedResourceUrlFactory", themedResourceUrlFactory);
+      
+      _themedResourceUrlFactory = themedResourceUrlFactory;
     }
 
     public void RegisterJavaScriptInclude (IControl control, HtmlHeadAppender htmlHeadAppender)
@@ -213,8 +218,7 @@ namespace Remotion.Web.Utilities
       string key = typeof (ScriptUtility).FullName + "_StyleUtility";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
-        string url = themedResourceUrlResolver.GetResourceUrl (control, ResourceType.Html, "StyleUtility.js");
+        var url = _themedResourceUrlFactory.CreateResourceUrl (ResourceType.Html, "StyleUtility.js");
 
         htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
         htmlHeadAppender.RegisterJavaScriptInclude (key, url);

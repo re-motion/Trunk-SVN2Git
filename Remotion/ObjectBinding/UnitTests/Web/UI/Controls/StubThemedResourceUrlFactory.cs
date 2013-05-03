@@ -15,17 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ServiceLocation;
-using Remotion.Web.Infrastructure.Factories;
+using Remotion.Web;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.Infrastructure
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
-  /// <summary>
-  /// Defines a factory method for creating an object of type <see cref="IThemedResourceUrlResolver"/> used for resolving the themed resources provided by the <b>Remotion.Web</b> assembly.
-  /// </summary>
-  [ConcreteImplementation (typeof(ThemedResourceUrlResolverFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IThemedResourceUrlResolverFactory
+  public class StubThemedResourceUrlFactory : IThemedResourceUrlFactory
   {
-    IThemedResourceUrlResolver CreateResourceUrlResolver ();
+    public IResourceUrl CreateResourceUrl (ResourceType resourceType, string relativeUrl)
+    {
+      return new StaticResourceUrl ("/" + relativeUrl);
+    }
   }
 }

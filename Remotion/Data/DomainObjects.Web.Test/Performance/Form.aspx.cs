@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.Performance
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-      HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
+      HtmlHeadAppender.Current.RegisterPageStylesheetLink ();
     }
   }
 }

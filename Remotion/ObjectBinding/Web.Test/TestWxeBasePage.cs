@@ -77,7 +77,7 @@ public class TestWxeBasePage:
 
     base.OnPreRender (e);
 
-    HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
+    HtmlHeadAppender.Current.RegisterPageStylesheetLink ();
 
     var key = GetType().FullName + "_Global";
     if (! HtmlHeadAppender.Current.IsRegistered (key))

@@ -61,7 +61,7 @@ public class SingleBocTestBasePage:
   {
     base.OnPreRender (e);
 
-    HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
+    HtmlHeadAppender.Current.RegisterPageStylesheetLink ();
 
     //  A call to the ResourceDispatcher to get have the automatic resources dispatched
     ResourceDispatcher.Dispatch (this, ResourceManagerUtility.GetResourceManager (this));

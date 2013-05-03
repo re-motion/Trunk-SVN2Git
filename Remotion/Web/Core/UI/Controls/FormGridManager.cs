@@ -1025,7 +1025,7 @@ namespace Remotion.Web.UI.Controls
     private ResourceManagerSet _cachedResourceManager;
 
     private bool _formGridListPopulated = false;
-    private IThemedResourceUrlResolver _themedResourceUrlResolver;
+    private IThemedResourceUrlFactory _themedResourceUrlFactory;
 
     // construction and disposing
 
@@ -1246,18 +1246,18 @@ namespace Remotion.Web.UI.Controls
       string key = typeof (FormGridManager).FullName + "_Style";
       if (!HtmlHeadAppender.Current.IsRegistered (key))
       {
-        string url = ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Html, "FormGrid.css");
+        var url = ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Html, "FormGrid.css");
         HtmlHeadAppender.Current.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
       }
     }
 
-    private IThemedResourceUrlResolver ThemedResourceUrlResolver
+    private IThemedResourceUrlFactory ThemedResourceUrlFactory
     {
       get
       {
-        if (_themedResourceUrlResolver == null)
-          _themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
-        return _themedResourceUrlResolver;
+        if (_themedResourceUrlFactory == null)
+          _themedResourceUrlFactory = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlFactory>();
+        return _themedResourceUrlFactory;
       }
     }
 
@@ -2885,12 +2885,7 @@ namespace Remotion.Web.UI.Controls
     {
       string relativeUrl = image + ImageExtension;
 
-      string imageUrl = ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, relativeUrl);
-
-      if (imageUrl != null)
-        return imageUrl;
-      else
-        return relativeUrl;  
+      return ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, relativeUrl).GetUrl();
     }
 
     /// <summary> Builds the input required marker. </summary>
