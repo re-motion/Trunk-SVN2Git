@@ -23,6 +23,7 @@ namespace Remotion.Web
   /// <summary>
   ///   Resolve the relative image URL into an absolute image url.
   /// </summary>
+  [Obsolete ("Use IResourceUrlFactory instead. (Version 1.13.197)", true)]
   public interface IResourceUrlResolver
   {
     /// <summary>
