@@ -19,6 +19,7 @@ using System;
 using System.Reflection;
 using System.Web;
 using System.Web.UI;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
 using Remotion.Web.Design;
@@ -35,23 +36,7 @@ namespace Remotion.Web
 
     /// <summary>
     ///   Returns the physical URL of a resource item.
-    ///   <seealso cref="IResourceUrlResolver"/>.
     /// </summary>
-    /// <remarks>
-    ///   <para>
-    ///     If the current ASP.NET application object implements <see cref="IResourceUrlResolver"/>, the application 
-    ///     object creates the URL string. 
-    ///     Otherwise, or if <paramref name="context"/> is <see langword="null"/>, the URL 
-    ///     <c>&lt;resource root&gt;/&lt;definingType.Assembly&gt;/&lt;ResourceType&gt;/fileName</c> is used.
-    ///   </para><para>
-    ///     The <b>resource root</b> is loaded from the application configuration,
-    ///     <see cref="Remotion.Web.Configuration.WebConfiguration.Resources">WebConfiguration.Resources</see>, and 
-    ///     defaults to <c>/&lt;AppDir&gt;/res</c>, e.g. <c>/WebApplication/res/Remotion.Web/Image/Help.gif</c>.
-    ///   </para><para>
-    ///     During design time, the <b>resource root</b> is mapped to the environment variable
-    ///     <c>REMOTIONRESOURCES</c>, or if the variable does not exist, <c>C:\Remotion.Resources</c>.
-    ///   </para>
-    /// </remarks>
     /// <param name="control"> 
     ///   The current <see cref="Control"/>. Currently, this parameter is only used to detect design time.
     /// </param>
@@ -59,21 +44,15 @@ namespace Remotion.Web
     /// <param name="definingType"> The type that this resource item is associated with. </param>
     /// <param name="resourceType"> The resource type (image, static html, etc.) </param>
     /// <param name="relativeUrl"> The relative URL of the item. </param>
+    [Obsolete ("Use IResourceUrlFactory.CreateResourceUrl(...) instead. (Version 1.13.197)", true)]
     public static string GetResourceUrl (IControl control, HttpContextBase context, Type definingType, ResourceType resourceType, string relativeUrl)
     {
-      IResourceUrlResolver resolver = null;
-      if (context != null)
-        resolver = context.ApplicationInstance as IResourceUrlResolver;
-      if (resolver != null)
-        return resolver.GetResourceUrl (control, definingType, resourceType, relativeUrl);
-      else
-        return GetResourceUrl (control, definingType, resourceType, null, relativeUrl);
+      throw new NotImplementedException("Use IResourceUrlFactory.CreateResourceUrl(...) instead. (Version 1.13.197)");
     }
 
     /// <summary>
     ///   Returns the physical URL of a resource item.
     /// </summary>
-    /// <seealso cref="IResourceUrlResolver"/>.
     /// <remarks>
     ///   <para>
     ///     Uses the URL &lt;resource root&gt;/&lt;definingType.Assembly&gt;/&lt;ResourceType&gt;/relativeUrl.
@@ -94,27 +73,24 @@ namespace Remotion.Web
     /// </param>
     /// <param name="resourceType"> The resource type (image, static html, etc.) Must not be <see langword="null"/>. </param>
     /// <param name="relativeUrl"> The resource file name. Must not be <see langword="null"/> or empty.</param>
-    public static string GetResourceUrl (IControl control, Type definingType, ResourceType resourceType, string relativeUrl)
+    [Obsolete ("Use IResourceUrlFactory.CreateResourceUrl(...) instead. (Version 1.13.197)")]
+    public static string GetResourceUrl ([CanBeNull]IControl control, Type definingType, ResourceType resourceType, string relativeUrl)
     {
-      return GetResourceUrl (control, definingType, resourceType, null, relativeUrl);
+      ArgumentUtility.CheckNotNull ("definingType", definingType);
+      ArgumentUtility.CheckNotNull ("resourceType", resourceType);
+      ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
+
+      bool isDesignMode = (control != null) && ControlHelper.IsDesignMode (control);
+      if (isDesignMode)
+        return new DesignTimeResourceUrl (definingType, resourceType, relativeUrl).GetUrl();
+      else
+        return new ResourceUrl (definingType, resourceType, relativeUrl).GetUrl();
     }
 
     /// <summary>
     ///   Returns the physical URL of a resource item.
     /// </summary>
     /// <seealso cref="IResourceUrlResolver"/>.
-    /// <remarks>
-    ///   <para>
-    ///     Uses the URL &lt;resource root&gt;/&lt;definingType.Assembly&gt;/&lt;ResourceType&gt;/relativeUrl.
-    ///   </para><para>
-    ///     The <b>resource root</b> is loaded from the application configuration,
-    ///     <see cref="Remotion.Web.Configuration.WebConfiguration.Resources">WebConfiguration.Resources</see>, and 
-    ///     defaults to <c>/&lt;AppDir&gt;/res</c>, e.g. <c>/WebApplication/res/Remotion.Web/Image/Help.gif</c>.
-    ///   </para><para>
-    ///     During design time, the <b>resource root</b> is mapped to the environment variable
-    ///     <c>REMOTIONRESOURCES</c>, or if the variable does not exist, <c>C:\Remotion.Resources</c>.
-    ///   </para>
-    /// </remarks>
     /// <param name="control"> 
     ///   The current <see cref="Control"/>. This parameter is only used to detect design time.
     /// </param>
@@ -124,32 +100,10 @@ namespace Remotion.Web
     /// <param name="resourceType"> The resource type (image, static html, etc.) Must not be <see langword="null"/>. </param>
     /// <param name="theme">The <see cref="ResourceTheme"/> to which the resource belongs.</param>
     /// <param name="relativeUrl"> The resource file name. Must not be <see langword="null"/> or empty.</param>
+    [Obsolete ("Use IResourceUrlFactory.CreateThemedResourceUrl(...) instead. (Version 1.13.197)", true)]
     public static string GetResourceUrl (IControl control, Type definingType, ResourceType resourceType, ResourceTheme theme, string relativeUrl)
     {
-      ArgumentUtility.CheckNotNull ("definingType", definingType);
-      ArgumentUtility.CheckNotNull ("resourceType", resourceType);
-      ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
-
-      IResourceUrl resourceUrl;
-
-      bool isDesignMode = (control == null) ? false : ControlHelper.IsDesignMode (control);
-      if (isDesignMode)
-      {
-        if (theme == null)
-
-          resourceUrl = new DesignTimeResourceUrl (definingType, resourceType, relativeUrl);
-        else
-          resourceUrl = new DesignTimeThemedResourceUrl (definingType, resourceType, theme, relativeUrl);
-      }
-      else
-      {
-        if (theme == null)
-          resourceUrl = new ResourceUrl (definingType, resourceType, relativeUrl);
-        else
-          resourceUrl = new ThemedResourceUrl (definingType, resourceType, theme, relativeUrl);
-      }
-
-      return resourceUrl.GetUrl();
+      throw new NotImplementedException("Use IResourceUrlFactory.CreateThemedResourceUrl(...) instead. (Version 1.13.197)");
     }
 
     /// <summary> Returns the root folder for all resources belonging to the <paramref name="assembly"/>. </summary>

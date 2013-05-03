@@ -33,17 +33,17 @@ namespace Remotion.Web.Infrastructure
 
   #region Obsolete interfaces
 
-  [Obsolete ("Use IInfrastructureResourceUrlFactory instead. (Version 1.13.197)")]
+  [Obsolete ("Use IInfrastructureResourceUrlFactory instead. (Version 1.13.197)",  true)]
   public interface IThemedResourceUrlResolverFactory
   {
-    [Obsolete ("Retrieve an instance of type IInfrastructureResourceUrlFactory instead via the IoC container. (Version 1.13.197)")]
+    [Obsolete ("Retrieve an instance of type IInfrastructureResourceUrlFactory instead via the IoC container. (Version 1.13.197)", true)]
     IThemedResourceUrlResolver CreateResourceUrlResolver ();
   }
 
-  [Obsolete ("Use IInfrastructureResourceUrlFactory instead. (Version 1.13.197)")]
+  [Obsolete ("Use IInfrastructureResourceUrlFactory instead. (Version 1.13.197)",  true)]
   public interface IThemedResourceUrlResolver
   {
-    [Obsolete ("Use IInfrastructureResourceUrlFactory.CreateResourceUrl(...) instead. (Version 1.13.197)")]
+    [Obsolete ("Use IInfrastructureResourceUrlFactory.CreateResourceUrl(...) instead. (Version 1.13.197)",  true)]
     string GetResourceUrl (IControl control, ResourceType resourceType, string relativeUrl);
   }
 
