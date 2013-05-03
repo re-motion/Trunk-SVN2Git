@@ -131,7 +131,7 @@ namespace Remotion.Web.UI.Controls
     private InitializeRootWebTreeNodes _initializeRootTreeNodes;
     private WebTreeNodeRenderMethod _treeNodeRenderMethod;
     private IPage _page;
-    private IThemedResourceUrlFactory _themedResourceUrlFactory;
+    private IInfrastructureResourceUrlFactory _infrastructureResourceUrlFactory;
 
     //  construction and destruction
 
@@ -829,22 +829,22 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Resolves the URLs for the node icons. </summary>
     private void ResolveNodeIcons ()
     {
-      _resolvedNodeIconF = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconF).GetUrl());
-      _resolvedNodeIconFMinus = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconFMinus).GetUrl());
-      _resolvedNodeIconFPlus = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconFPlus).GetUrl());
-      _resolvedNodeIconI = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconI).GetUrl());
-      _resolvedNodeIconL = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconL).GetUrl());
-      _resolvedNodeIconLMinus = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconLMinus).GetUrl());
-      _resolvedNodeIconLPlus = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconLPlus).GetUrl());
-      _resolvedNodeIconMinus = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconMinus).GetUrl());
-      _resolvedNodeIconPlus = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconPlus).GetUrl());
-      _resolvedNodeIconR = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconR).GetUrl());
-      _resolvedNodeIconRMinus = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconRMinus).GetUrl());
-      _resolvedNodeIconRPlus = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconRPlus).GetUrl());
-      _resolvedNodeIconT = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconT).GetUrl());
-      _resolvedNodeIconTMinus = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconTMinus).GetUrl());
-      _resolvedNodeIconTPlus = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconTPlus).GetUrl());
-      _resolvedNodeIconWhite = new IconInfo (ThemedResourceUrlFactory.CreateResourceUrl (ResourceType.Image, c_nodeIconWhite).GetUrl());
+      _resolvedNodeIconF = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconF).GetUrl());
+      _resolvedNodeIconFMinus = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconFMinus).GetUrl());
+      _resolvedNodeIconFPlus = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconFPlus).GetUrl());
+      _resolvedNodeIconI = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconI).GetUrl());
+      _resolvedNodeIconL = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconL).GetUrl());
+      _resolvedNodeIconLMinus = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconLMinus).GetUrl());
+      _resolvedNodeIconLPlus = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconLPlus).GetUrl());
+      _resolvedNodeIconMinus = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconMinus).GetUrl());
+      _resolvedNodeIconPlus = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconPlus).GetUrl());
+      _resolvedNodeIconR = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconR).GetUrl());
+      _resolvedNodeIconRMinus = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconRMinus).GetUrl());
+      _resolvedNodeIconRPlus = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconRPlus).GetUrl());
+      _resolvedNodeIconT = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconT).GetUrl());
+      _resolvedNodeIconTMinus = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconTMinus).GetUrl());
+      _resolvedNodeIconTPlus = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconTPlus).GetUrl());
+      _resolvedNodeIconWhite = new IconInfo (InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Image, c_nodeIconWhite).GetUrl());
     }
 
     public new HttpContextBase Context
@@ -852,13 +852,13 @@ namespace Remotion.Web.UI.Controls
       get { return ((IControl) this).Page.Context; }
     }
 
-    private IThemedResourceUrlFactory ThemedResourceUrlFactory
+    private IInfrastructureResourceUrlFactory InfrastructureResourceUrlFactory
     {
       get
       {
-        if (_themedResourceUrlFactory == null)
-          _themedResourceUrlFactory = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlFactory>();
-        return _themedResourceUrlFactory;
+        if (_infrastructureResourceUrlFactory == null)
+          _infrastructureResourceUrlFactory = SafeServiceLocator.Current.GetInstance<IInfrastructureResourceUrlFactory>();
+        return _infrastructureResourceUrlFactory;
       }
     }
 

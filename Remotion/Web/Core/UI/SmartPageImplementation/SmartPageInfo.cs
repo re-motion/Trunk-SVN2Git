@@ -317,8 +317,8 @@ namespace Remotion.Web.UI.SmartPageImplementation
         var scriptUrl = resourceUrlFactory.CreateResourceUrl (typeof (SmartPageInfo), ResourceType.Html, c_scriptFileUrl);
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
 
-        var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlFactory>();
-        var url3 = themedResourceUrlResolver.CreateResourceUrl (ResourceType.Html, c_styleFileUrl);
+        var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IInfrastructureResourceUrlFactory>();
+        var url3 = themedResourceUrlResolver.CreateThemedResourceUrl (ResourceType.Html, c_styleFileUrl);
         HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url3, HtmlHeadAppender.Priority.Library);
       }
 

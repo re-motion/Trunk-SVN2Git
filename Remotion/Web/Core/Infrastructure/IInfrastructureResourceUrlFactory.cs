@@ -23,25 +23,29 @@ namespace Remotion.Web.Infrastructure
 {
   /// <summary>
   /// Defines a method for resolving resource urls for the current <see cref="ResourceTheme"/>.
-  /// The <see cref="IThemedResourceUrlFactory"/> is only intended for use with controls located in <b>Remotion.Web</b> that do not have their own renderers.
+  /// The <see cref="IInfrastructureResourceUrlFactory"/> is only intended for use with controls located in <b>Remotion.Web</b> that do not have their own renderers.
   /// </summary>
-  [ConcreteImplementation (typeof (ThemedResourceUrlFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IThemedResourceUrlFactory
+  [ConcreteImplementation (typeof (InfrastructureResourceUrlFactory), Lifetime = LifetimeKind.Singleton)]
+  public interface IInfrastructureResourceUrlFactory
   {
-    IResourceUrl CreateResourceUrl (ResourceType resourceType, string relativeUrl);
+    IResourceUrl CreateThemedResourceUrl (ResourceType resourceType, string relativeUrl);
   }
 
-  [Obsolete ("Use IThemedResourceUrlFactory instead. (Version 1.13.197)")]
+  #region Obsolete interfaces
+
+  [Obsolete ("Use IInfrastructureResourceUrlFactory instead. (Version 1.13.197)")]
   public interface IThemedResourceUrlResolverFactory
   {
-    [Obsolete ("Retrieve an instance of type IThemedResourceUrlFactory instead via the IoC container. (Version 1.13.197)")]
+    [Obsolete ("Retrieve an instance of type IInfrastructureResourceUrlFactory instead via the IoC container. (Version 1.13.197)")]
     IThemedResourceUrlResolver CreateResourceUrlResolver ();
   }
 
-  [Obsolete ("Use IThemedResourceUrlFactory instead. (Version 1.13.197)")]
+  [Obsolete ("Use IInfrastructureResourceUrlFactory instead. (Version 1.13.197)")]
   public interface IThemedResourceUrlResolver
   {
-    [Obsolete ("Use IThemedResourceUrlFactory.CreateResourceUrl(...) instead. (Version 1.13.197)")]
+    [Obsolete ("Use IInfrastructureResourceUrlFactory.CreateResourceUrl(...) instead. (Version 1.13.197)")]
     string GetResourceUrl (IControl control, ResourceType resourceType, string relativeUrl);
   }
+
+  #endregion
 }

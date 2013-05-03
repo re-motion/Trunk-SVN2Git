@@ -19,9 +19,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
-  public class StubThemedResourceUrlFactory : IThemedResourceUrlFactory
+  public class StubInfrastructureResourceUrlFactory : IInfrastructureResourceUrlFactory
   {
-    public IResourceUrl CreateResourceUrl (ResourceType resourceType, string relativeUrl)
+    public IResourceUrl CreateThemedResourceUrl (ResourceType resourceType, string relativeUrl)
     {
       return new StaticResourceUrl ("/" + relativeUrl);
     }

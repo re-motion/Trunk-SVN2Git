@@ -61,8 +61,8 @@ namespace Remotion.Web.UI.Controls
 
     private static IconInfo CreateSpacerIcon ()
     {
-      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlFactory>();
-      string url = themedResourceUrlResolver.CreateResourceUrl (ResourceType.Image, "Spacer.gif").GetUrl();
+      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IInfrastructureResourceUrlFactory>();
+      string url = themedResourceUrlResolver.CreateThemedResourceUrl (ResourceType.Image, "Spacer.gif").GetUrl();
       return new IconInfo (url) { Height = Unit.Empty, Width = Unit.Empty, AlternateText = "" };
     }
 

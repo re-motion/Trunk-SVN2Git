@@ -102,7 +102,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (IBocEnumValueRenderer), new BocEnumValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
 
       _instances.Add (typeof (IClientScriptBehavior), new ClientScriptBehavior());
-      _instances.Add (typeof (IThemedResourceUrlFactory), new StubThemedResourceUrlFactory());
+      _instances.Add (typeof (IInfrastructureResourceUrlFactory), new StubInfrastructureResourceUrlFactory());
       _instances.Add (typeof (IResourceUrlFactory), new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
     }
 

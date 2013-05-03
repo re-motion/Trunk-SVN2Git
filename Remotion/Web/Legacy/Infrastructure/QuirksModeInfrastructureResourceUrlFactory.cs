@@ -22,24 +22,24 @@ namespace Remotion.Web.Legacy.Infrastructure
 {
   /// <summary>
   /// Responsible for resolving resource urls for the current <see cref="ResourceTheme"/>.
-  /// The <see cref="QuirksModeThemedResourceUrlFactory"/> is only intended for use with controls located <b>Remotion.Web</b> that do not have their own renderers.
+  /// The <see cref="QuirksModeInfrastructureResourceUrlFactory"/> is only intended for use with controls located <b>Remotion.Web</b> that do not have their own renderers.
   /// </summary>
-  public class QuirksModeThemedResourceUrlFactory : IThemedResourceUrlFactory
+  public class QuirksModeInfrastructureResourceUrlFactory : IInfrastructureResourceUrlFactory
   {
     private readonly IResourceUrlFactory _resourceUrlFactory;
 
-    public QuirksModeThemedResourceUrlFactory (IResourceUrlFactory resourceUrlFactory)
+    public QuirksModeInfrastructureResourceUrlFactory (IResourceUrlFactory resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
       
       _resourceUrlFactory = resourceUrlFactory;
     }
 
-    public IResourceUrl CreateResourceUrl (ResourceType resourceType, string relativeUrl)
+    public IResourceUrl CreateThemedResourceUrl (ResourceType resourceType, string relativeUrl)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
 
-      return _resourceUrlFactory.CreateResourceUrl (typeof (QuirksModeThemedResourceUrlFactory), resourceType, relativeUrl);
+      return _resourceUrlFactory.CreateResourceUrl (typeof (QuirksModeInfrastructureResourceUrlFactory), resourceType, relativeUrl);
     }
   }
 }

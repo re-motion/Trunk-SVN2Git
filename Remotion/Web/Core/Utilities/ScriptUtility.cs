@@ -30,7 +30,7 @@ namespace Remotion.Web.Utilities
   /// <summary> Utility class for client-side scripts. </summary>
   public class ScriptUtility : IScriptUtility
   {
-    private readonly IThemedResourceUrlFactory _themedResourceUrlFactory;
+    private readonly IInfrastructureResourceUrlFactory _infrastructureResourceUrlFactory;
 
     #region Obsolete
 
@@ -203,11 +203,11 @@ namespace Remotion.Web.Utilities
       return output.ToString ();
     }
 
-    public ScriptUtility (IThemedResourceUrlFactory themedResourceUrlFactory)
+    public ScriptUtility (IInfrastructureResourceUrlFactory infrastructureResourceUrlFactory)
     {
-      ArgumentUtility.CheckNotNull ("themedResourceUrlFactory", themedResourceUrlFactory);
+      ArgumentUtility.CheckNotNull ("infrastructureResourceUrlFactory", infrastructureResourceUrlFactory);
       
-      _themedResourceUrlFactory = themedResourceUrlFactory;
+      _infrastructureResourceUrlFactory = infrastructureResourceUrlFactory;
     }
 
     public void RegisterJavaScriptInclude (IControl control, HtmlHeadAppender htmlHeadAppender)
@@ -218,7 +218,7 @@ namespace Remotion.Web.Utilities
       string key = typeof (ScriptUtility).FullName + "_StyleUtility";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        var url = _themedResourceUrlFactory.CreateResourceUrl (ResourceType.Html, "StyleUtility.js");
+        var url = _infrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Html, "StyleUtility.js");
 
         htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
         htmlHeadAppender.RegisterJavaScriptInclude (key, url);

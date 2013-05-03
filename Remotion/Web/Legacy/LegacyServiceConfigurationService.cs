@@ -78,7 +78,7 @@ namespace Remotion.Web.Legacy
           typeof (IWebTreeViewRenderer), CreateSingletonImplementationInfo<WebTreeViewQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IThemedResourceUrlFactory), CreateSingletonImplementationInfo<QuirksModeThemedResourceUrlFactory>());
+          typeof (IInfrastructureResourceUrlFactory), CreateSingletonImplementationInfo<QuirksModeInfrastructureResourceUrlFactory>());
     }
 
     private static ServiceImplementationInfo CreateSingletonImplementationInfo<T> ()

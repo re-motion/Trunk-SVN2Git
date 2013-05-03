@@ -61,10 +61,8 @@ namespace Remotion.Web.UI
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      var resolver = ThemedResourceUrlFactory;
-
       string key = typeof (HtmlHeadContents).FullName + "_Style";
-      var url = resolver.CreateResourceUrl (ResourceType.Html, "Style.css");
+      var url = InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Html, "Style.css");
       htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Page);
     }
 
@@ -73,9 +71,9 @@ namespace Remotion.Web.UI
       get { return SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(); }
     }
 
-    private static IThemedResourceUrlFactory ThemedResourceUrlFactory
+    private static IInfrastructureResourceUrlFactory InfrastructureResourceUrlFactory
     {
-      get { return SafeServiceLocator.Current.GetInstance<IThemedResourceUrlFactory>(); }
+      get { return SafeServiceLocator.Current.GetInstance<IInfrastructureResourceUrlFactory>(); }
     }
   }
 }
