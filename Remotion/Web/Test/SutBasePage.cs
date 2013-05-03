@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Test
 {
@@ -25,13 +24,7 @@ namespace Remotion.Web.Test
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-
-      Remotion.Web.UI.HtmlHeadAppender.Current.RegisterStylesheetLink (
-          "style",
-          Remotion.Web.ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (SmartPage), Remotion.Web.ResourceType.Html, "Style.css"));
-      Remotion.Web.UI.HtmlHeadAppender.Current.RegisterStylesheetLink (
-          "fontsize080",
-          Remotion.Web.ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (SmartPage), Remotion.Web.ResourceType.Html, "FontSize080.css"));
+      HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
     }
   }
 }

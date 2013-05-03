@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Data.DomainObjects.Web.Test.WxeFunctions;
-using Remotion.ServiceLocation;
-using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 
@@ -34,12 +33,8 @@ namespace Remotion.Data.DomainObjects.Web.Test.Performance
 
     protected override void OnPreRender (EventArgs e)
     {
-      var resourceUrlFactory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>();
-
-      HtmlHeadAppender.Current.RegisterStylesheetLink (
-          GetType() + "_Style", resourceUrlFactory.CreateThemedResourceUrl (typeof (ResourceTheme), ResourceType.Html, "Style.css"));
-
       base.OnPreRender (e);
+      HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
     }
   }
 }

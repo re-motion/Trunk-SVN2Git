@@ -96,9 +96,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-      Remotion.Web.UI.HtmlHeadAppender.Current.RegisterStylesheetLink (
-          "style",
-          Remotion.Web.ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (WxePage), Remotion.Web.ResourceType.Html, "Style.css"));
+      HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
     }
 
     override protected void OnInit(EventArgs e)

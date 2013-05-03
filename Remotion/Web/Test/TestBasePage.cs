@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Test
 {
@@ -25,13 +25,7 @@ namespace Remotion.Web.Test
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-
-      HtmlHeadAppender.Current.RegisterStylesheetLink (
-          "style",
-          ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (SmartPage), ResourceType.Html, "Style.css"));
-      HtmlHeadAppender.Current.RegisterStylesheetLink (
-          "fontsize080",
-          ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (SmartPage), ResourceType.Html, "FontSize080.css"));
+      HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
     }
   }
 }

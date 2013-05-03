@@ -67,7 +67,7 @@ namespace Remotion.Web
       if (resolver != null)
         return resolver.GetResourceUrl (control, definingType, resourceType, relativeUrl);
       else
-        return GetResourceUrl (control, definingType, resourceType, relativeUrl);
+        return GetResourceUrl (control, definingType, resourceType, null, relativeUrl);
     }
 
     /// <summary>

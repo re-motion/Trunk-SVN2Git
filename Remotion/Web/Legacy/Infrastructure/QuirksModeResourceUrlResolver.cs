@@ -35,7 +35,7 @@ namespace Remotion.Web.Legacy.Infrastructure
     {
       ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
 
-      return ResourceUrlResolver.GetResourceUrl (control, typeof (QuirksModeResourceUrlResolver), resourceType, relativeUrl);
+      return ResourceUrlResolver.GetResourceUrl (control, typeof (QuirksModeResourceUrlResolver), resourceType, null, relativeUrl);
     }
   }
 }
