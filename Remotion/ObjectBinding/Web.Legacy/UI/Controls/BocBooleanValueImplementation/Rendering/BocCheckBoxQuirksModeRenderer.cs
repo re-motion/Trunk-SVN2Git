@@ -163,14 +163,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
 
     private void PrepareImage (BocCheckBoxRenderingContext renderingContext, Image imageControl, string description)
     {
-      string imageUrl = ResourceUrlResolver.GetResourceUrl (
-          renderingContext.Control,
-          renderingContext.HttpContext,
+      var imageUrl = ResourceUrlFactory.CreateResourceUrl (
           typeof (BocCheckBoxQuirksModeRenderer),
           ResourceType.Image,
           renderingContext.Control.Value.Value ? c_trueIcon : c_falseIcon);
 
-      imageControl.ImageUrl = imageUrl;
+      imageControl.ImageUrl = imageUrl.GetUrl();
       imageControl.AlternateText = StringUtility.NullToEmpty(description);
       imageControl.GenerateEmptyAlternateText = true;
       imageControl.Style["vertical-align"] = "middle";

@@ -102,6 +102,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       Next
     }
 
+    private readonly IResourceUrlFactory _resourceUrlFactory;
     private readonly BocListQuirksModeCssClassDefinition _cssClasses;
 
     /// <summary>
@@ -111,10 +112,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListQuirksModeRenderer"/> should use a
     /// factory to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockQuirksModeRenderer (BocListQuirksModeCssClassDefinition cssClasses)
+    public BocListNavigationBlockQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory, BocListQuirksModeCssClassDefinition cssClasses)
     {
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
+      _resourceUrlFactory = resourceUrlFactory;
       _cssClasses = cssClasses;
     }
 
@@ -176,7 +179,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       if (isInactive || renderingContext.Control.EditModeController.IsRowEditModeActive)
       {
-        string imageUrl = GetResolvedImageUrl(renderingContext, s_inactiveIcons[command]);
+        string imageUrl = GetResolvedImageUrl(s_inactiveIcons[command]);
         new IconInfo (imageUrl).Render (renderingContext.Writer, renderingContext.Control);
       }
       else
@@ -197,7 +200,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
-        string imageUrl = GetResolvedImageUrl (renderingContext, s_activeIcons[command]);
+        string imageUrl = GetResolvedImageUrl (s_activeIcons[command]);
         var icon = new IconInfo (imageUrl);
         icon.AlternateText = GetResourceManager (renderingContext).GetString (s_alternateTexts[command]);
         icon.Render (renderingContext.Writer, renderingContext.Control);
@@ -215,10 +218,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
           renderingContext.Control.GetResourceManager());
     }
 
-    private string GetResolvedImageUrl (BocListRenderingContext renderingContext, string imageUrl)
+    private string GetResolvedImageUrl (string imageUrl)
     {
-      imageUrl = ResourceUrlResolver.GetResourceUrl (renderingContext.Control, renderingContext.HttpContext, typeof (BocListNavigationBlockQuirksModeRenderer), ResourceType.Image, imageUrl);
-      return imageUrl;
+      return _resourceUrlFactory.CreateResourceUrl (typeof (BocListNavigationBlockQuirksModeRenderer), ResourceType.Image, imageUrl).GetUrl();
     }
   }
 }

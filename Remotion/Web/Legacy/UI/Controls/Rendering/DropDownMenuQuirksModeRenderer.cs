@@ -193,7 +193,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
 
       renderingContext.Writer.AddStyleAttribute ("vertical-align", "middle");
       renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-      string url = ResourceUrlResolver.GetResourceUrl (renderingContext.Control, renderingContext.HttpContext, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Image, c_dropDownIcon);
+      string url = ResourceUrlFactory.CreateResourceUrl (typeof (DropDownMenuQuirksModeRenderer), ResourceType.Image, c_dropDownIcon).GetUrl();
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Img);
@@ -210,8 +210,8 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
 
       if (!renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            renderingContext.Control, renderingContext.HttpContext, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.css");
+        string styleSheetUrl = 
+            ResourceUrlFactory.CreateResourceUrl (typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.css").GetUrl();
         string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (DropDownMenuQuirksModeRenderer), key, script);
       }

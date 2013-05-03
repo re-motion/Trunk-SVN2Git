@@ -95,7 +95,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
 
       if (canScript)
       {
-        string imageUrl = GetResolvedImageUrl (renderingContext);
+        string imageUrl = GetResolvedImageUrl ();
 
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl);
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (renderingContext.Control.AlternateText));
@@ -106,16 +106,14 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
       renderingContext.Writer.RenderEndTag ();
     }
 
-    public string GetDatePickerUrl (DatePickerButtonRenderingContext renderingContext)
+    private string GetDatePickerUrl ()
     {
-      return ResourceUrlResolver.GetResourceUrl (
-          renderingContext.Control.Parent, renderingContext.HttpContext, typeof (DatePickerPageQuirksModeRenderer), ResourceType.UI, c_datePickerPopupForm);
+      return ResourceUrlFactory.CreateResourceUrl (typeof (DatePickerPageQuirksModeRenderer), ResourceType.UI, c_datePickerPopupForm).GetUrl();
     }
 
-    public string GetResolvedImageUrl (DatePickerButtonRenderingContext renderingContext)
+    private string GetResolvedImageUrl ()
     {
-      return ResourceUrlResolver.GetResourceUrl (
-          renderingContext.Control, renderingContext.HttpContext, typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Image, c_datePickerIcon);
+      return ResourceUrlFactory.CreateResourceUrl (typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Image, c_datePickerIcon).GetUrl();
     }
 
     private string GetClickScript (DatePickerButtonRenderingContext renderingContext, bool hasClientScript)
@@ -128,7 +126,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
         string pickerActionContainer = "document.getElementById ('" + renderingContext.Control.ContainerControlID.Replace ('$', '_') + "')";
         string pickerActionTarget = "document.getElementById ('" + renderingContext.Control.TargetControlID.Replace ('$', '_') + "')";
 
-        string pickerUrl = "'" + GetDatePickerUrl (renderingContext) + "'";
+        string pickerUrl = "'" + GetDatePickerUrl () + "'";
 
         Unit popUpWidth = PopUpWidth;
         string pickerWidth = "'" + popUpWidth + "'";

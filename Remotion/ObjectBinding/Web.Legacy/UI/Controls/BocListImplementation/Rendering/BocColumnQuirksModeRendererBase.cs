@@ -72,9 +72,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return _cssClasses; }
     }
 
-    protected ResourceTheme ResourceTheme
+    protected IResourceUrlFactory ResourceUrlFactory
     {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
+      get { return SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(); }
     }
 
     void IBocColumnRenderer.RenderTitleCell (BocColumnRenderingContext renderingContext, SortingDirection sortingDirection, int orderIndex)
@@ -187,22 +187,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       {
         case SortingDirection.Ascending:
         {
-          imageUrl = ResourceUrlResolver.GetResourceUrl (
-              renderingContext.Control,
-              renderingContext.HttpContext,
+          imageUrl = ResourceUrlFactory.CreateResourceUrl (
               typeof (BocColumnQuirksModeRendererBase<>),
               ResourceType.Image,
-              c_sortAscendingIcon);
+              c_sortAscendingIcon).GetUrl();
           break;
         }
         case SortingDirection.Descending:
         {
-          imageUrl = ResourceUrlResolver.GetResourceUrl (
-              renderingContext.Control,
-              renderingContext.HttpContext,
+          imageUrl = ResourceUrlFactory.CreateResourceUrl (
               typeof (BocColumnQuirksModeRendererBase<>),
               ResourceType.Image,
-              c_sortDescendingIcon);
+              c_sortDescendingIcon).GetUrl();
           break;
         }
         case SortingDirection.None:
