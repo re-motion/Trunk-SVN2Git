@@ -989,7 +989,7 @@ public class ClientTransaction
     if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
       throw new ArgumentException ("The given end-point ID does not denote a related object (cardinality one).", "relationEndPointID");
 
-    DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
+    var domainObject = GetOriginatingObjectForRelationAccess (relationEndPointID);
 
     _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Current);
 
@@ -1015,7 +1015,7 @@ public class ClientTransaction
     if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
       throw new ArgumentException ("The given end-point ID does not denote a related object (cardinality one).", "relationEndPointID");
 
-    DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
+    var domainObject = GetOriginatingObjectForRelationAccess (relationEndPointID);
 
     _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Original);
 
@@ -1041,7 +1041,7 @@ public class ClientTransaction
     if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
       throw new ArgumentException ("The given end-point ID does not denote a related object collection (cardinality many).", "relationEndPointID");
 
-    DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
+    var domainObject = GetOriginatingObjectForRelationAccess (relationEndPointID);
 
     _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Current);
 
@@ -1068,7 +1068,7 @@ public class ClientTransaction
     if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
       throw new ArgumentException ("The given end-point ID does not denote a related object collection (cardinality many).", "relationEndPointID");
 
-    DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
+    var domainObject = GetOriginatingObjectForRelationAccess (relationEndPointID);
 
     _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Original);
 
@@ -1199,6 +1199,16 @@ public class ClientTransaction
     // See  RM-5278 when thinking about removing the ToITransaction method.
 
     return new ClientTransactionWrapper (this);
+  }
+
+  private DomainObject GetOriginatingObjectForRelationAccess (RelationEndPointID relationEndPointID)
+  {
+    // We always want the originating object to be loaded (even for virtual end-points) because we want that:
+    // - the user can rely on property access triggering OnLoaded for initialization (e.g., for registering event handlers),
+    // - the user gets an ObjectNotFoundException for the originating object rather than a "mandatory relation not set in database" exception (or a
+    //   null result) when the originating object doesn't exist.
+    DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
+    return domainObject;
   }
 
   // ReSharper disable UnusedParameter.Global

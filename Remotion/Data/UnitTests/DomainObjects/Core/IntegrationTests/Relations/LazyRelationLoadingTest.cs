@@ -110,15 +110,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     }
 
     [Test]
-    public void AccessingRelatedObject_ForeignKeySide_OriginalObjectIsAlsoNotLoadedOnAccess ()
+    public void AccessingOriginalRelatedObject_ForeignKeySide_OriginalObjectIsAlsoNotLoadedOnAccess ()
     {
       Assert.That (_order.Properties[typeof (Order), "Customer"].GetOriginalValue<Customer>().ID, Is.EqualTo (DomainObjectIDs.Customer1));
       Assert.That (_order.Properties[typeof (Order), "Customer"].GetOriginalValue<Customer> ().State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
-    [Ignore ("TODO 2264")]
-    public void AccessingRelatedObject_VirtualSide_ReturnsLoadedObject_ButDoesNotLoadOriginatingObject ()
+    public void AccessingRelatedObject_VirtualSide_ReturnsLoadedObject_AndAlsoLoadsOriginatingObject ()
     {
       Assert.That (_order.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -126,12 +125,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
       Assert.That (orderTicket.ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
       Assert.That (orderTicket.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_order.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void AccessingOriginalRelatedObject_VirtualSide_ReturnsLoadedObject_AndAlsoLoadsOriginatingObject ()
+    {
       Assert.That (_order.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var orderTicket = _order.Properties[typeof (Order), "OrderTicket"].GetOriginalValue<OrderTicket>();
+
+      Assert.That (orderTicket.ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (orderTicket.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_order.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
     [Ignore ("TODO 2264")]
-    public void AccessingRelatedCollection_ReturnsCollectionWithIncompleteContents_AndDoesNotLoadOriginatingObject ()
+    public void AccessingRelatedCollection_ReturnsCollectionWithIncompleteContents_AndAlsoLoadsOriginatingObject ()
     {
       Assert.That (_order.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -139,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
       Assert.That (orderItems.AssociatedEndPointID, Is.EqualTo (RelationEndPointID.Resolve (_order, o => o.OrderItems)));
       Assert.That (orderItems.IsDataComplete, Is.False);
-      Assert.That (_order.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (_order.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]

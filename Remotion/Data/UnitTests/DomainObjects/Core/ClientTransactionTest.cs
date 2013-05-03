@@ -868,13 +868,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       Order order = _transaction.ExecuteInScope (() => _objectID1.GetObject<Order> ());
 
-      var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      var endPointID = RelationEndPointID.Resolve (order, o => o.OrderTicket);
       _transaction.ExecuteInScope (() => order.OrderTicket = DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ());
       
       DomainObject orderTicket = ClientTransactionTestHelper.CallGetRelatedObject (_transaction, endPointID);
 
       Assert.That (orderTicket, Is.Not.Null);
       Assert.That (orderTicket, Is.SameAs (_transaction.ExecuteInScope (() => DomainObjectIDs.OrderTicket2.GetObject<OrderTicket> ())));
+    }
+
+    [Test]
+    public void GetRelatedObject_LoadsOriginatingObject ()
+    {
+      Order order = _transaction.ExecuteInScope (() => _objectID1.GetObjectReference<Order> ());
+      var endPointID = RelationEndPointID.Resolve (order, o => o.OrderTicket);
+
+      ClientTransactionTestHelper.CallGetRelatedObject (_transaction, endPointID);
+
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -933,6 +944,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void GetOriginalRelatedObject_LoadsOriginatingObject ()
+    {
+      Order order = _transaction.ExecuteInScope (() => _objectID1.GetObjectReference<Order> ());
+      var endPointID = RelationEndPointID.Resolve (order, o => o.OrderTicket);
+
+      ClientTransactionTestHelper.CallGetOriginalRelatedObject (_transaction, endPointID);
+
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage = "The given end-point ID does not denote a related object (cardinality one).\r\nParameter name: relationEndPointID")]
     public void GetOriginalRelatedObject_WrongCardinality ()
@@ -948,8 +970,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void GetRelatedObjects ()
     {
       Order order = _transaction.ExecuteInScope (() => _objectID1.GetObject<Order> ());
-      
-      var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
+
+      var endPointID = RelationEndPointID.Resolve (order, o => o.OrderItems);
       var endPoint = ((ICollectionEndPoint) ClientTransactionTestHelper.GetDataManager (_transaction).GetRelationEndPointWithLazyLoad (endPointID));
       endPoint.CreateAddCommand (_transaction.ExecuteInScope (() => DomainObjectIDs.OrderItem3.GetObject<OrderItem>())).ExpandToAllRelatedObjects ().Perform ();
 
@@ -965,6 +987,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                   _transaction.ExecuteInScope (() => DomainObjectIDs.OrderItem2.GetObject<OrderItem>()),
                   _transaction.ExecuteInScope (() => DomainObjectIDs.OrderItem3.GetObject<OrderItem>())
               }));
+    }
+
+    [Test]
+    public void GetRelatedObjects_LoadsOriginatingObject ()
+    {
+      Order order = _transaction.ExecuteInScope (() => _objectID1.GetObjectReference<Order> ());
+      var endPointID = RelationEndPointID.Resolve (order, o => o.OrderItems);
+
+      ClientTransactionTestHelper.CallGetRelatedObjects (_transaction, endPointID);
+
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -999,6 +1032,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                   _transaction.ExecuteInScope (() => DomainObjectIDs.OrderItem1.GetObject<OrderItem>()),
                   _transaction.ExecuteInScope (() => DomainObjectIDs.OrderItem2.GetObject<OrderItem>())
               }));
+    }
+
+    public void GetOriginalRelatedObjects_LoadsOriginatingObject ()
+    {
+      Order order = _transaction.ExecuteInScope (() => _objectID1.GetObjectReference<Order> ());
+      var endPointID = RelationEndPointID.Resolve (order, o => o.OrderItems);
+
+      ClientTransactionTestHelper.CallGetOriginalRelatedObjects (_transaction, endPointID);
+
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
