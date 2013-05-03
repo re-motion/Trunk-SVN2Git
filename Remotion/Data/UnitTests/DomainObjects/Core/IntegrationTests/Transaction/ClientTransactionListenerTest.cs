@@ -239,6 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       Customer customer = order.Customer;
       ObjectList<OrderItem> orderItems = order.OrderItems;
+      orderItems.EnsureDataComplete();
 
       TestableClientTransaction.AddListener (_strictListenerMock);
 
@@ -284,7 +285,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var newCustomerEndPointID = newCustomer.Orders.AssociatedEndPointID;
 
       IRelationEndPointDefinition customerEndPointDefinition = GetEndPointDefinition (typeof (Order), "Customer");
-      var customerPropertyDefinition = GetPropertyDefinition (typeof (Order), "Customer");
       
       TestableClientTransaction.AddListener (_strictListenerMock);
       
@@ -635,6 +635,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order1.OrderItems);
+      orderItemsEndPoint.EnsureDataComplete();
 
       Dev.Null = orderItemsEndPoint.HasChanged; // warm up has changed cache
 

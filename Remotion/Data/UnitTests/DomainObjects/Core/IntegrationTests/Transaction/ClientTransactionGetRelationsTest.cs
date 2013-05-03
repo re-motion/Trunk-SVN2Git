@@ -221,9 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Assert.That (ReferenceEquals (orders1, orders2), Is.True);
 
-      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
-      var domainObjects = _eventReceiver.LoadedDomainObjectLists[0];
-      Assert.That (domainObjects.Count, Is.EqualTo (2));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
     }
 
     [Test]

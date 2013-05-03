@@ -73,10 +73,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var mockRepository = new MockRepository();
 
       DomainObjectCollection newCustomer1Orders = newCustomer1.Orders;
+      Assert.That (newCustomer1Orders.IsDataComplete, Is.True);
       DomainObjectCollection newCustomer2Orders = newCustomer2.Orders;
+      Assert.That (newCustomer2Orders.IsDataComplete, Is.True);
       DomainObjectCollection official2Orders = official2.Orders;
+      official2Orders.EnsureDataComplete();
       DomainObjectCollection newOrder1OrderItems = newOrder1.OrderItems;
+      Assert.That (newOrder1OrderItems.IsDataComplete, Is.True);
       DomainObjectCollection newOrder2OrderItems = newOrder2.OrderItems;
+      Assert.That (newOrder2OrderItems.IsDataComplete, Is.True);
 
       var newCustomer1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newCustomer1);
       var newCustomer2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newCustomer2);

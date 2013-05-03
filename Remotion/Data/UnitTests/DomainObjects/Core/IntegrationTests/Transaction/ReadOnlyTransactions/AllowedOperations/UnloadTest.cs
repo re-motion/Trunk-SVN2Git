@@ -35,6 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       base.SetUp ();
 
       _order1 = ExecuteInWriteableSubTransaction (() => DomainObjectIDs.Order1.GetObject<Order> ());
+      ExecuteInWriteableSubTransaction (() => _order1.OrderItems.EnsureDataComplete());
       _endPointID = ExecuteInWriteableSubTransaction (() => _order1.OrderItems.AssociatedEndPointID);
     }
 

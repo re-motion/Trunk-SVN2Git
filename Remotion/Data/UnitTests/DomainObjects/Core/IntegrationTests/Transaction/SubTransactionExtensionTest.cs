@@ -134,88 +134,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _mockRepository.VerifyAll();
     }
 
-    private void RecordObjectLoadingCalls (
-        ClientTransaction transaction,
+    private void TestObjectLoadingWithRelatedObject (
+        Action accessCode,
         ObjectID expectedMainObjectID,
-        bool expectingCollection,
-        bool expectLoadingEvent,
-        bool expectLoadedEvent,
-        ObjectID[] expectedRelatedObjectIDs)
+        bool expectLoadEventsForRelatedObject,
+        ObjectID expectedRelatedID)
     {
+      _mockRepository.BackToRecordAll();
       using (_mockRepository.Ordered())
       {
         // loading of main object
         _extensionMock.ObjectsLoading (
-            Arg.Is (transaction.ParentTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { expectedMainObjectID }));
+            Arg.Is (_subTransaction.ParentTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { expectedMainObjectID }));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Mocks_Is.Same (transaction.ParentTransaction), Mocks_Is.NotNull());
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction.ParentTransaction), Mocks_Is.NotNull());
 
-        _extensionMock.ObjectsLoading (Arg.Is (transaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { expectedMainObjectID }));
+        _extensionMock.ObjectsLoading (Arg.Is (_subTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { expectedMainObjectID }));
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Mocks_Is.Same (transaction), Mocks_Is.NotNull());
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.NotNull());
 
         // accessing relation property
 
         _extensionMock.RelationReading (null, null, null, ValueAccess.Current);
-        LastCall.Constraints (Mocks_Is.Same (transaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
 
-        if (expectedRelatedObjectIDs.Any() && expectLoadingEvent)
+        if (expectLoadEventsForRelatedObject)
         {
           _extensionMock.ObjectsLoading (
-              Arg.Is (transaction.ParentTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (expectedRelatedObjectIDs));
+              Arg.Is (_subTransaction.ParentTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.IsIn (expectedRelatedID));
+          _extensionMock.ObjectsLoaded (_subTransaction.ParentTransaction, null);
+          LastCall.Constraints (Mocks_Is.Same (_subTransaction.ParentTransaction), Mocks_Is.Anything());
+
+          _extensionMock.ObjectsLoading (Arg.Is (_subTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.IsIn (expectedRelatedID));
+          _extensionMock.ObjectsLoaded (_subTransaction, null);
+          LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.Anything());
         }
 
-        if (expectLoadedEvent)
-        {
-          _extensionMock.ObjectsLoaded (transaction.ParentTransaction, null);
-          LastCall.Constraints (Mocks_Is.Same (transaction.ParentTransaction), Mocks_Is.Anything());
-        }
+        _extensionMock.RelationRead (null, null, null, (DomainObject) null, ValueAccess.Current);
 
-        if (expectedRelatedObjectIDs.Any () && expectLoadingEvent)
-        {
-          _extensionMock.ObjectsLoading (Arg.Is (transaction), Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (expectedRelatedObjectIDs));
-        }
-
-        if (expectLoadedEvent)
-        {
-          _extensionMock.ObjectsLoaded (transaction, null);
-          LastCall.Constraints (Mocks_Is.Same (transaction), Mocks_Is.Anything());
-        }
-
-        if (expectingCollection)
-          _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
-        else
-          _extensionMock.RelationRead (null, null, null, (DomainObject) null, ValueAccess.Current);
-
-        LastCall.Constraints (Mocks_Is.Same (transaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
 
         // loading of main object a second time
 
         // accessing relation property a second time
 
         _extensionMock.RelationReading (null, null, null, ValueAccess.Current);
-        LastCall.Constraints (Mocks_Is.Same (transaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
 
-
-        if (expectingCollection)
-          _extensionMock.RelationRead (transaction, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
-        else
-          _extensionMock.RelationRead (transaction, null, null, (DomainObject) null, ValueAccess.Current);
-        LastCall.Constraints (Mocks_Is.Same (transaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
+        _extensionMock.RelationRead (_subTransaction, null, null, (DomainObject) null, ValueAccess.Current);
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
       }
-    }
-
-    private void TestObjectLoadingWithRelatedObjects (
-        Action accessCode,
-        ObjectID expectedMainObjectID,
-        bool expectCollection,
-        bool expectLoadingEvent,
-        bool expectLoadedEvent,
-        ObjectID[] expectedRelatedIDs)
-    {
-      _mockRepository.BackToRecordAll();
-      RecordObjectLoadingCalls (_subTransaction, expectedMainObjectID, expectCollection, expectLoadingEvent, expectLoadedEvent, expectedRelatedIDs);
 
       _mockRepository.ReplayAll();
 
@@ -225,24 +194,83 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _mockRepository.VerifyAll();
     }
 
+    private void TestObjectLoadingWithRelatedObjectCollection (
+        Action accessCode,
+        ObjectID expectedMainObjectID,
+        bool expectLoadEventsForRelatedObjects,
+        ObjectID[] expectedRelatedIDs)
+    {
+      _mockRepository.BackToRecordAll ();
+      using (_mockRepository.Ordered())
+      {
+        // loading of main object
+        _extensionMock.ObjectsLoading (
+            Arg.Is (_subTransaction.ParentTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { expectedMainObjectID }));
+
+        _extensionMock.ObjectsLoaded (null, null);
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction.ParentTransaction), Mocks_Is.NotNull());
+
+        _extensionMock.ObjectsLoading (Arg.Is (_subTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { expectedMainObjectID }));
+        _extensionMock.ObjectsLoaded (null, null);
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.NotNull());
+
+        // accessing relation property
+
+        _extensionMock.RelationReading (null, null, null, ValueAccess.Current);
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
+
+        _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.Anything (), Mocks_Is.Anything (), Mocks_Is.Anything (), Mocks_Is.Anything ());
+
+        if (expectLoadEventsForRelatedObjects)
+        {
+          _extensionMock.ObjectsLoading (
+              Arg.Is (_subTransaction.ParentTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (expectedRelatedIDs));
+          _extensionMock.ObjectsLoaded (_subTransaction.ParentTransaction, null);
+          LastCall.Constraints (Mocks_Is.Same (_subTransaction.ParentTransaction), Mocks_Is.Anything());
+
+          _extensionMock.ObjectsLoading (Arg.Is (_subTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (expectedRelatedIDs));
+          _extensionMock.ObjectsLoaded (_subTransaction, null);
+          LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.Anything());
+        }
+
+        // loading of main object a second time
+
+        // accessing relation property a second time
+
+        _extensionMock.RelationReading (null, null, null, ValueAccess.Current);
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
+
+
+        _extensionMock.RelationRead (_subTransaction, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
+        LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
+      }
+
+      _mockRepository.ReplayAll ();
+
+      accessCode ();
+      accessCode ();
+
+      _mockRepository.VerifyAll ();
+    }
+
     [Test]
     public void ObjectLoadingWithRelatedObjects1Side ()
     {
-      TestObjectLoadingWithRelatedObjects (
+      TestObjectLoadingWithRelatedObjectCollection (
           delegate
           {
             Order order = DomainObjectIDs.Order3.GetObject<Order> ();
             int orderItemCount = order.OrderItems.Count;
             Assert.That (orderItemCount, Is.EqualTo (1));
           },
-          DomainObjectIDs.Order3,
-          true, true, true, new[] { DomainObjectIDs.OrderItem3 });
+          DomainObjectIDs.Order3, true, new[] { DomainObjectIDs.OrderItem3 });
     }
 
     [Test]
     public void ObjectLoadingWithRelatedObjectsNSide ()
     {
-      TestObjectLoadingWithRelatedObjects (
+      TestObjectLoadingWithRelatedObject (
           delegate
           {
             OrderItem orderItem = DomainObjectIDs.OrderItem3.GetObject<OrderItem>();
@@ -251,15 +279,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           },
           DomainObjectIDs.OrderItem3,
           false,
-          false,
-          false,
-          new[] { DomainObjectIDs.Order3 });
+          DomainObjectIDs.Order3);
     }
 
     [Test]
     public void ObjectLoadingWithRelatedObjects1To1RealSide ()
     {
-      TestObjectLoadingWithRelatedObjects (
+      TestObjectLoadingWithRelatedObject (
           delegate
           {
             Computer computer = DomainObjectIDs.Computer1.GetObject<Computer> ();
@@ -268,79 +294,72 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           },
           DomainObjectIDs.Computer1,
           false,
-          false,
-          false,
-          new[] { DomainObjectIDs.Employee3 });
+          DomainObjectIDs.Employee3);
     }
 
     [Test]
     public void ObjectLoadingWithRelatedObjects1To1VirtualSide ()
     {
-      TestObjectLoadingWithRelatedObjects (
+      TestObjectLoadingWithRelatedObject (
           delegate
           {
             Employee employee = DomainObjectIDs.Employee3.GetObject<Employee> ();
             Computer computer = employee.Computer;
             Assert.That (computer, Is.Not.Null);
           },
-          DomainObjectIDs.Employee3,
-          false, true, true, new[] { DomainObjectIDs.Computer1 });
+          DomainObjectIDs.Employee3, true, DomainObjectIDs.Computer1);
     }
 
     [Test]
     public void EmptyObjectLoadingWithRelatedObjects1Side ()
     {
-      TestObjectLoadingWithRelatedObjects (
+      TestObjectLoadingWithRelatedObjectCollection (
           delegate
           {
             Customer customer = DomainObjectIDs.Customer2.GetObject<Customer> ();
             int count = customer.Orders.Count;
             Assert.That (count, Is.EqualTo (0));
           },
-          DomainObjectIDs.Customer2,
-          true, true, false, new ObjectID[] { });
+          DomainObjectIDs.Customer2, false, null);
     }
 
     [Test]
     public void NullObjectLoadingWithRelatedObjectsNSide ()
     {
-      TestObjectLoadingWithRelatedObjects (
+      TestObjectLoadingWithRelatedObject (
           delegate
           {
             Client client = DomainObjectIDs.Client1.GetObject<Client> ();
             Client parent = client.ParentClient;
             Assert.That (parent, Is.Null);
           },
-          DomainObjectIDs.Client1,
-          false, true, false, new ObjectID[] { });
+          DomainObjectIDs.Client1, false, null);
     }
 
     [Test]
     public void NullObjectLoadingWithRelatedObjects1To1RealSide ()
     {
-      TestObjectLoadingWithRelatedObjects (
+      TestObjectLoadingWithRelatedObject (
           delegate
           {
             Computer computer = DomainObjectIDs.Computer4.GetObject<Computer> ();
             Employee employee = computer.Employee;
             Assert.That (employee, Is.Null);
           },
-          DomainObjectIDs.Computer4,
-          false, true, false, new ObjectID[] { });
+          DomainObjectIDs.Computer4, false, null);
     }
 
     [Test]
     public void NullObjectLoadingWithRelatedObjects1To1VirtualSide ()
     {
-      TestObjectLoadingWithRelatedObjects (
+      TestObjectLoadingWithRelatedObject (
           delegate
           {
             Employee employee = DomainObjectIDs.Employee7.GetObject<Employee> ();
             Computer computer = employee.Computer;
             Assert.That (computer, Is.Null);
           },
-          DomainObjectIDs.Employee7,
-          false, true, false, new ObjectID[] { });
+          DomainObjectIDs.Employee7, false, null);
     }
 
     [Test]
@@ -868,6 +887,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void GetRelatedObjects ()
     {
       DomainObjectCollection orderItems = _order1.OrderItems;
+      orderItems.EnsureDataComplete();
 
       _mockRepository.BackToRecord (_extensionMock);
 
@@ -971,6 +991,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             GetEndPointDefinition (typeof (Order), "OrderItems"),
             ValueAccess.Current);
 
+        _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
+        LastCall.Constraints (
+            Mocks_Is.Same (_subTransaction),
+            Mocks_Is.Same (_order1),
+            Mocks_Is.Equal (GetEndPointDefinition (typeof (Order), "OrderItems")),
+            Mocks_Is.NotNull (),
+            Mocks_Is.Equal (ValueAccess.Current));
+
         _extensionMock.ObjectsLoading (_subTransaction.ParentTransaction, null);
         LastCall.Constraints (Mocks_Is.Same (_subTransaction.ParentTransaction), Property.Value ("Count", 2));
 
@@ -982,18 +1010,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         _extensionMock.ObjectsLoaded (null, null);
         LastCall.Constraints (Mocks_Is.Same (_subTransaction), Property.Value ("Count", 2));
-
-        _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
-        LastCall.Constraints (
-            Mocks_Is.Same (_subTransaction),
-            Mocks_Is.Same (_order1),
-            Mocks_Is.Equal (GetEndPointDefinition (typeof (Order), "OrderItems")),
-            Mocks_Is.NotNull(),
-            Mocks_Is.Equal (ValueAccess.Current));
       }
       _mockRepository.ReplayAll();
 
-      Dev.Null = _order1.OrderItems;
+      _order1.OrderItems.EnsureDataComplete();
 
       _mockRepository.VerifyAll();
     }

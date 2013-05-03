@@ -579,7 +579,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void GetRelationEndPointWithLazyLoad_RegistersCollectionEndPoint ()
+    public void GetRelationEndPointWithLazyLoad_RegistersCollectionEndPoint_ButDoesNotLoadItsContents ()
     {
       _relationEndPointManager.ClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // preload Order1 before lazily loading its virtual end point
 
@@ -589,12 +589,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPoint = _relationEndPointManager.GetRelationEndPointWithLazyLoad (orderItemsEndPointID);
 
       Assert.That (endPoint, Is.Not.Null);
-      Assert.That (endPoint.IsDataComplete, Is.True);
+      Assert.That (endPoint.IsDataComplete, Is.False);
       Assert.That (_relationEndPointManager.RelationEndPoints[orderItemsEndPointID], Is.SameAs (endPoint));
     }
 
     [Test]
-    public void GetRelationEndPointWithLazyLoad_RegistersVirtualObjectEndPoint ()
+    public void GetRelationEndPointWithLazyLoad_RegistersVirtualObjectEndPoint_ButDoesNotLoadItsContents ()
     {
       _relationEndPointManager.ClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // preload Order1 before lazily loading its virtual end point
 
@@ -604,7 +604,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPoint = _relationEndPointManager.GetRelationEndPointWithLazyLoad (orderTicketEndPointID);
 
       Assert.That (endPoint, Is.Not.Null);
-      Assert.That (endPoint.IsDataComplete, Is.True);
+      Assert.That (endPoint.IsDataComplete, Is.False);
       Assert.That (_relationEndPointManager.RelationEndPoints[orderTicketEndPointID], Is.SameAs (endPoint));
     }
 

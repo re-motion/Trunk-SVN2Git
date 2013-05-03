@@ -141,7 +141,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     }
 
     [Test]
-    [Ignore ("TODO 2264")]
     public void AccessingRelatedCollection_ReturnsCollectionWithIncompleteContents_AndAlsoLoadsOriginatingObject ()
     {
       Assert.That (_order.State, Is.EqualTo (StateType.NotLoadedYet));
@@ -154,7 +153,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     }
 
     [Test]
-    [Ignore ("TODO 2264")]
     public void AccessingRelatedCollection_ReturnsCollectionWithIncompleteContents_ContentsIsLoadedWhenNeeded ()
     {
       Assert.That (_order.OrderItems.IsDataComplete, Is.False);
@@ -165,7 +163,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     }
 
     [Test]
-    [Ignore ("TODO 2264")]
     public void AccessingRelatedCollection_CollectionWithIncompleteContents_CanBeUsedToRegisterEvents ()
     {
       bool itemAdded = false;
@@ -184,7 +181,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     }
 
     [Test]
-    [Ignore ("TODO 2264")]
     public void AccessingRelatedCollection_ExceptionOnLoading_IsTriggeredOnDemand ()
     {
       var orderWithoutOrderItems = DomainObjectIDs.OrderWithoutOrderItems.GetObject<Order>();
@@ -195,12 +191,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     }
 
     [Test]
-    [Ignore ("TODO 2264")]
     public void AccessingRelatedCollection_ReturnsAlreadyLoadedCollection_IfAlreadyLoaded ()
     {
       TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (_order, o => o.OrderItems));
 
       Assert.That (_order.OrderItems.IsDataComplete, Is.True);
+    }
+
+    [Test]
+    public void AccessingOriginalRelatedCollection_LoadsContentsForBothOriginalAndCurrentCollection ()
+    {
+      Assert.That (_order.Properties[typeof (Order), "OrderItems"].GetOriginalValue<ObjectList<OrderItem>>().IsDataComplete, Is.True);
+      // Since the data had to be loaded for the original contents, it has also been loaded into the actual collection.
+      Assert.That (_order.OrderItems.IsDataComplete, Is.True);
+    }
+
+    [Test]
+    public void OneToManyIntegrationTest_WritingRelation_UsingForeignKeyProperty ()
+    {
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObjectReference<OrderItem>();
+      var order2 = DomainObjectIDs.Order2.GetObjectReference<Order>();
+
+      Assert.That (_order.OrderItems.IsDataComplete, Is.False);
+      Assert.That (order2.OrderItems.IsDataComplete, Is.False);
+      Assert.That (orderItem1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      orderItem1.Order = order2;
+
+      Assert.That (_order.OrderItems.IsDataComplete, Is.True);
+      Assert.That (order2.OrderItems.IsDataComplete, Is.True);
+      Assert.That (orderItem1.State, Is.EqualTo (StateType.Changed));
     }
   }
 }

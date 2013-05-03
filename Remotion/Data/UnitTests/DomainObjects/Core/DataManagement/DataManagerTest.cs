@@ -1049,7 +1049,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var endPoint = (IVirtualObjectEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
-      Assert.That (endPoint.IsDataComplete, Is.True);
+      endPoint.EnsureDataComplete();
 
       _dataManager.LoadLazyVirtualObjectEndPoint (endPointID);
     }

@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void RelationEndPointManager_Content ()
     {
-      Dev.Null = DomainObjectIDs.Order1.GetObject<Order> ().OrderItems;
+      DomainObjectIDs.Order1.GetObject<Order> ().OrderItems.EnsureDataComplete();
       Assert.That (_relationEndPointManager.RelationEndPoints.Count, Is.EqualTo (7));
 
       var deserializedManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (

@@ -503,6 +503,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         Assert.That (dataManager.GetRelationEndPointWithoutLoading (relationEndPointID), Is.Null);
 
         var endPoint = dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+        Assert.That (endPoint.IsSynchronized, Is.Null);
+        endPoint.EnsureDataComplete();
         Assert.That (endPoint.IsSynchronized, Is.True);
         CheckSyncState (industrialSector, s => s.Companies, true);
       }
@@ -531,6 +533,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         Assert.That (dataManager.GetRelationEndPointWithoutLoading (relationEndPointID), Is.Null);
 
         var endPoint = dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+        Assert.That (endPoint.IsSynchronized, Is.Null);
+        endPoint.EnsureDataComplete();
         Assert.That (endPoint.IsSynchronized, Is.True);
         CheckSyncState (company, c => c.IndustrialSector, true);
       }
@@ -554,6 +558,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
         var dataManager = ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current);
         var endPoint = dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+        Assert.That (endPoint.IsSynchronized, Is.Null);
+
+        endPoint.EnsureDataComplete ();
         Assert.That (endPoint.IsSynchronized, Is.False);
 
         BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current.ParentTransaction, relationEndPointID);
@@ -581,6 +588,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
         var dataManager = ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current);
         var endPoint = dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+        Assert.That (endPoint.IsSynchronized, Is.Null);
+
+        endPoint.EnsureDataComplete();
         Assert.That (endPoint.IsSynchronized, Is.False);
 
         BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, relationEndPointID);

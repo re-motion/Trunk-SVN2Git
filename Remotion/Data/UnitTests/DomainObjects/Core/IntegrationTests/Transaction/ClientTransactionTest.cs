@@ -449,7 +449,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     [Test]
     [Obsolete ("TODO 2072 - Remove")]
-    public void CopyCollectionEventHandlers_DoesLoadRelatedObjectsInDestinationTransaction_IfRequiredTo ()
+    public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectContentsInDestinationTransaction ()
     {
       var mockRepository = new MockRepository ();
       var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
@@ -458,15 +458,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       listenerMock.Stub (stub => stub.TransactionDiscard (innerTransaction));
 
-      listenerMock.ObjectsLoading (
-          Arg.Is (innerTransaction), 
-          Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }));
       listenerMock.DataContainerMapRegistering (null, null);
       LastCall.IgnoreArguments ().Repeat.Any();
       listenerMock.RelationEndPointMapRegistering (null, null);
       LastCall.IgnoreArguments ().Repeat.Any ();
-      listenerMock.ObjectsLoaded (null, null);
-      LastCall.IgnoreArguments ();
       listenerMock.VirtualRelationEndPointStateUpdated (null, null, null);
       LastCall.IgnoreArguments ().Repeat.Any ();
 
@@ -484,7 +479,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         int loadedObjectsBefore = innerTransaction.DataManager.DataContainers.Count;
         innerTransaction.CopyCollectionEventHandlers (order, TestableClientTransaction);
         int loadedObjectsAfter = innerTransaction.DataManager.DataContainers.Count;
-        Assert.That (loadedObjectsAfter, Is.Not.EqualTo (loadedObjectsBefore));
+        Assert.That (loadedObjectsAfter, Is.EqualTo (loadedObjectsBefore));
       }
 
       mockRepository.VerifyAll ();

@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
     public void SameIDInDifferentConcreteTables ()
     {
       TIPerson person = new ObjectID(typeof (TIPerson), new Guid ("{B969AFCB-2CDA-45ff-8490-EB52A86D5464}")).GetObject<TIPerson> ();
-      DomainObjectCollection historyEntries = person.HistoryEntries;
+      person.HistoryEntries.EnsureDataComplete();
     }
 
     [Test]

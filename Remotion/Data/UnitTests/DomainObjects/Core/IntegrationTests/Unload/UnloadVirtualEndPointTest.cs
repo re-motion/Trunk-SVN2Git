@@ -32,7 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order.OrderItems;
-      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+      orderItems.EnsureDataComplete ();
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem> ();
       var orderItem2 = DomainObjectIDs.OrderItem2.GetObject<OrderItem>();
 
       Assert.That (orderItems.IsDataComplete, Is.True);
@@ -57,7 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order.OrderItems;
-      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+      orderItems.EnsureDataComplete ();
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem> ();
       var orderItem2 = DomainObjectIDs.OrderItem2.GetObject<OrderItem>();
 
       Assert.That (orderItems.IsDataComplete, Is.True);
@@ -83,7 +85,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order.OrderItems;
-      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+      orderItems.EnsureDataComplete ();
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem> ();
       var orderItem2 = DomainObjectIDs.OrderItem2.GetObject<OrderItem>();
 
       Assert.That (orderItems.IsDataComplete, Is.True);
@@ -107,7 +110,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       var order = DomainObjectIDs.Order1.GetObject<Order> ();
       var orderItems = order.OrderItems;
-      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
+      orderItems.EnsureDataComplete ();
+      var orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem> ();
       var orderItem2 = DomainObjectIDs.OrderItem2.GetObject<OrderItem>();
 
       ObjectID newOrderItemID;

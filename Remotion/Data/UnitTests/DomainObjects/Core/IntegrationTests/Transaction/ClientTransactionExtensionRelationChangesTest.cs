@@ -391,6 +391,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void AddToOneToManyRelation ()
     {
       DomainObjectCollection preloadedOrderItems = _order1.OrderItems;
+      preloadedOrderItems.EnsureDataComplete();
       OrderItem orderItem = OrderItem.NewObject();
 
       _mockRepository.BackToRecord (_extension);
@@ -432,6 +433,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void AddToOneToManyRelationWithOldRelatedObject ()
     {
       DomainObjectCollection preloadedOrderItemsOfOrder1 = _order1.OrderItems;
+      preloadedOrderItemsOfOrder1.EnsureDataComplete();
 
       OrderItem newOrderItem = DomainObjectIDs.OrderItem3.GetObject<OrderItem>();
       Order oldOrderOfNewOrderItem = newOrderItem.Order;
