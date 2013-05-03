@@ -19,7 +19,6 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Web;
-using log4net.Config;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Logging;
 using Remotion.ObjectBinding;
@@ -61,7 +60,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       LogManager.Initialize();
-      PreferQuirksModeRendering = true;
+      PreferQuirksModeRendering = false;
       bool useClassicBlueTheme = false;
 
       if (useClassicBlueTheme)

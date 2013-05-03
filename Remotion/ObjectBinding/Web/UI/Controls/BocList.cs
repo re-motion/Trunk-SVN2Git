@@ -1242,8 +1242,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual Image GetValidationErrorMarker ()
     {
       Image validationErrorIcon = new Image();
-      var themedResourceUrlResolver = ServiceLocator.GetInstance<IInfrastructureResourceUrlFactory>();
-      validationErrorIcon.ImageUrl = themedResourceUrlResolver.CreateThemedResourceUrl (ResourceType.Image, c_rowEditModeValidationErrorIcon).GetUrl();
+      var urlFactory = ServiceLocator.GetInstance<IInfrastructureResourceUrlFactory>();
+      validationErrorIcon.ImageUrl = urlFactory.CreateThemedResourceUrl (ResourceType.Image, c_rowEditModeValidationErrorIcon).GetUrl();
 
       IResourceManager resourceManager = GetResourceManager();
       validationErrorIcon.AlternateText = resourceManager.GetString (ResourceIdentifier.ValidationErrorInfoAlternateText);

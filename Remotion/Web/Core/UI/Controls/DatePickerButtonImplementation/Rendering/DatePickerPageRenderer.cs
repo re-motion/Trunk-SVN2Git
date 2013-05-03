@@ -38,8 +38,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
       var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DatePickerPageRenderer), ResourceType.Html, "DatePicker.js");
       htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
 
-      var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (DatePickerPageRenderer), ResourceType.Html, "Style.css");
-      htmlHeadAppender.RegisterStylesheetLink (typeof (DatePickerPageRenderer).FullName + "_Style", styleUrl);
+      htmlHeadAppender.RegisterPageStylesheetLink();
     }
 
     protected IResourceUrlFactory ResourceUrlFactory

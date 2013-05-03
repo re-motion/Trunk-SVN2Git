@@ -171,7 +171,9 @@
     <Content Include="Res\Image\TreeViewTPlus.gif" />
     <Content Include="Res\Image\TreeViewWhite.gif" />
     <Content Include="Res\Image\ValidationError.gif" />
-    <Content Include="Res\UI\DatePickerForm.aspx" />
+    <Content Include="Res\UI\DatePickerForm.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
