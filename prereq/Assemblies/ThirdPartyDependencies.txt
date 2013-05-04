@@ -1,6 +1,5 @@
 Component				License			Source                                             	Custom Build
 =============================================================================================================================================
-Autofac.*				MIT			http://code.google.com/p/autofac/
 IronPython.*				Apache License 2.0	http://ironpython.codeplex.com/
 Microsoft.Practices.ServiceLocation	MS-PL			http://commonservicelocator.codeplex.com/
 Microsoft.Dynamic.*			Apache License 2.0	http://ironpython.codeplex.com/				Part of IronPython distribution
