@@ -1,7 +1,7 @@
 Component				License			Source                                             	Custom Build
 =============================================================================================================================================
 IronPython-2.7				Apache License 2.0	http://ironpython.codeplex.com/
-Microsoft.Practices.ServiceLocation	MS-PL			http://commonservicelocator.codeplex.com/
+CommonServiceLocator-1.0		MS-PL			http://commonservicelocator.codeplex.com/
 Castle 3.0				Apache License 2.0	http://www.castleproject.org/				
 log4net-1.2				Apache License 2.0	http://logging.apache.org/log4net/index.html
 nunit-2.6				zlib/libpng variant	http://nunit.org/
