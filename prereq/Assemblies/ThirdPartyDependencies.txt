@@ -5,5 +5,5 @@ Microsoft.Practices.ServiceLocation	MS-PL			http://commonservicelocator.codeplex
 Castle 3.0				Apache License 2.0	http://www.castleproject.org/				
 log4net-1.2				Apache License 2.0	http://logging.apache.org/log4net/index.html
 nunit-2.6				zlib/libpng variant	http://nunit.org/					Source from matching verison, patched for partial trust
-Rhino.Mocks				BSD			http://ayende.com/projects/rhino-mocks.aspx		trunk, latest version
+Rhino.Mocks-3.6				BSD			http://ayende.com/projects/rhino-mocks.aspx
 SharpZipLib-0.86			GPL, with exceptions	http://www.icsharpcode.net/OpenSource/SharpZipLib/
