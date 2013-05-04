@@ -109,11 +109,11 @@
       <Name>Core.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Data\Core\Data.Core.csproj">
-      <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
+      <Project>{70273934-12f1-49af-975a-303baefe1cae}</Project>
       <Name>Data.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
-      <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
+      <Project>{fbe0cbdd-82ff-4173-8536-47d3b5bc2e98}</Project>
       <Name>Security.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core\Web.Core.csproj">
