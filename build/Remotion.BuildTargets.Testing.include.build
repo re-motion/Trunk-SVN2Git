@@ -114,6 +114,7 @@
         ToolPath="$(NUnitToolPath)"
         Assemblies="%(_testOutputFiles.FullPath)"
         ContinueOnError="True"
+        Framework="$(ActiveConfigurationFramework)"
         Use32Bit="%(_testOutputFiles.Use32Bit)"
         OutputXmlFile="$(_testResultFile)">
       <Output TaskParameter="Failures" PropertyName="_nunit_failures"/>
