@@ -1,11 +1,9 @@
 Component				License			Source                                             	Custom Build
 =============================================================================================================================================
-IronPython.*				Apache License 2.0	http://ironpython.codeplex.com/
+IronPython-2.7				Apache License 2.0	http://ironpython.codeplex.com/
 Microsoft.Practices.ServiceLocation	MS-PL			http://commonservicelocator.codeplex.com/
-Microsoft.Dynamic.*			Apache License 2.0	http://ironpython.codeplex.com/				Part of IronPython distribution
-Microsoft.Scripting.*			Apache License 2.0	http://ironpython.codeplex.com/				Part of IronPython distribution
-Castle.*				Apache License 2.0	http://www.castleproject.org/				
+Castle 3.0				Apache License 2.0	http://www.castleproject.org/				
 log4net					Apache License 2.0	http://logging.apache.org/log4net/index.html
-nunit.*					zlib/libpng variant	http://nunit.org/					Source from matching verison, patched for partial trust
+nunit-2.6				zlib/libpng variant	http://nunit.org/					Source from matching verison, patched for partial trust
 Rhino.Mocks				BSD			http://ayende.com/projects/rhino-mocks.aspx		trunk, latest version
 SharpZipLib				GPL, with exceptions	http://www.icsharpcode.net/OpenSource/SharpZipLib/
