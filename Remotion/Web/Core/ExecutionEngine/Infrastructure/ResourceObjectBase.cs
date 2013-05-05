@@ -14,9 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.Utilities;
+using Remotion.Web.Resources;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
@@ -25,12 +28,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   {
     private readonly string _resourceRoot;
 
-    protected ResourceObjectBase (Assembly assembly)
+    protected ResourceObjectBase ()
     {
-      if (assembly != null)
-        _resourceRoot = ResourceUrlResolver.GetAssemblyRoot (false, assembly);
-      else
-        _resourceRoot = string.Empty;
+      _resourceRoot = "~/";
+    }
+
+    protected ResourceObjectBase (IResourcePathBuilder resourcePathBuilder, Assembly assembly)
+    {
+      ArgumentUtility.CheckNotNull ("resourcePathBuilder", resourcePathBuilder);
+      ArgumentUtility.CheckNotNull ("assembly", assembly);
+
+      _resourceRoot = resourcePathBuilder.BuildAbsolutePath (assembly) + "/";
     }
 
     public string ResourceRoot

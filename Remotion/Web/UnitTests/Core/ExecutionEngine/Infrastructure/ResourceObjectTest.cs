@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
@@ -27,42 +28,40 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     [SetUp]
     public void SetUp ()
     {
-      HttpContextHelper.CreateHttpContext ("GET", "default.aspx", string.Empty);
-      Assert.That (ResourceUrlResolver.GetAssemblyRoot (false, GetType().Assembly), Is.EqualTo ("/res/Remotion.Web.UnitTests/"));
     }
 
     [Test]
     public void InitializeWithResourceAssembly_WithoutAssembly ()
     {
-      ResourceObject resourceObject = new ResourceObject (null, "path.aspx");
+      var resourceObject = new ResourceObject ("path.aspx");
 
-      Assert.That (resourceObject.ResourceRoot, Is.Empty);
+      Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("~/"));
       Assert.That (resourceObject.Path, Is.EqualTo ("path.aspx"));
     }
 
     [Test]
     public void InitializeWithResourceAssembly_WithAssembly ()
     {
-      ResourceObject resourceObject = new ResourceObject (GetType().Assembly, "path.aspx");
+      var resourceObject = new ResourceObject (new FakeResourcePathBuilder(), GetType().Assembly, "path.aspx");
 
-      Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("/res/Remotion.Web.UnitTests/"));
+      Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("/fake/Remotion.Web.UnitTests/"));
       Assert.That (resourceObject.Path, Is.EqualTo ("path.aspx"));
     }
 
     [Test]
     public void GetResourcePath_WithoutAssembly ()
     {
-      ResourceObject resourceObject = new ResourceObject (null, "path.aspx");
+      var resourceObject = new ResourceObject ("path.aspx");
 
-      Assert.That (resourceObject.GetResourcePath (null), Is.EqualTo ("path.aspx"));
+      Assert.That (resourceObject.GetResourcePath (null), Is.EqualTo ("~/path.aspx"));
     }
 
     [Test]
     public void GetResourcePath_WithAssembly ()
     {
-      ResourceObject resourceObject = new ResourceObject (GetType().Assembly, "path.aspx");
+      var resourceObject = new ResourceObject (new FakeResourcePathBuilder(), GetType().Assembly, "path.aspx");
 
-      Assert.That (resourceObject.GetResourcePath (null), Is.EqualTo ("/res/Remotion.Web.UnitTests/path.aspx"));
+      Assert.That (resourceObject.GetResourcePath (null), Is.EqualTo ("/fake/Remotion.Web.UnitTests/path.aspx"));
     }
   }
 }

@@ -22,17 +22,15 @@ using System.Web.UI;
 using JetBrains.Annotations;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
-using Remotion.Web.Configuration;
+using Remotion.Web.Resources;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web
 {
   /// <summary> Utility methods for URL resolving. </summary>
+  [Obsolete ("Use IResourceUrlFactory instead. (Version 1.13.198)")]
   public static class ResourceUrlResolver
   {
-    private const string c_designTimeRootDefault = "C:\\Remotion.Resources";
-    private const string c_designTimeRootEnvironmentVaribaleName = "REMOTIONRESOURCES";
-
     /// <summary>
     ///   Returns the physical URL of a resource item.
     /// </summary>
@@ -109,14 +107,13 @@ namespace Remotion.Web
     ///   The folder where the resources are expected to be for the <paramref name="assembly"/>. 
     ///   Always ends on a slash.
     /// </returns>
+    [Obsolete ("Use IResourceUrlFactory.CreateResourceUrl(...) instead. (Version 1.13.197)")]
     public static string GetAssemblyRoot (bool isDesignMode, Assembly assembly)
     {
       ArgumentUtility.CheckNotNull ("assembly", assembly);
 
-      string root = GetRoot (isDesignMode);
-      string assemblyName = assembly.FullName.Split (new char[] { ',' }, 2)[0];
-      string separator = isDesignMode ? @"\" : "/";
-      return root + assemblyName + separator;
+      var builder = SafeServiceLocator.Current.GetInstance<IResourcePathBuilder>();
+      return builder.BuildAbsolutePath (assembly);
     }
 
     /// <summary> Returns the root folder for all resources. </summary>
@@ -125,49 +122,10 @@ namespace Remotion.Web
     ///   The folder where the resources are expected to be. Ends on a slash unless the root folder is an 
     ///   empty string.
     /// </returns>
-    private static string GetRoot (bool isDesignMode)
+    [Obsolete ("Use Control.ResolveClientUrl(\"~/\") instead. (Version 1.13.198)", true)]
+    public static string GetRoot (bool isDesignMode)
     {
-      string root;
-
-      if (isDesignMode)
-        root = GetDesignTimeRoot();
-      else
-        root = GetRunTimeRoot();
-
-      string separator = isDesignMode ? @"\" : "/";
-      if (root.Length > 0 && ! root.EndsWith (separator))
-        root += separator;
-      return root;
-    }
-
-    private static string GetRunTimeRoot ()
-    {
-      string root = WebConfiguration.Current.Resources.Root;
-      if (HttpRuntime.AppDomainAppVirtualPath != "/")
-        root = HttpRuntime.AppDomainAppVirtualPath + "/" + root;
-      if (! root.StartsWith ("/"))
-        root = "/" + root;
-      return root;
-    }
-
-    private static string GetDesignTimeRoot ()
-    {
-      string root = Environment.GetEnvironmentVariable (c_designTimeRootEnvironmentVaribaleName);
-      if (StringUtility.IsNullOrEmpty (root))
-        root = c_designTimeRootDefault;
-      return root;
-
-      //EnvDTE._DTE environment = (EnvDTE._DTE) site.GetService (typeof (EnvDTE._DTE));
-      //if(environment != null)
-      //{
-      //  EnvDTE.Project project = environment.ActiveDocument.ProjectItem.ContainingProject;          
-      //  //  project.Properties uses a 1-based index
-      //  for (int i = 1; i <= project.Properties.Count; i++)
-      //  {
-      //    if(project.Properties.Item (i).Name == "ActiveFileSharePath")
-      //      return project.Properties.Item (i).Value.ToString();
-      //  }
-      //}
+      throw new NotImplementedException ("Use Control.ResolveClientUrl(\"~/\") instead. (Version 1.13.198)");
     }
   }
 }

@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Reflection;
+using System.Web;
 using Remotion.Collections;
 using Remotion.Utilities;
+using Remotion.Web.Resources;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
@@ -26,8 +28,14 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   {
     private readonly string _path;
 
-    public ResourceObject (Assembly assembly, string path)
-        : base(assembly)
+    public ResourceObject (string path)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("path", path);
+      _path = path;
+    }
+
+    public ResourceObject (IResourcePathBuilder resourcePathBuilder, Assembly assembly, string path)
+        : base(resourcePathBuilder, assembly)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("path", path);
       _path = path;
@@ -40,7 +48,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override string GetResourcePath (NameObjectCollection variables)
     {
-      return ResourceRoot + _path;
+      return VirtualPathUtility.Combine (ResourceRoot, _path);
     }
   }
 }

@@ -81,7 +81,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     public void Initialize_WithPath ()
     {
       WxePageStep step = new WxePageStep ("page.aspx");
-      Assert.That (step.Page, Is.EqualTo("page.aspx"));
+      Assert.That (step.Page, Is.EqualTo("~/page.aspx"));
     }
 
     [Test]
@@ -92,7 +92,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       function.Add (step);
       function.Variables["ThePage"] = "page.aspx";
 
-      Assert.That (step.Page, Is.EqualTo ("page.aspx"));
+      Assert.That (step.Page, Is.EqualTo ("~/page.aspx"));
     }
 
     [Test]

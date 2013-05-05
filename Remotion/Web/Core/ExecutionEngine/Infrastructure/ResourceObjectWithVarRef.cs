@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Reflection;
+using System.Web;
 using Remotion.Collections;
 using Remotion.Utilities;
+using Remotion.Web.Resources;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
@@ -26,8 +28,14 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   {
     private readonly WxeVariableReference _pathReference;
 
-    public ResourceObjectWithVarRef (Assembly assembly, WxeVariableReference pathReference)
-        : base(assembly)
+    public ResourceObjectWithVarRef (WxeVariableReference pathReference)
+    {
+      ArgumentUtility.CheckNotNull ("pathReference", pathReference);
+      _pathReference = pathReference;
+    }
+
+    public ResourceObjectWithVarRef (IResourcePathBuilder resourcePathBuilder, Assembly assembly, WxeVariableReference pathReference)
+        : base(resourcePathBuilder , assembly)
     {
       ArgumentUtility.CheckNotNull ("pathReference", pathReference);
       _pathReference = pathReference;
@@ -45,7 +53,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (page == null)
         throw new InvalidCastException (string.Format ("The variable '{0}' was of type '{1}'. Expected type is '{2}'.", _pathReference.Name, pageObject.GetType().FullName, typeof (string).FullName));
 
-      return ResourceRoot + page;
+      return VirtualPathUtility.Combine (ResourceRoot, page);
     }
 
     public WxeVariableReference PathReference

@@ -97,7 +97,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
               _pageStep.SetPostBackCollection (new NameValueCollection ());
             });
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", false)).WhenCalled (
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "~/ThePage", false)).WhenCalled (
             invocation =>
             {
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));
@@ -133,7 +133,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
 
         _subFunction.Expect (mock => mock.Execute (_wxeContext)).WhenCalled (invocation => Thread.CurrentThread.Abort ());
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true));
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "~/ThePage", true));
       }
 
       _mockRepository.ReplayAll();
@@ -172,7 +172,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
 
         _subFunction.Expect (mock => mock.Execute (_wxeContext));
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true));
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "~/ThePage", true));
       }
 
       _mockRepository.ReplayAll();
@@ -240,7 +240,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
               Thread.CurrentThread.Abort ();
             });
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true)).WhenCalled (
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "~/ThePage", true)).WhenCalled (
             invocation =>
             {
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));

@@ -455,10 +455,10 @@
     <Compile Include="ExecutionEngine\WxeUserCancelException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IResourceUrlResolver.cs">
+    <Compile Include="Obsolete.IResourceUrlResolver.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ResourceUrlResolver.cs">
+    <Compile Include="Obsolete.ResourceUrlResolver.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\Command.cs">

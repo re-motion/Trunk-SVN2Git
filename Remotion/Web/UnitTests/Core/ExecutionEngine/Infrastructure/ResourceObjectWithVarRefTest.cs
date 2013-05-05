@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Collections;
-using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
@@ -31,61 +32,60 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     [SetUp]
     public void SetUp ()
     {
-      HttpContextHelper.CreateHttpContext ("GET", "default.aspx", string.Empty);
-      Assert.That (ResourceUrlResolver.GetAssemblyRoot (false, GetType().Assembly), Is.EqualTo ("/res/Remotion.Web.UnitTests/"));
-
       _variables = new NameObjectCollection { { "ThePath", "path.aspx" } };
     }
 
     [Test]
     public void InitializeWithResourceAssembly_WithoutAssembly ()
     {
-      ResourceObjectWithVarRef resourceObject = new ResourceObjectWithVarRef (null, new WxeVariableReference ("ThePage"));
+      var resourceObject = new ResourceObjectWithVarRef (new WxeVariableReference ("ThePage"));
 
-      Assert.That (resourceObject.ResourceRoot, Is.Empty);
+      Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("~/"));
       Assert.That (resourceObject.PathReference.Name, Is.EqualTo ("ThePage"));
     }
 
     [Test]
     public void InitializeWithResourceAssembly_WithAssembly ()
     {
-      ResourceObjectWithVarRef resourceObject = new ResourceObjectWithVarRef (GetType().Assembly, new WxeVariableReference ("ThePage"));
+      var resourceObject = new ResourceObjectWithVarRef (new FakeResourcePathBuilder(), GetType().Assembly, new WxeVariableReference ("ThePage"));
 
-      Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("/res/Remotion.Web.UnitTests/"));
+      Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("/fake/Remotion.Web.UnitTests/"));
       Assert.That (resourceObject.PathReference.Name, Is.EqualTo ("ThePage"));
     }
 
     [Test]
     public void GetResourcePath_WithoutAssembly ()
     {
-      ResourceObjectWithVarRef resourceObject = new ResourceObjectWithVarRef (null, new WxeVariableReference ("ThePath"));
+      var resourceObject = new ResourceObjectWithVarRef (new WxeVariableReference ("ThePath"));
 
-      Assert.That (resourceObject.GetResourcePath (_variables), Is.EqualTo ("path.aspx"));
+      Assert.That (resourceObject.GetResourcePath (_variables), Is.EqualTo ("~/path.aspx"));
     }
 
     [Test]
     public void GetResourcePath_WithAssembly ()
     {
-      ResourceObjectWithVarRef resourceObject = new ResourceObjectWithVarRef (GetType().Assembly, new WxeVariableReference ("ThePath"));
+      var resourceObject = new ResourceObjectWithVarRef (new FakeResourcePathBuilder(), GetType().Assembly, new WxeVariableReference ("ThePath"));
 
-      Assert.That (resourceObject.GetResourcePath (_variables), Is.EqualTo ("/res/Remotion.Web.UnitTests/path.aspx"));
+      Assert.That (resourceObject.GetResourcePath (_variables), Is.EqualTo ("/fake/Remotion.Web.UnitTests/path.aspx"));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The variable 'InvalidIdentifier' could not be found in the list of variables.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The variable 'InvalidIdentifier' could not be found in the list of variables.")]
     public void GetResourcePath_WithInvalidReference ()
     {
-      ResourceObjectWithVarRef resourceObject = new ResourceObjectWithVarRef (null, new WxeVariableReference ("InvalidIdentifier"));
+      var resourceObject = new ResourceObjectWithVarRef (new WxeVariableReference ("InvalidIdentifier"));
 
       resourceObject.GetResourcePath (_variables);
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidCastException), ExpectedMessage = "The variable 'InvalidType' was of type 'System.Int32'. Expected type is 'System.String'.")]
+    [ExpectedException (typeof (InvalidCastException), ExpectedMessage =
+        "The variable 'InvalidType' was of type 'System.Int32'. Expected type is 'System.String'.")]
     public void GetResourcePath_WithInvalidTypeInVariable ()
     {
       _variables.Add ("InvalidType", 1);
-      ResourceObjectWithVarRef resourceObject = new ResourceObjectWithVarRef (null, new WxeVariableReference ("InvalidType"));
+      var resourceObject = new ResourceObjectWithVarRef (new WxeVariableReference ("InvalidType"));
 
       resourceObject.GetResourcePath (_variables);
     }
