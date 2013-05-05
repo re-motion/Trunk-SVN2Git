@@ -20,16 +20,27 @@ using System.Linq;
 using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.Resources
 {
   public class ResourcePathBuilder : ResourcePathBuilderBase
   {
+    private readonly IHttpContextProvider _httpContextProvider;
     private readonly string _configuredResourceRoot;
 
-    public ResourcePathBuilder ()
+    public ResourcePathBuilder (IHttpContextProvider httpContextProvider)
+      : this (httpContextProvider, WebConfiguration.Current.Resources.Root)
     {
-      _configuredResourceRoot = WebConfiguration.Current.Resources.Root;
+    }
+
+    protected ResourcePathBuilder (IHttpContextProvider httpContextProvider, string configuredResourceRoot)
+    {
+      ArgumentUtility.CheckNotNull ("httpContextProvider", httpContextProvider);
+      ArgumentUtility.CheckNotNull ("configuredResourceRoot", configuredResourceRoot);
+
+      _httpContextProvider = httpContextProvider;
+      _configuredResourceRoot = configuredResourceRoot;
     }
 
     protected override string BuildPath (string[] completePath)
@@ -54,17 +65,18 @@ namespace Remotion.Web.Resources
 
     private string GetApplicationPath ()
     {
-      var context = HttpContext.Current;
+      var context = _httpContextProvider.GetCurrentHttpContext();
       if (context != null)
         return GetApplicationPathFromHttpContext (context);
 
       return HttpRuntime.AppDomainAppVirtualPath ?? "/";
     }
 
-    private string GetApplicationPathFromHttpContext (HttpContext context)
+    private string GetApplicationPathFromHttpContext (HttpContextBase context)
     {
       var applicationPath = context.Request.ApplicationPath ?? "/";
 
+      Assertion.IsNotNull (context.Request.Url, "context.Request.Url != null");
       var requestUrlAbsolutePath = context.Request.Url.AbsolutePath;
       if (requestUrlAbsolutePath.StartsWith (applicationPath, StringComparison.OrdinalIgnoreCase))
         return requestUrlAbsolutePath.Remove (applicationPath.Length);

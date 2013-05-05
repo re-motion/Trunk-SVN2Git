@@ -19,6 +19,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 using Remotion.Web.Compilation;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy;
 using Remotion.Web.Resources;
 using Remotion.Web.UI.Controls.Hotkey;
@@ -43,6 +44,7 @@ namespace Remotion.Web.UnitTests.Legacy
                                   typeof (IControlBuilderCodeProcessor),
                                   typeof (IHotkeyFormatter),
                                   typeof (IResourcePathBuilder),
+                                  typeof (IHttpContextProvider),
                               };
 
       var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IResourceUrl).Assembly })

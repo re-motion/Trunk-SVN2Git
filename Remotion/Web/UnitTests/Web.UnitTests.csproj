@@ -172,10 +172,13 @@
     <Compile Include="Core\Compilation\DefaultControlBuilderCodeProcessorTest.cs" />
     <Compile Include="Core\Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Core\Context\SafeContextWebIntegrationTest.cs" />
+    <Compile Include="Core\Infrastructure\IHttpContextProviderTest.cs" />
     <Compile Include="Core\Infrastructure\IInfrastructureResourceUrlFactoryTest.cs" />
     <Compile Include="Core\IResourceUrlFactoryTest.cs" />
     <Compile Include="Core\Resources\IResourcePathBuilderTest.cs" />
+    <Compile Include="Core\Resources\ResourcePathBuilderTest.cs" />
     <Compile Include="Core\Resources\ResourceUrlFactoryTest.cs" />
+    <Compile Include="Core\Resources\TestableResourcePathBuilder.cs" />
     <Compile Include="Core\Security\Domain\HandleInheritingAttribute.cs" />
     <Compile Include="Core\Security\Domain\DerivedHandleWithAttribute.cs" />
     <Compile Include="Core\Security\Domain\Handle.cs" />

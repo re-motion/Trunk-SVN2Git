@@ -143,7 +143,9 @@
     <Compile Include="ExecutionEngine\IWxeCallOptions.cs" />
     <Compile Include="ExecutionEngine\WxeCallArgumentsWithoutSender.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsBase.cs" />
+    <Compile Include="Infrastructure\HttpContextProvider.cs" />
     <Compile Include="Infrastructure\IBuildManager.cs" />
+    <Compile Include="Infrastructure\IHttpContextProvider.cs" />
     <Compile Include="Resources\IResourcePathBuilder.cs" />
     <Compile Include="Resources\ResourcePathBuilder.cs" />
     <Compile Include="Resources\ResourcePathBuilderBase.cs" />
