@@ -129,7 +129,7 @@ namespace Remotion.Web
     ///   The folder where the resources are expected to be. Ends on a slash unless the root folder is an 
     ///   empty string.
     /// </returns>
-    public static string GetRoot (bool isDesignMode)
+    private static string GetRoot (bool isDesignMode)
     {
       string root;
 

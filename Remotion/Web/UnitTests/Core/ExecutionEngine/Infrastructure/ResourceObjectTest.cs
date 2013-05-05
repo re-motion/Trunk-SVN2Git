@@ -28,7 +28,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     public void SetUp ()
     {
       HttpContextHelper.CreateHttpContext ("GET", "default.aspx", string.Empty);
-      Assert.That (ResourceUrlResolver.GetRoot (false), Is.EqualTo ("/res/"));
+      Assert.That (ResourceUrlResolver.GetAssemblyRoot (false, GetType().Assembly), Is.EqualTo ("/res/Remotion.Web.UnitTests/"));
     }
 
     [Test]
