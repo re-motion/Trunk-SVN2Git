@@ -27,6 +27,7 @@ namespace Remotion.Web
     private readonly Type _definingType;
     private readonly ResourceType _resourceType;
     private readonly string _relativeUrl;
+    private readonly ResourcePathBuilder _resourcePathBuilder;
 
     public ResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)
     {
@@ -37,6 +38,7 @@ namespace Remotion.Web
       _definingType = definingType;
       _resourceType = resourceType;
       _relativeUrl = relativeUrl;
+      _resourcePathBuilder = new ResourcePathBuilder();
     }
 
     public Type DefiningType
@@ -56,10 +58,7 @@ namespace Remotion.Web
 
     public virtual string GetUrl ()
     {
-      string assemblyRoot = ResourceUrlResolver.GetAssemblyRoot (false, DefiningType.Assembly);
-      Assertion.IsTrue (assemblyRoot.EndsWith ("/"));
-
-      return assemblyRoot + ResourceType.Name + "/" + RelativeUrl;
+      return _resourcePathBuilder.BuildAbsolutePath (DefiningType.Assembly, ResourceType.Name, RelativeUrl);
     }
   }
 }
