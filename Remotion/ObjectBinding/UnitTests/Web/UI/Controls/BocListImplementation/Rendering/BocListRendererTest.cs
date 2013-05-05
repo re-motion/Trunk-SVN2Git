@@ -17,8 +17,8 @@
 using System;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Web;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.HasMenuBlock).Return (false);
 
       var renderer = new BocListRenderer (
-          MockRepository.GenerateStub<IResourceUrlFactory>(),
+          new FakeResourceUrlFactory(),
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.MenuBlockOffset).Return (s_menuBlockOffset);
 
       var renderer = new BocListRenderer (
-          MockRepository.GenerateStub<IResourceUrlFactory>(),
+          new FakeResourceUrlFactory(),
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
@@ -104,7 +104,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.HasMenuBlock).Return (true);
 
       var renderer = new BocListRenderer (
-          MockRepository.GenerateStub<IResourceUrlFactory>(),
+          new FakeResourceUrlFactory(),
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
@@ -134,7 +134,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.HasNavigator).Return (true);
 
       var renderer = new BocListRenderer (
-          MockRepository.GenerateStub<IResourceUrlFactory>(),
+          new FakeResourceUrlFactory(),
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),

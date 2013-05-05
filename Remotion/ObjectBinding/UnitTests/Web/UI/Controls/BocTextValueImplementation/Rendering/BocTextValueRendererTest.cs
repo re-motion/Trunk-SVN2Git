@@ -18,12 +18,12 @@ using System;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using System.Web;
-using Remotion.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -32,14 +32,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
   [TestFixture]
   public class BocTextValueRendererTest : BocTextValueRendererTestBase<IBocTextValue>
   {
-    protected BocTextValueRenderer _renderer;
+    private BocTextValueRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
     {
       Initialize();
       TextValue = MockRepository.GenerateMock<IBocTextValue>();
-      _renderer = new BocTextValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
+      _renderer = new BocTextValueRenderer (new FakeResourceUrlFactory());
       TextValue.Stub (stub => stub.ClientID).Return ("MyTextValue");
       TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();

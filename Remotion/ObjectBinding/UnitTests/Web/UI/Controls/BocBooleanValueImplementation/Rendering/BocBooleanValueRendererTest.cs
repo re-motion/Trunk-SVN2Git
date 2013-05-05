@@ -19,11 +19,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
-using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
@@ -262,7 +261,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
 
     private void CheckRendering (string value, string iconUrl, string description)
     {
-      var resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory>();
+      var resourceUrlFactory = new FakeResourceUrlFactory();
       _renderer = new BocBooleanValueRenderer (resourceUrlFactory, new BocBooleanValueResourceSetFactory(resourceUrlFactory));
       _renderer.Render (new BocBooleanValueRenderingContext(HttpContext, Html.Writer, _booleanValue));
       var document = Html.GetResultDocument();

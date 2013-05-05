@@ -16,12 +16,12 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -30,7 +30,6 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.Reflection;
-using Remotion.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -330,7 +329,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
 
     private void AssertLabel (TestEnum? value, bool withStyle)
     {
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
+      var renderer = new BocEnumValueRenderer (new FakeResourceUrlFactory());
       renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();
@@ -379,7 +378,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
 
     private void AssertOptionList (bool withNullValue, TestEnum? selectedValue, bool isDisabled, bool withStyle, bool autoPostBack)
     {
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
+      var renderer = new BocEnumValueRenderer (new FakeResourceUrlFactory());
       renderer.Render (new BocEnumValueRenderingContext (HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();

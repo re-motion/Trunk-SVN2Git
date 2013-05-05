@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderTitleCellNoSorting ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (CreateResourceUrlFactory(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory (), _bocListCssClassDefinition);
       renderer.RenderTitleCell (_renderingContext, SortingDirection.None, -1);
 
       var document = Html.GetResultDocument();
@@ -118,7 +118,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
         string iconFilename,
         string iconAltText)
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (CreateResourceUrlFactory(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory (), _bocListCssClassDefinition);
       renderer.RenderTitleCell (_renderingContext, sortDirection, sortIndex);
 
       var document = Html.GetResultDocument();
@@ -140,11 +140,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Html.AssertAttribute (sortIcon, "alt", iconAltText);
 
       Html.AssertTextNode (sortOrderSpan, HtmlHelper.WhiteSpace + (sortIndex + 1), 1);
-    }
-
-    private IResourceUrlFactory CreateResourceUrlFactory ()
-    {
-      return new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue());
     }
   }
 }

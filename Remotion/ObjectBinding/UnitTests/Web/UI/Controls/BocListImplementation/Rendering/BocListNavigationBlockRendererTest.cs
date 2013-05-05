@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.CurrentPageIndex).Return (currentPageIndex);
       List.Stub (mock => mock.PageCount).Return (totalPageCount);
 
-      var renderer = new BocListNavigationBlockRenderer (CreateResourceUrlFactory(), _bocListCssClassDefinition);
+      var renderer = new BocListNavigationBlockRenderer (new FakeResourceUrlFactory (), _bocListCssClassDefinition);
       renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.CurrentPageIndex).Return (currentPageIndex);
       List.Stub (mock => mock.PageCount).Return (totalPageCount);
 
-      var renderer = new BocListNavigationBlockRenderer (CreateResourceUrlFactory(), _bocListCssClassDefinition);
+      var renderer = new BocListNavigationBlockRenderer (new FakeResourceUrlFactory (), _bocListCssClassDefinition);
       renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
@@ -124,7 +124,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.CurrentPageIndex).Return (currentPageIndex);
       List.Stub (mock => mock.PageCount).Return (totalPageCount);
 
-      var renderer = new BocListNavigationBlockRenderer (CreateResourceUrlFactory(), _bocListCssClassDefinition);
+      var renderer = new BocListNavigationBlockRenderer (new FakeResourceUrlFactory (), _bocListCssClassDefinition);
       renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
@@ -160,7 +160,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.CurrentPageIndex).Return (currentPageIndex);
       List.Stub (mock => mock.PageCount).Return (totalPageCount);
 
-      var renderer = new BocListNavigationBlockRenderer (CreateResourceUrlFactory(), _bocListCssClassDefinition);
+      var renderer = new BocListNavigationBlockRenderer (new FakeResourceUrlFactory (), _bocListCssClassDefinition);
       renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
@@ -185,11 +185,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var pageIndexField = Html.GetAssertedChildElement (div, "input", 5);
       AssertPageIndexHiddenField (pageIndexField, currentPageIndex);
-    }
-
-    private IResourceUrlFactory CreateResourceUrlFactory ()
-    {
-      return new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue());
     }
 
     private void AssertManualInputArea (XmlNode manualInputArea, int currentPageIndex, int totalPageCount)

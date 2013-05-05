@@ -21,6 +21,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -91,7 +92,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
       _enumValue.Stub (mock => mock.ListControlStyle).Return (new ListControlStyle());
       _enumValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
 
-      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
+      _resourceUrlFactory = new FakeResourceUrlFactory();
     }
 
     [Test]

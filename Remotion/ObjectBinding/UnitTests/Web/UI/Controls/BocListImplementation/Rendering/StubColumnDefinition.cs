@@ -14,14 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Web;
-using Remotion.Web.Resources;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -29,7 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   {
     protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator)
     {
-      return new StubColumnRenderer (new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue()));
+      return new StubColumnRenderer (new FakeResourceUrlFactory());
     }
 
     public bool IsSortable

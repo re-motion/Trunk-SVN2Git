@@ -18,6 +18,7 @@ using System;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
@@ -45,7 +46,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
 
-      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
+      _resourceUrlFactory = new FakeResourceUrlFactory();
     }
 
     [Test]

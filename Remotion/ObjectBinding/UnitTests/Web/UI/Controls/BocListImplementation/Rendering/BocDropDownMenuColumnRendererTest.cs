@@ -18,9 +18,9 @@ using System;
 using System.Collections.ObjectModel;
 using System.Web.UI;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
               false,
               new Command()));
 
-      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -92,7 +92,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       InitializeRowMenus();
 
-      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

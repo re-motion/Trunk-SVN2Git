@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       _columnRenderers = new[]
                          {
                              new BocColumnRenderer (
-                                 new StubColumnRenderer (CreateResourceUrlFactory()),
+                                 new StubColumnRenderer (new FakeResourceUrlFactory ()),
                                  stubColumnDefinition,
                                  0,
                                  false,
@@ -176,11 +176,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
 
       Html.GetAssertedChildElement (tr, "td", 0);
-    }
-
-    private IResourceUrlFactory CreateResourceUrlFactory ()
-    {
-      return new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue());
     }
   }
 }

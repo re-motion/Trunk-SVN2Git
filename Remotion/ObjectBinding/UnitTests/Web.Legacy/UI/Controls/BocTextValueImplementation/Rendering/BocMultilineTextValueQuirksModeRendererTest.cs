@@ -18,6 +18,7 @@ using System;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -62,7 +63,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
       pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory>();
+      _resourceUrlFactory = new FakeResourceUrlFactory();
 
       _renderer = new BocMultilineTextValueQuirksModeRenderer (_resourceUrlFactory);
     }

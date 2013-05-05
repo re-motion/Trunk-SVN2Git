@@ -79,7 +79,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
 
     private void AssertDateTimePickerButton (bool isDisabled, bool hasClientScript)
     {
-      var renderer = new DatePickerButtonRenderer (new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue()));
+      var renderer = new DatePickerButtonRenderer (new FakeResourceUrlFactory());
       renderer.Render (new DatePickerButtonRenderingContext (_httpContext, _htmlHelper.Writer, _datePickerButton));
       var buttonDocument = _htmlHelper.GetResultDocument();
 
@@ -90,7 +90,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
           "document.getElementById ('{1}'), '{2}', '{3}', '{4}');return false;",
           _datePickerButton.ContainerControlID,
           _datePickerButton.TargetControlID,
-          "/fake/Remotion.Web/Themes/ClassicBlue/UI/DatePickerForm.aspx",
+          "/fake/Remotion.Web/Themes/Fake/UI/DatePickerForm.aspx",
           "14em",
           "16em"
           );

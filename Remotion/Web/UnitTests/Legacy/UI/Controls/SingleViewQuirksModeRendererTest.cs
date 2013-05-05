@@ -20,8 +20,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
-using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
@@ -60,7 +60,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _singleView.Stub (stub => stub.ViewStyle).Return (new Style (stateBag));
       _singleView.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
 
-      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
+      _resourceUrlFactory = new FakeResourceUrlFactory();
     }
 
     [Test]

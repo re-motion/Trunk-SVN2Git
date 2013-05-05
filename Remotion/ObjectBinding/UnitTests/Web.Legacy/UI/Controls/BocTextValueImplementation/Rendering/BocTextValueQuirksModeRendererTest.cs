@@ -18,8 +18,8 @@ using System;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
@@ -42,7 +42,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
     {
       Initialize();
 
-      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
+      _resourceUrlFactory = new FakeResourceUrlFactory();
 
       TextValue = MockRepository.GenerateMock<IBocTextValue>();
       _renderer = new BocTextValueQuirksModeRenderer (_resourceUrlFactory);

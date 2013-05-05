@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (
           typeof (IBocListRenderer),
           new BocListRenderer (
-              CreateResourceUrlFactory(),
+              new FakeResourceUrlFactory (),
               bocListCssClassDefinition,
               new BocListTableBlockRenderer (
                   bocListCssClassDefinition,
@@ -59,51 +59,51 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
                       bocListCssClassDefinition,
                       new BocIndexColumnRenderer (bocListCssClassDefinition),
                       new BocSelectorColumnRenderer (bocListCssClassDefinition))),
-              new BocListNavigationBlockRenderer (CreateResourceUrlFactory(), bocListCssClassDefinition),
+              new BocListNavigationBlockRenderer (new FakeResourceUrlFactory (), bocListCssClassDefinition),
               new BocListMenuBlockRenderer (bocListCssClassDefinition)));
 
       _instances.Add (
           typeof (IBocSimpleColumnRenderer),
-          new BocSimpleColumnRenderer (CreateResourceUrlFactory(), bocListCssClassDefinition));
+          new BocSimpleColumnRenderer (new FakeResourceUrlFactory (), bocListCssClassDefinition));
       _instances.Add (
           typeof (IBocCompoundColumnRenderer),
-          new BocCompoundColumnRenderer (CreateResourceUrlFactory(), bocListCssClassDefinition));
+          new BocCompoundColumnRenderer (new FakeResourceUrlFactory (), bocListCssClassDefinition));
       _instances.Add (
           typeof (IBocCommandColumnRenderer),
-          new BocCommandColumnRenderer (CreateResourceUrlFactory(), bocListCssClassDefinition));
+          new BocCommandColumnRenderer (new FakeResourceUrlFactory (), bocListCssClassDefinition));
       _instances.Add (
           typeof (IBocCustomColumnRenderer),
-          new BocCustomColumnRenderer (CreateResourceUrlFactory(), bocListCssClassDefinition));
+          new BocCustomColumnRenderer (new FakeResourceUrlFactory (), bocListCssClassDefinition));
       _instances.Add (
           typeof (IBocRowEditModeColumnRenderer),
-          new BocRowEditModeColumnRenderer (CreateResourceUrlFactory(), bocListCssClassDefinition));
+          new BocRowEditModeColumnRenderer (new FakeResourceUrlFactory (), bocListCssClassDefinition));
       _instances.Add (
           typeof (IBocDropDownMenuColumnRenderer),
-          new BocDropDownMenuColumnRenderer (CreateResourceUrlFactory(), bocListCssClassDefinition));
+          new BocDropDownMenuColumnRenderer (new FakeResourceUrlFactory (), bocListCssClassDefinition));
       _instances.Add (typeof (IBocIndexColumnRenderer), new BocIndexColumnRenderer (bocListCssClassDefinition));
       _instances.Add (typeof (IBocSelectorColumnRenderer), new BocSelectorColumnRenderer (bocListCssClassDefinition));
       
-      _instances.Add (typeof (IDropDownMenuRenderer), new DropDownMenuRenderer (CreateResourceUrlFactory()));
-      _instances.Add (typeof (IListMenuRenderer), new ListMenuRenderer (CreateResourceUrlFactory()));
-      _instances.Add (typeof (IDatePickerButtonRenderer), new DatePickerButtonRenderer (CreateResourceUrlFactory()));
-      _instances.Add (typeof (IBocReferenceValueRenderer), new BocReferenceValueRenderer (CreateResourceUrlFactory()));
-      _instances.Add (typeof (IBocDateTimeValueRenderer), new BocDateTimeValueRenderer (CreateResourceUrlFactory()));
-      _instances.Add (typeof (IBocMultilineTextValueRenderer), new BocMultilineTextValueRenderer (CreateResourceUrlFactory()));
-      _instances.Add (typeof (IBocTextValueRenderer), new BocTextValueRenderer (CreateResourceUrlFactory()));
+      _instances.Add (typeof (IDropDownMenuRenderer), new DropDownMenuRenderer (new FakeResourceUrlFactory ()));
+      _instances.Add (typeof (IListMenuRenderer), new ListMenuRenderer (new FakeResourceUrlFactory ()));
+      _instances.Add (typeof (IDatePickerButtonRenderer), new DatePickerButtonRenderer (new FakeResourceUrlFactory ()));
+      _instances.Add (typeof (IBocReferenceValueRenderer), new BocReferenceValueRenderer (new FakeResourceUrlFactory ()));
+      _instances.Add (typeof (IBocDateTimeValueRenderer), new BocDateTimeValueRenderer (new FakeResourceUrlFactory ()));
+      _instances.Add (typeof (IBocMultilineTextValueRenderer), new BocMultilineTextValueRenderer (new FakeResourceUrlFactory ()));
+      _instances.Add (typeof (IBocTextValueRenderer), new BocTextValueRenderer (new FakeResourceUrlFactory ()));
       _instances.Add (
           typeof (IBocBooleanValueRenderer),
           new BocBooleanValueRenderer (
-              CreateResourceUrlFactory(),
-              new BocBooleanValueResourceSetFactory (CreateResourceUrlFactory())));
+              new FakeResourceUrlFactory (),
+              new BocBooleanValueResourceSetFactory (new FakeResourceUrlFactory ())));
       _instances.Add (
           typeof (IBocBooleanValueResourceSetFactory),
-          new BocBooleanValueResourceSetFactory (CreateResourceUrlFactory()));
-      _instances.Add (typeof (IBocCheckBoxRenderer), new BocCheckBoxRenderer (CreateResourceUrlFactory()));
-      _instances.Add (typeof (IBocEnumValueRenderer), new BocEnumValueRenderer (CreateResourceUrlFactory()));
+          new BocBooleanValueResourceSetFactory (new FakeResourceUrlFactory ()));
+      _instances.Add (typeof (IBocCheckBoxRenderer), new BocCheckBoxRenderer (new FakeResourceUrlFactory ()));
+      _instances.Add (typeof (IBocEnumValueRenderer), new BocEnumValueRenderer (new FakeResourceUrlFactory ()));
 
       _instances.Add (typeof (IClientScriptBehavior), new ClientScriptBehavior());
       _instances.Add (typeof (IInfrastructureResourceUrlFactory), new StubInfrastructureResourceUrlFactory());
-      _instances.Add (typeof (IResourceUrlFactory), CreateResourceUrlFactory());
+      _instances.Add (typeof (IResourceUrlFactory), new FakeResourceUrlFactory ());
     }
 
     public void SetFactory<T> (T factory)
@@ -138,11 +138,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     private bool IsCoreType (Type serviceType)
     {
       return serviceType.Assembly != typeof (BocList).Assembly;
-    }
-
-    private IResourceUrlFactory CreateResourceUrlFactory ()
-    {
-      return new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue());
     }
   }
 }

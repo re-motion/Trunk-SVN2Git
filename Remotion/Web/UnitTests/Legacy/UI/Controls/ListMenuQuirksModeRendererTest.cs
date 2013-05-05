@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI;
@@ -62,7 +63,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
       _control.Stub (stub => stub.Page).Return (pageStub);
 
-      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
+      _resourceUrlFactory = new FakeResourceUrlFactory();
 
       PopulateMenu();
     }

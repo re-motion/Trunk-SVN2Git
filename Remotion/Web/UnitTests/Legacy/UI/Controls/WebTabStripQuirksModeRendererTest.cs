@@ -75,7 +75,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
       _style = new WebTabStyle();
 
-      MockRepository.GenerateStub<IResourceUrlFactory>();
+      new FakeResourceUrlFactory();
     }
 
     [Test]
@@ -258,7 +258,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount, WebTabStripRenderingContext renderingContext)
     {
-      _renderer = new WebTabStripQuirksModeRenderer (new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme ("Legacy")));
+      _renderer = new WebTabStripQuirksModeRenderer (new FakeResourceUrlFactory());
       _renderer.Render (renderingContext);
 
       var document = _htmlHelper.GetResultDocument();

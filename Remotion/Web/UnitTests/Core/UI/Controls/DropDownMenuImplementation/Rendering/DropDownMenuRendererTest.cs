@@ -153,7 +153,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
 
     private XmlNode GetAssertedContainerSpan ()
     {
-      var renderer = new DropDownMenuRenderer (new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue()));
+      var renderer = new DropDownMenuRenderer (new FakeResourceUrlFactory ());
       renderer.Render (new DropDownMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
       var document = _htmlHelper.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);

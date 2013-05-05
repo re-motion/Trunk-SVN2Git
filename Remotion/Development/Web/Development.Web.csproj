@@ -95,6 +95,7 @@
     <Compile Include="UnitTesting\ExecutionEngine\TestFunctions\TestFunction.cs" />
     <Compile Include="UnitTesting\ExecutionEngine\TestFunctions\TestStep.cs" />
     <Compile Include="UnitTesting\ExecutionEngine\WxeContextMock.cs" />
+    <Compile Include="UnitTesting\Resources\FakeResourceUrlFactory.cs" />
     <Compile Include="UnitTesting\Resources\FakeResourcePathBuilder.cs" />
     <Compile Include="UnitTesting\UI\Controls\ControlInvoker.cs" />
     <Compile Include="UnitTesting\UI\Controls\NamingContainerMock.cs" />

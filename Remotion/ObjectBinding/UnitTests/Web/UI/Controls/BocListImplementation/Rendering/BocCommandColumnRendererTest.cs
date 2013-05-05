@@ -18,12 +18,11 @@ using System;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Web;
 using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls;
-using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -61,7 +60,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocCommandColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCommandColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 5, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -80,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderIconCell ()
     {
-      IBocColumnRenderer renderer = new BocCommandColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCommandColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, true, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -104,7 +103,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Column.Icon.Width = new Unit (16, UnitType.Pixel);
       Column.Icon.Height = new Unit (16, UnitType.Pixel);
 
-      IBocColumnRenderer renderer = new BocCommandColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCommandColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -126,7 +125,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       WebConfigurationMock.Current.Wcag.ConformanceLevel = WaiConformanceLevel.A;
 
-      IBocColumnRenderer renderer = new BocCommandColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCommandColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

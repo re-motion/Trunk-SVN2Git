@@ -22,6 +22,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using System.Web;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.Resources;
@@ -41,7 +42,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private readonly List<string> _itemInfos = new List<string>();
     private HttpContextBase _httpContext;
     private HtmlHelper _htmlHelper;
-    private IResourceUrlFactory _resourceUrlFactoryStub;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
@@ -69,9 +70,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       IClientScriptManager scriptManagerMock = MockRepository.GenerateMock<IClientScriptManager> ();
       _control.Page.Stub (stub => stub.ClientScript).Return (scriptManagerMock);
 
-      _resourceUrlFactoryStub = MockRepository.GenerateStub<IResourceUrlFactory>();
-      _resourceUrlFactoryStub.Stub (_ => _.CreateResourceUrl (null, null, null)).IgnoreArguments().Return (null)
-                             .WhenCalled (invocation => invocation.ReturnValue = GetStubbedUrlFromMethodInvocation (invocation));
+      _resourceUrlFactory = new FakeResourceUrlFactory();
     }
 
     [TearDown]
@@ -305,7 +304,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     {
       Type type = typeof (DropDownMenuQuirksModeRenderer);
       string initializationScriptKey = type.FullName + "_Startup";
-      string styleSheetUrl = "/res/Remotion.Web.Legacy/Html/DropDownMenu.css";
+      string styleSheetUrl = "/fake/Remotion.Web.Legacy/Html/DropDownMenu.css";
       string initializationScript = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
 
       string menuInfoKey = _control.UniqueID;
@@ -332,7 +331,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private XmlNode GetAssertedOuterDiv ()
     {
-      var renderer = new DropDownMenuQuirksModeRenderer (_resourceUrlFactoryStub);
+      var renderer = new DropDownMenuQuirksModeRenderer (_resourceUrlFactory);
       renderer.Render (new DropDownMenuRenderingContext (_httpContext, _htmlHelper.Writer, _control));
 
       var document = _htmlHelper.GetResultDocument();
@@ -463,22 +462,11 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private void AssertImage (XmlNode parent)
     {
       var img = parent.GetAssertedChildElement ("img", 0);
-      img.AssertAttributeValueEquals ("src", "/res/Remotion.Web.Legacy/Image/DropDownMenuArrow.gif");
+      img.AssertAttributeValueEquals ("src", "/fake/Remotion.Web.Legacy/Image/DropDownMenuArrow.gif");
       img.AssertAttributeValueEquals ("alt", "");
       img.AssertStyleAttribute ("vertical-align", "middle");
       img.AssertStyleAttribute ("border-style", "none");
       img.AssertChildElementCount (0);
-    }
-
-    private IResourceUrl GetStubbedUrlFromMethodInvocation (MethodInvocation invocation)
-    {
-      // ReSharper disable RedundantCast
-      string url = string.Format (
-          "/res/Remotion.Web.Legacy/{0}/{1}",
-          ((ResourceType) invocation.Arguments[1]).Name,
-          (string) invocation.Arguments[2]);
-      // ReSharper restore RedundantCast
-      return new StaticResourceUrl (url);
     }
   }
 }

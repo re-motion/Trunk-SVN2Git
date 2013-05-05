@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Web.Resources;
 
-namespace Remotion.Web.UnitTests.Core.Factories
+namespace Remotion.Web.UnitTests.Core.Resources
 {
   [TestFixture]
   public class ResourceUrlFactoryTest

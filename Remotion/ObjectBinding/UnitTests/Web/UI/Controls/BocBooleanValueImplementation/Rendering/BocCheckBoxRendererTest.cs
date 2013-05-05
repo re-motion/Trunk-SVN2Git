@@ -19,11 +19,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
-using System.Web;
-using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Rhino.Mocks;
@@ -224,7 +223,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     {
       _checkbox.Value = value;
 
-      _renderer = new BocCheckBoxRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
+      _renderer = new BocCheckBoxRenderer (new FakeResourceUrlFactory());
       _renderer.Render (new BocCheckBoxRenderingContext(HttpContext, Html.Writer, _checkbox));
 
       var document = Html.GetResultDocument();

@@ -130,19 +130,19 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _stubColumnRenderers = new[]
                              {
-                                 new BocColumnRenderer (new StubColumnRenderer (CreateResourceUrlFactory()),
+                                 new BocColumnRenderer (new StubColumnRenderer (new FakeResourceUrlFactory ()),
                                      stubColumnDefinition1,
                                      0,
                                      false,
                                      SortingDirection.Ascending,
                                      0),
-                                 new BocColumnRenderer (new StubColumnRenderer (CreateResourceUrlFactory()),
+                                 new BocColumnRenderer (new StubColumnRenderer (new FakeResourceUrlFactory ()),
                                      stubColumnDefinition2,
                                      1,
                                      false,
                                      SortingDirection.Ascending,
                                      1),
-                                 new BocColumnRenderer (new StubColumnRenderer (CreateResourceUrlFactory()),
+                                 new BocColumnRenderer (new StubColumnRenderer (new FakeResourceUrlFactory ()),
                                      stubColumnDefinition2,
                                      2,
                                      false,
@@ -163,11 +163,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
                             new BocListRowRenderingContext(new BocListRow (1, secondObject), 1, false)
                           };
       List.Stub (list => list.GetRowsToRender ()).Return (rows);
-    }
-
-    private IResourceUrlFactory CreateResourceUrlFactory ()
-    {
-      return new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue());
     }
   }
 }

@@ -16,10 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Web;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
@@ -57,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderEditable ()
     {
-      IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
       
       EventArgs = new BocListDataRowRenderEventArgs (EventArgs.ListIndex, EventArgs.BusinessObject, true, EventArgs.IsOddRow);
       
@@ -80,7 +80,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       List.EditModeController.Stub (mock => mock.GetEditableRow(10)).Return (MockRepository.GenerateStub<IEditableRow>());
 
-      IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
