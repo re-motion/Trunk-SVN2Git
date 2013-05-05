@@ -38,7 +38,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       ArgumentUtility.CheckNotNull ("resourcePathBuilder", resourcePathBuilder);
       ArgumentUtility.CheckNotNull ("assembly", assembly);
 
-      _resourceRoot = resourcePathBuilder.BuildAbsolutePath (assembly) + "/";
+      _resourceRoot = resourcePathBuilder.BuildAbsolutePath (assembly);
     }
 
     public string ResourceRoot

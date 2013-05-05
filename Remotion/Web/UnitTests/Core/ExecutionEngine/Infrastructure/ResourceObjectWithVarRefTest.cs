@@ -49,7 +49,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     {
       var resourceObject = new ResourceObjectWithVarRef (new FakeResourcePathBuilder(), GetType().Assembly, new WxeVariableReference ("ThePage"));
 
-      Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("/fake/Remotion.Web.UnitTests/"));
+      Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("/fake/Remotion.Web.UnitTests"));
       Assert.That (resourceObject.PathReference.Name, Is.EqualTo ("ThePage"));
     }
 

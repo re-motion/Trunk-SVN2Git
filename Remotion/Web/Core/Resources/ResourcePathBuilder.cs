@@ -36,14 +36,20 @@ namespace Remotion.Web.Resources
     {
       ArgumentUtility.CheckNotNullOrEmpty ("completePath", completePath);
 
-      return completePath.Aggregate (VirtualPathUtility.Combine);
+      return completePath.Aggregate (CombineVirtualPaths);
     }
 
     protected override string GetResourceRoot ()
     {
       var applicationPath = GetApplicationPath();
       Assertion.IsTrue (VirtualPathUtility.IsAbsolute (applicationPath));
-      return VirtualPathUtility.Combine (applicationPath, _configuredResourceRoot);
+
+      return CombineVirtualPaths (applicationPath, _configuredResourceRoot);
+    }
+
+    private string CombineVirtualPaths (string left, string right)
+    {
+      return VirtualPathUtility.Combine (VirtualPathUtility.AppendTrailingSlash (left), right);
     }
 
     private string GetApplicationPath ()

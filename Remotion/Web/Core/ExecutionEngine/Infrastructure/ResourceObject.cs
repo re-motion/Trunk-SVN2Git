@@ -48,7 +48,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override string GetResourcePath (NameObjectCollection variables)
     {
-      return VirtualPathUtility.Combine (ResourceRoot, _path);
+      return VirtualPathUtility.Combine (
+          VirtualPathUtility.AppendTrailingSlash (ResourceRoot),
+          _path);
     }
   }
 }

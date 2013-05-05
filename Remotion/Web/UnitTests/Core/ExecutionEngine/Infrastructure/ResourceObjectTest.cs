@@ -44,7 +44,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     {
       var resourceObject = new ResourceObject (new FakeResourcePathBuilder(), GetType().Assembly, "path.aspx");
 
-      Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("/fake/Remotion.Web.UnitTests/"));
+      Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("/fake/Remotion.Web.UnitTests"));
       Assert.That (resourceObject.Path, Is.EqualTo ("path.aspx"));
     }
 
