@@ -41,6 +41,7 @@ namespace Remotion.Web.Resources
   /// </remarks>
   /// <seealso cref="ResourcePathBuilder"/>
   /// <seealso cref="DesignTimeResourcePathBuilder"/>
+  /// <seealso cref="T:Remotion.Development.Web.UnitTesting.Resources.FakeResourcePathBuilder"/>
   [ConcreteImplementation (typeof (ResourcePathBuilder), Lifetime = LifetimeKind.Singleton)]
   public interface IResourcePathBuilder
   {

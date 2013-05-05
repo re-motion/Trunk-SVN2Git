@@ -22,9 +22,10 @@ namespace Remotion.Web.Resources
 {
   /// <summary>
   /// Responsible for creating objects that implement <see cref="IResourceUrl"/>.
+  /// </summary>
   /// <seealso cref="ResourceUrl"/>
   /// <seealso cref="ThemedResourceUrl"/>
-  /// </summary>
+  /// <seealso cref="T:Remotion.Development.Web.UnitTesting.Resources.FakeResourceUrlFactory"/>
   public class ResourceUrlFactory : IResourceUrlFactory
   {
     private readonly IResourcePathBuilder _builder;

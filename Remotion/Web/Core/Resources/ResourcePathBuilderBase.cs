@@ -36,7 +36,7 @@ namespace Remotion.Web.Resources
       ArgumentUtility.CheckNotNull ("assemblyRelativePathParts", assemblyRelativePathParts);
 
       string root = GetResourceRoot();
-      string assemblyName = assembly.FullName.Split (new[] { ',' }, 2)[0];
+      string assemblyName = assembly.GetName().Name;
 
       string[] completePath = ArrayUtility.Combine (new[] { root, assemblyName }, assemblyRelativePathParts);
       return BuildPath (completePath);

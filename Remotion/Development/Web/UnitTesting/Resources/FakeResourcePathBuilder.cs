@@ -20,6 +20,9 @@ using Remotion.Web.Resources;
 
 namespace Remotion.Development.Web.UnitTesting.Resources
 {
+  /// <summary>
+  /// Fake implementation of the <see cref="IResourcePathBuilder"/> interface, intended for use in unit testing.
+  /// </summary>
   public class FakeResourcePathBuilder : ResourcePathBuilderBase
   {
     protected override string GetResourceRoot ()

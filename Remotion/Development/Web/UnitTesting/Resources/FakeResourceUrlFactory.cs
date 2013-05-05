@@ -21,6 +21,9 @@ using Remotion.Web.Resources;
 
 namespace Remotion.Development.Web.UnitTesting.Resources
 {
+  /// <summary>
+  /// Fake implementation of the <see cref="IResourceUrlFactory"/> interface, intended for use in unit testing.
+  /// </summary>
   public class FakeResourceUrlFactory : IResourceUrlFactory
   {
     private readonly IResourcePathBuilder _builder = new FakeResourcePathBuilder();
