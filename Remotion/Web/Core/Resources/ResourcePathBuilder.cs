@@ -21,7 +21,7 @@ using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
 
-namespace Remotion.Web
+namespace Remotion.Web.Resources
 {
   public class ResourcePathBuilder : ResourcePathBuilderBase
   {

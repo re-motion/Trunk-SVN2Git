@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web;
-using Remotion.Web.Factories;
+using Remotion.Web.Resources;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       _columnRenderers = new[]
                          {
                              new BocColumnRenderer (
-                                 new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())),
+                                 new StubColumnRenderer (CreateResourceUrlFactory()),
                                  stubColumnDefinition,
                                  0,
                                  false,
@@ -176,6 +176,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
 
       Html.GetAssertedChildElement (tr, "td", 0);
+    }
+
+    private IResourceUrlFactory CreateResourceUrlFactory ()
+    {
+      return new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue());
     }
   }
 }

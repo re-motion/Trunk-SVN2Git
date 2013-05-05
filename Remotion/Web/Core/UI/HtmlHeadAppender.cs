@@ -23,6 +23,7 @@ using Remotion.Collections;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Resources;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.UI

@@ -14,34 +14,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.IO;
 
-namespace Remotion.Web.Design
+using System;
+using Remotion.Utilities;
+
+namespace Remotion.Web.Resources
 {
   /// <summary>
-  /// Represents the design-time implementation of <see cref="ThemedResourceUrl"/>.
+  /// Represents the absolute URL for a resource file that is not constructed using the <see cref="ResourceUrlResolver"/> infrastrcuture.
   /// </summary>
-  public class DesignTimeThemedResourceUrl : ThemedResourceUrl
+  public class StaticResourceUrl : IResourceUrl
   {
-    public DesignTimeThemedResourceUrl (Type definingType, ResourceType resourceType, ResourceTheme resourceTheme, string relativeUrl)
-        : base (definingType, resourceType, resourceTheme, relativeUrl)
+    private readonly string _url;
+
+    public StaticResourceUrl (string url)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("url", url);
+
+      _url = url;
     }
 
-    public override string GetUrl ()
+    public string GetUrl ()
     {
-      string assemblyRoot = ResourceUrlResolver.GetAssemblyRoot (true, DefiningType.Assembly);
-
-      return Path.Combine (
-          assemblyRoot,
-          Path.Combine (
-              ThemesFolder,
-              Path.Combine (
-                  ResourceTheme.Name,
-                  Path.Combine (
-                      ResourceType.Name,
-                      RelativeUrl))));
+      return _url;
     }
   }
 }

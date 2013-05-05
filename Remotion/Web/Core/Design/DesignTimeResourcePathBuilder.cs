@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Remotion.Utilities;
+using Remotion.Web.Resources;
 
 namespace Remotion.Web.Design
 {

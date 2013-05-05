@@ -17,10 +17,11 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web;
-using Remotion.Web.Factories;
+using Remotion.Web.Resources;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -28,7 +29,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   {
     protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator)
     {
-      return new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
+      return new StubColumnRenderer (new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue()));
     }
 
     public bool IsSortable

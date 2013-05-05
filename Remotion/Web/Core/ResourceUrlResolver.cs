@@ -20,11 +20,10 @@ using System.Reflection;
 using System.Web;
 using System.Web.UI;
 using JetBrains.Annotations;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
-using Remotion.Web.Design;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web
 {
@@ -74,17 +73,14 @@ namespace Remotion.Web
     /// <param name="resourceType"> The resource type (image, static html, etc.) Must not be <see langword="null"/>. </param>
     /// <param name="relativeUrl"> The resource file name. Must not be <see langword="null"/> or empty.</param>
     [Obsolete ("Use IResourceUrlFactory.CreateResourceUrl(...) instead. (Version 1.13.197)")]
-    public static string GetResourceUrl ([CanBeNull]IControl control, Type definingType, ResourceType resourceType, string relativeUrl)
+    public static string GetResourceUrl ([CanBeNull] IControl control, Type definingType, ResourceType resourceType, string relativeUrl)
     {
       ArgumentUtility.CheckNotNull ("definingType", definingType);
       ArgumentUtility.CheckNotNull ("resourceType", resourceType);
       ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
 
-      bool isDesignMode = (control != null) && ControlHelper.IsDesignMode (control);
-      if (isDesignMode)
-        return new DesignTimeResourceUrl (definingType, resourceType, relativeUrl).GetUrl();
-      else
-        return new ResourceUrl (definingType, resourceType, relativeUrl).GetUrl();
+      var factory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>();
+      return factory.CreateResourceUrl (definingType, resourceType, relativeUrl).GetUrl();
     }
 
     /// <summary>

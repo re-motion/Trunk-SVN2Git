@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Web.Factories
+namespace Remotion.Web.Resources
 {
   /// <summary>
   /// Responsible for creating objects that implement <see cref="IResourceUrl"/>.
@@ -26,22 +27,25 @@ namespace Remotion.Web.Factories
   /// </summary>
   public class ResourceUrlFactory : IResourceUrlFactory
   {
+    private readonly IResourcePathBuilder _builder;
     private readonly ResourceTheme _resourceTheme;
 
-    public ResourceUrlFactory (ResourceTheme resourceTheme)
+    public ResourceUrlFactory (IResourcePathBuilder builder, ResourceTheme resourceTheme)
     {
+      ArgumentUtility.CheckNotNull ("builder", builder);
       ArgumentUtility.CheckNotNull ("resourceTheme", resourceTheme);
+      _builder = builder;
       _resourceTheme = resourceTheme;
     }
 
     public IResourceUrl CreateResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)
     {
-      return new ResourceUrl (definingType, resourceType, relativeUrl);
+      return new ResourceUrl (_builder, definingType, resourceType, relativeUrl);
     }
 
     public IResourceUrl CreateThemedResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)
     {
-      return new ThemedResourceUrl (definingType, resourceType, _resourceTheme, relativeUrl);
+      return new ThemedResourceUrl (_builder, definingType, resourceType, _resourceTheme, relativeUrl);
     }
   }
 }

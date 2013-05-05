@@ -17,11 +17,12 @@
 using System;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web;
-using Remotion.Web.Factories;
+using Remotion.Web.Resources;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
@@ -129,19 +130,19 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _stubColumnRenderers = new[]
                              {
-                                 new BocColumnRenderer (new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())),
+                                 new BocColumnRenderer (new StubColumnRenderer (CreateResourceUrlFactory()),
                                      stubColumnDefinition1,
                                      0,
                                      false,
                                      SortingDirection.Ascending,
                                      0),
-                                 new BocColumnRenderer (new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())),
+                                 new BocColumnRenderer (new StubColumnRenderer (CreateResourceUrlFactory()),
                                      stubColumnDefinition2,
                                      1,
                                      false,
                                      SortingDirection.Ascending,
                                      1),
-                                 new BocColumnRenderer (new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())),
+                                 new BocColumnRenderer (new StubColumnRenderer (CreateResourceUrlFactory()),
                                      stubColumnDefinition2,
                                      2,
                                      false,
@@ -162,6 +163,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
                             new BocListRowRenderingContext(new BocListRow (1, secondObject), 1, false)
                           };
       List.Stub (list => list.GetRowsToRender ()).Return (rows);
+    }
+
+    private IResourceUrlFactory CreateResourceUrlFactory ()
+    {
+      return new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue());
     }
   }
 }

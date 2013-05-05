@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
+using Remotion.Web.Resources;
 
 namespace Remotion.Web.Legacy.Factories
 {
@@ -26,20 +28,24 @@ namespace Remotion.Web.Legacy.Factories
   /// </summary>
   public class QuirksModeResourceUrlFactory : IResourceUrlFactory
   {
+    private readonly IResourcePathBuilder _builder;
     private readonly ResourceTheme _resourceTheme = new ResourceTheme ("Legacy");
 
-    public QuirksModeResourceUrlFactory ()
+    public QuirksModeResourceUrlFactory (IResourcePathBuilder builder)
     {
+      ArgumentUtility.CheckNotNull ("builder", builder);
+      
+      _builder = builder;
     }
 
     public IResourceUrl CreateResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)
     {
-      return new ResourceUrl (definingType, resourceType, relativeUrl);
+      return new ResourceUrl (_builder, definingType, resourceType, relativeUrl);
     }
 
     public IResourceUrl CreateThemedResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)
     {
-      return new ThemedResourceUrl (definingType, resourceType, _resourceTheme, relativeUrl);
+      return new ThemedResourceUrl (_builder, definingType, resourceType, _resourceTheme, relativeUrl);
     }
   }
 }

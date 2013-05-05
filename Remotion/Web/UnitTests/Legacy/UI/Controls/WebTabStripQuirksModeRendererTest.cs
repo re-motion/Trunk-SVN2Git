@@ -21,10 +21,12 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Utilities;
-using Remotion.Web.Factories;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
+using Remotion.Web.Resources;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Hotkey;
@@ -256,7 +258,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount, WebTabStripRenderingContext renderingContext)
     {
-      _renderer = new WebTabStripQuirksModeRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
+      _renderer = new WebTabStripQuirksModeRenderer (new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme ("Legacy")));
       _renderer.Render (renderingContext);
 
       var document = _htmlHelper.GetResultDocument();

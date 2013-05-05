@@ -14,27 +14,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Utilities;
 
-namespace Remotion.Web
+using System;
+using NUnit.Framework;
+using Remotion.Web.Resources;
+using Rhino.Mocks;
+
+namespace Remotion.Web.UnitTests.Core.Resources
 {
-  /// <summary>
-  /// Represents the absolute URL for a resource file that is not constructed using the <see cref="ResourceUrlResolver"/> infrastrcuture.
-  /// </summary>
-  public class StaticResourceUrl : IResourceUrl
+  [TestFixture]
+  public class ThemedResourceUrlTest
   {
-    private readonly string _url;
-
-    public StaticResourceUrl (string url)
+    [Test]
+    public void GetUrl ()
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("url", url);
+      var resourceUrlBuilderStub = MockRepository.GenerateStub<IResourcePathBuilder>();
+      var resourceUrl = new ThemedResourceUrl (resourceUrlBuilderStub, typeof (ResourceUrlTest), ResourceType.Html, new ResourceTheme.NovaBlue(), "theRelativeUrl.js");
 
-      _url = url;
-    }
+      resourceUrlBuilderStub
+          .Stub (_ => _.BuildAbsolutePath (typeof (ResourceUrlTest).Assembly, new[] { "Themes", "NovaBlue", "Html", "theRelativeUrl.js" }))
+          .Return ("expectedUrl");
 
-    public string GetUrl ()
-    {
-      return _url;
+      Assert.That (resourceUrl.GetUrl(), Is.EqualTo ("expectedUrl"));
     }
   }
 }

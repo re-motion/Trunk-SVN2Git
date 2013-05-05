@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
+using Remotion.Web.Resources;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;

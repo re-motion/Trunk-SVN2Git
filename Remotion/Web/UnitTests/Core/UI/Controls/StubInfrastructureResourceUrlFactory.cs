@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Resources;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls
 {

@@ -17,13 +17,26 @@
 
 using System;
 using System.Reflection;
-using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
-namespace Remotion.Web
+namespace Remotion.Web.Resources
 {
-  [ConcreteImplementation (typeof (ResourcePathBuilder), Lifetime = LifetimeKind.Singleton)]
-  public interface IResourcePathBuilder
+  public abstract class ResourcePathBuilderBase : IResourcePathBuilder
   {
-    string BuildAbsolutePath (Assembly assembly, params string[] assemblyRelativePathParts);
+    protected abstract string GetResourceRoot ();
+
+    protected abstract string BuildPath (string[] completePath);
+
+    public string BuildAbsolutePath (Assembly assembly, params string[] assemblyRelativePathParts)
+    {
+      ArgumentUtility.CheckNotNull ("assembly", assembly);
+      ArgumentUtility.CheckNotNull ("assemblyRelativePathParts", assemblyRelativePathParts);
+
+      string root = GetResourceRoot();
+      string assemblyName = assembly.FullName.Split (new[] { ',' }, 2)[0];
+
+      string[] completePath = ArrayUtility.Combine (new[] { root, assemblyName }, assemblyRelativePathParts);
+      return BuildPath (completePath);
+    }
   }
 }

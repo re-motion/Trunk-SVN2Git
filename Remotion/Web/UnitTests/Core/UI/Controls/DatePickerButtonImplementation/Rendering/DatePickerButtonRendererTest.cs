@@ -17,7 +17,9 @@
 using System;
 using System.Web;
 using NUnit.Framework;
-using Remotion.Web.Factories;
+using Remotion.Development.Web.UnitTesting;
+using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Web.Resources;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Rhino.Mocks;
@@ -77,7 +79,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
 
     private void AssertDateTimePickerButton (bool isDisabled, bool hasClientScript)
     {
-      var renderer = new DatePickerButtonRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
+      var renderer = new DatePickerButtonRenderer (new ResourceUrlFactory (new FakeResourcePathBuilder(), new ResourceTheme.ClassicBlue()));
       renderer.Render (new DatePickerButtonRenderingContext (_httpContext, _htmlHelper.Writer, _datePickerButton));
       var buttonDocument = _htmlHelper.GetResultDocument();
 
@@ -88,7 +90,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
           "document.getElementById ('{1}'), '{2}', '{3}', '{4}');return false;",
           _datePickerButton.ContainerControlID,
           _datePickerButton.TargetControlID,
-          "/res/Remotion.Web/Themes/ClassicBlue/UI/DatePickerForm.aspx",
+          "/fake/Remotion.Web/Themes/ClassicBlue/UI/DatePickerForm.aspx",
           "14em",
           "16em"
           );

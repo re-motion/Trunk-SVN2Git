@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.ServiceLocation;
-using Remotion.Web.Factories;
+using Remotion.Web.Resources;
 
 namespace Remotion.Web
 {

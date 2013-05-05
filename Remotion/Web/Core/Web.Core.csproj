@@ -140,25 +140,23 @@
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Design\DesignTimeResourcePathBuilder.cs" />
-    <Compile Include="Design\DesignTimeThemedResourceUrl.cs" />
-    <Compile Include="Design\DesignTimeResourceUrl.cs" />
     <Compile Include="ExecutionEngine\IWxeCallOptions.cs" />
     <Compile Include="ExecutionEngine\WxeCallArgumentsWithoutSender.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsBase.cs" />
     <Compile Include="Infrastructure\IBuildManager.cs" />
-    <Compile Include="IResourcePathBuilder.cs" />
-    <Compile Include="ResourcePathBuilder.cs" />
-    <Compile Include="ResourcePathBuilderBase.cs" />
+    <Compile Include="Resources\IResourcePathBuilder.cs" />
+    <Compile Include="Resources\ResourcePathBuilder.cs" />
+    <Compile Include="Resources\ResourcePathBuilderBase.cs" />
     <Compile Include="Services\IconProxy.cs" />
     <Compile Include="Services\IWebServiceFactory.cs" />
     <Compile Include="Services\WebServiceFactory.cs" />
     <Compile Include="Services\WebServiceUtility.cs" />
-    <Compile Include="StaticResourceUrl.cs" />
+    <Compile Include="Resources\StaticResourceUrl.cs" />
     <Compile Include="IResourceUrlFactory.cs" />
-    <Compile Include="Factories\ResourceUrlFactory.cs">
+    <Compile Include="Resources\ResourceUrlFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ThemedResourceUrl.cs" />
+    <Compile Include="Resources\ThemedResourceUrl.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionMode.cs" />
@@ -191,7 +189,7 @@
     <Compile Include="Infrastructure\PageWrapper.cs" />
     <Compile Include="ResourceTheme.cs" />
     <Compile Include="ResourceType.cs" />
-    <Compile Include="ResourceUrl.cs" />
+    <Compile Include="Resources\ResourceUrl.cs" />
     <Compile Include="IResourceUrl.cs" />
     <Compile Include="UI\AsyncUnhandledException.cs" />
     <Compile Include="UI\Controls\CommandInfo.cs" />

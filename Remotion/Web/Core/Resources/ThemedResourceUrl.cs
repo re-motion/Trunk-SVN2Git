@@ -14,31 +14,48 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Web
+namespace Remotion.Web.Resources
 {
   /// <summary>
-  /// Represents the absolute URL for a resource file that does not change with the <see cref="ResourceTheme"/>.
+  /// Represents the absolute URL for a resource file that changes with the <see cref="ResourceTheme"/>.
   /// </summary>
-  public class ResourceUrl : IResourceUrl
+  public class ThemedResourceUrl : IResourceUrl
   {
+    protected const string ThemesFolder = "Themes";
+
     private readonly Type _definingType;
     private readonly ResourceType _resourceType;
+    private readonly ResourceTheme _resourceTheme;
     private readonly string _relativeUrl;
-    private readonly ResourcePathBuilder _resourcePathBuilder;
+    private readonly IResourcePathBuilder _resourcePathBuilder;
 
-    public ResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)
+    public ThemedResourceUrl (IResourcePathBuilder resourcePathBuilder, Type definingType, ResourceType resourceType, ResourceTheme resourceTheme, string relativeUrl)
     {
+      ArgumentUtility.CheckNotNull ("resourcePathBuilder", resourcePathBuilder);
       ArgumentUtility.CheckNotNull ("definingType", definingType);
       ArgumentUtility.CheckNotNull ("resourceType", resourceType);
+      ArgumentUtility.CheckNotNull ("resourceTheme", resourceTheme);
       ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
 
+      _resourcePathBuilder = resourcePathBuilder;
       _definingType = definingType;
       _resourceType = resourceType;
+      _resourceTheme = resourceTheme;
       _relativeUrl = relativeUrl;
-      _resourcePathBuilder = new ResourcePathBuilder();
+    }
+
+    public IResourcePathBuilder ResourcePathBuilder
+    {
+      get { return _resourcePathBuilder; }
+    }
+
+    public ResourceTheme ResourceTheme
+    {
+      get { return _resourceTheme; }
     }
 
     public Type DefiningType
@@ -58,7 +75,7 @@ namespace Remotion.Web
 
     public virtual string GetUrl ()
     {
-      return _resourcePathBuilder.BuildAbsolutePath (DefiningType.Assembly, ResourceType.Name, RelativeUrl);
+      return _resourcePathBuilder.BuildAbsolutePath (DefiningType.Assembly, ThemesFolder, ResourceTheme.Name, ResourceType.Name, RelativeUrl);
     }
   }
 }

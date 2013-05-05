@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,28 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.IO;
-using Remotion.Utilities;
 
-namespace Remotion.Web.Design
+using System;
+using Remotion.Web.Resources;
+
+namespace Remotion.Development.Web.UnitTesting.Resources
 {
-  /// <summary>
-  /// Represents the design-time implementation of <see cref="ResourceUrl"/>.
-  /// </summary>
-  public class DesignTimeResourceUrl : ResourceUrl
+  public class FakeResourcePathBuilder : ResourcePathBuilderBase
   {
-    public DesignTimeResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)
-        : base (definingType, resourceType, relativeUrl)
+    protected override string GetResourceRoot ()
     {
+      return "/fake";
     }
 
-    public override string GetUrl ()
+    protected override string BuildPath (string[] completePath)
     {
-      string assemblyRoot = ResourceUrlResolver.GetAssemblyRoot (true, DefiningType.Assembly);
-      Assertion.IsTrue (assemblyRoot.EndsWith (@"\"));
-
-      return Path.Combine (assemblyRoot, Path.Combine (ResourceType.Name, RelativeUrl));
+      return string.Join ("/", completePath);
     }
   }
 }

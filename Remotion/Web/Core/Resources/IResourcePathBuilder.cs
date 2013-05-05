@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,20 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using NUnit.Framework;
+using System.Reflection;
+using Remotion.ServiceLocation;
 
-namespace Remotion.Web.UnitTests.Core
+namespace Remotion.Web.Resources
 {
-  [TestFixture]
-  public class ThemedResourceUrlTest
+  [ConcreteImplementation (typeof (ResourcePathBuilder), Lifetime = LifetimeKind.Singleton)]
+  public interface IResourcePathBuilder
   {
-    [Test]
-    public void GetUrl ()
-    {
-      var resourceUrl = new ThemedResourceUrl (typeof (ResourceUrlTest), ResourceType.Html, new ResourceTheme.NovaBlue(), "theRelativeUrl.js");
-
-      Assert.That (resourceUrl.GetUrl(), Is.EqualTo ("/res/Remotion.Web.UnitTests/Themes/NovaBlue/Html/theRelativeUrl.js"));
-    }
+    string BuildAbsolutePath (Assembly assembly, params string[] assemblyRelativePathParts);
   }
 }
