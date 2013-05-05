@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       Dev.Null = MappingConfiguration.Current;
       Dev.Null = DomainObjectsConfiguration.Current.Query;
 
-      RunLoadObjectsTest();
+      //RunLoadObjectsTest();
 
       //RunSerializationTest();
 
@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       BindableObjectWithoutSecurityTest ();
 
       //LinqTest();
-      InstantiationTest ();
+      //InstantiationTest ();
       
       // RelationQuerySyncSpike ();
 
