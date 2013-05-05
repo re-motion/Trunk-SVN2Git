@@ -18,17 +18,23 @@
 using System;
 using System.Linq;
 using System.Web;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.Resources
 {
+  /// <summary>
+  /// Default implementation of the <see cref="IResourcePathBuilder"/> interface. 
+  /// Builds the resource path rooted to the application virtual directory.
+  /// </summary>
   public class ResourcePathBuilder : ResourcePathBuilderBase
   {
     private readonly IHttpContextProvider _httpContextProvider;
     private readonly string _configuredResourceRoot;
 
+    [UsedImplicitly]
     public ResourcePathBuilder (IHttpContextProvider httpContextProvider)
       : this (httpContextProvider, WebConfiguration.Current.Resources.Root)
     {

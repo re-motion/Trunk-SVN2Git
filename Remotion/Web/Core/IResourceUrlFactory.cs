@@ -43,6 +43,7 @@ namespace Remotion.Web
     ///     <c>REMOTIONRESOURCES</c>, or if the variable does not exist, <c>C:\Remotion.Resources</c>.
     ///   </para>
     /// </remarks>
+    /// <seealso cref="IResourcePathBuilder"/>
     IResourceUrl CreateResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl);
 
     /// <summary>
@@ -63,6 +64,7 @@ namespace Remotion.Web
     ///     <c>REMOTIONRESOURCES</c>, or if the variable does not exist, <c>C:\Remotion.Resources</c>.
     ///   </para>
     /// </remarks>
+    /// <seealso cref="IResourcePathBuilder"/>
     IResourceUrl CreateThemedResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl);
   }
 }

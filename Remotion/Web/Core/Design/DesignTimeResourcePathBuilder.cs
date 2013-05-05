@@ -18,11 +18,16 @@
 using System;
 using System.IO;
 using System.Linq;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Resources;
 
 namespace Remotion.Web.Design
 {
+  /// <summary>
+  /// Design-time implementation of the <see cref="IResourcePathBuilder"/> interface.
+  /// </summary>
+  [UsedImplicitly]
   public class DesignTimeResourcePathBuilder : ResourcePathBuilderBase
   {
     private const string c_designTimeRootDefault = "C:\\Remotion.Resources";

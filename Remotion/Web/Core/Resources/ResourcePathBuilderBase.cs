@@ -21,6 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.Resources
 {
+  /// <summary>
+  /// Base class for implementation of the <see cref="IResourcePathBuilder"/> interface.
+  /// </summary>
   public abstract class ResourcePathBuilderBase : IResourcePathBuilder
   {
     protected abstract string GetResourceRoot ();
