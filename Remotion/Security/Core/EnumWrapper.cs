@@ -80,17 +80,12 @@ namespace Remotion.Security
             "enumValue");
       }
 
-      return Get (BuildEnumName (enumValue.ToString(), GetPartialAssemblyQualifiedName (enumValue.GetType())));
+      return Get (BuildEnumName (enumValue.ToString(), TypeUtility.GetPartialAssemblyQualifiedName (enumValue.GetType())));
     }
 
     private static string BuildEnumName (string valueName, string typeName)
     {
       return valueName + "|" + typeName;
-    }
-
-    private static string GetPartialAssemblyQualifiedName (Type type)
-    {
-      return type.FullName + ", " + type.Assembly.GetName().Name;
     }
 
     private readonly string _name;
