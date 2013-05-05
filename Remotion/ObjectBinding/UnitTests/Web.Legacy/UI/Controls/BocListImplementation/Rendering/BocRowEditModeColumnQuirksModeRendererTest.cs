@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -58,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderEditable ()
     {
-      IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
 
       EventArgs = new BocListDataRowRenderEventArgs (EventArgs.ListIndex, EventArgs.BusinessObject, true, EventArgs.IsOddRow);
       
@@ -81,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       List.EditModeController.Stub (mock => mock.GetEditableRow(10)).Return (MockRepository.GenerateStub<IEditableRow>());
 
-      IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

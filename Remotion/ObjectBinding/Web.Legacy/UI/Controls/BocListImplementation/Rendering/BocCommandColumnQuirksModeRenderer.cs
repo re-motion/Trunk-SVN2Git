@@ -20,6 +20,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -36,8 +37,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// factory to obtain instances of this class.
     /// </remarks>
-    public BocCommandColumnQuirksModeRenderer (BocListQuirksModeCssClassDefinition cssClasses)
-        : base (cssClasses)
+    public BocCommandColumnQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory, BocListQuirksModeCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, cssClasses)
     {
     }
 

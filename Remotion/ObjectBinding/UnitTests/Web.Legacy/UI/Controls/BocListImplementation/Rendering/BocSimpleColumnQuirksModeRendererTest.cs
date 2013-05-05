@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Web.UI;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
@@ -60,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderBasicCell ()
     {
-      var renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
@@ -81,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.Command = new BocListItemCommand (CommandType.Href);
       Column.Command.HrefCommand.Href = "url";
 
-      var renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (_renderingContext, 5, false, EventArgs);
       var document = Html.GetResultDocument();
@@ -101,7 +102,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderIconCell ()
     {
-      var renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (_renderingContext, 0, true, EventArgs);
       var document = Html.GetResultDocument();
@@ -138,7 +139,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       List.Stub (mock => mock.Validators).Return (new List<IValidator>().AsReadOnly());
 
-      var renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

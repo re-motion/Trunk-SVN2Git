@@ -21,6 +21,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Security;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -34,8 +35,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   public abstract class BocCommandEnabledColumnQuirksModeRendererBase<TBocColumnDefinition> : BocColumnQuirksModeRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocCommandEnabledColumnDefinition
   {
-    protected BocCommandEnabledColumnQuirksModeRendererBase (BocListQuirksModeCssClassDefinition cssClasses)
-        : base (cssClasses)
+    protected BocCommandEnabledColumnQuirksModeRendererBase (IResourceUrlFactory resourceUrlFactory, BocListQuirksModeCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, cssClasses)
     {
     }
 

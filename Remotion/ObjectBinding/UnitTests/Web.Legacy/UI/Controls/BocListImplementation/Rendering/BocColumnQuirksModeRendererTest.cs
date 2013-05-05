@@ -17,6 +17,7 @@
 using System;
 using System.Web.UI;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
@@ -95,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderTitleCellNoSorting ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocSimpleColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
       renderer.RenderTitleCell (_renderingContext, SortingDirection.None, -1);
 
       var document = Html.GetResultDocument();
@@ -118,7 +119,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
         string iconFilename,
         string iconAltText)
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocSimpleColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
       renderer.RenderTitleCell (_renderingContext, sortDirection, sortIndex);
 
       var document = Html.GetResultDocument();

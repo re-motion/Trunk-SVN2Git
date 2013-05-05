@@ -17,6 +17,7 @@
 using System;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
@@ -56,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       Column.FormatString = string.Empty;
 
-      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
@@ -74,7 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
@@ -95,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.EnforceWidth = true;
       Column.Width = new Unit (40, UnitType.Pixel);
 
-      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();

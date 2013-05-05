@@ -16,11 +16,11 @@
 // 
 using System;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -36,8 +36,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <remarks>
     /// This class should not be instantiated directly by clients.
     /// </remarks>
-    public BocSimpleColumnQuirksModeRenderer (BocListQuirksModeCssClassDefinition cssClasses)
-        : base (cssClasses)
+    public BocSimpleColumnQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory, BocListQuirksModeCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, cssClasses)
     {
     }
 

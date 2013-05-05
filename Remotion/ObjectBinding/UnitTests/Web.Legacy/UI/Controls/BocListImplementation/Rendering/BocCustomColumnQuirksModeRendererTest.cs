@@ -21,6 +21,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
@@ -70,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
 
-      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
       var args = new BocListDataRowRenderEventArgs (10, EventArgs.BusinessObject, EventArgs.IsEditableRow, EventArgs.IsOddRow);
       renderer.RenderDataCell (_renderingContext, 0, false, args);
 
@@ -87,7 +88,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
 
-      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
       var args = new BocListDataRowRenderEventArgs (20, EventArgs.BusinessObject, EventArgs.IsEditableRow, EventArgs.IsOddRow);
       renderer.RenderDataCell (_renderingContext, 0, false, args);
 
@@ -104,7 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       Column.Mode = BocCustomColumnDefinitionMode.NoControls;
 
-      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

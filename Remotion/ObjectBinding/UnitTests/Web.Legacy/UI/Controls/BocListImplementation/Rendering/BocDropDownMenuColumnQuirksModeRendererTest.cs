@@ -18,6 +18,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Web.UI;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -74,7 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
               false,
               new Command()));
 
-      IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -93,7 +94,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       InitializeRowMenus();
 
-      IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

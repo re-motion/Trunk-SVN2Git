@@ -21,6 +21,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -33,8 +34,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       : BocCommandEnabledColumnQuirksModeRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocValueColumnDefinition
   {
-    protected BocValueColumnQuirksModeRendererBase (BocListQuirksModeCssClassDefinition cssClasses)
-        : base (cssClasses)
+    protected BocValueColumnQuirksModeRendererBase (IResourceUrlFactory resourceUrlFactory, BocListQuirksModeCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, cssClasses)
     {
     }
 

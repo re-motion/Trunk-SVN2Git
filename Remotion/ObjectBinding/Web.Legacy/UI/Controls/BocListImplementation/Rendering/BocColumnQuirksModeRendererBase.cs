@@ -50,16 +50,20 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     protected const string c_onCommandClickScript = "BocList_OnCommandClick();";
 
     private readonly BocListQuirksModeCssClassDefinition _cssClasses;
+    private readonly IResourceUrlFactory _resourceUrlFactory;
 
     /// <summary>
     /// Constructs the renderer.
     /// </summary>
+    /// <param name="resourceUrlFactory"></param>
     /// <param name="cssClasses">The <see cref="BocListQuirksModeCssClassDefinition"/> containing the CSS classes to apply to the rendered elements.</param>
-    protected BocColumnQuirksModeRendererBase (BocListQuirksModeCssClassDefinition cssClasses)
+    protected BocColumnQuirksModeRendererBase (IResourceUrlFactory resourceUrlFactory, BocListQuirksModeCssClassDefinition cssClasses)
     {
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
       _cssClasses = cssClasses;
+      _resourceUrlFactory = resourceUrlFactory;
     }
 
     public bool IsNull
@@ -74,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
     protected IResourceUrlFactory ResourceUrlFactory
     {
-      get { return SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(); }
+      get { return _resourceUrlFactory; }
     }
 
     void IBocColumnRenderer.RenderTitleCell (BocColumnRenderingContext renderingContext, SortingDirection sortingDirection, int orderIndex)

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
@@ -25,7 +26,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   public class StubColumnQuirksModeRenderer : BocColumnQuirksModeRendererBase<StubColumnDefinition>
   {
     public StubColumnQuirksModeRenderer ()
-        : base (new BocListQuirksModeCssClassDefinition())
+        : base (new FakeResourceUrlFactory(), new BocListQuirksModeCssClassDefinition())
     {
     }
 
