@@ -145,6 +145,7 @@
     <Compile Include="ExecutionEngine\WxeCallArgumentsWithoutSender.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsBase.cs" />
     <Compile Include="Infrastructure\IBuildManager.cs" />
+    <Compile Include="ResourceUrlBuilder.cs" />
     <Compile Include="Services\IconProxy.cs" />
     <Compile Include="Services\IWebServiceFactory.cs" />
     <Compile Include="Services\WebServiceFactory.cs" />
