@@ -68,11 +68,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (renderingContext.Control.Page.ClientScript.IsClientScriptBlockRegistered (typeof (BocReferenceValueRendererBase<>), key))
         return;
 
-      var nullIconUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (IControl), ResourceType.Image, "Spacer.gif");
+      var nullIcon = IconInfo.CreateSpacer (ResourceUrlFactory);
 
       var script = new StringBuilder (1000);
       script.Append ("BocReferenceValueBase.InitializeGlobals(");
-      script.AppendFormat ("'{0}'", nullIconUrl.GetUrl());
+      script.AppendFormat ("'{0}'", nullIcon.Url);
       script.Append (");");
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
@@ -265,7 +265,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
 
       if (isIconEnabled)
-        icon = icon ?? IconInfo.Spacer;
+        icon = icon ?? IconInfo.CreateSpacer (ResourceUrlFactory);
 
       if (icon != null)
       {

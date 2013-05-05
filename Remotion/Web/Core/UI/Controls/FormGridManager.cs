@@ -51,9 +51,6 @@ namespace Remotion.Web.UI.Controls
     /// <remarks> The symbol names map directly to the image's file names. </remarks>
     protected enum FormGridImage
     {
-      /// <summary> A blank image to be used as a spacer. </summary>
-      Spacer,
-    
       /// <summary> Used for field's with a mandatory input. </summary>
       RequiredField,
     
@@ -1026,6 +1023,7 @@ namespace Remotion.Web.UI.Controls
 
     private bool _formGridListPopulated = false;
     private IInfrastructureResourceUrlFactory _infrastructureResourceUrlFactory;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     // construction and disposing
 
@@ -1248,6 +1246,16 @@ namespace Remotion.Web.UI.Controls
       {
         var url = InfrastructureResourceUrlFactory.CreateThemedResourceUrl (ResourceType.Html, "FormGrid.css");
         HtmlHeadAppender.Current.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
+      }
+    }
+
+    private IResourceUrlFactory ResourceUrlFactory
+    {
+      get
+      {
+        if (_resourceUrlFactory == null)
+          _resourceUrlFactory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>();
+        return _resourceUrlFactory;
       }
     }
 
@@ -2950,11 +2958,9 @@ namespace Remotion.Web.UI.Controls
     protected Control GetBlankMarker()
     {
       Image spacer = new Image();
-      spacer.ImageUrl = GetImageUrl (FormGridImage.Spacer);
-  #if !NET11
+      spacer.ImageUrl = IconInfo.CreateSpacer (ResourceUrlFactory).Url;
       spacer.GenerateEmptyAlternateText = true;
-  #endif
-      return spacer;  
+      return spacer;
     }
 
     /// <summary>

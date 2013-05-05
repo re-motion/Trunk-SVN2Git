@@ -136,7 +136,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
-      IconInfo.Spacer.Render (renderingContext.Writer, renderingContext.Control);
+      IconInfo.CreateSpacer (ResourceUrlFactory).Render (renderingContext.Writer, renderingContext.Control);
 
       renderingContext.Writer.RenderEndTag();
     }

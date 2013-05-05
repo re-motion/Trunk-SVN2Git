@@ -47,31 +47,34 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
     private IDropDownMenu _control;
     private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
+    private FakeResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
     {
-      _htmlHelper = new HtmlHelper ();
+      _htmlHelper = new HtmlHelper();
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
 
-      _control = MockRepository.GenerateStub<IDropDownMenu> ();
+      _control = MockRepository.GenerateStub<IDropDownMenu>();
       _control.ID = "DropDownMenu1";
       _control.Stub (stub => stub.Enabled).Return (true);
       _control.Stub (stub => stub.UniqueID).Return ("DropDownMenu1");
       _control.Stub (stub => stub.ClientID).Return ("DropDownMenu1");
       _control.Stub (stub => stub.MenuItems).Return (new WebMenuItemCollection (_control));
-      _control.Stub (stub => stub.GetBindOpenEventScript (null, null, true)).IgnoreArguments ().Return ("OpenDropDownMenuEventReference");
-      _control.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
+      _control.Stub (stub => stub.GetBindOpenEventScript (null, null, true)).IgnoreArguments().Return ("OpenDropDownMenuEventReference");
+      _control.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
-      IPage pageStub = MockRepository.GenerateStub<IPage> ();
+      IPage pageStub = MockRepository.GenerateStub<IPage>();
       _control.Stub (stub => stub.Page).Return (pageStub);
 
-      StateBag stateBag = new StateBag ();
+      StateBag stateBag = new StateBag();
       _control.Stub (stub => stub.Attributes).Return (new AttributeCollection (stateBag));
       _control.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
 
-      IClientScriptManager scriptManagerMock = MockRepository.GenerateMock<IClientScriptManager> ();
+      IClientScriptManager scriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
       _control.Page.Stub (stub => stub.ClientScript).Return (scriptManagerMock);
+
+      _resourceUrlFactory = new FakeResourceUrlFactory();
     }
 
     [Test]
@@ -125,7 +128,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
       var span = titleDiv.GetAssertedChildElement ("a", hasTitle ? 1 : 0);
 
       var image = span.GetAssertedChildElement ("img", 0);
-      image.AssertAttributeValueEquals ("src", IconInfo.Spacer.Url);
+      image.AssertAttributeValueEquals ("src", IconInfo.CreateSpacer(_resourceUrlFactory).Url);
       image.AssertAttributeValueEquals ("alt", "");
     }
 
@@ -153,7 +156,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
 
     private XmlNode GetAssertedContainerSpan ()
     {
-      var renderer = new DropDownMenuRenderer (new FakeResourceUrlFactory ());
+      var renderer = new DropDownMenuRenderer (_resourceUrlFactory);
       renderer.Render (new DropDownMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
       var document = _htmlHelper.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);

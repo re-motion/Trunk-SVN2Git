@@ -84,11 +84,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       if (renderingContext.Control.Page.ClientScript.IsClientScriptBlockRegistered (typeof (BocReferenceValueQuirksModeRendererBase<,>), key))
         return;
 
-      var nullIconUrl = ResourceUrlFactory.CreateResourceUrl (typeof (QuirksModeResourceUrlFactory), ResourceType.Image, "Spacer.gif");
+      var nullIcon = IconInfo.CreateSpacer (ResourceUrlFactory);
 
       var script = new StringBuilder (1000);
       script.Append ("BocReferenceValueBase.InitializeGlobals(");
-      script.AppendFormat ("'{0}'", nullIconUrl.GetUrl());
+      script.AppendFormat ("'{0}'", nullIcon.Url);
       script.Append (");");
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (

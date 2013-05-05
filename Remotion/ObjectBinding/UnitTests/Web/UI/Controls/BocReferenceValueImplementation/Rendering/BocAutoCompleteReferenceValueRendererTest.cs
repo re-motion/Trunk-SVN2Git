@@ -550,7 +550,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
         dropDownButton.AssertChildElementCount (1);
 
         var dropDownSpacer = dropDownButton.GetAssertedChildElement ("img", 0);
-        dropDownSpacer.AssertAttributeValueEquals ("src", IconInfo.Spacer.Url);
+        dropDownSpacer.AssertAttributeValueEquals ("src", IconInfo.CreateSpacer (_resourceUrlFactory).Url);
         dropDownSpacer.AssertChildElementCount (0);
 
         hiddenFieldIndex++;

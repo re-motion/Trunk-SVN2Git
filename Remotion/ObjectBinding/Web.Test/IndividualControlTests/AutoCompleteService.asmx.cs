@@ -25,6 +25,9 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ServiceLocation;
+using Remotion.Web;
+using Remotion.Web.Resources;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -176,7 +179,7 @@ namespace OBWTest.IndividualControlTests
             new BusinessObjectWithIdentityProxy ((IBusinessObjectWithIdentity) person) { IconUrl = GetUrl (GetIcon ((IBusinessObject) person)) });
 
       foreach (string value in s_values)
-        persons.Add (new BusinessObjectWithIdentityProxy { UniqueIdentifier = "invalid", DisplayName = value, IconUrl = GetUrl (IconInfo.Spacer) });
+        persons.Add (new BusinessObjectWithIdentityProxy { UniqueIdentifier = "invalid", DisplayName = value, IconUrl = GetUrl (IconInfo.CreateSpacer(ResourceUrlFactory)) });
 
       var filteredPersons = persons.FindAll (person => person.DisplayName.StartsWith (searchString, StringComparison.OrdinalIgnoreCase));
       if (filteredPersons.Count == 0)
@@ -185,6 +188,11 @@ namespace OBWTest.IndividualControlTests
       filteredPersons.Sort ((left, right) => string.Compare (left.DisplayName, right.DisplayName, StringComparison.OrdinalIgnoreCase));
 
       return filteredPersons.ToArray();
+    }
+
+    private IResourceUrlFactory ResourceUrlFactory
+    {
+      get { return SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(); }
     }
 
     [WebMethod]
