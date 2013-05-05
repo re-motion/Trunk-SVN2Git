@@ -66,10 +66,7 @@ namespace Remotion.Web.Resources
     private string GetApplicationPath ()
     {
       var context = _httpContextProvider.GetCurrentHttpContext();
-      if (context != null)
-        return GetApplicationPathFromHttpContext (context);
-
-      return HttpRuntime.AppDomainAppVirtualPath ?? "/";
+      return GetApplicationPathFromHttpContext (context);
     }
 
     private string GetApplicationPathFromHttpContext (HttpContextBase context)

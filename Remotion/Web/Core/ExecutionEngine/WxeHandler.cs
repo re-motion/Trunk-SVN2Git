@@ -23,6 +23,7 @@ using Remotion.Logging;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
 using Remotion.Web.Utilities;
+using VirtualPathUtility = System.Web.VirtualPathUtility;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -191,16 +192,10 @@ namespace Remotion.Web.ExecutionEngine
     protected virtual Type GetTypeByPath (string absolutePath)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("absolutePath", absolutePath);
-      if (! absolutePath.StartsWith ("/"))
-        throw new ArgumentException ("An absolute path must start with a '/'.", "absolutePath");
 
-      string root = "/";
-      if (HttpRuntime.AppDomainAppVirtualPath != "/")
-        root = HttpRuntime.AppDomainAppVirtualPath + "/";
+      string relativePath = VirtualPathUtility.ToAppRelative (absolutePath);
 
-      string relativePath = absolutePath.Substring (root.Length);
-
-      Type type = UrlMapping.UrlMappingConfiguration.Current.Mappings.FindType ("~/" + relativePath);
+      Type type = UrlMapping.UrlMappingConfiguration.Current.Mappings.FindType (relativePath);
       if (type == null)
         throw new WxeException (string.Format ("Could not map the path '{0}' to a WXE function.", absolutePath));
 

@@ -26,7 +26,7 @@ namespace Remotion.Web.Infrastructure
     {
       var context = HttpContext.Current;
       if (context == null)
-        return null;
+        throw new InvalidOperationException ("No current HttpContext is set.");
 
       return new HttpContextWrapper (context);
     }
