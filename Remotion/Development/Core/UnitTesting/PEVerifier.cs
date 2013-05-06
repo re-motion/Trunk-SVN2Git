@@ -110,7 +110,7 @@ namespace Remotion.Development.UnitTesting
       process.StartInfo.RedirectStandardOutput = true;
       process.StartInfo.UseShellExecute = false;
       process.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-      process.StartInfo.Arguments = "/verbose " +  modulePath;
+      process.StartInfo.Arguments = string.Format ("/verbose \"{0}\"", modulePath);
       process.Start();
       return process;
     }
