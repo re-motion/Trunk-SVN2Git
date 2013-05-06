@@ -68,7 +68,7 @@
     </ItemGroup>
 
     <MSBuild Projects="@(_allDocumentationDeclarations)"
-             BuildInParallel="true"
+             BuildInParallel="false"
              StopOnFirstFailure="true"
              Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;"
              Properties="
@@ -228,7 +228,7 @@
     </ItemGroup>
 
     <MSBuild Projects="@(_allDocumentationDeclarations)"
-             BuildInParallel="true"
+             BuildInParallel="false"
              StopOnFirstFailure="true"
              Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;CopyWebsiteFilesToWebsiteDirectory"
              Properties="
