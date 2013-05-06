@@ -28,7 +28,7 @@ namespace Remotion.Web.UnitTests.Core.Resources
   public class ResourcePathBuilderTest
   {
     [Test]
-    public void BuildAbsolutePath_MultiplePathParts_DoesNotEndWithTrailingSlash ()
+    public void BuildAbsolutePath_MultiplePathParts_ResultingPathDoesNotEndWithTrailingSlash ()
     {
       var builder = CreateResourcePathBuilder (new Uri ("http://localhost/appDir/file"), "/appDir");
 
@@ -38,7 +38,7 @@ namespace Remotion.Web.UnitTests.Core.Resources
     }
 
     [Test]
-    public void BuildAbsolutePath_EmptyPathParts_DoesNotEndWithTrailingSlash ()
+    public void BuildAbsolutePath_EmptyPathParts_ResultingPathDoesNotEndWithTrailingSlash ()
     {
       var builder = CreateResourcePathBuilder (new Uri ("http://localhost/appDir/file"), "/appDir");
 
@@ -58,9 +58,99 @@ namespace Remotion.Web.UnitTests.Core.Resources
     }
 
     [Test]
-    public void BuildAbsolutePath_VirtualApplicationPathsDoNotMatch_ThrowsInvalidOperationException ()
+    public void BuildAbsolutePath_RequestToRoot ()
     {
-      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/App%20Dir/file"), "/App Dir");
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost"), "/");
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, "path"),
+          Is.StringStarting ("/resourceRoot"));
+    }
+
+    [Test]
+    public void BuildAbsolutePath_RequestToRootWithTrailingSlash ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/"), "/");
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, "path"),
+          Is.StringStarting ("/resourceRoot"));
+    }
+
+    [Test]
+    public void BuildAbsolutePath_RequestToRootWithApplicationPathNull_SubstitutesTrailingSlash ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost"), null);
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, "path"),
+          Is.StringStarting ("/resourceRoot"));
+    }
+
+    [Test]
+    public void BuildAbsolutePath_RequestToVirtualApplicationPathRoot ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/appDir"), "/appDir");
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, "path"),
+          Is.StringStarting ("/appDir/resourceRoot"));
+    }
+
+    [Test]
+    public void BuildAbsolutePath_RequestToVirtualApplicationPathRootWithTrailingSlash ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/appDir/"), "/appDir");
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, "path"),
+          Is.StringStarting ("/appDir/resourceRoot"));
+    }
+
+    [Test]
+    public void BuildAbsolutePath_UsesVirtualApplicationPathFromUrl_ComparesUsingDecodedPath ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C4_%e4_/file"), "/_ _Ä_ä_");
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, "part"),
+          Is.StringStarting ("/_%20_%C4_%e4_/resourceRoot"));
+    }
+
+    [Test]
+    public void BuildAbsolutePath_UsesVirtualApplicationPathFromUrl_ComparesUsingDecodedPathWithTrailingSlash ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C4_%e4_/file"), "/_ _Ä_ä_/");
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, "part"),
+          Is.StringStarting ("/_%20_%C4_%e4_/resourceRoot"));
+    }
+
+    [Test]
+    public void BuildAbsolutePath_UsesVirtualApplicationPathFromRootUrl_ComparesUsingDecodedPath ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C4_%e4_"), "/_ _Ä_ä_");
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, "part"),
+          Is.StringStarting ("/_%20_%C4_%e4_/resourceRoot"));
+    }
+
+    [Test]
+    public void BuildAbsolutePath_UsesVirtualApplicationPathFromRootUrlWithTrailingSlash_ComparesUsingDecodedPath ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C4_%e4_/"), "/_ _Ä_ä_");
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, "part"),
+          Is.StringStarting ("/_%20_%C4_%e4_/resourceRoot"));
+    }
+
+    [Test]
+    public void BuildAbsolutePath_DecodedVirtualApplicationPathsDoNotMatch_ThrowsInvalidOperationException ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/AppDir1/file"), "/AppDir");
 
       Assert.That (
           () =>

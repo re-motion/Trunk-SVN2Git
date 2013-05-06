@@ -17,6 +17,7 @@
 
 using System;
 using System.Linq;
+using System.Text;
 using System.Web;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -77,16 +78,37 @@ namespace Remotion.Web.Resources
 
     private string GetApplicationPathFromHttpContext (HttpContextBase context)
     {
-      var applicationPath = context.Request.ApplicationPath ?? "/";
+      var applicationPath = VirtualPathUtility.AppendTrailingSlash (context.Request.ApplicationPath) ?? "/";
+      if (applicationPath == "/")
+        return applicationPath;
 
       Assertion.IsNotNull (context.Request.Url, "context.Request.Url != null");
-      var requestUrlAbsolutePath = context.Request.Url.AbsolutePath;
+      var requestUrlAbsolutePath = VirtualPathUtility.AppendTrailingSlash (context.Request.Url.AbsolutePath);
       if (requestUrlAbsolutePath.StartsWith (applicationPath, StringComparison.OrdinalIgnoreCase))
-        return requestUrlAbsolutePath.Remove (applicationPath.Length);
+        return requestUrlAbsolutePath.Remove (applicationPath.Length - 1);
 
-      //Note: context.Request.Url.LocalPath would provide the unescaped Path. 
-      //      Unfortunately, cookie-paths are matched against the case and the escape sequences, 
-      //      so this would only result in silent failures when using cookie paths.
+      if (VirtualPathUtility.AppendTrailingSlash (context.Request.Url.LocalPath).StartsWith (applicationPath, StringComparison.OrdinalIgnoreCase))
+      {
+        var applicationPathPartsCount = applicationPath.Split (new[] { '/' }, StringSplitOptions.None).Length - 1;
+
+        var calculatedApplicationPath = requestUrlAbsolutePath
+            .Split (new[] { '/' }, StringSplitOptions.None)
+            .Take (applicationPathPartsCount)
+            .Aggregate (new StringBuilder (requestUrlAbsolutePath.Length), (sb, part) => sb.Append (part).Append ("/"))
+            .ToString();
+
+        Assertion.IsTrue (
+            requestUrlAbsolutePath.StartsWith (calculatedApplicationPath),
+            "Calculation of application path from request URL failed.\r\n"
+            + "  Absolute path from request: {0}\r\n"
+            + "  Calculated path: {1}\r\n"
+            + "  Application path: {2}\r\n",
+            requestUrlAbsolutePath,
+            calculatedApplicationPath,
+            applicationPath);
+
+        return calculatedApplicationPath;
+      }
 
       throw new InvalidOperationException (
           string.Format (
