@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      var propertyValues = id.ClassDefinition.GetPropertyDefinitions().ToDictionary (pd => pd, pd => new PropertyValue (pd));
+      var propertyValues = id.ClassDefinition.GetPropertyDefinitions().ToDictionary (pd => pd, pd => new PropertyValue (pd, pd.DefaultValue));
       return new DataContainer (id, DataContainerStateType.New, null, propertyValues);
     }
 
@@ -106,13 +106,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNull ("propertyValues", propertyValues);
-
-      // TODO: Remove this check, it doesn't provide any value
-      if (id.ClassDefinition != MappingConfiguration.Current.GetClassDefinition (id.ClassID))
-      {
-        string message = string.Format ("The ClassDefinition '{0}' of the ObjectID '{1}' is not part of the current mapping.", id.ClassDefinition, id);
-        throw new ArgumentException (message, "id");
-      }
 
       _id = id;
       _timestamp = timestamp;
@@ -670,7 +663,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         {
           var propertyName = info.GetValueForHandle<string>();
           var propertyDefinition = ClassDefinition.GetPropertyDefinition (propertyName);
-          var propertyValue = new PropertyValue (propertyDefinition);
+          var propertyValue = new PropertyValue (propertyDefinition, propertyDefinition.DefaultValue);
           propertyValue.DeserializeFromFlatStructure (info);
           _propertyValues.Add (propertyDefinition, propertyValue);
         }

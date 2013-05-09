@@ -604,15 +604,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void DefaultPropertyValueWithEnumNotDefiningZero ()
-    {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("testProperty", typeof (EnumNotDefiningZero), false);
-      var propertyValue = new PropertyValue (definition);
-      Assert.That (propertyValue.Value, Is.EqualTo (definition.DefaultValue));
-      Assert.That (propertyValue.OriginalValue, Is.EqualTo (definition.DefaultValue));
-    }
-
-    [Test]
     public void GetValueWithoutEvents_NoEvents ()
     {
       var clientTransactionMock = new TestableClientTransaction ();

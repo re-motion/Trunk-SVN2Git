@@ -52,16 +52,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     // construction and disposing
 
     /// <summary>
-    /// Initializes a new <b>PropertyValue</b> with a given <see cref="PropertyDefinition"/>.
-    /// </summary>
-    /// <param name="definition">The <see cref="PropertyDefinition"/> to use for initializing the <b>PropertyValue</b>. Must not be <see langword="null"/>.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="definition"/> is <see langword="null"/>.</exception>
-    public PropertyValue (PropertyDefinition definition)
-      : this (definition, definition.DefaultValue)
-    {
-    }
-
-    /// <summary>
     /// Initializes a new <b>PropertyValue</b> with a given <see cref="PropertyDefinition"/> and an initial <see cref="Value"/>.
     /// </summary>
     /// <param name="definition">The <see cref="PropertyDefinition"/> to use for initializing the <b>PropertyValue</b>. Must not be <see langword="null"/>.</param>
@@ -70,11 +60,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <exception cref="Remotion.Data.DomainObjects.InvalidTypeException"><paramref name="value"/> does not match the required type specified in <paramref name="definition"/>.</exception>
     /// <exception cref="Remotion.Data.DomainObjects.ValueTooLongException"><paramref name="value"/> is longer than the maximum length specified in <paramref name="definition"/>.</exception>
     public PropertyValue (PropertyDefinition definition, object value)
-      : this (definition, value, value)
-    {
-    }
-
-    private PropertyValue (PropertyDefinition definition, object value, object originalValue)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
 
@@ -87,11 +72,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       CheckValue (value, definition);
-      CheckValue (originalValue, definition);
 
       _definition = definition;
       _value = value;
-      _originalValue = originalValue;
+      _originalValue = value;
       _hasBeenTouched = false;
     }
 

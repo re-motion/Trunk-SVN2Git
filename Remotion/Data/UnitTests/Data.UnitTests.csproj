@@ -386,7 +386,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DelegatingDataManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\PropertyValueObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointFactoryExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\StateUpdateRaisingRelationEndPointFactoryDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\AssociatedCollectionDataStrategyFactoryTest.cs" />

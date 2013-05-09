@@ -91,21 +91,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping.ClassDefinition: Order' "
-        + "of the ObjectID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of the current mapping.\r\nParameter name: id")]
-    public void CreateNew_ClassDefinitionNotInMapping ()
-    {
-      TestMappingConfiguration.Initialize();
-      MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
-      var id = new ObjectID(MappingConfiguration.Current.GetClassDefinition ("Order"), new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
-      
-      MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
-      Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Order))));
-      DataContainer.CreateNew (id);
-    }
-
-        [Test]
     public void CreateForExisting_IncludesStorageClassPersistentProperties_WithLookupValue ()
     {
       DataContainer dc = DataContainer.CreateForExisting (
@@ -127,21 +112,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Transaction");
       Assert.That (dc.GetValue (propertyDefinition), Is.EqualTo (2));
       Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (2));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping.ClassDefinition: Order' "
-        + "of the ObjectID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of the current mapping.\r\nParameter name: id")]
-    public void CreateForExisting_ClassDefinitionNotInMapping ()
-    {
-      TestMappingConfiguration.Initialize ();
-      MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration ());
-      var id = new ObjectID(MappingConfiguration.Current.GetClassDefinition ("Order"), new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
-
-      MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration ());
-      Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Order))));
-      DataContainer.CreateForExisting(id, null, pd => pd.DefaultValue);
     }
 
     [Test]
