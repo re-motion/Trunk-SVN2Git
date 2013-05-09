@@ -579,7 +579,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 954: Fix this bug! https://dev.rubicon-it.com/jira/browse/COMMONS-954")]
+    [Ignore ("TODO 954: Fix this bug! https://www.re-motion.org/jira/browse/RM-954")]
     public void BinaryDataBug ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("testProperty2", typeof (byte[]), true);
