@@ -24,6 +24,12 @@ namespace Remotion.ObjectBinding.Sample
   public class TestBocList: BocList
   {
     public EventHandler<BocListItemEventArgs> RowMenuItemClick;
+    protected override string GetSelectionChangedHandlerScript ()
+    {
+      var baseScript = base.GetSelectionChangedHandlerScript ();
+      var extensionScript = "if (window.console) console.log ('OnSelectionChanged: ' + bocList.id + ', isInitializing: ' + isInitializing);";
+      return string.Format ("function (bocList, isInitializing) {{ var base = {0}; base (bocList, isInitializing); {1}; }}", baseScript, extensionScript);
+    }
 
     protected override WebMenuItem[] InitializeRowMenuItems(IBusinessObject businessObject, int listIndex)
     {

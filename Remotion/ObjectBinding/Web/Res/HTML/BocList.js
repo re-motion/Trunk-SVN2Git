@@ -79,7 +79,8 @@ function BocList_InitializeGlobals ()
 //  selectAllSelectorControlName: The name of the select-all selector control.
 //  selection: The RowSelection enum value defining the selection mode (disabled/single/multiple)
 //  hasClickSensitiveRows: true if the click event handler is bound to the data rows.
-//  updateListMenuHandler: A function to be invoked when the BocList's selection changes.
+//  onSelectionChangedHandler: A function to be invoked when the BocList's selection changes. 
+//                             First argument is the BocList, second argument is a flag indicating whether the callback is invoked during initialization.
 function BocList_InitializeList(bocList, selectRowSelectorControlName, selectAllSelectorControlName, selection, hasClickSensitiveRows, onSelectionChangedHandler)
 {
   if (BocList_HasDimensions (bocList))
@@ -116,7 +117,7 @@ function BocList_InitializeList(bocList, selectRowSelectorControlName, selectAll
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
 
-  selectedRows.OnSelectionChanged (bocList);
+  selectedRows.OnSelectionChanged (bocList, true);
 }
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl)
@@ -125,7 +126,7 @@ function BocList_BindRowClickEventHandler(bocList, row, selectorControl)
   {
     BocList_OnRowClick(evt, bocList, row, selectorControl);
     var selectedRows = _bocList_selectedRows[bocList.id];
-    selectedRows.OnSelectionChanged (bocList);
+    selectedRows.OnSelectionChanged (bocList, false);
   });
 }
 
@@ -297,7 +298,7 @@ function BocList_OnSelectAllSelectorControlClick(bocList, selectAllSelectorContr
   if (! selectAllSelectorControl.checked)
     selectedRows.Length = 0;
 
-  selectedRows.OnSelectionChanged (bocList);
+  selectedRows.OnSelectionChanged (bocList, false);
 }
 
 //  Event handler for the selection selectorControl in a data row.
