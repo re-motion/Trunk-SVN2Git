@@ -161,19 +161,13 @@ namespace Remotion.Web.UI.Controls
           PostBackOptions options = GetPostBackOptions();
           options.ClientSubmit = true;
 
-          string postBackScript;
-          if (options.PerformValidation)
-            postBackScript = "this.disabled = true;";
-          else
-            postBackScript = "this.disabled = (typeof (Page_IsValid) == 'undefined' || Page_IsValid == null || Page_IsValid == true);";
+          string postBackScript = string.Format("WebButton_Click (this, {0});", options.PerformValidation ? "true" : "false");
 
           string postBackEventReference = Page.ClientScript.GetPostBackEventReference (options, false);
           if (StringUtility.IsNullOrEmpty (postBackEventReference))
             postBackEventReference = Page.ClientScript.GetPostBackEventReference (this, null);
           postBackScript += EnsureEndWithSemiColon (postBackEventReference);
 
-          if (options.PerformValidation)
-            postBackScript += "this.disabled = (typeof (Page_IsValid) == 'undefined' || Page_IsValid == null || Page_IsValid == true);";
           postBackScript += "return false;";
 
           if (postBackScript != null)

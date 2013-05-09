@@ -13,7 +13,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-function WebButton_MouseDown (element, cssClass)
+function WebButton_Click(element, performValidation)
+{
+  var hasPageRequestManager = TypeUtility.IsDefined(window.Sys)
+    && TypeUtility.IsDefined(Sys.WebForms)
+    && TypeUtility.IsDefined(Sys.WebForms.PageRequestManager);
+
+  if (hasPageRequestManager && Sys.WebForms.PageRequestManager.getInstance().get_isInAsyncPostBack())
+  {
+    if (TypeUtility.IsDefined(SmartPage_Context))
+      SmartPage_Context.Instance.ShowStatusIsSubmittingMessage();
+  }
+  else
+  {
+    if (performValidation)
+      element.disabled = true;
+    else
+      element.disabled = (typeof (Page_IsValid) == 'undefined' || Page_IsValid == null || Page_IsValid == true);
+  }
+}
+
+function WebButton_MouseDown(element, cssClass)
 {
   element.className += " " + cssClass;
   return false;
