@@ -4,7 +4,7 @@
 #WxeStatusIsCachedMessage
 {
   background-color: White;
-  z-index: 100;
+  z-index: 2147483647;
 }
 
 #WxeStatusIsAbortingMessage td
