@@ -42,11 +42,13 @@ function ListMenuItemInfo (id, category, text, icon, iconDisabled, requiredSelec
 
 function ListMenu() { }
 
-function ListMenu_AddMenuInfo (listMenu, menuInfo) {
+function ListMenu_AddMenuInfo(listMenu, menuInfo)
+{
     _listMenu_listMenuInfos[listMenu.id] = menuInfo;
 }
 
-function ListMenu_Update (listMenu, getSelectionCount) {
+function ListMenu_Update(listMenu, getSelectionCount)
+{
     var menuInfo = _listMenu_listMenuInfos[listMenu.id];
     if (menuInfo == null)
         return;
@@ -56,37 +58,45 @@ function ListMenu_Update (listMenu, getSelectionCount) {
     if (getSelectionCount != null)
         selectionCount = getSelectionCount();
 
-    for (var i = 0; i < itemInfos.length; i++) {
+    for (var i = 0; i < itemInfos.length; i++)
+    {
         var itemInfo = itemInfos[i];
         var isEnabled = true;
-        if (itemInfo.IsDisabled) {
+        if (itemInfo.IsDisabled)
+        {
             isEnabled = false;
         }
-        else {
+        else
+        {
             if (itemInfo.RequiredSelection == _listMenu_requiredSelectionExactlyOne
-          && selectionCount != 1) {
+          && selectionCount != 1)
+            {
                 isEnabled = false;
             }
             if (itemInfo.RequiredSelection == _listMenu_requiredSelectionOneOrMore
-          && selectionCount < 1) {
+          && selectionCount < 1)
+            {
                 isEnabled = false;
             }
         }
         var item = document.getElementById(itemInfo.ID);
         var anchor = $(item).children().eq(0)[0];
         var icon = $(anchor).children().eq(0)[0];
-        if (isEnabled) {
+        if (isEnabled)
+        {
             if (icon != null && icon.nodeType==1)
                 icon.src = itemInfo.Icon;
             item.className = _listMenu_itemClassName;
-            if (itemInfo.Href != null) {
+            if (itemInfo.Href != null)
+            {
                 if (itemInfo.Href.toLowerCase().indexOf('javascript:') >= 0) {
                     anchor.href = '#';
                     anchor.removeAttribute('target');
                     anchor.setAttribute('javascript', itemInfo.Href);
                     anchor.onclick = function() { eval(this.getAttribute('javascript')); };
                 }
-                else {
+                else
+                {
                     anchor.href = itemInfo.Href;
                     if (itemInfo.Target != null)
                         anchor.target = itemInfo.Target;
@@ -95,8 +105,10 @@ function ListMenu_Update (listMenu, getSelectionCount) {
                 }
             }
         }
-        else {
-            if (icon != null && icon.nodeType == 1) {
+        else
+        {
+          if (icon != null && icon.nodeType == 1)
+          {
                 if (itemInfo.IconDisabled != null)
                     icon.src = itemInfo.IconDisabled;
                 else
