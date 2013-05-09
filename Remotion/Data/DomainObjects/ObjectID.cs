@@ -29,6 +29,7 @@ namespace Remotion.Data.DomainObjects
   /// <remarks>
   /// <see cref="ObjectID"/> supports values of type <see cref="System.Guid"/>, <see cref="System.Int32"/> and <see cref="System.String"/>.
   /// </remarks>
+  /// <threadsafety static="true" instance="true"/>
   [Serializable]
   public sealed class ObjectID : IComparable, ISerializable
   {

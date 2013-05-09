@@ -25,6 +25,7 @@ namespace Remotion.Data.DomainObjects
   /// Since this class is not covariant, instances are usually accessed through the <see cref="IDomainObjectHandle{T}"/> interface instead.
   /// </summary>
   /// <typeparam name="T">The type of <see cref="DomainObject"/> identified by this class.</typeparam>
+  /// <threadsafety static="true" instance="true"/>
   [Serializable]
   public class DomainObjectHandle<T> : IDomainObjectHandle<T>
       where T : DomainObject

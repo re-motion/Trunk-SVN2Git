@@ -26,6 +26,7 @@ namespace Remotion.SecurityManager.Domain
   /// The <see cref="NullSecurityManagerPrincipal"/> type is the <see cref="INullObject"/> implementation 
   /// of the <see cref="ISecurityManagerPrincipal"/> interface.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   [Serializable]
   public sealed class NullSecurityManagerPrincipal:ISecurityManagerPrincipal, IObjectReference
   {

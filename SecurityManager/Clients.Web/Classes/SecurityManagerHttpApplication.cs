@@ -105,7 +105,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
           if (user == null)
             return SecurityManagerPrincipal.Null;
           else
-            return SecurityManagerPrincipalFactory.CreateWithLocking (user.Tenant.GetHandle(), user.GetHandle(), null);
+            return SecurityManagerPrincipalFactory.Create (user.Tenant.GetHandle(), user.GetHandle(), null);
         }
       }
     }

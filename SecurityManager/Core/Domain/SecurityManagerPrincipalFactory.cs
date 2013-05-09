@@ -24,7 +24,7 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain
 {
   /// <summary>
-  /// Default implementation of the <see cref="ISecurityManagerPrincipal"/> interface.
+  /// Default implementation of the <see cref="ISecurityManagerPrincipalFactory"/> interface.
   /// </summary>
   public class SecurityManagerPrincipalFactory : ISecurityManagerPrincipalFactory
   {
@@ -32,7 +32,7 @@ namespace Remotion.SecurityManager.Domain
     {
     }
 
-    public ISecurityManagerPrincipal CreateWithLocking (
+    public ISecurityManagerPrincipal Create (
         IDomainObjectHandle<Tenant> tenantHandle,
         IDomainObjectHandle<User> userHandle,
         IDomainObjectHandle<Substitution> substitutionHandle)
@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.Domain
       ArgumentUtility.CheckNotNull ("tenantHandle", tenantHandle);
       ArgumentUtility.CheckNotNull ("userHandle", userHandle);
 
-      return new LockingSecurityManagerPrincipalDecorator (new SecurityManagerPrincipal (tenantHandle, userHandle, substitutionHandle));
+      return new SecurityManagerPrincipal (tenantHandle, userHandle, substitutionHandle);
     }
   }
 }

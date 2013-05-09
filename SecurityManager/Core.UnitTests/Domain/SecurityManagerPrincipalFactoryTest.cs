@@ -19,7 +19,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Development.UnitTesting;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -29,7 +28,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
   public class SecurityManagerPrincipalFactoryTest
   {
     [Test]
-    public void CreateWithLocking ()
+    public void Create ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
@@ -39,11 +38,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 
         var factory = new SecurityManagerPrincipalFactory();
 
-        var principal = factory.CreateWithLocking (tenant.GetHandle(), user.GetHandle(), null);
+        var principal = factory.Create (tenant.GetHandle(), user.GetHandle(), null);
 
-        Assert.That (principal, Is.TypeOf<LockingSecurityManagerPrincipalDecorator>());
-        var innerPrincipal = PrivateInvoke.GetNonPublicField (principal, "_innerPrincipal");
-        Assert.That (innerPrincipal, Is.TypeOf<SecurityManagerPrincipal>());
+        Assert.That (principal, Is.TypeOf<SecurityManagerPrincipal>());
+        Assert.That (principal.Tenant.ID, Is.EqualTo (tenant.ID));
+        Assert.That (principal.User.ID, Is.EqualTo (user.ID));
+        Assert.That (principal.Substitution, Is.Null);
       }
     }
   }

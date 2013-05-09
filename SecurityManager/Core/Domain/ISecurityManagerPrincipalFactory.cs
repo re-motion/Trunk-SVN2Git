@@ -24,7 +24,7 @@ using Remotion.ServiceLocation;
 namespace Remotion.SecurityManager.Domain
 {
   /// <summary>
-  /// Declares factory methods for creating an instance for the <see cref="ISecurityManagerPrincipal"/> interface.
+  /// Declares a factory method for creating an instance for the <see cref="ISecurityManagerPrincipal"/> interface.
   /// </summary>
   /// <seealso cref="SecurityManagerPrincipalFactory"/>
   [ConcreteImplementation (typeof (SecurityManagerPrincipalFactory), Lifetime = LifetimeKind.Singleton)]
@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.Domain
     /// <param name="userHandle">An <see cref="IDomainObjectHandle{T}"/> for the <see cref="User"/>. Must not be <see langword="null" />.</param>
     /// <param name="substitutionHandle">An <see cref="IDomainObjectHandle{T}"/> for the <see cref="Substitution"/>.</param>
     /// <returns>A threadsafe implementation of the <see cref="ISecurityManagerPrincipal"/> interface.</returns>
-    ISecurityManagerPrincipal CreateWithLocking (
+    ISecurityManagerPrincipal Create (
         IDomainObjectHandle<Tenant> tenantHandle,
         IDomainObjectHandle<User> userHandle,
         IDomainObjectHandle<Substitution> substitutionHandle);

@@ -28,7 +28,9 @@ namespace Remotion.Data.DomainObjects
   /// Use this interface when you need a typed representation of a certain <see cref="DomainObject"/> instance that is not bound to a specific
   /// <see cref="ClientTransaction"/>. Get a handle for a <see cref="DomainObject"/> or an <see cref="DomainObjects.ObjectID"/> by calling 
   /// <see cref="DomainObjectExtensions.GetHandle{T}"/> or <see cref="DomainObjects.ObjectID.GetHandle{T}"/>.
+  /// <note type="inotes">Implementations of the interface must be threadsafe.</note>
   /// </remarks>
+  /// <threadsafety static="true" instance="true"/>
   [TypeConverter (typeof (DomainObjectHandleConverter))]
   [DomainObjectHandle]
   public interface IDomainObjectHandle<out T> : IEquatable<IDomainObjectHandle<DomainObject>>

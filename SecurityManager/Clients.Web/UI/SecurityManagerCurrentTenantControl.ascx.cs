@@ -108,7 +108,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       }
 
       var oldSecurityManagerPrincipal = SecurityManagerPrincipal.Current;
-      var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (
+      var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.Create (
           ObjectID.Parse (tenantID).GetHandle<Tenant> (),
           oldSecurityManagerPrincipal.User.Handle,
           oldSecurityManagerPrincipal.Substitution != null ? oldSecurityManagerPrincipal.Substitution.Handle : null);
@@ -131,7 +131,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       }
 
       var oldSecurityManagerPrincipal = SecurityManagerPrincipal.Current;
-      var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (
+      var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.Create (
           oldSecurityManagerPrincipal.Tenant.Handle,
           oldSecurityManagerPrincipal.User.Handle,
           substitutionID != null ? ObjectID.Parse (substitutionID).GetHandle<Substitution>() : null);

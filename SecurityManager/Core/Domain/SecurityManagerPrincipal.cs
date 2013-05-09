@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.Domain
   /// <code>SecurityManagerPrincipal.Current.User.RootTransaction.Commit()</code>.
   /// </para>
   /// </remarks>
-  /// <threadsafety static="true" instance="false"/>
+  /// <threadsafety static="true" instance="true"/>
   [Serializable]
   public class SecurityManagerPrincipal : ISecurityManagerPrincipal
   {
@@ -61,6 +61,7 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
+    private readonly object _syncRoot = new object();
     private int _revision;
     private readonly IDomainObjectHandle<Tenant> _tenantHandle;
     private readonly IDomainObjectHandle<User> _userHandle;
@@ -80,7 +81,7 @@ namespace Remotion.SecurityManager.Domain
       _userHandle = userHandle;
       _substitutionHandle = substitutionHandle;
 
-      InitializeCache();
+      InitializeCache (GetRevision());
     }
 
     public TenantProxy Tenant
@@ -100,8 +101,12 @@ namespace Remotion.SecurityManager.Domain
 
     public void Refresh ()
     {
-      if (GetRevision() > _revision)
-        InitializeCache();
+      lock (_syncRoot)
+      {
+        var revision = GetRevision();
+        if (revision != _revision)
+          InitializeCache (revision);
+      }
     }
 
     public TenantProxy[] GetTenants (bool includeAbstractTenants)
@@ -180,10 +185,8 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private void InitializeCache ()
+    private void InitializeCache (int revision)
     {
-      _revision = GetRevision();
-
       var transaction = CreateClientTransaction();
 
       var newTenantProxy = CreateTenantProxy (GetTenant (transaction));
@@ -192,6 +195,7 @@ namespace Remotion.SecurityManager.Domain
       var newSubstitutionProxy = substitution != null ? CreateSubstitutionProxy (substitution) : null;
       var newSecurityPrincipal = CreateSecurityPrincipal (transaction);
 
+      _revision = revision;
       _tenantProxy = newTenantProxy;
       _userProxy = newUserProxy;
       _substitutionProxy = newSubstitutionProxy;

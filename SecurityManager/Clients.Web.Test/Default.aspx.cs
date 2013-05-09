@@ -95,7 +95,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test
       else
       {
         var securityManagerPrincipal =
-            ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (user.Tenant.GetHandle(), user.GetHandle(), null);
+            ApplicationInstance.SecurityManagerPrincipalFactory.Create (user.Tenant.GetHandle(), user.GetHandle(), null);
         ApplicationInstance.SetCurrentPrincipal (securityManagerPrincipal);
       }
     }

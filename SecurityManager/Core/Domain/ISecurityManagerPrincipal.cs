@@ -26,6 +26,8 @@ namespace Remotion.SecurityManager.Domain
   /// and optional <see cref="Substitution"/>. 
   /// See <see cref="SecurityManagerPrincipal"/> for the <see cref="SecurityManagerPrincipal.Current"/> instance.
   /// </summary>
+  /// <remarks>Implementations of the interface must be threadsafe.</remarks>
+  /// <threadsafety static="true" instance="true"/>
   public interface ISecurityManagerPrincipal : INullObject
   {
     TenantProxy Tenant { get; }
