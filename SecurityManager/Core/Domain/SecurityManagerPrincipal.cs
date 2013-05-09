@@ -46,7 +46,7 @@ namespace Remotion.SecurityManager.Domain
   /// </remarks>
   /// <threadsafety static="true" instance="true"/>
   [Serializable]
-  public class SecurityManagerPrincipal : ISecurityManagerPrincipal
+  public sealed class SecurityManagerPrincipal : ISecurityManagerPrincipal
   {
     public static readonly ISecurityManagerPrincipal Null = new NullSecurityManagerPrincipal();
 

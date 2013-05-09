@@ -173,7 +173,11 @@ public class BocAutoCompleteReferenceValueUserControl : BaseUserControl
     DisabledUnboundPartnerField.LoadUnboundValue ((IBusinessObjectWithIdentity) person.Partner, IsPostBack);
     DisabledUnboundReadOnlyPartnerField.Property = (IBusinessObjectReferenceProperty) CurrentObject.BusinessObjectClass.GetPropertyDefinition ("Partner");
     DisabledUnboundReadOnlyPartnerField.LoadUnboundValue ((IBusinessObjectWithIdentity) person.Partner, IsPostBack);
-  
+    if (UnboundPartnerField.BusinessObjectUniqueIdentifier != null)
+    {
+      var value = (Person)UnboundPartnerField.Value;
+      value.FirstName = DateTime.Now.TimeOfDay.ToString();
+    }
     if (!IsPostBack)
     {
       if (Page is ISmartNavigablePage)
