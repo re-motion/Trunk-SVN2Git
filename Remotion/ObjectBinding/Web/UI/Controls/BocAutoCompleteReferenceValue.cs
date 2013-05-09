@@ -88,8 +88,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     private IBusinessObjectWithIdentity _value;
 
-    /// <summary> The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object. </summary>
     private string _displayName;
+    private bool _isDisplayNameRefreshed;
 
     private string _invalidItemErrorMessage;
 
@@ -138,21 +138,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       string newValue = PageUtility.GetPostBackCollectionItem (Page, TextBoxUniqueID);
       if (newValue != null)
       {
-        if (_displayName == null && !string.IsNullOrEmpty (newValue))
+        if (InternalDisplayName == null && !string.IsNullOrEmpty (newValue))
           isDataChanged = true;
-        else if (_displayName != null && newValue != _displayName)
+        else if (InternalDisplayName != null && newValue != InternalDisplayName)
           isDataChanged = true;
       }
 
       var searchAvailableObjectWebService = GetSearchAvailableObjectService();
       if (isDataChanged)
       {
-        _displayName = StringUtility.EmptyToNull (newValue);
+        InternalDisplayName = StringUtility.EmptyToNull (newValue);
 
-        if (_displayName != null && InternalValue == null)
+        if (InternalDisplayName != null && InternalValue == null)
         {
           var result = searchAvailableObjectWebService.SearchExact (
-              _displayName,
+              InternalDisplayName,
               _searchServiceContextFromPreviousLifeCycle.BusinessObjectClass,
               _searchServiceContextFromPreviousLifeCycle.BusinessObjectProperty,
               _searchServiceContextFromPreviousLifeCycle.BusinessObjectIdentifier,
@@ -161,7 +161,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           if (result != null)
           {
             InternalValue = result.UniqueIdentifier;
-            _displayName = result.DisplayName;
+            InternalDisplayName = result.DisplayName;
           }
         }
 
@@ -185,28 +185,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         WcagHelper.Instance.HandleError (1, this);
     }
 
-    public override void PrepareValidation ()
-    {
-      base.PrepareValidation();
-
-      if (!IsReadOnly)
-        SetEditModeValue();
-    }
-
-    private void SetEditModeValue ()
-    {
-      var value = GetValue();
-      if (value != null)
-        _displayName = GetDisplayName (value);
-    }
-
     protected override void OnPreRender (EventArgs e)
     {
       EnsureChildControls();
       base.OnPreRender (e);
 
-      if (!IsReadOnly)
-        PreRenderEditModeValue();
+      EnsureDisplayNameRefreshed();
 
       GetSearchAvailableObjectService();
     }
@@ -361,12 +345,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         //  _label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
       }
 
-      return _displayName;
-    }
-
-    private void PreRenderEditModeValue ()
-    {
-      SetEditModeValue();
+      EnsureDisplayNameRefreshed();
+      return InternalDisplayName;
     }
 
     protected override sealed IBusinessObjectWithIdentity GetValue ()
@@ -390,12 +370,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (value != null)
       {
         InternalValue = value.UniqueIdentifier;
-        _displayName = GetDisplayName (value);
+        InternalDisplayName = GetDisplayName (value);
       }
       else
       {
         InternalValue = null;
-        _displayName = null;
+        InternalDisplayName = null;
       }
     }
 
@@ -611,10 +591,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        if (InternalValue == null && _displayName == null)
+        if (InternalValue == null && InternalDisplayName == null)
           return null;
 
-        return string.Format ("{0}\n{1}", InternalValue, _displayName); 
+        EnsureDisplayNameRefreshed();
+        return string.Format ("{0}\n{1}", InternalValue, InternalDisplayName); 
       }
     }
 
@@ -656,6 +637,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override sealed string GetSelectionCountScript ()
     {
       return "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + HiddenFieldClientID + "', '" + c_nullIdentifier + "'); }";
+    }
+
+    private string InternalDisplayName
+    {
+      get { return _displayName; }
+      set
+      {
+        _displayName = value;
+        _isDisplayNameRefreshed = true;
+      }
+    }
+
+    private void EnsureDisplayNameRefreshed ()
+    {
+      if (!_isDisplayNameRefreshed)
+      {
+        var value = GetValue();
+        if (value != null)
+          InternalDisplayName = GetDisplayName (value);
+      }
     }
   }
 }
