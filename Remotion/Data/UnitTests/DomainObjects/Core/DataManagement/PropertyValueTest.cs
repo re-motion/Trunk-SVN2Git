@@ -590,7 +590,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (((byte[]) propertyValue.Value)[0], Is.EqualTo (7));
       Assert.That (((byte[]) propertyValue.OriginalValue)[0], Is.EqualTo (1));
 
-      PrivateInvoke.InvokeNonPublicMethod (propertyValue, "Rollback");
+      propertyValue.RollbackState();
       Assert.That (propertyValue.HasChanged, Is.False);
       Assert.That (((byte[]) propertyValue.Value)[0], Is.EqualTo (1));
 
@@ -598,7 +598,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (propertyValue.HasChanged, Is.True);
       Assert.That (((byte[]) propertyValue.Value)[0], Is.EqualTo (7));
 
-      PrivateInvoke.InvokeNonPublicMethod (propertyValue, "Commit");
+      propertyValue.CommitState();
       Assert.That (propertyValue.HasChanged, Is.False);
       Assert.That (((byte[]) propertyValue.Value)[0], Is.EqualTo (7));
     }
