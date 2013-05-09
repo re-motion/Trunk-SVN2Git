@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Represents a property of a domain object that is persisted by the framework.
   /// </summary>
-  public class PropertyValue
+  public sealed class PropertyValue
   {
     public static bool IsTypeSupported (Type propertyType)
     {
@@ -98,38 +98,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
     // methods and properties
 
     /// <summary>
-    /// Gets the <see cref="PropertyDefinition"/> of the <see cref="PropertyValue"/>.
-    /// </summary>
-    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
-    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
-    public PropertyDefinition Definition
-    {
-      get
-      {
-        return _definition;
-      }
-    }
-
-    /// <summary>
-    /// Gets the name of the <see cref="PropertyValue"/>.
-    /// </summary>
-    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
-    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
-    public string Name
-    {
-      get
-      {
-        return _definition.PropertyName;
-      }
-    }
-
-    /// <summary>
     /// Gets or sets the value of the <see cref="PropertyValue"/>.
     /// </summary>
     /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
     /// See <see cref="ObjectInvalidException"/> for further information.</exception>
-    /// <exception cref="Remotion.Data.DomainObjects.InvalidTypeException"><paramref name="value"/> does not match the required type specified in <see cref="Definition"/>.</exception>
-    /// <exception cref="Remotion.Data.DomainObjects.ValueTooLongException"><paramref name="value"/> is longer than the maximum length specified in <see cref="Definition"/>.</exception>
+    /// <exception cref="Remotion.Data.DomainObjects.InvalidTypeException"><paramref name="value"/> does not match the required type specified in <see cref="PropertyDefinition"/>.</exception>
+    /// <exception cref="Remotion.Data.DomainObjects.ValueTooLongException"><paramref name="value"/> is longer than the maximum length specified in <see cref="PropertyDefinition"/>.</exception>
     public object Value
     {
       get
@@ -198,11 +172,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("source", source);
 
-      if (source.Definition != Definition)
+      if (source._definition != _definition)
       {
         var message = string.Format (
             "Cannot set this property's value from '{0}'; the properties do not have the same property definition.",
-            source.Definition);
+            source._definition);
         throw new ArgumentException (message, "source");
       }
 
