@@ -112,10 +112,9 @@ function DatePicker_Create(datePickerID, button, target, src, width, height)
 
   var datePicker = $('<div/>');
   datePicker.attr('id', datePickerID);
+  datePicker.addClass ('DatePicker');
   datePicker.width(width);
   datePicker.height(height);
-  datePicker.css('position', 'absolute');
-  datePicker.css('zIndex', '1100'); // Required so the DatePicker covers DropDownMenus
   datePicker.css('visibility', 'hidden');
 
   var frame = window.document.createElement("iframe");

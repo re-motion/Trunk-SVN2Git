@@ -3,7 +3,7 @@
 .ac_results 
 {
   overflow: hidden;
-  z-index: 99999;
+  z-index: 2147483647;
   /* position and dimension are set via javascript */
   max-height: 20em;
   max-width: 30em;
@@ -127,7 +127,7 @@ body.msie8 .ac_results li > div:first-child img
 .ac_informationPopUp 
 {
   overflow: hidden;
-  z-index: 99999;
+  z-index: 2147483647;
   /* position and dimension are set via javascript */
   max-height: 4em;
   max-width: 30em;

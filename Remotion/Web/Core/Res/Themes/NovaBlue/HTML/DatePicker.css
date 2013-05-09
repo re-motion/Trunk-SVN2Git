@@ -18,3 +18,9 @@ a.DatePickerButton.disabled img
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
           progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }
+
+div.DatePicker
+{
+  z-index: 2147483647;
+  position: absolute;
+}
