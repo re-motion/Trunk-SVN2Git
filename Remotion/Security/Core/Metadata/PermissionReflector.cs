@@ -31,28 +31,28 @@ namespace Remotion.Security.Metadata
   {
     private class CacheKey : IEquatable<CacheKey>
     {
-      private readonly Type _type;
-      private readonly IMethodInformation _methodInformation;
+      public readonly Type Type;
+      public readonly IMethodInformation MethodInformation;
 
       public CacheKey (Type type, IMethodInformation methodInformation)
       {
         Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
         Assertion.DebugAssert (methodInformation != null, "Parameter 'methodInformation' is null.");
-        
-        _type = type;
-        _methodInformation = methodInformation;
+
+        Type = type;
+        MethodInformation = methodInformation;
       }
 
       public override int GetHashCode ()
       {
-        return _methodInformation.GetHashCode();
+        return MethodInformation.GetHashCode();
       }
 
       public bool Equals (CacheKey other)
       {
         return EqualityUtility.NotNullAndSameType (this, other)
-               && _type.Equals (other._type)
-               && _methodInformation.Equals (other._methodInformation);
+               && Type == other.Type
+               && MethodInformation.Equals (other.MethodInformation);
       }
     }
 
@@ -96,7 +96,7 @@ namespace Remotion.Security.Metadata
     private Enum[] GetPermissionsFromCache (Type type, IMethodInformation methodInformation)
     {
       var cacheKey = new CacheKey (type, methodInformation);
-      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions (methodInformation));
+      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions (key.MethodInformation));
     }
   }
 }
