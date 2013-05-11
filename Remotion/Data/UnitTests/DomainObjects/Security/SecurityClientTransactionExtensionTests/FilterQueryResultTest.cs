@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Security;
-using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Security;
 
@@ -233,20 +232,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_WithInactiveClientTransaction ()
+    public void Test_WithActiveTransactionMatchingTransactionPassedAsArgument_DoesNotCreateScope ()
     {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
-      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { null });
-      _testHelper.AddExtension (_extension);
-      _testHelper.ReplayAll ();
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { securableObject });
 
-      using (ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction))
+      using (var scope = _testHelper.Transaction.EnterNonDiscardingScope())
       {
-        var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
+        _testHelper.AddExtension (_extension);
+        _testHelper.ExpectObjectSecurityStrategyHasAccessWithMatchingScope (securableObject, scope);
+        _testHelper.ReplayAll();
 
-        _testHelper.VerifyAll();
-        Assert.That (finalResult, Is.SameAs (queryResult));
+        _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
       }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithActiveTransactionNotMatchingTransactionPassedAsArgument_CreatesScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { securableObject });
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Find, true);
+      _testHelper.ReplayAll();
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithInactiveTransaction_CreatesScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { securableObject });
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Find, true);
+      _testHelper.ReplayAll();
+
+      using (_testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        using (_testHelper.MakeInactive())
+        {
+          _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
+
+        }
+      }
+      _testHelper.VerifyAll();
     }
   }
 }

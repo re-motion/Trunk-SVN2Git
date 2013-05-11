@@ -19,6 +19,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Core;
@@ -222,7 +223,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_WithInactiveTransaction ()
+    public void Test_WithActiveTransactionMatchingTransactionPassedAsArgument_DoesNotCreateScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      using (var scope = _testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        _testHelper.AddExtension (_extension);
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_getMethodInformation, TestAccessTypes.First);
+        _testHelper.ExpectObjectSecurityStrategyHasAccessWithMatchingScope (securableObject, scope);
+        _testHelper.ReplayAll();
+
+        _extension.PropertyValueReading (_testHelper.Transaction, securableObject, _stringPropertyDefinition, ValueAccess.Current);
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithActiveTransactionNotMatchingTransactionPassedAsArgument_CreatesScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_getMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+      _testHelper.ReplayAll();
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        _extension.PropertyValueReading (_testHelper.Transaction, securableObject, _stringPropertyDefinition, ValueAccess.Current);
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithInactiveTransaction_CreatesScope ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.AddExtension (_extension);
@@ -230,9 +265,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      using (ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction))
+      using (_testHelper.Transaction.EnterNonDiscardingScope())
       {
-        _extension.PropertyValueReading (_testHelper.Transaction, securableObject, _stringPropertyDefinition, ValueAccess.Current);
+        using (_testHelper.MakeInactive())
+        {
+          _extension.PropertyValueReading (_testHelper.Transaction, securableObject, _stringPropertyDefinition, ValueAccess.Current);
+        }
       }
 
       _testHelper.VerifyAll ();

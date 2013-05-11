@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("func", func);
 
-      using (CreateScopeIfRequired (clientTransaction))
+      using (EnterScopeOnDemand (clientTransaction))
       {
         return func();
       }
@@ -56,18 +56,21 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("action", action);
 
-      using (CreateScopeIfRequired (clientTransaction))
+      using (EnterScopeOnDemand (clientTransaction))
       {
         action();
       }
     }
 
-    private static IDisposable CreateScopeIfRequired (ClientTransaction clientTransaction)
+    private static IDisposable EnterScopeOnDemand (ClientTransaction clientTransaction)
     {
-      if (ClientTransaction.Current == clientTransaction && clientTransaction.ActiveTransaction == clientTransaction)
-        return null;
+      if (clientTransaction.ActiveTransaction != clientTransaction)
+        return clientTransaction.EnterNonDiscardingScope();
 
-      return clientTransaction.EnterNonDiscardingScope();
+      if (ClientTransaction.Current != clientTransaction)
+        return clientTransaction.EnterNonDiscardingScope();
+
+      return null;
     }
 
     [Obsolete ("This API has been renamed to ExecuteInScope. (1.13.188.0)", true)]

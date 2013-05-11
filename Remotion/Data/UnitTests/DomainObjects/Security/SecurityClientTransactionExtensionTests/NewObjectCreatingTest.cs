@@ -122,5 +122,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       _testHelper.VerifyAll ();
     }
+
+    [Test]
+    public void Test_WithActiveTransactionMatchingTransactionPassedAsArgument_DoesNotCreateScope ()
+    {
+      using (var scope = _testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        _testHelper.AddExtension (_extension);
+        _testHelper.ExpectFunctionalSecurityStrategyHasAccessWithMatchingScope (scope);
+        _testHelper.ReplayAll();
+
+        _extension.NewObjectCreating (_testHelper.Transaction, typeof (SecurableObject));
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithActiveTransactionNotMatchingTransactionPassedAsArgument_CreatesScope ()
+    {
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectFunctionalSecurityStrategyHasAccess (typeof (SecurableObject), GeneralAccessTypes.Create, true);
+      _testHelper.ReplayAll();
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        _extension.NewObjectCreating (_testHelper.Transaction, typeof (SecurableObject));
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithInactiveTransaction_CreatesScope ()
+    {
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectFunctionalSecurityStrategyHasAccess (typeof (SecurableObject), GeneralAccessTypes.Create, true);
+      _testHelper.ReplayAll ();
+
+      using (_testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        using (_testHelper.MakeInactive())
+        {
+        _extension.NewObjectCreating (_testHelper.Transaction, typeof (SecurableObject));
+        }
+      }
+
+      _testHelper.VerifyAll ();
+    }
   }
 }

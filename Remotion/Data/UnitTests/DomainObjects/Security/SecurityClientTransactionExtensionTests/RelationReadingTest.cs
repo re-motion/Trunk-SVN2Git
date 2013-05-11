@@ -266,7 +266,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_WithInactiveTransaction ()
+    public void Test_WithActiveTransactionMatchingTransactionPassedAsArgument_DoesNotCreateScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      using (var scope = _testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        _testHelper.AddExtension (_extension);
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_getMethodInformation, TestAccessTypes.First);
+        _testHelper.ExpectObjectSecurityStrategyHasAccessWithMatchingScope (securableObject, scope);
+        _testHelper.ReplayAll();
+
+        var securableEndPointDefintion = 
+            securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+        _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithActiveTransactionNotMatchingTransactionPassedAsArgument_CreatesScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_getMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+      _testHelper.ReplayAll();
+
+      var securableEndPointDefintion = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithInactiveTransaction_CreatesScope ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.AddExtension (_extension);
@@ -277,9 +315,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       var securableEndPointDefintion = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
 
-      using (ClientTransactionTestHelper.MakeInactive (_testHelper.Transaction))
+      using (_testHelper.Transaction.EnterNonDiscardingScope())
       {
-        _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
+        using (_testHelper.MakeInactive())
+        {
+          _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
+        }
       }
 
       _testHelper.VerifyAll ();

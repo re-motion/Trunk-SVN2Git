@@ -206,6 +206,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.VerifyAll ();
     }
 
+    [Test]
+    public void Test_WithActiveTransactionMatchingTransactionPassedAsArgument_DoesNotCreateScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      using (var scope = _testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        _testHelper.AddExtension (_extension);
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
+        _testHelper.ExpectObjectSecurityStrategyHasAccessWithMatchingScope (securableObject, scope);
+        _testHelper.ReplayAll();
+
+        _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, _stringPropertyDefinition, "old", "new");
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithActiveTransactionNotMatchingTransactionPassedAsArgument_CreatesScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+      _testHelper.ReplayAll();
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, _stringPropertyDefinition, "old", "new");
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithInactiveTransaction_CreatesScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject ();
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+      _testHelper.ReplayAll ();
+
+      using (_testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        using (_testHelper.MakeInactive())
+        {
+          _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, _stringPropertyDefinition, "old", "new");
+        }
+      }
+
+      _testHelper.VerifyAll ();
+    }
+
     private PropertyDefinition GetPropertyDefinition (PropertyInfo propertyInfo, Type classType = null)
     {
       return PropertyDefinitionObjectMother.CreateForPropertyInformation (

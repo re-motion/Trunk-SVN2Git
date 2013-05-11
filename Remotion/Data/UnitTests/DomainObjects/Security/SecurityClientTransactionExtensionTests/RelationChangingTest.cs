@@ -301,5 +301,65 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       _testHelper.VerifyAll ();
     }
+
+    [Test]
+    public void Test_WithActiveTransactionMatchingTransactionPassedAsArgument_DoesNotCreateScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      using (var scope = _testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        _testHelper.AddExtension (_extension);
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
+        _testHelper.ExpectObjectSecurityStrategyHasAccessWithMatchingScope (securableObject, scope);
+        _testHelper.ReplayAll();
+
+        var endPointDefinition = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+        _extension.RelationChanging (_testHelper.Transaction, securableObject, endPointDefinition, null, null);
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithActiveTransactionNotMatchingTransactionPassedAsArgument_CreatesScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+      _testHelper.ReplayAll();
+
+      var endPointDefinition = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        _extension.RelationChanging (_testHelper.Transaction, securableObject, endPointDefinition, null, null);
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithInactiveTransaction_CreatesScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject ();
+      _testHelper.AddExtension (_extension);
+
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+      _testHelper.ReplayAll ();
+
+      var endPointDefinition = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+
+      using (_testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        using (_testHelper.MakeInactive())
+        {
+          _extension.RelationChanging (_testHelper.Transaction, securableObject, endPointDefinition, null, null);
+        }
+      }
+
+      _testHelper.VerifyAll ();
+    }
   }
 }

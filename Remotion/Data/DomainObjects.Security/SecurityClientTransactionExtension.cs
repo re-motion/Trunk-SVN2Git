@@ -52,6 +52,7 @@ namespace Remotion.Data.DomainObjects.Security
 
     public override QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("queryResult", queryResult);
 
       if (clientTransaction.ParentTransaction != null)
@@ -66,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Security
       var queryResultList = new List<T> (queryResult.AsEnumerable ());
       var securityClient = GetSecurityClient ();
 
-      using (CreateTransactionScope (clientTransaction))
+      using (EnterScopeOnDemand (clientTransaction))
       {
         for (int i = queryResultList.Count - 1; i >= 0; i--)
         {
@@ -97,6 +98,7 @@ namespace Remotion.Data.DomainObjects.Security
 
     public override void NewObjectCreating (ClientTransaction clientTransaction, Type type)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("type", type);
 
       if (_isActive)
@@ -112,7 +114,7 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        using (CreateTransactionScope (clientTransaction))
+        using (EnterScopeOnDemand (clientTransaction))
         {
           securityClient.CheckConstructorAccess (type);
         }
@@ -125,6 +127,7 @@ namespace Remotion.Data.DomainObjects.Security
 
     public override void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       if (_isActive)
@@ -145,7 +148,7 @@ namespace Remotion.Data.DomainObjects.Security
       {
         _isActive = true;
 
-        using (CreateTransactionScope (clientTransaction))
+        using (EnterScopeOnDemand (clientTransaction))
         {
           securityClient.CheckAccess (securableObject, AccessType.Get (GeneralAccessTypes.Delete));
         }
@@ -158,6 +161,7 @@ namespace Remotion.Data.DomainObjects.Security
 
     public override void PropertyValueReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
@@ -170,6 +174,7 @@ namespace Remotion.Data.DomainObjects.Security
         IRelationEndPointDefinition relationEndPointDefinition,
         ValueAccess valueAccess)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
@@ -193,7 +198,7 @@ namespace Remotion.Data.DomainObjects.Security
       {
         _isActive = true;
         var methodInformation = propertyInfo.GetGetMethod (true) ?? new NullMethodInformation();
-        using (CreateTransactionScope (clientTransaction))
+        using (EnterScopeOnDemand (clientTransaction))
         {
           securityClient.CheckPropertyReadAccess (securableObject, methodInformation);
         }
@@ -206,6 +211,7 @@ namespace Remotion.Data.DomainObjects.Security
 
     public override void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
@@ -219,6 +225,7 @@ namespace Remotion.Data.DomainObjects.Security
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
@@ -250,7 +257,7 @@ namespace Remotion.Data.DomainObjects.Security
       {
         _isActive = true;
         var methodInformation = propertyInfo.GetSetMethod (true) ?? new NullMethodInformation ();
-        using (CreateTransactionScope (clientTransaction))
+        using (EnterScopeOnDemand (clientTransaction))
         {
           securityClient.CheckPropertyWriteAccess (securableObject, methodInformation);
         }
@@ -268,9 +275,15 @@ namespace Remotion.Data.DomainObjects.Security
       return _securityClient;
     }
 
-    private IDisposable CreateTransactionScope (ClientTransaction clientTransaction)
+    private IDisposable EnterScopeOnDemand (ClientTransaction clientTransaction)
     {
-      return clientTransaction.EnterNonDiscardingScope();
+      if (clientTransaction.ActiveTransaction != clientTransaction)
+        return clientTransaction.EnterNonDiscardingScope();
+
+      if (ClientTransaction.Current != clientTransaction)
+        return clientTransaction.EnterNonDiscardingScope();
+
+      return null;
     }
   }
 }

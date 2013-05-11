@@ -145,5 +145,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       _testHelper.VerifyAll ();
     }
+
+    [Test]
+    public void Test_WithActiveTransactionMatchingTransactionPassedAsArgument_DoesNotCreateScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      _testHelper.Transaction.Commit ();
+      using (var scope = _testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        _testHelper.AddExtension (_extension);
+        _testHelper.ExpectObjectSecurityStrategyHasAccessWithMatchingScope (securableObject, scope);
+        _testHelper.ReplayAll();
+
+        _extension.ObjectDeleting (_testHelper.Transaction, securableObject);
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithActiveTransactionNotMatchingTransactionPassedAsArgument_CreatesScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      _testHelper.Transaction.Commit ();
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Delete, true);
+      _testHelper.ReplayAll();
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        _extension.ObjectDeleting (_testHelper.Transaction, securableObject);
+      }
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithInactiveTransaction_CreatesScope ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject ();
+      _testHelper.Transaction.Commit ();
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Delete, true);
+      _testHelper.ReplayAll ();
+
+      using (_testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        using (_testHelper.MakeInactive())
+        {
+          _extension.ObjectDeleting (_testHelper.Transaction, securableObject);
+        }
+      }
+
+      _testHelper.VerifyAll ();
+    }
   }
 }
