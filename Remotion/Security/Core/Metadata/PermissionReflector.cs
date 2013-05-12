@@ -29,7 +29,7 @@ namespace Remotion.Security.Metadata
   /// </summary>
   public class PermissionReflector : ExtendedProviderBase, IPermissionProvider
   {
-    private class CacheKey : IEquatable<CacheKey>
+    private struct CacheKey : IEquatable<CacheKey>
     {
       public readonly Type Type;
       public readonly IMethodInformation MethodInformation;
@@ -50,13 +50,13 @@ namespace Remotion.Security.Metadata
 
       public bool Equals (CacheKey other)
       {
-        return EqualityUtility.NotNullAndSameType (this, other)
-               && Type == other.Type
+        return Type == other.Type
                && MethodInformation.Equals (other.MethodInformation);
       }
     }
 
     private static readonly ICache<CacheKey, Enum[]> s_cache = CacheFactory.CreateWithLocking<CacheKey, Enum[]>();
+    private readonly Func<CacheKey, Enum[]> _cacheValueFactory;
 
     public PermissionReflector ()
         : this ("Reflection", new NameValueCollection())
@@ -66,6 +66,7 @@ namespace Remotion.Security.Metadata
     public PermissionReflector (string name, NameValueCollection config)
         : base (name, config)
     {
+      _cacheValueFactory = key => GetPermissions (key.MethodInformation);
     }
 
     public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation)
@@ -96,7 +97,7 @@ namespace Remotion.Security.Metadata
     private Enum[] GetPermissionsFromCache (Type type, IMethodInformation methodInformation)
     {
       var cacheKey = new CacheKey (type, methodInformation);
-      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions (key.MethodInformation));
+      return s_cache.GetOrCreateValue (cacheKey, _cacheValueFactory);
     }
   }
 }
