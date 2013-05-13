@@ -31,8 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       CheckAllowed (ctx => ctx.ClientTransaction, ClientTransaction.CreateRootTransaction());
       CheckAllowed (ctx => ctx.IsInvalid, true);
-      CheckAllowed (ctx => ctx.Execute ((obj, tx) => 10), 20);
-      CheckAllowed (ctx => ctx.Execute ((obj, tx) => { }));
     }
 
     [Test]
@@ -55,17 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       contextMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo (result));
-    }
-
-    private void CheckAllowed (Action<IDomainObjectTransactionContext> action)
-    {
-      var contextMock = MockRepository.GenerateMock<IDomainObjectTransactionContext> ();
-      contextMock.Expect (action);
-      contextMock.Replay ();
-
-      action (new InitializedEventDomainObjectTransactionContextDecorator (contextMock));
-
-      contextMock.VerifyAllExpectations ();
     }
 
     private void CheckForbidden (Action<IDomainObjectTransactionContext> action)

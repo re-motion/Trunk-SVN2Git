@@ -465,8 +465,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private ClientTransactionScope EnterScopeOnDemand ()
     {
-      if (_clientTransaction.ActiveTransaction != _clientTransaction)
-        return _clientTransaction.EnterNonDiscardingScope();
+      //if (_clientTransaction.ActiveTransaction != _clientTransaction)
+      //  return _clientTransaction.EnterNonDiscardingScope();
 
       if (ClientTransaction.Current != _clientTransaction)
         return _clientTransaction.EnterNonDiscardingScope();

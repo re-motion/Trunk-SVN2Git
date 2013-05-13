@@ -79,14 +79,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateInvalidOperationException();
     }
 
+    [Obsolete ("This method has been removed. Use ClientTransaction.ExecuteInScope instead. (1.13.189.0)", true)]
     public T Execute<T> (Func<DomainObject, ClientTransaction, T> func)
     {
-      return _actualContext.Execute (func);
+      throw new NotImplementedException();
     }
 
+    [Obsolete ("This method has been removed. Use ClientTransaction.ExecuteInScope instead. (1.13.189.0)", true)]
     public void Execute (Action<DomainObject, ClientTransaction> action)
     {
-      _actualContext.Execute (action);
+      throw new NotImplementedException();
     }
 
     private InvalidOperationException CreateInvalidOperationException ()

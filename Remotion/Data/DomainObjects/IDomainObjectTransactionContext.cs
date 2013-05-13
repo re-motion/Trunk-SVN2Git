@@ -127,25 +127,10 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
     bool TryEnsureDataAvailable ();
 
-    /// <summary>
-    /// Executes the specified delegate in the context of the <see cref="ClientTransaction"/> associated with this 
-    /// <see cref="IDomainObjectTransactionContext"/>, returning the result of the delegate. While the
-    /// delegate is being executed, the <see cref="ClientTransaction"/> is made the <see cref="DomainObjects.ClientTransaction.Current"/> transaction.
-    /// </summary>
-    /// <typeparam name="T">The type of the value returned by the delegate.</typeparam>
-    /// <param name="func">The delegate to be executed. The delegate gets the <see cref="DomainObject"/> and the <see cref="ClientTransaction"/>
-    /// associated with this <see cref="IDomainObjectTransactionContext"/> as its parameters.
-    /// </param>
-    /// <returns>The result of <paramref name="func"/>.</returns>
+    [Obsolete ("This method has been removed. Use ClientTransaction.ExecuteInScope instead. (1.13.189.0)", true)]
     T Execute<T> (Func<DomainObject, ClientTransaction, T> func);
 
-    /// <summary>
-    /// Executes the specified delegate in the context of the <see cref="ClientTransaction"/> associated with this 
-    /// <see cref="IDomainObjectTransactionContext"/>. While the
-    /// delegate is being executed, the <see cref="ClientTransaction"/> is made the <see cref="DomainObjects.ClientTransaction.Current"/> transaction.
-    /// </summary>
-    /// <param name="action">The delegate to be executed. The delegate gets the <see cref="DomainObject"/> and the <see cref="ClientTransaction"/>
-    /// associated with this <see cref="IDomainObjectTransactionContext"/> as its parameters.</param>
+    [Obsolete ("This method has been removed. Use ClientTransaction.ExecuteInScope instead. (1.13.189.0)", true)]
     void Execute (Action<DomainObject, ClientTransaction> action);
 
     [Obsolete ("This method has been replaced by RegisterForCommit. (1.13.181.0)", true)]
