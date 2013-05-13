@@ -121,12 +121,8 @@ namespace Remotion.Web.ExecutionEngine
         _isPostBack = true;
       }
 
-      _isReturningPostBack = false;
-      _isOutOfSequencePostBack = false;
-      _returningFunction = null;
-
-      //  Use the Page's postback data
-      _postBackCollection = null;
+      ClearIsOutOfSequencePostBack();
+      ClearReturnState();
 
       while (_executionState.IsExecuting)
         _executionState.ExecuteSubFunction (context);
@@ -141,6 +137,9 @@ namespace Remotion.Web.ExecutionEngine
       {
         if (_userControlExecutor.IsReturningPostBack)
           _userControlExecutor = NullUserControlExecutor.Null;
+
+        ClearIsOutOfSequencePostBack();
+        ClearReturnState();
       }
     }
 
@@ -267,9 +266,21 @@ namespace Remotion.Web.ExecutionEngine
       _postBackCollection = previousPostBackCollection;
     }
 
+    private void ClearReturnState ()
+    {
+      _returningFunction = null;
+      _isReturningPostBack = false;
+      _postBackCollection = null;
+    }
+
     public void SetIsOutOfSequencePostBack (bool value)
     {
       _isOutOfSequencePostBack = value;
+    }
+    
+    private void ClearIsOutOfSequencePostBack ()
+    {
+      _isOutOfSequencePostBack = false;
     }
 
     public override string ToString ()
