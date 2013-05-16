@@ -77,22 +77,28 @@
       <Output TaskParameter="ItemCount" PropertyName="_testOutputFilesCount"/>
     </MSBuild.ExtensionPack.Framework.MsBuildHelper>
     <Error Text="More than one item found in _testOutputFiles." Condition="$(_testOutputFilesCount) &gt; 1" />
-      
-    <!-- Adapt App.Config to use correct databaseW -->
+
     <PropertyGroup>
+      <_testAssemblyFileName>%(_testOutputFiles.Filename)</_testAssemblyFileName>
+      <_testAssemblyFullPath>%(_testOutputFiles.FullPath)</_testAssemblyFullPath>
+      <_use32Bit>%(_testOutputFiles.Use32Bit)</_use32Bit>
+      <_platform>%(_testOutputFiles.Platform)</_platform>
       <_databaseSystem>%(_testOutputFiles.DatabaseSystem)</_databaseSystem>
+      <_dataSource>%(_testOutputFiles.DataSource)</_dataSource>
+      <_databaseDirectory>%(_testOutputFiles.DatabaseDirectory)</_databaseDirectory>
       <_appConfigFile>%(_testOutputFiles.FullPath).config</_appConfigFile>
     </PropertyGroup>
 
+    <!-- Adapt App.Config to use correct database -->
     <ItemGroup>
       <_appConfigAttributes Remove="@(_appConfigAttributes)"/>
       <_appConfigAttributes Include="/configuration/appSettings/add[@key='DataSource']">
         <Key>value</Key>
-        <Value>%(_testOutputFiles.DataSource)</Value>
+        <Value>$(_dataSource)</Value>
       </_appConfigAttributes>
       <_appConfigAttributes Include="/configuration/appSettings/add[@key='DatabaseDirectory']">
         <Key>value</Key>
-        <Value>%(_testOutputFiles.DatabaseDirectory)</Value>
+        <Value>$(_databaseDirectory)</Value>
       </_appConfigAttributes>
     </ItemGroup>
 
@@ -106,16 +112,16 @@
     <!-- Run tests -->
     
     <PropertyGroup>
-      <_testName>%(_testOutputFiles.Filename).$(ActiveConfigurationName).%(_testOutputFiles.Platform).%(_testOutputFiles.DatabaseSystem)</_testName>
+      <_testName>$(_testAssemblyFileName).$(ActiveConfigurationName).$(_platform).$(_databaseSystem)</_testName>
       <_testResultFile>$(LogDirectory)$(_testName).xml</_testResultFile>
     </PropertyGroup>
 
     <MSBuild.ExtensionPack.CodeQuality.NUnit
         ToolPath="$(NUnitToolPath)"
-        Assemblies="%(_testOutputFiles.FullPath)"
+        Assemblies="$(_testAssemblyFullPath)"
         ContinueOnError="True"
         Framework="$(ActiveConfigurationFramework)"
-        Use32Bit="%(_testOutputFiles.Use32Bit)"
+        Use32Bit="$(_use32Bit)"
         OutputXmlFile="$(_testResultFile)">
       <Output TaskParameter="Failures" PropertyName="_nunit_failures"/>
       <Output TaskParameter="Errors" PropertyName="_nunit_errors"/>
@@ -141,9 +147,9 @@
     <ItemGroup  Condition="$(_nunit_failures) &gt; 0 or $(_nunit_errors) &gt; 0">
       <NumberOfTestFailuresPerProject Include="$(_nunit_failures)" />
       <NumberOfTestErrorsPerProject Include="$(_nunit_errors)" />
-      <FailedProjects Include="%(_testOutputFiles.FullPath)">
-        <Platform>%(_testOutputFiles.Platform)</Platform>
-        <DatabaseSystem>%(_testOutputFiles.DatabaseSystem)</DatabaseSystem>
+      <FailedProjects Include="$(_testAssemblyFullPath)">
+        <Platform>$(_platform)</Platform>
+        <DatabaseSystem>$(_databaseSystem)</DatabaseSystem>
         <Failures>$(_nunit_failures)</Failures>
         <Errors>$(_nunit_errors)</Errors>
       </FailedProjects>
