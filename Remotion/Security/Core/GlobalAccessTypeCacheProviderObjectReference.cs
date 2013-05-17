@@ -53,8 +53,8 @@ namespace Remotion.Security
       ProviderBase realObject = SecurityConfiguration.Current.GlobalAccessTypeCacheProviders[_providerName];
       if (realObject == null)
       {
-        string message = string.Format ("No GlobalAccessTypeCacheProvider named '0' is registered in the current security configuration.", _providerName);
-        throw new SerializationException (message);
+        throw new SerializationException (
+            string.Format ("No GlobalAccessTypeCacheProvider named '{0}' is registered in the current security configuration.", _providerName));
       }
       else
         return realObject;

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Configuration;
@@ -73,7 +74,7 @@ namespace Remotion.Security.UnitTests.Core
       Expect.Call (_mockSecurityProvider.GetRevision()).Return (0);
       _mocks.ReplayAll();
 
-      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = _provider.GetCache ();
+      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = _provider.GetCache();
 
       _mocks.VerifyAll();
       Assert.That (actual, Is.Not.Null);
@@ -85,8 +86,8 @@ namespace Remotion.Security.UnitTests.Core
       Expect.Call (_mockSecurityProvider.GetRevision()).Return (0);
       _mocks.ReplayAll();
 
-      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> expected = _provider.GetCache ();
-      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = _provider.GetCache ();
+      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> expected = _provider.GetCache();
+      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = _provider.GetCache();
 
       _mocks.VerifyAll();
       Assert.That (actual, Is.SameAs (expected));
@@ -102,7 +103,7 @@ namespace Remotion.Security.UnitTests.Core
       }
       _mocks.ReplayAll();
 
-      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> expected = _provider.GetCache ();
+      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> expected = _provider.GetCache();
       ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = null;
 
       ThreadRunner.Run (delegate { actual = _provider.GetCache(); });
@@ -138,25 +139,15 @@ namespace Remotion.Security.UnitTests.Core
       config.Add ("description", "The Description");
 
       RevisionBasedAccessTypeCacheProvider provider = new RevisionBasedAccessTypeCacheProvider ("MyProvider", config);
-      SecurityContext securityContext = SecurityContext.CreateStateless(typeof (SecurableObject));
+      SecurityContext securityContext = SecurityContext.CreateStateless (typeof (SecurableObject));
       AccessType[] accessTypes = new[] { AccessType.Get (TestAccessTypes.Fifth) };
       ISecurityPrincipal securityPrincipal = new SecurityPrincipal ("foo", null, null, null);
       provider.GetCache().GetOrCreateValue (Tuple.Create ((ISecurityContext) securityContext, securityPrincipal), delegate { return accessTypes; });
 
-      RevisionBasedAccessTypeCacheProvider deserializedProvider = Serializer.SerializeAndDeserialize (provider);
-
-      Assert.That (deserializedProvider.Name, Is.EqualTo ("MyProvider"));
-      Assert.That (deserializedProvider.Description, Is.EqualTo ("The Description"));
-      Assert.IsInstanceOf (typeof (LockingCacheDecorator<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>), deserializedProvider.GetCache ());
-      Assert.That (deserializedProvider.GetCache(), Is.Not.SameAs (provider.GetCache()));
-      Assert.That (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull, Is.False);
-
-      AccessType[] newAccessTypes;
-      bool result = deserializedProvider.GetCache().TryGetValue (Tuple.Create ((ISecurityContext) securityContext, securityPrincipal), out newAccessTypes);
-      Assert.That (result, Is.True);
-      Assert.That (newAccessTypes, Is.Not.SameAs (accessTypes));
-      Assert.That (newAccessTypes.Length, Is.EqualTo (1));
-      Assert.That (newAccessTypes, Is.EquivalentTo (accessTypes));
+      Assert.That (
+          () => Serializer.SerializeAndDeserialize (provider),
+          Throws.TypeOf<SerializationException>()
+                .With.Message.EqualTo ("No GlobalAccessTypeCacheProvider named 'MyProvider' is registered in the current security configuration."));
     }
 
     [Test]

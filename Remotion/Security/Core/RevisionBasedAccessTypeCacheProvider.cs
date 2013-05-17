@@ -24,7 +24,7 @@ using Remotion.Security.Configuration;
 
 namespace Remotion.Security
 {
-  using CacheType = LockingCacheDecorator<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>;
+  using CacheType = LazyLockingCachingAdapter<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>;
 
   [Serializable]
   public class RevisionBasedAccessTypeCacheProvider : ExtendedProviderBase, IGlobalAccessTypeCacheProvider
@@ -42,7 +42,7 @@ namespace Remotion.Security
 
     private readonly object _syncRoot = new object();
 
-    private CacheType _cache;
+    private LazyLockingCachingAdapter<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> _cache;
     private int _revision;
 
     public RevisionBasedAccessTypeCacheProvider ()
@@ -54,26 +54,18 @@ namespace Remotion.Security
         : base (name, config)
     {
       _revision = 0;
-      _cache = CacheFactory.CreateWithLocking<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
+      _cache = CacheFactory.CreateWithLazyLocking<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
     }
 
     protected RevisionBasedAccessTypeCacheProvider (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
-      _revision = info.GetInt32 ("_revision");
-      _cache = (CacheType) info.GetValue ("_cache", typeof (CacheType));
+      throw new InvalidOperationException ("Serialization can only happen via the GlobalAccessTypeCacheProviderObjectReference.");
     }
 
     protected override void GetObjectData (SerializationInfo info, StreamingContext context)
     {
-      if (this == SecurityConfiguration.Current.GlobalAccessTypeCacheProviders[Name])
-        GlobalAccessTypeCacheProviderObjectReference.DoGetObjectDataForWellKnownProvider (this, info, context);
-      else
-      {
-        base.GetObjectData (info, context);
-        info.AddValue ("_revision", _revision);
-        info.AddValue ("_cache", _cache);
-      }
+      GlobalAccessTypeCacheProviderObjectReference.DoGetObjectDataForWellKnownProvider (this, info, context);
     }
 
     public ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> GetCache ()
@@ -86,7 +78,7 @@ namespace Remotion.Security
           if (_revision < currentRevision)
           {
             _revision = currentRevision;
-            _cache = CacheFactory.CreateWithLocking<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
+            _cache = CacheFactory.CreateWithLazyLocking<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
           }
         }
       }
