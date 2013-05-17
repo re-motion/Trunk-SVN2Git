@@ -84,12 +84,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
     {
       if (_securityStrategy == null)
-        _securityStrategy = GetSecurityStrategy();
+        _securityStrategy = CreateSecurityStrategy();
 
       return _securityStrategy;
     }
 
-    protected virtual IObjectSecurityStrategy GetSecurityStrategy ()
+    protected virtual IObjectSecurityStrategy CreateSecurityStrategy ()
     {
       return new DomainObjectSecurityStrategy (RequiredSecurityForStates.None, this);
     }
