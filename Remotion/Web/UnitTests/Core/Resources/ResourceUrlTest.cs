@@ -26,7 +26,7 @@ namespace Remotion.Web.UnitTests.Core.Resources
   public class ResourceUrlTest
   {
     [Test]
-    public void GetUrl ()
+    public void GetUrl_BuildsUrlUsingBuilder ()
     {
       var resourceUrlBuilderStub = MockRepository.GenerateStub<IResourcePathBuilder>();
 
@@ -36,6 +36,27 @@ namespace Remotion.Web.UnitTests.Core.Resources
           .Return ("expectedUrl");
 
       Assert.That (resourceUrl.GetUrl(), Is.EqualTo ("expectedUrl"));
+    }
+
+    [Test]
+    public void GetUrl_DoesNotCacheUrls ()
+    {
+      var resourceUrlBuilderStub = MockRepository.GenerateStub<IResourcePathBuilder>();
+
+      var resourceUrl = new ResourceUrl (resourceUrlBuilderStub, typeof (ResourceUrlTest), ResourceType.Html, "theRelativeUrl.js");
+      int count = 0;
+      resourceUrlBuilderStub
+          .Stub (_ => _.BuildAbsolutePath (typeof (ResourceUrlTest).Assembly, new[] { "Html", "theRelativeUrl.js" }))
+          .Return (null)
+          .WhenCalled (
+              mi =>
+              {
+                mi.ReturnValue = "expectedUrl " + count;
+                count++;
+              });
+
+      Assert.That (resourceUrl.GetUrl(), Is.EqualTo ("expectedUrl 0"));
+      Assert.That (resourceUrl.GetUrl(), Is.EqualTo ("expectedUrl 1"));
     }
   }
 }

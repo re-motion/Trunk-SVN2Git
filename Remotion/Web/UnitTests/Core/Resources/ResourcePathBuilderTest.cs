@@ -159,6 +159,18 @@ namespace Remotion.Web.UnitTests.Core.Resources
                 .With.Message.StartsWith ("Cannot calculate the application path when the request URL does not start with the application path."));
     }
 
+    [Test]
+    public void BuildAbsolutePath_MultipleCalls_DoesNotCacheHttpContext ()
+    {
+      var builder = (TestableResourcePathBuilder) CreateResourcePathBuilder (new Uri ("http://localhost/appDir/file"), "/appDir");
+
+      builder.BuildAbsolutePath (GetType().Assembly, "part1");
+      builder.HttpContextProvider.AssertWasCalled (_ => _.GetCurrentHttpContext(), options => options.Repeat.Once());
+
+      builder.BuildAbsolutePath (GetType().Assembly, "part1");
+      builder.HttpContextProvider.AssertWasCalled (_ => _.GetCurrentHttpContext(), options => options.Repeat.Twice());
+    }
+
     private ResourcePathBuilder CreateResourcePathBuilder (Uri url, string applicationPath)
     {
       var httpRequestStub = MockRepository.GenerateStub<HttpRequestBase>();
