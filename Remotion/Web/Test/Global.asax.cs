@@ -18,7 +18,9 @@
 using System;
 using System.ComponentModel;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Logging;
+using Remotion.ServiceLocation;
 using Remotion.Web.Test.ErrorHandling;
 using Remotion.Web.UI;
 
@@ -41,6 +43,8 @@ namespace Remotion.Web.Test
 
     protected void Application_Start (Object sender, EventArgs e)
     {
+      var defaultServiceLocator = new DefaultServiceLocator();
+      ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
       LogManager.Initialize();
     }
 

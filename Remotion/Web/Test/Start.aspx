@@ -70,7 +70,7 @@
       <p>
         <a href="ErrorHandling/TestForm.aspx">ErrorTest</a>
       </p>
-      <asp:Button id="ResetSessionButton" runat="server" Text="Reset Session"></asp:Button>
+      <asp:Button id="ResetSessionButton" runat="server" Text="Reset Session" OnClick="ResetSessionButton_Click"></asp:Button>
     </form>
   </body>
 </html>
