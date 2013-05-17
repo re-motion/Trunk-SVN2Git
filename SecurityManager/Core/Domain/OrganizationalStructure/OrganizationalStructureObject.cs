@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [Serializable]
   public abstract class OrganizationalStructureObject : BaseSecurityManagerObject, ISecurableObject, IDomainObjectSecurityContextFactory
   {
-    private DomainObjectSecurityStrategy _securityStrategy;
+    private IObjectSecurityStrategy _securityStrategy;
 
     protected OrganizationalStructureObject ()
     {
@@ -84,12 +84,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
     {
       if (_securityStrategy == null)
-        _securityStrategy = GetSecurityStrategyInternal();
+        _securityStrategy = GetSecurityStrategy();
 
       return _securityStrategy;
     }
 
-    protected virtual DomainObjectSecurityStrategy GetSecurityStrategyInternal ()
+    protected virtual IObjectSecurityStrategy GetSecurityStrategy ()
     {
       return new DomainObjectSecurityStrategy (RequiredSecurityForStates.None, this);
     }
