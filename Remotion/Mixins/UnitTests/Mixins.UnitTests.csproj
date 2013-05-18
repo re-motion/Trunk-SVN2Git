@@ -77,6 +77,7 @@
     <Compile Include="Core\CodeGeneration\ConcreteMixinTypeObjectMother.cs" />
     <Compile Include="Core\CodeGeneration\LockingCodeGenerationCacheDecoratorTest.cs" />
     <Compile Include="Core\CodeGeneration\LockingCodeGenerationModuleInfoDecoratorTest.cs" />
+    <Compile Include="Core\IntegrationTests\Overrides\OverridingTargetMethodsWithShadowing.cs" />
     <Compile Include="Core\TypeGenerationHelper.cs" />
     <Compile Include="Core\CodeGenerationTypeMother.cs" />
     <Compile Include="Core\CodeGeneration\AttributeBasedMetadataImporterTest.cs" />
