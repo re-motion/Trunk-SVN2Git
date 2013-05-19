@@ -35,29 +35,19 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     protected StatefulAccessControlList ()
     {
-      SubscribeCollectionEvents();
     }
 
-    //TODO: Add test for initialize during on load
-    protected override void OnLoaded (LoadMode loadMode)
+    protected override void OnRelationChanged (RelationChangedEventArgs args)
     {
-      base.OnLoaded (loadMode);
-      SubscribeCollectionEvents(); // always subscribe collection events when the object gets a new data container
+      base.OnRelationChanged (args);
+      if (args.IsRelation (this, "StateCombinationsInternal"))
+        HandleStateCombinationsChanged ((StateCombination) args.NewRelatedObject);
     }
 
-    private void SubscribeCollectionEvents ()
+    private void HandleStateCombinationsChanged (StateCombination stateCombination)
     {
-      StateCombinationsInternal.Added += StateCombinations_Added;
-    }
-
-    private void StateCombinations_Added (object sender, DomainObjectCollectionChangeEventArgs args)
-    {
-      var stateCombination = (StateCombination) args.DomainObject;
-      var stateCombinations = StateCombinationsInternal;
-      if (stateCombinations.Count == 1)
-        stateCombination.Index = 0;
-      else
-        stateCombination.Index = stateCombinations[stateCombinations.Count - 2].Index + 1;
+      if (stateCombination != null)
+        stateCombination.Index = StateCombinationsInternal.IndexOf (stateCombination);
     }
 
     public abstract int Index { get; set; }

@@ -33,29 +33,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     protected AccessControlList ()
     {
-      SubscribeCollectionEvents();
-    }
-
-    //TODO: Add test for initialize during on load
-    protected override void OnLoaded (LoadMode loadMode)
-    {
-      base.OnLoaded (loadMode);
-      SubscribeCollectionEvents(); // always subscribe collection events when the object gets a new data container
-    }
-
-    private void SubscribeCollectionEvents ()
-    {
-      AccessControlEntries.Added += AccessControlEntries_Added;
-    }
-
-    private void AccessControlEntries_Added (object sender, DomainObjectCollectionChangeEventArgs args)
-    {
-      var ace = (AccessControlEntry) args.DomainObject;
-      var accessControlEntries = AccessControlEntries;
-      if (accessControlEntries.Count == 1)
-        ace.Index = 0;
-      else
-        ace.Index = accessControlEntries[accessControlEntries.Count - 2].Index + 1;
     }
 
     [StorageClassNone]
@@ -122,6 +99,19 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("token", token);
       return GetAccessTypes (token, null);
+    }
+
+    protected override void OnRelationChanged (RelationChangedEventArgs args)
+    {
+      base.OnRelationChanged (args);
+      if (args.IsRelation (this, "AccessControlEntries"))
+        HandleAccessControlEntriesChanged ((AccessControlEntry) args.NewRelatedObject);
+    }
+
+    private void HandleAccessControlEntriesChanged (AccessControlEntry ace)
+    {
+      if (ace != null)
+        ace.Index = AccessControlEntries.IndexOf (ace);
     }
 
     protected override void OnCommitting (DomainObjectCommittingEventArgs args)

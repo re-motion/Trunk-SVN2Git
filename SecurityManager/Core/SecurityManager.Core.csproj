@@ -139,6 +139,7 @@
     <Compile Include="Domain\AccessControl\StatelessAccessControlList.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilter.cs" />
     <Compile Include="Domain\DomainObjectDeleteHandler.cs" />
+    <Compile Include="Domain\DomainObjectExtensions.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipal.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipalFactory.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipal.cs" />

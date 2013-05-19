@@ -74,38 +74,10 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return result.ToObjectList();
     }
 
-    // member fields
     private DomainObjectDeleteHandler _deleteHandler;
-
-    // construction and disposing
 
     protected SecurableClassDefinition ()
     {
-      SubscribeCollectionEvents();
-    }
-
-    // methods and properties
-
-    //TODO: Add test for initialize during on load
-    protected override void OnLoaded (LoadMode loadMode)
-    {
-      base.OnLoaded (loadMode);
-      SubscribeCollectionEvents(); // always subscribe collection events when the object gets a new data container
-    }
-
-    private void SubscribeCollectionEvents ()
-    {
-      StatefulAccessControlLists.Added += StatefulAccessControlLists_Added;
-    }
-
-    private void StatefulAccessControlLists_Added (object sender, DomainObjectCollectionChangeEventArgs args)
-    {
-      var accessControlList = (StatefulAccessControlList) args.DomainObject;
-      var accessControlLists = StatefulAccessControlLists;
-      if (accessControlLists.Count == 1)
-        accessControlList.Index = 0;
-      else
-        accessControlList.Index = accessControlLists[accessControlLists.Count - 2].Index + 1;
     }
 
     [DBBidirectionalRelation ("DerivedClasses")]
@@ -446,6 +418,19 @@ namespace Remotion.SecurityManager.Domain.Metadata
       base.OnCommitting (args);
 
       Touch();
+    }
+
+    protected override void OnRelationChanged (RelationChangedEventArgs args)
+    {
+      base.OnRelationChanged (args);
+      if (args.IsRelation (this, "StatefulAccessControlLists"))
+        HandleStatefulAccessControlListsChanged ((StatefulAccessControlList) args.NewRelatedObject);
+    }
+
+    private void HandleStatefulAccessControlListsChanged (StatefulAccessControlList acl)
+    {
+      if (acl != null)
+        acl.Index = StatefulAccessControlLists.IndexOf (acl);
     }
 
     protected override void OnDeleting (EventArgs args)
