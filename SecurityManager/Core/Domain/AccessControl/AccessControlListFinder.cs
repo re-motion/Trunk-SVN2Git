@@ -26,6 +26,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 {
   public class AccessControlListFinder : IAccessControlListFinder
   {
+    public AccessControlListFinder ()
+    {
+    }
+
     /// <exception cref="AccessControlException">
     ///   The <see cref="SecurableClassDefinition"/> is not found.<br/>- or -<br/>
     ///   A matching <see cref="AccessControlList"/> is not found.<br/>- or -<br/>
