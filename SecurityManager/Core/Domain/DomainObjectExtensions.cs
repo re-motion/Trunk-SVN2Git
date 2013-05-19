@@ -16,8 +16,10 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 
+using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain
 {
@@ -26,6 +28,10 @@ namespace Remotion.SecurityManager.Domain
     public static bool IsRelation<TDoaminObject> (this RelationChangedEventArgs args, TDoaminObject domainObject, string shortPropertyName)
         where TDoaminObject : DomainObject
     {
+      ArgumentUtility.CheckNotNull ("args", args);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
+
       var propertyIndexer = new PropertyIndexer (domainObject);
       var propertyAccessor = propertyIndexer[typeof (TDoaminObject), shortPropertyName];
       return args.RelationEndPointDefinition == propertyAccessor.PropertyData.RelationEndPointDefinition;
