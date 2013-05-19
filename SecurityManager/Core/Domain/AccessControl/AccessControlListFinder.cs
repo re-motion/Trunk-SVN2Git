@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -92,7 +93,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private StateCombination FindStateCombination (SecurableClassDefinition classDefinition, ISecurityContext context)
     {
-      List<StateDefinition> states = GetStates (classDefinition.StateProperties, context);
+      var states = GetStates (classDefinition.StateProperties, context);
       if (states == null)
         return null;
 
@@ -101,15 +102,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private List<StateDefinition> GetStates (IList<StatePropertyDefinition> stateProperties, ISecurityContext context)
     {
-      List<StateDefinition> states = new List<StateDefinition>();
-
       if (context.GetNumberOfStates() > stateProperties.Count)
         return null;
 
-      foreach (var stateProperty in stateProperties)
-        states.Add (GetState (stateProperty, context));
-
-      return states;
+      return stateProperties.Select (stateProperty => GetState (stateProperty, context)).ToList();
     }
 
     private StateDefinition GetState (StatePropertyDefinition property, ISecurityContext context)
