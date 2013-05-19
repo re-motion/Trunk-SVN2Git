@@ -31,16 +31,17 @@ namespace Remotion.SecurityManager.PerformanceTests
               new EnumWrapper[0]);
       ISecurityPrincipal user = new SecurityPrincipal ("TestBenutzer", null, null, null);
       provider.GetAccess (context, user);
-      Console.ReadKey();
+      //Console.ReadKey();
 
       Stopwatch stopwatch = Stopwatch.StartNew();
 
       int dummy = 0;
-      for (int i = 0; i < 1; i++)
+      int count = 10;
+      for (int i = 0; i < count; i++)
         dummy += provider.GetAccess (context, user).Length;
       stopwatch.Stop();
       Trace.Write (dummy);
-      Console.WriteLine ("Time taken: {0}ms", stopwatch.ElapsedMilliseconds/10.0);
+      Console.WriteLine ("Time taken: {0}ms", ((decimal)stopwatch.ElapsedMilliseconds)/count);
       Console.ReadKey();
     }
   }
