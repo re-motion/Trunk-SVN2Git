@@ -142,6 +142,7 @@
     <Compile Include="Domain\DomainObjectExtensions.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipal.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipalFactory.cs" />
+    <Compile Include="Domain\Metadata\SecurableClassDefinitionExtensions.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipal.cs" />
     <Compile Include="Domain\SearchInfrastructure\Metadata\AbstractRoleDefinitionPropertyTypeSearchService.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\GroupTypePropertyTypeSearchService.cs" />

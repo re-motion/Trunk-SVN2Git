@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
@@ -30,26 +31,21 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   [SecurityManagerStorageGroup]
   public abstract class StateCombination : AccessControlObject
   {
-    // types
-
-    // static members and constants
+    public static Expression<Func<StateCombination, IEnumerable<StateUsage>>> SelectStateUsages ()
+    {
+      return sc => sc.StateUsages;
+    }
 
     public static StateCombination NewObject ()
     {
       return NewObject<StateCombination> ();
     }
 
-    // member fields
-
     private DomainObjectDeleteHandler _deleteHandler;
-
-    // construction and disposing
 
     protected StateCombination ()
     {
     }
-
-    // methods and properties
 
     public abstract int Index { get; set; }
 

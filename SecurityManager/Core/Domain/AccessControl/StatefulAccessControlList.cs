@@ -16,7 +16,9 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
 
@@ -26,12 +28,17 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   [Instantiable]
   public abstract class StatefulAccessControlList : AccessControlList
   {
-    private DomainObjectDeleteHandler _deleteHandler;
+    public static Expression<Func<StatefulAccessControlList, IEnumerable<StateCombination>>> SelectStateCombinations ()
+    {
+      return acl => acl.StateCombinationsInternal;
+    }
 
     public static StatefulAccessControlList NewObject ()
     {
       return NewObject<StatefulAccessControlList>();
     }
+
+    private DomainObjectDeleteHandler _deleteHandler;
 
     protected StatefulAccessControlList ()
     {

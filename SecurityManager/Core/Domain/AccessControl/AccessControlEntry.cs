@@ -16,8 +16,10 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
@@ -37,21 +39,18 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   [SecurityManagerStorageGroup]
   public abstract class AccessControlEntry : AccessControlObject
   {
-    // types
-
-    // static members and constants
+    public static Expression<Func<AccessControlEntry, IEnumerable<Permission>>> SelectPermissions ()
+    {
+      return ace => ace.PermissionsInternal;
+    }
 
     public static AccessControlEntry NewObject ()
     {
       return NewObject<AccessControlEntry>();
     }
 
-    // member fields
-
     private SecurityTokenMatcher _matcher;
     private DomainObjectDeleteHandler _deleteHandler;
-
-    // construction and disposing
 
     protected AccessControlEntry ()
     {

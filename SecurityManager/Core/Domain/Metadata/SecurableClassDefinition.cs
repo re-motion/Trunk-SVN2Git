@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
@@ -35,9 +36,15 @@ namespace Remotion.SecurityManager.Domain.Metadata
   [DBTable]
   public abstract class SecurableClassDefinition : MetadataObject, ISupportsGetObject
   {
-    // types
+    public static Expression<Func<SecurableClassDefinition, IEnumerable<AccessTypeReference>>> SelectAccessTypeReferences ()
+    {
+      return @class => @class.AccessTypeReferences;
+    }
 
-    // static members and constants
+    public static Expression<Func<SecurableClassDefinition, IEnumerable<StatePropertyReference>>> SelectStatePropertyReferences ()
+    {
+      return @class => @class.StatePropertyReferences;
+    }
 
     public static SecurableClassDefinition NewObject ()
     {
@@ -405,13 +412,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
         if (result.DuplicateStateCombinations.Count > 0)
         {
           throw new ConstraintViolationException (
-              string.Format ("The securable class definition '{0}' contains at least one state combination that has been defined twice.", Name));
+              String.Format ("The securable class definition '{0}' contains at least one state combination that has been defined twice.", Name));
         }
         else
         {
           Assertion.IsTrue (result.InvalidStateCombinations.Count > 0);
           throw new ConstraintViolationException (
-              string.Format ("The securable class definition '{0}' contains at least one state combination that does not match the class's properties.", Name));
+              String.Format ("The securable class definition '{0}' contains at least one state combination that does not match the class's properties.", Name));
         }
       }
 
@@ -455,12 +462,12 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
     {
-      return new ArgumentException (string.Format (format, args), argumentName);
+      return new ArgumentException (String.Format (format, args), argumentName);
     }
     
     private ArgumentException CreateArgumentOutOfRangeException (string argumentName, object actualValue, string format, params object[] args)
     {
-      return new ArgumentOutOfRangeException(argumentName, actualValue, string.Format (format, args));
+      return new ArgumentOutOfRangeException(argumentName, actualValue, String.Format (format, args));
     }
 
     private IEnumerable<AccessControlList> GetAccessControlLists()

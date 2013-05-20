@@ -16,11 +16,11 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects;
 using Remotion.Reflection;
-using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata
@@ -29,6 +29,11 @@ namespace Remotion.SecurityManager.Domain.Metadata
   [Instantiable]
   public abstract class AccessTypeDefinition : EnumValueDefinition
   {
+    public static Expression<Func<AccessTypeDefinition, IEnumerable<AccessTypeReference>>> SelectAccessTypeReferences ()
+    {
+      return property => property.AccessTypeReferences;
+    }
+
     public static AccessTypeDefinition NewObject ()
     {
       return NewObject<AccessTypeDefinition>();

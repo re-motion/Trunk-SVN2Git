@@ -17,8 +17,10 @@
 // 
 
 using System;
+using System.Linq;
 using JetBrains.Annotations;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.SecurityManager.Clients.Web.UI.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Web.ExecutionEngine;
@@ -42,6 +44,14 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl
     {
     }
 
-    private WxeResourcePageStep Step1 = new WxeResourcePageStep (typeof (EditPermissionsForm), "UI/AccessControl/EditPermissionsForm.aspx");
+    private void Step1 ()
+    {
+      QueryFactory.CreateLinqQuery<SecurableClassDefinition>()
+                  .Where (cd => cd == CurrentObject).Select (cd => cd)
+                  .FetchDetails()
+                  .ToArray();
+    }
+
+    private WxeResourcePageStep Step2 = new WxeResourcePageStep (typeof (EditPermissionsForm), "UI/AccessControl/EditPermissionsForm.aspx");
   }
 }
