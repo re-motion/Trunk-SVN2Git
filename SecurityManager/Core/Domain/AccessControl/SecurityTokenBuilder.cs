@@ -108,7 +108,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           principalRoles = principalRoles.Where (r => IsRoleMatchingPrincipalRole (r, principal.Role));
       }
 
-      return new Principal (principalTenant, principalUser, principalRoles.ToArray());
+      return Principal.Create (principalTenant, principalUser, principalRoles);
     }
 
     private Substitution GetSubstitution (ISecurityPrincipal principal, User user)

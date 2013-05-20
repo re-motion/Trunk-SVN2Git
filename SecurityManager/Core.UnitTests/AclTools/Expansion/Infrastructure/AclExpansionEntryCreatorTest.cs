@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.Infrastructure
@@ -55,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.Infrastructure
       var userRoleAclAceCombination = new UserRoleAclAceCombination (Role, Ace);
       var accessTypesResult = aclExpansionEntryCreator.GetAccessTypes (userRoleAclAceCombination); //, out aclProbe, out accessTypeStatistics);
       Assert.That (User.Roles, Is.EquivalentTo (new[] { Role, Role2 }));
-      Assert.That (accessTypesResult.AclProbe.SecurityToken.Principal.Roles, Is.EquivalentTo (new[] { Role }));
+      Assert.That (accessTypesResult.AclProbe.SecurityToken.Principal.Roles, Is.EquivalentTo (new[] { Role }).Using (PrincipalRoleComparer.Instance));
     }
 
 

@@ -126,6 +126,7 @@
     <Compile Include="DomainTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\SearchServiceTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\ValidationTest.cs" />
+    <Compile Include="Domain\AccessControl\PrincipalRoleComparer.cs" />
     <Compile Include="Domain\AccessControl\PrincipalTest.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningGroupAndParents.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningGroup.cs" />

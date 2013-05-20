@@ -66,9 +66,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void EmptyToken_DoesNotMatch ()
+    public void TokenWithoutUser_DoesNotMatch ()
     {
-      SecurityToken token = TestHelper.CreateEmptyToken();
+      SecurityToken token = TestHelper.CreateTokenWithoutUser();
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 

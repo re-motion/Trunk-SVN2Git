@@ -18,6 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects;
+using Remotion.FunctionalProgramming;
+using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -64,7 +67,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       // always have the access rights returned; this is just not the information we want to present in the 
       // ACL-expansion, where we distinguish which role gives rise to which access rights).
 
-      Principal principal = new Principal (user.Tenant, user, new[] {role});
+      var principal = Principal.Create (user.Tenant, user, EnumerableUtility.Singleton (role));
       aclProbe._securityToken = new SecurityToken (principal, owningTenant, owningGroup, owningUser, abstractRoles);
 
       return aclProbe;

@@ -15,54 +15,76 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using JetBrains.Annotations;
+using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
   /// <summary>
-  /// The <see cref="Principal"/> type encapsulates a <see cref="Tenant"/> object, a <see cref="User"/> object, 
+  /// The <see cref="Principal"/> type represents a <see cref="Tenant"/> object, a <see cref="User"/> object, 
   /// and one or more <see cref="Role"/> objects. Together, they specify the principal for which the permissions are evaluated.
   /// </summary>
   public class Principal : INullObject
   {
-    public static Principal Null = new Principal();
+    public static readonly Principal Null = new Principal();
+
+    public static Principal Create ([NotNull] Tenant tenant, [CanBeNull] User user, [NotNull] IEnumerable<Role> roles)
+    {
+      ArgumentUtility.CheckNotNull ("tenant", tenant);
+      ArgumentUtility.CheckNotNull ("roles", roles);
+      
+      return new Principal (
+          tenant.GetHandle(),
+          user.GetSafeHandle(),
+          roles.Select (r => new PrincipalRole (r.Position.GetHandle(), r.Group.GetHandle())));
+    }
 
     private readonly bool _isNull;
-    private readonly Tenant _tenant;
-    private readonly User _user;
-    private readonly IList<Role> _roles;
+    private readonly IDomainObjectHandle<Tenant> _tenant;
+    private readonly IDomainObjectHandle<User> _user;
+    private readonly ReadOnlyCollection<PrincipalRole> _roles;
 
     private Principal ()
     {
       _isNull = true;
-      _roles = new Role[0];
+      _roles = new ReadOnlyCollection<PrincipalRole> (new PrincipalRole[0]);
     }
 
-    public Principal (Tenant tenant, User user, IList<Role> roles)
+    public Principal (
+        [NotNull] IDomainObjectHandle<Tenant> tenant,
+        [CanBeNull] IDomainObjectHandle<User> user,
+        [NotNull] IEnumerable<PrincipalRole> roles)
     {
-      ArgumentUtility.CheckNotNullOrItemsNull ("roles", roles);
+      ArgumentUtility.CheckNotNull ("tenant", tenant);
+      ArgumentUtility.CheckNotNull ("roles", roles);
 
       _isNull = false;
       _tenant = tenant;
       _user = user;
-      _roles = new ReadOnlyCollection<Role> (roles);
+      _roles = roles.ToList().AsReadOnly();
     }
 
-    public Tenant Tenant
+    [CanBeNull]
+    public IDomainObjectHandle<Tenant> Tenant
     {
       get { return _tenant; }
     }
 
-    public User User
+    [CanBeNull]
+    public IDomainObjectHandle<User> User
     {
       get { return _user; }
     }
 
-    public IList<Role> Roles
+    [NotNull]
+    public ReadOnlyCollection<PrincipalRole> Roles
     {
       get { return _roles; }
     }

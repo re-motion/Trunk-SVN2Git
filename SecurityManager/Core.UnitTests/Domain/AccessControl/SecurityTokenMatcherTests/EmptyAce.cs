@@ -22,7 +22,7 @@ using Remotion.SecurityManager.Domain.AccessControl;
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenMatcherTests
 {
   [TestFixture]
-  public class EmptyAce:SecurityTokenMatcherTestBase
+  public class EmptyAce : SecurityTokenMatcherTestBase
   {
     [Test]
     public void TokenWithAbstractRole_Matches ()
@@ -35,11 +35,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void EmptyToken_Matches ()
+    public void TokenWithoutUser_Matches ()
     {
       AccessControlEntry entry = AccessControlEntry.NewObject ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateEmptyToken ();
+      SecurityToken token = TestHelper.CreateTokenWithoutUser ();
 
       Assert.That (matcher.MatchesToken (token), Is.True);
     }

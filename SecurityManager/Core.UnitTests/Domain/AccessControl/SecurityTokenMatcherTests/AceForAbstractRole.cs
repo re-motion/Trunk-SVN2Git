@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     {
       AccessControlEntry entry = TestHelper.CreateAceWithAbstractRole ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateEmptyToken ();
+      SecurityToken token = TestHelper.CreateTokenWithoutUser ();
 
       Assert.That (matcher.MatchesToken (token), Is.False);
     }

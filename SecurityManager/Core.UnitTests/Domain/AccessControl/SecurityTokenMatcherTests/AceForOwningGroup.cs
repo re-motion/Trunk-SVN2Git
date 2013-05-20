@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     public void TokenWithoutPrincipalUserButWithPrincipalRole_Matches ()
     {
       SecurityToken token = new SecurityToken (
-          new Principal (_companyHelper.CompanyTenant, null, new[] { _companyHelper.AustrianCarTeam.Roles[0] }),
+          Principal.Create (_companyHelper.CompanyTenant, null, new[] { _companyHelper.AustrianCarTeam.Roles[0] }),
           null, _companyHelper.AustrianCarTeam, null, new AbstractRoleDefinition[0]);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
@@ -106,7 +106,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     public void TokenWithoutPrincipalRoles_DoesNotMatch ()
     {
       SecurityToken token = new SecurityToken (
-          new Principal (_companyHelper.CompanyTenant, _companyHelper.CarTeamMember, new Role[0]),
+          Principal.Create (_companyHelper.CompanyTenant, _companyHelper.CarTeamMember, new Role[0]),
           null, _companyHelper.AustrianCarTeam, null, new AbstractRoleDefinition[0]);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
@@ -128,9 +128,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void EmptyToken_DoesNotMatch ()
+    public void TokenWithoutUser_DoesNotMatch ()
     {     
-      SecurityToken token = TestHelper.CreateEmptyToken();
+      SecurityToken token = TestHelper.CreateTokenWithoutUser();
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 

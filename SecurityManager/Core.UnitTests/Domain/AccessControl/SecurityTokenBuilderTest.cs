@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -54,10 +55,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityTokenBuilder builder = new SecurityTokenBuilder ();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
 
-      Assert.That (token.Principal.User.UserName, Is.EqualTo ("test.user"));
-      Assert.That (token.Principal.Tenant, Is.SameAs (token.Principal.User.Tenant));
+      var user = token.Principal.User.GetObject();
+      Assert.That (user.UserName, Is.EqualTo ("test.user"));
+      Assert.That (token.Principal.Tenant, Is.EqualTo (user.Tenant).Using (DomainObjectHandleComparer.Instance));
       Assert.That (token.Principal.Roles, Is.Not.Empty);
-      Assert.That (token.Principal.Roles, Is.EquivalentTo (token.Principal.User.Roles));
+      Assert.That (token.Principal.Roles, Is.EquivalentTo (user.Roles).Using (PrincipalRoleComparer.Instance));
       Assert.That (token.Principal.IsNull, Is.False);
     }
 
@@ -77,12 +79,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityTokenBuilder builder = new SecurityTokenBuilder ();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
 
-      Assert.That (token.Principal.User.UserName, Is.EqualTo ("test.user"));
-      Assert.That (token.Principal.Tenant, Is.SameAs (token.Principal.User.Tenant));
+      var principalUser = token.Principal.User.GetObject();
+      Assert.That (principalUser.UserName, Is.EqualTo ("test.user"));
+      Assert.That (token.Principal.Tenant, Is.EqualTo (principalUser.Tenant).Using (DomainObjectHandleComparer.Instance));
       Assert.That (token.Principal.Roles.Count, Is.EqualTo (1));
-      Assert.That (token.Principal.Roles[0].Group.UniqueIdentifier, Is.EqualTo ("UID: testGroup"));
-      Assert.That (token.Principal.Roles[0].Position.UniqueIdentifier, Is.EqualTo ("UID: Official"));
-      Assert.That (token.Principal.Roles[0].User, Is.SameAs (token.Principal.User));
+      Assert.That (token.Principal.Roles[0].Group.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testGroup"));
+      Assert.That (token.Principal.Roles[0].Position.GetObject().UniqueIdentifier, Is.EqualTo ("UID: Official"));
       Assert.That (token.Principal.IsNull, Is.False);
     }
 
@@ -104,11 +106,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
-      Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
+      Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles.Count, Is.EqualTo (1));
-      Assert.That (token.Principal.Roles[0].Group.UniqueIdentifier, Is.EqualTo ("UID: testGroup"));
-      Assert.That (token.Principal.Roles[0].Position.UniqueIdentifier, Is.EqualTo ("UID: Official"));
-      Assert.That (token.Principal.Roles[0].User.UserName, Is.EqualTo ("test.user"));
+      Assert.That (token.Principal.Roles[0].Group.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testGroup"));
+      Assert.That (token.Principal.Roles[0].Position.GetObject().UniqueIdentifier, Is.EqualTo ("UID: Official"));
       Assert.That (token.Principal.IsNull, Is.False);
     }
 
@@ -125,10 +126,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityTokenBuilder builder = new SecurityTokenBuilder ();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
 
-      Assert.That (token.Principal.User.UserName, Is.EqualTo ("test.user"));
-      Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
+      var user = token.Principal.User.GetObject();
+      Assert.That (user.UserName, Is.EqualTo ("test.user"));
+      Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Not.Empty);
-      Assert.That (token.Principal.Roles, Is.EquivalentTo (token.Principal.User.Roles));
+      Assert.That (token.Principal.Roles, Is.EquivalentTo (user.Roles).Using (PrincipalRoleComparer.Instance));
       Assert.That (token.Principal.IsNull, Is.False);
     }
 
@@ -150,7 +152,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
-      Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
+      Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Empty);
       Assert.That (token.Principal.IsNull, Is.False);
     }
@@ -169,7 +171,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
-      Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
+      Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Empty);
       Assert.That (token.Principal.IsNull, Is.False);
     }
@@ -192,7 +194,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
-      Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
+      Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Empty);
       Assert.That (token.Principal.IsNull, Is.False);
     }
@@ -215,7 +217,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
-      Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
+      Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Empty);
       Assert.That (token.Principal.IsNull, Is.False);
     }
@@ -235,7 +237,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant, Is.Not.Null);
-      Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.Not.EqualTo ("UID: testTenant"));
+      Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.Not.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Empty);
       Assert.That (token.Principal.IsNull, Is.False);
     }

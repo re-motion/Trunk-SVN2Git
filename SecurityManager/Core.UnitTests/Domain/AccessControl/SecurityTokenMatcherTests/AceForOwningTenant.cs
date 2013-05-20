@@ -17,6 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -58,7 +59,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     [Test]
     public void TokenWithoutPrincipalUser_Matches ()
     {
-      SecurityToken token = new SecurityToken (new Principal (_companyHelper.CompanyTenant, null, new Role[0]), _companyHelper.CompanyTenant, null, null, new AbstractRoleDefinition[0]);
+      SecurityToken token = new SecurityToken (
+          Principal.Create (_companyHelper.CompanyTenant, null, new Role[0]),
+          _companyHelper.CompanyTenant,
+          null,
+          null,
+          new AbstractRoleDefinition[0]);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
       Assert.That (matcher.MatchesToken (token), Is.True);
@@ -118,7 +124,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     [Test]
     public void TokenWithoutTenantAndOwningTenant_DoesNotMatch ()
     {
-      SecurityToken token = new SecurityToken (new Principal (null, null, new Role[0]), _companyHelper.CompanyTenant, null, null, new AbstractRoleDefinition[0]);
+      // Creating a non-null principal with a null Tenant is only possible via reflection.
+      var principal = Principal.Create (TestHelper.CreateTenant ("tenant"), null, new Role[0]);
+      PrivateInvoke.SetNonPublicField (principal, "_tenant", null);
+
+      SecurityToken token = new SecurityToken (
+          principal,
+          _companyHelper.CompanyTenant,
+          null,
+          null,
+          new AbstractRoleDefinition[0]);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
       Assert.That (matcher.MatchesToken (token), Is.False);
@@ -127,7 +142,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     [Test]
     public void TokenWithTenantDifferentFromOwningTenant_DoesNotMatch ()
     {
-      SecurityToken token = new SecurityToken (new Principal (TestHelper.CreateTenant ("tenant"), null, new Role[0]), _companyHelper.CompanyTenant, null, null, new AbstractRoleDefinition[0]);
+      SecurityToken token = new SecurityToken (
+          Principal.Create (TestHelper.CreateTenant ("tenant"), null, new Role[0]),
+          _companyHelper.CompanyTenant,
+          null,
+          null,
+          new AbstractRoleDefinition[0]);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
       Assert.That (matcher.MatchesToken (token), Is.False);

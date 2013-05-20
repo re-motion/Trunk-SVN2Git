@@ -42,7 +42,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Initialize_Values ()
     {
       Tenant principalTenant = CreateTenant ("principalTenant");
-      Principal principal = new Principal (principalTenant, null, new Role[0]);
+      Principal principal = Principal.Create (principalTenant, null, new Role[0]);
       Tenant owningTenant = CreateTenant ("owningTenant");
       Group owningGroup = CreateGroup ("owningGroup", null, owningTenant);
       User owningUser = CreateUser ("owningUser", CreateGroup ("owningUserGroup", null, owningTenant), owningTenant);
@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Initialize_Empty ()
     {
       Tenant principalTenant = CreateTenant ("principalTenant");
-      Principal principal = new Principal (principalTenant, null, new Role[0]);
+      Principal principal = Principal.Create (principalTenant, null, new Role[0]);
       SecurityToken token = new SecurityToken (principal, null, null, null, new List<AbstractRoleDefinition> ());
 
       Assert.That (token.OwningTenant, Is.Null);

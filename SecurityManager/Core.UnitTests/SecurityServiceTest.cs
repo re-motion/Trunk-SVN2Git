@@ -117,7 +117,12 @@ namespace Remotion.SecurityManager.UnitTests
     {
       using (_clientTransaction.EnterNonDiscardingScope ())
       {
-        SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, new List<AbstractRoleDefinition> ());
+        SecurityToken token = new SecurityToken (
+            Principal.Create (_tenant, null, new Role[0]),
+            null,
+            null,
+            null,
+            new List<AbstractRoleDefinition>());
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
         Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Return (token);
@@ -137,7 +142,7 @@ namespace Remotion.SecurityManager.UnitTests
       {
         List<AbstractRoleDefinition> roles = new List<AbstractRoleDefinition>();
         roles.Add (_ace.SpecificAbstractRole);
-        SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, roles);
+        SecurityToken token = new SecurityToken (Principal.Create (_tenant, null, new Role[0]), null, null, null, roles);
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
         Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Return (token);
@@ -158,7 +163,7 @@ namespace Remotion.SecurityManager.UnitTests
       {
         List<AbstractRoleDefinition> roles = new List<AbstractRoleDefinition>();
         roles.Add (_ace.SpecificAbstractRole);
-        SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, roles);
+        SecurityToken token = new SecurityToken (Principal.Create (_tenant, null, new Role[0]), null, null, null, roles);
 
         Expect.Call (_mockAclFinder.Find (null, null)).Return (CreateAcl (_ace)).Constraints (
             Mocks_Is.NotNull(),
@@ -233,8 +238,9 @@ namespace Remotion.SecurityManager.UnitTests
         var role = Role.NewObject();
         role.Group = organizationalStructureFactory.CreateGroup();
         role.Group.Tenant = _tenant;
+        role.Position = organizationalStructureFactory.CreatePosition();
 
-        var token = new SecurityToken (new Principal (_tenant, null, new[] { role }), null, null, null, abstractRoles);
+        var token = new SecurityToken (Principal.Create (_tenant, null, new[] { role }), null, null, null, abstractRoles);
 
         subTransaction = _clientTransaction.CreateSubTransaction ();
         using (subTransaction.EnterNonDiscardingScope())
@@ -277,7 +283,7 @@ namespace Remotion.SecurityManager.UnitTests
     {
       using (_clientTransaction.EnterNonDiscardingScope ())
       {
-        SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, new AbstractRoleDefinition[0]);
+        SecurityToken token = new SecurityToken (Principal.Create (_tenant, null, new Role[0]), null, null, null, new AbstractRoleDefinition[0]);
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
         Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Return (token);

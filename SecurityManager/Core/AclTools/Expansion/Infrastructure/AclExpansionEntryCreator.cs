@@ -16,7 +16,9 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects;
+using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
 
@@ -67,8 +69,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       // by another matching ACE in the current ACL (deny rights always win). 
       var accessTypeStatistics = new AccessTypeStatistics();
 
-      Assertion.IsTrue (aclProbe.SecurityToken.Principal.Roles.Count == 1);
-      Assertion.IsTrue (object.ReferenceEquals (aclProbe.SecurityToken.Principal.Roles[0], userRoleAclAce.Role));
+      var roles = aclProbe.SecurityToken.Principal.Roles;
+      Assertion.IsTrue (roles.Count == 1);
+      Assertion.IsTrue (object.ReferenceEquals (roles[0].Position.GetObjectReference(), userRoleAclAce.Role.Position));
+      Assertion.IsTrue (object.ReferenceEquals (roles[0].Group.GetObjectReference(), userRoleAclAce.Role.Group));
       
       AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
 

@@ -177,11 +177,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void EmptyToken_DoesNotMatch ()
+    public void TokenWithoutUser_DoesNotMatch ()
     {
       _ace.GroupHierarchyCondition = GroupHierarchyCondition.This;
 
-      SecurityToken token = TestHelper.CreateEmptyToken();
+      SecurityToken token = TestHelper.CreateTokenWithoutUser();
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 

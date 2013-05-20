@@ -17,6 +17,9 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
+using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -41,13 +44,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       Tenant tenant = _testHelper.CreateTenant ("tenant");
       User user = _testHelper.CreateUser ("userName", null, "lastName", null, null, null);
-      Role[] roles = new[] { _testHelper.CreateRole (null, null, null), _testHelper.CreateRole (null, null, null) };
-      Principal principal = new Principal (tenant, user, roles);
+      Role[] roles = new[] { CreateRole (tenant), CreateRole (tenant) };
+      Principal principal = Principal.Create (tenant, user, roles);
 
-      Assert.That (principal.Tenant, Is.SameAs (tenant));
-      Assert.That (principal.User, Is.SameAs (user));
-      Assert.That (principal.Roles, Is.Not.SameAs (roles));
-      Assert.That (principal.Roles, Is.EquivalentTo (roles));
+      Assert.That (principal.Tenant, Is.EqualTo (tenant).Using (DomainObjectHandleComparer.Instance));
+      Assert.That (principal.User, Is.EqualTo (user).Using (DomainObjectHandleComparer.Instance));
+      Assert.That (principal.Roles, Is.EquivalentTo (roles).Using (PrincipalRoleComparer.Instance));
       Assert.That (principal.IsNull, Is.False);
     }
 
@@ -56,11 +58,28 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       Tenant tenant = _testHelper.CreateTenant ("tenant");
       User user = _testHelper.CreateUser ("userName", null, "lastName", null, null, null);
-      Principal principal = new Principal (tenant, user, new Role[0]);
+      Principal principal = Principal.Create (tenant, user, new Role[0]);
 
-      Assert.That (principal.Tenant, Is.SameAs (tenant));
-      Assert.That (principal.User, Is.SameAs (user));
+      Assert.That (principal.Tenant, Is.EqualTo (tenant).Using (DomainObjectHandleComparer.Instance));
+      Assert.That (principal.User, Is.EqualTo (user).Using (DomainObjectHandleComparer.Instance));
       Assert.That (principal.Roles, Is.Empty);
+      Assert.That (principal.IsNull, Is.False);
+    }
+
+    [Test]
+    public void Initialize_CopiesRoles ()
+    {
+      Tenant tenant = _testHelper.CreateTenant ("tenant");
+      var roles = new[]
+                  {
+                      new PrincipalRole (
+                          new DomainObjectHandle<Position> (new ObjectID (typeof (Position), Guid.NewGuid())),
+                          new DomainObjectHandle<Group> (new ObjectID (typeof (Group), Guid.NewGuid())))
+                  };
+      Principal principal = new Principal (tenant.GetHandle(), null, roles);
+
+      Assert.That (principal.Roles, Is.Not.SameAs (roles));
+      Assert.That (principal.Roles, Is.EquivalentTo (roles));
       Assert.That (principal.IsNull, Is.False);
     }
 
@@ -68,13 +87,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Initialize_WithTenantAndWithoutUserAndWithRoles ()
     {
       Tenant tenant = _testHelper.CreateTenant ("tenant");
-      Role[] roles = new[] { _testHelper.CreateRole (null, null, null), _testHelper.CreateRole (null, null, null) };
-      Principal principal = new Principal (tenant, null, roles);
+      Role[] roles = new[] { CreateRole (tenant), CreateRole (tenant) };
+      Principal principal = Principal.Create (tenant, null, roles);
 
-      Assert.That (principal.Tenant, Is.SameAs (tenant));
+      Assert.That (principal.Tenant, Is.EqualTo (tenant).Using (DomainObjectHandleComparer.Instance));
       Assert.That (principal.User, Is.Null);
-      Assert.That (principal.Roles, Is.Not.SameAs (roles));
-      Assert.That (principal.Roles, Is.EquivalentTo (roles));
+      Assert.That (principal.Roles, Is.EquivalentTo (roles).Using (PrincipalRoleComparer.Instance));
       Assert.That (principal.IsNull, Is.False);
     }
 
@@ -82,9 +100,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Initialize_WithTenantAndWithoutUserAndWithoutRoles ()
     {
       Tenant tenant = _testHelper.CreateTenant ("tenant");
-      Principal principal = new Principal (tenant, null, new Role[0]);
+      Principal principal = Principal.Create (tenant, null, new Role[0]);
 
-      Assert.That (principal.Tenant, Is.SameAs (tenant));
+      Assert.That (principal.Tenant, Is.EqualTo (tenant).Using (DomainObjectHandleComparer.Instance));
       Assert.That (principal.User, Is.Null);
       Assert.That (principal.Roles, Is.Empty);
       Assert.That (principal.IsNull, Is.False);
@@ -99,6 +117,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (principal.User, Is.Null);
       Assert.That (principal.Roles, Is.Empty);
       Assert.That (principal.IsNull, Is.True);
+    }
+
+    private Role CreateRole (Tenant tenant)
+    {
+      return _testHelper.CreateRole (
+          null,
+          _testHelper.CreateGroup (Guid.NewGuid().ToString(), null, tenant),
+          _testHelper.CreatePosition (Guid.NewGuid().ToString()));
     }
   }
 }
