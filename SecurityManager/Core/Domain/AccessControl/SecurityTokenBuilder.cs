@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         User owningUser = GetUser (context.Owner);
         IList<AbstractRoleDefinition> abstractRoles = GetAbstractRoles (context.AbstractRoles);
 
-        return new SecurityToken (principalUser, owningTenant, owningGroup, owningUser, abstractRoles);
+        return SecurityToken.Create(principalUser, owningTenant, owningGroup, owningUser, abstractRoles);
       }
     }
 

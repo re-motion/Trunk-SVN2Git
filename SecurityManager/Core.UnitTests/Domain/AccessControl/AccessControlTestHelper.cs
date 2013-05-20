@@ -358,13 +358,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public SecurityToken CreateTokenWithNullPrincipal ()
     {
-      return new SecurityToken (Principal.Null, null, null, null, new AbstractRoleDefinition[0]);
+      return SecurityToken.Create(Principal.Null, null, null, null, new AbstractRoleDefinition[0]);
     }
 
     public SecurityToken CreateTokenWithoutUser ()
     {
       Principal principal = Principal.Create (CreateTenant ("AnyTenant"), null, new Role[0]);
-      return new SecurityToken (principal, null, null, null, new AbstractRoleDefinition[0]);
+      return SecurityToken.Create(principal, null, null, null, new AbstractRoleDefinition[0]);
     }
 
     public SecurityToken CreateTokenWithOwningTenant (User principalUser, Tenant owningTenant)
@@ -376,7 +376,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public SecurityToken CreateTokenWithAbstractRole (params AbstractRoleDefinition[] roleDefinitions)
     {
       Principal principal = Principal.Create (CreateTenant ("AnyTenant"), null, new Role[0]);
-      return new SecurityToken (principal, null, null, null, (AbstractRoleDefinition[]) roleDefinitions.Clone());
+      return SecurityToken.Create(principal, null, null, null, (AbstractRoleDefinition[]) roleDefinitions.Clone());
     }
 
     public SecurityToken CreateTokenWithOwningGroup (User principalUser, Group owningGroup)
@@ -400,7 +400,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         abstractRoles.AddRange (abstractRoleDefinitions);
 
       Principal principal = Principal.Create (principalUser.Tenant, principalUser, principalUser.Roles);
-      return new SecurityToken (principal, owningTenant, owningGroup, owningUser, abstractRoles);
+      return SecurityToken.Create (principal, owningTenant, owningGroup, owningUser, abstractRoles);
     }
 
     public AbstractRoleDefinition CreateTestAbstractRole ()

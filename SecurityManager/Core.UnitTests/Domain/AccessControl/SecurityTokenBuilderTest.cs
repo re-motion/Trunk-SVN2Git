@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.TestDomain;
 using Rhino.Mocks;
 
@@ -356,8 +355,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
 
-      Assert.That (token.OwningTenant, Is.Not.Null);
-      Assert.That (token.OwningTenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
+      var tenant = token.OwningTenant;
+      Assert.That (tenant, Is.Not.Null);
+      Assert.That (tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
     }
 
     [Test]
@@ -392,9 +392,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
 
-      Group group = token.OwningGroup;
+      var group = token.OwningGroup;
       Assert.That (group, Is.Not.Null);
-      Assert.That (group.UniqueIdentifier, Is.EqualTo ("UID: testOwningGroup"));
+      Assert.That (group.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testOwningGroup"));
     }
 
     [Test]
@@ -429,9 +429,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
 
-      User owningUser = token.OwningUser;
+      var owningUser = token.OwningUser;
       Assert.That (owningUser, Is.Not.Null);
-      Assert.That (owningUser.UserName, Is.EqualTo ("group0/user1"));
+      Assert.That (owningUser.GetObject().UserName, Is.EqualTo ("group0/user1"));
     }
 
     [Test]

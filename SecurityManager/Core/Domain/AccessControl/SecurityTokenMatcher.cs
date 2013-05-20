@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return true;
 
         case TenantCondition.OwningTenant:
-          return MatchPrincipalAgainstTenant (token.Principal, token.OwningTenant);
+          return MatchPrincipalAgainstTenant (token.Principal, GetOwningTenant (token));
 
         case TenantCondition.SpecificTenant:
           return MatchPrincipalAgainstTenant (token.Principal, _ace.SpecificTenant);
@@ -126,7 +126,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return true;
 
         case UserCondition.Owner:
-          return MatchPrincipalAgainstUser (token.Principal, token.OwningUser);
+          return MatchPrincipalAgainstUser (token.Principal, GetOwningUser (token));
 
         case UserCondition.SpecificUser:
           return MatchPrincipalAgainstUser (token.Principal, _ace.SpecificUser);
@@ -160,7 +160,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return true;
 
         case GroupCondition.OwningGroup:
-          return MatchPrincipalAgainstGroup (token.Principal, token.OwningGroup, _ace.GroupHierarchyCondition);
+          return MatchPrincipalAgainstGroup (token.Principal, GetOwningGroup (token), _ace.GroupHierarchyCondition);
 
         case GroupCondition.SpecificGroup:
           return MatchPrincipalAgainstGroup (token.Principal, _ace.SpecificGroup, _ace.GroupHierarchyCondition);
@@ -173,7 +173,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           // Starting with this group, it then traverses the group hierarchy downward and checks if any of the groups is a member
           // of the principal's groups; if yes, the ACE matches, otherwise it does not.
         case GroupCondition.BranchOfOwningGroup:
-          return MatchPrincipalAgainstGroup (token.Principal, FindBranchRoot (token.OwningGroup), GroupHierarchyCondition.ThisAndChildren);
+          return MatchPrincipalAgainstGroup (token.Principal, FindBranchRoot (GetOwningGroup (token)), GroupHierarchyCondition.ThisAndChildren);
 
         case GroupCondition.AnyGroupWithSpecificGroupType:
           return MatchPrincipalAgainstPosition (token.Principal);
@@ -268,6 +268,31 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         return null;
 
       return principal.User.GetObjectReference (_clientTransaction);
+    }
+    
+
+    private Tenant GetOwningTenant (SecurityToken token)
+    {
+      if (token.OwningTenant == null)
+        return null;
+
+      return token.OwningTenant.GetObjectReference(_clientTransaction);
+    }
+
+    private Group GetOwningGroup (SecurityToken token)
+    {
+      if (token.OwningGroup == null)
+        return null;
+
+      return token.OwningGroup.GetObjectReference(_clientTransaction);
+    }
+
+    private User GetOwningUser (SecurityToken token)
+    {
+      if (token.OwningUser == null)
+        return null;
+
+      return token.OwningUser.GetObjectReference(_clientTransaction);
     }
 
     private InvalidOperationException CreateInvalidOperationException (string message, params object[] args)

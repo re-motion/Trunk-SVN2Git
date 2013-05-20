@@ -86,9 +86,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     {
       User owningUser = CreateUser (_companyHelper.CompanyTenant, null);
 
-      SecurityToken token = new SecurityToken (
-          Principal.Create (_companyHelper.CompanyTenant, null, new Role[0]), 
-          null, null, owningUser, new AbstractRoleDefinition[0]);
+      SecurityToken token = SecurityToken.Create (
+          Principal.Create (_companyHelper.CompanyTenant, null, new Role[0]),
+          null,
+          null,
+          owningUser,
+          new AbstractRoleDefinition[0]);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 

@@ -17,6 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -63,7 +64,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlEntry ace = TestHelper.CreateAceWithOwningGroup();
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      Assert.That (aclProbe.SecurityToken.OwningGroup, Is.SameAs (Role.Group));
+      Assert.That (aclProbe.SecurityToken.OwningGroup, Is.EqualTo (Role.Group).Using (DomainObjectHandleComparer.Instance));
 
       var accessConditionsExpected = new AclExpansionAccessConditions
                                      {
@@ -103,7 +104,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant();
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (User.Tenant));
+      Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (User.Tenant).Using (DomainObjectHandleComparer.Instance));
 
       var accessConditionsExpected = new AclExpansionAccessConditions
       {
@@ -142,7 +143,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var acl = TestHelper.CreateStatefulAcl (Ace3);
       Assert.That (Ace3.Validate ().IsValid);
       Principal principal = Principal.Create (user.Tenant, user, user.Roles);
-      SecurityToken securityToken = new SecurityToken (principal, user.Tenant, null, null, new AbstractRoleDefinition[0]);
+      SecurityToken securityToken = SecurityToken.Create(principal, user.Tenant, null, null, new AbstractRoleDefinition[0]);
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
       Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, WriteAccessType }));
     }
@@ -155,7 +156,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (ace.Validate ().IsValid);
       var acl = TestHelper.CreateStatefulAcl (ace);
       Principal principal = Principal.Create (User.Tenant, User, User.Roles);
-      SecurityToken securityToken = new SecurityToken (principal, User.Tenant, null, null, new AbstractRoleDefinition[0]);
+      SecurityToken securityToken = SecurityToken.Create(principal, User.Tenant, null, null, new AbstractRoleDefinition[0]);
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
       Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
     }
@@ -169,7 +170,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var acl = TestHelper.CreateStatefulAcl (ace);
       // We pass the Group used in the ace Position above in the owningGroups-list => ACE will match.
       Principal principal = Principal.Create (User.Tenant, User, User.Roles);
-      SecurityToken securityToken = new SecurityToken (principal, User.Tenant, Group, null, new AbstractRoleDefinition[0]);
+      SecurityToken securityToken = SecurityToken.Create(principal, User.Tenant, Group, null, new AbstractRoleDefinition[0]);
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
       Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
     }

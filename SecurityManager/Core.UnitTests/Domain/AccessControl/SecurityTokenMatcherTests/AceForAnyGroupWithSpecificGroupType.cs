@@ -65,10 +65,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group userGroup = _companyHelper.AustrianProjectsDepartment;
       Role userRole = TestHelper.CreateRole (user, userGroup, _companyHelper.HeadPosition);
-      
-      SecurityToken token = new SecurityToken (
+
+      SecurityToken token = SecurityToken.Create (
           Principal.Create (_companyHelper.CompanyTenant, null, new[] { userRole }),
-          null, userGroup, null, new AbstractRoleDefinition[0]);
+          null,
+          userGroup,
+          null,
+          new AbstractRoleDefinition[0]);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
@@ -93,9 +96,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     [Test]
     public void TokenWithoutPrincipalRoles_DoesNotMatch ()
     {
-      SecurityToken token = new SecurityToken (
+      SecurityToken token = SecurityToken.Create (
           Principal.Create (_companyHelper.CompanyTenant, _companyHelper.CarTeamMember, new Role[0]),
-          null, _companyHelper.AustrianCarTeam, null, new AbstractRoleDefinition[0]);
+          null,
+          _companyHelper.AustrianCarTeam,
+          null,
+          new AbstractRoleDefinition[0]);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 

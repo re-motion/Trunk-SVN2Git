@@ -68,7 +68,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       // ACL-expansion, where we distinguish which role gives rise to which access rights).
 
       var principal = Principal.Create (user.Tenant, user, EnumerableUtility.Singleton (role));
-      aclProbe._securityToken = new SecurityToken (principal, owningTenant, owningGroup, owningUser, abstractRoles);
+      aclProbe._securityToken = SecurityToken.Create(principal, owningTenant, owningGroup, owningUser, abstractRoles);
 
       return aclProbe;
     }
