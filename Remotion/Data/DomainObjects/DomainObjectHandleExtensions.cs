@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Persistence;
@@ -56,7 +57,7 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     /// <exception cref="ObjectDeletedException">The object has already been deleted and the <paramref name="includeDeleted"/> flag is 
     /// <see langword="false" />.</exception>
-    public static T GetObject<T> (this IDomainObjectHandle<T> handle, ClientTransaction clientTransaction = null, bool includeDeleted = false)
+    public static T GetObject<T> ([NotNull] this IDomainObjectHandle<T> handle, ClientTransaction clientTransaction = null, bool includeDeleted = false)
         where T : DomainObject, ISupportsGetObject
     {
       ArgumentUtility.CheckNotNull ("handle", handle);
@@ -81,7 +82,7 @@ namespace Remotion.Data.DomainObjects
     /// An error occurred while reading a <see cref="PropertyValue"/>.<br/> -or- <br/>
     /// An error occurred while accessing the data source.
     /// </exception>
-    public static T TryGetObject<T> (this IDomainObjectHandle<T> handle, ClientTransaction clientTransaction = null)
+    public static T TryGetObject<T> ([NotNull] this IDomainObjectHandle<T> handle, ClientTransaction clientTransaction = null)
         where T : DomainObject, ISupportsGetObject
     {
       ArgumentUtility.CheckNotNull ("handle", handle);
@@ -111,7 +112,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ArgumentNullException">One of the parameters passed to this method is <see langword="null"/>.</exception>
     /// <exception cref="ObjectInvalidException">The object with the given <paramref name="handle"/> is invalid in the given 
     /// <paramref name="clientTransaction"/>.</exception>
-    public static T GetObjectReference<T> (this IDomainObjectHandle<T> handle, ClientTransaction clientTransaction = null)
+    public static T GetObjectReference<T> ([NotNull] this IDomainObjectHandle<T> handle, ClientTransaction clientTransaction = null)
         where T : DomainObject, ISupportsGetObject
     {
       ArgumentUtility.CheckNotNull ("handle", handle);
@@ -137,7 +138,7 @@ namespace Remotion.Data.DomainObjects
     /// not found objects as <see cref="StateType.Invalid"/>, so calling this API again witht he same <see cref="ObjectID"/> results in a 
     /// <see cref="ObjectInvalidException"/> being thrown.
     /// </exception>
-    public static T[] GetObjects<T> (this IEnumerable<IDomainObjectHandle<T>> handles, ClientTransaction clientTransaction = null)
+    public static T[] GetObjects<T> ([NotNull] this IEnumerable<IDomainObjectHandle<T>> handles, ClientTransaction clientTransaction = null)
         where T : DomainObject, ISupportsGetObject
     {
       ArgumentUtility.CheckNotNull ("handles", handles);
@@ -157,7 +158,7 @@ namespace Remotion.Data.DomainObjects
     /// <paramref name="handles"/>. This list can contain invalid and <see langword="null" /> <see cref="DomainObject"/> references.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="handles"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-    public static T[] TryGetObjects<T> (this IEnumerable<IDomainObjectHandle<T>> handles, ClientTransaction clientTransaction = null)
+    public static T[] TryGetObjects<T> ([NotNull] this IEnumerable<IDomainObjectHandle<T>> handles, ClientTransaction clientTransaction = null)
         where T : DomainObject, ISupportsGetObject
     {
       ArgumentUtility.CheckNotNull ("handles", handles);
