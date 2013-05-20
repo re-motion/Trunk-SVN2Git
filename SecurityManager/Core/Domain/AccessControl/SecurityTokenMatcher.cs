@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.FunctionalProgramming;
+using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects;
@@ -96,7 +97,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           throw CreateInvalidOperationException ("The value 'Parent' is not a valid value for matching the 'TenantHierarchyCondition'.");
 
         case TenantHierarchyCondition.ThisAndParent:
-          return new[] { referenceTenant }.Concat (referenceTenant.GetParents()).Contains (GetPrincipalTenant (principal));
+          return GetTenantAndParents(referenceTenant).Contains (GetPrincipalTenant (principal));
 
         default:
           throw CreateInvalidOperationException (
@@ -109,8 +110,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (_ace.SpecificAbstractRole == null)
         return true;
 
-      return token.AbstractRoles.Select (abstractRole => abstractRole.GetObjectReference (_clientTransaction))
-                  .Contains (_ace.SpecificAbstractRole);
+      return GetAbstractRoles(token).Contains (_ace.SpecificAbstractRole);
     }
 
     private bool MatchesUserCondition (SecurityToken token)
@@ -187,8 +187,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (referenceGroup == null)
         return null;
 
-      return EnumerableUtility.Singleton (referenceGroup).Concat (referenceGroup.GetParents())
-                              .FirstOrDefault (g => g.GroupType == _ace.SpecificGroupType);
+      return GetGroupAndParents (referenceGroup).FirstOrDefault (g => _ace.SpecificGroupType.Equals (g.GroupType));
     }
 
     private bool MatchPrincipalAgainstGroup (Principal principal, Group referenceGroup, GroupHierarchyCondition groupHierarchyCondition)
@@ -199,11 +198,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       var principalRoles = GetMatchingPrincipalRoles (principal);
       var principalGroups = principalRoles.Select (r => r.Group.GetObjectReference());
 
-      Func<bool> isPrincipalMatchingReferenceGroupOrParents =
-          () => principalGroups.Intersect (EnumerableUtility.Singleton (referenceGroup).Concat (referenceGroup.GetParents())).Any();
+      Func<bool> isPrincipalMatchingReferenceGroupOrParents = () => principalGroups.Intersect (GetGroupAndParents (referenceGroup)).Any();
 
-      Func<bool> isPrincipalMatchingReferenceGroupOrChildren =
-          () => principalGroups.SelectMany (g => EnumerableUtility.Singleton (g).Concat (g.GetParents())).Contains (referenceGroup);
+      Func<bool> isPrincipalMatchingReferenceGroupOrChildren = () => principalGroups.SelectMany (GetGroupAndParents).Contains (referenceGroup);
 
       switch (groupHierarchyCondition)
       {
@@ -237,14 +234,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       var roles = (IEnumerable<PrincipalRole>) principal.Roles;
       if (_ace.UserCondition == UserCondition.SpecificPosition)
-        roles = roles.Where (r => r.Position.GetObjectReference (_clientTransaction) == _ace.SpecificPosition);
+        roles = roles.Where (r => _ace.SpecificPosition.Equals (r.Position.GetObjectReference (_clientTransaction)));
 
       bool hasSpecificPositionAndGroupType =
           _ace.UserCondition == UserCondition.SpecificPosition && _ace.GroupCondition == GroupCondition.BranchOfOwningGroup
           || _ace.GroupCondition == GroupCondition.AnyGroupWithSpecificGroupType;
 
       if (hasSpecificPositionAndGroupType)
-        roles = roles.Where (r => r.Group.GetObject(_clientTransaction).GroupType == _ace.SpecificGroupType);
+        roles = roles.Where (r => _ace.SpecificGroupType.Equals (r.Group.GetObject (_clientTransaction).GroupType));
 
       return roles;
     }
@@ -264,7 +261,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       return principal.User.GetObjectReference (_clientTransaction);
     }
-    
 
     private Tenant GetOwningTenant (SecurityToken token)
     {
@@ -288,6 +284,21 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         return null;
 
       return token.OwningUser.GetObjectReference(_clientTransaction);
+    }
+
+    private IEnumerable<AbstractRoleDefinition> GetAbstractRoles (SecurityToken token)
+    {
+      return token.AbstractRoles.Select (abstractRole => abstractRole.GetObjectReference (_clientTransaction));
+    }
+
+    private IEnumerable<Tenant> GetTenantAndParents (Tenant tenant)
+    {
+      return EnumerableUtility.Singleton (tenant).Concat (tenant.GetParents());
+    }
+
+    private IEnumerable<Group> GetGroupAndParents (Group @group)
+    {
+      return EnumerableUtility.Singleton (@group).Concat (@group.GetParents());
     }
 
     private InvalidOperationException CreateInvalidOperationException (string message, params object[] args)
