@@ -223,7 +223,7 @@ namespace Remotion.SecurityManager.UnitTests
     }
 
     [Test]
-    [Ignore ("RM-5522: Temporarily disabled")]
+    [Ignore ("RM-5633: Temporarily disabled")]
     public void GetAccess_UsesSecurityFreeSection ()
     {
       ClientTransaction subTransaction;
