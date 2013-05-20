@@ -15,12 +15,18 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using JetBrains.Annotations;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
+  /// <summary>
+  /// Defines the API required for resolving the information provided via the <see cref="ISecurityPrincipal"/>.
+  /// </summary>
+  /// <seealso cref="SecurityPrincipalRepository"/>
   public interface ISecurityPrincipalRepository
   {
     [NotNull]

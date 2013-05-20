@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using JetBrains.Annotations;
 using Remotion.Data.DomainObjects;
@@ -24,14 +25,21 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
+  /// <summary>
+  /// Defines the API required for resolving the information provided via the <see cref="ISecurityContext"/>.
+  /// </summary>
+  /// <seealso cref="SecurityContextRepository"/>
   public interface ISecurityContextRepository
   {
     [NotNull]
     IDomainObjectHandle<Tenant> GetTenant (string uniqueIdentifier);
+
     [NotNull]
     IDomainObjectHandle<Group> GetGroup (string uniqueIdentifier);
+
     [NotNull]
     IDomainObjectHandle<User> GetUser (string userName);
+
     [NotNull]
     IDomainObjectHandle<AbstractRoleDefinition> GetAbstractRole (EnumWrapper abstractRoleName);
   }

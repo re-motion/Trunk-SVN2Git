@@ -75,42 +75,45 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       if (string.IsNullOrEmpty (principal.SubstitutedUser) && principal.SubstitutedRole != null)
         throw CreateAccessControlException ("A substituted role was specified without a substituted user.");
-     
+
       User user = _securityPrincipalRepository.GetUser (principal.User);
-      Tenant principalTenant = user.Tenant;
-      User principalUser;
-      IEnumerable<Role> principalRoles;
-
-      if (principal.SubstitutedUser != null)
+      lock (user.RootTransaction)
       {
-        Substitution substitution = GetSubstitution (principal, user);
+        Tenant principalTenant = user.Tenant;
+        User principalUser;
+        IEnumerable<Role> principalRoles;
 
-        if (substitution == null)
+        if (principal.SubstitutedUser != null)
         {
-          principalUser = null;
-          principalRoles = new Role[0];
-        }
-        else if (principal.SubstitutedRole != null)
-        {
-          principalUser = null;
-          principalRoles = EnumerableUtility.Singleton (substitution.SubstitutedRole);
+          Substitution substitution = GetSubstitution (principal, user);
+
+          if (substitution == null)
+          {
+            principalUser = null;
+            principalRoles = new Role[0];
+          }
+          else if (principal.SubstitutedRole != null)
+          {
+            principalUser = null;
+            principalRoles = EnumerableUtility.Singleton (substitution.SubstitutedRole);
+          }
+          else
+          {
+            principalUser = substitution.SubstitutedUser;
+            principalRoles = substitution.SubstitutedUser.Roles;
+          }
         }
         else
         {
-          principalUser = substitution.SubstitutedUser;
-          principalRoles = substitution.SubstitutedUser.Roles;
-        }
-      }
-      else 
-      {
-        principalUser = user;
-        principalRoles = user.Roles;
-        
-        if (principal.Role != null)
-          principalRoles = principalRoles.Where (r => IsRoleMatchingPrincipalRole (r, principal.Role));
-      }
+          principalUser = user;
+          principalRoles = user.Roles;
 
-      return Principal.Create (principalTenant, principalUser, principalRoles);
+          if (principal.Role != null)
+            principalRoles = principalRoles.Where (r => IsRoleMatchingPrincipalRole (r, principal.Role));
+        }
+
+        return Principal.Create (principalTenant, principalUser, principalRoles);
+      }
     }
 
     private Substitution GetSubstitution (ISecurityPrincipal principal, User user)

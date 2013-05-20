@@ -17,6 +17,8 @@
 // 
 using System;
 using System.Linq;
+using System.Threading;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
@@ -26,13 +28,48 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
+  /// <summary>
+  /// Cache-based implementation of the <see cref="ISecurityPrincipalRepository"/> interface.
+  /// </summary>
   public class SecurityPrincipalRepository : ISecurityPrincipalRepository
   {
+    private DateTime _nextRevisionCheckInUtc;
+    private readonly TimeSpan _revisionCheckInterval = TimeSpan.FromSeconds (1);
+    private int _revision;
+
+    private readonly ICache<string, User> _userCache = CacheFactory.CreateWithLazyLocking<string, User>();
+
+    public SecurityPrincipalRepository ()
+    {
+      _revision = GetRevision();
+    }
+
     public User GetUser (string userName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("userName", userName);
 
-      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
+      RefreshOnDemand();
+      return _userCache.GetOrCreateValue (userName, GetUserInternal);
+    }
+    
+    private void RefreshOnDemand ()
+    {
+      if (DateTime.UtcNow >= _nextRevisionCheckInUtc)
+      {
+        _nextRevisionCheckInUtc = DateTime.UtcNow.Add (_revisionCheckInterval);
+        var revision = GetRevision();
+        if (revision != _revision)
+        {
+          _userCache.Clear();
+          _revision = revision;
+        }
+      }
+    }
+
+    private User GetUserInternal (string userName)
+    {
+      var clientTransaction = ClientTransaction.CreateRootTransaction();
+      using (clientTransaction.EnterNonDiscardingScope())
       {
         PrefetchPositions();
         return QueryFactory.CreateLinqQuery<User>().Where (u => u.UserName == userName).Select (u => u)
@@ -48,6 +85,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 // ReSharper disable ReturnValueOfPureMethodIsNotUsed
       QueryFactory.CreateLinqQuery<Position>().ToList();
 // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+    }
+
+    private int GetRevision ()
+    {
+      return (int) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery());
     }
 
     private AccessControlException CreateAccessControlException (string message, params object[] args)
