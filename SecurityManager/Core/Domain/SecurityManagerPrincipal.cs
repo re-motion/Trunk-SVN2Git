@@ -92,9 +92,9 @@ namespace Remotion.SecurityManager.Domain
     {
       get
       {
+        _lock.EnterReadLock();
         try
         {
-          _lock.EnterReadLock();
           return _tenantProxy;
         }
         finally
@@ -108,9 +108,9 @@ namespace Remotion.SecurityManager.Domain
     {
       get
       {
+        _lock.EnterReadLock();
         try
         {
-          _lock.EnterReadLock();
           return _userProxy;
         }
         finally
@@ -124,9 +124,9 @@ namespace Remotion.SecurityManager.Domain
     {
       get
       {
+        _lock.EnterReadLock();
         try
         {
-          _lock.EnterReadLock();
           return _substitutionProxy;
         }
         finally
@@ -138,9 +138,9 @@ namespace Remotion.SecurityManager.Domain
 
     public ISecurityPrincipal GetSecurityPrincipal ()
     {
+      _lock.EnterReadLock();
       try
       {
-        _lock.EnterReadLock();
         return _securityPrincipal;
       }
       finally
@@ -151,10 +151,9 @@ namespace Remotion.SecurityManager.Domain
 
     public void Refresh ()
     {
+      _lock.EnterUpgradeableReadLock();
       try
       {
-        _lock.EnterUpgradeableReadLock();
-
         var revision = GetRevision();
         if (revision != _revision)
           InitializeCache (revision);
@@ -246,10 +245,9 @@ namespace Remotion.SecurityManager.Domain
       var newSubstitutionProxy = substitution != null ? CreateSubstitutionProxy (substitution) : null;
       var newSecurityPrincipal = CreateSecurityPrincipal (transaction);
 
+      _lock.EnterWriteLock();
       try
       {
-        _lock.EnterWriteLock();
-
         _revision = revision;
         _tenantProxy = newTenantProxy;
         _userProxy = newUserProxy;
