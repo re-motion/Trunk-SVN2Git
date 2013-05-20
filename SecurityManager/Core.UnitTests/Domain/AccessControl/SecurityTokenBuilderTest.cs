@@ -51,8 +51,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = CreateTestPrincipal ();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (principal, context);
 
       var user = token.Principal.User.GetObject();
       Assert.That (user.UserName, Is.EqualTo ("test.user"));
@@ -75,8 +75,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = principalStub;
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (principal, context);
 
       var principalUser = token.Principal.User.GetObject();
       Assert.That (principalUser.UserName, Is.EqualTo ("test.user"));
@@ -101,8 +101,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = principalStub;
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
@@ -122,8 +122,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = principalStub;
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (principal, context);
 
       var user = token.Principal.User.GetObject();
       Assert.That (user.UserName, Is.EqualTo ("test.user"));
@@ -147,8 +147,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = principalStub;
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
@@ -166,8 +166,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = principalStub;
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
@@ -189,8 +189,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = principalStub;
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
@@ -212,8 +212,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = principalStub;
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
@@ -231,8 +231,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = principalStub;
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (principal, context);
 
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant, Is.Not.Null);
@@ -248,8 +248,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       var principalStub = MockRepository.GenerateStub<ISecurityPrincipal> ();
       principalStub.Stub (stub => stub.IsNull).Return (true);
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principalStub, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (principalStub, context);
 
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant, Is.Null);
@@ -264,8 +264,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = CreatePrincipal ("notexisting.user");
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      builder.CreateToken (principal, context);
     }
 
     [Test]
@@ -275,8 +275,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = CreatePrincipal ("");
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      builder.CreateToken (principal, context);
     }
 
     [Test]
@@ -294,8 +294,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext ();
       ISecurityPrincipal principal = principalStub;
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      builder.CreateToken (principal, context);
     }
 
     [Test]
@@ -303,8 +303,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       SecurityContext context = CreateContext();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, CreateTestPrincipal(), context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (CreateTestPrincipal(), context);
 
       Assert.That (token.AbstractRoles, Is.Empty);
     }
@@ -314,8 +314,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       SecurityContext context = CreateContext (ProjectRoles.QualityManager);
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, CreateTestPrincipal(), context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (CreateTestPrincipal(), context);
 
       Assert.That (token.AbstractRoles.Count, Is.EqualTo (1));
       Assert.That (
@@ -328,8 +328,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       SecurityContext context = CreateContext (ProjectRoles.QualityManager, ProjectRoles.Developer);
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, CreateTestPrincipal(), context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (CreateTestPrincipal(), context);
 
       Assert.That (token.AbstractRoles.Count, Is.EqualTo (2));
     }
@@ -342,8 +342,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       SecurityContext context = CreateContext (ProjectRoles.Developer, UndefinedAbstractRoles.Undefined, ProjectRoles.QualityManager);
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      builder.CreateToken (ClientTransactionScope.CurrentTransaction, CreateTestPrincipal(), context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      builder.CreateToken (CreateTestPrincipal(), context);
     }
 
     [Test]
@@ -352,8 +352,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext();
       ISecurityPrincipal user = CreateTestPrincipal();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (user, context);
 
       var tenant = token.OwningTenant;
       Assert.That (tenant, Is.Not.Null);
@@ -366,8 +366,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContextWithoutOwningTenant();
       ISecurityPrincipal user = CreateTestPrincipal();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (user, context);
 
       Assert.That (token.OwningTenant, Is.Null);
     }
@@ -379,8 +379,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContextWithNotExistingOwningTenant();
       ISecurityPrincipal user = CreateTestPrincipal();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      builder.CreateToken (user, context);
     }
 
     [Test]
@@ -389,8 +389,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext();
       ISecurityPrincipal user = CreateTestPrincipal();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (user, context);
 
       var group = token.OwningGroup;
       Assert.That (group, Is.Not.Null);
@@ -403,8 +403,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContextWithoutOwningGroup();
       ISecurityPrincipal user = CreateTestPrincipal();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (user, context);
 
       Assert.That (token.OwningGroup, Is.Null);
     }
@@ -416,8 +416,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContextWithNotExistingOwningGroup();
       ISecurityPrincipal user = CreateTestPrincipal();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      builder.CreateToken (user, context);
     }
 
     [Test]
@@ -426,8 +426,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext();
       ISecurityPrincipal user = CreateTestPrincipal();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (user, context);
 
       var owningUser = token.OwningUser;
       Assert.That (owningUser, Is.Not.Null);
@@ -440,8 +440,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContextWithoutOwningUser();
       ISecurityPrincipal user = CreateTestPrincipal();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      SecurityToken token = builder.CreateToken (user, context);
 
       Assert.That (token.OwningUser, Is.Null);
     }
@@ -453,8 +453,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContextWithNotExistingOwningUser();
       ISecurityPrincipal user = CreateTestPrincipal();
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+      builder.CreateToken (user, context);
     }
 
     [Test]
@@ -465,11 +465,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       using (ClientTransactionTestHelper.MakeInactive (ClientTransactionScope.CurrentTransaction))
       {
-        SecurityTokenBuilder builder = new SecurityTokenBuilder();
-        SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+        SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
+        SecurityToken token = builder.CreateToken (principal, context);
 
         Assert.That (token.Principal.IsNull, Is.False);
       }
+    }
+
+    private SecurityTokenBuilder CreateSecurityTokenBuilder ()
+    {
+      return new SecurityTokenBuilder (new SecurityPrincipalRepository(), new SecurityContextRepository());
     }
 
     private ISecurityPrincipal CreateTestPrincipal ()

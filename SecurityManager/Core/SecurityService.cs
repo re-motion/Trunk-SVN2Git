@@ -35,19 +35,8 @@ namespace Remotion.SecurityManager
     private readonly IAccessControlListFinder _accessControlListFinder;
     private readonly ISecurityTokenBuilder _securityTokenBuilder;
 
-    public SecurityService ()
-        : this (new AccessControlListFinder(), new SecurityTokenBuilder())
-    {
-    }
-
-    public SecurityService (IAccessControlListFinder accessControlListFinder, ISecurityTokenBuilder securityTokenBuilder)
-        : this ("SecurityManager", new NameValueCollection(), accessControlListFinder, securityTokenBuilder)
-    {
-    }
-
-
     public SecurityService (string name, NameValueCollection config)
-        : this (name, config, new AccessControlListFinder(), new SecurityTokenBuilder())
+        : this (name, config, new AccessControlListFinder(), new SecurityTokenBuilder (new SecurityPrincipalRepository(), new SecurityContextRepository()))
     {
     }
 
@@ -80,7 +69,7 @@ namespace Remotion.SecurityManager
         try
         {
           acl = _accessControlListFinder.Find (transaction, context);
-          token = _securityTokenBuilder.CreateToken (transaction, principal, context);
+          token = _securityTokenBuilder.CreateToken (principal, context);
         }
         catch (AccessControlException e)
         {
@@ -88,11 +77,8 @@ namespace Remotion.SecurityManager
           return new AccessType[0];
         }
 
-        using (transaction.EnterNonDiscardingScope())
-        {
-          AccessInformation accessInformation = acl.GetAccessTypes (token);
-          return Array.ConvertAll (accessInformation.AllowedAccessTypes, ConvertToAccessType);
-        }
+        AccessInformation accessInformation = acl.GetAccessTypes (token);
+        return Array.ConvertAll (accessInformation.AllowedAccessTypes, ConvertToAccessType);
       }
     }
 

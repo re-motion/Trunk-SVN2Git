@@ -29,13 +29,21 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
   /// <summary>
-  /// Teh <see cref="SecurityTokenBuilder"/> is responsible for creating a <see cref="SecurityToken"/> from an <see cref="ISecurityContext"/> and an
+  /// The <see cref="SecurityTokenBuilder"/> is responsible for creating a <see cref="SecurityToken"/> from an <see cref="ISecurityContext"/> and an
   /// <see cref="IPrincipal"/>.
   /// </summary>
   public class SecurityTokenBuilder : ISecurityTokenBuilder
   {
-    public SecurityTokenBuilder ()
+    private readonly ISecurityPrincipalRepository _securityPrincipalRepository;
+    private readonly ISecurityContextRepository _securityContextRepository;
+
+    public SecurityTokenBuilder (ISecurityPrincipalRepository securityPrincipalRepository, ISecurityContextRepository securityContextRepository)
     {
+      ArgumentUtility.CheckNotNull ("securityPrincipalRepository", securityPrincipalRepository);
+      ArgumentUtility.CheckNotNull ("securityContextRepository", securityContextRepository);
+      
+      _securityPrincipalRepository = securityPrincipalRepository;
+      _securityContextRepository = securityContextRepository;
     }
 
     /// <exception cref="AccessControlException">
@@ -43,22 +51,18 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     ///   A matching <see cref="Group"/> is not found for the <paramref name="context"/>'s <see cref="ISecurityContext.OwnerGroup"/>.<br/>- or -<br/>
     ///   A matching <see cref="AbstractRoleDefinition"/> is not found for all entries in the <paramref name="context"/>'s <see cref="SecurityContext.AbstractRoles"/> collection.
     /// </exception>
-    public SecurityToken CreateToken (ClientTransaction transaction, ISecurityPrincipal principal, ISecurityContext context)
+    public SecurityToken CreateToken (ISecurityPrincipal principal, ISecurityContext context)
     {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      using (transaction.EnterNonDiscardingScope())
-      {
         var principalUser = CreatePrincipal (principal);
         var owningTenant = GetTenant (context.OwnerTenant);
         var owningGroup = GetGroup (context.OwnerGroup);
         var owningUser = GetUser (context.Owner);
         var abstractRoles = GetAbstractRoles (context.AbstractRoles);
 
-        return SecurityToken.Create(principalUser, owningTenant, owningGroup, owningUser, abstractRoles);
-      }
+        return new SecurityToken (principalUser, owningTenant, owningGroup, owningUser, abstractRoles);
     }
 
     private Principal CreatePrincipal (ISecurityPrincipal principal)
@@ -72,9 +76,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (string.IsNullOrEmpty (principal.SubstitutedUser) && principal.SubstitutedRole != null)
         throw CreateAccessControlException ("A substituted role was specified without a substituted user.");
      
-      User user = GetUser (principal.User);
-      Assertion.IsNotNull (user);
-
+      User user = _securityPrincipalRepository.GetUser (principal.User);
       Tenant principalTenant = user.Tenant;
       User principalUser;
       IEnumerable<Role> principalRoles;
@@ -133,63 +135,33 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return role.Group.UniqueIdentifier == principalRole.Group && role.Position.UniqueIdentifier == principalRole.Position;
     }
 
-    private Tenant GetTenant (string tenantUniqueIdentifier)
+    private IDomainObjectHandle<Tenant> GetTenant (string uniqueIdentifier)
     {
-      if (StringUtility.IsNullOrEmpty (tenantUniqueIdentifier))
+      if (StringUtility.IsNullOrEmpty (uniqueIdentifier))
         return null;
 
-      Tenant tenant = Tenant.FindByUnqiueIdentifier (tenantUniqueIdentifier);
-      if (tenant == null)
-        throw CreateAccessControlException ("The tenant '{0}' could not be found.", tenantUniqueIdentifier);
-
-      return tenant;
+      return _securityContextRepository.GetTenant (uniqueIdentifier);
     }
 
-    private User GetUser (string userName)
+    private IDomainObjectHandle<User> GetUser (string userName)
     {
       if (StringUtility.IsNullOrEmpty (userName))
         return null;
 
-      User user = User.FindByUserName (userName);
-      if (user == null)
-        throw CreateAccessControlException ("The user '{0}' could not be found.", userName);
-
-      return user;
+      return _securityContextRepository.GetUser (userName);
     }
 
-    private Group GetGroup (string groupUniqueIdentifier)
+    private IDomainObjectHandle<Group> GetGroup (string uniqueIdentifier)
     {
-      if (StringUtility.IsNullOrEmpty (groupUniqueIdentifier))
+      if (StringUtility.IsNullOrEmpty (uniqueIdentifier))
         return null;
 
-      Group group = Group.FindByUnqiueIdentifier (groupUniqueIdentifier);
-      if (group == null)
-        throw CreateAccessControlException ("The group '{0}' could not be found.", groupUniqueIdentifier);
-
-      return group;
+      return _securityContextRepository.GetGroup (uniqueIdentifier);
     }
 
     private IEnumerable<IDomainObjectHandle<AbstractRoleDefinition>> GetAbstractRoles (IEnumerable<EnumWrapper> abstractRoleNames)
     {
-      var abstractRoleNamesCollection = abstractRoleNames.ConvertToCollection();
-      var abstractRolesCollection = AbstractRoleDefinition.Find (abstractRoleNamesCollection);
-
-      EnumWrapper? missingAbstractRoleName = FindFirstMissingAbstractRole (abstractRoleNamesCollection, abstractRolesCollection);
-      if (missingAbstractRoleName != null)
-        throw CreateAccessControlException ("The abstract role '{0}' could not be found.", missingAbstractRoleName);
-
-      return abstractRolesCollection.Select (abstractRole => abstractRole.GetHandle());
-    }
-
-    private EnumWrapper? FindFirstMissingAbstractRole (
-        IEnumerable<EnumWrapper> expectedAbstractRoles, IList<AbstractRoleDefinition> actualAbstractRoleDefinitions)
-    {
-      var actualAbstractRoles = actualAbstractRoleDefinitions.Select (r => EnumWrapper.Get (r.Name));
-      var result = from expected in expectedAbstractRoles
-                   where !actualAbstractRoles.Contains (expected)
-                   select (EnumWrapper?) expected;
-
-      return result.FirstOrDefault();
+      return abstractRoleNames.Select (name => _securityContextRepository.GetAbstractRole (name));
     }
 
     private AccessControlException CreateAccessControlException (string message, params object[] args)

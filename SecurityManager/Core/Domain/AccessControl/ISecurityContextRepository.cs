@@ -16,12 +16,23 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using JetBrains.Annotations;
+using Remotion.Data.DomainObjects;
 using Remotion.Security;
+using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
-  public interface ISecurityTokenBuilder
+  public interface ISecurityContextRepository
   {
-    SecurityToken CreateToken (ISecurityPrincipal principal, ISecurityContext context);
+    [NotNull]
+    IDomainObjectHandle<Tenant> GetTenant (string uniqueIdentifier);
+    [NotNull]
+    IDomainObjectHandle<Group> GetGroup (string uniqueIdentifier);
+    [NotNull]
+    IDomainObjectHandle<User> GetUser (string userName);
+    [NotNull]
+    IDomainObjectHandle<AbstractRoleDefinition> GetAbstractRole (EnumWrapper abstractRoleName);
   }
 }

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
@@ -42,6 +43,11 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       //Create
       Search
+    }
+
+    public static Expression<Func<User, IEnumerable<Substitution>>> SelectSubstitutions ()
+    {
+      return user => user.SubstitutingFor;
     }
 
     internal static User NewObject ()

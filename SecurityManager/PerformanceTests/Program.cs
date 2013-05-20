@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
@@ -26,7 +27,7 @@ namespace Remotion.SecurityManager.PerformanceTests
 
       LogManager.Initialize();
 
-      SecurityService provider = new SecurityService();
+      SecurityService provider = new SecurityService("SecurityManager", new NameValueCollection());
       var context =
           new SimpleSecurityContext (
              "ActaNova.Federal.Domain.File, ActaNova.Federal.Domain",

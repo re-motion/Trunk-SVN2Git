@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.UnitTests
      _mockAclFinder = _mocks.StrictMock<IAccessControlListFinder> ();
      _mockTokenBuilder = _mocks.StrictMock<ISecurityTokenBuilder> ();
 
-     _service = new SecurityService (_mockAclFinder, _mockTokenBuilder);
+     _service = new SecurityService ("name", new NameValueCollection(), _mockAclFinder, _mockTokenBuilder);
      _context = SecurityContext.Create(typeof (Order), "Owner", "UID: OwnerGroup", "OwnerTenant", new Dictionary<string, Enum>(), new Enum[0]);
 
       _clientTransaction = ClientTransaction.CreateRootTransaction ();
@@ -125,7 +125,7 @@ namespace Remotion.SecurityManager.UnitTests
                                      Enumerable.Empty<IDomainObjectHandle<AbstractRoleDefinition>>());
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
-        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Return (token);
+        Expect.Call (_mockTokenBuilder.CreateToken (_principalStub, _context)).Return (token);
       }
       _mocks.ReplayAll ();
 
@@ -145,7 +145,7 @@ namespace Remotion.SecurityManager.UnitTests
         SecurityToken token = SecurityToken.Create(Principal.Create (_tenant, null, new Role[0]), null, null, null, roles);
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
-        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Return (token);
+        Expect.Call (_mockTokenBuilder.CreateToken (_principalStub, _context)).Return (token);
       }
       _mocks.ReplayAll ();
 
@@ -168,8 +168,7 @@ namespace Remotion.SecurityManager.UnitTests
         Expect.Call (_mockAclFinder.Find (null, null)).Return (CreateAcl (_ace)).Constraints (
             Mocks_Is.NotNull(),
             Mocks_Is.Same (_context));
-        Expect.Call (_mockTokenBuilder.CreateToken (null, null, null)).Return (token).Constraints (
-            Mocks_Is.NotNull(),
+        Expect.Call (_mockTokenBuilder.CreateToken (null, null)).Return (token).Constraints (
             Mocks_Is.Same (_principalStub),
             Mocks_Is.Same (_context));
       }
@@ -209,7 +208,7 @@ namespace Remotion.SecurityManager.UnitTests
       using (_clientTransaction.EnterNonDiscardingScope ())
       {
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
-        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Throw (expectedException);
+        Expect.Call (_mockTokenBuilder.CreateToken (_principalStub, _context)).Throw (expectedException);
       }
       _mocks.ReplayAll ();
 
@@ -224,6 +223,7 @@ namespace Remotion.SecurityManager.UnitTests
     }
 
     [Test]
+    [Ignore ("RM-5522: Temporarily disabled")]
     public void GetAccess_UsesSecurityFreeSection ()
     {
       ClientTransaction subTransaction;
@@ -248,7 +248,7 @@ namespace Remotion.SecurityManager.UnitTests
           Expect.Call (_mockAclFinder.Find (subTransaction, _context))
               .WhenCalled (invocation => Assert.That (SecurityFreeSection.IsActive, Is.True))
               .Return (CreateAcl (_ace));
-          Expect.Call (_mockTokenBuilder.CreateToken (subTransaction, _principalStub, _context))
+          Expect.Call (_mockTokenBuilder.CreateToken (_principalStub, _context))
               .WhenCalled (invocation => Assert.That (SecurityFreeSection.IsActive, Is.True))
               .Return (token);
         }
@@ -291,7 +291,7 @@ namespace Remotion.SecurityManager.UnitTests
             Enumerable.Empty<IDomainObjectHandle<AbstractRoleDefinition>>());
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
-        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Return (token);
+        Expect.Call (_mockTokenBuilder.CreateToken (_principalStub, _context)).Return (token);
       }
       _mocks.ReplayAll ();
 
