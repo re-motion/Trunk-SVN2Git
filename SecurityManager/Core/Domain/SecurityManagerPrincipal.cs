@@ -17,6 +17,8 @@
 // 
 using System;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Threading;
 using JetBrains.Annotations;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
@@ -61,7 +63,9 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private readonly object _syncRoot = new object();
+    [NonSerialized]
+    private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+
     private int _revision;
     private readonly IDomainObjectHandle<Tenant> _tenantHandle;
     private readonly IDomainObjectHandle<User> _userHandle;
@@ -86,26 +90,78 @@ namespace Remotion.SecurityManager.Domain
 
     public TenantProxy Tenant
     {
-      get { return _tenantProxy; }
+      get
+      {
+        try
+        {
+          _lock.EnterReadLock();
+          return _tenantProxy;
+        }
+        finally
+        {
+          _lock.ExitReadLock();
+        }
+      }
     }
 
     public UserProxy User
     {
-      get { return _userProxy; }
+      get
+      {
+        try
+        {
+          _lock.EnterReadLock();
+          return _userProxy;
+        }
+        finally
+        {
+          _lock.ExitReadLock();
+        }
+      }
     }
 
     public SubstitutionProxy Substitution
     {
-      get { return _substitutionProxy; }
+      get
+      {
+        try
+        {
+          _lock.EnterReadLock();
+          return _substitutionProxy;
+        }
+        finally
+        {
+          _lock.ExitReadLock();
+        }
+      }
+    }
+
+    public ISecurityPrincipal GetSecurityPrincipal ()
+    {
+      try
+      {
+        _lock.EnterReadLock();
+        return _securityPrincipal;
+      }
+      finally
+      {
+        _lock.ExitReadLock();
+      }
     }
 
     public void Refresh ()
     {
-      lock (_syncRoot)
+      try
       {
+        _lock.EnterUpgradeableReadLock();
+
         var revision = GetRevision();
         if (revision != _revision)
           InitializeCache (revision);
+      }
+      finally
+      {
+        _lock.ExitUpgradeableReadLock();
       }
     }
 
@@ -128,11 +184,6 @@ namespace Remotion.SecurityManager.Domain
       return GetUser (CreateClientTransaction()).GetActiveSubstitutions()
           .Select (CreateSubstitutionProxy)
           .ToArray();
-    }
-
-    public ISecurityPrincipal GetSecurityPrincipal ()
-    {
-      return _securityPrincipal;
     }
 
     private SecurityPrincipal CreateSecurityPrincipal (ClientTransaction transaction)
@@ -195,11 +246,20 @@ namespace Remotion.SecurityManager.Domain
       var newSubstitutionProxy = substitution != null ? CreateSubstitutionProxy (substitution) : null;
       var newSecurityPrincipal = CreateSecurityPrincipal (transaction);
 
-      _revision = revision;
-      _tenantProxy = newTenantProxy;
-      _userProxy = newUserProxy;
-      _substitutionProxy = newSubstitutionProxy;
-      _securityPrincipal = newSecurityPrincipal;
+      try
+      {
+        _lock.EnterWriteLock();
+
+        _revision = revision;
+        _tenantProxy = newTenantProxy;
+        _userProxy = newUserProxy;
+        _substitutionProxy = newSubstitutionProxy;
+        _securityPrincipal = newSecurityPrincipal;
+      }
+      finally
+      {
+        _lock.ExitWriteLock();
+      }
     }
 
     private Tenant GetTenant (ClientTransaction transaction)
@@ -238,6 +298,12 @@ namespace Remotion.SecurityManager.Domain
     bool INullObject.IsNull
     {
       get { return false; }
+    }
+
+    [OnDeserialized]
+    private void OnDeserialized (StreamingContext context)
+    {
+      _lock = new ReaderWriterLockSlim();
     }
   }
 }
