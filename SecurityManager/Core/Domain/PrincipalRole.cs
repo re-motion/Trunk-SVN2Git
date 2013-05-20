@@ -17,6 +17,7 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -25,10 +26,18 @@ namespace Remotion.SecurityManager.Domain
 {
   public class PrincipalRole
   {
+    public static PrincipalRole Create ([NotNull] Position position, [NotNull] Group group)
+    {
+      ArgumentUtility.CheckNotNull ("position", position);
+      ArgumentUtility.CheckNotNull ("group", group);
+
+      return new PrincipalRole (position.GetHandle(), group.GetHandle());
+    }
+
     private readonly IDomainObjectHandle<Position> _position;
     private readonly IDomainObjectHandle<Group> _group;
 
-    public PrincipalRole (IDomainObjectHandle<Position> position, IDomainObjectHandle<Group> group)
+    public PrincipalRole ([NotNull] IDomainObjectHandle<Position> position, [NotNull] IDomainObjectHandle<Group> group)
     {
       ArgumentUtility.CheckNotNull ("position", position);
       ArgumentUtility.CheckNotNull ("group", group);
@@ -37,11 +46,13 @@ namespace Remotion.SecurityManager.Domain
       _group = @group;
     }
 
+    [NotNull]
     public IDomainObjectHandle<Position> Position
     {
       get { return _position; }
     }
 
+    [NotNull]
     public IDomainObjectHandle<Group> Group
     {
       get { return _group; }

@@ -39,11 +39,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("tenant", tenant);
       ArgumentUtility.CheckNotNull ("roles", roles);
-      
+
       return new Principal (
           tenant.GetHandle(),
           user.GetSafeHandle(),
-          roles.Select (r => new PrincipalRole (r.Position.GetHandle(), r.Group.GetHandle())));
+          roles.Select (r => PrincipalRole.Create (r.Position, r.Group)));
     }
 
     private readonly bool _isNull;
