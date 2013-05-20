@@ -110,7 +110,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (_ace.SpecificAbstractRole == null)
         return true;
 
-      return GetAbstractRoles(token).Contains (_ace.SpecificAbstractRole);
+      return GetAbstractRoles (token).Contains (_ace.SpecificAbstractRole);
     }
 
     private bool MatchesUserCondition (SecurityToken token)
@@ -121,10 +121,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return true;
 
         case UserCondition.Owner:
-          return MatchPrincipalAgainstUser (token.Principal, GetOwningUser (token));
+          return MatchPrincipalAgainstUser (token.Principal, token.OwningUser);
 
         case UserCondition.SpecificUser:
-          return MatchPrincipalAgainstUser (token.Principal, _ace.SpecificUser);
+          return MatchPrincipalAgainstUser (token.Principal, _ace.SpecificUser.GetHandle());
 
         case UserCondition.SpecificPosition:
           return MatchPrincipalAgainstPosition (token.Principal);
@@ -134,12 +134,18 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
-    private bool MatchPrincipalAgainstUser (Principal principal, User referenceUser)
+    private bool MatchPrincipalAgainstUser (Principal principal, IDomainObjectHandle<User> referenceUser)
     {
+      // User is only compared using the DomainObjectHandle to prevent spamming the ClientTransaction with unnecessary User-objects
+
       if (referenceUser == null)
         return false;
 
-      return referenceUser.Equals (GetPrincipalUser (principal));
+      var principalUser = principal.User;
+      if (principalUser == null)
+        return false;
+
+      return referenceUser.ObjectID.Equals (principalUser.ObjectID);
     }
 
     private bool MatchPrincipalAgainstPosition (Principal principal)
@@ -254,14 +260,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return principal.Tenant.GetObjectReference (_clientTransaction);
     }
 
-    private User GetPrincipalUser (Principal principal)
-    {
-      if (principal.User == null)
-        return null;
-
-      return principal.User.GetObjectReference (_clientTransaction);
-    }
-
     private Tenant GetOwningTenant (SecurityToken token)
     {
       if (token.OwningTenant == null)
@@ -276,14 +274,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         return null;
 
       return token.OwningGroup.GetObjectReference(_clientTransaction);
-    }
-
-    private User GetOwningUser (SecurityToken token)
-    {
-      if (token.OwningUser == null)
-        return null;
-
-      return token.OwningUser.GetObjectReference(_clientTransaction);
     }
 
     private IEnumerable<AbstractRoleDefinition> GetAbstractRoles (SecurityToken token)
