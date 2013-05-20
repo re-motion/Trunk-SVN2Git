@@ -16,7 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
@@ -49,13 +49,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       User owningUser = CreateUser ("owningUser", CreateGroup ("owningUserGroup", null, owningTenant), owningTenant);
       AbstractRoleDefinition abstractRole1 = AbstractRoleDefinition.NewObject (Guid.NewGuid (), "role1", 0);
       AbstractRoleDefinition abstractRole2 = AbstractRoleDefinition.NewObject (Guid.NewGuid (), "role2", 1);
-      SecurityToken token = SecurityToken.Create(principal, owningTenant, owningGroup, owningUser, new [] { abstractRole1,abstractRole2});
+      SecurityToken token = SecurityToken.Create (
+          principal,
+          owningTenant,
+          owningGroup,
+          owningUser,
+          new[] { abstractRole1.GetHandle(), abstractRole2.GetHandle() });
 
       Assert.That (token.Principal, Is.SameAs (principal));
       Assert.That (token.OwningTenant, Is.EqualTo (owningTenant).Using (DomainObjectHandleComparer.Instance));
       Assert.That (token.OwningGroup, Is.EqualTo (owningGroup).Using (DomainObjectHandleComparer.Instance));
       Assert.That (token.OwningUser, Is.EqualTo (owningUser).Using (DomainObjectHandleComparer.Instance));
-      Assert.That (token.AbstractRoles, Is.EquivalentTo (new[] { abstractRole1, abstractRole2 }));
+      Assert.That (token.AbstractRoles, Is.EquivalentTo (new[] { abstractRole1, abstractRole2 }).Using (DomainObjectHandleComparer.Instance));
     }
 
     [Test]
@@ -63,7 +68,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       Tenant principalTenant = CreateTenant ("principalTenant");
       Principal principal = Principal.Create (principalTenant, null, new Role[0]);
-      SecurityToken token = SecurityToken.Create(principal, null, null, null, new List<AbstractRoleDefinition> ());
+      SecurityToken token = SecurityToken.Create (principal, null, null, null, Enumerable.Empty<IDomainObjectHandle<AbstractRoleDefinition>>());
 
       Assert.That (token.OwningTenant, Is.Null);
       Assert.That (token.OwningGroup, Is.Null);

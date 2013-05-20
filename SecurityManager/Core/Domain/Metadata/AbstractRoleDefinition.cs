@@ -17,7 +17,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
@@ -30,7 +29,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 {
   [Serializable]
   [Instantiable]
-  public abstract class AbstractRoleDefinition : EnumValueDefinition
+  public abstract class AbstractRoleDefinition : EnumValueDefinition, ISupportsGetObject
   {
     public static AbstractRoleDefinition NewObject ()
     {

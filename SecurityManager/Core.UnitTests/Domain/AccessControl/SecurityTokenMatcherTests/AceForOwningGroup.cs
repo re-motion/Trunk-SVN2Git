@@ -16,7 +16,9 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -67,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
               null,
               _companyHelper.AustrianCarTeam,
               null,
-              new AbstractRoleDefinition[0]);
+              Enumerable.Empty<IDomainObjectHandle<AbstractRoleDefinition>>());
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
@@ -114,7 +116,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
           null,
           _companyHelper.AustrianCarTeam,
           null,
-          new AbstractRoleDefinition[0]);
+          Enumerable.Empty<IDomainObjectHandle<AbstractRoleDefinition>>());
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 

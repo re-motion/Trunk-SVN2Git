@@ -51,11 +51,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       using (transaction.EnterNonDiscardingScope())
       {
-        Principal principalUser = CreatePrincipal (principal);
-        Tenant owningTenant = GetTenant (context.OwnerTenant);
-        Group owningGroup = GetGroup (context.OwnerGroup);
-        User owningUser = GetUser (context.Owner);
-        IList<AbstractRoleDefinition> abstractRoles = GetAbstractRoles (context.AbstractRoles);
+        var principalUser = CreatePrincipal (principal);
+        var owningTenant = GetTenant (context.OwnerTenant);
+        var owningGroup = GetGroup (context.OwnerGroup);
+        var owningUser = GetUser (context.Owner);
+        var abstractRoles = GetAbstractRoles (context.AbstractRoles);
 
         return SecurityToken.Create(principalUser, owningTenant, owningGroup, owningUser, abstractRoles);
       }
@@ -169,16 +169,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return group;
     }
 
-    private IList<AbstractRoleDefinition> GetAbstractRoles (IEnumerable<EnumWrapper> abstractRoleNames)
+    private IEnumerable<IDomainObjectHandle<AbstractRoleDefinition>> GetAbstractRoles (IEnumerable<EnumWrapper> abstractRoleNames)
     {
       var abstractRoleNamesCollection = abstractRoleNames.ConvertToCollection();
-      IList<AbstractRoleDefinition> abstractRolesCollection = AbstractRoleDefinition.Find (abstractRoleNamesCollection);
+      var abstractRolesCollection = AbstractRoleDefinition.Find (abstractRoleNamesCollection);
 
       EnumWrapper? missingAbstractRoleName = FindFirstMissingAbstractRole (abstractRoleNamesCollection, abstractRolesCollection);
       if (missingAbstractRoleName != null)
         throw CreateAccessControlException ("The abstract role '{0}' could not be found.", missingAbstractRoleName);
 
-      return abstractRolesCollection;
+      return abstractRolesCollection.Select (abstractRole => abstractRole.GetHandle());
     }
 
     private EnumWrapper? FindFirstMissingAbstractRole (

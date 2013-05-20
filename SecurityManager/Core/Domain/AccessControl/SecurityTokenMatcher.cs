@@ -109,13 +109,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (_ace.SpecificAbstractRole == null)
         return true;
 
-      foreach (var abstractRole in token.AbstractRoles)
-      {
-        if (abstractRole.ID == _ace.SpecificAbstractRole.ID)
-          return true;
-      }
-
-      return false;
+      return token.AbstractRoles.Select (abstractRole => abstractRole.GetObjectReference (_clientTransaction))
+                  .Contains (_ace.SpecificAbstractRole);
     }
 
     private bool MatchesUserCondition (SecurityToken token)

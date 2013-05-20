@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using JetBrains.Annotations;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -34,35 +35,40 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         [CanBeNull] Tenant owningTenant,
         [CanBeNull] Group owningGroup,
         [CanBeNull] User owningUser,
-        [NotNull] IList<AbstractRoleDefinition> abstractRoles)
+        [NotNull] IEnumerable<IDomainObjectHandle<AbstractRoleDefinition>> abstractRoles)
     {
       ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNull ("abstractRoles", abstractRoles);
 
-      return new SecurityToken (principal, owningTenant.GetSafeHandle(), owningGroup.GetSafeHandle(), owningUser.GetSafeHandle(), abstractRoles);
+      return new SecurityToken (
+          principal,
+          owningTenant.GetSafeHandle(),
+          owningGroup.GetSafeHandle(),
+          owningUser.GetSafeHandle(),
+          abstractRoles);
     }
 
     private readonly Principal _principal;
     private readonly IDomainObjectHandle<Tenant> _owningTenant;
     private readonly IDomainObjectHandle<Group> _owningGroup;
     private readonly IDomainObjectHandle<User> _owningUser;
-    private readonly ReadOnlyCollection<AbstractRoleDefinition> _abstractRoles;
+    private readonly ReadOnlyCollection<IDomainObjectHandle<AbstractRoleDefinition>> _abstractRoles;
 
     public SecurityToken (
         [NotNull] Principal principal,
         [CanBeNull] IDomainObjectHandle<Tenant> owningTenant,
         [CanBeNull] IDomainObjectHandle<Group> owningGroup,
         [CanBeNull] IDomainObjectHandle<User> owningUser,
-        [NotNull] IList<AbstractRoleDefinition> abstractRoles)
+        [NotNull] IEnumerable<IDomainObjectHandle<AbstractRoleDefinition>> abstractRoles)
     {
       ArgumentUtility.CheckNotNull ("principal", principal);
-      ArgumentUtility.CheckNotNullOrItemsNull ("abstractRoles", abstractRoles);
+      ArgumentUtility.CheckNotNull ("abstractRoles", abstractRoles);
 
       _principal = principal;
       _owningTenant = owningTenant;
       _owningGroup = owningGroup;
       _owningUser = owningUser;
-      _abstractRoles = new ReadOnlyCollection<AbstractRoleDefinition> (abstractRoles);
+      _abstractRoles = abstractRoles.ToList().AsReadOnly();
     }
 
     [NotNull]
@@ -90,7 +96,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     }
 
     [NotNull]
-    public ReadOnlyCollection<AbstractRoleDefinition> AbstractRoles
+    public ReadOnlyCollection<IDomainObjectHandle<AbstractRoleDefinition>> AbstractRoles
     {
       get { return _abstractRoles; }
     }

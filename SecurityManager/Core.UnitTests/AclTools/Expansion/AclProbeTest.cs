@@ -16,7 +16,9 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
@@ -121,7 +123,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       FleshOutAccessControlEntryForTest (ace);
       Assert.That (ace.SpecificAbstractRole, Is.Not.Null);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      Assert.That (aclProbe.SecurityToken.AbstractRoles, Has.Member(ace.SpecificAbstractRole));
+      Assert.That (aclProbe.SecurityToken.AbstractRoles, Has.Member(ace.SpecificAbstractRole).Using (DomainObjectHandleComparer.Instance));
 
       var accessConditionsExpected = new AclExpansionAccessConditions();
       accessConditionsExpected.AbstractRole = ace.SpecificAbstractRole;
@@ -143,7 +145,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var acl = TestHelper.CreateStatefulAcl (Ace3);
       Assert.That (Ace3.Validate ().IsValid);
       Principal principal = Principal.Create (user.Tenant, user, user.Roles);
-      SecurityToken securityToken = SecurityToken.Create(principal, user.Tenant, null, null, new AbstractRoleDefinition[0]);
+      SecurityToken securityToken = SecurityToken.Create (
+          principal,
+          user.Tenant,
+          null,
+          null,
+          Enumerable.Empty<IDomainObjectHandle<AbstractRoleDefinition>>());
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
       Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, WriteAccessType }));
     }
@@ -156,7 +163,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (ace.Validate ().IsValid);
       var acl = TestHelper.CreateStatefulAcl (ace);
       Principal principal = Principal.Create (User.Tenant, User, User.Roles);
-      SecurityToken securityToken = SecurityToken.Create(principal, User.Tenant, null, null, new AbstractRoleDefinition[0]);
+      SecurityToken securityToken = SecurityToken.Create (
+          principal,
+          User.Tenant,
+          null,
+          null,
+          Enumerable.Empty<IDomainObjectHandle<AbstractRoleDefinition>>());
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
       Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
     }
@@ -170,12 +182,15 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var acl = TestHelper.CreateStatefulAcl (ace);
       // We pass the Group used in the ace Position above in the owningGroups-list => ACE will match.
       Principal principal = Principal.Create (User.Tenant, User, User.Roles);
-      SecurityToken securityToken = SecurityToken.Create(principal, User.Tenant, Group, null, new AbstractRoleDefinition[0]);
+      SecurityToken securityToken = SecurityToken.Create (
+          principal,
+          User.Tenant,
+          Group,
+          null,
+          Enumerable.Empty<IDomainObjectHandle<AbstractRoleDefinition>>());
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
       Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
     }
-
-
 
     private void FleshOutAccessControlEntryForTest (AccessControlEntry ace)
     {

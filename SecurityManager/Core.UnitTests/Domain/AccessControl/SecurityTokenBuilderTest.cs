@@ -318,7 +318,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, CreateTestPrincipal(), context);
 
       Assert.That (token.AbstractRoles.Count, Is.EqualTo (1));
-      Assert.That (token.AbstractRoles[0].Name, Is.EqualTo ("QualityManager|Remotion.SecurityManager.UnitTests.TestDomain.ProjectRoles, Remotion.SecurityManager.UnitTests"));
+      Assert.That (
+          token.AbstractRoles[0].GetObject().Name,
+          Is.EqualTo ("QualityManager|Remotion.SecurityManager.UnitTests.TestDomain.ProjectRoles, Remotion.SecurityManager.UnitTests"));
     }
 
     [Test]
@@ -341,9 +343,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityContext context = CreateContext (ProjectRoles.Developer, UndefinedAbstractRoles.Undefined, ProjectRoles.QualityManager);
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, CreateTestPrincipal(), context);
-
-      Assert.That (token.AbstractRoles.Count, Is.EqualTo (2));
+      builder.CreateToken (ClientTransactionScope.CurrentTransaction, CreateTestPrincipal(), context);
     }
 
     [Test]
