@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -43,6 +44,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private Dictionary<string, IDomainObjectHandle<Group>> _groupCache;
     private Dictionary<string, IDomainObjectHandle<User>> _userCache;
     private Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> _abstractRoleCache;
+    private Dictionary<string, SecurableClassDefinition> _classCache;
 
     public SecurityContextRepository ()
     {
@@ -123,6 +125,25 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
+    public SecurableClassDefinition GetClass (string name)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
+      RefreshOnDemand();
+      _lock.EnterReadLock();
+      try
+      {
+        var @class = _classCache.GetValueOrDefault (name);
+        if (@class == null)
+          throw CreateAccessControlException ("The securable class '{0}' could not be found.", name);
+        return @class;
+      }
+      finally
+      {
+        _lock.ExitReadLock();
+      }
+    }
+
     private void RefreshOnDemand ()
     {
       if (DateTime.UtcNow >= _nextRevisionCheckInUtc)
@@ -149,7 +170,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private void InitializeCache (int revision)
     {
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         var newTenantCache = QueryFactory.CreateLinqQuery<Tenant>()
                                    .Select (t => new { Key = t.UniqueIdentifier, Value = t.ID })
@@ -167,6 +188,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
                                    .Select (r => new { Key = r.Name, Value = r.ID })
                                    .ToDictionary (r => EnumWrapper.Get (r.Key), r => r.Value.GetHandle<AbstractRoleDefinition>());
 
+        var newClassCache = QueryFactory.CreateLinqQuery<SecurableClassDefinition>().Select (c => c)
+                                        .FetchStateProperties()
+                                        .FetchOne (cd => cd.StatelessAccessControlList)
+                                        .FetchMany (cd => cd.StatefulAccessControlLists)
+                                        .ThenFetchMany (StatefulAccessControlList.SelectStateCombinations())
+                                        .ThenFetchMany (StateCombination.SelectStateUsages()).
+                                         ToDictionary (c => c.Name);
+
         try
         {
           _lock.EnterWriteLock();
@@ -176,6 +205,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           _groupCache = newGroupCache;
           _userCache = newUserCache;
           _abstractRoleCache = newAbstractRoleCache;
+          _classCache = newClassCache;
         }
         finally
         {

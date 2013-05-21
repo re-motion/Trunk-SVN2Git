@@ -15,14 +15,17 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
+  [ConcreteImplementation (typeof (AccessControlListFinder), Lifetime = LifetimeKind.Singleton)]
   public interface IAccessControlListFinder
   {
-    AccessControlList Find (ClientTransaction transaction, ISecurityContext context);
+    IDomainObjectHandle<AccessControlList> Find (ISecurityContext context);
   }
 }

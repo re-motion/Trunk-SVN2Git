@@ -18,10 +18,12 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlListFinderTests
 {
@@ -49,45 +51,29 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     [Test]
     public void Succeed_WithValidSecurityContext ()
     {
-      AccessControlList expectedAccessControlList;
-      using (_currentClassDefinitionTransaction.EnterNonDiscardingScope ())
-      {
-        expectedAccessControlList = _currentClassDefinition.StatelessAccessControlList;
-      }
+      var expectedAccessControlList = _currentClassDefinition.StatelessAccessControlList;
       SecurityContext context = SecurityContext.CreateStateless(typeof (Order));
      
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
-      AccessControlList foundAcl = aclFinder.Find (ClientTransaction.CreateRootTransaction (), context);
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (context);
 
-      Assert.That (foundAcl.ID, Is.EqualTo (expectedAccessControlList.ID));
+      Assert.That (foundAcl, Is.EqualTo (expectedAccessControlList).Using (DomainObjectHandleComparer.Instance));
     }
 
     [Test]
     [ExpectedException (typeof (AccessControlException), ExpectedMessage = 
-        "The securable class 'Remotion.SecurityManager.UnitTests.TestDomain.PremiumOrder, Remotion.SecurityManager.UnitTests' cannot be found.")]
+        "The securable class 'Remotion.SecurityManager.UnitTests.TestDomain.PremiumOrder, Remotion.SecurityManager.UnitTests' could not be found.")]
     public void Fail_WithUnkownSecurableClassDefinition ()
     {
       SecurityContext context = SecurityContext.CreateStateless(typeof (PremiumOrder));
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
-      aclFinder.Find (ClientTransaction.CreateRootTransaction (), context);
+      var aclFinder = CreateAccessControlListFinder();
+      aclFinder.Find (context);
     }
 
-    [Test]
-    public void WithInactiveTransaction ()
+    private AccessControlListFinder CreateAccessControlListFinder ()
     {
-      AccessControlList expectedAccessControlList = _currentClassDefinitionTransaction.ExecuteInScope (() => _currentClassDefinition.StatelessAccessControlList);
-      SecurityContext context = SecurityContext.CreateStateless (typeof (Order));
-
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
-      
-      var inactiveTransaction = ClientTransaction.CreateRootTransaction();
-      using (ClientTransactionTestHelper.MakeInactive (inactiveTransaction))
-      {
-        AccessControlList foundAcl = aclFinder.Find (inactiveTransaction, context);
-
-        Assert.That (foundAcl.ID, Is.EqualTo (expectedAccessControlList.ID));
-      }
+      return new AccessControlListFinder (new SecurityContextRepository());
     }
   }
 }

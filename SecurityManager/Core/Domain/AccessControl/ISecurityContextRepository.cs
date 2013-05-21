@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
@@ -29,6 +30,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// Defines the API required for resolving the information provided via the <see cref="ISecurityContext"/>.
   /// </summary>
   /// <seealso cref="SecurityContextRepository"/>
+  [ConcreteImplementation (typeof (SecurityContextRepository), Lifetime = LifetimeKind.Singleton)]
   public interface ISecurityContextRepository
   {
     [NotNull]
@@ -42,5 +44,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     [NotNull]
     IDomainObjectHandle<AbstractRoleDefinition> GetAbstractRole (EnumWrapper abstractRoleName);
+
+    [NotNull]
+    SecurableClassDefinition GetClass (string name);
   }
 }

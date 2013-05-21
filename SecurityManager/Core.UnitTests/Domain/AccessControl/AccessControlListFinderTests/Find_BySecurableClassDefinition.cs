@@ -19,10 +19,12 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlListFinderTests
 {
@@ -46,10 +48,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       _testHelper.CreateStatelessAcl (classDefinition);
       SecurityContext context = CreateContextWithoutStates ();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (classDefinition, context);
 
-      Assert.That (foundAcl, Is.SameAs (acl));
+      Assert.That (foundAcl, Is.EqualTo (acl).Using (DomainObjectHandleComparer.Instance));
     }
 
     [Test]
@@ -60,10 +62,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       StatelessAccessControlList acl = _testHelper.CreateStatelessAcl (classDefinition);
       SecurityContext context = CreateStatelessContext ();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
-      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (classDefinition, context);
 
-      Assert.That (foundAcl, Is.SameAs (acl));
+      Assert.That (foundAcl, Is.EqualTo (acl).Using (DomainObjectHandleComparer.Instance));
     }
 
     [Test]
@@ -73,10 +75,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       StatefulAccessControlList acl = _testHelper.GetAclForDeliveredAndUnpaidStates (classDefinition);
       SecurityContext context = CreateContextForDeliveredAndUnpaidOrder();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (classDefinition, context);
 
-      Assert.That (foundAcl, Is.SameAs (acl));
+      Assert.That (foundAcl, Is.EqualTo (acl).Using (DomainObjectHandleComparer.Instance));
     }
 
     [Test]
@@ -86,10 +88,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       StatelessAccessControlList acl = _testHelper.GetAclForStateless (classDefinition);
       SecurityContext context = CreateStatelessContext();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (classDefinition, context);
 
-      Assert.That (foundAcl, Is.SameAs (acl));
+      Assert.That (foundAcl, Is.EqualTo (acl).Using (DomainObjectHandleComparer.Instance));
     }
 
     [Test]
@@ -100,10 +102,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       StatelessAccessControlList aclForOrder = _testHelper.GetAclForStateless (orderClass);
       SecurityContext context = CreateStatelessContext ();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
-      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, premiumOrderClass, context);
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (premiumOrderClass, context);
 
-      Assert.That (foundAcl, Is.SameAs (aclForOrder));
+      Assert.That (foundAcl, Is.EqualTo (aclForOrder).Using (DomainObjectHandleComparer.Instance));
     }
 
     [Test]
@@ -114,8 +116,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       _testHelper.CreateAclsForOrderAndPaymentStates (classDefinition);
       SecurityContext context = CreateContextWithoutPaymentState();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-      aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
+      var aclFinder = CreateAccessControlListFinder();
+      aclFinder.Find (classDefinition, context);
     }
 
     [Test]
@@ -131,8 +133,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       states.Add ("State", PaymentState.None);
       SecurityContext context = SecurityContext.Create (typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-      aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
+      var aclFinder = CreateAccessControlListFinder();
+      aclFinder.Find (classDefinition, context);
     }
 
     [Test]
@@ -149,8 +151,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       states.Add ("New", PaymentState.None);
       SecurityContext context = SecurityContext.Create (typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-      AccessControlList acl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
+      var aclFinder = CreateAccessControlListFinder();
+      var acl = aclFinder.Find (classDefinition, context);
 
       Assert.That (acl, Is.Null);
     }
@@ -163,10 +165,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlList acl = _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
       SecurityContext context = CreateContextForDeliveredAndUnpaidOrder (typeof (SpecialOrder));
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, specialOrderClass, context);
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (specialOrderClass, context);
 
-      Assert.That (foundAcl, Is.SameAs (acl));
+      Assert.That (foundAcl, Is.EqualTo (acl).Using (DomainObjectHandleComparer.Instance));
     }
 
     [Test]
@@ -174,14 +176,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       SecurableClassDefinition specialOrderClass = _testHelper.CreateSpecialOrderClassDefinition (orderClass);
-      AccessControlList aclForOrder = _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
+      _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
       AccessControlList aclForSpecialOrder = _testHelper.GetAclForDeliveredAndUnpaidStates (specialOrderClass);
       SecurityContext context = CreateContextForDeliveredAndUnpaidOrder (typeof (SpecialOrder));
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, specialOrderClass, context);
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (specialOrderClass, context);
 
-      Assert.That (foundAcl, Is.SameAs (aclForSpecialOrder));
+      Assert.That (foundAcl, Is.EqualTo (aclForSpecialOrder).Using (DomainObjectHandleComparer.Instance));
     }
 
     [Test]
@@ -189,14 +191,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       SecurableClassDefinition premiumOrderClass = _testHelper.CreatePremiumOrderClassDefinition (orderClass);
-      AccessControlList aclForOrder = _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
+      _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
       AccessControlList aclForPremiumOrder = _testHelper.GetAclForDeliveredAndUnpaidAndDhlStates (premiumOrderClass);
       SecurityContext context = CreateContextForDeliveredAndUnpaidAndDhlOrder (typeof (SpecialOrder));
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, premiumOrderClass, context);
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (premiumOrderClass, context);
 
-      Assert.That (foundAcl, Is.SameAs (aclForPremiumOrder));
+      Assert.That (foundAcl, Is.EqualTo (aclForPremiumOrder).Using (DomainObjectHandleComparer.Instance));
     }
 
     [Test]
@@ -205,12 +207,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       SecurableClassDefinition premiumOrderClass = _testHelper.CreatePremiumOrderClassDefinition (orderClass);
-      AccessControlList aclForOrder = _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
-      AccessControlList aclForPremiumOrder = _testHelper.GetAclForDeliveredAndUnpaidAndDhlStates (premiumOrderClass);
+      _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
+      _testHelper.GetAclForDeliveredAndUnpaidAndDhlStates (premiumOrderClass);
       SecurityContext context = CreateContextForDeliveredAndUnpaidOrder (typeof (SpecialOrder));
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-      aclFinder.Find (ClientTransactionScope.CurrentTransaction, premiumOrderClass, context);
+      AccessControlListFinder aclFinder = CreateAccessControlListFinder();
+      aclFinder.Find (premiumOrderClass, context);
     }
 
     [Test]
@@ -221,12 +223,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       _testHelper.CreateStatelessAcl (classDefinition);
       SecurityContext context = CreateContextWithoutStates ();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = CreateAccessControlListFinder();
       using (ClientTransactionTestHelper.MakeInactive (ClientTransactionScope.CurrentTransaction))
       {
-        AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
+        var foundAcl = aclFinder.Find (classDefinition, context);
 
-        Assert.That (foundAcl, Is.SameAs (acl));
+      Assert.That (foundAcl, Is.EqualTo (acl).Using (DomainObjectHandleComparer.Instance));
       }
     }
 
@@ -272,13 +274,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       return SecurityContext.Create (typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
     }
 
-    private static ClientTransaction CreateInactiveTransaction ()
+    private AccessControlListFinder CreateAccessControlListFinder ()
     {
-      var inactiveTransaction = ClientTransaction.CreateRootTransaction ();
-
-      inactiveTransaction.CreateSubTransaction ();
-      Assert.That (inactiveTransaction.ActiveTransaction, Is.Not.SameAs (inactiveTransaction));
-      return inactiveTransaction;
+      return new AccessControlListFinder (MockRepository.GenerateStub<ISecurityContextRepository>());
     }
   }
 }

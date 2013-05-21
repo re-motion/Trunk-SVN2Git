@@ -42,7 +42,7 @@ namespace Remotion.SecurityManager.PerformanceTests
       ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction();
       //using (StopwatchScope.CreateScope ("{elapsed:ms}"))
       {
-        provider.GetAccess (clientTransaction, context, user);
+        provider.GetAccess (context, user);
       }
       Console.WriteLine ("Init done");
       Console.ReadKey();
@@ -51,7 +51,7 @@ namespace Remotion.SecurityManager.PerformanceTests
       int dummy = 0;
       int count = 10;
       for (int i = 0; i < count; i++)
-        dummy += provider.GetAccess (clientTransaction, context, user).Length;
+        dummy += provider.GetAccess (context, user).Length;
       stopwatch.Stop();
       Trace.Write (dummy);
       Console.WriteLine ("Time taken: {0}ms", ((decimal)stopwatch.ElapsedMilliseconds)/count);

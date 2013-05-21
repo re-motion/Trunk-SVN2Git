@@ -1,4 +1,4 @@
-// This file is part of re-strict (www.re-motion.org)
+﻿// This file is part of re-strict (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -17,21 +17,15 @@
 // 
 
 using System;
-using JetBrains.Annotations;
+using Remotion.Data.DomainObjects;
 using Remotion.Security;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
-  /// <summary>
-  /// Defines the API required for resolving the information provided via the <see cref="ISecurityPrincipal"/>.
-  /// </summary>
-  /// <seealso cref="SecurityPrincipalRepository"/>
-  [ConcreteImplementation (typeof (SecurityPrincipalRepository), Lifetime = LifetimeKind.Singleton)]
-  public interface ISecurityPrincipalRepository
+  [ConcreteImplementation (typeof (AccessResolver), Lifetime = LifetimeKind.Singleton)]
+  public interface IAccessResolver
   {
-    [NotNull]
-    User GetUser (string userName);
+    AccessType[] GetAccessTypes (IDomainObjectHandle<AccessControlList> acl, SecurityToken token);
   }
 }

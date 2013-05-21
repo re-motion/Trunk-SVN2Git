@@ -62,6 +62,10 @@
     <DocumentationFile>bin\Release\Remotion.SecurityManager.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Clients.Web\bin\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -121,6 +125,8 @@
     </Compile>
     <Compile Include="Domain\AccessControl\AccessControlEntry.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryValidationError.cs" />
+    <Compile Include="Domain\AccessControl\AccessResolver.cs" />
+    <Compile Include="Domain\AccessControl\IAccessResolver.cs" />
     <Compile Include="Domain\AccessControl\ISecurityContextRepository.cs" />
     <Compile Include="Domain\AccessControl\ISecurityPrincipalRepository.cs" />
     <Compile Include="Domain\AccessControl\Principal.cs" />

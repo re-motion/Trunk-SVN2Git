@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
                   .ThenFetchMany (StatePropertyDefinition.SelectDefinedStates());
     }
 
-    public static IQueryable<SecurableClassDefinition> FetchStatelessAccessControlList (this IQueryable<SecurableClassDefinition> query)
+    private static IQueryable<SecurableClassDefinition> FetchStatelessAccessControlList (this IQueryable<SecurableClassDefinition> query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
                   .ThenFetchMany (AccessControlEntry.SelectPermissions());
     }
 
-    public static IQueryable<SecurableClassDefinition> FetchStatefulAcessControlLists (this IQueryable<SecurableClassDefinition> query)
+    private static IQueryable<SecurableClassDefinition> FetchStatefulAcessControlLists (this IQueryable<SecurableClassDefinition> query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
