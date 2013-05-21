@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   public class SecurityContextRepository : ISecurityContextRepository
   {
     private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-    private DateTime _nextRevisionCheckInUtc;
+    private long _nextRevisionCheckInUtcTicks;
     private readonly TimeSpan _revisionCheckInterval = TimeSpan.FromSeconds (1);
     private int _revision;
 
@@ -146,9 +146,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private void RefreshOnDemand ()
     {
-      if (DateTime.UtcNow >= _nextRevisionCheckInUtc)
+      if (DateTime.UtcNow.Ticks >= _nextRevisionCheckInUtcTicks)
       {
-        _nextRevisionCheckInUtc = DateTime.UtcNow.Add (_revisionCheckInterval);
+        Interlocked.Exchange (ref _nextRevisionCheckInUtcTicks, DateTime.UtcNow.Add (_revisionCheckInterval).Ticks);
         Refresh();
       }
     }
