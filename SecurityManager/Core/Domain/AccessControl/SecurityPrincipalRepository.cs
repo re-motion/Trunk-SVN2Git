@@ -33,9 +33,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// </summary>
   public class SecurityPrincipalRepository : ISecurityPrincipalRepository
   {
-    private DateTime _nextRevisionCheckInUtc;
+    private long _nextRevisionCheckInUtcTicks;
     private readonly TimeSpan _revisionCheckInterval = TimeSpan.FromSeconds (1);
-    private int _revision;
+    private volatile int _revision;
 
     private readonly ICache<string, User> _userCache = CacheFactory.CreateWithLazyLocking<string, User>();
 
@@ -54,9 +54,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     
     private void RefreshOnDemand ()
     {
-      if (DateTime.UtcNow >= _nextRevisionCheckInUtc)
+      if (DateTime.UtcNow.Ticks >= Interlocked.Read(ref _nextRevisionCheckInUtcTicks))
       {
-        _nextRevisionCheckInUtc = DateTime.UtcNow.Add (_revisionCheckInterval);
+        Interlocked.Exchange (ref _nextRevisionCheckInUtcTicks, DateTime.UtcNow.Add (_revisionCheckInterval).Ticks);
         var revision = GetRevision();
         if (revision != _revision)
         {

@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
     private long _nextRevisionCheckInUtcTicks;
     private readonly TimeSpan _revisionCheckInterval = TimeSpan.FromSeconds (1);
-    private int _revision;
+    private volatile int _revision;
 
     private Dictionary<string, IDomainObjectHandle<Tenant>> _tenantCache;
     private Dictionary<string, IDomainObjectHandle<Group>> _groupCache;
@@ -146,7 +146,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private void RefreshOnDemand ()
     {
-      if (DateTime.UtcNow.Ticks >= _nextRevisionCheckInUtcTicks)
+      if (DateTime.UtcNow.Ticks >= Interlocked.Read(ref _nextRevisionCheckInUtcTicks))
       {
         Interlocked.Exchange (ref _nextRevisionCheckInUtcTicks, DateTime.UtcNow.Add (_revisionCheckInterval).Ticks);
         Refresh();
