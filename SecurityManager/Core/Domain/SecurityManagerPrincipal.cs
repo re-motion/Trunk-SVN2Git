@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain
@@ -126,9 +127,9 @@ namespace Remotion.SecurityManager.Domain
     {
       lock (_syncRoot)
       {
-        var revision = GetRevision();
-        if (revision != _cachedData.Revision)
-          InitializeCache (revision);
+        var currentRevision = GetRevision();
+        if (_cachedData.Revision < currentRevision)
+          InitializeCache (currentRevision);
       }
     }
 
@@ -246,7 +247,7 @@ namespace Remotion.SecurityManager.Domain
 
     private int GetRevision ()
     {
-      return (int) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery());
+      return SafeServiceLocator.Current.GetInstance<IRevisionProvider>().GetRevision();
     }
 
     bool INullObject.IsNull

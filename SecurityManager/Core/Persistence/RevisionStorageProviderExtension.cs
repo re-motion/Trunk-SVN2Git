@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Remotion.Data.DomainObjects.Configuration;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.SecurityManager.Domain;
@@ -28,37 +28,26 @@ namespace Remotion.SecurityManager.Persistence
 {
   public class RevisionStorageProviderExtension
   {
-    // constants
+    private readonly IRevisionProvider _revisionProvider;
 
-    // types
-
-    // static members
-
-    // member fields
-
-    // construction and disposing
-
-    public RevisionStorageProviderExtension ()
+    public RevisionStorageProviderExtension (IRevisionProvider revisionProvider)
     {
+      ArgumentUtility.CheckNotNull ("revisionProvider", revisionProvider);
+      
+      _revisionProvider = revisionProvider;
     }
-
-    // methods and properties
-
 
     public virtual void Saving (IDbConnection connection, IDbTransaction transaction, IEnumerable<DataContainer> dataContainers)
     {
       ArgumentUtility.CheckNotNull ("connection", connection);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
-      ArgumentUtility.CheckNotNullOrItemsNull ("dataContainers", dataContainers);
+      ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
 
       Type securityManagerDomainLayerSuperType = typeof (BaseSecurityManagerObject);
-      foreach (DataContainer dataContainer in dataContainers)
+      if (dataContainers.Any (dataContainer => securityManagerDomainLayerSuperType.IsAssignableFrom (dataContainer.DomainObjectType)))
       {
-        if (securityManagerDomainLayerSuperType.IsAssignableFrom (dataContainer.DomainObjectType))
-        {
-          IncrementRevision (connection, transaction);
-          return;
-        }
+        IncrementRevision (connection, transaction);
+        _revisionProvider.InvalidateRevision();
       }
     }
 

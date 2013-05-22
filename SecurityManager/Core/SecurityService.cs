@@ -23,7 +23,6 @@ using Remotion.Logging;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -36,13 +35,15 @@ namespace Remotion.SecurityManager
     private readonly IAccessControlListFinder _accessControlListFinder;
     private readonly ISecurityTokenBuilder _securityTokenBuilder;
     private readonly IAccessResolver _accessResolver;
+    private readonly IRevisionProvider _revisionProvider;
 
     public SecurityService (string name, NameValueCollection config)
         : this (name,
                 config,
                 SafeServiceLocator.Current.GetInstance<IAccessControlListFinder>(),
                 SafeServiceLocator.Current.GetInstance<ISecurityTokenBuilder>(),
-                SafeServiceLocator.Current.GetInstance<IAccessResolver>())
+                SafeServiceLocator.Current.GetInstance<IAccessResolver>(),
+                SafeServiceLocator.Current.GetInstance<IRevisionProvider>())
     {
     }
 
@@ -51,16 +52,19 @@ namespace Remotion.SecurityManager
         NameValueCollection config,
         IAccessControlListFinder accessControlListFinder,
         ISecurityTokenBuilder securityTokenBuilder,
-        IAccessResolver accessResolver)
+        IAccessResolver accessResolver,
+      IRevisionProvider revisionProvider)
         : base (name, config)
     {
       ArgumentUtility.CheckNotNull ("accessControlListFinder", accessControlListFinder);
       ArgumentUtility.CheckNotNull ("securityTokenBuilder", securityTokenBuilder);
       ArgumentUtility.CheckNotNull ("accessResolver", accessResolver);
+      ArgumentUtility.CheckNotNull ("revisionProvider", revisionProvider);
 
       _accessControlListFinder = accessControlListFinder;
       _securityTokenBuilder = securityTokenBuilder;
       _accessResolver = accessResolver;
+      _revisionProvider = revisionProvider;
     }
 
     public AccessType[] GetAccess (ISecurityContext context, ISecurityPrincipal principal)
@@ -89,7 +93,7 @@ namespace Remotion.SecurityManager
 
     public int GetRevision ()
     {
-      return (int) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery());
+      return _revisionProvider.GetRevision();
     }
 
     bool INullObject.IsNull

@@ -25,6 +25,7 @@ using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
@@ -115,11 +116,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       ISecurityPrincipal securityPrincipal = _principal.GetSecurityPrincipal();
       Assert.That (securityPrincipal.IsNull, Is.False);
       Assert.That (securityPrincipal.User, Is.EqualTo ("substituting.user"));
-    }
-
-    private void IncrementRevision ()
-    {
-      ClientTransaction.Current.QueryManager.GetScalar (Revision.GetIncrementRevisionQuery());
     }
   }
 }

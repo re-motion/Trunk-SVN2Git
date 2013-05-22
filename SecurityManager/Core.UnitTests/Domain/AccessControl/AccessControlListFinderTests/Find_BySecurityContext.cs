@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Security;
+using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.TestDomain;
@@ -73,7 +74,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
 
     private AccessControlListFinder CreateAccessControlListFinder ()
     {
-      return new AccessControlListFinder (new SecurityContextRepository());
+      return new AccessControlListFinder (new SecurityContextRepository(new RevisionProvider()));
     }
   }
 }

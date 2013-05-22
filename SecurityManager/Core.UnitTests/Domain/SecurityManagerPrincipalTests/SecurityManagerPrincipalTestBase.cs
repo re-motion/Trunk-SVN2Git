@@ -18,6 +18,7 @@
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
@@ -30,6 +31,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       ArgumentUtility.CheckNotNull ("user", user);
 
       return new SecurityManagerPrincipal (tenant.GetHandle(), user.GetHandle(), substitution.GetSafeHandle());
+    }
+
+    protected void IncrementRevision ()
+    {
+      ClientTransaction.Current.QueryManager.GetScalar (Revision.GetIncrementRevisionQuery());
+      SafeServiceLocator.Current.GetInstance<IRevisionProvider>().InvalidateRevision();
     }
   }
 }

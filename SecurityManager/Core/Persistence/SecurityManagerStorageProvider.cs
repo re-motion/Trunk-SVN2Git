@@ -22,6 +22,9 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.SecurityManager.Domain;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Persistence
 {
@@ -40,11 +43,13 @@ namespace Remotion.SecurityManager.Persistence
             commandFactory,
             connectionFactory)
     {
-      _revisionExtension = new RevisionStorageProviderExtension();
+      _revisionExtension = new RevisionStorageProviderExtension (SafeServiceLocator.Current.GetInstance<IRevisionProvider>());
     }
 
     public override void Save (IEnumerable<DataContainer> dataContainers)
     {
+      ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
+      
       _revisionExtension.Saving (Connection.WrappedInstance, Transaction.WrappedInstance, dataContainers);
       base.Save (dataContainers);
     }

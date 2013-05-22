@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Security;
+using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -474,7 +475,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     private SecurityTokenBuilder CreateSecurityTokenBuilder ()
     {
-      return new SecurityTokenBuilder (new SecurityPrincipalRepository(), new SecurityContextRepository());
+      var revisionProvider = new RevisionProvider();
+      return new SecurityTokenBuilder (new SecurityPrincipalRepository(revisionProvider), new SecurityContextRepository(revisionProvider));
     }
 
     private ISecurityPrincipal CreateTestPrincipal ()

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using Remotion.SecurityManager.Domain;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
@@ -49,6 +50,7 @@ namespace Remotion.SecurityManager.UnitTests
     private IAccessControlListFinder _mockAclFinder;
     private ISecurityTokenBuilder _mockTokenBuilder;
     private IAccessResolver _mockAccessResolver;
+    private IRevisionProvider _mockRevisionProvider;
 
     private SecurityService _service;
     private SecurityContext _context;
@@ -67,8 +69,15 @@ namespace Remotion.SecurityManager.UnitTests
       _mockAclFinder = _mocks.StrictMock<IAccessControlListFinder>();
       _mockTokenBuilder = _mocks.StrictMock<ISecurityTokenBuilder>();
       _mockAccessResolver = _mocks.StrictMock<IAccessResolver>();
+      _mockRevisionProvider = MockRepository.GenerateStub<IRevisionProvider>();
 
-      _service = new SecurityService ("name", new NameValueCollection(), _mockAclFinder, _mockTokenBuilder, _mockAccessResolver);
+      _service = new SecurityService (
+          "name",
+          new NameValueCollection(),
+          _mockAclFinder,
+          _mockTokenBuilder,
+          _mockAccessResolver,
+          _mockRevisionProvider);
       _context = SecurityContext.Create (typeof (Order), "Owner", "UID: OwnerGroup", "OwnerTenant", new Dictionary<string, Enum>(), new Enum[0]);
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();

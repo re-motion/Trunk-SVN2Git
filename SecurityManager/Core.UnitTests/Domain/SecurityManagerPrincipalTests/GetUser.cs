@@ -109,10 +109,5 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
 
       Assert.That (userProxy.ID, Is.EqualTo (_user.ID));
     }
-
-    private void IncrementRevision ()
-    {
-      ClientTransaction.Current.QueryManager.GetScalar (Revision.GetIncrementRevisionQuery());
-    }
   }
 }

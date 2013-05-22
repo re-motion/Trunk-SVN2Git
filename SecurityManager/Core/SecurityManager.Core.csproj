@@ -127,6 +127,8 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryValidationError.cs" />
     <Compile Include="Domain\AccessControl\AccessResolver.cs" />
     <Compile Include="Domain\AccessControl\IAccessResolver.cs" />
+    <Compile Include="Domain\AccessControl\RepositoryBase.cs" />
+    <Compile Include="Domain\IRevisionProvider.cs" />
     <Compile Include="Domain\AccessControl\ISecurityContextRepository.cs" />
     <Compile Include="Domain\AccessControl\ISecurityPrincipalRepository.cs" />
     <Compile Include="Domain\AccessControl\Principal.cs" />
@@ -155,6 +157,7 @@
     <Compile Include="Domain\Metadata\SecurableClassDefinitionExtensions.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipal.cs" />
     <Compile Include="Domain\PrincipalRole.cs" />
+    <Compile Include="Domain\RevisionProvider.cs" />
     <Compile Include="Domain\SearchInfrastructure\Metadata\AbstractRoleDefinitionPropertyTypeSearchService.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\GroupTypePropertyTypeSearchService.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchService.cs" />

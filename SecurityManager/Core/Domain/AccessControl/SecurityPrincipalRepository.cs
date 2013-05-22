@@ -17,7 +17,6 @@
 // 
 using System;
 using System.Linq;
-using System.Threading;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
@@ -32,28 +31,21 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// Cache-based implementation of the <see cref="ISecurityPrincipalRepository"/> interface.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
-  public class SecurityPrincipalRepository : ISecurityPrincipalRepository
+  public sealed class SecurityPrincipalRepository : RepositoryBase<SecurityPrincipalRepository.Data>, ISecurityPrincipalRepository
   {
-    private class Data
+    public class Data : RevisionBasedData
     {
-      public readonly int Revision;
-
       public readonly ICache<string, User> Users;
 
-      public Data (int revision)
+      internal Data (int revision)
+        : base (revision)
       {
-        Revision = revision;
         Users = CacheFactory.CreateWithLazyLocking<string, User>();
       }
     }
 
-    private long _nextRevisionCheckInUtcTicks;
-    private readonly TimeSpan _revisionCheckInterval = TimeSpan.FromSeconds (1);
-
-    private readonly object _syncRoot = new object();
-    private volatile Data _cachedData;
-
-    public SecurityPrincipalRepository ()
+    public SecurityPrincipalRepository (IRevisionProvider revisionProvider)
+      : base (revisionProvider)
     {
     }
 
@@ -65,24 +57,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return cachedData.Users.GetOrCreateValue (userName, GetUserInternal);
     }
 
-    private Data GetCachedData ()
+    protected override Data LoadData (int revision)
     {
-      if (DateTime.UtcNow.Ticks >= Interlocked.Read (ref _nextRevisionCheckInUtcTicks) || _cachedData == null)
-      {
-        Interlocked.Exchange (ref _nextRevisionCheckInUtcTicks, DateTime.UtcNow.Add (_revisionCheckInterval).Ticks);
-        Refresh();
-      }
-      return _cachedData;
-    }
-
-    private void Refresh ()
-    {
-      lock (_syncRoot)
-      {
-        var revision = GetRevision();
-        if (_cachedData == null || revision != _cachedData.Revision)
-          _cachedData = new Data (revision);
-      }
+      return new Data (revision);
     }
 
     private User GetUserInternal (string userName)
@@ -104,11 +81,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 // ReSharper disable ReturnValueOfPureMethodIsNotUsed
       QueryFactory.CreateLinqQuery<Position>().ToList();
 // ReSharper restore ReturnValueOfPureMethodIsNotUsed
-    }
-
-    private int GetRevision ()
-    {
-      return (int) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery());
     }
 
     private AccessControlException CreateAccessControlException (string message, params object[] args)
