@@ -31,38 +31,57 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// <summary>
   /// Cache-based implementation of the <see cref="ISecurityPrincipalRepository"/> interface.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public class SecurityPrincipalRepository : ISecurityPrincipalRepository
   {
+    private class Data
+    {
+      public readonly int Revision;
+
+      public readonly ICache<string, User> Users;
+
+      public Data (int revision)
+      {
+        Revision = revision;
+        Users = CacheFactory.CreateWithLazyLocking<string, User>();
+      }
+    }
+
     private long _nextRevisionCheckInUtcTicks;
     private readonly TimeSpan _revisionCheckInterval = TimeSpan.FromSeconds (1);
-    private volatile int _revision;
 
-    private readonly ICache<string, User> _userCache = CacheFactory.CreateWithLazyLocking<string, User>();
+    private readonly object _syncRoot = new object();
+    private volatile Data _cachedData;
 
     public SecurityPrincipalRepository ()
     {
-      _revision = GetRevision();
     }
 
     public User GetUser (string userName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("userName", userName);
 
-      RefreshOnDemand();
-      return _userCache.GetOrCreateValue (userName, GetUserInternal);
+      var cachedData = GetCachedData();
+      return cachedData.Users.GetOrCreateValue (userName, GetUserInternal);
     }
-    
-    private void RefreshOnDemand ()
+
+    private Data GetCachedData ()
     {
-      if (DateTime.UtcNow.Ticks >= Interlocked.Read(ref _nextRevisionCheckInUtcTicks))
+      if (DateTime.UtcNow.Ticks >= Interlocked.Read (ref _nextRevisionCheckInUtcTicks) || _cachedData == null)
       {
         Interlocked.Exchange (ref _nextRevisionCheckInUtcTicks, DateTime.UtcNow.Add (_revisionCheckInterval).Ticks);
+        Refresh();
+      }
+      return _cachedData;
+    }
+
+    private void Refresh ()
+    {
+      lock (_syncRoot)
+      {
         var revision = GetRevision();
-        if (revision != _revision)
-        {
-          _userCache.Clear();
-          _revision = revision;
-        }
+        if (_cachedData == null || revision != _cachedData.Revision)
+          _cachedData = new Data (revision);
       }
     }
 

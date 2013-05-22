@@ -28,6 +28,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// Defines the API required for resolving the information provided via the <see cref="ISecurityPrincipal"/>.
   /// </summary>
   /// <seealso cref="SecurityPrincipalRepository"/>
+  /// <threadsafety static="true" instance="true"/>
   [ConcreteImplementation (typeof (SecurityPrincipalRepository), Lifetime = LifetimeKind.Singleton)]
   public interface ISecurityPrincipalRepository
   {

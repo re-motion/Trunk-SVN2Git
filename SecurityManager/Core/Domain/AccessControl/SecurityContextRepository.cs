@@ -33,184 +33,149 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// <summary>
   /// Cache-based implementation of the <see cref="ISecurityContextRepository"/> interface.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public class SecurityContextRepository : ISecurityContextRepository
   {
-    private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+    private class Data
+    {
+      public readonly int Revision;
+      public readonly Dictionary<string, IDomainObjectHandle<Tenant>> Tenants;
+      public readonly Dictionary<string, IDomainObjectHandle<Group>> Groups;
+      public readonly Dictionary<string, IDomainObjectHandle<User>> Users;
+      public readonly Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> AbstractRoles;
+      public readonly Dictionary<string, SecurableClassDefinition> Classes;
+
+      public Data (
+          int revision,
+          Dictionary<string, IDomainObjectHandle<Tenant>> tenants,
+          Dictionary<string, IDomainObjectHandle<Group>> groups,
+          Dictionary<string, IDomainObjectHandle<User>> users,
+          Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> abstractRoles,
+          Dictionary<string, SecurableClassDefinition> classes)
+      {
+        Revision = revision;
+        Tenants = tenants;
+        Groups = groups;
+        Users = users;
+        AbstractRoles = abstractRoles;
+        Classes = classes;
+      }
+    }
+
     private long _nextRevisionCheckInUtcTicks;
     private readonly TimeSpan _revisionCheckInterval = TimeSpan.FromSeconds (1);
-    private volatile int _revision;
 
-    private Dictionary<string, IDomainObjectHandle<Tenant>> _tenantCache;
-    private Dictionary<string, IDomainObjectHandle<Group>> _groupCache;
-    private Dictionary<string, IDomainObjectHandle<User>> _userCache;
-    private Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> _abstractRoleCache;
-    private Dictionary<string, SecurableClassDefinition> _classCache;
+    private readonly object _syncRoot = new object();
+    private volatile Data _cachedData;
 
     public SecurityContextRepository ()
     {
-      InitializeCache (GetRevision());
     }
 
     public IDomainObjectHandle<Tenant> GetTenant (string uniqueIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
-      RefreshOnDemand();
-      _lock.EnterReadLock();
-      try
-      {
-        var tenant = _tenantCache.GetValueOrDefault (uniqueIdentifier);
-        if (tenant == null)
-          throw CreateAccessControlException ("The tenant '{0}' could not be found.", uniqueIdentifier);
-        return tenant;
-      }
-      finally
-      {
-        _lock.ExitReadLock();
-      }
+      var cachedData = GetCachedData();
+      var tenant = cachedData.Tenants.GetValueOrDefault (uniqueIdentifier);
+      if (tenant == null)
+        throw CreateAccessControlException ("The tenant '{0}' could not be found.", uniqueIdentifier);
+      return tenant;
     }
 
     public IDomainObjectHandle<Group> GetGroup (string uniqueIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
-      RefreshOnDemand();
-      _lock.EnterReadLock();
-      try
-      {
-        var group = _groupCache.GetValueOrDefault (uniqueIdentifier);
-        if (group == null)
-          throw CreateAccessControlException ("The group '{0}' could not be found.", uniqueIdentifier);
-        return group;
-      }
-      finally
-      {
-        _lock.ExitReadLock();
-      }
+      var cachedData = GetCachedData();
+      var group = cachedData.Groups.GetValueOrDefault (uniqueIdentifier);
+      if (group == null)
+        throw CreateAccessControlException ("The group '{0}' could not be found.", uniqueIdentifier);
+      return group;
     }
 
     public IDomainObjectHandle<User> GetUser (string userName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("userName", userName);
 
-      RefreshOnDemand();
-      _lock.EnterReadLock();
-      try
-      {
-        var user = _userCache.GetValueOrDefault (userName);
-        if (user == null)
-          throw CreateAccessControlException ("The user '{0}' could not be found.", userName);
-        return user;
-      }
-      finally
-      {
-        _lock.ExitReadLock();
-      }
+      var cachedData = GetCachedData();
+      var user = cachedData.Users.GetValueOrDefault (userName);
+      if (user == null)
+        throw CreateAccessControlException ("The user '{0}' could not be found.", userName);
+      return user;
     }
 
-    public IDomainObjectHandle<AbstractRoleDefinition> GetAbstractRole (EnumWrapper abstractRoleName)
+    public IDomainObjectHandle<AbstractRoleDefinition> GetAbstractRole (EnumWrapper name)
     {
-      RefreshOnDemand();
-      _lock.EnterReadLock();
-      try
-      {
-        var abstractRole = _abstractRoleCache.GetValueOrDefault (abstractRoleName);
-        if (abstractRole == null)
-          throw CreateAccessControlException ("The abstract role '{0}' could not be found.", abstractRoleName);
-        return abstractRole;
-      }
-      finally
-      {
-        _lock.ExitReadLock();
-      }
+      ArgumentUtility.CheckNotNull ("name", name);
+
+      var cachedData = GetCachedData();
+      var abstractRole = cachedData.AbstractRoles.GetValueOrDefault (name);
+      if (abstractRole == null)
+        throw CreateAccessControlException ("The abstract role '{0}' could not be found.", name);
+      return abstractRole;
     }
 
     public SecurableClassDefinition GetClass (string name)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      RefreshOnDemand();
-      _lock.EnterReadLock();
-      try
-      {
-        var @class = _classCache.GetValueOrDefault (name);
-        if (@class == null)
-          throw CreateAccessControlException ("The securable class '{0}' could not be found.", name);
-        return @class;
-      }
-      finally
-      {
-        _lock.ExitReadLock();
-      }
+      var cachedData = GetCachedData();
+      var @class = cachedData.Classes.GetValueOrDefault (name);
+      if (@class == null)
+        throw CreateAccessControlException ("The securable class '{0}' could not be found.", name);
+      return @class;
     }
 
-    private void RefreshOnDemand ()
+    private Data GetCachedData ()
     {
-      if (DateTime.UtcNow.Ticks >= Interlocked.Read(ref _nextRevisionCheckInUtcTicks))
+      if (DateTime.UtcNow.Ticks >= Interlocked.Read (ref _nextRevisionCheckInUtcTicks) || _cachedData == null)
       {
         Interlocked.Exchange (ref _nextRevisionCheckInUtcTicks, DateTime.UtcNow.Add (_revisionCheckInterval).Ticks);
         Refresh();
       }
+      return _cachedData;
     }
 
     private void Refresh ()
     {
-      _lock.EnterUpgradeableReadLock();
-      try
+      lock (_syncRoot)
       {
         var revision = GetRevision();
-        if (revision != _revision)
-          InitializeCache (revision);
-      }
-      finally
-      {
-        _lock.ExitUpgradeableReadLock();
+        if (_cachedData == null || revision != _cachedData.Revision)
+          _cachedData = LoadData (revision);
       }
     }
 
-    private void InitializeCache (int revision)
+    private Data LoadData (int revision)
     {
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        var newTenantCache = QueryFactory.CreateLinqQuery<Tenant>()
-                                   .Select (t => new { Key = t.UniqueIdentifier, Value = t.ID })
-                                   .ToDictionary (t => t.Key, t => t.Value.GetHandle<Tenant>());
+        var tenants = QueryFactory.CreateLinqQuery<Tenant>()
+                                  .Select (t => new { Key = t.UniqueIdentifier, Value = t.ID })
+                                  .ToDictionary (t => t.Key, t => t.Value.GetHandle<Tenant>());
 
-        var newGroupCache = QueryFactory.CreateLinqQuery<Group>()
-                                   .Select (g => new { Key = g.UniqueIdentifier, Value = g.ID })
-                                   .ToDictionary (g => g.Key, g => g.Value.GetHandle<Group>());
+        var groups = QueryFactory.CreateLinqQuery<Group>()
+                                 .Select (g => new { Key = g.UniqueIdentifier, Value = g.ID })
+                                 .ToDictionary (g => g.Key, g => g.Value.GetHandle<Group>());
 
-        var newUserCache = QueryFactory.CreateLinqQuery<User>()
-                                   .Select (u => new { Key = u.UserName, Value = u.ID })
-                                   .ToDictionary (u => u.Key, u => u.Value.GetHandle<User>());
+        var users = QueryFactory.CreateLinqQuery<User>()
+                                .Select (u => new { Key = u.UserName, Value = u.ID })
+                                .ToDictionary (u => u.Key, u => u.Value.GetHandle<User>());
 
-        var newAbstractRoleCache = QueryFactory.CreateLinqQuery<AbstractRoleDefinition>()
-                                   .Select (r => new { Key = r.Name, Value = r.ID })
-                                   .ToDictionary (r => EnumWrapper.Get (r.Key), r => r.Value.GetHandle<AbstractRoleDefinition>());
+        var abstractRoles = QueryFactory.CreateLinqQuery<AbstractRoleDefinition>()
+                                        .Select (r => new { Key = r.Name, Value = r.ID })
+                                        .ToDictionary (r => EnumWrapper.Get (r.Key), r => r.Value.GetHandle<AbstractRoleDefinition>());
 
-        var newClassCache = QueryFactory.CreateLinqQuery<SecurableClassDefinition>().Select (c => c)
-                                        .FetchStateProperties()
-                                        .FetchOne (cd => cd.StatelessAccessControlList)
-                                        .FetchMany (cd => cd.StatefulAccessControlLists)
-                                        .ThenFetchMany (StatefulAccessControlList.SelectStateCombinations())
-                                        .ThenFetchMany (StateCombination.SelectStateUsages()).
-                                         ToDictionary (c => c.Name);
+        var classes = QueryFactory.CreateLinqQuery<SecurableClassDefinition>().Select (c => c)
+                                  .FetchStateProperties()
+                                  .FetchOne (cd => cd.StatelessAccessControlList)
+                                  .FetchMany (cd => cd.StatefulAccessControlLists)
+                                  .ThenFetchMany (StatefulAccessControlList.SelectStateCombinations())
+                                  .ThenFetchMany (StateCombination.SelectStateUsages()).
+                                   ToDictionary (c => c.Name);
 
-        try
-        {
-          _lock.EnterWriteLock();
-
-          _revision = revision;
-          _tenantCache = newTenantCache;
-          _groupCache = newGroupCache;
-          _userCache = newUserCache;
-          _abstractRoleCache = newAbstractRoleCache;
-          _classCache = newClassCache;
-        }
-        finally
-        {
-          _lock.ExitWriteLock();
-        }
+        return new Data (revision, tenants, groups, users, abstractRoles, classes);
       }
     }
 

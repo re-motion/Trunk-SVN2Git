@@ -30,6 +30,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// Defines the API required for resolving the information provided via the <see cref="ISecurityContext"/>.
   /// </summary>
   /// <seealso cref="SecurityContextRepository"/>
+  /// <threadsafety static="true" instance="true"/>
   [ConcreteImplementation (typeof (SecurityContextRepository), Lifetime = LifetimeKind.Singleton)]
   public interface ISecurityContextRepository
   {
@@ -43,7 +44,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     IDomainObjectHandle<User> GetUser (string userName);
 
     [NotNull]
-    IDomainObjectHandle<AbstractRoleDefinition> GetAbstractRole (EnumWrapper abstractRoleName);
+    IDomainObjectHandle<AbstractRoleDefinition> GetAbstractRole (EnumWrapper name);
 
     [NotNull]
     SecurableClassDefinition GetClass (string name);
