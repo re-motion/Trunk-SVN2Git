@@ -48,6 +48,7 @@ namespace Remotion.SecurityManager.Domain
   [Serializable]
   public sealed class SecurityManagerPrincipal : ISecurityManagerPrincipal
   {
+    [Serializable]
     private sealed class Data
     {
       public readonly int Revision;
