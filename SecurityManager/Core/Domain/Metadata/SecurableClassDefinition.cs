@@ -126,6 +126,18 @@ namespace Remotion.SecurityManager.Domain.Metadata
       get { return StatefulAccessControlLists.SelectMany (acl => acl.StateCombinations).ToList().AsReadOnly(); }
     }
 
+    //TODO RM-5636: Add tests
+    public bool AreStateCombinationsComplete ()
+    {
+      if (StateProperties.Count > 1)
+        throw new NotSupportedException ("Only classes with a zero or one StatePropertyDefinition are supported.");
+
+      int possibleStateCombinations = 1;
+      if (StateProperties.Count > 0)
+        possibleStateCombinations = StateProperties[0].DefinedStates.Count;
+      return StateCombinations.Count < possibleStateCombinations;
+    }
+
     [DBBidirectionalRelation ("MyClass")]
     public abstract StatelessAccessControlList StatelessAccessControlList { get; set; }
 

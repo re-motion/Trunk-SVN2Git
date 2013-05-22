@@ -63,14 +63,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void EnableNewStateCombinationButton ()
     {
-      var stateProperties = CurrentAccessControlList.Class.StateProperties;
-      if (stateProperties.Count > 1)
-        throw new NotSupportedException ("Only classes with a zero or one StatePropertyDefinition are supported.");
-
-      int possibleStateCombinations = 1;
-      if (stateProperties.Count > 0)
-        possibleStateCombinations = stateProperties[0].DefinedStates.Count;
-      NewStateCombinationButton.Enabled = CurrentAccessControlList.Class.StateCombinations.Count < possibleStateCombinations;
+      NewStateCombinationButton.Enabled = CurrentAccessControlList.Class.AreStateCombinationsComplete();
     }
 
     public override void LoadValues (bool interim)

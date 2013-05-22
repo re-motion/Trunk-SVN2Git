@@ -281,15 +281,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void EnableNewAccessControlListButton ()
     {
-      var stateProperties = CurrentSecurableClassDefinition.StateProperties;
-      if (stateProperties.Count > 1)
-        throw new NotSupportedException ("Only classes with a zero or one StatePropertyDefinition are supported.");
-
-      int possibleStateCombinations = 1;
-      if (stateProperties.Count > 0)
-        possibleStateCombinations = stateProperties[0].DefinedStates.Count;
-      NewStatefulAccessControlListButton.Enabled = CurrentSecurableClassDefinition.StateCombinations.Count < possibleStateCombinations;
-
+      NewStatefulAccessControlListButton.Enabled = CurrentSecurableClassDefinition.AreStateCombinationsComplete();
       NewStatelessAccessControlListButton.Enabled = CurrentSecurableClassDefinition.StatelessAccessControlList == null;
     }
 
