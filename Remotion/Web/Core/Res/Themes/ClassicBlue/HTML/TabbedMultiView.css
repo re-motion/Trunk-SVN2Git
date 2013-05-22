@@ -93,7 +93,7 @@ div.tabbedMultiViewTopControls
   background-color: White;
 }
 
-div.tabbedMultiViewTopControls.emtpy
+div.tabbedMultiViewTopControls.empty
 {
   height: 1em;
   background-color: White;
@@ -116,7 +116,7 @@ body.opera div.tabbedMultiViewBottomControls
   border: solid 0 transparent;
 }
 
-div.tabbedMultiViewBottomControls.emtpy
+div.tabbedMultiViewBottomControls.empty
 {
   height: 1em;
   background-color: White;
