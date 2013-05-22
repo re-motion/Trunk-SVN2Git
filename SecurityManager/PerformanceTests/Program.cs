@@ -8,7 +8,9 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Logging;
 using Remotion.Security;
+using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -20,8 +22,8 @@ namespace Remotion.SecurityManager.PerformanceTests
     {
       var defaultServiceLocator = new DefaultServiceLocator();
 
-      defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.IClientTransactionExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
-      defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.Tracing.IPersistenceExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
+      //defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.IClientTransactionExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
+      //defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.Tracing.IPersistenceExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
 
       ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
 
@@ -51,7 +53,9 @@ namespace Remotion.SecurityManager.PerformanceTests
       int dummy = 0;
       int count = 10;
       for (int i = 0; i < count; i++)
+      {
         dummy += provider.GetAccess (context, user).Length;
+      }
       stopwatch.Stop();
       Trace.Write (dummy);
       Console.WriteLine ("Time taken: {0}ms", ((decimal)stopwatch.ElapsedMilliseconds)/count);
