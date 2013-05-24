@@ -18,9 +18,12 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.FunctionalProgramming;
+using Remotion.Logging;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
@@ -29,28 +32,70 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
   public class AccessResolver : IAccessResolver
   {
+    private static readonly ILog s_log = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+    private static readonly QueryCache s_queryCache = new QueryCache();
+
     public AccessType[] GetAccessTypes (IDomainObjectHandle<AccessControlList> aclHandle, SecurityToken token)
     {
       ArgumentUtility.CheckNotNull ("aclHandle", aclHandle);
       ArgumentUtility.CheckNotNull ("token", token);
-      
-      var clientTransaction = ClientTransaction.CreateRootTransaction();
-      using (clientTransaction.EnterDiscardingScope())
-      {
-        QueryFactory.CreateLinqQuery<AccessTypeDefinition>().ToArray();
-        var acl = QueryFactory.CreateLinqQuery<AccessControlList>().Where (o => o.ID == aclHandle.ObjectID).Select (o => o)
-                              .FetchMany (o => o.AccessControlEntries)
-                              .ThenFetchMany (AccessControlEntry.SelectPermissions())
-                              .ToList().Single();
 
-        AccessInformation accessInformation = acl.GetAccessTypes (token);
-        return Array.ConvertAll (accessInformation.AllowedAccessTypes, ConvertToAccessType);
+      using (new SecurityFreeSection())
+      {
+        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+        {
+          using (StopwatchScope.CreateScope (
+              s_log,
+              LogLevel.Info,
+              string.Format (
+                  "Evaluated access types of ACL '{0}' for principal '{1}'. Time taken: {{elapsed:ms}}ms",
+                  aclHandle.ObjectID,
+                  token.Principal.User != null ? token.Principal.User.ObjectID.ToString() : "<unknown>")))
+          {
+            LoadAccessTypeDefinitions ();
+            var acl = LoadAccessControlList (aclHandle);
+
+            var accessInformation = acl.GetAccessTypes (token);
+            return Array.ConvertAll (accessInformation.AllowedAccessTypes, ConvertToAccessType);
+          }
+        }
+      }
+    }
+
+    private AccessControlList LoadAccessControlList (IDomainObjectHandle<AccessControlList> aclHandle)
+    {
+      using (StopwatchScope.CreateScope (
+          s_log,
+          LogLevel.Debug,
+          "Fetched ACL '" + aclHandle.ObjectID + "' for AccessResolver. Time taken: {elapsed:ms}ms"))
+      {
+        return s_queryCache.ExecuteCollectionQuery<AccessControlList> (
+            ClientTransaction.Current,
+            MethodInfo.GetCurrentMethod().Name,
+            acls => acls.Where (o => o.ID == aclHandle.ObjectID).Select (o => o)
+                        .FetchMany (o => o.AccessControlEntries)
+                        .ThenFetchMany (ace => ace.GetPermissionsForQuery()))
+                           .AsEnumerable()
+                           .Single (() => CreateAccessControlException ("The ACL '{0}' could not be found.", aclHandle.ObjectID));
+      }
+    }
+
+    private void LoadAccessTypeDefinitions ()
+    {
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched access types for AccessResolver. Time taken: {elapsed:ms}ms"))
+      {
+        s_queryCache.ExecuteCollectionQuery<AccessTypeDefinition> (ClientTransaction.Current, MethodInfo.GetCurrentMethod().Name, accessTypes => accessTypes);
       }
     }
 
     private AccessType ConvertToAccessType (AccessTypeDefinition accessTypeDefinition)
     {
       return AccessType.Get (EnumWrapper.Get (accessTypeDefinition.Name));
+    }
+
+    private AccessControlException CreateAccessControlException (string message, params object[] args)
+    {
+      return new AccessControlException (string.Format (message, args));
     }
   }
 }

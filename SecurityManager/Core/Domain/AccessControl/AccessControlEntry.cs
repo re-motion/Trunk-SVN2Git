@@ -40,11 +40,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   [SecurityManagerStorageGroup]
   public abstract class AccessControlEntry : AccessControlObject
   {
-    public static Expression<Func<AccessControlEntry, IEnumerable<Permission>>> SelectPermissions ()
-    {
-      return ace => ace.PermissionsInternal;
-    }
-
     public static AccessControlEntry NewObject ()
     {
       return NewObject<AccessControlEntry>();
