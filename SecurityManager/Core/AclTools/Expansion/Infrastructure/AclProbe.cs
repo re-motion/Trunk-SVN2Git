@@ -21,6 +21,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.FunctionalProgramming;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -30,7 +31,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
   /// <summary>
   /// <para>Contains a <see cref="SecurityToken"/> which can be used to query access rights through calling 
-  /// <see cref="AccessControlList.GetAccessTypes(Domain.AccessControl.SecurityToken)"/>; the
+  /// <see cref="AccessControlList.GetAccessTypes(Domain.AccessControl.AccessEvaluation.SecurityToken)"/>; the
   /// the permissions returned apply only if the <see cref="AclExpansionAccessConditions"/> of the <see cref="AclProbe"/> are satisfied.
   /// </para>
   /// <remarks><para>

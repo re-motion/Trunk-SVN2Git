@@ -16,22 +16,30 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
+using Remotion.Data.DomainObjects;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
+namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluation.SecurityTokenMatcherTests
 {
-  public class AclExpansionEntryCreator_GetAccessTypesResult
+  public class SecurityTokenMatcherTestBase: DomainTest
   {
-    public AclProbe AclProbe { get; private set; }
-    public AccessTypeStatistics AccessTypeStatistics { get; private set; }
-    public AccessInformation AccessInformation { get; private set; }
+    private AccessControlTestHelper _testHelper;
 
-    public AclExpansionEntryCreator_GetAccessTypesResult (AccessInformation accessInformation, AclProbe aclProbe, AccessTypeStatistics accessTypeStatistics)
+    public override void SetUp ()
     {
-      AclProbe = aclProbe;
-      AccessTypeStatistics = accessTypeStatistics;
-      AccessInformation = accessInformation;
+      base.SetUp ();
+      _testHelper = new AccessControlTestHelper ();
+      _testHelper.Transaction.EnterNonDiscardingScope ();
+    }
+
+    protected AccessControlTestHelper TestHelper
+    {
+      get { return _testHelper; }
+    }
+
+    protected User CreateUser (Tenant tenant, Group group)
+    {
+      return _testHelper.CreateUser ("test.user", "Test", "User", null, group, tenant);
     }
   }
 }

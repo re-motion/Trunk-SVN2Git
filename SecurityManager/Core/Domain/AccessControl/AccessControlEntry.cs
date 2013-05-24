@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.Metadata;

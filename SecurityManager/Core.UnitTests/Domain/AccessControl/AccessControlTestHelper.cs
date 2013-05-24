@@ -21,6 +21,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.TestDomain;

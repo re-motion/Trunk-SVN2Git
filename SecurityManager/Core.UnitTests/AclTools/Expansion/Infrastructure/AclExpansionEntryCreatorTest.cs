@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 using Rhino.Mocks;
 

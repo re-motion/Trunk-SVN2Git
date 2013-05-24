@@ -23,6 +23,7 @@ using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 

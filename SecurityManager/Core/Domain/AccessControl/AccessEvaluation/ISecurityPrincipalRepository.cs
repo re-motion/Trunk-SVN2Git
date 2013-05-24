@@ -15,23 +15,24 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
-using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
+using JetBrains.Annotations;
+using Remotion.Security;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 
-namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
+namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
-  public class AclExpansionEntryCreator_GetAccessTypesResult
+  /// <summary>
+  /// Defines the API required for resolving the information provided via the <see cref="ISecurityPrincipal"/>.
+  /// </summary>
+  /// <seealso cref="SecurityPrincipalRepository"/>
+  /// <threadsafety static="true" instance="true"/>
+  [ConcreteImplementation (typeof (SecurityPrincipalRepository), Lifetime = LifetimeKind.Singleton)]
+  public interface ISecurityPrincipalRepository
   {
-    public AclProbe AclProbe { get; private set; }
-    public AccessTypeStatistics AccessTypeStatistics { get; private set; }
-    public AccessInformation AccessInformation { get; private set; }
-
-    public AclExpansionEntryCreator_GetAccessTypesResult (AccessInformation accessInformation, AclProbe aclProbe, AccessTypeStatistics accessTypeStatistics)
-    {
-      AclProbe = aclProbe;
-      AccessTypeStatistics = accessTypeStatistics;
-      AccessInformation = accessInformation;
-    }
+    [NotNull]
+    User GetUser (string userName);
   }
 }

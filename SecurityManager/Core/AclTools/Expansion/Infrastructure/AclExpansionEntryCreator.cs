@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure

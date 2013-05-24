@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Remotion.SecurityManager.Domain;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using log4net;
 using log4net.Appender;
 using log4net.Config;

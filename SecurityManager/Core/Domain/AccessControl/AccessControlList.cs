@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
 using System.Linq;
