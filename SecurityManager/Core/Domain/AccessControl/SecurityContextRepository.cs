@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
-   private static readonly ILog s_log = LogManager.GetLogger (typeof (SecurityContextRepository));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (SecurityContextRepository));
 
     public SecurityContextRepository (IRevisionProvider revisionProvider)
         : base (revisionProvider)
@@ -139,6 +139,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     protected override Data LoadData (int revision)
     {
+      s_log.Info ("Reset SecurityContextRepository cache.");
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Refreshed data in SecurityContextRepository. Time taken: {elapsed:ms}ms"))
       {
         var tenants = LoadTenants();
@@ -213,7 +214,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private Dictionary<ObjectID, string> LoadSecurableClassDefinitions ()
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched securable classes into SecurityContextRepository. Time taken: {elapsed:ms}ms"))
+      using (
+          StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched securable classes into SecurityContextRepository. Time taken: {elapsed:ms}ms"))
       {
         var result = from @class in QueryFactory.CreateLinqQuery<SecurableClassDefinition>()
                      select new { @class.ID, @class.Name };
@@ -286,7 +288,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private Dictionary<IDomainObjectHandle<StatePropertyDefinition>, ReadOnlyCollectionDecorator<string>> LoadStatePropertyValues ()
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched state properties into SecurityContextRepository. Time taken: {elapsed:ms}ms"))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched state properties into SecurityContextRepository. Time taken: {elapsed:ms}ms")
+          )
       {
         var result = from s in QueryFactory.CreateLinqQuery<StateDefinition>()
                      select

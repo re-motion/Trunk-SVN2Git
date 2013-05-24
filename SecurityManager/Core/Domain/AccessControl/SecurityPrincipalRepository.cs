@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
+using Remotion.Logging;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
@@ -44,6 +45,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (SecurityPrincipalRepository));
+
     public SecurityPrincipalRepository (IRevisionProvider revisionProvider)
       : base (revisionProvider)
     {
@@ -59,20 +62,27 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     protected override Data LoadData (int revision)
     {
+      s_log.Info ("Reset SecurityContextRepository cache.");
       return new Data (revision);
     }
 
     private User GetUserInternal (string userName)
     {
-      var clientTransaction = ClientTransaction.CreateRootTransaction();
-      using (clientTransaction.EnterNonDiscardingScope())
+      using (StopwatchScope.CreateScope (
+          s_log,
+          LogLevel.Info,
+          "Fetched user '" + userName + "' into SecurityPrincipalRepository. Time taken: {elapsed:ms}ms"))
       {
-        PrefetchPositions();
-        return QueryFactory.CreateLinqQuery<User>().Where (u => u.UserName == userName).Select (u => u)
-                           .FetchOne (u => u.Tenant)
-                           .FetchMany (u => u.Roles).ThenFetchOne (r => r.Group)
-                           .FetchMany (User.SelectSubstitutions()).ThenFetchOne (s => s.SubstitutedRole).ThenFetchOne (r => r.Group)
-                           .ToList().Single (() => CreateAccessControlException ("The user '{0}' could not be found.", userName));
+        var clientTransaction = ClientTransaction.CreateRootTransaction();
+        using (clientTransaction.EnterNonDiscardingScope())
+        {
+          PrefetchPositions();
+          return QueryFactory.CreateLinqQuery<User>().Where (u => u.UserName == userName).Select (u => u)
+                             .FetchOne (u => u.Tenant)
+                             .FetchMany (u => u.Roles).ThenFetchOne (r => r.Group)
+                             .FetchMany (User.SelectSubstitutions()).ThenFetchOne (s => s.SubstitutedRole).ThenFetchOne (r => r.Group)
+                             .ToList().Single (() => CreateAccessControlException ("The user '{0}' could not be found.", userName));
+        }
       }
     }
 
