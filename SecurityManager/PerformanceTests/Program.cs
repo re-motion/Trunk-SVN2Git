@@ -42,6 +42,10 @@ namespace Remotion.SecurityManager.PerformanceTests
               new EnumWrapper[0]);
       ISecurityPrincipal user = new SecurityPrincipal ("ServiceUser", null, null, null);
       MappingConfiguration.Current.GetTypeDefinitions();
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        QueryFactory.CreateLinqQuery<Tenant>().FirstOrDefault();
+      }
       //using (StopwatchScope.CreateScope ("{elapsed:ms} ms"))
       {
         provider.GetAccess (context, user);
