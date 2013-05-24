@@ -11,6 +11,7 @@ using Remotion.Logging;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -42,17 +43,18 @@ namespace Remotion.SecurityManager.PerformanceTests
               new EnumWrapper[0]);
       ISecurityPrincipal user = new SecurityPrincipal ("ServiceUser", null, null, null);
       MappingConfiguration.Current.GetTypeDefinitions();
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        QueryFactory.CreateLinqQuery<Tenant>().FirstOrDefault();
-      }
-      //using (StopwatchScope.CreateScope ("{elapsed:ms} ms"))
+
+      Console.WriteLine ("Initializing query cache...");
+      new SecurityContextRepository (new RevisionProvider()).GetTenant ("SystemTenant");
+      Console.WriteLine ("Query cache initialized");
+      Console.WriteLine();
+
+      using (StopwatchScope.CreateScope ("First access check took {elapsed:ms} ms."))
       {
         provider.GetAccess (context, user);
       }
       Console.WriteLine ("Init done");
-      return;
-      Console.ReadKey();
+      //Console.ReadKey();
 
       Stopwatch stopwatch = Stopwatch.StartNew();
       int dummy = 0;
@@ -64,7 +66,7 @@ namespace Remotion.SecurityManager.PerformanceTests
       stopwatch.Stop();
       Trace.Write (dummy);
       Console.WriteLine ("Time taken: {0}ms", ((decimal)stopwatch.ElapsedMilliseconds)/count);
-      Console.ReadKey();
+      //Console.ReadKey();
     }
   }
 }

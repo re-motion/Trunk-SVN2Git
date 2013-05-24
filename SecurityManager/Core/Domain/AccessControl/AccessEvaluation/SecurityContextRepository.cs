@@ -19,9 +19,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Linq.EagerFetching;
 using Remotion.Logging;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -64,11 +68,15 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       }
     }
 
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (SecurityContextRepository));
+    private static readonly ILog s_log = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+    private static readonly ICache<string, IQuery> s_queryCache = CacheFactory.CreateWithLocking<string, IQuery>();
+
+    private readonly ClientTransaction _clientTransaction;
 
     public SecurityContextRepository (IRevisionProvider revisionProvider)
         : base (revisionProvider)
     {
+      _clientTransaction = ClientTransaction.CreateRootTransaction();
     }
 
     public IDomainObjectHandle<Tenant> GetTenant (string uniqueIdentifier)
@@ -158,121 +166,119 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     private Dictionary<string, IDomainObjectHandle<Tenant>> LoadTenants ()
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched tenants into SecurityContextRepository. Time taken: {elapsed:ms}ms"))
-      {
-        var result = from t in QueryFactory.CreateLinqQuery<Tenant>()
-                     select new { Key = t.UniqueIdentifier, Value = t.ID.GetHandle<Tenant>() };
+      var result = GetOrCreateQuery (
+          _clientTransaction,
+          MethodInfo.GetCurrentMethod(),
+          () => from t in QueryFactory.CreateLinqQuery<Tenant>()
+                select new { Key = t.UniqueIdentifier, Value = t.ID.GetHandle<Tenant>() });
 
-        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-        {
-          return result.ToDictionary (t => t.Key, t => t.Value);
-        }
+      using (CreateStopwatchScopeForQuery ("tenants"))
+      {
+        return result.ToDictionary (t => t.Key, t => t.Value);
       }
     }
 
     private Dictionary<string, IDomainObjectHandle<Group>> LoadGroups ()
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched groups into SecurityContextRepository. Time taken: {elapsed:ms}ms"))
-      {
-        var result = from g in QueryFactory.CreateLinqQuery<Group>()
-                     select new { Key = g.UniqueIdentifier, Value = g.ID.GetHandle<Group>() };
+      var result = GetOrCreateQuery (
+          _clientTransaction,
+          MethodInfo.GetCurrentMethod(),
+          () => from g in QueryFactory.CreateLinqQuery<Group>()
+                select new { Key = g.UniqueIdentifier, Value = g.ID.GetHandle<Group>() });
 
-        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-        {
-          return result.ToDictionary (g => g.Key, g => g.Value);
-        }
+      using (CreateStopwatchScopeForQuery ("groups"))
+      {
+        return result.ToDictionary (g => g.Key, g => g.Value);
       }
     }
 
     private Dictionary<string, IDomainObjectHandle<User>> LoadUsers ()
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched users into SecurityContextRepository. Time taken: {elapsed:ms}ms"))
-      {
-        var result = from u in QueryFactory.CreateLinqQuery<User>()
-                     select new { Key = u.UserName, Value = u.ID.GetHandle<User>() };
+      var result = GetOrCreateQuery (
+          _clientTransaction,
+          MethodInfo.GetCurrentMethod(),
+          () => from u in QueryFactory.CreateLinqQuery<User>()
+                select new { Key = u.UserName, Value = u.ID.GetHandle<User>() });
 
-        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-        {
-          return result.ToDictionary (u => u.Key, u => u.Value);
-        }
+      using (CreateStopwatchScopeForQuery ("users"))
+      {
+        return result.ToDictionary (u => u.Key, u => u.Value);
       }
     }
 
     private Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> LoadAbstractRoles ()
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched abstract roles into SecurityContextRepository. Time taken: {elapsed:ms}ms"))
-      {
-        var result = from r in QueryFactory.CreateLinqQuery<AbstractRoleDefinition>()
-                     select new { Key = r.Name, Value = r.ID.GetHandle<AbstractRoleDefinition>() };
+      var result = GetOrCreateQuery (
+          _clientTransaction,
+          MethodInfo.GetCurrentMethod(),
+          () => from r in QueryFactory.CreateLinqQuery<AbstractRoleDefinition>()
+                select new { Key = r.Name, Value = r.ID.GetHandle<AbstractRoleDefinition>() });
 
-        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-        {
-          return result.ToDictionary (r => EnumWrapper.Get (r.Key), r => r.Value);
-        }
+      using (CreateStopwatchScopeForQuery ("abstract roles"))
+      {
+        return result.ToDictionary (r => EnumWrapper.Get (r.Key), r => r.Value);
       }
     }
 
     private Dictionary<ObjectID, string> LoadSecurableClassDefinitions ()
     {
-      using (
-          StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched securable classes into SecurityContextRepository. Time taken: {elapsed:ms}ms"))
-      {
-        var result = from @class in QueryFactory.CreateLinqQuery<SecurableClassDefinition>()
-                     select new { @class.ID, @class.Name };
+      var result = GetOrCreateQuery (
+          _clientTransaction,
+          MethodInfo.GetCurrentMethod(),
+          () => from @class in QueryFactory.CreateLinqQuery<SecurableClassDefinition>()
+                select new { @class.ID, @class.Name });
 
-        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-        {
-          return result.ToDictionary (c => c.ID, c => c.Name);
-        }
+      using (CreateStopwatchScopeForQuery("securable classes"))
+      {
+        return result.ToDictionary (c => c.ID, c => c.Name);
       }
     }
 
     private ILookup<ObjectID, StatefulAccessControlListData> LoadStatefulAccessControlLists ()
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched stateful ACLs into SecurityContextRepository. Time taken: {elapsed:ms}ms"))
-      {
-        var result = from acl in QueryFactory.CreateLinqQuery<StatefulAccessControlList>()
-                     from sc in acl.GetStateCombinationsForQuery()
-                     from usage in sc.GetStateUsagesForQuery().DefaultIfEmpty()
-                     from propertyReference in acl.GetClassForQuery().GetStatePropertyReferencesForQuery().DefaultIfEmpty()
-                     select new
-                            {
-                                Class = acl.GetClassForQuery().ID,
-                                Acl = acl.ID.GetHandle<StatefulAccessControlList>(),
-                                HasState = propertyReference != null,
-                                StatePropertyID = propertyReference.StateProperty.ID.Value,
-                                StatePropertyClassID = propertyReference.StateProperty.ID.ClassID,
-                                StatePropertyName = propertyReference.StateProperty.Name,
-                                StateValue = usage.StateDefinition.Name
-                            };
+      var result = GetOrCreateQuery (
+          _clientTransaction,
+          MethodInfo.GetCurrentMethod(),
+          () => from acl in QueryFactory.CreateLinqQuery<StatefulAccessControlList>()
+                from sc in acl.GetStateCombinationsForQuery()
+                from usage in sc.GetStateUsagesForQuery().DefaultIfEmpty()
+                from propertyReference in acl.GetClassForQuery().GetStatePropertyReferencesForQuery().DefaultIfEmpty()
+                select new
+                       {
+                           Class = acl.GetClassForQuery().ID,
+                           Acl = acl.ID.GetHandle<StatefulAccessControlList>(),
+                           HasState = propertyReference != null,
+                           StatePropertyID = propertyReference.StateProperty.ID.Value,
+                           StatePropertyClassID = propertyReference.StateProperty.ID.ClassID,
+                           StatePropertyName = propertyReference.StateProperty.Name,
+                           StateValue = usage.StateDefinition.Name
+                       });
 
-        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-        {
-          return result.AsEnumerable()
-                       .GroupBy (
-                           row => new { row.Class, row.Acl },
-                           row => row.HasState
-                                      ? new State (
-                                            new ObjectID (row.StatePropertyClassID, row.StatePropertyID).GetHandle<StatePropertyDefinition>(),
-                                            row.StatePropertyName,
-                                            row.StateValue)
-                                      : null)
-                       .ToLookup (g => g.Key.Class, g => new StatefulAccessControlListData (g.Key.Acl, g.Where (s => s != null)));
-        }
+      using (CreateStopwatchScopeForQuery ("stateful ACLs"))
+      {
+        return result.GroupBy (
+            row => new { row.Class, row.Acl },
+            row => row.HasState
+                       ? new State (
+                             new ObjectID (row.StatePropertyClassID, row.StatePropertyID).GetHandle<StatePropertyDefinition>(),
+                             row.StatePropertyName,
+                             row.StateValue)
+                       : null)
+                     .ToLookup (g => g.Key.Class, g => new StatefulAccessControlListData (g.Key.Acl, g.Where (s => s != null)));
       }
     }
 
     private Dictionary<ObjectID, IDomainObjectHandle<StatelessAccessControlList>> LoadStatelessAccessControlLists ()
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched stateless ACLs into SecurityContextRepository. Time taken: {elapsed:ms}ms"))
-      {
-        var result = from acl in QueryFactory.CreateLinqQuery<StatelessAccessControlList>()
-                     select new { Class = acl.GetClassForQuery().ID, Acl = acl.ID.GetHandle<StatelessAccessControlList>() };
+      var result = GetOrCreateQuery (
+          _clientTransaction,
+          MethodInfo.GetCurrentMethod(),
+          () => from acl in QueryFactory.CreateLinqQuery<StatelessAccessControlList>()
+                select new { Class = acl.GetClassForQuery().ID, Acl = acl.ID.GetHandle<StatelessAccessControlList>() });
 
-        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-        {
-          return result.ToDictionary (o => o.Class, o => o.Acl);
-        }
+      using (CreateStopwatchScopeForQuery ("stateless ACLs"))
+      {
+        return result.ToDictionary (o => o.Class, o => o.Acl);
       }
     }
 
@@ -288,23 +294,49 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     private Dictionary<IDomainObjectHandle<StatePropertyDefinition>, ReadOnlyCollectionDecorator<string>> LoadStatePropertyValues ()
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched state properties into SecurityContextRepository. Time taken: {elapsed:ms}ms")
-          )
-      {
-        var result = from s in QueryFactory.CreateLinqQuery<StateDefinition>()
-                     select
-                         new
-                         {
-                             PropertyHandle = s.StateProperty.ID.GetHandle<StatePropertyDefinition>(),
-                             PropertyValue = s.Name
-                         };
+      var result = GetOrCreateQuery (
+          _clientTransaction,
+          MethodInfo.GetCurrentMethod(),
+          () => from s in QueryFactory.CreateLinqQuery<StateDefinition>()
+                select
+                    new
+                    {
+                        PropertyHandle = s.StateProperty.ID.GetHandle<StatePropertyDefinition>(),
+                        PropertyValue = s.Name
+                    });
 
-        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-        {
-          var lookUp = result.ToLookup (o => o.PropertyHandle, o => o.PropertyValue);
-          return lookUp.ToDictionary (o => o.Key, o => o.ToArray().AsReadOnly());
-        }
+      using (CreateStopwatchScopeForQuery ("state properties"))
+      {
+        var lookUp = result.ToLookup (o => o.PropertyHandle, o => o.PropertyValue);
+        return lookUp.ToDictionary (o => o.Key, o => o.ToArray().AsReadOnly());
       }
+    }
+
+    private StopwatchScope CreateStopwatchScopeForQuery (string queryName)
+    {
+      return StopwatchScope.CreateScope (
+          s_log,
+          LogLevel.Debug,
+          "Fetched " + queryName + " into SecurityContextRepository. Time taken: {elapsed:ms}ms");
+    }
+
+    private IEnumerable<T> GetOrCreateQuery<T> (ClientTransaction clientTransaction, MethodBase caller, Func<IQueryable<T>> queryCreator)
+    {
+      var executableQuery = (IExecutableQuery<IEnumerable<T>>) s_queryCache.GetOrCreateValue (caller.Name, _ => CreateExecutableQuery (queryCreator));
+
+      return executableQuery.Execute (clientTransaction.QueryManager);
+    }
+
+    private static IExecutableQuery<IEnumerable<T>> CreateExecutableQuery<T> (Func<IQueryable<T>> queryCreator)
+    {
+      var queryable = (DomainObjectQueryable<T>) queryCreator();
+      var queryExecutor = queryable.GetExecutor();
+      var queryModel = queryable.Provider.GenerateQueryModel (queryable.Expression);
+      return queryExecutor.QueryGenerator.CreateSequenceQuery<T> (
+          "<dynamic query>",
+          queryExecutor.StorageProviderDefinition,
+          queryModel,
+          Enumerable.Empty<FetchQueryModelBuilder>());
     }
 
     private AccessControlException CreateAccessControlException (string message, params object[] args)
