@@ -53,6 +53,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    public void SequenceOfForeignKeyIDs ()
+    {
+      var result =
+          (from o in QueryFactory.CreateLinqQuery<Order> ()
+           where o.OrderNumber == 1
+           select o.Customer.ID).ToArray ();
+
+      Assert.That (result, Is.EquivalentTo (new[] { DomainObjectIDs.Customer1 }));
+    }
+
+    [Test]
+    [Ignore ("TODO 5647")]
+    public void ForeignKeyID_Null ()
+    {
+      var result =
+          (from o in QueryFactory.CreateLinqQuery<Computer> ()
+           where o.ID == DomainObjectIDs.Computer4
+           select o.Employee.ID).Single();
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
     public void SequenceOfForeignKeyIDs_ConstructedInMemory ()
     {
       var result =
