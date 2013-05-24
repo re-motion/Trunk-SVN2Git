@@ -23,6 +23,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.FunctionalProgramming;
 using Remotion.Logging;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -46,6 +47,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
         Users = CacheFactory.CreateWithLazyLocking<string, User>();
       }
     }
+
+    private const string c_userNameParameter = "<userName>";
 
     private static readonly ILog s_log = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private static readonly QueryCache s_queryCache = new QueryCache();
@@ -89,15 +92,22 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           LogLevel.Debug,
           "Fetched user '" + userName + "' into SecurityPrincipalRepository. Time taken: {elapsed:ms}ms"))
       {
-        return s_queryCache.ExecuteCollectionQuery<User> (
-            clientTransaction,
+        var queryTemplate = s_queryCache.GetQuery<User> (
             MethodInfo.GetCurrentMethod().Name,
-            users => users.Where (u => u.UserName == userName).Select (u => u)
+            users => users.Where (u => u.UserName == c_userNameParameter).Select (u => u)
                           .FetchOne (u => u.Tenant)
                           .FetchMany (u => u.Roles).ThenFetchOne (r => r.Group)
-                          .FetchMany (User.SelectSubstitutions()).ThenFetchOne (s => s.SubstitutedRole).ThenFetchOne (r => r.Group))
-                           .AsEnumerable()
-                           .Single (() => CreateAccessControlException ("The user '{0}' could not be found.", userName));
+                          .FetchMany (User.SelectSubstitutions()).ThenFetchOne (s => s.SubstitutedRole).ThenFetchOne (r => r.Group));
+
+        Assertion.IsTrue (queryTemplate.Parameters.Count == 1, "Query parameter mismatch found.");
+        var userNameParameter = queryTemplate.Parameters[0];
+        Assertion.IsTrue (c_userNameParameter.Equals (userNameParameter.Value), "First parameter does not contain userName.");
+
+        // TODO: Clone the query
+
+        return clientTransaction.QueryManager.GetCollection<User> (query)
+                                .AsEnumerable()
+                                .Single (() => CreateAccessControlException ("The user '{0}' could not be found.", userName));
       }
     }
 

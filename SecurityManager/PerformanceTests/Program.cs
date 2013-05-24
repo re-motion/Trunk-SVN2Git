@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.PerformanceTests
 
       Stopwatch stopwatch = Stopwatch.StartNew();
       int dummy = 0;
-      int count = 10;
+      int count = 1;
       for (int i = 0; i < count; i++)
       {
         dummy += provider.GetAccess (context, user).Length;

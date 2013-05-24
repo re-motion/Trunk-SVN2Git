@@ -22,6 +22,7 @@ using System.Reflection;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.FunctionalProgramming;
 using Remotion.Logging;
 using Remotion.Security;
@@ -62,6 +63,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       }
     }
 
+    private static readonly Guid s_aclParameter = Guid.Empty;
+
     private AccessControlList LoadAccessControlList (IDomainObjectHandle<AccessControlList> aclHandle)
     {
       using (StopwatchScope.CreateScope (
@@ -69,14 +72,23 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           LogLevel.Debug,
           "Fetched ACL '" + aclHandle.ObjectID + "' for AccessResolver. Time taken: {elapsed:ms}ms"))
       {
-        return s_queryCache.ExecuteCollectionQuery<AccessControlList> (
-            ClientTransaction.Current,
+
+        var queryTemplate = s_queryCache.GetQuery<AccessControlList> (
             MethodInfo.GetCurrentMethod().Name,
-            acls => acls.Where (o => o.ID == aclHandle.ObjectID).Select (o => o)
+            acls => acls.Where (o => s_aclParameter.Equals (o.ID.Value))
+                        .Select (o => o)
                         .FetchMany (o => o.AccessControlEntries)
-                        .ThenFetchMany (ace => ace.GetPermissionsForQuery()))
-                           .AsEnumerable()
-                           .Single (() => CreateAccessControlException ("The ACL '{0}' could not be found.", aclHandle.ObjectID));
+                        .ThenFetchMany (ace => ace.GetPermissionsForQuery()));
+
+        Assertion.IsTrue (queryTemplate.Parameters.Count == 1, "Query parameter mismatch found.");
+        var aclParameter = queryTemplate.Parameters[0];
+        Assertion.IsTrue (s_aclParameter.Equals (aclParameter.Value), "First parameter does not contain ACL ID.");
+
+        // TODO: Clone the query
+
+        return ClientTransaction.Current.QueryManager.GetCollection<AccessControlList> (query)
+                                .AsEnumerable()
+                                .Single (() => CreateAccessControlException ("The ACL '{0}' could not be found.", aclHandle.ObjectID));
       }
     }
 
@@ -84,7 +96,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     {
       using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Fetched access types for AccessResolver. Time taken: {elapsed:ms}ms"))
       {
-        s_queryCache.ExecuteCollectionQuery<AccessTypeDefinition> (ClientTransaction.Current, MethodInfo.GetCurrentMethod().Name, accessTypes => accessTypes);
+        s_queryCache.ExecuteCollectionQuery<AccessTypeDefinition> (
+            ClientTransaction.Current,
+            MethodInfo.GetCurrentMethod().Name,
+            accessTypes => accessTypes);
       }
     }
 
