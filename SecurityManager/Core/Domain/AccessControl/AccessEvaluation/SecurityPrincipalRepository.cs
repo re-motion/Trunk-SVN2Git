@@ -48,7 +48,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     }
 
     private static readonly ILog s_log = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
+    private static readonly QueryCache s_queryCache = new QueryCache();
+    
     public SecurityPrincipalRepository (IRevisionProvider revisionProvider)
       : base (revisionProvider)
     {
@@ -73,26 +74,45 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       using (StopwatchScope.CreateScope (
           s_log,
           LogLevel.Info,
-          "Fetched user '" + userName + "' into SecurityPrincipalRepository. Time taken: {elapsed:ms}ms"))
+          "Refreshed data in SecurityPrincipalRepository for user '" + userName + "'. Time taken: {elapsed:ms}ms"))
       {
         var clientTransaction = ClientTransaction.CreateRootTransaction();
-        using (clientTransaction.EnterNonDiscardingScope())
-        {
-          PrefetchPositions();
-          return QueryFactory.CreateLinqQuery<User>().Where (u => u.UserName == userName).Select (u => u)
-                             .FetchOne (u => u.Tenant)
-                             .FetchMany (u => u.Roles).ThenFetchOne (r => r.Group)
-                             .FetchMany (User.SelectSubstitutions()).ThenFetchOne (s => s.SubstitutedRole).ThenFetchOne (r => r.Group)
-                             .ToList().Single (() => CreateAccessControlException ("The user '{0}' could not be found.", userName));
-        }
+        LoadPosititions (clientTransaction);
+        return LoadUser (clientTransaction, userName);
       }
     }
 
-    private void PrefetchPositions ()
+    private User LoadUser (ClientTransaction clientTransaction, string userName)
     {
-// ReSharper disable ReturnValueOfPureMethodIsNotUsed
-      QueryFactory.CreateLinqQuery<Position>().AsEnumerable().FirstOrDefault();
-// ReSharper restore ReturnValueOfPureMethodIsNotUsed
+      using (StopwatchScope.CreateScope (
+          s_log,
+          LogLevel.Debug,
+          "Fetched user '" + userName + "' into SecurityPrincipalRepository. Time taken: {elapsed:ms}ms"))
+      {
+        return s_queryCache.ExecuteCollectionQuery<User> (
+            clientTransaction,
+            MethodInfo.GetCurrentMethod().Name,
+            users => users.Where (u => u.UserName == userName).Select (u => u)
+                          .FetchOne (u => u.Tenant)
+                          .FetchMany (u => u.Roles).ThenFetchOne (r => r.Group)
+                          .FetchMany (User.SelectSubstitutions()).ThenFetchOne (s => s.SubstitutedRole).ThenFetchOne (r => r.Group))
+                           .AsEnumerable()
+                           .Single (() => CreateAccessControlException ("The user '{0}' could not be found.", userName));
+      }
+    }
+
+    private void LoadPosititions (ClientTransaction clientTransaction)
+    {
+      using (StopwatchScope.CreateScope (
+          s_log,
+          LogLevel.Debug,
+          "Fetched positions into SecurityPrincipalRepository. Time taken: {elapsed:ms}ms"))
+      {
+        s_queryCache.ExecuteCollectionQuery<Position> (
+            clientTransaction,
+            MethodInfo.GetCurrentMethod().Name,
+            positions => positions);
+      }
     }
 
     private AccessControlException CreateAccessControlException (string message, params object[] args)

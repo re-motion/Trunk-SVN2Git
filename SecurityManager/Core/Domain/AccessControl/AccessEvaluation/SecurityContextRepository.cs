@@ -71,12 +71,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     private static readonly ILog s_log = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private static readonly ICache<string, IQuery> s_queryCache = CacheFactory.CreateWithLocking<string, IQuery>();
 
-    private readonly ClientTransaction _clientTransaction;
-
     public SecurityContextRepository (IRevisionProvider revisionProvider)
         : base (revisionProvider)
     {
-      _clientTransaction = ClientTransaction.CreateRootTransaction();
     }
 
     public IDomainObjectHandle<Tenant> GetTenant (string uniqueIdentifier)
@@ -147,27 +144,29 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     protected override Data LoadData (int revision)
     {
-      s_log.Info ("Reset SecurityContextRepository cache.");
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Refreshed data in SecurityContextRepository. Time taken: {elapsed:ms}ms"))
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        var tenants = LoadTenants();
-        var groups = LoadGroups();
-        var users = LoadUsers();
-        var abstractRoles = LoadAbstractRoles();
-        var classes = BuildClassCache (
-            LoadSecurableClassDefinitions(),
-            LoadStatelessAccessControlLists(),
-            LoadStatefulAccessControlLists());
-        var statePropertyValues = LoadStatePropertyValues();
+        s_log.Info ("Reset SecurityContextRepository cache.");
+        using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Refreshed data in SecurityContextRepository. Time taken: {elapsed:ms}ms"))
+        {
+          var tenants = LoadTenants();
+          var groups = LoadGroups();
+          var users = LoadUsers();
+          var abstractRoles = LoadAbstractRoles();
+          var classes = BuildClassCache (
+              LoadSecurableClassDefinitions(),
+              LoadStatelessAccessControlLists(),
+              LoadStatefulAccessControlLists());
+          var statePropertyValues = LoadStatePropertyValues();
 
-        return new Data (revision, tenants, groups, users, abstractRoles, classes, statePropertyValues);
+          return new Data (revision, tenants, groups, users, abstractRoles, classes, statePropertyValues);
+        }
       }
     }
 
     private Dictionary<string, IDomainObjectHandle<Tenant>> LoadTenants ()
     {
       var result = GetOrCreateQuery (
-          _clientTransaction,
           MethodInfo.GetCurrentMethod(),
           () => from t in QueryFactory.CreateLinqQuery<Tenant>()
                 select new { Key = t.UniqueIdentifier, Value = t.ID.GetHandle<Tenant>() });
@@ -181,7 +180,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     private Dictionary<string, IDomainObjectHandle<Group>> LoadGroups ()
     {
       var result = GetOrCreateQuery (
-          _clientTransaction,
           MethodInfo.GetCurrentMethod(),
           () => from g in QueryFactory.CreateLinqQuery<Group>()
                 select new { Key = g.UniqueIdentifier, Value = g.ID.GetHandle<Group>() });
@@ -195,7 +193,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     private Dictionary<string, IDomainObjectHandle<User>> LoadUsers ()
     {
       var result = GetOrCreateQuery (
-          _clientTransaction,
           MethodInfo.GetCurrentMethod(),
           () => from u in QueryFactory.CreateLinqQuery<User>()
                 select new { Key = u.UserName, Value = u.ID.GetHandle<User>() });
@@ -209,7 +206,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     private Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> LoadAbstractRoles ()
     {
       var result = GetOrCreateQuery (
-          _clientTransaction,
           MethodInfo.GetCurrentMethod(),
           () => from r in QueryFactory.CreateLinqQuery<AbstractRoleDefinition>()
                 select new { Key = r.Name, Value = r.ID.GetHandle<AbstractRoleDefinition>() });
@@ -223,12 +219,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     private Dictionary<ObjectID, string> LoadSecurableClassDefinitions ()
     {
       var result = GetOrCreateQuery (
-          _clientTransaction,
           MethodInfo.GetCurrentMethod(),
           () => from @class in QueryFactory.CreateLinqQuery<SecurableClassDefinition>()
                 select new { @class.ID, @class.Name });
 
-      using (CreateStopwatchScopeForQueryExecution("securable classes"))
+      using (CreateStopwatchScopeForQueryExecution ("securable classes"))
       {
         return result.ToDictionary (c => c.ID, c => c.Name);
       }
@@ -237,7 +232,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     private ILookup<ObjectID, StatefulAccessControlListData> LoadStatefulAccessControlLists ()
     {
       var result = GetOrCreateQuery (
-          _clientTransaction,
           MethodInfo.GetCurrentMethod(),
           () => from acl in QueryFactory.CreateLinqQuery<StatefulAccessControlList>()
                 from sc in acl.GetStateCombinationsForQuery()
@@ -271,7 +265,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     private Dictionary<ObjectID, IDomainObjectHandle<StatelessAccessControlList>> LoadStatelessAccessControlLists ()
     {
       var result = GetOrCreateQuery (
-          _clientTransaction,
           MethodInfo.GetCurrentMethod(),
           () => from acl in QueryFactory.CreateLinqQuery<StatelessAccessControlList>()
                 select new { Class = acl.GetClassForQuery().ID, Acl = acl.ID.GetHandle<StatelessAccessControlList>() });
@@ -295,7 +288,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     private Dictionary<IDomainObjectHandle<StatePropertyDefinition>, ReadOnlyCollectionDecorator<string>> LoadStatePropertyValues ()
     {
       var result = GetOrCreateQuery (
-          _clientTransaction,
           MethodInfo.GetCurrentMethod(),
           () => from s in QueryFactory.CreateLinqQuery<StateDefinition>()
                 select
@@ -328,12 +320,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           "Fetched " + queryName + " into SecurityContextRepository. Time taken: {elapsed:ms}ms");
     }
 
-    private IEnumerable<T> GetOrCreateQuery<T> (ClientTransaction clientTransaction, MethodBase caller, Func<IQueryable<T>> queryCreator)
+    private IEnumerable<T> GetOrCreateQuery<T> (MethodBase caller, Func<IQueryable<T>> queryCreator)
     {
       var executableQuery =
           (IExecutableQuery<IEnumerable<T>>) s_queryCache.GetOrCreateValue (caller.Name, key => CreateExecutableQuery (key, queryCreator));
 
-      return executableQuery.Execute (clientTransaction.QueryManager);
+      return executableQuery.Execute (ClientTransaction.Current.QueryManager);
     }
 
     private static IExecutableQuery<IEnumerable<T>> CreateExecutableQuery<T> (string key, Func<IQueryable<T>> queryCreator)
