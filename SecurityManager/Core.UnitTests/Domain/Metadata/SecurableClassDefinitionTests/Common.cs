@@ -34,21 +34,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
   public class Common : DomainTest
   {
     [Test]
-    public void FindStateCombination_ValidStates ()
-    {
-      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
-      using (testHelper.Transaction.EnterNonDiscardingScope ())
-      {
-        StateCombination expectedCombination = testHelper.GetStateCombinationForDeliveredAndUnpaidOrder ();
-        SecurableClassDefinition orderClass = expectedCombination.Class;
-        List<StateDefinition> states = testHelper.GetDeliveredAndUnpaidStateList (orderClass);
-
-        StateCombination stateCombination = orderClass.FindStateCombination (states);
-        Assert.That (stateCombination, Is.SameAs (expectedCombination));
-      }
-    }
-
-    [Test]
     public void StateProperties_Empty ()
     {
       AccessControlTestHelper testHelper = new AccessControlTestHelper ();

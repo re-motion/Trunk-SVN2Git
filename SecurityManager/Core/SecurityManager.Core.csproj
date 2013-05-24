@@ -125,15 +125,18 @@
     </Compile>
     <Compile Include="Domain\AccessControl\AccessControlEntry.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryValidationError.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlExtensions.cs" />
     <Compile Include="Domain\AccessControl\AccessResolver.cs" />
     <Compile Include="Domain\AccessControl\IAccessResolver.cs" />
-    <Compile Include="Domain\AccessControl\RepositoryBase.cs" />
-    <Compile Include="Domain\IRevisionProvider.cs" />
     <Compile Include="Domain\AccessControl\ISecurityContextRepository.cs" />
     <Compile Include="Domain\AccessControl\ISecurityPrincipalRepository.cs" />
     <Compile Include="Domain\AccessControl\Principal.cs" />
+    <Compile Include="Domain\AccessControl\RepositoryBase.cs" />
+    <Compile Include="Domain\AccessControl\SecurableClassDefinitionData.cs" />
     <Compile Include="Domain\AccessControl\SecurityContextRepository.cs" />
     <Compile Include="Domain\AccessControl\SecurityPrincipalRepository.cs" />
+    <Compile Include="Domain\AccessControl\State.cs" />
+    <Compile Include="Domain\AccessControl\StatefulAccessControlListData.cs" />
     <Compile Include="Domain\AccessControl\TenantHierarchyCondition.cs" />
     <Compile Include="Domain\AccessControl\GroupHierarchyCondition.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcher.cs" />
@@ -152,9 +155,10 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilter.cs" />
     <Compile Include="Domain\DomainObjectDeleteHandler.cs" />
     <Compile Include="Domain\DomainObjectExtensions.cs" />
+    <Compile Include="Domain\IRevisionProvider.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipal.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipalFactory.cs" />
-    <Compile Include="Domain\Metadata\SecurableClassDefinitionExtensions.cs" />
+    <Compile Include="Domain\Metadata\MetadataExtensions.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipal.cs" />
     <Compile Include="Domain\PrincipalRole.cs" />
     <Compile Include="Domain\RevisionProvider.cs" />

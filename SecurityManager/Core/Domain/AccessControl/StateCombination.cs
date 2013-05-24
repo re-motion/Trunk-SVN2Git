@@ -31,11 +31,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   [SecurityManagerStorageGroup]
   public abstract class StateCombination : AccessControlObject
   {
-    public static Expression<Func<StateCombination, IEnumerable<StateUsage>>> SelectStateUsages ()
-    {
-      return sc => sc.StateUsages;
-    }
-
     public static StateCombination NewObject ()
     {
       return NewObject<StateCombination> ();

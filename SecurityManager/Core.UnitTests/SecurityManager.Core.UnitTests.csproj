@@ -106,6 +106,9 @@
     <Compile Include="AclTools\Expansion\AclExpansionTreeTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\OnCommitTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\EnumerationValueFilterTest.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlListFinderTests\FindForStatefulContext_AccessControlListFinderTest.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlListFinderTests\FindForStatelessContext_AccessControlListFinderTest.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlListFinderTests\TestBase.cs" />
     <Compile Include="Domain\AccessControl\AccessTypeStatisticsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationSettingsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationTest.cs" />
@@ -150,8 +153,6 @@
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\SecurityTokenMatcherTestBase.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\Test.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryValidationResultTest.cs" />
-    <Compile Include="Domain\AccessControl\AccessControlListFinderTests\Find_BySecurableClassDefinition.cs" />
-    <Compile Include="Domain\AccessControl\AccessControlListFinderTests\Find_BySecurityContext.cs" />
     <Compile Include="Domain\AccessControl\AccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlTestHelper.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\MixedTokens.cs" />
@@ -282,6 +283,7 @@
     <Compile Include="SecurityServiceTest.cs" />
     <Compile Include="SetUpFixture.cs" />
     <Compile Include="TestDomain\AbstractRoles.cs" />
+    <Compile Include="TestDomain\Customer.cs" />
     <Compile Include="TestDomain\Order.cs" />
     <Compile Include="TestDomain\PremiumOrder.cs" />
     <Compile Include="TestDomain\SecurityStates.cs" />

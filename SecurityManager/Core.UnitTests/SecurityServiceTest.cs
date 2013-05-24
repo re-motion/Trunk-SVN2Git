@@ -144,6 +144,26 @@ namespace Remotion.SecurityManager.UnitTests
 
       Assert.That (actualAccessTypes, Is.SameAs (expectedAccessTypes));
     }
+    
+
+    [Test]
+    public void GetAccess_ContextDoesNotMatchAcl_ReturnsEmptyAccessTypes ()
+    {
+      SecurityToken token = SecurityToken.Create (
+          Principal.Create (_tenant, null, new Role[0]),
+          null,
+          null,
+          null,
+          Enumerable.Empty<IDomainObjectHandle<AbstractRoleDefinition>>());
+
+      Expect.Call (_mockAclFinder.Find (_context)).Return (null);
+      Expect.Call (_mockTokenBuilder.CreateToken (_principalStub, _context)).Return (token);
+      _mocks.ReplayAll();
+
+      AccessType[] actualAccessTypes = _service.GetAccess (_context, _principalStub);
+
+      Assert.That (actualAccessTypes, Is.Empty);
+    }
 
     [Test]
     public void GetAccess_WithAccessControlExcptionFromAccessControlListFinder ()

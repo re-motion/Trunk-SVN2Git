@@ -42,7 +42,7 @@ namespace Remotion.Security
 
     private readonly object _syncRoot = new object();
 
-    private LazyLockingCachingAdapter<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> _cache;
+    private CacheType _cache;
     private volatile int _revision;
 
     public RevisionBasedAccessTypeCacheProvider ()

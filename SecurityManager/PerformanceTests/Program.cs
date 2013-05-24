@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Logging;
 using Remotion.Security;
@@ -22,8 +23,8 @@ namespace Remotion.SecurityManager.PerformanceTests
     {
       var defaultServiceLocator = new DefaultServiceLocator();
 
-      //defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.IClientTransactionExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
-      //defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.Tracing.IPersistenceExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
+      defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.IClientTransactionExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
+      defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.Tracing.IPersistenceExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
 
       ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
 
@@ -40,13 +41,13 @@ namespace Remotion.SecurityManager.PerformanceTests
               new Dictionary<string, EnumWrapper> { { "CommonFileState", EnumWrapper.Get ("Work|ActaNova.Domain.CommonFile+CommonFileStateType, ActaNova.Domain") } },
               new EnumWrapper[0]);
       ISecurityPrincipal user = new SecurityPrincipal ("ServiceUser", null, null, null);
-        //new SecurityService().GetAccess (ClientTransaction.CreateRootTransaction(), context, user);
-      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction();
-      //using (StopwatchScope.CreateScope ("{elapsed:ms}"))
+      MappingConfiguration.Current.GetTypeDefinitions();
+      //using (StopwatchScope.CreateScope ("{elapsed:ms} ms"))
       {
         provider.GetAccess (context, user);
       }
       Console.WriteLine ("Init done");
+      return;
       Console.ReadKey();
 
       Stopwatch stopwatch = Stopwatch.StartNew();

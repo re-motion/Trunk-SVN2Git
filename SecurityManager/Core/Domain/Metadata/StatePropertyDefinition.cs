@@ -33,16 +33,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
   [DBTable]
   public abstract class StatePropertyDefinition : MetadataObject
   {
-    public static Expression<Func<StatePropertyDefinition, IEnumerable<StatePropertyReference>>> SelectStatePropertyReferences ()
-    {
-      return property => property.StatePropertyReferences;
-    }
-
-    public static Expression<Func<StatePropertyDefinition, IEnumerable<StateDefinition>>> SelectDefinedStates ()
-    {
-      return property => property.DefinedStatesInternal;
-    }
-
     public static StatePropertyDefinition NewObject ()
     {
       return NewObject<StatePropertyDefinition>();

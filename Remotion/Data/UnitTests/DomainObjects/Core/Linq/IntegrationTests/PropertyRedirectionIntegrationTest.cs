@@ -86,5 +86,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           select o;
       CheckQueryResult (query);
     }
+
+    [Test]
+    public void RedirectedProperty_ViaExtensionMethod ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          where o.GetRedirectedOrderNumber() == 1
+          select o;
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    public void RedirectedRedirectedProperty_ViaExtensionMethod ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          where o.GetRedirectedRedirectedOrderNumber() == 1
+          select o;
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+    }
   }
 }

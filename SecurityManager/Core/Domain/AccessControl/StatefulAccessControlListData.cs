@@ -15,19 +15,40 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Security;
-using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
-  [ConcreteImplementation (typeof (AccessControlListFinder), Lifetime = LifetimeKind.Singleton)]
-  public interface IAccessControlListFinder
+  public class StatefulAccessControlListData
   {
-    [CanBeNull]
-    IDomainObjectHandle<AccessControlList> Find (ISecurityContext context);
+    private readonly IDomainObjectHandle<StatefulAccessControlList> _handle;
+    private readonly ReadOnlyCollectionDecorator<State> _states;
+
+    public StatefulAccessControlListData ([NotNull] IDomainObjectHandle<StatefulAccessControlList> handle, [NotNull] IEnumerable<State> states)
+    {
+      ArgumentUtility.CheckNotNull ("handle", handle);
+      ArgumentUtility.CheckNotNull ("states", states);
+
+      _handle = handle;
+      _states = states.ToArray().AsReadOnly();
+    }
+
+    [NotNull]
+    public IDomainObjectHandle<StatefulAccessControlList> Handle
+    {
+      get { return _handle; }
+    }
+
+    [NotNull]
+    public ReadOnlyCollectionDecorator<State> States
+    {
+      get { return _states; }
+    }
   }
 }

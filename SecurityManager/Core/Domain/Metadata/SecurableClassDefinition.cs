@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
@@ -36,16 +35,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
   [DBTable]
   public abstract class SecurableClassDefinition : MetadataObject, ISupportsGetObject
   {
-    public static Expression<Func<SecurableClassDefinition, IEnumerable<AccessTypeReference>>> SelectAccessTypeReferences ()
-    {
-      return @class => @class.AccessTypeReferences;
-    }
-
-    public static Expression<Func<SecurableClassDefinition, IEnumerable<StatePropertyReference>>> SelectStatePropertyReferences ()
-    {
-      return @class => @class.StatePropertyReferences;
-    }
-
     public static SecurableClassDefinition NewObject ()
     {
       return NewObject<SecurableClassDefinition>();

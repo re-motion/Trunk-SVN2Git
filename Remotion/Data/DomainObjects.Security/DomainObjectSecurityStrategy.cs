@@ -32,6 +32,37 @@ namespace Remotion.Data.DomainObjects.Security
     NewAndDeleted = 3
   }
 
+  public class AlwaysAllowReadFindDomainObjectSecurityStrategy : DomainObjectSecurityStrategy
+  {
+    private static readonly AccessType s_readAccessType = AccessType.Get (GeneralAccessTypes.Read);
+    private static readonly AccessType s_findAccessType = AccessType.Get (GeneralAccessTypes.Find);
+
+    public AlwaysAllowReadFindDomainObjectSecurityStrategy (RequiredSecurityForStates requiredSecurityForStates, IDomainObjectSecurityContextFactory securityContextFactory, ISecurityStrategy securityStrategy)
+        : base(requiredSecurityForStates, securityContextFactory, securityStrategy)
+    {
+    }
+
+    public AlwaysAllowReadFindDomainObjectSecurityStrategy (RequiredSecurityForStates requiredSecurityForStates, IDomainObjectSecurityContextFactory securityContextFactory)
+        : base(requiredSecurityForStates, securityContextFactory)
+    {
+    }
+
+    public override bool HasAccess (ISecurityProvider securityService, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    {
+      ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
+
+      if (requiredAccessTypes.Length == 1)
+      {
+        if (requiredAccessTypes[0].Equals(s_readAccessType) || requiredAccessTypes[0].Equals (s_findAccessType))
+          return true;
+      }
+
+      return base.HasAccess (securityService, principal, requiredAccessTypes);
+    }
+
+  }
+
+
   [Serializable]
   public class DomainObjectSecurityStrategy : ObjectSecurityStrategy
   {

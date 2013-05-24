@@ -79,7 +79,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private void PrefetchPositions ()
     {
 // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-      QueryFactory.CreateLinqQuery<Position>().ToList();
+      QueryFactory.CreateLinqQuery<Position>().AsEnumerable().FirstOrDefault();
 // ReSharper restore ReturnValueOfPureMethodIsNotUsed
     }
 

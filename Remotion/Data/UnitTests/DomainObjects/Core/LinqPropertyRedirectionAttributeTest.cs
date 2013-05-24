@@ -127,6 +127,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void MethodCallTransformer_Transform_ExtensionMethod ()
+    {
+      var instance = Expression.Constant (null, typeof (Order));
+      var call = Expression.Call (typeof (OrderExtensions).GetMethod ("GetRedirectedOrderNumber"), instance);
+
+      var transformer = new LinqPropertyRedirectionAttribute.MethodCallTransformer (typeof (Order).GetProperty ("OrderNumber"));
+      var result = transformer.Transform (call);
+
+      var expected = Expression.MakeMemberAccess (instance, typeof (Order).GetProperty ("OrderNumber"));
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
         "The method call 'null.get_Position()' cannot be redirected to the property "
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber'. No coercion operator is defined between types "
@@ -169,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "The method call 'StaticMethod()' cannot be redirected to the property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber'. "
-        + "Only instance methods can be redirected, but the method is static.")]
+        + "Only instance or extension methods can be redirected, but the method is static.")]
     public void MethodCallTransformer_Transform_StaticMethod ()
     {
       var call = Expression.Call (NormalizingMemberInfoFromExpressionUtility.GetMethod (() => StaticMethod()));
@@ -187,6 +200,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var call = Expression.Call (
           Expression.Constant (null, typeof (LinqPropertyRedirectionAttributeTest)),
           NormalizingMemberInfoFromExpressionUtility.GetMethod (() => MethodWithArguments (null)),
+          Expression.Constant (null));
+
+      var transformer = new LinqPropertyRedirectionAttribute.MethodCallTransformer (typeof (Order).GetProperty ("OrderNumber"));
+      transformer.Transform (call);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The method call 'null.GetRedirectedOrderNumberWithInvalidSignature(null)' cannot be redirected to the property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber'. "
+        + "Extensions method expecting parameters other than the instance parameter cannot be redirected.")]
+    public void MethodCallTransformer_Transform_ExtensionMethodWithArguments ()
+    {
+      var call = Expression.Call (
+          typeof (OrderExtensions).GetMethod ("GetRedirectedOrderNumberWithInvalidSignature"),
+          Expression.Constant (null, typeof (Order)),
           Expression.Constant (null));
 
       var transformer = new LinqPropertyRedirectionAttribute.MethodCallTransformer (typeof (Order).GetProperty ("OrderNumber"));

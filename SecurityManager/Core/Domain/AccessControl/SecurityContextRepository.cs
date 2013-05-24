@@ -15,12 +15,12 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -41,7 +41,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       public readonly Dictionary<string, IDomainObjectHandle<Group>> Groups;
       public readonly Dictionary<string, IDomainObjectHandle<User>> Users;
       public readonly Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> AbstractRoles;
-      public readonly Dictionary<string, SecurableClassDefinition> Classes;
+      public readonly Dictionary<string, SecurableClassDefinitionData> Classes;
+      public readonly Dictionary<IDomainObjectHandle<StatePropertyDefinition>, ReadOnlyCollectionDecorator<string>> StatePropertyValues;
 
       internal Data (
           int revision,
@@ -49,19 +50,21 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           Dictionary<string, IDomainObjectHandle<Group>> groups,
           Dictionary<string, IDomainObjectHandle<User>> users,
           Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> abstractRoles,
-          Dictionary<string, SecurableClassDefinition> classes)
-        :base (revision)
+          Dictionary<string, SecurableClassDefinitionData> classes,
+          Dictionary<IDomainObjectHandle<StatePropertyDefinition>, ReadOnlyCollectionDecorator<string>> statePropertyValues)
+          : base (revision)
       {
         Tenants = tenants;
         Groups = groups;
         Users = users;
         AbstractRoles = abstractRoles;
         Classes = classes;
+        StatePropertyValues = statePropertyValues;
       }
     }
 
     public SecurityContextRepository (IRevisionProvider revisionProvider)
-      : base (revisionProvider)
+        : base (revisionProvider)
     {
     }
 
@@ -109,7 +112,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return abstractRole;
     }
 
-    public SecurableClassDefinition GetClass (string name)
+    public SecurableClassDefinitionData GetClass (string name)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
@@ -120,38 +123,154 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return @class;
     }
 
+    public ReadOnlyCollectionDecorator<string> GetStatePropertyValues (IDomainObjectHandle<StatePropertyDefinition> stateProperty)
+    {
+      ArgumentUtility.CheckNotNull ("stateProperty", stateProperty);
+
+      var cachedData = GetCachedData();
+      var values = cachedData.StatePropertyValues.GetValueOrDefault (stateProperty);
+      if (values == null)
+        throw CreateAccessControlException ("The state property with ID '{0}' could not be found.", stateProperty);
+      return values;
+    }
+
     protected override Data LoadData (int revision)
     {
-      using (new SecurityFreeSection())
+      var tenants = LoadTenants();
+      var groups = LoadGroups();
+      var users = LoadUsers();
+      var abstractRoles = LoadAbstractRoles();
+      var classes = BuildClassCache (
+          LoadSecurableClassDefinitions(),
+          LoadStatelessAccessControlLists(),
+          LoadStatefulAccessControlLists());
+      var statePropertyValues = LoadStatePropertyValues();
+
+      return new Data (revision, tenants, groups, users, abstractRoles, classes, statePropertyValues);
+    }
+
+    private Dictionary<string, IDomainObjectHandle<Tenant>> LoadTenants ()
+    {
+      var result = from t in QueryFactory.CreateLinqQuery<Tenant>()
+                   select new { Key = t.UniqueIdentifier, Value = t.ID.GetHandle<Tenant>() };
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
-        {
-          var tenants = QueryFactory.CreateLinqQuery<Tenant>()
-                                    .Select (t => new { Key = t.UniqueIdentifier, Value = t.ID })
-                                    .ToDictionary (t => t.Key, t => t.Value.GetHandle<Tenant>());
+        return result.ToDictionary (t => t.Key, t => t.Value);
+      }
+    }
 
-          var groups = QueryFactory.CreateLinqQuery<Group>()
-                                   .Select (g => new { Key = g.UniqueIdentifier, Value = g.ID })
-                                   .ToDictionary (g => g.Key, g => g.Value.GetHandle<Group>());
+    private Dictionary<string, IDomainObjectHandle<Group>> LoadGroups ()
+    {
+      var result = from g in QueryFactory.CreateLinqQuery<Group>()
+                   select new { Key = g.UniqueIdentifier, Value = g.ID.GetHandle<Group>() };
 
-          var users = QueryFactory.CreateLinqQuery<User>()
-                                  .Select (u => new { Key = u.UserName, Value = u.ID })
-                                  .ToDictionary (u => u.Key, u => u.Value.GetHandle<User>());
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        return result.ToDictionary (g => g.Key, g => g.Value);
+      }
+    }
 
-          var abstractRoles = QueryFactory.CreateLinqQuery<AbstractRoleDefinition>()
-                                          .Select (r => new { Key = r.Name, Value = r.ID })
-                                          .ToDictionary (r => EnumWrapper.Get (r.Key), r => r.Value.GetHandle<AbstractRoleDefinition>());
+    private Dictionary<string, IDomainObjectHandle<User>> LoadUsers ()
+    {
+      var result = from u in QueryFactory.CreateLinqQuery<User>()
+                   select new { Key = u.UserName, Value = u.ID.GetHandle<User>() };
 
-          var classes = QueryFactory.CreateLinqQuery<SecurableClassDefinition>().Select (c => c)
-                                    .FetchStateProperties()
-                                    .FetchOne (cd => cd.StatelessAccessControlList)
-                                    .FetchMany (cd => cd.StatefulAccessControlLists)
-                                    .ThenFetchMany (StatefulAccessControlList.SelectStateCombinations())
-                                    .ThenFetchMany (StateCombination.SelectStateUsages()).
-                                     ToDictionary (c => c.Name);
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        return result.ToDictionary (u => u.Key, u => u.Value);
+      }
+    }
 
-          return new Data (revision, tenants, groups, users, abstractRoles, classes);
-        }
+    private Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> LoadAbstractRoles ()
+    {
+      var result = from r in QueryFactory.CreateLinqQuery<AbstractRoleDefinition>()
+                   select new { Key = r.Name, Value = r.ID.GetHandle<AbstractRoleDefinition>() };
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        return result.ToDictionary (r => EnumWrapper.Get (r.Key), r => r.Value);
+      }
+    }
+
+    private Dictionary<ObjectID, string> LoadSecurableClassDefinitions ()
+    {
+      var result = from @class in QueryFactory.CreateLinqQuery<SecurableClassDefinition>()
+                   select new { @class.ID, @class.Name };
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        return result.ToDictionary (c => c.ID, c => c.Name);
+      }
+    }
+
+    private ILookup<ObjectID, StatefulAccessControlListData> LoadStatefulAccessControlLists ()
+    {
+      var result = from acl in QueryFactory.CreateLinqQuery<StatefulAccessControlList>()
+                   from sc in acl.GetStateCombinationsForQuery()
+                   from usage in sc.GetStateUsagesForQuery().DefaultIfEmpty()
+                   from propertyReference in acl.GetClassForQuery().GetStatePropertyReferencesForQuery().DefaultIfEmpty()
+                   select new
+                          {
+                              Class = acl.GetClassForQuery().ID,
+                              Acl = acl.ID.GetHandle<StatefulAccessControlList>(),
+                              HasState = propertyReference != null,
+                              StatePropertyID = propertyReference.StateProperty.ID.Value,
+                              StatePropertyClassID = propertyReference.StateProperty.ID.ClassID,
+                              StatePropertyName = propertyReference.StateProperty.Name,
+                              StateValue = usage.StateDefinition.Name
+                          };
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        return result.AsEnumerable()
+                     .GroupBy (
+                         row => new { row.Class, row.Acl },
+                         row => row.HasState
+                                    ? new State (
+                                          new ObjectID (row.StatePropertyClassID, row.StatePropertyID).GetHandle<StatePropertyDefinition>(),
+                                          row.StatePropertyName,
+                                          row.StateValue)
+                                    : null)
+                     .ToLookup (g => g.Key.Class, g => new StatefulAccessControlListData (g.Key.Acl, g.Where (s => s != null)));
+      }
+    }
+
+    private Dictionary<ObjectID, IDomainObjectHandle<StatelessAccessControlList>> LoadStatelessAccessControlLists ()
+    {
+      var result = from acl in QueryFactory.CreateLinqQuery<StatelessAccessControlList>()
+                   select new { Class = acl.GetClassForQuery().ID, Acl = acl.ID.GetHandle<StatelessAccessControlList>() };
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        return result.ToDictionary (o => o.Class, o => o.Acl);
+      }
+    }
+
+    private Dictionary<string, SecurableClassDefinitionData> BuildClassCache (
+        IDictionary<ObjectID, string> classes,
+        IDictionary<ObjectID, IDomainObjectHandle<StatelessAccessControlList>> statelessAcls,
+        ILookup<ObjectID, StatefulAccessControlListData> statefulAcls)
+    {
+      return classes.ToDictionary (
+          c => c.Value,
+          c => new SecurableClassDefinitionData (classes.GetValueOrDefault (c.Key), statelessAcls.GetValueOrDefault (c.Key), statefulAcls[c.Key]));
+    }
+
+    private Dictionary<IDomainObjectHandle<StatePropertyDefinition>, ReadOnlyCollectionDecorator<string>> LoadStatePropertyValues ()
+    {
+      var result = from s in QueryFactory.CreateLinqQuery<StateDefinition>()
+                   select
+                       new
+                       {
+                           PropertyHandle = s.StateProperty.ID.GetHandle<StatePropertyDefinition>(),
+                           PropertyValue = s.Name
+                       };
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        var lookUp = result.ToLookup (o => o.PropertyHandle, o => o.PropertyValue);
+        return lookUp.ToDictionary (o => o.Key, o => o.ToArray().AsReadOnly());
       }
     }
 

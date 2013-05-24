@@ -300,6 +300,7 @@
     <Compile Include="DomainObjects\Core\Queries\QueryResultObjectMother.cs" />
     <Compile Include="DomainObjects\Database\DatabaseConfiguration.cs" />
     <Compile Include="DomainObjects\DomainObjectCreatorSwitch.cs" />
+    <Compile Include="DomainObjects\TestDomain\OrderExtensions.cs" />
     <Compile Include="DomainObjects\UseLegacyCodeGenerationAttribute.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleExtensionsTest.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleTest.cs" />

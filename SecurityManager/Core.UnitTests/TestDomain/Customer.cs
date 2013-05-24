@@ -1,4 +1,4 @@
-// This file is part of re-strict (www.re-motion.org)
+﻿// This file is part of re-strict (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -17,17 +17,20 @@
 // 
 
 using System;
-using JetBrains.Annotations;
-using Remotion.Data.DomainObjects;
 using Remotion.Security;
-using Remotion.ServiceLocation;
 
-namespace Remotion.SecurityManager.Domain.AccessControl
+namespace Remotion.SecurityManager.UnitTests.TestDomain
 {
-  [ConcreteImplementation (typeof (AccessControlListFinder), Lifetime = LifetimeKind.Singleton)]
-  public interface IAccessControlListFinder
+  public class Customer : ISecurableObject
   {
-    [CanBeNull]
-    IDomainObjectHandle<AccessControlList> Find (ISecurityContext context);
+    public IObjectSecurityStrategy GetSecurityStrategy ()
+    {
+      throw new Exception ("The method or operation is not implemented.");
+    }
+
+    public Type GetSecurableType ()
+    {
+      throw new Exception ("The method or operation is not implemented.");
+    }
   }
 }

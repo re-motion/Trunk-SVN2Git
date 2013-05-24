@@ -87,6 +87,9 @@ namespace Remotion.SecurityManager
           return new AccessType[0];
         }
 
+        if (acl == null)
+          return new AccessType[0];
+
         return _accessResolver.GetAccessTypes (acl, token);
       }
     }

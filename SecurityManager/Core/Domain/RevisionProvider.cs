@@ -37,26 +37,27 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private static readonly string s_revisionKey = SafeContextKeys.SecurityManagerRevision;
+    private readonly string _revisionKey;
 
     public RevisionProvider ()
     {
+      _revisionKey = SafeContextKeys.SecurityManagerRevision + "_" + Guid.NewGuid().ToString();
     }
 
     public int GetRevision ()
     {
-      var revision = (RevisionValue) SafeContext.Instance.GetData (s_revisionKey);
+      var revision = (RevisionValue) SafeContext.Instance.GetData (_revisionKey);
       if (revision == null)
       {
         revision = new RevisionValue (GetRevisionFromDatabase());
-        SafeContext.Instance.SetData (s_revisionKey, revision);
+        SafeContext.Instance.SetData (_revisionKey, revision);
       }
       return revision.Value;
     }
 
     public void InvalidateRevision ()
     {
-      SafeContext.Instance.FreeData (s_revisionKey);
+      SafeContext.Instance.FreeData (_revisionKey);
     }
 
     private static int GetRevisionFromDatabase ()
