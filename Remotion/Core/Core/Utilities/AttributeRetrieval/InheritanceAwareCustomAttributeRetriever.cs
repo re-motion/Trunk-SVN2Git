@@ -46,7 +46,18 @@ namespace Remotion.Utilities.AttributeRetrieval
                   null,
                   Type.EmptyTypes,
                   null);
-              Assertion.IsNotNull (method, "The internal method MethodInfo.GetParentDefinition has been removed. We need to patch this implementation.");
+              if (method == null)
+              {
+                if (System.Environment.Version.Major > 2)
+                {
+                  throw new InvalidOperationException ("This version of re-motion cannot be used with .NET Framework version 4.0 or later.");
+                }
+                else
+                {
+                  throw new AssertionException (
+                      "The internal method MethodInfo.GetParentDefinition has been removed. We need to patch this implementation.");
+                }
+              }
               return (Func<MethodInfo, MethodInfo>) Delegate.CreateDelegate (typeof (Func<MethodInfo, MethodInfo>), method);
             });
 
