@@ -43,6 +43,12 @@ namespace Remotion.SecurityManager.PerformanceTests
               new EnumWrapper[0]);
       ISecurityPrincipal user = new SecurityPrincipal ("ServiceUser", null, null, null);
       MappingConfiguration.Current.GetTypeDefinitions();
+      QueryFactory.CreateLinqQuery<Tenant>(); // Takes about 200ms
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        (from t in QueryFactory.CreateLinqQuery<Tenant>()
+         select new { Key = t.UniqueIdentifier, Value = t.ID.GetHandle<Tenant>() }).ToList(); // takes about 180ms for first Linq query in application.
+      }
 
       Console.WriteLine ("Initializing query cache...");
       new SecurityContextRepository (new RevisionProvider()).GetTenant ("SystemTenant");

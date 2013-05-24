@@ -172,7 +172,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           () => from t in QueryFactory.CreateLinqQuery<Tenant>()
                 select new { Key = t.UniqueIdentifier, Value = t.ID.GetHandle<Tenant>() });
 
-      using (CreateStopwatchScopeForQuery ("tenants"))
+      using (CreateStopwatchScopeForQueryExecution ("tenants"))
       {
         return result.ToDictionary (t => t.Key, t => t.Value);
       }
@@ -186,7 +186,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           () => from g in QueryFactory.CreateLinqQuery<Group>()
                 select new { Key = g.UniqueIdentifier, Value = g.ID.GetHandle<Group>() });
 
-      using (CreateStopwatchScopeForQuery ("groups"))
+      using (CreateStopwatchScopeForQueryExecution ("groups"))
       {
         return result.ToDictionary (g => g.Key, g => g.Value);
       }
@@ -200,7 +200,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           () => from u in QueryFactory.CreateLinqQuery<User>()
                 select new { Key = u.UserName, Value = u.ID.GetHandle<User>() });
 
-      using (CreateStopwatchScopeForQuery ("users"))
+      using (CreateStopwatchScopeForQueryExecution ("users"))
       {
         return result.ToDictionary (u => u.Key, u => u.Value);
       }
@@ -214,7 +214,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           () => from r in QueryFactory.CreateLinqQuery<AbstractRoleDefinition>()
                 select new { Key = r.Name, Value = r.ID.GetHandle<AbstractRoleDefinition>() });
 
-      using (CreateStopwatchScopeForQuery ("abstract roles"))
+      using (CreateStopwatchScopeForQueryExecution ("abstract roles"))
       {
         return result.ToDictionary (r => EnumWrapper.Get (r.Key), r => r.Value);
       }
@@ -228,7 +228,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           () => from @class in QueryFactory.CreateLinqQuery<SecurableClassDefinition>()
                 select new { @class.ID, @class.Name });
 
-      using (CreateStopwatchScopeForQuery("securable classes"))
+      using (CreateStopwatchScopeForQueryExecution("securable classes"))
       {
         return result.ToDictionary (c => c.ID, c => c.Name);
       }
@@ -254,7 +254,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
                            StateValue = usage.StateDefinition.Name
                        });
 
-      using (CreateStopwatchScopeForQuery ("stateful ACLs"))
+      using (CreateStopwatchScopeForQueryExecution ("stateful ACLs"))
       {
         return result.GroupBy (
             row => new { row.Class, row.Acl },
@@ -276,7 +276,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           () => from acl in QueryFactory.CreateLinqQuery<StatelessAccessControlList>()
                 select new { Class = acl.GetClassForQuery().ID, Acl = acl.ID.GetHandle<StatelessAccessControlList>() });
 
-      using (CreateStopwatchScopeForQuery ("stateless ACLs"))
+      using (CreateStopwatchScopeForQueryExecution ("stateless ACLs"))
       {
         return result.ToDictionary (o => o.Class, o => o.Acl);
       }
@@ -305,14 +305,22 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
                         PropertyValue = s.Name
                     });
 
-      using (CreateStopwatchScopeForQuery ("state properties"))
+      using (CreateStopwatchScopeForQueryExecution ("state properties"))
       {
         var lookUp = result.ToLookup (o => o.PropertyHandle, o => o.PropertyValue);
         return lookUp.ToDictionary (o => o.Key, o => o.ToArray().AsReadOnly());
       }
     }
 
-    private StopwatchScope CreateStopwatchScopeForQuery (string queryName)
+    private static StopwatchScope CreateStopwatchScopeForQueryParsing (string queryName)
+    {
+      return StopwatchScope.CreateScope (
+          s_log,
+          LogLevel.Debug,
+          "Parsing query for SecurityContextRepository." + queryName + "(). Time taken: {elapsed:ms}ms");
+    }
+
+    private static StopwatchScope CreateStopwatchScopeForQueryExecution (string queryName)
     {
       return StopwatchScope.CreateScope (
           s_log,
@@ -322,21 +330,25 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     private IEnumerable<T> GetOrCreateQuery<T> (ClientTransaction clientTransaction, MethodBase caller, Func<IQueryable<T>> queryCreator)
     {
-      var executableQuery = (IExecutableQuery<IEnumerable<T>>) s_queryCache.GetOrCreateValue (caller.Name, _ => CreateExecutableQuery (queryCreator));
+      var executableQuery =
+          (IExecutableQuery<IEnumerable<T>>) s_queryCache.GetOrCreateValue (caller.Name, key => CreateExecutableQuery (key, queryCreator));
 
       return executableQuery.Execute (clientTransaction.QueryManager);
     }
 
-    private static IExecutableQuery<IEnumerable<T>> CreateExecutableQuery<T> (Func<IQueryable<T>> queryCreator)
+    private static IExecutableQuery<IEnumerable<T>> CreateExecutableQuery<T> (string key, Func<IQueryable<T>> queryCreator)
     {
-      var queryable = (DomainObjectQueryable<T>) queryCreator();
-      var queryExecutor = queryable.GetExecutor();
-      var queryModel = queryable.Provider.GenerateQueryModel (queryable.Expression);
-      return queryExecutor.QueryGenerator.CreateSequenceQuery<T> (
-          "<dynamic query>",
-          queryExecutor.StorageProviderDefinition,
-          queryModel,
-          Enumerable.Empty<FetchQueryModelBuilder>());
+      using (CreateStopwatchScopeForQueryParsing (key))
+      {
+        var queryable = (DomainObjectQueryable<T>) queryCreator();
+        var queryExecutor = queryable.GetExecutor();
+        var queryModel = queryable.Provider.GenerateQueryModel (queryable.Expression);
+        return queryExecutor.QueryGenerator.CreateSequenceQuery<T> (
+            "<dynamic query>",
+            queryExecutor.StorageProviderDefinition,
+            queryModel,
+            Enumerable.Empty<FetchQueryModelBuilder>());
+      }
     }
 
     private AccessControlException CreateAccessControlException (string message, params object[] args)
