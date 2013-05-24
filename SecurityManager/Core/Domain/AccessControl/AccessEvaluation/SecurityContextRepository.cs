@@ -309,7 +309,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       return StopwatchScope.CreateScope (
           s_log,
           LogLevel.Debug,
-          "Parsing query for SecurityContextRepository." + queryName + "(). Time taken: {elapsed:ms}ms");
+          "Parsed query for SecurityContextRepository." + queryName + "(). Time taken: {elapsed:ms}ms");
     }
 
     private static StopwatchScope CreateStopwatchScopeForQueryExecution (string queryName)

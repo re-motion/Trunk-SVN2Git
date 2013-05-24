@@ -17,6 +17,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects;
@@ -62,6 +63,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       }
     }
 
+    private static readonly Guid s_aclParameter = Guid.Empty;
+
     private AccessControlList LoadAccessControlList (IDomainObjectHandle<AccessControlList> aclHandle)
     {
       using (StopwatchScope.CreateScope (
@@ -69,13 +72,17 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           LogLevel.Debug,
           "Fetched ACL '" + aclHandle.ObjectID + "' for AccessResolver. Time taken: {elapsed:ms}ms"))
       {
-        var result = QueryFactory.CreateLinqQuery<AccessControlList>().Where (o => o.ID == aclHandle.ObjectID)
-                                 .Select (o => o)
-                                 .FetchMany (o => o.AccessControlEntries)
-                                 .ThenFetchMany (ace => ace.GetPermissionsForQuery());
+        var queryTemplate = s_queryCache.GetQuery<AccessControlList> (
+            MethodInfo.GetCurrentMethod().Name,
+            acls => acls.Where (o => s_aclParameter.Equals (o.ID.Value))
+                        .Select (o => o)
+                        .FetchMany (o => o.AccessControlEntries)
+                        .ThenFetchMany (ace => ace.GetPermissionsForQuery()));
 
-        return result.AsEnumerable()
-                     .Single (() => CreateAccessControlException ("The ACL '{0}' could not be found.", aclHandle.ObjectID));
+        var query = queryTemplate.CreateCopyFromTemplate (new Dictionary<object, object> { { s_aclParameter, aclHandle.ObjectID.Value } });
+        return ClientTransaction.Current.QueryManager.GetCollection<AccessControlList> (query)
+                                .AsEnumerable()
+                                .Single (() => CreateAccessControlException ("The ACL '{0}' could not be found.", aclHandle.ObjectID));
       }
     }
 

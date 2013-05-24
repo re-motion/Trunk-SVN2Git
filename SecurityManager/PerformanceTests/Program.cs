@@ -70,10 +70,22 @@ namespace Remotion.SecurityManager.PerformanceTests
       {
         dummy += provider.GetAccess (context, user).Length;
       }
+
+      provider.GetAccess (
+          new SimpleSecurityContext (
+              "ActaNova.Federal.Domain.File, ActaNova.Federal.Domain",
+              null,
+              null,
+              null,
+              true,
+              new Dictionary<string, EnumWrapper>(),
+              new EnumWrapper[0]),
+          new SecurityPrincipal ("jou", null, null, null));
+
       stopwatch.Stop();
       Trace.Write (dummy);
       Console.WriteLine ("Time taken: {0}ms", ((decimal)stopwatch.ElapsedMilliseconds)/count);
-      //Console.ReadKey();
+      Console.ReadKey();
     }
   }
 }

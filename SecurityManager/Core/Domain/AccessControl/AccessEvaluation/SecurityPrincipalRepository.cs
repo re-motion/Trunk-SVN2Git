@@ -17,6 +17,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
@@ -47,6 +48,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       }
     }
 
+    private const string c_userNameParameter = "<userName>";
+
     private static readonly ILog s_log = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private static readonly QueryCache s_queryCache = new QueryCache();
     
@@ -76,34 +79,34 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           LogLevel.Info,
           "Refreshed data in SecurityPrincipalRepository for user '" + userName + "'. Time taken: {elapsed:ms}ms"))
       {
-        using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
-        {
-          LoadPosititions ();
-          return LoadUser (userName);
-        }
+        var clientTransaction = ClientTransaction.CreateRootTransaction();
+        LoadPosititions (clientTransaction);
+        return LoadUser (clientTransaction, userName);
       }
     }
 
-    private User LoadUser (string userName)
+    private User LoadUser (ClientTransaction clientTransaction, string userName)
     {
       using (StopwatchScope.CreateScope (
           s_log,
           LogLevel.Debug,
           "Fetched user '" + userName + "' into SecurityPrincipalRepository. Time taken: {elapsed:ms}ms"))
       {
-        var result = QueryFactory.CreateLinqQuery<User>()
-                                 .Where (u => u.UserName == userName)
-                                 .Select (u => u)
-                                 .FetchOne (u => u.Tenant)
-                                 .FetchMany (u => u.Roles).ThenFetchOne (r => r.Group)
-                                 .FetchMany (User.SelectSubstitutions()).ThenFetchOne (s => s.SubstitutedRole).ThenFetchOne (r => r.Group);
+        var queryTemplate = s_queryCache.GetQuery<User> (
+            MethodInfo.GetCurrentMethod().Name,
+            users => users.Where (u => u.UserName == c_userNameParameter).Select (u => u)
+                          .FetchOne (u => u.Tenant)
+                          .FetchMany (u => u.Roles).ThenFetchOne (r => r.Group)
+                          .FetchMany (User.SelectSubstitutions()).ThenFetchOne (s => s.SubstitutedRole).ThenFetchOne (r => r.Group));
 
-        return result.AsEnumerable()
-                     .Single (() => CreateAccessControlException ("The user '{0}' could not be found.", userName));
+        var query = queryTemplate.CreateCopyFromTemplate (new Dictionary<object, object> { { c_userNameParameter, userName } });
+        return clientTransaction.QueryManager.GetCollection<User> (query)
+                                .AsEnumerable()
+                                .Single (() => CreateAccessControlException ("The user '{0}' could not be found.", userName));
       }
     }
 
-    private void LoadPosititions ()
+    private void LoadPosititions (ClientTransaction clientTransaction)
     {
       using (StopwatchScope.CreateScope (
           s_log,
@@ -111,7 +114,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           "Fetched positions into SecurityPrincipalRepository. Time taken: {elapsed:ms}ms"))
       {
         s_queryCache.ExecuteCollectionQuery<Position> (
-            ClientTransaction.Current,
+            clientTransaction,
             MethodInfo.GetCurrentMethod().Name,
             positions => positions);
       }
