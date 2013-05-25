@@ -208,6 +208,7 @@
       <DependentUpon>ReferenceDataSourceTestForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="ReferenceDataSourceTestFunction.cs" />
+    <Compile Include="ResourceVirtualPathProvider.cs" />
     <Compile Include="StandardMode.Master.cs">
       <DependentUpon>StandardMode.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

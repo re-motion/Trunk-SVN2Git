@@ -19,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Web;
+using System.Web.Hosting;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Logging;
 using Remotion.ObjectBinding;
@@ -78,26 +79,28 @@ namespace OBWTest
       XmlReflectionBusinessObjectStorageProvider.SetCurrent (provider);
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (IGetObjectService), provider);
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>()
-          .AddService (typeof (ISearchAvailableObjectsService), new BindableXmlObjectSearchService());
+                            .AddService (typeof (ISearchAvailableObjectsService), new BindableXmlObjectSearchService());
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>()
-          .AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService());
+                            .AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService());
 
       BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>().AddService (new ReferenceDataSourceTestDefaultValueService());
       BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>().AddService (new ReferenceDataSourceTestDeleteObjectService());
 
       if (PreferQuirksModeRendering)
       {
-        DefaultServiceLocator defaultServiceLocator = new DefaultServiceLocator ();
-        foreach (var entry in LegacyServiceConfigurationService.GetConfiguration ())
+        DefaultServiceLocator defaultServiceLocator = new DefaultServiceLocator();
+        foreach (var entry in LegacyServiceConfigurationService.GetConfiguration())
           defaultServiceLocator.Register (entry);
-        foreach (var entry in BocLegacyServiceConfigurationService.GetConfiguration ())
+        foreach (var entry in BocLegacyServiceConfigurationService.GetConfiguration())
           defaultServiceLocator.Register (entry);
 
         ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
 
-        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocListRenderer> () is BocListQuirksModeRenderer);
-        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer> () is BocTextValueQuirksModeRenderer);
+        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocListRenderer>() is BocListQuirksModeRenderer);
+        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer>() is BocTextValueQuirksModeRenderer);
       }
+
+      //HostingEnvironment.RegisterVirtualPathProvider (new ResourceVirtualPathProvider());
     }
 
     protected void Session_Start (Object sender, EventArgs e)
