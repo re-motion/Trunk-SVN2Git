@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
@@ -170,16 +171,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
     private StorageTypeInformation GetStorageTypeForNullableValueType (Type nullableValueType, Type underlyingType, int? maxLength, bool isNullableInDatabase)
     {
       var underlyingStorageInformation = GetStorageType (underlyingType, maxLength, false);
-      if (underlyingType.IsEnum)
-      {
-        return new StorageTypeInformation (
-            typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.StorageType),
-            underlyingStorageInformation.StorageTypeName,
-            underlyingStorageInformation.StorageDbType,
-            isNullableInDatabase,
-            nullableValueType,
-            new AdvancedEnumConverter (nullableValueType));
-      }
 
       return new StorageTypeInformation (
           typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.StorageType),
@@ -187,17 +178,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
           underlyingStorageInformation.StorageDbType,
           isNullableInDatabase,
           nullableValueType,
-          new DefaultConverter (nullableValueType));
+          GetTypeConverter (nullableValueType, underlyingType));
+    }
+
+    private TypeConverter GetTypeConverter (Type nullableValueType, Type underlyingType)
+    {
+      if (underlyingType.IsEnum)
+        return new AdvancedEnumConverter (nullableValueType);
+      else
+        return new DefaultConverter (nullableValueType);
     }
 
     private StorageTypeInformation GetStorageTypeForEnumType (Type enumType, int? maxLength, bool isNullableInDatabase)
     {
-      var underlyingStorageType = GetStorageType (Enum.GetUnderlyingType (enumType), maxLength, isNullableInDatabase);
+      var underlyingStorageInformation = GetStorageType (Enum.GetUnderlyingType (enumType), maxLength, isNullableInDatabase);
       return new StorageTypeInformation (
-          underlyingStorageType.StorageType,
-          underlyingStorageType.StorageTypeName,
-          underlyingStorageType.StorageDbType,
-          underlyingStorageType.IsStorageTypeNullable,
+          underlyingStorageInformation.StorageType,
+          underlyingStorageInformation.StorageTypeName,
+          underlyingStorageInformation.StorageDbType,
+          underlyingStorageInformation.IsStorageTypeNullable,
           enumType,
           new AdvancedEnumConverter (enumType));
     }
