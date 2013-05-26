@@ -29,14 +29,14 @@ namespace Remotion.SecurityManager.PerformanceTests
     {
       var defaultServiceLocator = new DefaultServiceLocator();
 
-      //defaultServiceLocator.Register (
-      //    typeof (Remotion.Data.DomainObjects.IClientTransactionExtensionFactory),
-      //    typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory),
-      //    LifetimeKind.Singleton);
-      //defaultServiceLocator.Register (
-      //    typeof (Remotion.Data.DomainObjects.Tracing.IPersistenceExtensionFactory),
-      //    typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory),
-      //    LifetimeKind.Singleton);
+      defaultServiceLocator.Register (
+          typeof (Remotion.Data.DomainObjects.IClientTransactionExtensionFactory),
+          typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory),
+          LifetimeKind.Singleton);
+      defaultServiceLocator.Register (
+          typeof (Remotion.Data.DomainObjects.Tracing.IPersistenceExtensionFactory),
+          typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory),
+          LifetimeKind.Singleton);
 
       ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
 

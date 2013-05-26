@@ -216,16 +216,23 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       }
     }
 
-    private Dictionary<ObjectID, string> LoadSecurableClassDefinitions ()
+    private Dictionary<ObjectID, Tuple<string, ObjectID>> LoadSecurableClassDefinitions ()
     {
       var result = GetOrCreateQuery (
           MethodInfo.GetCurrentMethod(),
           () => from @class in QueryFactory.CreateLinqQuery<SecurableClassDefinition>()
-                select new { @class.ID, @class.Name });
+                select new
+                       {
+                           @class.ID,
+                           @class.Name,
+                           HasBaseClass = @class.BaseClass != null,
+                           BaseClassID = @class.BaseClass.ID.Value,
+                           BaseClassClassID = @class.BaseClass.ID.ClassID,
+                       });
 
       using (CreateStopwatchScopeForQueryExecution ("securable classes"))
       {
-        return result.ToDictionary (c => c.ID, c => c.Name);
+        return result.ToDictionary (c => c.ID, c => Tuple.Create (c.Name, c.HasBaseClass ? new ObjectID (c.BaseClassClassID, c.BaseClassID) : null));
       }
     }
 
@@ -276,13 +283,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     }
 
     private Dictionary<string, SecurableClassDefinitionData> BuildClassCache (
-        IDictionary<ObjectID, string> classes,
+        IDictionary<ObjectID, Tuple<string, ObjectID>> classes,
         IDictionary<ObjectID, IDomainObjectHandle<StatelessAccessControlList>> statelessAcls,
         ILookup<ObjectID, StatefulAccessControlListData> statefulAcls)
     {
       return classes.ToDictionary (
-          c => c.Value,
-          c => new SecurableClassDefinitionData (classes.GetValueOrDefault (c.Key), statelessAcls.GetValueOrDefault (c.Key), statefulAcls[c.Key]));
+          c => c.Value.Item1,
+          c => new SecurableClassDefinitionData (
+                   c.Value.Item2 != null ? classes[c.Value.Item2].Item1 : null,
+                   statelessAcls.GetValueOrDefault (c.Key),
+                   statefulAcls[c.Key]));
     }
 
     private Dictionary<IDomainObjectHandle<StatePropertyDefinition>, ReadOnlyCollectionDecorator<string>> LoadStatePropertyValues ()
