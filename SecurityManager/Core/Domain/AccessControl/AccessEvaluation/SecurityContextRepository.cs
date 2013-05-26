@@ -247,6 +247,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
                 select new
                        {
                            Class = acl.GetClassForQuery().ID,
+                           StateCombination = sc.ID.GetHandle<StateCombination>(),
                            Acl = acl.ID.GetHandle<StatefulAccessControlList>(),
                            HasState = propertyReference != null,
                            StatePropertyID = propertyReference.StateProperty.ID.Value,
@@ -258,7 +259,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       using (CreateStopwatchScopeForQueryExecution ("stateful ACLs"))
       {
         return result.GroupBy (
-            row => new { row.Class, row.Acl },
+            row => new { row.Class, row.Acl, row.StateCombination },
             row => row.HasState
                        ? new State (
                              new ObjectID (row.StatePropertyClassID, row.StatePropertyID).GetHandle<StatePropertyDefinition>(),

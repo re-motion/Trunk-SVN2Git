@@ -36,8 +36,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       ArgumentUtility.CheckNotNull ("handle", handle);
       ArgumentUtility.CheckNotNull ("states", states);
 
+      var stateArray = states.ToArray().AsReadOnly();
+
+      if (stateArray.Select (s => s.PropertyHandle).Distinct().Count() != stateArray.Count)
+        throw new ArgumentException ("Multiple state values found for a single state property.", "states");
+
       _handle = handle;
-      _states = states.ToArray().AsReadOnly();
+      _states = stateArray;
     }
 
     [NotNull]
