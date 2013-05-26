@@ -97,6 +97,8 @@ namespace Remotion.SecurityManager.PerformanceTests
       {
         dummy += provider.GetAccess (context, user).Length;
       }
+      stopwatch.Stop();
+      Console.WriteLine ("Time taken: {0}ms", ((decimal) stopwatch.ElapsedMilliseconds) / count);
 
       provider.GetAccess (
           new SimpleSecurityContext (
@@ -109,9 +111,7 @@ namespace Remotion.SecurityManager.PerformanceTests
               new EnumWrapper[0]),
           new SecurityPrincipal ("jou", null, null, null));
 
-      stopwatch.Stop();
       Trace.Write (dummy);
-      Console.WriteLine ("Time taken: {0}ms", ((decimal) stopwatch.ElapsedMilliseconds) / count);
       Console.ReadKey();
     }
 
