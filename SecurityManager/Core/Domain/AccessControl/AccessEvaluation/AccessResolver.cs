@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
 using Remotion.Logging;
@@ -82,7 +83,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
         var query = queryTemplate.CreateCopyFromTemplate (new Dictionary<object, object> { { s_aclParameter, aclHandle.ObjectID.Value } });
         return ClientTransaction.Current.QueryManager.GetCollection<AccessControlList> (query)
                                 .AsEnumerable()
-                                .Single (() => CreateAccessControlException ("The ACL '{0}' could not be found.", aclHandle.ObjectID));
+                                .Single (() => new ObjectsNotFoundException (EnumerableUtility.Singleton (aclHandle.ObjectID)));
       }
     }
 
@@ -100,11 +101,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     private AccessType ConvertToAccessType (AccessTypeDefinition accessTypeDefinition)
     {
       return AccessType.Get (EnumWrapper.Get (accessTypeDefinition.Name));
-    }
-
-    private AccessControlException CreateAccessControlException (string message, params object[] args)
-    {
-      return new AccessControlException (string.Format (message, args));
     }
   }
 }
