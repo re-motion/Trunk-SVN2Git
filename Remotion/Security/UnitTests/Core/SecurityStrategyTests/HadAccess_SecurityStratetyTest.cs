@@ -26,7 +26,7 @@ using Rhino.Mocks;
 namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
 {
   [TestFixture]
-  public class Test
+  public class HadAccess_SecurityStratetyTest
   {
     private MockRepository _mocks;
     private ISecurityProvider _mockSecurityProvider;
@@ -175,6 +175,25 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
 
       _mocks.VerifyAll();
       Assert.That (hasAccess, Is.EqualTo (false));
+    }
+
+    [Test]
+    public void HasAccess_UsesSecurityFreeSectionWhileWhenCreatingSecurityContext ()
+    {
+      var mockContextFactory = _mocks.StrictMock<ISecurityContextFactory>();
+      Expect.Call (mockContextFactory.CreateSecurityContext()).WhenCalled (
+          mi =>
+          {
+            Assert.That (SecurityFreeSection.IsActive);
+            mi.ReturnValue = _context;
+          });
+      Expect.Call (_mockSecurityProvider.GetAccess (_context, _userStub)).Return (new [] { AccessType.Get (GeneralAccessTypes.Edit) });
+      _mocks.ReplayAll();
+
+      bool hasAccess = _strategy.HasAccess (mockContextFactory, _mockSecurityProvider, _userStub, AccessType.Get (GeneralAccessTypes.Edit));
+
+      _mocks.VerifyAll();
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]

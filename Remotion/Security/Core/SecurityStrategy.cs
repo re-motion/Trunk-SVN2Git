@@ -24,6 +24,9 @@ namespace Remotion.Security
   [Serializable]
   public class SecurityStrategy : ISecurityStrategy
   {
+    [ThreadStatic]
+    private static bool _isEvaluatingAccess;
+
     private readonly ICache<ISecurityPrincipal, AccessType[]> _localCache;
     private readonly IGlobalAccessTypeCacheProvider _globalCacheProvider;
 
@@ -56,14 +59,34 @@ namespace Remotion.Security
       _localCache.Clear ();
     }
 
-    public bool HasAccess (ISecurityContextFactory factory, ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    public bool HasAccess (
+        ISecurityContextFactory factory,
+        ISecurityProvider securityProvider,
+        ISecurityPrincipal principal, 
+        params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("factory", factory);
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
       ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
 
-      AccessType[] actualAccessTypes = GetAccessFromLocalCache (factory, securityProvider, principal);
+      if (_isEvaluatingAccess)
+      {
+        throw new InvalidOperationException (
+            "Multiple reentrancies on SecurityStrategy.HasAccess(...) are not allowed as they can indicate a possible infinite recursion. "
+            + "Use SecurityFreeSection.IsActive to guard the computation of the SecurityContext returned by ISecurityContextFactory.CreateSecurityContext().");
+      }
+
+      AccessType[] actualAccessTypes;
+      try
+      {
+        _isEvaluatingAccess = true;
+        actualAccessTypes = GetAccessFromLocalCache (factory, securityProvider, principal);
+      }
+      finally
+      {
+        _isEvaluatingAccess = false;
+      }
 
       // This section is performance critical. No closure should be created, therefor converting this code to Linq is not possible.
       // requiredAccessTypes.All (requiredAccessType => actualAccessTypes.Contains (requiredAccessType));
@@ -90,21 +113,34 @@ namespace Remotion.Security
 
     private AccessType[] GetAccessFromGlobalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, ISecurityPrincipal principal)
     {
-      var globalAccessTypeCache = _globalCacheProvider.GetCache ();
-      if (globalAccessTypeCache == null)
-        throw new InvalidOperationException ("IGlobalAccesTypeCacheProvider.GetAccessTypeCache() evaluated and returned null.");
-
-      var context = factory.CreateSecurityContext ();
-      if (context == null)
-        throw new InvalidOperationException ("ISecurityContextFactory.CreateSecurityContext() evaluated and returned null.");
-
+      var globalCache = GetGlobalCache();
+      var context = CreateSecurityContext (factory);
       var key = new Tuple<ISecurityContext, ISecurityPrincipal> (context, principal);
 
       AccessType[] value;
-      if (!globalAccessTypeCache.TryGetValue (key, out value))
-        value = globalAccessTypeCache.GetOrCreateValue (key, delegate { return GetAccessFromSecurityProvider (securityProvider, context, principal); });
-  
+      if (!globalCache.TryGetValue (key, out value))
+        value = globalCache.GetOrCreateValue (key, delegate { return GetAccessFromSecurityProvider (securityProvider, context, principal); });
+
       return value;
+    }
+
+    private ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> GetGlobalCache ()
+    {
+      var globalCache = _globalCacheProvider.GetCache();
+      if (globalCache == null)
+        throw new InvalidOperationException ("IGlobalAccesTypeCacheProvider.GetAccessTypeCache() evaluated and returned null.");
+      return globalCache;
+    }
+
+    private ISecurityContext CreateSecurityContext (ISecurityContextFactory factory)
+    {
+      using (new SecurityFreeSection())
+      {
+        var context = factory.CreateSecurityContext();
+        if (context == null)
+          throw new InvalidOperationException ("ISecurityContextFactory.CreateSecurityContext() evaluated and returned null.");
+        return context;
+      }
     }
 
     private AccessType[] GetAccessFromSecurityProvider (ISecurityProvider securityProvider, ISecurityContext context, ISecurityPrincipal principal)

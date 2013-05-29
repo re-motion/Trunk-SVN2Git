@@ -163,6 +163,7 @@
     <Compile Include="Core\SecurityClientTests\SecurityClientIntegrationTest.cs" />
     <Compile Include="Core\SecurityPrincipalRoleTest.cs" />
     <Compile Include="Core\SecurityPrincipalTest.cs" />
+    <Compile Include="Core\SecurityStrategyTests\HasAccessWithReentrancy_SecurityStrategyTest.cs" />
     <Compile Include="Core\XmlAsserter\XmlDocumentBaseConstraint.cs" />
     <Compile Include="Core\XmlAsserter\XmlDocumentEqualConstraint.cs" />
     <Compile Include="Core\XmlAsserter\XmlDocumentEqualConstraintTest.cs" />
@@ -206,8 +207,8 @@
     <Compile Include="Core\SecurityContextTest.cs" />
     <Compile Include="Core\ObjectSecurityAdapterTest.cs" />
     <Compile Include="Core\SecurityFreeSectionTest.cs" />
-    <Compile Include="Core\SecurityStrategyTests\CachingTest.cs" />
-    <Compile Include="Core\SecurityStrategyTests\Test.cs" />
+    <Compile Include="Core\SecurityStrategyTests\HasAccessWithCaching_SecurityStrategyTest.cs" />
+    <Compile Include="Core\SecurityStrategyTests\HadAccess_SecurityStratetyTest.cs" />
     <Compile Include="Core\ThreadUserProviderTest.cs" />
     <Compile Include="Core\XmlAsserter\NodeStackToXPathConverter.cs" />
     <Compile Include="Core\XmlAsserter\NodeStackToXPathConverterTest.cs" />

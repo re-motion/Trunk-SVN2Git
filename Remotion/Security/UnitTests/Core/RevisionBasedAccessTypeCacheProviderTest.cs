@@ -69,7 +69,7 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
-    public void GetCache ()
+    public void GetCache_ReturnsLazyLockingCachingAdapter ()
     {
       Expect.Call (_mockSecurityProvider.GetRevision()).Return (0);
       _mocks.ReplayAll();
@@ -77,7 +77,7 @@ namespace Remotion.Security.UnitTests.Core
       ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = _provider.GetCache();
 
       _mocks.VerifyAll();
-      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual, Is.InstanceOf<LazyLockingCachingAdapter<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>>());
     }
 
     [Test]

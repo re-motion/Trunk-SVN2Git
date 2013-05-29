@@ -31,7 +31,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
   using GlobalCacheKey = Tuple<ISecurityContext, ISecurityPrincipal>;
 
   [TestFixture]
-  public class CachingTest
+  public class HasAccessWithCaching_SecurityStrategyTest
   {
     private MockRepository _mocks;
     private ISecurityProvider _mockSecurityProvider;
