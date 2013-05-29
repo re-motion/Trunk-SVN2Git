@@ -60,6 +60,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
         var foundAccessControlList = FindAccessControlList (@class, context);
         if (foundAccessControlList != null)
           return foundAccessControlList;
+
+        var isInheritanceEnabled = @class.StatelessAccessControlList == null && !@class.StatefulAccessControlLists.Any();
+        if (!isInheritanceEnabled)
+          break;
       }
 
       return null;

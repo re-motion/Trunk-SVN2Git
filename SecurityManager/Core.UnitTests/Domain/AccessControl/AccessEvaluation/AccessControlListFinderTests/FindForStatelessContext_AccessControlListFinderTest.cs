@@ -22,6 +22,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.SecurityManager.UnitTests.TestDomain;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluation.AccessControlListFinderTests
@@ -60,13 +61,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     {
       var acl = CreateStatelessAcl();
       StubClassDefinition<Order> (acl);
-      StubClassDefinition<PremiumOrder, Order> (null);
+      StubClassDefinition<PremiumOrder, Order> (null, new StatefulAccessControlListData[0]);
       var context = CreateContext<PremiumOrder>();
 
       var aclFinder = CreateAccessControlListFinder();
       var foundAcl = aclFinder.Find (context);
 
       Assert.That (foundAcl, Is.EqualTo (acl));
+    }
+
+    [Test]
+    public void Find_WithInheritedAclAndDerivedClassContainsOnlyStatefulAcl_ReturnsNull ()
+    {
+      var acl = CreateStatelessAcl();
+      StubClassDefinition<Order> (acl);
+      StubClassDefinition<PremiumOrder, Order> (null, CreateStatefulAcl());
+      var context = CreateContext<PremiumOrder>();
+
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (context);
+
+      Assert.That (foundAcl, Is.Null);
     }
 
     [Test]
@@ -85,13 +100,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
         where TClass : ISecurableObject
     {
       StubClassDefinition<TClass> (statelessAcl, CreateStatefulAcl());
-    }
-
-    private void StubClassDefinition<TClass, TBaseClass> ([CanBeNull] IDomainObjectHandle<StatelessAccessControlList> statelessAcl)
-        where TClass : TBaseClass
-        where TBaseClass : ISecurableObject
-    {
-      StubClassDefinition<TClass, TBaseClass> (statelessAcl, CreateStatefulAcl());
     }
 
     private SecurityContext CreateContext<TClass>()

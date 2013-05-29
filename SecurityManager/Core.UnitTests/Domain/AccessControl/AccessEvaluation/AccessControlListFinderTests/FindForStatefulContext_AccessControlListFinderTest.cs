@@ -130,13 +130,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     {
       var acl = CreateStatefulAcl (OrderState_Delivered, PaymentState_None);
       StubClassDefinition<Order> (acl);
-      StubClassDefinition<SpecialOrder, Order>();
+      StubClassDefinitionWithoutStatelessAcl<SpecialOrder, Order>();
       var context = CreateContextForSpecialOrder (OrderState.Delivered, PaymentState.None);
 
       var aclFinder = CreateAccessControlListFinder();
       var foundAcl = aclFinder.Find (context);
 
       Assert.That (foundAcl, Is.EqualTo (acl.Handle));
+    }
+
+    [Test]
+    public void Find_WithInheritedAclAndClassHasStatelessAcl_ReturnsNull ()
+    {
+      var acl = CreateStatefulAcl (OrderState_Delivered, PaymentState_None);
+      StubClassDefinition<Order> (acl);
+      StubClassDefinition<SpecialOrder, Order>();
+      var context = CreateContextForSpecialOrder (OrderState.Delivered, PaymentState.None);
+
+      var aclFinder = CreateAccessControlListFinder();
+      var foundAcl = aclFinder.Find (context);
+
+      Assert.That (foundAcl, Is.Null);
     }
 
     [Test]
@@ -154,17 +168,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     }
 
     [Test]
-    public void Find_WithInheritedAclMatchingStatesAndAclNotMatchingStates_ReturnsStatefulAclFromBaseClass ()
+    public void Find_WithInheritedAclMatchingStatesAndAclNotMatchingStates_ReturnsNull ()
     {
       var acl = CreateStatefulAcl (OrderState_Delivered, PaymentState_None);
       StubClassDefinition<Order> (acl);
-      StubClassDefinition<SpecialOrder, Order> ( CreateStatefulAcl (OrderState_Received, PaymentState_None));
+      StubClassDefinitionWithoutStatelessAcl<SpecialOrder, Order> ( CreateStatefulAcl (OrderState_Received, PaymentState_None));
       var context = CreateContextForSpecialOrder (OrderState.Delivered, PaymentState.None);
 
       var aclFinder = CreateAccessControlListFinder();
       var foundAcl = aclFinder.Find (context);
 
-      Assert.That (foundAcl, Is.EqualTo (acl.Handle));
+      Assert.That (foundAcl, Is.Null);
     }
 
     [Test]
@@ -172,7 +186,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     {
       StubClassDefinition<Order> (CreateStatefulAcl (OrderState_Delivered, PaymentState_None));
       var acl = CreateStatefulAcl (OrderState_Delivered, PaymentState_None, Delivery_Dhl);
-      StubClassDefinition<PremiumOrder, Order> (acl);
+      StubClassDefinitionWithoutStatelessAcl<PremiumOrder, Order> (acl);
       var context = CreateContextForPremiumOrder (OrderState.Delivered, PaymentState.None, Delivery.Dhl);
 
       var aclFinder = CreateAccessControlListFinder();
@@ -186,7 +200,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     {
       StubClassDefinition<Order> (CreateStatefulAcl (OrderState_Delivered, PaymentState_None));
       var acl = CreateStatefulAcl (OrderState_Received, PaymentState_None, Delivery_Dhl);
-      StubClassDefinition<PremiumOrder, Order> (acl);
+      StubClassDefinitionWithoutStatelessAcl<PremiumOrder, Order> (acl);
       var context = CreateContextForPremiumOrder (OrderState.Delivered, PaymentState.None, Delivery.Post);
 
       var aclFinder = CreateAccessControlListFinder();
@@ -206,6 +220,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
         where TBaseClass : ISecurableObject
     {
       StubClassDefinition<TClass, TBaseClass> (CreateStatelessAcl(), statefulAcls);
+    }
+
+    private void StubClassDefinitionWithoutStatelessAcl<TClass, TBaseClass> ([NotNull] params StatefulAccessControlListData[] statefulAcls)
+        where TClass : TBaseClass
+        where TBaseClass : ISecurableObject
+    {
+      StubClassDefinition<TClass, TBaseClass> (null, statefulAcls);
     }
 
     private SecurityContext CreateContextForCustomer ()
