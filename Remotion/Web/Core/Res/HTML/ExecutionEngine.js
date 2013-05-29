@@ -73,7 +73,7 @@ function WxePage_Context(
 
   this.OnUnload = function()
   {
-    Dispose();
+    this.Dispose();
   }
 
   // Handles the page abort event.
