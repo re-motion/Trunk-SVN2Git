@@ -252,5 +252,25 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       Assert.That (businessObjectProperty.IsRequired, Is.False);
       Assert.That (businessObjectProperty.IsReadOnly (null), Is.True);
     }
+
+    [Test]
+    public void GetMetadata_WithReadOnlyMixedPropertyHavingSetterOnMixin ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
+          typeof (IMixinAddingProperty).FullName + ".MixedReadOnlyPropertyHavingSetterOnMixin");
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
+
+      Assert.That (GetUnderlyingType (propertyReflector), Is.SameAs (typeof (string)));
+
+      IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
+
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (PropertyBase)));
+      Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (propertyInfo));
+      Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("MixedReadOnlyPropertyHavingSetterOnMixin"));
+      Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (string)));
+      Assert.That (businessObjectProperty.IsList, Is.False);
+      Assert.That (businessObjectProperty.IsRequired, Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.True);
+    }
   }
 }

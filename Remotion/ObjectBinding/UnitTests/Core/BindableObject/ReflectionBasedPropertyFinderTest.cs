@@ -168,63 +168,81 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var propertyFinder = new ReflectionBasedPropertyFinder (concreteType);
       var propertyInformations = propertyFinder.GetPropertyInfos().OrderBy (pi => pi.Name).ToArray();
 
-      Assert.That (propertyInformations.Length, Is.EqualTo (6));
+      Assert.That (propertyInformations.Length, Is.EqualTo (7));
 
-      Assert.That (propertyInformations[0], Is.TypeOf (typeof (InterfaceImplementationPropertyInformation)));
-      Assert.That (propertyInformations[0].DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (ClassWithMixedProperty))));
-      Assert.That (propertyInformations[0].Name, Is.EqualTo ("InterfaceProperty"));
+      var propertyInformation_0 = propertyInformations[0];
+      Assert.That (propertyInformation_0, Is.TypeOf (typeof (InterfaceImplementationPropertyInformation)));
+      Assert.That (propertyInformation_0.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (ClassWithMixedProperty))));
+      Assert.That (propertyInformation_0.Name, Is.EqualTo ("InterfaceProperty"));
 
-      Assert.That (propertyInformations[1], Is.TypeOf (typeof (BindableObjectMixinIntroducedPropertyInformation)));
-      Assert.That (propertyInformations[1].DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (MixinAddingProperty))));
-      Assert.That (((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[1]).ConcreteType, Is.SameAs (concreteTypeInformation));
-      Assert.That (propertyInformations[1].Name, Is.EqualTo ("MixedProperty"));
+      var propertyInformation_1 = propertyInformations[1];
+      Assert.That (propertyInformation_1, Is.TypeOf (typeof (BindableObjectMixinIntroducedPropertyInformation)));
+      Assert.That (propertyInformation_1.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (MixinAddingProperty))));
+      Assert.That (((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_1).ConcreteType, Is.SameAs (concreteTypeInformation));
+      Assert.That (propertyInformation_1.Name, Is.EqualTo ("MixedProperty"));
       Assert.That (
-          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[1]).ConcreteProperty.DeclaringType,
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_1).ConcreteProperty.DeclaringType,
           Is.SameAs (concreteTypeInformation));
       Assert.That (
-          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[1]).ConcreteProperty.Name,
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_1).ConcreteProperty.Name,
           Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.IMixinAddingProperty.MixedProperty"));
 
-      Assert.That (propertyInformations[2], Is.TypeOf (typeof (BindableObjectMixinIntroducedPropertyInformation)));
-      Assert.That (propertyInformations[2].DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (MixinAddingProperty))));
-      Assert.That (((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[2]).ConcreteType, Is.SameAs (concreteTypeInformation));
-      Assert.That (propertyInformations[2].Name, Is.EqualTo ("MixedReadOnlyProperty"));
+      var propertyInformation_2 = propertyInformations[2];
+      Assert.That (propertyInformation_2, Is.TypeOf (typeof (BindableObjectMixinIntroducedPropertyInformation)));
+      Assert.That (propertyInformation_2.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (MixinAddingProperty))));
+      Assert.That (((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_2).ConcreteType, Is.SameAs (concreteTypeInformation));
+      Assert.That (propertyInformation_2.Name, Is.EqualTo ("MixedReadOnlyProperty"));
       Assert.That (
-          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[2]).ConcreteProperty.DeclaringType,
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_2).ConcreteProperty.DeclaringType,
           Is.SameAs (concreteTypeInformation));
       Assert.That (
-          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[2]).ConcreteProperty.Name,
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_2).ConcreteProperty.Name,
           Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.IMixinAddingProperty.MixedReadOnlyProperty"));
 
-      Assert.That (propertyInformations[3], Is.TypeOf (typeof (PropertyInfoAdapter)));
-      Assert.That (propertyInformations[3].DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (ClassWithMixedProperty))));
-      Assert.That (propertyInformations[3].Name, Is.EqualTo ("PublicExistingProperty"));
-
-      Assert.That (propertyInformations[4], Is.TypeOf (typeof (BindableObjectMixinIntroducedPropertyInformation)));
-      Assert.That (propertyInformations[4].DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (BaseOfMixinAddingProperty))));
-      Assert.That (((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[4]).ConcreteType, Is.SameAs (concreteTypeInformation));
+      var propertyInformation_3 = propertyInformations[3];
+      Assert.That (propertyInformation_3, Is.TypeOf (typeof (BindableObjectMixinIntroducedPropertyInformation)));
+      Assert.That (propertyInformation_3.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (MixinAddingProperty))));
+      Assert.That (((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_3).ConcreteType, Is.SameAs (concreteTypeInformation));
+      Assert.That (propertyInformation_3.Name, Is.EqualTo ("MixedReadOnlyPropertyHavingSetterOnMixin"));
       Assert.That (
-          propertyInformations[4].Name,
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_3).ConcreteProperty.DeclaringType,
+          Is.SameAs (concreteTypeInformation));
+      Assert.That (
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_3).ConcreteProperty.Name,
+          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.IMixinAddingProperty.MixedReadOnlyPropertyHavingSetterOnMixin"));
+
+      var propertyInformation_4 = propertyInformations[4];
+      Assert.That (propertyInformation_4, Is.TypeOf (typeof (PropertyInfoAdapter)));
+      Assert.That (propertyInformation_4.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (ClassWithMixedProperty))));
+      Assert.That (propertyInformation_4.Name, Is.EqualTo ("PublicExistingProperty"));
+
+      var propertyInformation_5 = propertyInformations[5];
+      Assert.That (propertyInformation_5, Is.TypeOf (typeof (BindableObjectMixinIntroducedPropertyInformation)));
+      Assert.That (propertyInformation_5.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (BaseOfMixinAddingProperty))));
+      Assert.That (((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_5).ConcreteType, Is.SameAs (concreteTypeInformation));
+      Assert.That (
+          propertyInformation_5.Name,
           Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.IBaseOfMixinAddingProperty.ExplicitMixedPropertyBase"));
       Assert.That (
-          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[4]).ConcreteProperty.DeclaringType,
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_5).ConcreteProperty.DeclaringType,
           Is.SameAs (concreteTypeInformation));
       Assert.That (
-          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[4]).ConcreteProperty.Name,
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_5).ConcreteProperty.Name,
           Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.IBaseOfMixinAddingProperty.ExplicitMixedPropertyBase"));
 
-      Assert.That (propertyInformations[5], Is.TypeOf (typeof (BindableObjectMixinIntroducedPropertyInformation)));
-      Assert.That (propertyInformations[5].DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (MixinAddingProperty))));
+      var propertyInformation_6 = propertyInformations[6];
+      Assert.That (propertyInformation_6, Is.TypeOf (typeof (BindableObjectMixinIntroducedPropertyInformation)));
+      Assert.That (propertyInformation_6.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (MixinAddingProperty))));
       Assert.That (
-          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[5]).ConcreteType,
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_6).ConcreteType,
           Is.SameAs (concreteTypeInformation));
       Assert.That (
-          propertyInformations[5].Name, Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.IMixinAddingProperty.ExplicitMixedProperty"));
+          propertyInformation_6.Name, Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.IMixinAddingProperty.ExplicitMixedProperty"));
       Assert.That (
-          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[5]).ConcreteProperty.DeclaringType,
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_6).ConcreteProperty.DeclaringType,
           Is.SameAs (concreteTypeInformation));
       Assert.That (
-          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformations[5]).ConcreteProperty.Name,
+          ((BindableObjectMixinIntroducedPropertyInformation) propertyInformation_6).ConcreteProperty.Name,
           Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.IMixinAddingProperty.ExplicitMixedProperty"));
     }
 

@@ -21,6 +21,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
   public interface IMixinAddingProperty
   {
     string MixedProperty { get; set; }
+    string MixedReadOnlyPropertyHavingSetterOnMixin { get; set; }
     string MixedReadOnlyProperty { get; }
     string ExplicitMixedProperty { get; set; }
   }
@@ -39,6 +40,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     public string MixedReadOnlyProperty
     {
       get { return _mixedProperty; }
+    }
+
+    public string MixedReadOnlyPropertyHavingSetterOnMixin
+    {
+      get { return _mixedProperty; }
+      set { _mixedProperty = value; }
     }
 
     string IMixinAddingProperty.ExplicitMixedProperty
