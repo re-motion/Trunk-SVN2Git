@@ -117,9 +117,28 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    public void CanBeSetFromOutside ()
+    public void CanBeSetFromOutside_IsBasedOnGetSetMethod_TrueForInterfaceImplementationPropertySetter ()
     {
-      _implementationPropertyInformationStub.Stub (stub => stub.CanBeSetFromOutside).Return (false);
+      var methodInfoAdapter = MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString"));
+      _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (methodInfoAdapter);
+      _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (false)).Return (methodInfoAdapter);
+
+      Assert.That (_mixinIntroducedPropertyInformation.CanBeSetFromOutside, Is.True);
+    }
+
+    [Test]
+    public void CanBeSetFromOutside_IsBasedOnGetSetMethod_FalseForImplementationOnlyPropertySetter ()
+    {
+      var methodInfoAdapter = MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString"));
+      _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (false)).Return (methodInfoAdapter);
+
+      Assert.That (_mixinIntroducedPropertyInformation.CanBeSetFromOutside, Is.False);
+    }
+
+    [Test]
+    public void CanBeSetFromOutside_IsBasedOnGetSetMethod_FalseForNoPropertySetter ()
+    {
+      _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (false)).Return (null);
 
       Assert.That (_mixinIntroducedPropertyInformation.CanBeSetFromOutside, Is.False);
     }

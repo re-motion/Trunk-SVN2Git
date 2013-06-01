@@ -104,7 +104,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     public bool CanBeSetFromOutside
     {
-      get { return _mixinPropertyInfo.CanBeSetFromOutside; }
+      get { return GetSetMethod (false) != null; }
     }
 
     public object GetValue (object instance, object[] indexParameters)

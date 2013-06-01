@@ -263,7 +263,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     }
 
     [Test]
-    [Ignore ("TODO RM-5676")]
     public void GetMetadata_WithReadOnlyMixedPropertyHavingSetterOnMixin ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (

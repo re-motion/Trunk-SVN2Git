@@ -88,6 +88,15 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Core\BindableObject\IntergrationTests\InterfaceProperties\InterfacePropertiesTest.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\InterfaceProperties\TestDomain\IMixinInterface.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\InterfaceProperties\TestDomain\ClassWithInterface.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\MixedProperties\PubliclyIntroducedMixedPropertiesTest.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\MixedProperties\PrivatelyIntroducedMixedPropertiesTest.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\MixedProperties\TestDomain\IMixinInterface.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\MixedProperties\TestDomain\MixinClass.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\MixedProperties\TestDomain\TargetClassWithPrivatelyIntroducedMembers.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\MixedProperties\TestDomain\TargetClassWithPubliclyIntroducedMembers.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedListPropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\SingleValuePropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\BusinessObjectPropertyPathTestHelper.cs" />
