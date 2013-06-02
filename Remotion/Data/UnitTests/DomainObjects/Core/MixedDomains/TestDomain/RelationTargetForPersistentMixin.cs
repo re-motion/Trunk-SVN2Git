@@ -34,7 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     [DBBidirectionalRelation ("CollectionProperty1Side")]
     public abstract TargetClassForPersistentMixin RelationProperty3 { get; set; }
 
-    [DBBidirectionalRelation ("CollectionPropertyNSide")]
+    [DBBidirectionalRelation ("CollectionPropertyNSide", SortExpression =
+        "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.PersistentProperty ASC")]
     public abstract ObjectList<TargetClassForPersistentMixin> RelationProperty4 { get; }
 
     [DBBidirectionalRelation ("PrivateBaseRelationProperty", ContainsForeignKey = false)]

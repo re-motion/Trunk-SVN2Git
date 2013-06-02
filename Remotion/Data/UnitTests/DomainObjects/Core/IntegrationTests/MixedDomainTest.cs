@@ -15,8 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
@@ -165,6 +168,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (loadedMixin1.Computer.ID, Is.EqualTo (mixin1.Computer.ID));
       Assert.That (loadedMixin2.Computer.ID, Is.EqualTo (mixin2.Computer.ID));
+    }
+
+    [Test]
+    [Ignore ("TODO: RM-5678 - EagerFetch with SortExpression involving mixin properties")]
+    public void EagerFetchRelationWithSortExpressionUsingPropertyFromMixin ()
+    {
+      var result = QueryFactory.CreateLinqQuery<RelationTargetForPersistentMixin>()
+                               .Where (o => o.ID == DomainObjectIDs.RelationTargetForPersistentMixin4)
+                               .Select (o => o)
+                               .FetchMany (o => o.RelationProperty4)
+                               .ToArray();
+
+      Assert.That (result.Length, Is.EqualTo (1));
     }
   }
 }
