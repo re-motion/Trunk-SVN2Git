@@ -33,13 +33,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
       var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IBocList).Assembly })
           .Select (e => e.ServiceType).ToList();
       var nonLegacyServices = new[] { typeof (BocListCssClassDefinition) };
-      var legacyServiceTypes = allServiceTypes
+      var expectedLegacyServiceTypes = allServiceTypes
           .Except (nonLegacyServices)
           .Concat (new[] { typeof (BocListQuirksModeCssClassDefinition) });
 
       Assert.That (
-          legacyServiceTypes.ToArray(),
-          Is.EquivalentTo (BocLegacyServiceConfigurationService.GetConfiguration().Select (e => e.ServiceType).ToArray()));
+          BocLegacyServiceConfigurationService.GetConfiguration().Select (e => e.ServiceType),
+          Is.EquivalentTo (expectedLegacyServiceTypes));
 
       Assert.That (
           BocLegacyServiceConfigurationService.GetConfiguration()

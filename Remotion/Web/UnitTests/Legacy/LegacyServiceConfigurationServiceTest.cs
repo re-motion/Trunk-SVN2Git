@@ -49,11 +49,11 @@ namespace Remotion.Web.UnitTests.Legacy
 
       var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IResourceUrl).Assembly })
           .Select (e => e.ServiceType);
-      var legacyServiceTypes = allServiceTypes.Except (nonLegacyServices);
+      var expectedLegacyServiceTypes = allServiceTypes.Except (nonLegacyServices);
 
       Assert.That (
-          legacyServiceTypes, 
-          Is.EquivalentTo (LegacyServiceConfigurationService.GetConfiguration().Select (e => e.ServiceType)),
+          LegacyServiceConfigurationService.GetConfiguration().Select (e => e.ServiceType), 
+          Is.EquivalentTo (expectedLegacyServiceTypes),
           "New service was added in Remotion.Web. Either the Service must also be added to Remotion.Web.Legacy or added to the exclude list in 'nonLegacyServices'.");
 
       Assert.That (
