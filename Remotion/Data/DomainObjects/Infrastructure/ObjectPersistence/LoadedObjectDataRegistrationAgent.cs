@@ -195,8 +195,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       {
         _registrationListener.OnAfterObjectRegistration (objectIDs, loadedDomainObjects.AsReadOnly ());
       }
-
-      // TODO 5397: Clear the collector.
     }
   }
 }
