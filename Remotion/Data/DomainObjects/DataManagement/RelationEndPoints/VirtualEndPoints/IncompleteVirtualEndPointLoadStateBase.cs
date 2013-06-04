@@ -197,14 +197,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         }
         else
         {
+          // Virtual end-point contains an item without an opposite end-point. The virtual end-point is out-of-sync. Note that this can temporarily 
+          // occur during eager fetching because the end-point contents are set before the related objects' DataContainers are registered.
+          // Apart from that case, this indicates that foreign keys in the database have changed between loading the foreign key side and the virtual
+          // side of a bidirectional relation.
           dataManager.RegisterOriginalItemWithoutEndPoint (item);
-
-          if (s_log.IsWarnEnabled)
-          {
-            s_log.WarnFormat ("Virtual end-point '{0}' contains an item without an opposite end-point: '{1}'. The virtual end-point is out-of-sync.",
-                              endPoint.ID,
-                              item.ID);
-          }
         }
       }
 

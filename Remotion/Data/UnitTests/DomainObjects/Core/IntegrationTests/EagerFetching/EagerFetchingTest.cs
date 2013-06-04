@@ -47,13 +47,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       var result = TestableClientTransaction.QueryManager.GetCollection (ordersQuery);
       Assert.That (result.ToArray (), Is.EquivalentTo (new[] { DomainObjectIDs.Order1.GetObject<Order> (), DomainObjectIDs.Order3.GetObject<Order> () }));
 
-      Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Not.Null);
-      Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id2), Is.Not.Null);
-
-      Assert.That (((ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1)).Collection,
+      var orderItemsEndPoint1 = (ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id1);
+      Assert.That (orderItemsEndPoint1, Is.Not.Null);
+      Assert.That (orderItemsEndPoint1.IsSynchronized, Is.True);
+      Assert.That (orderItemsEndPoint1.Collection,
           Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1.GetObject<OrderItem>(), DomainObjectIDs.OrderItem2.GetObject<OrderItem>() }));
-      Assert.That (((ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id2)).Collection,
-          Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem3.GetObject<OrderItem>() }));
+
+      var orderEndPoint = (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (
+          RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order"));
+      Assert.That (orderEndPoint, Is.Not.Null);
+      Assert.That (orderEndPoint.IsSynchronized, Is.True);
+      Assert.That (orderEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order1));
+
+      var orderItemsEndPoint2 = (ICollectionEndPoint)TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id2);
+      Assert.That (orderItemsEndPoint2, Is.Not.Null);
+      Assert.That (orderItemsEndPoint2.IsSynchronized, Is.True);
+      Assert.That (orderItemsEndPoint2.Collection, Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem3.GetObject<OrderItem>() }));
     }
 
     [Test]

@@ -140,28 +140,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       if (_dataManager.ContainsOriginalObjectID (oppositeEndPoint.ObjectID))
       {
-        if (s_log.IsInfoEnabled)
-        {
-          s_log.InfoFormat (
-              "RealObjectEndPoint '{0}' is registered for already loaded virtual end-point '{1}'. "
-              + "The query result contained the item, so the ObjectEndPoint is marked as synchronzed.",
-              oppositeEndPoint.ID,
-              endPoint.ID);
-        }
+        // RealObjectEndPoint is registered for an already loaded virtual end-point. The query result contained the item, so the ObjectEndPoint is 
+        // marked as synchronzed.
 
         _dataManager.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
         oppositeEndPoint.MarkSynchronized ();
       }
       else
       {
-        if (s_log.IsWarnEnabled)
-        {
-          s_log.WarnFormat (
-              "ObjectEndPoint '{0}' is registered for already loaded virtual end-point '{1}'. "
-              + "The query result did not contain the item, so the ObjectEndPoint is out-of-sync.",
-              oppositeEndPoint.ID,
-              endPoint.ID);
-        }
+        // ObjectEndPoint is registered for an already loaded virtual end-point. The query result did not contain the item, so the ObjectEndPoint is 
+        // out-of-sync.
 
         _unsynchronizedOppositeEndPoints.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);
         oppositeEndPoint.MarkUnsynchronized ();
