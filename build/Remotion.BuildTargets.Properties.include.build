@@ -61,7 +61,6 @@
     <Error Text="The property 'DependDBProjectImportNotificationMailAddress' is not set." Condition="'$(DependDBProjectImportNotificationMailAddress)' == ''" />
     <Error Text="The property 'DependDBProjectVCSUrlTemplate' is not set." Condition="'$(DependDBProjectVCSUrlTemplate)' == ''" />
     <Error Text="The property 'DependDBProjectBranch' is not set." Condition="'$(DependDBProjectBranch)' == ''" />
-    <Error Text="The property 'DependDBProjectVersion' is not set." Condition="'$(DependDBProjectVersion)' == ''" />
   </Target>
 
   <Target Name="CheckCodePlexProperties" >
