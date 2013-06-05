@@ -173,9 +173,9 @@
     </PropertyGroup>
   </Target>
   
-  <Target Name="TestBuild" DependsOnTargets="CheckProperties;TestBuild_Configuration;TestBuildDebugOnly" />
+  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly" />
   
-  <Target Name="FullBuild" DependsOnTargets="CheckProperties;FullBuild_Configuration;CreateAdditionalBuildMetadata;BuildAll;DocumentAll;PackageAll" />
+  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;CreateAdditionalBuildMetadata;BuildAll;DocumentAll;PackageAll" />
   
   <Target Name="Deploy" DependsOnTargets="CreateAdditionalBuildMetadata;DeployAll">
     <Message Text="Deployed re-motion, version '$(Version)', revision '$(SvnRevision)'." Importance="High"/>
@@ -267,9 +267,9 @@
   </Target>
 
   <!-- Main Build Targets -->  
-  <Target Name="CIBuild" DependsOnTargets="GetLatestReleasedVersion;TestBuild;SetVersionCiAndNightlyBuild" />
-  <Target Name="NightlyBuild" DependsOnTargets="GetLatestReleasedVersion;FullBuild;SetVersionCiAndNightlyBuild" />
-  <Target Name="Server_FullBuild" DependsOnTargets="GetEarliestUnreleasedVersion;FullBuild;Tag;ReleaseJiraVersion;UpdateAssemblyInfosForLocalBuild;SetVersionFullBuild" />
-  <Target Name="Server_Deploy" DependsOnTargets="GetLatestReleasedVersion;Deploy;SetVersionFullBuild" />
+  <Target Name="CIBuild" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;TestBuild;SetVersionCiAndNightlyBuild" />
+  <Target Name="NightlyBuild" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;FullBuild;SetVersionCiAndNightlyBuild" />
+  <Target Name="Server_FullBuild" DependsOnTargets="CheckProperties;GetEarliestUnreleasedVersion;FullBuild;Tag;ReleaseJiraVersion;UpdateAssemblyInfosForLocalBuild;SetVersionFullBuild" />
+  <Target Name="Server_Deploy" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;Deploy;SetVersionFullBuild" />
 
 </Project>
