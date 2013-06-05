@@ -40,14 +40,14 @@
     <SvnBranchFolder></SvnBranchFolder>
     <SvnTagsFolder>tags</SvnTagsFolder>
     
-    <DependDBProjectBranch>Trunk</DependDBProjectBranch>
+    <DependDBProjectBranch></DependDBProjectBranch>
     <DependDBUploadPath></DependDBUploadPath>
     <DependDBProjectVCSUrlTemplate>$(SvnBaseUri)/!svn/bc/$(SvnRevision)/$(SvnBranchFolder)/{0}</DependDBProjectVCSUrlTemplate>
     <DependDBProjectImportNotificationMailAddress></DependDBProjectImportNotificationMailAddress>
 
     <DebugSymbolsVCSUrl>$(SvnBaseUri)/$(SvnBranchFolder)/</DebugSymbolsVCSUrl>
 
-    <JiraVersionPattern>^1\.13\.\d+\.0$</JiraVersionPattern>
+    <JiraVersionPattern></JiraVersionPattern>
   </PropertyGroup>
   
   <PropertyGroup>
