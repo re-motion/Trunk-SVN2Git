@@ -22,6 +22,7 @@
   <Import Project="Remotion.Projects.include.build" />
   <Import Project="Remotion.Configurations.include.build" />
   <Import Project="Remotion.BuildTargets.include.build" />
+  <Import Project="Remotion.BuildTargets.Properties.include.build" />
   <Import Project="Remotion.BuildTargets.Testing.include.build" />
   <Import Project="Remotion.AssembleBuildOutput.include.build" />
   <Import Project="Remotion.DebugSymbols.include.build" />
