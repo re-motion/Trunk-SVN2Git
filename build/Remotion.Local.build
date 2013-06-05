@@ -22,7 +22,7 @@
   <PropertyGroup>
     <SolutionBuildFile>Remotion.build</SolutionBuildFile>
     <ReleaseType>LOCAL</ReleaseType>
-    <SvnBranchFolder>trunk</SvnBranchFolder>  
+    <SvnBranchFolder>local</SvnBranchFolder>  
     <SvnRevision>0</SvnRevision>
 
     <DependDBProjectVCSUrlTemplate>http://localost/svn/!svn/bc/$(SvnRevision)/$(SvnBranchFolder)/{0}</DependDBProjectVCSUrlTemplate>

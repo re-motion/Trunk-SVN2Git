@@ -4,6 +4,8 @@
   <Import Project="Remotion.build" />
   
   <PropertyGroup>
+    <!-- Empty properties will be passed to MSBuild by TeamCity -->
+
     <BuildRootDirectory>$(teamcity_build_checkoutdir)\</BuildRootDirectory>
     <SvnRevision>$(build_vcs_number)</SvnRevision>
     
@@ -22,7 +24,6 @@
     <SecureNetworkShare></SecureNetworkShare>
     <SolutionKeyFile>$(SecureNetworkShare)\remotion.snk</SolutionKeyFile>
 
-    <!-- Passwords will be passed to MSBuild by TeamCity -->
     <CodeplexPassword></CodeplexPassword>
     <NuGetApiKey></NuGetApiKey>
     <JiraPassword></JiraPassword>
@@ -36,7 +37,7 @@
     
     <SvnBaseUri>https://svn.re-motion.org/svn/Remotion</SvnBaseUri>
     <SvnUsername>build</SvnUsername>
-    <SvnBranchFolder>trunk</SvnBranchFolder>  
+    <SvnBranchFolder></SvnBranchFolder>
     <SvnTagsFolder>tags</SvnTagsFolder>
     
     <DependDBProjectBranch>Trunk</DependDBProjectBranch>
@@ -46,7 +47,7 @@
 
     <DebugSymbolsVCSUrl>$(SvnBaseUri)/$(SvnBranchFolder)/</DebugSymbolsVCSUrl>
 
-    <VersionPattern>^1\.13\.\d+\.0$</VersionPattern>
+    <JiraVersionPattern>^1\.13\.\d+\.0$</JiraVersionPattern>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -55,8 +56,7 @@
     <MSBuildCommunityTasksPath>$(ToolPath)MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
     <MSBuildExtensionPackPath>$(ToolPath)MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <MSBuildRemotionTasksPath>$(ToolPath)Remotion.BuildTools.MSBuildTasks\</MSBuildRemotionTasksPath>
-  </PropertyGroup>  
-  
+  </PropertyGroup>
   
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Subversion.SvnCopy" />
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Subversion.SvnCommit" />
@@ -93,7 +93,7 @@
                                       JiraUsername="$(JiraUsername)"
                                       JiraPassword="$(JiraPassword)"
                                       JiraProject="$(JiraProject)"
-                                      VersionPattern="$(VersionPattern)">
+                                      VersionPattern="$(JiraVersionPattern)">
       <Output PropertyName="VersionID" TaskParameter="VersionID"/>
       <Output PropertyName="Version" TaskParameter="VersionName"/>
       <Output PropertyName="NextVersionID" TaskParameter="NextVersionID"/>
@@ -117,7 +117,7 @@
                                   JiraUsername="$(JiraUsername)"
                                   JiraPassword="$(JiraPassword)"
                                   JiraProject="$(JiraProject)"
-                                  VersionPattern="$(VersionPattern)">
+                                  VersionPattern="$(JiraVersionPattern)">
       <Output PropertyName="VersionID" TaskParameter="VersionID"/>
       <Output PropertyName="Version" TaskParameter="VersionName"/>
       <Output PropertyName="_nextUnreleasedVersionID" TaskParameter="NextUnreleasedVersionID"/>
@@ -137,7 +137,7 @@
                           JiraUsername="$(JiraUsername)"
                           JiraPassword="$(JiraPassword)"
                           JiraProject="$(JiraProject)"
-                          VersionPattern="$(VersionPattern)"
+                          VersionPattern="$(JiraVersionPattern)"
                           VersionComponentToIncrement="3"
                           VersionReleaseWeekday="Friday"
                           Condition="$(NumberOfUnreleasedVersions) == 2"/>
@@ -173,16 +173,29 @@
     </PropertyGroup>
   </Target>
   
-  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly" />
+  <Target Name="TestBuild" DependsOnTargets="CheckProperties;TestBuild_Configuration;TestBuildDebugOnly" />
   
-  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;CreateAdditionalBuildMetadata;BuildAll;DocumentAll;PackageAll" />
+  <Target Name="FullBuild" DependsOnTargets="CheckProperties;FullBuild_Configuration;CreateAdditionalBuildMetadata;BuildAll;DocumentAll;PackageAll" />
   
   <Target Name="Deploy" DependsOnTargets="CreateAdditionalBuildMetadata;DeployAll">
     <Message Text="Deployed re-motion, version '$(Version)', revision '$(SvnRevision)'." Importance="High"/>
   </Target>
   
-  <!-- Create properties -->
+  <!-- Check properties -->
   
+  <Target Name="CheckProperties" DependsOnTargets="
+          CheckBuildConfigurationProperties;
+          CheckBuildLocationProperties;
+          CheckJiraProperties;
+          CheckSvnProperties;
+          CheckDebugSymbolsProperties;
+          CheckDependDBProperties;
+          CheckCodePlexProperties;
+          CheckNuGetProperties;" >
+  </Target>
+
+  <!-- Create properties -->
+
   <Target Name="CreateSvnWorkingCopyPath">
     <!-- Removing the ending backslash is required! Otherwise svn.exe detects
          the final \" sequence as an escaped double quote. -->
