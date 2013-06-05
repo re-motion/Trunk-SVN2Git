@@ -59,7 +59,6 @@
     <Message Text="The property 'JiraUrl' is set to '$(JiraUrl)'." />
     <Message Text="The property 'JiraProject' is set to '$(JiraProject)'." />
     <Message Text="The property 'JiraUsername' is set to '$(JiraUsername)'." />
-    <Message Text="The property 'JiraPassword' is set to '$(JiraPassword)'." />
     <Message Text="The property 'JiraVersionPattern' is set to '$(JiraVersionPattern)'." />
   </Target>
 
@@ -75,7 +74,6 @@
     <Message Text="The property 'SvnBranchFolder' is set to '$(SvnBranchFolder)'." />
     <Message Text="The property 'SvnTagsFolder' is set to '$(SvnTagsFolder)'." />
     <Message Text="The property 'SvnUsername' is set to '$(SvnUsername)'." />
-    <Message Text="The property 'SvnPassword' is set to '$(SvnPassword)'." />
     <Message Text="The property 'SvnRevision' is set to '$(SvnRevision)'." />
   </Target>
 
@@ -93,6 +91,7 @@
 
     <Message Text="The property 'DependDBUploadPath' is set to '$(DependDBUploadPath)'." />
     <Message Text="The property 'DependDBProjectImportNotificationMailAddress' is set to '$(DependDBProjectImportNotificationMailAddress)'." />
+    <Message Text="The property 'DependDBProjectImportNotificationMailAddressCC' is set to '$(DependDBProjectImportNotificationMailAddressCC)'." />
     <Message Text="The property 'DependDBProjectVCSUrlTemplate' is set to '$(DependDBProjectVCSUrlTemplate)'." />
     <Message Text="The property 'DependDBProjectBranch' is set to '$(DependDBProjectBranch)'." />
   </Target>
@@ -102,13 +101,10 @@
     <Error Text="The property 'CodeplexPassword' is not set." Condition="'$(CodeplexPassword)' == ''" />
 
     <Message Text="The property 'CodePlexUsername' is set to '$(CodePlexUsername)'." />
-    <Message Text="The property 'CodeplexPassword' is set to '$(CodeplexPassword)'." />
   </Target>
 
   <Target Name="CheckNuGetProperties" >
     <Error Text="The property 'NuGetApiKey' is not set." Condition="'$(NuGetApiKey)' == ''" />
-
-    <Message Text="The property 'NuGetApiKey' is set to '$(NuGetApiKey)'." />
   </Target>
   
 </Project>
