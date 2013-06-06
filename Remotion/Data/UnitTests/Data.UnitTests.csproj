@@ -183,6 +183,10 @@
       <Project>{9b6f6d1a-a7ea-4ee8-b36e-e31cf7e518e3}</Project>
       <Name>Web.Security</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DomainObjects.ObjectBinding\Data.DomainObjects.ObjectBinding.csproj">
+      <Project>{f3935d12-39e6-4f06-8316-98cd7ed60c6b}</Project>
+      <Name>Data.DomainObjects.ObjectBinding</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DomainObjects.RdbmsTools\Data.DomainObjects.RdbmsTools.csproj">
       <Project>{A6505EE0-0F6B-4CB6-ACC7-1C05C0E236BC}</Project>
       <Name>Data.DomainObjects.RdbmsTools</Name>
@@ -264,6 +268,11 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\UpcastIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ClassDerivedFromClassWithIgnoreForMappingConfigurationAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ClassWithIgnoreForMappingConfigurationAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassAndDerivedClassWithIgnoreForMappingConfigurationAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithAllBaseTypesIgnoredForMappingConfigurationAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithIgnoreForMappingConfigurationAttribute.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\StoragePropertyDefinitionUnificationUtilityTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\BaseClassWithDBTable.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\TargetClassBelowDBTable.cs" />

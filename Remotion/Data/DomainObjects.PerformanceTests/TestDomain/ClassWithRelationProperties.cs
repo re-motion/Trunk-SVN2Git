@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.ObjectBinding;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
 {

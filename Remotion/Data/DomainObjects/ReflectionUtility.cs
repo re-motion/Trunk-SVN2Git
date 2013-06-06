@@ -16,10 +16,13 @@
 // 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.ExtensibleEnums;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -330,26 +333,24 @@ namespace Remotion.Data.DomainObjects
     /// <returns><see langword="true" /> if the given type is the inheritance root.</returns>
     public static bool IsInheritanceRoot (Type type)
     {
-      if (IsDomainObjectBase (type.BaseType))
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
+
+      if (Attribute.IsDefined (type, typeof (StorageGroupAttribute), false))
         return true;
 
-      return Attribute.IsDefined (type, typeof (StorageGroupAttribute), false);
+      if (type == typeof (DomainObject))
+        return false;
+
+      return type.BaseType.CreateSequence (t => t.BaseType, IsDomainObject).All (IsTypeIgnoredForMappingConfiguration);
     }
 
-    //TODO COMMONS-825: Refactor this
-    //TODO COMMONS-839: Refactor this
-    /// <summary>
-    /// Checks if the given type is the domain object base.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to check. Must not be <see langword="null" />.</param>
-    /// <returns><see langword="true" /> if the given type is the domain object base.</returns>
-    public static bool IsDomainObjectBase (Type type)
+    public static bool IsTypeIgnoredForMappingConfiguration (Type type)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
 
-      return type.Assembly == typeof (DomainObject).Assembly;
+      return AttributeUtility.IsDefined<IgnoreForMappingConfigurationAttribute> (type, false);
     }
-
+    
     public static Type ToRuntimeType (this ITypeInformation typeInformation)
     {
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);

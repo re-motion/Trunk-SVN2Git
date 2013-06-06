@@ -199,7 +199,7 @@
     <Compile Include="Core\UnitTesting\ThreadRunnerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\Linq\ExpressionTreeComparerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\SetUpFixture.cs" />
-    <Compile Include="Data\UnitTesting\DomainObjects\TestDomain\SimpleDomainObject.cs" />
+    <Compile Include="Data\UnitTesting\DomainObjects\TestDomain\TestDomainObject.cs" />
     <Compile Include="Core\UnitTesting\ObjectMothers\ObjectMotherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

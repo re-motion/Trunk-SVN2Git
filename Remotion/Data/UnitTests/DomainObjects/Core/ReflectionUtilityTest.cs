@@ -23,11 +23,13 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Rhino.Mocks;
+using ClassWithIgnoreForMappingConfigurationAttribute = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithIgnoreForMappingConfigurationAttribute;
+using DerivedClassWithDifferentProperties = Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.DerivedClassWithDifferentProperties;
 using File = System.IO.File;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
@@ -113,33 +115,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void IsDomainObjectBase_DomainObjectBase ()
-    {
-      Assert.That (ReflectionUtility.IsDomainObjectBase (typeof (DomainObject)), Is.True);
-    }
-
-    [Test]
-    public void IsDomainObjectBase_NoDomainObjectBase ()
-    {
-      Assert.That (ReflectionUtility.IsDomainObjectBase (typeof (string)), Is.False);
-    }
-
-    [Test]
-    public void IsInheritanceRoot_BaseTypeIsDomainObjectBase ()
+    public void IsInheritanceRoot_BaseTypeIsDomainObject ()
     {
       Assert.That (ReflectionUtility.IsInheritanceRoot (typeof (AbstractClass)), Is.True);
     }
 
     [Test]
-    public void IsInheritanceRoot_BaseTypeIsNoDomainObjectBase_ClassHasStorageGroupAttributeApplied ()
+    public void IsInheritanceRoot_BaseTypeIsNoDomainObject_ClassHasStorageGroupAttributeApplied ()
     {
       Assert.That (ReflectionUtility.IsInheritanceRoot (typeof (Derived2ClassWithStorageGroupAttribute)), Is.True);
     }
 
     [Test]
-    public void IsInheritanceRoot_BaseTypeIsNoDomainObjectBase_DomainObject ()
+    public void IsInheritanceRoot_BaseTypeIsNoDomainObjectBase_DomainObject_ReturnsFalse ()
     {
       Assert.That (ReflectionUtility.IsInheritanceRoot (typeof (DomainObject)), Is.False);
+    }
+
+    [Test]
+    public void IsInheritanceRoot_OnlyImmediateBaseTypeIsIgnoredForMappingConfiguration_ReturnsFalse ()
+    {
+      Assert.That (ReflectionUtility.IsInheritanceRoot (typeof (ClassDerivedFromClassWithIgnoreForMappingConfigurationAttribute)), Is.False);
+    }
+
+    [Test]
+    public void IsInheritanceRoot_TypeIsIgnoredForMappingConfiguration_ReturnsFalse ()
+    {
+      Assert.That (ReflectionUtility.IsInheritanceRoot (typeof (ClassWithIgnoreForMappingConfigurationAttribute)), Is.False);
+    }
+
+    [Test]
+    public void IsInheritanceRoot_AllBaseTypesAreIgnoredForMappingConfiguration_ReturnsTrue ()
+    {
+      Assert.That (ReflectionUtility.IsInheritanceRoot (typeof (ClassWithAllBaseTypesIgnoredForMappingConfigurationAttribute)), Is.True);
     }
 
     [Test]

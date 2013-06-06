@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
 using Remotion.Data.DomainObjects.Queries;
 

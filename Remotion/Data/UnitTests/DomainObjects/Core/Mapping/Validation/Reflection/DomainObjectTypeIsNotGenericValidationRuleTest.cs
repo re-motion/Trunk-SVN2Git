@@ -45,22 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     }
 
     [Test]
-    public void IsGenericType_IsDomainObjectBase ()
-    {
-      var typeStub = MockRepository.GenerateStub<Type> ();
-      typeStub.Stub (stub => stub.Name).Return ("Test");
-      typeStub.Stub (stub => stub.IsGenericType).Return (true);
-      typeStub.Stub (stub => stub.Assembly).Return (typeof (DomainObject).Assembly);
-      typeStub.Stub (stub => stub.IsSubclassOf (typeof (DomainObject))).Return (true);
-
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeStub);
-      
-      var validationResult = _validationRule.Validate (classDefinition);
-
-      AssertMappingValidationResult (validationResult, true, null);
-    }
-
-    [Test]
     public void IsGenericType_IsNotDomainObjectBase ()
     {
       var type = typeof (GenericTypeDomainObject<string>);

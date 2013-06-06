@@ -28,6 +28,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -81,6 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
       Module domainObjectAssemblyModule = typeof (DomainObject).Assembly.ManifestModule;
       File.Copy (domainObjectAssemblyModule.FullyQualifiedName, Path.Combine (AssemblyDirectory, domainObjectAssemblyModule.Name));
+
+      Module domainObjectsObjectBindingAssemblyModule = typeof (BindableDomainObject).Assembly.ManifestModule;
+      File.Copy (domainObjectsObjectBindingAssemblyModule.FullyQualifiedName, Path.Combine (AssemblyDirectory, domainObjectsObjectBindingAssemblyModule.Name));
 
       Module coreAssemblyModule = typeof (ArgumentUtility).Assembly.ManifestModule;
       File.Copy (coreAssemblyModule.FullyQualifiedName, Path.Combine (AssemblyDirectory, coreAssemblyModule.Name));

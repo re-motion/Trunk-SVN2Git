@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      if (type.IsGenericType && !ReflectionUtility.IsDomainObjectBase(type))
+      if (type.IsGenericType)// && !ReflectionUtility.IsDomainObjectBase(type))
       {
         return MappingValidationResult.CreateInvalidResultForType (type, "Generic domain objects are not supported.");
       }

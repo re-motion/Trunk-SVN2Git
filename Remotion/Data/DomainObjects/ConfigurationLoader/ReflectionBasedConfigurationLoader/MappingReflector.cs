@@ -106,9 +106,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private IEnumerable<Type> GetDomainObjectTypes ()
     {
       return (from type in _typeDiscoveryService.GetTypes (typeof (DomainObject), false).Cast<Type>()
-              where !type.IsDefined (typeof (IgnoreForMappingConfigurationAttribute), false)
-                    //TODO COMMONS-825: test this
-                    && !ReflectionUtility.IsDomainObjectBase (type)
+              where !ReflectionUtility.IsTypeIgnoredForMappingConfiguration (type)
               select type).Distinct();
     }
 

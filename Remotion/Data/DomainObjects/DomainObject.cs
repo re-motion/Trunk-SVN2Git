@@ -17,6 +17,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
@@ -37,6 +38,7 @@ namespace Remotion.Data.DomainObjects
   /// implementation.
   /// </para>
   /// </remarks>
+  [IgnoreForMappingConfiguration]
   [Serializable]
   public class DomainObject
   {

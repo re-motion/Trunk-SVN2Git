@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.ObjectBinding;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects
+namespace Remotion.Data.DomainObjects.ObjectBinding
 {
   /// <summary>
   /// Represents a <see cref="DomainObject"/> that can be instantiated (via <see cref="NewObject(Remotion.Reflection.ParamList)"/>), retrieved (via
@@ -35,6 +35,7 @@ namespace Remotion.Data.DomainObjects
   /// from <see cref="DomainObject"/> if you need to hide these methods from the public; derive from <see cref="SimpleDomainObject{TDomainObject}"/>
   /// if you don't.
   /// </remarks>
+  [IgnoreForMappingConfiguration]
   [Serializable]
   public abstract class SimpleDomainObject<TDomainObject> : BindableDomainObject, ISupportsGetObject
       where TDomainObject : SimpleDomainObject<TDomainObject>

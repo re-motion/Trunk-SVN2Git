@@ -615,7 +615,6 @@
     <Compile Include="Mapping\ReflectionBasedPropertyResolver.cs" />
     <Compile Include="Mapping\SortExpressions\SortExpressionDefinition.cs" />
     <Compile Include="Mapping\Validation\SortExpressionValidator.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectDefaultValueStrategy.cs" />
     <Compile Include="Persistence\Model\IStorageEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\ISqlDialect.cs" />
     <Compile Include="Persistence\Rdbms\Model\IRdbmsStorageEntityDefinitionVisitor.cs" />
@@ -696,21 +695,6 @@
     <Compile Include="Mapping\RelationEndPointDefinitionExtensions.cs" />
     <Compile Include="Mapping\RelationKindType.cs" />
     <Compile Include="Mapping\SerializableMappingObject.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObject.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectAttribute.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectGetObjectService.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectImplementation.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectMetadataFactory.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectMixin.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectPropertyFinder.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectPropertyReflector.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectProvider.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectProviderAttribute.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectQuerySearchService.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectSearchAllService.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectCompoundSearchService.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryMixin.cs" />
-    <Compile Include="ObjectBinding\IBindableDomainObjectImplementation.cs" />
     <Compile Include="Persistence\BulkLoadException.cs" />
     <Compile Include="RelationChangedEventArgs.cs" />
     <Compile Include="RelationChangingEventArgs.cs" />
@@ -729,7 +713,6 @@
     <Compile Include="Queries\IQueryResult.cs" />
     <Compile Include="Queries\QueryCache.cs" />
     <Compile Include="Queries\QueryFactory.cs" />
-    <Compile Include="SimpleDomainObject.cs" />
     <Compile Include="Tracing\TracingDbConnection.cs" />
     <Compile Include="Tracing\TracingDbTransaction.cs" />
     <Compile Include="DomainImplementation\Transport\BinaryExportStrategy.cs" />
@@ -1064,12 +1047,6 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <EmbeddedResource Include="ObjectBinding\Globalization\BooleanProperty.de.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ObjectBinding\Globalization\BooleanProperty.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Schemas\Queries.xsd">
       <SubType>
       </SubType>

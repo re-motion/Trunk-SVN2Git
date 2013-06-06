@@ -15,18 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors
 {
-  [Uses (typeof (MixinAddingUnidirectionalRelation1))]
-  [DBTable ("MixedDomains_TargetWithUnidirectionalMixin2")]
-  [TestDomain]
-  public class TargetClassWithUnidirectionalMixin2 : SimpleDomainObject<TargetClassWithUnidirectionalMixin2>
+  public abstract class ClassDerivedFromClassWithIgnoreForMappingConfigurationAttribute : ClassWithIgnoreForMappingConfigurationAttribute
   {
-    
+    protected ClassDerivedFromClassWithIgnoreForMappingConfigurationAttribute ()
+    {
+    }
   }
 }
