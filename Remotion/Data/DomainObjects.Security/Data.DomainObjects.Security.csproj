@@ -101,10 +101,6 @@
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
       <Name>Mixins.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.Core.csproj">
-      <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
-      <Name>ObjectBinding.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
