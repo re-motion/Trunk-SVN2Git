@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -236,6 +237,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 
       Assert.That (((BindableDomainObjectMixin.IDomainObject) instance).Properties, Is.EqualTo (instance.PublicProperties));
       _implementationMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BindableDomainObject_IsNotPartOfMapping ()
+    {
+      Assert.That (MappingConfiguration.Current.GetTypeDefinitions().Where (o => o.ClassType == typeof (BindableDomainObject)), Is.Empty);
+    }
+
+    [Test]
+    public void RefectionUtilityIsTypeIgnoredForMappingConfiguration_BindableDomainObject_ReturnsTrue ()
+    {
+      Assert.That (ReflectionUtility.IsTypeIgnoredForMappingConfiguration (typeof (BindableDomainObject)), Is.True);
     }
   }
 }
