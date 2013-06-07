@@ -136,10 +136,6 @@
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
       <Name>Mixins.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.Core.csproj">
-      <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
-      <Name>ObjectBinding.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
       <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
       <Name>TypePipe.Core</Name>
