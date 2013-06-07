@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,13 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample
 {
-  public abstract class ClassDerivedFromClassWithIgnoreForMappingConfigurationAttribute : ClassWithIgnoreForMappingConfigurationAttribute
+  [DBStorageGroup]
+  [IgnoreForMappingConfiguration]
+  public class ClassWithStorageGroupAttributeAndIgnoredForMappingConfigurationAttributeAndBaseClass : BaseClassWithoutStorageGroupAttribute
   {
-    protected ClassDerivedFromClassWithIgnoreForMappingConfigurationAttribute ()
-    {
-    }
   }
 }

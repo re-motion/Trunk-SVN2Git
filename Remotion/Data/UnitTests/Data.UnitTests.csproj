@@ -268,11 +268,17 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\UpcastIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ClassDerivedFromClassWithIgnoreForMappingConfigurationAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\BaseClassWithoutStorageGroupAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassInMapping.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassInMappingDerivedFromClassWithIgnoreForMappingConfigurationAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ClassWithIgnoreForMappingConfigurationAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassAndDerivedClassWithIgnoreForMappingConfigurationAttribute.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithAllBaseTypesIgnoredForMappingConfigurationAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassNotInMappingDerivedFromBaseClassInMapping.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithAllBaseTypesWithIgnoreForMappingConfigurationAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithIgnoreForMappingConfigurationAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithStorageGroupAttributeAndBaseClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithStorageGroupAttributeAndIgnoredForMappingConfigurationAttributeAndBaseClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\DerivedClassInMappingDerivedFromClassNotInMapping.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\StoragePropertyDefinitionUnificationUtilityTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\BaseClassWithDBTable.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\TargetClassBelowDBTable.cs" />

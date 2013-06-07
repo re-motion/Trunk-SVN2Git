@@ -335,11 +335,11 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
 
-      if (Attribute.IsDefined (type, typeof (StorageGroupAttribute), false))
-        return true;
-
-      if (type == typeof (DomainObject))
+      if (IsTypeIgnoredForMappingConfiguration (type))
         return false;
+
+      if (AttributeUtility.IsDefined<StorageGroupAttribute> (type, false))
+        return true;
 
       return type.BaseType.CreateSequence (t => t.BaseType, IsDomainObject).All (IsTypeIgnoredForMappingConfiguration);
     }

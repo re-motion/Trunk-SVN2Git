@@ -59,7 +59,7 @@
       <Name>Data.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Remotion\Data\DomainObjects.ObjectBinding\Data.DomainObjects.ObjectBinding.csproj">
-      <Project>{f3935d12-39e6-4f06-8316-98cd7ed60c6b}</Project>
+      <Project>{F3935D12-39E6-4F06-8316-98CD7ED60C6B}</Project>
       <Name>Data.DomainObjects.ObjectBinding</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Remotion\Data\DomainObjects.Security\Data.DomainObjects.Security.csproj">
