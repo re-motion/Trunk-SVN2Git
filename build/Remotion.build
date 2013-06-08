@@ -152,6 +152,7 @@
              Properties="SolutionDirectory=$(SolutionDirectory);
                          OutputDirectory=$(OutputDirectory);
                          ArchiveDirectory=$(ArchiveDirectory);
+                         Version=$(Version);
                          NuGetApiKey=$(NuGetApiKey)"/>
   </Target>
 
