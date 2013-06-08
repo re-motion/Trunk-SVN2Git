@@ -231,10 +231,11 @@
     
     <!-- Copy build processor output to upload path -->
     <ItemGroup>
-      <SourceFiles Include="$(DependDBOutputDirectory)*.xml" Exclude="$(DependDBConfigurationFile)"/>
+      <SourceFiles Include="$(DependDBOutputDirectory)$(DependDBProjectName)*.xml"/>
     </ItemGroup>
+
     <Copy SourceFiles="@(SourceFiles)" DestinationFolder="$(DependDBUploadPath)"/>
-    
+
     <Message Text="Done uploading to DependDB, ProjectName=$(DependDBProjectName)" Importance="High"/>
   </Target>
 
