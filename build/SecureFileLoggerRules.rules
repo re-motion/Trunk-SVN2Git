@@ -1,3 +1,4 @@
+\('[^']*' == '' AND 'Password' == 'Password'\)
 --password [^ ]*
 CodeplexPassword=[^ ]*
 /password:[^ ]*

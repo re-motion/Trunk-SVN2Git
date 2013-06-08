@@ -53,7 +53,7 @@
     <Error Text="The property 'JiraUrl' is not set." Condition="'$(JiraUrl)' == ''" />
     <Error Text="The property 'JiraProject' is not set." Condition="'$(JiraProject)' == ''" />
     <Error Text="The property 'JiraUsername' is not set." Condition="'$(JiraUsername)' == ''" />
-    <Error Text="The property 'JiraPassword' is not set." Condition="'$(JiraPassword)' == ''" />
+    <Error Text="The property 'JiraPassword' is not set." Condition="'$(JiraPassword)' == '' AND 'Password' == 'Password'" />
     <Error Text="The property 'JiraVersionPattern' is not set." Condition="'$(JiraVersionPattern)' == ''" />
 
     <Message Text="The property 'JiraUrl' is set to '$(JiraUrl)'." />
@@ -67,7 +67,7 @@
     <Error Text="The property 'SvnBranchFolder' is not set." Condition="'$(SvnBranchFolder)' == ''" />
     <Error Text="The property 'SvnTagsFolder' is not set." Condition="'$(SvnTagsFolder)' == ''" />
     <Error Text="The property 'SvnUsername' is not set." Condition="'$(SvnUsername)' == ''" />
-    <Error Text="The property 'SvnPassword' is not set." Condition="'$(SvnPassword)' == ''" />
+    <Error Text="The property 'SvnPassword' is not set." Condition="'$(SvnPassword)' == '' AND 'Password' == 'Password'" />
     <Error Text="The property 'SvnRevision' is not set." Condition="'$(SvnRevision)' == ''" />
 
     <Message Text="The property 'SvnBaseUri' is set to '$(SvnBaseUri)'." />
@@ -98,13 +98,13 @@
 
   <Target Name="CheckCodePlexProperties" >
     <Error Text="The property 'CodePlexUsername' is not set." Condition="'$(CodePlexUsername)' == ''" />
-    <Error Text="The property 'CodeplexPassword' is not set." Condition="'$(CodeplexPassword)' == ''" />
+    <Error Text="The property 'CodeplexPassword' is not set." Condition="'$(CodeplexPassword)' == '' AND 'Password' == 'Password'" />
 
     <Message Text="The property 'CodePlexUsername' is set to '$(CodePlexUsername)'." />
   </Target>
 
   <Target Name="CheckNuGetProperties" >
-    <Error Text="The property 'NuGetApiKey' is not set." Condition="'$(NuGetApiKey)' == ''" />
+    <Error Text="The property 'NuGetApiKey' is not set." Condition="'$(NuGetApiKey)' == '' AND 'Password' == 'Password'" />
   </Target>
   
 </Project>
