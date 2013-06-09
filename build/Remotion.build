@@ -172,7 +172,8 @@
                          ArchiveDirectory=$(ArchiveDirectory);
                          ReleaseType=$(ReleaseType);
                          AdditionalBuildMetadata=$(AdditionalBuildMetadata);
-                         Platforms=$(Platforms);"/>
+                         Platforms=$(Platforms);
+                         DatabaseSystems=$(DatabaseSystems)"/>
   </Target>
   
   <Target Name="TestBuildDebugOnly" DependsOnTargets="CleanFolders">
