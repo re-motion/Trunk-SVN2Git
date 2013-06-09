@@ -80,7 +80,7 @@
     <Error Text="The property 'DependDBProjectDirectory' is not set." Condition="'$(DependDBProjectDirectory)' == ''" />
 
     <!--https://dependdb.codeplex.com/workitem/142-->
-    <Error Text="The property 'DependDBProjectBranch' must not contain forward slashes." Condition="'$(DependDBProjectBranch.Contains('/'))' == ''" />
+    <Error Text="The property 'DependDBProjectBranch' must not contain forward slashes." Condition="'$(DependDBProjectBranch.Contains(/))' == ''" />
 
     <!-- DependDB configuration: General settings -->
     <PropertyGroup>
