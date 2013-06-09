@@ -257,7 +257,7 @@
                          TempDirectory=$(TempDirectory);
                          Version=$(Version);
                          DependDBProjectBranch=$(DependDBProjectBranch);
-                         DependDBProjectVersion=$(Version);
+                         DependDBProjectVersion=$(DependDBProjectVersion);
                          DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
                          DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
                          DependDBProjectImportNotificationMailAddressCc=$(DependDBProjectImportNotificationMailAddressCc);
