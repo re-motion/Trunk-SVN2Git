@@ -292,6 +292,7 @@
     <Message Text="Creating CodePlex release, PackageName=$(PackageName)" Importance="High"/>
 
     <Error Text="The property 'CodePlexProjectName' is not set." Condition="'$(CodePlexProjectName)' == ''" />
+    <Error Text="The property 'CodePlexReleaseName' is not set." Condition="'$(CodePlexReleaseName)' == ''" />
     <Error Text="The property 'CodePlexDescription' is not set." Condition="'$(CodePlexDescription)' == ''" />
 
     <PropertyGroup>
@@ -300,11 +301,11 @@
 
     <CodeplexCreateRelease ToolPath="$(CodeplexReleaseToolPath)"
                            ProjectName="$(CodePlexProjectName)"
-                           ReleaseName="$(Version)"
+                           ReleaseName="$(CodePlexReleaseName)"
                            Username="$(CodeplexUsername)"
                            Password="$(CodeplexPassword)"
                            Description="$(CodePlexDescription)"
-                           IsDefaultRelease="true"
+                           IsDefaultRelease="false"
                            ReleaseDate="$(_releaseDate)"
                            ReleaseStatus="Stable"
                            ShowToPublic="true"/>
