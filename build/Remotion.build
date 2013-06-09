@@ -113,7 +113,9 @@
                  DependDBProjectBranch=$(DependDBProjectBranch);
                  DependDBProjectVersion=$(Version);
                  DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
-                 DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);"/>
+                 DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
+                 DependDBProjectImportNotificationMailAddressCc=$(DependDBProjectImportNotificationMailAddressCc);
+                 DependDBUploadPath=$(DependDBUploadPath);"/>
   </Target>
   
   <Target Name="ZipPackageAll">
@@ -170,12 +172,7 @@
                          ArchiveDirectory=$(ArchiveDirectory);
                          ReleaseType=$(ReleaseType);
                          AdditionalBuildMetadata=$(AdditionalBuildMetadata);
-                         Platforms=$(Platforms);
-                         DatabaseSystems=$(DatabaseSystems);
-                         DependDBProjectBranch=$(DependDBProjectBranch);
-                         DependDBProjectVersion=$(Version);
-                         DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
-                         DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);"/>
+                         Platforms=$(Platforms);"/>
   </Target>
   
   <Target Name="TestBuildDebugOnly" DependsOnTargets="CleanFolders">
@@ -260,7 +257,7 @@
                          TempDirectory=$(TempDirectory);
                          Version=$(Version);
                          DependDBProjectBranch=$(DependDBProjectBranch);
-                         DependDBProjectVersion=$(DependDBProjectVersion);
+                         DependDBProjectVersion=$(Version);
                          DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
                          DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
                          DependDBProjectImportNotificationMailAddressCc=$(DependDBProjectImportNotificationMailAddressCc);
