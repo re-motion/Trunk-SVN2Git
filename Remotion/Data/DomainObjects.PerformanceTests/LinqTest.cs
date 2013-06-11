@@ -144,7 +144,6 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       PerformanceTestHelper.TimeAndOutput (1000, "Complex query with group by (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
       PerformanceTestHelper.TimeAndOutput (500, "Complex query with group by (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
-    
 
     private LinqPerformanceTestHelper<T> CreateLinqPerformanceTestHelper<T> (Func<IQueryable<T>> queryGenerator)
     {
