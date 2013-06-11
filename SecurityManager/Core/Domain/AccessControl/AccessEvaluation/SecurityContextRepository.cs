@@ -341,6 +341,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     private static IExecutableQuery<IEnumerable<T>> CreateExecutableQuery<T> (string key, Func<IQueryable<T>> queryCreator)
     {
+      // Note: Parsing the query takes about 1/3 of the total query time when connected to a local database instance.
+      // Unfortunately, the first query also causes the initialization of various caches in re-store, 
+      // an operation that cannot be easily excluded from the meassured parsing time. Therefor, the cache mainly helps to alleviate any concerns 
+      // about the cost associated with this part of the cache initialization.
       using (CreateStopwatchScopeForQueryParsing (key))
       {
         var queryable = (DomainObjectQueryable<T>) queryCreator();

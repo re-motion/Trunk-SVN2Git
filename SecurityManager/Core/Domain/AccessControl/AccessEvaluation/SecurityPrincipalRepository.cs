@@ -51,6 +51,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     private const string c_userNameParameter = "<userName>";
 
     private static readonly ILog s_log = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
+    // Note: Parsing the query takes about 1/6 of the total query time when connected to a local database instance.
+    // Unfortunately, the first query also causes the initialization of various caches in re-store, 
+    // an operation that cannot be easily excluded from the meassured parsing time. Therefor, the cache mainly helps to alleviate any concerns 
+    // about the cost associated with this part of the cache initialization.
     private static readonly QueryCache s_queryCache = new QueryCache();
     
     public SecurityPrincipalRepository (IRevisionProvider revisionProvider)
