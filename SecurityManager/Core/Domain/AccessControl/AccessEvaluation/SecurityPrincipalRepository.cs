@@ -68,7 +68,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     protected override Data LoadData (int revision)
     {
-      s_log.Info ("Reset SecurityContextRepository cache.");
+      s_log.Info ("Reset SecurityPrincipalRepository cache.");
       return new Data (revision);
     }
 
