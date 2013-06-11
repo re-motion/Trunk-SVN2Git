@@ -136,18 +136,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5679")]
     public void SingleBoolean ()
     {
       var result = (from c in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes>()
                     where c.ID == DomainObjectIDs.ClassWithAllDataTypes1
                     select c.BooleanProperty).ToArray();
 
-      Assert.That (result, Is.EqualTo (new[] { true }));
+      Assert.That (result, Is.EqualTo (new[] { false }));
     }
 
     [Test]
-    [Ignore ("TODO 5679")]
     public void SingleNullableBoolean ()
     {
       var result = (from c in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes>()
@@ -158,16 +156,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5679")]
     public void ComplexProjection_WithBooleans ()
     {
       var result = (from c in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes>()
                     where c.ID == DomainObjectIDs.ClassWithAllDataTypes1
                     select new { c.BooleanProperty, c.NaBooleanProperty, c.NaBooleanWithNullValueProperty }).ToArray();
 
+
       Assert.That (
           result,
-          Is.EqualTo (new[] { new { BooleanProperty = true, NaBooleanProperty = (bool?) true, NaBooleanWithNullValueProperty = (bool?) null } }));
+          Is.EqualTo (new[] { new { BooleanProperty = false, NaBooleanProperty = (bool?) true, NaBooleanWithNullValueProperty = (bool?) null } }));
     }
 
   }

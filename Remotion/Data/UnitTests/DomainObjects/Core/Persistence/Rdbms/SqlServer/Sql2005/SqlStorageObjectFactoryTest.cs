@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _resultOpertatorHandlerRegistryStub,
           mappingConfiguration);
 
-      Assert.That (result, Is.TypeOf (typeof (DomainObjectQueryGenerator)));
+      Assert.That (result, Is.InstanceOf<DomainObjectQueryGenerator>());
       var resultAsDomainObjectQueryGenerator = (DomainObjectQueryGenerator) result;
       Assert.That (resultAsDomainObjectQueryGenerator.SqlQueryGenerator, Is.SameAs (_sqlQueryGeneratorStub));
       Assert.That (resultAsDomainObjectQueryGenerator.StorageTypeInformationProvider, Is.SameAs (_storageTypeInformationProviderStub));
