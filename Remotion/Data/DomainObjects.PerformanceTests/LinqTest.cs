@@ -102,8 +102,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
       PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
       PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      //PerformanceTestHelper.TimeAndOutput (2000, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (1000, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+      //PerformanceTestHelper.TimeAndOutput (100, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (100, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
 
     [Test]
