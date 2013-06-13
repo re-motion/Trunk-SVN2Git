@@ -28,26 +28,28 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void WithTinyResultSet ()
     {
-      Func<IQueryable<Client>> queryGenerator = () => (from c in QueryFactory.CreateLinqQuery<Client> () select c);
+      Func<IQueryable<Client>> queryGenerator = () => (from c in QueryFactory.CreateLinqQuery<Client>() select c);
       var linqHelper = new LinqPerformanceTestHelper<Client> (queryGenerator);
 
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with tiny (1) result set (QM)", linqHelper.GenerateQueryModel);
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with tiny (1) result set (QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with tiny (1) result set (QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      PerformanceTestHelper.TimeAndOutput (2000, "Simple query with tiny (1) result set (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (1000, "Simple query with tiny (1) result set (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+      var message = "Simple query with tiny (1) result set ";
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
+      PerformanceTestHelper.TimeAndOutput (2000, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (1000, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
 
     [Test]
-    public void WithCustomProjection ()
+    public void WithCustomProjectionAndTinyResultSet ()
     {
       var linqHelper = CreateLinqPerformanceTestHelper (() => from c in QueryFactory.CreateLinqQuery<Client>() select new { c.ID, c.Name });
 
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with tiny (1) result set (QM)", linqHelper.GenerateQueryModel);
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with tiny (1) result set (QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with tiny (1) result set (QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      //PerformanceTestHelper.TimeAndOutput (2000, "Simple query with tiny (1) result set (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (1000, "Simple query with tiny (1) result set (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+      var message = "Custom projection query with tiny (1) result set ";
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
+      //PerformanceTestHelper.TimeAndOutput (2000, message +"(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (1000, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
 
     [Test]
@@ -56,11 +58,25 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       Func<IQueryable<Company>> queryGenerator = () => (from c in QueryFactory.CreateLinqQuery<Company>() select c);
       var linqHelper = new LinqPerformanceTestHelper<Company> (queryGenerator);
 
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with small (200) result set (QM)", linqHelper.GenerateQueryModel);
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with small (200) result set (QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with small (200) result set (QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      PerformanceTestHelper.TimeAndOutput (2000, "Simple query with small (200) result set (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (1000, "Simple query with small (200) result set (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+      var message = "Simple query with small (200) result set ";
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
+      PerformanceTestHelper.TimeAndOutput (2000, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (1000, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+    }
+
+    [Test]
+    public void WithCustomProjectionAndSmallResultSet ()
+    {
+      var linqHelper = CreateLinqPerformanceTestHelper (() => from c in QueryFactory.CreateLinqQuery<Company>() select new { c.ID, c.Name });
+
+      var message = "Custom projection query with small (200) result set ";
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
+      //PerformanceTestHelper.TimeAndOutput (2000, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (1000, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
 
     [Test]
@@ -69,11 +85,25 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       Func<IQueryable<Person>> queryGenerator = () => (from p in QueryFactory.CreateLinqQuery<Person> () select p);
       var linqHelper = new LinqPerformanceTestHelper<Person> (queryGenerator);
 
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with large (2000) result set (QM)", linqHelper.GenerateQueryModel);
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with large (2000) result set (QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
-      PerformanceTestHelper.TimeAndOutput (10000, "Simple query with large (2000) result set (QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      PerformanceTestHelper.TimeAndOutput (100, "Simple query with large (2000) result set (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (100, "Simple query with large (2000) result set (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+      var message = "Simple query with large (2000) result set ";
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
+      PerformanceTestHelper.TimeAndOutput (100, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (100, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+    }
+    
+    [Test]
+    public void WithCustomProjectionAndLargeResultSet ()
+    {
+      var linqHelper = CreateLinqPerformanceTestHelper (() => from c in QueryFactory.CreateLinqQuery<Person>() select new { c.ID, c.LastName });
+
+      var message = "Custom projection query with large (2000) result set ";
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
+      //PerformanceTestHelper.TimeAndOutput (2000, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (1000, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
 
     [Test]
@@ -87,11 +117,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var linqHelper = new LinqPerformanceTestHelper<Person> (
           queryGenerator);
 
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with subqueries (QM)", linqHelper.GenerateQueryModel);
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with subqueries (QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with subqueries (QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      PerformanceTestHelper.TimeAndOutput (1000, "Complex query with subqueries (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (500, "Complex query with subqueries (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+      var message = "Complex query with subqueries ";
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
+      PerformanceTestHelper.TimeAndOutput (1000, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (500, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
 
     [Test]
@@ -105,11 +136,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var linqHelper = new LinqPerformanceTestHelper<Person> (
           queryGenerator);
 
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with subqueries in second from clause and multiply order by clauses (QM)", linqHelper.GenerateQueryModel);
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with subqueries in second from clause and multiply order by clauses (QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with subqueries in second from clause and multiply order by clauses (QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      PerformanceTestHelper.TimeAndOutput (1000, "Complex query with subqueries in second from clause and multiply order by clauses (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (500, "Complex query with subqueries in second from clause and multiply order by clauses (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+      var message = "Complex query with subqueries in second from clause and multiply order by clauses ";
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
+      PerformanceTestHelper.TimeAndOutput (1000, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (500, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
 
     [Test]
@@ -124,11 +156,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var linqHelper = new LinqPerformanceTestHelper<Company> (
           queryGenerator);
 
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with joins and subquery (QM)", linqHelper.GenerateQueryModel);
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with joins and subquery (QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with joins and subquery (QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      PerformanceTestHelper.TimeAndOutput (1000, "Complex query with joins and subquery (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (500, "Complex query with joins and subquery (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+      var message = "Complex query with joins and subquery ";
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
+      PerformanceTestHelper.TimeAndOutput (1000, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (500, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
 
     [Test]
@@ -138,11 +171,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       Func<IQueryable<Person>> queryGenerator = () => (query);
       var linqHelper = new LinqPerformanceTestHelper<Person> (queryGenerator);
 
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with group by (QM)", linqHelper.GenerateQueryModel);
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with group by (QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with group by (QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      PerformanceTestHelper.TimeAndOutput (1000, "Complex query with group by (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (500, "Complex query with group by (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+      var message = "Complex query with group by ";
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM)", linqHelper.GenerateQueryModel);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
+      PerformanceTestHelper.TimeAndOutput (10000, message + "(QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
+      PerformanceTestHelper.TimeAndOutput (1000, message + "(QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (500, message + "(QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
 
     private LinqPerformanceTestHelper<T> CreateLinqPerformanceTestHelper<T> (Func<IQueryable<T>> queryGenerator)
