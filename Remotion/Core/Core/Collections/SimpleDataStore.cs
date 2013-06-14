@@ -162,6 +162,8 @@ namespace Remotion.Collections
     /// </returns>
     public bool TryGetValue (TKey key, out TValue value)
     {
+      ArgumentUtility.CheckNotNull ("key", key);
+
       return _innerDictionary.TryGetValue (key, out value);
     }
 
@@ -175,6 +177,9 @@ namespace Remotion.Collections
     /// </returns>
     public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> creator)
     {
+      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull ("creator", creator);
+
       TValue value;
       if (!TryGetValue (key, out value))
       {
