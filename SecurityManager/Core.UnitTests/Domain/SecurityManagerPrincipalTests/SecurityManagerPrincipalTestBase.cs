@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     protected void IncrementRevision ()
     {
       ClientTransaction.Current.QueryManager.GetScalar (Revision.GetIncrementRevisionQuery(new RevisionKey()));
-      SafeServiceLocator.Current.GetInstance<IRevisionProvider>().InvalidateRevision();
+      SafeServiceLocator.Current.GetInstance<IDomainRevisionProvider>().InvalidateRevision(new RevisionKey());
     }
   }
 }

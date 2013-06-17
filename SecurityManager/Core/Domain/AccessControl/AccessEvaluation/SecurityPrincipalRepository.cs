@@ -35,14 +35,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
   /// Cache-based implementation of the <see cref="ISecurityPrincipalRepository"/> interface.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
-  public sealed class SecurityPrincipalRepository : RepositoryBase<SecurityPrincipalRepository.Data>, ISecurityPrincipalRepository
+  public sealed class SecurityPrincipalRepository
+      : RepositoryBase<SecurityPrincipalRepository.Data, RevisionKey, Int32RevisionValue>,
+        ISecurityPrincipalRepository
   {
     public class Data : RevisionBasedData
     {
       public readonly ICache<string, User> Users;
 
-      internal Data (int revision)
-        : base (revision)
+      internal Data (Int32RevisionValue revision)
+          : base (revision)
       {
         Users = CacheFactory.CreateWithLazyLocking<string, User>();
       }
@@ -57,9 +59,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     // an operation that cannot be easily excluded from the meassured parsing time. Therefor, the cache mainly helps to alleviate any concerns 
     // about the cost associated with this part of the cache initialization.
     private static readonly QueryCache s_queryCache = new QueryCache();
-    
-    public SecurityPrincipalRepository (IRevisionProvider revisionProvider)
-      : base (revisionProvider)
+
+    public SecurityPrincipalRepository (IDomainRevisionProvider revisionProvider)
+        : base (revisionProvider)
     {
     }
 
@@ -67,11 +69,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     {
       ArgumentUtility.CheckNotNullOrEmpty ("userName", userName);
 
-      var cachedData = GetCachedData();
+      var cachedData = GetCachedData (new RevisionKey());
       return cachedData.Users.GetOrCreateValue (userName, GetUserInternal);
     }
 
-    protected override Data LoadData (int revision)
+    protected override Data LoadData (Int32RevisionValue revision)
     {
       s_log.Info ("Reset SecurityPrincipalRepository cache.");
       return new Data (revision);

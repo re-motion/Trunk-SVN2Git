@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Linq;
 using JetBrains.Annotations;
@@ -52,14 +53,18 @@ namespace Remotion.SecurityManager.Domain
     [Serializable]
     private sealed class Data
     {
-      public readonly int Revision;
+      public readonly Int32RevisionValue Revision;
       public readonly TenantProxy TenantProxy;
       public readonly UserProxy UserProxy;
       public readonly SubstitutionProxy SubstitutionProxy;
       public readonly ISecurityPrincipal SecurityPrincipal;
 
       public Data (
-          int revision, TenantProxy tenantProxy, UserProxy userProxy, SubstitutionProxy substitutionProxy, ISecurityPrincipal securityPrincipal)
+          Int32RevisionValue revision,
+          TenantProxy tenantProxy,
+          UserProxy userProxy,
+          SubstitutionProxy substitutionProxy,
+          ISecurityPrincipal securityPrincipal)
       {
         Revision = revision;
         TenantProxy = tenantProxy;
@@ -128,7 +133,7 @@ namespace Remotion.SecurityManager.Domain
       lock (_syncRoot)
       {
         var currentRevision = GetRevision();
-        if (_cachedData.Revision < currentRevision)
+        if (!_cachedData.Revision.IsCurrent (currentRevision))
           InitializeCache (currentRevision);
       }
     }
@@ -142,16 +147,16 @@ namespace Remotion.SecurityManager.Domain
       }
 
       return tenant.GetHierachy()
-          .Where (t => includeAbstractTenants || !t.IsAbstract)
-          .Select (CreateTenantProxy)
-          .ToArray();
+                   .Where (t => includeAbstractTenants || !t.IsAbstract)
+                   .Select (CreateTenantProxy)
+                   .ToArray();
     }
 
     public SubstitutionProxy[] GetActiveSubstitutions ()
     {
       return GetUser (CreateClientTransaction()).GetActiveSubstitutions()
-          .Select (CreateSubstitutionProxy)
-          .ToArray();
+                                                .Select (CreateSubstitutionProxy)
+                                                .ToArray();
     }
 
     private SecurityPrincipal CreateSecurityPrincipal (ClientTransaction transaction)
@@ -204,7 +209,7 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private void InitializeCache (int revision)
+    private void InitializeCache (Int32RevisionValue revision)
     {
       var transaction = CreateClientTransaction();
 
@@ -237,17 +242,17 @@ namespace Remotion.SecurityManager.Domain
 
     private ClientTransaction CreateClientTransaction ()
     {
-      var transaction = ClientTransaction.CreateRootTransaction ();
+      var transaction = ClientTransaction.CreateRootTransaction();
 
       if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-        transaction.Extensions.Add (new SecurityClientTransactionExtension ());
+        transaction.Extensions.Add (new SecurityClientTransactionExtension());
 
       return transaction;
     }
 
-    private int GetRevision ()
+    private Int32RevisionValue GetRevision ()
     {
-      return SafeServiceLocator.Current.GetInstance<IRevisionProvider>().GetRevision();
+      return SafeServiceLocator.Current.GetInstance<IDomainRevisionProvider>().GetRevision(new RevisionKey());
     }
 
     bool INullObject.IsNull

@@ -21,45 +21,49 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
-  public abstract class RepositoryBase<TData>
-      where TData : RepositoryBase<TData>.RevisionBasedData
+  public abstract class RepositoryBase<TData,TRevisionKey, TRevisionValue>
+      where TData : RepositoryBase<TData,TRevisionKey, TRevisionValue>.RevisionBasedData
+      where TRevisionKey : IRevisionKey
+      where TRevisionValue : IRevisionValue
   {
     public abstract class RevisionBasedData
     {
-      private readonly int _revision;
+      private readonly TRevisionValue _revision;
 
-      protected RevisionBasedData (int revision)
+      protected RevisionBasedData (TRevisionValue revision)
       {
         _revision = revision;
       }
 
-      public int Revision
+      public TRevisionValue Revision
       {
         get { return _revision; }
       }
     }
 
-    private readonly IRevisionProvider _revisionProvider;
+    private readonly IRevisionProvider<TRevisionKey, TRevisionValue> _revisionProvider;
     private readonly object _syncRoot = new object();
     private volatile TData _cachedData;
 
-    protected RepositoryBase (IRevisionProvider revisionProvider)
+    protected RepositoryBase (IRevisionProvider<TRevisionKey, TRevisionValue> revisionProvider)
     {
       ArgumentUtility.CheckNotNull ("revisionProvider", revisionProvider);
 
       _revisionProvider = revisionProvider;
     }
 
-    protected abstract TData LoadData (int revision);
+    protected abstract TData LoadData (TRevisionValue revision);
 
-    protected TData GetCachedData ()
+    protected TData GetCachedData (TRevisionKey revisionKey)
     {
-      var currentRevision = _revisionProvider.GetRevision();
-      if (_cachedData == null || _cachedData.Revision < currentRevision)
+      ArgumentUtility.CheckNotNull ("revisionKey", revisionKey);
+      
+      var currentRevision = _revisionProvider.GetRevision (revisionKey);
+      if (_cachedData == null || !_cachedData.Revision.IsCurrent (currentRevision))
       {
         lock (_syncRoot)
         {
-          if (_cachedData == null || _cachedData.Revision < currentRevision)
+          if (_cachedData == null || !_cachedData.Revision.IsCurrent (currentRevision))
             _cachedData = LoadData (currentRevision);
         }
       }

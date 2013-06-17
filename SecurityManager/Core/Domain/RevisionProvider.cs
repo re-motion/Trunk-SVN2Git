@@ -15,54 +15,19 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
-using Remotion.Context;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.SecurityManager.Domain
 {
   /// <summary>
-  /// Cache-based implementation of the <see cref="IRevisionProvider"/> interface.
+  /// Cache-based implementation of the <see cref="IRevisionProvider{TKey, TValue}"/> interface.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
-  //TODO RM-5640: Write tests
-  public class RevisionProvider : IRevisionProvider
+  public class RevisionProvider : RevisionProviderBase<RevisionKey>, IDomainRevisionProvider
   {
-    private class RevisionValue
-    {
-      public readonly int Value;
-      public RevisionValue (int value)
-      {
-        Value = value;
-      }
-    }
-
-    private readonly string _revisionKey;
-
     public RevisionProvider ()
     {
-      _revisionKey = SafeContextKeys.SecurityManagerRevision + "_" + Guid.NewGuid().ToString();
-    }
-
-    public int GetRevision ()
-    {
-      var revision = (RevisionValue) SafeContext.Instance.GetData (_revisionKey);
-      if (revision == null)
-      {
-        revision = new RevisionValue (GetRevisionFromDatabase());
-        SafeContext.Instance.SetData (_revisionKey, revision);
-      }
-      return revision.Value;
-    }
-
-    public void InvalidateRevision ()
-    {
-      SafeContext.Instance.FreeData (_revisionKey);
-    }
-
-    private static int GetRevisionFromDatabase ()
-    {
-      return (int?) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery(new RevisionKey())) ?? 0;
     }
   }
 }

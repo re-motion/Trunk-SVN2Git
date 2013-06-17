@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager
     private readonly IAccessControlListFinder _accessControlListFinder;
     private readonly ISecurityTokenBuilder _securityTokenBuilder;
     private readonly IAccessResolver _accessResolver;
-    private readonly IRevisionProvider _revisionProvider;
+    private readonly IDomainRevisionProvider _revisionProvider;
 
     public SecurityService (string name, NameValueCollection config)
         : this (name,
@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager
                 SafeServiceLocator.Current.GetInstance<IAccessControlListFinder>(),
                 SafeServiceLocator.Current.GetInstance<ISecurityTokenBuilder>(),
                 SafeServiceLocator.Current.GetInstance<IAccessResolver>(),
-                SafeServiceLocator.Current.GetInstance<IRevisionProvider>())
+                SafeServiceLocator.Current.GetInstance<IDomainRevisionProvider>())
     {
     }
 
@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager
         IAccessControlListFinder accessControlListFinder,
         ISecurityTokenBuilder securityTokenBuilder,
         IAccessResolver accessResolver,
-      IRevisionProvider revisionProvider)
+        IDomainRevisionProvider revisionProvider)
         : base (name, config)
     {
       ArgumentUtility.CheckNotNull ("accessControlListFinder", accessControlListFinder);
@@ -106,7 +106,7 @@ namespace Remotion.SecurityManager
 
     public int GetRevision ()
     {
-      return _revisionProvider.GetRevision();
+      return _revisionProvider.GetRevision(new RevisionKey()).Int32Value;
     }
 
     bool INullObject.IsNull

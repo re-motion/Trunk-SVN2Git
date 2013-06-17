@@ -15,25 +15,38 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-
 using System;
-using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain
 {
-  /// <summary>
-  /// Defines the API required for retrieving the <c>Revision</c> or the data.
-  /// </summary>
-  /// <seealso cref="RevisionProviderBase{T}"/>
-  /// <seealso cref="RevisionProvider"/>
-  /// <seealso cref="UserRevisionProvider"/>
-  /// <threadsafety static="true" instance="true"/>
-  [ConcreteImplementation (typeof (UserRevisionProvider), Lifetime = LifetimeKind.Singleton)]
-  public interface IRevisionProvider<TRevisionKey, TRevisionValue>
-      where TRevisionKey : IRevisionKey
-      where TRevisionValue : IRevisionValue
+  [Serializable]
+  public sealed class Int32RevisionValue : IRevisionValue
   {
-    TRevisionValue GetRevision (TRevisionKey key);
-    void InvalidateRevision (TRevisionKey key);
+    private readonly DateTime _timestamp;
+    private readonly int _revision;
+
+    public Int32RevisionValue (int revision)
+    {
+      _timestamp = DateTime.UtcNow;
+      _revision = revision;
+    }
+
+    public int Int32Value
+    {
+      get { return _revision; }
+    }
+
+    public bool IsCurrent (IRevisionValue reference)
+    {
+      var referenceRevision = reference as Int32RevisionValue;
+      if (referenceRevision == null)
+        return false;
+
+      if (_revision == referenceRevision._revision)
+        return true;
+      if (_timestamp > referenceRevision._timestamp)
+        return true;
+      return false;
+    }
   }
 }

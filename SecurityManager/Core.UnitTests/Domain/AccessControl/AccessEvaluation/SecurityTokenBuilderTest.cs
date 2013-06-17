@@ -472,7 +472,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     private SecurityTokenBuilder CreateSecurityTokenBuilder ()
     {
       var revisionProvider = new RevisionProvider();
-      return new SecurityTokenBuilder (new SecurityPrincipalRepository(revisionProvider), new SecurityContextRepository(revisionProvider));
+      return new SecurityTokenBuilder (new SecurityPrincipalRepository (revisionProvider), new SecurityContextRepository (revisionProvider));
     }
 
     private ISecurityPrincipal CreateTestPrincipal ()

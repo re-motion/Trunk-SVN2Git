@@ -156,14 +156,20 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilter.cs" />
     <Compile Include="Domain\DomainObjectDeleteHandler.cs" />
     <Compile Include="Domain\DomainObjectExtensions.cs" />
-    <Compile Include="Domain\IRevisionProvider.cs" />
+    <Compile Include="Domain\IDomainRevisionProvider.cs" />
+    <Compile Include="Domain\Int32RevisionValue.cs" />
+    <Compile Include="Domain\IRevisionKey.cs" />
+    <Compile Include="Domain\IRevisionValue.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipal.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipalFactory.cs" />
+    <Compile Include="Domain\IRevisionProvider.cs" />
     <Compile Include="Domain\IUserRevisionProvider.cs" />
     <Compile Include="Domain\Metadata\MetadataExtensions.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipal.cs" />
     <Compile Include="Domain\PrincipalRole.cs" />
+    <Compile Include="Domain\RevisionKey.cs" />
     <Compile Include="Domain\RevisionProvider.cs" />
+    <Compile Include="Domain\RevisionProviderBase.cs" />
     <Compile Include="Domain\SearchInfrastructure\Metadata\AbstractRoleDefinitionPropertyTypeSearchService.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\GroupTypePropertyTypeSearchService.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchService.cs" />
@@ -238,6 +244,8 @@
     <Compile Include="Domain\Revision.cs" />
     <Compile Include="Domain\SecurityManagerAccessTypes.cs" />
     <Compile Include="Domain\SecurityManagerStorageGroupAttribute.cs" />
+    <Compile Include="Domain\UserRevisionKey.cs" />
+    <Compile Include="Domain\UserRevisionProvider.cs" />
     <Compile Include="Globalization\AclTools\Expansion\AclToolsExpansion.de.Designer.cs">
       <DependentUpon>AclToolsExpansion.de.resx</DependentUpon>
       <DesignTime>True</DesignTime>

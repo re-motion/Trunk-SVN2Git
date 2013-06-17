@@ -38,7 +38,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
   /// Cache-based implementation of the <see cref="ISecurityContextRepository"/> interface.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
-  public sealed class SecurityContextRepository : RepositoryBase<SecurityContextRepository.Data>, ISecurityContextRepository
+  public sealed class SecurityContextRepository
+      : RepositoryBase<SecurityContextRepository.Data, RevisionKey, Int32RevisionValue>,
+        ISecurityContextRepository
   {
     public class Data : RevisionBasedData
     {
@@ -51,7 +53,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       public readonly Dictionary<IDomainObjectHandle<StatePropertyDefinition>, ReadOnlyCollectionDecorator<string>> StatePropertyValues;
 
       internal Data (
-          int revision,
+          Int32RevisionValue revision,
           Dictionary<string, IDomainObjectHandle<Tenant>> tenants,
           Dictionary<string, IDomainObjectHandle<Group>> groups,
           Dictionary<string, IDomainObjectHandle<User>> users,
@@ -73,8 +75,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     private static readonly ILog s_log = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private static readonly ICache<string, IQuery> s_queryCache = CacheFactory.CreateWithLocking<string, IQuery>();
+    private static readonly RevisionKey s_revisionKey = new RevisionKey();
 
-    public SecurityContextRepository (IRevisionProvider revisionProvider)
+    public SecurityContextRepository (IDomainRevisionProvider revisionProvider)
         : base (revisionProvider)
     {
     }
@@ -83,7 +86,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
-      var cachedData = GetCachedData();
+      var cachedData = GetCachedData (s_revisionKey);
       var tenant = cachedData.Tenants.GetValueOrDefault (uniqueIdentifier);
       if (tenant == null)
         throw CreateAccessControlException ("The tenant '{0}' could not be found.", uniqueIdentifier);
@@ -94,7 +97,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
-      var cachedData = GetCachedData();
+      var cachedData = GetCachedData (s_revisionKey);
       var group = cachedData.Groups.GetValueOrDefault (uniqueIdentifier);
       if (group == null)
         throw CreateAccessControlException ("The group '{0}' could not be found.", uniqueIdentifier);
@@ -105,18 +108,18 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     {
       ArgumentUtility.CheckNotNullOrEmpty ("userName", userName);
 
-      var cachedData = GetCachedData();
+      var cachedData = GetCachedData (s_revisionKey);
       var user = cachedData.Users.GetValueOrDefault (userName);
       if (user == null)
         throw CreateAccessControlException ("The user '{0}' could not be found.", userName);
       return user;
-        }
+    }
 
     public IDomainObjectHandle<Position> GetPosition (string uniqueIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
-      var cachedData = GetCachedData();
+      var cachedData = GetCachedData (s_revisionKey);
       var position = cachedData.Positions.GetValueOrDefault (uniqueIdentifier);
       if (position == null)
         throw CreateAccessControlException ("The position '{0}' could not be found.", uniqueIdentifier);
@@ -128,7 +131,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     {
       ArgumentUtility.CheckNotNull ("name", name);
 
-      var cachedData = GetCachedData();
+      var cachedData = GetCachedData (s_revisionKey);
       var abstractRole = cachedData.AbstractRoles.GetValueOrDefault (name);
       if (abstractRole == null)
         throw CreateAccessControlException ("The abstract role '{0}' could not be found.", name);
@@ -139,7 +142,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      var cachedData = GetCachedData();
+      var cachedData = GetCachedData (s_revisionKey);
       var @class = cachedData.Classes.GetValueOrDefault (name);
       if (@class == null)
         throw CreateAccessControlException ("The securable class '{0}' could not be found.", name);
@@ -150,14 +153,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     {
       ArgumentUtility.CheckNotNull ("stateProperty", stateProperty);
 
-      var cachedData = GetCachedData();
+      var cachedData = GetCachedData (s_revisionKey);
       var values = cachedData.StatePropertyValues.GetValueOrDefault (stateProperty);
       if (values == null)
         throw CreateAccessControlException ("The state property with ID '{0}' could not be found.", stateProperty);
       return values;
     }
 
-    protected override Data LoadData (int revision)
+    protected override Data LoadData (Int32RevisionValue revision)
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {

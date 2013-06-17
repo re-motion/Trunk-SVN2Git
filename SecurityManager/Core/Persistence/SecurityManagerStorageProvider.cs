@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -43,13 +44,13 @@ namespace Remotion.SecurityManager.Persistence
             commandFactory,
             connectionFactory)
     {
-      _revisionExtension = new RevisionStorageProviderExtension (SafeServiceLocator.Current.GetInstance<IRevisionProvider>());
+      _revisionExtension = new RevisionStorageProviderExtension (SafeServiceLocator.Current.GetInstance<IDomainRevisionProvider>());
     }
 
     public override void Save (IEnumerable<DataContainer> dataContainers)
     {
       ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-      
+
       _revisionExtension.Saving (Connection.WrappedInstance, Transaction.WrappedInstance, dataContainers);
       base.Save (dataContainers);
     }

@@ -29,9 +29,9 @@ namespace Remotion.SecurityManager.Persistence
 {
   public class RevisionStorageProviderExtension
   {
-    private readonly IRevisionProvider _revisionProvider;
+    private readonly IDomainRevisionProvider _revisionProvider;
 
-    public RevisionStorageProviderExtension (IRevisionProvider revisionProvider)
+    public RevisionStorageProviderExtension (IDomainRevisionProvider revisionProvider)
     {
       ArgumentUtility.CheckNotNull ("revisionProvider", revisionProvider);
       
@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.Persistence
         //                        Position, GroupType, MetadataObject
         // SecurityPrincipal-revision: user.Username, Role.User, Substitution.SubstitutedBy
         IncrementRevision (connection, transaction);
-        _revisionProvider.InvalidateRevision();
+        _revisionProvider.InvalidateRevision (new RevisionKey());
       }
     }
 

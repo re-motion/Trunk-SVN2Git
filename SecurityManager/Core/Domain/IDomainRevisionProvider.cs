@@ -1,4 +1,4 @@
-﻿// This file is part of re-strict (www.re-motion.org)
+// This file is part of re-strict (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -21,19 +21,8 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain
 {
-  /// <summary>
-  /// Defines the API required for retrieving the <c>Revision</c> or the data.
-  /// </summary>
-  /// <seealso cref="RevisionProviderBase{T}"/>
-  /// <seealso cref="RevisionProvider"/>
-  /// <seealso cref="UserRevisionProvider"/>
-  /// <threadsafety static="true" instance="true"/>
-  [ConcreteImplementation (typeof (UserRevisionProvider), Lifetime = LifetimeKind.Singleton)]
-  public interface IRevisionProvider<TRevisionKey, TRevisionValue>
-      where TRevisionKey : IRevisionKey
-      where TRevisionValue : IRevisionValue
+  [ConcreteImplementation (typeof (RevisionProvider), Lifetime = LifetimeKind.Singleton)]
+  public interface IDomainRevisionProvider : IRevisionProvider<RevisionKey, Int32RevisionValue>
   {
-    TRevisionValue GetRevision (TRevisionKey key);
-    void InvalidateRevision (TRevisionKey key);
   }
 }

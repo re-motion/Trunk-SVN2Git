@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests
     private IAccessControlListFinder _mockAclFinder;
     private ISecurityTokenBuilder _mockTokenBuilder;
     private IAccessResolver _mockAccessResolver;
-    private IRevisionProvider _mockRevisionProvider;
+    private IDomainRevisionProvider _mockRevisionProvider;
 
     private SecurityService _service;
     private SecurityContext _context;
@@ -71,7 +71,7 @@ namespace Remotion.SecurityManager.UnitTests
       _mockAclFinder = _mocks.StrictMock<IAccessControlListFinder>();
       _mockTokenBuilder = _mocks.StrictMock<ISecurityTokenBuilder>();
       _mockAccessResolver = _mocks.StrictMock<IAccessResolver>();
-      _mockRevisionProvider = MockRepository.GenerateStub<IRevisionProvider>();
+      _mockRevisionProvider = _mocks.Stub<IDomainRevisionProvider>();
 
       _service = new SecurityService (
           "name",
@@ -257,7 +257,10 @@ namespace Remotion.SecurityManager.UnitTests
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
       dbFixtures.CreateEmptyDomain ();
 
-      Assert.That (_service.GetRevision (), Is.EqualTo (0));
+      _mockRevisionProvider.Stub (_ => _.GetRevision (new RevisionKey())).Return (new Int32RevisionValue (5));
+      _mocks.ReplayAll ();
+
+      Assert.That (_service.GetRevision (), Is.EqualTo (5));
     }
 
     [Test]
