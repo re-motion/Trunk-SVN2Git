@@ -46,6 +46,10 @@ namespace Remotion.SecurityManager.Persistence
       Type securityManagerDomainLayerSuperType = typeof (BaseSecurityManagerObject);
       if (dataContainers.Any (dataContainer => securityManagerDomainLayerSuperType.IsAssignableFrom (dataContainer.DomainObjectType)))
       {
+        //TODO RM-5521: revision
+        // SecurityContext-revision: Group.Parent, Group.GroupType, Group.UniqueIdentifier, Tenant.UniqueIdentifier, Tenant.Parent, 
+        //                        Position, GroupType, MetadataObject
+        // SecurityPrincipal-revision: user.Username, Role.User, Substitution.SubstitutedBy
         IncrementRevision (connection, transaction);
         _revisionProvider.InvalidateRevision();
       }
