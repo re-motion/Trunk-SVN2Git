@@ -91,7 +91,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
       User owningUser = CreateUser (_companyHelper.CompanyTenant, null);
 
       SecurityToken token = SecurityToken.Create (
-          Principal.Create (_companyHelper.CompanyTenant, null, new Role[0]),
+          PrincipalTestHelper.Create (_companyHelper.CompanyTenant, null, new Role[0]),
           null,
           null,
           owningUser,

@@ -113,7 +113,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
             principalRoles = principalRoles.Where (r => IsRoleMatchingPrincipalRole (r, principal.Role));
         }
 
-        return Principal.Create (principalTenant, principalUser, principalRoles);
+        return new Principal (
+            principalTenant.GetHandle(),
+            principalUser.GetSafeHandle(),
+            principalRoles.Select (r => new PrincipalRole (r.Position.GetHandle(), r.Group.GetHandle())));
       }
     }
 
@@ -136,7 +139,15 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       if (role == null)
         return false;
 
-      return role.Group.UniqueIdentifier == principalRole.Group && role.Position.UniqueIdentifier == principalRole.Position;
+      var principalPositionHandle = _securityContextRepository.GetPosition (principalRole.Position);
+      if (!principalPositionHandle.Equals (role.Position.GetHandle()))
+        return false;
+
+      var principalRoleGroupHandle = _securityContextRepository.GetGroup (principalRole.Group);
+      if (!principalRoleGroupHandle.Equals (role.Group.GetHandle()))
+        return false;
+
+      return true;
     }
 
     private IDomainObjectHandle<Tenant> GetTenant (string uniqueIdentifier)

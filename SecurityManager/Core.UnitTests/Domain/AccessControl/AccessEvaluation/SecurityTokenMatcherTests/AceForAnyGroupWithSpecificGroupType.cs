@@ -71,7 +71,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
       Role userRole = TestHelper.CreateRole (user, userGroup, _companyHelper.HeadPosition);
 
       SecurityToken token = SecurityToken.Create (
-          Principal.Create (_companyHelper.CompanyTenant, null, new[] { userRole }),
+          PrincipalTestHelper.Create (_companyHelper.CompanyTenant, null, new[] { userRole }),
           null,
           userGroup,
           null,
@@ -101,7 +101,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     public void TokenWithoutPrincipalRoles_DoesNotMatch ()
     {
       SecurityToken token = SecurityToken.Create (
-          Principal.Create (_companyHelper.CompanyTenant, _companyHelper.CarTeamMember, new Role[0]),
+          PrincipalTestHelper.Create (_companyHelper.CompanyTenant, _companyHelper.CarTeamMember, new Role[0]),
           null,
           _companyHelper.AustrianCarTeam,
           null,

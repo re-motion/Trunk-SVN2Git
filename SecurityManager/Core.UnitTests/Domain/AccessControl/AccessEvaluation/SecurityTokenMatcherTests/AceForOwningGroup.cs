@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     {
       SecurityToken token =
           SecurityToken.Create (
-              Principal.Create (_companyHelper.CompanyTenant, null, new[] { _companyHelper.AustrianCarTeam.Roles[0] }),
+              PrincipalTestHelper.Create (_companyHelper.CompanyTenant, null, new[] { _companyHelper.AustrianCarTeam.Roles[0] }),
               null,
               _companyHelper.AustrianCarTeam,
               null,
@@ -114,7 +114,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     public void TokenWithoutPrincipalRoles_DoesNotMatch ()
     {
       SecurityToken token = SecurityToken.Create (
-          Principal.Create (_companyHelper.CompanyTenant, _companyHelper.CarTeamMember, new Role[0]),
+          PrincipalTestHelper.Create (_companyHelper.CompanyTenant, _companyHelper.CarTeamMember, new Role[0]),
           null,
           _companyHelper.AustrianCarTeam,
           null,

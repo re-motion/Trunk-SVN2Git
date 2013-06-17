@@ -159,6 +159,7 @@
     <Compile Include="Domain\AccessControl\AccessEvaluation\SecurityTokenMatcherTests\AceForAbstractRole.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\SecurityTokenMatcherTests\AceForPosition.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\SecurityTokenMatcherTests\AceForOwningTenant.cs" />
+    <Compile Include="Domain\AccessControl\PrincipalTestHelper.cs" />
     <Compile Include="Domain\AccessControl\StatefulAccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\StatelessAccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\StateUsageTest.cs" />

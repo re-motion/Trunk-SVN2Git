@@ -365,7 +365,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public SecurityToken CreateTokenWithoutUser ()
     {
-      Principal principal = Principal.Create (CreateTenant ("AnyTenant"), null, new Role[0]);
+      Principal principal = PrincipalTestHelper.Create (CreateTenant ("AnyTenant"), null, new Role[0]);
       return SecurityToken.Create(principal, null, null, null, Enumerable.Empty<IDomainObjectHandle<AbstractRoleDefinition>>());
     }
 
@@ -377,7 +377,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public SecurityToken CreateTokenWithAbstractRole (params AbstractRoleDefinition[] roleDefinitions)
     {
-      Principal principal = Principal.Create (CreateTenant ("AnyTenant"), null, new Role[0]);
+      Principal principal = PrincipalTestHelper.Create (CreateTenant ("AnyTenant"), null, new Role[0]);
       return SecurityToken.Create (principal, null, null, null, roleDefinitions.Select (abstractRole => abstractRole.GetHandle()));
     }
 
@@ -401,7 +401,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       if (abstractRoleDefinitions != null)
         abstractRoles.AddRange (abstractRoleDefinitions.Select (abstractRole=>abstractRole.GetHandle()));
 
-      Principal principal = Principal.Create (principalUser.Tenant, principalUser, principalUser.Roles);
+      Principal principal = PrincipalTestHelper.Create (principalUser.Tenant, principalUser, principalUser.Roles);
       return SecurityToken.Create (principal, owningTenant, owningGroup, owningUser, abstractRoles);
     }
 

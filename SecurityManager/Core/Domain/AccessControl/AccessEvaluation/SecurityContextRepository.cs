@@ -45,6 +45,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       public readonly Dictionary<string, IDomainObjectHandle<Tenant>> Tenants;
       public readonly Dictionary<string, IDomainObjectHandle<Group>> Groups;
       public readonly Dictionary<string, IDomainObjectHandle<User>> Users;
+      public readonly Dictionary<string, IDomainObjectHandle<Position>> Positions;
       public readonly Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> AbstractRoles;
       public readonly Dictionary<string, SecurableClassDefinitionData> Classes;
       public readonly Dictionary<IDomainObjectHandle<StatePropertyDefinition>, ReadOnlyCollectionDecorator<string>> StatePropertyValues;
@@ -54,6 +55,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           Dictionary<string, IDomainObjectHandle<Tenant>> tenants,
           Dictionary<string, IDomainObjectHandle<Group>> groups,
           Dictionary<string, IDomainObjectHandle<User>> users,
+          Dictionary<string, IDomainObjectHandle<Position>> positions,
           Dictionary<EnumWrapper, IDomainObjectHandle<AbstractRoleDefinition>> abstractRoles,
           Dictionary<string, SecurableClassDefinitionData> classes,
           Dictionary<IDomainObjectHandle<StatePropertyDefinition>, ReadOnlyCollectionDecorator<string>> statePropertyValues)
@@ -62,6 +64,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
         Tenants = tenants;
         Groups = groups;
         Users = users;
+        Positions = positions;
         AbstractRoles = abstractRoles;
         Classes = classes;
         StatePropertyValues = statePropertyValues;
@@ -107,7 +110,19 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       if (user == null)
         throw CreateAccessControlException ("The user '{0}' could not be found.", userName);
       return user;
+        }
+
+    public IDomainObjectHandle<Position> GetPosition (string uniqueIdentifier)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
+
+      var cachedData = GetCachedData();
+      var position = cachedData.Positions.GetValueOrDefault (uniqueIdentifier);
+      if (position == null)
+        throw CreateAccessControlException ("The position '{0}' could not be found.", uniqueIdentifier);
+      return position;
     }
+
 
     public IDomainObjectHandle<AbstractRoleDefinition> GetAbstractRole (EnumWrapper name)
     {
@@ -152,6 +167,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           var tenants = LoadTenants();
           var groups = LoadGroups();
           var users = LoadUsers();
+          var positions = LoadPositions();
           var abstractRoles = LoadAbstractRoles();
           var classes = BuildClassCache (
               LoadSecurableClassDefinitions(),
@@ -159,7 +175,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
               LoadStatefulAccessControlLists());
           var statePropertyValues = LoadStatePropertyValues();
 
-          return new Data (revision, tenants, groups, users, abstractRoles, classes, statePropertyValues);
+          return new Data (revision, tenants, groups, users, positions, abstractRoles, classes, statePropertyValues);
         }
       }
     }
@@ -200,6 +216,19 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       using (CreateStopwatchScopeForQueryExecution ("users"))
       {
         return result.ToDictionary (u => u.Key, u => u.Value);
+      }
+    }
+
+    private Dictionary<string, IDomainObjectHandle<Position>> LoadPositions ()
+    {
+      var result = GetOrCreateQuery (
+          MethodInfo.GetCurrentMethod(),
+          () => from g in QueryFactory.CreateLinqQuery<Position>()
+                select new { Key = g.UniqueIdentifier, Value = g.ID.GetHandle<Position>() });
+
+      using (CreateStopwatchScopeForQueryExecution ("positions"))
+      {
+        return result.ToDictionary (g => g.Key, g => g.Value);
       }
     }
 

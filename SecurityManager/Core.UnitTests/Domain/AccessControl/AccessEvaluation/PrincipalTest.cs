@@ -46,7 +46,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
       Tenant tenant = _testHelper.CreateTenant ("tenant");
       User user = _testHelper.CreateUser ("userName", null, "lastName", null, null, null);
       Role[] roles = new[] { CreateRole (tenant), CreateRole (tenant) };
-      Principal principal = Principal.Create (tenant, user, roles);
+      Principal principal = PrincipalTestHelper.Create (tenant, user, roles);
 
       Assert.That (principal.Tenant, Is.EqualTo (tenant).Using (DomainObjectHandleComparer.Instance));
       Assert.That (principal.User, Is.EqualTo (user).Using (DomainObjectHandleComparer.Instance));
@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     {
       Tenant tenant = _testHelper.CreateTenant ("tenant");
       User user = _testHelper.CreateUser ("userName", null, "lastName", null, null, null);
-      Principal principal = Principal.Create (tenant, user, new Role[0]);
+      Principal principal = PrincipalTestHelper.Create (tenant, user, new Role[0]);
 
       Assert.That (principal.Tenant, Is.EqualTo (tenant).Using (DomainObjectHandleComparer.Instance));
       Assert.That (principal.User, Is.EqualTo (user).Using (DomainObjectHandleComparer.Instance));
@@ -89,7 +89,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     {
       Tenant tenant = _testHelper.CreateTenant ("tenant");
       Role[] roles = new[] { CreateRole (tenant), CreateRole (tenant) };
-      Principal principal = Principal.Create (tenant, null, roles);
+      Principal principal = PrincipalTestHelper.Create (tenant, null, roles);
 
       Assert.That (principal.Tenant, Is.EqualTo (tenant).Using (DomainObjectHandleComparer.Instance));
       Assert.That (principal.User, Is.Null);
@@ -101,7 +101,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     public void Initialize_WithTenantAndWithoutUserAndWithoutRoles ()
     {
       Tenant tenant = _testHelper.CreateTenant ("tenant");
-      Principal principal = Principal.Create (tenant, null, new Role[0]);
+      Principal principal = PrincipalTestHelper.Create (tenant, null, new Role[0]);
 
       Assert.That (principal.Tenant, Is.EqualTo (tenant).Using (DomainObjectHandleComparer.Instance));
       Assert.That (principal.User, Is.Null);

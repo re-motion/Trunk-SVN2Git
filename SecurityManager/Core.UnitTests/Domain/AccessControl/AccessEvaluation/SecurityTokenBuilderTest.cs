@@ -181,47 +181,41 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     [Test]
     public void Create_WithValidPrincipal_WithInvalidSubstitutedRoleFromGroup ()
     {
-      var principalStub = MockRepository.GenerateStub<ISecurityPrincipal> ();
+      var principalStub = MockRepository.GenerateStub<ISecurityPrincipal>();
       principalStub.Stub (stub => stub.User).Return ("substituting.user");
       principalStub.Stub (stub => stub.SubstitutedUser).Return ("test.user");
-      var princialSubstitutedRoleStub = MockRepository.GenerateStub<ISecurityPrincipalRole> ();
+      var princialSubstitutedRoleStub = MockRepository.GenerateStub<ISecurityPrincipalRole>();
       princialSubstitutedRoleStub.Stub (stub => stub.Group).Return ("UID: notexisting.group");
       princialSubstitutedRoleStub.Stub (stub => stub.Position).Return ("UID: Official");
       principalStub.Stub (stub => stub.SubstitutedRole).Return (princialSubstitutedRoleStub);
 
-      SecurityContext context = CreateContext ();
+      SecurityContext context = CreateContext();
       ISecurityPrincipal principal = principalStub;
 
       SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (principal, context);
-
-      Assert.That (token.Principal.User, Is.Null);
-      Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
-      Assert.That (token.Principal.Roles, Is.Empty);
-      Assert.That (token.Principal.IsNull, Is.False);
+      Assert.That (
+          () => builder.CreateToken (principal, context),
+          Throws.TypeOf<AccessControlException>().With.Message.EqualTo ("The group 'UID: notexisting.group' could not be found."));
     }
 
     [Test]
-    public void Create_WithValidPrincipal_WithInvalidSubstitutedRoleFromPosition ()
+    public void Create_WithValidPrincipal_WithInvalidSubstitutedRoleFromPosition_ThrowsAccessControlException ()
     {
-      var principalStub = MockRepository.GenerateStub<ISecurityPrincipal> ();
+      var principalStub = MockRepository.GenerateStub<ISecurityPrincipal>();
       principalStub.Stub (stub => stub.User).Return ("substituting.user");
       principalStub.Stub (stub => stub.SubstitutedUser).Return ("test.user");
-      var princialSubstitutedRoleStub = MockRepository.GenerateStub<ISecurityPrincipalRole> ();
+      var princialSubstitutedRoleStub = MockRepository.GenerateStub<ISecurityPrincipalRole>();
       princialSubstitutedRoleStub.Stub (stub => stub.Group).Return ("UID: testGroup");
       princialSubstitutedRoleStub.Stub (stub => stub.Position).Return ("UID: notexisting.position");
       principalStub.Stub (stub => stub.SubstitutedRole).Return (princialSubstitutedRoleStub);
 
-      SecurityContext context = CreateContext ();
+      SecurityContext context = CreateContext();
       ISecurityPrincipal principal = principalStub;
 
       SecurityTokenBuilder builder = CreateSecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (principal, context);
-
-      Assert.That (token.Principal.User, Is.Null);
-      Assert.That (token.Principal.Tenant.GetObject().UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
-      Assert.That (token.Principal.Roles, Is.Empty);
-      Assert.That (token.Principal.IsNull, Is.False);
+      Assert.That (
+          () => builder.CreateToken (principal, context),
+          Throws.TypeOf<AccessControlException>().With.Message.EqualTo ("The position 'UID: notexisting.position' could not be found."));
     }
 
     [Test]

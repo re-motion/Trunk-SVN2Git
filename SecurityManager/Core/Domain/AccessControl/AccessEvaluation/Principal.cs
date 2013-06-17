@@ -35,17 +35,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
   {
     public static readonly Principal Null = new Principal();
 
-    public static Principal Create ([NotNull] Tenant tenant, [CanBeNull] User user, [NotNull] IEnumerable<Role> roles)
-    {
-      ArgumentUtility.CheckNotNull ("tenant", tenant);
-      ArgumentUtility.CheckNotNull ("roles", roles);
-
-      return new Principal (
-          tenant.GetHandle(),
-          user.GetSafeHandle(),
-          roles.Select (r => PrincipalRole.Create (r.Position, r.Group)));
-    }
-
     private readonly bool _isNull;
     private readonly IDomainObjectHandle<Tenant> _tenant;
     private readonly IDomainObjectHandle<User> _user;

@@ -1,4 +1,4 @@
-﻿// This file is part of re-strict (www.re-motion.org)
+// This file is part of re-strict (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -15,39 +15,27 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
-namespace Remotion.SecurityManager.Domain
+namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
-  public class PrincipalRole
+  public static class PrincipalTestHelper
   {
-    private readonly IDomainObjectHandle<Position> _position;
-    private readonly IDomainObjectHandle<Group> _group;
-
-    public PrincipalRole ([NotNull] IDomainObjectHandle<Position> position, [NotNull] IDomainObjectHandle<Group> group)
+    public static Principal Create ([NotNull] Tenant tenant, [CanBeNull] User user, [NotNull] IEnumerable<Role> roles)
     {
-      ArgumentUtility.CheckNotNull ("position", position);
-      ArgumentUtility.CheckNotNull ("group", group);
+      ArgumentUtility.CheckNotNull ("tenant", tenant);
+      ArgumentUtility.CheckNotNull ("roles", roles);
 
-      _position = position;
-      _group = @group;
-    }
-
-    [NotNull]
-    public IDomainObjectHandle<Position> Position
-    {
-      get { return _position; }
-    }
-
-    [NotNull]
-    public IDomainObjectHandle<Group> Group
-    {
-      get { return _group; }
+      return new Principal (
+          tenant.GetHandle(),
+          user.GetSafeHandle(),
+          roles.Select (r => new PrincipalRole (Data.DomainObjects.DomainObjectExtensions.GetHandle<Position>(r.Position), Data.DomainObjects.DomainObjectExtensions.GetHandle<Group>(r.Group))));
     }
   }
 }

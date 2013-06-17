@@ -85,7 +85,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
           "Refreshed data in SecurityPrincipalRepository for user '" + userName + "'. Time taken: {elapsed:ms}ms"))
       {
         var clientTransaction = ClientTransaction.CreateRootTransaction();
-        LoadPosititions (clientTransaction);
         return LoadUser (clientTransaction, userName);
       }
     }
@@ -100,28 +99,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
         var queryTemplate = s_queryCache.GetQuery<User> (
             MethodInfo.GetCurrentMethod().Name,
             users => users.Where (u => u.UserName == c_userNameParameter).Select (u => u)
-                          .FetchOne (u => u.Tenant)
-                          .FetchMany (u => u.Roles).ThenFetchOne (r => r.Group)
-                          .FetchMany (User.SelectSubstitutions()).ThenFetchOne (s => s.SubstitutedRole).ThenFetchOne (r => r.Group));
+                          .FetchMany (u => u.Roles)
+                          .FetchMany (User.SelectSubstitutions()).ThenFetchOne (s => s.SubstitutedRole));
 
         var query = queryTemplate.CreateCopyFromTemplate (new Dictionary<object, object> { { c_userNameParameter, userName } });
         return clientTransaction.QueryManager.GetCollection<User> (query)
                                 .AsEnumerable()
                                 .Single (() => CreateAccessControlException ("The user '{0}' could not be found.", userName));
-      }
-    }
-
-    private void LoadPosititions (ClientTransaction clientTransaction)
-    {
-      using (StopwatchScope.CreateScope (
-          s_log,
-          LogLevel.Debug,
-          "Fetched positions into SecurityPrincipalRepository. Time taken: {elapsed:ms}ms"))
-      {
-        s_queryCache.ExecuteCollectionQuery<Position> (
-            clientTransaction,
-            MethodInfo.GetCurrentMethod().Name,
-            positions => positions);
       }
     }
 

@@ -26,6 +26,7 @@ using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
+using PrincipalTestHelper = Remotion.SecurityManager.UnitTests.Domain.AccessControl.PrincipalTestHelper;
 
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -145,7 +146,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var user = User3;
       var acl = TestHelper.CreateStatefulAcl (Ace3);
       Assert.That (Ace3.Validate ().IsValid);
-      Principal principal = Principal.Create (user.Tenant, user, user.Roles);
+      Principal principal = PrincipalTestHelper.Create (user.Tenant, user, user.Roles);
       SecurityToken securityToken = SecurityToken.Create (
           principal,
           user.Tenant,
@@ -163,7 +164,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       Assert.That (ace.Validate ().IsValid);
       var acl = TestHelper.CreateStatefulAcl (ace);
-      Principal principal = Principal.Create (User.Tenant, User, User.Roles);
+      Principal principal = PrincipalTestHelper.Create (User.Tenant, User, User.Roles);
       SecurityToken securityToken = SecurityToken.Create (
           principal,
           User.Tenant,
@@ -182,7 +183,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (ace.Validate ().IsValid);
       var acl = TestHelper.CreateStatefulAcl (ace);
       // We pass the Group used in the ace Position above in the owningGroups-list => ACE will match.
-      Principal principal = Principal.Create (User.Tenant, User, User.Roles);
+      Principal principal = PrincipalTestHelper.Create (User.Tenant, User, User.Roles);
       SecurityToken securityToken = SecurityToken.Create (
           principal,
           User.Tenant,

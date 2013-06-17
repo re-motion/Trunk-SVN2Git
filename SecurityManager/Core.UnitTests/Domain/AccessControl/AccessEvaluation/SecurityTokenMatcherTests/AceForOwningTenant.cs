@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     public void TokenWithoutPrincipalUser_Matches ()
     {
       SecurityToken token = SecurityToken.Create (
-          Principal.Create (_companyHelper.CompanyTenant, null, new Role[0]),
+          PrincipalTestHelper.Create (_companyHelper.CompanyTenant, null, new Role[0]),
           _companyHelper.CompanyTenant,
           null,
           null,
@@ -129,7 +129,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     public void TokenWithoutTenantAndOwningTenant_DoesNotMatch ()
     {
       // Creating a non-null principal with a null Tenant is only possible via reflection.
-      var principal = Principal.Create (TestHelper.CreateTenant ("tenant"), null, new Role[0]);
+      var principal = PrincipalTestHelper.Create (TestHelper.CreateTenant ("tenant"), null, new Role[0]);
       PrivateInvoke.SetNonPublicField (principal, "_tenant", null);
 
       SecurityToken token = SecurityToken.Create (
@@ -147,7 +147,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluati
     public void TokenWithTenantDifferentFromOwningTenant_DoesNotMatch ()
     {
       SecurityToken token = SecurityToken.Create (
-          Principal.Create (TestHelper.CreateTenant ("tenant"), null, new Role[0]),
+          PrincipalTestHelper.Create (TestHelper.CreateTenant ("tenant"), null, new Role[0]),
           _companyHelper.CompanyTenant,
           null,
           null,

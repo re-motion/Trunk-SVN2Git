@@ -40,6 +40,7 @@ using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;
 using Mocks_Property = Rhino.Mocks.Constraints.Property;
 using log4net.Filter;
+using PrincipalTestHelper = Remotion.SecurityManager.UnitTests.Domain.AccessControl.PrincipalTestHelper;
 using SecurityContext=Remotion.Security.SecurityContext;
 
 namespace Remotion.SecurityManager.UnitTests
@@ -129,7 +130,7 @@ namespace Remotion.SecurityManager.UnitTests
       AccessType[] expectedAccessTypes = new AccessType[1];
 
       SecurityToken token = SecurityToken.Create (
-          Principal.Create (_tenant, null, new Role[0]),
+          PrincipalTestHelper.Create (_tenant, null, new Role[0]),
           null,
           null,
           null,
@@ -151,7 +152,7 @@ namespace Remotion.SecurityManager.UnitTests
     public void GetAccess_ContextDoesNotMatchAcl_ReturnsEmptyAccessTypes ()
     {
       SecurityToken token = SecurityToken.Create (
-          Principal.Create (_tenant, null, new Role[0]),
+          PrincipalTestHelper.Create (_tenant, null, new Role[0]),
           null,
           null,
           null,
@@ -226,7 +227,7 @@ namespace Remotion.SecurityManager.UnitTests
         role.Group.Tenant = _tenant;
         role.Position = organizationalStructureFactory.CreatePosition();
 
-        var token = SecurityToken.Create(Principal.Create (_tenant, null, new[] { role }), null, null, null, abstractRoles);
+        var token = SecurityToken.Create(PrincipalTestHelper.Create (_tenant, null, new[] { role }), null, null, null, abstractRoles);
 
         subTransaction = _clientTransaction.CreateSubTransaction ();
         using (subTransaction.EnterNonDiscardingScope())

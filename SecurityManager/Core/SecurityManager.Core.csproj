@@ -131,6 +131,7 @@
     <Compile Include="Domain\AccessControl\AccessEvaluation\ISecurityContextRepository.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\ISecurityPrincipalRepository.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\Principal.cs" />
+    <Compile Include="Domain\AccessControl\AccessEvaluation\PrincipalTestHelper.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\RepositoryBase.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\SecurableClassDefinitionData.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\SecurityContextRepository.cs" />

@@ -45,6 +45,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     IDomainObjectHandle<User> GetUser (string userName);
 
     [NotNull]
+    IDomainObjectHandle<Position> GetPosition (string uniqueIdentifier);
+
+    [NotNull]
     IDomainObjectHandle<AbstractRoleDefinition> GetAbstractRole (EnumWrapper name);
 
     [NotNull]
