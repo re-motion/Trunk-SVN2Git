@@ -60,8 +60,7 @@ namespace Remotion.SecurityManager.Persistence
     {
       using (IDbCommand command = connection.CreateCommand ())
       {
-        var query =  Revision.GetIncrementRevisionQuery();
-        Assertion.IsTrue (query.Parameters.Count == 1);
+        var query = Revision.GetIncrementRevisionQuery (new RevisionKey());
         Assertion.IsTrue (query.QueryType == QueryType.Scalar);
 
         command.Transaction = transaction;
@@ -70,7 +69,7 @@ namespace Remotion.SecurityManager.Persistence
         {
           var dbParameter = command.CreateParameter();
           dbParameter.ParameterName = parameter.Name;
-          dbParameter.Value = parameter.Value;
+          dbParameter.Value = parameter.Value ?? DBNull.Value;
           command.Parameters.Add (dbParameter);
         }
 

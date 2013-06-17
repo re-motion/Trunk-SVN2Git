@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
 
       ClientTransactionScope.CurrentTransaction.Commit ();
 
-      Assert.That (ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery()), Is.EqualTo (1));
+      Assert.That (ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery(new RevisionKey())), Is.EqualTo (1));
     }
 
     [Test]
@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
 
       ClientTransactionScope.CurrentTransaction.Commit ();
 
-      Assert.That (ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery()), Is.Null);
+      Assert.That (ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery(new RevisionKey())), Is.Null);
     }
   }
 }
