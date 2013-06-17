@@ -16,11 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security
@@ -48,12 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       _accessTypeResult = new[] { AccessType.Get (GeneralAccessTypes.Read), AccessType.Get (GeneralAccessTypes.Edit) };
     }
 
-    [TearDown]
-    public void TearDown ()
-    {
-      SecurityConfiguration.Current.GlobalAccessTypeCacheProvider = new NullGlobalAccessTypeCacheProvider();
-    }
-
     [Test]
     public void Initialize ()
     {
@@ -62,19 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       Assert.That (strategy.SecurityContextFactory, Is.SameAs (_stubContextFactory));
       Assert.That (strategy.SecurityStrategy, Is.SameAs (_mockSecurityStrategy));
       Assert.That (strategy.RequiredSecurityForStates, Is.EqualTo (RequiredSecurityForStates.New));
-    }
-
-    [Test]
-    public void Initialize_WithDefaults ()
-    {
-      IGlobalAccessTypeCacheProvider stubGlobalCacheProvider = _mocks.StrictMock<IGlobalAccessTypeCacheProvider>();
-      SecurityConfiguration.Current.GlobalAccessTypeCacheProvider = stubGlobalCacheProvider;
-      DomainObjectSecurityStrategy strategy = new DomainObjectSecurityStrategy (RequiredSecurityForStates.None, _stubContextFactory);
-
-      Assert.That (strategy.SecurityContextFactory, Is.SameAs (_stubContextFactory));
-      Assert.IsInstanceOf (typeof (SecurityStrategy), strategy.SecurityStrategy);
-      Assert.IsInstanceOf (typeof (Cache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
-      Assert.That (((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider, Is.SameAs (stubGlobalCacheProvider));
     }
 
     [Test]
