@@ -22,7 +22,7 @@ namespace Remotion.ServiceLocation
   /// <summary>
   /// Defines the concrete implementation for a service type (usually an interface or abstract class) as well as its <see cref="LifetimeKind"/>.
   /// This attribute is used by the DefaultServiceProvider to determine how to instantiate a service type. Mutiple 
-  /// <see cref="ConcreteImplementationAttribute"/> istances can be applied to a single service type. They are not inherited.
+  /// <see cref="ConcreteImplementationAttribute"/> instances can be applied to a single service type. They are not inherited.
   /// </summary>
   [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
   public class ConcreteImplementationAttribute : Attribute
