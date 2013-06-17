@@ -62,6 +62,10 @@
     <NoWarn>1591;0419</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Core\Core\bin\Debug\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -89,13 +93,11 @@
     <Compile Include="DemandPermissionAttribute.cs" />
     <Compile Include="Configuration\SecurityProviderHelper.cs" />
     <Compile Include="EnumWrapper.cs" />
-    <Compile Include="GlobalAccessTypeCacheProviderObjectReference.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />
-    <Compile Include="IGlobalAccessTypeCacheProvider.cs" />
+    <Compile Include="IGlobalAccessTypeCache.cs" />
     <Compile Include="IObjectSecurityAdapter.cs" />
     <Compile Include="IObjectSecurityStrategy.cs" />
     <Compile Include="IPrincipalProvider.cs" />
-    <Compile Include="IRevisionBasedSecurityProvider.cs" />
     <Compile Include="ISecurableObject.cs" />
     <Compile Include="ISecurityAdapter.cs" />
     <Compile Include="ISecurityContext.cs" />
@@ -108,15 +110,14 @@
     <Compile Include="Metadata\IMemberResolver.cs" />
     <Compile Include="Metadata\NullMemberResolver.cs" />
     <Compile Include="Metadata\ReflectionBasedMemberResolver.cs" />
+    <Compile Include="NullGlobalAccessTypeCache.cs" />
     <Compile Include="NullSecurityPrincipal.cs" />
     <Compile Include="NullSecurityClient.cs" />
     <Compile Include="NullSecurityProvider.cs" />
     <Compile Include="Configuration\PermissionProviderHelper.cs" />
-    <Compile Include="Configuration\GlobalAccessTypeCacheProviderHelper.cs" />
     <Compile Include="Configuration\PrincipalProviderHelper.cs" />
     <Compile Include="FunctionalSecurityContextFactory.cs" />
     <Compile Include="GeneralAccessTypes.cs" />
-    <Compile Include="NullGlobalAccessTypeCacheProvider.cs" />
     <Compile Include="DemandMethodPermissionAttribute.cs" />
     <Compile Include="Configuration\SecurityConfiguration.cs" />
     <Compile Include="DemandPropertyReadPermissionAttribute.cs" />
@@ -154,7 +155,6 @@
     <Compile Include="NullPrincipalProvider.cs" />
     <Compile Include="PermissionDeniedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RevisionBasedAccessTypeCacheProvider.cs" />
     <Compile Include="SecurityClient.cs" />
     <Compile Include="SecurityConfigurationException.cs" />
     <Compile Include="SecurityContext.cs" />

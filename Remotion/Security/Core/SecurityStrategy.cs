@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Collections;
-using Remotion.Security.Configuration;
+using Remotion.FunctionalProgramming;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Security
@@ -25,23 +27,29 @@ namespace Remotion.Security
   public class SecurityStrategy : ISecurityStrategy
   {
     [ThreadStatic]
-    private static bool _isEvaluatingAccess;
+    private static bool s_isEvaluatingAccess;
+
+    private static IGlobalAccessTypeCache GetGlobalAccessTypeCache ()
+    {
+      return SafeServiceLocator.Current.GetAllInstances<IGlobalAccessTypeCache>()
+          .First (() => new InvalidOperationException ("No instance of IGlobalAccessTypeCache has been registered with the ServiceLocator."));
+    }
 
     private readonly ICache<ISecurityPrincipal, AccessType[]> _localCache;
-    private readonly IGlobalAccessTypeCacheProvider _globalCacheProvider;
+    private readonly IGlobalAccessTypeCache _globalCache;
 
     public SecurityStrategy ()
-      : this (new Cache<ISecurityPrincipal, AccessType[]> (), SecurityConfiguration.Current.GlobalAccessTypeCacheProvider)
+        : this (new Cache<ISecurityPrincipal, AccessType[]>(), GetGlobalAccessTypeCache())
     {
     }
 
-    public SecurityStrategy (ICache<ISecurityPrincipal, AccessType[]> localCache, IGlobalAccessTypeCacheProvider globalCacheProvider)
+    public SecurityStrategy (ICache<ISecurityPrincipal, AccessType[]> localCache, IGlobalAccessTypeCache globalCache)
     {
       ArgumentUtility.CheckNotNull ("localCache", localCache);
-      ArgumentUtility.CheckNotNull ("globalCacheProvider", globalCacheProvider);
+      ArgumentUtility.CheckNotNull ("globalCache", globalCache);
 
       _localCache = localCache;
-      _globalCacheProvider = globalCacheProvider;
+      _globalCache = globalCache;
     }
 
     public ICache<ISecurityPrincipal, AccessType[]> LocalCache
@@ -49,20 +57,20 @@ namespace Remotion.Security
       get { return _localCache; }
     }
 
-    public IGlobalAccessTypeCacheProvider GlobalCacheProvider
+    public IGlobalAccessTypeCache GlobalCache
     {
-      get { return _globalCacheProvider; }
+      get { return _globalCache; }
     }
 
     public void InvalidateLocalCache ()
     {
-      _localCache.Clear ();
+      _localCache.Clear();
     }
 
     public bool HasAccess (
         ISecurityContextFactory factory,
         ISecurityProvider securityProvider,
-        ISecurityPrincipal principal, 
+        ISecurityPrincipal principal,
         params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("factory", factory);
@@ -70,7 +78,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
 
-      if (_isEvaluatingAccess)
+      if (s_isEvaluatingAccess)
       {
         throw new InvalidOperationException (
             "Multiple reentrancies on SecurityStrategy.HasAccess(...) are not allowed as they can indicate a possible infinite recursion. "
@@ -80,12 +88,12 @@ namespace Remotion.Security
       AccessType[] actualAccessTypes;
       try
       {
-        _isEvaluatingAccess = true;
+        s_isEvaluatingAccess = true;
         actualAccessTypes = GetAccessFromLocalCache (factory, securityProvider, principal);
       }
       finally
       {
-        _isEvaluatingAccess = false;
+        s_isEvaluatingAccess = false;
       }
 
       // This section is performance critical. No closure should be created, therefor converting this code to Linq is not possible.
@@ -126,10 +134,7 @@ namespace Remotion.Security
 
     private ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> GetGlobalCache ()
     {
-      var globalCache = _globalCacheProvider.GetCache();
-      if (globalCache == null)
-        throw new InvalidOperationException ("IGlobalAccesTypeCacheProvider.GetAccessTypeCache() evaluated and returned null.");
-      return globalCache;
+      return _globalCache;
     }
 
     private ISecurityContext CreateSecurityContext (ISecurityContextFactory factory)

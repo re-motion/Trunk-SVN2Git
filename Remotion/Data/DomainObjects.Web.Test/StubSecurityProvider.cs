@@ -6,7 +6,7 @@ using Remotion.Security;
 
 namespace Remotion.Data.DomainObjects.Web.Test
 {
-  public class StubSecurityProvider : ExtendedProviderBase,  ISecurityProvider, IRevisionBasedSecurityProvider
+  public class StubSecurityProvider : ExtendedProviderBase, ISecurityProvider
   {
     private readonly AccessType[] _accessTypes = Enum.GetValues(typeof (GeneralAccessTypes)).Cast<Enum>().Select (e => AccessType.Get ((Enum) e)).ToArray();
 
@@ -28,11 +28,6 @@ namespace Remotion.Data.DomainObjects.Web.Test
     public AccessType[] GetAccess (ISecurityContext context, ISecurityPrincipal principal)
     {
       return _accessTypes;
-    }
-
-    public int GetRevision ()
-    {
-      return 0;
     }
   }
 }

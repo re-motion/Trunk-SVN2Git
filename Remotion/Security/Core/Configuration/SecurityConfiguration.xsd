@@ -10,7 +10,6 @@
     <xs:complexType>
       <xs:all>
         <xs:element name="securityProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
-        <xs:element name="globalAccessTypeCacheProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
         <xs:element name="permissionProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
         <xs:element name="userProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
         <xs:element name="functionalSecurityStrategy" minOccurs="0" maxOccurs="1">
@@ -27,7 +26,6 @@
       <xs:attribute name="defaultSecurityProvider" type="c:SecurityProviderSelection" default="None" />
       <xs:attribute name="defaultPrincipalProvider" type="c:PrincipalProviderSelection" default="Thread" />
       <xs:attribute name="defaultPermissionProvider" type="c:PermissionProviderSelection" default="Reflection" />
-      <xs:attribute name="defaultGlobalAccessTypeCacheProvider" type="c:GlobalAccessTypeCacheProviderSelection" default="None" />
     </xs:complexType>
   </xs:element>
 
@@ -65,20 +63,6 @@
       <xs:simpleType>
         <xs:restriction base="xs:string">
           <xs:enumeration value="Reflection" />
-        </xs:restriction>
-      </xs:simpleType>
-      <xs:simpleType>
-        <xs:restriction base="c:RequiredStringType" />
-      </xs:simpleType>
-    </xs:union>
-  </xs:simpleType>
-
-  <xs:simpleType name="GlobalAccessTypeCacheProviderSelection">
-    <xs:union>
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="None" />
-          <xs:enumeration value="RevisionBased" />
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType>

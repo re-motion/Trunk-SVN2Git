@@ -14,15 +14,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Collections;
-using Remotion.Security.Configuration;
+using Remotion.FunctionalProgramming;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Security
 {
   public class FunctionalSecurityStrategy : IFunctionalSecurityStrategy
   {
+    private static IGlobalAccessTypeCache GetGlobalAccessTypeCache ()
+    {
+      return SafeServiceLocator.Current.GetAllInstances<IGlobalAccessTypeCache>()
+          .First (() => new InvalidOperationException ("No instance of IGlobalAccessTypeCache has been registered with the ServiceLocator."));
+    }
+
     private readonly ISecurityStrategy _securityStrategy;
 
     public FunctionalSecurityStrategy (ISecurityStrategy securityStrategy)
@@ -33,7 +41,7 @@ namespace Remotion.Security
     }
 
     public FunctionalSecurityStrategy ()
-        : this (new SecurityStrategy (new NullCache<ISecurityPrincipal, AccessType[]>(), SecurityConfiguration.Current.GlobalAccessTypeCacheProvider))
+        : this (new SecurityStrategy (new NullCache<ISecurityPrincipal, AccessType[]>(), GetGlobalAccessTypeCache()))
     {
     }
 

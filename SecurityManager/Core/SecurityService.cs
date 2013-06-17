@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Logging;
 using Remotion.Security;
-using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.ServiceLocation;
@@ -30,22 +29,20 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager
 {
-  public class SecurityService : ExtendedProviderBase, IRevisionBasedSecurityProvider
+  public class SecurityService : ExtendedProviderBase, ISecurityProvider
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (SecurityService));
 
     private readonly IAccessControlListFinder _accessControlListFinder;
     private readonly ISecurityTokenBuilder _securityTokenBuilder;
     private readonly IAccessResolver _accessResolver;
-    private readonly IDomainRevisionProvider _revisionProvider;
 
     public SecurityService (string name, NameValueCollection config)
         : this (name,
                 config,
                 SafeServiceLocator.Current.GetInstance<IAccessControlListFinder>(),
                 SafeServiceLocator.Current.GetInstance<ISecurityTokenBuilder>(),
-                SafeServiceLocator.Current.GetInstance<IAccessResolver>(),
-                SafeServiceLocator.Current.GetInstance<IDomainRevisionProvider>())
+                SafeServiceLocator.Current.GetInstance<IAccessResolver>())
     {
     }
 
@@ -54,19 +51,16 @@ namespace Remotion.SecurityManager
         NameValueCollection config,
         IAccessControlListFinder accessControlListFinder,
         ISecurityTokenBuilder securityTokenBuilder,
-        IAccessResolver accessResolver,
-        IDomainRevisionProvider revisionProvider)
+        IAccessResolver accessResolver)
         : base (name, config)
     {
       ArgumentUtility.CheckNotNull ("accessControlListFinder", accessControlListFinder);
       ArgumentUtility.CheckNotNull ("securityTokenBuilder", securityTokenBuilder);
       ArgumentUtility.CheckNotNull ("accessResolver", accessResolver);
-      ArgumentUtility.CheckNotNull ("revisionProvider", revisionProvider);
 
       _accessControlListFinder = accessControlListFinder;
       _securityTokenBuilder = securityTokenBuilder;
       _accessResolver = accessResolver;
-      _revisionProvider = revisionProvider;
     }
 
     public AccessType[] GetAccess (ISecurityContext context, ISecurityPrincipal principal)
@@ -102,11 +96,6 @@ namespace Remotion.SecurityManager
           return new AccessType[0];
         }
       }
-    }
-
-    public int GetRevision ()
-    {
-      return _revisionProvider.GetRevision(new RevisionKey()).Int32Value;
     }
 
     bool INullObject.IsNull

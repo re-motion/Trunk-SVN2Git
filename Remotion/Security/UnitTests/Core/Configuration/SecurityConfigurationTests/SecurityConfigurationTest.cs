@@ -35,7 +35,6 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       Assert.IsInstanceOf (typeof (ThreadPrincipalProvider), configuration.PrincipalProvider);
       Assert.IsInstanceOf (typeof (FunctionalSecurityStrategy), configuration.FunctionalSecurityStrategy);
       Assert.IsInstanceOf (typeof (PermissionReflector), configuration.PermissionProvider);
-      Assert.IsInstanceOf (typeof (NullGlobalAccessTypeCacheProvider), configuration.GlobalAccessTypeCacheProvider);
     }
 
     [Test]

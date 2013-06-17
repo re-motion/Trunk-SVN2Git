@@ -16,11 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Security.Configuration;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
@@ -47,7 +49,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       _context = SecurityContext.Create (typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum>(), new Enum[0]);
       SetupResult.For (_stubContextFactory.CreateSecurityContext()).Return (_context);
 
-      _strategy = new SecurityStrategy (new NullCache<ISecurityPrincipal, AccessType[]>(), new NullGlobalAccessTypeCacheProvider());
+      _strategy = new SecurityStrategy (new NullCache<ISecurityPrincipal, AccessType[]>(), new NullGlobalAccessTypeCache());
     }
 
     [Test]
@@ -199,14 +201,17 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
     [Test]
     public void Serialization ()
     {
-      SecurityStrategy strategy =
-          new SecurityStrategy (new Cache<ISecurityPrincipal, AccessType[]>(), SecurityConfiguration.Current.GlobalAccessTypeCacheProvider);
+      SecurityStrategy strategy = new SecurityStrategy (
+          new Cache<ISecurityPrincipal, AccessType[]>(),
+          SafeServiceLocator.Current.GetAllInstances<IGlobalAccessTypeCache>().First());
       AccessType[] accessTypes = new[] { AccessType.Get (GeneralAccessTypes.Find) };
       strategy.LocalCache.GetOrCreateValue (new SecurityPrincipal ("foo", null, null, null), delegate { return accessTypes; });
 
       SecurityStrategy deserializedStrategy = Serializer.SerializeAndDeserialize (strategy);
       Assert.That (deserializedStrategy, Is.Not.SameAs (strategy));
-      Assert.That (deserializedStrategy.GlobalCacheProvider, Is.SameAs (SecurityConfiguration.Current.GlobalAccessTypeCacheProvider));
+
+      //TODO RM-5521: test
+      Assert.That (deserializedStrategy.GlobalCache, Is.InstanceOf (typeof (NullGlobalAccessTypeCache)));
 
       AccessType[] newAccessTypes;
       bool result = deserializedStrategy.LocalCache.TryGetValue (new SecurityPrincipal ("foo", null, null, null), out newAccessTypes);

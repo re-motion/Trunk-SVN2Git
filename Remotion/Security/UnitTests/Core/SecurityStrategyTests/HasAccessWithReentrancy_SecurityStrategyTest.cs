@@ -27,14 +27,41 @@ using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
 {
-  using GlobalCacheKey = Tuple<ISecurityContext, ISecurityPrincipal>;
-
   [TestFixture]
   public class HasAccessWithReentrancy_SecurityStrategyTest
   {
+    private class GlobalAccessTypeCache : IGlobalAccessTypeCache
+    {
+      private LazyLockingCachingAdapter<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> _innerCache;
+
+      public GlobalAccessTypeCache ()
+      {
+        _innerCache = CacheFactory.CreateWithLazyLocking<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
+      }
+
+      public bool IsNull
+      {
+        get { return false; }
+      }
+
+      public AccessType[] GetOrCreateValue (Tuple<ISecurityContext, ISecurityPrincipal> key, Func<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> valueFactory)
+      {
+        return _innerCache.GetOrCreateValue (key, valueFactory);
+      }
+
+      public bool TryGetValue (Tuple<ISecurityContext, ISecurityPrincipal> key, out AccessType[] value)
+      {
+        return _innerCache.TryGetValue (key, out value);
+      }
+
+      public void Clear ()
+      {
+        _innerCache.Clear();
+      }
+    }
+
     private ISecurityProvider _securityProviderStub;
-    private IGlobalAccessTypeCacheProvider _globalAccessTypeCacheProviderStub;
-    private ICache<GlobalCacheKey, AccessType[]> _globalAccessTypeCache;
+    private IGlobalAccessTypeCache _globalAccessTypeCache;
     private ICache<ISecurityPrincipal, AccessType[]> _localAccessTypeCache;
     private ISecurityPrincipal _principalStub;
     private SecurityContext _context;
@@ -43,9 +70,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
     public void SetUp ()
     {
       _securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
-      _globalAccessTypeCache = CacheFactory.CreateWithLazyLocking<GlobalCacheKey, AccessType[]>();
-      _globalAccessTypeCacheProviderStub = MockRepository.GenerateStub<IGlobalAccessTypeCacheProvider>();
-      _globalAccessTypeCacheProviderStub.Stub (_ => _.GetCache()).Return (_globalAccessTypeCache);
+      _globalAccessTypeCache = new GlobalAccessTypeCache ();
       _localAccessTypeCache = CacheFactory.Create<ISecurityPrincipal, AccessType[]>();
 
       _principalStub = MockRepository.GenerateStub<ISecurityPrincipal>();
@@ -64,7 +89,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
     [Test]
     public void ReentrancyInGlobalCache_WithEqualSecurityContext_ThrowsInvalidOperationException ()
     {
-      var securityStrategy = new SecurityStrategy (_localAccessTypeCache, _globalAccessTypeCacheProviderStub);
+      var securityStrategy = new SecurityStrategy (_localAccessTypeCache, _globalAccessTypeCache);
       _securityProviderStub.Stub (_ => _.GetAccess (_context, _principalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       var secondContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory>();
@@ -94,8 +119,8 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
     [Test]
     public void ReentrancyInGlobalCache_AccrossMultipleSecurityStrategyInstances_ThrowsInvalidOperationException ()
     {
-      var firstSecurityStrategy = new SecurityStrategy (_localAccessTypeCache, _globalAccessTypeCacheProviderStub);
-      var secondSecurityStrategy = new SecurityStrategy (_localAccessTypeCache, _globalAccessTypeCacheProviderStub);
+      var firstSecurityStrategy = new SecurityStrategy (_localAccessTypeCache, _globalAccessTypeCache);
+      var secondSecurityStrategy = new SecurityStrategy (_localAccessTypeCache, _globalAccessTypeCache);
       _securityProviderStub.Stub (_ => _.GetAccess (_context, _principalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       var secondContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory>();
@@ -124,7 +149,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
     [Test]
     public void ExceptionDuringAccessTypeRetrieval_ResetsReentrancyForSubsequentCalls ()
     {
-      var securityStrategy = new SecurityStrategy (_localAccessTypeCache, _globalAccessTypeCacheProviderStub);
+      var securityStrategy = new SecurityStrategy (_localAccessTypeCache, _globalAccessTypeCache);
       _securityProviderStub.Stub (_ => _.GetAccess (_context, _principalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       var exception = new Exception();
@@ -150,7 +175,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
     [Test]
     public void ReentrancyCheckIsScopedToThread_MultipleThreadsCanPerformSecurityEvaluationConcurrently ()
     {
-      var securityStrategy = new SecurityStrategy (_localAccessTypeCache, _globalAccessTypeCacheProviderStub);
+      var securityStrategy = new SecurityStrategy (_localAccessTypeCache, _globalAccessTypeCache);
       _securityProviderStub.Stub (_ => _.GetAccess (_context, _principalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       var secondContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory>();
@@ -166,7 +191,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
                 () =>
                 {
                   var securityStrategyOnOtherThread =
-                      new SecurityStrategy (CacheFactory.Create<ISecurityPrincipal, AccessType[]>(), _globalAccessTypeCacheProviderStub);
+                      new SecurityStrategy (CacheFactory.Create<ISecurityPrincipal, AccessType[]>(), _globalAccessTypeCache);
                   var hasAccess = securityStrategyOnOtherThread.HasAccess (
                       secondContextFactoryStub, _securityProviderStub, _principalStub, AccessType.Get (GeneralAccessTypes.Read));
                   Assert.That (hasAccess, Is.True);

@@ -21,8 +21,8 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
-  public abstract class RepositoryBase<TData,TRevisionKey, TRevisionValue>
-      where TData : RepositoryBase<TData,TRevisionKey, TRevisionValue>.RevisionBasedData
+  public abstract class RepositoryBase<TData, TRevisionKey, TRevisionValue>
+      where TData : RepositoryBase<TData, TRevisionKey, TRevisionValue>.RevisionBasedData
       where TRevisionKey : IRevisionKey
       where TRevisionValue : IRevisionValue
   {

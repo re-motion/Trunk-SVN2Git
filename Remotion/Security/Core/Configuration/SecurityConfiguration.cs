@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.Configuration;
 using System.Configuration.Provider;
 using Remotion.Configuration;
@@ -64,7 +63,6 @@ namespace Remotion.Security.Configuration
     private PermissionProviderHelper _permissionProviderHelper;
     private SecurityProviderHelper _securityProviderHelper;
     private PrincipalProviderHelper _principalProviderHelper;
-    private GlobalAccessTypeCacheProviderHelper _globalAccessTypeCacheProviderHelper;
     private List<ProviderHelperBase> _providerHelpers = new List<ProviderHelperBase>();
 
     // construction and disposing
@@ -79,9 +77,6 @@ namespace Remotion.Security.Configuration
       
       _principalProviderHelper = new PrincipalProviderHelper (this);
       _providerHelpers.Add (_principalProviderHelper);
-
-      _globalAccessTypeCacheProviderHelper = new GlobalAccessTypeCacheProviderHelper (this);
-      _providerHelpers.Add (_globalAccessTypeCacheProviderHelper);
 
       _xmlnsProperty = new ConfigurationProperty ("xmlns", typeof (string), null, ConfigurationPropertyOptions.None);
 
@@ -175,17 +170,6 @@ namespace Remotion.Security.Configuration
     {
       get { return (TypeElement<IMemberResolver>) this[_memberResolverProperty]; }
       set { this[_memberResolverProperty] = value; }
-    }
-
-    public IGlobalAccessTypeCacheProvider GlobalAccessTypeCacheProvider
-    {
-      get { return _globalAccessTypeCacheProviderHelper.Provider; }
-      set { _globalAccessTypeCacheProviderHelper.Provider = value; }
-    }
-
-    public ProviderCollection GlobalAccessTypeCacheProviders
-    {
-      get { return _globalAccessTypeCacheProviderHelper.Providers; }
     }
   }
 }

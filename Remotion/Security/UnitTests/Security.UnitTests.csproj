@@ -57,6 +57,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Core\Core\bin\Debug\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\NUnit-2.6\net-2.0\nunit.framework.dll</HintPath>
@@ -78,12 +82,10 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Core\AccessTypeTest.cs" />
-    <Compile Include="Core\Configuration\GlobalAccessTypeCacheProviderMock.cs" />
     <Compile Include="Core\Configuration\FunctionalSecurityStrategyMock.cs" />
     <Compile Include="Core\Configuration\MemberResolverMock.cs" />
     <Compile Include="Core\Configuration\PermissionProviderMock.cs" />
     <Compile Include="Core\Configuration\SecurityConfigurationMock.cs" />
-    <Compile Include="Core\Configuration\SecurityConfigurationTests\DeserializeSecurityConfigurationForGlobalAccessTypeCacheProviderTest.cs" />
     <Compile Include="Core\Configuration\SecurityConfigurationTests\DeserializeSecurityConfigurationForSecurityProviderTest.cs" />
     <Compile Include="Core\Configuration\SecurityConfigurationTests\DeserializeSecurityConfigurationForPrincipalProviderTest.cs" />
     <Compile Include="Core\Configuration\SecurityConfigurationTests\SecurityConfigurationTest.cs" />
@@ -99,7 +101,6 @@
     <Compile Include="Core\Metadata\MemberResolverTests\GetStaticMethodInformationTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTest.cs" />
     <Compile Include="Core\MockConstraints\FunctionalSecurityContextFactoryConstraint.cs" />
-    <Compile Include="Core\NullGlobalAccessTypeCacheProviderTest.cs" />
     <Compile Include="Core\FunctionalSecurityStrategyTest.cs" />
     <Compile Include="Core\DemandPermissionAttributeTest.cs" />
     <Compile Include="Core\Metadata\AccessTypes.cs" />
@@ -170,7 +171,6 @@
     <Compile Include="Core\XmlAsserter\XmlDocumentSimilarConstraint.cs" />
     <Compile Include="Core\XmlAsserter\XmlElementConstraint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\RevisionBasedAccessTypeCacheProviderTest.cs" />
     <Compile Include="Core\SampleDomain\DerivedSecurableObject.cs" />
     <Compile Include="Core\SampleDomain\DerivedSecurableObjectWithSecuredInstanceMethods.cs" />
     <Compile Include="Core\SampleDomain\DerivedSecurableObjectWithSecuredStaticMethods.cs" />

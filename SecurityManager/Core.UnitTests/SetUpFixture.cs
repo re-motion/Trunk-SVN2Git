@@ -35,8 +35,10 @@ using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Persistence;
+using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.UnitTests
 {
@@ -58,7 +60,9 @@ namespace Remotion.SecurityManager.UnitTests
     {
       try
       {
-        ServiceLocator.SetLocatorProvider (() => null);
+        var serviceLocator = new DefaultServiceLocator();
+        serviceLocator.Register (typeof (IGlobalAccessTypeCache), () => new NullGlobalAccessTypeCache());
+        ServiceLocator.SetLocatorProvider (() => serviceLocator);
 
         ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
         providers.Add (new RdbmsProviderDefinition ("SecurityManager", new SecurityManagerSqlStorageObjectFactory(), TestDomainConnectionString));

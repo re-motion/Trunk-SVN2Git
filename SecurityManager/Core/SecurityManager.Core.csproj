@@ -167,6 +167,7 @@
     <Compile Include="Domain\Metadata\MetadataExtensions.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipal.cs" />
     <Compile Include="Domain\PrincipalRole.cs" />
+    <Compile Include="Domain\GlobalAccessTypeCache.cs" />
     <Compile Include="Domain\RevisionKey.cs" />
     <Compile Include="Domain\RevisionProvider.cs" />
     <Compile Include="Domain\RevisionProviderBase.cs" />

@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using log4net;
 using log4net.Appender;
@@ -34,7 +33,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.SecurityManager.UnitTests.Domain;
 using Remotion.SecurityManager.UnitTests.TestDomain;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;
@@ -52,7 +50,6 @@ namespace Remotion.SecurityManager.UnitTests
     private IAccessControlListFinder _mockAclFinder;
     private ISecurityTokenBuilder _mockTokenBuilder;
     private IAccessResolver _mockAccessResolver;
-    private IDomainRevisionProvider _mockRevisionProvider;
 
     private SecurityService _service;
     private SecurityContext _context;
@@ -71,15 +68,13 @@ namespace Remotion.SecurityManager.UnitTests
       _mockAclFinder = _mocks.StrictMock<IAccessControlListFinder>();
       _mockTokenBuilder = _mocks.StrictMock<ISecurityTokenBuilder>();
       _mockAccessResolver = _mocks.StrictMock<IAccessResolver>();
-      _mockRevisionProvider = _mocks.Stub<IDomainRevisionProvider>();
 
       _service = new SecurityService (
           "name",
           new NameValueCollection(),
           _mockAclFinder,
           _mockTokenBuilder,
-          _mockAccessResolver,
-          _mockRevisionProvider);
+          _mockAccessResolver);
       _context = SecurityContext.Create (typeof (Order), "Owner", "UID: OwnerGroup", "OwnerTenant", new Dictionary<string, Enum>(), new Enum[0]);
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
@@ -252,21 +247,9 @@ namespace Remotion.SecurityManager.UnitTests
     }
 
     [Test]
-    public void GetRevision ()
-    {
-      DatabaseFixtures dbFixtures = new DatabaseFixtures ();
-      dbFixtures.CreateEmptyDomain ();
-
-      _mockRevisionProvider.Stub (_ => _.GetRevision (new RevisionKey())).Return (new Int32RevisionValue (5));
-      _mocks.ReplayAll ();
-
-      Assert.That (_service.GetRevision (), Is.EqualTo (5));
-    }
-
-    [Test]
     public void GetIsNull ()
     {
-      Assert.That (((IRevisionBasedSecurityProvider) _service).IsNull, Is.False);
+      Assert.That (((ISecurityProvider) _service).IsNull, Is.False);
     }
 
     private IDomainObjectHandle<AccessControlList> CreateAccessControlListHandle ()

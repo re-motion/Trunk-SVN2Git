@@ -14,28 +14,45 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections.Specialized;
-using Remotion.Collections;
-using Remotion.Configuration;
 
-namespace Remotion.Security.UnitTests.Core.Configuration
+using System;
+using Remotion.Collections;
+using Remotion.Utilities;
+
+namespace Remotion.Security
 {
-  public class GlobalAccessTypeCacheProviderMock : ExtendedProviderBase, IGlobalAccessTypeCacheProvider
+  [Serializable]
+  public class NullGlobalAccessTypeCache : IGlobalAccessTypeCache
   {
-    public GlobalAccessTypeCacheProviderMock (string name, NameValueCollection config)
-        : base (name, config)
+    public NullGlobalAccessTypeCache ()
     {
     }
 
-    public ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> GetCache ()
+    public AccessType[] GetOrCreateValue (
+        Tuple<ISecurityContext, ISecurityPrincipal> key,
+        Func<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> valueFactory)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
+
+      return valueFactory (key);
+    }
+
+    public bool TryGetValue (Tuple<ISecurityContext, ISecurityPrincipal> key, out AccessType[] value)
+    {
+      ArgumentUtility.CheckNotNull ("key", key);
+
+      value = null;
+      return false;
+    }
+
+    public void Clear ()
+    {
     }
 
     public bool IsNull
     {
-      get { return false; }
+      get { return true; }
     }
   }
 }

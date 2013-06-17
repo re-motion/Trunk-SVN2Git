@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Collections;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Security
 {
@@ -24,12 +26,15 @@ namespace Remotion.Security
   /// These are used as parameters for each call to the <see cref="ISecurityProvider.GetAccess"/> method of <see cref="ISecurityProvider"/>.
   /// </summary>
   /// <remarks><note type="inotes">Implementations are free to implement their own best practice for keeping the cache up to date.</note></remarks>
-  public interface IGlobalAccessTypeCacheProvider : INullObject
+  [ConcreteImplementation (
+      "Remotion.SecurityManager.Domain.GlobalAccessTypeCache, Remotion.SecurityManager, "
+      + "Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+      ignoreIfNotFound: true,
+      Position = 0,
+      Lifetime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof (NullGlobalAccessTypeCache), Position = 1, Lifetime = LifetimeKind.Singleton)]
+  public interface IGlobalAccessTypeCache : ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>
   {
-    /// <summary>
-    /// Gets the <see cref="ICache{TKey,TValue}"/> for the <see cref="ISecurityContext"/> and <see cref="ISecurityPrincipal"/> key pair.
-    /// </summary>
-    /// <returns>The <see cref="ICache{T, S}"/> in use.</returns>
-    ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> GetCache ();
+    //TODO RM-5521: test IoC
   }
 }
