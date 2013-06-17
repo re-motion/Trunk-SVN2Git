@@ -64,9 +64,12 @@
         <member name="M:Microsoft.Cci.PdbReader.GetPrimarySourceLocationsForMethodToken(System.UInt32)">
             <summary>
             Returns zero or more locations for the source for a given method represented by a metadata token.
+            
             </summary>
             <param name="token">metadata token representing a method</param>
-            <returns>an IDictionary&lt;uint, IPrimarySourceLocation&gt; linking an il offset to a source file location</returns>
+            <returns>
+            an IDictionary&lt;uint, IPrimarySourceLocation&gt; linking an il offset to a source file location
+            </returns>
         </member>
         <member name="M:Microsoft.Cci.PdbReader.GetSourceNameFor(Microsoft.Cci.ILocalDefinition,System.Boolean@)">
             <summary>

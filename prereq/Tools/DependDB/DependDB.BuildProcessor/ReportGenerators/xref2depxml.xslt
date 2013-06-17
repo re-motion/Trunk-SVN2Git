@@ -106,7 +106,34 @@
 						</xsl:when>
 					</xsl:choose>
 				</xsl:for-each>
-				
+
+        <!-- OverrideTarget -> Member -->
+        <xsl:for-each select="//InvolvedTypes/InvolvedType/Members/Member/OverriddenMembers/Member-Reference[@type = 'OverrideTarget']">
+          <xsl:element name="Dependency">
+            <xsl:variable name="member-ref" select="."/>
+            <xsl:apply-templates select="//Member[@id = $member-ref/@ref]" mode="referenced" />
+            <xsl:element name="Dependents">
+              <xsl:apply-templates select="../.." mode="dependent">
+                <xsl:with-param name="relation" select="'MixinOverrideTarget'" />
+              </xsl:apply-templates>
+            </xsl:element>
+          </xsl:element>
+        </xsl:for-each>
+
+        <!-- OverrideMixin -> Member -->
+        <xsl:for-each select="//InvolvedTypes/InvolvedType/Members/Member/OverriddenMembers/Member-Reference[@type = 'OverrideMixin']">
+          <xsl:element name="Dependency">
+            <xsl:variable name="member-ref" select="."/>
+            <xsl:apply-templates select="//Member[@id = $member-ref/@ref]" mode="referenced" />
+            <xsl:element name="Dependents">
+              <xsl:apply-templates select="../.." mode="dependent">
+                <xsl:with-param name="relation" select="'MixinOverrideMixin'" />
+              </xsl:apply-templates>
+            </xsl:element>
+          </xsl:element>
+        </xsl:for-each>
+        
+        <!-- Special handling for members with sub-members (properties/events, sub-members are methods like get_X())-->
 				<!-- OverrideTarget -> Member -->
 				<xsl:for-each select="//InvolvedTypes/InvolvedType/Members/Member/SubMember/OverriddenMembers/Member-Reference[@type = 'OverrideTarget']">
 					<xsl:element name="Dependency">
