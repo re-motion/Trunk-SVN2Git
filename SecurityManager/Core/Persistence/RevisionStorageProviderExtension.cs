@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.Utilities;
@@ -60,11 +61,18 @@ namespace Remotion.SecurityManager.Persistence
       using (IDbCommand command = connection.CreateCommand ())
       {
         var query =  Revision.GetIncrementRevisionQuery();
-        Assertion.IsTrue (query.Parameters.Count == 0);
+        Assertion.IsTrue (query.Parameters.Count == 1);
         Assertion.IsTrue (query.QueryType == QueryType.Scalar);
 
         command.Transaction = transaction;
         command.CommandText = query.Statement;
+        foreach (QueryParameter parameter in query.Parameters)
+        {
+          var dbParameter = command.CreateParameter();
+          dbParameter.ParameterName = parameter.Name;
+          dbParameter.Value = parameter.Value;
+          command.Parameters.Add (dbParameter);
+        }
 
         command.ExecuteNonQuery ();
       }

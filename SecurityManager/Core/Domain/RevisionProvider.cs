@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.Domain
 
     private static int GetRevisionFromDatabase ()
     {
-      return (int) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery());
+      return (int?) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery()) ?? 0;
     }
   }
 }

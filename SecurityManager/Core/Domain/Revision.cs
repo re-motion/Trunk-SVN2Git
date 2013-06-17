@@ -54,22 +54,54 @@ namespace Remotion.SecurityManager.Domain
       var storageProviderDefinition = GetStorageProviderDefinition();
       var sqlDialect = storageProviderDefinition.Factory.CreateSqlDialect (storageProviderDefinition);
 
+      const string incrementrevision = "IncrementRevision";
+      string revisionTable = GetRevisionTableIdentifier (sqlDialect);
+      string revisionColumn = GetRevisionColumnIdentifier (sqlDialect);
+      string revisionValueParameter = sqlDialect.GetParameterName ("value");
+
       var statement = new StringBuilder();
-      statement.Append ("Update ");
-      statement.Append (GetRevisionTableIdentifier (sqlDialect));
-      statement.Append (" SET ");
-      statement.Append (GetRevisionColumnIdentifier (sqlDialect));
-      statement.Append (" = ");
-      statement.Append (GetRevisionColumnIdentifier (sqlDialect));
-      statement.Append (" + 1");
+      statement.Append ("BEGIN TRANSACTION " + incrementrevision);
       statement.Append (sqlDialect.StatementDelimiter);
+      statement.AppendLine();
+      statement.Append ("IF EXISTS (SELECT 0 FROM ");
+      statement.Append (revisionTable);
+      statement.Append (")");
+      statement.AppendLine();
+
+      statement.Append ("UPDATE ");
+      statement.Append (revisionTable);
+      statement.Append (" SET ");
+      statement.Append (revisionColumn);
+      statement.Append (" = ");
+      statement.Append (revisionColumn);
+      statement.Append (" + 1");
+      statement.AppendLine();
+
+      statement.Append ("ELSE");
+      statement.AppendLine();
+
+      statement.Append ("INSERT INTO ");
+      statement.Append (revisionTable);
+      statement.Append ("(");
+      statement.Append (revisionColumn);
+      statement.Append (") VALUES (");
+      statement.Append (revisionValueParameter);
+      statement.Append (")");
+      statement.Append (sqlDialect.StatementDelimiter);
+      statement.AppendLine();
+      statement.Append ("COMMIT TRANSACTION " + incrementrevision);
+      statement.Append (sqlDialect.StatementDelimiter);
+      statement.AppendLine();
+
+      var parameters = new QueryParameterCollection();
+      parameters.Add (revisionValueParameter, 1);
 
       return QueryFactory.CreateQuery (
           new QueryDefinition (
               typeof (Revision) + "." + MethodBase.GetCurrentMethod().Name,
               storageProviderDefinition,
               statement.ToString(),
-              QueryType.Scalar));
+              QueryType.Scalar), parameters);
     }
 
     private static RdbmsProviderDefinition GetStorageProviderDefinition ()

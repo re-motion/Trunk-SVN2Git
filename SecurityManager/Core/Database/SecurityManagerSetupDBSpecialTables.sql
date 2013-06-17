@@ -8,8 +8,3 @@ CREATE TABLE [dbo].[Revision]
 )
 
 GO
-
-INSERT INTO [dbo].[Revision] 
-([Value]) VALUES (0)
-
-GO

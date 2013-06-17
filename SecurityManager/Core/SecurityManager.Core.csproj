@@ -159,6 +159,7 @@
     <Compile Include="Domain\IRevisionProvider.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipal.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipalFactory.cs" />
+    <Compile Include="Domain\IUserRevisionProvider.cs" />
     <Compile Include="Domain\Metadata\MetadataExtensions.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipal.cs" />
     <Compile Include="Domain\PrincipalRole.cs" />

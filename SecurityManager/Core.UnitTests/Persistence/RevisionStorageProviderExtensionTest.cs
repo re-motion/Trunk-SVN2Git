@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
 
       ClientTransactionScope.CurrentTransaction.Commit ();
 
-      Assert.That (ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery()), Is.EqualTo (0));
+      Assert.That (ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery()), Is.Null);
     }
   }
 }
