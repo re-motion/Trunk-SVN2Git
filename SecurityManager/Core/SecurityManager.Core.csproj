@@ -127,6 +127,7 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryValidationError.cs" />
     <Compile Include="Domain\AccessControl\AccessControlExtensions.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\AccessResolver.cs" />
+    <Compile Include="Domain\AccessControl\AccessEvaluation\CachedUser.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\IAccessResolver.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\ISecurityContextRepository.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\ISecurityPrincipalRepository.cs" />
