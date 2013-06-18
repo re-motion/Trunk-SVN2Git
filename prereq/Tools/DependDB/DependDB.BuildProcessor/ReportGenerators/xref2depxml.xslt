@@ -134,7 +134,7 @@
         </xsl:for-each>
         
         <!-- Special handling for members with sub-members (properties/events, sub-members are methods like get_X())-->
-				<!-- OverrideTarget -> Member -->
+				<!-- OverrideTarget -> SubMember -->
 				<xsl:for-each select="//InvolvedTypes/InvolvedType/Members/Member/SubMember/OverriddenMembers/Member-Reference[@type = 'OverrideTarget']">
 					<xsl:element name="Dependency">
 						<xsl:variable name="member-ref" select="."/>
@@ -147,7 +147,7 @@
 					</xsl:element>
 				</xsl:for-each>
 				
-				<!-- OverrideMixin -> Member -->
+				<!-- OverrideMixin -> SubMember -->
 				<xsl:for-each select="//InvolvedTypes/InvolvedType/Members/Member/SubMember/OverriddenMembers/Member-Reference[@type = 'OverrideMixin']">
 					<xsl:element name="Dependency">
 						<xsl:variable name="member-ref" select="."/>
