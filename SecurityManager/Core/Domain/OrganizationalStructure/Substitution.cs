@@ -109,5 +109,16 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         return displayName;
       }
     }
+
+    protected override void OnCommitting (DomainObjectCommittingEventArgs args)
+    {
+      base.OnCommitting (args);
+
+      //TODO RM-5521: rewrite with test
+      if (SubstitutedUser != null)
+      {
+        SubstitutedUser.RegisterForCommit();
+      }
+    }
   }
 }

@@ -73,6 +73,19 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       _deleteHandler.Delete ();
     }
 
+    protected override void OnCommitting (DomainObjectCommittingEventArgs args)
+    {
+      base.OnCommitting (args);
+
+      //TODO RM-5521: rewrite with test
+      if (User != null)
+        User.RegisterForCommit();
+
+      //TODO RM-5521: rewrite with test
+      foreach (var substitution in SubstitutedBy)
+        substitution.RegisterForCommit();
+    }
+
     protected override string GetOwningTenant ()
     {
       if (User != null)
