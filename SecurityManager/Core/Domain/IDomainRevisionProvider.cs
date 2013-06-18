@@ -21,6 +21,11 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain
 {
+  /// <summary>
+  /// Defines the API required for retrieving the <c>Revision</c> of the Security Manager domain.
+  /// </summary>
+  /// <seealso cref="RevisionProvider"/>
+  /// <threadsafety static="true" instance="true"/>
   [ConcreteImplementation (typeof (RevisionProvider), Lifetime = LifetimeKind.Singleton)]
   public interface IDomainRevisionProvider : IRevisionProvider<RevisionKey, Int32RevisionValue>
   {

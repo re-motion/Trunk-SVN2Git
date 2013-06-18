@@ -31,29 +31,29 @@ namespace Remotion.SecurityManager.Domain
   public sealed class GlobalAccessTypeCache : IGlobalAccessTypeCache, ISerializable, IObjectReference
   {
     //TODO RM-5521: test
-    private class Repository : RepositoryBase<Repository.Data, RevisionKey, Int32RevisionValue>
+    private class SecurityContextCache : RepositoryBase<SecurityContextCache.Data, RevisionKey, Int32RevisionValue>
     {
       private readonly RevisionKey _revisionKey = new RevisionKey();
 
       public class Data : RevisionBasedData
       {
-        public readonly LazyLockingCachingAdapter<GlobalAccessTypeCacheKey, AccessType[]> AccessTypes;
+        public readonly ICache<ISecurityPrincipal, AccessTypeCache> Items;
 
         internal Data (Int32RevisionValue revision)
             : base (revision)
         {
-          AccessTypes = CacheFactory.CreateWithLazyLocking<GlobalAccessTypeCacheKey, AccessType[]>();
+          Items = CacheFactory.CreateWithLocking<ISecurityPrincipal, AccessTypeCache>();
         }
       }
 
-      public Repository (IRevisionProvider<RevisionKey, Int32RevisionValue> revisionProvider)
+      public SecurityContextCache (IRevisionProvider<RevisionKey, Int32RevisionValue> revisionProvider)
           : base (revisionProvider)
       {
       }
 
-      public ICache<GlobalAccessTypeCacheKey, AccessType[]> AccessTypes
+      public ICache<ISecurityPrincipal, AccessTypeCache> Items
       {
-        get { return GetCachedData (_revisionKey).AccessTypes; }
+        get { return GetCachedData (_revisionKey).Items; }
       }
 
       protected override Data LoadData (Int32RevisionValue revision)
@@ -62,12 +62,50 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private readonly Repository _cache;
+    private class AccessTypeCache : RepositoryBase<AccessTypeCache.Data, UserRevisionKey, Int32RevisionValue>
+    {
+      private readonly UserRevisionKey _revisionKey;
 
-    public GlobalAccessTypeCache (IDomainRevisionProvider revisionProvider)
+      public class Data : RevisionBasedData
+      {
+        public readonly ICache<ISecurityContext, AccessType[]> Items;
+
+        internal Data (Int32RevisionValue revision)
+            : base (revision)
+        {
+          Items = CacheFactory.CreateWithLazyLocking<ISecurityContext, AccessType[]>();
+        }
+      }
+
+      public AccessTypeCache (IRevisionProvider<UserRevisionKey, Int32RevisionValue> revisionProvider, string userName)
+          : base (revisionProvider)
+      {
+        ArgumentUtility.CheckNotNullOrEmpty ("userName", userName);
+        
+        _revisionKey = new UserRevisionKey (userName);
+      }
+
+      public ICache<ISecurityContext, AccessType[]> Items
+      {
+        get { return GetCachedData (_revisionKey).Items; }
+      }
+
+      protected override Data LoadData (Int32RevisionValue revision)
+      {
+        return new Data (revision);
+      }
+    }
+
+    private readonly IUserRevisionProvider _userRevisionProvider;
+    private readonly SecurityContextCache _securityContextCache;
+
+    public GlobalAccessTypeCache (IDomainRevisionProvider revisionProvider, IUserRevisionProvider userRevisionProvider)
     {
       ArgumentUtility.CheckNotNull ("revisionProvider", revisionProvider);
-      _cache = new Repository (revisionProvider);
+      ArgumentUtility.CheckNotNull ("userRevisionProvider", userRevisionProvider);
+      
+      _securityContextCache = new SecurityContextCache (revisionProvider);
+      _userRevisionProvider = userRevisionProvider;
     }
 
     private GlobalAccessTypeCache (SerializationInfo info, StreamingContext context)
@@ -85,24 +123,36 @@ namespace Remotion.SecurityManager.Domain
     }
 
     public AccessType[] GetOrCreateValue (
-        GlobalAccessTypeCacheKey key,
+        GlobalAccessTypeCacheKey globalKey,
         Func<GlobalAccessTypeCacheKey, AccessType[]> valueFactory)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull ("globalKey", globalKey);
       ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
 
-      return _cache.AccessTypes.GetOrCreateValue (key, valueFactory);
+      var accessTypeCache = _securityContextCache.Items.GetOrCreateValue (
+          globalKey.SecurityPrincipal,
+          key => new AccessTypeCache (_userRevisionProvider, globalKey.SecurityPrincipal.User));
+
+      return accessTypeCache.Items.GetOrCreateValue (
+          globalKey.SecurityContext,
+          key => valueFactory (globalKey));
     }
 
-    public bool TryGetValue (GlobalAccessTypeCacheKey key, out AccessType[] value)
+    public bool TryGetValue (GlobalAccessTypeCacheKey globalKey, out AccessType[] value)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
-      return _cache.AccessTypes.TryGetValue (key, out value);
+      ArgumentUtility.CheckNotNull ("globalKey", globalKey);
+
+      AccessTypeCache accessTypeCache;
+      if (_securityContextCache.Items.TryGetValue (globalKey.SecurityPrincipal, out accessTypeCache))
+        return accessTypeCache.Items.TryGetValue (globalKey.SecurityContext, out value);
+
+      value = null;
+      return false;
     }
 
     public void Clear ()
     {
-      _cache.AccessTypes.Clear();
+      _securityContextCache.Items.Clear();
     }
 
     bool INullObject.IsNull

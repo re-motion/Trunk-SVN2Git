@@ -17,9 +17,17 @@
 // 
 
 using System;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain
 {
+  /// <summary>
+  /// Defines the API required for retrieving the <c>Revision</c> of the <see cref="User"/>.
+  /// </summary>
+  /// <seealso cref="UserRevisionProvider"/>
+  /// <threadsafety static="true" instance="true"/>
+  [ConcreteImplementation (typeof (UserRevisionProvider), Lifetime = LifetimeKind.Singleton)]
   public interface IUserRevisionProvider : IRevisionProvider<UserRevisionKey, Int32RevisionValue>
   {
   }
