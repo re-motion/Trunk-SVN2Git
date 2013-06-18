@@ -31,11 +31,6 @@ namespace Remotion.SecurityManager.Domain
       _revision = revision;
     }
 
-    public int Int32Value
-    {
-      get { return _revision; }
-    }
-
     public bool IsCurrent (IRevisionValue reference)
     {
       var referenceRevision = reference as Int32RevisionValue;
