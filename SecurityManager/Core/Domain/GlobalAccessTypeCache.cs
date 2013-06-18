@@ -37,12 +37,12 @@ namespace Remotion.SecurityManager.Domain
 
       public class Data : RevisionBasedData
       {
-        public readonly LazyLockingCachingAdapter<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> AccessTypes;
+        public readonly LazyLockingCachingAdapter<GlobalAccessTypeCacheKey, AccessType[]> AccessTypes;
 
         internal Data (Int32RevisionValue revision)
             : base (revision)
         {
-          AccessTypes = CacheFactory.CreateWithLazyLocking<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
+          AccessTypes = CacheFactory.CreateWithLazyLocking<GlobalAccessTypeCacheKey, AccessType[]>();
         }
       }
 
@@ -51,7 +51,7 @@ namespace Remotion.SecurityManager.Domain
       {
       }
 
-      public ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> AccessTypes
+      public ICache<GlobalAccessTypeCacheKey, AccessType[]> AccessTypes
       {
         get { return GetCachedData (_revisionKey).AccessTypes; }
       }
@@ -62,12 +62,12 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private readonly Repository _repository;
+    private readonly Repository _cache;
 
     public GlobalAccessTypeCache (IDomainRevisionProvider revisionProvider)
     {
       ArgumentUtility.CheckNotNull ("revisionProvider", revisionProvider);
-      _repository = new Repository (revisionProvider);
+      _cache = new Repository (revisionProvider);
     }
 
     private GlobalAccessTypeCache (SerializationInfo info, StreamingContext context)
@@ -85,24 +85,24 @@ namespace Remotion.SecurityManager.Domain
     }
 
     public AccessType[] GetOrCreateValue (
-        Tuple<ISecurityContext, ISecurityPrincipal> key,
-        Func<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> valueFactory)
+        GlobalAccessTypeCacheKey key,
+        Func<GlobalAccessTypeCacheKey, AccessType[]> valueFactory)
     {
       ArgumentUtility.CheckNotNull ("key", key);
       ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
 
-      return _repository.AccessTypes.GetOrCreateValue (key, valueFactory);
+      return _cache.AccessTypes.GetOrCreateValue (key, valueFactory);
     }
 
-    public bool TryGetValue (Tuple<ISecurityContext, ISecurityPrincipal> key, out AccessType[] value)
+    public bool TryGetValue (GlobalAccessTypeCacheKey key, out AccessType[] value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
-      return _repository.AccessTypes.TryGetValue (key, out value);
+      return _cache.AccessTypes.TryGetValue (key, out value);
     }
 
     public void Clear ()
     {
-      _repository.AccessTypes.Clear();
+      _cache.AccessTypes.Clear();
     }
 
     bool INullObject.IsNull

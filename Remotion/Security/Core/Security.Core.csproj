@@ -93,6 +93,7 @@
     <Compile Include="DemandPermissionAttribute.cs" />
     <Compile Include="Configuration\SecurityProviderHelper.cs" />
     <Compile Include="EnumWrapper.cs" />
+    <Compile Include="GlobalAccessTypeCacheKey.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />
     <Compile Include="IGlobalAccessTypeCache.cs" />
     <Compile Include="IObjectSecurityAdapter.cs" />

@@ -32,11 +32,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
   {
     private class GlobalAccessTypeCache : IGlobalAccessTypeCache
     {
-      private LazyLockingCachingAdapter<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> _innerCache;
+      private readonly LazyLockingCachingAdapter<GlobalAccessTypeCacheKey, AccessType[]> _innerCache;
 
       public GlobalAccessTypeCache ()
       {
-        _innerCache = CacheFactory.CreateWithLazyLocking<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
+        _innerCache = CacheFactory.CreateWithLazyLocking<GlobalAccessTypeCacheKey, AccessType[]>();
       }
 
       public bool IsNull
@@ -44,12 +44,12 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
         get { return false; }
       }
 
-      public AccessType[] GetOrCreateValue (Tuple<ISecurityContext, ISecurityPrincipal> key, Func<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> valueFactory)
+      public AccessType[] GetOrCreateValue (GlobalAccessTypeCacheKey key, Func<GlobalAccessTypeCacheKey, AccessType[]> valueFactory)
       {
         return _innerCache.GetOrCreateValue (key, valueFactory);
       }
 
-      public bool TryGetValue (Tuple<ISecurityContext, ISecurityPrincipal> key, out AccessType[] value)
+      public bool TryGetValue (GlobalAccessTypeCacheKey key, out AccessType[] value)
       {
         return _innerCache.TryGetValue (key, out value);
       }

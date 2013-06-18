@@ -33,7 +33,7 @@ namespace Remotion.Security
       Position = 0,
       Lifetime = LifetimeKind.Singleton)]
   [ConcreteImplementation (typeof (NullGlobalAccessTypeCache), Position = 1, Lifetime = LifetimeKind.Singleton)]
-  public interface IGlobalAccessTypeCache : ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>
+  public interface IGlobalAccessTypeCache : ICache<GlobalAccessTypeCacheKey, AccessType[]>
   {
     //TODO RM-5521: test IoC
   }

@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Security
@@ -29,8 +28,8 @@ namespace Remotion.Security
     }
 
     public AccessType[] GetOrCreateValue (
-        Tuple<ISecurityContext, ISecurityPrincipal> key,
-        Func<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> valueFactory)
+        GlobalAccessTypeCacheKey key,
+        Func<GlobalAccessTypeCacheKey, AccessType[]> valueFactory)
     {
       ArgumentUtility.CheckNotNull ("key", key);
       ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
@@ -38,7 +37,7 @@ namespace Remotion.Security
       return valueFactory (key);
     }
 
-    public bool TryGetValue (Tuple<ISecurityContext, ISecurityPrincipal> key, out AccessType[] value)
+    public bool TryGetValue (GlobalAccessTypeCacheKey key, out AccessType[] value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
 

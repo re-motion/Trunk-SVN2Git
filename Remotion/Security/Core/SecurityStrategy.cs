@@ -121,20 +121,15 @@ namespace Remotion.Security
 
     private AccessType[] GetAccessFromGlobalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, ISecurityPrincipal principal)
     {
-      var globalCache = GetGlobalCache();
+      var globalCache = _globalCache;
       var context = CreateSecurityContext (factory);
-      var key = new Tuple<ISecurityContext, ISecurityPrincipal> (context, principal);
+      var key = new GlobalAccessTypeCacheKey (context, principal);
 
       AccessType[] value;
       if (!globalCache.TryGetValue (key, out value))
         value = globalCache.GetOrCreateValue (key, delegate { return GetAccessFromSecurityProvider (securityProvider, context, principal); });
 
       return value;
-    }
-
-    private ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> GetGlobalCache ()
-    {
-      return _globalCache;
     }
 
     private ISecurityContext CreateSecurityContext (ISecurityContextFactory factory)
