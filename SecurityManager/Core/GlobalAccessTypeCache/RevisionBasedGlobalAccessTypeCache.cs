@@ -21,14 +21,15 @@ using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Security;
+using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
-namespace Remotion.SecurityManager.Domain
+namespace Remotion.SecurityManager.GlobalAccessTypeCache
 {
   [Serializable]
-  public sealed class GlobalAccessTypeCache : IGlobalAccessTypeCache, ISerializable, IObjectReference
+  public sealed class RevisionBasedGlobalAccessTypeCache : IGlobalAccessTypeCache, ISerializable, IObjectReference
   {
     //TODO RM-5521: test
     private class SecurityContextCache : RepositoryBase<SecurityContextCache.Data, RevisionKey, Int32RevisionValue>
@@ -99,7 +100,7 @@ namespace Remotion.SecurityManager.Domain
     private readonly IUserRevisionProvider _userRevisionProvider;
     private readonly SecurityContextCache _securityContextCache;
 
-    public GlobalAccessTypeCache (IDomainRevisionProvider revisionProvider, IUserRevisionProvider userRevisionProvider)
+    public RevisionBasedGlobalAccessTypeCache (IDomainRevisionProvider revisionProvider, IUserRevisionProvider userRevisionProvider)
     {
       ArgumentUtility.CheckNotNull ("revisionProvider", revisionProvider);
       ArgumentUtility.CheckNotNull ("userRevisionProvider", userRevisionProvider);
@@ -108,7 +109,7 @@ namespace Remotion.SecurityManager.Domain
       _userRevisionProvider = userRevisionProvider;
     }
 
-    private GlobalAccessTypeCache (SerializationInfo info, StreamingContext context)
+    private RevisionBasedGlobalAccessTypeCache (SerializationInfo info, StreamingContext context)
     {
     }
 
@@ -118,7 +119,7 @@ namespace Remotion.SecurityManager.Domain
 
     object IObjectReference.GetRealObject (StreamingContext context)
     {
-      return (GlobalAccessTypeCache) SafeServiceLocator.Current.GetAllInstances<IGlobalAccessTypeCache>()
+      return (RevisionBasedGlobalAccessTypeCache) SafeServiceLocator.Current.GetAllInstances<IGlobalAccessTypeCache>()
           .First (() => new InvalidOperationException ("No instance of IGlobalAccessTypeCache has been registered with the ServiceLocator."));
     }
 

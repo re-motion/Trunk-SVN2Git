@@ -27,7 +27,7 @@ namespace Remotion.Security
   /// </summary>
   /// <remarks><note type="inotes">Implementations are free to implement their own best practice for keeping the cache up to date.</note></remarks>
   [ConcreteImplementation (
-      "Remotion.SecurityManager.Domain.GlobalAccessTypeCache, Remotion.SecurityManager, "
+      "Remotion.SecurityManager.Domain.GlobalAccessTypeCache.RevisionBasedGlobalAccessTypeCache, Remotion.SecurityManager, "
       + "Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
       ignoreIfNotFound: true,
       Position = 0,
