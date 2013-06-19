@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.Domain
 
     private GuidRevisionValue GetRevisionFromDatabase (TRevisionKey key)
     {
-      var value = (Guid?) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery(new RevisionKey()));
+      var value = (Guid?) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery (key));
 
       if (value.HasValue)
         return new GuidRevisionValue (value.Value);
