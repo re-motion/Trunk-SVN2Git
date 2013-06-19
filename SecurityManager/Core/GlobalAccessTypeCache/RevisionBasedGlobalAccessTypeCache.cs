@@ -18,11 +18,10 @@
 
 using System;
 using System.Runtime.Serialization;
-using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
-using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
+using Remotion.SecurityManager.GlobalAccessTypeCache.Implementation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -32,70 +31,6 @@ namespace Remotion.SecurityManager.GlobalAccessTypeCache
   public sealed class RevisionBasedGlobalAccessTypeCache : IGlobalAccessTypeCache, ISerializable, IObjectReference
   {
     //TODO RM-5521: test
-    private class SecurityContextCache : RepositoryBase<SecurityContextCache.Data, RevisionKey, Int32RevisionValue>
-    {
-      private readonly RevisionKey _revisionKey = new RevisionKey();
-
-      public class Data : RevisionBasedData
-      {
-        public readonly ICache<ISecurityPrincipal, AccessTypeCache> Items;
-
-        internal Data (Int32RevisionValue revision)
-            : base (revision)
-        {
-          Items = CacheFactory.CreateWithLocking<ISecurityPrincipal, AccessTypeCache>();
-        }
-      }
-
-      public SecurityContextCache (IRevisionProvider<RevisionKey, Int32RevisionValue> revisionProvider)
-          : base (revisionProvider)
-      {
-      }
-
-      public ICache<ISecurityPrincipal, AccessTypeCache> Items
-      {
-        get { return GetCachedData (_revisionKey).Items; }
-      }
-
-      protected override Data LoadData (Int32RevisionValue revision)
-      {
-        return new Data (revision);
-      }
-    }
-
-    private class AccessTypeCache : RepositoryBase<AccessTypeCache.Data, UserRevisionKey, Int32RevisionValue>
-    {
-      private readonly UserRevisionKey _revisionKey;
-
-      public class Data : RevisionBasedData
-      {
-        public readonly ICache<ISecurityContext, AccessType[]> Items;
-
-        internal Data (Int32RevisionValue revision)
-            : base (revision)
-        {
-          Items = CacheFactory.CreateWithLazyLocking<ISecurityContext, AccessType[]>();
-        }
-      }
-
-      public AccessTypeCache (IRevisionProvider<UserRevisionKey, Int32RevisionValue> revisionProvider, string userName)
-          : base (revisionProvider)
-      {
-        ArgumentUtility.CheckNotNullOrEmpty ("userName", userName);
-        
-        _revisionKey = new UserRevisionKey (userName);
-      }
-
-      public ICache<ISecurityContext, AccessType[]> Items
-      {
-        get { return GetCachedData (_revisionKey).Items; }
-      }
-
-      protected override Data LoadData (Int32RevisionValue revision)
-      {
-        return new Data (revision);
-      }
-    }
 
     private readonly IUserRevisionProvider _userRevisionProvider;
     private readonly SecurityContextCache _securityContextCache;
