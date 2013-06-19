@@ -136,6 +136,9 @@
     <Compile Include="Domain\AccessControl\AccessEvaluation\RepositoryBase.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\SecurableClassDefinitionData.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\SecurityContextRepository.cs" />
+    <Compile Include="Domain\AccessControl\AccessEvaluation\SecurityContextRevisionBasedCache.cs" />
+    <Compile Include="Domain\AccessControl\AccessEvaluation\SecurityContextRevisionBasedCacheBase.cs" />
+    <Compile Include="Domain\AccessControl\AccessEvaluation\SecurityContextUserRevisionBasedCache.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\SecurityPrincipalRepository.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\State.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\StatefulAccessControlListData.cs" />

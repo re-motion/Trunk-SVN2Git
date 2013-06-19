@@ -112,6 +112,12 @@ namespace Remotion.SecurityManager.Persistence
         IncrementRevision (connection, transaction, revisionKey);
         _userRevisionProvider.InvalidateRevision (revisionKey);
       }
+
+      if (userNamesToInvalidate.Any())
+      {
+        IncrementRevision (connection, transaction, UserRevisionKey.Global);
+        _userRevisionProvider.InvalidateRevision (UserRevisionKey.Global);
+      }
     }
 
     private IEnumerable<string> LoadUserNames (IDbConnection connection, IDbTransaction transaction, ICollection<IDomainObjectHandle<User>> users)
@@ -132,13 +138,6 @@ namespace Remotion.SecurityManager.Persistence
         while (dataReader.Read())
           yield return dataReader.GetString (0);
       }
-    }
-
-    private DataContainer LoadUser (IDomainObjectHandle<User> userID)
-    {
-      var user = userID.GetObject (ClientTransaction.CreateRootTransaction());
-      var dataManager = DataManagementService.GetDataManager (user.RootTransaction);
-      return dataManager.DataContainers[userID.ObjectID];
     }
 
     private bool IsDomainRevisionRelevant (DataContainer dataContainer)
