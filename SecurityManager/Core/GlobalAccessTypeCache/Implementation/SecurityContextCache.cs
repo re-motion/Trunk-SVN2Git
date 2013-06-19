@@ -24,9 +24,9 @@ using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 
 namespace Remotion.SecurityManager.GlobalAccessTypeCache.Implementation
 {
-  public class SecurityContextCache : RepositoryBase<SecurityContextCache.Data, RevisionKey, Int32RevisionValue>
+  public sealed class SecurityContextCache : RepositoryBase<SecurityContextCache.Data, RevisionKey, Int32RevisionValue>
   {
-    public class Data : RevisionBasedData
+    public sealed class Data : RevisionBasedData
     {
       private readonly ICache<ISecurityPrincipal, AccessTypeCache> _items;
 
