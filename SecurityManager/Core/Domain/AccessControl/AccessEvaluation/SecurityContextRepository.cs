@@ -89,7 +89,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       var cachedData = GetCachedData (s_revisionKey);
       var tenant = cachedData.Tenants.GetValueOrDefault (uniqueIdentifier);
       if (tenant == null)
-        throw CreateAccessControlException ("The tenant '{0}' could not be found.", uniqueIdentifier);
+      {
+        cachedData = GetCachedData (s_revisionKey, Revision.Invalidate);
+        tenant = cachedData.Tenants.GetValueOrDefault (uniqueIdentifier);
+        if (tenant == null)
+          throw CreateAccessControlException ("The tenant '{0}' could not be found.", uniqueIdentifier);
+      }
       return tenant;
     }
 
@@ -100,7 +105,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       var cachedData = GetCachedData (s_revisionKey);
       var group = cachedData.Groups.GetValueOrDefault (uniqueIdentifier);
       if (group == null)
-        throw CreateAccessControlException ("The group '{0}' could not be found.", uniqueIdentifier);
+      {
+        cachedData = GetCachedData (s_revisionKey, Revision.Invalidate);
+        group = cachedData.Groups.GetValueOrDefault (uniqueIdentifier);
+        if (group == null)
+          throw CreateAccessControlException ("The group '{0}' could not be found.", uniqueIdentifier);
+      }
       return group;
     }
 
@@ -111,7 +121,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       var cachedData = GetCachedData (s_revisionKey);
       var user = cachedData.Users.GetValueOrDefault (userName);
       if (user == null)
-        throw CreateAccessControlException ("The user '{0}' could not be found.", userName);
+      {
+        cachedData = GetCachedData (s_revisionKey, Revision.Invalidate);
+        user = cachedData.Users.GetValueOrDefault (userName);
+        if (user == null)
+          throw CreateAccessControlException ("The user '{0}' could not be found.", userName);
+      }
       return user;
     }
 
@@ -122,7 +137,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       var cachedData = GetCachedData (s_revisionKey);
       var position = cachedData.Positions.GetValueOrDefault (uniqueIdentifier);
       if (position == null)
-        throw CreateAccessControlException ("The position '{0}' could not be found.", uniqueIdentifier);
+      {
+        cachedData = GetCachedData (s_revisionKey, Revision.Invalidate);
+        position = cachedData.Positions.GetValueOrDefault (uniqueIdentifier);
+        if (position == null)
+          throw CreateAccessControlException ("The position '{0}' could not be found.", uniqueIdentifier);
+      }
       return position;
     }
 
@@ -134,7 +154,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       var cachedData = GetCachedData (s_revisionKey);
       var abstractRole = cachedData.AbstractRoles.GetValueOrDefault (name);
       if (abstractRole == null)
-        throw CreateAccessControlException ("The abstract role '{0}' could not be found.", name);
+      {
+        cachedData = GetCachedData (s_revisionKey, Revision.Invalidate);
+        abstractRole = cachedData.AbstractRoles.GetValueOrDefault (name);
+        if (abstractRole == null)
+          throw CreateAccessControlException ("The abstract role '{0}' could not be found.", name);
+      }
       return abstractRole;
     }
 
@@ -145,7 +170,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       var cachedData = GetCachedData (s_revisionKey);
       var @class = cachedData.Classes.GetValueOrDefault (name);
       if (@class == null)
-        throw CreateAccessControlException ("The securable class '{0}' could not be found.", name);
+      {
+        cachedData = GetCachedData (s_revisionKey, Revision.Invalidate);
+        @class = cachedData.Classes.GetValueOrDefault (name);
+        if (@class == null)
+          throw CreateAccessControlException ("The securable class '{0}' could not be found.", name);
+      }
       return @class;
     }
 
@@ -156,7 +186,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       var cachedData = GetCachedData (s_revisionKey);
       var values = cachedData.StatePropertyValues.GetValueOrDefault (stateProperty);
       if (values == null)
-        throw CreateAccessControlException ("The state property with ID '{0}' could not be found.", stateProperty);
+      {
+        cachedData = GetCachedData (s_revisionKey, Revision.Invalidate);
+        values = cachedData.StatePropertyValues.GetValueOrDefault (stateProperty);
+        if (values == null)
+          throw CreateAccessControlException ("The state property with ID '{0}' could not be found.", stateProperty);
+      }
       return values;
     }
 

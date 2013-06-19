@@ -41,6 +41,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       }
     }
 
+    protected enum Revision
+    {
+      Stale,
+      Invalidate
+    }
+
     private readonly IRevisionProvider<TRevisionKey, TRevisionValue> _revisionProvider;
     private readonly object _syncRoot = new object();
     private volatile TData _cachedData;
@@ -54,10 +60,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     protected abstract TData LoadData (TRevisionValue revision);
 
-    protected TData GetCachedData (TRevisionKey revisionKey)
+    protected TData GetCachedData (TRevisionKey revisionKey, Revision revision = Revision.Stale)
     {
       ArgumentUtility.CheckNotNull ("revisionKey", revisionKey);
-      
+
+      if (revision == Revision.Invalidate)
+        _revisionProvider.InvalidateRevision (revisionKey);
+
       var currentRevision = _revisionProvider.GetRevision (revisionKey);
       if (_cachedData == null || !_cachedData.Revision.IsCurrent (currentRevision))
       {
