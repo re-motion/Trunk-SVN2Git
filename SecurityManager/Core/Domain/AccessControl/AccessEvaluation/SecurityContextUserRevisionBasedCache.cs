@@ -28,14 +28,14 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
   public class SecurityContextUserRevisionBasedCache
-      : SecurityContextRevisionBasedCacheBase<SecurityContextUserRevisionBasedCache.Data, UserRevisionKey, Int32RevisionValue>
+      : SecurityContextRevisionBasedCacheBase<SecurityContextUserRevisionBasedCache.Data, UserRevisionKey, GuidRevisionValue>
   {
     public class Data : RevisionBasedData
     {
       public readonly Dictionary<string, IDomainObjectHandle<User>> Users;
 
       internal Data (
-          Int32RevisionValue revision,
+          GuidRevisionValue revision,
           Dictionary<string, IDomainObjectHandle<User>> users)
           : base (revision)
       {
@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       return GetCachedData (UserRevisionKey.Global, Revision.Invalidate);
     }
 
-    protected override Data LoadData (Int32RevisionValue revision)
+    protected override Data LoadData (GuidRevisionValue revision)
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {

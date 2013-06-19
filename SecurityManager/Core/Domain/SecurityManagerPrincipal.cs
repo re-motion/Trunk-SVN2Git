@@ -53,14 +53,14 @@ namespace Remotion.SecurityManager.Domain
     [Serializable]
     private sealed class Data
     {
-      public readonly Int32RevisionValue Revision;
+      public readonly GuidRevisionValue Revision;
       public readonly TenantProxy TenantProxy;
       public readonly UserProxy UserProxy;
       public readonly SubstitutionProxy SubstitutionProxy;
       public readonly ISecurityPrincipal SecurityPrincipal;
 
       public Data (
-          Int32RevisionValue revision,
+          GuidRevisionValue revision,
           TenantProxy tenantProxy,
           UserProxy userProxy,
           SubstitutionProxy substitutionProxy,
@@ -209,7 +209,7 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private void InitializeCache (Int32RevisionValue revision)
+    private void InitializeCache (GuidRevisionValue revision)
     {
       var transaction = CreateClientTransaction();
 
@@ -250,7 +250,7 @@ namespace Remotion.SecurityManager.Domain
       return transaction;
     }
 
-    private Int32RevisionValue GetRevision ()
+    private GuidRevisionValue GetRevision ()
     {
       return SafeServiceLocator.Current.GetInstance<IDomainRevisionProvider>().GetRevision(new RevisionKey());
     }

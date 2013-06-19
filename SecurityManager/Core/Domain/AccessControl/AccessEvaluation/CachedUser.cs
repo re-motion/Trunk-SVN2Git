@@ -29,7 +29,7 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
-  public sealed class CachedUser : RepositoryBase<CachedUser.Data, UserRevisionKey, Int32RevisionValue>
+  public sealed class CachedUser : RepositoryBase<CachedUser.Data, UserRevisionKey, GuidRevisionValue>
   {
     //RM-5640: Rewrite with tests
 
@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     {
       public readonly User User;
 
-      internal Data (Int32RevisionValue revision, User user)
+      internal Data (GuidRevisionValue revision, User user)
           : base (revision)
       {
         User = user;
@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     private readonly string _userName;
 
-    public CachedUser (IRevisionProvider<UserRevisionKey, Int32RevisionValue> revisionProvider, string userName)
+    public CachedUser (IRevisionProvider<UserRevisionKey, GuidRevisionValue> revisionProvider, string userName)
         : base(revisionProvider)
     {
       ArgumentUtility.CheckNotNull ("userName", userName);
@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       return GetCachedData (new UserRevisionKey (_userName)).User;
     }
 
-    protected override Data LoadData (Int32RevisionValue revision)
+    protected override Data LoadData (GuidRevisionValue revision)
     {
       s_log.InfoFormat ("Reset CachedUser for user '{0}'.", _userName);
       return new Data (revision, GetUser (_userName));

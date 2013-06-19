@@ -49,7 +49,9 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
 
       ClientTransactionScope.CurrentTransaction.Commit ();
 
-      Assert.That (ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery(new RevisionKey())), Is.EqualTo (1));
+      var value = ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery (new RevisionKey()));
+      Assert.That (value, Is.InstanceOf<Guid>());
+      Assert.That (value, Is.Not.EqualTo (Guid.Empty));
     }
 
     [Test]

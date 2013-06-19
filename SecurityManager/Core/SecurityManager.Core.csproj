@@ -161,7 +161,7 @@
     <Compile Include="Domain\DomainObjectDeleteHandler.cs" />
     <Compile Include="Domain\DomainObjectExtensions.cs" />
     <Compile Include="Domain\IDomainRevisionProvider.cs" />
-    <Compile Include="Domain\Int32RevisionValue.cs" />
+    <Compile Include="Domain\GuidRevisionValue.cs" />
     <Compile Include="Domain\IRevisionKey.cs" />
     <Compile Include="Domain\IRevisionValue.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipal.cs" />

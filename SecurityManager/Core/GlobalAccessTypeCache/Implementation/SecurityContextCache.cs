@@ -24,13 +24,13 @@ using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 
 namespace Remotion.SecurityManager.GlobalAccessTypeCache.Implementation
 {
-  public sealed class SecurityContextCache : RepositoryBase<SecurityContextCache.Data, RevisionKey, Int32RevisionValue>
+  public sealed class SecurityContextCache : RepositoryBase<SecurityContextCache.Data, RevisionKey, GuidRevisionValue>
   {
     public sealed class Data : RevisionBasedData
     {
       private readonly ICache<ISecurityPrincipal, AccessTypeCache> _items;
 
-      internal Data (Int32RevisionValue revision)
+      internal Data (GuidRevisionValue revision)
           : base (revision)
       {
         _items = CacheFactory.CreateWithLocking<ISecurityPrincipal, AccessTypeCache>();
@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.GlobalAccessTypeCache.Implementation
     //TODO RM-5521: test, implement ICache-interface with delegating members to "Items", generalize as RevisionBasedCache<TKey, TRevisionProvider>
     private readonly RevisionKey _revisionKey = new RevisionKey();
 
-    public SecurityContextCache (IRevisionProvider<RevisionKey, Int32RevisionValue> revisionProvider)
+    public SecurityContextCache (IRevisionProvider<RevisionKey, GuidRevisionValue> revisionProvider)
         : base (revisionProvider)
     {
     }
@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.GlobalAccessTypeCache.Implementation
       get { return GetCachedData (_revisionKey).Items; }
     }
 
-    protected override Data LoadData (Int32RevisionValue revision)
+    protected override Data LoadData (GuidRevisionValue revision)
     {
       return new Data (revision);
     }

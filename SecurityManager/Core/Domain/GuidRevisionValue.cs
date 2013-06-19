@@ -20,12 +20,12 @@ using System;
 namespace Remotion.SecurityManager.Domain
 {
   [Serializable]
-  public sealed class Int32RevisionValue : IRevisionValue
+  public sealed class GuidRevisionValue : IRevisionValue
   {
     private readonly DateTime _timestamp;
-    private readonly int _revision;
+    private readonly Guid _revision;
 
-    public Int32RevisionValue (int revision)
+    public GuidRevisionValue (Guid revision)
     {
       _timestamp = DateTime.UtcNow;
       _revision = revision;
@@ -33,7 +33,7 @@ namespace Remotion.SecurityManager.Domain
 
     public bool IsCurrent (IRevisionValue reference)
     {
-      var referenceRevision = reference as Int32RevisionValue;
+      var referenceRevision = reference as GuidRevisionValue;
       if (referenceRevision == null)
         return false;
 

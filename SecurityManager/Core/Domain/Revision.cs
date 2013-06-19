@@ -92,8 +92,7 @@ namespace Remotion.SecurityManager.Domain
       statement.Append (" SET ");
       statement.Append (revisionValueColumn);
       statement.Append (" = ");
-      statement.Append (revisionValueColumn);
-      statement.Append (" + 1");
+      statement.Append (revisionValueParameter);
       statement.Append (" WHERE (");
       AppendKeyClause (statement, parameters, revisionKey, sqlDialect);
       statement.Append (")");
@@ -123,7 +122,7 @@ namespace Remotion.SecurityManager.Domain
       statement.Append (sqlDialect.StatementDelimiter);
       statement.AppendLine();
 
-      parameters.Add (revisionValueParameter, 1);
+      parameters.Add (revisionValueParameter, Guid.NewGuid());
 
       return QueryFactory.CreateQuery (
           new QueryDefinition (

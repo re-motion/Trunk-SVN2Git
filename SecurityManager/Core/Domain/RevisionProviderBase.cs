@@ -24,7 +24,7 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain
 {
   /// <threadsafety static="true" instance="true"/>
-  public abstract class RevisionProviderBase<TRevisionKey> : IRevisionProvider<TRevisionKey, Int32RevisionValue>
+  public abstract class RevisionProviderBase<TRevisionKey> : IRevisionProvider<TRevisionKey, GuidRevisionValue>
       where TRevisionKey : IRevisionKey
   {
     private readonly string _revisionProviderKey;
@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.Domain
       _revisionProviderKey = SafeContextKeys.SecurityManagerRevision + "_" + Guid.NewGuid().ToString();
     }
 
-    public Int32RevisionValue GetRevision (TRevisionKey key)
+    public GuidRevisionValue GetRevision (TRevisionKey key)
     {
       ArgumentUtility.CheckNotNull ("key", key);
 
@@ -51,25 +51,25 @@ namespace Remotion.SecurityManager.Domain
       revisions.Remove (key);
     }
 
-    private SimpleDataStore<TRevisionKey, Int32RevisionValue> GetCachedRevisions ()
+    private SimpleDataStore<TRevisionKey, GuidRevisionValue> GetCachedRevisions ()
     {
-      var revisions = (SimpleDataStore<TRevisionKey, Int32RevisionValue>) SafeContext.Instance.GetData (_revisionProviderKey);
+      var revisions = (SimpleDataStore<TRevisionKey, GuidRevisionValue>) SafeContext.Instance.GetData (_revisionProviderKey);
       if (revisions == null)
       {
-        revisions = new SimpleDataStore<TRevisionKey, Int32RevisionValue>();
+        revisions = new SimpleDataStore<TRevisionKey, GuidRevisionValue>();
         SafeContext.Instance.SetData (_revisionProviderKey, revisions);
       }
       return revisions;
     }
 
-    private Int32RevisionValue GetRevisionFromDatabase (TRevisionKey key)
+    private GuidRevisionValue GetRevisionFromDatabase (TRevisionKey key)
     {
-      var value =(int?) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery(new RevisionKey()));
+      var value = (Guid?) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery(new RevisionKey()));
 
       if (value.HasValue)
-        return new Int32RevisionValue (value.Value);
+        return new GuidRevisionValue (value.Value);
 
-      return new Int32RevisionValue (0);
+      return new GuidRevisionValue (Guid.Empty);
     }
 
   }
