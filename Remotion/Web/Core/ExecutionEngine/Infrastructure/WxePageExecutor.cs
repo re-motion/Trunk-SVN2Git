@@ -54,9 +54,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       catch (HttpException e)
       {
         Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (e);
-        if (unwrappedException is WxeExecuteNextStepException)
-          return;
-        if (unwrappedException is WxeExecuteUserControlNextStepException)
+        if (unwrappedException is WxeExecutionControlExceptionBase)
           return;
         throw;
       }
