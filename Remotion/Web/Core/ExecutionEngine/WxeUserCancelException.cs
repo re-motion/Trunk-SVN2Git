@@ -39,10 +39,6 @@ namespace Remotion.Web.ExecutionEngine
       : base (message)
     {
     }
-    public WxeUserCancelException (string message, Exception innerException)
-      : base (message, innerException)
-    {
-    }
 
     protected WxeUserCancelException (SerializationInfo info, StreamingContext context)
       : base (info, context)

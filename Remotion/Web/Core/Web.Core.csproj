@@ -143,6 +143,7 @@
     <Compile Include="ExecutionEngine\IWxeCallOptions.cs" />
     <Compile Include="ExecutionEngine\WxeCallArgumentsWithoutSender.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsBase.cs" />
+    <Compile Include="ExecutionEngine\WxeInfrastructureException.cs" />
     <Compile Include="Infrastructure\HttpContextProvider.cs" />
     <Compile Include="Infrastructure\IBuildManager.cs" />
     <Compile Include="Infrastructure\IHttpContextProvider.cs" />
@@ -290,7 +291,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectWithVarRef.cs" />
     <Compile Include="ExecutionEngine\WxeExecuteUserControlNextStepException.cs" />
-    <Compile Include="ExecutionEngine\WxeExecutionControlExceptionBase.cs" />
+    <Compile Include="ExecutionEngine\WxeExecutionControlException.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageExecutor.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\PostProcessingSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingRedirectToSubFunctionState.cs" />

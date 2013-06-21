@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
@@ -28,7 +29,7 @@ namespace Remotion.Web.Utilities
   /// <summary>
   /// Utility class for pages.
   /// </summary>
-  public class PageUtility
+  public static class PageUtility
   {
     /// <summary>
     ///   Gets the form's postback data in a fashion that works for WxePages too. 
@@ -64,23 +65,18 @@ namespace Remotion.Web.Utilities
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      NameValueCollection collection = PageUtility.GetPostBackCollection (page);
+      NameValueCollection collection = GetPostBackCollection (page);
       if (collection == null)
         return null;
       return collection[name];
     }
 
-    private PageUtility ()
-    {
-    }
-
+    [CanBeNull]
     public static Exception GetUnwrappedExceptionFromHttpException (Exception e)
     {
       Exception unwrappedException = e as HttpException;
       while (unwrappedException is HttpException)
-      {
         unwrappedException = unwrappedException.InnerException;
-      }
       return unwrappedException;
     }
   }

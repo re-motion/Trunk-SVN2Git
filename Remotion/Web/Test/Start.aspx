@@ -68,7 +68,10 @@
       </p>
       <h3>Error Handling</h3>
       <p>
-        <a href="ErrorHandling/TestForm.aspx">ErrorTest</a>
+        <a href="ErrorHandling/TestForm.aspx">Test for handling errors in synchronous and asynchronous requests</a>
+      </p>
+      <p>
+        <a href="ExceptionHandlingTest.wxe">Test for propagtion of exceptions thrown on WXE Pages</a>
       </p>
       <asp:Button id="ResetSessionButton" runat="server" Text="Reset Session" OnClick="ResetSessionButton_Click"></asp:Button>
     </form>

@@ -50,15 +50,10 @@ namespace Remotion.Web.ExecutionEngine
   /// stop processing the page at all).
   /// </example>
   [Serializable]
-  public abstract class WxeIgnorableException : WxeException
+  public abstract class WxeIgnorableException : WxeInfrastructureException
   {
     protected WxeIgnorableException (string message)
       : base (message)
-    {
-    }
-
-    protected WxeIgnorableException (string message, Exception innerException)
-      : base (message, innerException)
     {
     }
 

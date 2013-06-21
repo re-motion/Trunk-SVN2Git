@@ -19,20 +19,17 @@ using System.Runtime.Serialization;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  /// <summary> This exception is used by the execution engine to end the execution of a <see cref="WxeUserControlStep"/>. </summary>
+  /// <summary> This exception is used by the execution engine to control the call stack. </summary>
   [Serializable]
-  public class WxeExecuteUserControlNextStepException : WxeExecutionControlException
+  public abstract class WxeExecutionControlException : WxeInfrastructureException
   {
-    public WxeExecuteUserControlNextStepException ()
-      : base (
-      "This exception does not indicate an error. It is used to roll back the call stack. "
-      + "It is recommended to disable breaking on this exeption type while debugging."
-      )
+    protected WxeExecutionControlException (string message)
+        : base(message)
     {
     }
 
-    protected WxeExecuteUserControlNextStepException (SerializationInfo info, StreamingContext context)
-      : base (info, context)
+    protected WxeExecutionControlException (SerializationInfo info, StreamingContext context)
+        : base (info, context)
     {
     }
   }

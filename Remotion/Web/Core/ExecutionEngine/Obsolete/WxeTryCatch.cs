@@ -137,23 +137,23 @@ namespace Remotion.Web.ExecutionEngine.Obsolete
         {
           _trySteps.Execute (context);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-          if (e is System.Threading.ThreadAbortException)
+          if (ex is System.Threading.ThreadAbortException)
             throw;
 
-          Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (e);
+          Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (ex) ?? ex;
 
           for (int i = 0; i < _catchBlocks.Count; ++i)
           {
             WxeCatchBlock catchBlock = (WxeCatchBlock) _catchBlocks[i];
-            if (catchBlock.ExceptionType.IsAssignableFrom (e.GetType()))
+            if (catchBlock.ExceptionType.IsInstanceOfType (ex))
             {
               _executingCatchBlock = i;
-              catchBlock.Exception = e;
+              catchBlock.Exception = ex;
               break;
             }
-            else if (catchBlock.ExceptionType.IsAssignableFrom (unwrappedException.GetType()))
+            else if (catchBlock.ExceptionType.IsInstanceOfType (unwrappedException))
             {
               _executingCatchBlock = i;
               catchBlock.Exception = unwrappedException;

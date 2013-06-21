@@ -15,20 +15,27 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Configuration;
 using System.Runtime.Serialization;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  /// <summary> This exception is used by the execution engine to control the call stack. </summary>
+  /// <summary> This exception is thrown when the execution engine needs to manipulate the ASP.NET execution control flow. </summary>
+  /// <remarks> 
+  /// This exception is derived from <see cref="ConfigurationException"/> to allow the exception to bubble through the ASP.NET infrastructure 
+  /// (i.e. Page.ProcessRequest) without being logged in the ASP.NET performance counters (.e.g. Total Errors).
+  /// </remarks>
   [Serializable]
-  public abstract class WxeExecutionControlExceptionBase : WxeException
+  public abstract class WxeInfrastructureException : ConfigurationException
   {
-    protected WxeExecutionControlExceptionBase (string message)
-        : base(message)
+    protected WxeInfrastructureException (string message)
+#pragma warning disable 612,618
+        : base (message)
+#pragma warning restore 612,618
     {
     }
 
-    protected WxeExecutionControlExceptionBase (SerializationInfo info, StreamingContext context)
+    protected WxeInfrastructureException (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
     }

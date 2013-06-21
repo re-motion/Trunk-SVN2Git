@@ -135,12 +135,12 @@ namespace Remotion.Web.Test.ExecutionEngine
       // CurrentPageStep.ExecuteFunction ((Control)sender, this, new SubFunction("call var1", "call var2"));
       if (! IsReturningPostBack)
       {
-        SubFunction subFunction = new SubFunction ("sub var 1", "vall var2");
+        var subFunction = new SampleWxeSubFunction ("sub var 1", "vall var2");
         this.ExecuteFunction (subFunction);
       }
       else
       {
-        SubFunction subFunction = (SubFunction) ReturningFunction;
+        var subFunction = (SampleWxeSubFunction) ReturningFunction;
         RetValLabel.Text = subFunction.Var1;
       }
     }

@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,26 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Runtime.Serialization;
+using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Web.ExecutionEngine
+namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling
 {
-  /// <summary> This exception is used by the execution engine to end the execution of a <see cref="WxeUserControlStep"/>. </summary>
   [Serializable]
-  public class WxeExecuteUserControlNextStepException : WxeExecutionControlException
+  public class TestFunction : WxeFunction
   {
-    public WxeExecuteUserControlNextStepException ()
-      : base (
-      "This exception does not indicate an error. It is used to roll back the call stack. "
-      + "It is recommended to disable breaking on this exeption type while debugging."
-      )
+    public TestFunction ()
+        : base (new NoneTransactionMode())
     {
     }
 
-    protected WxeExecuteUserControlNextStepException (SerializationInfo info, StreamingContext context)
-      : base (info, context)
-    {
-    }
+    private WxePageStep Step1 = new WxePageStep ("~/ExecutionEngine/ExceptionHandling/TestForm.aspx");
   }
 }

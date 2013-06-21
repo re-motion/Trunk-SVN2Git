@@ -51,10 +51,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         context.HttpContext.Server.Transfer (url, isPostBack);
       }
-      catch (HttpException e)
+      catch (HttpException ex)
       {
-        Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (e);
-        if (unwrappedException is WxeExecutionControlExceptionBase)
+        var unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (ex);
+        if (unwrappedException is WxeExecutionControlException)
           return;
         throw;
       }
