@@ -37,13 +37,22 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       WxePage page = new WxePage();
 
       page.EnableAbort = null;
-      Assert.IsTrue (((IWxePage) page).IsAbortEnabled, "Abort disabled with EnableAbort=Undefined.");
+      Assert.That (
+          ((IWxePage) page).IsAbortEnabled,
+          Is.True,
+          "Abort disabled with EnableAbort=Undefined.");
 
       page.EnableAbort = true;
-      Assert.IsTrue (((IWxePage) page).IsAbortEnabled, "Abort disabled with EnableAbort=True.");
+      Assert.That (
+          ((IWxePage) page).IsAbortEnabled,
+          Is.True,
+          "Abort disabled with EnableAbort=True.");
 
       page.EnableAbort = false;
-      Assert.IsFalse (((IWxePage) page).IsAbortEnabled, "Abort enabled with EnableAbort=False.");
+      Assert.That (
+          ((IWxePage) page).IsAbortEnabled,
+          Is.False,
+          "Abort enabled with EnableAbort=False.");
     }
 
 
@@ -55,13 +64,22 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       page.IsDirty = false;
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.Always;
-      Assert.IsTrue (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation disabled with ShowAbortConfirmation=Always.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.True,
+          "Abort confirmation disabled with ShowAbortConfirmation=Always.");
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.OnlyIfDirty;
-      Assert.IsTrue (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation disabled with ShowAbortConfirmation=OnlyIfDirty.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.True,
+          "Abort confirmation disabled with ShowAbortConfirmation=OnlyIfDirty.");
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.Never;
-      Assert.IsFalse (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation enabled with ShowAbortConfirmation=Never.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.False,
+          "Abort confirmation enabled with ShowAbortConfirmation=Never.");
     }
 
     [Test]
@@ -72,13 +90,22 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       page.IsDirty = true;
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.Always;
-      Assert.IsTrue (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation disabled with ShowAbortConfirmation=Always.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.True,
+          "Abort confirmation disabled with ShowAbortConfirmation=Always.");
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.OnlyIfDirty;
-      Assert.IsTrue (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation disabledwith ShowAbortConfirmation=OnlyIfDirty.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.True,
+          "Abort confirmation disabledwith ShowAbortConfirmation=OnlyIfDirty.");
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.Never;
-      Assert.IsFalse (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation enabled with ShowAbortConfirmation=Never.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.False,
+          "Abort confirmation enabled with ShowAbortConfirmation=Never.");
     }
 
     [Test]
@@ -89,13 +116,22 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       page.IsDirty = false;
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.Always;
-      Assert.IsFalse (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation enabled with ShowAbortConfirmation=Always.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.False,
+          "Abort confirmation enabled with ShowAbortConfirmation=Always.");
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.OnlyIfDirty;
-      Assert.IsFalse (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation enabled with ShowAbortConfirmation=OnlyIfDirty.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.False,
+          "Abort confirmation enabled with ShowAbortConfirmation=OnlyIfDirty.");
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.Never;
-      Assert.IsFalse (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation enabled with ShowAbortConfirmation=Never.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.False,
+          "Abort confirmation enabled with ShowAbortConfirmation=Never.");
     }
 
     [Test]
@@ -106,13 +142,22 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       page.IsDirty = true;
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.Always;
-      Assert.IsFalse (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation enabled with ShowAbortConfirmation=Always.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.False,
+          "Abort confirmation enabled with ShowAbortConfirmation=Always.");
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.OnlyIfDirty;
-      Assert.IsFalse (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation enabled with ShowAbortConfirmation=OnlyIfDirty.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.False,
+          "Abort confirmation enabled with ShowAbortConfirmation=OnlyIfDirty.");
 
       page.ShowAbortConfirmation = ShowAbortConfirmation.Never;
-      Assert.IsFalse (((IWxePage) page).IsAbortConfirmationEnabled, "Abort confirmation enabled with ShowAbortConfirmation=Never.");
+      Assert.That (
+          ((IWxePage) page).IsAbortConfirmationEnabled,
+          Is.False,
+          "Abort confirmation enabled with ShowAbortConfirmation=Never.");
     }
 
 
@@ -123,15 +168,22 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       page.EnableAbort = true;
 
       page.EnableOutOfSequencePostBacks = null;
-      Assert.IsFalse (
-          ((IWxePage) page).AreOutOfSequencePostBacksEnabled, "Out-of-sequence postbacks enabled with EnableOutOfSequencePostBacks=Undefined.");
+      Assert.That (
+          ((IWxePage) page).AreOutOfSequencePostBacksEnabled,
+          Is.False,
+          "Out-of-sequence postbacks enabled with EnableOutOfSequencePostBacks=Undefined.");
 
       page.EnableOutOfSequencePostBacks = true;
-      Assert.IsFalse (((IWxePage) page).AreOutOfSequencePostBacksEnabled, "Out-of-sequence postbacks enabled with EnableOutOfSequencePostBacks=True.");
+      Assert.That (
+          ((IWxePage) page).AreOutOfSequencePostBacksEnabled,
+          Is.False,
+          "Out-of-sequence postbacks enabled with EnableOutOfSequencePostBacks=True.");
 
       page.EnableOutOfSequencePostBacks = false;
-      Assert.IsFalse (
-          ((IWxePage) page).AreOutOfSequencePostBacksEnabled, "Out-of-sequence postbacks enabled with EnableOutOfSequencePostBacks=False.");
+      Assert.That (
+          ((IWxePage) page).AreOutOfSequencePostBacksEnabled,
+          Is.False,
+          "Out-of-sequence postbacks enabled with EnableOutOfSequencePostBacks=False.");
     }
 
     [Test]
@@ -141,15 +193,22 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       page.EnableAbort = false;
 
       page.EnableOutOfSequencePostBacks = null;
-      Assert.IsFalse (
-          ((IWxePage) page).AreOutOfSequencePostBacksEnabled, "Out-of-sequence postbacks enabled with EnableOutOfSequencePostBacks=Undefined.");
+      Assert.That (
+          ((IWxePage) page).AreOutOfSequencePostBacksEnabled,
+          Is.False,
+          "Out-of-sequence postbacks enabled with EnableOutOfSequencePostBacks=Undefined.");
 
       page.EnableOutOfSequencePostBacks = true;
-      Assert.IsTrue (((IWxePage) page).AreOutOfSequencePostBacksEnabled, "Out-of-sequence postbacks disabled with EnableOutOfSequencePostBacks=True.");
+      Assert.That (
+          ((IWxePage) page).AreOutOfSequencePostBacksEnabled,
+          Is.True,
+          "Out-of-sequence postbacks disabled with EnableOutOfSequencePostBacks=True.");
 
       page.EnableOutOfSequencePostBacks = false;
-      Assert.IsFalse (
-          ((IWxePage) page).AreOutOfSequencePostBacksEnabled, "Out-of-sequence postbacks enabled with EnableOutOfSequencePostBacks=False.");
+      Assert.That (
+          ((IWxePage) page).AreOutOfSequencePostBacksEnabled,
+          Is.False,
+          "Out-of-sequence postbacks enabled with EnableOutOfSequencePostBacks=False.");
     }
   }
 }
