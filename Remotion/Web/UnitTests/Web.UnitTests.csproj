@@ -378,7 +378,7 @@
     <Compile Include="Core\ExecutionEngine\WxeMethodStepTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\ExecutionEngine\WxePageTest.cs">
+    <Compile Include="Core\ExecutionEngine\WxePageTests\AbortHandling_WxePageTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\ExecutionEngine\WxeParameterConverterMock.cs">

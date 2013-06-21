@@ -20,10 +20,10 @@ using NUnit.Framework;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 
-namespace Remotion.Web.UnitTests.Core.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageTests
 {
   [TestFixture]
-  public class WxePageTest : WxeTest
+  public class AbortHandling_WxePageTest : WxeTest
   {
     [SetUp]
     public override void SetUp ()
