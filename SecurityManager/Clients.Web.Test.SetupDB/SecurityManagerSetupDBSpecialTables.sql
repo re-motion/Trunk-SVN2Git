@@ -4,12 +4,12 @@ GO
 -- Create all tables
 CREATE TABLE [dbo].[Revision]
 (
-  [Value] int NOT NULL
+  [Value] UNIQUEIDENTIFIER NOT NULL,
+  [GlobalKey] UNIQUEIDENTIFIER NOT NULL,
+  [LocalKey] NVARCHAR (100) NULL,
 )
 
-GO
-
-INSERT INTO [dbo].[Revision] 
-([Value]) VALUES (0)
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Revision_GlobalKey_LocalKey] ON [dbo].[Revision] ([GlobalKey], [LocalKey]) INCLUDE ([Value])
+CREATE NONCLUSTERED INDEX [IX_Revision_LocalKey_GlobalKey] ON [dbo].[Revision] ([LocalKey], [GlobalKey]) INCLUDE ([Value])
 
 GO

@@ -12,3 +12,6 @@ ALTER TABLE [Group]
 
 ALTER TABLE [Position]
   ADD CONSTRAINT PositionUniqueIdentifier UNIQUE NONCLUSTERED ([UniqueIdentifier])
+
+ALTER TABLE [Culture]
+  ADD CONSTRAINT CultureUniqueIdentifier UNIQUE NONCLUSTERED ([CultureName])
