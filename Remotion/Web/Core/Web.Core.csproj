@@ -140,6 +140,8 @@
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Design\DesignTimeResourcePathBuilder.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxeHttpExceptionPreservingException.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxeResourceNotFoundException.cs" />
     <Compile Include="ExecutionEngine\IWxeCallOptions.cs" />
     <Compile Include="ExecutionEngine\WxeCallArgumentsWithoutSender.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsBase.cs" />

@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -16,19 +16,28 @@
 // 
 
 using System;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
+using System.Runtime.Serialization;
+using System.Web;
 
-namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling
+namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
+  /// <summary>
+  /// Exception thrown when the requested resource was not found.
+  /// </summary>
+  /// <remarks>
+  /// This exception is used to preserve context information when using HttpServerUtility.Transfer(...) and the requested page was not found.
+  /// </remarks>
   [Serializable]
-  public class MissingPageFunction : WxeFunction
+  public sealed class WxeResourceNotFoundException : HttpException
   {
-    public MissingPageFunction ()
-        : base (new NoneTransactionMode())
+    public WxeResourceNotFoundException (string message, HttpException innerException)
+        : base (500, message, innerException)
     {
     }
 
-    private WxePageStep Step1 = new WxePageStep ("~/ExecutionEngine/ExceptionHandling/MissingForm.aspx");
+    private WxeResourceNotFoundException (SerializationInfo info, StreamingContext context)
+        : base (info, context)
+    {
+    }
   }
 }

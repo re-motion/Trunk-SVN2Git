@@ -67,6 +67,11 @@ namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling
       ExecuteFunction (new MissingPageFunction(), WxeCallArguments.Default);
     }
 
+    protected void ThrowExceptionForMissingUserControlButton_Click (object sender, EventArgs e)
+    {
+      ExecuteFunction (new MissingUserControlFunction(), WxeCallArguments.Default);
+    }
+
     private void ThrowInnerExceptionWithNesting ()
     {
       try

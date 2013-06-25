@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.Text;
 using System.Web;
 using System.Web.UI;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
@@ -51,6 +52,9 @@ namespace Remotion.Web.ExecutionEngine
     public static readonly string ReturningTokenID = "wxeReturningTokenField";
     public static readonly string PageTokenID = "wxePageTokenField";
     public static readonly string PostBackSequenceNumberID = "wxePostBackSequenceNumberField";
+
+    private const int HttpStatusCode_ServerError = 500;
+    private const int HttpStatusCode_NotFound = 404;
 
     private const string c_scriptFileUrl = "ExecutionEngine.js";
     private const string c_styleFileUrl = "ExecutionEngine.css";
@@ -460,6 +464,20 @@ namespace Remotion.Web.ExecutionEngine
           httpContext.Response.Clear (); // throw away page trace output
         throw new WxeExecuteNextStepException ();
       }
+    }
+    
+    [NotNull]
+    public Exception WrapProcessRequestException ([NotNull] HttpException exception)
+    {
+      ArgumentUtility.CheckNotNull ("exception", exception);
+
+      if (exception.GetHttpCode() == HttpStatusCode_ServerError)
+        return exception.PreserveStackTrace();
+
+      if (exception.GetHttpCode() == HttpStatusCode_NotFound)
+        return new WxeResourceNotFoundException ("Resource not found.", exception);
+
+      return new WxeHttpExceptionPreservingException (exception);
     }
 
     public WxeForm WxeForm

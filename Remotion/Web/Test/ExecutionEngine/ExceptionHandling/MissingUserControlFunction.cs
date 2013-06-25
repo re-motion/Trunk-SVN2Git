@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
@@ -22,13 +21,13 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling
 {
   [Serializable]
-  public class MissingPageFunction : WxeFunction
+  public class MissingUserControlFunction : WxeFunction
   {
-    public MissingPageFunction ()
+    public MissingUserControlFunction ()
         : base (new NoneTransactionMode())
     {
     }
 
-    private WxePageStep Step1 = new WxePageStep ("~/ExecutionEngine/ExceptionHandling/MissingForm.aspx");
+    private WxePageStep Step1 = new WxePageStep ("~/ExecutionEngine/ExceptionHandling/MissingUserControlForm.aspx");
   }
 }

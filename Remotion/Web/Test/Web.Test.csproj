@@ -182,6 +182,14 @@
       <DependentUpon>TestForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="ExecutionEngine\ExceptionHandling\MissingPageFunction.cs" />
+    <Compile Include="ExecutionEngine\ExceptionHandling\MissingUserControlForm.aspx.cs">
+      <DependentUpon>MissingUserControlForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\ExceptionHandling\MissingUserControlForm.aspx.designer.cs">
+      <DependentUpon>MissingUserControlForm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ExecutionEngine\ExceptionHandling\MissingUserControlFunction.cs" />
     <Compile Include="ExecutionEngine\ExceptionHandling\TestFunction.cs" />
     <Compile Include="ExecutionEngine\ExceptionHandling\TestForm.aspx.cs">
       <DependentUpon>TestForm.aspx</DependentUpon>
@@ -413,6 +421,7 @@
     <Content Include="DefaultButtonTest.aspx" />
     <Content Include="ErrorHandling\ErrorForm.aspx" />
     <Content Include="ErrorHandling\TestForm.aspx" />
+    <Content Include="ExecutionEngine\ExceptionHandling\MissingUserControlForm.aspx" />
     <Content Include="ExecutionEngine\ExceptionHandling\TestForm.aspx" />
     <Content Include="ExecutionEngine\ExceptionHandling\ThrowingForm.aspx" />
     <Content Include="ExecutionEngine\ZeroControl.ascx" />

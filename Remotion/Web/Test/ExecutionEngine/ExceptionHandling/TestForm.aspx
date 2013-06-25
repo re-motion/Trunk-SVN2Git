@@ -26,11 +26,24 @@
 <body>
   <form id="TheForm" runat="server">
     <div>
-      <asp:Button runat="server" ID="ThrowExceptionButton" OnClick="ThrowExceptionButton_Click" Text="Throw Exception"/>
-      <asp:Button runat="server" ID="ThrowHttpExceptionButton" OnClick="ThrowHttpExceptionButton_Click" Text="Throw HttpException"/>
-      <asp:Button runat="server" ID="ThrowExceptionFromSubFunctionButton" OnClick="ThrowExceptionFromSubFunctionButton_Click" Text="Throw Exception from SubFunction"/>
-      <asp:Button runat="server" ID="ThrowExceptionForMissingPageButton" OnClick="ThrowExceptionForMissingPageButton_Click" Text="Throw Exception for missing page"/>
-      <asp:Button runat="server" ID="OpenSubFunctionButton" OnClick="OpenSubFunctionButton_Click" Text="Open SubFunction"/>
+      <p>
+        <asp:Button runat="server" ID="ThrowExceptionButton" OnClick="ThrowExceptionButton_Click" Text="Throw Exception" />
+      </p>
+      <p>
+        <asp:Button runat="server" ID="ThrowHttpExceptionButton" OnClick="ThrowHttpExceptionButton_Click" Text="Throw HttpException" />
+      </p>
+      <p>
+        <asp:Button runat="server" ID="ThrowExceptionFromSubFunctionButton" OnClick="ThrowExceptionFromSubFunctionButton_Click" Text="Throw Exception from SubFunction" />
+      </p>
+      <p>
+        <asp:Button runat="server" ID="ThrowExceptionForMissingPageButton" OnClick="ThrowExceptionForMissingPageButton_Click" Text="Throw Exception for missing page" />
+      </p>
+      <p>
+        <asp:Button runat="server" ID="ThrowExceptionForMissingUserControlButton" OnClick="ThrowExceptionForMissingUserControlButton_Click" Text="Throw Exception for missing user control" />
+      </p>
+      <p>
+        <asp:Button runat="server" ID="OpenSubFunctionButton" OnClick="OpenSubFunctionButton_Click" Text="Open SubFunction" />
+      </p>
     </div>
     <div>
       <asp:Literal runat="server" ID="Stack"></asp:Literal>

@@ -16,19 +16,17 @@
 // 
 
 using System;
+using System.Web.UI;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling
 {
-  [Serializable]
-  public class MissingPageFunction : WxeFunction
+  public partial class MissingUserControlForm : WxePage
   {
-    public MissingPageFunction ()
-        : base (new NoneTransactionMode())
+    protected override void OnPreInit (EventArgs e)
     {
+      base.OnPreInit (e);
+      LoadControl ("MissingUserControl.ascx");
     }
-
-    private WxePageStep Step1 = new WxePageStep ("~/ExecutionEngine/ExceptionHandling/MissingForm.aspx");
   }
 }

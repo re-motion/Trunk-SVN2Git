@@ -58,6 +58,15 @@ namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling {
         protected global::System.Web.UI.WebControls.Button ThrowExceptionForMissingPageButton;
         
         /// <summary>
+        /// ThrowExceptionForMissingUserControlButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ThrowExceptionForMissingUserControlButton;
+        
+        /// <summary>
         /// OpenSubFunctionButton control.
         /// </summary>
         /// <remarks>

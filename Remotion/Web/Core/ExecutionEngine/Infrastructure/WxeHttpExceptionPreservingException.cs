@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -16,19 +16,27 @@
 // 
 
 using System;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
+using System.Runtime.Serialization;
+using System.Web;
 
-namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling
+namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   [Serializable]
-  public class MissingPageFunction : WxeFunction
+  public sealed class WxeHttpExceptionPreservingException : WxeException
   {
-    public MissingPageFunction ()
-        : base (new NoneTransactionMode())
+    public WxeHttpExceptionPreservingException (HttpException exception)
+        : base ("HttpException was thrown.", exception)
     {
     }
 
-    private WxePageStep Step1 = new WxePageStep ("~/ExecutionEngine/ExceptionHandling/MissingForm.aspx");
+    private WxeHttpExceptionPreservingException (SerializationInfo info, StreamingContext context)
+        : base (info, context)
+    {
+    }
+
+    public HttpException HttpException
+    {
+      get { return (HttpException) InnerException; }
+    }
   }
 }

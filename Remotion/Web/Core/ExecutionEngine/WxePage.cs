@@ -17,11 +17,14 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Web;
 using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.Obsolete;
 using Remotion.Web.UI;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -288,6 +291,17 @@ namespace Remotion.Web.ExecutionEngine
     {
     }
 
+    public override void ProcessRequest (System.Web.HttpContext httpContext)
+    {
+      try
+      {
+        base.ProcessRequest (httpContext);
+      }
+      catch (HttpException ex)
+      {
+        throw _wxePageInfo.WrapProcessRequestException (ex);
+      }
+    }
 
     /// <summary> Gets or sets the flag that determines whether to abort the session upon closing the window. </summary>
     /// <value> 

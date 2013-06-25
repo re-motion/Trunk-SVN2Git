@@ -21,6 +21,7 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling
 {
+  [Serializable]
   public class ThrowingFunction : WxeFunction
   {
     public ThrowingFunction ()
