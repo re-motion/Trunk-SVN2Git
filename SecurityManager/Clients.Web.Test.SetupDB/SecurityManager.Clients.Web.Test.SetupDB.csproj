@@ -73,6 +73,7 @@
     <None Include="App.config" />
     <None Include="CreateDB.sql" />
     <None Include="TearDownDB.sql" />
+    <Content Include="ACE-Add.sql" />
     <Content Include="SecurityManagerSetupConstraints.sql" />
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
