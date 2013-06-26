@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
@@ -93,16 +94,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       bool match = false;
       if (_catchExceptions && _catchExceptionTypes != null)
-      {
-        foreach (Type exceptionType in _catchExceptionTypes)
-        {
-          if (exceptionType.IsAssignableFrom (exception.GetType ()))
-          {
-            match = true;
-            break;
-          }
-        }
-      }
+        match = _catchExceptionTypes.Any (exceptionType => exceptionType.IsInstanceOfType (exception));
 
       if (!_catchExceptions || !match)
         return false;
