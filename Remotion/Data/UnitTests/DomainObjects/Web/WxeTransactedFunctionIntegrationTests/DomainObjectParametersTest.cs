@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
       ClassWithAllDataTypes outParameter;
       ClassWithAllDataTypes[] outParameterArray;
 
-      Assert.That (
+      var wxeUnhandledException = Assert.Throws<WxeUnhandledException> (
           () => ExecuteDelegateInSubWxeFunctionWithParameters (
               WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
               WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
@@ -168,16 +168,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
               null,
               null,
               out outParameter,
-              out outParameterArray),
-          Throws.TypeOf<WxeUnhandledException>()
-                .With.Message.StringStarting (
-                    "An unhandled exception ocured while executing WxeFunction "
-                    + "'Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions.DomainObjectParameterTestTransactedFunction':\r\n"
-                    + "One or more of the output parameters returned from the WxeFunction are incompatible with the function's parent transaction. "
-                    + "The following objects are incompatible with the target transaction: ")
-                    .And.Message.StringContaining ("ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid")
-                    .And.Message.StringContaining ("ClassWithAllDataTypes|583ec716-8443-4b55-92bf-09f7c8768529|System.Guid")
-                    .And.Message.StringEnding (". Objects of type 'Remotion.Data.DomainObjects.IDomainObjectHandle`1[T]' could be used instead."));
+              out outParameterArray));
+
+      Assert.That (
+          wxeUnhandledException.Message,
+          Is.EqualTo (
+              "An exception ocured while executing WxeFunction "
+              + "'Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions.TransactedFunctionWithChildFunction'."));
+
+      Assert.That (wxeUnhandledException.InnerException, Is.InstanceOf<WxeUnhandledException>());
+      Assert.That (
+          wxeUnhandledException.InnerException.Message,
+          Is.EqualTo (
+              "An exception ocured while executing WxeFunction "
+              + "'Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions.DomainObjectParameterTestTransactedFunction'."));
+
+      Assert.That (wxeUnhandledException.InnerException.InnerException, Is.Not.Null);
+      Assert.That (
+          wxeUnhandledException.InnerException.InnerException.Message,
+          Is.StringStarting (
+              "One or more of the output parameters returned from the WxeFunction are incompatible with the function's parent transaction. "
+              + "The following objects are incompatible with the target transaction: ")
+            .And.StringContaining ("ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid")
+            .And.StringContaining ("ClassWithAllDataTypes|583ec716-8443-4b55-92bf-09f7c8768529|System.Guid")
+            .And.StringEnding (". Objects of type 'Remotion.Data.DomainObjects.IDomainObjectHandle`1[T]' could be used instead."));
     }
 
     [Test]
