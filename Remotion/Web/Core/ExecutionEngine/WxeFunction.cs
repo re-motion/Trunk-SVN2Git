@@ -23,7 +23,6 @@ using System.Threading;
 using Remotion.Collections;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -226,25 +225,21 @@ namespace Remotion.Web.ExecutionEngine
       }
       catch (Exception stepException)
       {
-        Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (stepException) ?? stepException;
-
         try
         {
-          _executionListener.OnExecutionFail (context, unwrappedException);
+          _executionListener.OnExecutionFail (context, stepException);
         }
         catch (Exception listenerException)
         {
-          throw new WxeFatalExecutionException (unwrappedException, listenerException);
+          throw new WxeFatalExecutionException (stepException, listenerException);
         }
 
+        var unwrappedException = WxeHttpExceptionPreservingException.GetUnwrappedException (stepException) ?? stepException;
         if (!_exceptionHandler.Catch (unwrappedException))
         {
-          if (unwrappedException is WxeUnhandledException)
-            throw unwrappedException.PreserveStackTrace();
-
           throw new WxeUnhandledException (
-              string.Format ("An unhandled exception ocured while executing WxeFunction '{0}':\r\n{1}", GetType().FullName, unwrappedException.Message),
-              unwrappedException);
+              string.Format ("An exception ocured while executing WxeFunction '{0}'.", GetType().FullName),
+              stepException);
         }
       }
 

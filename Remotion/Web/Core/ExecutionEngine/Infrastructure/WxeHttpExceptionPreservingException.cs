@@ -18,14 +18,27 @@
 using System;
 using System.Runtime.Serialization;
 using System.Web;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   [Serializable]
   public sealed class WxeHttpExceptionPreservingException : WxeException
   {
+    [CanBeNull]
+    public static Exception GetUnwrappedException ([NotNull] Exception exception)
+    {
+      ArgumentUtility.CheckNotNull ("exception", exception);
+      
+      var unwrappedException = exception;
+      while (unwrappedException is HttpException || unwrappedException is WxeHttpExceptionPreservingException)
+        unwrappedException = unwrappedException.InnerException;
+      return unwrappedException;
+    }
+
     public WxeHttpExceptionPreservingException (HttpException exception)
-        : base ("HttpException was thrown.", exception)
+        : base (string.Format ("{0} was thrown.", exception), ArgumentUtility.CheckNotNull("exception", exception))
     {
     }
 

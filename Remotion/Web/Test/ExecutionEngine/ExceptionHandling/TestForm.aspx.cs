@@ -53,7 +53,7 @@ namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling
       }
       catch (Exception ex)
       {
-        throw new HttpException ("Test outer exception", ex);
+        throw new HttpException ("Test outer HTTP exception", ex);
       }
     }
     

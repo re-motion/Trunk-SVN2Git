@@ -55,12 +55,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
       catch (HttpException httpException)
       {
-        var unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (httpException);
-        if (unwrappedException is WxeExecutionControlException)
+        if (httpException.InnerException is WxeExecutionControlException)
           return;
-
-        if (unwrappedException is WxeHttpExceptionPreservingException)
-          httpException = ((WxeHttpExceptionPreservingException) unwrappedException).HttpException;
 
         if (httpException.GetHttpCode() == HttpStatusCode_NotFound)
           throw new WxeResourceNotFoundException (string.Format ("The page '{0}' does not exist.", page), httpException);

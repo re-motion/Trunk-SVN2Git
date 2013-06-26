@@ -142,7 +142,7 @@ namespace Remotion.Web.ExecutionEngine.Obsolete
           if (ex is System.Threading.ThreadAbortException)
             throw;
 
-          Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (ex) ?? ex;
+          Exception unwrappedException = WxeHttpExceptionPreservingException.GetUnwrappedException (ex) ?? ex;
 
           for (int i = 0; i < _catchBlocks.Count; ++i)
           {

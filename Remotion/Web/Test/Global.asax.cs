@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.ComponentModel;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Logging;
@@ -26,20 +25,9 @@ using Remotion.Web.UI;
 
 namespace Remotion.Web.Test
 {
-  /// <summary>
-  /// Summary description for Global.
-  /// </summary>
   public class Global : HttpApplication
   {
-    /// <summary>
-    /// Required designer variable.
-    /// </summary>
-    private IContainer components = null;
-
-    public Global ()
-    {
-      InitializeComponent();
-    }
+    private static ILog s_log = LogManager.GetLogger (typeof (Global));
 
     protected void Application_Start (Object sender, EventArgs e)
     {
@@ -67,6 +55,9 @@ namespace Remotion.Web.Test
     protected void Application_Error (Object sender, EventArgs e)
     {
       var exception = Server.GetLastError();
+
+      s_log.Error ("Application Error:", exception);
+
       if (exception is AsyncUnhandledException)
       {
         Server.ClearError();
@@ -87,18 +78,5 @@ namespace Remotion.Web.Test
     protected void Application_End (Object sender, EventArgs e)
     {
     }
-
-    #region Web Form Designer generated code
-
-    /// <summary>
-    /// Required method for Designer support - do not modify
-    /// the contents of this method with the code editor.
-    /// </summary>
-    private void InitializeComponent ()
-    {
-      this.components = new System.ComponentModel.Container();
-    }
-
-    #endregion
   }
 }

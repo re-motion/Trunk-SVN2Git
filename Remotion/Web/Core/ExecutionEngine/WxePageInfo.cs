@@ -471,9 +471,6 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNull ("exception", exception);
 
-      if (exception.GetHttpCode() == HttpStatusCode_ServerError)
-        return exception.PreserveStackTrace();
-
       if (exception.GetHttpCode() == HttpStatusCode_NotFound)
         return new WxeResourceNotFoundException ("Resource not found.", exception);
 

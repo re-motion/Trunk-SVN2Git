@@ -19,7 +19,6 @@ using System;
 using System.Collections.Specialized;
 using System.Web;
 using System.Web.UI;
-using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
@@ -69,15 +68,6 @@ namespace Remotion.Web.Utilities
       if (collection == null)
         return null;
       return collection[name];
-    }
-
-    [CanBeNull]
-    public static Exception GetUnwrappedExceptionFromHttpException (Exception e)
-    {
-      Exception unwrappedException = e as HttpException;
-      while (unwrappedException is HttpException)
-        unwrappedException = unwrappedException.InnerException;
-      return unwrappedException;
     }
   }
 }
