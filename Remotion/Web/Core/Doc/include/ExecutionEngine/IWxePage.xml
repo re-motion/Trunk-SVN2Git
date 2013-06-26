@@ -128,17 +128,17 @@ public override void Dispose()
     <example>
       Sample implementation of <see cref="Page.ProcessRequest"/>.
       <code escaped="true" lang="C#">
-        public override void ProcessRequest (System.Web.HttpContext httpContext)
-        {
-          try
-          {
-            base.ProcessRequest (httpContext);
-          }
-          catch (HttpException ex)
-          {
-            throw _wxePageInfo.WrapProcessRequestException (ex);
-          }
-        }
+public override void ProcessRequest (System.Web.HttpContext httpContext)
+{
+  try
+  {
+    base.ProcessRequest (httpContext);
+  }
+  catch (HttpException ex)
+  {
+    throw _wxePageInfo.WrapProcessRequestException (ex);
+  }
+}
       </code>
     </example>
     <example>
