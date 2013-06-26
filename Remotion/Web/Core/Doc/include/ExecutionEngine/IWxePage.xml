@@ -126,6 +126,22 @@ public override void Dispose()
       </code>    
     </example>
     <example>
+      Sample implementation of <see cref="Page.ProcessRequest"/>.
+      <code escaped="true" lang="C#">
+        public override void ProcessRequest (System.Web.HttpContext httpContext)
+        {
+          try
+          {
+            base.ProcessRequest (httpContext);
+          }
+          catch (HttpException ex)
+          {
+            throw _wxePageInfo.WrapProcessRequestException (ex);
+          }
+        }
+      </code>
+    </example>
+    <example>
       Sample implementation of <see cref="Control.OnPreRender"/>. 
       <code escaped="true" lang="C#">
 protected override void OnPreRender (EventArgs e)
