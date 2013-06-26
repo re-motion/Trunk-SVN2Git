@@ -85,6 +85,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public Type[] GetCatchExceptionTypes ()
     {
+      if (_catchExceptionTypes == null)
+        return new Type[0];
       return (Type[]) _catchExceptionTypes.Clone ();
     }
 
