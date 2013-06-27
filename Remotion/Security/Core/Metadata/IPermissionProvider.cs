@@ -16,9 +16,11 @@
 // 
 using System;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Security.Metadata
 {
+  [ConcreteImplementation(typeof (PermissionReflector), Lifetime = LifetimeKind.Singleton)]
   public interface IPermissionProvider
   {
     Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation);

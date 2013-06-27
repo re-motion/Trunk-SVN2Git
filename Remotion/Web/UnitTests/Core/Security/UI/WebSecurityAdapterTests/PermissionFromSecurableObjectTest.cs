@@ -16,8 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
+using Remotion.ServiceLocation;
 using Remotion.Web.Security.UI;
 using Remotion.Web.UnitTests.Core.Security.Configuration;
 using Remotion.Web.UnitTests.Core.Security.Domain;
@@ -30,6 +32,7 @@ namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
   {
     private IWebSecurityAdapter _securityAdapter;
     private WebPermissionProviderTestHelper _testHelper;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     [SetUp]
     public void SetUp ()
@@ -40,13 +43,17 @@ namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
       _testHelper = new WebPermissionProviderTestHelper ();
       SecurityConfiguration.Current.SecurityProvider = _testHelper.SecurityProvider;
       SecurityConfiguration.Current.PrincipalProvider = _testHelper.PrincipalProvider;
-      SecurityConfiguration.Current.FunctionalSecurityStrategy = _testHelper.FunctionalSecurityStrategy;
+
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IFunctionalSecurityStrategy), () => _testHelper.FunctionalSecurityStrategy);
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 
     [TearDown]
     public void TearDown ()
     {
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
+      _serviceLocatorScope.Dispose();
     }
 
     [Test]

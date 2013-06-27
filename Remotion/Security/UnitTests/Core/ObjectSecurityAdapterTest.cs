@@ -16,11 +16,13 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.Configuration;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core
@@ -45,6 +47,7 @@ namespace Remotion.Security.UnitTests.Core
     private IMemberResolver _mockMemberResolver;
     private IPropertyInformation _mockPropertyInformation;
     private IMethodInformation _mockMethodInformation;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     // construction and disposing
 
@@ -76,8 +79,11 @@ namespace Remotion.Security.UnitTests.Core
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
       SecurityConfiguration.Current.PrincipalProvider = _mockPrincipalProvider;
-      SecurityConfiguration.Current.PermissionProvider = _mockPermissionProvider;
-      SecurityConfiguration.Current.MemberResolver = _mockMemberResolver;
+
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IPermissionProvider), () =>_mockPermissionProvider);
+      serviceLocator.Register (typeof (IMemberResolver), () =>_mockMemberResolver);
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
       _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy>();
       _securableObject = new SecurableObject (_mockObjectSecurityStrategy);
@@ -87,6 +93,7 @@ namespace Remotion.Security.UnitTests.Core
     public void TearDown ()
     {
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
+      _serviceLocatorScope.Dispose();
     }
 
     [Test]

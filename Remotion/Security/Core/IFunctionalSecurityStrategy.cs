@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Security
 {
   /// <summary>Encapsulates the security checks for static access to the business object.</summary>
   /// <remarks><note type="inotes">Implementations are free to decide whether they provide object-independent caching.</note></remarks>
+  [ConcreteImplementation (typeof (FunctionalSecurityStrategy), Lifetime = LifetimeKind.Singleton)]
   public interface IFunctionalSecurityStrategy
   {
     /// <summary>Determines whether the requested access is granted.</summary>

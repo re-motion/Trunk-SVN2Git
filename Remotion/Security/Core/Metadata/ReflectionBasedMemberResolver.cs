@@ -72,6 +72,10 @@ namespace Remotion.Security.Metadata
 
     private static readonly ICache<CacheKey, IMethodInformation> s_cache = CacheFactory.CreateWithLocking<CacheKey, IMethodInformation>();
 
+    public ReflectionBasedMemberResolver ()
+    {
+    }
+
     public IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation)
     {
       ArgumentUtility.CheckNotNull ("type", type);

@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Configuration;
 using Remotion.Security.Configuration;
-using Remotion.Security.Metadata;
 
 namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTests
 {
@@ -33,59 +32,14 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       Assert.That (configuration, Is.Not.Null);
       Assert.IsInstanceOf (typeof (NullSecurityProvider), configuration.SecurityProvider);
       Assert.IsInstanceOf (typeof (ThreadPrincipalProvider), configuration.PrincipalProvider);
-      Assert.IsInstanceOf (typeof (FunctionalSecurityStrategy), configuration.FunctionalSecurityStrategy);
-      Assert.IsInstanceOf (typeof (PermissionReflector), configuration.PermissionProvider);
     }
 
     [Test]
     public void DeserializeSecurityConfiguration_WithNamespace()
     {
-      string xmlFragment = @"<remotion.security xmlns=""http://www.re-motion.org/Security/Configuration"" />";
+      string xmlFragment = @"<remotion.security xmlns=""http://www.re-motion.org/Security/Configuration/2.0"" />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
       // Succeeded
-    }
-
-    [Test]
-    public void DeserializeSecurityConfiguration_WithDefaultFunctionalSecurityStrategy()
-    {
-      string xmlFragment = @"<remotion.security />";
-      ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.IsInstanceOf (typeof (FunctionalSecurityStrategy), Configuration.FunctionalSecurityStrategy);
-    }
-
-    [Test]
-    public void FunctionalSecurityStrategyIsAlwaysSameInstance()
-    {
-      string xmlFragment = @"<remotion.security />";
-      ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.That (Configuration.FunctionalSecurityStrategy, Is.SameAs (Configuration.FunctionalSecurityStrategy));
-    }
-
-    [Test]
-    public void DeserializeSecurityConfiguration_WithCustomFunctionalSecurityStrategy()
-    {
-      string xmlFragment =
-          @"
-          <remotion.security>
-            <functionalSecurityStrategy type=""Remotion.Security.UnitTests::Core.Configuration.FunctionalSecurityStrategyMock"" />
-          </remotion.security>";
-
-      ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-
-      Assert.IsInstanceOf (typeof (FunctionalSecurityStrategyMock), Configuration.FunctionalSecurityStrategy);
-    }
-
-    [Test]
-    public void DeserializeSecurityConfiguration_WithCustomMemberResolver ()
-    {
-      string xmlFragment =
-          @"<remotion.security>
-            <memberResolver type=""Remotion.Security.UnitTests::Core.Configuration.MemberResolverMock"" />
-          </remotion.security>";
-
-      ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-
-      Assert.IsInstanceOf (typeof (MemberResolverMock), Configuration.MemberResolver);
     }
   }
 }

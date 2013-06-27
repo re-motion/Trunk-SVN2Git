@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Specialized;
 using NUnit.Framework;
-using Remotion.Configuration;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
@@ -33,18 +32,6 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     public void SetUp ()
     {
       _permissionReflector = new PermissionReflector ();
-    }
-
-    [Test]
-    public void Initialize ()
-    {
-      NameValueCollection config = new NameValueCollection ();
-      config.Add ("description", "The Description");
-
-      ExtendedProviderBase provider = new PermissionReflector ("Provider", config);
-
-      Assert.That (provider.Name, Is.EqualTo ("Provider"));
-      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
 
     [Test]

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Remotion.Collections;
-using Remotion.Configuration;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -27,7 +26,7 @@ namespace Remotion.Security.Metadata
   /// <summary>
   /// Implements the <see cref="IPermissionProvider"/> for a reflection-based security declaration.
   /// </summary>
-  public class PermissionReflector : ExtendedProviderBase, IPermissionProvider
+  public class PermissionReflector : IPermissionProvider
   {
     private struct CacheKey : IEquatable<CacheKey>
     {
@@ -59,12 +58,6 @@ namespace Remotion.Security.Metadata
     private readonly Func<CacheKey, Enum[]> _cacheValueFactory;
 
     public PermissionReflector ()
-        : this ("Reflection", new NameValueCollection())
-    {
-    }
-
-    public PermissionReflector (string name, NameValueCollection config)
-        : base (name, config)
     {
       _cacheValueFactory = key => GetPermissions (key.MethodInformation);
     }

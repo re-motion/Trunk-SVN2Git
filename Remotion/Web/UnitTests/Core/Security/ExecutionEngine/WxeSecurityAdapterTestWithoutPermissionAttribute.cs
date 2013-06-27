@@ -16,7 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 using Remotion.Web.UnitTests.Core.Security.Configuration;
 using Rhino.Mocks;
 using Remotion.Security.Configuration;
@@ -39,6 +41,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     private IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
     private ISecurityProvider _mockSecurityProvider;
     private IPrincipalProvider _mockPrincipalProvider;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     // construction and disposing
 
@@ -63,13 +66,17 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
       SecurityConfiguration.Current.PrincipalProvider = _mockPrincipalProvider;
-      SecurityConfiguration.Current.FunctionalSecurityStrategy = _mockFunctionalSecurityStrategy;
+
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IFunctionalSecurityStrategy), () => _mockFunctionalSecurityStrategy);
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 
     [TearDown]
     public void TearDown ()
     {
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
+      _serviceLocatorScope.Dispose();
     }
 
     [Test]

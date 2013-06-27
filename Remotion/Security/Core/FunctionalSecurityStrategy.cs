@@ -16,6 +16,7 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
@@ -31,9 +32,17 @@ namespace Remotion.Security
           .First (() => new InvalidOperationException ("No instance of IGlobalAccessTypeCache has been registered with the ServiceLocator."));
     }
 
+    public static FunctionalSecurityStrategy CreateWithCustomSecurityStrategy (ISecurityStrategy securityStrategy)
+    {
+      ArgumentUtility.CheckNotNull ("securityStrategy", securityStrategy);
+      
+      return new FunctionalSecurityStrategy (securityStrategy);
+    }
+
     private readonly ISecurityStrategy _securityStrategy;
 
-    public FunctionalSecurityStrategy (ISecurityStrategy securityStrategy)
+    [PublicAPI]
+    protected FunctionalSecurityStrategy (ISecurityStrategy securityStrategy)
     {
       ArgumentUtility.CheckNotNull ("securityStrategy", securityStrategy);
 

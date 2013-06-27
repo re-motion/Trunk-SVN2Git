@@ -22,6 +22,8 @@ using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
+using Remotion.Security.Metadata;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security
@@ -32,12 +34,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
     private ISecurityProvider _securityProviderStub;
     private IPrincipalProvider _principalProviderStub;
     private ISecurityPrincipal _securityPrincipalStub;
-    private IFunctionalSecurityStrategy _functionalSecurityStub;
+    private IFunctionalSecurityStrategy _functionalSecurityStrategyStub;
 
     private ISecurityContext _securityContextStub;
     private ISecurityContextFactory _securityContextFactoryStub;
     
     private ClientTransaction _clientTransaction;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     [SetUp]
     public void SetUp ()
@@ -45,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       _securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       _principalProviderStub = MockRepository.GenerateStub<IPrincipalProvider>();
       _securityPrincipalStub = MockRepository.GenerateStub<ISecurityPrincipal>();
-      _functionalSecurityStub = MockRepository.GenerateStub<IFunctionalSecurityStrategy>();
+      _functionalSecurityStrategyStub = MockRepository.GenerateStub<IFunctionalSecurityStrategy>();
 
       _principalProviderStub.Stub (stub => stub.GetPrincipal()).Return (_securityPrincipalStub);
 
@@ -59,7 +62,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
 
       SecurityConfiguration.Current.SecurityProvider = _securityProviderStub;
       SecurityConfiguration.Current.PrincipalProvider = _principalProviderStub;
-      SecurityConfiguration.Current.FunctionalSecurityStrategy = _functionalSecurityStub;
+
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IFunctionalSecurityStrategy), () => _functionalSecurityStrategyStub);
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
       _clientTransaction.EnterNonDiscardingScope();
     }
@@ -70,7 +76,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       ClientTransactionScope.ResetActiveScope();
       SecurityConfiguration.Current.SecurityProvider = null;
       SecurityConfiguration.Current.PrincipalProvider = null;
-      SecurityConfiguration.Current.FunctionalSecurityStrategy = null;
+
+      _serviceLocatorScope.Dispose();
     }
 
     [Test]
@@ -218,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
     [Test]
     public void AutomaticCleanup_WhenDomainObjectCtorThrows_DoesNotRequireDeletePermissions ()
     {
-      _functionalSecurityStub
+      _functionalSecurityStrategyStub
           .Stub (
               mock => mock.HasAccess (
                   typeof (SecurableObject),

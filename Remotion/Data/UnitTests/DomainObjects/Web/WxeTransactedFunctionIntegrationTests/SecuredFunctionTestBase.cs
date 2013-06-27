@@ -19,8 +19,11 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
+using Remotion.Security.Metadata;
+using Remotion.ServiceLocation;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Security.ExecutionEngine;
@@ -37,6 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     private IFunctionalSecurityStrategy _functionalSecurityStrategyStub;
     private IObjectSecurityStrategy _objectSecurityStrategyStub;
     private AccessType _testAccessTypeValue;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     public override void SetUp ()
     {
@@ -57,7 +61,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
       SecurityConfiguration.Current.SecurityProvider = _securityProviderStub;
       SecurityConfiguration.Current.PrincipalProvider = principalProviderStub;
-      SecurityConfiguration.Current.FunctionalSecurityStrategy = _functionalSecurityStrategyStub;
+
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IFunctionalSecurityStrategy), () => _functionalSecurityStrategyStub);
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
       _testAccessTypeValue = AccessType.Get (TestAccessTypes.Value);
     }
@@ -67,7 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _previousAdapter);
       SecurityConfiguration.Current.SecurityProvider = null;
       SecurityConfiguration.Current.PrincipalProvider = null;
-      SecurityConfiguration.Current.FunctionalSecurityStrategy = null;
+
+      _serviceLocatorScope.Dispose();
 
       base.TearDown ();
     }

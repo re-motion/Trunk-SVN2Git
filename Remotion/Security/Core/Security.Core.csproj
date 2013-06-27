@@ -115,7 +115,6 @@
     <Compile Include="NullSecurityPrincipal.cs" />
     <Compile Include="NullSecurityClient.cs" />
     <Compile Include="NullSecurityProvider.cs" />
-    <Compile Include="Configuration\PermissionProviderHelper.cs" />
     <Compile Include="Configuration\PrincipalProviderHelper.cs" />
     <Compile Include="FunctionalSecurityContextFactory.cs" />
     <Compile Include="GeneralAccessTypes.cs" />

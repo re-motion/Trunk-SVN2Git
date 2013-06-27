@@ -20,6 +20,7 @@ using System.Reflection;
 using Remotion.Reflection;
 using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Security
@@ -39,12 +40,14 @@ namespace Remotion.Security
       if (securityProvider.IsNull)
         return SecurityClient.Null;
 
+      var serviceLocator = SafeServiceLocator.Current;
+
       return new SecurityClient (
           securityProvider,
-          SecurityConfiguration.Current.PermissionProvider,
+          serviceLocator.GetInstance<IPermissionProvider>(),
           SecurityConfiguration.Current.PrincipalProvider,
-          SecurityConfiguration.Current.FunctionalSecurityStrategy,
-          SecurityConfiguration.Current.MemberResolver);
+          serviceLocator.GetInstance<IFunctionalSecurityStrategy>(),
+          serviceLocator.GetInstance<IMemberResolver>());
     }
 
     private readonly ISecurityProvider _securityProvider;

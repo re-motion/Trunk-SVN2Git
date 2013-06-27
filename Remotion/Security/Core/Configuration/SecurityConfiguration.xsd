@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <xs:schema
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:c="http://www.re-motion.org/Security/Configuration"
-    targetNamespace="http://www.re-motion.org/Security/Configuration"
+    xmlns:c="http://www.re-motion.org/Security/Configuration/2.0"
+    targetNamespace="http://www.re-motion.org/Security/Configuration/2.0"
     elementFormDefault="qualified"
     attributeFormDefault="unqualified">
 
@@ -10,22 +10,10 @@
     <xs:complexType>
       <xs:all>
         <xs:element name="securityProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
-        <xs:element name="permissionProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
         <xs:element name="userProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
-        <xs:element name="functionalSecurityStrategy" minOccurs="0" maxOccurs="1">
-          <xs:complexType>
-            <xs:attribute name="type" type="c:DotNetType" default="None" />
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="memberResolver" minOccurs="0" maxOccurs="1">
-          <xs:complexType>
-            <xs:attribute name="type" type="c:DotNetType" default="None" />
-          </xs:complexType>
-        </xs:element>
       </xs:all>
       <xs:attribute name="defaultSecurityProvider" type="c:SecurityProviderSelection" default="None" />
       <xs:attribute name="defaultPrincipalProvider" type="c:PrincipalProviderSelection" default="Thread" />
-      <xs:attribute name="defaultPermissionProvider" type="c:PermissionProviderSelection" default="Reflection" />
     </xs:complexType>
   </xs:element>
 
@@ -50,19 +38,6 @@
           <xs:enumeration value="Thread" />
           <xs:enumeration value="HttpContext" />
           <xs:enumeration value="SecurityManager" />
-        </xs:restriction>
-      </xs:simpleType>
-      <xs:simpleType>
-        <xs:restriction base="c:RequiredStringType" />
-      </xs:simpleType>
-    </xs:union>
-  </xs:simpleType>
-
-  <xs:simpleType name="PermissionProviderSelection">
-    <xs:union>
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="Reflection" />
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType>

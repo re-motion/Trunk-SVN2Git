@@ -25,6 +25,7 @@ using Remotion.Reflection;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -49,6 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     private readonly IPermissionProvider _mockPermissionReflector;
     private readonly IMemberResolver _mockMemberResolver;
     private readonly ClientTransaction _transaction;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     // construction and disposing
 
@@ -95,14 +97,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       PrivateInvoke.InvokeNonPublicStaticMethod (typeof (SecurityConfiguration), "SetCurrent", new SecurityConfiguration ());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
       SecurityConfiguration.Current.PrincipalProvider = _stubPrincipalProvider;
-      SecurityConfiguration.Current.FunctionalSecurityStrategy = _mockFunctionalSecurityStrategy;
-      SecurityConfiguration.Current.PermissionProvider = _mockPermissionReflector;
-      SecurityConfiguration.Current.MemberResolver = _mockMemberResolver;
+
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IMemberResolver), () => _mockMemberResolver);
+      serviceLocator.Register (typeof (IPermissionProvider), () => _mockPermissionReflector);
+      serviceLocator.Register (typeof (IFunctionalSecurityStrategy), () => _mockFunctionalSecurityStrategy);
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 
     public void TearDownSecurityConfiguration ()
     {
       PrivateInvoke.InvokeNonPublicStaticMethod (typeof (SecurityConfiguration), "SetCurrent", new SecurityConfiguration ());
+      _serviceLocatorScope.Dispose();
     }
 
     public void ReplayAll ()

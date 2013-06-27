@@ -21,6 +21,7 @@ using System.Configuration.Provider;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
+using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
 using Remotion.Security;
 using Remotion.Security.Configuration;
@@ -28,6 +29,7 @@ using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Configuration;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.OrganizationalStructure.RolePropertiesSearchServiceTests
@@ -43,6 +45,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     private IFunctionalSecurityStrategy _stubFunctionalSecurityStrategy;
     private RolePropertiesSearchService _searchService;
     private IBusinessObjectReferenceProperty _positionProperty;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     public override void TestFixtureSetUp ()
     {
@@ -78,7 +81,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
       SecurityConfiguration.Current.PrincipalProvider = _mockPrincipalProvider;
-      SecurityConfiguration.Current.FunctionalSecurityStrategy = _stubFunctionalSecurityStrategy;
+
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IFunctionalSecurityStrategy), () => _stubFunctionalSecurityStrategy);
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
       _searchService = new RolePropertiesSearchService();
 
@@ -92,6 +98,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       base.TearDown();
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
+      _serviceLocatorScope.Dispose();
     }
 
     [Test]

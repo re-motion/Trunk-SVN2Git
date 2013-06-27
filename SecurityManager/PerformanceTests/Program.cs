@@ -77,8 +77,8 @@ namespace Remotion.SecurityManager.PerformanceTests
       Console.WriteLine ();
 
       Console.WriteLine ("Initializing query cache...");
-      new SecurityContextRepository (new RevisionProvider()).GetTenant ("SystemTenant");
-      new SecurityPrincipalRepository (new RevisionProvider()).GetUser ("ServiceUser");
+      new SecurityContextRepository (new RevisionProvider(), new UserRevisionProvider()).GetTenant ("SystemTenant");
+      new SecurityPrincipalRepository (new UserRevisionProvider()).GetUser ("ServiceUser");
       Console.WriteLine ("Query cache initialized");
       Console.WriteLine();
 
