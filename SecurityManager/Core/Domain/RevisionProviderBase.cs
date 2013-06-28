@@ -51,6 +51,12 @@ namespace Remotion.SecurityManager.Domain
       revisions.Remove (key);
     }
 
+    public void InvalidateAllRevisions ()
+    {
+      var revisions = GetCachedRevisions();
+      revisions.Clear();
+    }
+
     private SimpleDataStore<TRevisionKey, GuidRevisionValue> GetCachedRevisions ()
     {
       var revisions = (SimpleDataStore<TRevisionKey, GuidRevisionValue>) SafeContext.Instance.GetData (_revisionProviderKey);

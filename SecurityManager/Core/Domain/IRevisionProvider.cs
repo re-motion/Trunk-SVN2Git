@@ -35,5 +35,6 @@ namespace Remotion.SecurityManager.Domain
   {
     TRevisionValue GetRevision (TRevisionKey key);
     void InvalidateRevision (TRevisionKey key);
+    void InvalidateAllRevisions ();
   }
 }
