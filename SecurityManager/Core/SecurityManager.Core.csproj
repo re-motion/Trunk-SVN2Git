@@ -498,6 +498,7 @@
       <LastGenOutput>Substitution.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Content Include="Database\SecurityManagerSetupIndexes.sql" />
     <Content Include="Database\SecurityManagerSetupConstraints.sql">
     </Content>
     <None Include="Database\SecurityManagerTearDownDB.sql" />
