@@ -40,7 +40,8 @@
     </ItemGroup>
     <ItemGroup>
       <NuGetSrcFiles Remove="@(NuGetSrcFiles)"/>
-      <NuGetSrcFiles Include="$(_srcDirectory)**\*.*"/>
+      <NuGetSrcFiles Include="$(_srcDirectory)**\*.*" 
+                     Exclude="$(_srcDirectory)**\bin\**;$(_srcDirectory)**\obj\**;"/>
     </ItemGroup>
   </Target>
   
