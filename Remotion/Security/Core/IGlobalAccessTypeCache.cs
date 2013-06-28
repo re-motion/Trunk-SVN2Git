@@ -27,7 +27,7 @@ namespace Remotion.Security
   /// </summary>
   /// <remarks><note type="inotes">Implementations are free to implement their own best practice for keeping the cache up to date.</note></remarks>
   [ConcreteImplementation (
-      "Remotion.SecurityManager.Domain.GlobalAccessTypeCache.RevisionBasedGlobalAccessTypeCache, Remotion.SecurityManager, "
+      "Remotion.SecurityManager.GlobalAccessTypeCache.RevisionBasedGlobalAccessTypeCache, Remotion.SecurityManager, "
       + "Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
       ignoreIfNotFound: true,
       Position = 0,
@@ -35,6 +35,5 @@ namespace Remotion.Security
   [ConcreteImplementation (typeof (NullGlobalAccessTypeCache), Position = 1, Lifetime = LifetimeKind.Singleton)]
   public interface IGlobalAccessTypeCache : ICache<GlobalAccessTypeCacheKey, AccessType[]>
   {
-    //TODO RM-5521: test IoC
   }
 }

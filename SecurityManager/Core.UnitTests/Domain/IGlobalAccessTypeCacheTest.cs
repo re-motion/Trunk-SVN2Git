@@ -1,26 +1,29 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of re-strict (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
-// The re-motion Core Framework is free software; you can redistribute it 
-// and/or modify it under the terms of the GNU Lesser General Public License 
-// as published by the Free Software Foundation; either version 2.1 of the 
-// License, or (at your option) any later version.
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License version 3.0 
+// as published by the Free Software Foundation.
 // 
-// re-motion is distributed in the hope that it will be useful, 
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of 
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-// GNU Lesser General Public License for more details.
+// GNU Affero General Public License for more details.
 // 
-// You should have received a copy of the GNU Lesser General Public License
-// along with re-motion; if not, see http://www.gnu.org/licenses.
+// You should have received a copy of the GNU Affero General Public License
+// along with this program; if not, see http://www.gnu.org/licenses.
+// 
+// Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Security;
+using Remotion.SecurityManager.GlobalAccessTypeCache;
 using Remotion.ServiceLocation;
 
-namespace Remotion.Security.UnitTests.Core
+namespace Remotion.SecurityManager.UnitTests.Domain
 {
   [TestFixture]
   public class IGlobalAccessTypeCacheTest
@@ -38,8 +41,9 @@ namespace Remotion.Security.UnitTests.Core
     {
       var obj = _serviceLocator.GetAllInstances<IGlobalAccessTypeCache>().ToArray();
 
-      Assert.That (obj.Length, Is.EqualTo (1));
-      Assert.That (obj[0], Is.TypeOf (typeof (NullGlobalAccessTypeCache)));
+      Assert.That (obj.Length, Is.EqualTo (2));
+      Assert.That (obj[0], Is.TypeOf (typeof (RevisionBasedGlobalAccessTypeCache)));
+      Assert.That (obj[1], Is.TypeOf (typeof (NullGlobalAccessTypeCache)));
     }
 
     [Test]
@@ -49,6 +53,7 @@ namespace Remotion.Security.UnitTests.Core
       var obj2 = _serviceLocator.GetAllInstances<IGlobalAccessTypeCache>().ToArray();
 
       Assert.That (obj1[0], Is.SameAs (obj2[0]));
+      Assert.That (obj1[1], Is.SameAs (obj2[1]));
     }
   }
 }
