@@ -32,6 +32,9 @@ namespace Remotion.SecurityManager.Domain
     protected RevisionProviderBase ()
     {
       //RM-5640: Rewrite with tests
+      // Inject an invalidation object where implementations can register for an invalidation of all cached revisions.
+      // While this is a potential memory leak, the revision providers are used with singleton-semantics anyway when instantiated via IoC,
+      // so this shouldn't be an issue.
       _revisionProviderKey = SafeContextKeys.SecurityManagerRevision + "_" + Guid.NewGuid().ToString();
     }
 
