@@ -94,7 +94,6 @@ group by acl.[ID], acl.[ClassID], acl.[StatefulAcl_ClassID];
 select
     NEWID() as [ID],
     'Permission' as [ClassID],
-    atr.[Index] as [Index],
     NULL as [Allowed],
     atr.[AccessTypeID] [AccessTypeDefinitionID],
     atr.[AccessTypeIDClassID] as [AccessTypeDefinitionIDClassID],
@@ -162,7 +161,6 @@ insert into Permission
 (
     [ID],
     [ClassID],
-    [Index],
     [Allowed],
     [AccessTypeDefinitionID],
     [AccessTypeDefinitionIDClassID],
@@ -171,7 +169,6 @@ insert into Permission
 select 
     [ID],
     [ClassID],
-    [Index],
     [Allowed],
     [AccessTypeDefinitionID],
     [AccessTypeDefinitionIDClassID],
@@ -184,10 +181,10 @@ select ace.*, cd.[Name]
 from #AccessControlEntry ace
 inner join SecurableClassDefinition cd on cd.[ID] = ace.[StatefulAcl_ClassID]
 
-select p.[AccessControlEntryID], p.[Index], at.[Name], p.[Allowed]
+select p.[AccessControlEntryID], at.[Name], p.[Allowed]
 from #Permission p
 inner join EnumValueDefinition at on at.[ID] = p.[AccessTypeDefinitionID]
-order by p.[AccessControlEntryID], p.[Index]
+order by p.[AccessControlEntryID], at.[Name]
 
 --rollback transaction
 --commit transaction
