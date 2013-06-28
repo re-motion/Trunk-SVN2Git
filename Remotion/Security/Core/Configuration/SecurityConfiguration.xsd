@@ -10,7 +10,7 @@
     <xs:complexType>
       <xs:all>
         <xs:element name="securityProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
-        <xs:element name="userProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
+        <xs:element name="principalProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
       </xs:all>
       <xs:attribute name="defaultSecurityProvider" type="c:SecurityProviderSelection" default="None" />
       <xs:attribute name="defaultPrincipalProvider" type="c:PrincipalProviderSelection" default="Thread" />
