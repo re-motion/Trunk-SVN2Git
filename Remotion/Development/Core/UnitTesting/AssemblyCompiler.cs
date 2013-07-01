@@ -91,7 +91,7 @@ namespace Remotion.Development.UnitTesting
     {
       CodeDomProvider provider = new CSharpCodeProvider ();
 
-      string[] sourceFiles = Directory.GetFiles (_sourceDirectory);
+      string[] sourceFiles = Directory.GetFiles (_sourceDirectory, "*.cs");
 
       _results = provider.CompileAssemblyFromFile (_compilerParameters, sourceFiles);
 

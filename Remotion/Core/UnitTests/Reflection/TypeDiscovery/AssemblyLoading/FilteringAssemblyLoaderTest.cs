@@ -167,6 +167,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
           "FileLoadExceptionConsoleApplication.exe",
           true,
           null);
+      string programConfig = program + ".config";
+      File.Copy ("Reflection\\TypeDiscovery\\TestAssemblies\\FileLoadExceptionConsoleApplication\\app.config", programConfig);
       string delaySignAssembly = Compile (
           "Reflection\\TypeDiscovery\\TestAssemblies\\DelaySignAssembly",
           "DelaySignAssembly.dll",
@@ -197,6 +199,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
       finally
       {
         FileUtility.DeleteAndWaitForCompletion (program);
+        FileUtility.DeleteAndWaitForCompletion (programConfig);
         FileUtility.DeleteAndWaitForCompletion (delaySignAssembly);
       }
     }
