@@ -104,6 +104,15 @@
     <Compile Include="CompositionPattern\UnitTests\ExternalDomainMixins\MunicipalSettlementMixinTest.cs" />
     <Compile Include="CompositionPattern\UnitTests\ExternalDomainMixins\SettlementIntegrationTest.cs" />
     <Compile Include="DynamicMixinBuilding\Core\BaseRequirements.cs" />
+    <Compile Include="GenericMixins\Core\BaseTargetClass.cs" />
+    <Compile Include="GenericMixins\Core\DerivedParameterClass.cs" />
+    <Compile Include="GenericMixins\Core\DerivedTargetClass.cs" />
+    <Compile Include="GenericMixins\Core\DerivedTargetClassWithClosedParameter.cs" />
+    <Compile Include="GenericMixins\Core\TargetClass.cs" />
+    <Compile Include="GenericMixins\Core\ParameterClass.cs" />
+    <Compile Include="GenericMixins\Core\GenericMixin.cs" />
+    <Compile Include="GenericMixins\Core\BaseParameterClass.cs" />
+    <Compile Include="GenericMixins\UnitTests\GenericMixinTest.cs" />
     <Compile Include="UsesAndExtends\Core\DisposableMixin.cs" />
     <Compile Include="DynamicMixinBuilding\Core\DynamicMixinBuilder.cs" />
     <Compile Include="DynamicMixinBuilding\Core\DynamicMixinTypeGenerator.cs" />
@@ -164,6 +173,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
