@@ -64,7 +64,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5647")]
     public void ForeignKeyID_Null ()
     {
       var result =

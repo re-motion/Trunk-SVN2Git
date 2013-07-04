@@ -16,15 +16,14 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;
-using Remotion.Linq.SqlBackend.MappingResolution;
-using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.Utilities;
 
@@ -53,26 +52,19 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     public bool GenerateQueryModelAndSQL ()
     {
-      var generator = new UniqueIdentifierGenerator();
-      var sqlPreparationStage = new DefaultSqlPreparationStage (_methodCallTransformerProvider, _resultOperatorHandlerRegistry, generator);
-      var mappingResolutionStage =
-          new DefaultMappingResolutionStage (
-              new MappingResolver (new StorageSpecificExpressionResolver (new RdbmsPersistenceModelProvider ())),
-              generator);
-      var sqlGenerationStage = new DefaultSqlGenerationStage();
-      var mappingResolutionContext = new MappingResolutionContext();
+      var storageProviderDefinition =
+          (RdbmsProviderDefinition) MappingConfiguration.Current.GetTypeDefinition (typeof (Client)).StorageEntityDefinition.StorageProviderDefinition;
+      var storageObjectFactory = (SqlStorageObjectFactory) storageProviderDefinition.Factory;
+      var sqlQueryGenerator = 
+          storageObjectFactory.CreateSqlQueryGenerator (storageProviderDefinition, _methodCallTransformerProvider, _resultOperatorHandlerRegistry);
 
       var queryable = _queryGenerator();
       var queryModel = _queryParser.GetParsedQuery (queryable.Expression);
 
-      var sqlStatement = sqlPreparationStage.PrepareSqlStatement (queryModel, null);
-      var resolvedSqlStatement = mappingResolutionStage.ResolveSqlStatement (sqlStatement, mappingResolutionContext);
+      var result = sqlQueryGenerator.CreateSqlQuery (queryModel);
 
-      var commandBuilder = new SqlCommandBuilder();
-      sqlGenerationStage.GenerateTextForOuterSqlStatement (commandBuilder, resolvedSqlStatement);
-      var sqlCommandData = commandBuilder.GetCommand();
-
-      return !string.IsNullOrEmpty (sqlCommandData.CommandText);
+      var sqlStatement = result.SqlCommand.CommandText;
+      return !string.IsNullOrEmpty (sqlStatement);
     }
 
     public bool GenerateQueryModelAndSQLAndIQuery ()

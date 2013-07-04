@@ -427,7 +427,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
-      var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
+      var sqlGenerationStage = ObjectFactory.Create<ExtendedSqlGenerationStage> (ParamList.Empty);
 
       return new SqlQueryGenerator (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
     }

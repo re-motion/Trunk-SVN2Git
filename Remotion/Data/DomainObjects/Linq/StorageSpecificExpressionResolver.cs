@@ -42,6 +42,11 @@ namespace Remotion.Data.DomainObjects.Linq
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
     }
 
+    public IRdbmsPersistenceModelProvider RdbmsPersistenceModelProvider
+    {
+      get { return _rdbmsPersistenceModelProvider; }
+    }
+
     public SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

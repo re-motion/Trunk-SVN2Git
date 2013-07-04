@@ -47,6 +47,11 @@ namespace Remotion.Data.DomainObjects.Linq
       _storageSpecificExpressionResolver = storageSpecificExpressionResolver;
     }
 
+    public IStorageSpecificExpressionResolver StorageSpecificExpressionResolver
+    {
+      get { return _storageSpecificExpressionResolver; }
+    }
+
     public IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);

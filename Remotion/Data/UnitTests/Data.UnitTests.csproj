@@ -265,6 +265,8 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\ReadOnlyTransactionsTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\LoadEventsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\RelationReadEventsTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ExtendedSqlGeneratingOuterSelectExpressionVisitorTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ExtendedSqlGenerationStageTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\UpcastIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>

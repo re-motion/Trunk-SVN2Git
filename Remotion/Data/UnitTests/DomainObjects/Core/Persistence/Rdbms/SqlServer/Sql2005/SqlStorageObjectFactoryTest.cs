@@ -34,6 +34,8 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Development.UnitTesting;
+using Remotion.Linq;
+using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Mixins;
 using Rhino.Mocks;
@@ -229,7 +231,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _sqlProviderFactory.CreateSqlQueryGenerator (
           _rdbmsProviderDefinition, _methodCallTransformerProviderStub, _resultOpertatorHandlerRegistryStub);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlQueryGenerator)));
+      Assert.That (result, Is.TypeOf<SqlQueryGenerator>());
+      
+      var sqlQueryGenerator = (SqlQueryGenerator) result;
+      Assert.That (sqlQueryGenerator.PreparationStage, Is.TypeOf (typeof (DefaultSqlPreparationStage)));
+      
+      var defaultSqlPreparationStage = ((DefaultSqlPreparationStage) sqlQueryGenerator.PreparationStage);
+      Assert.That (defaultSqlPreparationStage.MethodCallTransformerProvider, Is.SameAs (_methodCallTransformerProviderStub));
+      Assert.That (defaultSqlPreparationStage.ResultOperatorHandlerRegistry, Is.SameAs (_resultOpertatorHandlerRegistryStub));
+      Assert.That (defaultSqlPreparationStage.UniqueIdentifierGenerator, Is.TypeOf<UniqueIdentifierGenerator>());
+
+      Assert.That (sqlQueryGenerator.ResolutionStage, Is.TypeOf<DefaultMappingResolutionStage>());
+      var defaultMappingResolutionStage = ((DefaultMappingResolutionStage) sqlQueryGenerator.ResolutionStage);
+      Assert.That (defaultMappingResolutionStage.Resolver, Is.TypeOf<MappingResolver>());
+      
+      var mappingResolver = ((MappingResolver) defaultMappingResolutionStage.Resolver);
+      Assert.That (mappingResolver.StorageSpecificExpressionResolver, Is.TypeOf<StorageSpecificExpressionResolver>());
+      Assert.That (
+          ((StorageSpecificExpressionResolver) mappingResolver.StorageSpecificExpressionResolver).RdbmsPersistenceModelProvider,
+          Is.TypeOf<RdbmsPersistenceModelProvider>());
+      
+      Assert.That (defaultMappingResolutionStage.UniqueIdentifierGenerator, Is.SameAs (defaultSqlPreparationStage.UniqueIdentifierGenerator));
+      Assert.That (sqlQueryGenerator.GenerationStage, Is.TypeOf<ExtendedSqlGenerationStage>());
     }
 
     [Test]

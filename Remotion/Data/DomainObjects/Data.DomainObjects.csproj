@@ -169,6 +169,8 @@
     <Compile Include="Infrastructure\TypePipe\ImplementingGetAccessorInterceptor.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingSetAccessorInterceptor.cs" />
     <Compile Include="Infrastructure\TypePipe\WrappingAccessorInterceptor.cs" />
+    <Compile Include="Linq\ExtendedSqlGeneratingOuterSelectExpressionVisitor.cs" />
+    <Compile Include="Linq\ExtendedSqlGenerationStage.cs" />
     <Compile Include="ObjectIDExtensions.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\DataManagementCommandDecoratorBase.cs" />
     <Compile Include="DomainImplementation\Cloning\CloneContext.cs" />
