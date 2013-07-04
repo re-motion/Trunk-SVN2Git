@@ -163,14 +163,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
                        {
                            @class.ID,
                            @class.Name,
-                           HasBaseClass = @class.BaseClass != null,
-                           BaseClassID = @class.BaseClass.ID.Value,
-                           BaseClassClassID = @class.BaseClass.ID.ClassID,
+                           BaseClassID = @class.BaseClass.ID
                        });
 
       using (CreateStopwatchScopeForQueryExecution ("securable classes"))
       {
-        return result.ToDictionary (c => c.ID, c => Tuple.Create (c.Name, c.HasBaseClass ? new ObjectID (c.BaseClassClassID, c.BaseClassID) : null));
+        return result.ToDictionary (c => c.ID, c => Tuple.Create (c.Name, c.BaseClassID));
       }
     }
 
@@ -187,9 +185,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
                            Class = acl.GetClassForQuery().ID,
                            StateCombination = sc.ID.GetHandle<StateCombination>(),
                            Acl = acl.ID.GetHandle<StatefulAccessControlList>(),
-                           HasState = propertyReference != null,
-                           StatePropertyID = propertyReference.StateProperty.ID.Value,
-                           StatePropertyClassID = propertyReference.StateProperty.ID.ClassID,
+                           StatePropertyID = propertyReference.StateProperty.ID,
                            StatePropertyName = propertyReference.StateProperty.Name,
                            StateValue = usage.StateDefinition.Name
                        });
@@ -198,9 +194,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       {
         return result.GroupBy (
             row => new { row.Class, row.Acl, row.StateCombination },
-            row => row.HasState
+            row => row.StatePropertyID != null
                        ? new State (
-                             new ObjectID (row.StatePropertyClassID, row.StatePropertyID).GetHandle<StatePropertyDefinition>(),
+                             row.StatePropertyID.GetHandle<StatePropertyDefinition>(),
                              row.StatePropertyName,
                              row.StateValue)
                        : null)
