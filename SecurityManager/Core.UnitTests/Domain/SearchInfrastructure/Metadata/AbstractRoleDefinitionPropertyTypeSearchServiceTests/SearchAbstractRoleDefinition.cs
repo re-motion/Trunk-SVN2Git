@@ -71,7 +71,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Metadat
       var expected = AbstractRoleDefinition.FindAll().AsEnumerable().Where (r => r.DisplayName.Contains ("QualityManager")).ToArray();
       Assert.That (expected.Length, Is.EqualTo (1));
 
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("QualityManager"));
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("Manager|"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
     }
@@ -85,6 +85,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Metadat
       var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("qualitymanager"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_DontMatchOtherValue ()
+    {
+      var expected = AbstractRoleDefinition.FindAll().AsEnumerable().ToArray();
+      Assert.That (expected.Length, Is.EqualTo (2));
+
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("QualityManager"));
+
+      Assert.That (actual.Length, Is.EqualTo (1));
     }
 
     private SecurityManagerSearchArguments CreateSecurityManagerSearchArguments (string displayName)
