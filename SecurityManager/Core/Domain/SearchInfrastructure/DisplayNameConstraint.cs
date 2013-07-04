@@ -98,7 +98,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       ArgumentUtility.CheckNotNull ("metadataObject", metadataObject);
 
       if (HasConstraint())
-        return metadataObject.Where (t => t.DisplayName.Contains (Value));
+        return metadataObject.Where (t => t.DisplayName.IndexOf (Value, StringComparison.CurrentCultureIgnoreCase) != -1);
 
       return metadataObject;
     }

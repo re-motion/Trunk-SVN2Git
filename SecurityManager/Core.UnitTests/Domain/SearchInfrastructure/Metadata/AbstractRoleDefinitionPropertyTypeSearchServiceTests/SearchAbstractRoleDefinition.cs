@@ -76,6 +76,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Metadat
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 
+    [Test]
+    public void Search_WithDisplayNameConstraint_FindDisplayNameCaseInsensitive ()
+    {
+      var expected = AbstractRoleDefinition.FindAll().AsEnumerable().Where (r => r.DisplayName.Contains ("QualityManager")).ToArray();
+      Assert.That (expected.Length, Is.EqualTo (1));
+
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("qualitymanager"));
+
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
     private SecurityManagerSearchArguments CreateSecurityManagerSearchArguments (string displayName)
     {
       return new SecurityManagerSearchArguments (
