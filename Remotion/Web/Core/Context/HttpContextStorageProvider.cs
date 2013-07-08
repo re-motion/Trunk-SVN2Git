@@ -28,8 +28,10 @@ namespace Remotion.Web.Context
     public object GetData (string key)
     {
       ArgumentUtility.CheckNotNull ("key", key);
-      if (HttpContext.Current != null)
-        return HttpContext.Current.Items[key];
+
+      var httpContext = HttpContext.Current;
+      if (httpContext != null)
+        return httpContext.Items[key];
       else
         return _fallbackProvider.GetData (key);
     }
@@ -37,8 +39,10 @@ namespace Remotion.Web.Context
     public void SetData (string key, object value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
-      if (HttpContext.Current != null)
-        HttpContext.Current.Items[key] = value;
+
+      var httpContext = HttpContext.Current;
+      if (httpContext != null)
+        httpContext.Items[key] = value;
       else 
         _fallbackProvider.SetData (key, value);
     }
@@ -46,8 +50,10 @@ namespace Remotion.Web.Context
     public void FreeData (string key)
     {
       ArgumentUtility.CheckNotNull ("key", key);
-      if (HttpContext.Current != null)
-        HttpContext.Current.Items.Remove (key);
+
+      var httpContext = HttpContext.Current;
+      if (httpContext != null)
+        httpContext.Items.Remove (key);
       else
         _fallbackProvider.FreeData (key);
     }
