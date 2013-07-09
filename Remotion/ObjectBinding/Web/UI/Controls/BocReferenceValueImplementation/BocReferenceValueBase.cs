@@ -56,9 +56,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// <summary> The key identifying the command resource entry. </summary>
     private const string c_resourceKeyCommand = "Command";
 
-    private const string c_iconIDPostfix = "Boc_Icon";
-    private const string c_labelIDPostfix = "Boc_Label";
-
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectReferenceProperty) };
 
     private static readonly object SelectionChangedEvent = new object();
@@ -1045,16 +1042,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     protected BusinessObjectIconWebServiceContext CreateIconWebServiceContext ()
     {
       return BusinessObjectIconWebServiceContext.Create (GetBusinessObjectClass(), IconServiceArguments);
-    }
-
-    string IBocReferenceValueBase.LabelClientID
-    {
-      get { return ClientID +  ClientIDSeparator + c_labelIDPostfix; }
-    }
-
-    string IBocReferenceValueBase.IconClientID
-    {
-      get { return ClientID +  ClientIDSeparator + c_iconIDPostfix; }
     }
 
     string IBocReferenceValueBase.NullValueString

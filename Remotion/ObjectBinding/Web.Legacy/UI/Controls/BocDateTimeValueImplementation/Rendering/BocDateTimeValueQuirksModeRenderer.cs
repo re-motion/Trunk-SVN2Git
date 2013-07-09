@@ -86,12 +86,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      var dateTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.DateTextboxID };
+      var dateTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.GetDateValueName() };
       Initialize (renderingContext, dateTextBox, renderingContext.Control.DateTextBoxStyle, GetDateMaxLength ());
       dateTextBox.Text = renderingContext.Control.Value.HasValue ? Formatter.FormatDateValue (renderingContext.Control.Value.Value) : renderingContext.Control.DateString;
       dateTextBox.Page = renderingContext.Control.Page.WrappedInstance;
 
-      var timeTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.TimeTextboxID };
+      var timeTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.GetTimeValueName() };
       Initialize (renderingContext, timeTextBox, renderingContext.Control.TimeTextBoxStyle, GetTimeMaxLength (renderingContext));
       timeTextBox.Text = renderingContext.Control.Value.HasValue ? Formatter.FormatTimeValue (renderingContext.Control.Value.Value, renderingContext.Control.ShowSeconds) : renderingContext.Control.TimeString;
       timeTextBox.Page = renderingContext.Control.Page.WrappedInstance;
@@ -349,11 +349,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
           DateTime dateTime = renderingContext.Control.Value.Value;
 
           if (renderingContext.Control.ActualValueType == BocDateTimeValueType.DateTime)
-            label.Text = Formatter.FormatDateTimeValue (dateTime, renderingContext.Control.ShowSeconds);
+            label.Text = Formatter.FormatDateValue (dateTime) + ' ' + Formatter.FormatTimeValue (dateTime, renderingContext.Control.ShowSeconds);
           else if (renderingContext.Control.ActualValueType == BocDateTimeValueType.Date)
             label.Text = Formatter.FormatDateValue (dateTime);
           else
-            label.Text = dateTime.ToString();
+            label.Text = dateTime.ToString ();
         }
         else
           label.Text = "&nbsp;";

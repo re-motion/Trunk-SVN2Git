@@ -846,7 +846,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Invoker.InitRecursive();
       Controller.SwitchRowIntoEditMode (2, Columns);
 
-      string id = "NamingContainer_Controller_Row_{0}_{1}_Boc_TextBox";
+      string id = "NamingContainer_Controller_Row_{0}_{1}_Value";
       string[] trackedIDs = new string[2];
       trackedIDs[0] = string.Format (id, 2, 0);
       trackedIDs[1] = string.Format (id, 2, 1);

@@ -22,11 +22,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
   public interface IBocAutoCompleteReferenceValue : IBocReferenceValueBase
   {
-    string TextBoxUniqueID { get; }
-    string TextBoxClientID { get; }
-    string HiddenFieldUniqueID { get; }
-    string HiddenFieldClientID { get; }
-    string DropDownButtonClientID { get; }
+    string GetTextValueName ();
+    string GetKeyValueName ();
     string SearchServicePath { get; }
 
     /// <summary> Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) only. </summary>

@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     {
       TextBox textBox = new RenderOnlyTextBox();
       textBox.Text = renderingContext.Control.Text;
-      textBox.ID = renderingContext.Control.TextBoxID;
+      textBox.ID = renderingContext.Control.GetValueName();
       textBox.EnableViewState = false;
       textBox.Enabled = renderingContext.Control.Enabled;
       textBox.ReadOnly = !renderingContext.Control.Enabled;

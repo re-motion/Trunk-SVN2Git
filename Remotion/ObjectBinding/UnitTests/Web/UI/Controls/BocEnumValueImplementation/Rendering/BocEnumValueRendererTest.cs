@@ -38,6 +38,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
   [TestFixture]
   public class BocEnumValueRendererTest : RendererTestBase
   {
+    private const string c_clientID = "MyEnumValue";
+    private const string c_valueName = "ListControlClientID";
     private IBocEnumValue _enumValue;
     private readonly Unit _width = Unit.Point (173);
     private readonly Unit _height = Unit.Point (17);
@@ -64,7 +66,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
                   new BindableObjectDefaultValueStrategy ())
               );
       _enumValue.Property = property;
-      _enumValue.Stub (stub => stub.ClientID).Return ("MyEnumValue");
+      _enumValue.Stub (stub => stub.ClientID).Return (c_clientID);
       _enumValue.Stub (mock => mock.IsDesignMode).Return (false);
 
       var pageStub = MockRepository.GenerateStub<IPage>();
@@ -78,8 +80,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
       _enumValue.Stub (mock => mock.GetEnabledValues()).Return (_enumerationInfos);
 
       _enumValue.Stub (mock => mock.GetNullItemText()).Return ("null");
-      _enumValue.Stub (mock => mock.LabelID).Return ("LabelClientID");
-      _enumValue.Stub (mock => mock.ListControlID).Return ("ListControlClientID");
+      _enumValue.Stub (mock => mock.GetValueName()).Return (c_valueName);
 
       StateBag stateBag = new StateBag();
       _enumValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
@@ -337,7 +338,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
 
 
       var span = Html.GetAssertedChildElement (div, "span", 0);
-      Html.AssertAttribute (span, "id", _enumValue.LabelID);
+      Html.AssertAttribute (span, "id", c_valueName);
+      if (_enumValue.EnumerationValueInfo!=null)
+        Html.AssertAttribute (span, "data-value", _enumValue.EnumerationValueInfo.Identifier);
 
       if (withStyle)
       {
@@ -385,7 +388,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
       var div = GetAssertedSpan (document, false, false, false, renderer);
 
       var select = Html.GetAssertedChildElement (div, "select", 0);
-      Html.AssertAttribute (select, "id", _enumValue.GetListControlClientID());
+      Html.AssertAttribute (select, "id", c_valueName);
+      Html.AssertAttribute (select, "name", c_valueName);
 
       if (withStyle)
         Html.AssertStyleAttribute (select, "height", "100%");
@@ -397,7 +401,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
         AssertNullOption (select, !selectedValue.HasValue);
 
       if (autoPostBack)
-        Html.AssertAttribute (select, "onchange", string.Format ("javascript:__doPostBack('{0}','')", _enumValue.ListControlID));
+        Html.AssertAttribute (select, "onchange", string.Format ("javascript:__doPostBack('{0}','')", c_valueName));
 
       int index = withNullValue ? 1 : 0;
       foreach (TestEnum value in Enum.GetValues (typeof (TestEnum)))

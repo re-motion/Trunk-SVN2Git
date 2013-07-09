@@ -14,20 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
 {
   public interface IBocCheckBox : IBocBooleanValueBase
   {
-    string LabelID { get; }
-    string CheckboxID { get; }
-    string ImageID { get; }
     bool IsDescriptionEnabled { get; }
     string DefaultTrueDescription { get; }
     string DefaultFalseDescription { get; }
-    string GetLabelUniqueID ();
-    string GetCheckboxUniqueID ();
-    string GetImageUniqueID ();
+    string GetValueName ();
   }
 }

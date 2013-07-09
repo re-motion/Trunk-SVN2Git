@@ -38,8 +38,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     IconInfo GetIcon ();
     string IconServicePath { get; }
     string GetLabelText ();
-    string IconClientID { get; }
-    string LabelClientID { get; }
 
     /// <summary>
     ///   Gets the style that you want to apply to the text box (edit mode) 

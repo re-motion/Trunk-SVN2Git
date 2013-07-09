@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
@@ -105,7 +106,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocBooleanValue.GetTrackedClientIDs();
       Assert.That (actual, Is.Not.Null);
       Assert.That (actual.Length, Is.EqualTo (1));
-      Assert.That (actual[0], Is.EqualTo (_bocBooleanValue.GetHiddenFieldClientID()));
+      Assert.That (actual[0], Is.EqualTo (((IBocBooleanValue)_bocBooleanValue).GetKeyValueName()));
     }
 
 
@@ -483,6 +484,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocBooleanValue.SaveValue (false);
       Assert.That (_businessObject.BooleanValue, Is.EqualTo (true));
       Assert.That (_bocBooleanValue.IsDirty, Is.False);
+    }
+
+    [Test]
+    public void GetKeyValueName ()
+    {
+      Assert.That (((IBocBooleanValue)_bocBooleanValue).GetKeyValueName (), Is.EqualTo ("NamingContainer_BocBooleanValue_KeyValue"));
+    }
+
+    [Test]
+    public void GetTextValueName ()
+    {
+      Assert.That (((IBocBooleanValue)_bocBooleanValue).GetTextValueName (), Is.EqualTo ("NamingContainer_BocBooleanValue_TextValue"));
     }
   }
 }

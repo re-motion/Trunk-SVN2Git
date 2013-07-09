@@ -39,6 +39,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
   [TestFixture]
   public class BocAutoCompleteReferenceValueRendererTest : RendererTestBase
   {
+    private const string c_clientID = "MyReferenceValue";
+    private const string c_textValueName = "MyReferenceValue_SelectedTextValue";
+    private const string c_keyValueName = "MyReferenceValue_SelectedKeyValue";
+    private const string c_uniqueidentifier = "uniqueidentifier";
+
     private enum OptionMenuConfiguration
     {
       NoOptionsMenu,
@@ -74,13 +79,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       TextBox = new StubTextBox();
 
       Control = MockRepository.GenerateStub<IBocAutoCompleteReferenceValue>();
-      Control.Stub (stub => stub.ClientID).Return ("MyReferenceValue");
-      Control.Stub (stub => stub.TextBoxUniqueID).Return ("MyReferenceValue_Boc_TextBox");
-      Control.Stub (stub => stub.TextBoxClientID).Return ("MyReferenceValue_Boc_TextBox");
-      Control.Stub (stub => stub.HiddenFieldUniqueID).Return ("MyReferenceValue_Boc_HiddenField");
-      Control.Stub (stub => stub.HiddenFieldClientID).Return ("MyReferenceValue_Boc_HiddenField");
-      Control.Stub (stub => stub.LabelClientID).Return ("MyReferenceValue_Boc_Label");
-      Control.Stub (stub => stub.DropDownButtonClientID).Return ("MyReferenceValue_Boc_DropDownButton");
+      Control.Stub (stub => stub.ClientID).Return (c_clientID);
+      Control.Stub (stub => stub.GetTextValueName()).Return (c_textValueName);
+      Control.Stub (stub => stub.GetKeyValueName()).Return (c_keyValueName);
+      Control.Stub (stub => stub.BusinessObjectUniqueIdentifier).Return (c_uniqueidentifier);
       Control.Stub (stub => stub.Command).Return (new BocCommand());
       Control.Command.Type = CommandType.Event;
       Control.Command.Show = CommandShow.Always;
@@ -401,6 +403,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
       XmlNode span = GetAssertedContainerSpan (false);
       AssertControl (span, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
+
+      var input = span.GetAssertedChildElement ("span", 0).GetAssertedChildElement ("span", 1).GetAssertedChildElement ("input", 2);
+      input.AssertAttributeValueEquals ("id", c_keyValueName);
+      input.AssertAttributeValueEquals ("name", c_keyValueName);
     }
 
     [Test]
@@ -523,7 +529,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       contentSpan.AssertChildElementCount (1);
       
       var innerSpan = contentSpan.GetAssertedChildElement ("span", 0);
-      innerSpan.AssertAttributeValueEquals ("id", Control.LabelClientID);
+      innerSpan.AssertAttributeValueEquals ("id", c_clientID + "_Label");
+      innerSpan.AssertAttributeValueEquals ("data-value", c_uniqueidentifier);
       innerSpan.AssertChildElementCount (0);
       innerSpan.AssertTextNode ("MyText", 0);
 
@@ -557,7 +564,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       }
 
       var hiddenField = contentSpan.GetAssertedChildElement ("input", hiddenFieldIndex);
-      hiddenField.AssertAttributeValueEquals ("id", Control.HiddenFieldClientID);
+      hiddenField.AssertAttributeValueEquals ("id", c_keyValueName);
+      hiddenField.AssertAttributeValueEquals ("name", c_keyValueName);
       hiddenField.AssertAttributeValueEquals ("type", "hidden");
       if (autoPostBack == AutoPostBack.Enabled)
         hiddenField.AssertAttributeValueEquals ("onchange", "PostBackEventReference");

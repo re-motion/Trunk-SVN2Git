@@ -43,8 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // constants
 
     private const string c_nullIdentifier = "==null==";
-    private const string c_labelIDPostfix = "_Boc_Label";
-    private const string c_listControlIDPostfix = "_Boc_ListControl";
+    private const string c_listControlIDPostfix = "_Value";
 
     // types
 
@@ -220,41 +219,32 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return new string[0];
       else if (ListControlStyle.ControlType == ListControlType.DropDownList
                || ListControlStyle.ControlType == ListControlType.ListBox)
-        return new[] { GetListControlClientID() };
+        return new[] { GetValueName () };
       else if (ListControlStyle.ControlType == ListControlType.RadioButtonList)
       {
         string[] clientIDs = new string[GetEnabledValues().Length + (IsRequired ? 0 : 1)];
         for (int i = 0; i < clientIDs.Length; i++)
-          clientIDs[i] = GetListControlClientID() + "_" + i.ToString (NumberFormatInfo.InvariantInfo);
+          clientIDs[i] = GetValueName () + "_" + i.ToString (NumberFormatInfo.InvariantInfo);
         return clientIDs;
       }
       else
         return new string[0];
     }
 
-    private string GetListControlUniqueID ()
+    string IBocEnumValue.GetValueName ()
     {
-      return UniqueID + c_listControlIDPostfix;
+      return GetValueName();
     }
 
-    public string GetListControlClientID ()
+    protected string GetValueName ()
     {
       return ClientID + c_listControlIDPostfix;
     }
 
-    public string GetLabelClientID ()
+    [Obsolete ("Use GetValueName() instead. (1.13.206)", true)]
+    public string GetListControlClientID ()
     {
-      return ClientID + c_labelIDPostfix;
-    }
-
-    string IBocEnumValue.LabelID
-    {
-      get { return UniqueID + c_labelIDPostfix; }
-    }
-
-    string IBocEnumValue.ListControlID
-    {
-      get { return UniqueID + c_listControlIDPostfix; }
+      throw new NotImplementedException ("Use GetValueName() instead. (1.13.206)");
     }
 
     /// <summary> This event is fired when the selection is changed between postbacks. </summary>
@@ -422,7 +412,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public string FocusID
     {
-      get { return IsReadOnly ? null : GetListControlClientID(); }
+      get { return IsReadOnly ? null : GetValueName (); }
     }
 
     /// <summary>
@@ -546,7 +536,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadPostData/*' />
     protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetListControlUniqueID());
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetValueName());
       bool isDataChanged = false;
       if (newValue != null)
       {

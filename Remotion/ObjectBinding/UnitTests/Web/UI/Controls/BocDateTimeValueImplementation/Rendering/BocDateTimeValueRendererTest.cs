@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -35,23 +36,31 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
   [SetCulture("")]
   public class BocDateTimeValueRendererTest : RendererTestBase
   {
-    private const string c_timeString = "15:43";
-    private const string c_dateString = "31.07.2009";
+    private const string c_timeString = "17:45";
+    private const string c_dateString = "12.07.2013";
+    private const string c_formatedDateString = "2013-07-12";
+    private const string c_formatedTimeString = "17:45:00";
+    private const string c_dateValueName = "MyDateTimeValue_DateValue";
+    private const string c_timeValueName = "MyDateTimeValue_TimeValue";
+    private const string c_dateValueID = "MyDateTimeValue";
     private IBocDateTimeValue _control;
     private SingleRowTextBoxStyle _dateStyle;
     private SingleRowTextBoxStyle _timeStyle;
     private StubTextBox _dateTextBox;
     private StubTextBox _timeTextBox;
     private BocDateTimeValueRenderingContext _renderingContext;
+    private DateTime _dateValue = new DateTime(2013, 07, 12);
+    private DateTime _dateTimeValue = new DateTime (2013, 07, 12, 17, 45, 0);
+
 
     [SetUp]
     public void SetUp ()
     {
       Initialize();
       _control = MockRepository.GenerateStub<IBocDateTimeValue>();
-      _control.Stub (stub => stub.ClientID).Return ("MyDateTimeValue");
-      _control.Stub (stub => stub.DateTextboxID).Return ("MyDateTimeValue$Boc_DateTextBox");
-      _control.Stub (stub => stub.TimeTextboxID).Return ("MyDateTimeValue$Boc_TimeTextBox");
+      _control.Stub (stub => stub.ClientID).Return (c_dateValueID);
+      _control.Stub (stub => stub.GetDateValueName()).Return (c_dateValueName);
+      _control.Stub (stub => stub.GetTimeValueName()).Return (c_timeValueName);
 
       _dateStyle = new SingleRowTextBoxStyle();
       _timeStyle = new SingleRowTextBoxStyle();
@@ -59,7 +68,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
       _control.Stub (stub => stub.TimeTextBoxStyle).Return (_timeStyle);
 
       var pageStub = MockRepository.GenerateStub<IPage>();
-      pageStub.Stub (stub => stub.WrappedInstance).Return (new Page());
+      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       pageStub.Stub (stub => stub.ClientScript).Return (MockRepository.GenerateStub<IClientScriptManager>());
       _control.Stub (stub => stub.Page).Return (pageStub);
 
@@ -100,6 +109,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
     }
 
     [Test]
+    public void RenderDateValue_ReadOnlyMode ()
+    {
+      _control.Stub (stub => stub.DateString).Return (c_dateString);
+      _control.Stub (stub => stub.ActualValueType).Return (BocDateTimeValueType.Date);
+      _control.Stub (stub => stub.Value).Return (_dateValue);
+      _control.Stub (stub => stub.Enabled).Return (true);
+      _control.Stub (stub => stub.IsReadOnly).Return (true);
+      
+      BocDateTimeValueRenderer renderer;
+      XmlNode container = GetAssertedContainer (out renderer, true);
+
+      AssertDate (container, renderer);
+    }
+
+    [Test]
     public void RenderDateTimeValue ()
     {
       _control.Stub (stub => stub.DateString).Return (c_dateString);
@@ -116,33 +140,87 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
       container.AssertTextNode ("DatePicker", 1);
     }
 
+    [Test]
+    public void RenderDateTimeValue_ReadOnlyMode ()
+    {
+      _control.Stub (stub => stub.DateString).Return (c_dateString);
+      _control.Stub (stub => stub.TimeString).Return (c_timeString);
+      _control.Stub (stub => stub.ActualValueType).Return (BocDateTimeValueType.DateTime);
+      _control.Stub (stub => stub.Value).Return (_dateTimeValue);
+      _control.Stub (stub => stub.Enabled).Return (true);
+      _control.Stub (stub => stub.IsReadOnly).Return (true);
+      
+      BocDateTimeValueRenderer renderer;
+      XmlNode container = GetAssertedContainer (out renderer, false);
+
+      AssertTime (container, renderer);
+    }
+
+    [Test]
+    public void RenderIDs ()
+    {
+      _control.Stub (stub => stub.DateString).Return (c_dateString);
+      _control.Stub (stub => stub.TimeString).Return (c_timeString);
+      _control.Stub (stub => stub.ActualValueType).Return (BocDateTimeValueType.DateTime);
+      _control.Stub (stub => stub.Enabled).Return (true);
+
+      var renderer = new BocDateTimeValueRenderer (new FakeResourceUrlFactory());
+      renderer.Render (new BocDateTimeValueRenderingContext (HttpContext, Html.Writer, _control));
+      var document = Html.GetResultDocument ();
+      var container = document.GetAssertedChildElement ("span", 0);
+      var dateInput = container.GetAssertedChildElement("span", 0).GetAssertedChildElement("input", 0);
+      var timeInput = container.GetAssertedChildElement ("span", 2).GetAssertedChildElement ("input", 0);
+      dateInput.AssertAttributeValueEquals ("id", c_dateValueName);
+      dateInput.AssertAttributeValueEquals ("name", c_dateValueName);
+      timeInput.AssertAttributeValueEquals ("id", c_timeValueName);
+      timeInput.AssertAttributeValueEquals ("name", c_timeValueName);
+    }
+
     private void AssertTime (XmlNode container, BocDateTimeValueRenderer renderer)
     {
-      var timeInputWrapper = container.GetAssertedChildElement ("span", 2);
-      timeInputWrapper.AssertAttributeValueContains ("class", renderer.CssClassTimeInputWrapper);
-      timeInputWrapper.AssertAttributeValueContains ("class", renderer.GetPositioningCssClass (_renderingContext, BocDateTimeValueRenderer.DateTimeValuePart.Time));
-      timeInputWrapper.AssertChildElementCount (0);
+      if (!_control.IsReadOnly)
+      {
+        var timeInputWrapper = container.GetAssertedChildElement ("span", 2);
+        timeInputWrapper.AssertAttributeValueContains ("class", renderer.CssClassTimeInputWrapper);
+        timeInputWrapper.AssertAttributeValueContains (
+            "class", renderer.GetPositioningCssClass (_renderingContext, BocDateTimeValueRenderer.DateTimeValuePart.Time));
+        timeInputWrapper.AssertChildElementCount (0);
+        timeInputWrapper.AssertTextNode ("TextBox", 0);
 
-      timeInputWrapper.AssertTextNode ("TextBox", 0);
-
-      Assert.That (_timeTextBox.ID, Is.EqualTo (_control.TimeTextboxID));
-      Assert.That (_timeTextBox.CssClass, Is.EqualTo (renderer.CssClassTime));
-      Assert.That (_timeTextBox.Text, Is.EqualTo (c_timeString));
-      Assert.That (_timeTextBox.MaxLength, Is.EqualTo (5));
+        Assert.That (_timeTextBox.ID, Is.EqualTo (c_timeValueName));
+        Assert.That (_timeTextBox.CssClass, Is.EqualTo (renderer.CssClassTime));
+        Assert.That (_timeTextBox.Text, Is.EqualTo (c_timeString));
+        Assert.That (_timeTextBox.MaxLength, Is.EqualTo (5));
+      }
+      else
+      {
+        var dateLabel = container.GetAssertedChildElement ("span", 0);
+        dateLabel.AssertAttributeValueEquals ("data-value", c_formatedDateString);
+        var timeLabel = container.GetAssertedChildElement ("span", 1);
+        timeLabel.AssertAttributeValueEquals ("data-value", c_formatedTimeString);
+      }
     }
 
     private void AssertDate (XmlNode container, BocDateTimeValueRenderer renderer)
     {
       var dateInputWrapper = container.GetAssertedChildElement ("span", 0);
-      dateInputWrapper.AssertAttributeValueContains ("class", renderer.CssClassDateInputWrapper);
-      dateInputWrapper.AssertAttributeValueContains ("class", renderer.GetPositioningCssClass (_renderingContext, BocDateTimeValueRenderer.DateTimeValuePart.Date));
-      dateInputWrapper.AssertChildElementCount (0);
+      if (!_control.IsReadOnly)
+      {
+        dateInputWrapper.AssertAttributeValueContains ("class", renderer.CssClassDateInputWrapper);
+        dateInputWrapper.AssertAttributeValueContains (
+            "class", renderer.GetPositioningCssClass (_renderingContext, BocDateTimeValueRenderer.DateTimeValuePart.Date));
+        dateInputWrapper.AssertChildElementCount (0);
 
-      dateInputWrapper.AssertTextNode ("TextBox", 0);
-      Assert.That (_dateTextBox.ID, Is.EqualTo (_control.DateTextboxID));
-      Assert.That (_dateTextBox.CssClass, Is.EqualTo (renderer.CssClassDate));
-      Assert.That (_dateTextBox.Text, Is.EqualTo (c_dateString));
-      Assert.That (_dateTextBox.MaxLength, Is.EqualTo (10));
+        dateInputWrapper.AssertTextNode ("TextBox", 0);
+        Assert.That (_dateTextBox.ID, Is.EqualTo (c_dateValueName));
+        Assert.That (_dateTextBox.CssClass, Is.EqualTo (renderer.CssClassDate));
+        Assert.That (_dateTextBox.Text, Is.EqualTo (c_dateString));
+        Assert.That (_dateTextBox.MaxLength, Is.EqualTo (10));
+      }
+      else
+      {
+        dateInputWrapper.AssertAttributeValueEquals ("data-value", _dateValue.ToString ("yyyy-MM-dd"));
+      }
     }
 
     private XmlNode GetAssertedContainer (out BocDateTimeValueRenderer renderer, bool isDateOnly)
@@ -152,8 +230,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
 
       var document = Html.GetResultDocument ();
       var container = document.GetAssertedChildElement ("span", 0);
-      container.AssertAttributeValueEquals ("id", "MyDateTimeValue");
-      container.AssertAttributeValueEquals ("class", isDateOnly ? renderer.CssClassDateOnly : renderer.CssClassDateTime);
+      container.AssertAttributeValueEquals ("id", c_dateValueID);
+      container.AssertAttributeValueContains ("class", isDateOnly ? renderer.CssClassDateOnly : renderer.CssClassDateTime);
       container.AssertChildElementCount (isDateOnly ? 1 : 2);
       return container;
     }

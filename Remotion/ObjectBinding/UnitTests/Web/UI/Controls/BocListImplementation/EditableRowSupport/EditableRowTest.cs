@@ -780,7 +780,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       IBusinessObjectReferenceDataSource dataSource = _editableRow.GetDataSource();
       dataSource.LoadValues (false);
 
-      string id = "NamingContainer_Row_{0}_Boc_TextBox";
+      string id = "NamingContainer_Row_{0}_Value";
       string[] trackedIDs = new string[2];
       trackedIDs[0] = string.Format (id, 0);
       trackedIDs[1] = string.Format (id, 1);

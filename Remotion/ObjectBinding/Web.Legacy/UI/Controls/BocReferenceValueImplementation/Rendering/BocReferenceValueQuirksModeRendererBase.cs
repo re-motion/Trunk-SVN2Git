@@ -183,5 +183,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       string argument = string.Empty;
       return renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
     }
+
+    protected virtual string GetDropDownButtonName (BocRenderingContext<TControl> renderingContext)
+    {
+      return renderingContext.Control.ClientID + "_DropDownButton";
+    }
   }
 }

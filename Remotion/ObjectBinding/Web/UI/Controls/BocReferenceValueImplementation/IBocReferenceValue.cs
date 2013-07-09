@@ -23,7 +23,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   {
     void PopulateDropDownList (DropDownList dropDownList);
     DropDownListStyle DropDownListStyle { get; }
-    string DropDownListClientID { get; }
-    string DropDownListUniqueID { get; }
+    string GetValueName ();
   }
 }

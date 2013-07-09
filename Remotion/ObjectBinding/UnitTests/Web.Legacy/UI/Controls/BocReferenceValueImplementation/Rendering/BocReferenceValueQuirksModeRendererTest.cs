@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using System.Web;
@@ -27,6 +28,7 @@ using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
@@ -41,6 +43,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
   [TestFixture]
   public class BocReferenceValueQuirksModeRendererTest : RendererTestBase
   {
+    private const string c_clientID = "MyReferenceValue";
+    private const string c_valueName = "MyReferenceValue_Value";
+
     private IBusinessObjectProvider _provider;
     private BusinessObjectReferenceDataSource _dataSource;
     protected static readonly Unit Width = Unit.Pixel (250);
@@ -55,24 +60,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     [SetUp]
     public void SetUp ()
     {
-      Initialize ();
+      Initialize();
 
-      OptionsMenu = new StubDropDownMenu ();
-      DropDownList = new StubDropDownList ();
+      OptionsMenu = new StubDropDownMenu();
+      DropDownList = new StubDropDownList();
 
-      Control = MockRepository.GenerateStub<IBocReferenceValue> ();
-      Control.Stub (stub => stub.ClientID).Return ("MyReferenceValue");
-      Control.Stub (stub => stub.Command).Return (new BocCommand ());
+      Control = MockRepository.GenerateStub<IBocReferenceValue>();
+      Control.Stub (stub => stub.ClientID).Return (c_clientID);
+      Control.Stub (stub => stub.Command).Return (new BocCommand());
       Control.Command.Type = CommandType.Event;
       Control.Command.Show = CommandShow.Always;
 
       Control.Stub (stub => stub.OptionsMenu).Return (OptionsMenu);
 
-      IPage pageStub = MockRepository.GenerateStub<IPage> ();
-      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock ());
+      IPage pageStub = MockRepository.GenerateStub<IPage>();
+      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       Control.Stub (stub => stub.Page).Return (pageStub);
 
-      ClientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager> ();
+      ClientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
       pageStub.Stub (stub => stub.ClientScript).Return (ClientScriptManagerMock);
 
       BusinessObject = TypeWithReference.Create ("MyBusinessObject");
@@ -82,31 +87,28 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
                                          TypeWithReference.Create ("ReferencedObject 1"),
                                          TypeWithReference.Create ("ReferencedObject 2")
                                      };
-      _dataSource = new BusinessObjectReferenceDataSource ();
+      _dataSource = new BusinessObjectReferenceDataSource();
       _dataSource.BusinessObject = (IBusinessObject) BusinessObject;
 
       _provider = ((IBusinessObject) BusinessObject).BusinessObjectClass.BusinessObjectProvider;
-      _provider.AddService<IBusinessObjectWebUIService> (new ReflectionBusinessObjectWebUIService ());
+      _provider.AddService<IBusinessObjectWebUIService> (new ReflectionBusinessObjectWebUIService());
 
-      StateBag stateBag = new StateBag ();
+      StateBag stateBag = new StateBag();
       Control.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
       Control.Stub (mock => mock.Style).Return (Control.Attributes.CssStyle);
       Control.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
-      Control.Stub (mock => mock.DropDownListStyle).Return (new DropDownListStyle ());
+      Control.Stub (mock => mock.DropDownListStyle).Return (new DropDownListStyle());
       Control.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
-
-      Control.Stub (stub => stub.LabelClientID).Return (Control.ClientID + "_Boc_Label");
-      Control.Stub (stub => stub.DropDownListClientID).Return (Control.ClientID + "_Boc_DropDownList");
-      Control.Stub (stub => stub.IconClientID).Return (Control.ClientID + "_Boc_Icon");
+      Control.Stub (stub => stub.GetValueName ()).Return (c_valueName);
       Control.Stub (stub => stub.PopulateDropDownList (Arg<DropDownList>.Is.NotNull))
-          .WhenCalled (
-          invocation =>
-          {
-            foreach (var item in BusinessObject.ReferenceList)
-              ((DropDownList) invocation.Arguments[0]).Items.Add (new ListItem (item.DisplayName, item.UniqueIdentifier));
-          });
+             .WhenCalled (
+                 invocation =>
+                 {
+                   foreach (var item in BusinessObject.ReferenceList)
+                     ((DropDownList) invocation.Arguments[0]).Items.Add (new ListItem (item.DisplayName, item.UniqueIdentifier));
+                 });
 
-      Control.Stub (stub => stub.GetLabelText ()).Return ("MyText");
+      Control.Stub (stub => stub.GetLabelText()).Return ("MyText");
 
       _resourceUrlFactory = new FakeResourceUrlFactory();
     }
@@ -114,22 +116,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     [TearDown]
     public void TearDown ()
     {
-      ClientScriptManagerMock.VerifyAllExpectations ();
+      ClientScriptManagerMock.VerifyAllExpectations();
     }
 
     protected override void Initialize ()
     {
-      base.Initialize ();
-      HttpResponseBase response = MockRepository.GenerateMock<HttpResponseBase> ();
+      base.Initialize();
+      HttpResponseBase response = MockRepository.GenerateMock<HttpResponseBase>();
       HttpContext.Stub (mock => mock.Response).Return (response);
       response.Stub (mock => mock.ContentType).Return ("text/html");
 
-      HttpBrowserCapabilities browser = new HttpBrowserCapabilities ();
-      browser.Capabilities = new Hashtable ();
+      HttpBrowserCapabilities browser = new HttpBrowserCapabilities();
+      browser.Capabilities = new Hashtable();
       browser.Capabilities.Add ("browser", "IE");
       browser.Capabilities.Add ("majorversion", "7");
 
-      var request = MockRepository.GenerateStub<HttpRequestBase> ();
+      var request = MockRepository.GenerateStub<HttpRequestBase>();
       request.Stub (stub => stub.Browser).Return (new HttpBrowserCapabilitiesWrapper (browser));
 
       HttpContext.Stub (stub => stub.Request).Return (request);
@@ -140,10 +142,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     {
       DropDownList.AutoPostBack = false;
       Control.Stub (stub => stub.Enabled).Return (true);
-      SetUpClientScriptExpectations ();
-      SetValue ();
+      SetUpClientScriptExpectations();
+      SetValue();
 
-      Control.Stub (stub => stub.DropDownListStyle).Return (new DropDownListStyle ());
+      Control.Stub (stub => stub.DropDownListStyle).Return (new DropDownListStyle());
       Control.DropDownListStyle.AutoPostBack = true;
 
       XmlNode div = GetAssertedDiv (1, false);
@@ -424,7 +426,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (CreateRenderingContext());
       Html.Writer.RenderEndTag();
-      
+
       var document = Html.GetResultDocument();
       AssertRow (document, false, false, false);
     }
@@ -439,7 +441,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (CreateRenderingContext());
       Html.Writer.RenderEndTag();
-      
+
       var document = Html.GetResultDocument();
       AssertRow (document, true, false, false);
     }
@@ -459,10 +461,31 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       AssertRow (document, true, false, true);
     }
 
+    [Test]
+    public void RenderIDs ()
+    {
+      Control.Stub (stub => stub.Enabled).Return (true);
+
+      var renderer = new BocReferenceValueQuirksModeRenderer (_resourceUrlFactory);
+      renderer.Render (CreateRenderingContext());
+      var document = Html.GetResultDocument();
+      var select =
+          document.GetAssertedChildElement ("div", 0)
+                  .GetAssertedChildElement ("table", 0)
+                  .GetAssertedChildElement ("tr", 0)
+                  .GetAssertedChildElement ("td", 0)
+                  .GetAssertedChildElement ("select", 0);
+      select.AssertAttributeValueEquals ("id", c_valueName);
+      select.AssertAttributeValueEquals ("name", c_valueName);
+    }
+
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
       var renderer = new TestableBocReferenceValueQuirksModeRenderer (_resourceUrlFactory, () => DropDownList);
+
+      Assert.That (DropDownList.ID, Is.Null);
       renderer.Render (CreateRenderingContext());
+      Assert.That (DropDownList.ID, Is.EqualTo (c_valueName));
 
       var document = Html.GetResultDocument();
       var div = document.GetAssertedChildElement ("div", 0);
@@ -543,7 +566,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       iconCell.AssertChildElementCount (1);
 
       XmlNode iconParent;
-      if (Control.IsCommandEnabled ())
+      if (Control.IsCommandEnabled())
         iconParent = iconCell.GetAssertedChildElement ("a", 0);
       else
         iconParent = iconCell.GetAssertedChildElement ("span", 0);
@@ -563,7 +586,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       valueCell.AssertChildElementCount (hasLabel ? 1 : 0);
       if (hasLabel)
       {
-        if (Control.IsCommandEnabled ())
+        if (Control.IsCommandEnabled())
         {
           var link = valueCell.GetAssertedChildElement ("a", 0);
           link.AssertAttributeValueEquals ("href", "#");
@@ -578,7 +601,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
         {
           var span = valueCell.GetAssertedChildElement ("span", 0);
           var label = span.GetAssertedChildElement ("span", 0);
-          label.AssertAttributeValueEquals ("id", Control.ClientID + "_Boc_Label");
+          label.AssertAttributeValueEquals ("id", Control.ClientID + "_Value");
           label.AssertTextNode ("MyText", 0);
         }
       }
@@ -606,7 +629,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
     protected void SetUpGetIconExpectations ()
     {
-      Control.Expect (mock => mock.GetIcon ()).Return (new IconInfo ("~/Images/NullIcon.gif"));
+      Control.Expect (mock => mock.GetIcon()).Return (new IconInfo ("~/Images/NullIcon.gif"));
     }
 
     protected void SetUpClientScriptExpectations ()
@@ -616,7 +639,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
     protected void AssertIcon (XmlNode parent, bool wrapNonCommandIcon)
     {
-      if (Control.IsCommandEnabled ())
+      if (Control.IsCommandEnabled())
       {
         var link = parent.GetAssertedChildElement ("a", 0);
         link.AssertAttributeValueEquals ("class", "bocReferenceValueCommand");

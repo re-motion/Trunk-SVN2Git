@@ -41,6 +41,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
   [TestFixture]
   public class BocAutoCompleteReferenceValueQuirksModeRendererTest : RendererTestBase
   {
+    private const string c_clientID = "MyReferenceValue";
+    private const string c_textValueName = "MyReferenceValue_TextValue";
+    private const string c_keyValueName = "MyReferenceValue_Boc_HiddenValue";
     private static readonly Unit s_width = Unit.Pixel (250);
     private static readonly Unit s_height = Unit.Point (12);
 
@@ -63,12 +66,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       TextBox = new StubTextBox();
 
       Control = MockRepository.GenerateStub<IBocAutoCompleteReferenceValue> ();
-      Control.Stub (stub => stub.ClientID).Return ("MyReferenceValue");
-      Control.Stub (stub => stub.TextBoxUniqueID).Return ("MyReferenceValue_Boc_TextBox");
-      Control.Stub (stub => stub.TextBoxClientID).Return ("MyReferenceValue_Boc_TextBox");
-      Control.Stub (stub => stub.HiddenFieldUniqueID).Return ("MyReferenceValue_Boc_HiddenField");
-      Control.Stub (stub => stub.HiddenFieldClientID).Return ("MyReferenceValue_Boc_HiddenField");
-      Control.Stub (stub => stub.DropDownButtonClientID).Return ("MyReferenceValue_Boc_DropDownButton");
+      Control.Stub (stub => stub.ClientID).Return (c_clientID);
+      Control.Stub (stub => stub.GetTextValueName()).Return (c_textValueName);
+      Control.Stub (stub => stub.GetKeyValueName()).Return (c_keyValueName);
       Control.Stub (stub => stub.Command).Return (new BocCommand ());
       Control.Command.Type = CommandType.Event;
       Control.Command.Show = CommandShow.Always;
@@ -463,7 +463,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
       var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (_resourceUrlFactory, () =>TextBox);
+
+      Assert.That (TextBox.ID, Is.Null);
       renderer.Render (CreateRenderingContext());
+      if (!Control.IsReadOnly)
+        Assert.That (TextBox.ID, Is.EqualTo (Control.GetTextValueName ()));
 
       var document = Html.GetResultDocument ();
       var div = document.GetAssertedChildElement ("div", 0);

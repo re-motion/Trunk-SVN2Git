@@ -148,13 +148,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (!renderingContext.Control.Enabled)
         return;
 
-      string key = renderingContext.Control.UniqueID + "_InitializationScript";
+      string key = renderingContext.Control.ClientID + "_InitializationScript";
 
       var script = new StringBuilder (1000);
       script.Append ("$(document).ready( function() { BocAutoCompleteReferenceValue.Initialize(");
-      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.TextBoxClientID);
-      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.HiddenFieldClientID);
-      script.AppendFormat ("$('#{0}'),", renderingContext.Control.DropDownButtonClientID);
+      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.GetTextValueName());
+      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.GetKeyValueName());
+      script.AppendFormat ("$('#{0}'),", GetDropDownButtonName(renderingContext));
 
       if (renderingContext.Control.IsIconEnabled())
         script.AppendFormat ("$('#{0} .{1}'), ", renderingContext.Control.ClientID, CssClassCommand);
@@ -187,6 +187,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
           renderingContext.Control, typeof (IBocAutoCompleteReferenceValue), key, script.ToString());
+    }
+
+    private  string GetDropDownButtonName (BocRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
+    {
+      return renderingContext.Control.ClientID + "_DropDownButton";
     }
 
     private string GetSearchContextAsJson (SearchAvailableObjectWebServiceContext searchContext)
@@ -306,7 +311,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private void RenderDropdownButton (BocRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.DropDownButtonClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetDropDownButtonName(renderingContext));
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       IconInfo.CreateSpacer (ResourceUrlFactory).Render (renderingContext.Writer, renderingContext.Control);
@@ -317,7 +322,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       return new HiddenField
       {
-        ID = renderingContext.Control.HiddenFieldUniqueID,
+        ID = renderingContext.Control.GetKeyValueName(),
         Page = renderingContext.Control.Page.WrappedInstance,
         EnableViewState = true,
         Value = renderingContext.Control.BusinessObjectUniqueIdentifier ?? renderingContext.Control.NullValueString        
@@ -327,7 +332,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private TextBox GetTextBox (BocRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
       var textBox = _textBoxFactory();
-      textBox.ID = renderingContext.Control.TextBoxUniqueID;
+      textBox.ID = renderingContext.Control.GetTextValueName();
       textBox.Text = renderingContext.Control.GetLabelText ();
       textBox.Enabled = renderingContext.Control.Enabled;
       textBox.EnableViewState = false;

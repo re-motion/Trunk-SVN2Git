@@ -31,24 +31,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation
     {
     }
 
-    /// <summary> Formats the <see cref="DateTime"/> value according to the current culture. </summary>
-    /// <param name="dateValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <param name="showSeconds"> <see langword="true"/> if the time format includes seconds. </param>
-    /// <returns> A formatted string representing the <see cref="DateTime"/> value. </returns>
-    public virtual string FormatDateTimeValue (DateTime dateValue, bool showSeconds)
-    {
-      if (showSeconds)
-      {
-        //  G:  yyyy, mm, dd, hh, mm, ss
-        return dateValue.ToString ("G");
-      }
-      else
-      {
-        //  g:  yyyy, mm, dd, hh, mm
-        return dateValue.ToString ("g");
-      }
-    }
-
     /// <summary> Formats the <see cref="DateTime"/> value's date component according to the current culture. </summary>
     /// <param name="dateValue"> The <see cref="DateTime"/> value to be formatted. </param>
     /// <returns> A formatted string representing the <see cref="DateTime"/> value's date component. </returns>

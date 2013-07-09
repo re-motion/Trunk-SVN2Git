@@ -24,7 +24,6 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -41,8 +40,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // constants
 
     private const string c_nullString = "null";
-
-    private const string c_hiddenfieldIDPostfix = "Boc_HiddenField";
+    private const string c_keyValueName = "_KeyValue";
+    private const string c_textValueName = "_TextValue";
 
     // types
 
@@ -160,39 +159,35 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { GetHiddenFieldClientID() };
+      return IsReadOnly ? new string[0] : new[] { GetKeyValueName () };
+    }
+
+    string IBocBooleanValue.GetKeyValueName ()
+    {
+      return GetKeyValueName();
     }
 
     /// <summary>
-    /// Gets an ID to use for the hidden field needed to store the value of the control client-side.
+    /// Gets a name (ID) to use for the hidden field needed to store the value of the control client-side.
     /// </summary>
-    /// <returns>The control's <see cref="Control.UniqueID"/> postfixed with a constant id for the hidden field.</returns>
-    public string GetHiddenFieldUniqueID ()
+    /// <returns>The control's <see cref="Control.ClientID"/> postfixed with a constant id for the hidden field.</returns>
+    protected string GetKeyValueName ()
     {
-      return UniqueID + IdSeparator + c_hiddenfieldIDPostfix;
+      return ClientID + c_keyValueName;
+    }
+
+    string IBocBooleanValue.GetTextValueName ()
+    {
+      return GetTextValueName();
     }
 
     /// <summary>
-    /// Gets an ID to use for the hidden field needed to store the value of the control client-side.
+    /// Gets a name (ID) to use for the hyperlink used to change the value of the control client-side.
     /// </summary>
-    /// <returns>The control's <see cref="Control.UniqueID"/> postfixed with a constant id for the hidden field.</returns>
-    public string GetHiddenFieldClientID ()
+    /// <returns>The control's <see cref="Control.ClientID"/> postfixed with a constant id for the hyperlink.</returns>
+    protected string GetTextValueName ()
     {
-      return ClientID + ClientIDSeparator + c_hiddenfieldIDPostfix;
-    }
-
-    /// <summary>
-    /// Gets an ID to use for the hyperlink used to change the value of the control client-side.
-    /// </summary>
-    /// <returns>The control's <see cref="Control.UniqueID"/> postfixed with a constant id for the hyperlink.</returns>
-    public string GetHyperLinkUniqueID ()
-    {
-      return UniqueID + IdSeparator + "Boc_HyperLink";
-    }
-
-    private string GetHyperLinkClientID ()
-    {
-      return ClientID + ClientIDSeparator + "Boc_HyperLink";
+      return ClientID + c_textValueName;
     }
 
     protected override bool? GetValue ()
@@ -262,7 +257,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public override string FocusID
     {
-      get { return IsReadOnly ? null : GetHyperLinkClientID (); }
+      get { return IsReadOnly ? null : GetTextValueName (); }
     }
 
     /// <summary> Gets the string representation of this control's <see cref="BocBooleanValueBase.Value"/>. </summary>
@@ -321,7 +316,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadPostData/*' />
     protected override bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      string newValueAsString = PageUtility.GetPostBackCollectionItem (Page, GetHiddenFieldUniqueID());
+      string newValueAsString = PageUtility.GetPostBackCollectionItem (Page, GetKeyValueName());
       bool? newValue = null;
       bool isDataChanged = false;
       if (newValueAsString != null)
@@ -440,16 +435,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override bool SupportsPropertyMultiplicity (bool isList)
     {
       return ! isList;
-    }
-
-    string IBocBooleanValue.GetLabelClientID ()
-    {
-      return UniqueID + IdSeparator + "Boc_Label";
-    }
-
-    string IBocBooleanValue.GetImageClientID ()
-    {
-      return UniqueID + IdSeparator + "Boc_Image";
     }
 
     BocBooleanValueResourceSet IBocBooleanValue.CreateResourceSet ()

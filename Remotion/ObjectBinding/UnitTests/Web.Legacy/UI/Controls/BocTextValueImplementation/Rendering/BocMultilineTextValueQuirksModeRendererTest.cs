@@ -34,6 +34,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
   [TestFixture]
   public class BocMultilineTextValueQuirksModeRendererTest : BocTextValueQuirksModeRendererTestBase<IBocMultilineTextValue>
   {
+    private const string c_textValueID = "MyTextValue_Boc_Textbox";
     private IResourceUrlFactory _resourceUrlFactory;
     private BocMultilineTextValueQuirksModeRenderer _renderer;
 
@@ -55,7 +56,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
           });
 
       TextValue.Stub (stub => stub.ClientID).Return ("MyTextValue");
-      TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");
+      TextValue.Stub (stub => stub.GetValueName()).Return (c_textValueID);
 
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
 
@@ -173,8 +174,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
       Html.AssertChildElementCount (span, 1);
 
       var textarea = Html.GetAssertedChildElement (span, "textarea", 0);
+      Html.AssertAttribute (textarea, "id", c_textValueID);
+      Html.AssertAttribute (textarea, "name", c_textValueID);
       if (TextValue.TextBoxStyle.AutoPostBack == true)
-        Html.AssertAttribute (textarea, "onchange", string.Format("javascript:__doPostBack('{0}','')", TextValue.TextBoxID));
+        Html.AssertAttribute (textarea, "onchange", string.Format("javascript:__doPostBack('{0}','')", c_textValueID));
       CheckTextAreaStyle (textarea, false, withStyle);
       Html.AssertTextNode (textarea, TextValue.Text, 0);
       Html.AssertChildElementCount (textarea, 0);
@@ -204,6 +207,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
       }
 
       var label = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertAttribute (label, "id", c_textValueID);
       Html.AssertTextNode (label, BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText, 0);
       Html.GetAssertedChildElement (label, "br", 1);
       Html.AssertTextNode (label, BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_secondLineText, 2);

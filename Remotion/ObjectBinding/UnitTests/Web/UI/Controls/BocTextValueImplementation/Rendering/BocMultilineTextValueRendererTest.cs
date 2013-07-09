@@ -31,6 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
   [TestFixture]
   public class BocMultilineTextValueRendererTest : BocTextValueRendererTestBase<IBocMultilineTextValue>
   {
+    private const string c_textValueID = "MyTextValue_Boc_Textbox";
     private BocMultilineTextValueRenderer _renderer;
     
     [SetUp]
@@ -46,7 +47,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
           new[] { BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText });
 
       TextValue.Stub (stub => stub.ClientID).Return ("MyTextValue");
-      TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");
+      TextValue.Stub (stub => stub.GetValueName()).Return (c_textValueID);
 
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
 
@@ -164,8 +165,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       Html.AssertChildElementCount (content, 1);
 
       var textarea = Html.GetAssertedChildElement (content, "textarea", 0);
+      Html.AssertAttribute (textarea, "id", c_textValueID);
+      Html.AssertAttribute (textarea, "name", c_textValueID);
       if (TextValue.TextBoxStyle.AutoPostBack == true)
-        Html.AssertAttribute (textarea, "onchange", string.Format("javascript:__doPostBack('{0}','')", TextValue.TextBoxID));
+        Html.AssertAttribute (textarea, "onchange", string.Format("javascript:__doPostBack('{0}','')", c_textValueID));
       CheckTextAreaStyle (textarea, false, withStyle);
       Html.AssertTextNode (textarea, TextValue.Text, 0);
       Html.AssertChildElementCount (textarea, 0);
@@ -197,6 +200,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       }
 
       var label = Html.GetAssertedChildElement (content, "span", 0);
+      Html.AssertAttribute (label, "id", c_textValueID);
       Html.AssertTextNode (label, BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, 0);
       Html.GetAssertedChildElement (label, "br", 1);
       Html.AssertTextNode (label, BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText, 2);

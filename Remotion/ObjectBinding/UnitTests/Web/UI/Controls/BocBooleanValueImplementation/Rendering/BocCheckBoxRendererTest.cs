@@ -36,6 +36,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     private const string c_trueDescription = "Wahr";
     private const string c_falseDescription = "Falsch";
     private const string c_cssClass = "someCssClass";
+    private const string c_clientID = "MyCheckbox";
+    private const string c_valueName = "MyCheckBox_BooleanValue";
     private readonly string _startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
 
     private IBocCheckBox _checkbox;
@@ -48,11 +50,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
       Initialize();
       _checkbox = MockRepository.GenerateMock<IBocCheckBox>();
 
-      _checkbox.Stub (mock => mock.ClientID).Return ("MyCheckbox");
-      _checkbox.Stub (mock => mock.GetCheckboxUniqueID()).Return ("_Boc_CheckBox");
-      _checkbox.Stub (mock => mock.GetImageUniqueID()).Return ("_Boc_Image");
-      _checkbox.Stub (mock => mock.GetLabelUniqueID()).Return ("_Boc_Label");
-
+      _checkbox.Stub (mock => mock.ClientID).Return (c_clientID);
+      _checkbox.Stub (mock => mock.GetValueName()).Return (c_valueName);
+      
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
       _startupScript = string.Format (
           "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
@@ -101,6 +101,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     {
       _checkbox.Stub (mock => mock.Enabled).Return (true);
       _checkbox.Stub (mock => mock.IsRequired).Return (true);
+      _checkbox.Stub (mock => mock.IsReadOnly).Return (true);
       CheckRender (true, _checkbox.TrueDescription);
     }
 
@@ -109,6 +110,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     {
       _checkbox.Stub (mock => mock.Enabled).Return (true);
       _checkbox.Stub (mock => mock.IsRequired).Return (true);
+      _checkbox.Stub (mock => mock.IsReadOnly).Return (true);
       CheckRender (false, _checkbox.FalseDescription);
     }
 
@@ -232,12 +234,19 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
       CheckCssClass (outerSpan);
 
       if (_checkbox.IsReadOnly)
+      {
+        outerSpan = outerSpan.GetAssertedChildElement ("span", 0);
+        outerSpan.AssertAttributeValueContains ("id", c_valueName);
+        outerSpan.AssertAttributeValueContains ("data-value", value.ToString());
         CheckImage (value, outerSpan, spanText);
+      }
       else
+      {
         CheckInput (value, outerSpan);
+      }
 
       var label = Html.GetAssertedChildElement (outerSpan, "span", 1);
-      Html.AssertAttribute (label, "id", "_Boc_Label");
+      Html.AssertNoAttribute (label, "id");
 
       Html.AssertTextNode (label, spanText, 0);
     }
@@ -246,8 +255,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     {
       var checkbox = Html.GetAssertedChildElement (outerSpan, "input", 0);
       Html.AssertAttribute (checkbox, "type", "checkbox");
-      Html.AssertAttribute (checkbox, "id", "_Boc_CheckBox");
-      Html.AssertAttribute (checkbox, "name", "_Boc_CheckBox");
+      Html.AssertAttribute (checkbox, "id", c_valueName);
+      Html.AssertAttribute (checkbox, "name", c_valueName);
       if (value)
         Html.AssertAttribute (checkbox, "checked", "checked");
       else
@@ -262,7 +271,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     private void CheckImage (bool value, XmlNode outerSpan, string altText)
     {
       var image = Html.GetAssertedChildElement (outerSpan, "img", 0);
-      Html.AssertAttribute (image, "id", "_Boc_Image");
+      Html.AssertNoAttribute (image, "id");
       Html.AssertAttribute (image, "src", string.Format ("/CheckBox{0}.gif", value), HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (image, "alt", altText);
     }

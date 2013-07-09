@@ -40,6 +40,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
     private const string c_falseDescription = "Falsch";
     private const string c_defaultControlWidth = "100pt";
     private const string c_cssClass = "someCssClass";
+    private const string c_clientID = "MyCheckbox";
+    private const string c_valueName = "MyCheckBox_BooleanValue";
     private readonly string _startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
 
     private IBocCheckBox _checkbox;
@@ -53,11 +55,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
       Initialize();
       _checkbox = MockRepository.GenerateMock<IBocCheckBox>();
 
-      _checkbox.Stub (mock => mock.ClientID).Return ("MyCheckbox");
-      _checkbox.Stub (mock => mock.GetCheckboxUniqueID()).Return ("_Boc_CheckBox");
-      _checkbox.Stub (mock => mock.GetImageUniqueID()).Return ("_Boc_Image");
-      _checkbox.Stub (mock => mock.GetLabelUniqueID()).Return ("_Boc_Label");
-
+      _checkbox.Stub (mock => mock.ClientID).Return (c_clientID);
+      _checkbox.Stub (mock => mock.GetValueName()).Return (c_valueName);
+      
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
       _startupScript = string.Format (
           "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
@@ -248,7 +248,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
         CheckInput (value, outerSpan);
 
       var label = Html.GetAssertedChildElement (outerSpan, "span", 1);
-      Html.AssertAttribute (label, "id", "_Boc_Label");
+      Html.AssertAttribute (label, "id", "MyCheckbox_Label");
 
       Html.AssertTextNode (label, spanText, 0);
     }
@@ -257,8 +257,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
     {
       var checkbox = Html.GetAssertedChildElement (outerSpan, "input", 0);
       Html.AssertAttribute (checkbox, "type", "checkbox");
-      Html.AssertAttribute (checkbox, "id", "_Boc_CheckBox");
-      Html.AssertAttribute (checkbox, "name", "_Boc_CheckBox");
+      Html.AssertAttribute (checkbox, "id", c_valueName);
+      Html.AssertAttribute (checkbox, "name", c_valueName);
       if (value)
         Html.AssertAttribute (checkbox, "checked", "checked");
       else

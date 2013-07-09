@@ -47,8 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
-
-    private const string c_dropDownListIDPostfix = "Boc_DropDownList";
+    private const string c_dropDownListIDPostfix = "_Value";
 
     // types
 
@@ -142,17 +141,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override string ValueContainingControlID
     {
-      get { return DropDownListUniqueID; }
+      get { return GetValueName(); }
     }
 
-    public string DropDownListUniqueID
+    string IBocReferenceValue.GetValueName ()
     {
-      get { return UniqueID + IdSeparator + c_dropDownListIDPostfix; }
+      return GetValueName();
     }
 
+    protected string GetValueName ()
+    {
+      return ClientID + c_dropDownListIDPostfix;
+    }
+
+    [Obsolete ("Use GetValueName() instead. (1.13.206)", true)]
     public string DropDownListClientID
     {
-      get { return ClientID + ClientIDSeparator + c_dropDownListIDPostfix; }
+      get { throw new NotImplementedException ("Use GetValueName() instead. (1.13.206)"); }
     }
 
     /// <summary> Called when the state of the control has changed between postbacks. </summary>
@@ -305,7 +310,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override sealed string GetSelectionCountScript ()
     {
-      return "function() { return BocReferenceValue.GetSelectionCount ('" + DropDownListClientID + "', '" + c_nullIdentifier + "'); }";
+      return "function() { return BocReferenceValue.GetSelectionCount ('" + GetValueName() + "', '" + c_nullIdentifier + "'); }";
     }
 
     /// <summary> Sets the <see cref="IBusinessObjectWithIdentity"/> objects to be displayed in edit mode. </summary>
@@ -478,7 +483,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { DropDownListClientID };
+      return IsReadOnly ? new string[0] : new[] { GetValueName() };
     }
 
     /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
@@ -490,7 +495,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public string FocusID
     {
-      get { return IsReadOnly ? null : DropDownListClientID; }
+      get { return IsReadOnly ? null : GetValueName(); }
     }
 
     /// <summary> Gets the style that you want to apply to the <see cref="DropDownList"/> (edit mode) only. </summary>

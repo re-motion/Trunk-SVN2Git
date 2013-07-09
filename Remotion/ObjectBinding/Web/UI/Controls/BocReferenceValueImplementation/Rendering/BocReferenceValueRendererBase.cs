@@ -332,10 +332,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private Label GetLabel (BocRenderingContext<TControl> renderingContext)
     {
-      var label = new Label { ID = renderingContext.Control.LabelClientID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
+      var label = new Label { ID = renderingContext.Control.ClientID + "_Label", EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
       label.ApplyStyle (renderingContext.Control.CommonStyle);
       label.ApplyStyle (renderingContext.Control.LabelStyle);
       label.Text = HttpUtility.HtmlEncode (renderingContext.Control.GetLabelText ());
+      label.Attributes.Add ("data-value", renderingContext.Control.BusinessObjectUniqueIdentifier);
       return label;
     }
 

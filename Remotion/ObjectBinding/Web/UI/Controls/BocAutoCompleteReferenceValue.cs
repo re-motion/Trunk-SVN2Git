@@ -52,9 +52,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
 
-    private const string c_textBoxIDPostfix = "Boc_TextBox";
-    private const string c_hiddenFieldIDPostfix = "Boc_HiddenField";
-    private const string c_buttonIDPostfix = "Boc_DropDownButton";
+    private const string c_textBoxIDPostfix = "_TextValue";
+    private const string c_hiddenFieldIDPostfix = "_KeyValue";
 
     // types
     
@@ -128,14 +127,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override string ValueContainingControlID
     {
-      get { return HiddenFieldUniqueID; }
+      get { return GetKeyValueName(); }
     }
 
     protected override bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
       var isDataChanged = base.LoadPostData (postDataKey, postCollection);
 
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, TextBoxUniqueID);
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetTextValueName());
       if (newValue != null)
       {
         if (InternalDisplayName == null && !string.IsNullOrEmpty (newValue))
@@ -395,7 +394,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { TextBoxClientID };
+      return IsReadOnly ? new string[0] : new[] { GetTextValueName() };
     }
 
     /// <summary> The <see cref="BocReferenceValue"/> supports only scalar properties. </summary>
@@ -415,7 +414,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public string FocusID
     {
-      get { return IsReadOnly ? null : TextBoxClientID; }
+      get { return IsReadOnly ? null : GetTextValueName(); }
     }
 
     /// <summary> Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) only. </summary>
@@ -599,29 +598,42 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    string IBocAutoCompleteReferenceValue.GetTextValueName ()
+    {
+      return GetTextValueName();
+    }
+
+    protected string GetTextValueName ()
+    {
+      return ClientID + c_textBoxIDPostfix;
+    }
+
+    string IBocAutoCompleteReferenceValue.GetKeyValueName ()
+    {
+      return GetKeyValueName();
+    }
+
+    protected string GetKeyValueName ()
+    {
+      return ClientID + c_hiddenFieldIDPostfix;
+    }
+
+    [Obsolete ("Use GetTextValueName() instead. (1.13.206)", true)]
     public string TextBoxUniqueID
     {
-      get { return UniqueID + IdSeparator + c_textBoxIDPostfix; }
+      get { throw new NotImplementedException ("Use GetTextValueName() instead. (1.13.206)"); }
     }
 
+    [Obsolete ("Use GetTextValueName() instead. (1.13.206)", true)]
     public string TextBoxClientID
     {
-      get { return ClientID + ClientIDSeparator + c_textBoxIDPostfix; }
+      get { throw new NotImplementedException ("Use GetTextValueName() instead. (1.13.206)"); }
     }
 
-    string IBocAutoCompleteReferenceValue.DropDownButtonClientID
-    {
-      get { return ClientID + ClientIDSeparator + c_buttonIDPostfix; }
-    }
-
+    [Obsolete ("Use GetKeyValueName() instead. (1.13.206)", true)]
     public string HiddenFieldClientID
     {
-      get { return ClientID + ClientIDSeparator + c_hiddenFieldIDPostfix; }
-    }
-
-    public string HiddenFieldUniqueID
-    {
-      get { return UniqueID + IdSeparator + c_hiddenFieldIDPostfix; }
+      get { throw new NotImplementedException ("Use GetKeyValueName() instead. (1.13.206)"); }
     }
 
     protected override sealed string GetNullItemErrorMessage ()
@@ -636,7 +648,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override sealed string GetSelectionCountScript ()
     {
-      return "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + HiddenFieldClientID + "', '" + c_nullIdentifier + "'); }";
+      return "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + GetKeyValueName() + "', '" + c_nullIdentifier + "'); }";
     }
 
     private string InternalDisplayName

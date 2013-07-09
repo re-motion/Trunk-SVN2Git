@@ -73,9 +73,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       AddAttributesToRender (renderingContext, false);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Label labelControl = new Label { ID = renderingContext.Control.GetLabelUniqueID () };
-      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetCheckboxUniqueID () };
-      Image imageControl = new Image { ID = renderingContext.Control.GetImageUniqueID () };
+      Label labelControl = new Label { ID = renderingContext.Control.ClientID + "_Label" };
+      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetValueName () };
+      Image imageControl = new Image { ID = renderingContext.Control.ClientID + "Image" };
 
       string description = GetDescription (renderingContext);
 
@@ -136,8 +136,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
 
     private string GetScriptParameters (BocCheckBoxRenderingContext renderingContext)
     {
-      string label = renderingContext.Control.IsDescriptionEnabled ? "document.getElementById ('" + renderingContext.Control.LabelID + "')" : "null";
-      string checkBox = "document.getElementById ('" + renderingContext.Control.CheckboxID + "')";
+      string label = renderingContext.Control.IsDescriptionEnabled ? "document.getElementById ('" + renderingContext.Control.ClientID + "_Label" + "')" : "null";
+      string checkBox = "document.getElementById ('" + renderingContext.Control.GetValueName() + "')";
       string script = " ("
                       + checkBox + ", "
                       + label + ", "

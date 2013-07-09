@@ -107,11 +107,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (!renderingContext.Control.Enabled)
         return;
 
-      string key = renderingContext.Control.UniqueID + "_InitializationScript";
+      string key = renderingContext.Control.ClientID + "_InitializationScript";
 
       var script = new StringBuilder (1000);
       script.Append ("$(document).ready( function() { BocReferenceValue.Initialize(");
-      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.DropDownListClientID);
+      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.GetValueName());
 
       if (renderingContext.Control.IsIconEnabled())
         script.AppendFormat ("$('#{0} .{1}'), ", renderingContext.Control.ClientID, CssClassCommand);
@@ -173,7 +173,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private DropDownList GetDropDownList (BocRenderingContext<IBocReferenceValue> renderingContext)
     {
       var dropDownList = _dropDownListFactoryMethod ();
-      dropDownList.ID = renderingContext.Control.DropDownListUniqueID;
+      dropDownList.ID = renderingContext.Control.GetValueName();
       dropDownList.EnableViewState = false;
       dropDownList.Page = renderingContext.Control.Page.WrappedInstance;
       renderingContext.Control.PopulateDropDownList (dropDownList);

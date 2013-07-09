@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
@@ -145,8 +146,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
       Assert.That (actual, Is.Not.Null);
       Assert.That (actual.Length, Is.EqualTo (2));
-      Assert.That (actual[0], Is.EqualTo (_bocDateTimeValue.GetDateTextboxClientID()));
-      Assert.That (actual[1], Is.EqualTo (_bocDateTimeValue.GetTimeTextboxClientID()));
+      Assert.That (actual[0], Is.EqualTo (((IBocDateTimeValue) _bocDateTimeValue).GetDateValueName()));
+      Assert.That (actual[1], Is.EqualTo (((IBocDateTimeValue)_bocDateTimeValue).GetTimeValueName()));
     }
 
     [Test]
@@ -157,7 +158,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
       Assert.That (actual, Is.Not.Null);
       Assert.That (actual.Length, Is.EqualTo (1));
-      Assert.That (actual[0], Is.EqualTo (_bocDateTimeValue.GetDateTextboxClientID()));
+      Assert.That (actual[0], Is.EqualTo (((IBocDateTimeValue)_bocDateTimeValue).GetDateValueName()));
     }
 
     [Test]
@@ -168,8 +169,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
       Assert.That (actual, Is.Not.Null);
       Assert.That (actual.Length, Is.EqualTo (2));
-      Assert.That (actual[0], Is.EqualTo (_bocDateTimeValue.GetDateTextboxClientID()));
-      Assert.That (actual[1], Is.EqualTo (_bocDateTimeValue.GetTimeTextboxClientID()));
+      Assert.That (actual[0], Is.EqualTo (((IBocDateTimeValue)_bocDateTimeValue).GetDateValueName()));
+      Assert.That (actual[1], Is.EqualTo (((IBocDateTimeValue)_bocDateTimeValue).GetTimeValueName()));
     }
 
 
@@ -464,5 +465,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Assert.That (_businessObject.DateTimeValue, Is.EqualTo (new DateTime (2000, 1, 1)));
       Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }
+
+    [Test]
+    public void GetDateValueName ()
+    {
+      Assert.That (((IBocDateTimeValue)_bocDateTimeValue).GetDateValueName(), Is.EqualTo ("NamingContainer_BocDateTimeValue_DateValue"));
+    }
+
+    [Test]
+    public void GetTimeValueName ()
+    {
+      Assert.That (((IBocDateTimeValue)_bocDateTimeValue).GetTimeValueName(), Is.EqualTo ("NamingContainer_BocDateTimeValue_TimeValue"));
+    }
+
   }
 }

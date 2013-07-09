@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     protected virtual TextBox GetTextBox (BocRenderingContext<T> renderingContext)
     {
       TextBox textBox = new RenderOnlyTextBox { Text = renderingContext.Control.Text };
-      textBox.ID = renderingContext.Control.TextBoxID;
+      textBox.ID = renderingContext.Control.GetValueName();
       textBox.EnableViewState = false;
       textBox.Enabled = renderingContext.Control.Enabled;
       textBox.ReadOnly = !renderingContext.Control.Enabled;

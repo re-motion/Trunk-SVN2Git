@@ -63,9 +63,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       AddAttributesToRender (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Label labelControl = new Label { ID = renderingContext.Control.GetLabelUniqueID () };
-      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetCheckboxUniqueID () };
-      Image imageControl = new Image { ID = renderingContext.Control.GetImageUniqueID () };
+      Label labelControl = new Label();
+      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetValueName () };
+      Image imageControl = new Image();
 
       string description = GetDescription (renderingContext);
 
@@ -74,8 +74,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
         PrepareImage (renderingContext, imageControl, description);
         PrepareLabel (renderingContext, description, labelControl);
 
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.GetValueName ());
+        if (renderingContext.Control.Value.HasValue)
+          renderingContext.Writer.AddAttribute ("data-value", renderingContext.Control.Value.Value.ToString ());
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
         imageControl.RenderControl (renderingContext.Writer);
         labelControl.RenderControl (renderingContext.Writer);
+        renderingContext.Writer.RenderEndTag ();
       }
       else
       {
@@ -126,8 +131,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
 
     private string GetScriptParameters (BocCheckBoxRenderingContext renderingContext)
     {
-      string label = renderingContext.Control.IsDescriptionEnabled ? "document.getElementById ('" + renderingContext.Control.LabelID + "')" : "null";
-      string checkBox = "document.getElementById ('" + renderingContext.Control.CheckboxID + "')";
+      string label = renderingContext.Control.IsDescriptionEnabled ? "document.getElementById ('" + renderingContext.Control.GetValueName() + "')" : "null";
+      string checkBox = "document.getElementById ('" + renderingContext.Control.GetValueName() + "')";
       string script = " ("
                       + checkBox + ", "
                       + label + ", "

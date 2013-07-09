@@ -822,7 +822,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Invoker.InitRecursive();
       Controller.SwitchListIntoEditMode (Columns);
 
-      string id = "NamingContainer_Controller_Row_{0}_{1}_Boc_TextBox";
+      string id = "NamingContainer_Controller_Row_{0}_{1}_Value";
       string[] trackedIDs = new string[10];
       for (int i = 0; i < 5; i++)
       {

@@ -141,9 +141,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
       var script = new StringBuilder (1000);
       script.Append ("$(document).ready( function() { BocAutoCompleteReferenceValue.Initialize(");
-      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.TextBoxClientID);
-      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.HiddenFieldClientID);
-      script.AppendFormat ("$('#{0}'),", renderingContext.Control.DropDownButtonClientID);
+      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.GetTextValueName());
+      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.GetKeyValueName());
+      script.AppendFormat ("$('#{0}'),", GetDropDownButtonName(renderingContext));
 
       if (renderingContext.Control.IsIconEnabled())
         script.AppendFormat ("$('#{0} .{1}'), ", renderingContext.Control.ClientID, CssClassCommand);
@@ -198,7 +198,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     private TextBox GetTextbox (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
       var textBox = TextBoxFactory();
-      textBox.ID = renderingContext.Control.TextBoxUniqueID;
+      textBox.ID = renderingContext.Control.GetTextValueName();
       textBox.EnableViewState = false;
       textBox.Text = renderingContext.Control.GetLabelText ();
 
@@ -214,7 +214,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     private HiddenField GetHiddenField (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
       var hiddenField = new HiddenField();
-      hiddenField.ID = renderingContext.Control.HiddenFieldUniqueID;
+      hiddenField.ID = renderingContext.Control.GetKeyValueName();
       hiddenField.Value = renderingContext.Control.BusinessObjectUniqueIdentifier ?? renderingContext.Control.NullValueString;
 
       return hiddenField;
@@ -550,7 +550,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
     private void RenderDropdownButton (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.DropDownButtonClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetDropDownButtonName(renderingContext));
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       IconInfo.CreateSpacer (ResourceUrlFactory).Render (renderingContext.Writer, renderingContext.Control);

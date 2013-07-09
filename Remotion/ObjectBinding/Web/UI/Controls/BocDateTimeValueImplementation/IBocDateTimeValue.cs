@@ -35,10 +35,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation
     SingleRowTextBoxStyle DateTimeTextBoxStyle { get; }
     string DateString { get; }
     string TimeString { get; }
-    string DateTextboxID { get; }
-    string TimeTextboxID { get; }
-    string DateTextboxClientID { get; }
-    string TimeTextboxClientID { get; }
+    string GetDateValueName ();
+    string GetTimeValueName ();
     string GetDatePickerText ();
   }
 }

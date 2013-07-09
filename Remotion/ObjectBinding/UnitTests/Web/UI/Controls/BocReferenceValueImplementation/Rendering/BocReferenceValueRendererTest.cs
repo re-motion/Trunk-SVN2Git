@@ -38,6 +38,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
   [TestFixture]
   public class BocReferenceValueRendererTest : RendererTestBase
   {
+    private const string c_clientID = "MyReferenceValue";
+    private const string c_valueName = "MyReferenceValue_SelectedValue";
+    private const string c_uniqueIdentifier = "uniqueidentifiert";
+
     private enum OptionMenuConfiguration
     {
       NoOptionsMenu,
@@ -50,6 +54,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     protected static readonly Unit Width = Unit.Pixel (250);
     protected static readonly Unit Height = Unit.Point (12);
     private IResourceUrlFactory _resourceUrlFactoryStub;
+
     public IClientScriptManager ClientScriptManagerMock { get; set; }
     public IBocReferenceValue Control { get; set; }
     public TypeWithReference BusinessObject { get; set; }
@@ -65,8 +70,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       DropDownList = new StubDropDownList();
 
       Control = MockRepository.GenerateStub<IBocReferenceValue>();
-      Control.Stub (stub => stub.ClientID).Return ("MyReferenceValue");
+      Control.Stub (stub => stub.ClientID).Return (c_clientID);
       Control.Stub (stub => stub.Command).Return (new BocCommand());
+      Control.Stub (stub => stub.BusinessObjectUniqueIdentifier).Return (c_uniqueIdentifier);
       Control.Command.Type = CommandType.Event;
       Control.Command.Show = CommandShow.Always;
 
@@ -98,10 +104,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
       Control.Stub (mock => mock.DropDownListStyle).Return (new DropDownListStyle());
       Control.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
-
-      Control.Stub (stub => stub.LabelClientID).Return (Control.ClientID + "_Boc_Label");
-      Control.Stub (stub => stub.DropDownListClientID).Return (Control.ClientID + "_Boc_DropDownList");
-      Control.Stub (stub => stub.IconClientID).Return (Control.ClientID + "_Boc_Icon");
+      Control.Stub (stub => stub.GetValueName ()).Return (c_valueName);
       Control.Stub (stub => stub.PopulateDropDownList (Arg<DropDownList>.Is.NotNull))
           .WhenCalled (
               invocation =>
@@ -433,6 +436,19 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       AssertReadOnlyContent (document);
     }
 
+    [Test]
+    public void RenderIDs ()
+    {
+      Control.Stub (stub => stub.Enabled).Return (true);
+
+      var renderer = new BocReferenceValueRenderer (_resourceUrlFactoryStub);
+      renderer.Render (CreateRenderingContext ());
+      var document = Html.GetResultDocument ();
+      var select = document.GetAssertedChildElement ("span", 0).GetAssertedChildElement ("span", 0).GetAssertedChildElement ("span", 1).GetAssertedChildElement ("select", 0);
+      select.AssertAttributeValueEquals ("id", c_valueName);
+      select.AssertAttributeValueEquals ("name", c_valueName);
+    }
+
     private void AssertReadOnlyContent (XmlNode parent)
     {
       var span = parent.GetAssertedChildElement ("span", 0);
@@ -449,7 +465,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       contentSpan.AssertChildElementCount (1);
 
       var innerSpan = contentSpan.GetAssertedChildElement ("span", 0);
-      innerSpan.AssertAttributeValueEquals ("id", Control.LabelClientID);
+      innerSpan.AssertAttributeValueEquals ("id", c_clientID + "_Label");
+      innerSpan.AssertAttributeValueEquals ("data-value", c_uniqueIdentifier);
       innerSpan.AssertChildElementCount (0);
       innerSpan.AssertTextNode ("MyText", 0);
 
@@ -497,7 +514,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     {
       var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, () => DropDownList);
       renderer.Render (CreateRenderingContext());
-
+      
       var document = Html.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);
 

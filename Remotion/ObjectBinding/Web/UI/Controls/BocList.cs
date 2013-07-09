@@ -110,6 +110,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> The key identifying a list menu item resource entry. </summary>
     private const string c_resourceKeyListMenuItems = "ListMenuItems";
 
+    private const string c_rowSelectorPostfix = "_RowSelector";
+    private const string c_allRowsSelectorPostfix = "_AllRowsSelector";
+
     // types
 
     /// <summary> A list of control wide resources. </summary>
@@ -3484,12 +3487,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocList.GetSelectorControlName ()
     {
-      return UniqueID + "_Boc_SelectRowControl";
+      return ClientID + c_rowSelectorPostfix;
     }
 
     string IBocList.GetSelectAllControlName ()
     {
-      return UniqueID + "_Boc_SelectAllControl";
+      return ClientID + c_allRowsSelectorPostfix;
     }
 
     string IBocList.GetSelectionChangedHandlerScript()
@@ -3592,7 +3595,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocList.GetCurrentPageControlName ()
     {
-      return UniqueID + c_currentPageControlName;
+      return ClientID + c_currentPageControlName;
     }
   }
 

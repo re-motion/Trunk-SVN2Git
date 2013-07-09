@@ -49,7 +49,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     void CopyBaseAttributes (WebControl controlSrc);
     void MergeStyle (Style s);
 
-    string GetTextBoxClientID ();
-    string TextBoxID { get; }
+    string GetValueName ();
   }
 }
