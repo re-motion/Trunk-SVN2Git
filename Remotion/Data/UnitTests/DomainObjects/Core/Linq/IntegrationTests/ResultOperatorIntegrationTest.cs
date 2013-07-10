@@ -278,7 +278,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       + "'from Order o in DomainObjectQueryable<Order> where {value(Remotion.Data.DomainObjects.ObjectID[]) => Contains([o].ID)} select [o]' for "
       + "SQL generation. The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following "
       + "expression cannot be translated to SQL: "
-      + "'new ObjectID(ClassID = [t0].[ClassID] AS ClassID, Value = Convert([t0].[ID] AS Value)) IN value(Remotion.Data.DomainObjects.ObjectID[])'.")]
+      + "'new ObjectID(ClassID = [t0].[ClassID] AS ClassID, Value = Convert([t0].[ID] AS Value)) "
+      + "IN (Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid,Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid)'.")]
     public void QueryWithContainsInWhere_OnCollection_WithObjectIDs ()
     {
       var possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3 };
