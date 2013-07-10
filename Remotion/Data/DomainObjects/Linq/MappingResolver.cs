@@ -28,6 +28,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using ArgumentUtility = Remotion.Linq.Utilities.ArgumentUtility;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -141,7 +142,9 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("desiredType", desiredType);
 
       if (desiredType.IsAssignableFrom (checkedExpression.Type))
+      {
         return Expression.Constant (true);
+      }
       else if (checkedExpression.Type.IsAssignableFrom (desiredType))
       {
         if (!ReflectionUtility.IsDomainObject (checkedExpression.Type))
@@ -156,10 +159,15 @@ namespace Remotion.Data.DomainObjects.Linq
         var classDefinition = GetClassDefinition (desiredType);
         var idExpression = Expression.MakeMemberAccess (checkedExpression, s_idPropertyInfo);
         var classIDExpression = Expression.MakeMemberAccess (idExpression, s_classIDPropertyInfo);
-        return Expression.Equal (classIDExpression, new SqlLiteralExpression (classDefinition.ID));
+        var allClassDefinitions = EnumerableUtility.Singleton (classDefinition).Concat (classDefinition.GetAllDerivedClasses().Select (cd => cd));
+        var allClassIDExpressions = allClassDefinitions.Select (cd => new SqlLiteralExpression (cd.ID));
+
+        return new SqlInExpression (classIDExpression, new SqlCollectionExpression (typeof (string[]), allClassIDExpressions.Cast<Expression>()));
       }
       else
+      {
         return Expression.Constant (false);
+      }
     }
 
     public Expression TryResolveOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)

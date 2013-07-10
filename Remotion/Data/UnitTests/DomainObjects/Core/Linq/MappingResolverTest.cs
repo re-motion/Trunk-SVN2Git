@@ -414,9 +414,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var idExpression = Expression.MakeMemberAccess (sqlEntityExpression, typeof (DomainObject).GetProperty ("ID"));
       var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty ("ClassID"));
-      var expectedTree = Expression.Equal (classIDExpression, new SqlLiteralExpression ("StorageGroupClass"));
+      var expectedExpression = new SqlInExpression (
+          classIDExpression, new SqlCollectionExpression (typeof (string[]), new Expression[] { new SqlLiteralExpression ("StorageGroupClass") }));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedTree);
+      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
     [Test]
@@ -430,7 +431,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveTypeCheck_ExpressionTypeIsAssignableFromDesiredType ()
+    public void ResolveTypeCheck_ExpressionTypeIsAssignableFromDesiredType_WithMultiplePossibleClassIDs ()
+    {
+      var sqlEntityExpression = (SqlEntityExpression) CreateFakeEntityExpression (typeof (Company));
+
+      var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Partner));
+
+      var idExpression = Expression.MakeMemberAccess (sqlEntityExpression, typeof (DomainObject).GetProperty ("ID"));
+      var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty ("ClassID"));
+      var expectedExpression = new SqlInExpression (
+          classIDExpression,
+          new SqlCollectionExpression (
+              typeof (string[]),
+              new Expression[]
+              { 
+                  new SqlLiteralExpression ("Partner"), 
+                  new SqlLiteralExpression ("Distributor"), 
+                  new SqlLiteralExpression ("Supplier") 
+              }));
+      
+      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+    }
+
+    [Test]
+    public void ResolveTypeCheck_ExpressionTypeIsAssignableFromDesiredType_WithSingleClassID ()
     {
       var sqlEntityExpression = (SqlEntityExpression) CreateFakeEntityExpression (typeof (Company));
 
@@ -438,8 +462,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var idExpression = Expression.MakeMemberAccess (sqlEntityExpression, typeof (DomainObject).GetProperty ("ID"));
       var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty ("ClassID"));
-      var expectedExpression = Expression.Equal (classIDExpression, new SqlLiteralExpression ("Customer"));
-
+      var expectedExpression = new SqlInExpression (
+          classIDExpression, new SqlCollectionExpression (typeof (string[]), new Expression[] { new SqlLiteralExpression ("Customer") }));
+      
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 

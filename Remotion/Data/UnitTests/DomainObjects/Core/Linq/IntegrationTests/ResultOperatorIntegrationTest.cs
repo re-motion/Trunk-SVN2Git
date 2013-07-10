@@ -15,15 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 
-[assembly: ApplyQueryGeneratorMixin]
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
   [TestFixture]
@@ -332,7 +329,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("RM-5684")]
     public void Query_WithOfType_DerivedType ()
     {
       var partnerIDs = new[]
@@ -445,9 +441,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.InvalidOrder,
           DomainObjectIDs.OrderWithoutOrderItems);
 
-      var query2 = from c in QueryFactory.CreateLinqQuery<Customer> ()
-                  where c.Orders.All (o => o.OrderItems.Count() > 0)
-                  select c;
+      // ReSharper disable UseMethodAny.0
+      var query2 = from c in QueryFactory.CreateLinqQuery<Customer>()
+                   where c.Orders.All (o => o.OrderItems.Count() > 0)
+                   select c;
+      // ReSharper restore UseMethodAny.0
 
       CheckQueryResult (
           query2,
@@ -562,10 +560,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void Average_InSubquery_WithIntProperty ()
     {
+      // ReSharper disable CompareOfFloatsByEqualityOperator
       var query =
-          from c in QueryFactory.CreateLinqQuery<Customer> ()
+          from c in QueryFactory.CreateLinqQuery<Customer>()
           where c.Orders.Average (o => o.OrderNumber) == 1.5
           select c;
+      // ReSharper restore CompareOfFloatsByEqualityOperator
 
       CheckQueryResult (query, DomainObjectIDs.Customer1);
     }
