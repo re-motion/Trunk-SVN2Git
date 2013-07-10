@@ -325,7 +325,7 @@
     
     <CodeplexUploadFiles ToolPath="$(CodeplexReleaseToolPath)"
                          ProjectName="$(CodePlexProjectName)"
-                         ReleaseName="$(Version)"
+                         ReleaseName="$(CodePlexReleaseName)"
                          Username="$(CodeplexUsername)"
                          Password="$(CodeplexPassword)"
                          FileDisplayName="%(_uploadFiles.Identity)"
