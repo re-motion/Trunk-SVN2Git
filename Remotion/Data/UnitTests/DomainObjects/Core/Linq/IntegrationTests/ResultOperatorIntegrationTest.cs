@@ -15,12 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 
+[assembly: ApplyQueryGeneratorMixin]
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
   [TestFixture]
@@ -314,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void Query_WithOfType_DerivedType ()
+    public void Query_WithOfType_SameType ()
     {
       var query = QueryFactory.CreateLinqQuery<Customer>().OfType<Customer>();
 
@@ -328,17 +331,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void Query_WithOfType_SameType ()
+    [Ignore ("RM-5684")]
+    public void Query_WithOfType_DerivedType ()
     {
-      var query = QueryFactory.CreateLinqQuery<Company>().OfType<Customer>();
+      var partnerIDs = new[]
+                       {
+                           (Guid) DomainObjectIDs.Partner1.Value,
+                           (Guid) DomainObjectIDs.Distributor1.Value,
+                           (Guid) DomainObjectIDs.Supplier1.Value,
+                           (Guid) DomainObjectIDs.Company1.Value,
+                           (Guid) DomainObjectIDs.Customer1.Value
+                       };
+      var query = QueryFactory.CreateLinqQuery<Company>().OfType<Partner>().Where (p => partnerIDs.Contains ((Guid) p.ID.Value));
 
       CheckQueryResult (
           query,
-          DomainObjectIDs.Customer1,
-          DomainObjectIDs.Customer2,
-          DomainObjectIDs.Customer3,
-          DomainObjectIDs.Customer4,
-          DomainObjectIDs.Customer5);
+          DomainObjectIDs.Partner1,
+          DomainObjectIDs.Distributor1,
+          DomainObjectIDs.Supplier1);
     }
 
     [Test]
