@@ -98,6 +98,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Reflection.CodeGeneration\Core.Reflection.CodeGeneration.csproj">
+      <Project>{503dcac3-e668-41d8-aa48-176e489b8e86}</Project>
+      <Name>Core.Reflection.CodeGeneration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Mixins\Core\Mixins.Core.csproj">
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
       <Name>Mixins.Core</Name>

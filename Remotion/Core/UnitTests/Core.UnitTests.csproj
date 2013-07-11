@@ -211,6 +211,22 @@
     <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ILStatement.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\SetUpFixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Reflection\CodeGeneration\TestDomain\BaseClassWithDeserializationEvents.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithConstrainedGenericMethod.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithDeserializationEvents.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Reflection\CodeGeneration\TestDomain\GenericClassWithGenericMethod.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Reflection\DelegateFactoryTest.cs" />
     <Compile Include="Reflection\MemberLookupInfoTest.cs" />
     <Compile Include="Reflection\MemberSignatures\EventSignatureTest.cs" />
@@ -252,7 +268,6 @@
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\StructWithMethods.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\DerivedClassWithMethods.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\SimpleReferenceType.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodGenerationTestBase.cs" />
     <Compile Include="Reflection\CodeGeneration\TestMethodReferencingAttribute.cs" />
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactoryTest.cs" />
     <Compile Include="Reflection\MethodInfoAdapterConverterTest.cs" />
@@ -313,9 +328,6 @@
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionForServiceWithoutConcreteImplementationAttribute.cs" />
     <Compile Include="Utilities\AppDomainAssemblyResolverTest.cs" />
     <Compile Include="Reflection\MethodResolverTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\BlockStatementTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\CastClassExpressionTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithProtectedVirtualMethod.cs" />
     <Compile Include="Reflection\DynamicParamListTest.cs" />
     <Compile Include="Reflection\ParamListImplementationTest.cs" />
     <Compile Include="Reflection\ParamListTest.cs" />
@@ -338,9 +350,6 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\FilteringAssemblyLoaderTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\FileLoadExceptionConsoleApplication\Program.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttributeTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithReplicatableConstructors.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\SimpleAttribute.cs" />
-    <Compile Include="Reflection\CodeGeneration\SetUpFixture.cs" />
     <Compile Include="Reflection\ConstructorLookupInfoTest.cs" />
     <Compile Include="Reflection\MethodLookupInfoTest.cs" />
     <Compile Include="Reflection\TestDomain\Base.cs" />
@@ -352,48 +361,7 @@
     <Compile Include="Collections\SimpleDataStoreTest.cs" />
     <Compile Include="Context\CallContextStorageProviderTest.cs" />
     <Compile Include="Globalization\ResourceManagerFactoryTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\AssemblySaverTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\PopStatementTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\BaseClassWithDeserializationEvents.cs" />
-    <Compile Include="Reflection\CodeGeneration\ClassEmitterGenericsTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\ClassEmitterTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithDeserializationEvents.cs" />
-    <Compile Include="Reflection\CodeGeneration\EventEmitterTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\CustomAttributeExpressionTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\ExpressionReferenceTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\FieldInfoReferenceTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\IfStatementTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\PropertyEmitterTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\LdArrayElementTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodEmitterTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\PropertyReferenceTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\SameConditionExpressionTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithAllKindsOfMembers.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithConstrainedGenericMethod.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithCustomAttribute.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithProtectedMethod.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithPublicFields.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithSimpleGenericMethod.cs" />
-    <Compile Include="Reflection\CodeGeneration\CodeGenerationBaseTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\GenericClassWithNested.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\SerializableClassWithPrivateGetObjectData.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\GenericInterfaceWithAllKindsOfMembers.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\GenericClassWithAllKindsOfMembers.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\GenericClassWithConstraints.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\GenericClassWithGenericMethod.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\IArrayProvider.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\IInterfaceWithMethod.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\IMarkerInterface.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\SerializableClass.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\SerializableClassWithoutCtor.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\SimpleArrayProvider.cs" />
-    <Compile Include="Reflection\CodeGeneration\TestDomain\StructWithMethod.cs" />
     <Compile Include="Reflection\CodeGeneration\SerializationEventRaiserTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\SerializationImplementerTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\SnippetGenerationBaseTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\TryFinallyStatementTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\TypedMethodInvocationExpressionTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\TypeReferenceWrapperTest.cs" />
     <Compile Include="Collections\LockingCacheDecoratorTest.cs" />
     <Compile Include="Collections\SetTest.cs" />
     <Compile Include="Collections\AutoInitDictionaryTest.cs" />

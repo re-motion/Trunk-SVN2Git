@@ -99,10 +99,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\Castle 3.0\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-3.5 (Client Profile)\log4net.dll</HintPath>
@@ -257,8 +253,6 @@
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactory.cs" />
     <Compile Include="Reflection\MethodInfoAdapter.cs" />
     <Compile Include="Reflection\MethodResolver.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\BlockStatement.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\CastClassExpression.cs" />
     <Compile Include="Reflection\MemberSignatures\MemberSignatureEqualityComparer.cs" />
     <Compile Include="Reflection\NullMethodInformation.cs" />
     <Compile Include="Reflection\NullPropertyInformation.cs" />
@@ -294,8 +288,6 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyLoaderException.cs" />
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\FilteringAssemblyLoader.cs" />
-    <Compile Include="Reflection\CodeGeneration\IClassEmitter.cs" />
-    <Compile Include="Reflection\CodeGeneration\IMethodEmitter.cs" />
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
     <Compile Include="Reflection\DynamicParamList.cs" />
     <Compile Include="Reflection\MemberLookupInfo.cs" />
@@ -308,31 +300,7 @@
     <Compile Include="Context\CallContextStorageProvider.cs" />
     <Compile Include="Globalization\ResourceDefinition.cs" />
     <Compile Include="Globalization\ResourceManagerFactory.cs" />
-    <Compile Include="Reflection\CodeGeneration\CustomClassEmitter.cs" />
-    <Compile Include="Reflection\CodeGeneration\CustomEventEmitter.cs" />
-    <Compile Include="Reflection\CodeGeneration\CustomMethodEmitter.cs" />
-    <Compile Include="Reflection\CodeGeneration\CustomPropertyEmitter.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\AssemblySaver.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\ClassEmitterSupportingOpenGenericBaseType.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\ConditionExpression.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\AutomaticMethodInvocationExpression.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\CustomAttributeExpression.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\ExpressionReference.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\FieldInfoReference.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\IfStatement.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\ILStatement.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\InitObjectExpression.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\LoadCalculatedArrayElementExpression.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\PopStatement.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\PropertyReference.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\SameConditionExpression.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\TryFinallyStatement.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\TypedMethodInvocationExpression.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\TypeReferenceWrapper.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\VirtualMethodInvocationExpression.cs" />
-    <Compile Include="Reflection\CodeGeneration\IAttributableEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\SerializationEventRaiser.cs" />
-    <Compile Include="Reflection\CodeGeneration\SerializationImplementer.cs" />
     <Compile Include="Collections\AutoInitDictionary.cs" />
     <Compile Include="Collections\MultiDictionary.cs" />
     <Compile Include="Collections\LockingCacheDecorator.cs" />

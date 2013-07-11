@@ -16,27 +16,58 @@
 // 
 using System;
 using System.Reflection;
+using Castle.DynamicProxy.Generators.Emitters;
+using NUnit.Framework;
 using Remotion.Reflection.CodeGeneration;
-using Remotion.Reflection.CodeGeneration.DPExtensions;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
-  public class MethodWrapperEmitterTestBase : MethodGenerationTestBase
-  {
-    protected IMethodEmitter GetWrapperMethodFromEmitter (
+  public class MethodWrapperEmitterTestBase
+  {    
+    private static int s_counter;
+
+    private ClassEmitter _classEmitter;
+    private bool _hasBeenBuilt;
+
+    [SetUp]
+    public virtual void SetUp ()
+    {
+      var uniqueName = GetType().Name + "." + s_counter;
+      s_counter++;
+
+      _classEmitter = new ClassEmitter (SetUpFixture.Scope, uniqueName, typeof (object), new Type[0], TypeAttributes.Class | TypeAttributes.Public, true);
+      _hasBeenBuilt = false;
+    }
+
+    [TearDown]
+    public virtual void TearDown ()
+    {
+      if (!_hasBeenBuilt)
+        _classEmitter.BuildType();
+    }
+
+    protected MethodEmitter GetWrapperMethodFromEmitter (
         MethodBase executingTestMethod, Type[] publicParameterTypes, Type publicReturnType, MethodInfo innerMethod)
     {
       var methodName = executingTestMethod.DeclaringType.Name + "_" + executingTestMethod.Name;
-      var method = ClassEmitter.CreateMethod (methodName, MethodAttributes.Public | MethodAttributes.Static, publicReturnType, publicParameterTypes);
+      var method = _classEmitter.CreateMethod (methodName, MethodAttributes.Public | MethodAttributes.Static, publicReturnType, publicParameterTypes);
 
       var statement = new ILStatement ((memberEmitter, ilGenerator) =>
       {
         var emitter = new MethodWrapperEmitter (ilGenerator, innerMethod, publicParameterTypes, publicReturnType);
         emitter.EmitStaticMethodBody ();
       });
-      method.AddStatement (statement);
+      method.CodeBuilder.AddStatement (statement);
 
       return method;
+    }
+
+    protected object BuildTypeAndInvokeMethod (MethodEmitter method, params object[] arguments)
+    {
+      _hasBeenBuilt = true;
+      Type builtType = _classEmitter.BuildType();
+      var methodInfo = builtType.GetMethod (method.MethodBuilder.Name);
+      return methodInfo.Invoke (null, arguments);
     }
   }
 }
