@@ -2,7 +2,7 @@ Component				License			Source                                             	Custo
 =============================================================================================================================================
 IronPython-2.7				Apache License 2.0	http://ironpython.codeplex.com/
 CommonServiceLocator-1.0		MS-PL			http://commonservicelocator.codeplex.com/
-Castle 3.0				Apache License 2.0	http://www.castleproject.org/				
+Castle-3.0				Apache License 2.0	http://www.castleproject.org/				
 log4net-1.2				Apache License 2.0	http://logging.apache.org/log4net/index.html
 nunit-2.6				zlib/libpng variant	http://nunit.org/
 Rhino.Mocks-3.6				BSD			http://ayende.com/projects/rhino-mocks.aspx
