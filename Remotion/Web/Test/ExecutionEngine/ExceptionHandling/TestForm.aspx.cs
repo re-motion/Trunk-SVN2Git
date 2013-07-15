@@ -72,6 +72,11 @@ namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling
       ExecuteFunction (new MissingUserControlFunction(), WxeCallArguments.Default);
     }
 
+    protected void ThrowExceptionForInvalidMarkupButton_Click (object sender, EventArgs e)
+    {
+      ExecuteFunction (new InvalidMarkupFunction(), WxeCallArguments.Default);
+    }
+
     private void ThrowInnerExceptionWithNesting ()
     {
       try

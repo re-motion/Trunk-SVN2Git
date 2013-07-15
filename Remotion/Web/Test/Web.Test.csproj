@@ -181,6 +181,14 @@
     <Compile Include="ErrorHandling\TestForm.aspx.designer.cs">
       <DependentUpon>TestForm.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ExecutionEngine\ExceptionHandling\InvalidMarkupForm.aspx.cs">
+      <DependentUpon>InvalidMarkupForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\ExceptionHandling\InvalidMarkupForm.aspx.designer.cs">
+      <DependentUpon>InvalidMarkupForm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ExecutionEngine\ExceptionHandling\InvalidMarkupFunction.cs" />
     <Compile Include="ExecutionEngine\ExceptionHandling\MissingPageFunction.cs" />
     <Compile Include="ExecutionEngine\ExceptionHandling\MissingUserControlForm.aspx.cs">
       <DependentUpon>MissingUserControlForm.aspx</DependentUpon>
@@ -421,6 +429,7 @@
     <Content Include="DefaultButtonTest.aspx" />
     <Content Include="ErrorHandling\ErrorForm.aspx" />
     <Content Include="ErrorHandling\TestForm.aspx" />
+    <Content Include="ExecutionEngine\ExceptionHandling\InvalidMarkupForm.aspx" />
     <Content Include="ExecutionEngine\ExceptionHandling\MissingUserControlForm.aspx" />
     <Content Include="ExecutionEngine\ExceptionHandling\TestForm.aspx" />
     <Content Include="ExecutionEngine\ExceptionHandling\ThrowingForm.aspx" />

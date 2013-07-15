@@ -42,6 +42,9 @@
         <asp:Button runat="server" ID="ThrowExceptionForMissingUserControlButton" OnClick="ThrowExceptionForMissingUserControlButton_Click" Text="Throw Exception for missing user control" />
       </p>
       <p>
+        <asp:Button runat="server" ID="ThrowExceptionForInvalidMarkupButton" OnClick="ThrowExceptionForInvalidMarkupButton_Click" Text="Throw Exception for page containing invalid markup" />
+      </p>
+      <p>
         <asp:Button runat="server" ID="OpenSubFunctionButton" OnClick="OpenSubFunctionButton_Click" Text="Open SubFunction" />
       </p>
     </div>
