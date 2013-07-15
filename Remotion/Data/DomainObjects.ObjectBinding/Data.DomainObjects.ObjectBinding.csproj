@@ -82,14 +82,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Globalization\BooleanProperty.de.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\BooleanProperty.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Relinq\Core\Linq.Core.csproj">
       <Project>{028e7899-0d5f-49c8-9eb6-8b051e02f1e0}</Project>
       <Name>Linq.Core</Name>
