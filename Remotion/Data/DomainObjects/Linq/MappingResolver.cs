@@ -99,8 +99,8 @@ namespace Remotion.Data.DomainObjects.Linq
       var propertyInfoAdapter = PropertyInfoAdapter.Create (property);
       var allClassDefinitions = new[] { entityClassDefinition }.Concat (entityClassDefinition.GetAllDerivedClasses ());
       var resolvedMember = allClassDefinitions
-          .Select (cd => ResolveMemberInClassDefinition (originatingEntity, propertyInfoAdapter, cd)).
-           FirstOrDefault (e => e != null);
+          .Select (cd => ResolveMemberInClassDefinition (originatingEntity, propertyInfoAdapter, cd))
+          .FirstOrDefault (e => e != null);
 
       if (resolvedMember == null)
       {
