@@ -38,8 +38,8 @@ namespace Remotion.Data.DomainObjects.Linq
   public class MappingResolver : IMappingResolver
   {
     private readonly IStorageSpecificExpressionResolver _storageSpecificExpressionResolver;
-    private static readonly PropertyInfo s_classIDPropertyInfo = typeof (ObjectID).GetProperty ("ClassID");
-    private static readonly PropertyInfo s_idPropertyInfo = typeof (DomainObject).GetProperty ("ID");
+    private static readonly PropertyInfoAdapter s_classIDProperty = PropertyInfoAdapter.Create (typeof (ObjectID).GetProperty ("ClassID"));
+    private static readonly PropertyInfoAdapter s_idProperty =  PropertyInfoAdapter.Create (typeof (DomainObject).GetProperty ("ID"));
 
     public MappingResolver (IStorageSpecificExpressionResolver storageSpecificExpressionResolver)
     {
@@ -90,16 +90,15 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      var property = GetMemberAsPropertyInfo (originatingEntity, memberInfo);
+      var property = GetMemberAsProperty (originatingEntity, memberInfo);
       var entityClassDefinition = GetClassDefinition (originatingEntity.Type);
 
-      if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
+      if (property.Equals (s_idProperty))
         return _storageSpecificExpressionResolver.ResolveIDProperty (originatingEntity, entityClassDefinition);
 
-      var propertyInfoAdapter = PropertyInfoAdapter.Create (property);
       var allClassDefinitions = new[] { entityClassDefinition }.Concat (entityClassDefinition.GetAllDerivedClasses ());
       var resolvedMember = allClassDefinitions
-          .Select (cd => ResolveMemberInClassDefinition (originatingEntity, propertyInfoAdapter, cd))
+          .Select (cd => ResolveMemberInClassDefinition (originatingEntity, property, cd))
           .FirstOrDefault (e => e != null);
 
       if (resolvedMember == null)
@@ -157,8 +156,8 @@ namespace Remotion.Data.DomainObjects.Linq
         }
 
         var classDefinition = GetClassDefinition (desiredType);
-        var idExpression = Expression.MakeMemberAccess (checkedExpression, s_idPropertyInfo);
-        var classIDExpression = Expression.MakeMemberAccess (idExpression, s_classIDPropertyInfo);
+        var idExpression = Expression.MakeMemberAccess (checkedExpression, s_idProperty.PropertyInfo);
+        var classIDExpression = Expression.MakeMemberAccess (idExpression, s_classIDProperty.PropertyInfo);
         var allClassDefinitions = EnumerableUtility.Singleton (classDefinition).Concat (classDefinition.GetAllDerivedClasses().Select (cd => cd));
         var allClassIDExpressions = allClassDefinitions.Select (cd => new SqlLiteralExpression (cd.ID));
 
@@ -206,7 +205,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return classDefinition;
     }
 
-    private static PropertyInfo GetMemberAsPropertyInfo (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
+    private static PropertyInfoAdapter GetMemberAsProperty (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
     {
       var property = memberInfo as PropertyInfo;
       if (property == null)
@@ -217,7 +216,7 @@ namespace Remotion.Data.DomainObjects.Linq
                 originatingEntity.Type.Name,
                 memberInfo.Name));
       }
-      return property;
+      return PropertyInfoAdapter.Create (property);
     }
 
     private Expression ResolveMemberInClassDefinition (
@@ -244,13 +243,12 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private IRelationEndPointDefinition GetEndPointDefinition (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
     {
-      var property = GetMemberAsPropertyInfo (originatingEntity, memberInfo);
+      var property = GetMemberAsProperty (originatingEntity, memberInfo);
       var entityClassDefinition = GetClassDefinition (originatingEntity.Type);
 
-      var propertyInfoAdapter = PropertyInfoAdapter.Create (property);
       var allClassDefinitions = new[] { entityClassDefinition }.Concat (entityClassDefinition.GetAllDerivedClasses());
       var leftEndPointDefinition = allClassDefinitions
-          .Select (cd => cd.ResolveRelationEndPoint (propertyInfoAdapter))
+          .Select (cd => cd.ResolveRelationEndPoint (property))
           .FirstOrDefault (e => e != null);
 
       if (leftEndPointDefinition == null)
