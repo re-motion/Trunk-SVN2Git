@@ -60,7 +60,6 @@
   
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Subversion.SvnCopy" />
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Subversion.SvnCommit" />
-  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Subversion.SvnExport" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Science.Maths" />
   <UsingTask AssemblyFile="$(MSBuildRemotionTasksPath)\Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.Jira.JiraGetEarliestUnreleasedVersion" />
   <UsingTask AssemblyFile="$(MSBuildRemotionTasksPath)\Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.Jira.JiraGetLatestReleasedVersion" />
