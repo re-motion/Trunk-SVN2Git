@@ -19,7 +19,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.RoleTests
@@ -29,7 +28,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
   {
     private User _user;
     private Role _role;
-    private Group _roleGroup2;
     private Substitution _substitution;
 
     public override void SetUp ()
@@ -39,7 +37,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       var tenant = TestHelper.CreateTenant ("TestTenant", "UID: testTenant");
       var userGroup = TestHelper.CreateGroup ("UserGroup", Guid.NewGuid().ToString(), null, tenant);
       var roleGroup = TestHelper.CreateGroup ("RoleGroup", Guid.NewGuid().ToString(), null, tenant);
-      _roleGroup2 = TestHelper.CreateGroup ("RoleGroup2", Guid.NewGuid().ToString(), null, tenant);
       _user = TestHelper.CreateUser ("user", "Firstname", "Lastname", "Title", userGroup, tenant);
       var position = TestHelper.CreatePosition ("Position");
       _role = TestHelper.CreateRole (_user, roleGroup, position);
@@ -62,7 +59,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
         commitOnClassWasCalled = true;
         Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
       };
-      _role.Group = _roleGroup2;
+      _role.RegisterForCommit();
       ClientTransaction.Current.Commit();
 
       Assert.That (commitOnClassWasCalled, Is.True);
@@ -92,7 +89,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
         commitOnClassWasCalled = true;
         Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
       };
-      _role.Group = _roleGroup2;
+      _role.RegisterForCommit();
       ClientTransaction.Current.Commit();
       Assert.That (commitOnClassWasCalled, Is.True);
     }
@@ -110,12 +107,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       ClientTransaction.Current.Commit();
 
       Assert.That (commitOnClassWasCalled, Is.True);
-    }
-
-    private DataContainer GetDataContainer (DomainObject domainObject)
-    {
-      return DataManagementService.GetDataManager (ClientTransaction.Current)
-                                  .GetDataContainerWithLazyLoad (domainObject.ID, true);
     }
   }
 }
