@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void OnCommitting_WithChangedAcl_RegistersClassForCommit ()
+    public void OnCommitting_WithChangedAccessTypeReference_RegistersClassForCommit ()
     {
       var classDefinition = SecurableClassDefinition.NewObject();
       var accessType = _testHelper.CreateAccessTypeCreate (0);
@@ -66,7 +66,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void OnCommitting_WithDeletedAcl_RegistersClassForCommit ()
+    public void OnCommitting_WithDeletedAccessTypeReference_RegistersClassForCommit ()
     {
       var classDefinition = SecurableClassDefinition.NewObject();
       var accessType = _testHelper.CreateAccessTypeCreate (0);
