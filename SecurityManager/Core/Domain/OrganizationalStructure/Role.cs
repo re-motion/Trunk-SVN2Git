@@ -77,9 +77,11 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       base.OnCommitting (args);
 
-      //TODO RM-5521: rewrite with test
-      if (User != null)
-        User.RegisterForCommit();
+      var userProperty = Properties[typeof (Role), "User"];
+      if (userProperty.GetValue<User> () != null)
+        userProperty.GetValue<User> ().RegisterForCommit();
+      else if (userProperty.GetOriginalValue<User>() != null)
+        userProperty.GetOriginalValue<User>().RegisterForCommit();
 
       //TODO RM-5521: rewrite with test
       foreach (var substitution in SubstitutedBy)
