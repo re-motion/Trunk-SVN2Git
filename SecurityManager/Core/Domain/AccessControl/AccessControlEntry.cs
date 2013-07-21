@@ -16,10 +16,8 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Linq.Expressions;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
@@ -336,7 +334,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       base.OnCommitting (args);
 
       if (Class != null)
-        Class.Touch();
+        Class.RegisterForCommit();
     }
   }
 }

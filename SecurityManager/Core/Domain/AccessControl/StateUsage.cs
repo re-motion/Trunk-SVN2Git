@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       base.OnCommitting (args);
 
       if (Class != null)
-        Class.Touch ();
+        Class.RegisterForCommit ();
     }
   }
 }

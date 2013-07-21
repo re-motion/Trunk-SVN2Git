@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
@@ -91,7 +90,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       base.OnCommitting (args);
 
       if (Class != null)
-        Class.Touch();
+        Class.RegisterForCommit();
     }
 
     //TODO: Rewrite with test
