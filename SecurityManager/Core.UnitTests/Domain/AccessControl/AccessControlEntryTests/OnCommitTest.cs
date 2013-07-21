@@ -273,18 +273,46 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void TouchClass ()
+    public void AceHasChanged_RegistersClassForCommit ()
     {
-      SecurableClassDefinition classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
-      StatelessAccessControlList acl = _testHelper.CreateStatelessAcl (classDefinition);
+      var classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      var acl = _testHelper.CreateStatelessAcl (classDefinition);
       var ace = _testHelper.CreateAceWithOwningUser();
       acl.AccessControlEntries.Add (ace);
      
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
-        classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
         ace.RegisterForCommit();
+
+        ClientTransaction.Current.Commit();
+
+        Assert.That (commitOnClassWasCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void AceIsDeleted_RegistersClassForCommit ()
+    {
+      var classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      var acl = _testHelper.CreateStatelessAcl (classDefinition);
+      var ace = _testHelper.CreateAceWithOwningUser();
+      acl.AccessControlEntries.Add (ace);
+     
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
+        ace.Delete();
 
         ClientTransaction.Current.Commit();
 
