@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -33,7 +34,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
+
       var tenant = TestHelper.CreateTenant ("TestTenant", "UID: testTenant");
       var userGroup = TestHelper.CreateGroup ("UserGroup", Guid.NewGuid().ToString(), null, tenant);
       var roleGroup = TestHelper.CreateGroup ("RoleGroup", Guid.NewGuid().ToString(), null, tenant);
@@ -42,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       var position = TestHelper.CreatePosition ("Position");
       _role = TestHelper.CreateRole (_user, roleGroup, position);
 
-       var substitutingUser = TestHelper.CreateUser ("substitutingUser", "Firstname", "Lastname", "Title", userGroup, tenant);
+      var substitutingUser = TestHelper.CreateUser ("substitutingUser", "Firstname", "Lastname", "Title", userGroup, tenant);
       _substitution = Substitution.NewObject();
       _substitution.SubstitutedUser = _user;
       _substitution.SubstitutedRole = _role;
@@ -54,49 +56,66 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     [Test]
     public void WithUser_RegistersUserForCommit ()
     {
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      bool commitOnClassWasCalled = false;
+      _user.Committing += (sender, e) =>
       {
-        _role.Group = _roleGroup2;
-        ClientTransaction.Current.Commit();
-      }
-      var dataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).GetDataContainerWithLazyLoad (_user.ID, true);
-      Assert.That (dataContainer.HasBeenMarkedChanged, Is.True);
+        commitOnClassWasCalled = true;
+        Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+      };
+      _role.Group = _roleGroup2;
+      ClientTransaction.Current.Commit();
+
+      Assert.That (commitOnClassWasCalled, Is.True);
     }
 
     [Test]
     public void WithRoleDeleted_RegistersOriginalUserForCommit ()
     {
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      bool commitOnClassWasCalled = false;
+      _user.Committing += (sender, e) =>
       {
-        _role.Delete();
-        ClientTransaction.Current.Commit();
-      }
-      var dataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).GetDataContainerWithLazyLoad (_user.ID, true);
-      Assert.That (dataContainer.HasBeenMarkedChanged, Is.True);
+        commitOnClassWasCalled = true;
+        Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+      };
+      _role.Delete();
+      ClientTransaction.Current.Commit();
+
+      Assert.That (commitOnClassWasCalled, Is.True);
     }
 
     [Test]
     public void WithSubstition_RegistersSubstitutionForCommit ()
     {
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      bool commitOnClassWasCalled = false;
+      _substitution.Committing += (sender, e) =>
       {
-        _role.Group = _roleGroup2;
-        ClientTransaction.Current.Commit();
-      }
-      var dataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).GetDataContainerWithLazyLoad (_substitution.ID, true);
-      Assert.That (dataContainer.HasBeenMarkedChanged, Is.True);
+        commitOnClassWasCalled = true;
+        Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+      };
+      _role.Group = _roleGroup2;
+      ClientTransaction.Current.Commit();
+      Assert.That (commitOnClassWasCalled, Is.True);
     }
 
     [Test]
     public void WithRoleDeleted_DeletesSubstitution ()
     {
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      bool commitOnClassWasCalled = false;
+      _substitution.Committing += (sender, e) =>
       {
-        _role.Delete();
-        ClientTransaction.Current.Commit();
-      }
-      var dataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).GetDataContainerWithLazyLoad (_substitution.ID, true);
-      Assert.That (dataContainer.State, Is.EqualTo (StateType.Deleted));
+        commitOnClassWasCalled = true;
+        Assert.That (GetDataContainer ((DomainObject) sender).State, Is.EqualTo (StateType.Deleted));
+      };
+      _role.Delete();
+      ClientTransaction.Current.Commit();
+
+      Assert.That (commitOnClassWasCalled, Is.True);
+    }
+
+    private DataContainer GetDataContainer (DomainObject domainObject)
+    {
+      return DataManagementService.GetDataManager (ClientTransaction.Current)
+                                  .GetDataContainerWithLazyLoad (domainObject.ID, true);
     }
   }
 }
