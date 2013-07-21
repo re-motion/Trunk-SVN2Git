@@ -393,7 +393,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
     }
 
     [Test]
-    public void Touch_AfterCreation ()
+    public void RegisterForCommit_AfterCreation ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
@@ -401,13 +401,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
 
         Assert.That (classDefinition.State, Is.EqualTo (StateType.New));
 
-        Assert.That (() => classDefinition.Touch(), Throws.Nothing);
+        Assert.That (() => classDefinition.RegisterForCommit(), Throws.Nothing);
         Assert.That (classDefinition.State, Is.EqualTo (StateType.New));
       }
     }
 
     [Test]
-    public void Touch_InNotLoadedState ()
+    public void RegisterForCommit_InNotLoadedState ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
@@ -416,14 +416,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         {
           Assert.That (classDefinition.State, Is.EqualTo (StateType.NotLoadedYet));
 
-          Assert.That (() => classDefinition.Touch(), Throws.Nothing);
+          Assert.That (() => classDefinition.RegisterForCommit(), Throws.Nothing);
           Assert.That (classDefinition.State, Is.EqualTo (StateType.Changed));
         }
       }
     }
     
     [Test]
-    public void Touch_AfterDelete ()
+    public void RegisterForCommit_AfterDelete ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
@@ -436,14 +436,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
           classDefinition.Delete();
           Assert.That (classDefinition.State, Is.EqualTo (StateType.Deleted));
 
-          Assert.That (() => classDefinition.Touch(), Throws.Nothing);
+          Assert.That (() => classDefinition.RegisterForCommit(), Throws.Nothing);
           Assert.That (classDefinition.State, Is.EqualTo (StateType.Deleted));
         }
       }
     }
 
     [Test]
-    public void Touch_AfterDiscard ()
+    public void RegisterForCommit_AfterDiscard ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
@@ -453,7 +453,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
 
         Assert.That (classDefinition.State, Is.EqualTo (StateType.Invalid));
 
-        Assert.That (() => classDefinition.Touch(), Throws.TypeOf<ObjectInvalidException>());
+        Assert.That (() => classDefinition.RegisterForCommit(), Throws.TypeOf<ObjectInvalidException>());
       }
     }
 
