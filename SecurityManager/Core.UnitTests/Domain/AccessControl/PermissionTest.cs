@@ -36,10 +36,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void TouchClassOnCommit ()
+    public void OnCommitting_WithChangedPermission_RegistersClassForCommit ()
     {
-      SecurableClassDefinition classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
-      StatelessAccessControlList acl = _testHelper.CreateStatelessAcl (classDefinition);
+      var classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      var acl = _testHelper.CreateStatelessAcl (classDefinition);
       var ace = _testHelper.CreateAceWithOwningUser();
       acl.AccessControlEntries.Add (ace);
       var accessType = _testHelper.AttachJournalizeAccessType (classDefinition);
@@ -48,8 +48,38 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
-        classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
         ace.GetPermissions()[0].RegisterForCommit();
+
+        ClientTransaction.Current.Commit();
+
+        Assert.That (commitOnClassWasCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void OnCommitting_WithDeletedPermission_RegistersClassForCommit ()
+    {
+      var classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      var acl = _testHelper.CreateStatelessAcl (classDefinition);
+      var ace = _testHelper.CreateAceWithOwningUser();
+      acl.AccessControlEntries.Add (ace);
+      var accessType = _testHelper.AttachJournalizeAccessType (classDefinition);
+      ace.AllowAccess (accessType);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
+        ace.GetPermissions()[0].Delete();
 
         ClientTransaction.Current.Commit();
 
