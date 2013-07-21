@@ -62,18 +62,47 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void TouchClassOnCommit ()
+    public void OnCommitting_WithChangedStateUsage_RegistersClassForCommit ()
     {
-      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
-      StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
-      StateDefinition paidState = paymentProperty[EnumWrapper.Get (PaymentState.Paid).Name];
-      StateCombination combination = _testHelper.CreateStateCombination (orderClass);
+      var classDefinition = _testHelper.CreateOrderClassDefinition();
+      var property = _testHelper.CreatePaymentStateProperty (classDefinition);
+      var state = property[EnumWrapper.Get (PaymentState.Paid).Name];
+      var combination = _testHelper.CreateStateCombination (classDefinition);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
-        orderClass.Committing += delegate { commitOnClassWasCalled = true; };
-        combination.AttachState (paidState);
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
+        combination.AttachState (state);
+
+        ClientTransaction.Current.Commit();
+
+        Assert.That (commitOnClassWasCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void OnCommitting_WithDeletedStateUsage_RegistersClassForCommit ()
+    {
+      var classDefinition = _testHelper.CreateOrderClassDefinition();
+      var property = _testHelper.CreatePaymentStateProperty (classDefinition);
+      var combination = _testHelper.CreateStateCombination (classDefinition);
+      combination.AttachState (property[EnumWrapper.Get (PaymentState.Paid).Name]);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
+        combination.ClearStates();
+        combination.AttachState (property[EnumWrapper.Get (PaymentState.None).Name]);
 
         ClientTransaction.Current.Commit();
 
