@@ -20,7 +20,6 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
-using Remotion.Security.Configuration;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
@@ -28,7 +27,7 @@ using Rhino.Mocks;
 namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
 {
   [TestFixture]
-  public class HadAccess_SecurityStratetyTest
+  public class HasAccess_SecurityStratetyTest
   {
     private MockRepository _mocks;
     private ISecurityProvider _mockSecurityProvider;

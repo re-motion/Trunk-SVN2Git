@@ -210,7 +210,7 @@
     <Compile Include="Core\ObjectSecurityAdapterTest.cs" />
     <Compile Include="Core\SecurityFreeSectionTest.cs" />
     <Compile Include="Core\SecurityStrategyTests\HasAccessWithCaching_SecurityStrategyTest.cs" />
-    <Compile Include="Core\SecurityStrategyTests\HadAccess_SecurityStratetyTest.cs" />
+    <Compile Include="Core\SecurityStrategyTests\HasAccess_SecurityStratetyTest.cs" />
     <Compile Include="Core\ThreadUserProviderTest.cs" />
     <Compile Include="Core\XmlAsserter\NodeStackToXPathConverter.cs" />
     <Compile Include="Core\XmlAsserter\NodeStackToXPathConverterTest.cs" />
