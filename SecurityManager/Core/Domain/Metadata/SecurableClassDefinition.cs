@@ -423,9 +423,9 @@ namespace Remotion.SecurityManager.Domain.Metadata
         }
       }
 
-      base.OnCommitting (args);
+      RegisterForCommit();
 
-      Touch();
+      base.OnCommitting (args);
     }
 
     protected override void OnRelationChanged (RelationChangedEventArgs args)

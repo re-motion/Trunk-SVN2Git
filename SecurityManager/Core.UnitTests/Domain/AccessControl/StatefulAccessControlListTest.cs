@@ -138,17 +138,44 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void TouchClassOnCommit ()
+    public void OnCommitting_RegistersClassForCommit ()
     {
-      StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
-      var securableClassDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
-      securableClassDefinition.StatefulAccessControlLists.Add (acl);
+      var acl = StatefulAccessControlList.NewObject ();
+      var classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      classDefinition.StatefulAccessControlLists.Add (acl);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
-        acl.Class.Committing += delegate { commitOnClassWasCalled = true; };
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
         acl.RegisterForCommit();
+
+        ClientTransaction.Current.Commit();
+
+        Assert.That (commitOnClassWasCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void OnCommitting_WithDeletedAcl_RegistersClassForCommit ()
+    {
+      var acl = StatefulAccessControlList.NewObject ();
+      var classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      classDefinition.StatefulAccessControlLists.Add (acl);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
+        acl.Delete();
 
         ClientTransaction.Current.Commit();
 

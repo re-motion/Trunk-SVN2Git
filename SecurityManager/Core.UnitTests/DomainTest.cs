@@ -18,6 +18,8 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests
 {
@@ -46,6 +48,14 @@ namespace Remotion.SecurityManager.UnitTests
     [TestFixtureTearDown]
     public virtual void TestFixtureTearDown ()
     {
+    }
+
+    protected DataContainer GetDataContainer (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      
+      return DataManagementService.GetDataManager (ClientTransaction.Current)
+                                  .GetDataContainerWithLazyLoad (domainObject.ID, true);
     }
   }
 }
