@@ -19,8 +19,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -231,16 +229,42 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void TouchClassOnCommit ()
+    public void OnCommitting_WithChangedStateCombination_RegistersClassForCommit ()
     {
-      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
-      StateCombination combination = _testHelper.CreateStateCombination (orderClass);
+      var classDefinition = _testHelper.CreateOrderClassDefinition();
+      var combination = _testHelper.CreateStateCombination (classDefinition);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
-        orderClass.Committing += delegate { commitOnClassWasCalled = true; };
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
         combination.RegisterForCommit();
+
+        ClientTransaction.Current.Commit();
+
+        Assert.That (commitOnClassWasCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void OnCommitting_WithDeletedStateCombination_RegistersClassForCommit ()
+    {
+      var classDefinition = _testHelper.CreateOrderClassDefinition();
+      var combination = _testHelper.CreateStateCombination (classDefinition);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
+        combination.Delete();
 
         ClientTransaction.Current.Commit();
 
