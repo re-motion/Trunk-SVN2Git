@@ -83,7 +83,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       else if (userProperty.GetOriginalValue<User>() != null)
         userProperty.GetOriginalValue<User>().RegisterForCommit();
 
-      //TODO RM-5521: rewrite with test
       foreach (var substitution in SubstitutedBy)
         substitution.RegisterForCommit();
     }

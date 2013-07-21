@@ -29,17 +29,25 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     private User _user;
     private Role _role;
     private Group _roleGroup2;
+    private Substitution _substitution;
 
     public override void SetUp ()
     {
       base.SetUp ();
-      Tenant tenant = TestHelper.CreateTenant ("TestTenant", "UID: testTenant");
-      Group userGroup = TestHelper.CreateGroup ("UserGroup", Guid.NewGuid().ToString(), null, tenant);
-      Group roleGroup = TestHelper.CreateGroup ("RoleGroup", Guid.NewGuid().ToString(), null, tenant);
+      var tenant = TestHelper.CreateTenant ("TestTenant", "UID: testTenant");
+      var userGroup = TestHelper.CreateGroup ("UserGroup", Guid.NewGuid().ToString(), null, tenant);
+      var roleGroup = TestHelper.CreateGroup ("RoleGroup", Guid.NewGuid().ToString(), null, tenant);
       _roleGroup2 = TestHelper.CreateGroup ("RoleGroup2", Guid.NewGuid().ToString(), null, tenant);
       _user = TestHelper.CreateUser ("user", "Firstname", "Lastname", "Title", userGroup, tenant);
-      Position position = TestHelper.CreatePosition ("Position");
+      var position = TestHelper.CreatePosition ("Position");
       _role = TestHelper.CreateRole (_user, roleGroup, position);
+
+       var substitutingUser = TestHelper.CreateUser ("substitutingUser", "Firstname", "Lastname", "Title", userGroup, tenant);
+      _substitution = Substitution.NewObject();
+      _substitution.SubstitutedUser = _user;
+      _substitution.SubstitutedRole = _role;
+      _substitution.SubstitutingUser = substitutingUser;
+
       ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope();
     }
 
@@ -51,8 +59,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
         _role.Group = _roleGroup2;
         ClientTransaction.Current.Commit();
       }
-      var userDataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).DataContainers[_user.ID];
-      Assert.That (userDataContainer.HasBeenMarkedChanged, Is.True);
+      var dataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).GetDataContainerWithLazyLoad (_user.ID, true);
+      Assert.That (dataContainer.HasBeenMarkedChanged, Is.True);
     }
 
     [Test]
@@ -63,8 +71,32 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
         _role.Delete();
         ClientTransaction.Current.Commit();
       }
-      var userDataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).DataContainers[_user.ID];
-      Assert.That (userDataContainer.HasBeenMarkedChanged, Is.True);
+      var dataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).GetDataContainerWithLazyLoad (_user.ID, true);
+      Assert.That (dataContainer.HasBeenMarkedChanged, Is.True);
+    }
+
+    [Test]
+    public void WithSubstition_RegistersSubstitutionForCommit ()
+    {
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        _role.Group = _roleGroup2;
+        ClientTransaction.Current.Commit();
+      }
+      var dataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).GetDataContainerWithLazyLoad (_substitution.ID, true);
+      Assert.That (dataContainer.HasBeenMarkedChanged, Is.True);
+    }
+
+    [Test]
+    public void WithRoleDeleted_DeletesSubstitution ()
+    {
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        _role.Delete();
+        ClientTransaction.Current.Commit();
+      }
+      var dataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).GetDataContainerWithLazyLoad (_substitution.ID, true);
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Deleted));
     }
   }
 }
