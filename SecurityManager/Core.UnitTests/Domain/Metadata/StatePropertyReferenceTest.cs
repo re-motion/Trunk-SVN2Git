@@ -34,16 +34,43 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void TouchClassOnCommit ()
+    public void OnCommitting_WithChangedStatePropertyReference_RegistersClassForCommit ()
     {
-      SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
+      var classDefinition = SecurableClassDefinition.NewObject();
       var stateProperty = _testHelper.CreateFileStateProperty (0);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
-        classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
         classDefinition.AddStateProperty (stateProperty);
+
+        ClientTransaction.Current.Commit();
+
+        Assert.That (commitOnClassWasCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void OnCommitting_WithDeletedStatePropertyReference_RegistersClassForCommit ()
+    {
+      var classDefinition = SecurableClassDefinition.NewObject();
+      var stateProperty = _testHelper.CreateFileStateProperty (0);
+      classDefinition.AddStateProperty (stateProperty);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
+        classDefinition.RemoveStateProperty (stateProperty);
 
         ClientTransaction.Current.Commit();
 

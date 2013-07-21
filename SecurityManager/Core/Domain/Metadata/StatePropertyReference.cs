@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       base.OnCommitting (args);
 
       if (Class != null)
-        Class.Touch();
+        Class.RegisterForCommit();
     }
   }
 }

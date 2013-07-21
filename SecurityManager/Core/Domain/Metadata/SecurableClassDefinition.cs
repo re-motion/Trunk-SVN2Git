@@ -83,11 +83,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
     [DBBidirectionalRelation ("BaseClass", SortExpression = "Index ASC")]
     public abstract ObjectList<SecurableClassDefinition> DerivedClasses { get; }
 
-    public void Touch ()
-    {
-      RegisterForCommit();
-    }
-
     [EditorBrowsable (EditorBrowsableState.Never)]
     [DBBidirectionalRelation ("Class")]
     protected abstract ObjectList<StatePropertyReference> StatePropertyReferences { get; }
