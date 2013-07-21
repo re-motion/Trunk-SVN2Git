@@ -44,16 +44,43 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void TouchClassOnCommit ()
+    public void OnCommitting_WithChangedAcl_RegistersClassForCommit ()
     {
-      SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
+      var classDefinition = SecurableClassDefinition.NewObject();
       var accessType = _testHelper.CreateAccessTypeCreate (0);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
-        classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
         classDefinition.AddAccessType (accessType);
+
+        ClientTransaction.Current.Commit();
+
+        Assert.That (commitOnClassWasCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void OnCommitting_WithDeletedAcl_RegistersClassForCommit ()
+    {
+      var classDefinition = SecurableClassDefinition.NewObject();
+      var accessType = _testHelper.CreateAccessTypeCreate (0);
+      classDefinition.AddAccessType (accessType);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        classDefinition.Committing += (sender, e) =>
+        {
+          commitOnClassWasCalled = true;
+          Assert.That (GetDataContainer ((DomainObject) sender).HasBeenMarkedChanged, Is.True);
+        };
+        classDefinition.RemoveAccessType (accessType);
 
         ClientTransaction.Current.Commit();
 
