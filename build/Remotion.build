@@ -110,6 +110,7 @@
                  ArchiveDirectory=$(ArchiveDirectory);
                  TempDirectory=$(TempDirectory);
                  Version=$(Version);
+                 JiraVersion=$(JiraVersion);
                  DependDBProjectBranch=$(DependDBProjectBranch);
                  DependDBProjectVersion=$(Version);
                  DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);

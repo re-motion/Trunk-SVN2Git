@@ -258,6 +258,7 @@
     
     <PropertyGroup>
       <Version>$(Version-Major).$(Version-Minor).$(Version-Build).$(Version-Revision)</Version>
+      <JiraVersion>$(Version-Major).$(Version-Minor).$(Version-Build).0</JiraVersion>
     </PropertyGroup>
     
     <Message Text="##teamcity[buildNumber '$(Version)']" />

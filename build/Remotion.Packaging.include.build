@@ -151,6 +151,8 @@
   <Target Name="CreateReleaseNotes" DependsOnTargets="CreateReleaseNotesProperties">
     <Message Text="Creating release notes, PackageName=$(PackageName)" Importance="High"/>
 
+    <Error Text="The property 'JiraVersion' is not set." Condition="'$(JiraVersion)' == ''" />
+
     <PropertyGroup>
       <_jiraComponent Condition="$(ReleaseNotesComponentName) == ''"></_jiraComponent>
       <_jiraComponent Condition="$(ReleaseNotesComponentName) != ''">component='$(ReleaseNotesComponentName)'</_jiraComponent>
@@ -163,7 +165,7 @@
       <_releaseNotesLocalTempDirectory>$(ReleaseNotesLocalTempDirectory.TrimEnd('\'))</_releaseNotesLocalTempDirectory>
     </PropertyGroup>
 
-    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) &quot;$(_releaseNotesLocalTempDirectory)&quot; &quot;t:$(_htmlTitle)&quot; $(_jiraComponent)"
+    <Exec Command="JiraReleaseNoteGenerator.exe $(JiraVersion) &quot;$(_releaseNotesLocalTempDirectory)&quot; &quot;t:$(_htmlTitle)&quot; $(_jiraComponent)"
           WorkingDirectory="$(JiraReleaseNoteGeneratorPath)" />
     
     <Message Text="Done creating release notes, PackageName=$(PackageName)" Importance="High"/>
