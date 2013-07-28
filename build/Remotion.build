@@ -201,7 +201,7 @@
              Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
              Properties="
                   ConfigurationID=%(AllConfigurations.Identity);
-                  SolutionKeyFile=$(SolutionKeyFile)  ;
+                  SolutionKeyFile=$(SolutionKeyFile);
                   SolutionDirectory=$(SolutionDirectory);
                   OutputDirectory=$(OutputDirectory);
                   TempDirectory=$(TempDirectory);
