@@ -266,9 +266,9 @@
   </Target>
 
   <!-- Main Build Targets -->  
-  <Target Name="CIBuild" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;TestBuild;SetVersionCiAndNightlyBuild" />
-  <Target Name="NightlyBuild" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;FullBuild;SetVersionCiAndNightlyBuild" />
-  <Target Name="Server_FullBuild" DependsOnTargets="CheckProperties;GetEarliestUnreleasedVersion;FullBuild;Tag;ReleaseJiraVersion;UpdateAssemblyInfosForLocalBuild;SetVersionFullBuild" />
-  <Target Name="Server_Deploy" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;Deploy;SetVersionFullBuild" />
+  <Target Name="CIBuild" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;SetVersionCiAndNightlyBuild;TestBuild" />
+  <Target Name="NightlyBuild" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;SetVersionCiAndNightlyBuild;FullBuild" />
+  <Target Name="Server_FullBuild" DependsOnTargets="CheckProperties;GetEarliestUnreleasedVersion;SetVersionFullBuild;FullBuild;Tag;ReleaseJiraVersion;UpdateAssemblyInfosForLocalBuild" />
+  <Target Name="Server_Deploy" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;SetVersionFullBuild;Deploy" />
 
 </Project>
