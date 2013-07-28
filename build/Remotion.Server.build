@@ -172,8 +172,10 @@
     </PropertyGroup>
   </Target>
   
-  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly;PackageAll" />
-  
+  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly;" />
+
+  <Target Name="ArtifactBuild" DependsOnTargets="FullBuild_Configuration;CreateAdditionalBuildMetadata;BuildAll;PackageAll" />
+
   <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;CreateAdditionalBuildMetadata;BuildAll;DocumentAll;PackageAll" />
   
   <Target Name="Deploy" DependsOnTargets="CreateAdditionalBuildMetadata;DeployAll">
@@ -267,6 +269,7 @@
 
   <!-- Main Build Targets -->  
   <Target Name="CIBuild" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;SetVersionCiAndNightlyBuild;TestBuild" />
+  <Target Name="ArtifactBuild" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;SetVersionCiAndNightlyBuild;ArtifactBuild" />
   <Target Name="NightlyBuild" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;SetVersionCiAndNightlyBuild;FullBuild" />
   <Target Name="Server_FullBuild" DependsOnTargets="CheckProperties;GetEarliestUnreleasedVersion;SetVersionFullBuild;FullBuild;Tag;ReleaseJiraVersion;UpdateAssemblyInfosForLocalBuild" />
   <Target Name="Server_Deploy" DependsOnTargets="CheckProperties;GetLatestReleasedVersion;SetVersionFullBuild;Deploy" />
