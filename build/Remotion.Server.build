@@ -111,7 +111,8 @@
 
   <Target Name="GetLatestReleasedVersion">
     <Error Text="Property 'Version' was already set. Probably caused by: GetEarliestUnreleasedVersion" Condition="'$(Version)' != ''" />
-    
+    <Error Text="Property 'NextVersion' was already set. Probably caused by: GetEarliestUnreleasedVersion" Condition="'$(NextVersion)' != ''" />
+
     <JiraGetLatestReleasedVersion JiraUrl="$(JiraUrl)"
                                   JiraUsername="$(JiraUsername)"
                                   JiraPassword="$(JiraPassword)"
@@ -119,11 +120,11 @@
                                   VersionPattern="$(JiraVersionPattern)">
       <Output PropertyName="VersionID" TaskParameter="VersionID"/>
       <Output PropertyName="Version" TaskParameter="VersionName"/>
-      <Output PropertyName="_nextUnreleasedVersionID" TaskParameter="NextUnreleasedVersionID"/>
-      <Output PropertyName="_nextUnreleasedVersion" TaskParameter="NextUnreleasedVersionName"/>
+      <Output PropertyName="NextVersionID" TaskParameter="NextUnreleasedVersionID"/>
+      <Output PropertyName="NextVersion" TaskParameter="NextUnreleasedVersionName"/>
     </JiraGetLatestReleasedVersion>
 
-    <Message Text="Determined version (latest relesed): $(Version), next version (earliest unrelesed) is going to be $(_nextUnreleasedVersion)" Importance="High"/>
+    <Message Text="Determined version (latest relesed): $(Version), next version (earliest unrelesed) is going to be $(NextVersion)" Importance="High"/>
   </Target>
   
   <Target Name="ReleaseJiraVersion" DependsOnTargets="GetEarliestUnreleasedVersion">
@@ -248,7 +249,7 @@
   
   <!-- Versioning -->
     
-  <Target Name="SetVersionCiAndNightlyBuild" DependsOnTargets="CheckVersion">  
+  <Target Name="SetVersionCiAndNightlyBuild" DependsOnTargets="CheckVersion">
     <PropertyGroup>
         <Version-Major>$([System.Version]::Parse ($(Version)).Major)</Version-Major>
         <Version-Minor>$([System.Version]::Parse ($(Version)).Minor)</Version-Minor>
@@ -258,7 +259,7 @@
     
     <PropertyGroup>
       <Version>$(Version-Major).$(Version-Minor).$(Version-Build).$(Version-Revision)</Version>
-      <JiraVersion>$(Version-Major).$(Version-Minor).$(Version-Build).0</JiraVersion>
+      <JiraVersion>$(NextVersion)</JiraVersion>
     </PropertyGroup>
     
     <Message Text="##teamcity[buildNumber '$(Version)']" />
