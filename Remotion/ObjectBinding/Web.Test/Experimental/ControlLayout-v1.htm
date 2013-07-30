@@ -24,7 +24,7 @@
     
     .dateTimeValue a.datePicker
     {
-      background-image: url('res/Remotion.Web/Themes/NovaBlue/Image/DatePicker.gif');
+      background-image: url('../res/Remotion.Web/Themes/NovaBlue/Image/DatePicker.gif');
       background-position: left center;
       background-repeat: no-repeat;
       display: inline-block;
@@ -55,7 +55,7 @@
       box-sizing: border-box;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
-      background-image: url('res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/AutoCompleteReferenceValueDropDownButtonFace.gif');
+      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/AutoCompleteReferenceValueDropDownButtonFace.gif');
       background-position: -1px center;
       background-repeat: no-repeat;
       background-color: #F1F1F1;
@@ -77,40 +77,31 @@
       text-decoration:none;
     }
 
-          .bocCheckBoxStyled
-      {
-        display: inline-block;
-        position: relative;
-      }
-      .bocCheckBoxStyled input[type=checkbox]
-      {
-        opacity: 0;
-        float: left;
-        width: 16px;
-        height: 16px;
-        padding: 0px;
-      }
-      .bocCheckBoxStyled input[type=checkbox] + img
-      {
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: -1;
-        width: 16px;
-        height: 16px;
-        padding: 0px;
-        background-position: center;
-        background-image: url('res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
-      }
-      .bocCheckBoxStyled input[type=checkbox]:checked + img
-      {
-        background-image: url('res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
-      }
-      .bocCheckBoxStyled input[type=checkbox]:focus + img
-      {
-        outline-style: dotted;
-        outline-width: 1px;
-      }
+    .bocCheckBoxStyled input[type=checkbox]
+    {
+      position: absolute;
+      left: -10000px; /*Hide from visible screen but show for screen reader*/
+      left: 0px; /* for debugging */
+    }
+    .bocCheckBoxStyled input[type=checkbox] + label img
+    {
+      width: 16px;
+      height: 16px;
+      padding: 0px;
+      border: none;
+      vertical-align: top;
+      background-position: center center;
+      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
+    }
+    .bocCheckBoxStyled input[type=checkbox]:checked + label img
+    {
+      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
+    }
+    .bocCheckBoxStyled input[type=checkbox]:focus + label img
+    {
+      outline-style: dotted;
+      outline-width: 1px;
+    }
   </style>
 </head>
 <body>
@@ -149,8 +140,8 @@
   Multiline tooltip: <span title="Line 1&#13&#10Line 2">The Tooltip Target</span><br/>
   Checkbox using transparent image: 
     <span class="bocCheckBoxStyled">
-      <input type="checkbox"/>
-      <img src="res/Remotion.Web/Themes/NovaBlue/Image/Spacer.gif"/>
+      <input id="bocCheckBoxStyled_Value" type="checkbox"/>
+      <label for="bocCheckBoxStyled_Value"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
     </span>
     M
     <br/>
