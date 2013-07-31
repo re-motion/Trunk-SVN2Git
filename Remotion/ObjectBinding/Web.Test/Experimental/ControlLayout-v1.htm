@@ -80,8 +80,13 @@
     .bocCheckBoxStyled input[type=checkbox]
     {
       position: absolute;
-      left: -10000px; /*Hide from visible screen but show for screen reader*/
-      left: 0px; /* for debugging */
+      left: -1000%; /*Hide from visible screen but show for screen reader*/
+    }
+    
+    .bocCheckBoxStyled input[type=checkbox]
+    {
+      /* for debugging */
+      left: 30%; 
     }
     .bocCheckBoxStyled input[type=checkbox] + label img
     {
@@ -102,10 +107,103 @@
       outline-style: dotted;
       outline-width: 1px;
     }
+    .bocCheckBoxStyled input[type=checkbox]:checked + label:after
+    {
+      content: " ja";
+    }
+    .bocCheckBoxStyled input[type=checkbox] + label:after
+    {
+      content: " nein";
+    }
+
+    .bocTriStateStyled input[type=radio] {
+      position: absolute;
+      left: -1000%; /*Hide from visible screen but show for screen reader*/
+    }
+    .bocTriStateStyled input[type=radio].ValueNull
+    {
+       /* for debugging */
+       left: 30em;
+    }
+    .bocTriStateStyled input[type=radio].ValueTrue
+    {
+       /* for debugging */
+      left: 31em;
+    }
+    .bocTriStateStyled input[type=radio].ValueFalse
+    {
+       /* for debugging */
+      left: 32em;
+    }
+    .bocTriStateStyled input[type=radio] ~ span label img
+    {
+      width: 16px;
+      height: 16px;
+      padding: 0px;
+      border: none;
+      vertical-align: top;
+      background-position: center center;
+      background-image: none;
+      display: none;
+    }
+    .bocTriStateStyled input[type=radio].ValueNull:checked ~ span label.ValueNull img
+    {
+      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxNull.gif');
+      display: inline;
+    }
+    .bocTriStateStyled input[type=radio].ValueTrue:checked ~ span label.ValueTrue img
+    {
+      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
+      display: inline;
+    }
+    .bocTriStateStyled input[type=radio].ValueFalse:checked ~ span label.ValueFalse img
+    {
+      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
+      display: inline;
+    }
+    .bocTriStateStyled input[type=radio]:focus ~ span label img,
+    .bocTriStateStyled input[type=radio]:focus ~ span label img,
+    .bocTriStateStyled input[type=radio]:focus ~ span label img
+    {
+      outline-style: dotted;
+      outline-width: 1px;
+    }
+    .bocTriStateStyled input[type=radio].ValueNull:checked ~ span label.ValueNull:after
+    {
+      content: " unbestimmt";
+    }
+    .bocTriStateStyled input[type=radio].ValueTrue:checked ~ span label.ValueTrue:after
+    {
+      content: " ja";
+    }
+    .bocTriStateStyled input[type=radio].ValueFalse:checked ~ span label.ValueFalse:after
+    {
+      content: " nein";
+    }
   </style>
 </head>
 <body>
   <form action="/" method="post">
+  Checkbox using image: <br />
+  <span class="bocCheckBoxStyled">
+    <input id="bocCheckBoxStyled_Value" type="checkbox"/>
+    <label for="bocCheckBoxStyled_Value"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
+  </span>
+  M
+  <br />
+  Tri-State using image: <br />
+  <span class="bocTriStateStyled">
+    <input class="ValueNull" id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" checked="checked"/>
+    <input class="ValueTrue" id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio"/>
+    <input class="ValueFalse" id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" type="radio"/>
+    <span aria-hidden="true">
+      <label class="ValueNull" for="bocTriStateStyles_ValueTrue"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
+      <label class="ValueTrue" for="bocTriStateStyles_ValueFalse"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
+      <label class="ValueFalse" for="bocTriStateStyles_ValueNull"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
+    </span>
+  </span>
+  M
+  <br />
   Date Time Value:<br />
   <span class="dateTimeValue">
     <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
@@ -138,12 +236,7 @@
   M
   <br />
   Multiline tooltip: <span title="Line 1&#13&#10Line 2">The Tooltip Target</span><br/>
-  Checkbox using transparent image: 
-    <span class="bocCheckBoxStyled">
-      <input id="bocCheckBoxStyled_Value" type="checkbox"/>
-      <label for="bocCheckBoxStyled_Value"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
-    </span>
-    M
+  M
     <br/>
   </form>
 </body>
