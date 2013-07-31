@@ -109,11 +109,11 @@
     }
     .bocCheckBoxStyled input[type=checkbox]:checked + label:after
     {
-      content: " ja";
+      content: " yes";
     }
     .bocCheckBoxStyled input[type=checkbox] + label:after
     {
-      content: " nein";
+      content: " no";
     }
 
     .bocTriStateStyled input[type=radio] {
@@ -168,15 +168,15 @@
     }
     .bocTriStateStyled input[type=radio].ValueNull:checked + label:after
     {
-      content: " unbestimmt";
+      content: " undefined";
     }
     .bocTriStateStyled input[type=radio].ValueTrue:checked + label:after
     {
-      content: " ja";
+      content: " yes";
     }
     .bocTriStateStyled input[type=radio].ValueFalse:checked + label:after
     {
-      content: " nein";
+      content: " no";
     }
   </style>
 </head>
@@ -191,12 +191,12 @@
   <br />
   Tri-State using image: <br />
   <span class="bocTriStateStyled">
-    <input class="ValueNull" id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" checked="checked"/>
-    <label for="bocTriStateStyles_ValueTrue" aria-hidden="true"></label>
-    <input class="ValueTrue" id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio"/>
-    <label for="bocTriStateStyles_ValueFalse" aria-hidden="true"></label>
-    <input class="ValueFalse" id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" type="radio"/>
-    <label for="bocTriStateStyles_ValueNull" aria-hidden="true"></label>
+    <input class="ValueNull" id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" title="undefined" checked="checked"/>
+    <label for="bocTriStateStyles_ValueTrue" aria-hidden="true" title="select 'no'"></label>
+    <input class="ValueTrue" id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio" title="yes"/>
+    <label for="bocTriStateStyles_ValueFalse" aria-hidden="true" title="select 'yes'"></label>
+    <input class="ValueFalse" id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" type="radio" title="no"/>
+    <label for="bocTriStateStyles_ValueNull" aria-hidden="true" title="reset"></label>
   </span>
   M
   <br />
@@ -232,8 +232,6 @@
   M
   <br />
   Multiline tooltip: <span title="Line 1&#13&#10Line 2">The Tooltip Target</span><br/>
-  M
-    <br/>
   </form>
 </body>
 </html>
