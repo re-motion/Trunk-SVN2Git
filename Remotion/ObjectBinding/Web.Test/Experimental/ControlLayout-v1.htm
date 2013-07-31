@@ -88,21 +88,21 @@
       /* for debugging */
       left: 30%; 
     }
-    .bocCheckBoxStyled input[type=checkbox] + label img
+    .bocCheckBoxStyled input[type=checkbox] + label
     {
-      width: 16px;
-      height: 16px;
+      min-width: 16px;
+      min-height: 16px;
       padding: 0px;
-      border: none;
-      vertical-align: top;
-      background-position: center center;
+      padding-left: 20px;
+      background-repeat: no-repeat;
+      background-position: left center;
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
     }
-    .bocCheckBoxStyled input[type=checkbox]:checked + label img
+    .bocCheckBoxStyled input[type=checkbox]:checked + label
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
     }
-    .bocCheckBoxStyled input[type=checkbox]:focus + label img
+    .bocCheckBoxStyled input[type=checkbox]:focus + label
     {
       outline-style: dotted;
       outline-width: 1px;
@@ -135,48 +135,46 @@
        /* for debugging */
       left: 32em;
     }
-    .bocTriStateStyled input[type=radio] ~ span label img
+    .bocTriStateStyled input[type=radio] ~ label
     {
-      width: 16px;
-      height: 16px;
+      min-width: 16px;
+      min-height: 16px;
       padding: 0px;
-      border: none;
-      vertical-align: top;
-      background-position: center center;
+      padding-left: 20px;
+      background-repeat: no-repeat;
+      background-position: left center;
       background-image: none;
       display: none;
     }
-    .bocTriStateStyled input[type=radio].ValueNull:checked ~ span label.ValueNull img
+    .bocTriStateStyled input[type=radio].ValueNull:checked + label
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxNull.gif');
       display: inline;
     }
-    .bocTriStateStyled input[type=radio].ValueTrue:checked ~ span label.ValueTrue img
+    .bocTriStateStyled input[type=radio].ValueTrue:checked + label
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
       display: inline;
     }
-    .bocTriStateStyled input[type=radio].ValueFalse:checked ~ span label.ValueFalse img
+    .bocTriStateStyled input[type=radio].ValueFalse:checked + label
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
       display: inline;
     }
-    .bocTriStateStyled input[type=radio]:focus ~ span label img,
-    .bocTriStateStyled input[type=radio]:focus ~ span label img,
-    .bocTriStateStyled input[type=radio]:focus ~ span label img
+    .bocTriStateStyled input[type=radio]:focus ~ label
     {
       outline-style: dotted;
       outline-width: 1px;
     }
-    .bocTriStateStyled input[type=radio].ValueNull:checked ~ span label.ValueNull:after
+    .bocTriStateStyled input[type=radio].ValueNull:checked + label:after
     {
       content: " unbestimmt";
     }
-    .bocTriStateStyled input[type=radio].ValueTrue:checked ~ span label.ValueTrue:after
+    .bocTriStateStyled input[type=radio].ValueTrue:checked + label:after
     {
       content: " ja";
     }
-    .bocTriStateStyled input[type=radio].ValueFalse:checked ~ span label.ValueFalse:after
+    .bocTriStateStyled input[type=radio].ValueFalse:checked + label:after
     {
       content: " nein";
     }
@@ -187,20 +185,18 @@
   Checkbox using image: <br />
   <span class="bocCheckBoxStyled">
     <input id="bocCheckBoxStyled_Value" type="checkbox"/>
-    <label for="bocCheckBoxStyled_Value"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
+    <label for="bocCheckBoxStyled_Value"></label>
   </span>
   M
   <br />
   Tri-State using image: <br />
   <span class="bocTriStateStyled">
-    <input class="ValueNull" id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" checked="checked"/>
-    <input class="ValueTrue" id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio"/>
-    <input class="ValueFalse" id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" type="radio"/>
-    <span aria-hidden="true">
-      <label class="ValueNull" for="bocTriStateStyles_ValueTrue"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
-      <label class="ValueTrue" for="bocTriStateStyles_ValueFalse"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
-      <label class="ValueFalse" for="bocTriStateStyles_ValueNull"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
-    </span>
+    <input class="ValueNull" id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" title="'ja' auswählen" checked="checked"/>
+    <label for="bocTriStateStyles_ValueTrue" aria-hidden="true" title="'ja' auswählen"></label>
+    <input class="ValueTrue" id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio" title="'nein' auswählen"/>
+    <label for="bocTriStateStyles_ValueFalse" aria-hidden="true" title="'nein' auswählen"></label>
+    <input class="ValueFalse" id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" title="zurücksetzen" type="radio"/>
+    <label for="bocTriStateStyles_ValueNull" aria-hidden="true" title="zurücksetzen"></label>
   </span>
   M
   <br />
