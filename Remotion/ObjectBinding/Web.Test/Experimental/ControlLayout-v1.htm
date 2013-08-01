@@ -3,6 +3,12 @@
 <head>
   <title></title>
   <style type="text/css">
+    h1
+    {
+      font-size: 1em;
+      margin-top: 0.5em;
+      margin-bottom: 0;
+    }
     .dateTimeValue input.dateField
     {
       box-sizing: border-box;
@@ -88,7 +94,7 @@
       /* for debugging */
       left: 30%; 
     }
-    .bocCheckBoxStyled input[type=checkbox] + label
+    .bocCheckBoxStyled label
     {
       min-width: 16px;
       min-height: 16px;
@@ -135,7 +141,7 @@
        /* for debugging */
       left: 32em;
     }
-    .bocTriStateStyled input[type=radio] ~ label
+    .bocTriStateStyled label
     {
       min-width: 16px;
       min-height: 16px;
@@ -182,14 +188,13 @@
 </head>
 <body>
   <form action="/" method="post">
-  Checkbox using image: <br />
+  <h1>Checkbox using image:</h1>
   <span class="bocCheckBoxStyled">
     <input id="bocCheckBoxStyled_Value" type="checkbox"/>
     <label for="bocCheckBoxStyled_Value"></label>
   </span>
   M
-  <br />
-  Tri-State using image: <br />
+  <h1>Tri-State using image:</h1>
   <span class="bocTriStateStyled">
     <input class="ValueNull" id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" title="undefined" checked="checked"/>
     <label for="bocTriStateStyles_ValueTrue" aria-hidden="true" title="select 'no'"></label>
@@ -199,23 +204,31 @@
     <label for="bocTriStateStyles_ValueNull" aria-hidden="true" title="reset"></label>
   </span>
   M
-  <br />
-  Date Time Value:<br />
+  <h1>Tri-State with disabled NULL value using image:</h1>
+  (only selecting the disabled value the first time does not work yet)<br/>
+  <span class="bocTriStateStyled">
+    <input class="ValueNull" id="bocTriStateStyles2_ValueNull" name="bocTriStateStyles2_Value" type="radio" title="undefined" checked="checked"/>
+    <label for="bocTriStateStyles2_ValueTrue" aria-hidden="true" title="select 'no'"></label>
+    <input class="ValueTrue" id="bocTriStateStyles2_ValueTrue" name="bocTriStateStyles2_Value" type="radio" title="yes"/>
+    <label for="bocTriStateStyles2_ValueFalse" aria-hidden="true" title="select 'yes'"></label>
+    <input class="ValueFalse" id="bocTriStateStyles2_ValueFalse" name="bocTriStateStyles2_Value" type="radio" title="no"/>
+    <label for="bocTriStateStyles2_ValueNull" aria-hidden="true" title="reset"></label>
+  </span>
+  M
+  <h1>Date Time Value:</h1>
   <span class="dateTimeValue">
     <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
     <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
     <input name="timeValue" type="text" class="timeField" maxlength="10" value="12:24:59" />
   </span>
   M
-  <br />
-  Date Value:<br />
+  <h1>Date Value:</h1>
   <span class="dateTimeValue">
     <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
     <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
   </span>
   M
-  <br />
-  Reference Value:<br />
+  <h1>Reference Value:</h1>
   <span class="referenceValue">
     <select name="referenceValue" class="dropDownList" >
       <option value="1" >Value 1</option>
@@ -223,15 +236,15 @@
     </select>
   </span>
   M
-  <br />
-  Auto Complete Reference Value: (Issue in IE: text will end up behind the dropdown until IE moves back to left)<br />
+  <h1>Auto Complete Reference Value:</h1>
+  (Issue in IE: text will end up behind the dropdown until IE moves back to left)<br/>
   <span class="autoCompleteReferenceValue">
     <input name="autoCompleteReferenceValue" type="text" class="textField" />
     <a href="#" class="dropDownButton" title="Show the value list">&nbsp;</a>
   </span>
   M
-  <br />
-  Multiline tooltip: <span title="Line 1&#13&#10Line 2">The Tooltip Target</span><br/>
+  <h1>Multiline tooltip:</h1>
+   <span title="Line 1&#13&#10Line 2">The Tooltip Target</span><br/>
   </form>
 </body>
 </html>
