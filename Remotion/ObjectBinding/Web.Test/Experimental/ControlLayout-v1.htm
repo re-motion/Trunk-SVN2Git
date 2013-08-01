@@ -127,17 +127,17 @@
       position: absolute;
       left: -1000%; /*Hide from visible screen but show for screen reader*/
     }
-    .bocTriStateStyled input[type=radio].ValueNull
+    .bocTriStateStyled input[type=radio][value="null"]
     {
        /* for debugging */
        left: 30em;
     }
-    .bocTriStateStyled input[type=radio].ValueTrue
+    .bocTriStateStyled input[type=radio][value="true"]
     {
        /* for debugging */
       left: 31em;
     }
-    .bocTriStateStyled input[type=radio].ValueFalse
+    .bocTriStateStyled input[type=radio][value="false"]
     {
        /* for debugging */
       left: 32em;
@@ -154,17 +154,17 @@
       display: none;
       content: " ";
     }
-    .bocTriStateStyled input[type=radio].ValueNull:checked + label:before
+    .bocTriStateStyled input[type=radio][value="null"]:checked + label:before
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxNull.gif');
       display: inline;
     }
-    .bocTriStateStyled input[type=radio].ValueTrue:checked + label:before
+    .bocTriStateStyled input[type=radio][value="true"]:checked + label:before
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
       display: inline;
     }
-    .bocTriStateStyled input[type=radio].ValueFalse:checked + label:before
+    .bocTriStateStyled input[type=radio][value="false"]:checked + label:before
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
       display: inline;
@@ -174,15 +174,15 @@
       outline-style: dotted;
       outline-width: 1px;
     }
-    .bocTriStateStyled input[type=radio].ValueNull:checked + label:after
+    .bocTriStateStyled input[type=radio][value="null"]:checked + label:after
     {
       content: "undefined";
     }
-    .bocTriStateStyled input[type=radio].ValueTrue:checked + label:after
+    .bocTriStateStyled input[type=radio][value="true"]:checked + label:after
     {
       content: "yes";
     }
-    .bocTriStateStyled input[type=radio].ValueFalse:checked + label:after
+    .bocTriStateStyled input[type=radio][value="false"]:checked + label:after
     {
       content: "no";
     }
@@ -201,11 +201,11 @@
 
   <h1>Tri-State using image:</h1>
   <span class="bocTriStateStyled">
-    <input class="ValueNull" id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" value="null" title="undefined" checked="checked"/>
+    <input id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" value="null" title="undefined" checked="checked"/>
     <label for="bocTriStateStyles_ValueTrue" aria-hidden="true" title="select 'no'"></label>
-    <input class="ValueTrue" id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio" value="true"title="yes"/>
+    <input id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio" value="true"title="yes"/>
     <label for="bocTriStateStyles_ValueFalse" aria-hidden="true" title="select 'yes'"></label>
-    <input class="ValueFalse" id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" type="radio" value="false" title="no"/>
+    <input id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" type="radio" value="false" title="no"/>
     <label for="bocTriStateStyles_ValueNull" aria-hidden="true" title="reset"></label>
   </span>
   M<br/>
@@ -215,11 +215,11 @@
   <h1>Tri-State with disabled NULL value using image:</h1>
   (only selecting the disabled value the first time does not work yet)<br/>
   <span class="bocTriStateStyled">
-    <input class="ValueNull" id="bocTriStateStyles2_ValueNull" name="bocTriStateStyles2_Value" type="radio" value="null" title="undefined" checked="checked"/>
+    <input id="bocTriStateStyles2_ValueNull" name="bocTriStateStyles2_Value" type="radio" value="null" title="undefined" checked="checked"/>
     <label for="bocTriStateStyles2_ValueTrue" aria-hidden="true" title="select 'no'"></label>
-    <input class="ValueTrue" id="bocTriStateStyles2_ValueTrue" name="bocTriStateStyles2_Value" type="radio" value="true" title="yes"/>
+    <input id="bocTriStateStyles2_ValueTrue" name="bocTriStateStyles2_Value" type="radio" value="true" title="yes"/>
     <label for="bocTriStateStyles2_ValueFalse" aria-hidden="true" title="select 'yes'"></label>
-    <input class="ValueFalse" id="bocTriStateStyles2_ValueFalse" name="bocTriStateStyles2_Value" type="radio" value="false" title="no"/>
+    <input id="bocTriStateStyles2_ValueFalse" name="bocTriStateStyles2_Value" type="radio" value="false" title="no"/>
     <label for="bocTriStateStyles2_ValueNull" aria-hidden="true" title="reset"></label>
   </span>
   M
