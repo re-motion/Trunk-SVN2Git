@@ -9,13 +9,19 @@
       margin-top: 0.5em;
       margin-bottom: 0;
     }
+
+    .dateTimeValue input::-ms-clear
+    {
+      display: none;
+    }
+
     .dateTimeValue input.dateField
     {
       box-sizing: border-box;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
       
-      width: 8.6em;
+      width: 8.1em;
       padding-right: 26px;
     }
     
@@ -94,6 +100,7 @@
       /* for debugging */
       left: 30%; 
     }
+
     .bocCheckBoxStyled label:before
     {
       width: 16px;
@@ -105,19 +112,23 @@
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
       content: " ";
     }
+
     .bocCheckBoxStyled input[type=checkbox]:checked + label:before
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
     }
+
     .bocCheckBoxStyled input[type=checkbox]:focus + label
     {
       outline-style: dotted;
       outline-width: 1px;
     }
+
     .bocCheckBoxStyled input[type=checkbox]:checked + label:after
     {
       content: "yes";
     }
+
     .bocCheckBoxStyled input[type=checkbox] + label:after
     {
       content: "no";
@@ -127,21 +138,25 @@
       position: absolute;
       left: -1000%; /*Hide from visible screen but show for screen reader*/
     }
+
     .bocTriStateStyled input[type=radio][value="null"]
     {
        /* for debugging */
        left: 30em;
     }
+
     .bocTriStateStyled input[type=radio][value="true"]
     {
        /* for debugging */
       left: 31em;
     }
+
     .bocTriStateStyled input[type=radio][value="false"]
     {
        /* for debugging */
       left: 32em;
     }
+
     .bocTriStateStyled label:before
     {
       width: 16px;
@@ -154,34 +169,41 @@
       display: none;
       content: " ";
     }
+
     .bocTriStateStyled input[type=radio][value="null"]:checked + label:before
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxNull.gif');
       display: inline;
     }
+
     .bocTriStateStyled input[type=radio][value="true"]:checked + label:before
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
       display: inline;
     }
+
     .bocTriStateStyled input[type=radio][value="false"]:checked + label:before
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
       display: inline;
     }
+
     .bocTriStateStyled input[type=radio]:focus ~ label
     {
       outline-style: dotted;
       outline-width: 1px;
     }
+
     .bocTriStateStyled input[type=radio][value="null"]:checked + label:after
     {
       content: "undefined";
     }
+
     .bocTriStateStyled input[type=radio][value="true"]:checked + label:after
     {
       content: "yes";
     }
+
     .bocTriStateStyled input[type=radio][value="false"]:checked + label:after
     {
       content: "no";
@@ -229,13 +251,17 @@
     <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
     <input name="timeValue" type="text" class="timeField" maxlength="10" value="12:24:59" />
   </span>
-  M
+  M<br/>
+  Note: The clear-button (IE10) was disabled on the date and time input elements.
+
   <h1>Date Value:</h1>
   <span class="dateTimeValue">
     <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
     <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
   </span>
-  M
+  M<br/>
+  Note: The clear-button (IE10) was disabled on the date input element.
+
   <h1>Reference Value:</h1>
   <span class="referenceValue">
     <select name="referenceValue" class="dropDownList" >
