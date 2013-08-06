@@ -147,5 +147,31 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       reflectionServiceMock.VerifyAllExpectations();
       Assert.That (instance, Is.SameAs (fakeInstance));
     }
+
+    [Test]
+    public void CreateInstance_WithConcreteType_AndPreparedMixins ()
+    {
+      var allowNonPublicCtor = BooleanObjectMother.GetRandomBoolean();
+      var concreteType = TypeFactory.GetConcreteType(typeof(BaseType1));
+      var paramList = ParamList.Create("blub");
+      
+      var fakePreparedInstance = new object();
+
+      var reflectionServiceMock = MockRepository.GenerateStrictMock<IReflectionService>();
+      _defaultPipelineMock.Stub(_ => _.ReflectionService).Return(reflectionServiceMock);
+      reflectionServiceMock
+          .Expect(_ => _.InstantiateAssembledType(concreteType, paramList, allowNonPublicCtor))
+          .Return(new object())
+          .WhenCalled(
+              mi =>
+              {
+                Assert.That (MixedObjectInstantiationScope.HasCurrent, Is.True);
+                Assert.That (MixedObjectInstantiationScope.Current.SuppliedMixinInstances, Is.EqualTo (new[] { fakePreparedInstance }));
+              });
+
+      _implementation.CreateInstance(allowNonPublicCtor, concreteType, paramList, fakePreparedInstance);
+
+      reflectionServiceMock.VerifyAllExpectations();
+    }
   }
 }

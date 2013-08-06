@@ -55,18 +55,16 @@ namespace Remotion.Mixins.CodeGeneration
               targetOrConcreteType.FullName), "preparedMixins");
       }
 
-      if (classContext != null && classContext.Type != targetOrConcreteType)
+      using (new MixedObjectInstantiationScope(preparedMixins))
       {
-        // The ClassContext doesn't match the requested type, so it must already be a concrete type. Just instantiate it.
-        Assertion.DebugAssert (MixinTypeUtility.IsGeneratedConcreteMixedType (targetOrConcreteType));
+        if (classContext != null && classContext.Type != targetOrConcreteType)
+        {
+          // The ClassContext doesn't match the requested type, so it must already be a concrete type. Just instantiate it.
+          Assertion.DebugAssert (MixinTypeUtility.IsGeneratedConcreteMixedType (targetOrConcreteType));
 
-        var reflectionService = _pipelineRegistry.DefaultPipeline.ReflectionService;
-        return reflectionService.InstantiateAssembledType (targetOrConcreteType, constructorParameters, allowNonPublicConstructors);
-      }
-
-      // TODO 5370: This scope _must_ also be around the if block above. Add a test and fix.
-      using (new MixedObjectInstantiationScope (preparedMixins))
-      {
+          var reflectionService = _pipelineRegistry.DefaultPipeline.ReflectionService;
+          return reflectionService.InstantiateAssembledType (targetOrConcreteType, constructorParameters, allowNonPublicConstructors);
+        }
         return _pipelineRegistry.DefaultPipeline.Create (targetOrConcreteType, constructorParameters, allowNonPublicConstructors);
       }
     }
