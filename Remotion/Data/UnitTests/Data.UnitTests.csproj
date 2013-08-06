@@ -342,7 +342,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\NonInterceptableTypeExceptionTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TestDomain\NonInstantiableClassWithMixinWithPersistentAutoProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NotFoundObjectsClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectCleanupExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\NewObjectInitializationContextTest.cs" />
@@ -1380,14 +1379,6 @@
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StubStorageGroup1Attribute.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\ConstructionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\MixedDomainTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TestDomain\ClassWithExplicitInterfaceProperty.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TestDomain\ClassWithWrongConstructor.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TestDomain\IPropertyInterface.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TestDomain\NonInstantiableAbstractClass.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TestDomain\NonInstantiableAbstractClassWithProps.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TestDomain\ClassWithAbstractRelatedCollectionSetter.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TestDomain\NonInstantiableSealedClass.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TestDomain\Throws.cs" />
     <Compile Include="DomainObjects\Factories\BaseConfiguration.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\BehavioralMixinTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\DomainObjectMixinBaseClassTest.cs" />
