@@ -85,8 +85,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     public ConcreteMixinType GetBuiltType ()
     {
       GenerateTypeFeatures ();
-      var overrideInterfaceGenerator = GenerateOverrides ();
-      var methodWrappers = GenerateMethodWrappers ();
+      OverrideInterfaceGenerator overrideInterfaceGenerator = GenerateOverrides ();
+      Dictionary<MethodInfo, MethodInfo> methodWrappers = GenerateMethodWrappers ();
 
       Type generatedType = Emitter.BuildType();
       Type generatedOverrideInterface = overrideInterfaceGenerator.GetBuiltType();

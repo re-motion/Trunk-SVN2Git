@@ -73,11 +73,25 @@
     <Compile Include="CoreComponentIntegration\TestDomain\MixinSuppressingNonInheritedAttribute.cs" />
     <Compile Include="Core\AdditionalMixinDependencyAttributeTest.cs" />
     <Compile Include="Core\ClassContextObjectMother.cs" />
+    <Compile Include="Core\CodeGeneration\AdHocCodeGenerator.cs" />
     <Compile Include="Core\CodeGeneration\ConcreteMixinTypeIdentifierObjectMother.cs" />
     <Compile Include="Core\CodeGeneration\ConcreteMixinTypeObjectMother.cs" />
     <Compile Include="Core\CodeGeneration\LockingCodeGenerationCacheDecoratorTest.cs" />
     <Compile Include="Core\CodeGeneration\LockingCodeGenerationModuleInfoDecoratorTest.cs" />
     <Compile Include="Core\IntegrationTests\Overrides\OverridingTargetMethodsWithShadowing.cs" />
+    <Compile Include="Core\CodeGeneration\TypePipe\CodeGenerationClassContextSerializerTest.cs" />
+    <Compile Include="Core\CodeGeneration\TypePipe\CodeGenerationMixinContextOriginSerializerTest.cs" />
+    <Compile Include="Core\CodeGeneration\TypePipe\CodeGenerationMixinContextSerializerTest.cs" />
+    <Compile Include="Core\CodeGeneration\TypePipe\ExpressionConcreteMixinTypeIdentifierSerializerTest.cs" />
+    <Compile Include="Core\CodeGeneration\TypePipe\FlatClassContextTest.cs" />
+    <Compile Include="Core\CodeGeneration\TypePipe\MixinParticipantTypeIdentifierProviderTest.cs" />
+    <Compile Include="Core\CodeGeneration\TypePipe\MixinSerializationHelper2Test.cs" />
+    <Compile Include="Core\Context\Serialization\AttributeClassContextSerializationTest.cs" />
+    <Compile Include="Core\Context\Serialization\AttributeMixinContextOriginSerializationTest.cs" />
+    <Compile Include="Core\Context\Serialization\AttributeMixinContextSerializationTest.cs" />
+    <Compile Include="Core\Context\Serialization\FlatClassContextSerializationTest.cs" />
+    <Compile Include="Core\Context\Serialization\FlatMixinContextOriginSerializationTest.cs" />
+    <Compile Include="Core\Context\Serialization\FlatMixinContextSerializationTest.cs" />
     <Compile Include="Core\TypeGenerationHelper.cs" />
     <Compile Include="Core\CodeGenerationTypeMother.cs" />
     <Compile Include="Core\CodeGeneration\AttributeBasedMetadataImporterTest.cs" />
@@ -89,26 +103,18 @@
     <Compile Include="Core\CodeGeneration\ConcreteMixinTypeIdentifierTest.cs" />
     <Compile Include="Core\CodeGeneration\ConcreteMixinTypeTest.cs" />
     <Compile Include="Core\CodeGeneration\ConcreteTypeBuilderObjectMother.cs" />
-    <Compile Include="Core\CodeGeneration\ConcreteTypeBuilderTest.cs" />
     <Compile Include="Core\CodeGeneration\ConcreteTypeBuilderTestHelper.cs" />
     <Compile Include="Core\CodeGeneration\DynamicMethodCodeBuilder.cs" />
     <Compile Include="Core\CodeGeneration\DynamicMethodEmitter.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\AttributeGeneratorTest.cs" />
-    <Compile Include="Core\CodeGeneration\DynamicProxy\CodeGenerationClassContextSerializerTest.cs" />
-    <Compile Include="Core\CodeGeneration\DynamicProxy\CodeGenerationConcreteMixinTypeIdentifierSerializerTest.cs" />
-    <Compile Include="Core\CodeGeneration\DynamicProxy\CodeGenerationMixinContextSerializerTest.cs" />
-    <Compile Include="Core\CodeGeneration\DynamicProxy\CodeGenerationSerializerUtilityTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\ConcreteMixedTypeAttributeUtilityTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\ConcreteMixinTypeAttributeUtilityTest.cs" />
-    <Compile Include="Core\CodeGeneration\DynamicProxy\CodeGenerationMixinContextOriginSerializerTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\FakeConcreteMixedType.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\FakeConcreteMixinType.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\MixinSerializationHelperTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\MixinTypeGeneratorTest.cs" />
-    <Compile Include="Core\CodeGeneration\DynamicProxy\ModuleManagerTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\OverrideInterfaceGeneratorTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\OverrideInterfaceMappingAttributeTest.cs" />
-    <Compile Include="Core\CodeGeneration\DynamicProxy\SerializationHelperTest.cs" />
     <Compile Include="Core\CodeGeneration\GuidNameProviderTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\AttributeSpike.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\AttributeTest.cs" />
@@ -122,7 +128,6 @@
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\IntroductionTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\MixedMixinTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\OverrideTest.cs" />
-    <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\StrongNameTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\ClassWithCtors.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\IMixinWithPropsEventsAtts.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\MixinAddingAttributes.cs" />
@@ -143,7 +148,6 @@
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\GeneratedTypeInConfigurationTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\OverrideTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\PublicWrapperTest.cs" />
-    <Compile Include="Core\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\StrongNameTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\ClassOverridingMixinMethod.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\DerivedTargetClassWithProtectedOverrider.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\MixinOverriddenByProtectedOverrider.cs" />
@@ -156,7 +160,6 @@
     <Compile Include="Core\CodeGeneration\IntegrationTests\NextCallProxyCodeGeneration\TypeFeatureTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\Serialization\AbstractMixinWithSerializationCallbacks.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\Serialization\MixinSerializationTest.cs" />
-    <Compile Include="Core\CodeGeneration\IntegrationTests\Serialization\ModuleManagerSerializationExtensionTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\Serialization\RhinoMocksRepositoryAdapter.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\Serialization\SerializationCallbackTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\Serialization\SerializationTest.cs" />
@@ -251,9 +254,6 @@
     <Compile Include="Core\Context\MixinContextCollectionTest.cs" />
     <Compile Include="Core\Context\MixinContextTest.cs" />
     <Compile Include="Core\Context\ReadOnlyContextCollectionTest.cs" />
-    <Compile Include="Core\Context\Serialization\AttributeClassContextSerializationTest.cs" />
-    <Compile Include="Core\Context\Serialization\AttributeMixinContextOriginSerializationTest.cs" />
-    <Compile Include="Core\Context\Serialization\AttributeMixinContextSerializationTest.cs" />
     <Compile Include="Core\Context\Serialization\SerializationInfoMixinContextOriginSerializationTest.cs" />
     <Compile Include="Core\Context\Serialization\SerializationInfoClassContextSerializationTest.cs" />
     <Compile Include="Core\Context\Serialization\SerializationInfoMixinContextSerializationTest.cs" />
@@ -363,8 +363,8 @@
     <Compile Include="Core\Globalization\TestDomain\MixinAddingMultiLingualResourcesAttributes1.cs" />
     <Compile Include="Core\Globalization\TestDomain\MixinAddingMultiLingualResourcesAttributes2.cs" />
     <Compile Include="Core\MixAttributeTest.cs" />
-    <Compile Include="Core\MixerTools\ClassContextFinderTest.cs" />
-    <Compile Include="Core\MixerTools\ConcreteTypeBuilderFactoryTest.cs" />
+    <Compile Include="Core\MixerTools\MixedTypeFinderTest.cs" />
+    <Compile Include="Core\MixerTools\MixerPipelineFactoryTest.cs" />
     <Compile Include="Core\MixerTools\MixerRunnerTest.cs" />
     <Compile Include="Core\MixerTools\MixerTest.cs" />
     <Compile Include="Core\MixerTools\Mixer_IntegrationTest.cs" />
@@ -674,6 +674,10 @@
     <ProjectReference Include="..\..\Development\RhinoMocks\Development.RhinoMocks.csproj">
       <Project>{2177143e-345f-4faa-9958-1ae2b5eed242}</Project>
       <Name>Development.RhinoMocks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Development\TypePipe\Development.TypePipe.csproj">
+      <Project>{f6faf727-9405-4bcc-9153-803f73853e67}</Project>
+      <Name>Development.TypePipe</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
       <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>

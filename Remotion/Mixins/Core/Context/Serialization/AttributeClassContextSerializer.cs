@@ -15,47 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.Serialization
 {
   /// <summary>
   /// Serializes a <see cref="ClassContext"/> into an array suitable for use as a custom attribute parameter.
   /// </summary>
-  public class AttributeClassContextSerializer : IClassContextSerializer
+  public class AttributeClassContextSerializer : ArrayClassContextSerializer
   {
-    private readonly object[] _values = new object[3];
-
-    public object[] Values
+    protected override ArrayMixinContextSerializer CreateMixinContextSerializer ()
     {
-      get { return _values; }
-    }
-
-    public void AddClassType(Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      Values[0] = type;
-    }
-
-    public void AddMixins(IEnumerable<MixinContext> mixinContexts)
-    {
-      ArgumentUtility.CheckNotNull ("mixinContexts", mixinContexts);
-      Values[1] = mixinContexts.Select (mc => (object) SerializeMixinContext (mc)).ToArray ();
-    }
-
-    public void AddComposedInterfaces(IEnumerable<Type> composedInterfaces)
-    {
-      ArgumentUtility.CheckNotNull ("composedInterfaces", composedInterfaces);
-      Values[2] = composedInterfaces.ToArray ();
-    }
-
-    private object[] SerializeMixinContext (MixinContext m)
-    {
-      var serializer = new AttributeMixinContextSerializer ();
-      m.Serialize (serializer);
-      return serializer.Values;
+      return new AttributeMixinContextSerializer();
     }
   }
 }

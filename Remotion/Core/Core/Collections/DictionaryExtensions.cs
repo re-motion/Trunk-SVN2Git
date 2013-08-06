@@ -25,20 +25,25 @@ namespace Remotion.Collections
   /// </summary>
   public static class DictionaryExtensions
   {
-    public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dict, TKey key)
+    public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key)
     {
-      ArgumentUtility.CheckNotNull ("dict", dict);
+      ArgumentUtility.CheckNotNull ("dictionary", dictionary);
       // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
 
+      return GetValueOrDefault (dictionary, key, default (TValue));
+    }
+
+    public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+    {
+      ArgumentUtility.CheckNotNull ("dictionary", dictionary);
+      // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
+      // Default value may be null.
+
       TValue value;
-      if (dict.TryGetValue (key, out value))
-      {
+      if (dictionary.TryGetValue (key, out value))
         return value;
-      }
       else
-      {
-        return default (TValue);
-      }
+        return defaultValue;
     }
 
     public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue> (this IDictionary<TKey, TValue> dict)

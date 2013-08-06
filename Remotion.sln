@@ -48,7 +48,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		build\Remotion.AssembleBuildOutput.include.build = build\Remotion.AssembleBuildOutput.include.build
 		build\Remotion.build = build\Remotion.build
 		build\Remotion.BuildTargets.include.build = build\Remotion.BuildTargets.include.build
-		build\Remotion.BuildTargets.Properties.include.build = build\Remotion.BuildTargets.Properties.include.build
 		build\Remotion.BuildTargets.Testing.include.build = build\Remotion.BuildTargets.Testing.include.build
 		build\Remotion.Configurations.include.build = build\Remotion.Configurations.include.build
 		build\Remotion.DebugSymbols.include.build = build\Remotion.DebugSymbols.include.build
@@ -238,6 +237,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Development.RhinoMocks", "Remotion\Development\RhinoMocks\Development.RhinoMocks.csproj", "{2177143E-345F-4FAA-9958-1AE2B5EED242}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityManager.PerformanceTests", "SecurityManager\PerformanceTests\SecurityManager.PerformanceTests.csproj", "{2657E4C0-90AB-4B2E-A1B9-90DD4EEE7825}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Development.TypePipe", "Remotion\Development\TypePipe\Development.TypePipe.csproj", "{F6FAF727-9405-4BCC-9153-803F73853E67}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.ObjectBinding", "Remotion\Data\DomainObjects.ObjectBinding\Data.DomainObjects.ObjectBinding.csproj", "{F3935D12-39E6-4F06-8316-98CD7ED60C6B}"
 EndProject
@@ -542,16 +543,12 @@ Global
 		{6693589F-085C-4CB7-A28A-426F19C19E6B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6693589F-085C-4CB7-A28A-426F19C19E6B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2ADC369A-4CE5-4378-B72E-4FBEDD8FA724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2ADC369A-4CE5-4378-B72E-4FBEDD8FA724}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ADC369A-4CE5-4378-B72E-4FBEDD8FA724}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{2ADC369A-4CE5-4378-B72E-4FBEDD8FA724}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2ADC369A-4CE5-4378-B72E-4FBEDD8FA724}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2ADC369A-4CE5-4378-B72E-4FBEDD8FA724}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{88CA7395-A63D-4934-ADA7-7D0600C85DA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88CA7395-A63D-4934-ADA7-7D0600C85DA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88CA7395-A63D-4934-ADA7-7D0600C85DA3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{88CA7395-A63D-4934-ADA7-7D0600C85DA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88CA7395-A63D-4934-ADA7-7D0600C85DA3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{88CA7395-A63D-4934-ADA7-7D0600C85DA3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
@@ -803,6 +800,14 @@ Global
 		{2657E4C0-90AB-4B2E-A1B9-90DD4EEE7825}.Release|Any CPU.ActiveCfg = Release|x86
 		{2657E4C0-90AB-4B2E-A1B9-90DD4EEE7825}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{2657E4C0-90AB-4B2E-A1B9-90DD4EEE7825}.Release|Mixed Platforms.Build.0 = Release|x86
+		{F6FAF727-9405-4BCC-9153-803F73853E67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6FAF727-9405-4BCC-9153-803F73853E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6FAF727-9405-4BCC-9153-803F73853E67}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F6FAF727-9405-4BCC-9153-803F73853E67}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F6FAF727-9405-4BCC-9153-803F73853E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6FAF727-9405-4BCC-9153-803F73853E67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6FAF727-9405-4BCC-9153-803F73853E67}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F6FAF727-9405-4BCC-9153-803F73853E67}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F3935D12-39E6-4F06-8316-98CD7ED60C6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F3935D12-39E6-4F06-8316-98CD7ED60C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3935D12-39E6-4F06-8316-98CD7ED60C6B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -851,6 +856,7 @@ Global
 		{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED} = {9F4D90EC-6AD2-495D-BFC3-270DC15974DD}
 		{44924ED6-8C12-416D-972F-F1F10417E7EF} = {9F4D90EC-6AD2-495D-BFC3-270DC15974DD}
 		{2177143E-345F-4FAA-9958-1AE2B5EED242} = {9F4D90EC-6AD2-495D-BFC3-270DC15974DD}
+		{F6FAF727-9405-4BCC-9153-803F73853E67} = {9F4D90EC-6AD2-495D-BFC3-270DC15974DD}
 		{FDCCDB1E-0962-41DA-99A1-2DB390C48748} = {72195525-BF6C-43D6-AC96-39E34D02EA34}
 		{5F1B88F7-FAFB-45C2-A357-333245870A6B} = {72195525-BF6C-43D6-AC96-39E34D02EA34}
 		{5C1EB605-33ED-4A19-91B0-D060638191FB} = {72195525-BF6C-43D6-AC96-39E34D02EA34}

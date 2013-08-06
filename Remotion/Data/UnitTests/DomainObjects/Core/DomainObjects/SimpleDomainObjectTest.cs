@@ -49,7 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [UseLegacyCodeGeneration]
     public void DeserializationConstructor_CallsBase ()
     {
       var serializable = ClassDerivedFromSimpleDomainObject_ImplementingISerializable.NewObject ();

@@ -134,7 +134,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
     }
 
     [Test]
-    public void AllowsAbstractMixinTypeNotSerializableWithISerializable ()
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = "is not marked as serializable", MatchType = MessageMatch.Contains)]
+    public void ThrowsIfAbstractMixinTypeNotSerializable_EvenWithISerializable ()
     {
       ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (NotSerializableMixinWithISerializable));
       Serializer.SerializeAndDeserialize (targetInstance);

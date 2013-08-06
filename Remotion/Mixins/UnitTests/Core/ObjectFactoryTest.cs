@@ -250,8 +250,8 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Mixins.UnitTests.Core.ObjectFactoryTest+"
-       + "TargetClassWithProtectedCtors contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type 'Remotion.Mixins.UnitTests.Core.ObjectFactoryTest+"
+       + "TargetClassWithProtectedCtors' contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
        + "not set).")]
     public void ProtectedDefaultConstructor_Mixed ()
     {
@@ -271,8 +271,8 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Mixins.UnitTests.Core.ObjectFactoryTest+"
-       + "TargetClassWithProtectedCtors contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type 'Remotion.Mixins.UnitTests.Core.ObjectFactoryTest+"
+       + "TargetClassWithProtectedCtors' contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
        + "not set).")]
     public void ProtectedDefaultConstructor_NonMixed ()
     {
@@ -292,8 +292,8 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Mixins.UnitTests.Core.ObjectFactoryTest+"
-       + "TargetClassWithProtectedCtors contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type 'Remotion.Mixins.UnitTests.Core.ObjectFactoryTest+"
+       + "TargetClassWithProtectedCtors' contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
        + "not set).")]
     public void ProtectedNonDefaultConstructor_Mixed ()
     {
@@ -313,8 +313,8 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Mixins.UnitTests.Core.ObjectFactoryTest+"
-       + "TargetClassWithProtectedCtors contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type 'Remotion.Mixins.UnitTests.Core.ObjectFactoryTest+"
+       + "TargetClassWithProtectedCtors' contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
        + "not set).")]
     public void ProtectedNonDefaultConstructor_NonMixed ()
     {

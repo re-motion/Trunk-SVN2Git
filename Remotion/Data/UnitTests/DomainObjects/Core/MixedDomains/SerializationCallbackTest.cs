@@ -25,7 +25,6 @@ using Remotion.Reflection;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 {
   [TestFixture]
-  [UseLegacyCodeGeneration]
   public class SerializationCallbackTest : ClientTransactionBaseTest
   {
     [Test]

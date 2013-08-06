@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remotion.TypePipe.MutableReflection.Implementation;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 
@@ -44,7 +45,7 @@ namespace Remotion.Mixins.Definitions.Building
         foreach (var associatedMethodForMember in associatedMethodsForMember)
         {
           // check whether we already have a member for that base definition; if yes, check which one is more derived
-          var baseDefinition = associatedMethodForMember.GetBaseDefinition ();
+          var baseDefinition = MethodBaseDefinitionCache.GetBaseDefinition (associatedMethodForMember);
           T existingMember;
           if (!baseDefinitionsToMostDerivedMembers.TryGetValue (baseDefinition, out existingMember) // we have no member for the base definition...
               || existingMember.DeclaringType.IsAssignableFrom (member.DeclaringType)) // the current one is more derived...

@@ -158,7 +158,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
     }
 
     [Test]
-    public void AllowsClassNotSerializableWithISerializable ()
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = "is not marked as serializable", MatchType = MessageMatch.Contains)]
+    public void Throws_For_ClassNotSerializable_EvenWithISerializableImplementation ()
     {
       NotSerializableClassWithISerializable targetInstance = CreateGeneratedTypeInstanceWithoutMixins<NotSerializableClassWithISerializable> ();
 

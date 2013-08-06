@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
@@ -26,19 +27,27 @@ using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   public class MappingReflector : IMappingLoader
   {
+    public static TypePipeBasedDomainObjectCreator CreateDomainObjectCreator ()
+    {
+      var pipelineRegistry = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>();
+      var defaultPipeline = pipelineRegistry.DefaultPipeline;
+      return new TypePipeBasedDomainObjectCreator (defaultPipeline);
+    }
+
     private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingReflector));
     private readonly IMappingNameResolver _nameResolver;
     private readonly IMappingObjectFactory _mappingObjectFactory;
     private readonly ITypeDiscoveryService _typeDiscoveryService;
     private readonly IClassIDProvider _classIDProvider;
     private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
-
+    
     // This ctor is required when the MappingReflector is instantiated as a configuration element from a config file.
     public MappingReflector ()
         : this (
@@ -46,7 +55,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
             new ClassIDProvider(),
             new DomainModelConstraintProvider(),
             new ReflectionBasedNameResolver(),
-            SafeServiceLocator.Current.GetInstance<IDomainObjectCreator>())
+            CreateDomainObjectCreator())
     {
     }
 

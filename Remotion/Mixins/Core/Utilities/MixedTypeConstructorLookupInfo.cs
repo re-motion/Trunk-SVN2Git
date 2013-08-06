@@ -21,6 +21,7 @@ using Remotion.Text;
 
 namespace Remotion.Mixins.Utilities
 {
+  // TODO 5370: Try to remove this class.
   public class MixedTypeConstructorLookupInfo : ConstructorLookupInfo
   {
     private sealed class CacheKey
@@ -79,14 +80,14 @@ namespace Remotion.Mixins.Utilities
 
       if (targetTypeCtor == null)
       {
-        string message = string.Format ("Type {0} does not contain a constructor with the following signature: ({1}).",
+        string message = string.Format ("Type '{0}' does not contain a constructor with the following signature: ({1}).",
             _targetType.FullName, SeparatedStringBuilder.Build (",", parameterTypes, t => t.FullName));
         throw new MissingMethodException (message);
       }
       else if (!targetTypeCtor.IsPublic && !_allowNonPublic)
       {
         string message = string.Format (
-            "Type {0} contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is not set).",
+            "Type '{0}' contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is not set).",
             _targetType.FullName);
         throw new MissingMethodException (message);
       }

@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
@@ -28,7 +28,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
   /// </summary>
   public class ImplementedInterfaceFinder
   {
-    private readonly IEnumerable<ConcreteMixinType> _concreteMixinTypes;
+    private readonly IEnumerable<IMixinInfo> _mixinInfos;
     private readonly IEnumerable<InterfaceIntroductionDefinition> _receivedInterfaces;
     private readonly IEnumerable<Type> _alreadyImplementedInterfaces;
     private readonly IEnumerable<RequiredTargetCallTypeDefinition> _requiredTargetCallTypes;
@@ -37,17 +37,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
         IEnumerable<Type> alreadyImplementedInterfaces, 
         IEnumerable<InterfaceIntroductionDefinition> receivedInterfaces, 
         IEnumerable<RequiredTargetCallTypeDefinition> requiredTargetCallTypes, 
-        IEnumerable<ConcreteMixinType> concreteMixinTypes)
+        IEnumerable<IMixinInfo> mixinInfos)
     {
       ArgumentUtility.CheckNotNull ("alreadyImplementedInterfaces", alreadyImplementedInterfaces);
       ArgumentUtility.CheckNotNull ("receivedInterfaces", receivedInterfaces);
       ArgumentUtility.CheckNotNull ("requiredTargetCallTypes", requiredTargetCallTypes);
-      ArgumentUtility.CheckNotNull ("concreteMixinTypes", concreteMixinTypes);
+      ArgumentUtility.CheckNotNull ("mixinInfos", mixinInfos);
 
       _alreadyImplementedInterfaces = alreadyImplementedInterfaces;
       _receivedInterfaces = receivedInterfaces;
       _requiredTargetCallTypes = requiredTargetCallTypes;
-      _concreteMixinTypes = concreteMixinTypes;
+      _mixinInfos = mixinInfos;
     }
 
     public Type[] GetInterfacesToImplement ()
@@ -59,10 +59,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
       interfaces.ExceptWith (_alreadyImplementedInterfaces); // remove required interfaces the type already implements
 
       interfaces.UnionWith (_receivedInterfaces.Select (introduction => introduction.InterfaceType));
-      interfaces.UnionWith (_concreteMixinTypes.Select (concreteMixinType => concreteMixinType.GeneratedOverrideInterface));
+      interfaces.UnionWith (_mixinInfos.SelectMany (mixin => mixin.GetInterfacesToImplement()));
       interfaces.Add (typeof (IMixinTarget));
       interfaces.Add (typeof (IInitializableMixinTarget));
-      interfaces.Add (typeof (ISerializable));
+      // TODO 5370 ??
+      //interfaces.Add (typeof (ISerializable));
 
       return interfaces.ToArray ();
     }

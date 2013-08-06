@@ -172,7 +172,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
     }
 
     [Test]
-    [UseLegacyCodeGeneration]
     public void Serializable ()
     {
       // TODO 5370: Remove

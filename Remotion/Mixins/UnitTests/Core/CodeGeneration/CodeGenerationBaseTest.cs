@@ -18,27 +18,42 @@ using System;
 using NUnit.Framework;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 {
   public abstract class CodeGenerationBaseTest
   {
+    private IPipeline _previousDefaultPipeline;
+
     [SetUp]
-    public virtual void SetUp()
+    public virtual void SetUp ()
     {
-      ConcreteTypeBuilder.SetCurrent (SavedTypeBuilder);
+      _previousDefaultPipeline = PipelineRegistry.DefaultPipeline;
+      PipelineRegistry.SetDefaultPipeline (Pipeline);
     }
 
     [TearDown]
-    public virtual void TearDown()
+    public virtual void TearDown ()
     {
-      ConcreteTypeBuilder.SetCurrent (null);
+      PipelineRegistry.SetDefaultPipeline (_previousDefaultPipeline);
     }
 
-    protected ConcreteTypeBuilder SavedTypeBuilder
+    protected IPipelineRegistry PipelineRegistry
     {
-      get { return SetUpFixture.SavedTypeBuilder; }
+      get { return SetUpFixture.PipelineRegistry; }
+    }
+
+    protected IPipeline Pipeline
+    {
+      get { return SetUpFixture.Pipeline; }
+    }
+
+    protected void AddSavedAssembly (string assemblyPath)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty("assemblyPath", assemblyPath);
+      SetUpFixture.AddSavedAssembly (assemblyPath);
     }
 
     protected Type CreateMixedType (Type targetType, params Type[] mixinTypes)
@@ -83,7 +98,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     /// </summary>
     public void SkipDeletion ()
     {
-      SetUpFixture.SkipDeletion ();
+      SetUpFixture.SkipDeletion();
     }
   }
 }

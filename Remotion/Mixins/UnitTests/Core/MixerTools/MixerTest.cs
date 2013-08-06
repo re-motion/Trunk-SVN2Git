@@ -17,7 +17,6 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.MixerTools;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy;
@@ -25,6 +24,10 @@ using Remotion.Mixins.Validation;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
+using Remotion.TypePipe;
+using Remotion.TypePipe.Implementation;
+using Remotion.TypePipe.MutableReflection;
+using Remotion.Utilities;
 using Rhino.Mocks;
 using ErrorEventArgs = Remotion.Mixins.MixerTools.ErrorEventArgs;
 
@@ -35,42 +38,48 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
   public class MixerTest
   {
     private string _assemblyOutputDirectoy;
-    private string _signedModulePath;
-    private string _unsignedModulePath;
+    private string _modulePath;
 
-    private IClassContextFinder _classContextFinderStub;
-    private IConcreteTypeBuilderFactory _concreteTypeBuilderFactoryStub;
-    private IConcreteTypeBuilder _concreteTypeBuilderStub;
+    private IMixedTypeFinder _mixedTypeFinderStub;
+    private IMixerPipelineFactory _mixerPipelineFactoryStub;
+    private IPipeline _pipelineStub;
+    
     private Mixer _mixer;
+
+    private IReflectionService _reflectionServiceDynamicMock;
+    private ICodeManager _codeManagerDynamicMock;
+
+    private Type _fakeMixedType;
     private MixinConfiguration _configuration;
-    private ClassContext _context;
+
 
     [SetUp]
     public void SetUp ()
     {
       _assemblyOutputDirectoy = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "MixerTest");
-      _signedModulePath = Path.Combine (_assemblyOutputDirectoy, "Signed.dll");
-      _unsignedModulePath = Path.Combine (_assemblyOutputDirectoy, "Unsigned.dll");
+      _modulePath = Path.Combine (_assemblyOutputDirectoy, "Signed.dll");
       
       if (Directory.Exists (_assemblyOutputDirectoy))
         Directory.Delete (_assemblyOutputDirectoy, true);
 
+      _mixedTypeFinderStub = MockRepository.GenerateStub<IMixedTypeFinder> ();
+      _mixerPipelineFactoryStub = MockRepository.GenerateStub<IMixerPipelineFactory> ();
+      _pipelineStub = MockRepository.GenerateStub<IPipeline> ();
+
+      _mixer = new Mixer (_mixedTypeFinderStub, _mixerPipelineFactoryStub, _assemblyOutputDirectoy);
+
+      _reflectionServiceDynamicMock = MockRepository.GenerateMock<IReflectionService>();
+      _codeManagerDynamicMock = MockRepository.GenerateMock<ICodeManager>();
+      _pipelineStub.Stub (stub => stub.ReflectionService).Return (_reflectionServiceDynamicMock);
+      _pipelineStub.Stub (stub => stub.CodeManager).Return (_codeManagerDynamicMock);
+
+      _fakeMixedType = typeof (int);
       _configuration = new MixinConfiguration ();
-      _context = ClassContextObjectMother.Create(typeof (object));
 
-      _classContextFinderStub = MockRepository.GenerateStub<IClassContextFinder> ();
-      _concreteTypeBuilderFactoryStub = MockRepository.GenerateStub<IConcreteTypeBuilderFactory> ();
-      _concreteTypeBuilderStub = MockRepository.GenerateStub<IConcreteTypeBuilder> ();
+      _mixedTypeFinderStub.Stub (stub => stub.FindMixedTypes (_configuration)).Return (new[] { _fakeMixedType });
 
-      _classContextFinderStub.Stub (stub => stub.FindClassContexts (_configuration)).Return (new[] { _context });
-
-      _concreteTypeBuilderFactoryStub.Stub (stub => stub.GetSignedModulePath (_assemblyOutputDirectoy)).Return (_signedModulePath);
-      _concreteTypeBuilderFactoryStub.Stub (stub => stub.GetUnsignedModulePath (_assemblyOutputDirectoy)).Return (_unsignedModulePath);
-      _concreteTypeBuilderFactoryStub.Stub (stub => stub.CreateTypeBuilder (_assemblyOutputDirectoy)).Return (_concreteTypeBuilderStub);
-
-      _concreteTypeBuilderStub.Stub (stub => stub.SaveGeneratedConcreteTypes ()).Return (new string[0]);
-
-      _mixer = new Mixer (_classContextFinderStub, _concreteTypeBuilderFactoryStub, _assemblyOutputDirectoy);
+      _mixerPipelineFactoryStub.Stub (stub => stub.GetModulePath (_assemblyOutputDirectoy)).Return (_modulePath);
+      _mixerPipelineFactoryStub.Stub (stub => stub.CreatePipeline (_assemblyOutputDirectoy)).Return (_pipelineStub);
     }
 
     [TearDown]
@@ -105,69 +114,70 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     public void PrepareOutputDirectory_SignedModuleIsDeleted ()
     {
       Directory.CreateDirectory (_assemblyOutputDirectoy);
-      CreateEmptyFile(_signedModulePath);
+      CreateEmptyFile(_modulePath);
 
-      Assert.That (File.Exists (_signedModulePath), Is.True);
+      Assert.That (File.Exists (_modulePath), Is.True);
 
       _mixer.PrepareOutputDirectory ();
 
-      Assert.That (File.Exists (_signedModulePath), Is.False);
+      Assert.That (File.Exists (_modulePath), Is.False);
     }
 
     [Test]
     public void PrepareOutputDirectory_UnsignedModuleIsDeleted ()
     {
       Directory.CreateDirectory (_assemblyOutputDirectoy);
-      CreateEmptyFile (_unsignedModulePath);
+      CreateEmptyFile (_modulePath);
 
-      Assert.That (File.Exists (_unsignedModulePath), Is.True);
+      Assert.That (File.Exists (_modulePath), Is.True);
 
       _mixer.PrepareOutputDirectory ();
 
-      Assert.That (File.Exists (_unsignedModulePath), Is.False);
+      Assert.That (File.Exists (_modulePath), Is.False);
     }
 
     [Test]
     public void Execute_FindsClassContexts ()
     {
-      var classContextFinderMock = new MockRepository().StrictMock<IClassContextFinder> ();
-      classContextFinderMock.Expect (mock => mock.FindClassContexts (_configuration)).Return (new ClassContext[0]);
-      classContextFinderMock.Replay ();
+      var mixedTypeFinderMock = new MockRepository().StrictMock<IMixedTypeFinder> ();
+      mixedTypeFinderMock.Expect (mock => mock.FindMixedTypes (_configuration)).Return (new Type[0]);
+      mixedTypeFinderMock.Replay ();
 
-      var mixer = new Mixer (classContextFinderMock, _concreteTypeBuilderFactoryStub, _assemblyOutputDirectoy);
+      var mixer = new Mixer (mixedTypeFinderMock, _mixerPipelineFactoryStub, _assemblyOutputDirectoy);
       mixer.Execute (_configuration);
 
-      classContextFinderMock.VerifyAllExpectations ();
+      mixedTypeFinderMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void Execute_RaisesClassContextBeingProcessed ()
     {
       object eventSender = null;
-      ClassContextEventArgs eventArgs = null;
+      TypeEventArgs eventArgs = null;
 
-      _mixer.ClassContextBeingProcessed += (sender, args) => { eventSender = sender; eventArgs = args; };
+      _mixer.TypeBeingProcessed += (sender, args) => { eventSender = sender; eventArgs = args; };
       _mixer.Execute (_configuration);
 
       Assert.That (eventSender, Is.SameAs (_mixer));
-      Assert.That (eventArgs.ClassContext, Is.SameAs (_context));
+      Assert.That (eventArgs.Type, Is.SameAs (_fakeMixedType));
     }
 
     [Test]
-    public void Execute_GetsConcreteType ()
+    public void Execute_GetsConcreteType_WithActivatedConfiguration ()
     {
-      var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
-      concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Return (typeof (FakeConcreteMixedType));
-      concreteTypeBuilderMock.Expect (mock => mock.SaveGeneratedConcreteTypes()).Return (new string[0]);
-      concreteTypeBuilderMock.Replay ();
+      MixinConfiguration activeConfiguration = null;
 
-      RedefineFactoryStub (concreteTypeBuilderMock);
-
+      _reflectionServiceDynamicMock
+          .Expect (mock => _reflectionServiceDynamicMock.GetAssembledType (_fakeMixedType))
+          .Return (typeof (FakeConcreteMixedType))
+          .WhenCalled (mi => activeConfiguration = MixinConfiguration.ActiveConfiguration);
+      
       _mixer.Execute (_configuration);
 
-      concreteTypeBuilderMock.VerifyAllExpectations ();
+      _reflectionServiceDynamicMock.VerifyAllExpectations ();
+      Assert.That (activeConfiguration, Is.SameAs (_configuration));
       Assert.That (_mixer.FinishedTypes.Count, Is.EqualTo (1));
-      Assert.That (_mixer.FinishedTypes[_context.Type], Is.SameAs (typeof (FakeConcreteMixedType)));
+      Assert.That (_mixer.FinishedTypes[_fakeMixedType], Is.SameAs (typeof (FakeConcreteMixedType)));
     }
 
     [Test]
@@ -175,12 +185,9 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     {
       var validationException = new ValidationException ("x", new ValidationLogData());
 
-      var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
-      concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Throw (validationException);
-      concreteTypeBuilderMock.Expect (mock => mock.SaveGeneratedConcreteTypes ()).Return (new string[0]);
-      concreteTypeBuilderMock.Replay ();
-
-      RedefineFactoryStub (concreteTypeBuilderMock);
+      _reflectionServiceDynamicMock
+          .Expect (mock => _reflectionServiceDynamicMock.GetAssembledType (_fakeMixedType))
+          .Throw (validationException);
 
       object eventSender = null;
       ValidationErrorEventArgs eventArgs = null;
@@ -188,7 +195,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       _mixer.ValidationErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
       _mixer.Execute (_configuration);
 
-      concreteTypeBuilderMock.VerifyAllExpectations ();
+      _reflectionServiceDynamicMock.VerifyAllExpectations ();
 
       Assert.That (eventSender, Is.SameAs (_mixer));
       Assert.That (eventArgs.ValidationException, Is.SameAs (validationException));
@@ -199,12 +206,9 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     {
       var exception = new Exception ("x");
 
-      var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
-      concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Throw (exception);
-      concreteTypeBuilderMock.Expect (mock => mock.SaveGeneratedConcreteTypes ()).Return (new string[0]);
-      concreteTypeBuilderMock.Replay ();
-
-      RedefineFactoryStub (concreteTypeBuilderMock);
+      _reflectionServiceDynamicMock
+          .Expect (mock => _reflectionServiceDynamicMock.GetAssembledType (_fakeMixedType))
+          .Throw (exception);
 
       object eventSender = null;
       ErrorEventArgs eventArgs = null;
@@ -212,7 +216,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       _mixer.ErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
       _mixer.Execute (_configuration);
 
-      concreteTypeBuilderMock.VerifyAllExpectations ();
+      _reflectionServiceDynamicMock.VerifyAllExpectations ();
 
       Assert.That (eventSender, Is.SameAs (_mixer));
       Assert.That (eventArgs.Exception, Is.SameAs (exception));
@@ -221,36 +225,27 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     [Test]
     public void Execute_Saves ()
     {
-      var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
-      concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Return (typeof (FakeConcreteMixedType));
-      concreteTypeBuilderMock.Expect (mock => mock.SaveGeneratedConcreteTypes ()).Return (new[] { "a", "b" });
-      concreteTypeBuilderMock.Replay ();
-
-      RedefineFactoryStub (concreteTypeBuilderMock);
+      _codeManagerDynamicMock.Expect (mock => mock.FlushCodeToDisk()).Return ("a");
 
       _mixer.Execute (_configuration);
 
-      concreteTypeBuilderMock.VerifyAllExpectations ();
-      Assert.That (_mixer.GeneratedFiles, Is.EqualTo (new[] { "a", "b" }));
+      _codeManagerDynamicMock.VerifyAllExpectations();
+      Assert.That (_mixer.GeneratedFile, Is.EqualTo ("a"));
     }
 
     [Test]
     public void Create ()
     {
-      var fakeTypeNameProvider = MockRepository.GenerateStub<IConcreteMixedTypeNameProvider> ();
-      
-      var mixer = Mixer.Create ("A", "B", "C", fakeTypeNameProvider);
-      Assert.That (mixer.ConcreteTypeBuilderFactory, Is.TypeOf (typeof (ConcreteTypeBuilderFactory)));
-      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.SameAs (fakeTypeNameProvider));
-      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).SignedAssemblyName, Is.EqualTo ("A"));
-      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).UnsignedAssemblyName, Is.EqualTo ("B"));
+      var mixer = Mixer.Create ("A", "D");
+      Assert.That (mixer.MixerPipelineFactory, Is.TypeOf (typeof (MixerPipelineFactory)));
+      Assert.That (((MixerPipelineFactory) mixer.MixerPipelineFactory).AssemblyName, Is.EqualTo ("A"));
 
-      Assert.That (mixer.AssemblyOutputDirectory, Is.EqualTo ("C"));
+      Assert.That (mixer.AssemblyOutputDirectory, Is.EqualTo ("D"));
 
-      Assert.That (mixer.ClassContextFinder, Is.TypeOf (typeof (ClassContextFinder)));
-      Assert.That (((ClassContextFinder) mixer.ClassContextFinder).TypeDiscoveryService, Is.TypeOf (typeof (AssemblyFinderTypeDiscoveryService)));
+      Assert.That (mixer.MixedTypeFinder, Is.TypeOf (typeof (MixedTypeFinder)));
+      Assert.That (((MixedTypeFinder) mixer.MixedTypeFinder).TypeDiscoveryService, Is.TypeOf (typeof (AssemblyFinderTypeDiscoveryService)));
 
-      var service = (AssemblyFinderTypeDiscoveryService) ((ClassContextFinder) mixer.ClassContextFinder).TypeDiscoveryService;
+      var service = (AssemblyFinderTypeDiscoveryService) ((MixedTypeFinder) mixer.MixedTypeFinder).TypeDiscoveryService;
       Assert.That (service.AssemblyFinder, Is.TypeOf (typeof (CachingAssemblyFinderDecorator)));
 
       var assemblyFinder = (AssemblyFinder) ((CachingAssemblyFinderDecorator) service.AssemblyFinder).InnerFinder;
@@ -263,13 +258,6 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
 
       Assert.That (assemblyFinder.AssemblyLoader, Is.TypeOf (typeof (FilteringAssemblyLoader)));
       Assert.That (((FilteringAssemblyLoader) assemblyFinder.AssemblyLoader).Filter, Is.TypeOf (typeof (LoadAllAssemblyLoaderFilter)));
-    }
-
-    private void RedefineFactoryStub (IConcreteTypeBuilder concreteTypeBuilderMock)
-    {
-      _concreteTypeBuilderFactoryStub.BackToRecord ();
-      _concreteTypeBuilderFactoryStub.Stub (stub => stub.CreateTypeBuilder (_assemblyOutputDirectoy)).Return (concreteTypeBuilderMock);
-      _concreteTypeBuilderFactoryStub.Replay ();
     }
 
     private void CreateEmptyFile (string path)

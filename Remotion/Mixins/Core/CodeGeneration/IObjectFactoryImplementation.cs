@@ -20,8 +20,7 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins.CodeGeneration
 {
-  [ConcreteImplementation ("Remotion.Mixins.CodeGeneration.ObjectFactoryImplementation, Remotion.Mixins, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    Lifetime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof (ObjectFactoryImplementation), Lifetime = LifetimeKind.Singleton)]
   public interface IObjectFactoryImplementation
   {
     object CreateInstance (bool allowNonPublicConstructors, Type targetOrConcreteType, ParamList constructorParameters, params object[] preparedMixins);

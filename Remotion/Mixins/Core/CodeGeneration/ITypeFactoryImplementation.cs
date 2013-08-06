@@ -19,8 +19,7 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins.CodeGeneration
 {
-  [ConcreteImplementation ("Remotion.Mixins.CodeGeneration.TypeFactoryImplementation, Remotion.Mixins, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    Lifetime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof (TypeFactoryImplementation), Lifetime = LifetimeKind.Singleton)]
   public interface ITypeFactoryImplementation
   {
     Type GetConcreteType (Type targetOrConcreteType);

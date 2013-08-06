@@ -35,7 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
-    [UseLegacyCodeGeneration]
     public void SerializeAndDeserialize ()
     {
       SampleBindableMixinDomainObject value = SampleBindableMixinDomainObject.NewObject ();
@@ -51,7 +50,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
-    [UseLegacyCodeGeneration]
     public void SerializeAndDeserialize_WithNewBindableObjectProvider ()
     {
       SampleBindableMixinDomainObject value = SampleBindableMixinDomainObject.NewObject ();

@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.TypePipe.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
@@ -51,14 +52,18 @@ namespace Remotion.Mixins.UnitTests.Core
       return GetGeneratedMixinTypeAndMetadata (requestingClass, mixinType);
     }
 
-    public static ConcreteMixinType GetGeneratedMixinTypeAndMetadata (ClassContext requestingClass, Type mixinType)
+    private static ConcreteMixinType GetGeneratedMixinTypeAndMetadata (ClassContext requestingClass, Type mixinType)
     {
       MixinDefinition mixinDefinition = TargetClassDefinitionFactory
           .CreateAndValidate (requestingClass)
           .GetMixinByConfiguredType (mixinType);
       Assert.That (mixinDefinition, Is.Not.Null);
 
-      return ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition.GetConcreteMixinTypeIdentifier ());
+      var mixinTypeIdentifier = mixinDefinition.GetConcreteMixinTypeIdentifier();
+
+      var pipeline = PipelineRegistryTestHelper.GloablRegistry.DefaultPipeline;
+      var generatedMixinType = pipeline.ReflectionService.GetAdditionalType (mixinTypeIdentifier);
+      return new AttributeBasedMetadataImporter().GetMetadataForMixinType (generatedMixinType);
     }
   }
 }

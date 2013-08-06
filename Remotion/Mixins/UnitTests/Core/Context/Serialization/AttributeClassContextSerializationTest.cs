@@ -17,10 +17,9 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.Mixins.Context;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins.Context.Serialization;
 using System.Linq;
-using Remotion.Mixins.UnitTests.Core.TestDomain;
 
 namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
 {
@@ -28,14 +27,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
   public class AttributeClassContextSerializationTest
   {
     private AttributeClassContextSerializer _serializer;
-    private AttributeClassContextDeserializer _deserializer;
     private AttributeClassContextDeserializer _invalidDeserializer;
 
     [SetUp]
     public void SetUp()
     {
       _serializer = new AttributeClassContextSerializer ();
-      _deserializer = new AttributeClassContextDeserializer (_serializer.Values);
       _invalidDeserializer = new AttributeClassContextDeserializer (new object[] { 1, 2, 3 });
     }
 
@@ -43,30 +40,43 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     public void AddClassType()
     {
       _serializer.AddClassType (typeof (DateTime));
-      Assert.That (_deserializer.GetClassType (), Is.EqualTo (typeof (DateTime)));
+
+      var deserializer = new AttributeClassContextDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetClassType (), Is.EqualTo (typeof (DateTime)));
     }
 
     [Test]
     public void AddMixins ()
     {
-      var mixinContext1 = MixinContextObjectMother.Create (mixinType: typeof (string));
+      var mixinContext1 = MixinContextObjectMother.Create (mixinType: typeof (string), origin: MixinContextOriginObjectMother.Create (assembly: GetType().Assembly));
       var mixinContext2 = MixinContextObjectMother.Create (mixinType: typeof (object));
       _serializer.AddMixins (new[] {mixinContext1, mixinContext2});
-      Assert.That (_deserializer.GetMixins().ToArray(), Is.EqualTo (new[] { mixinContext1, mixinContext2 }));
+
+      // Check that the chain of serializers correctly sets up the AttributeMixinContextOriginSerializer
+      var serializedMixinContexts = ((object[]) _serializer.Values[1]);
+      var serializedMixinContext1 = (object[]) serializedMixinContexts[1];
+      var serializedMixinOrigin = (object[]) serializedMixinContext1[4];
+      var serializedMixinOriginAssembly = serializedMixinOrigin[1];
+      Assert.That (serializedMixinOriginAssembly, Is.EqualTo (GetType ().Assembly.FullName));
+
+      var deserializer = new AttributeClassContextDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetMixins ().ToArray (), Is.EqualTo (new[] { mixinContext1, mixinContext2 }));
     }
 
     [Test]
     public void AddComposedInterfaces ()
     {
       _serializer.AddComposedInterfaces (new[] {typeof (int), typeof (string)});
-      Assert.That (_deserializer.GetComposedInterfaces(), Is.EqualTo (new[] {typeof (int), typeof (string)}));
+
+      var deserializer = new AttributeClassContextDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetComposedInterfaces (), Is.EqualTo (new[] { typeof (int), typeof (string) }));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Expected an array with 3 elements.\r\nParameter name: values")]
     public void Deserializer_InvalidArray()
     {
-      new AttributeClassContextDeserializer (new[] { "x" });
+      Dev.Null = new AttributeClassContextDeserializer (new[] { "x" });
     }
 
     [Test]

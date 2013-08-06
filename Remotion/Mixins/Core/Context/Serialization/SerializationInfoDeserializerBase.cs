@@ -22,6 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.Serialization
 {
+  // TODO 5370: Remove this class and its subclasses.
   /// <summary>
   /// Provides functionality for deserializing data serialized via <see cref="SerializationInfoSerializerBase"/>.
   /// </summary>

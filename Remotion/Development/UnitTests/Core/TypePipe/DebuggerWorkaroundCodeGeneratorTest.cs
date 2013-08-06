@@ -21,7 +21,6 @@ using Remotion.Development.TypePipe;
 using Remotion.Diagnostics;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
-using Remotion.TypePipe.Configuration;
 using Rhino.Mocks;
 
 namespace Remotion.Development.UnitTests.Core.TypePipe
@@ -39,12 +38,10 @@ namespace Remotion.Development.UnitTests.Core.TypePipe
     public void SetUp ()
     {
       _moduleBuilderFactoryMock = MockRepository.GenerateStrictMock<IModuleBuilderFactory>();
-      var configurationProviderStub = MockRepository.GenerateStub<IConfigurationProvider>();
       _debuggerInterfaceMock = MockRepository.GenerateStrictMock<IDebuggerInterface>();
       _maximumTypesPerAssembly = 2;
 
-      _generator = new DebuggerWorkaroundCodeGenerator (
-          _moduleBuilderFactoryMock, configurationProviderStub, _debuggerInterfaceMock, _maximumTypesPerAssembly);
+      _generator = new DebuggerWorkaroundCodeGenerator (_moduleBuilderFactoryMock, false, null, _debuggerInterfaceMock, _maximumTypesPerAssembly);
     }
 
     [Test]

@@ -22,11 +22,11 @@ using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
-using Remotion.Mixins.Utilities;
 using Remotion.Mixins.Validation;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -40,13 +40,9 @@ namespace Remotion.Mixins.MixerTools
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (Mixer));
 
-    public static Mixer Create (
-        string signedAssemblyName, 
-        string unsignedAssemblyName, 
-        string assemblyOutputDirectory, 
-        IConcreteMixedTypeNameProvider typeNameProvider)
+    public static Mixer Create (string assemblyName, string assemblyOutputDirectory)
     {
-      var builderFactory = new ConcreteTypeBuilderFactory (typeNameProvider, signedAssemblyName, unsignedAssemblyName);
+      var builderFactory = new MixerPipelineFactory (assemblyName);
 
       // Use a custom TypeDiscoveryService with the LoadAllAssemblyLoaderFilter so that mixed types within system assemblies are also considered.
       var assemblyLoader = new FilteringAssemblyLoader (new LoadAllAssemblyLoaderFilter ());
@@ -54,53 +50,54 @@ namespace Remotion.Mixins.MixerTools
       var assemblyFinder = new CachingAssemblyFinderDecorator (new AssemblyFinder (rootAssemblyFinder, assemblyLoader));
       var typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
 
-      var finder = new ClassContextFinder (typeDiscoveryService);
+      var finder = new MixedTypeFinder (typeDiscoveryService);
 
       return new Mixer (finder, builderFactory, assemblyOutputDirectory);
     }
 
-    public event EventHandler<ClassContextEventArgs> ClassContextBeingProcessed = delegate { };
+    public event EventHandler<TypeEventArgs> TypeBeingProcessed = delegate { };
     public event EventHandler<ValidationErrorEventArgs> ValidationErrorOccurred = delegate { };
     public event EventHandler<ErrorEventArgs> ErrorOccurred = delegate { };
 
-    private readonly List<Tuple<ClassContext, Exception>> _errors = new List<Tuple<ClassContext, Exception>> ();
-    private readonly Dictionary<Type, ClassContext> _processedContexts = new Dictionary<Type, ClassContext> ();
+    private readonly List<Tuple<Type, Exception>> _errors = new List<Tuple<Type, Exception>> ();
+    private readonly HashSet<Type> _processedTypes = new HashSet<Type>();
     private readonly Dictionary<Type, Type> _finishedTypes = new Dictionary<Type, Type> ();
-    private readonly List<string> _generatedFiles = new List<string>();
 
-    public Mixer (IClassContextFinder classContextFinder, IConcreteTypeBuilderFactory concreteTypeBuilderFactory, string assemblyOutputDirectory)
+    private string _generatedFile;
+
+    public Mixer (IMixedTypeFinder mixedTypeFinder, IMixerPipelineFactory mixerPipelineFactory, string assemblyOutputDirectory)
     {
-      ArgumentUtility.CheckNotNull ("classContextFinder", classContextFinder);
-      ArgumentUtility.CheckNotNull ("concreteTypeBuilderFactory", concreteTypeBuilderFactory);
+      ArgumentUtility.CheckNotNull ("mixedTypeFinder", mixedTypeFinder);
+      ArgumentUtility.CheckNotNull ("mixerPipelineFactory", mixerPipelineFactory);
       ArgumentUtility.CheckNotNull ("assemblyOutputDirectory", assemblyOutputDirectory);
 
-      ClassContextFinder = classContextFinder;
-      ConcreteTypeBuilderFactory = concreteTypeBuilderFactory;
+      MixedTypeFinder = mixedTypeFinder;
+      MixerPipelineFactory = mixerPipelineFactory;
       AssemblyOutputDirectory = assemblyOutputDirectory;
     }
 
-    public IClassContextFinder ClassContextFinder { get; private set; }
-    public IConcreteTypeBuilderFactory ConcreteTypeBuilderFactory { get; private set; }
+    public IMixedTypeFinder MixedTypeFinder { get; private set; }
+    public IMixerPipelineFactory MixerPipelineFactory { get; private set; }
     public string AssemblyOutputDirectory { get; private set; }
 
-    public ReadOnlyCollection<Tuple<ClassContext, Exception>> Errors
+    public ReadOnlyCollection<Tuple<Type, Exception>> Errors
     {
       get { return _errors.AsReadOnly(); }
     }
 
-    public Dictionary<Type, ClassContext> ProcessedContexts
+    public ReadOnlyCollectionDecorator<Type> ProcessedTypes
     {
-      get { return _processedContexts; }
+      get { return _processedTypes.AsReadOnly(); }
     }
 
-    public Dictionary<Type, Type> FinishedTypes
+    public ReadOnlyDictionary<Type, Type> FinishedTypes
     {
-      get { return _finishedTypes; }
+      get { return new ReadOnlyDictionary<Type, Type>(_finishedTypes); }
     }
 
-    public List<string> GeneratedFiles
+    public string GeneratedFile
     {
-      get { return _generatedFiles; }
+      get { return _generatedFile; }
     }
 
     public void PrepareOutputDirectory ()
@@ -111,8 +108,7 @@ namespace Remotion.Mixins.MixerTools
         Directory.CreateDirectory (AssemblyOutputDirectory);
       }
 
-      CleanupIfExists (ConcreteTypeBuilderFactory.GetSignedModulePath (AssemblyOutputDirectory));
-      CleanupIfExists (ConcreteTypeBuilderFactory.GetUnsignedModulePath (AssemblyOutputDirectory));
+      CleanupIfExists (MixerPipelineFactory.GetModulePath (AssemblyOutputDirectory));
     }
 
     // The MixinConfiguration is passed to Execute in order to be able to call PrepareOutputDirectory before analyzing the configuration (and potentially
@@ -124,62 +120,58 @@ namespace Remotion.Mixins.MixerTools
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to mix and save all types: {elapsed}."))
       {
         _errors.Clear();
-        _processedContexts.Clear();
+        _processedTypes.Clear();
         _finishedTypes.Clear();
-        _generatedFiles.Clear();
+        _generatedFile = null;
 
         s_log.InfoFormat ("The base directory is '{0}'.", AppDomain.CurrentDomain.BaseDirectory);
 
-        var builder = ConcreteTypeBuilderFactory.CreateTypeBuilder (AssemblyOutputDirectory);
+        var pipeline = MixerPipelineFactory.CreatePipeline (AssemblyOutputDirectory);
 
-        var classContexts = ClassContextFinder.FindClassContexts (configuration).ToArray ();
+        var mixedTypes = MixedTypeFinder.FindMixedTypes (configuration).ToArray ();
 
         s_log.Info ("Generating types...");
-        foreach (var classContext in classContexts)
-          Generate (classContext, builder);
+        using (configuration.EnterScope())
+        {
+          foreach (var mixedType in mixedTypes)
+            Generate (mixedType, pipeline);
+        }
 
         s_log.Info ("Saving assemblies...");
-        Save (builder);
+        Save (pipeline);
       }
 
       s_log.InfoFormat ("Successfully generated concrete types for {0} target classes.", _finishedTypes.Count);
     }
 
-    private void Generate (ClassContext classContext, IConcreteTypeBuilder concreteTypeBuilder)
+    private void Generate (Type mixedType, IPipeline pipeline)
     {
-      _processedContexts.Add (classContext.Type, classContext);
+      _processedTypes.Add (mixedType);
 
       try
       {
-        ClassContextBeingProcessed (this, new ClassContextEventArgs (classContext));
+        TypeBeingProcessed (this, new TypeEventArgs (mixedType));
 
-        Type concreteType = concreteTypeBuilder.GetConcreteType (classContext);
-        _finishedTypes.Add (classContext.Type, concreteType);
+        Type concreteType = pipeline.ReflectionService.GetAssembledType (mixedType);
+        _finishedTypes.Add (mixedType, concreteType);
       }
       catch (ValidationException validationException)
       {
-        _errors.Add (new Tuple<ClassContext, Exception> (classContext, validationException));
+        _errors.Add (new Tuple<Type, Exception> (mixedType, validationException));
         ValidationErrorOccurred (this, new ValidationErrorEventArgs (validationException));
       }
       catch (Exception ex)
       {
-        _errors.Add (new Tuple<ClassContext, Exception> (classContext, ex));
+        _errors.Add (new Tuple<Type, Exception> (mixedType, ex));
         ErrorOccurred (this, new ErrorEventArgs (ex));
       }
     }
 
-    private void Save (IConcreteTypeBuilder builder)
+    private void Save (IPipeline pipeline)
     {
-      var paths = builder.SaveGeneratedConcreteTypes ();
-      _generatedFiles.AddRange (paths);
+      _generatedFile = pipeline.CodeManager.FlushCodeToDisk();
 
-      if (paths.Length == 0)
-        s_log.Info ("No assemblies generated.");
-      else
-      {
-        foreach (string path in paths)
-          s_log.InfoFormat ("Generated assembly file {0}.", path);
-      }
+      s_log.InfoFormat ("Generated assembly file {0}.", _generatedFile);
     }
 
     private void CleanupIfExists (string path)

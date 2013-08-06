@@ -286,7 +286,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [UseLegacyCodeGeneration]
     public void Serialization ()
     {
       //TODO 5370: Remove

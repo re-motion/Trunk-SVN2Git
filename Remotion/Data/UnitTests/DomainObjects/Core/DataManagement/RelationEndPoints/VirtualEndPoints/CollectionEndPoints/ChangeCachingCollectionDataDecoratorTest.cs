@@ -678,7 +678,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [UseLegacyCodeGeneration]
     public void Serializable ()
     {
       //TODO 5370: Remove

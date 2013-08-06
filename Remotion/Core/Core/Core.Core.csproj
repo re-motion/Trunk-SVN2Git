@@ -157,6 +157,7 @@
     <Compile Include="Reflection\MemberSignatures\MemberNameAndSignatureEqualityComparer.cs" />
     <Compile Include="Reflection\MemberSignatures\MemberSignatureProvider.cs" />
     <Compile Include="Reflection\MemberSignatures\MethodSignature.cs" />
+    <Compile Include="Reflection\MemberSignatures\NestedTypeSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\PropertySignature.cs" />
     <Compile Include="SafeContextSingleton.cs" />
     <Compile Include="Design\IDesignModeHelper.cs" />

@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.TypePipe.MutableReflection.Implementation;
 using Remotion.Utilities;

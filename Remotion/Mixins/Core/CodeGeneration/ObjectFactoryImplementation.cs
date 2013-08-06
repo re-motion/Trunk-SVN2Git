@@ -17,19 +17,29 @@
 using System;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration
 {
   public class ObjectFactoryImplementation : IObjectFactoryImplementation
   {
+    private readonly IPipelineRegistry _pipelineRegistry;
+
+    public ObjectFactoryImplementation (IPipelineRegistry pipelineRegistry)
+    {
+      ArgumentUtility.CheckNotNull ("pipelineRegistry", pipelineRegistry);
+      _pipelineRegistry = pipelineRegistry;
+    }
+
     public object CreateInstance (
-        bool allowNonPublicConstructors, 
-        Type targetOrConcreteType, 
-        ParamList constructorParameters, 
+        bool allowNonPublicConstructors,
+        Type targetOrConcreteType,
+        ParamList constructorParameters,
         params object[] preparedMixins)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
+      ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
       ArgumentUtility.CheckNotNull ("preparedMixins", preparedMixins);
 
       if (targetOrConcreteType.IsInterface)
@@ -39,22 +49,25 @@ namespace Remotion.Mixins.CodeGeneration
       }
 
       var classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
-
-      IConstructorLookupInfo constructorLookupInfo;
-      if (classContext == null)
+      if (classContext == null && preparedMixins.Length > 0)
       {
-        if (preparedMixins.Length > 0)
           throw new ArgumentException (string.Format ("There is no mixin configuration for type {0}, so no mixin instances must be specified.",
               targetOrConcreteType.FullName), "preparedMixins");
-
-        constructorLookupInfo = new MixedTypeConstructorLookupInfo (targetOrConcreteType, targetOrConcreteType, allowNonPublicConstructors);
       }
-      else
-        constructorLookupInfo = ConcreteTypeBuilder.Current.GetConstructorLookupInfo (classContext, allowNonPublicConstructors);
 
+      if (classContext != null && classContext.Type != targetOrConcreteType)
+      {
+        // The ClassContext doesn't match the requested type, so it must already be a concrete type. Just instantiate it.
+        Assertion.DebugAssert (MixinTypeUtility.IsGeneratedConcreteMixedType (targetOrConcreteType));
+
+        var reflectionService = _pipelineRegistry.DefaultPipeline.ReflectionService;
+        return reflectionService.InstantiateAssembledType (targetOrConcreteType, constructorParameters, allowNonPublicConstructors);
+      }
+
+      // TODO 5370: This scope _must_ also be around the if block above. Add a test and fix.
       using (new MixedObjectInstantiationScope (preparedMixins))
       {
-        return constructorParameters.InvokeConstructor (constructorLookupInfo);
+        return _pipelineRegistry.DefaultPipeline.Create (targetOrConcreteType, constructorParameters, allowNonPublicConstructors);
       }
     }
   }

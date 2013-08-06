@@ -44,7 +44,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
     public void ApplicationAssemblyMatchExpression ()
     {
       ApplicationAssemblyLoaderFilter filter = ApplicationAssemblyLoaderFilter.Instance;
-      Assert.That (filter.SystemAssemblyMatchExpression, Is.EqualTo (@"^((mscorlib)|(System)|(System\..*)|(Microsoft\..*)|(Remotion\..*\.Generated\..*))$"));
+      Assert.That (filter.SystemAssemblyMatchExpression, Is.EqualTo (@"^((mscorlib)|(System)|(System\..*)|(Microsoft\..*)|(Remotion\..*\.Generated\..*)|(TypePipe_.*Generated.*))$"));
     }
 
     [Test]

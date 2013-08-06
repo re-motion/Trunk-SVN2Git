@@ -27,9 +27,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   [ConcreteImplementation (typeof (TypeDefinitionProvider))]
   public interface ITypeDefinitionProvider
   {
-    // TODO 5370: Remove when re-mix is integrated.
-    Type GetPublicDomainObjectType (Type concreteType);
-
     ClassDefinition GetTypeDefinition (Type domainObjectType);
   }
 }

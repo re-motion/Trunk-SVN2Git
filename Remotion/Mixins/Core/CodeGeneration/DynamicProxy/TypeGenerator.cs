@@ -22,6 +22,7 @@ using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration;
+using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
@@ -79,8 +80,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       var implementedInterfaceFinder = new ImplementedInterfaceFinder (
           _configuration.ImplementedInterfaces, 
           _configuration.ReceivedInterfaces, 
-          _configuration.RequiredTargetCallTypes, 
-          concreteMixinTypes.Where (t => t != null));
+          _configuration.RequiredTargetCallTypes,
+          concreteMixinTypes.Where (t => t != null).Select (t => new DerivedMixinInfo (t)).Cast<IMixinInfo>());
       
       var interfacesToImplement = implementedInterfaceFinder.GetInterfacesToImplement ();
 

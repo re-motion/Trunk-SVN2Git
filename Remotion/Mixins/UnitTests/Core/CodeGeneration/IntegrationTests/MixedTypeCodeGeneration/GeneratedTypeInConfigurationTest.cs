@@ -18,38 +18,44 @@ using System;
 using NUnit.Framework;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
-using Remotion.Reflection.CodeGeneration;
+using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {
   [TestFixture]
   public class GeneratedTypeInConfigurationTest : CodeGenerationBaseTest
   {
-    [Test]
-    public void GeneratedMixinTypeWorks()
-    {
-      var moduleManager = ConcreteTypeBuilderTestHelper.GetCurrentModuleManager ();
-      var typeEmitter = new CustomClassEmitter (moduleManager.Scope, "GeneratedTypeInConfigurationTest.GeneratedMixinTypeWorks", typeof (object));
-      Type generatedType = typeEmitter.BuildType();
+    private Type _generatedType;
 
-      using (MixinConfiguration.BuildFromActive().ForClass<NullTarget>().Clear().AddMixins (generatedType).EnterScope())
+    [TestFixtureSetUp]
+    public void TestFixtureSetUp ()
+    {
+      var generator = new AdHocCodeGenerator("MixedTypeCodeGeneration.GeneratedTypeInConfigurationTest");
+      var typeBuilder = generator.CreateType ("GeneratedType");
+      generator.AddCustomAttribute (typeof (NonApplicationAssemblyAttribute));
+      _generatedType = typeBuilder.CreateType();
+      
+      var generatedAssemblyPath = generator.Save();
+      AddSavedAssembly (generatedAssemblyPath);
+    }
+
+    [Test]
+    public void GeneratedMixinTypeWorks ()
+    {
+      using (MixinConfiguration.BuildNew().ForClass<NullTarget>().Clear().AddMixins(_generatedType).EnterScope())
       {
-        object instance = ObjectFactory.Create (typeof (NullTarget), ParamList.Empty);
-        Assert.That (Mixin.Get (generatedType, instance), Is.Not.Null);
+        object instance = ObjectFactory.Create(typeof(NullTarget), ParamList.Empty);
+        Assert.That(Mixin.Get(_generatedType, instance), Is.Not.Null);
       }
     }
 
     [Test]
-    public void GeneratedTargetTypeWorks()
+    public void GeneratedTargetTypeWorks ()
     {
-      var moduleManager = ConcreteTypeBuilderTestHelper.GetCurrentModuleManager ();
-      var typeEmitter = new CustomClassEmitter (moduleManager.Scope, "GeneratedTypeInConfigurationTest.GeneratedTargetTypeWorks", typeof (object));
-      Type generatedType = typeEmitter.BuildType();
-
-      using (MixinConfiguration.BuildFromActive().ForClass (generatedType).Clear().AddMixins (typeof (NullMixin)).EnterScope())
+      using (MixinConfiguration.BuildNew().ForClass(_generatedType).Clear().AddMixins(typeof(NullMixin)).EnterScope())
       {
-        object instance = ObjectFactory.Create (generatedType, ParamList.Empty);
-        Assert.That (Mixin.Get (typeof (NullMixin), instance), Is.Not.Null);
+        object instance = ObjectFactory.Create(_generatedType, ParamList.Empty);
+        Assert.That(Mixin.Get(typeof(NullMixin), instance), Is.Not.Null);
       }
     }
   }

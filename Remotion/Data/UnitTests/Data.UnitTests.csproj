@@ -155,6 +155,10 @@
       <Project>{2177143e-345f-4faa-9958-1ae2b5eed242}</Project>
       <Name>Development.RhinoMocks</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Development\TypePipe\Development.TypePipe.csproj">
+      <Project>{f6faf727-9405-4bcc-9153-803f73853e67}</Project>
+      <Name>Development.TypePipe</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Development\Web\Development.Web.csproj">
       <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
       <Name>Development.Web</Name>
@@ -223,7 +227,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectInititalizationContextScopeTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectReferenceInitializationContextTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataPendingRegistrationCollectorTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\DomainObjectParticipantCacheKeyProviderTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectAssociatedTransactionHierarchyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\EagerFetching\EagerFetchingWithInvalidMandatoryRelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Loading\CanceledLoadOperationTest.cs" />
@@ -292,7 +295,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\InterceptedPropertyCollectorAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TypePipeBasedDomainObjectCreatorTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\WrappingAccessorInterceptorTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\Interception\DefaultServiceLocatorConfigurationTest.cs" />
     <Compile Include="DomainObjects\ObjectIDExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\DataManagementCommandDecoratorBaseTest.cs" />
@@ -316,9 +318,7 @@
     <Compile Include="DomainObjects\Core\Queries\QueryObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryResultObjectMother.cs" />
     <Compile Include="DomainObjects\Database\DatabaseConfiguration.cs" />
-    <Compile Include="DomainObjects\DomainObjectCreatorSwitch.cs" />
     <Compile Include="DomainObjects\TestDomain\OrderExtensions.cs" />
-    <Compile Include="DomainObjects\UseLegacyCodeGenerationAttribute.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleExtensionsTest.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleTest.cs" />
     <Compile Include="DomainObjects\Web\WxeParameterIntegrationTest.cs" />
@@ -341,7 +341,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerServiceTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTestHelper.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\Interception\NonInterceptableTypeExceptionTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\NonInterceptableTypeExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\InstantiableClassWithMixinWithStorageClassNoneAutoProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\NonInstantiableClassWithMixinWithPersistentAutoProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NotFoundObjectsClientTransactionListenerTest.cs" />
@@ -1255,7 +1255,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectTransactionContextIndexerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectTransactionContextTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectCheckUtilityTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\InterceptedDomainObjectCreatorTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectIDStringSerialization\StringObjectIDValueParserTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectIDStringSerialization\GuidObjectIDValueParserTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectIDStringSerialization\Int32ObjectIDValueParserTest.cs" />
@@ -1265,8 +1264,6 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\ConcurrencyViolationTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PropertyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadDataTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\Interception\DomainObjectConstructorLookupInfoTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\Interception\SetUpFixture.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\SerializableClass.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\SerializableClassImplementingISerializable.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\SerializableClassImplementingISerializableNotCallingBaseCtor.cs" />
@@ -1419,10 +1416,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\DOWithConstructors.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\DOWithVirtualProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\NonSerializableDO.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\Interception\SerializationHelperTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\Throws.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\Interception\TypeGeneratorTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\Interception\InterceptedDomainObjectTypeFactoryTest.cs" />
     <Compile Include="DomainObjects\Factories\BaseConfiguration.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\BehavioralMixinTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\DomainObjectMixinBaseClassTest.cs" />

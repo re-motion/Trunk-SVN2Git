@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
@@ -28,6 +27,8 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection.TypeDiscovery;
 using System.Linq;
+using Remotion.TypePipe;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -44,6 +45,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void CreateDomainObjectCreator ()
+    {
+      var defaultPipeline = MockRepository.GenerateStub<IPipeline> ();
+
+      var registryStub = MockRepository.GenerateStub<IPipelineRegistry> ();
+      registryStub.Stub (stub => stub.DefaultPipeline).Return (defaultPipeline);
+
+      using (new ServiceLocatorScope (typeof (IPipelineRegistry), () => registryStub))
+      {
+        var creator = MappingReflector.CreateDomainObjectCreator();
+        Assert.That (creator.Pipeline, Is.SameAs (defaultPipeline));
+      }
+    }
+
+    [Test]
     public void Initialization_DefaultTypeDiscoveryService ()
     {
       var reflector = new MappingReflector ();
@@ -52,21 +68,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [Ignore ("TODO 5370")]
-    public void Initialization_MappingObjectFactory_InstanceCreator_ResolvedViaServiceLocator ()
+    public void Initialization_MappingObjectFactory_InstanceCreator ()
     {
       var defaultCreator = new MappingReflector().MappingObjectFactory.CreateClassDefinition (typeof (Order), null).InstanceCreator;
       Assert.That (defaultCreator, Is.TypeOf<TypePipeBasedDomainObjectCreator>());
-
-      var otherCreator = new MappingReflector ().MappingObjectFactory.CreateClassDefinition (typeof (Order), null).InstanceCreator;
-      Assert.That (otherCreator, Is.SameAs (defaultCreator), "Should be singleton.");
-
-      using (new ServiceLocatorScope (typeof (IDomainObjectCreator), typeof (ThrowingDomainObjectCreator)))
-      {
-        var configuredCreator = new MappingReflector ().MappingObjectFactory.CreateClassDefinition (typeof (Order), null).InstanceCreator;
-        Assert.That (configuredCreator, Is.TypeOf<ThrowingDomainObjectCreator>());
-      }
-    }
+   }
 
     [Test]
     public void GetResolveTypes ()

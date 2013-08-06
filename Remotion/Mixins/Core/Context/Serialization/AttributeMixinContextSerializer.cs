@@ -15,53 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.Serialization
 {
   /// <summary>
   /// Serializes a <see cref="MixinContext"/> into an array suitable for use as a custom attribute parameter.
   /// </summary>
-  public class AttributeMixinContextSerializer : IMixinContextSerializer
+  public class AttributeMixinContextSerializer : ArrayMixinContextSerializer
   {
-    private readonly object[] _values = new object[5];
-
-    public object[] Values
+    protected override ArrayMixinContextOriginSerializer CreateMixinContextOriginSerializer ()
     {
-      get { return _values; }
-    }
-
-    public void AddMixinType (Type mixinType)
-    {
-      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
-      Values[0] = mixinType;
-    }
-
-    public void AddMixinKind(MixinKind mixinKind)
-    {
-      Values[1] = mixinKind;
-    }
-
-    public void AddIntroducedMemberVisibility(MemberVisibility introducedMemberVisibility)
-    {
-      Values[2] = introducedMemberVisibility;
-    }
-
-    public void AddExplicitDependencies(IEnumerable<Type> explicitDependencies)
-    {
-      ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
-      Values[3] = explicitDependencies.ToArray ();
-    }
-
-    public void AddOrigin (MixinContextOrigin origin)
-    {
-      ArgumentUtility.CheckNotNull ("origin", origin);
-
-      var originSerializer = new AttributeMixinContextOriginSerializer();
-      origin.Serialize (originSerializer);
-      Values[4] = originSerializer.Values;
+      return new AttributeMixinContextOriginSerializer();
     }
   }
 }

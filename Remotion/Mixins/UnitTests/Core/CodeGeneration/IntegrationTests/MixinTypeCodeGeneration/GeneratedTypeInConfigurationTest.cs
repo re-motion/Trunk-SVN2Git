@@ -17,44 +17,57 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration.TestDomain;
 using Remotion.Reflection;
-using Remotion.Reflection.CodeGeneration;
+using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration
 {
   [TestFixture]
   public class GeneratedTypeInConfigurationTest : CodeGenerationBaseTest
   {
+    private Type _generatedMixinType;
+    private Type _generatedTargetTypeWithMethodOverride;
+
+    [TestFixtureSetUp]
+    public void TestFixtureSetUp ()
+    {
+      var generator = new AdHocCodeGenerator ("MixinTypeCodeGeneration.GeneratedTypeInConfigurationTest");
+      generator.AddCustomAttribute(typeof(NonApplicationAssemblyAttribute));
+
+      var generatedMixinTypeBuilder = generator.CreateType("GeneratedMixinType", typeof (Mixin<object>));
+      _generatedMixinType = generatedMixinTypeBuilder.CreateType();
+
+      var generatedTargetTypeWithMethodOverrideBuilder = generator.CreateType ("GeneratedTargetType");
+      var methodBuilder = generator.CreateMethod (
+          generatedTargetTypeWithMethodOverrideBuilder, "ToString", MethodAttributes.Public, typeof (string), Type.EmptyTypes);
+      var gen = methodBuilder.GetILGenerator();
+      gen.Emit (OpCodes.Ldstr, "Generated _and_ overridden");
+      gen.Emit (OpCodes.Ret);
+      methodBuilder.SetCustomAttribute (generator.CreateCustomAttributeBuilder (typeof (OverrideMixinAttribute)));
+      _generatedTargetTypeWithMethodOverride = generatedTargetTypeWithMethodOverrideBuilder.CreateType();
+
+      var generatedAssemblyPath = generator.Save();
+      AddSavedAssembly(generatedAssemblyPath);
+    }
+
     [Test]
     public void GeneratedMixinTypeWithOverriddenMethodWorks ()
     {
-      var moduleScope = ConcreteTypeBuilderTestHelper.GetCurrentModuleManager().Scope;
-      var typeEmitter = new CustomClassEmitter (moduleScope, "GeneratedMixinTypeWithOverriddenMethodWorks", typeof (Mixin<object>));
-      Type generatedType = typeEmitter.BuildType ();
-
-      using (MixinConfiguration.BuildFromActive().ForClass<ClassOverridingMixinMethod> ().Clear().AddMixins (generatedType).EnterScope())
+      using (MixinConfiguration.BuildNew().ForClass<ClassOverridingMixinMethod> ().Clear().AddMixins (_generatedMixinType).EnterScope())
       {
         object instance = ObjectFactory.Create (typeof (ClassOverridingMixinMethod), ParamList.Empty);
-        Assert.That (Mixin.Get (generatedType, instance).ToString (), Is.EqualTo ("Overridden!"));
+        Assert.That (Mixin.Get (_generatedMixinType, instance).ToString (), Is.EqualTo ("Overridden!"));
       }
     }
 
     [Test]
     public void GeneratedTargetTypeOverridingMixinMethodWorks ()
     {
-      var typeEmitter = new CustomClassEmitter (ConcreteTypeBuilderTestHelper.GetCurrentModuleManager ().Scope,
-          "GeneratedTargetTypeOverridingMixinMethodWorks", typeof (object));
-      typeEmitter.CreateMethod ("ToString", MethodAttributes.Public, typeof (string), new Type[0])
-          .ImplementByReturning (new ConstReference ("Generated _and_ overridden").ToExpression ())
-          .AddCustomAttribute (new CustomAttributeBuilder (typeof (OverrideMixinAttribute).GetConstructor (Type.EmptyTypes), new object[0]));
-      Type generatedType = typeEmitter.BuildType ();
-
-      using (MixinConfiguration.BuildFromActive().ForClass (generatedType).Clear().AddMixins (typeof (SimpleMixin)).EnterScope())
+      using (MixinConfiguration.BuildNew().ForClass(_generatedTargetTypeWithMethodOverride).Clear().AddMixins(typeof(SimpleMixin)).EnterScope())
       {
-        object instance = ObjectFactory.Create (generatedType, ParamList.Empty);
+        object instance = ObjectFactory.Create(_generatedTargetTypeWithMethodOverride, ParamList.Empty);
         Assert.That (Mixin.Get<SimpleMixin> (instance).ToString (), Is.EqualTo ("Generated _and_ overridden"));
       }
     }

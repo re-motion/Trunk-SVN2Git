@@ -65,7 +65,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = @"Invalid mixin instances supplied\. Expected the following mixin types "
-        + @"\(in this order\)\: \('Remotion\.Mixins\.UnitTests\.Core\.TestDomain\.MixinWithVirtualMethod_GeneratedMixin_.*'\)\. The given types "
+        + @"\(in this order\)\: \('Remotion\.Mixins\.UnitTests\.Core\.TestDomain\.MixinWithVirtualMethod_Proxy_.*'\)\. The given types "
         + @"were\: \('Remotion\.Mixins\.UnitTests\.Core\.TestDomain\.MixinWithVirtualMethod'\)\.", 
         MatchType = MessageMatch.Regex)]
     public void CheckMixinArray_NonMatchingMixins_NeedDerived ()

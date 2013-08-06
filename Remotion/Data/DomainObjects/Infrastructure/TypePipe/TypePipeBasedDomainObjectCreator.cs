@@ -17,7 +17,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
@@ -53,6 +52,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       _pipeline = pipeline;
     }
 
+    public IPipeline Pipeline
+    {
+      get { return _pipeline; }
+    }
+
     public DomainObject CreateObjectReference (IObjectInitializationContext objectInitializationContext, ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("objectInitializationContext", objectInitializationContext);
@@ -62,10 +66,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       CheckDomainTypeAndClassDefinition (objectID.ClassDefinition.ClassType);
       objectID.ClassDefinition.ValidateCurrentMixinConfiguration();
 
-      var mixedType = DomainObjectMixinCodeGenerationBridge.GetConcreteType (objectID.ClassDefinition.ClassType);
-      var concreteType = _pipeline.ReflectionService.GetAssembledType (mixedType);
+      var concreteType = _pipeline.ReflectionService.GetAssembledType (objectID.ClassDefinition.ClassType);
       var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
-      _pipeline.PrepareExternalUninitializedObject (instance);
+      // TODO 5370:
+      _pipeline.PrepareExternalUninitializedObject (instance, 0);
 
       // These calls are normally performed by DomainObject's ctor
       instance.Initialize (objectID, objectInitializationContext.RootTransaction);
@@ -90,12 +94,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (domainObjectType);
       classDefinition.ValidateCurrentMixinConfiguration();
 
-      var mixedType = DomainObjectMixinCodeGenerationBridge.GetConcreteType (domainObjectType);
       using (clientTransaction.EnterNonDiscardingScope ())
       {
         using (new ObjectInititalizationContextScope (objectInitializationContext))
         {
-          var instance = (DomainObject) _pipeline.CreateObject (mixedType, constructorParameters, allowNonPublicConstructor: true);
+          var instance = (DomainObject) _pipeline.Create (domainObjectType, constructorParameters, allowNonPublicConstructor: true);
           DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
           return instance;
         }

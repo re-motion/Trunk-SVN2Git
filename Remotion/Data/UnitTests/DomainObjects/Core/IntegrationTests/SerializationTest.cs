@@ -26,7 +26,6 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
   [TestFixture]
-  [UseLegacyCodeGeneration]
   public class SerializationTest : SerializationBaseTest
   {
     public override void TestFixtureSetUp ()

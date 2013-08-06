@@ -15,12 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Castle.DynamicProxy;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.UnitTests.Core.CodeGeneration;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
 
@@ -29,20 +26,6 @@ namespace Remotion.Mixins.UnitTests.Core
   [TestFixture]
   public class MixinTargetMockUtilityTest
   {
-    [SetUp]
-    public void SetUp ()
-    {
-      ConcreteTypeBuilder.SetCurrent (null);
-      // ensure compatibility with Rhino.Mocks
-      ConcreteTypeBuilderTestHelper.GetModuleManager (ConcreteTypeBuilder.Current).Scope = new ModuleScope (false);
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      ConcreteTypeBuilder.SetCurrent (null);
-    }
-
     [Test]
     public void Mock_ThisBaseConfig ()
     {
@@ -88,8 +71,8 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot create an instance of "
-        + "'Remotion.Mixins.UnitTests.Core.TestDomain.MixinWithAbstractMembers' because it is an abstract type.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The type 'Remotion.Mixins.UnitTests.Core.TestDomain.MixinWithAbstractMembers' cannot be constructed because the assembled type is abstract.")]
     public void CreateMixinWithMockedTarget_AbstractMixin ()
     {
       var thisMock = new ClassOverridingMixinMembers();

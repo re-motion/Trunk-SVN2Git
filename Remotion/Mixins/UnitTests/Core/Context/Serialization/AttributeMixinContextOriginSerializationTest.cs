@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins.Context.Serialization;
 
 namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
@@ -25,14 +26,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
   public class AttributeMixinContextOriginSerializationTest
   {
     private AttributeMixinContextOriginSerializer _serializer;
-    private AttributeMixinContextOriginDeserializer _deserializer;
     private AttributeMixinContextOriginDeserializer _invalidDeserializer;
 
     [SetUp]
     public void SetUp ()
     {
       _serializer = new AttributeMixinContextOriginSerializer ();
-      _deserializer = new AttributeMixinContextOriginDeserializer (_serializer.Values);
       _invalidDeserializer = new AttributeMixinContextOriginDeserializer (new object[] { 1, 2, 3 });
     }
 
@@ -40,7 +39,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     public void AddKind ()
     {
       _serializer.AddKind ("some kind");
-      Assert.That (_deserializer.GetKind(), Is.EqualTo ("some kind"));
+
+      var deserializer = new AttributeMixinContextOriginDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetKind (), Is.EqualTo ("some kind"));
     }
 
     [Test]
@@ -48,21 +49,25 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     {
       var someAssembly = GetType().Assembly;
       _serializer.AddAssembly (someAssembly);
-      Assert.That (_deserializer.GetAssembly (), Is.EqualTo (someAssembly));
+
+      var deserializer = new AttributeMixinContextOriginDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetAssembly (), Is.EqualTo (someAssembly));
     }
 
     [Test]
     public void GetLocation ()
     {
       _serializer.AddLocation ("some location");
-      Assert.That (_deserializer.GetLocation(), Is.EqualTo ("some location"));
+
+      var deserializer = new AttributeMixinContextOriginDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetLocation (), Is.EqualTo ("some location"));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Expected an array with 3 elements.\r\nParameter name: values")]
     public void Deserializer_InvalidArray ()
     {
-      new AttributeMixinContextOriginDeserializer (new[] { "x" });
+      Dev.Null = new AttributeMixinContextOriginDeserializer (new[] { "x" });
     }
 
     [Test]

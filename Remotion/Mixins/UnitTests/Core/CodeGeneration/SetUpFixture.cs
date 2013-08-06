@@ -15,12 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.IO;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.CodeGeneration;
+using Remotion.Development.TypePipe;
+using Remotion.Mixins.CodeGeneration.TypePipe;
+using Remotion.ServiceLocation;
 using Remotion.Text;
+using Remotion.TypePipe;
+using Remotion.TypePipe.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
@@ -28,10 +29,27 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   [SetUpFixture]
   public class SetUpFixture
   {
-    private static ConcreteTypeBuilder s_savedTypeBuilder;
+    private static readonly IPipelineRegistry s_pipelineRegistry = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>();
 
-    private static bool _skipDeletion = false;
-    private ResetCheckingModuleManager _moduleManager;
+    private static IPipeline s_pipeline;
+    private static bool s_skipDeletion;
+
+    private static AssemblyTrackingCodeManager s_assemblyTrackingCodeManager;
+
+    public static IPipelineRegistry PipelineRegistry
+    {
+      get { return s_pipelineRegistry; }
+    }
+
+    public static IPipeline Pipeline
+    {
+      get
+      {
+        if (s_pipeline == null)
+          throw new InvalidOperationException ("SetUp must be executed first.");
+        return s_pipeline;
+      }
+    }
 
     /// <summary>
     /// Signals that the <see cref="SetUpFixture"/> should not delete the files it generates. Call this ad-hoc in a test to keep the files and inspect
@@ -39,73 +57,55 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     /// </summary>
     public static void SkipDeletion ()
     {
-      _skipDeletion = true;
+      s_skipDeletion = true;
+    }
+
+    /// <summary>
+    /// Adds an assembly to be verified and deleted at the end of the test runs.
+    /// </summary>
+    public static void AddSavedAssembly (string assemblyPath)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("assemblyPath", assemblyPath);
+      s_assemblyTrackingCodeManager.AddSavedAssembly (assemblyPath);
     }
 
     [SetUp]
-    public void SetUp()
+    public void SetUp ()
     {
-      ResetGeneratedAssemblies ();
-      _moduleManager = new ResetCheckingModuleManager (false);
-      s_savedTypeBuilder = new ConcreteTypeBuilder (_moduleManager, new GuidNameProvider(), new GuidNameProvider());
+      var assemblyTrackingPipelineFactory = new AssemblyTrackingPipelineFactory();
+      var settings = PipelineSettings.New().SetEnableSerializationWithoutAssemblySaving (true).Build();
+      var participants = new IParticipant[] { new MixinParticipant() };
+
+      s_pipeline = assemblyTrackingPipelineFactory.CreatePipeline ("re-mix-tests", settings, participants);
+      s_assemblyTrackingCodeManager = assemblyTrackingPipelineFactory.AssemblyTrackingCodeManager;
     }
 
     [TearDown]
     public void TearDown()
     {
 #if !NO_PEVERIFY
-      string[] paths;
       try
       {
-        _moduleManager.AllowReset = true;
-        paths = s_savedTypeBuilder.SaveGeneratedConcreteTypes ();
+        s_assemblyTrackingCodeManager.FlushCodeToDisk();
       }
       catch (Exception ex)
       {
         Assert.Fail ("Error when saving assemblies: {0}", ex);
-        throw;
       }
 
-      foreach (string path in paths)
-        PEVerifier.CreateDefault ().VerifyPEFile (path);
-
+      s_assemblyTrackingCodeManager.PeVerifySavedAssemblies();
 #endif
 
-      if (!_skipDeletion)
-        ResetGeneratedAssemblies (); // delete assemblies if everything went fine
-      else
-        Console.WriteLine ("Assemblies saved to: " + Environment.NewLine + SeparatedStringBuilder.Build (Environment.NewLine, paths));
-      
-      s_savedTypeBuilder = null;
-    }
-
-    public static ConcreteTypeBuilder SavedTypeBuilder
-    {
-      get
+      if (!s_skipDeletion)
       {
-        if (s_savedTypeBuilder == null)
-          throw new InvalidOperationException ("SetUp must be executed first.");
-        return s_savedTypeBuilder;
+        s_assemblyTrackingCodeManager.DeleteSavedAssemblies(); // Delete assemblies if everything went fine.
       }
-    }
-
-    private void ResetGeneratedAssemblies ()
-    {
-      string weakModulePath = ModuleManager.DefaultWeakModulePath.Replace ("{counter}", "*");
-      string strongModulePath = ModuleManager.DefaultStrongModulePath.Replace ("{counter}", "*");
-      string weakPdbPath = Path.GetFileNameWithoutExtension (weakModulePath) + ".pdb";
-      string strongPdbPath = Path.GetFileNameWithoutExtension (strongModulePath) + ".pdb";
-
-      DeleteFiles (weakModulePath);
-      DeleteFiles (strongModulePath);
-      DeleteFiles (weakPdbPath);
-      DeleteFiles (strongPdbPath);
-    }
-
-    private void DeleteFiles (string searchPattern)
-    {
-      foreach (string file in Directory.GetFiles (Environment.CurrentDirectory, searchPattern))
-        FileUtility.DeleteAndWaitForCompletion (file);
+      else
+      {
+        Console.WriteLine (
+            "Assemblies saved to: " + Environment.NewLine
+            + SeparatedStringBuilder.Build (Environment.NewLine, s_assemblyTrackingCodeManager.SavedAssemblies));
+      }
     }
   }
 }

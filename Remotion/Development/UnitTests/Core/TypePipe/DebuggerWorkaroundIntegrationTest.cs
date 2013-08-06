@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.TypePipe;
+using Remotion.Development.TypePipe.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics;
 using Remotion.TypePipe;
@@ -45,8 +46,8 @@ namespace Remotion.Development.UnitTests.Core.TypePipe
           new DebuggerWorkaroundPipelineFactory { DebuggerInterface = _debuggerStub, MaximumTypesPerAssembly = _maximumTypesPerAssembly };
       PrivateInvoke.SetNonPublicStaticField (typeof (PipelineFactory), "s_instance", debuggerWorkaroundPipelineFactory);
 
-      var dummyParticipant = MockRepository.GenerateStub<IParticipant>();
-      _pipeline = PipelineFactory.Create ("DebuggerWorkaroundIntegrationTest", dummyParticipant);
+      var modifyingParticipant = new ModifyingParticipant();
+      _pipeline = PipelineFactory.Create ("DebuggerWorkaroundIntegrationTest", modifyingParticipant);
     }
 
     [TearDown]

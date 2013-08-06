@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.DomainImplementation.Cloning;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
 using Rhino.Mocks;
@@ -99,7 +100,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
     {
       Order clone = _cloner.CreateCloneHull (_order1);
       Assert.That (clone.CtorCalled, Is.False);
-      Assert.That (InterceptedDomainObjectCreator.Instance.Factory.WasCreatedByFactory (((object) clone).GetType()));
+      var pipeline = ((TypePipeBasedDomainObjectCreator) clone.ID.ClassDefinition.InstanceCreator).Pipeline;
+      Assert.That (pipeline.ReflectionService.IsAssembledType (((object) clone).GetType()));
     }
 
     [Test]

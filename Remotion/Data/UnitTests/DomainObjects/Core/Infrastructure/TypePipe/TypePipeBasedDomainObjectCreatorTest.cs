@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
+using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Reflection;
 using Remotion.TypePipe;
 using Rhino.Mocks;
@@ -37,14 +38,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     private ClientTransaction _transaction;
     private IObjectInitializationContext _order1InitializationContext;
     private IObjectInitializationContext _targetClassForPersistentMixinInitializationContext;
+    private IPipeline _pipeline;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      var domainObjectParticipant = new DomainObjectParticipant(new TypeDefinitionProvider(), new InterceptedPropertyCollectorAdapter());
-      var pipeline = PipelineFactory.Create ("TypePipeBasedDomainObjectCreatorTest", domainObjectParticipant);
-      _interceptedDomainObjectCreator = new TypePipeBasedDomainObjectCreator (pipeline);
+      var remixParticipant = new MixinParticipant ();
+      var domainObjectParticipant = new DomainObjectParticipant (new TypeDefinitionProvider (), new InterceptedPropertyCollectorAdapter ());
+      _pipeline = PipelineFactory.Create ("TypePipeBasedDomainObjectCreatorTest", remixParticipant, domainObjectParticipant);
+      _interceptedDomainObjectCreator = new TypePipeBasedDomainObjectCreator (_pipeline);
 
       _transaction = ClientTransaction.CreateRootTransaction();
       _order1InitializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, _transaction);
@@ -67,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     {
       var order = _interceptedDomainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
 
-      Assert.That (((object) order).GetType().Name, Is.StringMatching (@"_Proxy\d"));
+      Assert.That (_pipeline.ReflectionService.IsAssembledType (((object) order).GetType()), Is.True);
     }
 
     [Test]
@@ -152,8 +155,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       var initializationContext = CreateNewObjectInitializationContext (DomainObjectIDs.OrderItem1, _transaction);
       var result = _interceptedDomainObjectCreator.CreateNewObject (initializationContext, ParamList.Create ("A product"), _transaction);
 
-      Assert.That (((object) result).GetType().Name, Is.StringMatching (@"_Proxy\d"));
-      Assert.That (result, Is.AssignableTo<OrderItem>());
+      Assert.That (_pipeline.ReflectionService.IsAssembledType (((object) result).GetType ()), Is.True);
+      Assert.That (result, Is.AssignableTo<OrderItem> ());
       Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.OrderItem1));
       Assert.That (result.RootTransaction, Is.SameAs (_transaction));
       Assert.That (_transaction.IsDiscarded, Is.False);

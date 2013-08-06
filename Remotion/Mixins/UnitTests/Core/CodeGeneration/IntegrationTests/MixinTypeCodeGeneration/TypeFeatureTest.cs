@@ -59,48 +59,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     }
 
     [Test]
-    public void NameProviderIsUsedWhenTypeIsGenerated ()
-    {
-      var repository = new MockRepository ();
-      var nameProviderMock = repository.StrictMock<IConcreteMixinTypeNameProvider> ();
-      var moduleManager = ConcreteTypeBuilderTestHelper.GetIModuleManager (SavedTypeBuilder);
-
-      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (moduleManager, nameProviderMock);
-      ConcreteTypeBuilder.SetCurrent (builder);
-
-      nameProviderMock.Expect (mock => mock.GetNameForConcreteMixinType (Arg<ConcreteMixinTypeIdentifier>.Is.Anything)).Return ("Bra");
-
-      repository.ReplayAll ();
-
-      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
-      Type generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (requestingClass, typeof (MixinWithAbstractMembers));
-
-      Assert.That (generatedType.FullName, Is.EqualTo ("Bra"));
-
-      repository.VerifyAll ();
-    }
-
-    [Test]
-    public void NamesOfNestedTypesAreFlattened ()
-    {
-      var repository = new MockRepository ();
-      var nameProviderMock = repository.StrictMock<IConcreteMixinTypeNameProvider> ();
-      var moduleManager = ConcreteTypeBuilderTestHelper.GetIModuleManager (SavedTypeBuilder);
-
-      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (moduleManager, nameProviderMock);
-      ConcreteTypeBuilder.SetCurrent (builder);
-
-      nameProviderMock.Expect (mock => mock.GetNameForConcreteMixinType (Arg<ConcreteMixinTypeIdentifier>.Is.Anything)).Return ("Bra+Oof");
-
-      repository.ReplayAll ();
-
-      var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
-      Assert.That (generatedType.FullName, Is.EqualTo ("Bra/Oof"));
-
-      repository.VerifyAll ();
-    }
-
-    [Test]
     public void IdentifierMember_HoldsIdentifier ()
     {
       var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));

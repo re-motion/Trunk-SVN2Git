@@ -83,7 +83,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     }
 
     [Test]
-    [UseLegacyCodeGeneration]
     public void Serialization ()
     {
       var instance = SampleBindableDomainObject.NewObject ();
@@ -95,7 +94,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     }
 
     [Test]
-    [UseLegacyCodeGeneration]
     public void Serialization_ViaISerializable ()
     {
       var instance = SampleBindableDomainObject_ImplementingISerializable.NewObject ();

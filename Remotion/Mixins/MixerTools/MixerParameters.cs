@@ -19,6 +19,7 @@ using Remotion.Text.CommandLine;
 
 namespace Remotion.Mixins.MixerTools
 {
+  // TODO 5370: Document breaking change in JIRA.
   [Serializable]
   public class MixerParameters
   {
@@ -39,20 +40,10 @@ namespace Remotion.Mixins.MixerTools
         Placeholder = "directory")]
     public string AssemblyOutputDirectory = Environment.CurrentDirectory;
 
-    [CommandLineStringArgument ("signedAssemblyName", true,
-        Description = "The simple name of the signed assembly generated (without extension; default: Remotion.Mixins.Persistent.Signed).",
+    [CommandLineStringArgument ("assemblyName", true,
+        Description = "The simple name of the assembly generated (without extension; default: Remotion.Mixins.Persistent).",
         Placeholder = "simpleName")]
-    public string SignedAssemblyName = "Remotion.Mixins.Persistent.Signed";
-
-    [CommandLineStringArgument ("unsignedAssemblyName", true,
-        Description = "The simple name of the unsigned assembly generated (without extension; default: Remotion.Mixins.Persistent.Unsigned).",
-        Placeholder = "simpleName")]
-    public string UnsignedAssemblyName = "Remotion.Mixins.Persistent.Unsigned";
-
-    [CommandLineFlagArgument ("keepTypeNames", false,
-        Description = "Specifies that the mixer should not use GUIDs to name the generated types, but instead keep the type names of the target "
-        + "types. To get unique names, the mixer will put the generated types in a dedicated namespace.")]
-    public bool KeepTypeNames;
+    public string AssemblyName = "Remotion.Mixins.Persistent";
 
     [CommandLineFlagArgument ("verbose", false,
         Description = "Enables verbose output. Verbose output will include all messages from all loggers in the framework.")]

@@ -21,8 +21,8 @@ using System.Reflection;
 using Castle.DynamicProxy;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Development.TypePipe.UnitTesting;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Samples.DynamicMixinBuilding.Core;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -59,7 +59,8 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
       DynamicMixinBuilder.Scope = new ModuleScope (true, false, "DynamicMixinBuilder.Signed", Path.Combine (directory, "DynamicMixinBuilder.Signed.dll"),
         "DynamicMixinBuilder.Unsigned", Path.Combine (directory, "DynamicMixinBuilder.Unsigned.dll"));
 
-      ConcreteTypeBuilder.SetCurrent (null);
+      // Set new default pipeline to avoid cached types to influence each other.
+      PipelineRegistryTestHelper.ResetDefaultPipeline();
 
       _invocationHandler = delegate (object instance, MethodInfo method, object[] args, BaseMethodInvoker baseMethod)
       {

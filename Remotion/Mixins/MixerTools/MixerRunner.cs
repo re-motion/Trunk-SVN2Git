@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.IO;
 using Remotion.Logging;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Validation;
 using Remotion.Utilities;
 
@@ -99,16 +98,7 @@ namespace Remotion.Mixins.MixerTools
 
     private Mixer CreateMixer ()
     {
-      var typeNameProvider = 
-          _parameters.KeepTypeNames 
-          ? (IConcreteMixedTypeNameProvider) new NamespaceChangingNameProvider()
-          : new GuidNameProvider();
-
-      var mixer = Mixer.Create (
-          _parameters.SignedAssemblyName, 
-          _parameters.UnsignedAssemblyName, 
-          _parameters.AssemblyOutputDirectory, 
-          typeNameProvider);
+      var mixer = Mixer.Create (_parameters.AssemblyName, _parameters.AssemblyOutputDirectory);
       
       mixer.ValidationErrorOccurred += Mixer_ValidationErrorOccurred;
       mixer.ErrorOccurred += Mixer_ErrorOccurred;

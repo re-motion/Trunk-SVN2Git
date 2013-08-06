@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins.Context.Serialization;
 
 namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
@@ -25,14 +26,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
   public class AttributeMixinContextSerializationTest
   {
     private AttributeMixinContextSerializer _serializer;
-    private AttributeMixinContextDeserializer _deserializer;
     private AttributeMixinContextDeserializer _invalidDeserializer;
 
     [SetUp]
     public void SetUp()
     {
       _serializer = new AttributeMixinContextSerializer ();
-      _deserializer = new AttributeMixinContextDeserializer (_serializer.Values);
       _invalidDeserializer = new AttributeMixinContextDeserializer (new object[] {1, 2, 3, 4, 5});
     }
 
@@ -40,44 +39,58 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     public void AddMixinType()
     {
       _serializer.AddMixinType (typeof (DateTime));
-      Assert.That (_deserializer.GetMixinType (), Is.EqualTo (typeof (DateTime)));
+
+      var deserializer = new AttributeMixinContextDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetMixinType (), Is.EqualTo (typeof (DateTime)));
     }
 
     [Test]
     public void AddMixinKind()
     {
       _serializer.AddMixinKind (MixinKind.Used);
-      Assert.That (_deserializer.GetMixinKind (), Is.EqualTo (MixinKind.Used));
+
+      var deserializer = new AttributeMixinContextDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetMixinKind (), Is.EqualTo (MixinKind.Used));
     }
 
     [Test]
     public void AddIntroducedMemberVisibility ()
     {
       _serializer.AddIntroducedMemberVisibility (MemberVisibility.Public);
-      Assert.That (_deserializer.GetIntroducedMemberVisibility(), Is.EqualTo (MemberVisibility.Public));
+
+      var deserializer = new AttributeMixinContextDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetIntroducedMemberVisibility (), Is.EqualTo (MemberVisibility.Public));
     }
 
     [Test]
     public void AddExplicitDependencies ()
     {
       _serializer.AddExplicitDependencies (new[] { typeof (int), typeof (string) });
-      Assert.That (_deserializer.GetExplicitDependencies (), Is.EqualTo (new[] { typeof (int), typeof (string) }));
+
+      var deserializer = new AttributeMixinContextDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetExplicitDependencies (), Is.EqualTo (new[] { typeof (int), typeof (string) }));
     }
 
     [Test]
     public void AddOrigin ()
     {
-      var mixinContextOrigin = MixinContextOriginObjectMother.Create();
+      var mixinContextOrigin = MixinContextOriginObjectMother.Create (assembly: GetType ().Assembly);
       _serializer.AddOrigin (mixinContextOrigin);
-      if (mixinContextOrigin != null)
-        Assert.That (_deserializer.GetOrigin (), Is.EqualTo (mixinContextOrigin));
+
+      // Check that the chain of serializers correctly sets up the AttributeMixinContextOriginSerializer
+      var serializedMixinOrigin = (object[]) _serializer.Values[4];
+      var serializedMixinOriginAssembly = serializedMixinOrigin[1];
+      Assert.That (serializedMixinOriginAssembly, Is.EqualTo (GetType ().Assembly.FullName));
+
+      var deserializer = new AttributeMixinContextDeserializer (_serializer.Values);
+      Assert.That (deserializer.GetOrigin (), Is.EqualTo (mixinContextOrigin));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Expected an array with 5 elements.\r\nParameter name: values")]
     public void Deserializer_InvalidArray()
     {
-      new AttributeMixinContextDeserializer (new[] { "x" });
+      Dev.Null = new AttributeMixinContextDeserializer (new[] { "x" });
     }
 
     [Test]

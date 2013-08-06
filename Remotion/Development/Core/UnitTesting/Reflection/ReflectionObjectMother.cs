@@ -36,6 +36,7 @@ namespace Remotion.Development.UnitTesting.Reflection
     private static readonly Type[] s_otherGenericParameters = EnsureNoNulls (typeof (Lookup<,>).GetGenericArguments());
     private static readonly Type[] s_serializableTypes = EnsureNoNulls (new[] { typeof (object), typeof (string), typeof (List<int>) });
     private static readonly Type[] s_unsealedTypes = EnsureNoNulls (new[] { typeof (Exception), typeof (List<int>) });
+    private static readonly Type[] s_sealedTypes = EnsureNoNulls (new[] { typeof (string), typeof (ReflectionObjectMother) });
     private static readonly Type[] s_delegateTypes = EnsureNoNulls (new[] { typeof (EventHandler), typeof (Action<,,>) });
     private static readonly Type[] s_valueTypes = EnsureNoNulls (new[] { typeof (double), typeof (DateTime) });
     private static readonly Type[] s_classTypes = EnsureNoNulls (new[] { typeof (StringBuilder), typeof (Exception) });
@@ -114,6 +115,14 @@ namespace Remotion.Development.UnitTesting.Reflection
       var type = GetRandomElement (s_unsealedTypes);
       Assertion.IsTrue (type.IsClass);
       Assertion.IsFalse (type.IsSealed);
+      return type;
+    }
+
+    public static Type GetSomeNonSubclassableType ()
+    {
+      var type = GetRandomElement (s_sealedTypes);
+      Assertion.IsTrue (type.IsClass);
+      Assertion.IsTrue (type.IsSealed);
       return type;
     }
 

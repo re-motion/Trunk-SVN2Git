@@ -17,7 +17,6 @@
 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
@@ -28,19 +27,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// </summary>
   public class TypeDefinitionProvider : ITypeDefinitionProvider
   {
-    // TODO 5370: Remove when re-mix is integrated.
-    public Type GetPublicDomainObjectType (Type concreteType)
-    {
-      ArgumentUtility.CheckNotNull ("concreteType", concreteType);
-
-      return MixinTypeUtility.GetUnderlyingTargetType (concreteType);
-    }
-
     public ClassDefinition GetTypeDefinition (Type domainObjectType)
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
 
-      return MappingConfiguration.Current.GetTypeDefinition (domainObjectType);
+        var mappingConfiguration = MappingConfiguration.Current;
+      if (!mappingConfiguration.ContainsTypeDefinition (domainObjectType))
+        return null;
+
+      return mappingConfiguration.GetTypeDefinition (domainObjectType);
     }
   }
 }

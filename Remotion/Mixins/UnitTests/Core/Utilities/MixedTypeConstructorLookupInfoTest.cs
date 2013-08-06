@@ -100,8 +100,8 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Mixins.UnitTests.Core.Utilities.MixedTypeConstructorLookupInfoTest"
-       + "+TargetTypeMock does not contain a constructor with the following signature: (System.Boolean).")]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type 'Remotion.Mixins.UnitTests.Core.Utilities.MixedTypeConstructorLookupInfoTest"
+       + "+TargetTypeMock' does not contain a constructor with the following signature: (System.Boolean).")]
     public void CreateDelegate_NoCtorOnTargetType ()
     {
       MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), false);
@@ -109,8 +109,8 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Mixins.UnitTests.Core.Utilities.MixedTypeConstructorLookupInfoTest"
-        + "+TargetTypeMock contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is not set).")]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type 'Remotion.Mixins.UnitTests.Core.Utilities.MixedTypeConstructorLookupInfoTest"
+        + "+TargetTypeMock' contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is not set).")]
     public void CreateDelegate_ProtectedCtorOnTargetType_NoAllowNonPublic ()
     {
       MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), false);

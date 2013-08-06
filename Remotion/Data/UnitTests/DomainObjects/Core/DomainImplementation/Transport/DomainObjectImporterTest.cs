@@ -22,11 +22,14 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
+using Remotion.TypePipe;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -82,9 +85,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
 
-      var creator = InterceptedDomainObjectCreator.Instance;
       var importedInstance = (ClassWithAllDataTypes) imported[0];
-      Assert.That (creator.Factory.WasCreatedByFactory (((object) importedInstance).GetType ()), Is.True, "creator should be used");
+      var pipeline = ((TypePipeBasedDomainObjectCreator) importedInstance.ID.ClassDefinition.InstanceCreator).Pipeline;
+      Assert.That (pipeline.ReflectionService.IsAssembledType (((object) importedInstance).GetType ()), Is.True, "creator should be used");
       Assert.That (importedInstance.ID, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1), "ID should be copied");
 
       var importTransaction = importedInstance.RootTransaction;

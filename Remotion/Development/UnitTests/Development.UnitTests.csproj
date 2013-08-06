@@ -153,6 +153,10 @@
       <Project>{2177143e-345f-4faa-9958-1ae2b5eed242}</Project>
       <Name>Development.RhinoMocks</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TypePipe\Development.TypePipe.csproj">
+      <Project>{F6FAF727-9405-4BCC-9153-803F73853E67}</Project>
+      <Name>Development.TypePipe</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Web\Development.Web.csproj">
       <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
       <Name>Development.Web</Name>
@@ -162,17 +166,6 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="Core\Mixins\DebuggerWorkaroundModuleManagerDecoratorIntegrationTest.cs" />
-    <Compile Include="Core\Mixins\DebuggerWorkaroundMixinTypeGeneratorDecoratorTest.cs" />
-    <Compile Include="Core\Mixins\DebuggerWorkaroundModuleManagerDecoratorTest.cs" />
-    <Compile Include="Core\Mixins\DebuggerWorkaroundTypeGeneratorDecoratorTest.cs" />
-    <Compile Include="Core\Mixins\TestDomain\MixedClass5.cs" />
-    <Compile Include="Core\Mixins\TestDomain\MixedClass4.cs" />
-    <Compile Include="Core\Mixins\TestDomain\MixedClassWithMixinNeedingConcreteType.cs" />
-    <Compile Include="Core\Mixins\TestDomain\MixedClass3.cs" />
-    <Compile Include="Core\Mixins\TestDomain\MixedClass2.cs" />
-    <Compile Include="Core\Mixins\TestDomain\MixedClass1.cs" />
-    <Compile Include="Core\Mixins\TestDomain\NullMixin.cs" />
     <Compile Include="Core\TypePipe\DebuggerWorkaroundIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>

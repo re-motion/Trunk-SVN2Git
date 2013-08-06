@@ -180,7 +180,6 @@
     <Compile Include="BindableObjectWithSecurityTest.cs" />
     <Compile Include="CommitTest.cs" />
     <Compile Include="ClassDefinitionTest.cs" />
-    <Compile Include="DomainObjectCreatorSwitch.cs" />
     <Compile Include="HasRelationChangedTest.cs" />
     <Compile Include="InstantiationTest.cs" />
     <Compile Include="LinqPerformanceTestHelper.cs" />
@@ -223,7 +222,6 @@
     <Compile Include="TestDomain\File.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UseLegacyCodeGenerationAttribute.cs" />
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>

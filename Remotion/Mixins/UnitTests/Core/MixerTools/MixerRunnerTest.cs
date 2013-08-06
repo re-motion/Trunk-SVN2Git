@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.MixerTools;
 
 namespace Remotion.Mixins.UnitTests.Core.MixerTools
@@ -40,9 +39,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       Assert.That (_parameters.AssemblyOutputDirectory, Is.EqualTo (Environment.CurrentDirectory));
       Assert.That (_parameters.BaseDirectory, Is.EqualTo (Environment.CurrentDirectory));
       Assert.That (_parameters.ConfigFile, Is.EqualTo (""));
-      Assert.That (_parameters.SignedAssemblyName, Is.EqualTo ("Remotion.Mixins.Persistent.Signed"));
-      Assert.That (_parameters.UnsignedAssemblyName, Is.EqualTo ("Remotion.Mixins.Persistent.Unsigned"));
-      Assert.That (_parameters.KeepTypeNames, Is.EqualTo (false));
+      Assert.That (_parameters.AssemblyName, Is.EqualTo ("Remotion.Mixins.Persistent"));
     }
 
     [Test]
@@ -60,20 +57,8 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       var runner = new MixerRunner (_parameters);
       var mixer = CallCreateMixer (runner);
 
-      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).SignedAssemblyName, Is.EqualTo (_parameters.SignedAssemblyName));
-      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).UnsignedAssemblyName, Is.EqualTo (_parameters.UnsignedAssemblyName));
-      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.TypeOf<GuidNameProvider>());
+      Assert.That (((MixerPipelineFactory) mixer.MixerPipelineFactory).AssemblyName, Is.EqualTo (_parameters.AssemblyName));
       Assert.That (mixer.AssemblyOutputDirectory, Is.EqualTo (_parameters.AssemblyOutputDirectory));
-    }
-
-    [Test]
-    public void CreateMixer_KeepTypeNames ()
-    {
-      var runner = new MixerRunner (_parameters);
-      _parameters.KeepTypeNames = true;
-      var mixer = CallCreateMixer (runner);
-
-      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.TypeOf<NamespaceChangingNameProvider>());
     }
 
     [Test]
@@ -81,12 +66,12 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     {
       _parameters.AssemblyOutputDirectory = "MixerRunnerTest";
       _parameters.BaseDirectory = "MixerRunnerTest_Input";
-      var unsignedAssemblyPath = Path.Combine (_parameters.AssemblyOutputDirectory, _parameters.UnsignedAssemblyName + ".dll");
+      var assemblyPath = Path.Combine (_parameters.AssemblyOutputDirectory, _parameters.AssemblyName + ".dll");
       
       try
       {
         Assert.That (Directory.Exists (_parameters.AssemblyOutputDirectory), Is.False);
-        Assert.That (File.Exists (unsignedAssemblyPath), Is.False);
+        Assert.That (File.Exists (assemblyPath), Is.False);
 
         Assert.That (Directory.Exists (_parameters.BaseDirectory), Is.False);
         Directory.CreateDirectory (_parameters.BaseDirectory);
@@ -101,7 +86,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
         runner.Run ();
 
         Assert.That (Directory.Exists (_parameters.AssemblyOutputDirectory), Is.True);
-        Assert.That (File.Exists (unsignedAssemblyPath), Is.True);
+        Assert.That (File.Exists (assemblyPath), Is.True);
       }
       finally
       {

@@ -22,25 +22,19 @@ namespace Remotion.Mixins.Context.Serialization
   /// <summary>
   /// Deserializes the data produced by <see cref="AttributeMixinContextOriginSerializer"/>.
   /// </summary>
-  public class AttributeMixinContextOriginDeserializer : AttributeDeserializerBase, IMixinContextOriginDeserializer
+  public class AttributeMixinContextOriginDeserializer : ArrayMixinContextOriginDeserializer
   {
-    public AttributeMixinContextOriginDeserializer(object[] values) : base (values, 3)
+    public AttributeMixinContextOriginDeserializer (object[] values)
+        : base(values)
     {
     }
 
-    public string GetKind ()
+    protected override T ConvertFromStorageFormat<T> (object value, int index)
     {
-      return GetValue<string> (0);
-    }
+      if (typeof (T) == typeof (Assembly))
+        return (T) (object) Assembly.Load (ConvertFromStorageFormat<string> (value, index));
 
-    public Assembly GetAssembly ()
-    {
-      return Assembly.Load (GetValue<string> (1));
-    }
-
-    public string GetLocation ()
-    {
-      return GetValue<string> (2);
+      return base.ConvertFromStorageFormat<T> (value, index);
     }
   }
 }

@@ -21,7 +21,6 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Design;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection.TypeDiscovery;
@@ -29,7 +28,6 @@ using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using ReflectionUtility = Remotion.Mixins.Utilities.ReflectionUtility;
 
 namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder_IntegrationTests
 {
@@ -103,19 +101,18 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     [Test]
     public void BuildDefault_DoesNotLockPersistedFile ()
     {
-      ConcreteTypeBuilder.SetCurrent (null);
       TypeGenerationHelper.ForceTypeGeneration (typeof (object));
-      string[] paths = ConcreteTypeBuilder.Current.SaveGeneratedConcreteTypes();
+      string path = TypeGenerationHelper.Pipeline.CodeManager.FlushCodeToDisk();
+
       try
       {
-        Assert.That (paths.Length, Is.EqualTo (1));
         ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
         DeclarativeConfigurationBuilder.BuildDefaultConfiguration ();
       }
       finally
       {
-        File.Delete (paths[0]);
-        File.Delete (paths[0].Replace (".dll", ".pdb"));
+        File.Delete (path);
+        File.Delete (path.Replace (".dll", ".pdb"));
       }
     }
 
@@ -153,14 +150,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
       var assemblyFinder = GetAssemblyFinder(service);
       var filter = ((FilteringAssemblyLoader) assemblyFinder.AssemblyLoader).Filter;
 
-      Assembly signedAssembly = TypeGenerationHelper.ForceTypeGeneration (typeof (object)).Assembly;
-      Assembly unsignedAssembly = TypeGenerationHelper.ForceTypeGeneration (typeof (BaseType1)).Assembly;
+      Assembly generatedAssembly = TypeGenerationHelper.ForceTypeGeneration (typeof (object)).Assembly;
 
-      Assert.That (ReflectionUtility.IsAssemblySigned (signedAssembly), Is.True);
-      Assert.That (ReflectionUtility.IsAssemblySigned (unsignedAssembly), Is.False);
-
-      Assert.That (filter.ShouldIncludeAssembly (signedAssembly), Is.False);
-      Assert.That (filter.ShouldIncludeAssembly (unsignedAssembly), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (generatedAssembly.GetName()), Is.False);
     }
 
     private AssemblyFinder GetAssemblyFinder (AssemblyFinderTypeDiscoveryService service)

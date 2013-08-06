@@ -111,10 +111,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
       var nameValueCollection = new NameValueCollection { { "factoryType", typeof (StorageObjectFactoryFakeWithCtorParameters).AssemblyQualifiedName } };
       Assert.That (
           () => new TestableStorageProviderDefinition ("TestProvider", nameValueCollection),
-          Throws.TypeOf<ConfigurationErrorsException> ().With.Message.EqualTo (
+          Throws.TypeOf<ConfigurationErrorsException>().With.Message.EqualTo (
               "The factory type 'Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StorageProviderDefinitionTest+StorageObjectFactoryFakeWithCtorParameters' "
               + "specified in the configuration of the 'TestProvider' StorageProvider definition cannot be instantiated: Type "
-              + "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StorageProviderDefinitionTest+StorageObjectFactoryFakeWithCtorParameters "
+              + "'Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StorageProviderDefinitionTest+StorageObjectFactoryFakeWithCtorParameters' "
               + "does not contain a constructor with the following signature: ()."));
     }
 

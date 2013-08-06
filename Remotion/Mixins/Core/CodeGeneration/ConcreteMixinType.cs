@@ -17,10 +17,14 @@
 using System;
 using System.Reflection;
 using System.Collections.Generic;
+using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.TypeAssembly;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration
 {
+  // TODO 5370: Unify with DeriveMixinInfo.
   /// <summary>
   /// Holds the results of mixin code generation when a concrete mixin type was generated.
   /// </summary>
@@ -103,6 +107,41 @@ namespace Remotion.Mixins.CodeGeneration
       {
         return wrapper;
       }
+    }
+
+    public ConcreteMixinType SubstituteMutableReflectionObjects (GeneratedTypesContext context)
+    {
+      var identifier = SubstituteConcreteMixinIdentifier (context, _identifier);
+      var generatedType = Substitute (context, _generatedType);
+      var generatedOverrideInterface = Substitute (context, _generatedOverrideInterface);
+      var overrideInterfaceMethodsByMixinMethod = Substitute (context, _overrideInterfaceMethodsByMixinMethod);
+      var methodWrappers = Substitute (context, _methodWrappers);
+
+      return new ConcreteMixinType (identifier, generatedType, generatedOverrideInterface, overrideInterfaceMethodsByMixinMethod, methodWrappers);
+    }
+
+    private static ConcreteMixinTypeIdentifier SubstituteConcreteMixinIdentifier (GeneratedTypesContext context, ConcreteMixinTypeIdentifier identifier)
+    {
+      var mixinType = Substitute (context, identifier.MixinType);
+      var overriders = identifier.Overriders.Select (m => Substitute (context, m));
+      var overridden = identifier.Overridden.Select (m => Substitute (context, m));
+
+      return new ConcreteMixinTypeIdentifier (mixinType, new HashSet<MethodInfo> (overriders), new HashSet<MethodInfo> (overridden));
+    }
+
+    private static Dictionary<MethodInfo, MethodInfo> Substitute (GeneratedTypesContext context, Dictionary<MethodInfo, MethodInfo> dictionary)
+    {
+      return dictionary.ToDictionary (p => Substitute (context, p.Key), p => Substitute (context, p.Value));
+    }
+
+    private static T Substitute<T> (GeneratedTypesContext context, T member)
+        where T : MemberInfo
+    {
+      var mutableMember = member as IMutableMember;
+      if (mutableMember != null)
+        return (T) context.GetGeneratedMember (mutableMember);
+      else
+        return member;
     }
   }
 }

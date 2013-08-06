@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
               new ClassIDProvider(),
               new DomainModelConstraintProvider(),
               new ReflectionBasedNameResolver(),
-              new DomainObjectCreatorSwitch()),
+              MappingReflector.CreateDomainObjectCreator()),
           new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       MappingConfiguration.SetCurrent (mappingConfiguration);
     }

@@ -21,13 +21,13 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -941,9 +941,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void CreatorIsFactoryBasedCreator ()
+    public void CreatorIsTypePipeBasedCreator ()
     {
-      Assert.That (_orderClass.InstanceCreator, Is.SameAs (MappingReflectorObjectMother.DomainObjectCreator));
+      Assert.That (_orderClass.InstanceCreator, Is.TypeOf<TypePipeBasedDomainObjectCreator>());
     }
 
     [Test]

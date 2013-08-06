@@ -16,38 +16,20 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.Serialization
 {
   /// <summary>
   /// Serializes a <see cref="MixinContextOrigin"/> into an array suitable for use as a custom attribute parameter.
   /// </summary>
-  public class AttributeMixinContextOriginSerializer : IMixinContextOriginSerializer
+  public class AttributeMixinContextOriginSerializer : ArrayMixinContextOriginSerializer
   {
-    private readonly object[] _values = new object[3];
-
-    public object[] Values
+    protected override object ConvertToStorageFormat<T> (T value)
     {
-      get { return _values; }
-    }
+      if (typeof (T) == typeof (Assembly))
+        return ((Assembly) (object) (value)).FullName;
 
-    public void AddKind (string kind)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("kind", kind);
-      _values[0] = kind;
-    }
-
-    public void AddAssembly (Assembly assembly)
-    {
-      ArgumentUtility.CheckNotNull ("assembly", assembly);
-      _values[1] = assembly.FullName;
-    }
-
-    public void AddLocation (string location)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("location", location);
-      _values[2] = location;
+      return base.ConvertToStorageFormat (value);
     }
   }
 }

@@ -471,7 +471,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [UseLegacyCodeGeneration]
     public void Serializable ()
     {
       //TODO 5370: Remove

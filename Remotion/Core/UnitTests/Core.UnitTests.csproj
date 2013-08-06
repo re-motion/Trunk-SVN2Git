@@ -234,6 +234,7 @@
     <Compile Include="Reflection\MemberSignatures\MemberNameAndSignatureEqualityComparerTest.cs" />
     <Compile Include="Reflection\MemberSignatures\MemberSignatureProviderTest.cs" />
     <Compile Include="Reflection\MemberSignatures\MethodSignatureTest.cs" />
+    <Compile Include="Reflection\MemberSignatures\NestedTypeSignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\PropertySignatureTest.cs" />
     <Compile Include="Reflection\TestDomain\AbstractClass.cs" />
     <Compile Include="Reflection\TestDomain\ClassForSignatureComparisons2.cs" />

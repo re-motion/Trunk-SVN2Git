@@ -86,7 +86,7 @@ namespace Remotion.Mixins.Definitions
 
     public string FullName
     {
-      get { return string.Format ("{0}.{1}", MemberInfo.DeclaringType.FullName, Name); }
+      get { return MemberInfo.DeclaringType.FullName + "." + Name; }
     }
 
     public abstract MemberDefinitionBase BaseAsMember { get; protected internal set; }

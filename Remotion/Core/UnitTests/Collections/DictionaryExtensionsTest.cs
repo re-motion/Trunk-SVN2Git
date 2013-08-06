@@ -66,6 +66,23 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
+    public void GetValueOrDefault_WithDefaultValue ()
+    {
+      var foundValue = _dictionary.GetValueOrDefault ("a", "Beta");
+      Assert.That (foundValue, Is.EqualTo ("Alpha"));
+
+      var substitutedDefaultValue = _dictionary.GetValueOrDefault ("z", "Beta");
+      Assert.That (substitutedDefaultValue, Is.EqualTo ("Beta"));
+    }
+
+    [Test]
+    public void GetValueOrDefault_WithDefaultValue_NullDefaultValue ()
+    {
+      var substitutedDefaultValue = _dictionary.GetValueOrDefault ("z", null);
+      Assert.That (substitutedDefaultValue, Is.Null);
+    }
+
+    [Test]
     public void AsReadOnly ()
     {
       ReadOnlyDictionary<string, string> readOnlyDictionary = _dictionary.AsReadOnly ();

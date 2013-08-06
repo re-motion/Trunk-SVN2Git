@@ -167,7 +167,6 @@
     <Compile Include="Infrastructure\ObjectLifetime\ObjectInititalizationContextScope.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\ObjectReferenceInitializationContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectDataPendingRegistrationCollector.cs" />
-    <Compile Include="Infrastructure\TypePipe\DomainObjectParticipantCacheKeyProvider.cs" />
     <Compile Include="Infrastructure\TypePipe\IAccessorInterceptor.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingAccessorInterceptorBase.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingGetAccessorInterceptor.cs" />
@@ -678,7 +677,6 @@
     <Compile Include="Infrastructure\ClientTransactionWrapper.cs" />
     <Compile Include="Infrastructure\DomainObjectTransactionContextIndexer.cs" />
     <Compile Include="Infrastructure\DomainObjectCheckUtility.cs" />
-    <Compile Include="Infrastructure\Interception\DomainObjectConstructorLookupInfo.cs" />
     <Compile Include="Infrastructure\PropertyAccessorData.cs" />
     <Compile Include="Infrastructure\PropertyKind.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedDeserializationInfo.cs" />
@@ -725,12 +723,8 @@
     <Compile Include="Infrastructure\CompoundClientTransactionListener.cs" />
     <Compile Include="Infrastructure\DomainObjectMixinCodeGenerationBridge.cs" />
     <Compile Include="Infrastructure\IClientTransactionListener.cs" />
-    <Compile Include="Infrastructure\InterceptedDomainObjectTypeFactory.cs" />
-    <Compile Include="Infrastructure\Interception\IInterceptedDomainObject.cs" />
-    <Compile Include="Infrastructure\Interception\InterceptedPropertyCollector.cs" />
-    <Compile Include="Infrastructure\Interception\SerializationHelper.cs" />
-    <Compile Include="Infrastructure\Interception\TypeGenerator.cs" />
-    <Compile Include="Infrastructure\Interception\ModuleManager.cs" />
+    <Compile Include="Infrastructure\TypePipe\IInterceptedDomainObject.cs" />
+    <Compile Include="Infrastructure\TypePipe\InterceptedPropertyCollector.cs" />
     <Compile Include="Infrastructure\InvalidatedTransactionListener.cs" />
     <Compile Include="Infrastructure\LoggingClientTransactionListener.cs" />
     <Compile Include="Infrastructure\HierarchyManagement\ReadOnlyClientTransactionListener.cs" />
@@ -777,14 +771,13 @@
     <Compile Include="StorageGroupAttribute.cs" />
     <Compile Include="StringPropertyAttribute.cs" />
     <Compile Include="Configuration\IDomainObjectsConfiguration.cs" />
-    <Compile Include="Infrastructure\Interception\NonInterceptableTypeException.cs" />
+    <Compile Include="Infrastructure\TypePipe\NonInterceptableTypeException.cs" />
     <Compile Include="Infrastructure\CurrentPropertyManager.cs" />
     <Compile Include="Development\FakeDomainObjectsConfiguration.cs" />
     <Compile Include="Configuration\DomainObjectsConfiguration.cs" />
     <Compile Include="ObjectList.cs" />
     <Compile Include="Infrastructure\IDomainObjectCreator.cs" />
     <Compile Include="Mapping\Configuration\MappingLoaderConfiguration.cs" />
-    <Compile Include="Infrastructure\InterceptedDomainObjectCreator.cs" />
     <Compile Include="Persistence\Configuration\StorageConfiguration.cs" />
     <Compile Include="Persistence\Configuration\StorageProviderDefinitionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

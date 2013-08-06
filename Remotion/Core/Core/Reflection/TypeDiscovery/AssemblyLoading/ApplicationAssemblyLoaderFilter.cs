@@ -78,6 +78,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
                 @"System\..*",
                 @"Microsoft\..*",
                 @"Remotion\..*\.Generated\..*",
+                @"TypePipe_.*Generated.*",
             });
         _assemblyNameFilter = null;
       }
