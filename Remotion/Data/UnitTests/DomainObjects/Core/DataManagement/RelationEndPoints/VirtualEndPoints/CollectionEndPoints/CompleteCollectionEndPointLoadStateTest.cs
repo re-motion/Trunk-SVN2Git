@@ -627,9 +627,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void FlattenedSerializable ()
     {
-      //TODO 5370: Remove
-      SetUp ();
-
       var state = new CompleteCollectionEndPointLoadState (
           new SerializableCollectionEndPointDataManagerFake(),
           new SerializableRelationEndPointProviderFake(),

@@ -142,9 +142,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
     public void Initialize_ThrowsForDeserializedObject ()
     {
-      //TODO 5370: Remove
-      SetUp();
-
       var orderItem = _transaction.ExecuteInScope (() => DomainObjectIDs.OrderItem1.GetObject<OrderItem>());
 
 
@@ -504,9 +501,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_Serialization_True ()
     {
-      // TODO 5370: Remove.
-      SetUp ();
-
       var order = _transaction.ExecuteInScope (() => Order.NewObject ());
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
 
@@ -517,9 +511,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_Serialization_False ()
     {
-      // TODO 5370: Remove.
-      SetUp();
-
       var order = (Order) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.Order1);
 
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
@@ -531,9 +522,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_True ()
     {
-      // TODO 5370: Remove.
-      SetUp ();
-
       var classWithAllDataTypes = _transaction.ExecuteInScope (() => ClassWithAllDataTypes.NewObject ());
       Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.True);
 
@@ -544,9 +532,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_False ()
     {
-      // TODO 5370: Remove.
-      SetUp ();
-
       var classWithAllDataTypes = (ClassWithAllDataTypes) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.ClassWithAllDataTypes1);
 
       Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.False);
@@ -570,9 +555,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void Properties_Serialization ()
     {
-      // TODO 5370: Remove.
-      SetUp ();
-
       var order = _transaction.ExecuteInScope (() => Order.NewObject ());
       var propertyIndexer = _transaction.ExecuteInScope (() => order.Properties);
       Assert.That (propertyIndexer, Is.Not.Null);
