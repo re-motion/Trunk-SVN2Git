@@ -14,27 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Diagnostics;
-using NUnit.Framework;
-using Remotion.Mixins.CodeGeneration;
 
-namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
+using System;
+using Remotion.Reflection.CodeGeneration;
+
+namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  [TestFixture]
-  public class CodeGenerationTimerTest
+  /// <summary>
+  /// Defines a mapping between an overridden mixin member and the member in the mixin's override interface. The attribute is applied to the members
+  /// of the interface so that the mixin member can be determined when needed.
+  /// </summary>
+  [AttributeUsage (AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+  public class OverrideInterfaceMappingAttribute : MethodReferencingAttribute
   {
-    [Test]
-    public void Time ()
+    public OverrideInterfaceMappingAttribute (Type declaringType, string methodName, string methodSignature)
+        : base (declaringType, methodName, methodSignature)
     {
-      TimeSpan timeBefore = CodeGenerationTimer.CodeGenerationTime;
-      using (new CodeGenerationTimer ())
-      {
-        Stopwatch sw = Stopwatch.StartNew();
-        while (sw.ElapsedMilliseconds < 1) // wait for at least one millisecond
-          ;
-      }
-      Assert.That (CodeGenerationTimer.CodeGenerationTime > timeBefore);
     }
   }
 }

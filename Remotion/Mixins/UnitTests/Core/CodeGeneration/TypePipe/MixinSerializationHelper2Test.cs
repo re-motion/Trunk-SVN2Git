@@ -18,10 +18,10 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Development.TypePipe.UnitTesting;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.Mixins.CodeGeneration.TypePipe;
-using Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.TypePipe;
 
@@ -105,7 +105,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
     public void Initialization_WithTypeTransformer_InvalidTransformedType_NonAssignable ()
     {
       CallGetObjectDataForGeneratedTypes(true);
-      new MixinSerializationHelper2(_serializationInfo, _context, t => typeof(object));
+      Dev.Null = new MixinSerializationHelper2(_serializationInfo, _context, t => typeof(object));
     }
 
     [Test]
@@ -219,6 +219,67 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
     {
       MixinSerializationHelper2.GetObjectDataForGeneratedTypes(
           _serializationInfo, _context, _concreteMixin, _identifier, serializeBaseMembers, _pipeline.ParticipantConfigurationID);
+    }
+
+    [IgnoreForMixinConfiguration]
+    public class FakeConcreteMixinType : MixinWithAbstractMembers, ISerializable, IDeserializationCallback
+    {
+      public interface IOverriddenMethods
+      {
+      }
+
+      public bool OnDeserializingCalled = false;
+      public bool OnDeserializedCalled = false;
+      public bool OnDeserializationCalled = false;
+      public bool CtorCalled = true;
+      public bool SerializationCtorCalled = false;
+
+      public FakeConcreteMixinType ()
+      {
+      }
+
+      protected FakeConcreteMixinType (SerializationInfo info, StreamingContext context)
+      {
+        SerializationCtorCalled = true;
+      }
+
+      [OnDeserializing]
+      public void OnDeserializing (StreamingContext context)
+      {
+        OnDeserializingCalled = true;
+      }
+
+      [OnDeserialized]
+      public void OnDeserialized (StreamingContext context)
+      {
+        OnDeserializedCalled = true;
+      }
+
+      public void OnDeserialization (object sender)
+      {
+        OnDeserializationCalled = true;
+      }
+
+      public void GetObjectData (SerializationInfo info, StreamingContext context)
+      {
+        throw new NotImplementedException();
+      }
+
+      protected override string AbstractMethod (int i)
+      {
+        throw new NotImplementedException();
+      }
+
+      protected override string AbstractProperty
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      protected override event Func<string> AbstractEvent;
+      protected override string RaiseEvent ()
+      {
+        throw new NotImplementedException();
+      }
     }
   }
 }

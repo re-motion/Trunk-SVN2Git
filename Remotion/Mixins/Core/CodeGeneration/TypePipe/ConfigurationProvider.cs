@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;

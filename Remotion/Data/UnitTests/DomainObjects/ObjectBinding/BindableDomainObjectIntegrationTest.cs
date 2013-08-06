@@ -112,9 +112,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void SerializeAndDeserialize ()
     {
-      //TODO 5370: Remove
-      SetUp ();
-
       Serializer.SerializeAndDeserialize (_instanceOverridingDisplayName);
     }
 

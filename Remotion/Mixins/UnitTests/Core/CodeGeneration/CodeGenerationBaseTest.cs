@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Reflection;
 using Remotion.TypePipe;
 using Remotion.Utilities;

@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain
@@ -30,8 +30,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain
               new object[] { typeof (MixinWithAbstractMembers), "RaiseEvent", "System.String RaiseEvent()" },
               new object[] { typeof (MixinWithAbstractMembers), "get_AbstractProperty", "System.String get_AbstractProperty()" },
               new object[] { typeof (MixinWithAbstractMembers), "add_AbstractEvent", "Void add_AbstractEvent(System.Func`1[System.String])" },
-              new object[] { typeof (MixinWithAbstractMembers), "remove_AbstractEvent", "Void remove_AbstractEvent(System.Func`1[System.String])" },
-          },
+              new object[] { typeof (MixinWithAbstractMembers), "remove_AbstractEvent", "Void remove_AbstractEvent(System.Func`1[System.String])" }
+          }
       })]
   public class LoadableConcreteMixinTypeForMixinWithAbstractMembers
   {

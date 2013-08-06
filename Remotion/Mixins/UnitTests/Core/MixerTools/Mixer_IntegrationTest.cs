@@ -25,8 +25,6 @@ using Remotion.Mixins.MixerTools;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection.TypeDiscovery;
 using System.Linq;
-using Remotion.ServiceLocation;
-using Remotion.TypePipe;
 
 namespace Remotion.Mixins.UnitTests.Core.MixerTools
 {

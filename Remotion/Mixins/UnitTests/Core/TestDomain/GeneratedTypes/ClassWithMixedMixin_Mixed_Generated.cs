@@ -19,11 +19,12 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.UnitTests.Core.TestDomain.GeneratedTypes
 {
+  // TODO 5370: regenerate concrete type for ClassWithMixedMixin
   [Serializable, ConcreteMixedType(new object[] { typeof(ClassWithMixedMixin), new object[] { new object[] { typeof(MixinMixingClass), 0, 0, new Type[] {  } } }, new Type[] {  } }, new Type[] { typeof(MixinMixingClass) }), DebuggerDisplay("Mix of Remotion.Mixins.UnitTests.Core.TestDomain.ClassWithMixedMixin + Remotion.Mixins.UnitTests.Core.TestDomain.MixinMixingClass")]
   [IgnoreForMixinConfiguration]
   public class ClassWithMixedMixin_Mixed_Generated_WithEfficientMixinCreation : ClassWithMixedMixin, IMixinTarget, IInitializableMixinTarget, ISerializable
@@ -75,7 +76,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain.GeneratedTypes
 
     public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
     {
-      SerializationHelper.GetObjectDataForGeneratedTypes(info, context, this, __classContext, this.__extensions, true);
+      // TODO 5370: SerializationHelper.GetObjectDataForGeneratedTypes(info, context, this, __classContext, this.__extensions, true);
     }
 
     void IInitializableMixinTarget.Initialize()

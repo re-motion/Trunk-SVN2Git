@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
 using System.Linq;

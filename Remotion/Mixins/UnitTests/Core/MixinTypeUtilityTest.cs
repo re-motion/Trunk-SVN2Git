@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using Castle.DynamicProxy;
 using NUnit.Framework;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.Utilities;

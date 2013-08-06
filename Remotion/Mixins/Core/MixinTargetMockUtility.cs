@@ -17,6 +17,7 @@
 using System;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins
@@ -98,13 +99,6 @@ namespace Remotion.Mixins
     /// This method cannot mock mixins with abstract methods, but it can mock subclasses of those mixins if they implement the abstract methods. If 
     /// you already have a mixin instance to be mocked, use the <see cref="MockMixinTarget{TTarget,TNext}"/> method instead.
     /// </para>
-    /// <para>
-    /// For use with Rhino Mocks, be sure to configure the current <see cref="ConcreteTypeBuilder"/>'s <see cref="IModuleManager"/> to
-    /// generate transient modules instead of persistent ones (which is the default). The following example code shows how to do this:
-    /// <code>
-    /// ((Remotion.Mixins.CodeGeneration.DynamicProxy.ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope = new ModuleScope (false);
-    /// </code>
-    /// </para>
     /// </remarks>
     public static TMixin CreateMixinWithMockedTarget<TMixin, TTarget, TNext> (TTarget targetMock, TNext nextMock, params object[] args)
         where TTarget : class
@@ -136,13 +130,6 @@ namespace Remotion.Mixins
     /// <para>
     /// This method cannot mock mixins with abstract methods, but it can mock subclasses of those mixins if they implement the abstract methods. If 
     /// you already have a mixin instance to be mocked, use the <see cref="MockMixinTarget{TTarget,TNext}"/> method instead.
-    /// </para>
-    /// <para>
-    /// For use with Rhino Mocks, be sure to configure the current <see cref="ConcreteTypeBuilder"/>'s <see cref="IModuleManager"/> to
-    /// generate transient modules instead of persistent ones (which is the default). The following example code shows how to do this:
-    /// <code>
-    /// ((Remotion.Mixins.CodeGeneration.DynamicProxy.ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope = new ModuleScope (false);
-    /// </code>
     /// </para>
     /// </remarks>
     public static TMixin CreateMixinWithMockedTarget<TMixin, TTarget> (TTarget targetMock, params object[] args)

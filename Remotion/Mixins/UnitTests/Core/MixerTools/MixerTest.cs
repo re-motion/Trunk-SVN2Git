@@ -16,18 +16,18 @@
 // 
 using System;
 using System.IO;
+using System.Runtime.Serialization;
 using NUnit.Framework;
+using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.MixerTools;
-using Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.Validation;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Implementation;
-using Remotion.TypePipe.MutableReflection;
-using Remotion.Utilities;
 using Rhino.Mocks;
 using ErrorEventArgs = Remotion.Mixins.MixerTools.ErrorEventArgs;
 
@@ -111,23 +111,10 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     }
 
     [Test]
-    public void PrepareOutputDirectory_SignedModuleIsDeleted ()
+    public void PrepareOutputDirectory_ModuleIsDeleted ()
     {
       Directory.CreateDirectory (_assemblyOutputDirectoy);
       CreateEmptyFile(_modulePath);
-
-      Assert.That (File.Exists (_modulePath), Is.True);
-
-      _mixer.PrepareOutputDirectory ();
-
-      Assert.That (File.Exists (_modulePath), Is.False);
-    }
-
-    [Test]
-    public void PrepareOutputDirectory_UnsignedModuleIsDeleted ()
-    {
-      Directory.CreateDirectory (_assemblyOutputDirectoy);
-      CreateEmptyFile (_modulePath);
 
       Assert.That (File.Exists (_modulePath), Is.True);
 
@@ -263,6 +250,71 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     private void CreateEmptyFile (string path)
     {
       using (File.Create (path))
+      {
+      }
+    }
+
+    [IgnoreForMixinConfiguration]
+    public class FakeConcreteMixedType : BaseType1, IInitializableMixinTarget, ISerializable, IDeserializationCallback
+    {
+      public bool OnDeserializingCalled = false;
+      public bool OnDeserializedCalled = false;
+      public bool OnDeserializationCalled = false;
+      public bool CtorCalled = true;
+      public bool SerializationCtorCalled = false;
+
+      public FakeConcreteMixedType ()
+      {
+      }
+
+      protected FakeConcreteMixedType (SerializationInfo info, StreamingContext context)
+      {
+        SerializationCtorCalled = true;
+      }
+
+      [OnDeserializing]
+      public void OnDeserializing (StreamingContext context)
+      {
+        OnDeserializingCalled = true;
+      }
+
+      [OnDeserialized]
+      public void OnDeserialized (StreamingContext context)
+      {
+        OnDeserializedCalled = true;
+      }
+
+      public void OnDeserialization (object sender)
+      {
+        OnDeserializationCalled = true;
+      }
+
+      public ClassContext ClassContext
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public object[] Mixins
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public object FirstNextCallProxy
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public void GetObjectData (SerializationInfo info, StreamingContext context)
+      {
+        throw new NotImplementedException();
+      }
+
+      public void Initialize ()
+      {
+        throw new NotImplementedException();
+      }
+
+      public void InitializeAfterDeserialization (object[] mixinInstances)
       {
       }
     }

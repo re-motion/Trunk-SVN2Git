@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Context;
 using Remotion.TypePipe.Dlr.Ast;
 using Remotion.TypePipe.Expressions;

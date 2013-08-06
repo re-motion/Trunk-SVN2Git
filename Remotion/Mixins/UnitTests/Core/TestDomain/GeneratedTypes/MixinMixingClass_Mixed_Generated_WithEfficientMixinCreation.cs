@@ -19,12 +19,13 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.UnitTests.Core.TestDomain.GeneratedTypes
 {
-  [Serializable, ConcreteMixedType(new object[] { typeof(MixinMixingClass), new object[] { new object[] { typeof(MixinMixingMixin), 0, 0, new Type[] {  } } }, new Type[] {  } }, new Type[] { typeof(MixinMixingMixin) }), DebuggerDisplay("Mix of Remotion.Mixins.UnitTests.Core.TestDomain.MixinMixingClass + Remotion.Mixins.UnitTests.Core.TestDomain.MixinMixingMixin")]
+  // TODO 5370: regenerate concrete type for MixinMixingClass
+  [Serializable, ConcreteMixedType(new object[] { typeof(MixinMixingClass), new object[] { new object[] { typeof(MixinMixingMixin), 0, 0, new Type[] { } } }, new Type[] { } }, new Type[] { typeof(MixinMixingMixin) }), DebuggerDisplay("Mix of Remotion.Mixins.UnitTests.Core.TestDomain.MixinMixingClass + Remotion.Mixins.UnitTests.Core.TestDomain.MixinMixingMixin")]
   [IgnoreForMixinConfiguration]
   public class MixinMixingClass_Mixed_Generated_WithEfficientMixinCreation : MixinMixingClass, IMixinTarget, IInitializableMixinTarget, ISerializable
   {
@@ -75,7 +76,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain.GeneratedTypes
 
     public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
     {
-      SerializationHelper.GetObjectDataForGeneratedTypes(info, context, this, __classContext, this.__extensions, true);
+      // TODO 5370: SerializationHelper.GetObjectDataForGeneratedTypes(info, context, this, __classContext, this.__extensions, true);
     }
 
     void IInitializableMixinTarget.Initialize()

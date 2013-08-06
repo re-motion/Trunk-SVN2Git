@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
-namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
+namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
   /// <summary>
   /// Finds the interfaces to be implemented by the generated type.

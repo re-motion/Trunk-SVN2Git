@@ -20,8 +20,6 @@ using System.Runtime.InteropServices;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection.CodeGeneration;
@@ -241,8 +239,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void GetMethodWrappersForMixinType()
     {
-      var moduleForWrappers = new ModuleManager ();
-      Type builtType = CreateTypeWithFakeWrappers(moduleForWrappers);
+      Type builtType = CreateTypeWithFakeWrappers();
 
       // fake wrapper methods
       var wrapperMethod1 = builtType.GetMethod ("Wrapper1");
@@ -357,9 +354,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     {
     }
 
-    private Type CreateTypeWithFakeWrappers (ModuleManager moduleForWrappers)
+    private Type CreateTypeWithFakeWrappers ()
     {
-      TypeBuilder wrapperClassBuilder = moduleForWrappers.Scope.ObtainDynamicModuleWithStrongName ().DefineType ("WrapperClass");
+      TypeBuilder wrapperClassBuilder = new AdHocCodeGenerator().CreateType ("WrapperClass");
 
       wrapperClassBuilder.DefineMethod ("Wrapper1", MethodAttributes.Public).GetILGenerator ().Emit (OpCodes.Ret);
       wrapperClassBuilder.DefineMethod ("Wrapper2", MethodAttributes.Public).GetILGenerator ().Emit (OpCodes.Ret);

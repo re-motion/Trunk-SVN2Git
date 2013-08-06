@@ -14,21 +14,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Mixins.Definitions;
-using Remotion.Reflection.CodeGeneration;
-using Remotion.Reflection.CodeGeneration.DPExtensions;
 
-namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
+using System;
+using System.Reflection;
+using NUnit.Framework;
+using Remotion.Mixins.CodeGeneration.TypePipe;
+using Remotion.Mixins.UnitTests.Core.TestDomain;
+
+namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
 {
-  public class AttributeReplicator
+  [TestFixture]
+  public class OverrideInterfaceMappingAttributeTest
   {
-    private readonly AttributeGenerator _attributeGenerator = new AttributeGenerator ();
-
-    public void ReplicateAttributes (IAttributableDefinition source, IAttributableEmitter targetEmitter)
+    [Test]
+    public void ResolveMethod ()
     {
-      foreach (AttributeDefinition attribute in source.CustomAttributes)
-        _attributeGenerator.GenerateAttribute (targetEmitter, attribute.Data);
-    }
+      var attribute = new OverrideInterfaceMappingAttribute (typeof (MixinWithAbstractMembers), "AbstractMethod", "Void AbstractMethod()");
+      var expected = typeof (MixinWithAbstractMembers).GetMethod ("AbstractMethod", BindingFlags.NonPublic | BindingFlags.Instance);
 
+      Assert.That (attribute.ResolveReferencedMethod (), Is.EqualTo (expected));
+    }
   }
 }

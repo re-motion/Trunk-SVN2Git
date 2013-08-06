@@ -174,18 +174,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
     [Test]
     public void Serializable ()
     {
-      // TODO 5370: Remove
-      _order1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+      var order = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
 
       var transactionEventSink = new SerializableClientTransactionEventSinkFake();
       var manager = new InvalidDomainObjectManager (transactionEventSink);
 
-      manager.MarkInvalid (_order1);
+      manager.MarkInvalid (order);
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (manager);
 
       Assert.That (deserializedInstance.TransactionEventSink, Is.Not.Null);
-      Assert.That (deserializedInstance.InvalidObjectIDs, Has.Member (_order1.ID));
+      Assert.That (deserializedInstance.InvalidObjectIDs, Has.Member (order.ID));
     }
 
     

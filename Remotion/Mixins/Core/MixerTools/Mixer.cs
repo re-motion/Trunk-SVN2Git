@@ -20,13 +20,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using Remotion.Collections;
 using Remotion.Logging;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Validation;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.TypePipe;
+using Remotion.TypePipe.Implementation;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -34,7 +34,7 @@ namespace Remotion.Mixins.MixerTools
 {
   /// <summary>
   /// Provides functionality for pre-generating mixed types and saving them to disk to be later loaded via 
-  /// <see cref="ConcreteTypeBuilder.LoadConcreteTypes(System.Reflection.Assembly)"/>.
+  /// <see cref="IPipeline.CodeManager"/>'s <see cref="ICodeManager.LoadFlushedCode"/> method.
   /// </summary>
   public class Mixer
   {
