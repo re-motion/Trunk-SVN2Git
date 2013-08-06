@@ -83,7 +83,7 @@
     <Compile Include="Core\CodeGeneration\TypePipe\ExpressionConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Core\CodeGeneration\TypePipe\FlatClassContextTest.cs" />
     <Compile Include="Core\CodeGeneration\TypePipe\MixinParticipantTypeIdentifierProviderTest.cs" />
-    <Compile Include="Core\CodeGeneration\TypePipe\MixinSerializationHelper2Test.cs" />
+    <Compile Include="Core\CodeGeneration\TypePipe\MixinSerializationHelperTest.cs" />
     <Compile Include="Core\Context\Serialization\AttributeClassContextSerializationTest.cs" />
     <Compile Include="Core\Context\Serialization\AttributeMixinContextOriginSerializationTest.cs" />
     <Compile Include="Core\Context\Serialization\AttributeMixinContextSerializationTest.cs" />

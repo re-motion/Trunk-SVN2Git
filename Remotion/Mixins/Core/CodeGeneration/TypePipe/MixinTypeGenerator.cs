@@ -33,7 +33,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   public class MixinTypeGenerator
   {
     private static readonly MethodInfo s_getObjectDataForGeneratedTypesMethod = MemberInfoFromExpressionUtility.GetMethod (
-        () => MixinSerializationHelper2.GetObjectDataForGeneratedTypes(null, new StreamingContext(), null, null, false, null));
+        () => MixinSerializationHelper.GetObjectDataForGeneratedTypes(null, new StreamingContext(), null, null, false, null));
 
     private readonly ConcreteMixinTypeIdentifier _identifier;
     private readonly MutableType _type;
@@ -82,7 +82,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       // of AssembledTypeID) and a different way to get the type back from the pipeline (GetAdditionalType instead of GetAssembledType).
       // Consider refactoring ComplexSerializationEnabler to allow this code to be replaced.
 
-      SerializationImplementer2.ImplementGetObjectDataByDelegation (
+      SerializationImplementer.ImplementGetObjectDataByDelegation (
           _type,
           (ctx, baseIsISerializable) =>
           Expression.Call (

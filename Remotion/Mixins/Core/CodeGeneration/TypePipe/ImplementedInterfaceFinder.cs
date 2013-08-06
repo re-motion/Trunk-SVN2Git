@@ -62,8 +62,6 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       interfaces.UnionWith (_mixinInfos.SelectMany (mixin => mixin.GetInterfacesToImplement()));
       interfaces.Add (typeof (IMixinTarget));
       interfaces.Add (typeof (IInitializableMixinTarget));
-      // TODO 5370 ??
-      //interfaces.Add (typeof (ISerializable));
 
       return interfaces.ToArray ();
     }

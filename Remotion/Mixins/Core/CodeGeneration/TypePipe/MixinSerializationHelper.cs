@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration.Serialization;
@@ -26,7 +27,7 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
   [Serializable]
-  public class MixinSerializationHelper2 : IObjectReference, ISerializable, IDeserializationCallback
+  public class MixinSerializationHelper : IObjectReference, ISerializable, IDeserializationCallback
   {
     // Always remember: the whole configuration must be serialized as one single, flat object (or SerializationInfo), we cannot rely on any
     // nested objects to be deserialized in the right order
@@ -42,7 +43,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       ArgumentUtility.CheckNotNull ("mixin", mixin);
       ArgumentUtility.CheckNotNull ("identifier", identifier);
 
-      info.SetType (typeof (MixinSerializationHelper2));
+      info.SetType (typeof (MixinSerializationHelper));
 
       var identifierSerializer = new SerializationInfoConcreteMixinTypeIdentifierSerializer (info, "__identifier");
       identifier.Serialize (identifierSerializer);
@@ -66,12 +67,12 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
     private readonly object _deserializedObject;
     private readonly StreamingContext _context;
 
-    public MixinSerializationHelper2 (SerializationInfo info, StreamingContext context)
+    public MixinSerializationHelper (SerializationInfo info, StreamingContext context)
       : this (info, context, t => t)
     {
     }
 
-    public MixinSerializationHelper2 (SerializationInfo info, StreamingContext context, Func<Type, Type> typeTransformer)
+    public MixinSerializationHelper (SerializationInfo info, StreamingContext context, Func<Type, Type> typeTransformer)
     {
       ArgumentUtility.CheckNotNull ("info", info);
       ArgumentUtility.CheckNotNull ("typeTransformer", typeTransformer);
@@ -85,8 +86,10 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       var pipeline = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>().Get (pipelineIdentifier);
 
       Type untransformedConcreteType = pipeline.ReflectionService.GetAdditionalType (identifier);
-      // TODO 5370: Maybe remove typeTransformer and directly call pipeline.ReflectionService.GetAssembledType (untransformedConcreteType)?
-      var concreteType = typeTransformer (untransformedConcreteType);
+      // TODO 5370: Is there a bug here? The typeTransformer parameter is always t => t because the ctor is always called by the Reflection engine?
+      // This would mean that deserialization of a mixed mixin would not work correctly. Create an integration test. Then, remove typeTransformer and 
+      // directly call pipeline.ReflectionService.GetAssembledType (untransformedConcreteType)?
+      var concreteType = typeTransformer(untransformedConcreteType);
 
       if (!identifier.MixinType.IsAssignableFrom (concreteType))
       {
@@ -112,7 +115,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
             new object[] { info, context },
             null);
       }
-      SerializationImplementer.RaiseOnDeserializing (_deserializedObject, _context);
+      Reflection.CodeGeneration.SerializationImplementer.RaiseOnDeserializing (_deserializedObject, _context);
     }
 
     public object GetRealObject (StreamingContext context)
@@ -136,8 +139,8 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
         FormatterServices.PopulateObjectMembers (_deserializedObject, baseMembers, _baseMemberValues);
       }
 
-      SerializationImplementer.RaiseOnDeserialized (_deserializedObject, _context);
-      SerializationImplementer.RaiseOnDeserialization (_deserializedObject, sender);
+      Reflection.CodeGeneration.SerializationImplementer.RaiseOnDeserialized (_deserializedObject, _context);
+      Reflection.CodeGeneration.SerializationImplementer.RaiseOnDeserialization (_deserializedObject, sender);
 
       // Note: This and Next properties are initialized from the target class via InitializeDeserializedMixinTarget
     }
