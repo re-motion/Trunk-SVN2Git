@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -21,17 +22,16 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using System.Linq;
 using Remotion.Reflection;
-using Throws = Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.Throws;
+using Throws = Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain.Throws;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 {
   [TestFixture]
-  [Ignore ("TODO 5370: Check and migrate tests, or delete.")]
   public class InterceptedPropertyIntegrationTest : ClientTransactionBaseTest
   {
     public override void SetUp ()
@@ -68,7 +68,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     public void ConstructedObjectIsDerived ()
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.NewObject();
-      Assert.That (((object) classWithAllDataTypes).GetType().Equals (typeof (ClassWithAllDataTypes)), Is.False);
+      Assert.That(classWithAllDataTypes, Is.Not.TypeOf<ClassWithAllDataTypes>());
+      Assert.That(classWithAllDataTypes, Is.InstanceOf<ClassWithAllDataTypes>());
     }
 
     [Test]
@@ -121,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableAbstractClass "
+        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain.NonInstantiableAbstractClass "
         + "as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an "
         + "automatic property).")]
     public void AbstractWithMethodCannotBeInstantiated ()
@@ -131,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableAbstractClassWithProps "
+        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain.NonInstantiableAbstractClassWithProps "
         + "as its member get_Foo (on type NonInstantiableAbstractClassWithProps) is abstract (and not an automatic property).")]
     public void AbstractWithNonAutoPropertiesCannotBeInstantiated ()
     {
@@ -141,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
         "Cannot instantiate type "
-        + "'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableClassWithMixinWithPersistentAutoProperties' "
+        + "'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain.NonInstantiableClassWithMixinWithPersistentAutoProperties' "
         + "because the mixin member 'MixinWithAutoProperties.PersistentAutoProperty' is an automatic property. Mixins must implement their persistent "
         + "members by using 'Properties' to get and set property values.")]
     public void ClassWithMixinWithAutoPropertiesCannotBeInstantiated ()
@@ -151,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
-        "Cannot instantiate type 'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableSealedClass' as it is sealed.")]
+        "Cannot instantiate type 'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain.NonInstantiableSealedClass' as it is sealed.")]
     public void SealedCannotBeInstantiated ()
     {
       NonInstantiableSealedClass.NewObject();
@@ -175,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage =
-        "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.ClassWithWrongConstructor' does not contain a "
+        "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain.ClassWithWrongConstructor' does not contain a "
         + "constructor with the following signature: ().")]
     public void ConstructorMismatch1 ()
     {
@@ -184,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage =
-        "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.ClassWithWrongConstructor' does not contain a "
+        "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain.ClassWithWrongConstructor' does not contain a "
         + "constructor with the following signature: (Double).")]
     public void ConstructorMismatch2 ()
     {

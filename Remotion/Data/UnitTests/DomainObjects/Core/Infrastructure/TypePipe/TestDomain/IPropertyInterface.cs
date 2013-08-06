@@ -14,27 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain
 {
-  [Serializable]
-  [DBTable]
-  public class SerializableClassImplementingISerializableNotCallingBaseGetObjectData : DomainObject, ISerializable
+  public interface IPropertyInterface
   {
-    public SerializableClassImplementingISerializableNotCallingBaseGetObjectData ()
-    {
-    }
-
-    protected SerializableClassImplementingISerializableNotCallingBaseGetObjectData (SerializationInfo info, StreamingContext context)
-        : base (info, context)
-    {
-    }
-
-    public void GetObjectData (SerializationInfo info, StreamingContext context)
-    {
-    }
+    int Property { get; set; }
   }
 }

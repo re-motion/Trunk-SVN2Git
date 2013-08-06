@@ -14,18 +14,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain
 {
-  [Instantiable]
-  public class DerivedDO : DOWithVirtualProperties
+  [DBTable]
+  public class Throws : DomainObject
   {
-    public virtual int VirtualPropertyOnDerivedClass
+    public static Throws NewObject ()
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
+      return NewObject<Throws> ();
+    }
+
+    public Throws ()
+      : base (ThrowException (), new StreamingContext())
+    {
+    }
+
+    private static SerializationInfo ThrowException ()
+    {
+      throw new Exception ("Thrown in ThrowException()");
     }
   }
 }

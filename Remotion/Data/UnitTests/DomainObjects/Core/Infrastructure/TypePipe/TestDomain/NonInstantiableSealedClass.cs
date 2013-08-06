@@ -14,30 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain
 {
   [DBTable]
-  [Instantiable]
-  public abstract class DOWithAbstractProperties : DomainObject
+  public sealed class NonInstantiableSealedClass : DomainObject
   {
-    public abstract int PropertyWithGetterAndSetter { get; set; }
-    public abstract string PropertyWithGetterOnly { get; }
-    public abstract DateTime PropertyWithSetterOnly { set; }
-    protected abstract int ProtectedProperty { get; set; }
-
-    [StorageClassNone]
-    public new PropertyIndexer Properties
+    public static NonInstantiableSealedClass NewObject ()
     {
-      get { return base.Properties; }
+      return NewObject<NonInstantiableSealedClass> ();
     }
 
-    public string GetAndCheckCurrentPropertyName ()
+    public NonInstantiableSealedClass()
     {
-      return CurrentPropertyManager.GetAndCheckCurrentPropertyName();
     }
   }
 }

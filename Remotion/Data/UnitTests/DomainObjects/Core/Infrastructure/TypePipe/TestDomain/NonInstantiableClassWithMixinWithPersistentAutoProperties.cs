@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,25 +14,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain
+using System;
+using Remotion.Data.DomainObjects;
+using Remotion.Mixins;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe.TestDomain
 {
   [DBTable]
-  public class DOWithConstructors : DomainObject
+  [Uses (typeof (MixinWithAutoProperties))]
+  public class NonInstantiableClassWithMixinWithPersistentAutoProperties : DomainObject
   {
-    public readonly string FirstArg;
-    public readonly string SecondArg;
-
-    public DOWithConstructors (string firstArg, string secondArg)
+    public static NonInstantiableClassWithMixinWithPersistentAutoProperties NewObject ()
     {
-      FirstArg = firstArg;
-      SecondArg = secondArg;
+      return NewObject<NonInstantiableClassWithMixinWithPersistentAutoProperties> ();
     }
 
-    public DOWithConstructors (int arg)
-        : this (arg.ToString(), null)
+    public class MixinWithAutoProperties : DomainObjectMixin<NonInstantiableClassWithMixinWithPersistentAutoProperties>
     {
+      public int PersistentAutoProperty { get; set; }
     }
   }
 }
