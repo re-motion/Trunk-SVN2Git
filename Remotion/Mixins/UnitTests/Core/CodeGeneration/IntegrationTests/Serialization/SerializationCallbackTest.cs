@@ -22,13 +22,13 @@ using Remotion.Reflection;
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Serialization
 {
   [TestFixture]
-  public class SerializationCallbackTest
+  public class SerializationCallbackTest : CodeGenerationBaseTest
   {
     private TargetTypeWithSerializationCallbacks _instance;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
       _instance = ObjectFactory.Create<TargetTypeWithSerializationCallbacks> (ParamList.Empty);
     }
 
