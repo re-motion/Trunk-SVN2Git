@@ -331,7 +331,8 @@
 	
 	<xsl:template name="typeAttribute">
 		<xsl:param name="typeSource" />
-		<xsl:attribute name="type" select="if ($typeSource/@genericParameter) then $typeSource/@genericParameter else $typeSource" />
+    <xsl:variable name="typeName" select="if ($typeSource/@genericParameter) then $typeSource/@genericParameter else $typeSource" />
+		<xsl:attribute name="type" select="replace($typeName, ', ', ',')" />
 	</xsl:template>
 	
 	<xsl:template name="variableElement">
