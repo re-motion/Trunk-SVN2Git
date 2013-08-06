@@ -32,7 +32,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Fact
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Linq;
 using Remotion.Linq.SqlBackend.MappingResolution;
-using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -45,6 +44,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   /// </summary>
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
+    public SqlStorageObjectFactory ()
+    {
+    }
+
     public StorageProvider CreateStorageProvider (StorageProviderDefinition storageProviderDefinition, IPersistenceExtension persistenceExtension)
     {
       ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
@@ -357,16 +360,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
     protected virtual StorageProvider CreateStorageProvider (
         IPersistenceExtension persistenceExtension,
-        RdbmsProviderDefinition storageProviderDefinition,
+        RdbmsProviderDefinition rdbmsProviderDefinition,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
     {
       ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       return ObjectFactory.Create<RdbmsProvider> (
           ParamList.Create (
-              storageProviderDefinition,
+              rdbmsProviderDefinition,
               persistenceExtension,
               commandFactory,
               (Func<IDbConnection>) (() => new SqlConnection())));
