@@ -351,7 +351,6 @@
     <Compile Include="Core\MixinTargetMockUtilityTest.cs" />
     <Compile Include="Core\MixinTest.cs" />
     <Compile Include="Core\MixinTypeUtilityTest.cs" />
-    <Compile Include="Core\ObjectFactoryPerformanceTest.cs" />
     <Compile Include="Core\ObjectFactoryTest.cs" />
     <Compile Include="Core\IntegrationTests\AttributeIntroduction\InheritedAttributeTest.cs" />
     <Compile Include="Core\TestDomain\InheritableAttribute.cs" />
@@ -535,8 +534,6 @@
     <Compile Include="Core\TestDomain\DerivedNullTarget.cs" />
     <Compile Include="Core\TestDomain\DuckBaseMixin.cs" />
     <Compile Include="Core\TestDomain\DuckTargetCallMixin.cs" />
-    <Compile Include="Core\TestDomain\GeneratedTypes\ClassWithMixedMixin_Mixed_Generated.cs" />
-    <Compile Include="Core\TestDomain\GeneratedTypes\MixinMixingClass_Mixed_Generated_WithEfficientMixinCreation.cs" />
     <Compile Include="Core\TestDomain\GenericClassExtendedByMixin.cs" />
     <Compile Include="Core\TestDomain\GenericClassForMixinIgnoringDerivedClass.cs" />
     <Compile Include="Core\TestDomain\GenericMixin.cs" />
