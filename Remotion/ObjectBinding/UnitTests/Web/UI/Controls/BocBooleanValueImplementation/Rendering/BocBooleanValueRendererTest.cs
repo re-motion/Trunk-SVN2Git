@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
           "'" + c_trueDescription + "', '" + c_falseDescription + "', '" + c_nullDescription + "');return false;",
           "ResourceKey",
           c_clientID + "_Image",
-          c_clientID + "_Label",
+          c_clientID + "_LabelValue",
           c_keyValueName);
 
       _keyDownScript = "BocBooleanValue_OnKeyDown (this);";
@@ -284,7 +284,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
       checkImageAttributes (image, iconUrl, description);
 
       var label = Html.GetAssertedChildElement (outerSpan, "span", 2);
-      Html.AssertAttribute (label, "id", "MyBooleanValue_Label");
+      Html.AssertAttribute (label, "id", "MyBooleanValue_LabelValue");
       Html.AssertChildElementCount (label, 0);
       Html.AssertTextNode (label, description, 0);
 

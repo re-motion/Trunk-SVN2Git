@@ -246,7 +246,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
 
     private string GetLabelName (BocBooleanValueRenderingContext renderingContext)
     {
-      return renderingContext.Control.ClientID + "_Label";
+      return renderingContext.Control.ClientID + "_LabelValue";
     }
 
     private string GetImageName (BocBooleanValueRenderingContext renderingContext)
