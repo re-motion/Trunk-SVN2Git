@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
   public class MappingReflectorObjectMother
   {
-    public static readonly TypePipeBasedDomainObjectCreator DomainObjectCreator = MappingReflector.CreateDomainObjectCreator();
+    public static readonly DomainObjectCreator DomainObjectCreator = MappingReflector.CreateDomainObjectCreator();
 
     public static MappingReflector CreateMappingReflector (ITypeDiscoveryService typeDiscoveryService)
     {

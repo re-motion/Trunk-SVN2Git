@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// <summary>
   /// Provides a common interface for classes creating new instances of <see cref="DomainObject"/> types.
   /// </summary>
-  [ConcreteImplementation (typeof (TypePipeBasedDomainObjectCreator), Lifetime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof (DomainObjectCreator), Lifetime = LifetimeKind.Singleton)]
   public interface IDomainObjectCreator
   {
     /// <summary>

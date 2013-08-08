@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
     {
       Order clone = _cloner.CreateCloneHull (_order1);
       Assert.That (clone.CtorCalled, Is.False);
-      var pipeline = ((TypePipeBasedDomainObjectCreator) clone.ID.ClassDefinition.InstanceCreator).Pipeline;
+      var pipeline = ((DomainObjectCreator) clone.ID.ClassDefinition.InstanceCreator).Pipeline;
       Assert.That (pipeline.ReflectionService.IsAssembledType (((object) clone).GetType()));
     }
 

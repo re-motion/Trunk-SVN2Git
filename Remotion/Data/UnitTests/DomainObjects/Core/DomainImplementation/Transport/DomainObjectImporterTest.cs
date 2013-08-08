@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
 
       var importedInstance = (ClassWithAllDataTypes) imported[0];
-      var pipeline = ((TypePipeBasedDomainObjectCreator) importedInstance.ID.ClassDefinition.InstanceCreator).Pipeline;
+      var pipeline = ((DomainObjectCreator) importedInstance.ID.ClassDefinition.InstanceCreator).Pipeline;
       Assert.That (pipeline.ReflectionService.IsAssembledType (((object) importedInstance).GetType ()), Is.True, "creator should be used");
       Assert.That (importedInstance.ID, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1), "ID should be copied");
 

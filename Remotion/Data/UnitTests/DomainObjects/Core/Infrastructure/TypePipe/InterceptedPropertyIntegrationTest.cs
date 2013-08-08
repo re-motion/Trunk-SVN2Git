@@ -407,7 +407,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
     private bool WasCreatedByFactory (object o)
     {
-      var pipeline = ((TypePipeBasedDomainObjectCreator) DomainObjectIDs.Order1.ClassDefinition.InstanceCreator).Pipeline;
+      var pipeline = ((DomainObjectCreator) DomainObjectIDs.Order1.ClassDefinition.InstanceCreator).Pipeline;
       return pipeline.ReflectionService.IsAssembledType (o.GetType ());
     }
 

@@ -34,11 +34,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 {
   public class MappingReflector : IMappingLoader
   {
-    public static TypePipeBasedDomainObjectCreator CreateDomainObjectCreator ()
+    public static DomainObjectCreator CreateDomainObjectCreator ()
     {
       var pipelineRegistry = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>();
       var defaultPipeline = pipelineRegistry.DefaultPipeline;
-      return new TypePipeBasedDomainObjectCreator (defaultPipeline);
+      return new DomainObjectCreator (defaultPipeline);
     }
 
     private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingReflector));

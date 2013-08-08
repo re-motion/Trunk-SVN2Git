@@ -293,7 +293,7 @@
     <Compile Include="DomainObjects\DomainObjectHandleConverterTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\ImplementingAccessorInterceptorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\InterceptedPropertyCollectorAdapterTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\TypePipeBasedDomainObjectCreatorTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\DomainObjectCreatorTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\WrappingAccessorInterceptorTest.cs" />
     <Compile Include="DomainObjects\ObjectIDExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionObjectMother.cs" />

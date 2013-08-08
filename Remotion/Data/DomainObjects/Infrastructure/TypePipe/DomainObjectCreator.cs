@@ -30,23 +30,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// <summary>
   /// Creates new domain object instances via an instance of <see cref="IPipeline"/>.
   /// </summary>
-  public class TypePipeBasedDomainObjectCreator : IDomainObjectCreator
+  public class DomainObjectCreator : IDomainObjectCreator
   {
     // TODO 5375: Remove if possible.
-    public static readonly TypePipeBasedDomainObjectCreator Instance = CreateInstance();
+    public static readonly DomainObjectCreator Instance = CreateInstance();
 
     // TODO 5375: Refactor away and move to callers?
-    private static TypePipeBasedDomainObjectCreator CreateInstance ()
+    private static DomainObjectCreator CreateInstance ()
     {
       var pipelineRegistry = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>();
       var defaultPipeline = pipelineRegistry.DefaultPipeline;
 
-      return new TypePipeBasedDomainObjectCreator (defaultPipeline);
+      return new DomainObjectCreator (defaultPipeline);
     }
 
     private readonly IPipeline _pipeline;
 
-    public TypePipeBasedDomainObjectCreator (IPipeline pipeline)
+    public DomainObjectCreator (IPipeline pipeline)
     {
       ArgumentUtility.CheckNotNull ("pipeline", pipeline);
 

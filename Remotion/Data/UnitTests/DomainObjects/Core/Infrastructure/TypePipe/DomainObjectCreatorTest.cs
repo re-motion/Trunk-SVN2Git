@@ -31,9 +31,9 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 {
   [TestFixture]
-  public class TypePipeBasedDomainObjectCreatorTest : StandardMappingTest
+  public class DomainObjectCreatorTest : StandardMappingTest
   {
-    private TypePipeBasedDomainObjectCreator _interceptedDomainObjectCreator;
+    private DomainObjectCreator _domainObjectCreator;
 
     private ClientTransaction _transaction;
     private IObjectInitializationContext _order1InitializationContext;
@@ -46,8 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
       var remixParticipant = new MixinParticipant ();
       var domainObjectParticipant = new DomainObjectParticipant (new TypeDefinitionProvider (), new InterceptedPropertyCollectorAdapter ());
-      _pipeline = PipelineFactory.Create ("TypePipeBasedDomainObjectCreatorTest", remixParticipant, domainObjectParticipant);
-      _interceptedDomainObjectCreator = new TypePipeBasedDomainObjectCreator (_pipeline);
+      _pipeline = PipelineFactory.Create ("DomainObjectCreatorTest", remixParticipant, domainObjectParticipant);
+      _domainObjectCreator = new DomainObjectCreator (_pipeline);
 
       _transaction = ClientTransaction.CreateRootTransaction();
       _order1InitializationContext = CreateFakeInitializationContext (DomainObjectIDs.Order1, _transaction);
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     [Test]
     public void CreateObjectReference ()
     {
-      var order = _interceptedDomainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
+      var order = _domainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
 
       Assert.That (order, Is.InstanceOf (typeof (Order)));
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     [Test]
     public void CreateObjectReference_UsesFactoryGeneratedType ()
     {
-      var order = _interceptedDomainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
+      var order = _domainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
 
       Assert.That (_pipeline.ReflectionService.IsAssembledType (((object) order).GetType()), Is.True);
     }
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     [Test]
     public void CreateObjectReference_CallsNoCtor ()
     {
-      var order = (Order) _interceptedDomainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
+      var order = (Order) _domainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
 
       Assert.That (order.CtorCalled, Is.False);
     }
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     [Test]
     public void CreateObjectReference_PreparesMixins ()
     {
-      var instance = _interceptedDomainObjectCreator.CreateObjectReference (_targetClassForPersistentMixinInitializationContext, _transaction);
+      var instance = _domainObjectCreator.CreateObjectReference (_targetClassForPersistentMixinInitializationContext, _transaction);
 
       Assert.That (Mixin.Get<MixinAddingPersistentProperties> (instance), Is.Not.Null);
     }
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     [Test]
     public void CreateObjectReference_InitializesObjectID ()
     {
-      var instance = _interceptedDomainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
+      var instance = _domainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
       Assert.That (instance.ID, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
           .Expect (mock => mock.RegisterObject (Arg<DomainObject>.Matches (obj => obj.ID == DomainObjectIDs.Order1)))
           .WhenCalled (mi => registeredObject = (DomainObject) mi.Arguments[0]);
 
-      var instance = _interceptedDomainObjectCreator.CreateObjectReference (initializationContextMock, _transaction);
+      var instance = _domainObjectCreator.CreateObjectReference (initializationContextMock, _transaction);
 
       initializationContextMock.VerifyAllExpectations ();
       Assert.That (instance, Is.SameAs (registeredObject));
@@ -120,21 +120,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     {
       using (MixinConfiguration.BuildNew().EnterScope())
       {
-        _interceptedDomainObjectCreator.CreateObjectReference (_targetClassForPersistentMixinInitializationContext, _transaction);
+        _domainObjectCreator.CreateObjectReference (_targetClassForPersistentMixinInitializationContext, _transaction);
       }
     }
 
     [Test]
     public void CreateObjectReference_CallsReferenceInitializing ()
     {
-      var domainObject = (Order) _interceptedDomainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
+      var domainObject = (Order) _domainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
       Assert.That (domainObject.OnReferenceInitializingCalled, Is.True);
     }
 
     [Test]
     public void CreateObjectReference_CallsReferenceInitializing_InRightTransaction ()
     {
-      var domainObject = (Order) _interceptedDomainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
+      var domainObject = (Order) _domainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
       Assert.That (domainObject.OnReferenceInitializingTx, Is.SameAs (_transaction));
     }
 
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     {
       using (ClientTransactionTestHelper.MakeInactive (_transaction))
       {
-        var domainObject = (Order) _interceptedDomainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
+        var domainObject = (Order) _domainObjectCreator.CreateObjectReference (_order1InitializationContext, _transaction);
         Assert.That (domainObject.OnReferenceInitializingTx, Is.SameAs (_transaction));
         Assert.That (domainObject.OnReferenceInitializingActiveTx, Is.SameAs (_transaction));
       }
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     public void CreateNewObject ()
     {
       var initializationContext = CreateNewObjectInitializationContext (DomainObjectIDs.OrderItem1, _transaction);
-      var result = _interceptedDomainObjectCreator.CreateNewObject (initializationContext, ParamList.Create ("A product"), _transaction);
+      var result = _domainObjectCreator.CreateNewObject (initializationContext, ParamList.Create ("A product"), _transaction);
 
       Assert.That (_pipeline.ReflectionService.IsAssembledType (((object) result).GetType ()), Is.True);
       Assert.That (result, Is.AssignableTo<OrderItem> ());
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     {
       using (MixinConfiguration.BuildNew().EnterScope())
       {
-        _interceptedDomainObjectCreator.CreateNewObject (_targetClassForPersistentMixinInitializationContext, ParamList.Empty, _transaction);
+        _domainObjectCreator.CreateNewObject (_targetClassForPersistentMixinInitializationContext, ParamList.Empty, _transaction);
       }
     }
 
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     {
       var initializationContext = CreateNewObjectInitializationContext (DomainObjectIDs.ClassWithAllDataTypes1, _transaction);
 
-      var result = _interceptedDomainObjectCreator.CreateNewObject (initializationContext, ParamList.Empty, _transaction);
+      var result = _domainObjectCreator.CreateNewObject (initializationContext, ParamList.Empty, _transaction);
 
       var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (result);
       Assert.That (mixin, Is.Not.Null);
@@ -193,13 +193,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     {
       Assert.That (
           () =>
-          _interceptedDomainObjectCreator.CreateNewObject (
+          _domainObjectCreator.CreateNewObject (
               CreateNewObjectInitializationContext (DomainObjectIDs.OrderItem1, _transaction), ParamList.Empty, _transaction),
           Is.Not.Null);
 
       Assert.That (
           () =>
-          _interceptedDomainObjectCreator.CreateNewObject (
+          _domainObjectCreator.CreateNewObject (
               CreateNewObjectInitializationContext (DomainObjectIDs.OrderItem2, _transaction), ParamList.Empty, _transaction),
           Is.Not.Null);
     }

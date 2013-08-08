@@ -271,7 +271,7 @@
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\UnlockedParentTransactionContext.cs" />
     <Compile Include="Infrastructure\TypePipe\TypeDefinitionProvider.cs" />
-    <Compile Include="Infrastructure\TypePipe\TypePipeBasedDomainObjectCreator.cs" />
+    <Compile Include="Infrastructure\TypePipe\DomainObjectCreator.cs" />
     <Compile Include="IDomainObjectHandle.cs" />
     <Compile Include="ISupportsGetObject.cs" />
     <Compile Include="Linq\ExecutableQueries\CustomSequenceQueryAdapter.cs" />

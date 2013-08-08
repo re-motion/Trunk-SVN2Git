@@ -943,7 +943,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatorIsTypePipeBasedCreator ()
     {
-      Assert.That (_orderClass.InstanceCreator, Is.TypeOf<TypePipeBasedDomainObjectCreator>());
+      Assert.That (_orderClass.InstanceCreator, Is.TypeOf<DomainObjectCreator>());
     }
 
     [Test]
