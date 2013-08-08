@@ -17,6 +17,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using Remotion.Mixins.Context;
 using Remotion.TypePipe.Caching;
 using Remotion.TypePipe.Dlr.Ast;
@@ -29,20 +30,12 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// </summary>
   public class MixinParticipantTypeIdentifierProvider : ITypeIdentifierProvider
   {
-    // TODO 5370: Remove.
-    private readonly IConcreteTypeMetadataImporter _concreteTypeMetadataImporter;
-
-    public MixinParticipantTypeIdentifierProvider (IConcreteTypeMetadataImporter concreteTypeMetadataImporter)
-    {
-      ArgumentUtility.CheckNotNull ("concreteTypeMetadataImporter", concreteTypeMetadataImporter);
-
-      _concreteTypeMetadataImporter = concreteTypeMetadataImporter;
-    }
+    private static readonly MethodInfo s_createFlatClassContext = MemberInfoFromExpressionUtility.GetMethod (() => FlatClassContext.Create (null));
 
     public object GetID (Type requestedType)
     {
-      // Using Debug.Assert because it will be compiled away.
-      Debug.Assert (requestedType != null);
+      // Using Assertion.DebugAssert because it will be compiled away.
+      Assertion.DebugAssert (requestedType != null);
 
       return MixinConfiguration.ActiveConfiguration.GetContext (requestedType);
     }
@@ -60,15 +53,15 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       var classContext = ArgumentUtility.CheckNotNullAndType<ClassContext> ("id", id);
 
       var classContextExpression = GetClassContextExpression (classContext);
-      return Expression.Call (typeof (FlatClassContext), "Create", Type.EmptyTypes, classContextExpression);
+      return Expression.Call (s_createFlatClassContext, classContextExpression);
     }
 
     private Expression GetClassContextExpression (ClassContext classContext)
     {
-      var classContextCodeGenerator = new CodeGenerationClassContextSerializer ();
+      var classContextCodeGenerator = new CodeGenerationClassContextSerializer();
       classContext.Serialize (classContextCodeGenerator);
-      var classContextExpression = classContextCodeGenerator.GetConstructorInvocationExpression ();
-      return classContextExpression;
+
+      return classContextCodeGenerator.GetConstructorInvocationExpression();
     }
   }
 }
