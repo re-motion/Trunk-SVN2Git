@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.ServiceLocation;
+using Remotion.TypePipe.Implementation;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -23,6 +24,6 @@ namespace Remotion.Mixins.CodeGeneration
   public interface ITypeFactoryImplementation
   {
     Type GetConcreteType (Type targetOrConcreteType);
-    void InitializeUnconstructedInstance (object mixinTarget);
+    void InitializeUnconstructedInstance (object mixinTarget, InitializationSemantics initializationSemantics);
   }
 }

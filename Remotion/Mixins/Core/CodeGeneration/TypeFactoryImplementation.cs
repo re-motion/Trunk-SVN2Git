@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.TypePipe;
+using Remotion.TypePipe.Implementation;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration
@@ -27,6 +28,7 @@ namespace Remotion.Mixins.CodeGeneration
     public TypeFactoryImplementation (IPipelineRegistry pipelineRegistry)
     {
       ArgumentUtility.CheckNotNull ("pipelineRegistry", pipelineRegistry);
+
       _pipelineRegistry = pipelineRegistry;
     }
 
@@ -48,13 +50,12 @@ namespace Remotion.Mixins.CodeGeneration
       return _pipelineRegistry.DefaultPipeline.ReflectionService.GetAssembledType (targetOrConcreteType);
     }
 
-    public void InitializeUnconstructedInstance (object mixinTarget)
+    public void InitializeUnconstructedInstance (object mixinTarget, InitializationSemantics initializationSemantics)
     {
       ArgumentUtility.CheckNotNull ("mixinTarget", mixinTarget);
       ArgumentUtility.CheckType<IMixinTarget> ("mixinTarget", mixinTarget);
 
-      // tODO 5370: Pass in the initialization semantics.
-      _pipelineRegistry.DefaultPipeline.PrepareExternalUninitializedObject (mixinTarget,0);
+      _pipelineRegistry.DefaultPipeline.PrepareExternalUninitializedObject (mixinTarget, initializationSemantics);
     }
   }
 }

@@ -18,6 +18,7 @@ using System;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.ServiceLocation;
+using Remotion.TypePipe.Implementation;
 
 namespace Remotion.Mixins
 {
@@ -95,11 +96,12 @@ namespace Remotion.Mixins
     /// Initializes a mixin target instance which was created without its constructor having been called.
     /// </summary>
     /// <param name="mixinTarget">The mixin target to initialize.</param>
+    /// <param name="initializationSemantics">The semantics to apply during initialization.</param>
     /// <exception cref="ArgumentNullException">The mixin target is <see langword="null"/>.</exception>
     /// <remarks>This method is useful when a mixin target instance is created via <see cref="FormatterServices.GetSafeUninitializedObject"/>.</remarks>
-    public static void InitializeUnconstructedInstance (object mixinTarget)
+    public static void InitializeUnconstructedInstance (object mixinTarget, InitializationSemantics initializationSemantics)
     {
-      LazyStaticFields.TypeFactoryImplementation.InitializeUnconstructedInstance (mixinTarget);
+      LazyStaticFields.TypeFactoryImplementation.InitializeUnconstructedInstance (mixinTarget, initializationSemantics);
     }
   }
 }

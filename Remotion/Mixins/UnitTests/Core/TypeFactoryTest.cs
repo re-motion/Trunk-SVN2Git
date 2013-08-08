@@ -18,6 +18,7 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Remotion.TypePipe.Implementation;
 
 namespace Remotion.Mixins.UnitTests.Core
 {
@@ -39,14 +40,16 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    public void InitializeUnconstructedInstance ()
+    public void InitializeUnconstructedInstance_ConstructionSemantics ()
     {
       Type concreteType = TypeFactory.GetConcreteType (typeof (BaseType3));
       BaseType3 bt3 = (BaseType3) FormatterServices.GetSafeUninitializedObject (concreteType);
-      TypeFactory.InitializeUnconstructedInstance (bt3 as IMixinTarget);
+      TypeFactory.InitializeUnconstructedInstance (bt3 as IMixinTarget, InitializationSemantics.Construction);
       BT3Mixin1 bt3m1 = Mixin.Get<BT3Mixin1> (bt3);
       Assert.That (bt3m1, Is.Not.Null, "Mixin must have been created");
       Assert.That (bt3m1.Target, Is.SameAs (bt3), "Mixin must have been initialized");
     }
+
+    // TODO 5370: Test for deserialization semantics.
   }
 }
