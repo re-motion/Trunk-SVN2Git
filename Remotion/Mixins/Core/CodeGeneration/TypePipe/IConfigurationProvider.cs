@@ -22,7 +22,10 @@ using Remotion.Mixins.Definitions;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// Provides <see cref="TargetClassDefinition"/>s for requested types and <see cref="ClassContext"/>s.
+  /// This interface is an implementation detail of <see cref="MixinParticipant"/>.
+  /// </summary>
   public interface IConfigurationProvider
   {
     TargetClassDefinition GetTargetClassDefinition (ClassContext classContext);

@@ -23,7 +23,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// Generates an expression that regenerates a <see cref="MixinContext"/> serialized using this class.
+  /// </summary>
   public class ExpressionMixinContextSerializer : MixinContextSerializerBase
   {
     private static readonly ConstructorInfo s_constructor =

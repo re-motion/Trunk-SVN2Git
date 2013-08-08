@@ -23,8 +23,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
-  // TODO 5370: tests
+  /// <summary>
+  /// A facade that modifies mixin target type by calling the methods on <see cref="TargetTypeGenerator"/> in the proper order.
+  /// </summary>
   public class TargetTypeGeneratorFacade : ITargetTypeModifier
   {
     private readonly INextCallProxyGenerator _nextCallProxyGenerator;

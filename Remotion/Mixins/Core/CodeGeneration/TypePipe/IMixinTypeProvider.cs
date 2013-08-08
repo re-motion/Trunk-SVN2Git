@@ -22,7 +22,10 @@ using Remotion.TypePipe.TypeAssembly;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: Docs.
+  /// <summary>
+  /// Generates concrete mixin types and meta data.
+  /// This interface is an abstraction for <see cref="MixinParticipant"/>.
+  /// </summary>
   public interface IMixinTypeProvider
   {
     IMixinInfo GetMixinInfo (IProxyTypeAssemblyContext context, MixinDefinition mixin);

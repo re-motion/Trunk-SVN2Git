@@ -18,12 +18,16 @@
 using System;
 using System.Reflection;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.TypePipe.Dlr.Ast;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// A <see cref="IMixinContextOriginSerializer"/> that builds expressions that represent the creation of an equivalent 
+  /// <see cref="MixinContextOrigin"/> from constant values.
+  /// </summary>
   public class ExpressionMixinContextOriginSerializer : MixinContextOriginSerializerBase
   {
     private static readonly ConstructorInfo s_constructor =

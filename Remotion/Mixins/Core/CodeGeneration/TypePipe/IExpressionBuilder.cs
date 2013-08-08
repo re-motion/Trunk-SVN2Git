@@ -23,7 +23,9 @@ using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// Builds complex <see cref="Expression"/>s needed for code generation.
+  /// </summary>
   public interface IExpressionBuilder
   {
     Expression CreateNewClassContext (ClassContext classContext);

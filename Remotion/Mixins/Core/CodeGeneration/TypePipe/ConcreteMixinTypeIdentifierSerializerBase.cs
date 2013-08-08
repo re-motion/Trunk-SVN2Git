@@ -24,6 +24,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
+  /// <summary>
+  /// A common base class for <see cref="IConcreteMixinTypeIdentifierSerializer"/> implementations.
+  /// </summary>
   public class ConcreteMixinTypeIdentifierSerializerBase : IConcreteMixinTypeIdentifierSerializer
   {
     private Type _mixinType;

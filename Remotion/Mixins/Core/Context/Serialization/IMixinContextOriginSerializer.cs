@@ -19,7 +19,7 @@ using System.Reflection;
 namespace Remotion.Mixins.Context.Serialization
 {
   /// <summary>
-  /// Provides an interface for classes serializing the contents of a <see cref="MixinContextOrigin"/> object.
+  /// Serializes the contents of a <see cref="MixinContextOrigin"/> object.
   /// </summary>
   public interface IMixinContextOriginSerializer
   {

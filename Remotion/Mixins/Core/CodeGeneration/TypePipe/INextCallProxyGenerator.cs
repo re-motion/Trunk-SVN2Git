@@ -22,7 +22,9 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// An abstraction for generating <see cref="INextCallProxy"/>.
+  /// </summary>
   public interface INextCallProxyGenerator
   {
     INextCallProxy Create (

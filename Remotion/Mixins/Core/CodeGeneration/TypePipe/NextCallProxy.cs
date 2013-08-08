@@ -25,7 +25,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
+  /// <summary>
+  /// Encapsulates the implementation details of the "next call proxy" concept.
+  /// </summary>
   public class NextCallProxy : INextCallProxy
   {
     private readonly MutableType _type;

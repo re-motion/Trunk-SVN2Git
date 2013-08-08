@@ -22,7 +22,10 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs  
+  /// <summary>
+  /// An abstraction that encapsulates the modifications applied to a mixin target type.
+  /// This interface is an implementation detail of <see cref="MixinParticipant"/>.
+  /// </summary>
   public interface ITargetTypeModifier
   {
     void ModifyTargetType (

@@ -25,7 +25,9 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// Adds custom <see cref="Attribute"/>s to <see cref="IMutableMember"/>s.
+  /// </summary>
   public interface IAttributeGenerator
   {
     void AddDebuggerBrowsableAttribute (IMutableMember member, DebuggerBrowsableState debuggerBrowsableState);

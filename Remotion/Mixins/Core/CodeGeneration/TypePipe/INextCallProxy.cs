@@ -22,7 +22,10 @@ using Remotion.TypePipe.Dlr.Ast;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// An abstraction that represents a next call proxy type, i.e., a type which objects can be used to proceed execution with the next mixin in the
+  /// chain.
+  /// </summary>
   public interface INextCallProxy
   {
     Type Type { get; }

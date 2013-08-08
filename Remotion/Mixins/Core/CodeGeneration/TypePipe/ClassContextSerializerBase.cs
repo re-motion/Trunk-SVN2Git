@@ -25,7 +25,9 @@ using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// A common base class for <see cref="IClassContextSerializer"/> implementations.
+  /// </summary>
   public class ClassContextSerializerBase : IClassContextSerializer
   {
     private Type _type;

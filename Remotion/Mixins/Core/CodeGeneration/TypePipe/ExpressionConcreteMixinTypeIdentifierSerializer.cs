@@ -19,14 +19,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.Reflection;
+using Remotion.TypePipe.Dlr.Ast;
 using Remotion.Utilities;
-using Expression = Remotion.TypePipe.Dlr.Ast.Expression;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
   /// <summary>
-  /// Generates an expression that regenerates a <see cref="ConcreteMixinTypeIdentifier"/> serialized using this class.
+  /// A <see cref="IConcreteMixinTypeIdentifierSerializer"/> that builds expressions that represent the creation of an equivalent 
+  /// <see cref="ConcreteMixinTypeIdentifier"/> from constant values.
   /// </summary>
   public class ExpressionConcreteMixinTypeIdentifierSerializer : ConcreteMixinTypeIdentifierSerializerBase
   {

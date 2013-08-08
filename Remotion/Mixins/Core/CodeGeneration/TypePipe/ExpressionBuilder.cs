@@ -26,7 +26,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// A helper class for code generation that builds complex <see cref="Expression"/>s.
+  /// </summary>
   public class ExpressionBuilder : IExpressionBuilder
   {
     private static readonly MethodInfo s_initializeMethod =

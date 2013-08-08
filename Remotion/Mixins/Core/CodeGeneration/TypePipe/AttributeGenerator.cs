@@ -27,7 +27,10 @@ using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// Adds custom <see cref="Attribute"/>s to <see cref="IMutableMember"/>s.
+  /// This class provides helper methods used during code generation.
+  /// </summary>
   public class AttributeGenerator : IAttributeGenerator
   {
     private static readonly ConstructorInfo s_debuggerBrowsableAttributeConstructor =

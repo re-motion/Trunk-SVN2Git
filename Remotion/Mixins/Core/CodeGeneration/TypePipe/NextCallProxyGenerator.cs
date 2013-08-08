@@ -27,8 +27,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
-  // TODO 5370: tests
+  /// <summary>
+  /// Generates <see cref="INextCallProxy"/> instances.
+  /// </summary>
   public class NextCallProxyGenerator : INextCallProxyGenerator
   {
     public INextCallProxy Create (

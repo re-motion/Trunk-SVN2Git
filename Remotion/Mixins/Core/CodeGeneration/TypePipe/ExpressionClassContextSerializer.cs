@@ -18,13 +18,17 @@
 using System;
 using System.Reflection;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.TypePipe.Dlr.Ast;
 using Remotion.Utilities;
 using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
+  /// <summary>
+  /// A <see cref="IClassContextSerializer"/> that builds expressions that represent the creation of an equivalent <see cref="ClassContext"/>
+  /// from constant values.
+  /// </summary>
   public class ExpressionClassContextSerializer : ClassContextSerializerBase
   {
     private static readonly ConstructorInfo s_constructor =

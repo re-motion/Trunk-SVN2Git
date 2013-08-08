@@ -30,7 +30,9 @@ using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: Docs.
+  /// <summary>
+  /// Encapsulates the modifications that are applied to a mixin target type.
+  /// </summary>
   public class TargetTypeGenerator
   {
     private static readonly ConstructorInfo s_mixinArrayInitializerCtor =

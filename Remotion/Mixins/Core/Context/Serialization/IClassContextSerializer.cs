@@ -19,6 +19,9 @@ using System.Collections.Generic;
 
 namespace Remotion.Mixins.Context.Serialization
 {
+  /// <summary>
+  /// Serializes the contents of a <see cref="ClassContext"/> object.
+  /// </summary>
   public interface IClassContextSerializer
   {
     void AddClassType (Type type);

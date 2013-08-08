@@ -21,8 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: docs
-  // TODO 5370: tests
+  /// <summary>
+  /// A common base class for <see cref="IMixinContextOriginSerializer"/> implementations.
+  /// </summary>
   public class MixinContextOriginSerializerBase : IMixinContextOriginSerializer
   {
     private string _kind;

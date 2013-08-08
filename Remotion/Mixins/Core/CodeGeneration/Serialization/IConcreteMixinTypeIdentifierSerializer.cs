@@ -20,6 +20,9 @@ using System.Reflection;
 
 namespace Remotion.Mixins.CodeGeneration.Serialization
 {
+  /// <summary>
+  /// Serializes the contents of a <see cref="ConcreteMixinTypeIdentifier"/> object.
+  /// </summary>
   public interface IConcreteMixinTypeIdentifierSerializer
   {
     void AddMixinType (Type mixinType);
