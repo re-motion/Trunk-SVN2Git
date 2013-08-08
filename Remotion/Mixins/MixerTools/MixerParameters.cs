@@ -19,7 +19,6 @@ using Remotion.Text.CommandLine;
 
 namespace Remotion.Mixins.MixerTools
 {
-  // TODO 5370: Document breaking change in JIRA.
   [Serializable]
   public class MixerParameters
   {

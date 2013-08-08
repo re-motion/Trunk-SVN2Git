@@ -93,7 +93,6 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       ArgumentUtility.CheckNotNull ("classContext", classContext);
       ArgumentUtility.CheckNotNull ("orderedMixinTypes", orderedMixinTypes);
 
-      // TODO 5370: just the easiest way to get to the data.
       var attributeData = ConcreteMixedTypeAttribute.FromClassContext (classContext, orderedMixinTypes.ToArray());
       var attribute = new CustomAttributeDeclaration (
           s_concreteMixedTypeAttributeConstructor, new object[] { attributeData.ClassContextData, attributeData.OrderedMixinTypes });
@@ -105,7 +104,6 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       ArgumentUtility.CheckNotNull ("member", member);
       ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
 
-      // TODO 5370: just the easiest way to get to the data.
       var attributeData = ConcreteMixinTypeAttribute.Create (concreteMixinTypeIdentifier).ConcreteMixinTypeIdentifierData;
       var attribute = new CustomAttributeDeclaration (s_concreteMixinTypeAttributeConstructor, new object[] { attributeData });
       member.AddCustomAttribute (attribute);
