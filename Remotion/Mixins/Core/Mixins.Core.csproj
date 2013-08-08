@@ -300,7 +300,6 @@
     <Compile Include="Utilities\DependencySort\IDependencyAnalyzer.cs" />
     <Compile Include="Definitions\Building\DependencySorting\IDependentMixinSorter.cs" />
     <Compile Include="Utilities\MixedObjectInstantiationScope.cs" />
-    <Compile Include="Utilities\MixedTypeConstructorLookupInfo.cs" />
     <Compile Include="Utilities\MixinGenericArgumentFinder.cs" />
     <Compile Include="Utilities\MixinReflector.cs" />
     <Compile Include="Utilities\MixinTypeCloser.cs" />

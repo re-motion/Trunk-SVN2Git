@@ -358,7 +358,6 @@
     <Compile Include="Core\Utilities\ConstraintBasedGenericParameterInstantiatorTest.cs" />
     <Compile Include="Core\Utilities\DependencySortTest.cs" />
     <Compile Include="Core\Utilities\MixedObjectInstantiationScopeTest.cs" />
-    <Compile Include="Core\Utilities\MixedTypeConstructorLookupInfoTest.cs" />
     <Compile Include="Core\Utilities\MixinGenericArgumentFinderTest.cs" />
     <Compile Include="Core\Utilities\MixinReflectorTest.cs" />
     <Compile Include="Core\Utilities\MixinTypeCloserTest.cs" />
