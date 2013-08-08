@@ -26,7 +26,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
   public class SerializationImplementer
   {
     private static readonly MethodInfo s_getObjectDataMethod =

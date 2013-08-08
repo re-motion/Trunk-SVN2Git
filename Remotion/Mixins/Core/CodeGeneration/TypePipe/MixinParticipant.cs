@@ -25,7 +25,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370.
+  /// <summary>
+  /// A TypePipe <see cref="IParticipant"/> that specifies the code generation needs necessary for re-mix.
+  /// </summary>
   public class MixinParticipant : IParticipant
   {
     private readonly IConfigurationProvider _configurationProvider;

@@ -25,7 +25,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
+  /// <summary>
+  /// Generates concrete mixin types and meta data by calling the methods on <see cref="MixinTypeGenerator"/> in proper order.
+  /// </summary>
   public class MixinTypeGeneratorFacade : IMixinTypeProvider
   {
     public IMixinInfo GetMixinInfo (IProxyTypeAssemblyContext context, MixinDefinition mixin)

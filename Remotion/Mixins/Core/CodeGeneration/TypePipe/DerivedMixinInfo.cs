@@ -22,7 +22,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
+  /// <summary>
+  /// Encapsulates meta data about a derived mixin type, that is, a mixin type for which a sublcass proxy is created and used instead of the original
+  /// mixin type created by the programmer.
+  /// </summary>
   public class DerivedMixinInfo : IMixinInfo
   {
     private readonly ConcreteMixinType _concreteMixinType;

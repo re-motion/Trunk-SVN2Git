@@ -22,7 +22,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
   public class OverrideInterface
   {
     private readonly Type _type;

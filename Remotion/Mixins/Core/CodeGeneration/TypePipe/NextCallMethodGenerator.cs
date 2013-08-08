@@ -21,12 +21,9 @@ using Remotion.Mixins.Definitions;
 using Remotion.TypePipe.Dlr.Ast;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
 using Remotion.Utilities;
-using System.Linq;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
   public class NextCallMethodGenerator : INextCallMethodGenerator
   {
     private readonly TargetClassDefinition _targetClassDefinition;

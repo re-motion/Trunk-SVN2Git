@@ -21,7 +21,9 @@ using System.Reflection;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
+  /// <summary>
+  /// Encapsulates meta data about a mixin type.
+  /// </summary>
   public interface IMixinInfo
   {
     Type MixinType { get; }

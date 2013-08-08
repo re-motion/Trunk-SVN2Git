@@ -18,16 +18,18 @@
 using System;
 using System.Diagnostics;
 using Remotion.Mixins.Context;
-using Remotion.Mixins.Context.Serialization;
 using Remotion.TypePipe.Caching;
 using Remotion.TypePipe.Dlr.Ast;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370.
+  /// <summary>
+  /// The <see cref="ITypeIdentifierProvider"/> returned by the <see cref="MixinParticipant"/>.
+  /// </summary>
   public class MixinParticipantTypeIdentifierProvider : ITypeIdentifierProvider
   {
+    // TODO 5370: Remove.
     private readonly IConcreteTypeMetadataImporter _concreteTypeMetadataImporter;
 
     public MixinParticipantTypeIdentifierProvider (IConcreteTypeMetadataImporter concreteTypeMetadataImporter)

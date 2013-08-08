@@ -19,7 +19,9 @@ using System.Reflection;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
+  /// <summary>
+  /// A client-specific interface for the <see cref="NextCallMethodGenerator"/> that represents the target type.
+  /// </summary>
   public interface ITargetTypeForNextCall
   {
     FieldInfo ExtensionsField { get; }

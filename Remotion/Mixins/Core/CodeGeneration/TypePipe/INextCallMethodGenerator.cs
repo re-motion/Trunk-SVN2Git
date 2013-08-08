@@ -22,7 +22,9 @@ using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
+  /// <summary>
+  /// Creates <see cref="Expression"/>s that represent base calls to the next method in the chain.
+  /// </summary>
   public interface INextCallMethodGenerator
   {
     Expression CreateBaseCallToTarget (MethodBodyContextBase ctx, MethodDefinition implementingMethod);

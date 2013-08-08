@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
@@ -25,7 +24,6 @@ using ReflectionUtility = Remotion.Mixins.Utilities.ReflectionUtility;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
   public class TargetTypeForNextCall : ITargetTypeForNextCall
   {
     private readonly MutableType _concreteTarget;
@@ -81,14 +79,5 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
 
       return _concreteTarget.AddMethod (name, attributes, md, ctx => ctx.DelegateToBase (baseMethod));
     }
-
-    //public MethodInfo GetPublicMethodWrapper (MethodDefinition methodToBeWrapped)
-    //{
-    //  ArgumentUtility.CheckNotNull ("methodToBeWrapped", methodToBeWrapped);
-    //  if (methodToBeWrapped.DeclaringClass != _targetClassDefinition)
-    //    throw new ArgumentException ("Only methods from class " + _targetClassDefinition.FullName + " can be wrapped.");
-
-    //  return Emitter.GetPublicMethodWrapper (methodToBeWrapped.MethodInfo);
-    //}
   }
 }

@@ -29,7 +29,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
+  /// <summary>
+  /// Encapsulates the generation of a derived mixin type.
+  /// </summary>
   public class MixinTypeGenerator
   {
     private static readonly MethodInfo s_getObjectDataForGeneratedTypesMethod = MemberInfoFromExpressionUtility.GetMethod (
