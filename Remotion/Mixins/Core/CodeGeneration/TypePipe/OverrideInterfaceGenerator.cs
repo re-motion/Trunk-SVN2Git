@@ -23,27 +23,36 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370
-  public class OverrideInterfaceGenerator2
+  public class OverrideInterfaceGenerator
   {
-    public static OverrideInterfaceGenerator2 CreateNestedGenerator (MutableType outerType, string typeName)
+    public static OverrideInterfaceGenerator CreateNestedGenerator (MutableType outerType, string typeName)
     {
       ArgumentUtility.CheckNotNull ("outerType", outerType);
       ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
 
       var interfaceType = outerType.AddNestedType(typeName, TypeAttributes.Interface | TypeAttributes.NestedPublic | TypeAttributes.Abstract, null);
-      return new OverrideInterfaceGenerator2 (interfaceType);
+      return new OverrideInterfaceGenerator (interfaceType);
     }
 
     private readonly IAttributeGenerator _attributeGenerator = new AttributeGenerator();
     private readonly Dictionary<MethodInfo, MethodInfo> _interfaceMethods = new Dictionary<MethodInfo, MethodInfo> ();
     private readonly MutableType _interfaceType;
 
-    private OverrideInterfaceGenerator2 (MutableType interfaceType)
+    private OverrideInterfaceGenerator (MutableType interfaceType)
     {
       ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
 
       _interfaceType = interfaceType;
+    }
+
+    public Type Type
+    {
+      get { return _interfaceType; }
+    }
+
+    public Dictionary<MethodInfo, MethodInfo> InterfaceMethodsForOverriddenMethods
+    {
+      get { return _interfaceMethods; }
     }
 
     public MethodInfo AddOverriddenMethod (MethodInfo overriddenMethod)
@@ -60,16 +69,6 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       _interfaceMethods.Add (overriddenMethod, method);
 
       return method;
-    }
-
-    public Dictionary<MethodInfo, MethodInfo> GetInterfaceMethodsForOverriddenMethods ()
-    {
-      return _interfaceMethods;
-    }
-
-    public Type Type
-    {
-      get { return _interfaceType; }
     }
   }
 }

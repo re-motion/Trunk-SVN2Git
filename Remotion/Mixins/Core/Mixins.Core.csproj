@@ -123,7 +123,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CodeGeneration\TypePipe\OverrideInterface.cs" />
-    <Compile Include="CodeGeneration\TypePipe\OverrideInterfaceGenerator2.cs" />
+    <Compile Include="CodeGeneration\TypePipe\OverrideInterfaceGenerator.cs" />
     <Compile Include="CodeGeneration\TypePipe\RegularMixinInfo.cs" />
     <Compile Include="CodeGeneration\TypePipe\SerializationImplementer.cs" />
     <Compile Include="CodeGeneration\TypePipe\TargetTypeForNextCall.cs" />
