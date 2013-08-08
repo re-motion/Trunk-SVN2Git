@@ -26,7 +26,6 @@ using Remotion.TypePipe.MutableReflection;
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
   // TODO 5370: docs
-  // TODO 5370: tests
   public interface IAttributeGenerator
   {
     void AddDebuggerBrowsableAttribute (IMutableMember member, DebuggerBrowsableState debuggerBrowsableState);

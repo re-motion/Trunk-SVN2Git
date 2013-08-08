@@ -28,7 +28,6 @@ using System.Linq;
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
   // TODO 5370: docs
-  // TODO 5370: tests
   public class AttributeGenerator : IAttributeGenerator
   {
     private static readonly ConstructorInfo s_debuggerBrowsableAttributeConstructor =

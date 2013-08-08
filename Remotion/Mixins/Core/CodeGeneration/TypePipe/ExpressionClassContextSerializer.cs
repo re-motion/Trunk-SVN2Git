@@ -24,7 +24,6 @@ using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
-  // TODO 5370: tests
   // TODO 5370: docs
   public class ExpressionClassContextSerializer : ClassContextSerializerBase
   {

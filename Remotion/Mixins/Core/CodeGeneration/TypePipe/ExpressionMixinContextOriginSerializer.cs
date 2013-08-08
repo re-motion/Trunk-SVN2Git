@@ -24,7 +24,6 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
   // TODO 5370: docs
-  // TODO 5370: tests
   public class ExpressionMixinContextOriginSerializer : MixinContextOriginSerializerBase
   {
     private static readonly ConstructorInfo s_constructor =
