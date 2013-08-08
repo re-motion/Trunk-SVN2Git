@@ -44,9 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     {
       base.SetUp();
 
-      var remixParticipant = new MixinParticipant ();
-      var domainObjectParticipant = new DomainObjectParticipant (new TypeDefinitionProvider (), new InterceptedPropertyCollectorAdapter ());
-      _pipeline = PipelineFactory.Create ("DomainObjectCreatorTest", remixParticipant, domainObjectParticipant);
+      var remixParticipant = new MixinParticipant();
+      var restoreParticipant = new DomainObjectParticipant (new TypeDefinitionProvider(), new InterceptedPropertyCollectorAdapter());
+      _pipeline = PipelineFactory.Create ("DomainObjectCreatorTest", remixParticipant, restoreParticipant);
       _domainObjectCreator = new DomainObjectCreator (_pipeline);
 
       _transaction = ClientTransaction.CreateRootTransaction();

@@ -16,18 +16,15 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.Context;
 using Remotion.TypePipe.Dlr.Ast;
-using Rhino.Mocks;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
 {
   [TestFixture]
   public class MixinParticipantTypeIdentifierProviderTest
   {
-    private IConcreteTypeMetadataImporter _concreteTypeMetadataImporterMock;
     private MixinParticipantTypeIdentifierProvider _provider;
 
     private ClassContext _classContext;
@@ -35,8 +32,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
     [SetUp]
     public void SetUp ()
     {
-      _concreteTypeMetadataImporterMock = MockRepository.GenerateStrictMock<IConcreteTypeMetadataImporter>();
-      _provider = new MixinParticipantTypeIdentifierProvider (_concreteTypeMetadataImporterMock);
+      _provider = new MixinParticipantTypeIdentifierProvider();
 
       var mixinContext = new MixinContext (
           MixinKind.Extending,
