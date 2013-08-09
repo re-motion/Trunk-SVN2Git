@@ -16,27 +16,14 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Mixins.Definitions.Building
 {
   public class AttributeDefinitionBuilder
   {
-    // Cache custom attribute data. This tremendously improves the performance of the TypeMixer.
-    private static readonly ICache<MemberInfo, ReadOnlyCollection<ICustomAttributeData>> s_attributeCache =
-        CacheFactory.CreateWithLocking<MemberInfo, ReadOnlyCollection<ICustomAttributeData>>();
-
-    private static ReadOnlyCollection<ICustomAttributeData> GetCustomAttributesWithInheritanceFromCache (MemberInfo attributeSource)
-    {
-      ArgumentUtility.CheckNotNull ("attributeSource", attributeSource);
-      return s_attributeCache.GetOrCreateValue (attributeSource, i => TypePipeCustomAttributeData.GetCustomAttributes (i, true).ToList ().AsReadOnly ());
-    }
-
     private readonly IAttributableDefinition _attributableDefinition;
 
     public AttributeDefinitionBuilder (IAttributableDefinition attributableDefinition)
@@ -49,7 +36,8 @@ namespace Remotion.Mixins.Definitions.Building
     {
       ArgumentUtility.CheckNotNull ("attributeSource", attributeSource);
 
-      Apply (attributeSource, GetCustomAttributesWithInheritanceFromCache (attributeSource), false);
+      var attributes = TypePipeCustomAttributeData.GetCustomAttributes (attributeSource, inherit: true);
+      Apply (attributeSource, attributes, isCopyTemplate: false);
     }
 
     public void Apply (MemberInfo attributeSource, IEnumerable<ICustomAttributeData> attributes, bool isCopyTemplate)
@@ -128,7 +116,7 @@ namespace Remotion.Mixins.Definitions.Building
         bool includeCopyAttributes, 
         bool includeInheritableAttributes)
     {
-      foreach (var attributeData in GetCustomAttributesWithInheritanceFromCache (copiedAttributesSource))
+      foreach (var attributeData in TypePipeCustomAttributeData.GetCustomAttributes (copiedAttributesSource, inherit: true))
       {
         Type attributeType = attributeData.Constructor.DeclaringType;
         if (typeof (CopyCustomAttributesAttribute).IsAssignableFrom (attributeType))
