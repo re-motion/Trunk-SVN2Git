@@ -266,8 +266,9 @@
   </Target>
   
   <Target Name="SetVersionFullBuild" DependsOnTargets="CheckVersion">
-    <Message Text="##teamcity[buildNumber '$(Version)']" />
     <JiraVersion>$(Version)</JiraVersion>
+
+    <Message Text="##teamcity[buildNumber '$(Version)']" />
   </Target>
 
   <!-- Main Build Targets -->  
