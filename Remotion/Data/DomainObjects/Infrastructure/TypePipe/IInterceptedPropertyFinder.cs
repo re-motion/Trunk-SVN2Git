@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
 {
@@ -26,7 +25,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// Retrieves <see cref="IAccessorInterceptor"/>s that can be used to intercept (implement or override) accessor methods declared by 
   /// <see cref="DomainObject"/> derivatives.
   /// </summary>
-  [ConcreteImplementation (typeof (InterceptedPropertyCollectorAdapter))]
   public interface IInterceptedPropertyFinder
   {
     IEnumerable<IAccessorInterceptor> GetPropertyInterceptors (ClassDefinition classDefinition, Type concreteBaseType);
