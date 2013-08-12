@@ -156,10 +156,14 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       _initializationMethod = _concreteTarget.AddMethod (
           "__InitializeMixins",
           MethodAttributes.Private,
-          parameters: new[] { new ParameterDeclaration (typeof (InitializationSemantics)) },
+          parameters: new[] { new ParameterDeclaration (typeof (bool), "isDeserialization") },
           bodyProvider: ctx => ImplementMixinInitalizationMethod (ctx, mixinTypes));
 
-      _concreteTarget.AddInitialization (ctx => Expression.Call (ctx.This, _initializationMethod, ctx.InitializationSemantics));
+      _concreteTarget.AddInitialization (
+          ctx => Expression.Call (
+              ctx.This,
+              _initializationMethod,
+              Expression.Equal (ctx.InitializationSemantics, Expression.Constant (InitializationSemantics.Deserialization))));
     }
 
     public void ImplementIMixinTarget (string targetClassName)
@@ -321,7 +325,6 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       // if (!__extensionsInitialized) {
       //   __extensionsInitialized = true;
       //   <set first call proxy>;
-      //   bool isDeserialization = initializationSemantics == InitializationSemantics.Deserialization;
       //   if (isDeserialization)
       //     <check deserialzed mixin instances>;
       //   else
@@ -329,20 +332,16 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       //   <initialize mixins>(isDeserialization);
       // }
 
-      var isDeserialization = Expression.Variable (typeof (bool));
       return Expression.IfThen (
           Expression.Not (_extensionsInitializedField),
           Expression.Block (
-              new[] { isDeserialization },
               Expression.Assign (_extensionsInitializedField, Expression.Constant (true)),
               ImplementSettingFirstNextCallProxy (ctx.This),
-              Expression.Assign (
-                  isDeserialization, Expression.Equal (ctx.Parameters[0], Expression.Constant (InitializationSemantics.Deserialization))),
               Expression.IfThenElse (
-                  isDeserialization,
+                  ctx.Parameters[0],
                   ImplementCheckingDeserializedMixinInstances(),
                   ImplementCreatingMixinInstances()),
-              ImplementInitializingMixins (ctx.This, mixinTypes, isDeserialization)));
+              ImplementInitializingMixins (ctx.This, mixinTypes, ctx.Parameters[0])));
     }
 
     private Expression ImplementSettingFirstNextCallProxy (ThisExpression @this)

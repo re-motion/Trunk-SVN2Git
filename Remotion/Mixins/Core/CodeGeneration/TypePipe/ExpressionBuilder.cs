@@ -46,8 +46,8 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       ArgumentUtility.CheckNotNull ("concreteTarget", concreteTarget);
       ArgumentUtility.CheckNotNull ("initializationMethod", initializationMethod);
 
-      // this.__InitializationMethod (InitializationSemantics.Construction);
-      return Expression.Call (new ThisExpression (concreteTarget), initializationMethod, Expression.Constant (InitializationSemantics.Construction));
+      // this.__InitializationMethod (isDeserialization: false);
+      return Expression.Call (new ThisExpression (concreteTarget), initializationMethod, Expression.Constant (false));
     }
 
     public Expression CreateInitializingDelegation (

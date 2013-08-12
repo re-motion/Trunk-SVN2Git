@@ -84,7 +84,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       var instance = (IMixinTarget) CreateMixedObject<NullTarget> (typeof (MixinWithOnInitializedAndOnDeserialized));
       ((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]).OnInitializedCalled = false;
 
-      PrivateInvoke.SetNonPublicField (instance, "__extensionsInitialized", false);
       CallInitializeMixins (instance, InitializationSemantics.Construction);
 
       Assert.That (((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]).OnInitializedCalled, Is.True);
