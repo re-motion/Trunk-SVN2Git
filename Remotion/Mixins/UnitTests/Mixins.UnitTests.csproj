@@ -76,6 +76,9 @@
     <Compile Include="Core\CodeGeneration\AdHocCodeGenerator.cs" />
     <Compile Include="Core\CodeGeneration\ConcreteMixinTypeIdentifierObjectMother.cs" />
     <Compile Include="Core\CodeGeneration\ConcreteMixinTypeObjectMother.cs" />
+    <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\InitializableMixinTargetTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Core\IntegrationTests\Overrides\OverridingTargetMethodsWithShadowing.cs" />
     <Compile Include="Core\CodeGeneration\TypePipe\CodeGenerationClassContextSerializerTest.cs" />
     <Compile Include="Core\CodeGeneration\TypePipe\CodeGenerationMixinContextOriginSerializerTest.cs" />
