@@ -68,7 +68,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       Assert.That (deserialized.StringMethod (3), Is.EqualTo ("MixinMixingMixin-MixinMixingClass-ClassWithMixedMixin.StringMethod (3)"));
     }
 
-    [Ignore ("TODO 5370")]
+    [Ignore ("TODO 5812")]
     [Test]
     public void MixedDerivedMixin_Serialization ()
     {
