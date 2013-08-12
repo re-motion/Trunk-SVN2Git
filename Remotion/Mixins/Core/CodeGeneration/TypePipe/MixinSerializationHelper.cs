@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration.Serialization;
-using Remotion.Reflection.CodeGeneration;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.Utilities;

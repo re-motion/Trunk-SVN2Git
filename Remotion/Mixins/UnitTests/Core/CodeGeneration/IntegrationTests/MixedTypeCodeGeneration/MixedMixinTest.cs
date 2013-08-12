@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System.Runtime.Serialization;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
@@ -53,6 +56,17 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
         var instance = ObjectFactory.Create<ClassOverridingSingleMixinMethod>(ParamList.Empty);
         Assert.That (Mixin.Get<MixinWithOverridableMember> (instance).ToString(), Is.StringStarting("Overridden: "));
       }
+    }
+
+    [Test]
+    [ExpectedException (typeof (SerializationException))]
+    public void MixedMixin_Serialization ()
+    {
+      var instance = ObjectFactory.Create<ClassWithMixedMixin> (ParamList.Empty);
+
+      var deserialized = Serializer.SerializeAndDeserialize (instance);
+
+      Assert.That (deserialized.StringMethod (3), Is.EqualTo ("MixinMixingMixin-MixinMixingClass-ClassWithMixedMixin.StringMethod (3)"));
     }
   }
 }
