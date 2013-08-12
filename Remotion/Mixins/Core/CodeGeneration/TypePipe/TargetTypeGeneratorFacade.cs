@@ -55,9 +55,8 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       targetTypeGenerator.AddNextCallProxy (targetClassDefinition, mixinInfos);
       targetTypeGenerator.AddFields();
       targetTypeGenerator.AddTypeInitializations (targetClassDefinition.ConfigurationContext, mixinTypes);
-      targetTypeGenerator.AddInitializations();
+      targetTypeGenerator.AddInitializations(mixinTypes);
 
-      targetTypeGenerator.ImplementIInitializableMixinTarget (mixinTypes);
       targetTypeGenerator.ImplementIMixinTarget (targetClassDefinition.Name);
       targetTypeGenerator.ImplementIntroducedInterfaces (targetClassDefinition.ReceivedInterfaces);
       targetTypeGenerator.ImplementRequiredDuckMethods (targetClassDefinition);

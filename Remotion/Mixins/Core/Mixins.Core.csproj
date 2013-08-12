@@ -68,7 +68,6 @@
     <Compile Include="CodeGeneration\ConcreteMixinTypeAttribute.cs" />
     <Compile Include="CodeGeneration\ConcreteMixinTypeIdentifier.cs" />
     <Compile Include="CodeGeneration\TypePipe\ImplementedInterfaceFinder.cs" />
-    <Compile Include="CodeGeneration\TypePipe\IInitializableMixinTarget.cs" />
     <Compile Include="CodeGeneration\TypePipe\OverrideInterfaceMappingAttribute.cs" />
     <Compile Include="CodeGeneration\IConcreteTypeMetadataImporter.cs" />
     <Compile Include="CodeGeneration\IGeneratedMixinType.cs" />

@@ -38,7 +38,6 @@ namespace Remotion.Mixins.UnitTests.Core
       Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (typeof (int)), Is.False);
       Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (typeof (BaseType1)), Is.False);
       Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (typeof (IMixinTarget)), Is.False);
-      Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (typeof (IInitializableMixinTarget)), Is.False);
 
       Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (MixinTypeUtility.GetConcreteMixedType (typeof (object))), Is.False);
       Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (MixinTypeUtility.GetConcreteMixedType (typeof (string))), Is.False);

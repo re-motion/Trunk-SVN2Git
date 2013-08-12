@@ -255,7 +255,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     }
 
     [IgnoreForMixinConfiguration]
-    public class FakeConcreteMixedType : BaseType1, IInitializableMixinTarget, ISerializable, IDeserializationCallback
+    public class FakeConcreteMixedType : BaseType1, ISerializable, IDeserializationCallback
     {
       public bool OnDeserializingCalled = false;
       public bool OnDeserializedCalled = false;
@@ -307,15 +307,6 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       public void GetObjectData (SerializationInfo info, StreamingContext context)
       {
         throw new NotImplementedException();
-      }
-
-      public void Initialize ()
-      {
-        throw new NotImplementedException();
-      }
-
-      public void InitializeAfterDeserialization (object[] mixinInstances)
-      {
       }
     }
   }

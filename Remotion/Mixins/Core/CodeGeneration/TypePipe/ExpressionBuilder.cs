@@ -31,11 +31,6 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// </summary>
   public class ExpressionBuilder : IExpressionBuilder
   {
-    private static readonly MethodInfo s_initializeMethod =
-        MemberInfoFromExpressionUtility.GetMethod ((IInitializableMixinTarget o) => o.Initialize());
-    private static readonly MethodInfo s_initializeAfterDeserializationMethod =
-        MemberInfoFromExpressionUtility.GetMethod ((IInitializableMixinTarget o) => o.InitializeAfterDeserialization(null));
-
     public Expression CreateNewClassContext (ClassContext classContext)
     {
       ArgumentUtility.CheckNotNull ("classContext", classContext);
@@ -46,49 +41,20 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       return serializer.CreateNewExpression();
     }
 
-    public Expression CreateInitializationOnConstructionOrDeserialization (
-        MutableType concreteTarget, Expression extensionsField, Expression extensionsInitializedField, Expression initializationSemantcis)
+    public Expression CreateInitialization (MutableType concreteTarget, MethodInfo initializationMethod)
     {
       ArgumentUtility.CheckNotNull ("concreteTarget", concreteTarget);
-      ArgumentUtility.CheckNotNull ("extensionsField", extensionsField);
-      ArgumentUtility.CheckNotNull ("extensionsInitializedField", extensionsInitializedField);
-      ArgumentUtility.CheckNotNull ("initializationSemantcis", initializationSemantcis);
+      ArgumentUtility.CheckNotNull ("initializationMethod", initializationMethod);
 
-      // if (__extensions == null || !__extensionsInitialized) {
-      //   if (initializationSemantics == InitializationSemantics.Construction)
-      //     ((IInitializableMixinTarget) this).Initialize();
-      //   else
-      //     ((IInitializableMixinTarget) this).InitializeAfterDeserialization(mixinInstances: null);
-      // }
-
-      var @this = new ThisExpression (concreteTarget);
-      var initializeOnConstructionOrDeserialization =
-          Expression.IfThenElse (
-              Expression.Equal (initializationSemantcis, Expression.Constant (InitializationSemantics.Construction)),
-              Expression.Call (@this, s_initializeMethod),
-              Expression.Call (@this, s_initializeAfterDeserializationMethod, extensionsField));
-      return ExecuteIfInitializationIsNeeded (extensionsField, extensionsInitializedField, initializeOnConstructionOrDeserialization);
-    }
-
-    public Expression CreateInitialization (MutableType concreteTarget, Expression extensionsField, Expression extensionsInitializedField)
-    {
-      ArgumentUtility.CheckNotNull ("concreteTarget", concreteTarget);
-      ArgumentUtility.CheckNotNull ("extensionsField", extensionsField);
-      ArgumentUtility.CheckNotNull ("extensionsInitializedField", extensionsInitializedField);
-
-      // if (__extensions == null || !__extensionsInitialized)
-      //   ((IInitializableMixinTarget) this).Initialize();
-
-      var initializeAction = Expression.Call (new ThisExpression (concreteTarget), s_initializeMethod);
-      return ExecuteIfInitializationIsNeeded (extensionsField, extensionsInitializedField, initializeAction);
+      // this.__InitializationMethod (InitializationSemantics.Construction);
+      return Expression.Call (new ThisExpression (concreteTarget), initializationMethod, Expression.Constant (InitializationSemantics.Construction));
     }
 
     public Expression CreateInitializingDelegation (
-        MethodBodyContextBase bodyContext, Expression extensionsField, Expression extensionsInitializedField, Expression instance, MethodInfo methodToCall)
+        MethodBodyContextBase ctx, MethodInfo initializationMethod, Expression instance, MethodInfo methodToCall)
     {
-      ArgumentUtility.CheckNotNull ("bodyContext", bodyContext);
-      ArgumentUtility.CheckNotNull ("extensionsField", extensionsField);
-      ArgumentUtility.CheckNotNull ("extensionsInitializedField", extensionsInitializedField);
+      ArgumentUtility.CheckNotNull ("ctx", ctx);
+      ArgumentUtility.CheckNotNull ("initializationMethod", initializationMethod);
       ArgumentUtility.CheckNotNull ("instance", instance);
       ArgumentUtility.CheckNotNull ("methodToCall", methodToCall);
 
@@ -96,18 +62,8 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       // instance<GenericParameters>.MethodToCall(<parameters>);
 
       return Expression.Block (
-          CreateInitialization (bodyContext.DeclaringType, extensionsField, extensionsInitializedField),
-          bodyContext.DelegateTo (instance, methodToCall));
-    }
-
-    private Expression ExecuteIfInitializationIsNeeded (Expression extensionsField, Expression extensionsInitializedField, Expression action)
-    {
-      // if (__extensions == null || !__extensionsInitialized)
-      //   <action>();
-
-      return Expression.IfThen (
-          Expression.OrElse (Expression.Equal (extensionsField, Expression.Constant (null)), Expression.Not (extensionsInitializedField)),
-          action);
+          CreateInitialization (ctx.DeclaringType, initializationMethod),
+          ctx.DelegateTo (instance, methodToCall));
     }
   }
 }

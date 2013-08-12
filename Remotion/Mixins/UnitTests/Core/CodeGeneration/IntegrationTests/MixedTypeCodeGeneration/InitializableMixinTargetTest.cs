@@ -27,6 +27,7 @@ using System.Linq;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {
+  // TODO 5370
   [TestFixture]
   public class InitializableMixinTargetTest : CodeGenerationBaseTest
   {

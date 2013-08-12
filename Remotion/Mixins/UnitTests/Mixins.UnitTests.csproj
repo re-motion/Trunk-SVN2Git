@@ -106,7 +106,6 @@
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\DuckRequirementTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\GeneratedTypeInConfigurationTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\GenericsTest.cs" />
-    <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\InitializableMixinTargetTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\InstantiationTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\IntroductionTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\MixedMixinTest.cs" />
