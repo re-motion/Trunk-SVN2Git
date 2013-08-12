@@ -14,9 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+
 namespace Remotion.Mixins.UnitTests.Core.TestDomain
 {
-  [Extends (typeof (MixinMixingClass))]
+  [Serializable]
+  [Extends(typeof(MixinMixingClass))]
   public class MixinMixingMixin : Mixin<MixinMixingClass, MixinMixingMixin.IRequirements>
   {
     public interface IRequirements

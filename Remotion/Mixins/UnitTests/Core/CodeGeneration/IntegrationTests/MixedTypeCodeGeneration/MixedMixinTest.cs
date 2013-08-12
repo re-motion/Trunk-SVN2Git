@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
-using System.Runtime.Serialization;
+using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain;
@@ -59,7 +59,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException))]
     public void MixedMixin_Serialization ()
     {
       var instance = ObjectFactory.Create<ClassWithMixedMixin> (ParamList.Empty);
@@ -67,6 +66,71 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       var deserialized = Serializer.SerializeAndDeserialize (instance);
 
       Assert.That (deserialized.StringMethod (3), Is.EqualTo ("MixinMixingMixin-MixinMixingClass-ClassWithMixedMixin.StringMethod (3)"));
+    }
+
+    [Ignore ("TODO 5370")]
+    [Test]
+    public void MixedDerivedMixin_Serialization ()
+    {
+      var instance = ObjectFactory.Create<ClassWithMixedDerivedMixin> (ParamList.Empty);
+
+      var derivedMixin = Mixin.Get<MixinMixingClassRequiringToBeDerived> (instance);
+      var mixinType = derivedMixin.GetType();
+      Assert.That (Pipeline.ReflectionService.IsAssembledType (mixinType), Is.True, "Mixed mixin.");
+
+      var underlyingType = Pipeline.ReflectionService.GetRequestedType (mixinType);
+      Assert.That (underlyingType, Is.Not.SameAs (typeof (MixinMixingClassRequiringToBeDerived)), "Derived mixin.");
+      Assert.That (underlyingType.BaseType, Is.SameAs (typeof (MixinMixingClassRequiringToBeDerived)));
+
+      var mixinMixin = Mixin.Get<MixinMixingDerivedMixin> (derivedMixin);
+      Assert.That (mixinMixin, Is.Not.Null);
+
+      var deserialized = Serializer.SerializeAndDeserialize (instance);
+
+      Assert.That (
+          deserialized.StringMethod (3),
+          Is.EqualTo ("MixinMixingDerivedMixin-MixinMixingClassRequiringToBeDerived-ClassWithMixedDerivedMixin.StringMethod (3)"));
+    }
+
+    [Serializable]
+    public class ClassWithMixedDerivedMixin
+    {
+      public virtual string StringMethod (int i)
+      {
+        return "ClassWithMixedDerivedMixin.StringMethod (" + i + ")";
+      }
+    }
+
+    [Serializable]
+    [Extends(typeof(ClassWithMixedDerivedMixin))]
+    public class MixinMixingClassRequiringToBeDerived : Mixin<ClassWithMixedDerivedMixin, MixinMixingClassRequiringToBeDerived.IRequirements>
+    {
+      public interface IRequirements
+      {
+        string StringMethod (int i);
+      }
+
+      [OverrideTarget]
+      protected virtual string StringMethod (int i)
+      {
+        return "MixinMixingClassRequiringToBeDerived-" + Next.StringMethod(i);
+      }
+    }
+
+    [Serializable]
+    [Extends(typeof(MixinMixingClassRequiringToBeDerived))]
+    public class MixinMixingDerivedMixin : Mixin<MixinMixingClassRequiringToBeDerived, MixinMixingDerivedMixin.IRequirements>
+    {
+      public interface IRequirements
+      {
+        string StringMethod (int i);
+      }
+
+      [OverrideTarget]
+      public virtual string StringMethod (int i)
+      {
+        return "MixinMixingDerivedMixin-" + Next.StringMethod(i);
+      }
     }
   }
 }
