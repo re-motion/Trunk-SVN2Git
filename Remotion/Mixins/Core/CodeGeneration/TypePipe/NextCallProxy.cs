@@ -133,7 +133,6 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
     private void ImplementBaseCallForRequirementOnTarget (RequiredMethodDefinition requiredMethod)
     {
       var methodImplementation = _type.AddExplicitOverride (requiredMethod.InterfaceMethod, ctx => Expression.Default (ctx.ReturnType));
-      // TODO 5370: refactor if-else away.
       if (requiredMethod.ImplementingMethod.Overrides.Count == 0) // this is not an overridden method, call method directly on _this
       {
         methodImplementation.SetBody (ctx => _nextCallMethodGenerator.CreateBaseCallToTarget (ctx, requiredMethod.ImplementingMethod));
@@ -152,7 +151,6 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
     private void ImplementBaseCallForRequirementOnMixin (RequiredMethodDefinition requiredMethod)
     {
       var methodImplementation = _type.AddExplicitOverride (requiredMethod.InterfaceMethod, ctx => Expression.Default (ctx.ReturnType));
-      // TODO 5370: refactor if-else away.
       if (requiredMethod.ImplementingMethod.Base == null) // this is not an override, call method directly on extension
       {
         methodImplementation.SetBody (ctx => _nextCallMethodGenerator.CreateBaseCallToTarget (ctx, requiredMethod.ImplementingMethod));
