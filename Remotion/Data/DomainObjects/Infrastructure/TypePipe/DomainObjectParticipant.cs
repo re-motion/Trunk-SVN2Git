@@ -60,7 +60,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
     private readonly ITypeDefinitionProvider _typeDefinitionProvider;
     private readonly IInterceptedPropertyFinder _interceptedPropertyFinder;
 
-    public DomainObjectParticipant (ITypeDefinitionProvider typeDefinitionProvider, IInterceptedPropertyFinder interceptedPropertyFinder)
+    public DomainObjectParticipant ()
+        : this (new TypeDefinitionProvider(), new InterceptedPropertyCollectorAdapter())
+    {
+    }
+
+    private DomainObjectParticipant (ITypeDefinitionProvider typeDefinitionProvider, IInterceptedPropertyFinder interceptedPropertyFinder)
     {
       ArgumentUtility.CheckNotNull ("typeDefinitionProvider", typeDefinitionProvider);
       ArgumentUtility.CheckNotNull ("interceptedPropertyFinder", interceptedPropertyFinder);
