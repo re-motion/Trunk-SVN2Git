@@ -50,7 +50,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       var concreteMixinTypeCache = GetOrCreateConcreteMixinTypeCache (participantState);
 
       // TODO 5370 Review
-      // What if already present? (should we ignore it or raise an exception?)
+      // What if already present? (should we ignore it, override it, or raise an exception?)
       if (!concreteMixinTypeCache.ContainsKey (concreteMixinType.Identifier))
         concreteMixinTypeCache.Add (concreteMixinType.Identifier, concreteMixinType);
     }
