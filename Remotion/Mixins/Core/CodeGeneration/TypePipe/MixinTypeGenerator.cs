@@ -80,7 +80,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
 
     public void ImplementGetObjectData ()
     {
-      // TODO 5370: This does exactly the same as what ComplexSerializationEnabler does, but with a different ID (ConcreteMixinTypeIdentifier instead 
+      // TODO 5811: This does exactly the same as what ComplexSerializationEnabler does, but with a different ID (ConcreteMixinTypeIdentifier instead 
       // of AssembledTypeID) and a different way to get the type back from the pipeline (GetAdditionalType instead of GetAssembledType).
       // Consider refactoring ComplexSerializationEnabler to allow this code to be replaced.
 
