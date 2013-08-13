@@ -38,10 +38,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\Castle-3.0\net-3.5\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\..\..\prereq\Assemblies\CommonServiceLocator-1.0\net-2.0\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -639,17 +635,9 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Reflection.CodeGeneration\Core.Reflection.CodeGeneration.csproj">
-      <Project>{503dcac3-e668-41d8-aa48-176e489b8e86}</Project>
-      <Name>Core.Reflection.CodeGeneration</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Development\RhinoMocks\Development.RhinoMocks.csproj">
-      <Project>{2177143e-345f-4faa-9958-1ae2b5eed242}</Project>
-      <Name>Development.RhinoMocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Development\TypePipe\Development.TypePipe.csproj">
       <Project>{f6faf727-9405-4bcc-9153-803f73853e67}</Project>
