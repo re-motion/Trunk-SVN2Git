@@ -20,7 +20,6 @@ using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Implementation;
 using Remotion.Utilities;
@@ -32,18 +31,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// </summary>
   public class DomainObjectCreator : IDomainObjectCreator
   {
-    // TODO 5375: Remove if possible.
-    public static readonly DomainObjectCreator Instance = CreateInstance();
-
-    // TODO 5375: Refactor away and move to callers?
-    private static DomainObjectCreator CreateInstance ()
-    {
-      var pipelineRegistry = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>();
-      var defaultPipeline = pipelineRegistry.DefaultPipeline;
-
-      return new DomainObjectCreator (defaultPipeline);
-    }
-
     private readonly IPipeline _pipeline;
 
     public DomainObjectCreator (IPipeline pipeline)
