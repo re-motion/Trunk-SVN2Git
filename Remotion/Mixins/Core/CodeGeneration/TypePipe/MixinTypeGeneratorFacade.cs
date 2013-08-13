@@ -37,9 +37,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
         return new RegularMixinInfo (mixin.Type);
 
       var concreteMixinTypeIdentifier = mixin.GetConcreteMixinTypeIdentifier();
-      var concreteMixinType = GetOrGenerateConcreteMixinType (context, concreteMixinTypeIdentifier);
-
-      return new DerivedMixinInfo (concreteMixinType);
+      return GetOrGenerateConcreteMixinType (context, concreteMixinTypeIdentifier);
     }
 
     public void AddLoadedConcreteMixinType (IDictionary<string, object> participantState, ConcreteMixinType concreteMixinType)

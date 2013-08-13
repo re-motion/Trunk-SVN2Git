@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using System.Collections.Generic;
+using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 using Remotion.Utilities;
@@ -24,7 +25,6 @@ using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration
 {
-  // TODO 5370: Unify with DeriveMixinInfo.
   /// <summary>
   /// Holds the results of mixin code generation when a concrete mixin type was generated.
   /// </summary>
@@ -32,7 +32,7 @@ namespace Remotion.Mixins.CodeGeneration
   /// A concrete mixin type is a type derived from a mixin type that implements <see cref="OverrideMixinAttribute">mixin overrides</see> and holds
   /// public wrappers for protected methods needed to be accessed from the outside.
   /// </remarks>
-  public class ConcreteMixinType
+  public class ConcreteMixinType : IMixinInfo
   {
     private readonly ConcreteMixinTypeIdentifier _identifier;
     private readonly Type _generatedType;
@@ -73,6 +73,27 @@ namespace Remotion.Mixins.CodeGeneration
     public Type GeneratedOverrideInterface
     {
       get { return _generatedOverrideInterface; }
+    }
+
+    public Type MixinType
+    {
+      get { return GeneratedType; }
+    }
+
+    public IEnumerable<Type> GetInterfacesToImplement ()
+    {
+      yield return GeneratedOverrideInterface;
+    }
+
+    public MethodInfo GetPubliclyCallableMixinMethod (MethodInfo methodToBeCalled)
+    {
+      ArgumentUtility.CheckNotNull ("methodToBeCalled", methodToBeCalled);
+
+      if (methodToBeCalled.IsPublic)
+        return methodToBeCalled;
+
+      // TODO 5370: Inline.
+      return GetMethodWrapper (methodToBeCalled);
     }
 
     public MethodInfo GetOverrideInterfaceMethod (MethodInfo mixinMethod)

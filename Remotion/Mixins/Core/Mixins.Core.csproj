@@ -92,7 +92,6 @@
     <Compile Include="CodeGeneration\TypePipe\CodeGenerationMixinContextSerializer.cs" />
     <Compile Include="CodeGeneration\TypePipe\ConcreteMixinTypeIdentifierSerializerBase.cs" />
     <Compile Include="CodeGeneration\TypePipe\ConfigurationProvider.cs" />
-    <Compile Include="CodeGeneration\TypePipe\DerivedMixinInfo.cs" />
     <Compile Include="CodeGeneration\TypePipe\ExpressionBuilder.cs" />
     <Compile Include="CodeGeneration\TypePipe\ExpressionClassContextSerializer.cs" />
     <Compile Include="CodeGeneration\TypePipe\ExpressionConcreteMixinTypeIdentifierSerializer.cs" />
