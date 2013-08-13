@@ -96,7 +96,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
             new object[] { info, context },
             null);
       }
-      Reflection.CodeGeneration.SerializationImplementer.RaiseOnDeserializing (_deserializedObject, _context);
+      SerializationImplementer.RaiseOnDeserializing (_deserializedObject, _context);
     }
 
     public object GetRealObject (StreamingContext context)
@@ -120,8 +120,8 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
         FormatterServices.PopulateObjectMembers (_deserializedObject, baseMembers, _baseMemberValues);
       }
 
-      Reflection.CodeGeneration.SerializationImplementer.RaiseOnDeserialized (_deserializedObject, _context);
-      Reflection.CodeGeneration.SerializationImplementer.RaiseOnDeserialization (_deserializedObject, sender);
+      SerializationImplementer.RaiseOnDeserialized (_deserializedObject, _context);
+      SerializationImplementer.RaiseOnDeserialization (_deserializedObject, sender);
 
       // Note: This and Next properties are initialized from the target class via InitializeDeserializedMixinTarget
     }
