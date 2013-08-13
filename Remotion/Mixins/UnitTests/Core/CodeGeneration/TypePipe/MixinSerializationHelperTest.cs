@@ -18,7 +18,6 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Development.TypePipe.UnitTesting;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.Mixins.CodeGeneration.TypePipe;
@@ -43,7 +42,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
       _serializationInfo = new SerializationInfo(typeof(object), new FormatterConverter());
       _context = new StreamingContext();
       _concreteMixin = new FakeConcreteMixinType();
-      var classContext = ClassContextObjectMother.Create(typeof(ClassOverridingMixinMembers), typeof(MixinWithAbstractMembers));
+      var classContext = ClassContextObjectMother.Create (typeof (ClassOverridingMixinMembers), typeof (FakeConcreteMixinType));
       _identifier = DefinitionObjectMother.GetTargetClassDefinition(classContext).Mixins[0].GetConcreteMixinTypeIdentifier();
 
       _pipeline = PipelineFactory.Create ("MixinSerializationHelper", new MixinParticipant());
@@ -99,21 +98,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
     }
 
     [Test]
-    [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "TypeTransformer returned type 'System.Object', which is not compatible "
-        + "with the serialized mixin configuration. The configuration requires a type assignable to "
-        + "'Remotion.Mixins.UnitTests.Core.TestDomain.MixinWithAbstractMembers'.")]
-    public void Initialization_WithTypeTransformer_InvalidTransformedType_NonAssignable ()
-    {
-      CallGetObjectDataForGeneratedTypes(true);
-      Dev.Null = new MixinSerializationHelper(_serializationInfo, _context, t => typeof(object));
-    }
-
-    [Test]
     public void Initialization_SignalsOnDeserializing ()
     {
       CallGetObjectDataForGeneratedTypes(true);
 
-      var helper = new MixinSerializationHelper(_serializationInfo, _context, t => typeof(FakeConcreteMixinType));
+      var helper = new MixinSerializationHelper(_serializationInfo, _context);
       var deserializedObject = (FakeConcreteMixinType) helper.GetRealObject(_context);
 
       Assert.That(deserializedObject.OnDeserializingCalled, Is.True);
@@ -124,7 +113,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
     {
       CallGetObjectDataForGeneratedTypes(true);
 
-      var helper = new MixinSerializationHelper(_serializationInfo, _context, t => typeof(FakeConcreteMixinType));
+      var helper = new MixinSerializationHelper(_serializationInfo, _context);
       var deserializedObject = (FakeConcreteMixinType) helper.GetRealObject(_context);
 
       Assert.That(deserializedObject.CtorCalled, Is.False);
@@ -135,7 +124,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
     {
       CallGetObjectDataForGeneratedTypes(false);
 
-      var helper = new MixinSerializationHelper(_serializationInfo, _context, t => typeof(FakeConcreteMixinType));
+      var helper = new MixinSerializationHelper(_serializationInfo, _context);
       var deserializedObject = (FakeConcreteMixinType) helper.GetRealObject(_context);
 
       Assert.That(deserializedObject.CtorCalled, Is.True);
@@ -151,24 +140,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
 
       var realObject = helper.GetRealObject(_context);
       Assert.That(realObject.GetType(), Is.SameAs(_pipeline.ReflectionService.GetAdditionalType(_identifier)));
-    }
-
-    [Test]
-    public void GetRealObject_WithTypeTransformer ()
-    {
-      CallGetObjectDataForGeneratedTypes(true);
-
-      var helper = new MixinSerializationHelper(
-          _serializationInfo,
-          _context,
-          delegate(Type t)
-          {
-            Assert.That(t, Is.SameAs(_pipeline.ReflectionService.GetAdditionalType(_identifier)));
-            return typeof(FakeConcreteMixinType);
-          });
-
-      var realObject = helper.GetRealObject(_context);
-      Assert.That(realObject.GetType(), Is.SameAs(typeof(FakeConcreteMixinType)));
     }
 
     [Test]
@@ -190,7 +161,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
     {
       _concreteMixin.I = 4711;
       CallGetObjectDataForGeneratedTypes(false);
-      var helper = new MixinSerializationHelper(_serializationInfo, _context, t => typeof(FakeConcreteMixinType));
+      var helper = new MixinSerializationHelper(_serializationInfo, _context);
 
       var deserializedObject = (MixinWithAbstractMembers) helper.GetRealObject(_context);
       Assert.That(deserializedObject.I, Is.EqualTo(0));
@@ -203,7 +174,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
     public void OnDeserialization_RaisesEvents ()
     {
       CallGetObjectDataForGeneratedTypes(true);
-      var helper = new MixinSerializationHelper(_serializationInfo, _context, t => typeof(FakeConcreteMixinType));
+      var helper = new MixinSerializationHelper(_serializationInfo, _context);
 
       var deserializedObject = (FakeConcreteMixinType) helper.GetRealObject(_context);
       Assert.That(deserializedObject.OnDeserializedCalled, Is.False);
@@ -222,16 +193,22 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
     }
 
     [IgnoreForMixinConfiguration]
+    [Serializable]
     public class FakeConcreteMixinType : MixinWithAbstractMembers, ISerializable, IDeserializationCallback
     {
       public interface IOverriddenMethods
       {
       }
 
+      [NonSerialized]
       public bool OnDeserializingCalled = false;
+      [NonSerialized]
       public bool OnDeserializedCalled = false;
+      [NonSerialized]
       public bool OnDeserializationCalled = false;
+      [NonSerialized]
       public bool CtorCalled = true;
+      [NonSerialized]
       public bool SerializationCtorCalled = false;
 
       public FakeConcreteMixinType ()
@@ -275,7 +252,12 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
         get { throw new NotImplementedException(); }
       }
 
-      protected override event Func<string> AbstractEvent;
+      protected override event Func<string> AbstractEvent
+      {
+        add { throw new NotImplementedException(); }
+        remove { throw new NotImplementedException(); }
+      }
+
       protected override string RaiseEvent ()
       {
         throw new NotImplementedException();

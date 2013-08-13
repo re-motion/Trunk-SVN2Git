@@ -66,14 +66,8 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
     private readonly StreamingContext _context;
 
     public MixinSerializationHelper (SerializationInfo info, StreamingContext context)
-      : this (info, context, t => t)
-    {
-    }
-
-    public MixinSerializationHelper (SerializationInfo info, StreamingContext context, Func<Type, Type> typeTransformer)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      ArgumentUtility.CheckNotNull ("typeTransformer", typeTransformer);
 
       _context = context;
 
@@ -83,18 +77,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       var pipelineIdentifier = info.GetString ("__participantConfigurationID");
       var pipeline = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>().Get (pipelineIdentifier);
 
-      Type untransformedConcreteType = pipeline.ReflectionService.GetAdditionalType (identifier);
-      // TODO 5370: Is there a bug here? The typeTransformer parameter is always t => t because the ctor is always called by the Reflection engine?
-      // This would mean that deserialization of a mixed mixin would not work correctly. Create an integration test. Then, remove typeTransformer and 
-      // directly call pipeline.ReflectionService.GetAssembledType (untransformedConcreteType)?
-      var concreteType = typeTransformer(untransformedConcreteType);
-
-      if (!identifier.MixinType.IsAssignableFrom (concreteType))
-      {
-        string message = string.Format ("TypeTransformer returned type '{0}', which is not compatible with the serialized mixin configuration. The "
-            + "configuration requires a type assignable to '{1}'.", concreteType, identifier.MixinType);
-        throw new InvalidOperationException (message);
-      }
+      var mixinType = pipeline.ReflectionService.GetAdditionalType (identifier);
 
       _baseMemberValues = (object[]) info.GetValue ("__baseMemberValues", typeof (object[]));
 
@@ -102,12 +85,12 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       // However, _baseMemberValues being null means that the object itself manages its member deserialization via ISerializable. In such a case, we
       // need to use the deserialization constructor to instantiate the object.
       if (_baseMemberValues != null)
-        _deserializedObject = FormatterServices.GetSafeUninitializedObject (concreteType);
+        _deserializedObject = FormatterServices.GetSafeUninitializedObject (mixinType);
       else
       {
-        Assertion.IsTrue (typeof (ISerializable).IsAssignableFrom (concreteType));
+        Assertion.IsTrue (typeof (ISerializable).IsAssignableFrom (mixinType));
         _deserializedObject = Activator.CreateInstance (
-            concreteType, 
+            mixinType, 
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, 
             null,
             new object[] { info, context },
