@@ -92,8 +92,17 @@ namespace Remotion.Mixins.CodeGeneration
       if (methodToBeCalled.IsPublic)
         return methodToBeCalled;
 
-      // TODO 5370: Inline.
-      return GetMethodWrapper (methodToBeCalled);
+      MethodInfo wrapper;
+      if (!_methodWrappers.TryGetValue (methodToBeCalled, out wrapper))
+      {
+        string message =
+            string.Format ("No public wrapper was generated for method '{0}.{1}'.", methodToBeCalled.DeclaringType.FullName, methodToBeCalled.Name);
+        throw new KeyNotFoundException (message);
+      }
+      else
+      {
+        return wrapper;
+      }
     }
 
     public MethodInfo GetOverrideInterfaceMethod (MethodInfo mixinMethod)
@@ -110,23 +119,6 @@ namespace Remotion.Mixins.CodeGeneration
       else
       {
         return interfaceMethod;
-      }
-    }
-
-    public MethodInfo GetMethodWrapper (MethodInfo wrappedMethod)
-    {
-      ArgumentUtility.CheckNotNull ("wrappedMethod", wrappedMethod);
-
-      MethodInfo wrapper;
-      if (!_methodWrappers.TryGetValue (wrappedMethod, out wrapper))
-      {
-        string message =
-            string.Format ("No public wrapper was generated for method '{0}.{1}'.", wrappedMethod.DeclaringType.FullName, wrappedMethod.Name);
-        throw new KeyNotFoundException (message);
-      }
-      else
-      {
-        return wrapper;
       }
     }
 

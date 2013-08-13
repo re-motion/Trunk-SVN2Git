@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Mixins.CodeGeneration;
 using System.Reflection;
 
@@ -26,47 +28,57 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   public class ConcreteMixinTypeTest
   {
     private ConcreteMixinType _concreteMixinType;
-    private MethodInfo _method1;
-    private MethodInfo _method2;
+    private MethodInfo _nonPublicMethod;
+    private MethodInfo _publicMethod;
+    private MethodInfo _wrapperOrInterfaceMethod;
 
     [SetUp]
     public void SetUp ()
     {
       var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
-      _method1 = typeof (object).GetMethod ("ToString");
-      _method2 = typeof (object).GetMethod ("Equals", BindingFlags.Instance | BindingFlags.Public);
+      _nonPublicMethod = ReflectionObjectMother.GetSomeNonPublicMethod();
+      _publicMethod = ReflectionObjectMother.GetSomePublicMethod();
+      _wrapperOrInterfaceMethod = ReflectionObjectMother.GetSomeMethod();
       _concreteMixinType = new ConcreteMixinType (
           identifier, 
-          typeof (object), 
-          typeof (IServiceProvider), 
-          new Dictionary<MethodInfo, MethodInfo> { { _method1, _method2 } },
-          new Dictionary<MethodInfo, MethodInfo> { { _method1, _method2 } });
+          typeof (object),
+          typeof (IServiceProvider),
+          new Dictionary<MethodInfo, MethodInfo> { { _nonPublicMethod, _wrapperOrInterfaceMethod } },
+          new Dictionary<MethodInfo, MethodInfo> { { _nonPublicMethod, _wrapperOrInterfaceMethod } });
     }
 
     [Test]
-    public void GetMethodWrapper ()
+    public void GetPubliclyCallableMixinMethod ()
     {
-      Assert.That (_concreteMixinType.GetMethodWrapper (_method1), Is.SameAs (_method2));
+      Assert.That (_concreteMixinType.GetPubliclyCallableMixinMethod (_nonPublicMethod), Is.SameAs (_wrapperOrInterfaceMethod));
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No public wrapper was generated for method 'System.Object.Equals'.")]
-    public void GetMethodWrapper_NotFound ()
+    public void GetPubliclyCallableMixinMethod_ForPublicMethod ()
     {
-      _concreteMixinType.GetMethodWrapper (_method2);
+      Assert.That (_concreteMixinType.GetPubliclyCallableMixinMethod (_publicMethod), Is.SameAs (_publicMethod));
+    }
+
+    [Test]
+    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No public wrapper was generated for method 'System.Text.StringBuilder.ReplaceString'.")]
+    public void GetPubliclyCallableMixinMethod_NotFound ()
+    {
+      var method = typeof (StringBuilder).GetMethod ("ReplaceString", BindingFlags.NonPublic | BindingFlags.Instance);
+      _concreteMixinType.GetPubliclyCallableMixinMethod (method);
     }
 
     [Test]
     public void GetOverrideInterfaceMethod ()
     {
-      Assert.That (_concreteMixinType.GetOverrideInterfaceMethod (_method1), Is.SameAs (_method2));
+      Assert.That (_concreteMixinType.GetOverrideInterfaceMethod (_nonPublicMethod), Is.SameAs (_wrapperOrInterfaceMethod));
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No override interface method was generated for method 'System.Object.Equals'.")]
+    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No override interface method was generated for method 'System.Object.ToString'.")]
     public void GetOverrideInterfaceMethod_NotFound ()
     {
-      _concreteMixinType.GetOverrideInterfaceMethod (_method2);
+      var method = typeof (object).GetMethod ("ToString");
+      _concreteMixinType.GetOverrideInterfaceMethod (method);
     }
 
   }
