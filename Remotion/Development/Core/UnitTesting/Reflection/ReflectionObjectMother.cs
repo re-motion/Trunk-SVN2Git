@@ -42,6 +42,7 @@ namespace Remotion.Development.UnitTesting.Reflection
     private static readonly Type[] s_classTypes = EnsureNoNulls (new[] { typeof (StringBuilder), typeof (Exception) });
     private static readonly Type[] s_interfaceTypes = EnsureNoNulls (new[] { typeof (IDisposable), typeof (IServiceProvider) });
     private static readonly Type[] s_otherInterfaceTypes = EnsureNoNulls (new[] { typeof (IComparable), typeof (ICloneable) });
+    private static readonly Type[] s_nestedTypes = EnsureNoNulls (new[] { typeof (DomainType), typeof (DomainTypeBase) });
     private static readonly FieldInfo[] s_staticFields = EnsureNoNulls (new[] { typeof (string).GetField ("Empty"), typeof (Type).GetField ("EmptyTypes") });
     private static readonly FieldInfo[] s_instanceFields = EnsureNoNulls (new[] { typeof (DomainType).GetField ("Field") });
     private static readonly ConstructorInfo[] s_staticCtors = EnsureNoNulls (new[] { typeof (DomainType).TypeInitializer });
@@ -156,7 +157,16 @@ namespace Remotion.Development.UnitTesting.Reflection
 
     public static Type GetSomeOtherInterfaceType ()
     {
-      return GetRandomElement (s_otherInterfaceTypes);
+      var type = GetRandomElement (s_otherInterfaceTypes);
+      Assertion.IsTrue (type.IsInterface);
+      return type;
+    }
+
+    public static Type GetSomeNestedType ()
+    {
+      var type = GetRandomElement (s_nestedTypes);
+      Assertion.IsTrue (type.IsNested);
+      return type;
     }
 
     public static MemberInfo GetSomeMember ()
