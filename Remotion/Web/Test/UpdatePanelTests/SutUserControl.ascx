@@ -74,4 +74,6 @@
   <asp:Button ID="SyncPostBackOutsideUpdatePanelButton" runat="server" Text="Button: Sync PostBack Outside Update Panel" /><br />
   <asp:LinkButton ID="AsyncPostBackOutsideUpdatePanelLinkButton" runat="server" Text="LinkButton: Async PostBack Outside Update Panel" /><br />
   <asp:LinkButton ID="SyncPostBackOutsideUpdatePanelLinkButton" runat="server" Text="LinkButton: Sync PostBack Outside Update Panel" /><br />
+  <remotion:WebButton ID="AsyncPostBackOutsideUpdatePanelWebButton" runat="server" Text="WebButton: Async PostBack Outside Update Panel" /><br />
+  <remotion:WebButton ID="SyncPostBackOutsideUpdatePanelWebButton" runat="server" Text="WebButton: Sync PostBack Outside Update Panel" /><br />
 </div>

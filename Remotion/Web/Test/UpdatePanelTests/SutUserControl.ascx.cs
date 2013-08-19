@@ -39,6 +39,8 @@ namespace Remotion.Web.Test.UpdatePanelTests
       SyncPostBackInsideUpdatePanelLinkButton.Click += HandlePostBack;
       SyncPostBackOutsideUpdatePanelLinkButton.Click += HandlePostBack;
       AsyncPostBackInsideUpdatePanelWebButton.Click += HandlePostBack;
+      AsyncPostBackOutsideUpdatePanelWebButton.Click += HandlePostBack;
+      SyncPostBackOutsideUpdatePanelWebButton.Click += HandlePostBack;
       SyncPostBackInsideUpdatePanelWebButton.Click += HandlePostBack;
       DropDownMenuInsideUpdatePanel.EventCommandClick += HandlePostBack;
 
@@ -48,7 +50,6 @@ namespace Remotion.Web.Test.UpdatePanelTests
       Controls.Add (_postBackEventHandler);
 
       string asyncPostBackCommandInsideUpdatePanelID = "AsyncPostBackCommandInsideUpdatePanel";
-      ((ISmartPage) Page).RegisterCommandForSynchronousPostBack (_postBackEventHandler, asyncPostBackCommandInsideUpdatePanelID);
       AsyncCommandInsideUpdatePanelHyperLink.NavigateUrl = "#";
       AsyncCommandInsideUpdatePanelHyperLink.Attributes["onclick"] =
           Page.ClientScript.GetPostBackEventReference (_postBackEventHandler, asyncPostBackCommandInsideUpdatePanelID);
