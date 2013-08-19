@@ -110,7 +110,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       List.Stub (stub => stub.GetSelectorControlName ()).Return ("SelectRowControl$UnqiueID");
       List.Stub (stub => stub.GetSelectAllControlName()).Return ("SelectAllControl$UniqueID");
-      List.Stub (stub => stub.GetCurrentPageControlName()).Return ("CurrentPageControl$UniqueID");
+      List.Stub (stub => stub.GetCurrentPageControlName()).Return ("CurrentPageControl$UniqueID"); // Keep the $-sign as long as the ScalarLoadPostDataTarget is used.
 
       List.Stub (list => list.GetResourceManager()).Return (
           MultiLingualResources.GetResourceManager (typeof (ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier)));

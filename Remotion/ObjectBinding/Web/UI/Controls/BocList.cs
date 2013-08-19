@@ -3595,7 +3595,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocList.GetCurrentPageControlName ()
     {
-      return ClientID + c_currentPageControlName;
+      return _currentPagePostBackTarget.UniqueID;
     }
   }
 
