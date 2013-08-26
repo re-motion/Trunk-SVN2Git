@@ -107,7 +107,10 @@ namespace Remotion.Mixins.MixerTools
 
     private void Mixer_ValidationErrorOccurred (object sender, ValidationErrorEventArgs e)
     {
-      ConsoleDumper.DumpValidationResults (e.ValidationException.ValidationLogData.GetResults ());
+      using (ConsoleUtility.EnterColorScope (ConsoleColor.Red, null))
+      {
+        Console.WriteLine (e.ValidationException.Message);
+      }
     }
 
     void Mixer_ErrorOccurred (object sender, ErrorEventArgs e)

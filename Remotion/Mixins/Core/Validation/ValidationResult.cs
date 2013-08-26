@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Mixins.Definitions;
 using Remotion.Text;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
@@ -23,21 +24,20 @@ using System.Linq;
 
 namespace Remotion.Mixins.Validation
 {
-  [Serializable]
   public struct ValidationResult
   {
-    private readonly ValidatedDefinitionDescription _validatedDefinitionDescription;
+    private readonly IVisitableDefinition _validatedDefinition;
 
     private readonly List<ValidationResultItem> _successes;
     private readonly List<ValidationResultItem> _warnings;
     private readonly List<ValidationResultItem> _failures;
     private readonly List<ValidationExceptionResultItem> _exceptions;
 
-    public ValidationResult (ValidatedDefinitionDescription validatedDefinitionDescription)
+    public ValidationResult (IVisitableDefinition validatedDefinition)
     {
-      ArgumentUtility.CheckNotNull ("validatedDefinitionDescription", validatedDefinitionDescription);
+      ArgumentUtility.CheckNotNull ("validatedDefinition", validatedDefinition);
 
-      _validatedDefinitionDescription = validatedDefinitionDescription;
+      _validatedDefinition = validatedDefinition;
 
       _successes = new List<ValidationResultItem> ();
       _warnings = new List<ValidationResultItem> ();
@@ -45,14 +45,14 @@ namespace Remotion.Mixins.Validation
       _exceptions = new List<ValidationExceptionResultItem> ();
     }
 
-    public ValidatedDefinitionDescription ValidatedDefinitionDescription
+    public IVisitableDefinition ValidatedDefinition
     {
-      get { return _validatedDefinitionDescription; }
+      get { return _validatedDefinition; }
     }
 
     public string GetDefinitionContextPath()
     {
-      return SeparatedStringBuilder.Build (" -> ", ValidatedDefinitionDescription.ParentDescription.CreateSequence (d => d.ParentDescription).Select (d => d.FullName));
+      return SeparatedStringBuilder.Build (" -> ", ValidatedDefinition.Parent.CreateSequence (d => d.Parent).Select (d => d.FullName));
     }
 
     public int TotalRulesExecuted

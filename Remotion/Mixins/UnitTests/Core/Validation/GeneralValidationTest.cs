@@ -61,6 +61,8 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
     [Test]
     public void ValidationDump ()
     {
+      // This test shows validation errors to the console if there are any in the mixin test domain.
+
       var log = MixinConfiguration.ActiveConfiguration.Validate();
       ConsoleDumper.DumpValidationResults (log.GetResults());
     }
@@ -74,7 +76,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
       {
         Assert.That (results.MoveNext(), Is.True);
         ValidationResult firstResult = results.Current;
-        Assert.That (firstResult.ValidatedDefinitionDescription, Is.Not.Null);
+        Assert.That (firstResult.ValidatedDefinition, Is.Not.Null);
       }
     }
 
@@ -114,12 +116,12 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
       }
 
       var validationResults = log.GetResults();
-      var visitedDefinitions = new HashSet<ValidatedDefinitionDescription>();
+      var visitedDefinitions = new HashSet<IVisitableDefinition>();
       foreach (ValidationResult result in validationResults)
       {
-        var definitionDescription = result.ValidatedDefinitionDescription;
-        Assert.That (visitedDefinitions.Contains (definitionDescription), Is.False, definitionDescription.ToString());
-        visitedDefinitions.Add (definitionDescription);
+        var definition = result.ValidatedDefinition;
+        Assert.That (visitedDefinitions.Contains (definition), Is.False, definition.ToString());
+        visitedDefinitions.Add (definition);
       }
 
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
@@ -279,14 +281,18 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
           Is.EqualTo (
               "Some parts of the mixin configuration could not be validated."
               + Environment.NewLine
-              + "Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain.AbstractMixinWithoutBase.AbstractMethod (Remotion.Mixins.UnitTests.Core."
-              + "Validation.ValidationTestDomain.AbstractMixinWithoutBase -> Remotion.Mixins.UnitTests.Core.TestDomain.ClassOverridingSingleMixinMethod):"
+              + "MethodDefinition 'Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain.AbstractMixinWithoutBase.AbstractMethod', 6 rules "
+              + "executed"
               + Environment.NewLine
-              +
-              "Error: A target class overrides a method from one of its mixins, but the mixin is not derived from one of the Mixin<...> base classes."
-              + Environment.NewLine));
-
-      Assert.That (exception.ValidationLogData, Is.SameAs (validationLogData));
+              + "Context: Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain.AbstractMixinWithoutBase -> "
+              + "Remotion.Mixins.UnitTests.Core.TestDomain.ClassOverridingSingleMixinMethod"
+              + Environment.NewLine
+              + "  failures - 1"
+              + Environment.NewLine
+              + "    A target class overrides a method from one of its mixins, but the mixin is not derived from one of the Mixin<...> base classes. "
+              + "(Remotion.Mixins.Validation.Rules.DefaultMethodRules.OverridingMixinMethodsOnlyPossibleWhenMixinDerivedFromMixinBase)"
+              + Environment.NewLine
+));
     }
 
     [Test]
@@ -347,13 +353,13 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
 
       Assert.That (results.Count, Is.EqualTo (4));
 
-      Assert.That (results[0].ValidatedDefinitionDescription, Is.EqualTo (ValidatedDefinitionDescription.FromDefinition (bt2)));
+      Assert.That (results[0].ValidatedDefinition, Is.EqualTo (bt2));
       Assert.That (results[0].Successes.Count, Is.EqualTo (1));
       Assert.That (results[0].Failures.Count, Is.EqualTo (1));
       Assert.That (results[0].Warnings.Count, Is.EqualTo (1));
       Assert.That (results[0].Exceptions.Count, Is.EqualTo (1));
 
-      Assert.That (results[1].ValidatedDefinitionDescription, Is.EqualTo (ValidatedDefinitionDescription.FromDefinition (bt1)));
+      Assert.That (results[1].ValidatedDefinition, Is.EqualTo (bt1));
 
       Assert.That (results[1].Successes.Count, Is.EqualTo (2));
       Assert.That (results[1].Successes[0].Message, Is.EqualTo ("4"));
@@ -371,13 +377,13 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
       Assert.That (results[1].Exceptions[0].Exception, Is.EqualTo (exception));
       Assert.That (results[1].Exceptions[1].Exception, Is.EqualTo (exception));
 
-      Assert.That (results[2].ValidatedDefinitionDescription, Is.EqualTo (ValidatedDefinitionDescription.FromDefinition (bt3)));
+      Assert.That (results[2].ValidatedDefinition, Is.EqualTo (bt3));
       Assert.That (results[2].Successes.Count, Is.EqualTo (1));
       Assert.That (results[2].Failures.Count, Is.EqualTo (1));
       Assert.That (results[2].Warnings.Count, Is.EqualTo (1));
       Assert.That (results[2].Exceptions.Count, Is.EqualTo (1));
 
-      Assert.That (results[3].ValidatedDefinitionDescription, Is.EqualTo (ValidatedDefinitionDescription.FromDefinition (bt4)));
+      Assert.That (results[3].ValidatedDefinition, Is.EqualTo (bt4));
 
       Assert.That (results[3].Successes.Count, Is.EqualTo (1));
       Assert.That (results[3].Successes[0].Message, Is.EqualTo ("Success2"));
@@ -394,7 +400,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
 
     private void AssertVisitedEquivalent (IEnumerable<ValidationResult> validationResults, IVisitableDefinition expectedDefinition)
     {
-      var match = validationResults.Any (result => result.ValidatedDefinitionDescription == ValidatedDefinitionDescription.FromDefinition (expectedDefinition));
+      var match = validationResults.Any (result => result.ValidatedDefinition.FullName == expectedDefinition.FullName);
       var message = string.Format ("Expected {0} '{1}' to be visited.", expectedDefinition.GetType().Name, expectedDefinition.FullName);
       Assert.That (match, message);
     }

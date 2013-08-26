@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 using Remotion.Utilities;
@@ -37,35 +38,40 @@ namespace Remotion.Mixins.Validation
       {
         if (item.TotalRulesExecuted != item.Successes.Count)
         {
-          sb.Append (Environment.NewLine).Append (item.ValidatedDefinitionDescription.FullName);
-          string parentString = item.GetDefinitionContextPath ();
-          if (parentString.Length > 0)
-            sb.Append (" (").Append (parentString).Append ("):").Append (Environment.NewLine);
+          sb.AppendLine();
+          sb.AppendFormat (
+               "{0} '{1}', {2} rules executed",
+               item.ValidatedDefinition.GetType().Name,
+               item.ValidatedDefinition.FullName,
+               item.TotalRulesExecuted);
+          sb.AppendLine ();
 
-          foreach (ValidationExceptionResultItem exception in item.Exceptions)
-            sb.Append ("Internal exception: ").Append (exception.Message).Append (Environment.NewLine);
+          string contextString = item.GetDefinitionContextPath ();
+          if (contextString.Length > 0)
+          {
+            sb.AppendFormat ("Context: " + contextString);
+            sb.AppendLine ();
+          }
 
-          foreach (ValidationResultItem failure in item.Failures)
-            sb.Append ("Error: ").Append (failure.Message).Append (Environment.NewLine);
-
-          foreach (ValidationResultItem warning in item.Warnings)
-            sb.Append ("Warning: ").Append (warning.Message).Append (Environment.NewLine);
+          AppendResults (sb, "unexpected exceptions", item.Exceptions);
+          AppendResults (sb, "warnings", item.Warnings);
+          AppendResults (sb, "failures", item.Failures);
         }
       }
       return sb.ToString ();
     }
 
-    private readonly ValidationLogData _validationLogData;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ValidationException"/> class.
-    /// </summary>
-    /// <param name="message">The exception message.</param>
-    /// <param name="validationLogData">The validation log data.</param>
-    public ValidationException (string message, ValidationLogData validationLogData)
-        : base (message)
+    private static void AppendResults<T> (StringBuilder sb, string title, ICollection<T> resultList) 
+        where T : IDefaultValidationResultItem
     {
-      _validationLogData = validationLogData;
+      if (resultList.Count > 0)
+      {
+        sb.AppendFormat ("  {0} - {1}", title, resultList.Count);
+        sb.AppendLine();
+        foreach (T resultItem in resultList)
+          sb.AppendFormat ("    {0} ({1})", resultItem.Message, resultItem.RuleName);
+        sb.AppendLine();
+      }
     }
 
     /// <summary>
@@ -74,7 +80,7 @@ namespace Remotion.Mixins.Validation
     /// <param name="validationLogData">The validation log data.</param>
     /// <exception cref="ArgumentNullException">The log is empty.</exception>
     public ValidationException (ValidationLogData validationLogData)
-      : this (BuildExceptionString (validationLogData), validationLogData)
+      : base (BuildExceptionString (validationLogData))
     {
     }
 
@@ -87,18 +93,6 @@ namespace Remotion.Mixins.Validation
     protected ValidationException (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
-      _validationLogData = (ValidationLogData) info.GetValue ("ValidationLogData", typeof (ValidationLogData));
-    }
-
-    public ValidationLogData ValidationLogData
-    {
-      get { return _validationLogData; }
-    }
-
-    public override void GetObjectData (SerializationInfo info, StreamingContext context)
-    {
-      base.GetObjectData (info, context);
-      info.AddValue ("ValidationLogData", _validationLogData);
     }
   }
 }

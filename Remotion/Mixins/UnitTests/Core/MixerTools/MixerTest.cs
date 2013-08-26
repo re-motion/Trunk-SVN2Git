@@ -170,7 +170,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     [Test]
     public void Execute_ValidationError ()
     {
-      var validationException = new ValidationException ("x", new ValidationLogData());
+      var validationException = new ValidationException (new ValidationLogData());
 
       _reflectionServiceDynamicMock
           .Expect (mock => _reflectionServiceDynamicMock.GetAssembledType (_fakeMixedType))

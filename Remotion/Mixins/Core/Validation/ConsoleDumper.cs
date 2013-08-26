@@ -39,8 +39,8 @@ namespace Remotion.Mixins.Validation
           {
             Console.WriteLine (
                 "{0} '{1}', {2} rules executed",
-                result.ValidatedDefinitionDescription.Kind,
-                result.ValidatedDefinitionDescription.FullName,
+                result.ValidatedDefinition.GetType().Name,
+                result.ValidatedDefinition.FullName,
                 result.TotalRulesExecuted);
             DumpContext (result);
           }

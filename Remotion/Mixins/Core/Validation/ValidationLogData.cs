@@ -17,13 +17,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Remotion.Mixins.Definitions;
 
 namespace Remotion.Mixins.Validation
 {
   /// <summary>
   /// Holds the data written to an <see cref="IValidationLog"/>.
   /// </summary>
-  [Serializable]
   public class ValidationLogData
   {
     private readonly List<ValidationResult> _results = new List<ValidationResult> ();
@@ -51,10 +51,10 @@ namespace Remotion.Mixins.Validation
     {
       foreach (ValidationResult mergedResult in data.GetResults ())
       {
-        ValidationResult? activeResult = FindMatchingResult (mergedResult.ValidatedDefinitionDescription);
+        ValidationResult? activeResult = FindMatchingResult (mergedResult.ValidatedDefinition);
         if (activeResult == null)
         {
-          activeResult = new ValidationResult (mergedResult.ValidatedDefinitionDescription);
+          activeResult = new ValidationResult (mergedResult.ValidatedDefinition);
           Add (activeResult.Value);
         }
 
@@ -111,11 +111,11 @@ namespace Remotion.Mixins.Validation
       return _successes + _warnings + _failures + _exceptions;
     }
 
-    private ValidationResult? FindMatchingResult (ValidatedDefinitionDescription validatedDefinitionDescription)
+    private ValidationResult? FindMatchingResult (IVisitableDefinition validatedDefinition)
     {
       foreach (var result in GetResults ())
       {
-        if (result.ValidatedDefinitionDescription == validatedDefinitionDescription)
+        if (result.ValidatedDefinition == validatedDefinition)
           return result;
       }
       return null;

@@ -36,11 +36,10 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
       log.Succeed (rule);
       log.ValidationEndsFor (definition);
 
-      var exception = new ValidationException ("Message", log.GetData());
+      var exception = new ValidationException (log.GetData());
 
       var deserializedException = Serializer.SerializeAndDeserialize (exception);
       Assert.That (deserializedException.Message, Is.EqualTo (exception.Message));
-      Assert.That (deserializedException.ValidationLogData.GetNumberOfSuccesses(), Is.EqualTo (exception.ValidationLogData.GetNumberOfSuccesses()));
     }
 
     private void DummyRule (DelegateValidationRule<TargetClassDefinition>.Args args)
