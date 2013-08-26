@@ -55,7 +55,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
       ArgumentUtility.CheckNotNull ("filePath", filePath);
 
       s_log.InfoFormat ("Attempting to get assembly name for path '{0}'.", filePath);
-      AssemblyName assemblyName = PerformGuardedLoadOperation (filePath, null, () => AssemblyName.GetAssemblyName (filePath));
+      AssemblyName assemblyName = PerformGuardedLoadOperation (filePath, null, () => AssemblyNameCache.GetAssemblyName (filePath));
       if (assemblyName == null)
         return null;
 

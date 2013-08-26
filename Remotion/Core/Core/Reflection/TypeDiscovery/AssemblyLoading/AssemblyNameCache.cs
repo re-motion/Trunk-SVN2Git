@@ -25,12 +25,12 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
   /// </summary>
   public static class AssemblyNameCache
   {
-    private static ConcurrentDictionary<string, AssemblyName> s_cache = new ConcurrentDictionary<string, AssemblyName>();
+    private static readonly ConcurrentDictionary<string, AssemblyName> s_cache = new ConcurrentDictionary<string, AssemblyName>();
 
     public static AssemblyName GetAssemblyName (string filePath)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("filePath", filePath);
-      return AssemblyName.GetAssemblyName (filePath);
+      return s_cache.GetOrAdd (filePath, AssemblyName.GetAssemblyName);
     }
   }
 }
