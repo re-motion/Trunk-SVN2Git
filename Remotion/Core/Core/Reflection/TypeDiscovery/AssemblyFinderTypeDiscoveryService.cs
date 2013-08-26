@@ -39,6 +39,8 @@ namespace Remotion.Reflection.TypeDiscovery
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (AssemblyFinderTypeDiscoveryService));
 
+    private static readonly ConcurrentDictionary<_Assembly, Type[]> s_typeCache = new ConcurrentDictionary<_Assembly, Type[]> ();
+
     private readonly IAssemblyFinder _assemblyFinder;
 
     /// <summary>
@@ -84,10 +86,19 @@ namespace Remotion.Reflection.TypeDiscovery
 
     private IEnumerable<Type> GetTypes (_Assembly assembly, Type baseType)
     {
-      Type[] allTypesInAssembly;
+      var allTypesInAssembly = s_typeCache.GetOrAdd (assembly, GetTypesWithExceptionHandling);
+
+      if (baseType == null)
+        return allTypesInAssembly;
+      else
+        return GetFilteredTypes (allTypesInAssembly, baseType);
+    }
+
+    private static Type[] GetTypesWithExceptionHandling (_Assembly assembly)
+    {
       try
       {
-        allTypesInAssembly = assembly.GetTypes ();
+        return assembly.GetTypes();
       }
       catch (ReflectionTypeLoadException ex)
       {
@@ -98,11 +109,6 @@ namespace Remotion.Reflection.TypeDiscovery
             SeparatedStringBuilder.Build (Environment.NewLine, ex.LoaderExceptions, e => e.Message));
         throw new TypeLoadException (message, ex);
       }
-
-      if (baseType == null)
-        return allTypesInAssembly;
-      else
-        return GetFilteredTypes (allTypesInAssembly, baseType);
     }
 
     private IEnumerable<Type> GetFilteredTypes (IEnumerable<Type> types, Type baseType)
