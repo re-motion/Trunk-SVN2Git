@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
+using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
@@ -80,7 +82,7 @@ namespace Remotion.ServiceLocation
     {
       ArgumentUtility.CheckNotNull ("assemblies", assemblies);
 
-      return assemblies.SelectMany (a => GetDefaultConfiguration (a.GetTypes()));
+      return assemblies.SelectMany (a => GetDefaultConfiguration (AssemblyTypeCache.GetTypes (a)));
     }
 
     private static ServiceConfigurationEntry CreateServiceConfigurationEntry (Type type, ConcreteImplementationAttribute[] concreteImplementationAttributes)

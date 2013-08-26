@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
 namespace Remotion.Security.Metadata
@@ -59,7 +60,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("cache", cache);
 
       List<EnumValueInfo> accessTypes = new List<EnumValueInfo> ();
-      foreach (Type type in assembly.GetTypes ())
+      foreach (var type in AssemblyTypeCache.GetTypes (assembly))
       {
         if (type.IsEnum && Attribute.IsDefined (type, typeof (AccessTypeAttribute), false))
         {

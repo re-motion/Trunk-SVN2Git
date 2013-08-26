@@ -162,6 +162,7 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyNameCache.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Reflection\AssemblyTypeCache.cs" />
     <Compile Include="SafeContextSingleton.cs" />
     <Compile Include="Design\IDesignModeHelper.cs" />
     <Compile Include="Diagnostics\DebuggerInterface.cs" />

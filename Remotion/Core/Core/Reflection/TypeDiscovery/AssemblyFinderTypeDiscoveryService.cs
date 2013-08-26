@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
@@ -24,6 +25,7 @@ using System.Runtime.InteropServices;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Text;
 using Remotion.Utilities;
 
@@ -38,8 +40,6 @@ namespace Remotion.Reflection.TypeDiscovery
   public class AssemblyFinderTypeDiscoveryService : ITypeDiscoveryService
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (AssemblyFinderTypeDiscoveryService));
-
-    private static readonly ConcurrentDictionary<_Assembly, Type[]> s_typeCache = new ConcurrentDictionary<_Assembly, Type[]> ();
 
     private readonly IAssemblyFinder _assemblyFinder;
 
@@ -86,19 +86,11 @@ namespace Remotion.Reflection.TypeDiscovery
 
     private IEnumerable<Type> GetTypes (_Assembly assembly, Type baseType)
     {
-      var allTypesInAssembly = s_typeCache.GetOrAdd (assembly, GetTypesWithExceptionHandling);
-
-      if (baseType == null)
-        return allTypesInAssembly;
-      else
-        return GetFilteredTypes (allTypesInAssembly, baseType);
-    }
-
-    private static Type[] GetTypesWithExceptionHandling (_Assembly assembly)
-    {
+      ReadOnlyCollection<Type> allTypesInAssembly;
+      
       try
       {
-        return assembly.GetTypes();
+        allTypesInAssembly = AssemblyTypeCache.GetTypes (assembly);
       }
       catch (ReflectionTypeLoadException ex)
       {
@@ -109,6 +101,11 @@ namespace Remotion.Reflection.TypeDiscovery
             SeparatedStringBuilder.Build (Environment.NewLine, ex.LoaderExceptions, e => e.Message));
         throw new TypeLoadException (message, ex);
       }
+
+      if (baseType == null)
+        return allTypesInAssembly;
+      else
+        return GetFilteredTypes (allTypesInAssembly, baseType);
     }
 
     private IEnumerable<Type> GetFilteredTypes (IEnumerable<Type> types, Type baseType)

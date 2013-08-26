@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
 namespace Remotion.Security.Metadata
@@ -57,7 +59,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("cache", cache);
 
       List<EnumValueInfo> abstractRoles = new List<EnumValueInfo> ();
-      foreach (Type type in assembly.GetTypes ())
+      foreach (Type type in AssemblyTypeCache.GetTypes (assembly))
       {
         if (type.IsEnum && Attribute.IsDefined (type, typeof (AbstractRoleAttribute), false))
         {

@@ -21,6 +21,7 @@ using System.ComponentModel.Design;
 using System.Reflection;
 using Remotion.Mixins.Context.DeclarativeAnalyzers;
 using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
@@ -166,7 +167,7 @@ namespace Remotion.Mixins.Context
       ArgumentUtility.CheckNotNull ("assembly", assembly);
       s_log.DebugFormat ("Adding assembly {0} to DeclarativeConfigurationBuilder.", assembly);
 
-      foreach (Type t in assembly.GetTypes())
+      foreach (var t in AssemblyTypeCache.GetTypes (assembly))
       {
         if (!t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false) && !MixinTypeUtility.IsGeneratedByMixinEngine (t))
           AddType (t);

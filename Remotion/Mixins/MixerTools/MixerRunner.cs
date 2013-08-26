@@ -19,6 +19,8 @@ using System.Linq;
 using System.IO;
 using Remotion.Logging;
 using Remotion.Mixins.Validation;
+using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.MixerTools
@@ -87,7 +89,7 @@ namespace Remotion.Mixins.MixerTools
       }
       else
       {
-        var mixerLoggers = from t in typeof (Mixer).Assembly.GetTypes ()
+        var mixerLoggers = from t in AssemblyTypeCache.GetTypes (typeof (Mixer).Assembly)
                            where t.Namespace == typeof (Mixer).Namespace
                            select LogManager.GetLogger (t);
         var logThresholds = from l in mixerLoggers

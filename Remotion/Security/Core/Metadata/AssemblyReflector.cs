@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
 namespace Remotion.Security.Metadata
@@ -79,7 +81,7 @@ namespace Remotion.Security.Metadata
       _abstractRoleReflector.GetAbstractRoles (securityAssembly, cache);
       _abstractRoleReflector.GetAbstractRoles (assembly, cache);
 
-      foreach (Type type in assembly.GetTypes ())
+      foreach (Type type in AssemblyTypeCache.GetTypes (assembly))
       {
         if (typeof (ISecurableObject).IsAssignableFrom (type))
           _classReflector.GetMetadata (type, cache);

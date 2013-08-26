@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation.Rules;
+using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Validation
@@ -77,7 +79,7 @@ namespace Remotion.Mixins.Validation
 
     private static void InstallDefaultRules (ValidatingVisitor visitor)
     {
-      foreach (Type t in Assembly.GetExecutingAssembly().GetTypes())
+      foreach (Type t in AssemblyTypeCache.GetTypes (Assembly.GetExecutingAssembly()))
       {
         if (!t.IsAbstract && typeof (IRuleSet).IsAssignableFrom (t) && t.Namespace == typeof (IRuleSet).Namespace)
         {
