@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Development.TypePipe.UnitTesting.ObjectMothers.CodeGeneration;
 using Remotion.Development.UnitTesting;
 using Remotion.TypePipe.Dlr.Ast;
@@ -31,7 +32,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 {
   [TestFixture]
-  public class DomainObjectParticipantTest
+  public class DomainObjectParticipantTest : StandardMappingTest
   {
     private ITypeDefinitionProvider _typeDefinitionProviderMock;
 
@@ -41,9 +42,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
     private ProxyTypeAssemblyContext _proxyTypeAssemblyContext;
     private MutableType _proxyType;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _typeDefinitionProviderMock = MockRepository.GenerateStrictMock<ITypeDefinitionProvider>();
       _interceptedPropertyFinderMock = MockRepository.GenerateStrictMock<IInterceptedPropertyFinder>();
 
@@ -116,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       _participant.Participate (null, context);
 
       Assert.That (_proxyType.AddedInterfaces, Has.No.Member (typeof (IInterceptedDomainObject)));
-      _typeDefinitionProviderMock.AssertWasNotCalled (mock => mock.GetTypeDefinition (_proxyTypeAssemblyContext.RequestedType));
+      _typeDefinitionProviderMock.AssertWasNotCalled (mock => mock.GetTypeDefinition (Arg<Type>.Is.Anything));
     }
 
     [Test]
@@ -163,6 +165,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
       var nonAbstractClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (isAbstract: false);
       _typeDefinitionProviderMock.Stub (stub => stub.GetTypeDefinition (typeof (NonSubclassableDomainObject))).Return (nonAbstractClassDefinition);
       _participant.HandleNonSubclassableType (typeof (NonSubclassableDomainObject));
+    }
+
+    [Test]
+    public void HandleNonSubclassableType_NonDomainObject_Nop ()
+    {
+      _participant.HandleNonSubclassableType (typeof (object));
+
+      Assert.That(_proxyType.AddedInterfaces, Has.No.Member(typeof(IInterceptedDomainObject)));
+      _typeDefinitionProviderMock.AssertWasNotCalled(mock => mock.GetTypeDefinition(Arg<Type>.Is.Anything));
     }
 
     private void StubGetPropertyInterceptors (params IAccessorInterceptor[] accessorInterceptors)

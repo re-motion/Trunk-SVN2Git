@@ -111,6 +111,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
     {
       ArgumentUtility.CheckNotNull ("requestedType", requestedType);
 
+      if (!typeof (DomainObject).IsTypePipeAssignableFrom (requestedType))
+        return;
+
       var classDefinition = _typeDefinitionProvider.GetTypeDefinition (requestedType);
       if (classDefinition != null && !classDefinition.IsAbstract)
       {
