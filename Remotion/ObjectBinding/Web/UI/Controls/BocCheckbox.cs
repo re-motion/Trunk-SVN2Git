@@ -19,14 +19,10 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.Utilities;
-using Remotion.Web;
-using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -41,7 +37,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public class BocCheckBox : BocBooleanValueBase, IBocCheckBox
   {
     // constants
-    private const string c_checkboxIDPostfix = "_Value";
+    private const string c_keyValueName = "_KeyValue";
+    private const string c_textValueName = "_TextValue";
 
     // types
 
@@ -126,7 +123,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! _isActive)
         return false;
 
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetValueName());
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetKeyValueName());
       bool newBooleanValue = ! StringUtility.IsNullOrEmpty (newValue);
       bool isDataChanged = _value != newBooleanValue;
       if (isDataChanged)
@@ -232,7 +229,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { GetValueName() };
+      return IsReadOnly ? new string[0] : new[] { GetKeyValueName() };
     }
 
     /// <summary>
@@ -263,7 +260,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public override string FocusID
     {
-      get { return IsReadOnly ? null : GetValueName(); }
+      get { return IsReadOnly ? null : GetKeyValueName(); }
     }
 
     /// <summary> Gets the string representation of this control's <see cref="BocBooleanValueBase.Value"/>. </summary>
@@ -402,14 +399,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return !WcagHelper.Instance.IsWaiConformanceLevelARequired() && _showDescription == true; }
     }
 
-    string IBocCheckBox.GetValueName ()
+    string IBocCheckBox.GetKeyValueName ()
     {
-      return GetValueName();
+      return GetKeyValueName();
     }
 
-    protected string GetValueName ()
+    protected string GetKeyValueName ()
     {
-      return ClientID + c_checkboxIDPostfix;
+      return ClientID + c_keyValueName;
+    }
+    
+    string IBocCheckBox.GetTextValueName ()
+    {
+      return GetTextValueName();
+    }
+
+    protected string GetTextValueName ()
+    {
+      return ClientID + c_textValueName;
     }
 
     bool IBocCheckBox.IsDescriptionEnabled
