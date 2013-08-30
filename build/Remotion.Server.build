@@ -162,7 +162,7 @@
   <Target Name="TestBuild_Configuration">
     <PropertyGroup>
       <Platforms>x86</Platforms>
-      <DatabaseSystems>SqlServer2008</DatabaseSystems>
+      <DatabaseSystems>SqlServer2008SE</DatabaseSystems>
     </PropertyGroup>
   </Target>
   
