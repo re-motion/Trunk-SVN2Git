@@ -37,7 +37,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
     /// <summary> Text displayed when control is displayed in desinger and is read-only has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
 
-    private readonly DateTimeFormatter _formatter = new DateTimeFormatter();
     private readonly TextBox _dateTextBox;
     private readonly TextBox _timeTextBox;
 
@@ -84,17 +83,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
 
     private void RenderEditModeControls (BocDateTimeValueRenderingContext renderingContext)
     {
+      var formatter = renderingContext.Control.DateTimeFormatter;
+
       var dateTextBox = _dateTextBox;
       dateTextBox.ID = renderingContext.Control.GetDateValueName();
       dateTextBox.CssClass = CssClassDate;
-      Initialize (renderingContext, dateTextBox, renderingContext.Control.DateTextBoxStyle, GetDateMaxLength());
+      Initialize (
+          renderingContext,
+          dateTextBox,
+          renderingContext.Control.DateTextBoxStyle,
+          formatter.GetDateMaxLength());
       dateTextBox.Text = renderingContext.Control.DateString;
       dateTextBox.Page = renderingContext.Control.Page.WrappedInstance;
 
       var timeTextBox = _timeTextBox;
       timeTextBox.ID = renderingContext.Control.GetTimeValueName();
       timeTextBox.CssClass = CssClassTime;
-      Initialize (renderingContext, timeTextBox, renderingContext.Control.TimeTextBoxStyle, GetTimeMaxLength (renderingContext));
+      Initialize (
+          renderingContext,
+          timeTextBox,
+          renderingContext.Control.TimeTextBoxStyle,
+          formatter.GetTimeMaxLength (renderingContext.Control.ShowSeconds));
       timeTextBox.Text = renderingContext.Control.TimeString;
       timeTextBox.Page = renderingContext.Control.Page.WrappedInstance;
 
@@ -183,13 +192,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
 
     public string GetPositioningCssClass (BocDateTimeValueRenderingContext renderingContext, DateTimeValuePart part)
     {
+      var formatter = renderingContext.Control.DateTimeFormatter;
       return string.Format (
-          "boc{0}{1}Hours{2}", part, Formatter.Is12HourTimeFormat() ? 12 : 24, renderingContext.Control.ShowSeconds ? "WithSeconds" : string.Empty);
-    }
-
-    private DateTimeFormatter Formatter
-    {
-      get { return _formatter; }
+          "boc{0}{1}Hours{2}", part, formatter.Is12HourTimeFormat() ? 12 : 24, renderingContext.Control.ShowSeconds ? "WithSeconds" : string.Empty);
     }
 
     private void Initialize (BocDateTimeValueRenderingContext renderingContext, TextBox textBox, SingleRowTextBoxStyle textBoxStyle, int maxLength)
@@ -204,25 +209,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
 
       if (renderingContext.Control.ProvideMaxLength)
         textBox.MaxLength = maxLength;
-    }
-
-    /// <summary> Calculates the maximum length for required for entering the date component. </summary>
-    /// <returns> The length. </returns>
-    private int GetDateMaxLength ()
-    {
-      DateTime date = new DateTime (2000, 12, 31);
-      string maxDate = date.ToString ("d");
-      return maxDate.Length;
-    }
-
-    /// <summary> Calculates the maximum length for required for entering the time component. </summary>
-    /// <returns> The length. </returns>
-    private int GetTimeMaxLength (BocDateTimeValueRenderingContext renderingContext)
-    {
-      DateTime time = new DateTime (1, 1, 1, 23, 30, 30);
-      string maxTime = renderingContext.Control.ShowSeconds ? time.ToString ("T") : time.ToString ("t");
-
-      return maxTime.Length;
     }
 
     private void RenderReadOnlyValue (BocDateTimeValueRenderingContext renderingContext)
@@ -242,14 +228,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
       {
         if (renderingContext.Control.Value.HasValue)
         {
+          var formatter = renderingContext.Control.DateTimeFormatter;
+
           var dateTime = renderingContext.Control.Value.Value;
 
-          dateLabel.Text = Formatter.FormatDateValue (dateTime);
+          dateLabel.Text = formatter.FormatDateValue (dateTime);
           dateLabel.Attributes.Add ("data-value", dateTime.ToString ("yyyy-MM-dd"));
 
           if (renderingContext.Control.ActualValueType == BocDateTimeValueType.DateTime)
           {
-            timeLabel.Text = Formatter.FormatTimeValue (dateTime);
+            timeLabel.Text = formatter.FormatTimeValue (dateTime, renderingContext.Control.ShowSeconds);
             timeLabel.Attributes.Add ("data-value", dateTime.ToString ("HH:mm:ss"));
           }
         }

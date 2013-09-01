@@ -87,6 +87,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
 
       _control.Stub (stub => stub.ProvideMaxLength).Return (true);
 
+      var dateTimeFormatter = new DateTimeFormatter();
+      _control.Stub (stub => stub.DateTimeFormatter).Return (dateTimeFormatter);
+
       _dateTextBox = new StubTextBox();
       _timeTextBox = new StubTextBox();
 

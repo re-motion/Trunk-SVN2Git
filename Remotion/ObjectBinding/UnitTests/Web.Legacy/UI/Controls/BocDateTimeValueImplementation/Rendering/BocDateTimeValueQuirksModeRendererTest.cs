@@ -77,6 +77,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocDateTimeVal
       _dateTimeValue.Stub (mock => mock.TimeTextBoxStyle).Return (new TextBoxStyle());
       _dateTimeValue.Stub (mock => mock.DateTimeTextBoxStyle).Return (new TextBoxStyle());
       _dateTimeValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
+      
+      var dateTimeFormatter = new DateTimeFormatter();
+      _dateTimeValue.Stub (stub => stub.DateTimeFormatter).Return (dateTimeFormatter);
 
       _resourceUrlFactory = new FakeResourceUrlFactory();
     }

@@ -18,6 +18,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Legacy;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ServiceLocation;
@@ -32,7 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
     {
       var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IBocList).Assembly })
           .Select (e => e.ServiceType).ToList();
-      var nonLegacyServices = new[] { typeof (BocListCssClassDefinition) };
+      var nonLegacyServices = new[] { typeof (BocListCssClassDefinition), typeof (IDateTimeFormatter) };
       var expectedLegacyServiceTypes = allServiceTypes
           .Except (nonLegacyServices)
           .Concat (new[] { typeof (BocListQuirksModeCssClassDefinition) });

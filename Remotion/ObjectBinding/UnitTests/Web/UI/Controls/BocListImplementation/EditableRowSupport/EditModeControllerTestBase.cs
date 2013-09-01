@@ -26,6 +26,7 @@ using Remotion.ObjectBinding.UnitTests.Core.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.EditableRowSupport
@@ -62,6 +63,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void TestFixtureSetUp ()
     {
       ServiceLocator.SetLocatorProvider (() => new StubServiceLocator ());
+    }
+
+    [TestFixtureTearDown]
+    public void TestFixtureTearDown ()
+    {
+      ServiceLocator.SetLocatorProvider (() => new DefaultServiceLocator());
     }
 
     public override void SetUp ()

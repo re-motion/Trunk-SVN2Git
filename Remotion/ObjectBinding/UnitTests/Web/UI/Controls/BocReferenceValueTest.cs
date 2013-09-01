@@ -23,6 +23,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
+using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
@@ -58,6 +59,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     public void TestFixtureSetUp ()
     {
       ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
+    }
+
+    [TestFixtureTearDown]
+    public void TestFixtureTearDown ()
+    {
+      ServiceLocator.SetLocatorProvider (() => new DefaultServiceLocator());
     }
 
     [SetUp]

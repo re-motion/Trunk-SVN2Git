@@ -182,6 +182,7 @@
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckBoxRenderingContext.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueRenderer.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocCheckBoxRenderer.cs" />
+    <Compile Include="UI\Controls\BocDateTimeValueImplementation\IDateTimeFormatter.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\IBocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderingContext.cs" />

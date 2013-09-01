@@ -120,6 +120,8 @@
     <Compile Include="Core\BusinessObjectPropertyPathTest.cs" />
     <Compile Include="Web\UI\Controls\BocCompundColumnDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocCustomColumnDefinitionTest.cs" />
+    <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\DateTimeFormatterTest.cs" />
+    <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\IDateTimeFormatterTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\BocListRowTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\ListUtilityTest.cs" />
     <Compile Include="Web.Legacy\BocLegacyServiceConfigurationServiceTest.cs" />

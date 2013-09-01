@@ -18,6 +18,7 @@ using System;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
@@ -37,6 +38,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     public void TestFixtureSetUp ()
     {
       ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
+    }
+
+    [TestFixtureTearDown]
+    public void TestFixtureTearDown ()
+    {
+      ServiceLocator.SetLocatorProvider (() => new DefaultServiceLocator());
     }
 
     [SetUp]

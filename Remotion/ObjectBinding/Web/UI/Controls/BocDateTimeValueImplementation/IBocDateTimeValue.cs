@@ -38,5 +38,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation
     string GetDateValueName ();
     string GetTimeValueName ();
     string GetDatePickerText ();
+    IDateTimeFormatter DateTimeFormatter { get; }
   }
 }

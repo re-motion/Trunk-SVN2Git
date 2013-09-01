@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
@@ -35,6 +36,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     public void TestFixtureSetUp ()
     {
       ServiceLocator.SetLocatorProvider (() => new StubServiceLocator ());
+    }
+    
+    [TestFixtureTearDown]
+    public void TestFixtureTearDown ()
+    {
+      ServiceLocator.SetLocatorProvider (() => new DefaultServiceLocator());
     }
 
     protected virtual void Initialize ()

@@ -17,7 +17,6 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
@@ -42,7 +41,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
     /// <summary> Text displayed when control is displayed in desinger and is read-only has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
     private const string c_defaultControlWidth = "150pt";
-    private readonly DateTimeFormatter _formatter = new DateTimeFormatter ();
     private readonly IClientScriptBehavior _clientScriptBehavior;
 
     public BocDateTimeValueQuirksModeRenderer (IClientScriptBehavior clientScriptBehavior, IResourceUrlFactory resourceUrlFactory)
@@ -86,14 +84,16 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
+      var formatter = renderingContext.Control.DateTimeFormatter;
       var dateTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.GetDateValueName() };
-      Initialize (renderingContext, dateTextBox, renderingContext.Control.DateTextBoxStyle, GetDateMaxLength ());
-      dateTextBox.Text = renderingContext.Control.Value.HasValue ? Formatter.FormatDateValue (renderingContext.Control.Value.Value) : renderingContext.Control.DateString;
+      Initialize (renderingContext, dateTextBox, renderingContext.Control.DateTextBoxStyle, formatter.GetDateMaxLength ());
+      dateTextBox.Text = renderingContext.Control.Value.HasValue ? formatter.FormatDateValue (renderingContext.Control.Value.Value) : renderingContext.Control.DateString;
       dateTextBox.Page = renderingContext.Control.Page.WrappedInstance;
 
       var timeTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.GetTimeValueName() };
-      Initialize (renderingContext, timeTextBox, renderingContext.Control.TimeTextBoxStyle, GetTimeMaxLength (renderingContext));
-      timeTextBox.Text = renderingContext.Control.Value.HasValue ? Formatter.FormatTimeValue (renderingContext.Control.Value.Value, renderingContext.Control.ShowSeconds) : renderingContext.Control.TimeString;
+      var showSeconds = renderingContext.Control.ShowSeconds;
+      Initialize (renderingContext, timeTextBox, renderingContext.Control.TimeTextBoxStyle, formatter.GetTimeMaxLength (showSeconds));
+      timeTextBox.Text = renderingContext.Control.Value.HasValue ? formatter.FormatTimeValue (renderingContext.Control.Value.Value, showSeconds) : renderingContext.Control.TimeString;
       timeTextBox.Page = renderingContext.Control.Page.WrappedInstance;
 
       var datePickerButton = renderingContext.Control.DatePickerButton;
@@ -260,11 +260,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
       get { return "bocDateTimeValue"; }
     }
 
-    private DateTimeFormatter Formatter
-    {
-      get { return _formatter; }
-    }
-
     private string GetDateTextBoxSize (BocDateTimeValueRenderingContext renderingContext, int dateTextBoxWidthPercentage)
     {
       string dateTextBoxSize;
@@ -299,25 +294,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
         textBox.MaxLength = maxLength;
     }
 
-    /// <summary> Calculates the maximum length for required for entering the date component. </summary>
-    /// <returns> The length. </returns>
-    private int GetDateMaxLength ()
-    {
-      DateTime date = new DateTime (2000, 12, 31);
-      string maxDate = date.ToString ("d");
-      return maxDate.Length;
-    }
-
-    /// <summary> Calculates the maximum length for required for entering the time component. </summary>
-    /// <returns> The length. </returns>
-    private int GetTimeMaxLength (BocDateTimeValueRenderingContext renderingContext)
-    {
-      DateTime time = new DateTime (1, 1, 1, 23, 30, 30);
-      string maxTime = renderingContext.Control.ShowSeconds ? time.ToString ("T") : time.ToString ("t");
-
-      return maxTime.Length;
-    }
-
     private int GetDateTextBoxWidthPercentage (BocDateTimeValueRenderingContext renderingContext, bool hasDateField, bool hasTimeField)
     {
       int dateTextBoxWidthPercentage = 0;
@@ -346,12 +322,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
       {
         if (renderingContext.Control.Value.HasValue)
         {
+          var formatter = renderingContext.Control.DateTimeFormatter;
           DateTime dateTime = renderingContext.Control.Value.Value;
 
           if (renderingContext.Control.ActualValueType == BocDateTimeValueType.DateTime)
-            label.Text = Formatter.FormatDateValue (dateTime) + ' ' + Formatter.FormatTimeValue (dateTime, renderingContext.Control.ShowSeconds);
+            label.Text = formatter.FormatDateValue (dateTime) + ' ' + formatter.FormatTimeValue (dateTime, renderingContext.Control.ShowSeconds);
           else if (renderingContext.Control.ActualValueType == BocDateTimeValueType.Date)
-            label.Text = Formatter.FormatDateValue (dateTime);
+            label.Text = formatter.FormatDateValue (dateTime);
           else
             label.Text = dateTime.ToString ();
         }

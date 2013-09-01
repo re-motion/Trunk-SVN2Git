@@ -19,7 +19,6 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
@@ -33,13 +32,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   {
     private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
     private IResourceUrlFactory _resourceUrlFactory;
-    private StubServiceLocator ServiceLocator { get; set; }
 
     [SetUp]
     public void SetUp ()
     {
-      ServiceLocator = new StubServiceLocator();
-
       Initialize();
 
       List.Stub (mock => mock.HasNavigator).Return (true);

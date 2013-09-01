@@ -19,6 +19,7 @@ using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
@@ -33,6 +34,12 @@ public class BocListWcagTest: BocTest
   public void TestFixtureSetUp ()
   {
     ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
+  }
+
+  [TestFixtureTearDown]
+  public void TestFixtureTearDown ()
+  {
+    ServiceLocator.SetLocatorProvider (() => new DefaultServiceLocator());
   }
 
   [SetUp]

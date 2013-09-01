@@ -74,7 +74,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // member fields
 
-    private readonly DateTimeFormatter _formatter = new DateTimeFormatter();
     private readonly DatePickerButton _datePickerButton;
 
     private readonly Style _commonStyle;
@@ -566,7 +565,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       try
       {
-        InternalDateValue = _formatter.FormatDateValue (_savedDateTimeValue.Value);
+        InternalDateValue = DateTimeFormatter.FormatDateValue (_savedDateTimeValue.Value);
       }
       catch (InvalidCastException e)
       {
@@ -578,7 +577,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         try
         {
-          InternalTimeValue = _formatter.FormatTimeValue (_savedDateTimeValue.Value, ShowSeconds);
+          InternalTimeValue = DateTimeFormatter.FormatTimeValue (_savedDateTimeValue.Value, ShowSeconds);
         }
         catch (InvalidCastException e)
         {
@@ -963,6 +962,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    IDateTimeFormatter IBocDateTimeValue.DateTimeFormatter
+    {
+      get { return DateTimeFormatter; }
+    }
+
+    protected virtual IDateTimeFormatter DateTimeFormatter
+    {
+      get { return ServiceLocator.GetInstance<IDateTimeFormatter>(); }
+    }
 
     public string DateString
     {
