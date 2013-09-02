@@ -25,7 +25,6 @@ using System.Runtime.InteropServices;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Text;
 using Remotion.Utilities;
 
