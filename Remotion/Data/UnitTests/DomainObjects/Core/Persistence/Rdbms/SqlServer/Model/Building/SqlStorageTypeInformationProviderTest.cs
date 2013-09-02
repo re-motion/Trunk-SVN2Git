@@ -45,6 +45,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
     }
 
+    private enum UnsupportedEnum : ulong
+    {
+    }
+
     [SetUp]
     public void SetUp ()
     {
@@ -540,9 +544,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Type 'System.Char' is not supported by this storage provider.")]
-    public void GetStorageType_Type_UnsupportedType ()
+    public void GetStorageType_Type_UnsupportedType_NotNullable ()
     {
       _storageTypeInformationProvider.GetStorageType (typeof (Char));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Type 'System.Nullable`1[System.Char]' is not supported by this storage provider.")]
+    public void GetStorageType_Type_UnsupportedType_Nullable ()
+    {
+      _storageTypeInformationProvider.GetStorageType (typeof (Char?));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.Model.Building.SqlStorageTypeInformationProviderTest+UnsupportedEnum' "
+        + "is not supported by this storage provider.")]
+    public void GetStorageType_Type_UnsupportedType_EnumWithUnsupportedUnderlyingType ()
+    {
+      _storageTypeInformationProvider.GetStorageType (typeof (UnsupportedEnum));
     }
 
     [Test]

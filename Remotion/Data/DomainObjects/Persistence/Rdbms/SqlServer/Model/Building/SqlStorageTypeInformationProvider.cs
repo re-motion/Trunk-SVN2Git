@@ -18,6 +18,7 @@ using System;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -114,6 +115,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       return GetStorageType (value.GetType());
     }
 
+    [CanBeNull]
     private StorageTypeInformation GetStorageType (Type dotNetType, int? maxLength, bool isNullableInDatabase)
     {
       var underlyingTypeOfNullable = Nullable.GetUnderlyingType (dotNetType);
@@ -168,9 +170,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       return new StorageTypeInformation (typeof (string), storageType, DbType.String, isNullableInDatabase, extensibleEnumType, new ExtensibleEnumConverter (extensibleEnumType));
     }
 
+    [CanBeNull]
     private StorageTypeInformation GetStorageTypeForNullableValueType (Type nullableValueType, Type underlyingType, int? maxLength, bool isNullableInDatabase)
     {
       var underlyingStorageInformation = GetStorageType (underlyingType, maxLength, false);
+      if (underlyingStorageInformation == null)
+        return null;
 
       return new StorageTypeInformation (
           typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.StorageType),
@@ -189,9 +194,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
         return new DefaultConverter (nullableValueType);
     }
 
+    [CanBeNull]
     private StorageTypeInformation GetStorageTypeForEnumType (Type enumType, int? maxLength, bool isNullableInDatabase)
     {
       var underlyingStorageInformation = GetStorageType (Enum.GetUnderlyingType (enumType), maxLength, isNullableInDatabase);
+      if (underlyingStorageInformation == null)
+        return null;
+
       return new StorageTypeInformation (
           underlyingStorageInformation.StorageType,
           underlyingStorageInformation.StorageTypeName,

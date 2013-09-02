@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
@@ -25,9 +26,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public interface IStorageTypeInformationProvider
   {
+    [NotNull]
     IStorageTypeInformation GetStorageTypeForID (bool isStorageTypeNullable);
+
+    [NotNull]
     IStorageTypeInformation GetStorageTypeForSerializedObjectID (bool isStorageTypeNullable);
+
+    [NotNull]
     IStorageTypeInformation GetStorageTypeForClassID (bool isStorageTypeNullable);
+
+    [NotNull]
     IStorageTypeInformation GetStorageTypeForTimestamp (bool isStorageTypeNullable);
 
     /// <summary>
@@ -38,6 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     /// <param name="forceNullable">Specifies whether to override the <see cref="PropertyDefinition.IsNullable"/> property to make the property
     /// nullable in the database even when the property is not nullable in memory.</param>
     /// <returns>A <see cref="IStorageTypeInformation"/> for the given <paramref name="propertyDefinition"/>.</returns>
+    [NotNull]
     IStorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition, bool forceNullable);
 
     /// <summary>
@@ -46,6 +55,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     /// </summary>
     /// <param name="type">The type for which an <see cref="IStorageTypeInformation"/> object should be returned.</param>
     /// <returns>A <see cref="IStorageTypeInformation"/> for the given <paramref name="type"/>.</returns>
+    [NotNull]
     IStorageTypeInformation GetStorageType (Type type);
 
     /// <summary>
@@ -58,6 +68,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     /// For  <see langword="null" /> values, a default <see cref="IStorageTypeInformation"/> is returned that is not guaranteed to be compatible with 
     /// all possible data types, although it tries to be as compatible as possible without knowing the context in which the value is to be used.
     /// </remarks>
+    [NotNull]
     IStorageTypeInformation GetStorageType (object value);
   }
 }
