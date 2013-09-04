@@ -16,9 +16,12 @@
 // 
 using System;
 using System.Reflection;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
+using System.Linq;
+using Remotion.Text;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {
@@ -137,6 +140,42 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       ClassWithMixinsAcceptingAlphabeticOrdering instance = ObjectFactory.Create<ClassWithMixinsAcceptingAlphabeticOrdering> (ParamList.Empty);
       Assert.That (instance.ToString (), Is.EqualTo ("MixinAcceptingAlphabeticOrdering1.ToString-MixinAcceptingAlphabeticOrdering2.ToString-ClassWithMixinsAcceptingAlphabeticOrdering.ToString"));
+    }
+
+    [Test]
+    [Ignore("TODO 5832")]
+    public void MethodWithArrayArray ()
+    {
+      var instance = ObjectFactory.Create<TypeWithArrayArray>();
+      var bytes = new[] { new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6 } };
+      
+      var result = instance.M (bytes);
+
+      Assert.That (result, Is.EqualTo ("{4,5,6},{1,2,3} mixed"));
+    }
+
+    public class TypeWithArrayArray
+    {
+      [UsedImplicitly]
+      public virtual string M (byte[][] bytes)
+      {
+        return SeparatedStringBuilder.Build(",", bytes.Select (bs => "{"  + SeparatedStringBuilder.Build (",", bs) + "}"));
+      }
+    }
+
+    [Extends (typeof (TypeWithArrayArray))]
+    public class MixinMixingTypeWithArrayArray : Mixin<MixinMixingTypeWithArrayArray.IRequirements, MixinMixingTypeWithArrayArray.IRequirements>
+    {
+      public interface IRequirements
+      {
+        string M (byte[][] bytes);
+      }
+
+      [OverrideTarget]
+      public virtual string M (byte[][] bytes)
+      {
+        return Next.M (bytes.Reverse().ToArray()) + " mixed";
+      }
     }
   }
 }
