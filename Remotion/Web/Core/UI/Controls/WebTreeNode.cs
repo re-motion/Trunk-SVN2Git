@@ -80,6 +80,8 @@ namespace Remotion.Web.UI.Controls
     [EditorBrowsable (EditorBrowsableState.Never)]
     public WebTreeNode ()
     {
+      _children = new WebTreeNodeCollection (null);
+      _children.SetParent (null, this);
     }
 
     //  /// <summary> Collapses the current node. </summary>
