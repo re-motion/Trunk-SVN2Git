@@ -627,8 +627,9 @@ namespace Remotion.Web.UI.Controls
       if (hasExpansionLink)
       {
         string argument = c_expansionCommandPrefix + nodePath;
-        string postBackLink = Page.ClientScript.GetPostBackClientHyperlink (this, argument);
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, postBackLink);
+        string postBackEventReference = Page.ClientScript.GetPostBackEventReference (this, argument);
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEventReference);
+        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         writer.RenderBeginTag (HtmlTextWriterTag.A);
       }
 
@@ -650,8 +651,9 @@ namespace Remotion.Web.UI.Controls
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       string argument = GetClickCommandArgument (nodePath);
-      string postBackLink = Page.ClientScript.GetPostBackClientHyperlink (this, argument);
-      writer.AddAttribute (HtmlTextWriterAttribute.Href, postBackLink);
+      string postBackEventReference = Page.ClientScript.GetPostBackEventReference (this, argument);
+      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEventReference);
+      writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
       writer.RenderBeginTag (HtmlTextWriterTag.A);
       if (_treeNodeRenderMethod == null)
       {

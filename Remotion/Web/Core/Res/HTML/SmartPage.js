@@ -449,6 +449,7 @@ function SmartPage_Context(
   // OnUnload()
   this.OnBeforeUnload = function ()
   {
+    console.log (window.location.href + " OnBeforeUnload");
     _isAbortingBeforeUnload = false;
     var displayAbortConfirmation = false;
 
@@ -516,6 +517,7 @@ function SmartPage_Context(
   // Override for the ASP.NET __doPostBack method.
   this.DoPostBack = function (eventTarget, eventArgument)
   {
+    console.log(window.location.href + " DoPostBack");
     var eventSource = document.getElementById(UniqueIDToClientID(eventTarget));
     this.SetActiveElement(eventSource);
     var _this = this;
@@ -524,6 +526,7 @@ function SmartPage_Context(
 
   this.DoPostBackInternal = function (eventTarget, eventArgument)
   {
+    console.log(window.location.href + " DoPostBackInternal");
     // Debugger space
     var dummy = 0;
     var continueRequest = this.CheckFormState();
@@ -557,6 +560,7 @@ function SmartPage_Context(
   // Event handler for Form.Submit.
   this.OnFormSubmit = function ()
   {
+    console.log(window.location.href + " OnFormSubmit");
     if (_isExecutingDoPostBack)
     {
       if (_aspnetFormOnSubmit != null)
@@ -626,6 +630,7 @@ function SmartPage_Context(
   // Event handler for Form.OnClick.
   this.OnFormClick = function (evt)
   {
+    console.log(window.location.href + " OnFormClick");
     var eventSource = eventSource = GetEventSource(evt);
     this.SetActiveElement(eventSource);
     eventSource = GetFocusableElement(eventSource);
