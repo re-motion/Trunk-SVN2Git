@@ -115,7 +115,7 @@
     </MSBuild>
 
     <PropertyGroup>
-      <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(_startTime)))).TotalMilliseconds.ToString(D))</_timeTaken>
+      <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(_startTime)))).TotalMilliseconds.ToString())</_timeTaken>
     </PropertyGroup>
 
     <Message Text="##teamcity[buildStatisticValue key='Duration.BuildReleaseProjects.$(ConfigurationID)' value='$(_timeTaken)']"
@@ -140,7 +140,7 @@
     </MSBuild>
 
     <PropertyGroup>
-      <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(_startTime)))).TotalMilliseconds.ToString(D))</_timeTaken>
+      <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(_startTime)))).TotalMilliseconds.ToString())</_timeTaken>
     </PropertyGroup>
 
     <Message Text="##teamcity[buildStatisticValue key='Duration.BuildTestProjects.$(ConfigurationID)' value='$(_timeTaken)']"
