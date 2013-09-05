@@ -104,11 +104,22 @@
     <Error Text="The property 'ActiveConfigurationName' is not set." Condition="'$(ActiveConfigurationName)' == ''" />
     <Error Text="The property 'SolutionKeyFile' is not set." Condition="'$(SolutionKeyFile)' == ''" />
 
+    <PropertyGroup>
+      <_startTime>$([System.DateTime]::UtcNow)</_startTime>
+    </PropertyGroup>
+
     <MSBuild Projects ="@(ReleaseProjectFiles)"
              ContinueOnError="false"
              Properties="Configuration=$(ActiveConfigurationName);AssemblyOriginatorKeyFile=$(SolutionKeyFile);">
       <Output ItemName="ReleaseOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
+
+    <PropertyGroup>
+      <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(_startTime)))).TotalSeconds.ToString(N0))</_timeTaken>
+    </PropertyGroup>
+
+    <Message Text="##teamcity[buildStatisticValue key='BuildReleaseProjects.$(ConfigurationID)' value='$(_timeTaken)']"
+             Condition="'$(TEAMCITY_VERSION)' != ''" />
 
     <Message Text="Done building release projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
@@ -118,11 +129,18 @@
 
     <Error Text="The property 'ActiveConfigurationName' is not set." Condition="'$(ActiveConfigurationName)' == ''" />
 
+    <PropertyGroup>
+      <_startTime>$([System.DateTime]::UtcNow)</_startTime>
+    </PropertyGroup>
+
     <MSBuild Projects ="@(UnitTestProjectFiles);@(IntegrationTestProjectFiles)"
              ContinueOnError="false"
              Properties="Configuration=$(ActiveConfigurationName);AssemblyOriginatorKeyFile=$(SolutionKeyFile);">
       <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
+
+    <Message Text="##teamcity[buildStatisticValue key='BuildTestProjects.$(ConfigurationID)' value='$(_timeTaken)']"
+             Condition="'$(TEAMCITY_VERSION)' != ''" />
 
     <Message Text="Done building test projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>

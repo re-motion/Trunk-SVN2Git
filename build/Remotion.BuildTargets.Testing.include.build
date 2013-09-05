@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <!-- Main target; reporting only, calls RunTestsInternal for actual work -->
-  <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateTestConfigurations;CreateLogDirectory;BuildTestProjects;RunTestsInternal">
+  <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateTestConfigurations;CreateLogDirectory;BuildTestProjects;LogRunTestsStartTime;RunTestsInternal">
     <Error Text="ItemGroup 'NumberOfTestFailuresPerProject' is empty, but should contain test results!" Condition="@(NumberOfTestFailuresPerProject) == ''"/>
     <Error Text="ItemGroup 'NumberOfTestErrorsPerProject' is empty, but should contain test results!" Condition="@(NumberOfTestErrorsPerProject) == ''"/>
 
@@ -50,9 +50,22 @@
       Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors in: %0A@(FailedProjects->'%(Identity) (%(Platform)/%(DatabaseSystem)) with %(Failures) failures and %(Errors) errors','%0A')"
       Condition="$(_failures) &gt; 0 or $(_errors) &gt; 0"/>
 
+    <PropertyGroup>
+      <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(RunTestsStartTime)))).TotalSeconds.ToString(N0))</_timeTaken>
+    </PropertyGroup>
+
+    <Message Text="##teamcity[buildStatisticValue key='RunTests.$(ConfigurationID)' value='$(_timeTaken)']"
+             Condition="'$(TEAMCITY_VERSION)' != ''" />
+
     <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
 
+  <Target Name="LogRunTestsStartTime">
+    <PropertyGroup>
+      <RunTestsStartTime>$([System.DateTime]::UtcNow)</RunTestsStartTime>
+    </PropertyGroup>
+  </Target>
+  
   <!-- 
     Actual testing happens here.
     BuildTestOutputFilesCrossProduct creates all test configurations (the result is a cross product of TestOutputFiles x
