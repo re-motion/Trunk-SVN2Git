@@ -118,7 +118,7 @@
       <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(_startTime)))).TotalSeconds.ToString(N0))</_timeTaken>
     </PropertyGroup>
 
-    <Message Text="##teamcity[buildStatisticValue key='BuildReleaseProjects.$(ConfigurationID)' value='$(_timeTaken)']"
+    <Message Text="##teamcity[buildStatisticValue key='Duration.BuildReleaseProjects.$(ConfigurationID)' value='$(_timeTaken)']"
              Condition="'$(TEAMCITY_VERSION)' != ''" />
 
     <Message Text="Done building release projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
@@ -139,7 +139,7 @@
       <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
 
-    <Message Text="##teamcity[buildStatisticValue key='BuildTestProjects.$(ConfigurationID)' value='$(_timeTaken)']"
+    <Message Text="##teamcity[buildStatisticValue key='Duration.BuildTestProjects.$(ConfigurationID)' value='$(_timeTaken)']"
              Condition="'$(TEAMCITY_VERSION)' != ''" />
 
     <Message Text="Done building test projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>

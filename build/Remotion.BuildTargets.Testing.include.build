@@ -54,7 +54,7 @@
       <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(RunTestsStartTime)))).TotalSeconds.ToString(N0))</_timeTaken>
     </PropertyGroup>
 
-    <Message Text="##teamcity[buildStatisticValue key='RunTests.$(ConfigurationID)' value='$(_timeTaken)']"
+    <Message Text="##teamcity[buildStatisticValue key='Duration.RunTests.$(ConfigurationID)' value='$(_timeTaken)']"
              Condition="'$(TEAMCITY_VERSION)' != ''" />
 
     <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
