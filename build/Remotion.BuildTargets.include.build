@@ -139,6 +139,10 @@
       <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
 
+    <PropertyGroup>
+      <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(_startTime)))).TotalSeconds.ToString(N0))</_timeTaken>
+    </PropertyGroup>
+
     <Message Text="##teamcity[buildStatisticValue key='Duration.BuildTestProjects.$(ConfigurationID)' value='$(_timeTaken)']"
              Condition="'$(TEAMCITY_VERSION)' != ''" />
 
