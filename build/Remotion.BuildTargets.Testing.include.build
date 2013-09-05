@@ -51,7 +51,7 @@
       Condition="$(_failures) &gt; 0 or $(_errors) &gt; 0"/>
 
     <PropertyGroup>
-      <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(RunTestsStartTime)))).TotalMilliseconds.ToString())</_timeTaken>
+      <_timeTaken>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse($(RunTestsStartTime)))).TotalMilliseconds.ToString(0))</_timeTaken>
     </PropertyGroup>
 
     <Message Text="##teamcity[buildStatisticValue key='Duration.RunTests.$(ConfigurationID)' value='$(_timeTaken)']"
