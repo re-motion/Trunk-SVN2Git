@@ -273,6 +273,10 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\UpcastIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\IgnoredTypes\OnlyBaseClassNotInMapping\BaseClassOfExcludedClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\IgnoredTypes\OnlyBaseClassNotInMapping\ClassExcludedFromMapping.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\IgnoredTypes\OnlyBaseClassNotInMapping\ClassDerivedFromExcludedClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\IgnoredTypes\OnlyBaseClassNotInMapping\When_ASingleClassIsExcludedFromTheMapping.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\BaseClassWithoutStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassInMapping.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassInMappingDerivedFromClassWithIgnoreForMappingConfigurationAttribute.cs" />
