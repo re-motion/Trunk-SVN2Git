@@ -143,7 +143,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     }
 
     [Test]
-    [Ignore("TODO 5832")]
     public void MethodWithArrayArray ()
     {
       var instance = ObjectFactory.Create<TypeWithArrayArray>();
