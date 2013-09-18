@@ -23,6 +23,7 @@ using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
@@ -129,7 +130,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     IListMenu ListMenu { get; }
 
     /// <summary>
-    ///   Obtains a reference to a client-side script function that causes, when invoked, a server postback to the form.
+    ///   Obtains a reference to a client-side script function that causes, when invoked, a server post back to the form.
     /// </summary>
     /// <remarks> 
     ///   <para>
@@ -147,6 +148,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     /// </param>
     /// <returns></returns>
     string GetCustomCellPostBackClientEvent (int columnIndex, BocListRow row, string customCellArgument);
+
+    /// <summary>
+    ///   Registers the command used in <see cref="BocCustomColumnDefinition"/> for a synchronous post back.
+    /// </summary>
+    /// <param name="columnIndex"> The index of the column for which the synchronous post back shoud be registered. </param>
+    /// <param name="row"> The <see cref="BocListRow"/> for which the synchronous post back shoud be registered. </param>
+    /// <param name="customCellArgument"> 
+    ///   The argument for which the synchronous post back shoud be registered.
+    ///   Can be <see langword="null"/>.
+    /// </param>
+    void RegisterCustomCellForSynchronousPostBack (int columnIndex, BocListRow row, string customCellArgument);
+
     string GetListItemCommandArgument (int columnIndex, BocListRow row);
     string GetRowEditCommandArgument (BocListRow row, BocList.RowEditModeCommand command);
     IResourceManager GetResourceManager ();

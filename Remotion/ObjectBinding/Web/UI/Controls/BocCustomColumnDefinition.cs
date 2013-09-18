@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
@@ -298,6 +299,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// </remarks>
   public abstract class BocCustomColumnDefinitionCell
   {
+    #region Obsoletes
+
+    [Obsolete ("Use OnPreRender (BocCustomCellPreRenderArguments) instead. (1.13.216)", true)]
+    protected virtual void OnPreRender (BocCustomCellArguments arguments)
+    {
+      throw new NotSupportedException("Use OnPreRender (BocCustomCellPreRenderArguments) instead. (1.13.216)");
+    }
+
+    #endregion
+
     private BocCustomCellArguments _arguments;
 
     /// <summary> Get the javascript code that invokes <see cref="OnClick"/> when called. </summary>
@@ -305,7 +316,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <returns> The script invoking <see cref="OnClick"/> when called. </returns>
     protected string GetPostBackClientEvent (string eventArgument)
     {
-      BocCustomCellRenderArguments renderArguments = _arguments as BocCustomCellRenderArguments;
+      var renderArguments = _arguments as BocCustomCellRenderArguments;
       if (renderArguments == null)
         throw new InvalidOperationException ("GetPostBackClientEvent can only be called from DoRender method.");
 
@@ -314,6 +325,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           new BocListRow (renderArguments.ListIndex, renderArguments.BusinessObject),
           eventArgument);
       return postBackClientEvent + renderArguments.OnClick;
+    }
+
+    protected void RegisterForSynchronousPostBack (BocListRow row, string eventArgument)
+    {
+      ArgumentUtility.CheckNotNull ("row", row);
+
+      var preRenderArguments = _arguments as BocCustomCellPreRenderArguments;
+      if (preRenderArguments == null)
+        throw new InvalidOperationException ("RegisterForSynchronousPostBack can only be called from OnPreRender method.");
+
+      _arguments.List.RegisterCustomCellForSynchronousPostBack (preRenderArguments.ColumnIndex, row, eventArgument);
     }
 
     internal Control CreateControlInternal (BocCustomCellArguments arguments)
@@ -397,7 +419,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    internal void PreRender (BocCustomCellArguments arguments)
+    internal void PreRender (BocCustomCellPreRenderArguments arguments)
     {
       InitArguments (arguments);
       OnPreRender (arguments);
@@ -405,7 +427,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Override this method to prerender a custom column. </summary>
     /// <remarks> This method is called for each column during the <b>PreRender</b> phase of the <see cref="BocList"/>. </remarks>
-    protected virtual void OnPreRender (BocCustomCellArguments arguments)
+    protected virtual void OnPreRender (BocCustomCellPreRenderArguments arguments)
     {
     }
 
@@ -622,6 +644,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return _isValid; }
       set { _isValid = value; }
+    }
+  }
+
+  public class BocCustomCellPreRenderArguments : BocCustomCellArguments
+  {
+    private readonly int _columnIndex;
+    public BocCustomCellPreRenderArguments (IBocList list, BocCustomColumnDefinition columnDefinition, int columnIndex)
+        : base(list, columnDefinition)
+    {
+      _columnIndex = columnIndex;
+    }
+
+    /// <summary> Gets the index of the pre-rendered column. </summary>
+    public int ColumnIndex
+    {
+      get { return _columnIndex; }
+    }
+
+    public IEnumerable<BocListRow> GetRowsToRender ()
+    {
+      return List.GetRowsToRender().Select (row =>row.Row);
     }
   }
 

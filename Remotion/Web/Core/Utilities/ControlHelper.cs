@@ -60,6 +60,22 @@ namespace Remotion.Web.Utilities
       get { return "System.Web.UI.PageRequestManager:AsyncPostBackErrorHttpCode"; }
     }
 
+    public static bool IsNestedInUpdatePanel (Control child)
+    {
+      ArgumentUtility.CheckNotNull ("child", child);
+
+      var scriptManager = ScriptManager.GetCurrent (child.Page);
+      if (scriptManager == null)
+        return false;
+
+      for (Control current = child; current != null && !(current is Page); current = current.Parent)
+      {
+        if (current is UpdatePanel)
+          return true;
+      }
+      return false;
+    }
+
     public static Control[] GetControlsRecursive (Control parentControl, Type type)
     {
       ArrayList controlList = new ArrayList();

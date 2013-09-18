@@ -869,46 +869,32 @@ namespace Remotion.Web.UI.Controls
       if (!isSynchronousEventCommand && !isSynchronousWxeFunctionCommand)
         return;
 
-      var scriptManager = ScriptManager.GetCurrent (control.Page);
-      if (scriptManager != null)
-      {
-        bool hasUpdatePanelAsParent = false;
-        for (Control current = control; current != null && !(current is Page); current = current.Parent)
-        {
-          if (current is UpdatePanel)
-          {
-            hasUpdatePanelAsParent = true;
-            break;
-          }
-        }
+      if (!ControlHelper.IsNestedInUpdatePanel (control))
+        return;
 
-        if (hasUpdatePanelAsParent)
+      if (isSynchronousEventCommand)
+      {
+        ISmartPage smartPage = control.Page as ISmartPage;
+        if (smartPage == null)
         {
-          if (isSynchronousEventCommand)
-          {
-            ISmartPage smartPage = control.Page as ISmartPage;
-            if (smartPage == null)
-            {
-              throw new InvalidOperationException (
-                  string.Format (
-                      "{0}: EventCommands with RequiresSynchronousPostBack set to true are only supported on pages implementing ISmartPage when used within an UpdatePanel.",
-                      commandID));
-            }
-            smartPage.RegisterCommandForSynchronousPostBack (control, argument);
-          }
-          else if (isSynchronousWxeFunctionCommand)
-          {
-            ISmartPage smartPage = control.Page as ISmartPage;
-            if (smartPage == null)
-            {
-              throw new InvalidOperationException (
-                  string.Format (
-                      "{0}: WxeCommands are only supported on pages implementing ISmartPage when used within an UpdatePanel.",
-                      commandID));
-            }
-            smartPage.RegisterCommandForSynchronousPostBack (control, argument);
-          }
+          throw new InvalidOperationException (
+              string.Format (
+                  "{0}: EventCommands with RequiresSynchronousPostBack set to true are only supported on pages implementing ISmartPage when used within an UpdatePanel.",
+                  commandID));
         }
+        smartPage.RegisterCommandForSynchronousPostBack (control, argument);
+      }
+      else if (isSynchronousWxeFunctionCommand)
+      {
+        ISmartPage smartPage = control.Page as ISmartPage;
+        if (smartPage == null)
+        {
+          throw new InvalidOperationException (
+              string.Format (
+                  "{0}: WxeCommands are only supported on pages implementing ISmartPage when used within an UpdatePanel.",
+                  commandID));
+        }
+        smartPage.RegisterCommandForSynchronousPostBack (control, argument);
       }
     }
 

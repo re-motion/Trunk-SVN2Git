@@ -42,6 +42,13 @@ namespace Remotion.ObjectBinding.Sample
       }
     }
 
+    protected override void OnPreRender (BocCustomCellPreRenderArguments arguments)
+    {
+      base.OnPreRender (arguments);
+      foreach (var row in arguments.GetRowsToRender())
+        RegisterForSynchronousPostBack (row, "sync");
+    }
+
     protected override void OnClick(BocCustomCellClickArguments arguments, string eventArgument)
     {
     }
@@ -53,18 +60,18 @@ namespace Remotion.ObjectBinding.Sample
     protected override void Render (HtmlTextWriter writer, BocCustomCellRenderArguments arguments)
     {
       writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-      string onClickEvent = GetPostBackClientEvent ("1");
+      string onClickEvent = GetPostBackClientEvent ("async");
       writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onClickEvent);
       writer.RenderBeginTag (HtmlTextWriterTag.A);
-      writer.Write ("1");
+      writer.Write ("async");
       writer.RenderEndTag();
       writer.Write (" ");
 
       writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-      onClickEvent = GetPostBackClientEvent ("2");
+      onClickEvent = GetPostBackClientEvent ("sync");
       writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onClickEvent);
       writer.RenderBeginTag (HtmlTextWriterTag.A);
-      writer.Write ("2");
+      writer.Write ("sync");
       writer.RenderEndTag();
       writer.Write ("<br />");
     }

@@ -161,9 +161,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private void PreRenderCustomColumns ()
     {
       var columns = EnsureColumnsGot ();
-      foreach (var customColumn in columns.OfType<BocCustomColumnDefinition>())
+      for (int index = 0; index < columns.Length; index++)
       {
-        var args = new BocCustomCellArguments (this, customColumn);
+        var column = columns[index];
+        var customColumn = column as BocCustomColumnDefinition;
+        if (customColumn == null)
+          continue;
+        var args = new BocCustomCellPreRenderArguments (this, customColumn, index);
         customColumn.CustomCell.PreRender (args);
       }
     }

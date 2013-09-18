@@ -45,6 +45,7 @@ using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.UI.Controls.PostBackTargets;
 using Remotion.Web.UI.Globalization;
+using Remotion.Web.Utilities;
 using StringArrayConverter=Remotion.Web.UI.Design.StringArrayConverter;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -70,7 +71,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Obsolete("Use EnsureSortedBocListRowsGot instead. (Version 1.13.52)")]
     protected BocListRow[] EnsureGotIndexedRowsSorted()
     {
-      return EnsureSortedBocListRowsGot();
+      return EnsureSortedBocListRowsGot().ToArray();
     }
 
     [Obsolete("Use EnsureSortedBocListRowsGot instead. (Version 1.13.52)", true)]
@@ -261,8 +262,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private BocListSortingOrderEntry[] _sortingOrder = new BocListSortingOrderEntry[0];
 
-    private BocListRow[] _indexedRowsSorted;
-    private SortedRow[] _currentPageRows;
+    private ReadOnlyCollection<BocListRow> _indexedRowsSorted;
+    private ReadOnlyCollection<SortedRow> _currentPageRows;
 
     /// <summary> Determines whether to enable the selecting of the data rows. </summary>
     private RowSelection _selection = RowSelection.Undefined;
@@ -1294,6 +1295,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return Page.ClientScript.GetPostBackEventReference (this, postBackArgument) + ";";
     }
 
+    void IBocList.RegisterCustomCellForSynchronousPostBack (int columnIndex, BocListRow row, string customCellArgument)
+    {
+      ArgumentUtility.CheckNotNull ("row", row);
+
+      if (!ControlHelper.IsNestedInUpdatePanel (this))
+        return;
+
+      var smartPage = Page as ISmartPage;
+      if (smartPage == null)
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "{0}, column {1}: Registering a custom column for a synchronous post back is only supported on pages implementing ISmartPage when used within an UpdatePanel.",
+                ID, columnIndex));
+      }
+
+      string postBackArgument = FormatCustomCellPostBackArgument (columnIndex, row, customCellArgument);
+      smartPage.RegisterCommandForSynchronousPostBack (this, postBackArgument);
+    }
+
     private string FormatCustomCellPostBackArgument (int columnIndex, BocListRow row, string customCellArgument)
     {
       if (customCellArgument == null)
@@ -1762,15 +1783,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! HasSortingKeys)
         return null;
 
-      BocListRow[] sortedRows = EnsureSortedBocListRowsGot();
+      var sortedRows = EnsureSortedBocListRowsGot();
 
       return sortedRows.Select (r => r.BusinessObject).ToArray();
     }
 
-    protected BocListRow[] EnsureSortedBocListRowsGot ()
+    protected ReadOnlyCollection<BocListRow> EnsureSortedBocListRowsGot ()
     {
       if (_indexedRowsSorted == null)
-        _indexedRowsSorted = GetSortedBocListRows().ToArray();
+        return _indexedRowsSorted = GetSortedBocListRows().ToList().AsReadOnly();
       return _indexedRowsSorted;
     }
 
@@ -1792,10 +1813,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return rows.OrderBy (sortingOrder);
     }
     
-    protected SortedRow[] EnsureBocListRowsForCurrentPageGot ()
+    protected ReadOnlyCollection<SortedRow> EnsureBocListRowsForCurrentPageGot ()
     {
       if (_currentPageRows == null)
-        _currentPageRows = GetBocListRowsForCurrentPage().ToArray();
+        _currentPageRows = GetBocListRowsForCurrentPage().ToList().AsReadOnly();
       return _currentPageRows;
     }
 
