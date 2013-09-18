@@ -220,7 +220,7 @@
         <_versionBuild>$([System.Version]::Parse ($(Version)).Build)</_versionBuild>
         <_versionRevision>$([System.Version]::Parse ($(Version)).Revision)</_versionRevision>
     </PropertyGroup>
-    <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="$(_versionRevision);1">
+    <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="$(_versionRevision);10000">
       <Output PropertyName="_versionRevision" TaskParameter="Result"/>
     </MSBuild.ExtensionPack.Science.Maths>
     <PropertyGroup>
