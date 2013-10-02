@@ -55,6 +55,7 @@ namespace Remotion.Web.UI.Controls
     private ISecurableObject _securableObject;
     private MissingPermissionBehavior _missingPermissionBehavior = MissingPermissionBehavior.Invisible;
     private bool _requiresSynchronousPostBack;
+    private bool _hasPagePreRenderCompleted;
 
     private TextWithHotkey _textWithHotkey;
 
@@ -109,15 +110,22 @@ namespace Remotion.Web.UI.Controls
       IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true) ?? NullResourceManager.Instance;
       LoadResources (resourceManager);
 
-      if (_isDefaultButton && string.IsNullOrEmpty (Page.Form.DefaultButton))
+      if (_isDefaultButton && Page != null && string.IsNullOrEmpty (Page.Form.DefaultButton))
         Page.Form.DefaultButton = UniqueID;
 
+      if (Page != null)
+        Page.PreRenderComplete += Page_PreRenderComplete;
+    }
+
+    private void Page_PreRenderComplete (object sender, EventArgs e)
+    {
       if (_requiresSynchronousPostBack)
       {
         var scriptManager = ScriptManager.GetCurrent (base.Page);
         if (scriptManager != null)
           scriptManager.RegisterPostBackControl (this);
       }
+      _hasPagePreRenderCompleted = true;
     }
 
     protected override void Render (HtmlTextWriter writer)
@@ -450,7 +458,17 @@ namespace Remotion.Web.UI.Controls
     public bool RequiresSynchronousPostBack
     {
       get { return _requiresSynchronousPostBack; }
-      set { _requiresSynchronousPostBack = value; }
+      set
+      {
+        if (_hasPagePreRenderCompleted)
+        {
+          throw new InvalidOperationException (
+              string.Format (
+                  "Attempting to set the RequiresSynchronousPostBack flag on button '{0}' is not supported after the PreRenderComplete event has fired.",
+                  ID));
+        }
+        _requiresSynchronousPostBack = value;
+      }
     }
 
     public new IPage Page
