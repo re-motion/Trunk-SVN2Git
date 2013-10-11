@@ -19,8 +19,8 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Web;
-using System.Web.Hosting;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Development.Web.ResourceHosting;
 using Remotion.Logging;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -43,6 +43,7 @@ namespace OBWTest
   public class Global : HttpApplication
   {
     private WaiConformanceLevel _waiConformanceLevelBackup;
+    private static ResourceVirtualPathProvider _resourceVirtualPathProvider;
 
     public Global ()
     {
@@ -100,8 +101,28 @@ namespace OBWTest
         Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer>() is BocTextValueQuirksModeRenderer);
       }
 
-      //HostingEnvironment.RegisterVirtualPathProvider (new ResourceVirtualPathProvider());
+      _resourceVirtualPathProvider = new ResourceVirtualPathProvider (
+          new[]
+          {
+              new ResourcePathMapping ("Remotion.Web", @"..\..\Web\Core\res"),
+              new ResourcePathMapping ("Remotion.ObjectBinding.Web", @"..\..\ObjectBinding\Web\res")
+          });
+      _resourceVirtualPathProvider.Register ();
+
+      //var bundle = new Bundle ("~/bundles/css");
+      //foreach (var resourcePathMapping in _resourceVirtualPathProvider.Mappings)
+      //  BundleCssFilesRecursively ((ResourceVirtualDirectory) _resourceVirtualPathProvider.GetDirectory(resourcePathMapping.VirtualPath), bundle);
+
+      //BundleTable.Bundles.Add (bundle);
     }
+
+    //private void BundleCssFilesRecursively (ResourceVirtualDirectory virtualDirectory, Bundle bundle)
+    //{
+    //  foreach (ResourceVirtualDirectory directory in virtualDirectory.Directories)
+    //    BundleCssFilesRecursively (directory, bundle);
+
+    //  bundle.IncludeDirectory (virtualDirectory.AppRelativeVirtualPath, "*.css");
+    //}
 
     protected void Session_Start (Object sender, EventArgs e)
     {
@@ -109,6 +130,7 @@ namespace OBWTest
 
     protected void Application_BeginRequest (Object sender, EventArgs e)
     {
+      _resourceVirtualPathProvider.HandleBeginRequest();
     }
 
     protected void Application_AuthenticateRequest (Object sender, EventArgs e)

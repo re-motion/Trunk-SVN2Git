@@ -81,6 +81,10 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceHosting\ResourcePathMapping.cs" />
+    <Compile Include="ResourceHosting\ResourceVirtualDirectory.cs" />
+    <Compile Include="ResourceHosting\ResourceVirtualFile.cs" />
+    <Compile Include="ResourceHosting\ResourceVirtualPathProvider.cs" />
     <Compile Include="UnitTesting\AspNetFramework\ControlMock.cs" />
     <Compile Include="UnitTesting\AspNetFramework\FakePageForAsyncPostBack.cs">
       <SubType>ASPXCodeBehind</SubType>

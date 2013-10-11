@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Web;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Development.Web.ResourceHosting;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Security.ExecutionEngine;
@@ -37,6 +38,8 @@ namespace Remotion.Data.DomainObjects.Web.Test
     /// </summary>
     private IContainer components = null;
 
+    private static ResourceVirtualPathProvider _resourceVirtualPathProvider;
+
     public Global ()
     {
       InitializeComponent();
@@ -50,6 +53,16 @@ namespace Remotion.Data.DomainObjects.Web.Test
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
       AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), new WebSecurityAdapter());
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), new WxeSecurityAdapter());
+
+      _resourceVirtualPathProvider = new ResourceVirtualPathProvider (
+          new[]
+          {
+              new ResourcePathMapping ("Remotion.Web", @"..\..\Web\Core\res"),
+              new ResourcePathMapping ("Remotion.Web.Legacy", @"..\..\Web\Legacy\Res"),
+              new ResourcePathMapping ("Remotion.ObjectBinding.Web", @"..\..\ObjectBinding\Web\res"),
+              new ResourcePathMapping ("Remotion.ObjectBinding.Web.Legacy", @"..\..\ObjectBinding\Web.Legacy\Res")
+          });
+      _resourceVirtualPathProvider.Register();
     }
 
     protected void Session_Start (Object sender, EventArgs e)
@@ -58,6 +71,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     protected void Application_BeginRequest (Object sender, EventArgs e)
     {
+      _resourceVirtualPathProvider.HandleBeginRequest();
     }
 
     protected void Application_EndRequest (Object sender, EventArgs e)

@@ -34,7 +34,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -122,6 +122,10 @@
       <Name>Core.Core</Name>
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Development\Web\Development.Web.csproj">
+      <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
+      <Name>Development.Web</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Mixins\Core\Mixins.Core.csproj">
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
@@ -407,7 +411,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>27872</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/dev/Remotion/trunk/Remotion/Data/DomainObjects.Web.Test</IISUrl>
+          <IISUrl>http://localhost:61130/DomainObjects.Web.Test</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

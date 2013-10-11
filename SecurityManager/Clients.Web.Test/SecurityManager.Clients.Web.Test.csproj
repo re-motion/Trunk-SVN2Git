@@ -20,7 +20,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -125,6 +125,10 @@
       <Name>Data.Core</Name>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Remotion\Development\Web\Development.Web.csproj">
+      <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
+      <Name>Development.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Remotion\Mixins\Core\Mixins.Core.csproj">
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
       <Name>Mixins.Core</Name>
@@ -204,7 +208,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50371</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/dev/Remotion/trunk/SecurityManager/Clients.Web.Test/</IISUrl>
+          <IISUrl>http://localhost:61130/SecurityManager.Clients.Web.Test/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

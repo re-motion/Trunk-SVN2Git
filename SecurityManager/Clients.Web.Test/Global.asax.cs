@@ -15,8 +15,10 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Development.Web.ResourceHosting;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.ServiceLocation;
@@ -29,6 +31,8 @@ namespace Remotion.SecurityManager.Clients.Web.Test
 {
   public class Global : SecurityManagerHttpApplication
   {
+    private static ResourceVirtualPathProvider _resourceVirtualPathProvider;
+
     protected void Application_Start (object sender, EventArgs e)
     {
       var defaultServiceLocator = new DefaultServiceLocator();
@@ -42,10 +46,28 @@ namespace Remotion.SecurityManager.Clients.Web.Test
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
       AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), new WebSecurityAdapter());
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), new WxeSecurityAdapter());
+
+      _resourceVirtualPathProvider = new ResourceVirtualPathProvider (
+          new[]
+          {
+              new ResourcePathMapping ("Remotion.Web", @"..\..\Remotion\Web\Core\res"),
+              new ResourcePathMapping ("Remotion.Web.Legacy", @"..\..\Remotion\Web\Legacy\Res"),
+              new ResourcePathMapping ("Remotion.ObjectBinding.Web", @"..\..\Remotion\ObjectBinding\Web\res"),
+              new ResourcePathMapping ("Remotion.ObjectBinding.Web.Legacy", @"..\..\Remotion\ObjectBinding\Web.Legacy\Res"),
+              new ResourcePathMapping ("Remotion.SecurityManager.Clients.Web/Html", @"..\Clients.Web\res\Html"),
+              new ResourcePathMapping ("Remotion.SecurityManager.Clients.Web/Themes", @"..\Clients.Web\res\Themes"),
+              new ResourcePathMapping ("Remotion.SecurityManager.Clients.Web/UI", @"..\Clients.Web\UI"),
+          });
+      _resourceVirtualPathProvider.Register();
     }
 
     protected void Application_End (object sender, EventArgs e)
     {
+    }
+
+    protected void Application_BeginRequest (Object sender, EventArgs e)
+    {
+      _resourceVirtualPathProvider.HandleBeginRequest();
     }
   }
 }

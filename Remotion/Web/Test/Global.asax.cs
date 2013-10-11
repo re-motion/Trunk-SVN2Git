@@ -18,6 +18,7 @@
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Development.Web.ResourceHosting;
 using Remotion.Logging;
 using Remotion.ServiceLocation;
 using Remotion.Web.Test.ErrorHandling;
@@ -28,12 +29,20 @@ namespace Remotion.Web.Test
   public class Global : HttpApplication
   {
     private static ILog s_log = LogManager.GetLogger (typeof (Global));
+    private static ResourceVirtualPathProvider _resourceVirtualPathProvider;
 
     protected void Application_Start (Object sender, EventArgs e)
     {
       var defaultServiceLocator = new DefaultServiceLocator();
       ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
       LogManager.Initialize();
+
+      _resourceVirtualPathProvider = new ResourceVirtualPathProvider (
+          new[]
+          {
+              new ResourcePathMapping ("Remotion.Web", @"..\Core\res"),
+          });
+      _resourceVirtualPathProvider.Register ();
     }
 
     protected void Session_Start (Object sender, EventArgs e)
@@ -42,6 +51,7 @@ namespace Remotion.Web.Test
 
     protected void Application_BeginRequest (Object sender, EventArgs e)
     {
+      _resourceVirtualPathProvider.HandleBeginRequest();
     }
 
     protected void Application_EndRequest (Object sender, EventArgs e)
