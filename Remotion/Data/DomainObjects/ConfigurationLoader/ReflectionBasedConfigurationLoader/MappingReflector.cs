@@ -37,8 +37,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public static DomainObjectCreator CreateDomainObjectCreator ()
     {
       var pipelineRegistry = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>();
-      var defaultPipeline = pipelineRegistry.DefaultPipeline;
-      return new DomainObjectCreator (defaultPipeline);
+      return new DomainObjectCreator (pipelineRegistry);
     }
 
     private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingReflector));

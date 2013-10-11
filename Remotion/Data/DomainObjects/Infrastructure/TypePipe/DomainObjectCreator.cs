@@ -31,18 +31,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// </summary>
   public class DomainObjectCreator : IDomainObjectCreator
   {
-    private readonly IPipeline _pipeline;
+    private readonly IPipelineRegistry _pipelineRegistry;
 
-    public DomainObjectCreator (IPipeline pipeline)
+    public DomainObjectCreator (IPipelineRegistry pipelineRegistry)
     {
-      ArgumentUtility.CheckNotNull ("pipeline", pipeline);
+      ArgumentUtility.CheckNotNull ("pipelineRegistry", pipelineRegistry);
 
-      _pipeline = pipeline;
+      _pipelineRegistry = pipelineRegistry;
     }
 
-    public IPipeline Pipeline
+    public IPipelineRegistry PipelineRegistry
     {
-      get { return _pipeline; }
+      get { return _pipelineRegistry; }
+    }
+
+    private IPipeline Pipeline
+    {
+      get { return _pipelineRegistry.DefaultPipeline; }
     }
 
     public DomainObject CreateObjectReference (IObjectInitializationContext objectInitializationContext, ClientTransaction clientTransaction)
@@ -54,9 +59,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       CheckDomainTypeAndClassDefinition (objectID.ClassDefinition.ClassType);
       objectID.ClassDefinition.ValidateCurrentMixinConfiguration();
 
-      var concreteType = _pipeline.ReflectionService.GetAssembledType (objectID.ClassDefinition.ClassType);
+      var concreteType = Pipeline.ReflectionService.GetAssembledType (objectID.ClassDefinition.ClassType);
       var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
-      _pipeline.PrepareExternalUninitializedObject (instance, InitializationSemantics.Construction);
+      Pipeline.PrepareExternalUninitializedObject (instance, InitializationSemantics.Construction);
 
       // These calls are normally performed by DomainObject's ctor
       instance.Initialize (objectID, objectInitializationContext.RootTransaction);
@@ -85,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       {
         using (new ObjectInititalizationContextScope (objectInitializationContext))
         {
-          var instance = (DomainObject) _pipeline.Create (domainObjectType, constructorParameters, allowNonPublicConstructor: true);
+          var instance = (DomainObject) Pipeline.Create (domainObjectType, constructorParameters, allowNonPublicConstructor: true);
           DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
           return instance;
         }

@@ -47,15 +47,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateDomainObjectCreator ()
     {
-      var defaultPipeline = MockRepository.GenerateStub<IPipeline> ();
-
       var registryStub = MockRepository.GenerateStub<IPipelineRegistry> ();
-      registryStub.Stub (stub => stub.DefaultPipeline).Return (defaultPipeline);
 
       using (new ServiceLocatorScope (typeof (IPipelineRegistry), () => registryStub))
       {
         var creator = MappingReflector.CreateDomainObjectCreator();
-        Assert.That (creator.Pipeline, Is.SameAs (defaultPipeline));
+        Assert.That (creator.PipelineRegistry, Is.SameAs (registryStub));
       }
     }
 
