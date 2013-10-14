@@ -18,9 +18,13 @@
 using System;
 using System.IO;
 using System.Web.Hosting;
+using Remotion.Utilities;
 
 namespace Remotion.Development.Web.ResourceHosting
 {
+  /// <summary>
+  /// Represents a physical resource file as a virtual file.
+  /// </summary>
   public class ResourceVirtualFile : VirtualFile
   {
     private readonly FileInfo _physicalFile;
@@ -28,6 +32,9 @@ namespace Remotion.Development.Web.ResourceHosting
     public ResourceVirtualFile (string virtualPath, FileInfo physicalFile)
         : base (virtualPath)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("virtualPath", virtualPath);
+      ArgumentUtility.CheckNotNull ("physicalFile", physicalFile);
+      
       _physicalFile = physicalFile;
     }
 

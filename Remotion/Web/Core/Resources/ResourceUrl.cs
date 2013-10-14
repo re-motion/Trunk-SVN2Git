@@ -35,7 +35,7 @@ namespace Remotion.Web.Resources
       ArgumentUtility.CheckNotNull ("resourcePathBuilder", resourcePathBuilder);
       ArgumentUtility.CheckNotNull ("definingType", definingType);
       ArgumentUtility.CheckNotNull ("resourceType", resourceType);
-      ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
+      ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
 
       _resourcePathBuilder = resourcePathBuilder;
       _definingType = definingType;

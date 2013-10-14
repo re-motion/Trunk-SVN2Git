@@ -20,9 +20,13 @@ using System.Collections;
 using System.IO;
 using System.Web;
 using System.Web.Hosting;
+using Remotion.Utilities;
 
 namespace Remotion.Development.Web.ResourceHosting
 {
+  /// <summary>
+  /// Represents a physical resource directory as a virtual directory.
+  /// </summary>
   public class ResourceVirtualDirectory : VirtualDirectory
   {
     private readonly string _virtualPath;
@@ -31,6 +35,9 @@ namespace Remotion.Development.Web.ResourceHosting
     public ResourceVirtualDirectory (string virtualPath, DirectoryInfo physicalDirectory)
         : base (virtualPath)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("virtualPath", virtualPath);
+      ArgumentUtility.CheckNotNull ("physicalDirectory", physicalDirectory);
+
       _virtualPath = virtualPath;
       _physicalDirectory = physicalDirectory;
     }

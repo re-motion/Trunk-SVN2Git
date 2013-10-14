@@ -21,6 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Development.Web.ResourceHosting
 {
+  /// <summary>
+  /// Represents the translation of a physical path within the solution to a virtual path within the website.
+  /// </summary>
   public class ResourcePathMapping
   {
     private readonly string _virtualPath;

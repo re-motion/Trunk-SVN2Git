@@ -41,11 +41,19 @@ namespace Remotion.Web.Resources
 
     public IResourceUrl CreateResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)
     {
+      ArgumentUtility.CheckNotNull ("definingType", definingType);
+      ArgumentUtility.CheckNotNull ("resourceType", resourceType);
+      ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
+
       return new ResourceUrl (_builder, definingType, resourceType, relativeUrl);
     }
 
     public IResourceUrl CreateThemedResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)
     {
+      ArgumentUtility.CheckNotNull ("definingType", definingType);
+      ArgumentUtility.CheckNotNull ("resourceType", resourceType);
+      ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
+
       return new ThemedResourceUrl (_builder, definingType, resourceType, _resourceTheme, relativeUrl);
     }
   }

@@ -38,6 +38,26 @@ namespace Remotion.Web.UnitTests.Core.Resources
     }
 
     [Test]
+    public void BuildAbsolutePath_MiddlePartBeginsIsDot_SkipsPart ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/appDir/file"), "/appDir");
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, ".", "part2"),
+          Is.EqualTo ("/appDir/resourceRoot/Remotion.Web.UnitTests/part2"));
+    }
+    
+    [Test]
+    public void BuildAbsolutePath_LastPathPartIsDot_SkipsPart ()
+    {
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/appDir/file"), "/appDir");
+
+      Assert.That (
+          builder.BuildAbsolutePath (GetType().Assembly, "part1", "."),
+          Is.EqualTo ("/appDir/resourceRoot/Remotion.Web.UnitTests/part1"));
+    }
+
+    [Test]
     public void BuildAbsolutePath_EmptyPathParts_ResultingPathDoesNotEndWithTrailingSlash ()
     {
       var builder = CreateResourcePathBuilder (new Uri ("http://localhost/appDir/file"), "/appDir");
