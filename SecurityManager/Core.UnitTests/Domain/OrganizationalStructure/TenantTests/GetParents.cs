@@ -112,14 +112,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     [Test]
     public void Test_WithCircularHierarchyAboveTheRoot_ThrowsInvalidOperationException ()
     {
+      Tenant grandParent3 = TestHelper.CreateTenant ("Grandparent3", "UID: Grandparent3");
       Tenant grandParent2 = TestHelper.CreateTenant ("Grandparent2", "UID: Grandparent2");
+      grandParent2.Parent = grandParent3;
       Tenant grandParent1 = TestHelper.CreateTenant ("Grandparent1", "UID: Grandparent1");
       grandParent1.Parent = grandParent2;
       Tenant parent = TestHelper.CreateTenant ("parent1", "UID: parent");
       parent.Parent = grandParent1;
       Tenant root = TestHelper.CreateTenant ("Root", "UID: Root");
       root.Parent = parent;
-      grandParent2.Parent = parent;
+      grandParent3.Parent = grandParent1;
 
       Assert.That (
           () => root.GetParents().Take(10).ToArray(),

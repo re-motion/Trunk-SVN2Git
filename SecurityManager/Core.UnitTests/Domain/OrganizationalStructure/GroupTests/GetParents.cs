@@ -112,11 +112,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     public void Test_WithCircularHierarchyAboveTheRoot_ThrowsInvalidOperationException ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
-      Group grandParent2 = TestHelper.CreateGroup ("Grandparent2", "UID: Grandparent2", null, tenant);
+      Group grandParent3 = TestHelper.CreateGroup ("Grandparent2", "UID: Grandparent3", null, tenant);
+      Group grandParent2 = TestHelper.CreateGroup ("Grandparent3", "UID: Grandparent2", grandParent3, tenant);
       Group grandParent1 = TestHelper.CreateGroup ("Grandparent1", "UID: Grandparent1", grandParent2, tenant);
       Group parent = TestHelper.CreateGroup ("parent1", "UID: parent", grandParent1, tenant);
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", parent, tenant);
-      grandParent2.Parent = parent;
+      grandParent3.Parent = grandParent1;
 
       Assert.That (
           () => root.GetParents().Take(10).ToArray(),
@@ -128,9 +129,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     public void Test_WithCircularHierarchyAboveTheRoot_ParentIsOwnParent_ThrowsInvalidOperationException ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
-      Group parent = TestHelper.CreateGroup ("Parent", "UID: Parent", null, tenant);
+      Group grandParent = TestHelper.CreateGroup ("Grandparent", "UID: Grandparent", null, tenant);
+      Group parent = TestHelper.CreateGroup ("Parent", "UID: Parent", grandParent, tenant);
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", parent, tenant);
-      parent.Parent = parent;
+      grandParent.Parent = grandParent;
 
       Assert.That (
           () => root.GetParents().Take(10).ToArray(),
