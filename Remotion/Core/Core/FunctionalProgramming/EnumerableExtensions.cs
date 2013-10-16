@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Utilities;
 using System.Linq;
@@ -194,6 +195,77 @@ namespace Remotion.FunctionalProgramming
       ArgumentUtility.CheckNotNull ("nextElementSelector", nextElementSelector);
 
       return CreateSequence (source, nextElementSelector, e => e != null);
+    }
+
+    /// <summary>
+    /// Generates a sequence of elements from the <paramref name="source"/> element by applying the specified next-element function, 
+    /// adding elements to the sequence while the current element is not <see langword="null" />. 
+    /// If a cycle is detected based on the <see cref="EqualityComparer{TSource}.Default"/> comparer, an exception is thrown.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the <paramref name="source"/> element.</typeparam>
+    /// <typeparam name="TException">Type type of the exception returned by <paramref name="createCycleFoundException"/>.</typeparam>
+    /// <param name="source">The object to be transformed into a sequence.</param>
+    /// <param name="nextElementSelector">A function to retrieve the next element in the sequence. Must not be <see langword="null" />.</param>
+    /// <param name="createCycleFoundException">
+    /// This callback is invoked if a cycle is detected within the sequence.
+    /// The returned exception is then thrown to indicate this error. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>
+    /// A sequence of elements containing the <paramref name="source"/> and all subsequent elements 
+    /// until the <paramref name="nextElementSelector"/> returns <see langword="null" />.
+    /// </returns>
+    public static IEnumerable<TSource> CreateSequenceWithCycleCheck<TSource, TException> (
+        this TSource source,
+        Func<TSource, TSource> nextElementSelector,
+        Func<TSource, TException> createCycleFoundException)
+        where TSource : class
+        where TException : Exception
+    {
+      return CreateSequenceWithCycleCheck (source, nextElementSelector, e => e != null, EqualityComparer<TSource>.Default, createCycleFoundException);
+    }
+
+    /// <summary>
+    /// Generates a sequence of elements from the <paramref name="source"/> element by applying the specified next-element function, 
+    /// adding elements to the sequence while the current element satisfies the specified condition. If a cycle is detected, an exception is thrown.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the <paramref name="source"/> element.</typeparam>
+    /// <typeparam name="TException">Type type of the exception returned by <paramref name="createCycleFoundException"/>.</typeparam>
+    /// <param name="source">The object to be transformed into a sequence.</param>
+    /// <param name="nextElementSelector">A function to retrieve the next element in the sequence. Must not be <see langword="null" />.</param>
+    /// <param name="predicate">A function to test each element for a condition. Must not be <see langword="null" />.</param>
+    /// <param name="equalityComparer">
+    /// The <see cref="IEqualityComparer{TSource}"/> used when checking if an element was already returned as part of the sequence.
+    /// </param>
+    /// <param name="createCycleFoundException">
+    /// This callback is invoked if a cycle is detected within the sequence.
+    /// The returned exception is then thrown to indicate this error. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>
+    /// A collection of elements containing the <paramref name="source"/> and all subsequent elements where each element satisfies a specified condition.
+    /// </returns>
+    public static IEnumerable<TSource> CreateSequenceWithCycleCheck<TSource, TException> (
+        this TSource source,
+        Func<TSource, TSource> nextElementSelector,
+        Func<TSource, bool> predicate,
+        [CanBeNull] IEqualityComparer<TSource> equalityComparer,
+        Func<TSource, TException> createCycleFoundException)
+        where TException : Exception
+    {
+      ArgumentUtility.CheckNotNull ("nextElementSelector", nextElementSelector);
+      ArgumentUtility.CheckNotNull ("predicate", predicate);
+      ArgumentUtility.CheckNotNull ("createCycleFoundException", createCycleFoundException);
+
+      var chainMembers = new HashSet<TSource> (equalityComparer);
+      Func<TSource, TSource> nextElementSelectorWithCycleCheck = element =>
+      {
+        if (chainMembers.Contains (element))
+          throw createCycleFoundException (element);
+        chainMembers.Add (element);
+
+        return nextElementSelector (element);
+      };
+
+      return CreateSequence (source, nextElementSelectorWithCycleCheck, predicate);
     }
 
     /// <summary>

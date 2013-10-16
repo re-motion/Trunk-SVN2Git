@@ -20,6 +20,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
+using Remotion.UnitTests.FunctionalProgramming.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.FunctionalProgramming
@@ -188,6 +189,145 @@ namespace Remotion.UnitTests.FunctionalProgramming
     {
       IEnumerable<int> actual = 4.CreateSequence (e => e - 1, e => e > 0);
       Assert.That (actual.ToArray(), Is.EqualTo (new[] { 4, 3, 2, 1 }));
+    }
+
+    [Test]
+    public void CreateSequenceWithCycleCheck_WhileNotNull ()
+    {
+      var first = new Element (1, null);
+      var second = new Element (2, first);
+      var third = new Element (3, second);
+      var fourth = new Element (4, third);
+
+      IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (e => e.Parent, e => new Exception());
+      Assert.That (actual.ToArray (), Is.EqualTo (new[] { fourth, third, second, first }));
+    }
+
+    [Test]
+    public void CreateSequenceWithCycleCheck_WhilePredicateEvaluatesTrue ()
+    {
+      var first = new Element (1, new Element (0, null));
+      var second = new Element (2, first);
+      var third = new Element (3, second);
+      var fourth = new Element (4, third);
+
+      IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (e => e.Parent, e => e != first, null, e => new Exception());
+      Assert.That (actual.ToArray (), Is.EqualTo (new[] { fourth, third, second }));
+    }
+
+    [Test]
+    public void CreateSequenceWithCycleCheck_WhilePredicateEvaluatesTrue_WithNull ()
+    {
+      IEnumerable<Element> actual = ((Element)null).CreateSequenceWithCycleCheck (e => e.Parent, e => e != null, null, e => new Exception());
+      Assert.That (actual.ToArray (), Is.Empty);
+    }
+
+    [Test]
+    public void CreateSequenceWithCycleCheck_WhilePredicateEvaluatesTrue_WithSingleElement ()
+    {
+      var element = new Element (0, null);
+
+      IEnumerable<Element> actual = element.CreateSequenceWithCycleCheck (e => e.Parent, e => e != null, null, e => new Exception());
+      Assert.That (actual.ToArray (), Is.EqualTo (new[] { element }));
+    }
+
+    [Test]
+    public void CreateSequenceWithCycleCheck_WhilePredicateEvaluatesTrue_WithValueType ()
+    {
+      IEnumerable<int> actual = 4.CreateSequenceWithCycleCheck (e => e - 1, e => e > 0, null, e => new Exception());
+      Assert.That (actual.ToArray(), Is.EqualTo (new[] { 4, 3, 2, 1 }));
+    }
+
+    [Test]
+    public void CreateSequenceWithCycleCheck_WithCycle_Throws ()
+    {
+      var first = new Element (1, null);
+      var second = new Element (2, first);
+      var third = new Element (3, second);
+      var fourth = new Element (4, third);
+
+      first.SetParent (fourth);
+
+      IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (
+          e => e.Parent,
+          e => e != null,
+          EqualityComparer<Element>.Default,
+          e => new Exception (string.Format ("element: '{0}'", e)));
+
+      Assert.That (() => actual.Take (10).ToArray(), Throws.Exception.With.Message.EqualTo (string.Format ("element: '{0}'", fourth)));
+    }
+
+    [Test]
+    public void CreateSequenceWithCycleCheck_ElementIsOwnParent_Throws ()
+    {
+      var first = new Element (1, null);
+      first.SetParent (first);
+
+      IEnumerable<Element> actual = first.CreateSequenceWithCycleCheck (
+          e => e.Parent,
+          e => e != null,
+          EqualityComparer<Element>.Default,
+          e => new Exception (string.Format ("element: '{0}'", e)));
+
+      Assert.That (() => actual.Take (10).ToArray(), Throws.Exception.With.Message.EqualTo (string.Format ("element: '{0}'", first)));
+    }
+
+    [Test]
+    public void CreateSequenceWithCycleCheck_WithCycleAboveRoot_Throws ()
+    {
+      var first = new Element (1, null);
+      var second = new Element (2, first);
+      var third = new Element (3, second);
+      var fourth = new Element (4, third);
+
+      first.SetParent (third);
+
+      IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (
+          e => e.Parent,
+          e => e != null,
+          EqualityComparer<Element>.Default,
+          e => new Exception (string.Format ("element: '{0}'", e)));
+
+      Assert.That (() => actual.Take (10).ToArray(), Throws.Exception.With.Message.EqualTo (string.Format ("element: '{0}'", third)));
+    }
+
+    [Test]
+    public void CreateSequenceWithCycleCheck_WithCycleAboveRoot_ElementIsOwnParent_Throws ()
+    {
+      var first = new Element (1, null);
+      var second = new Element (2, first);
+      var third = new Element (3, second);
+      var fourth = new Element (4, third);
+
+      first.SetParent (first);
+
+      IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (
+          e => e.Parent,
+          e => e != null,
+          EqualityComparer<Element>.Default,
+          e => new Exception (string.Format ("element: '{0}'", e)));
+
+      Assert.That (() => actual.Take (10).ToArray(), Throws.Exception.With.Message.EqualTo (string.Format ("element: '{0}'", first)));
+    }
+
+    [Test]
+    public void CreateSequenceWithCycleCheck_UsesEqualityComparer ()
+    {
+      var first = new Element (1, null);
+      var second = new Element (2, first);
+      var third = new Element (3, second);
+      var fourth = new Element (4, third);
+
+
+      var fakeComparer = new FakeElementEqualityComparer ((x, y) => second.Equals (x) || second.Equals (y));
+
+      IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (
+          e => e.Parent,
+          e => e != null,
+          fakeComparer,
+          e => new Exception (string.Format ("element: '{0}'", e)));
+
+      Assert.That (() => actual.Take (10).ToArray(), Throws.Exception.With.Message.EqualTo (string.Format ("element: '{0}'", second)));
     }
 
     [Test]
