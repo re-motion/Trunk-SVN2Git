@@ -235,6 +235,7 @@ namespace Remotion.FunctionalProgramming
     /// <param name="predicate">A function to test each element for a condition. Must not be <see langword="null" />.</param>
     /// <param name="equalityComparer">
     /// The <see cref="IEqualityComparer{TSource}"/> used when checking if an element was already returned as part of the sequence.
+    /// Can be <see langword="null" /> to indicate default behavior.
     /// </param>
     /// <param name="createCycleFoundException">
     /// This callback is invoked if a cycle is detected within the sequence.
