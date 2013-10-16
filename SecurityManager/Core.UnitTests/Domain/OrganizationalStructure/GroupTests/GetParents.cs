@@ -89,17 +89,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", parent, tenant);
       grandParent2.Parent = root;
 
-      try
-      {
-        grandParent1.GetParents().ToArray();
-        Assert.Fail();
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message,
-            Is.EqualTo ("The parent hierarchy for group '" + grandParent1.ID + "' cannot be resolved because a circular reference exists."));
-      }
+      Assert.That (
+          () => root.GetParents().Take(10).ToArray(),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("The parent hierarchy for group '{0}' cannot be resolved because a circular reference exists.", root.ID)));
     }
 
     [Test]
@@ -109,17 +102,40 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
       root.Parent = root;
 
-      try
-      {
-        root.GetParents ().ToArray ();
-        Assert.Fail ();
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message,
-            Is.EqualTo ("The parent hierarchy for group '" + root.ID + "' cannot be resolved because a circular reference exists."));
-      }
+      Assert.That (
+          () => root.GetParents().Take(10).ToArray(),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("The parent hierarchy for group '{0}' cannot be resolved because a circular reference exists.", root.ID)));
+    }
+
+    [Test]
+    public void Test_WithCircularHierarchyAboveTheRoot_ThrowsInvalidOperationException ()
+    {
+      Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
+      Group grandParent2 = TestHelper.CreateGroup ("Grandparent2", "UID: Grandparent2", null, tenant);
+      Group grandParent1 = TestHelper.CreateGroup ("Grandparent1", "UID: Grandparent1", grandParent2, tenant);
+      Group parent = TestHelper.CreateGroup ("parent1", "UID: parent", grandParent1, tenant);
+      Group root = TestHelper.CreateGroup ("Root", "UID: Root", parent, tenant);
+      grandParent2.Parent = parent;
+
+      Assert.That (
+          () => root.GetParents().Take(10).ToArray(),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("The parent hierarchy for group '{0}' cannot be resolved because a circular reference exists.", root.ID)));
+    }
+
+    [Test]
+    public void Test_WithCircularHierarchyAboveTheRoot_ParentIsOwnParent_ThrowsInvalidOperationException ()
+    {
+      Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
+      Group parent = TestHelper.CreateGroup ("Parent", "UID: Parent", null, tenant);
+      Group root = TestHelper.CreateGroup ("Root", "UID: Root", parent, tenant);
+      parent.Parent = parent;
+
+      Assert.That (
+          () => root.GetParents().Take(10).ToArray(),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("The parent hierarchy for group '{0}' cannot be resolved because a circular reference exists.", root.ID)));
     }
 
     [Test]

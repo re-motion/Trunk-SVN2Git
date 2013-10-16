@@ -123,17 +123,20 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       if (!securityClient.HasMethodAccess (this, "GetParents"))
         return Enumerable.Empty<Tenant>();
 
-      Func<Tenant, Tenant> parentResolver = g =>
+      var chainMembers = new HashSet<Tenant>();
+      Func<Tenant, Tenant> parentResolver = tenant =>
       {
-        if (g == this)
+        if (chainMembers.Contains (tenant))
         {
           throw new InvalidOperationException (
-              string.Format ("The parent hierarchy for group '{0}' cannot be resolved because a circular reference exists.", ID));
+              string.Format ("The parent hierarchy for tenant '{0}' cannot be resolved because a circular reference exists.", ID));
         }
-        return g.Parent;
+        chainMembers.Add (tenant);
+
+        return tenant.Parent;
       };
 
-      return Parent.CreateSequence (parentResolver, g => g != null && securityClient.HasAccess (g, AccessType.Get (GeneralAccessTypes.Read)));
+      return Parent.CreateSequence (parentResolver, t => t != null && securityClient.HasAccess (t, AccessType.Get (GeneralAccessTypes.Read)));
     }
 
     /// <summary>

@@ -91,36 +91,54 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       root.Parent = parent;
       grandParent2.Parent = root;
 
-      try
-      {
-        grandParent1.GetParents().ToArray();
-        Assert.Fail();
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message,
-            Is.EqualTo ("The parent hierarchy for group '" + grandParent1.ID + "' cannot be resolved because a circular reference exists."));
-      }
+      Assert.That (
+          () => root.GetParents().Take(10).ToArray(),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("The parent hierarchy for tenant '{0}' cannot be resolved because a circular reference exists.", root.ID)));
     }
 
     [Test]
-    public void Test_WithCircularHierarchy_GroupIsOwnParent_ThrowsInvalidOperationException ()
+    public void Test_WithCircularHierarchy_ParentIsOwnParent_ThrowsInvalidOperationException ()
     {
       Tenant root = TestHelper.CreateTenant ("Root", "UID: Root");
       root.Parent = root;
 
-      try
-      {
-        root.GetParents ().ToArray ();
-        Assert.Fail ();
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message,
-            Is.EqualTo ("The parent hierarchy for group '" + root.ID + "' cannot be resolved because a circular reference exists."));
-      }
+      Assert.That (
+          () => root.GetParents().Take(10).ToArray(),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("The parent hierarchy for tenant '{0}' cannot be resolved because a circular reference exists.", root.ID)));
+    }
+
+    [Test]
+    public void Test_WithCircularHierarchyAboveTheRoot_ThrowsInvalidOperationException ()
+    {
+      Tenant grandParent2 = TestHelper.CreateTenant ("Grandparent2", "UID: Grandparent2");
+      Tenant grandParent1 = TestHelper.CreateTenant ("Grandparent1", "UID: Grandparent1");
+      grandParent1.Parent = grandParent2;
+      Tenant parent = TestHelper.CreateTenant ("parent1", "UID: parent");
+      parent.Parent = grandParent1;
+      Tenant root = TestHelper.CreateTenant ("Root", "UID: Root");
+      root.Parent = parent;
+      grandParent2.Parent = parent;
+
+      Assert.That (
+          () => root.GetParents().Take(10).ToArray(),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("The parent hierarchy for tenant '{0}' cannot be resolved because a circular reference exists.", root.ID)));
+    }
+
+    [Test]
+    public void Test_WithCircularHierarchyAboveTheRoot_ParentIsOwnParent_ThrowsInvalidOperationException ()
+    {
+      Tenant parent = TestHelper.CreateTenant ("parent1", "UID: parent");
+      Tenant root = TestHelper.CreateTenant ("Root", "UID: Root");
+      root.Parent = parent;
+      parent.Parent = parent;
+
+      Assert.That (
+          () => root.GetParents().Take(10).ToArray(),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("The parent hierarchy for tenant '{0}' cannot be resolved because a circular reference exists.", root.ID)));
     }
 
     [Test]
