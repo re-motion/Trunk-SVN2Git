@@ -426,6 +426,14 @@
     <Compile Include="CssIncludeTest.aspx.designer.cs">
       <DependentUpon>CssIncludeTest.aspx</DependentUpon>
     </Compile>
+    <Compile Include="WebButtonDisabledCssTest.aspx.cs">
+      <DependentUpon>WebButtonDisabledCssTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebButtonDisabledCssTest.aspx.designer.cs">
+      <DependentUpon>WebButtonDisabledCssTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WebButtonWithDisabledCssStyleSupport.cs" />
     <Content Include="DefaultButtonTest.aspx" />
     <Content Include="ErrorHandling\ErrorForm.aspx" />
     <Content Include="ErrorHandling\TestForm.aspx" />
@@ -478,6 +486,7 @@
     <Content Include="ExecutionEngine\WebForm1.aspx">
       <SubType>Form</SubType>
     </Content>
+    <Content Include="WebButtonDisabledCssTest.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
