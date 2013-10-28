@@ -66,6 +66,11 @@ namespace Remotion.Web.Services
       _width = width;
     }
 
+    [Obsolete ("Default ctor for ASMX WSDL page.", true)]
+    private IconProxy ()
+    {
+    }
+
     public string Url
     {
       get { return _url; }
