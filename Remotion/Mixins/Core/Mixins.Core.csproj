@@ -336,6 +336,7 @@
     <Compile Include="Validation\Rules\DefaultTargetDependencyRules.cs" />
     <Compile Include="Validation\Rules\IRuleSet.cs" />
     <Compile Include="Validation\Rules\RuleSetBase.cs" />
+    <Compile Include="Validation\SerializableValidationLogData.cs" />
     <Compile Include="Validation\ValidatingVisitor.cs" />
     <Compile Include="Validation\ValidationException.cs" />
     <Compile Include="Validation\ValidationExceptionResultItem.cs" />

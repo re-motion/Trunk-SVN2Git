@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -29,28 +30,35 @@ namespace Remotion.Mixins.Validation
   [Serializable]
   public class ValidationException : Exception
   {
+    private readonly SerializableValidationLogData _serializableValidationLogData;
+
+    public SerializableValidationLogData ValidationLogData
+    {
+      get { return _serializableValidationLogData; }
+    }
+
     private static string BuildExceptionString (ValidationLogData data)
     {
       ArgumentUtility.CheckNotNull ("data", data);
 
       var sb = new StringBuilder ("Some parts of the mixin configuration could not be validated.");
-      foreach (ValidationResult item in data.GetResults ())
+      foreach (ValidationResult item in data.GetResults())
       {
         if (item.TotalRulesExecuted != item.Successes.Count)
         {
           sb.AppendLine();
           sb.AppendFormat (
-               "{0} '{1}', {2} rules executed",
-               item.ValidatedDefinition.GetType().Name,
-               item.ValidatedDefinition.FullName,
-               item.TotalRulesExecuted);
-          sb.AppendLine ();
+              "{0} '{1}', {2} rules executed",
+              item.ValidatedDefinition.GetType().Name,
+              item.ValidatedDefinition.FullName,
+              item.TotalRulesExecuted);
+          sb.AppendLine();
 
-          string contextString = item.GetDefinitionContextPath ();
+          string contextString = item.GetDefinitionContextPath();
           if (contextString.Length > 0)
           {
             sb.AppendFormat ("Context: " + contextString);
-            sb.AppendLine ();
+            sb.AppendLine();
           }
 
           AppendResults (sb, "unexpected exceptions", item.Exceptions);
@@ -58,10 +66,10 @@ namespace Remotion.Mixins.Validation
           AppendResults (sb, "failures", item.Failures);
         }
       }
-      return sb.ToString ();
+      return sb.ToString();
     }
 
-    private static void AppendResults<T> (StringBuilder sb, string title, ICollection<T> resultList) 
+    private static void AppendResults<T> (StringBuilder sb, string title, ICollection<T> resultList)
         where T : IDefaultValidationResultItem
     {
       if (resultList.Count > 0)
@@ -80,8 +88,9 @@ namespace Remotion.Mixins.Validation
     /// <param name="validationLogData">The validation log data.</param>
     /// <exception cref="ArgumentNullException">The log is empty.</exception>
     public ValidationException (ValidationLogData validationLogData)
-      : base (BuildExceptionString (validationLogData))
+        : base (BuildExceptionString (validationLogData))
     {
+      _serializableValidationLogData = validationLogData.MakeSerializable();
     }
 
     /// <summary>
@@ -93,6 +102,14 @@ namespace Remotion.Mixins.Validation
     protected ValidationException (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
+      _serializableValidationLogData =
+          (SerializableValidationLogData) info.GetValue ("SerializableValidationLogData", typeof (SerializableValidationLogData));
+    }
+
+    public override void GetObjectData (SerializationInfo info, StreamingContext context)
+    {
+      base.GetObjectData (info, context);
+      info.AddValue ("SerializableValidationLogData", _serializableValidationLogData);
     }
   }
 }

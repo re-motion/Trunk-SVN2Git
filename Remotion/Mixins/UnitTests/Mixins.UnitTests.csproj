@@ -391,6 +391,7 @@
     <Compile Include="Core\Validation\Rules\DefaultRequiredTargetCallTypeRulesTest.cs" />
     <Compile Include="Core\Validation\Rules\DefaultTargetClassRulesTest.cs" />
     <Compile Include="Core\Validation\Rules\DefaultTargetDependencyRulesTest.cs" />
+    <Compile Include="Core\Validation\SerializableValidationLogDataTest.cs" />
     <Compile Include="Core\Validation\ValidationExceptionResultItemTest.cs" />
     <Compile Include="Core\Validation\ValidationExceptionTest.cs" />
     <Compile Include="Core\Validation\ValidationResultItemTest.cs" />

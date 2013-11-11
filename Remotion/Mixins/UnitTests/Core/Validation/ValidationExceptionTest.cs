@@ -40,6 +40,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
 
       var deserializedException = Serializer.SerializeAndDeserialize (exception);
       Assert.That (deserializedException.Message, Is.EqualTo (exception.Message));
+      Assert.That (deserializedException.ValidationLogData, Is.Not.Null);
     }
 
     private void DummyRule (DelegateValidationRule<TargetClassDefinition>.Args args)
