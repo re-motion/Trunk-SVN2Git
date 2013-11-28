@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
@@ -29,8 +28,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
   /// </summary>
   public class MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule : IPropertyDefinitionValidationRule
   {
-    public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule ()
+    private readonly IMemberInfoNameResolver _memberInfoNameResolver;
+
+    public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (IMemberInfoNameResolver memberInfoNameResolver)
     {
+      ArgumentUtility.CheckNotNull ("memberInfoNameResolver", memberInfoNameResolver);
+      
+      _memberInfoNameResolver = memberInfoNameResolver;
     }
 
     public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
@@ -45,8 +49,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
           classDefinition.ClassType,
           isInheritanceRoot,
           true,
-          //TODO AO: check if name resolver can be injected or retrieved via MappingConfiguration or MappingLoader
-          SafeServiceLocator.Current.GetInstance<IMemberInfoNameResolver>(),
+          _memberInfoNameResolver,
           classDefinition.PersistentMixinFinder);
       var propertyInfos = propertyFinder.FindPropertyInfos();
 

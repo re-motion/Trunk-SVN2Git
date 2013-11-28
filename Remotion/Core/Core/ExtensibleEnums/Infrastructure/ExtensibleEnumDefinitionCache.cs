@@ -25,6 +25,11 @@ namespace Remotion.ExtensibleEnums.Infrastructure
   /// Caches <see cref="ExtensibleEnumDefinition{T}"/> instances for non-generic, reflective access.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
+  // TODO AO: "Change ExtensibleEnumDefinitionCache to be retrieved via IoC
+  // No interface, just conreteimpl attribute, pass IExtensibleEnumValueDiscoveryService into ctor.
+  // pass IGlobSvc into ctor of ExtensibleEnumValueDiscoveryService, provide second, protected ctor accepting both IGlobSvc and ITypeDiscSvc. 
+  // Implement TestableExtensibleEnumValueDiscoveryService with public ctor within unittests as netsted type in test fixture
+  // ConcreteImplAtt on IExtensibleEnumValueDiscoveryService.
   public sealed class ExtensibleEnumDefinitionCache
   {
     /// <summary>

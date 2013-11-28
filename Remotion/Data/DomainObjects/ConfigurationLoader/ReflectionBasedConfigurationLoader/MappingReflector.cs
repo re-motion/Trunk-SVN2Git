@@ -153,7 +153,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public IPropertyDefinitionValidator CreatePropertyDefinitionValidator ()
     {
       return new PropertyDefinitionValidator (
-          new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule(),
+          new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (_nameResolver),
           new MappingAttributesAreSupportedForPropertyTypeValidationRule(),
           new StorageClassIsSupportedValidationRule(),
           new PropertyTypeIsSupportedValidationRule());
