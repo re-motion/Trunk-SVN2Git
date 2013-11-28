@@ -91,7 +91,7 @@ namespace Remotion.ObjectBinding.BindableObject
       var mixinIntroducedPropertyInformation = propertyInfo as BindableObjectMixinIntroducedPropertyInformation;
       var property = mixinIntroducedPropertyInformation == null
           ? propertyInfo
-          : mixinIntroducedPropertyInformation.FindInterfaceDeclarations()  //TODO AO: should be cached - check with MK!?
+          : mixinIntroducedPropertyInformation.FindInterfaceDeclarations()  //Is already evaluated within implementation -> not performance relevant
               .Single (
                   () =>
                       new InvalidOperationException (
