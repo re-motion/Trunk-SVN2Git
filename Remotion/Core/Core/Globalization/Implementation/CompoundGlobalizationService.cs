@@ -33,11 +33,6 @@ namespace Remotion.Globalization.Implementation
   {
     private readonly IGlobalizationService[] _globalizationServices;
 
-    public static ICompoundGlobalizationService Create ()
-    {
-      return SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>();
-    }
-
     /// <summary>
     ///   Combines several <see cref="IGlobalizationService"/>-instances to a single CompoundGlobalizationService.
     /// </summary>

@@ -850,6 +850,9 @@ namespace Remotion.Web.UI.Controls
 
     public virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+
       var key = ResourceManagerUtility.GetGlobalResourceKey (ToolTip);
       if (!StringUtility.IsNullOrEmpty (key))
         ToolTip = resourceManager.GetString (key);

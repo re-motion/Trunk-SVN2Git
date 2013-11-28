@@ -231,7 +231,7 @@ namespace Remotion.Web.UI.Controls
       base.OnPreRender (e);
 
       var resourceManager = ResourceManagerUtility.GetResourceManager (this, true);
-      var globalizationService = CompoundGlobalizationService.Create();
+      var globalizationService = SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>();
 
       LoadResources (resourceManager, globalizationService);
     }

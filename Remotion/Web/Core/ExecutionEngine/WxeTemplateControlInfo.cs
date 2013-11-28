@@ -21,6 +21,7 @@ using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -136,7 +137,7 @@ namespace Remotion.Web.ExecutionEngine
     {
       get
       {
-        return CompoundGlobalizationService.Create ();
+        return SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>();
       }
     }
 

@@ -123,7 +123,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     protected IGlobalizationService GlobalizationService 
     {
-      get { return CompoundGlobalizationService.Create(); }
+      get { return SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>(); }
     }
 
     protected TControl GetControl<TControl> (string controlID, string propertyIdentifier)

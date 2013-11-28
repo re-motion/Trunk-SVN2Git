@@ -582,7 +582,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
     {
       get
       {
-        return CompoundGlobalizationService.Create ();
+        return SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>();
       }
     }
 

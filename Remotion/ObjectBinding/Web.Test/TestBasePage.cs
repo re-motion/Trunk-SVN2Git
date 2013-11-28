@@ -86,7 +86,7 @@ namespace OBWTest
 
     protected IGlobalizationService GlobalizationService
     {
-      get { return CompoundGlobalizationService.Create(); }
+      get { return SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>(); }
     }
 
     IResourceManager IObjectWithResources.GetResourceManager()
