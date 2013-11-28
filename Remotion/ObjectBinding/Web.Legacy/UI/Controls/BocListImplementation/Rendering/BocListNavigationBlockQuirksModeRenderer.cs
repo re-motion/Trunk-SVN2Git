@@ -227,7 +227,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       return ResourceManagerSet.Create (
           renderingContext.Control.GetResourceManager(),
-          _globalizationService.GetResourceManager (TypeAdapter.Create(typeof (ResourceIdentifier))));
+          _globalizationService.GetResourceManager (typeof (ResourceIdentifier)));
     }
 
     private string GetResolvedImageUrl (string imageUrl)

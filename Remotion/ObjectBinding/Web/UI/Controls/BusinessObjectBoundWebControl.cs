@@ -387,7 +387,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           Tuple.Create (localResourcesType, NamingContainer),
           key =>
           {
-            var localResourceManager = GlobalizationService.GetResourceManager (TypeAdapter.Create(localResourcesType));
+            var localResourceManager = GlobalizationService.GetResourceManager (localResourcesType);
             var namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
 
             return ResourceManagerSet.Create (namingContainerResourceManager, localResourceManager);

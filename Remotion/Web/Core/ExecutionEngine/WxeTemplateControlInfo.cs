@@ -150,7 +150,7 @@ namespace Remotion.Web.ExecutionEngine
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = _globalizationService.GetResourceManager (TypeAdapter.Create(localResourcesType));
+      IResourceManager localResourceManager = _globalizationService.GetResourceManager (localResourcesType);
       Control namingContainer = _control.NamingContainer ?? (Control) _control;
       IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (namingContainer, true);
 

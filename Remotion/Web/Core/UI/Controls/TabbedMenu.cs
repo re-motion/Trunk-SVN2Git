@@ -554,7 +554,7 @@ namespace Remotion.Web.UI.Controls
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = _globalizationService.GetResourceManager (TypeAdapter.Create(localResourcesType));
+      IResourceManager localResourceManager = _globalizationService.GetResourceManager (localResourcesType);
       IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
 
       _cachedResourceManager = ResourceManagerSet.Create (namingContainerResourceManager, localResourceManager);

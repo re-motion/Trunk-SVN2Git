@@ -203,7 +203,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = _globalizationService.GetResourceManager (TypeAdapter.Create(localResourcesType));
+      IResourceManager localResourceManager = _globalizationService.GetResourceManager (localResourcesType);
       IResourceManager pageResourceManager = ResourceManagerUtility.GetResourceManager (_page.WrappedInstance, true);
 
       _cachedResourceManager = ResourceManagerSet.Create (pageResourceManager, localResourceManager);

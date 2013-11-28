@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.BindableObject
       
       _resourceManager =
           new DoubleCheckedLockingContainer<IResourceManager> (
-              () => new CompoundGlobalizationService (globalizationServices).GetResourceManager (TypeAdapter.Create (typeof (ResourceIdentifier))));
+              () => new CompoundGlobalizationService (globalizationServices).GetResourceManager (typeof (ResourceIdentifier)));
       _memberInformationGlobalizationService = memberInformationGlobalizationService;
       _enumerationGlobalizationService = enumerationGlobalizationService;
       _extensibleEnumerationGlobalizationService = extensibleEnumerationGlobalizationService;

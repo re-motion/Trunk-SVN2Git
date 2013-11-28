@@ -109,7 +109,7 @@ public class TestWxeBasePage:
   protected virtual IResourceManager GetResourceManager()
   {
     Type type = GetType();
-    return GlobalizationService.GetResourceManager (TypeAdapter.Create (type));
+    return GlobalizationService.GetResourceManager (type);
   }
 
   protected IGlobalizationService GlobalizationService

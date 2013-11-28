@@ -61,7 +61,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
       var methods = typeDeclaringMethods.GetMethods (BindingFlags.Static | BindingFlags.Public);
       var extensionMethods = GetValueExtensionMethods (typeof (T), methods);
 
-      var resourceManager = s_globalizationService.GetResourceManager (TypeAdapter.Create (typeDeclaringMethods));
+      var resourceManager = s_globalizationService.GetResourceManager (typeDeclaringMethods);
       return from mi in extensionMethods
         let value = (T) mi.Invoke (null, new object[] { definition })
         let positionAttribute = AttributeUtility.GetCustomAttribute<ExtensibleEnumPositionAttribute> (mi, true)

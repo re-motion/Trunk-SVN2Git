@@ -65,7 +65,7 @@ namespace Remotion.Mixins.Globalization
       if (includeHierarchy == false)
         throw new NotSupportedException ("Usage of MixedMultiLingualResources.GetResourceManager with includeHierarchy=false is not supported.");
 
-      var resourceManager = s_globalizationService.GetResourceManager (TypeAdapter.Create (objectType));
+      var resourceManager = s_globalizationService.GetResourceManager (objectType);
       if (resourceManager.IsNull)
       {
         var message = string.Format (
@@ -125,7 +125,7 @@ namespace Remotion.Mixins.Globalization
 
       try
       {
-        var rm = s_globalizationService.GetResourceManager (TypeAdapter.Create (objectTypeToGetResourceFor));
+        var rm = s_globalizationService.GetResourceManager (objectTypeToGetResourceFor);
         string text = rm.GetString (name);
         return (text != name);
       }
@@ -146,7 +146,7 @@ namespace Remotion.Mixins.Globalization
     {
       ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
 
-      var resourceManager = s_globalizationService.GetResourceManager (TypeAdapter.Create (objectTypeToGetResourceFor));
+      var resourceManager = s_globalizationService.GetResourceManager (objectTypeToGetResourceFor);
       if (resourceManager.IsNull)
         return false;
 

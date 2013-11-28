@@ -108,7 +108,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     {
       Type type = this.GetType();
 
-      return GlobalizationService.GetResourceManager (TypeAdapter.Create (type));
+      return GlobalizationService.GetResourceManager (type);
     }
 
     protected IServiceLocator ServiceLocator

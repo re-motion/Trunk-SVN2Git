@@ -39,7 +39,6 @@ namespace Remotion.Globalization
     /// <remarks>
     /// If not resource manager can be found for the specified <see cref="ITypeInformation"/> a <see cref="NullResourceManager"/> is returned.
     /// </remarks>
-    // TODO AO: extension method accepting Type instead of ITypeInformation > cleanup
     [NotNull]
     IResourceManager GetResourceManager ([NotNull] ITypeInformation typeInformation);
   }

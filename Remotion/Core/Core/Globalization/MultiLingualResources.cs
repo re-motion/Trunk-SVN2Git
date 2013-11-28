@@ -45,7 +45,7 @@ namespace Remotion.Globalization
       if (includeHierarchy == false)
         throw new NotSupportedException ("Usage of MixedMultiLingualResources.GetResourceManager with includeHierarchy=false is not supported.");
 
-      var resourceManager = s_globalizationService.GetResourceManager (TypeAdapter.Create (objectType));
+      var resourceManager = s_globalizationService.GetResourceManager (objectType);
       if (resourceManager.IsNull)
       {
         var message = string.Format (

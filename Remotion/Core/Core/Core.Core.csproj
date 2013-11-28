@@ -147,6 +147,7 @@
     <Compile Include="Context\ISafeContextStorageProvider.cs" />
     <Compile Include="Context\SafeContext.cs" />
     <Compile Include="Context\SafeContextKeys.cs" />
+    <Compile Include="Globalization\GlobalizationServiceExtensions.cs" />
     <Compile Include="Globalization\IEnumerationGlobalizationService.cs" />
     <Compile Include="Globalization\IExtensibleEnumerationGlobalizationService.cs" />
     <Compile Include="Globalization\Implementation\CompoundGlobalizationService.cs" />
