@@ -15,9 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
+using Remotion.Globalization;
 using Remotion.Mixins;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Reflection;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -58,8 +62,8 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("serviceType", serviceType, typeof (IBusinessObjectService));
 
       if (serviceType == typeof (IBindableObjectGlobalizationService))
-        return new BindableObjectGlobalizationService();
-
+        return SafeServiceLocator.Current.GetInstance<IBindableObjectGlobalizationService>();
+    
       if (serviceType == typeof (IBusinessObjectStringFormatterService))
         return new BusinessObjectStringFormatterService();
 

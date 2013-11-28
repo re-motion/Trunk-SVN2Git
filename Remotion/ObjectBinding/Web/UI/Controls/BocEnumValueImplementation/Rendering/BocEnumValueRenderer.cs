@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -34,8 +35,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
 
-    public BocEnumValueRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (resourceUrlFactory)
+    public BocEnumValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+      : base (resourceUrlFactory, globalizationService)
     {
     }
 

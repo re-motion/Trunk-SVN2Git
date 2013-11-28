@@ -107,11 +107,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "CommandColumnDefinition"; }
     }
 
-    public override void LoadResources (IResourceManager resourceManager)
+    public override void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
-      base.LoadResources (resourceManager);
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
+      base.LoadResources (resourceManager, globalizationService);
 
       string key = ResourceManagerUtility.GetGlobalResourceKey (Text);
       if (!string.IsNullOrEmpty (key))

@@ -22,6 +22,8 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -275,7 +277,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount, WebTabStripRenderingContext renderingContext)
     {
-      _renderer = new WebTabStripRenderer (new FakeResourceUrlFactory());
+      _renderer = new WebTabStripRenderer (new FakeResourceUrlFactory(), CompoundGlobalizationService.Create());
       _renderer.Render (renderingContext);
 
       var document = _htmlHelper.GetResultDocument();

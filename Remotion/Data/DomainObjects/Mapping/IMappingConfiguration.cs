@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -31,6 +32,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     ClassDefinition GetClassDefinition (string classID);
     ClassDefinition GetClassDefinition (string classID, Func<string, Exception> missingClassDefinitionExceptionFactory);
 
-    IMappingNameResolver NameResolver { get; }
+    IMemberInfoNameResolver NameResolver { get; }
   }
 }

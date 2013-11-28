@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using Remotion.Globalization;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
   [BindableObject]
   [Serializable]
+  [MultiLingualResources ("Remotion.ObjectBinding.UnitTests.Core.Globalization.SimpleBusinessObjectClass")]
   public class SimpleBusinessObjectClass
   {
     private string _string;
@@ -34,6 +37,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
       set { _string = value; }
     }
 
+    public string StringForLongPropertyName
+    {
+      get { return _string; }
+      set { _string = value; }
+    }
+
     public string StringWithoutGetter
     {
       set { _string = value; }
@@ -41,6 +50,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 
     public string StringWithoutSetter
     {
+      set { _string = value; }
+    }
+
+    //TODO AO: fix spelling
+    public string PropertyForMixinOverriddeTest
+    {
+      get { return _string; }
       set { _string = value; }
     }
   }

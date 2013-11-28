@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
+using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -27,11 +29,12 @@ namespace Remotion.Globalization
   /// <summary>
   ///   Combines one or more <see cref="IResourceManager"/> instances to a set that can be accessed using a single interface.
   /// </summary>
-  public class ResourceManagerSet : ReadOnlyCollection<IResourceManager>, IResourceManager
+  public class ResourceManagerSet : IResourceManager
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (ResourceManagerSet));
 
-    private string _name;
+    private readonly IResourceManager[] _resourceManagers;
+    private readonly string _name;
 
     /// <summary>
     ///   Combines several IResourceManager instances to a single ResourceManagerSet, starting with the first entry of the first set.
@@ -50,31 +53,32 @@ namespace Remotion.Globalization
     ///     rmset (rm1, rm2, rm3, rm4, rm5, rm6, rm7, rm8)
     ///   </para>
     /// </example>
-    /// <param name="resourceManagers"> The resource manager, starting with the least specific. </param>
-    public ResourceManagerSet (params IResourceManager[] resourceManagers)
-        : base (CreateFlatList (resourceManagers))
+    /// <param name="resourceManagers"> The resource manager, starting with the most specific. </param>
+    public static ResourceManagerSet Create (params IResourceManager[] resourceManagers)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("resourceManagers", resourceManagers);
+      ArgumentUtility.CheckNotNull ("resourceManagers", resourceManagers);
 
-      SeparatedStringBuilder sb = new SeparatedStringBuilder (", ", 30*Count);
-      foreach (IResourceManager rm in this)
-        sb.Append (rm.Name);
-      _name = sb.ToString();
+      return new ResourceManagerSet (resourceManagers.AsEnumerable());
     }
 
-    private static IList<IResourceManager> CreateFlatList (IEnumerable<IResourceManager> resourceManagers)
+    public ResourceManagerSet (IEnumerable<IResourceManager> resourceManagers)
     {
-      List<IResourceManager> list = new List<IResourceManager>();
-      foreach (IResourceManager rm in resourceManagers)
-      {
-        ResourceManagerSet rmset = rm as ResourceManagerSet;
-        if (rmset != null)
-          list.AddRange (rmset);
-        else if (rm != null && !rm.IsNull)
-          list.Add (rm);
-      }
+      _resourceManagers = CreateFlatList(resourceManagers).ToArray();
+      SeparatedStringBuilder sb = new SeparatedStringBuilder (", ", 30 * _resourceManagers.Length);
+      foreach (var rm in _resourceManagers)
+        sb.Append (rm.Name);
+      _name = _resourceManagers.Any() ? sb.ToString() : "Empty ResourceManagerSet";
+    }
 
-      return list;
+    [Obsolete ("Use ResourceManagerSet.Create instead. NOTE: The order of the ResourceMangers is now reversed. (Version 1.23.211)", true)]
+    public ResourceManagerSet (params IResourceManager[] resourceManagers)
+    {
+      throw new InvalidOperationException ("Use ResourceManagerSet.Create instead. (Version 1.23.211)");
+    }
+
+    public IEnumerable<IResourceManager> ResourceManagers
+    {
+      get { return _resourceManagers.AsReadOnly(); }
     }
 
     public NameValueCollection GetAllStrings ()
@@ -88,15 +92,15 @@ namespace Remotion.Globalization
     /// <seealso cref="M:Remotion.Globalization.IResourceManager.GetAllStrings(System.String)"/>
     public NameValueCollection GetAllStrings (string prefix)
     {
-      NameValueCollection result = new NameValueCollection();
-
-      foreach (IResourceManager resourceManager in this)
+      var result = new NameValueCollection();
+      foreach (var resourceManager in _resourceManagers)
       {
-        NameValueCollection strings = resourceManager.GetAllStrings (prefix);
-        for (int i = 0; i < strings.Count; i++)
+        var strings = resourceManager.GetAllStrings (prefix);
+        for (var i = 0; i < strings.Count; i++)
         {
-          string key = strings.Keys[i];
-          result[key] = strings[i];
+          var key = strings.Keys[i];
+          if (result[key] == null)
+            result[key] = strings[i];
         }
       }
       return result;
@@ -106,50 +110,58 @@ namespace Remotion.Globalization
     ///   Gets the value of the specified string resource. 
     /// </summary>
     /// <seealso cref="M:Remotion.Globalization.IResourceManager.GetString(System.String)"/>
-    public string GetString (string id)
+    public bool TryGetString (string id, out string value)
     {
-      for (int i = Count - 1; i >= 0; --i)
+      //FOR-loop for performance reasons
+      // ReSharper disable ForCanBeConvertedToForeach
+      for (var i = 0; i < _resourceManagers.Length; i++)
       {
-        string s = this[i].GetString (id);
+        var s = _resourceManagers[i].GetStringOrDefault (id);
         if (s != null && s != id)
-          return s;
+        {
+          value = s;
+          return true;
+        }
       }
+      // ReSharper restore ForCanBeConvertedToForeach
 
-      s_log.Debug ("Could not find resource with ID '" + id + "' in any of the following resource containers " + _name + ".");
-      return id;
+      s_log.DebugFormat ("Could not find resource with ID '{0}' in any of the following resource containers '{1}'.", id, _name);
+
+      value = null;
+      return false;
     }
-
-    /// <summary>
-    ///   Gets the value of the specified string resource. 
-    /// </summary>
-    /// <seealso cref="M:Remotion.Globalization.IResourceManager.GetString(System.Enum)"/>
-    public string GetString (Enum enumValue)
-    {
-      return GetString (ResourceIdentifiersAttribute.GetResourceIdentifier (enumValue));
-    }
-
+    
     /// <summary>Tests whether the <see cref="ResourceManagerSet"/> contains the specified resource.</summary>
     /// <param name="id">The ID of the resource to look for.</param>
     /// <returns><see langword="true"/> if the <see cref="ResourceManagerSet"/> contains the specified resource.</returns>
-    public bool ContainsResource (string id)
+    public bool ContainsString (string id)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
-      for (int i = this.Count - 1; i >= 0; --i)
+      //FOR-loop for performance reasons
+      // ReSharper disable once LoopCanBeConvertedToQuery
+      for (var i = 0; i < _resourceManagers.Length; i++)
       {
-        if (this[i].ContainsResource (id))
+        if (_resourceManagers.ElementAt (i).ContainsString (id))
           return true;
       }
+      // ReSharper restore LoopCanBeConvertedToQuery
       return false;
     }
 
-    /// <summary>Tests whether the <see cref="ResourceManagerSet"/> contains the specified resource.</summary>
-    /// <param name="enumValue">The ID of the resource to look for.</param>
-    /// <returns><see langword="true"/> if the <see cref="ResourceManagerSet"/> contains the specified resource.</returns>
-    public bool ContainsResource (Enum enumValue)
+    private static IEnumerable<IResourceManager> CreateFlatList (IEnumerable<IResourceManager> resourceManagers)
     {
-      ArgumentUtility.CheckNotNull ("enumValue", enumValue);
-      return ContainsResource (ResourceIdentifiersAttribute.GetResourceIdentifier (enumValue));
+      foreach (var resourceManager in resourceManagers)
+      {
+        var rmset = resourceManager as ResourceManagerSet;
+        if (rmset != null)
+        {
+          foreach (var rm in rmset.ResourceManagers)
+            yield return rm;
+        }
+        else if (resourceManager != null && !resourceManager.IsNull)
+          yield return resourceManager;
+      }
     }
 
     public string Name
@@ -159,7 +171,7 @@ namespace Remotion.Globalization
 
     bool INullObject.IsNull
     {
-      get { return false; }
+      get { return !_resourceManagers.Any(); }
     }
   }
 }

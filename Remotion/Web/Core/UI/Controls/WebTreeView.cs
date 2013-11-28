@@ -23,6 +23,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls.WebTreeViewImplementation;
@@ -424,10 +425,11 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Loads the resources into the control's properties. </summary>
-    protected virtual void LoadResources (IResourceManager resourceManager)
+    protected virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       if (ControlHelper.IsDesignMode (this))
         return;
 
@@ -439,7 +441,7 @@ namespace Remotion.Web.UI.Controls
       if (!StringUtility.IsNullOrEmpty (key))
         ToolTip = resourceManager.GetString (key);
 
-      Nodes.LoadResources (resourceManager);
+      Nodes.LoadResources (resourceManager, globalizationService);
     }
 
     protected override void OnLoad (EventArgs e)
@@ -470,8 +472,10 @@ namespace Remotion.Web.UI.Controls
 
       base.OnPreRender (e);
 
-      IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true) ?? NullResourceManager.Instance;
-      LoadResources (resourceManager);
+      var resourceManager = ResourceManagerUtility.GetResourceManager (this, true);
+      var globalizationService = CompoundGlobalizationService.Create();
+
+      LoadResources (resourceManager, globalizationService);
 
       if (_requiresSynchronousPostBack)
       {

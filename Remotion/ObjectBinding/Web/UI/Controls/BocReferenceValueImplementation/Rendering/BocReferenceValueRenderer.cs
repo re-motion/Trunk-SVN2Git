@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Text;
 using System.Web.UI.WebControls;
@@ -50,13 +51,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
-    public BocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory)
-      : this (resourceUrlFactory, () => new DropDownList ())
+    public BocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+        : this (resourceUrlFactory, globalizationService, () => new DropDownList())
     {
     }
 
-    protected BocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, Func<DropDownList> dropDownListFactoryMethod)
-      : base (resourceUrlFactory)
+    protected BocReferenceValueRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        ICompoundGlobalizationService globalizationService,
+        Func<DropDownList> dropDownListFactoryMethod)
+        : base (resourceUrlFactory, globalizationService)
     {
       ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
       _dropDownListFactoryMethod = dropDownListFactoryMethod;
@@ -66,7 +70,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude();
       RegisterBrowserCompatibilityScript (htmlHeadAppender);
       RegisterJavaScriptFiles (htmlHeadAppender);
       RegisterStylesheets (htmlHeadAppender);
@@ -131,12 +135,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.Append ("); } );");
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
-          renderingContext.Control, typeof (IBocReferenceValue), key, script.ToString ());
+          renderingContext.Control,
+          typeof (IBocReferenceValue),
+          key,
+          script.ToString());
     }
 
     private string GetResourcesAsJson (BocReferenceValueRenderingContext renderingContext)
     {
-      var resourceManager = GetResourceManager(renderingContext);
+      var resourceManager = GetResourceManager (renderingContext);
       var jsonBuilder = new StringBuilder (1000);
 
       jsonBuilder.Append ("{ ");
@@ -172,7 +179,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private DropDownList GetDropDownList (BocRenderingContext<IBocReferenceValue> renderingContext)
     {
-      var dropDownList = _dropDownListFactoryMethod ();
+      var dropDownList = _dropDownListFactoryMethod();
       dropDownList.ID = renderingContext.Control.GetValueName();
       dropDownList.EnableViewState = false;
       dropDownList.Page = renderingContext.Control.Page.WrappedInstance;
@@ -187,7 +194,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return dropDownList;
     }
 
-    public override string GetCssClassBase(IBocReferenceValue control)
+    public override string GetCssClassBase (IBocReferenceValue control)
     {
       return "bocReferenceValue";
     }

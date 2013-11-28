@@ -17,6 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -28,8 +29,8 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
   /// </summary>
   public class SingleViewRenderer : RendererBase<ISingleView>, ISingleViewRenderer
   {
-    public SingleViewRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (resourceUrlFactory)
+    public SingleViewRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+      : base (resourceUrlFactory, globalizationService)
     {
     }
 

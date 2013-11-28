@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Logging;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -86,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly ReadOnlyDictionary<string, ClassDefinition> _classDefinitions;
     private readonly ReadOnlyDictionary<string, RelationDefinition> _relationDefinitions;
     private readonly bool _resolveTypes;
-    private readonly IMappingNameResolver _nameResolver;
+    private readonly IMemberInfoNameResolver _nameResolver;
 
     // construction and disposing
 
@@ -195,7 +196,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return classDefinition;
     }
 
-    public IMappingNameResolver NameResolver
+    public IMemberInfoNameResolver NameResolver
     {
       get { return _nameResolver; }
     }

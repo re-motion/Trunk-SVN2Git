@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using Remotion.Collections;
+using System.Collections.Generic;
 using Remotion.ExtensibleEnums;
+using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
-using Remotion.Mixins.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -35,36 +37,51 @@ namespace Remotion.ObjectBinding.BindableObject
       False
     }
 
-    private readonly ICache<ITypeInformation, IResourceManager> _resourceManagerCache =
-        CacheFactory.CreateWithLocking<ITypeInformation, IResourceManager>();
+    private readonly IMemberInformationGlobalizationService _memberInformationGlobalizationService;
+    private readonly DoubleCheckedLockingContainer<IResourceManager> _resourceManager;
+    private readonly IEnumerationGlobalizationService _enumerationGlobalizationService;
+    private readonly IExtensibleEnumerationGlobalizationService _extensibleEnumerationGlobalizationService;
 
-    private readonly TypeConversionProvider _typeConversionProvider;
-
-    public BindableObjectGlobalizationService ()
+    public BindableObjectGlobalizationService (
+      //TOOD AO: replace with ICompoundGloblaizationService
+        IEnumerable<IGlobalizationService> globalizationServices,
+        IMemberInformationGlobalizationService memberInformationGlobalizationService,
+        IEnumerationGlobalizationService enumerationGlobalizationService,
+        IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService)
     {
-      _typeConversionProvider = TypeConversionProvider.Create();
+      ArgumentUtility.CheckNotNull ("globalizationServices", globalizationServices);
+      ArgumentUtility.CheckNotNull ("memberInformationGlobalizationService", memberInformationGlobalizationService);
+      ArgumentUtility.CheckNotNull ("enumerationGlobalizationService", enumerationGlobalizationService);
+      ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
+      
+      _resourceManager =
+          new DoubleCheckedLockingContainer<IResourceManager> (
+              () => new CompoundGlobalizationService (globalizationServices).GetResourceManager (TypeAdapter.Create (typeof (ResourceIdentifier))));
+      _memberInformationGlobalizationService = memberInformationGlobalizationService;
+      _enumerationGlobalizationService = enumerationGlobalizationService;
+      _extensibleEnumerationGlobalizationService = extensibleEnumerationGlobalizationService;
     }
 
     public string GetEnumerationValueDisplayName (Enum value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
-      return EnumDescription.GetDescription (value);
+      return _enumerationGlobalizationService.GetEnumerationValueDisplayName (value);
     }
 
-    public string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value)
+    public string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value) //move to member info globalization service
     {
       ArgumentUtility.CheckNotNull ("value", value);
-      return value.GetLocalizedName();
+      return _extensibleEnumerationGlobalizationService.GetExtensibleEnumerationValueDisplayName (value);
     }
 
     public string GetBooleanValueDisplayName (bool value)
     {
-      IResourceManager resourceManager = GetResourceManagerFromCache (TypeAdapter.Create (typeof (ResourceIdentifier)));
-      return resourceManager.GetString (value ? ResourceIdentifier.True : ResourceIdentifier.False);
+      return _resourceManager.Value.GetString (value ? ResourceIdentifier.True : ResourceIdentifier.False);
     }
 
-    public string GetPropertyDisplayName (IPropertyInformation propertyInfo)
+    public string GetPropertyDisplayName (ITypeInformation typeInfo, IPropertyInformation propertyInfo)
     {
+      ArgumentUtility.CheckNotNull ("typeInfo", typeInfo);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       // Note: Currently, MixedMultilingualResources requires the concrete mixed type and the concrete implemented property for globalization 
@@ -72,36 +89,17 @@ namespace Remotion.ObjectBinding.BindableObject
       // based globalization some time, so that we can work with ordinary IPropertyInformation objects
 
       var mixinIntroducedPropertyInformation = propertyInfo as BindableObjectMixinIntroducedPropertyInformation;
-      var globalizedType = mixinIntroducedPropertyInformation != null ? mixinIntroducedPropertyInformation.ConcreteType : propertyInfo.DeclaringType;
-      var property = mixinIntroducedPropertyInformation != null ? mixinIntroducedPropertyInformation.ConcreteProperty : propertyInfo;
+      var property = mixinIntroducedPropertyInformation == null
+          ? propertyInfo
+          : mixinIntroducedPropertyInformation.FindInterfaceDeclarations()  //TODO AO: should be cached!?
+              .Single (
+                  () =>
+                      new InvalidOperationException (
+                          string.Format (
+                              "BindableObjectGlobalizationService only supports unique interface declarations but proerty '{0}' is declared on multiply interfaces",
+                              propertyInfo.Name)));
 
-      var resourceManager = GetResourceManagerFromCache (globalizedType);
-
-      string resourceID = "property:" + property.Name;
-      if (!resourceManager.ContainsResource (resourceID))
-        return propertyInfo.Name;
-      return resourceManager.GetString (resourceID);
-    }
-
-    private IResourceManager GetResourceManagerFromCache (ITypeInformation typeInformation)
-    {
-      IResourceManager resourceManager;
-      if (_resourceManagerCache.TryGetValue (typeInformation, out resourceManager))
-        return resourceManager;
-      return _resourceManagerCache.GetOrCreateValue (typeInformation, GetResourceManager);
-    }
-
-    private IResourceManager GetResourceManager (ITypeInformation typeInformation)
-    {
-      if (!_typeConversionProvider.CanConvert (typeInformation.GetType(), typeof (Type)))
-        return NullResourceManager.Instance;
-
-      var type = (Type) _typeConversionProvider.Convert (typeInformation.GetType(), typeof (Type), typeInformation);
-
-      if (MixedMultiLingualResources.ExistsResource (type))
-        return MixedMultiLingualResources.GetResourceManager (type, true);
-
-      return NullResourceManager.Instance;
+      return _memberInformationGlobalizationService.GetPropertyDisplayName (property, typeInfo);
     }
   }
 }

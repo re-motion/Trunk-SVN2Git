@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -29,8 +30,8 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
   /// </summary>
   public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
   {
-    public TabbedMultiViewRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (resourceUrlFactory)
+    public TabbedMultiViewRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+      : base (resourceUrlFactory, globalizationService)
     {
     }
 

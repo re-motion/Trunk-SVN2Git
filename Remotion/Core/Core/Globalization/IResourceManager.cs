@@ -43,34 +43,22 @@ namespace Remotion.Globalization
     NameValueCollection GetAllStrings (string prefix);
 
     /// <summary>
-    ///   Gets the value of the specified String resource.
+    ///   Tries to get the value of the specified String resource.
     /// </summary>
     /// <param name="id">The ID of the resource to get. </param>
-    /// <returns>
-    ///   The value of the resource. If no match is possible, the identifier is returned.
-    /// </returns>
-    string GetString (string id);
-
-    /// <summary>
-    ///   Gets the value of the specified string resource. The resource is identified by
-    ///   concatenating type and value name.
-    /// </summary>
-    /// <remarks> See <see cref="ResourceIdentifiersAttribute.GetResourceIdentifier"/> for resource identifier syntax. </remarks>
-    /// <returns>
-    ///   The value of the resource. If no match is possible, the identifier is returned.
-    /// </returns>
-    string GetString (Enum enumValue);
+    /// <param name="value">The value of the resource lookup result.</param>
+    /// <returns><see langword="true"/> if the <see cref="IResourceManager"/> contains the specified resource.</returns>
+    bool TryGetString (string id, out string value);
 
     /// <summary>Tests whether the <see cref="IResourceManager"/> contains the specified resource.</summary>
     /// <param name="id">The ID of the resource to look for.</param>
     /// <returns><see langword="true"/> if the <see cref="IResourceManager"/> contains the specified resource.</returns>
-    bool ContainsResource (string id);
+    //TODO AO: only as extension method
+    bool ContainsString (string id);
 
-    /// <summary>Tests whether the <see cref="IResourceManager"/> contains the specified resource.</summary>
-    /// <param name="enumValue">The ID of the resource to look for.</param>
-    /// <returns><see langword="true"/> if the <see cref="IResourceManager"/> contains the specified resource.</returns>
-    bool ContainsResource (Enum enumValue);
-
+    /// <summary>
+    ///   Returns the name of the resource manager.
+    /// </summary>
     string Name { get; }
   }
 }

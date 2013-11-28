@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
@@ -28,8 +29,8 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
   /// </summary>
   public class DatePickerButtonRenderer : RendererBase<IDatePickerButton>, IDatePickerButtonRenderer
   {
-    public DatePickerButtonRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (resourceUrlFactory)
+    public DatePickerButtonRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+      : base (resourceUrlFactory, globalizationService)
     {
     }
 

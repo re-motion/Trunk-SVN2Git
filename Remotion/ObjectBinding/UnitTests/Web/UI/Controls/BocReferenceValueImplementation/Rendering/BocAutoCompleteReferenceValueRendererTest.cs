@@ -22,6 +22,7 @@ using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.Services;
@@ -63,6 +64,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     private BusinessObjectReferenceDataSource _dataSource;
     private IBusinessObjectProvider _provider;
     private IResourceUrlFactory _resourceUrlFactory;
+    private ICompoundGlobalizationService _globalizationService;
     private IBocAutoCompleteReferenceValue Control { get; set; }
     private DropDownMenu OptionsMenu { get; set; }
     private IClientScriptManager ClientScriptManagerMock { get; set; }
@@ -123,6 +125,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.GetResourceManager()).Return (NullResourceManager.Instance);
 
       _resourceUrlFactory = new FakeResourceUrlFactory();
+      _globalizationService = CompoundGlobalizationService.Create();
     }
 
     [TearDown]
@@ -413,7 +416,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     [Ignore ("Assertions for embedded menu are incorrect: COMMONS-2431")]
     public void RenderOptions ()
     {
-      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (_resourceUrlFactory, () => new StubTextBox ());
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (_resourceUrlFactory, _globalizationService, () => new StubTextBox ());
 
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -430,7 +433,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (_resourceUrlFactory, () => new StubTextBox());
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (_resourceUrlFactory, _globalizationService, () => new StubTextBox());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (CreateRenderingContext());
@@ -607,7 +610,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
-      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (_resourceUrlFactory, () => TextBox);
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (_resourceUrlFactory, _globalizationService, () => TextBox);
       renderer.Render (CreateRenderingContext());
 
       var document = Html.GetResultDocument();

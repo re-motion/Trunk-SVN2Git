@@ -59,13 +59,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private readonly Func<TextBox> _textBoxFactory;
 
-    public BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory)
-      : this (resourceUrlFactory, () => new RenderOnlyTextBox())
+    public BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+      : this (resourceUrlFactory, globalizationService, () => new RenderOnlyTextBox())
     {
     }
 
-    protected BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, Func<TextBox> textBoxFactory)
-      : base (resourceUrlFactory)
+    protected BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService, Func<TextBox> textBoxFactory)
+      : base (resourceUrlFactory, globalizationService)
     {
       ArgumentUtility.CheckNotNull ("textBoxFactory", textBoxFactory);
       _textBoxFactory = textBoxFactory;

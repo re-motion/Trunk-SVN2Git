@@ -14,49 +14,54 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Web.UI.Globalization;
 
 namespace OBWTest.IndividualControlTests
 {
-
-public abstract class BaseUserControl : 
-    DataEditUserControl, 
-    IObjectWithResources //  Provides the UserControl's ResourceManager via GetResourceManager() 
-{
-  protected virtual void RegisterEventHandlers ()
+  public abstract class BaseUserControl
+      :
+          DataEditUserControl,
+          IObjectWithResources //  Provides the UserControl's ResourceManager via GetResourceManager() 
   {
+    protected virtual void RegisterEventHandlers ()
+    {
+    }
+
+    protected override void OnInit (EventArgs e)
+    {
+      RegisterEventHandlers();
+      base.OnInit (e);
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      //  A call to the ResourceDispatcher to get have the automatic resources dispatched
+      ResourceDispatcher.Dispatch (this, ResourceManagerUtility.GetResourceManager (this));
+
+      base.OnPreRender (e);
+    }
+
+    protected virtual IResourceManager GetResourceManager ()
+    {
+      Type type = GetType();
+      return GlobalizationService.GetResourceManager (TypeAdapter.Create (type));
+    }
+
+    protected IGlobalizationService GlobalizationService
+    {
+      get { return CompoundGlobalizationService.Create(); }
+    }
+
+    IResourceManager IObjectWithResources.GetResourceManager ()
+    {
+      return GetResourceManager();
+    }
   }
-  
-	override protected void OnInit(EventArgs e)
-	{
-    RegisterEventHandlers ();
-		base.OnInit(e);
-	}
-
-  protected override void OnPreRender(EventArgs e)
-  {
-    //  A call to the ResourceDispatcher to get have the automatic resources dispatched
-    ResourceDispatcher.Dispatch (this, ResourceManagerUtility.GetResourceManager (this));
-
-    base.OnPreRender (e);
-  }
-
-  protected virtual IResourceManager GetResourceManager()
-  {
-    Type type = GetType();
-    if (MultiLingualResources.ExistsResource (type))
-      return MultiLingualResources.GetResourceManager (type, true);
-    else
-      return null;
-  }
-
-  IResourceManager IObjectWithResources.GetResourceManager()
-  {
-    return GetResourceManager();
-  }
-}
-
 }

@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -29,8 +30,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   /// </summary>
   public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>, IBocMultilineTextValueRenderer
   {
-    public BocMultilineTextValueRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (resourceUrlFactory)
+    public BocMultilineTextValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+      : base (resourceUrlFactory, globalizationService)
     {
     }
 

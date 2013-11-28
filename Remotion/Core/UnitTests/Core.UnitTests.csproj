@@ -209,9 +209,42 @@
     <Compile Include="FunctionalProgramming\MaybeTest.cs" />
     <Compile Include="FunctionalProgramming\TestDomain\FakeElementEqualityComparer.cs" />
     <Compile Include="FunctionalProgramming\TestDomain\RecursiveItem.cs" />
+    <Compile Include="Globalization\CompoundGlobalizationServiceTest.cs" />
+    <Compile Include="Globalization\EnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="Globalization\ExtensibleEnumerationServiceGlobalizationServiceTest.cs" />
+    <Compile Include="Globalization\GlobalizationServiceTest.cs" />
+    <Compile Include="Globalization\ICompoundGlobalizationServiceTest.cs" />
+    <Compile Include="Globalization\IEnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="Globalization\IExtensibleEnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="Globalization\IGlobalizationServiceTest.cs" />
+    <Compile Include="Globalization\IMemberInformationGlobalizationServiceTest.cs" />
+    <Compile Include="Globalization\IResourceManagerResolverTest.cs" />
+    <Compile Include="Globalization\MemberInformationGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
+    <Compile Include="Globalization\Resources\ClassWithResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ClassWithResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Globalization\Resources\EnumWithResources.Designer.cs">
+      <DependentUpon>EnumWithResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Globalization\Resources\ExtensibleEnumWithResources.Designer.cs">
+      <DependentUpon>ExtensibleEnumWithResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Globalization\TestDomain\ClassWithResources.cs" />
+    <Compile Include="Globalization\TestDomain\EnumWithDescription.cs" />
+    <Compile Include="Globalization\TestDomain\EnumWithResoruces.cs" />
+    <Compile Include="Globalization\TestDomain\ExtensibleEnumWithResources.cs" />
+    <Compile Include="Globalization\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
+    <Compile Include="Globalization\TestDomain\MixinAddingResources.cs" />
+    <Compile Include="Globalization\TestDomain\TestEnum.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ILStatement.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\SetUpFixture.cs">
       <SubType>Code</SubType>
@@ -229,6 +262,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Reflection\DelegateFactoryTest.cs" />
+    <Compile Include="Reflection\IMemberInfoNameResolverTest.cs" />
     <Compile Include="Reflection\MemberLookupInfoTest.cs" />
     <Compile Include="Reflection\MemberSignatures\EventSignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\FieldSignatureTest.cs" />
@@ -237,6 +271,7 @@
     <Compile Include="Reflection\MemberSignatures\MethodSignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\NestedTypeSignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\PropertySignatureTest.cs" />
+    <Compile Include="Reflection\ReflectionBasedMemberInfoNameResolverTest.cs" />
     <Compile Include="Reflection\TestDomain\AbstractClass.cs" />
     <Compile Include="Reflection\TestDomain\ClassForSignatureComparisons2.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
@@ -387,7 +422,6 @@
     <Compile Include="Design\StubDesignModeHelper.cs" />
     <Compile Include="DoubleCheckedLockingContainerTest.cs" />
     <Compile Include="Globalization\ResourceManagerResolverTest.cs" />
-    <Compile Include="Globalization\ResourceManagerResolverUtilityTest.cs" />
     <Compile Include="Globalization\TestDomain\ClassWithMultiLingualResourcesAttributes.cs" />
     <Compile Include="Globalization\TestDomain\ClassWithoutMultiLingualResourcesAttributes.cs" />
     <Compile Include="Globalization\TestDomain\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
@@ -407,6 +441,19 @@
     <Compile Include="Logging\LogManagerTest.cs" />
     <Compile Include="Logging\LogMessages.cs" />
     <Compile Include="Logging\SampleType.cs" />
+    <EmbeddedResource Include="Globalization\Resources\ClassWithResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ClassWithResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Resources\EnumWithResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EnumWithResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Resources\ExtensibleEnumWithResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExtensibleEnumWithResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\ColorExtensions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ColorExtensions.Designer.cs</LastGenOutput>

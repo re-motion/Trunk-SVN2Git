@@ -722,7 +722,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       EnsureChildControls();
       base.OnPreRender (e);
 
-      LoadResources (GetResourceManager());
+      LoadResources (GetResourceManager(), GlobalizationService);
 
       if (!IsDesignMode)
         PreRenderMenuItems();
@@ -864,14 +864,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     }
 
     /// <summary> Loads the resources into the control's properties. </summary>
-    protected override void LoadResources (IResourceManager resourceManager)
+    protected override void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       if (IsDesignMode)
         return;
 
-      base.LoadResources (resourceManager);
+      base.LoadResources (resourceManager, globalizationService);
 
       var key = ResourceManagerUtility.GetGlobalResourceKey (NullItemErrorMessage);
       if (!string.IsNullOrEmpty (key))
@@ -882,9 +883,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         OptionsTitle = resourceManager.GetString (key);
 
       if (Command != null)
-        Command.LoadResources (resourceManager);
+        Command.LoadResources (resourceManager, globalizationService);
 
-      OptionsMenuItems.LoadResources (resourceManager);
+      OptionsMenuItems.LoadResources (resourceManager, globalizationService);
     }
 
     private void CheckIconService ()

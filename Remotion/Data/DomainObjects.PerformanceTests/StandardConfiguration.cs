@@ -27,6 +27,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
@@ -56,7 +57,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
               typeDiscoveryService,
               new ClassIDProvider(),
               new DomainModelConstraintProvider(),
-              new ReflectionBasedNameResolver(),
+              new ReflectionBasedMemberInfoNameResolver(),
               MappingReflector.CreateDomainObjectCreator()),
           new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       MappingConfiguration.SetCurrent (mappingConfiguration);

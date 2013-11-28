@@ -19,6 +19,8 @@ using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
@@ -55,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      _renderer = new BocMultilineTextValueRenderer (new FakeResourceUrlFactory());
+      _renderer = new BocMultilineTextValueRenderer (new FakeResourceUrlFactory (), CompoundGlobalizationService.Create ());
     }
 
     [Test]

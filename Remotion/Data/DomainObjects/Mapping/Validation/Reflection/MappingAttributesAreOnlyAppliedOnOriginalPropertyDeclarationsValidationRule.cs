@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
@@ -44,7 +45,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
           classDefinition.ClassType,
           isInheritanceRoot,
           true,
-          new ReflectionBasedNameResolver(),
+          //TODO AO: check if name resolver can be injected or retrieved via MappingConfiguration or MappingLoader
+          SafeServiceLocator.Current.GetInstance<IMemberInfoNameResolver>(),
           classDefinition.PersistentMixinFinder);
       var propertyInfos = propertyFinder.FindPropertyInfos();
 

@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
@@ -33,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
           typeof (DerivedClassWithDifferentProperties),
           true,
           true,
-          new ReflectionBasedNameResolver(),
+          new ReflectionBasedMemberInfoNameResolver(),
           classDefinition.PersistentMixinFinder);
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (DerivedClassWithDifferentProperties)));
@@ -45,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder = new RelationPropertyFinder (
-          typeof (ClassWithDifferentProperties), true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
+          typeof (ClassWithDifferentProperties), true, true, new ReflectionBasedMemberInfoNameResolver(), classDefinition.PersistentMixinFinder);
 
       Assert.That (
           propertyFinder.FindPropertyInfos(),
@@ -63,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
       var propertyFinder = new RelationPropertyFinder (
-          typeof (ClassWithVirtualRelationEndPoints), true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
+          typeof (ClassWithVirtualRelationEndPoints), true, true, new ReflectionBasedMemberInfoNameResolver(), classDefinition.PersistentMixinFinder);
 
       Assert.That (
           propertyFinder.FindPropertyInfos(),

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
@@ -117,14 +118,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     private MixinPropertyFinder CreatePropertyFinder (Type type, bool includeBaseProperties)
     {
      return new MixinPropertyFinder (CreateNewFinder, new PersistentMixinFinder (type, includeBaseProperties), includeBaseProperties,
-          new ReflectionBasedNameResolver ());
+          new ReflectionBasedMemberInfoNameResolver ());
     }
 
     public PropertyFinderBase CreateNewFinder (
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
-        IMappingNameResolver nameResolver,
+        IMemberInfoNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
       return new StubPropertyFinderBase (

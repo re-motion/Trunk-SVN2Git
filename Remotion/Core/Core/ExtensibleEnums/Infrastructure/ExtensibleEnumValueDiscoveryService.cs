@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -21,6 +22,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums.Infrastructure
@@ -31,18 +34,25 @@ namespace Remotion.ExtensibleEnums.Infrastructure
   /// </summary>
   public class ExtensibleEnumValueDiscoveryService : IExtensibleEnumValueDiscoveryService
   {
-    public static IEnumerable<ExtensibleEnumInfo<T>> GetValueInfosForTypes<T> (ExtensibleEnumDefinition<T> definition, IEnumerable<Type> typeCandidates) 
+    //TODO AO: IoC for GlobalizationService??
+    private static readonly IGlobalizationService s_globalizationService =
+        new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>());
+
+    public static IEnumerable<ExtensibleEnumInfo<T>> GetValueInfosForTypes<T> (
+        ExtensibleEnumDefinition<T> definition,
+        IEnumerable<Type> typeCandidates)
         where T: ExtensibleEnum<T>
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
       ArgumentUtility.CheckNotNull ("typeCandidates", typeCandidates);
 
-      return from type in GetStaticTypes (typeCandidates) // optimization: only static types can have extension methods
-             from valueInfo in GetValueInfosForType (definition, type)
-             select valueInfo;
+      return from type in GetStaticTypes (typeCandidates)
+        // optimization: only static types can have extension methods
+        from valueInfo in GetValueInfosForType (definition, type)
+        select valueInfo;
     }
 
-    public static IEnumerable<ExtensibleEnumInfo<T>> GetValueInfosForType<T> (ExtensibleEnumDefinition<T> definition, Type typeDeclaringMethods) 
+    public static IEnumerable<ExtensibleEnumInfo<T>> GetValueInfosForType<T> (ExtensibleEnumDefinition<T> definition, Type typeDeclaringMethods)
         where T: ExtensibleEnum<T>
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
@@ -51,15 +61,12 @@ namespace Remotion.ExtensibleEnums.Infrastructure
       var methods = typeDeclaringMethods.GetMethods (BindingFlags.Static | BindingFlags.Public);
       var extensionMethods = GetValueExtensionMethods (typeof (T), methods);
 
-      var resourceManager = MultiLingualResources.ExistsResource (typeDeclaringMethods) 
-          ? MultiLingualResources.GetResourceManager (typeDeclaringMethods) 
-          : NullResourceManager.Instance;
-
+      var resourceManager = s_globalizationService.GetResourceManager (TypeAdapter.Create (typeDeclaringMethods));
       return from mi in extensionMethods
-             let value = (T) mi.Invoke (null, new object[] { definition })
-             let positionAttribute = AttributeUtility.GetCustomAttribute<ExtensibleEnumPositionAttribute> (mi, true)
-             let positionalKey = positionAttribute != null ? positionAttribute.PositionalKey : 0.0
-             select new ExtensibleEnumInfo<T> (value, mi, resourceManager, positionalKey);
+        let value = (T) mi.Invoke (null, new object[] { definition })
+        let positionAttribute = AttributeUtility.GetCustomAttribute<ExtensibleEnumPositionAttribute> (mi, true)
+        let positionalKey = positionAttribute != null ? positionAttribute.PositionalKey : 0.0
+        select new ExtensibleEnumInfo<T> (value, mi, resourceManager, positionalKey);
     }
 
     public static IEnumerable<Type> GetStaticTypes (IEnumerable<Type> types)
@@ -76,14 +83,14 @@ namespace Remotion.ExtensibleEnums.Infrastructure
 
       var extensibleEnumValuesType = typeof (ExtensibleEnumDefinition<>).MakeGenericType (extensibleEnumType);
       return from m in methodCandidates
-             where m.IsPublic
-                   && !m.IsGenericMethod
-                   && extensibleEnumType.IsAssignableFrom (m.ReturnType)
-                   && m.IsDefined (typeof (ExtensionAttribute), false)
-             let parameters = m.GetParameters ()
-             where parameters.Length == 1
-                   && parameters[0].ParameterType == extensibleEnumValuesType
-             select m;
+        where m.IsPublic
+              && !m.IsGenericMethod
+              && extensibleEnumType.IsAssignableFrom (m.ReturnType)
+              && m.IsDefined (typeof (ExtensionAttribute), false)
+        let parameters = m.GetParameters()
+        where parameters.Length == 1
+              && parameters[0].ParameterType == extensibleEnumValuesType
+        select m;
     }
 
     private readonly ITypeDiscoveryService _typeDiscoveryService;
@@ -100,7 +107,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
       get { return _typeDiscoveryService; }
     }
 
-    public IEnumerable<ExtensibleEnumInfo<T>> GetValueInfos<T> (ExtensibleEnumDefinition<T> definition) where T : ExtensibleEnum<T>
+    public IEnumerable<ExtensibleEnumInfo<T>> GetValueInfos<T> (ExtensibleEnumDefinition<T> definition) where T: ExtensibleEnum<T>
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
 

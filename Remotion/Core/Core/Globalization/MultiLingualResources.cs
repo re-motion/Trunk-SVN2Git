@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using Remotion.Globalization.Implementation;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization
@@ -22,19 +25,11 @@ namespace Remotion.Globalization
   /// <summary>
   /// Provides the public API for classes working with and analyzing instances of <see cref="MultiLingualResourcesAttribute"/>.
   /// </summary>
+  [Obsolete ("Retrieve IGlobalizationService from IoC container instead.")]
   public static class MultiLingualResources
   {
-  	private static readonly ResourceManagerResolver<MultiLingualResourcesAttribute> s_resolver =
-        new ResourceManagerResolver<MultiLingualResourcesAttribute>();
-
-		/// <summary>
-		/// Gets the resolver object used by the methods of this class.
-		/// </summary>
-		/// <value>The resolver object used by <see cref="MultiLingualResources"/>.</value>
-		public static ResourceManagerResolver<MultiLingualResourcesAttribute> Resolver
-		{
-			get { return s_resolver; }
-		}
+    private static readonly IGlobalizationService s_globalizationService =
+        new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>());
 
     /// <summary>
     ///   Returns an instance of <c>IResourceManager</c> for the resource container specified
@@ -46,7 +41,20 @@ namespace Remotion.Globalization
     {
       ArgumentUtility.CheckNotNull ("objectType", objectType);
       ArgumentUtility.CheckNotNull ("includeHierarchy", includeHierarchy);
-      return s_resolver.GetResourceManager (objectType, includeHierarchy);
+
+      if (includeHierarchy == false)
+        throw new NotSupportedException ("Usage of MixedMultiLingualResources.GetResourceManager with includeHierarchy=false is not supported.");
+
+      var resourceManager = s_globalizationService.GetResourceManager (TypeAdapter.Create (objectType));
+      if (resourceManager.IsNull)
+      {
+        var message = string.Format (
+            "Type {0} and its base classes do not define a resource attribute.",
+            objectType.FullName);
+        throw new ResourceException (message);
+      }
+
+      return resourceManager;
     }
 
     /// <summary>
@@ -73,8 +81,12 @@ namespace Remotion.Globalization
     {
       ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
       ArgumentUtility.CheckNotNull ("name", name);
-      
-      return ResourceManagerResolverUtility.Current.GetResourceText (s_resolver, objectTypeToGetResourceFor, name);
+
+      var resourceManager = GetResourceManager (objectTypeToGetResourceFor);
+      var text = resourceManager.GetString (name);
+      if (text == name)
+        return String.Empty;
+      return text;
     }
 
     /// <summary>
@@ -90,7 +102,7 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("objectToGetResourceFor", objectToGetResourceFor);
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      return GetResourceText (objectToGetResourceFor.GetType(), name);  
+      return GetResourceText (objectToGetResourceFor.GetType(), name);
     }
 
     /// <summary>
@@ -106,7 +118,16 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
       ArgumentUtility.CheckNotNull ("name", name);
 
-			return ResourceManagerResolverUtility.Current.ExistsResourceText (s_resolver, objectTypeToGetResourceFor, name);
+      try
+      {
+        var resourceManager = GetResourceManager (objectTypeToGetResourceFor);
+        string text = resourceManager.GetString (name);
+        return (text != name);
+      }
+      catch
+      {
+        return false;
+      }
     }
 
     /// <summary>
@@ -122,7 +143,7 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("objectToGetResourceFor", objectToGetResourceFor);
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      return ExistsResourceText (objectToGetResourceFor.GetType(), name);  
+      return ExistsResourceText (objectToGetResourceFor.GetType(), name);
     }
 
     /// <summary>
@@ -135,7 +156,8 @@ namespace Remotion.Globalization
     public static bool ExistsResource (Type objectTypeToGetResourceFor)
     {
       ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
-			return ResourceManagerResolverUtility.Current.ExistsResource (s_resolver, objectTypeToGetResourceFor);
+
+      return !GetResourceManager (objectTypeToGetResourceFor).IsNull;
     }
 
     /// <summary>

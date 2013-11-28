@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.ComponentModel;
+using JetBrains.Annotations;
 using Remotion.Globalization;
 
 namespace Remotion.Web.UI.Controls
@@ -30,6 +32,6 @@ namespace Remotion.Web.UI.Controls
   {
     IControl OwnerControl { get; set; }
     string ItemID { get; }
-    void LoadResources (IResourceManager resourceManager);
+    void LoadResources ([NotNull] IResourceManager resourceManager, [NotNull] ICompoundGlobalizationService globalizationService);
   }
 }

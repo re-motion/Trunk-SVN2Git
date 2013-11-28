@@ -25,7 +25,9 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.Logging;
+using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
@@ -1024,6 +1026,7 @@ namespace Remotion.Web.UI.Controls
     private bool _formGridListPopulated = false;
     private IInfrastructureResourceUrlFactory _infrastructureResourceUrlFactory;
     private IResourceUrlFactory _resourceUrlFactory;
+    private readonly IGlobalizationService _globalizationService;
 
     // construction and disposing
 
@@ -1039,6 +1042,8 @@ namespace Remotion.Web.UI.Controls
       _showValidationMarkers = true;
       _showRequiredMarkers = true;
       _showHelpProviders = true;
+      //TODO AO: change to property like hotkeyformatter
+      _globalizationService = CompoundGlobalizationService.Create();
     }
   
     // methods and properties
@@ -1982,9 +1987,9 @@ namespace Remotion.Web.UI.Controls
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (typeof (ResourceIdentifier), true);
+      IResourceManager localResourceManager = _globalizationService.GetResourceManager (TypeAdapter.Create(typeof (ResourceIdentifier)));
       IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
-      _cachedResourceManager = new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
+      _cachedResourceManager = ResourceManagerSet.Create (namingContainerResourceManager, localResourceManager);
 
       return _cachedResourceManager;
     }

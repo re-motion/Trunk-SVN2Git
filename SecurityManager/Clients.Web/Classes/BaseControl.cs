@@ -20,7 +20,9 @@ using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Reflection;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.ServiceLocation;
@@ -106,10 +108,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     {
       Type type = this.GetType();
 
-      if (MultiLingualResources.ExistsResource (type))
-        return MultiLingualResources.GetResourceManager (type, true);
-      else
-        return null;
+      return GlobalizationService.GetResourceManager (TypeAdapter.Create (type));
     }
 
     protected IServiceLocator ServiceLocator
@@ -120,6 +119,11 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     protected IResourceUrlFactory ResourceUrlFactory
     {
       get { return ServiceLocator.GetInstance<IResourceUrlFactory>(); }
+    }
+
+    protected IGlobalizationService GlobalizationService 
+    {
+      get { return CompoundGlobalizationService.Create(); }
     }
 
     protected TControl GetControl<TControl> (string controlID, string propertyIdentifier)

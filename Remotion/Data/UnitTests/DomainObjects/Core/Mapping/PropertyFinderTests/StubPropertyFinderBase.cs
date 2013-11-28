@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
@@ -26,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
-        IMappingNameResolver nameResolver,
+        IMemberInfoNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
         : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
     {
@@ -37,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
         bool includeBaseProperties,
         bool includeMixinProperties,
         IPersistentMixinFinder persistentMixinFinder)
-        : this (type, includeBaseProperties, includeMixinProperties, new ReflectionBasedNameResolver(), persistentMixinFinder)
+        : this (type, includeBaseProperties, includeMixinProperties, new ReflectionBasedMemberInfoNameResolver(), persistentMixinFinder)
     {
     }
 
@@ -45,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
-        IMappingNameResolver nameResolver,
+        IMemberInfoNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
       return new StubPropertyFinderBase (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);

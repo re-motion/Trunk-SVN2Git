@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <summary>Used to create the <see cref="RelationDefinition"/> from a <see cref="IPropertyInformation"/>.</summary>
   public class RelationReflector : RelationReflectorBase<BidirectionalRelationAttribute>
   {
-    public RelationReflector (ClassDefinition classDefinition, IPropertyInformation propertyInfo, IMappingNameResolver nameResolver)
+    public RelationReflector (ClassDefinition classDefinition, IPropertyInformation propertyInfo, IMemberInfoNameResolver nameResolver)
         : base (classDefinition, propertyInfo, nameResolver)
     {
     }

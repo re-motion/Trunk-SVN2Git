@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Remotion.Globalization;
 
 namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
 {
@@ -25,8 +26,8 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
   /// </summary>
   public class WebTreeViewRenderer : RendererBase<IWebTreeView>, IWebTreeViewRenderer
   {
-    public WebTreeViewRenderer (IResourceUrlFactory resourceUrlFactory)
-        : base (resourceUrlFactory)
+    public WebTreeViewRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+        : base (resourceUrlFactory, globalizationService)
     {
     }
 

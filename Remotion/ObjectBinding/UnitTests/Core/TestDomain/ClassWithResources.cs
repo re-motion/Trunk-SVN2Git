@@ -24,6 +24,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
   public class ClassWithResources
   {
     private string _value1;
+    private string _value2;
     private string _valueWithoutResource;
 
     public ClassWithResources ()
@@ -34,6 +35,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     {
       get { return _value1; }
       set { _value1 = value; }
+    }
+
+    public string Value2 
+    {
+      get { return _value2; }
+      set { _value2 = value; }
     }
 
     public string ValueWithoutResource

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Remotion.Globalization;
 using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
@@ -26,8 +27,8 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
   /// </summary>
   public class WebButtonRenderer : RendererBase<IWebButton>, IWebButtonRenderer
   {
-    public WebButtonRenderer (IResourceUrlFactory resourceUrlFactory)
-        : base (resourceUrlFactory)
+    public WebButtonRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+        : base (resourceUrlFactory, globalizationService)
     {
     }
 

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -30,8 +31,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public abstract class BocRendererBase<TControl> : RendererBase<TControl>
       where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
-    protected BocRendererBase (IResourceUrlFactory resourceUrlFactory)
-        : base (resourceUrlFactory)
+    protected BocRendererBase (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+        : base (resourceUrlFactory, globalizationService)
     {
     }
 

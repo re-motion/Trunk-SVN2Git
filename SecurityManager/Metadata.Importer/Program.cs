@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
@@ -97,7 +98,7 @@ namespace Remotion.SecurityManager.Metadata.Importer
                     typeDiscoveryService,
                     new ClassIDProvider(),
                     new DomainModelConstraintProvider(),
-                    new ReflectionBasedNameResolver(),
+                    new ReflectionBasedMemberInfoNameResolver(),
                     MappingReflector.CreateDomainObjectCreator()),
                 new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
 

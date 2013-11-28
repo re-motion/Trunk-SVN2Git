@@ -178,14 +178,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Loads the resources into the control's properties. </summary>
-    protected override void LoadResources (IResourceManager resourceManager)
+    protected override void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       if (IsDesignMode)
         return;
 
-      base.LoadResources (resourceManager);
+      base.LoadResources (resourceManager, globalizationService);
 
       var key = ResourceManagerUtility.GetGlobalResourceKey (Select);
       if (! StringUtility.IsNullOrEmpty (key))

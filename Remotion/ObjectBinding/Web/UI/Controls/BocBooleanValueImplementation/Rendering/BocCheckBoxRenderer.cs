@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -35,8 +36,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
 
     private static readonly string s_startUpScriptKey = typeof (BocCheckBoxRenderer).FullName + "_Startup";
 
-    public BocCheckBoxRenderer (IResourceUrlFactory resourceUrlFactory)
-        : base (resourceUrlFactory)
+    public BocCheckBoxRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+        : base (resourceUrlFactory, globalizationService)
     {
     }
 

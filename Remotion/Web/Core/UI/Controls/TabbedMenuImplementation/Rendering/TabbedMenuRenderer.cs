@@ -18,6 +18,7 @@ using System;
 using System.Drawing;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using System.Web;
 
@@ -29,8 +30,8 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   /// </summary>
   public class TabbedMenuRenderer : RendererBase<ITabbedMenu>, ITabbedMenuRenderer
   {
-    public TabbedMenuRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (resourceUrlFactory)
+    public TabbedMenuRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+      : base (resourceUrlFactory, globalizationService)
     {
     }
 

@@ -25,6 +25,7 @@ using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Design;
+using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -217,7 +218,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         CacheFactory.Create<Tuple<Type, Control>, IResourceManager>();
 
     private bool _controlExistedInPreviousRequest;
-
+    
     /// <summary> Creates a new instance of the BusinessObjectBoundWebControl type. </summary>
     protected BusinessObjectBoundWebControl ()
     {
@@ -386,10 +387,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           Tuple.Create (localResourcesType, NamingContainer),
           key =>
           {
-            IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
-            IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
+            var localResourceManager = GlobalizationService.GetResourceManager (TypeAdapter.Create(localResourcesType));
+            var namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
 
-            return new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
+            return ResourceManagerSet.Create (namingContainerResourceManager, localResourceManager);
           });
     }
 
@@ -481,6 +482,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return ServiceLocator.GetInstance<ResourceTheme>(); }
     }
 
+    protected ICompoundGlobalizationService GlobalizationService
+    {
+      get { return ServiceLocator.GetInstance<ICompoundGlobalizationService> (); }
+    }
+
     protected override void LoadControlState (object savedState)
     {
       base.LoadControlState (savedState);
@@ -488,10 +494,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Loads the resources into the control's properties. </summary>
-    protected virtual void LoadResources (IResourceManager resourceManager)
+    protected virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       if (IsDesignMode)
         return;
 

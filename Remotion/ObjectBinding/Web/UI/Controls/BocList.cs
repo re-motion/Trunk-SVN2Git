@@ -119,7 +119,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> A list of control wide resources. </summary>
     /// <remarks> 
     ///   Resources will be accessed using 
-    ///   <see cref="IResourceManager.GetString (Enum)"/>. 
+    ///   <see cref="IResourceManager.TryGetString"/>. 
     /// </remarks>
     [ResourceIdentifiers]
     [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocList")]
@@ -986,7 +986,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       EnsureEditModeValidatorsRestored();
 
-      LoadResources (GetResourceManager());
+      LoadResources (GetResourceManager(), GlobalizationService);
 
       if (!IsDesignMode)
       {
@@ -1965,13 +1965,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Loads the resources into the control's properties. </summary>
-    protected override void LoadResources (IResourceManager resourceManager)
+    protected override void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       if (IsDesignMode)
         return;
-      base.LoadResources (resourceManager);
+      base.LoadResources (resourceManager, globalizationService);
 
       string key;
       key = ResourceManagerUtility.GetGlobalResourceKey (IndexColumnTitle);
@@ -1994,9 +1995,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! StringUtility.IsNullOrEmpty (key))
         ErrorMessage = resourceManager.GetString (key);
 
-      _fixedColumns.LoadResources (resourceManager);
-      OptionsMenuItems.LoadResources (resourceManager);
-      ListMenuItems.LoadResources (resourceManager);
+      _fixedColumns.LoadResources (resourceManager, globalizationService);
+      OptionsMenuItems.LoadResources (resourceManager, globalizationService);
+      ListMenuItems.LoadResources (resourceManager, globalizationService);
     }
 
     /// <summary> Is raised when a data row is rendered. </summary>

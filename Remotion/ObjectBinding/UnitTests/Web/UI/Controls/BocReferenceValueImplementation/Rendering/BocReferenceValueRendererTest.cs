@@ -22,6 +22,7 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -54,6 +55,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     protected static readonly Unit Width = Unit.Pixel (250);
     protected static readonly Unit Height = Unit.Point (12);
     private IResourceUrlFactory _resourceUrlFactoryStub;
+    private ICompoundGlobalizationService _globalizationService;
 
     public IClientScriptManager ClientScriptManagerMock { get; set; }
     public IBocReferenceValue Control { get; set; }
@@ -118,6 +120,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.GetResourceManager()).Return (NullResourceManager.Instance);
 
       _resourceUrlFactoryStub = new FakeResourceUrlFactory();
+      _globalizationService = CompoundGlobalizationService.Create ();
     }
 
     [TearDown]
@@ -407,7 +410,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     [Ignore ("Assertions for embedded menu are incorrect: COMMONS-2431")]
     public void RenderOptions ()
     {
-      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, _globalizationService, () => new StubDropDownList());
       Control.Stub (stub => stub.HasValueEmbeddedInsideOptionsMenu).Return (true);
       Control.Stub (stub => stub.HasOptionsMenu).Return (true);
 
@@ -426,7 +429,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, _globalizationService, () => new StubDropDownList());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (CreateRenderingContext());
@@ -441,7 +444,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     {
       Control.Stub (stub => stub.Enabled).Return (true);
 
-      var renderer = new BocReferenceValueRenderer (_resourceUrlFactoryStub);
+      var renderer = new BocReferenceValueRenderer (_resourceUrlFactoryStub, _globalizationService);
       renderer.Render (CreateRenderingContext ());
       var document = Html.GetResultDocument ();
       var select = document.GetAssertedChildElement ("span", 0).GetAssertedChildElement ("span", 0).GetAssertedChildElement ("span", 1).GetAssertedChildElement ("select", 0);
@@ -512,7 +515,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
-      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, () => DropDownList);
+      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, _globalizationService, () => DropDownList);
       renderer.Render (CreateRenderingContext());
       
       var document = Html.GetResultDocument();

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using
     Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.
         MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
           typeof (DerivedClassWithMappingAttribute),
           false,
           true,
-          new ReflectionBasedNameResolver(),
+          new ReflectionBasedMemberInfoNameResolver(),
           classDefinition.PersistentMixinFinder);
 
       var properties = propertyFinder.FindPropertyInfos();
@@ -59,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
           typeof (DerivedClassWithMappingAttribute),
           true,
           true,
-          new ReflectionBasedNameResolver(),
+          new ReflectionBasedMemberInfoNameResolver(),
           classDefinition.PersistentMixinFinder);
 
       var properties = propertyFinder.FindPropertyInfos();

@@ -19,6 +19,8 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -37,13 +39,15 @@ namespace Remotion.Web.ExecutionEngine
     private readonly IWxeTemplateControl _control;
     /// <summary> Caches the <see cref="ResourceManagerSet"/> for this control. </summary>
     private ResourceManagerSet _cachedResourceManager;
-
-
+    private readonly IGlobalizationService _globalizationService;
 
     public WxeTemplateControlInfo (IWxeTemplateControl control)
     {
       ArgumentUtility.CheckNotNullAndType<TemplateControl> ("control", control);
+      
       _control = control;
+      //TODO AO: change to property
+      _globalizationService = CompoundGlobalizationService.Create();
     }
 
     public virtual void Initialize (HttpContext context)
@@ -146,11 +150,11 @@ namespace Remotion.Web.ExecutionEngine
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
+      IResourceManager localResourceManager = _globalizationService.GetResourceManager (TypeAdapter.Create(localResourcesType));
       Control namingContainer = _control.NamingContainer ?? (Control) _control;
       IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (namingContainer, true);
 
-      _cachedResourceManager = new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
+      _cachedResourceManager = ResourceManagerSet.Create (namingContainerResourceManager, localResourceManager);
 
       return _cachedResourceManager;
     }

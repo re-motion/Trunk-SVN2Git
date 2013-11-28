@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
-        IMappingNameResolver nameResolver,
+        IMemberInfoNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
         : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
     {
@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
-        IMappingNameResolver nameResolver,
+        IMemberInfoNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
       return new AllMappingPropertiesFinder (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);

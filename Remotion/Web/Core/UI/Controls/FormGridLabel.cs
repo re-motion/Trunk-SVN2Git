@@ -96,7 +96,7 @@ public class FormGridLabel: Label, ISmartControl
   {
     base.OnPreRender (e);
 
-    IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true) ?? NullResourceManager.Instance;
+    var resourceManager = ResourceManagerUtility.GetResourceManager (this, true);
     LoadResources (resourceManager);
   }
 

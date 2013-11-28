@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Logging;
+using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
@@ -41,7 +42,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     }
 
     private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingReflector));
-    private readonly IMappingNameResolver _nameResolver;
+    private readonly IMemberInfoNameResolver _nameResolver;
     private readonly IMappingObjectFactory _mappingObjectFactory;
     private readonly ITypeDiscoveryService _typeDiscoveryService;
     private readonly IClassIDProvider _classIDProvider;
@@ -53,7 +54,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
             ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService(),
             new ClassIDProvider(),
             new DomainModelConstraintProvider(),
-            new ReflectionBasedNameResolver(),
+            SafeServiceLocator.Current.GetInstance<IMemberInfoNameResolver>(),
             CreateDomainObjectCreator())
     {
     }
@@ -62,7 +63,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         ITypeDiscoveryService typeDiscoveryService,
         IClassIDProvider classIDProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider,
-        IMappingNameResolver nameResolver,
+        IMemberInfoNameResolver nameResolver,
         IDomainObjectCreator domainObjectCreator)
     {
       ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
@@ -128,7 +129,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return true; }
     }
 
-    public IMappingNameResolver NameResolver
+    public IMemberInfoNameResolver NameResolver
     {
       get { return _nameResolver; }
     }

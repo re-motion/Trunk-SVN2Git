@@ -17,6 +17,7 @@
 using System;
 using System.Text;
 using System.Web.UI;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -30,8 +31,8 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   {
     private const string c_whiteSpace = "&nbsp;";
 
-    public DropDownMenuRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (resourceUrlFactory)
+    public DropDownMenuRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+      : base (resourceUrlFactory, globalizationService)
     {
     }
 

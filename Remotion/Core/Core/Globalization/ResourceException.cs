@@ -23,6 +23,7 @@ namespace Remotion.Globalization
 /// <summary>
 ///   Represents errors that occur during resource handling.
 /// </summary>
+[Obsolete()]
 [Serializable]
 public class ResourceException: Exception
 {

@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -47,9 +48,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       get { return false; }
     }
 
-    public IMappingNameResolver NameResolver
+    public IMemberInfoNameResolver NameResolver
     {
-      get { return new ReflectionBasedNameResolver(); }
+      get { return new ReflectionBasedMemberInfoNameResolver(); }
     }
 
     public IClassDefinitionValidator CreateClassDefinitionValidator ()

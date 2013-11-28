@@ -14,10 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
@@ -28,11 +32,12 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
   [TestFixture]
-  [SetUICulture("en-US")]
+  [SetUICulture ("en-US")]
   public class BocListNavigationBlockQuirksModeRendererTest : BocListRendererTestBase
   {
     private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
     private IResourceUrlFactory _resourceUrlFactory;
+    private ICompoundGlobalizationService _globalizationService;
     private const string c_pageInfo = "Page {0} of {1}";
     private const string c_tripleBlank = HtmlHelper.WhiteSpace + HtmlHelper.WhiteSpace + HtmlHelper.WhiteSpace;
 
@@ -45,6 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
       _resourceUrlFactory = new FakeResourceUrlFactory();
+      _globalizationService = CompoundGlobalizationService.Create();
     }
 
     [Test]
@@ -53,8 +59,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPageIndex).Return (0);
       List.Stub (mock => mock.PageCount).Return (1);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _bocListQuirksModeCssClassDefinition);
-      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _globalizationService, _bocListQuirksModeCssClassDefinition);
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -92,8 +98,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPageIndex).Return (0);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _bocListQuirksModeCssClassDefinition);
-      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _globalizationService, _bocListQuirksModeCssClassDefinition);
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -131,8 +137,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPageIndex).Return (1);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _bocListQuirksModeCssClassDefinition);
-      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _globalizationService, _bocListQuirksModeCssClassDefinition);
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -170,8 +176,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPageIndex).Return (1);
       List.Stub (mock => mock.PageCount).Return (3);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _bocListQuirksModeCssClassDefinition);
-      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _globalizationService, _bocListQuirksModeCssClassDefinition);
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -206,16 +212,19 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     private void AssertActiveIcon (XmlNode link, string command, int pageIndex)
     {
       Html.AssertAttribute (link, "id", List.ClientID + "_Navigation_" + command);
-      Html.AssertAttribute (link, "onclick", "document.getElementById ('CurrentPageControl_UniqueID').value = " + pageIndex + ";postBackEventReference");
+      Html.AssertAttribute (
+          link,
+          "onclick",
+          "document.getElementById ('CurrentPageControl_UniqueID').value = " + pageIndex + ";postBackEventReference");
       Html.AssertAttribute (link, "href", "#");
 
       var icon = Html.GetAssertedChildElement (link, "img", 0);
-      Html.AssertAttribute (icon, "src", string.Format ("/Move{0}.gif", command), HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (icon, "src", string.Format ("/Move{0}.gif", command), HtmlHelperBase.AttributeValueCompareMode.Contains);
     }
 
     private void AssertInactiveIcon (XmlNode icon, string command)
     {
-      Html.AssertAttribute (icon, "src", string.Format ("/Move{0}Inactive.gif", command), HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (icon, "src", string.Format ("/Move{0}Inactive.gif", command), HtmlHelperBase.AttributeValueCompareMode.Contains);
     }
   }
 }

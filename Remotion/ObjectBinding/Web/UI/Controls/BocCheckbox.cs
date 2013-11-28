@@ -160,7 +160,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       EnsureChildControls();
       base.OnPreRender (e);
 
-      LoadResources (GetResourceManager());
+      LoadResources (GetResourceManager(), GlobalizationService);
 
       _isActive = !IsReadOnly && Enabled;
     }
@@ -200,13 +200,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Loads the resources into the control's properties. </summary>
-    protected override void LoadResources (IResourceManager resourceManager)
+    protected override void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       if (IsDesignMode)
         return;
-      base.LoadResources (resourceManager);
+      base.LoadResources (resourceManager, globalizationService);
 
       string key;
       key = ResourceManagerUtility.GetGlobalResourceKey (TrueDescription);

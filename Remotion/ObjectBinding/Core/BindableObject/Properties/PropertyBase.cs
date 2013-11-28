@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using Remotion.FunctionalProgramming;
@@ -76,7 +77,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     protected PropertyBase (Parameters parameters)
     {
-      if (parameters.PropertyInfo.GetIndexParameters ().Length > 0)
+      if (parameters.PropertyInfo.GetIndexParameters().Length > 0)
         throw new InvalidOperationException ("Indexed properties are not supported.");
 
       _businessObjectProvider = parameters.BusinessObjectProvider;
@@ -150,7 +151,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
         IBindableObjectGlobalizationService globalizationService = BusinessObjectProvider.GetService<IBindableObjectGlobalizationService>();
         if (globalizationService == null)
           return Identifier;
-        return globalizationService.GetPropertyDisplayName (_propertyInfo);
+
+        if (_reflectedClass == null)
+        {
+          throw new InvalidOperationException (
+              string.Format ("The reflected class for the property '{0}.{1}' is not set.", _propertyInfo.DeclaringType.Name, _propertyInfo.Name));
+        }
+
+        return globalizationService.GetPropertyDisplayName (TypeAdapter.Create(_reflectedClass.TargetType), _propertyInfo);
       }
     }
 

@@ -28,14 +28,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     private RelationEndPointDefinitionCollectionFactory _factory;
     private IMappingObjectFactory _mappingObjectFactoryMock;
-    private IMappingNameResolver _mappingNameResolverMock;
+    private IMemberInfoNameResolver _memberInfoNameResolverMock;
 
     [SetUp]
     public void SetUp ()
     {
       _mappingObjectFactoryMock = MockRepository.GenerateStrictMock<IMappingObjectFactory>();
-      _mappingNameResolverMock = MockRepository.GenerateStrictMock<IMappingNameResolver>();
-      _factory = new RelationEndPointDefinitionCollectionFactory(_mappingObjectFactoryMock, _mappingNameResolverMock);
+      _memberInfoNameResolverMock = MockRepository.GenerateStrictMock<IMemberInfoNameResolver>();
+      _factory = new RelationEndPointDefinitionCollectionFactory(_mappingObjectFactoryMock, _memberInfoNameResolverMock);
     }
 
     [Test]
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var result = _factory.CreateRelationEndPointDefinitionCollection (classDefinition);
 
       _mappingObjectFactoryMock.VerifyAllExpectations();
-      _mappingNameResolverMock.VerifyAllExpectations();
+      _memberInfoNameResolverMock.VerifyAllExpectations();
       Assert.That (result.Count, Is.EqualTo (1));
       Assert.That (result[0], Is.SameAs (fakeRelationEndPoint));
     }

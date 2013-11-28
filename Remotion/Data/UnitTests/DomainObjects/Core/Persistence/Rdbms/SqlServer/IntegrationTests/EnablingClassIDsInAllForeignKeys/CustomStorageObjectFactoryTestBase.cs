@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new FixedTypeDiscoveryService (GetReflectedTypes()),
           new ClassIDProvider(),
           new DomainModelConstraintProvider(),
-          new ReflectionBasedNameResolver(),
+          new ReflectionBasedMemberInfoNameResolver(),
           new ThrowingDomainObjectCreator());
       _storageObjectFactory = CreateSqlStorageObjectFactory ();
       var storageProviderDefinitionFinderStub = MockRepository.GenerateStub<IStorageProviderDefinitionFinder>();

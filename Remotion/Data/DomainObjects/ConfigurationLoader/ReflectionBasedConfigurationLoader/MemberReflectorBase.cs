@@ -26,10 +26,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public const StorageClass DefaultStorageClass = StorageClass.Persistent;
 
     private readonly IPropertyInformation _propertyInfo;
-    private readonly IMappingNameResolver _nameResolver;
+    private readonly IMemberInfoNameResolver _nameResolver;
     private readonly StorageClassAttribute _storageClassAttribute;
 
-    protected MemberReflectorBase (IPropertyInformation propertyInfo, IMappingNameResolver nameResolver)
+    protected MemberReflectorBase (IPropertyInformation propertyInfo, IMemberInfoNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return _propertyInfo; }
     }
 
-    public IMappingNameResolver NameResolver
+    public IMemberInfoNameResolver NameResolver
     {
       get { return _nameResolver; }
     }

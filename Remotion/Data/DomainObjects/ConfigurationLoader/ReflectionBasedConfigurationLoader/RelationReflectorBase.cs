@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <summary>Base class for reflecting on the relations of a class.</summary>
   public abstract class RelationReflectorBase<T> : MemberReflectorBase where T: BidirectionalRelationAttribute
   {
-    protected RelationReflectorBase (ClassDefinition classDefinition, IPropertyInformation propertyInfo, IMappingNameResolver nameResolver)
+    protected RelationReflectorBase (ClassDefinition classDefinition, IPropertyInformation propertyInfo, IMemberInfoNameResolver nameResolver)
         : base (propertyInfo, nameResolver)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

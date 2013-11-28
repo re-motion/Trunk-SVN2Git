@@ -20,6 +20,8 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
@@ -263,7 +265,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     private void CheckRendering (string value, string iconUrl, string description)
     {
       var resourceUrlFactory = new FakeResourceUrlFactory();
-      _renderer = new BocBooleanValueRenderer (resourceUrlFactory, new BocBooleanValueResourceSetFactory(resourceUrlFactory));
+      _renderer = new BocBooleanValueRenderer (resourceUrlFactory, CompoundGlobalizationService.Create (), new BocBooleanValueResourceSetFactory (resourceUrlFactory));
       _renderer.Render (new BocBooleanValueRenderingContext(HttpContext, Html.Writer, _booleanValue));
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);

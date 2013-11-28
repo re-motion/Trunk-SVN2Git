@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public PropertyReflector (
         ClassDefinition classDefinition,
         IPropertyInformation propertyInfo,
-        IMappingNameResolver nameResolver,
+        IMemberInfoNameResolver nameResolver,
         IDomainModelConstraintProvider domainModelConstraintProvider)
         : base (propertyInfo, nameResolver)
     {

@@ -19,6 +19,8 @@ using System.Web;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -36,6 +38,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
     private IClientScriptManager _clientScriptManagerMock;
     private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
+    private ICompoundGlobalizationService _globalizationService;
 
     [SetUp]
     public void SetUp ()
@@ -60,6 +63,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
       _control.Stub (stub => stub.Page).Return (pageStub);
 
+      _globalizationService = CompoundGlobalizationService.Create();
+
       PopulateMenu();
     }
 
@@ -77,7 +82,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       _clientScriptManagerMock.Expect (
           mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuRenderer), _control.UniqueID + "_MenuItems", script));
 
-      var renderer = new ListMenuRenderer (new FakeResourceUrlFactory());
+      var renderer = new ListMenuRenderer (new FakeResourceUrlFactory(), _globalizationService);
       renderer.Render (new ListMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
       _clientScriptManagerMock.VerifyAllExpectations ();
     }
@@ -145,7 +150,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
     private XmlNode GetAssertedTable ()
     {
-      var renderer = new ListMenuRenderer (new FakeResourceUrlFactory());
+      var renderer = new ListMenuRenderer (new FakeResourceUrlFactory(), _globalizationService);
       renderer.Render (new ListMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
 
       var document = _htmlHelper.GetResultDocument();

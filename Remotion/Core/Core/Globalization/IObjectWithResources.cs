@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using JetBrains.Annotations;
+
 namespace Remotion.Globalization
 {
 
@@ -28,6 +31,7 @@ public interface IObjectWithResources
   /// <summary>
   ///   Returns an instance of <c>IResourceManager</c> for resource container of the object.
   /// </summary>
+  [CanBeNull]
   IResourceManager GetResourceManager();
 }
 

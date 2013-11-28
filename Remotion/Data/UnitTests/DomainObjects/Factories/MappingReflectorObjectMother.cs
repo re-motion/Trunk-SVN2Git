@@ -19,6 +19,7 @@ using System.ComponentModel.Design;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
           typeDiscoveryService,
           new ClassIDProvider(),
           new DomainModelConstraintProvider(),
-          new ReflectionBasedNameResolver(),
+          new ReflectionBasedMemberInfoNameResolver(),
           DomainObjectCreator);
     }
   }

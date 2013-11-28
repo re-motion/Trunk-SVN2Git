@@ -301,14 +301,14 @@ namespace Remotion.Data.DomainObjects
       if (IsMixedProperty (propertyInfo, classDefinition))
       {
         var originalMixinTarget =
-            classDefinition.PersistentMixinFinder.FindOriginalMixinTarget (classDefinition.GetPersistentMixin (propertyInfo.DeclaringType.ToRuntimeType ()));
+            classDefinition.PersistentMixinFinder.FindOriginalMixinTarget (classDefinition.GetPersistentMixin (propertyInfo.DeclaringType.ConvertToRuntimeType ()));
         if (originalMixinTarget == null)
           throw new InvalidOperationException (
               String.Format ("IPersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin) evaluated and returned null."));
         return originalMixinTarget;
       }
       else
-        return propertyInfo.DeclaringType.ToRuntimeType();
+        return propertyInfo.DeclaringType.ConvertToRuntimeType();
     }
 
     /// <summary>
@@ -322,7 +322,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return classDefinition.GetPersistentMixin (propertyInfo.DeclaringType.ToRuntimeType()) != null;
+      return classDefinition.GetPersistentMixin (propertyInfo.DeclaringType.ConvertToRuntimeType()) != null;
     }
 
     /// <summary>
@@ -349,13 +349,6 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
 
       return AttributeUtility.IsDefined<IgnoreForMappingConfigurationAttribute> (type, false);
-    }
-    
-    public static Type ToRuntimeType (this ITypeInformation typeInformation)
-    {
-      ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
-
-      return (Type) s_typeConversionProvider.Convert (typeInformation.GetType(), typeof (Type), typeInformation);
     }
   }
 }

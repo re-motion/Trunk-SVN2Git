@@ -30,7 +30,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
   public class MixinAddingProperty : BaseOfMixinAddingProperty, IMixinAddingProperty
   {
     private string _mixedProperty;
-
+    
     public string MixedProperty
     {
       get { return _mixedProperty; }

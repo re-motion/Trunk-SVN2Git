@@ -846,7 +846,6 @@
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\StringProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\ValueTypes.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedNameResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\VirtualRelationEndPointDefinitionFactory.cs" />

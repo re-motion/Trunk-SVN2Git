@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,6 +23,7 @@ using System.Web.UI;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
@@ -92,17 +94,22 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       /// <summary> Don't page. </summary>
       Undefined,
+
       /// <summary> Move to first page. </summary>
       First,
+
       /// <summary> Move to last page. </summary>
       Last,
+
       /// <summary> Move to previous page. </summary>
       Previous,
+
       /// <summary> Move to next page. </summary>
       Next
     }
 
     private readonly IResourceUrlFactory _resourceUrlFactory;
+    private readonly ICompoundGlobalizationService _globalizationService;
     private readonly BocListQuirksModeCssClassDefinition _cssClasses;
 
     /// <summary>
@@ -112,12 +119,17 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListQuirksModeRenderer"/> should use a
     /// factory to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory, BocListQuirksModeCssClassDefinition cssClasses)
+    public BocListNavigationBlockQuirksModeRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        ICompoundGlobalizationService globalizationService,
+        BocListQuirksModeCssClassDefinition cssClasses)
     {
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
       _resourceUrlFactory = resourceUrlFactory;
+      _globalizationService = globalizationService;
       _cssClasses = cssClasses;
     }
 
@@ -125,7 +137,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       get { return _cssClasses; }
     }
-    
+
     /// <summary> 
     /// Renders the navigation bar consisting of the move buttons and the page information. 
     /// </summary>
@@ -157,7 +169,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         RenderNavigationIcon (renderingContext, isLastPage, GoToOption.Next, renderingContext.Control.CurrentPageIndex + 1);
         RenderNavigationIcon (renderingContext, isLastPage, GoToOption.Last, renderingContext.Control.PageCount - 1);
 
-        RenderValueField(renderingContext);
+        RenderValueField (renderingContext);
       }
       renderingContext.Writer.RenderEndTag();
     }
@@ -179,7 +191,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       if (isInactive || renderingContext.Control.EditModeController.IsRowEditModeActive)
       {
-        string imageUrl = GetResolvedImageUrl(s_inactiveIcons[command]);
+        string imageUrl = GetResolvedImageUrl (s_inactiveIcons[command]);
         new IconInfo (imageUrl).Render (renderingContext.Writer, renderingContext.Control);
       }
       else
@@ -192,7 +204,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
             "document.getElementById ('{0}').value = {1};",
             renderingContext.Control.GetCurrentPageControlName().Replace ('$', '_'),
             pageIndex);
-        var postBackOptions = new PostBackOptions ( new Control { ID = renderingContext.Control.GetCurrentPageControlName() }, "");
+        var postBackOptions = new PostBackOptions (new Control { ID = renderingContext.Control.GetCurrentPageControlName() }, "");
         postBackEvent.Append (renderingContext.Control.Page.ClientScript.GetPostBackEventReference (postBackOptions));
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent.ToString());
 
@@ -213,9 +225,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
     protected virtual IResourceManager GetResourceManager (BocListRenderingContext renderingContext)
     {
-      return new ResourceManagerSet (
-          MultiLingualResources.GetResourceManager (typeof (ResourceIdentifier), true),
-          renderingContext.Control.GetResourceManager());
+      return ResourceManagerSet.Create (
+          renderingContext.Control.GetResourceManager(),
+          _globalizationService.GetResourceManager (TypeAdapter.Create(typeof (ResourceIdentifier))));
     }
 
     private string GetResolvedImageUrl (string imageUrl)

@@ -88,6 +88,28 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Core\BindableObject\IBindableObjectGlobalizationServiceTest.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\GlobalizationIntegrationTests.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\Resources\MixinOfMixinAddingResources.Designer.cs">
+      <DependentUpon>MixinOfMixinAddingResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\Resources\DerivedTargetClassForGlobalization.Designer.cs">
+      <DependentUpon>DerivedTargetClassForGlobalization.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\TestDomain\ClassWithMixedPropertyAndResources.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\TestDomain\ClassWithResources.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\TestDomain\DerivedTargetClassForGlobalization.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\TestDomain\IDerivedMixinAddingResources.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\TestDomain\IMixinAddingResources.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\TestDomain\ITargetClassForGlobalization.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\TestDomain\MixinAddingResources.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\TestDomain\DerivedMixinAddingResources.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\TestDomain\MixinOfMixinAddingResources.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\TestDomain\TargetClassForGlobalization.cs" />
     <Compile Include="Core\BindableObject\IntergrationTests\InterfaceProperties\InterfacePropertiesTest.cs" />
     <Compile Include="Core\BindableObject\IntergrationTests\InterfaceProperties\TestDomain\IMixinInterface.cs" />
     <Compile Include="Core\BindableObject\IntergrationTests\InterfaceProperties\TestDomain\ClassWithInterface.cs" />
@@ -118,6 +140,30 @@
     <Compile Include="Core\BusinessObjectPropertyPaths\TestDomain\TypeThree.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\TestDomain\TypeTwo.cs" />
     <Compile Include="Core\BusinessObjectPropertyPathTest.cs" />
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\Resources\TargetClassForGlobalization.Designer.cs">
+      <DependentUpon>TargetClassForGlobalization.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Core\Globalization\MixinAddingResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MixinAddingResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Globalization\MixinAddingResources2.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MixinAddingResources2.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Globalization\SimpleBusinessObjectClass.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SimpleBusinessObjectClass.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\TestDomain\ClassWithMixedPropertyAndResources.cs" />
+    <Compile Include="Core\TestDomain\ClassWithResources.cs" />
+    <Compile Include="Core\TestDomain\MixinAddingResources.cs" />
+    <Compile Include="Core\TestDomain\MixinAddingResources2.cs" />
     <Compile Include="Web\UI\Controls\BocCompundColumnDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocCustomColumnDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\DateTimeFormatterTest.cs" />
@@ -155,7 +201,7 @@
     <Compile Include="Core\BindableObject\BindableObjectClassWithIdentityTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectDataSourceTests\DesignTime.cs" />
     <Compile Include="Core\BindableObject\BindableObjectDataSourceTests\RunTime.cs" />
-    <Compile Include="Core\BindableObject\BindableObjectGlobalizationServiceTest.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectMixinTests\Common.cs" />
     <Compile Include="Core\BindableObject\BindableObjectMixinTests\DefaultValueTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectMixinTests\GetDisplayName.cs" />
@@ -190,8 +236,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExtensibleEnumWithResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Core\Globalization\MixinAddingResources2.Designer.cs">
-      <DependentUpon>MixinAddingResources2.resx</DependentUpon>
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\Resources\DerivedMixinAddingResources.Designer.cs">
+      <DependentUpon>DerivedMixinAddingResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -233,7 +279,6 @@
     <Compile Include="Core\TestDomain\TestAccessTypes.cs" />
     <Compile Include="Core\TestDomain\TestFlags.cs" />
     <Compile Include="Core\TestDomain\EnumerationValueFilter.cs" />
-    <Compile Include="Core\TestDomain\MixinAddingResources2.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttributeFromMixin.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttribute.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithoutAttributeAndWithSpecificBusinessObjectProviderAttribute.cs" />
@@ -274,14 +319,12 @@
     <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ClassWithBusinessObjectProperties.cs" />
     <Compile Include="Core\TestDomain\ClassWithMixedProperty.cs" />
     <Compile Include="Core\TestDomain\ClassWithOverriddenDisplayName.cs" />
-    <Compile Include="Core\TestDomain\ClassWithResources.cs" />
     <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ClassWithIdentityAndSearchServiceTypeAttribute.cs" />
     <Compile Include="Core\TestDomain\ClassWithUndefinedEnumValue.cs" />
     <Compile Include="Core\TestDomain\ClassWithDisabledEnumValue.cs" />
     <Compile Include="Core\TestDomain\ClassWithManualIdentity.cs" />
     <Compile Include="Core\TestDomain\ClassWithMixedPropertyOfSameName.cs" />
     <Compile Include="Core\TestDomain\ClassWithIdentityAndDisplayName.cs" />
-    <Compile Include="Core\TestDomain\ClassWithMixedPropertyAndResources.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithoutAttribute.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClass.cs" />
     <Compile Include="Core\TestDomain\BaseBusinessObjectClass.cs" />
@@ -289,7 +332,6 @@
     <Compile Include="Core\TestDomain\IInterfaceWithReferenceType.cs" />
     <Compile Include="Core\TestDomain\ManualBusinessObject.cs" />
     <Compile Include="Core\TestDomain\MixinAddingProperty.cs" />
-    <Compile Include="Core\TestDomain\MixinAddingResources.cs" />
     <Compile Include="Core\TestDomain\SecurableClassWithOverriddenDisplayName.cs" />
     <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ISearchServiceOnProperty.cs" />
     <Compile Include="Core\TestDomain\EnumWithUndefinedValueFromOtherType.cs" />
@@ -334,7 +376,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Core\Globalization\MixinAddingResources.Designer.cs">
+    <Compile Include="Core\BindableObject\IntergrationTests\Globalization\Resources\MixinAddingResources.Designer.cs">
       <DependentUpon>MixinAddingResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -569,6 +611,15 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Core\BindableObject\IntergrationTests\Globalization\Resources\MixinOfMixinAddingResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MixinOfMixinAddingResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\BindableObject\IntergrationTests\Globalization\Resources\DerivedTargetClassForGlobalization.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DerivedTargetClassForGlobalization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Core\Globalization\ClassWithResources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -579,16 +630,21 @@
       <LastGenOutput>ClassWithMixedPropertyAndResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Core\BindableObject\IntergrationTests\Globalization\Resources\TargetClassForGlobalization.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TargetClassForGlobalization.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Core\Globalization\ExtensibleEnumWithResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExtensibleEnumWithResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Core\Globalization\MixinAddingResources2.resx">
+    <EmbeddedResource Include="Core\BindableObject\IntergrationTests\Globalization\Resources\DerivedMixinAddingResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MixinAddingResources2.Designer.cs</LastGenOutput>
+      <LastGenOutput>DerivedMixinAddingResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Core\Globalization\MixinAddingResources.resx">
+    <EmbeddedResource Include="Core\BindableObject\IntergrationTests\Globalization\Resources\MixinAddingResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MixinAddingResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
@@ -597,6 +653,18 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EnumWithResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Globalization\MixinAddingResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MixinAddingResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Globalization\MixinAddingResources2.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MixinAddingResources2.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Globalization\SimpleBusinessObjectClass.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SimpleBusinessObjectClass.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

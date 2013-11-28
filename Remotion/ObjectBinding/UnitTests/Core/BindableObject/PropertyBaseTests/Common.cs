@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 using NUnit.Framework;
@@ -32,6 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
   {
     private BindableObjectProvider _bindableObjectProvider;
     private MockRepository _mockRepository;
+    private BindableObjectClass _bindableObjectClass;
 
     public override void SetUp ()
     {
@@ -41,6 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProvider);
       BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectProvider);
       _mockRepository = new MockRepository();
+      _bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
     }
 
     [Test]
@@ -57,7 +60,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   null,
                   true,
                   true,
-                  new BindableObjectDefaultValueStrategy ()));
+                  new BindableObjectDefaultValueStrategy()));
 
       Assert.That (propertyBase.PropertyInfo, Is.SameAs (propertyInfo));
       Assert.That (propertyBase.PropertyType, Is.SameAs (propertyInfo.PropertyType));
@@ -72,17 +75,17 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void Initialize_IndexedProperty ()
     {
       IPropertyInformation propertyInfo =
-          PropertyInfoAdapter.Create(typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }));
+          PropertyInfoAdapter.Create (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }));
       new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy ()));
+          new PropertyBase.Parameters (
+              _bindableObjectProvider,
+              propertyInfo,
+              propertyInfo.PropertyType,
+              propertyInfo.PropertyType,
+              null,
+              true,
+              true,
+              new BindableObjectDefaultValueStrategy()));
     }
 
     [Test]
@@ -99,14 +102,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   null,
                   true,
                   true,
-                  new BindableObjectDefaultValueStrategy ()));
+                  new BindableObjectDefaultValueStrategy()));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
-      var value = new SimpleReferenceType ();
+      var value = new SimpleReferenceType();
       instance.Scalar = value;
 
-      Assert.That (propertyBase.GetValue(((IBusinessObject) instance)), Is.SameAs (value));
+      Assert.That (propertyBase.GetValue (((IBusinessObject) instance)), Is.SameAs (value));
     }
 
     [Test]
@@ -123,11 +126,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   null,
                   true,
                   true,
-                  new BindableObjectDefaultValueStrategy ()));
+                  new BindableObjectDefaultValueStrategy()));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
-      var value = new SimpleReferenceType ();
+      var value = new SimpleReferenceType();
       PrivateInvoke.SetNonPublicProperty (instance, "PrivateProperty", value);
 
       Assert.That (propertyBase.GetValue (((IBusinessObject) instance)), Is.SameAs (value));
@@ -139,7 +142,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     {
       var propertyInfo = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInfo.Stub (stub => stub.PropertyType).Return (typeof (bool));
-      propertyInfo.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
+      propertyInfo.Stub (stub => stub.GetIndexParameters()).Return (new ParameterInfo[0]);
       propertyInfo.Stub (stub => stub.GetSetMethod (true)).Return (null);
       PropertyBase propertyBase =
           new StubPropertyBase (
@@ -151,7 +154,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   null,
                   true,
                   true,
-                  new BindableObjectDefaultValueStrategy ()));
+                  new BindableObjectDefaultValueStrategy()));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
@@ -172,14 +175,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   null,
                   true,
                   true,
-                  new BindableObjectDefaultValueStrategy ()));
-      
+                  new BindableObjectDefaultValueStrategy()));
+
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
       var value = new SimpleReferenceType();
-      propertyBase.SetValue ((IBusinessObject)instance, value);
+      propertyBase.SetValue ((IBusinessObject) instance, value);
 
-      Assert.That (instance.Scalar, Is.SameAs(value));
+      Assert.That (instance.Scalar, Is.SameAs (value));
     }
 
     [Test]
@@ -196,23 +199,23 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   null,
                   true,
                   true,
-                  new BindableObjectDefaultValueStrategy ()));
+                  new BindableObjectDefaultValueStrategy()));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
-      var value = new SimpleReferenceType ();
+      var value = new SimpleReferenceType();
       propertyBase.SetValue ((IBusinessObject) instance, value);
 
-      Assert.That (PrivateInvoke.GetNonPublicProperty(instance, "PrivateProperty"), Is.SameAs (value));
+      Assert.That (PrivateInvoke.GetNonPublicProperty (instance, "PrivateProperty"), Is.SameAs (value));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property has no setter.")]
     public void GetValue_NoSetter ()
     {
-      var propertyInfo = MockRepository.GenerateStub<IPropertyInformation> ();
+      var propertyInfo = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInfo.Stub (stub => stub.PropertyType).Return (typeof (bool));
-      propertyInfo.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
+      propertyInfo.Stub (stub => stub.GetIndexParameters()).Return (new ParameterInfo[0]);
       propertyInfo.Stub (stub => stub.GetSetMethod (true)).Return (null);
       PropertyBase propertyBase =
           new StubPropertyBase (
@@ -224,7 +227,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   null,
                   true,
                   true,
-                  new BindableObjectDefaultValueStrategy ()));
+                  new BindableObjectDefaultValueStrategy()));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
@@ -246,7 +249,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   null,
                   true,
                   true,
-                  new BindableObjectDefaultValueStrategy ()));
+                  new BindableObjectDefaultValueStrategy()));
 
       Assert.That (propertyBase.IsDefaultValue (businessObject), Is.False);
     }
@@ -264,7 +267,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               expected,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy()));
 
       Assert.That (property.IsList, Is.True);
       Assert.That (property.ListInfo, Is.SameAs (expected));
@@ -283,7 +286,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy()));
 
       Assert.That (property.IsList, Is.False);
       Dev.Null = property.ListInfo;
@@ -302,7 +305,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy()));
       var expected = new SimpleReferenceType();
 
       Assert.That (property.ConvertFromNativePropertyType (expected), Is.SameAs (expected));
@@ -320,10 +323,32 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy()));
       var expected = new SimpleReferenceType();
 
       Assert.That (property.ConvertToNativePropertyType (expected), Is.SameAs (expected));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "The reflected class for the property 'SimpleBusinessObjectClass.String' is not set.")]
+    public void GetDisplayName_ReflectedClassNotSet ()
+    {
+      var propertyInfo = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
+      var property = new StubPropertyBase (
+          new PropertyBase.Parameters (
+              _bindableObjectProvider,
+              propertyInfo,
+              typeof (string),
+              typeof (string),
+              null,
+              false,
+              false,
+              new BindableObjectDefaultValueStrategy()));
+      var mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
+      _bindableObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
+
+      var displayName = property.DisplayName;
     }
 
     [Test]
@@ -332,11 +357,21 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
-              _bindableObjectProvider, propertyInfo, typeof (string), typeof (string), null, false, false, new BindableObjectDefaultValueStrategy ()));
+              _bindableObjectProvider,
+              propertyInfo,
+              typeof (string),
+              typeof (string),
+              null,
+              false,
+              false,
+              new BindableObjectDefaultValueStrategy()));
+      property.SetReflectedClass (_bindableObjectClass);
+
       var mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
       _bindableObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
 
-      Expect.Call (mockGlobalizationService.GetPropertyDisplayName (propertyInfo)).Return ("MockString");
+      Expect.Call (mockGlobalizationService.GetPropertyDisplayName (TypeAdapter.Create (_bindableObjectClass.TargetType), propertyInfo))
+          .Return ("MockString");
       _mockRepository.ReplayAll();
 
       string actual = property.DisplayName;
@@ -357,7 +392,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy()));
 
       Assert.That (property.DisplayName, Is.EqualTo ("String"));
     }
@@ -365,7 +400,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [Test]
     public void SetAndGetReflectedClass ()
     {
-      BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
               _bindableObjectProvider,
@@ -375,12 +409,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy()));
 
-      property.SetReflectedClass (bindableObjectClass);
+      property.SetReflectedClass (_bindableObjectClass);
 
-      Assert.That (property.ReflectedClass, Is.SameAs (bindableObjectClass));
-      Assert.That (((IBusinessObjectProperty) property).ReflectedClass, Is.SameAs (bindableObjectClass));
+      Assert.That (property.ReflectedClass, Is.SameAs (_bindableObjectClass));
+      Assert.That (((IBusinessObjectProperty) property).ReflectedClass, Is.SameAs (_bindableObjectClass));
     }
 
     [Test]
@@ -403,7 +437,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy()));
 
       property.SetReflectedClass (bindableObjectClass);
 
@@ -429,7 +463,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy()));
 
       property.SetReflectedClass (bindableObjectClass);
       property.SetReflectedClass (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithIdentity)));
@@ -450,7 +484,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy()));
 
       Dev.Null = property.ReflectedClass;
     }

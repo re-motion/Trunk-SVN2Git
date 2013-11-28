@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.Web;
 
@@ -23,13 +24,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
 {
   public class TestableBocDateTimeValueRenderer : BocDateTimeValueRenderer
   {
-    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory)
-        : base(resourceUrlFactory)
+    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+        : base(resourceUrlFactory, globalizationService)
     {
     }
 
-    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, TextBox dateTextBox, TextBox timeTextBox)
-        : base(resourceUrlFactory, dateTextBox, timeTextBox)
+    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService, TextBox dateTextBox, TextBox timeTextBox)
+        : base(resourceUrlFactory, globalizationService, dateTextBox, timeTextBox)
     {
     }
   }

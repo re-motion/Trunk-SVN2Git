@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -32,8 +33,8 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
   {
     private const string c_whiteSpace = "&nbsp;";
 
-    public ListMenuRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (resourceUrlFactory)
+    public ListMenuRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+      : base (resourceUrlFactory, globalizationService)
     {
     }
 

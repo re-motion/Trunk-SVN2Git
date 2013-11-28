@@ -293,14 +293,15 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    public void LoadResources (IResourceManager resourceManager)
+    public void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       for (int i = 0; i < InnerList.Count; i++)
       {
         IControlItem controlItem = (IControlItem) InnerList[i];
-        controlItem.LoadResources (resourceManager);
+        controlItem.LoadResources (resourceManager, globalizationService);
       }
     }
   }

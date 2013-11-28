@@ -28,14 +28,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   {
     private readonly IPersistentMixinFinder _persistentMixinFinder;
     private readonly bool _includeBaseMixins;
-    private readonly IMappingNameResolver _nameResolver;
-    private readonly Func<Type, bool, bool, IMappingNameResolver, IPersistentMixinFinder, PropertyFinderBase> _propertyFinderFactory;
+    private readonly IMemberInfoNameResolver _nameResolver;
+    private readonly Func<Type, bool, bool, IMemberInfoNameResolver, IPersistentMixinFinder, PropertyFinderBase> _propertyFinderFactory;
 
     public MixinPropertyFinder (
-        Func<Type, bool, bool, IMappingNameResolver, IPersistentMixinFinder, PropertyFinderBase> propertyFinderFactory,
+        Func<Type, bool, bool, IMemberInfoNameResolver, IPersistentMixinFinder, PropertyFinderBase> propertyFinderFactory,
         IPersistentMixinFinder persistentMixinFinder,
         bool includeBaseMixins,
-        IMappingNameResolver nameResolver)
+        IMemberInfoNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("propertyFinderFactory", propertyFinderFactory);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);

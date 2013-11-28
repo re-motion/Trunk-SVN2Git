@@ -420,10 +420,11 @@ namespace Remotion.Web.UI.Controls
       return true;
     }
 
-    public virtual void LoadResources (IResourceManager resourceManager)
+    public virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       string key = ResourceManagerUtility.GetGlobalResourceKey (Category);
       if (!StringUtility.IsNullOrEmpty (key))
         Category = resourceManager.GetString (key);
@@ -436,7 +437,7 @@ namespace Remotion.Web.UI.Controls
       DisabledIcon.LoadResources (resourceManager);
 
       if (Command != null)
-        Command.LoadResources (resourceManager);
+        Command.LoadResources (resourceManager, globalizationService);
     }
   }
 

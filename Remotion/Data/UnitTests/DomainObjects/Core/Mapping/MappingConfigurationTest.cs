@@ -36,6 +36,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.R
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointPropertyTypeIsSupportedValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -48,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private MockRepository _mockRepository;
     private IMappingLoader _mockMappingLoader;
-    private ReflectionBasedNameResolver _nameResolver;
+    private ReflectionBasedMemberInfoNameResolver _memberInfoNameResolver;
     private TableDefinition _fakeStorageEntityDefinition;
 
     public override void SetUp ()
@@ -58,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _emptyClassDefinitions = new ClassDefinition[0];
       _emptyRelationDefinitions = new RelationDefinition[0];
 
-      _nameResolver = new ReflectionBasedNameResolver();
+      _memberInfoNameResolver = new ReflectionBasedMemberInfoNameResolver();
       _mockRepository = new MockRepository();
       _mockMappingLoader = _mockRepository.StrictMock<IMappingLoader>();
 
@@ -82,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.VerifyAll();
 
       Assert.That (configuration.ResolveTypes, Is.True);
-      Assert.That (configuration.NameResolver, Is.SameAs (_nameResolver));
+      Assert.That (configuration.NameResolver, Is.SameAs (_memberInfoNameResolver));
     }
 
     [Test]
@@ -528,7 +529,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (_emptyClassDefinitions);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (null)).IgnoreArguments().Return (_emptyRelationDefinitions);
       SetupResult.For (_mockMappingLoader.ResolveTypes).Return (false);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (_memberInfoNameResolver);
       SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
@@ -549,7 +550,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitions);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (null)).IgnoreArguments().Return (relationDefinitions);
       SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (_memberInfoNameResolver);
       SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
@@ -561,7 +562,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitions);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (null)).IgnoreArguments().Return (relationDefinitions);
       SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (_memberInfoNameResolver);
       SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (CreateClassDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (CreatePropertyDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (CreateRelationDefinitionValidator());

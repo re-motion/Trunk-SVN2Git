@@ -19,6 +19,8 @@ using System.Globalization;
 using System.Threading;
 using System.Web;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
+using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
@@ -70,10 +72,12 @@ public class SingleBocTestBasePage:
   public virtual IResourceManager GetResourceManager()
   {
     Type type = GetType();
-    if (MultiLingualResources.ExistsResource (type))
-      return MultiLingualResources.GetResourceManager (type, true);
-    else
-      return null;
+    return GlobalizationService.GetResourceManager (TypeAdapter.Create (type));
+  }
+
+  protected IGlobalizationService GlobalizationService
+  {
+    get { return CompoundGlobalizationService.Create(); }
   }
 
 //  public string GetResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)

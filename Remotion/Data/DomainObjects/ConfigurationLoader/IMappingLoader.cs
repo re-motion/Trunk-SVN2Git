@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader
 {
@@ -25,6 +26,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader
     ClassDefinition[] GetClassDefinitions();
     RelationDefinition[] GetRelationDefinitions (IDictionary<Type, ClassDefinition> classDefinitions);
     bool ResolveTypes { get; }
-    IMappingNameResolver NameResolver { get; }
+    IMemberInfoNameResolver NameResolver { get; }
   }
 }

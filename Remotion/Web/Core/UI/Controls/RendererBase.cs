@@ -19,6 +19,7 @@ using System.Text;
 using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Globalization;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -35,15 +36,18 @@ namespace Remotion.Web.UI.Controls
         CacheFactory.Create<Tuple<Type, IResourceManager>, IResourceManager>();
 
     private readonly IResourceUrlFactory _resourceUrlFactory;
+    private readonly IGlobalizationService _globalizationService;
 
     /// <summary>
     /// Initializes the <see cref="Context"/> and the <see cref="Control"/> properties from the arguments.
     /// </summary>
-    protected RendererBase (IResourceUrlFactory resourceUrlFactory)
+    protected RendererBase (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       _resourceUrlFactory = resourceUrlFactory;
+      _globalizationService = globalizationService;
     }
 
     /// <summary>
@@ -112,7 +116,7 @@ namespace Remotion.Web.UI.Controls
 
       return _resourceManagerCache.GetOrCreateValue (
           Tuple.Create (localResourcesType, controlResourceManager),
-          key => new ResourceManagerSet (MultiLingualResources.GetResourceManager (key.Item1, true), key.Item2));
+          key => ResourceManagerSet.Create (key.Item2 , _globalizationService.GetResourceManager (TypeAdapter.Create(key.Item1))));
     }
   }
 }

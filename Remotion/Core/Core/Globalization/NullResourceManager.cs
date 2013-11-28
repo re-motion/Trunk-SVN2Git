@@ -30,7 +30,7 @@ namespace Remotion.Globalization
     private NullResourceManager ()
     {
     }
-
+    //TODO AO: change to implicit implementations
     NameValueCollection IResourceManager.GetAllStrings ()
     {
       return new NameValueCollection();
@@ -41,22 +41,13 @@ namespace Remotion.Globalization
       return new NameValueCollection();
     }
 
-    string IResourceManager.GetString (string id)
+    bool IResourceManager.TryGetString (string id, out string value)
     {
-      return id;
-    }
-
-    string IResourceManager.GetString (Enum enumValue)
-    {
-      return ResourceIdentifiersAttribute.GetResourceIdentifier (enumValue);
-    }
-
-    public bool ContainsResource (string id)
-    {
+      value = null;
       return false;
     }
 
-    public bool ContainsResource (Enum enumValue)
+    public bool ContainsString (string id)
     {
       return false;
     }

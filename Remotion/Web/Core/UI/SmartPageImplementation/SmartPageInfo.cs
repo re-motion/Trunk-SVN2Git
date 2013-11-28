@@ -26,6 +26,8 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Collections;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
+using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
@@ -86,6 +88,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
 
     private Tuple<Control, FieldInfo> _htmlFormField;
     private bool _htmlFormFieldInitialized;
+    private readonly IGlobalizationService _globalizationService;
 
     public SmartPageInfo (ISmartPage page)
     {
@@ -94,7 +97,9 @@ namespace Remotion.Web.UI.SmartPageImplementation
       _page.Init += Page_Init;
       // PreRenderComplete-handler must be registered before ScriptManager registers its own PreRenderComplete-handler during OnInit.
       _page.PreRenderComplete += Page_PreRenderComplete;
-   }
+      //TODO AO: change to property
+      _globalizationService = CompoundGlobalizationService.Create();
+    }
 
     /// <summary> Implements <see cref="ISmartPage.RegisterClientSidePageEventHandler">ISmartPage.RegisterClientSidePageEventHandler</see>. </summary>
     public void RegisterClientSidePageEventHandler (SmartPageEvents pageEvent, string key, string function)
@@ -198,10 +203,10 @@ namespace Remotion.Web.UI.SmartPageImplementation
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
+      IResourceManager localResourceManager = _globalizationService.GetResourceManager (TypeAdapter.Create(localResourcesType));
       IResourceManager pageResourceManager = ResourceManagerUtility.GetResourceManager (_page.WrappedInstance, true);
 
-      _cachedResourceManager = new ResourceManagerSet (localResourceManager, pageResourceManager);
+      _cachedResourceManager = ResourceManagerSet.Create (pageResourceManager, localResourceManager);
 
       return _cachedResourceManager;
     }

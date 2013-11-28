@@ -147,9 +147,22 @@
     <Compile Include="Context\ISafeContextStorageProvider.cs" />
     <Compile Include="Context\SafeContext.cs" />
     <Compile Include="Context\SafeContextKeys.cs" />
+    <Compile Include="Globalization\IEnumerationGlobalizationService.cs" />
+    <Compile Include="Globalization\IExtensibleEnumerationGlobalizationService.cs" />
+    <Compile Include="Globalization\Implementation\CompoundGlobalizationService.cs" />
+    <Compile Include="Globalization\Implementation\EnumerationGlobalizationService.cs" />
+    <Compile Include="Globalization\Implementation\ExtensibleEnumerationServiceGlobalizationService.cs" />
+    <Compile Include="Globalization\Implementation\GlobalizationService.cs" />
+    <Compile Include="Globalization\ICompoundGlobalizationService.cs" />
+    <Compile Include="Globalization\IGlobalizationService.cs" />
+    <Compile Include="Globalization\IMemberInformationGlobalizationService.cs" />
+    <Compile Include="Globalization\IResourceManagerResolver.cs" />
+    <Compile Include="Globalization\Implementation\MemberInformationGlobalizationService.cs" />
+    <Compile Include="Globalization\ResourceManagerExtensions.cs" />
     <Compile Include="IHandleAttribute.cs" />
     <Compile Include="Reflection\DelegateFactory.cs" />
     <Compile Include="Reflection\IDelegateFactory.cs" />
+    <Compile Include="Reflection\IMemberInfoNameResolver.cs" />
     <Compile Include="Reflection\MemberSignatures\EventSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\FieldSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\IMemberSignature.cs" />
@@ -159,6 +172,7 @@
     <Compile Include="Reflection\MemberSignatures\MethodSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\NestedTypeSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\PropertySignature.cs" />
+    <Compile Include="Reflection\ReflectionBasedMemberInfoNameResolver.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyNameCache.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -252,7 +266,7 @@
     <Compile Include="ExtensibleEnums\IExtensibleEnumDefinition.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryService.cs" />
     <Compile Include="FunctionalProgramming\Maybe.cs" />
-    <Compile Include="Globalization\ResourceManagerCacheEntry.cs" />
+    <Compile Include="Globalization\Implementation\ResourceManagerCacheEntry.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttribute.cs" />
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactory.cs" />
@@ -305,7 +319,7 @@
     <Compile Include="Collections\SimpleDataStore.cs" />
     <Compile Include="Context\CallContextStorageProvider.cs" />
     <Compile Include="Globalization\ResourceDefinition.cs" />
-    <Compile Include="Globalization\ResourceManagerFactory.cs" />
+    <Compile Include="Globalization\Implementation\ResourceManagerFactory.cs" />
     <Compile Include="Reflection\CodeGeneration\SerializationEventRaiser.cs" />
     <Compile Include="Collections\AutoInitDictionary.cs" />
     <Compile Include="Collections\MultiDictionary.cs" />
@@ -323,11 +337,9 @@
     <Compile Include="Design\DesignModeHelperBase.cs" />
     <Compile Include="Design\EnvDteDesignModeHelper.cs" />
     <Compile Include="DoubleCheckedLockingContainer.cs" />
-    <Compile Include="Globalization\IResourceManagerResolverUtility.cs" />
     <Compile Include="Globalization\IResourcesAttribute.cs" />
     <Compile Include="Globalization\MultiLingualResources.cs" />
-    <Compile Include="Globalization\ResourceManagerResolver.cs" />
-    <Compile Include="Globalization\ResourceManagerResolverUtility.cs" />
+    <Compile Include="Globalization\Implementation\ResourceManagerResolver.cs" />
     <Compile Include="Collections\ArrayComparer.cs" />
     <Compile Include="Logging\Log4NetLog.cs" />
     <Compile Include="Logging\Log4NetLogManager.cs" />
@@ -369,7 +381,7 @@
     <Compile Include="Globalization\ResourceManagerSet.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Globalization\ResourceManagerWrapper.cs">
+    <Compile Include="Globalization\Implementation\ResourceManagerWrapper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyFinder.cs" />

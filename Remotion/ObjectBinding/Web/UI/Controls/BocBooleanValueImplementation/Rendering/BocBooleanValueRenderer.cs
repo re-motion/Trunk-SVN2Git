@@ -19,6 +19,7 @@ using System;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -37,8 +38,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
 
     private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValueRenderer).FullName + "_Startup_";
 
-    public BocBooleanValueRenderer (IResourceUrlFactory resourceUrlFactory, IBocBooleanValueResourceSetFactory resourceSetFactory)
-        : base (resourceUrlFactory)
+    public BocBooleanValueRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        ICompoundGlobalizationService globalizationService,
+        IBocBooleanValueResourceSetFactory resourceSetFactory)
+        : base (resourceUrlFactory, globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceSetFactory", resourceSetFactory);
 
@@ -106,7 +110,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       }
       else
       {
-        if(renderingContext.Control.Value.HasValue)
+        if (renderingContext.Control.Value.HasValue)
           dataValueReadOnlyControl.Attributes.Add ("data-value", renderingContext.Control.Value.Value.ToString());
         dataValueReadOnlyControl.RenderControl (renderingContext.Writer);
       }
@@ -154,7 +158,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
             resourceSet.FalseIconUrl,
             resourceSet.NullIconUrl);
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
-            renderingContext.Control, typeof (BocBooleanValueRenderer), startUpScriptKey, startupScript);
+            renderingContext.Control,
+            typeof (BocBooleanValueRenderer),
+            startUpScriptKey,
+            startupScript);
       }
     }
 
@@ -215,22 +222,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       {
         imageUrl = resourceSet.NullIconUrl;
         description = string.IsNullOrEmpty (renderingContext.Control.NullDescription)
-                          ? resourceSet.DefaultNullDescription
-                          : renderingContext.Control.NullDescription;
+            ? resourceSet.DefaultNullDescription
+            : renderingContext.Control.NullDescription;
       }
       else if (renderingContext.Control.Value.Value)
       {
         imageUrl = resourceSet.TrueIconUrl;
         description = string.IsNullOrEmpty (renderingContext.Control.TrueDescription)
-                          ? resourceSet.DefaultTrueDescription
-                          : renderingContext.Control.TrueDescription;
+            ? resourceSet.DefaultTrueDescription
+            : renderingContext.Control.TrueDescription;
       }
       else
       {
         imageUrl = resourceSet.FalseIconUrl;
         description = string.IsNullOrEmpty (renderingContext.Control.FalseDescription)
-                          ? resourceSet.DefaultFalseDescription
-                          : renderingContext.Control.FalseDescription;
+            ? resourceSet.DefaultFalseDescription
+            : renderingContext.Control.FalseDescription;
       }
 
       imageControl.AlternateText = description;

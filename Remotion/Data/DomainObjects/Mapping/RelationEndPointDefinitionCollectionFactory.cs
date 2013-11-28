@@ -29,15 +29,15 @@ namespace Remotion.Data.DomainObjects.Mapping
   public class RelationEndPointDefinitionCollectionFactory
   {
     private readonly IMappingObjectFactory _mappingObjectFactory;
-    private readonly IMappingNameResolver _mappingNameResolver;
+    private readonly IMemberInfoNameResolver _memberInfoNameResolver;
 
-    public RelationEndPointDefinitionCollectionFactory (IMappingObjectFactory mappingObjectFactory, IMappingNameResolver mappingNameResolver)
+    public RelationEndPointDefinitionCollectionFactory (IMappingObjectFactory mappingObjectFactory, IMemberInfoNameResolver memberInfoNameResolver)
     {
       ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
-      ArgumentUtility.CheckNotNull ("mappingNameResolver", mappingNameResolver);
+      ArgumentUtility.CheckNotNull ("memberInfoNameResolver", memberInfoNameResolver);
 
       _mappingObjectFactory = mappingObjectFactory;
-      _mappingNameResolver = mappingNameResolver;
+      _memberInfoNameResolver = memberInfoNameResolver;
     }
 
     public RelationEndPointDefinitionCollection CreateRelationEndPointDefinitionCollection (ClassDefinition classDefinition)
@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Mapping
           classDefinition.ClassType,
           classDefinition.BaseClass == null,
           true,
-          _mappingNameResolver,
+          _memberInfoNameResolver,
           classDefinition.PersistentMixinFinder);
       return relationPropertyFinder.FindPropertyInfos ();
     }

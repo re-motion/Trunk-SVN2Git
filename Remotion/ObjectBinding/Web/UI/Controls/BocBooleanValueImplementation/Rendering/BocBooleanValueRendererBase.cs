@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Globalization;
 using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
@@ -28,8 +29,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   public abstract class BocBooleanValueRendererBase<T> : BocRendererBase<T>
       where T: IBocBooleanValueBase
   {
-    protected BocBooleanValueRendererBase (IResourceUrlFactory resourceUrlFactory)
-        : base (resourceUrlFactory)
+    protected BocBooleanValueRendererBase (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+        : base (resourceUrlFactory, globalizationService)
     { 
     }
   }

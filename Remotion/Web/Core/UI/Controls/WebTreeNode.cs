@@ -363,10 +363,10 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    public virtual void LoadResources (IResourceManager resourceManager)
+    public virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
-      if (resourceManager == null)
-        return;
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
 
       string key = ResourceManagerUtility.GetGlobalResourceKey (Text);
       if (! StringUtility.IsNullOrEmpty (key))

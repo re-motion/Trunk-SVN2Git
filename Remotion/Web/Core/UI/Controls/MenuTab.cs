@@ -128,13 +128,14 @@ namespace Remotion.Web.UI.Controls
         _command.OwnerControl = OwnerControl;
     }
 
-    public override void LoadResources (IResourceManager resourceManager)
+    public override void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
-      base.LoadResources (resourceManager);
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
+      base.LoadResources (resourceManager, globalizationService);
       if (Command != null)
-        Command.LoadResources (resourceManager);
+        Command.LoadResources (resourceManager, globalizationService);
     }
 
     protected virtual MenuTab GetActiveTab ()

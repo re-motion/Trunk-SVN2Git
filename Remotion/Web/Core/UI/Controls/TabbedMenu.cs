@@ -22,6 +22,8 @@ using System.Drawing.Design;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
+using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
@@ -60,6 +62,7 @@ namespace Remotion.Web.UI.Controls
     private bool _isPastInitialization;
     private Color _subMenuBackgroundColor;
     private ResourceManagerSet _cachedResourceManager;
+    private readonly IGlobalizationService _globalizationService;
 
 
     // construction and destruction
@@ -69,6 +72,8 @@ namespace Remotion.Web.UI.Controls
       _subMenuTabStrip = new WebTabStrip (this, new[] { typeof (SubMenuTab) });
       _statusStyle = new Style ();
       _subMenuBackgroundColor = new Color ();
+      //TODO AO: to property
+      _globalizationService = CompoundGlobalizationService.Create();
     }
 
     // methods and properties
@@ -549,10 +554,10 @@ namespace Remotion.Web.UI.Controls
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
+      IResourceManager localResourceManager = _globalizationService.GetResourceManager (TypeAdapter.Create(localResourcesType));
       IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
 
-      _cachedResourceManager = new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
+      _cachedResourceManager = ResourceManagerSet.Create (namingContainerResourceManager, localResourceManager);
 
       return _cachedResourceManager;
     }

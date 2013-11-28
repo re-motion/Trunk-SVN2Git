@@ -681,9 +681,7 @@
     <Compile Include="IGraphTraversalStrategy.cs" />
     <Compile Include="Linq\EagerFetchingExtensionMethods.cs" />
     <Compile Include="Linq\ExtensionMethods.cs" />
-    <Compile Include="Mapping\IMappingNameResolver.cs" />
     <Compile Include="Mapping\IPersistentMixinFinder.cs" />
-    <Compile Include="Mapping\ReflectionBasedNameResolver.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionExtensions.cs" />
     <Compile Include="Mapping\RelationKindType.cs" />
     <Compile Include="Mapping\SerializableMappingObject.cs" />

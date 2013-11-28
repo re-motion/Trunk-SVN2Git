@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.Web;
@@ -25,13 +26,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 {
   public class TestableBocReferenceValueRenderer : BocReferenceValueRenderer
   {
-    public TestableBocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory)
-        : base(resourceUrlFactory)
+    public TestableBocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+        : base(resourceUrlFactory, globalizationService)
     {
     }
 
-    public TestableBocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, Func<DropDownList> dropDownListFactoryMethod)
-        : base(resourceUrlFactory, dropDownListFactoryMethod)
+    public TestableBocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService, Func<DropDownList> dropDownListFactoryMethod)
+        : base(resourceUrlFactory, globalizationService, dropDownListFactoryMethod)
     {
     }
   }

@@ -18,7 +18,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Web.UI;
+using JetBrains.Annotations;
 using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.Utilities;
 
@@ -30,9 +32,6 @@ namespace Remotion.Web.UI.Globalization
 public static class ResourceManagerUtility
 {
   private const string c_globalResourceKeyPrefix = "$res:";
-
-  private static readonly LockingCacheDecorator<Type, IResourceManager> s_chachedResourceManagers =
-      CacheFactory.CreateWithLocking<Type, IResourceManager>();
 
   public static bool IsGlobalResourceKey (string elementValue)
   {
@@ -82,51 +81,35 @@ public static class ResourceManagerUtility
   ///   one resource manager is found, an <see cref="ResourceManagerSet"/> is returned.
   /// </returns>
   /// <remarks> Uses a cache for the individual <see cref="IResourceManager"/> instances. </remarks>
-  public static IResourceManager GetResourceManager (Control control, bool alwaysIncludeParents)
+  [NotNull]
+  public static IResourceManager GetResourceManager ([CanBeNull]Control control, bool alwaysIncludeParents)
   {
     if (control == null)
-      return null;
+      return NullResourceManager.Instance;
 
-    List<IResourceManager> resourceManagers = new List<IResourceManager>();
-
+    var resourceManagers = new List<IResourceManager>();
     GetResourceManagersRecursive (control, resourceManagers, alwaysIncludeParents);
 
     if (resourceManagers.Count == 0)
-      return null;
+      return NullResourceManager.Instance;
     else if (resourceManagers.Count == 1)
-      return resourceManagers[0].IsNull ? null : resourceManagers[0];
+      return resourceManagers[0];
     else
-      return new ResourceManagerSet (resourceManagers.ToArray());
+      return new ResourceManagerSet (resourceManagers);
   }
 
-  private static void GetResourceManagersRecursive (Control control, List<IResourceManager> resourceManagers, bool alwaysIncludeParents)
+  private static void GetResourceManagersRecursive ([CanBeNull]Control control, List<IResourceManager> resourceManagers, bool alwaysIncludeParents)
   {
     if (control == null)
       return;
 
-    var objectWithResources  = control as IObjectWithResources;
-
-    if (objectWithResources != null)
-      resourceManagers.Add (GetResourceManagerFromCache (objectWithResources));
+    var objectWithResources = control as IObjectWithResources;
 
     if (objectWithResources == null || alwaysIncludeParents)
       GetResourceManagersRecursive (control.Parent, resourceManagers, alwaysIncludeParents);
-  }
 
-  /// <summary> Gets the (cached) <see cref="IResourceManager"/> for the passed <see cref="IObjectWithResources"/> </summary>
-  /// <param name="objectWithResources">
-  ///   The <see cref="IObjectWithResources"/> to get the <see cref="IResourceManager"/> from.
-  /// </param>
-  /// <returns> 
-  ///   An <see cref="IResourceManager"/> object returned by <see cref="IObjectWithResources.GetResourceManager">IObjectWithResources.GetResourceManager</see>.
-  /// </returns>
-  private static IResourceManager GetResourceManagerFromCache (IObjectWithResources objectWithResources)
-  {
-    ArgumentUtility.CheckNotNull ("objectWithResources", objectWithResources);
-
-    return s_chachedResourceManagers.GetOrCreateValue (
-        objectWithResources.GetType(),
-        key => objectWithResources.GetResourceManager() ?? NullResourceManager.Instance);
+    if (objectWithResources != null)
+      resourceManagers.Add (objectWithResources.GetResourceManager() ?? NullResourceManager.Instance);
   }
 }
 }

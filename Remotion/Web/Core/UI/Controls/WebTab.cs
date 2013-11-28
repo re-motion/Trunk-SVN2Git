@@ -361,12 +361,12 @@ public class WebTab: IWebTab, IControlStateManager
   {
   }
 
-  public virtual void LoadResources (IResourceManager resourceManager)
+  public virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
   {
-    if (resourceManager == null)
-      return;
-
-    string key = ResourceManagerUtility.GetGlobalResourceKey (Text);
+    ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+    ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+    
+    var key = ResourceManagerUtility.GetGlobalResourceKey (Text);
     if (! StringUtility.IsNullOrEmpty (key))
       Text = resourceManager.GetString (key);
     

@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.Logging;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -229,8 +230,10 @@ namespace Remotion.Web.UI.Controls
 
       base.OnPreRender (e);
 
-      IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true) ?? NullResourceManager.Instance;
-      LoadResources (resourceManager);
+      var resourceManager = ResourceManagerUtility.GetResourceManager (this, true);
+      var globalizationService = CompoundGlobalizationService.Create();
+
+      LoadResources (resourceManager, globalizationService);
     }
 
     /// <summary> Calls <see cref="Control.OnPreRender"/> on every invocation. </summary>
@@ -400,13 +403,14 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Loads the resources into the control's properties. </summary>
-    protected virtual void LoadResources (IResourceManager resourceManager)
+    protected virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       if (IsDesignMode)
         return;
-      Tabs.LoadResources (resourceManager);
+      Tabs.LoadResources (resourceManager, globalizationService);
     }
 
     /// <summary> Sets the selected tab. </summary>

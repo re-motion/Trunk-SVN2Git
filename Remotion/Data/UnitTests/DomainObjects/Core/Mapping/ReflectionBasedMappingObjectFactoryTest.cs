@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class ReflectionBasedMappingObjectFactoryTest : StandardMappingTest
   {
-    private ReflectionBasedNameResolver _mappingNameResolver;
+    private ReflectionBasedMemberInfoNameResolver _mappingMemberInfoNameResolver;
     private ThrowingDomainObjectCreator _domainObjectCreator;
 
     private ReflectionBasedMappingObjectFactory _factory;
@@ -38,11 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _mappingNameResolver = new ReflectionBasedNameResolver();
+      _mappingMemberInfoNameResolver = new ReflectionBasedMemberInfoNameResolver();
       _domainObjectCreator = new ThrowingDomainObjectCreator();
 
       _factory = new ReflectionBasedMappingObjectFactory (
-          _mappingNameResolver, new ClassIDProvider(), new DomainModelConstraintProvider(), _domainObjectCreator);
+          _mappingMemberInfoNameResolver, new ClassIDProvider (), new DomainModelConstraintProvider (), _domainObjectCreator);
     }
 
     [Test]

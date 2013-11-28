@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly Type _type;
     private readonly bool _includeBaseProperties;
     private readonly HashSet<IMethodInformation> _explicitInterfaceImplementations;
-    private readonly IMappingNameResolver _nameResolver;
+    private readonly IMemberInfoNameResolver _nameResolver;
     private readonly bool _includeMixinProperties;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
-        IMappingNameResolver nameResolver,
+        IMemberInfoNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
       ArgumentUtility.CheckNotNull ("type", type);
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return _includeMixinProperties; }
     }
 
-    public IMappingNameResolver NameResolver
+    public IMemberInfoNameResolver NameResolver
     {
       get { return _nameResolver; }
     }
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
-        IMappingNameResolver nameResolver,
+        IMemberInfoNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder);
 
     public IPropertyInformation[] FindPropertyInfos ()

@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
               classDefinition,
               true,
               true,
-              new ReflectionBasedNameResolver(),
+              new ReflectionBasedMemberInfoNameResolver(),
               classDefinition.PersistentMixinFinder,
               new DomainModelConstraintProvider());
 
@@ -53,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
               classDefinition,
               true,
               true,
-              new ReflectionBasedNameResolver(),
+              new ReflectionBasedMemberInfoNameResolver(),
               classDefinition.PersistentMixinFinder,
               new DomainModelConstraintProvider());
 
@@ -82,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
               classDefinition,
               true,
               true,
-              new ReflectionBasedNameResolver(),
+              new ReflectionBasedMemberInfoNameResolver(),
               classDefinition.PersistentMixinFinder,
               new DomainModelConstraintProvider());
 
