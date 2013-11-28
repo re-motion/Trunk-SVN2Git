@@ -37,7 +37,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   {
     protected IBocList List { get; set; }
     protected IBusinessObject BusinessObject { get; set; }
-    protected IGlobalizationService GlobalizationService { get; set; }
     protected BocListDataRowRenderEventArgs EventArgs { get; set; }
 
     protected override void Initialize ()
@@ -68,9 +67,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           (new ReflectionBusinessObjectWebUIService ());
 
       EventArgs = new BocListDataRowRenderEventArgs (10, (IBusinessObject) businessObject.FirstValue, false, true);
-
-      //TODO AO: replace with proeperty from base class
-      GlobalizationService = new GlobalizationService(new ResourceManagerResolver<MultiLingualResourcesAttribute>());
 
       InitializeMockList();
     }

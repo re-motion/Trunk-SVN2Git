@@ -39,15 +39,12 @@ namespace Remotion.Web.ExecutionEngine
     private readonly IWxeTemplateControl _control;
     /// <summary> Caches the <see cref="ResourceManagerSet"/> for this control. </summary>
     private ResourceManagerSet _cachedResourceManager;
-    private readonly IGlobalizationService _globalizationService;
-
+    
     public WxeTemplateControlInfo (IWxeTemplateControl control)
     {
       ArgumentUtility.CheckNotNullAndType<TemplateControl> ("control", control);
       
       _control = control;
-      //TODO AO: change to property
-      _globalizationService = CompoundGlobalizationService.Create();
     }
 
     public virtual void Initialize (HttpContext context)
@@ -135,6 +132,14 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
+    public IGlobalizationService GlobalizationService
+    {
+      get
+      {
+        return CompoundGlobalizationService.Create ();
+      }
+    }
+
     /// <summary> Find the <see cref="IResourceManager"/> for this control info. </summary>
     /// <param name="localResourcesType"> 
     ///   A type with the <see cref="MultiLingualResourcesAttribute"/> applied to it.
@@ -150,9 +155,9 @@ namespace Remotion.Web.ExecutionEngine
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = _globalizationService.GetResourceManager (localResourcesType);
-      Control namingContainer = _control.NamingContainer ?? (Control) _control;
-      IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (namingContainer, true);
+      var localResourceManager = GlobalizationService.GetResourceManager (localResourcesType);
+      var namingContainer = _control.NamingContainer ?? (Control) _control;
+      var namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (namingContainer, true);
 
       _cachedResourceManager = ResourceManagerSet.Create (namingContainerResourceManager, localResourceManager);
 

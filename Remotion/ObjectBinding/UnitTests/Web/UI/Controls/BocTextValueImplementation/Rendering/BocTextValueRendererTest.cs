@@ -43,8 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
     {
       Initialize();
       TextValue = MockRepository.GenerateMock<IBocTextValue>();
-      //TODO AO: move to base test class
-      _renderer = new BocTextValueRenderer (new FakeResourceUrlFactory(), CompoundGlobalizationService.Create());
+      _renderer = new BocTextValueRenderer (new FakeResourceUrlFactory(), GlobalizationService);
       TextValue.Stub (stub => stub.ClientID).Return (c_clientID);
       TextValue.Stub (stub => stub.GetValueName()).Return (c_valueName);
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();

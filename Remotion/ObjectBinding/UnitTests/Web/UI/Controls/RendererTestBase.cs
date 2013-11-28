@@ -18,6 +18,8 @@ using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
+using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
@@ -27,6 +29,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
   {
     protected HttpContextBase HttpContext { get; private set; }
     protected HtmlHelper Html { get; private set; }
+
+    protected ICompoundGlobalizationService GlobalizationService
+    {
+      get
+      {
+        return new CompoundGlobalizationService(new [] { new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>()) });
+      }
+    }
 
     protected RendererTestBase ()
     {
