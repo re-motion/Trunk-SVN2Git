@@ -88,8 +88,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
 
     private Tuple<Control, FieldInfo> _htmlFormField;
     private bool _htmlFormFieldInitialized;
-    private readonly IGlobalizationService _globalizationService;
-
+    
     public SmartPageInfo (ISmartPage page)
     {
       ArgumentUtility.CheckNotNullAndType<Page> ("page", page);
@@ -97,8 +96,6 @@ namespace Remotion.Web.UI.SmartPageImplementation
       _page.Init += Page_Init;
       // PreRenderComplete-handler must be registered before ScriptManager registers its own PreRenderComplete-handler during OnInit.
       _page.PreRenderComplete += Page_PreRenderComplete;
-      //TODO AO: change to property
-      _globalizationService = CompoundGlobalizationService.Create();
     }
 
     /// <summary> Implements <see cref="ISmartPage.RegisterClientSidePageEventHandler">ISmartPage.RegisterClientSidePageEventHandler</see>. </summary>
@@ -203,8 +200,8 @@ namespace Remotion.Web.UI.SmartPageImplementation
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = _globalizationService.GetResourceManager (localResourcesType);
-      IResourceManager pageResourceManager = ResourceManagerUtility.GetResourceManager (_page.WrappedInstance, true);
+      var localResourceManager = GlobalizationService.GetResourceManager (localResourcesType);
+      var pageResourceManager = ResourceManagerUtility.GetResourceManager (_page.WrappedInstance, true);
 
       _cachedResourceManager = ResourceManagerSet.Create (pageResourceManager, localResourceManager);
 
@@ -581,6 +578,13 @@ namespace Remotion.Web.UI.SmartPageImplementation
       }
     }
 
+    public IGlobalizationService GlobalizationService
+    {
+      get
+      {
+        return CompoundGlobalizationService.Create ();
+      }
+    }
 
     /// <summary>
     ///   Implements <see cref="ISmartPage.StatusIsSubmittingMessage">ISmartPage.StatusIsSubmittingMessage</see>.

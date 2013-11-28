@@ -79,15 +79,11 @@ public class ValidationStateViewer : WebControl, IControl
   /// <summary> Caches the <see cref="ResourceManagerSet"/> for this <see cref="ValidationStateViewer"/>. </summary>
   private ResourceManagerSet _cachedResourceManager;
 
-  private IGlobalizationService _globalizationService;
-
   // construction and disposing
 
   /// <summary> Initializes a new instance of the <see cref="ValidationStateViewer"/> class. </summary>
   public ValidationStateViewer()
   {
-    //TODO AO: to property
-    _globalizationService = CompoundGlobalizationService.Create ();
   }
 
   /// <summary> Registers all instances of <see cref="FormGridManager"/>. </summary>
@@ -275,11 +271,21 @@ public class ValidationStateViewer : WebControl, IControl
 
     //  Get the resource managers
 
-    IResourceManager localResourceManager = _globalizationService.GetResourceManager (typeof (ResourceIdentifier));
+    IResourceManager localResourceManager = GlobalizationService.GetResourceManager (typeof (ResourceIdentifier));
     IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
     _cachedResourceManager = ResourceManagerSet.Create (namingContainerResourceManager, localResourceManager);
 
     return _cachedResourceManager;
+  }
+
+  [Browsable (false)]
+  [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+  public IGlobalizationService GlobalizationService
+  {
+    get
+    {
+      return CompoundGlobalizationService.Create ();
+    }
   }
 
   /// <summary>

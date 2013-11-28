@@ -62,9 +62,7 @@ namespace Remotion.Web.UI.Controls
     private bool _isPastInitialization;
     private Color _subMenuBackgroundColor;
     private ResourceManagerSet _cachedResourceManager;
-    private readonly IGlobalizationService _globalizationService;
-
-
+    
     // construction and destruction
     public TabbedMenu ()
     {
@@ -72,8 +70,6 @@ namespace Remotion.Web.UI.Controls
       _subMenuTabStrip = new WebTabStrip (this, new[] { typeof (SubMenuTab) });
       _statusStyle = new Style ();
       _subMenuBackgroundColor = new Color ();
-      //TODO AO: to property
-      _globalizationService = CompoundGlobalizationService.Create();
     }
 
     // methods and properties
@@ -554,8 +550,8 @@ namespace Remotion.Web.UI.Controls
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = _globalizationService.GetResourceManager (localResourcesType);
-      IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
+      var localResourceManager = GlobalizationService.GetResourceManager (localResourcesType);
+      var namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
 
       _cachedResourceManager = ResourceManagerSet.Create (namingContainerResourceManager, localResourceManager);
 
@@ -575,7 +571,16 @@ namespace Remotion.Web.UI.Controls
         StatusText = resourceManager.GetString (key);
     }
 
-
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public IGlobalizationService GlobalizationService
+    {
+      get
+      {
+        return CompoundGlobalizationService.Create();
+      }
+    }
+    
     /// <summary> Gets the collection of <see cref="MainMenuTab"/> objects. </summary>
     [PersistenceMode (PersistenceMode.InnerProperty)]
     [ListBindable (false)]
