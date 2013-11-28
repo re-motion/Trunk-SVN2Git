@@ -159,15 +159,6 @@ namespace Remotion.Globalization.Implementation
       return false;
     }
 
-    /// <summary>Tests whether the <see cref="ResourceManagerWrapper"/> contains the specified resource.</summary>
-    /// <param name="id">The ID of the resource to look for.</param>
-    /// <returns><see langword="true"/> if the <see cref="ResourceManagerWrapper"/> contains the specified resource.</returns>
-    public bool ContainsString (string id)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      return _resourceManager.GetObject (id) != null;
-    }
-
     /// <summary>
     ///   Returns the culture hierarchy, starting with the most specialized culture.
     /// </summary>

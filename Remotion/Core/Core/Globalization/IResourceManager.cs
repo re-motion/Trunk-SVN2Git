@@ -50,12 +50,6 @@ namespace Remotion.Globalization
     /// <returns><see langword="true"/> if the <see cref="IResourceManager"/> contains the specified resource.</returns>
     bool TryGetString (string id, out string value);
 
-    /// <summary>Tests whether the <see cref="IResourceManager"/> contains the specified resource.</summary>
-    /// <param name="id">The ID of the resource to look for.</param>
-    /// <returns><see langword="true"/> if the <see cref="IResourceManager"/> contains the specified resource.</returns>
-    //TODO AO: only as extension method
-    bool ContainsString (string id);
-
     /// <summary>
     ///   Returns the name of the resource manager.
     /// </summary>

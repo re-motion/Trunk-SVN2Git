@@ -47,11 +47,6 @@ namespace Remotion.Globalization
       return false;
     }
 
-    public bool ContainsString (string id)
-    {
-      return false;
-    }
-
     string IResourceManager.Name
     {
       get { return "Remotion.Globalization.NullResourceManager"; }

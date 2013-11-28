@@ -131,24 +131,6 @@ namespace Remotion.Globalization
       return false;
     }
     
-    /// <summary>Tests whether the <see cref="ResourceManagerSet"/> contains the specified resource.</summary>
-    /// <param name="id">The ID of the resource to look for.</param>
-    /// <returns><see langword="true"/> if the <see cref="ResourceManagerSet"/> contains the specified resource.</returns>
-    public bool ContainsString (string id)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-
-      //FOR-loop for performance reasons
-      // ReSharper disable once LoopCanBeConvertedToQuery
-      for (var i = 0; i < _resourceManagers.Length; i++)
-      {
-        if (_resourceManagers.ElementAt (i).ContainsString (id))
-          return true;
-      }
-      // ReSharper restore LoopCanBeConvertedToQuery
-      return false;
-    }
-
     private static IEnumerable<IResourceManager> CreateFlatList (IEnumerable<IResourceManager> resourceManagers)
     {
       foreach (var resourceManager in resourceManagers)
