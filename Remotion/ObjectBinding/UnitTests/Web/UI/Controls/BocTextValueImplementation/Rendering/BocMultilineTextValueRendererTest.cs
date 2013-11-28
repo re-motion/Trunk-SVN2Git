@@ -57,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      _renderer = new BocMultilineTextValueRenderer (new FakeResourceUrlFactory (), CompoundGlobalizationService.Create ());
+      _renderer = new BocMultilineTextValueRenderer (new FakeResourceUrlFactory (), GlobalizationService);
     }
 
     [Test]

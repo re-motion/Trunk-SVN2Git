@@ -51,9 +51,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
     private HtmlHelper _htmlHelper;
     private FakeResourceUrlFactory _resourceUrlFactory;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _htmlHelper = new HtmlHelper();
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
 
@@ -158,7 +159,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
 
     private XmlNode GetAssertedContainerSpan ()
     {
-      var renderer = new DropDownMenuRenderer (_resourceUrlFactory, CompoundGlobalizationService.Create());
+      var renderer = new DropDownMenuRenderer (_resourceUrlFactory, GlobalizationService);
       renderer.Render (new DropDownMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
       var document = _htmlHelper.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);

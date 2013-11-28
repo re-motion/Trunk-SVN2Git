@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var renderer = new BocListRenderer (
           new FakeResourceUrlFactory(),
-          CompoundGlobalizationService.Create (),
+          GlobalizationService,
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
@@ -74,7 +74,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var renderer = new BocListRenderer (
           new FakeResourceUrlFactory(),
-          CompoundGlobalizationService.Create (),
+          GlobalizationService,
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
@@ -109,7 +109,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var renderer = new BocListRenderer (
           new FakeResourceUrlFactory(),
-          CompoundGlobalizationService.Create (),
+          GlobalizationService,
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
@@ -140,7 +140,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var renderer = new BocListRenderer (
           new FakeResourceUrlFactory(),
-          CompoundGlobalizationService.Create (),
+          GlobalizationService,
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),

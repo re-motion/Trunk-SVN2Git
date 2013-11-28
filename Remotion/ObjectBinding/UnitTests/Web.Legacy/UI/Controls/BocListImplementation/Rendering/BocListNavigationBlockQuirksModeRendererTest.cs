@@ -37,7 +37,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   {
     private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
     private IResourceUrlFactory _resourceUrlFactory;
-    private ICompoundGlobalizationService _globalizationService;
     private const string c_pageInfo = "Page {0} of {1}";
     private const string c_tripleBlank = HtmlHelper.WhiteSpace + HtmlHelper.WhiteSpace + HtmlHelper.WhiteSpace;
 
@@ -50,7 +49,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
       _resourceUrlFactory = new FakeResourceUrlFactory();
-      _globalizationService = CompoundGlobalizationService.Create();
     }
 
     [Test]
@@ -59,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPageIndex).Return (0);
       List.Stub (mock => mock.PageCount).Return (1);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _globalizationService, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, GlobalizationService, _bocListQuirksModeCssClassDefinition);
       renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
@@ -98,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPageIndex).Return (0);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _globalizationService, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, GlobalizationService, _bocListQuirksModeCssClassDefinition);
       renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
@@ -137,7 +135,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPageIndex).Return (1);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _globalizationService, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, GlobalizationService, _bocListQuirksModeCssClassDefinition);
       renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
@@ -176,7 +174,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPageIndex).Return (1);
       List.Stub (mock => mock.PageCount).Return (3);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, _globalizationService, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_resourceUrlFactory, GlobalizationService, _bocListQuirksModeCssClassDefinition);
       renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();

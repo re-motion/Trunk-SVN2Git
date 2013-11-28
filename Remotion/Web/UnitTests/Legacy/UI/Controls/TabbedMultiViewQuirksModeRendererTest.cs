@@ -43,9 +43,10 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private HtmlHelper _htmlHelper;
     private IResourceUrlFactory _resourceUrlFactory;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _htmlHelper = new HtmlHelper ();
       _httpContext = MockRepository.GenerateStub<HttpContextBase> ();
   

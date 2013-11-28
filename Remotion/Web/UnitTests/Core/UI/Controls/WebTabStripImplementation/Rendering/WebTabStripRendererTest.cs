@@ -47,9 +47,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
     private HtmlHelper _htmlHelper;
     private WebTabStyle _style;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _htmlHelper = new HtmlHelper();
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
 
@@ -277,7 +278,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount, WebTabStripRenderingContext renderingContext)
     {
-      _renderer = new WebTabStripRenderer (new FakeResourceUrlFactory(), CompoundGlobalizationService.Create());
+      _renderer = new WebTabStripRenderer (new FakeResourceUrlFactory(), GlobalizationService);
       _renderer.Render (renderingContext);
 
       var document = _htmlHelper.GetResultDocument();

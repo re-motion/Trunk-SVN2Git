@@ -21,12 +21,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
-using Remotion.Web.Resources;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Hotkey;
@@ -48,9 +46,10 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private HtmlHelper _htmlHelper;
     private WebTabStyle _style;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _htmlHelper = new HtmlHelper();
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
 

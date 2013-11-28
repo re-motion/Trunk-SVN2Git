@@ -17,12 +17,16 @@
 using System;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
+using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
   [TestFixture]
   public class RendererTestBase
   {
+    protected CompoundGlobalizationService GlobalizationService;
+
     [TestFixtureSetUp]
     public void TestFixtureSetUp ()
     {
@@ -33,6 +37,13 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     public void TestFixtureTearDown ()
     {
       ServiceLocator.SetLocatorProvider (null);
+    }
+
+    [SetUp]
+    public virtual void SetUp ()
+    {
+      GlobalizationService =
+          new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>()) });
     }
   }
 }

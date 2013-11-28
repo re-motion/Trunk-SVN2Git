@@ -169,7 +169,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
       _control.Stub (stub => stub.ActualValueType).Return (BocDateTimeValueType.DateTime);
       _control.Stub (stub => stub.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (new FakeResourceUrlFactory (), CompoundGlobalizationService.Create ());
+      var renderer = new BocDateTimeValueRenderer (new FakeResourceUrlFactory (), GlobalizationService);
       renderer.Render (new BocDateTimeValueRenderingContext (HttpContext, Html.Writer, _control));
       var document = Html.GetResultDocument ();
       var container = document.GetAssertedChildElement ("span", 0);
@@ -230,7 +230,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
 
     private XmlNode GetAssertedContainer (out BocDateTimeValueRenderer renderer, bool isDateOnly)
     {
-      renderer = new TestableBocDateTimeValueRenderer (new FakeResourceUrlFactory (), CompoundGlobalizationService.Create (), _dateTextBox, _timeTextBox);
+      renderer = new TestableBocDateTimeValueRenderer (new FakeResourceUrlFactory (), GlobalizationService, _dateTextBox, _timeTextBox);
       renderer.Render (new BocDateTimeValueRenderingContext(HttpContext, Html.Writer, _control));
 
       var document = Html.GetResultDocument ();

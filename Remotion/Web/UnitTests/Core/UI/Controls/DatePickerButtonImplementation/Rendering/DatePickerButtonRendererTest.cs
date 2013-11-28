@@ -17,11 +17,8 @@
 using System;
 using System.Web;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting;
 using Remotion.Development.Web.UnitTesting.Resources;
-using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
-using Remotion.Web.Resources;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Rhino.Mocks;
@@ -35,9 +32,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
     private HttpContextBase _httpContext;
     private HtmlHelper _htmlHelper;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _htmlHelper = new HtmlHelper ();
       _httpContext = MockRepository.GenerateStub<HttpContextBase> ();
 
@@ -81,8 +79,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
 
     private void AssertDateTimePickerButton (bool isDisabled, bool hasClientScript)
     {
-      //TODO AO: move globalization service to property in rendertestbase - only use globalizatuinservice without mixins (same with dms tests)
-      var renderer = new DatePickerButtonRenderer (new FakeResourceUrlFactory(), CompoundGlobalizationService.Create());
+      var renderer = new DatePickerButtonRenderer (new FakeResourceUrlFactory(), GlobalizationService);
       renderer.Render (new DatePickerButtonRenderingContext (_httpContext, _htmlHelper.Writer, _datePickerButton));
       var buttonDocument = _htmlHelper.GetResultDocument();
 

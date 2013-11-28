@@ -332,7 +332,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
 
     private void AssertLabel (TestEnum? value, bool withStyle)
     {
-      var renderer = new BocEnumValueRenderer (new FakeResourceUrlFactory (), CompoundGlobalizationService.Create ());
+      var renderer = new BocEnumValueRenderer (new FakeResourceUrlFactory (), GlobalizationService);
       renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();
@@ -383,7 +383,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
 
     private void AssertOptionList (bool withNullValue, TestEnum? selectedValue, bool isDisabled, bool withStyle, bool autoPostBack)
     {
-      var renderer = new BocEnumValueRenderer (new FakeResourceUrlFactory (), CompoundGlobalizationService.Create ());
+      var renderer = new BocEnumValueRenderer (new FakeResourceUrlFactory (), GlobalizationService);
       renderer.Render (new BocEnumValueRenderingContext (HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();
