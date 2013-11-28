@@ -1026,8 +1026,7 @@ namespace Remotion.Web.UI.Controls
     private bool _formGridListPopulated = false;
     private IInfrastructureResourceUrlFactory _infrastructureResourceUrlFactory;
     private IResourceUrlFactory _resourceUrlFactory;
-    private readonly IGlobalizationService _globalizationService;
-
+    
     // construction and disposing
 
     /// <summary> Simple constructor. </summary>
@@ -1042,8 +1041,6 @@ namespace Remotion.Web.UI.Controls
       _showValidationMarkers = true;
       _showRequiredMarkers = true;
       _showHelpProviders = true;
-      //TODO AO: change to property like hotkeyformatter
-      _globalizationService = CompoundGlobalizationService.Create();
     }
   
     // methods and properties
@@ -1987,7 +1984,7 @@ namespace Remotion.Web.UI.Controls
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager = _globalizationService.GetResourceManager (typeof (ResourceIdentifier));
+      IResourceManager localResourceManager = GlobalizationService.GetResourceManager (typeof (ResourceIdentifier));
       IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
       _cachedResourceManager = ResourceManagerSet.Create (namingContainerResourceManager, localResourceManager);
 
@@ -3104,6 +3101,16 @@ namespace Remotion.Web.UI.Controls
           return true;
       }
       return false;
+    }
+
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public IGlobalizationService GlobalizationService
+    {
+      get
+      {
+        return CompoundGlobalizationService.Create ();
+      }
     }
 
     [Browsable (false)]

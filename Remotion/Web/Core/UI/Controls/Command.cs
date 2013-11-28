@@ -850,11 +850,7 @@ namespace Remotion.Web.UI.Controls
 
     public virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
     {
-      //TODO AO: review null check with MK (check all callsites including dependDB and overrides)
-      if (resourceManager == null)
-        return;
-
-      string key = ResourceManagerUtility.GetGlobalResourceKey (ToolTip);
+      var key = ResourceManagerUtility.GetGlobalResourceKey (ToolTip);
       if (!StringUtility.IsNullOrEmpty (key))
         ToolTip = resourceManager.GetString (key);
     }
