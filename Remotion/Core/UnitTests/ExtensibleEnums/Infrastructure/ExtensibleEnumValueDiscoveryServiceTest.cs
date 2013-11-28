@@ -98,7 +98,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     {
       var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeColorDefinition, typeof (ColorExtensions)).ToArray ();
 
-      //TODO AO: review.
+      //TODO AO: review with MK
       var expected = new[] { 
           new { Value = Color.Values.Red () }, 
           new { Value = Color.Values.Green () } };

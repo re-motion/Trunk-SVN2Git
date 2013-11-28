@@ -53,8 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
       set { _string = value; }
     }
 
-    //TODO AO: fix spelling
-    public string PropertyForMixinOverriddeTest
+    public string PropertyForMixinOverrideTest
     {
       get { return _string; }
       set { _string = value; }

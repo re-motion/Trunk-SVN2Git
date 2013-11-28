@@ -657,6 +657,7 @@
     <EmbeddedResource Include="Core\Globalization\MixinAddingResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MixinAddingResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Globalization\MixinAddingResources2.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -665,6 +666,7 @@
     <EmbeddedResource Include="Core\Globalization\SimpleBusinessObjectClass.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SimpleBusinessObjectClass.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

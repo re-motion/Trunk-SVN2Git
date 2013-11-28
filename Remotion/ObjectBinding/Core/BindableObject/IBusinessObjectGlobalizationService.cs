@@ -56,10 +56,9 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <summary>
     /// Gets the localized display name of a property.
     /// </summary>
-    /// <param name="type">The target type of the property.</param>
-    /// <param name="info">The property.</param>
+    /// <param name="propertyInformation"></param>
+    /// <param name="typeInformationForResourceResolution"></param>
     /// <returns>The localized display name.</returns>
-    //TODO AO: switch arguments (copy argument and description from memberinformation glboalizationservice)
-    string GetPropertyDisplayName (ITypeInformation type, IPropertyInformation info);
+    string GetPropertyDisplayName (IPropertyInformation propertyInformation, ITypeInformation typeInformationForResourceResolution);
   }
 }

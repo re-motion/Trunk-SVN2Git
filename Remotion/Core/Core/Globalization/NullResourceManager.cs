@@ -30,29 +30,29 @@ namespace Remotion.Globalization
     private NullResourceManager ()
     {
     }
-    //TODO AO: change to implicit implementations
-    NameValueCollection IResourceManager.GetAllStrings ()
+
+    public NameValueCollection GetAllStrings ()
     {
       return new NameValueCollection();
     }
 
-    NameValueCollection IResourceManager.GetAllStrings (string prefix)
+    public NameValueCollection GetAllStrings (string prefix)
     {
       return new NameValueCollection();
     }
 
-    bool IResourceManager.TryGetString (string id, out string value)
+    public bool TryGetString (string id, out string value)
     {
       value = null;
       return false;
     }
 
-    string IResourceManager.Name
+    public string Name
     {
       get { return "Remotion.Globalization.NullResourceManager"; }
     }
 
-    bool INullObject.IsNull
+    public bool IsNull
     {
       get { return true; }
     }

@@ -370,7 +370,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       var mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
       _bindableObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
 
-      Expect.Call (mockGlobalizationService.GetPropertyDisplayName (TypeAdapter.Create (_bindableObjectClass.TargetType), propertyInfo))
+      Expect.Call (mockGlobalizationService.GetPropertyDisplayName (propertyInfo, TypeAdapter.Create (_bindableObjectClass.TargetType)))
           .Return ("MockString");
       _mockRepository.ReplayAll();
 

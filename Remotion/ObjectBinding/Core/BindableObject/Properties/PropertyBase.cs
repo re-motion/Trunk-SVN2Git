@@ -158,7 +158,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
               string.Format ("The reflected class for the property '{0}.{1}' is not set.", _propertyInfo.DeclaringType.Name, _propertyInfo.Name));
         }
 
-        return globalizationService.GetPropertyDisplayName (TypeAdapter.Create(_reflectedClass.TargetType), _propertyInfo);
+        return globalizationService.GetPropertyDisplayName (_propertyInfo, TypeAdapter.Create(_reflectedClass.TargetType));
       }
     }
 

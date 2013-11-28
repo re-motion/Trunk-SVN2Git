@@ -63,9 +63,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Globalization {
         /// <summary>
         ///   Looks up a localized string similar to overridden by mixin.
         /// </summary>
-        internal static string property_PropertyForMixinOverriddeTest {
+        internal static string property_PropertyForMixinOverrideTest {
             get {
-                return ResourceManager.GetString("property:PropertyForMixinOverriddeTest", resourceCulture);
+                return ResourceManager.GetString("property:PropertyForMixinOverrideTest", resourceCulture);
             }
         }
         

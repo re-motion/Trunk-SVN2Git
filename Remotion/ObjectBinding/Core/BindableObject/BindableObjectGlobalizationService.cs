@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.BindableObject
       return _resourceManager.Value.GetString (value ? ResourceIdentifier.True : ResourceIdentifier.False);
     }
 
-    public string GetPropertyDisplayName (ITypeInformation typeInfo, IPropertyInformation propertyInfo)
+    public string GetPropertyDisplayName (IPropertyInformation propertyInfo, ITypeInformation typeInfo)
     {
       ArgumentUtility.CheckNotNull ("typeInfo", typeInfo);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
@@ -91,7 +91,7 @@ namespace Remotion.ObjectBinding.BindableObject
       var mixinIntroducedPropertyInformation = propertyInfo as BindableObjectMixinIntroducedPropertyInformation;
       var property = mixinIntroducedPropertyInformation == null
           ? propertyInfo
-          : mixinIntroducedPropertyInformation.FindInterfaceDeclarations()  //TODO AO: should be cached!?
+          : mixinIntroducedPropertyInformation.FindInterfaceDeclarations()  //TODO AO: should be cached - check with MK!?
               .Single (
                   () =>
                       new InvalidOperationException (
