@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums.Infrastructure;
+using Remotion.ServiceLocation;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 using System.Linq;
 
@@ -26,6 +27,14 @@ namespace Remotion.UnitTests.ExtensibleEnums
   [TestFixture]
   public class ExtensibleEnumTest
   {
+    private ExtensibleEnumDefinitionCache _extensibleEnumDefinitionCache;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _extensibleEnumDefinitionCache = SafeServiceLocator.Current.GetInstance<ExtensibleEnumDefinitionCache> ();
+    }
+
     [Test]
     public void Initialization_IDOnly ()
     {
@@ -226,7 +235,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void Values_FromCache ()
     {
-      Assert.That (Color.Values, Is.SameAs (ExtensibleEnumDefinitionCache.Instance.GetDefinition (typeof (Color))));
+      Assert.That (Color.Values, Is.SameAs (_extensibleEnumDefinitionCache.GetDefinition (typeof (Color))));
     }
 
     [Test]

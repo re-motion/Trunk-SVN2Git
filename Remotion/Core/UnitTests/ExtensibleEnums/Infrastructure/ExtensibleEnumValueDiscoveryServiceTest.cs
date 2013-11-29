@@ -24,7 +24,6 @@ using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
-using Remotion.Reflection;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 using Rhino.Mocks;
 
@@ -33,13 +32,21 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
   [TestFixture]
   public class ExtensibleEnumValueDiscoveryServiceTest
   {
+    public class TestableExtensibleEnumValueDiscoveryService : ExtensibleEnumValueDiscoveryService
+    {
+      public TestableExtensibleEnumValueDiscoveryService (ITypeDiscoveryService typeDiscoveryService, ICompoundGlobalizationService globalizationService)
+          : base(typeDiscoveryService, globalizationService)
+      {
+      }
+    }
+
     private readonly MethodInfo _redMethod = typeof (ColorExtensions).GetMethod ("Red");
     private readonly MethodInfo _greenMethod = typeof (ColorExtensions).GetMethod ("Green");
     private readonly MethodInfo _redMetallicMethod = typeof (MetallicColorExtensions).GetMethod ("RedMetallic");
 
     private ExtensibleEnumDefinition<Color> _fakeColorDefinition;
     private ExtensibleEnumDefinition<Planet> _fakePlanetDefinition;
-    private GlobalizationService _globalizationService;
+    private ICompoundGlobalizationService _globalizationService;
     private ITypeDiscoveryService _typeDiscoveryServiceStub;
     private ExtensibleEnumValueDiscoveryService _service;
 
@@ -48,10 +55,10 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     {
       _fakeColorDefinition = new ExtensibleEnumDefinition<Color> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
       _fakePlanetDefinition = new ExtensibleEnumDefinition<Planet> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
-      _globalizationService = new GlobalizationService(new ResourceManagerResolver<MultiLingualResourcesAttribute>());
+      _globalizationService = new CompoundGlobalizationService(new [] { new GlobalizationService(new ResourceManagerResolver<MultiLingualResourcesAttribute>())});
 
        _typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
-      _service = new ExtensibleEnumValueDiscoveryService(_typeDiscoveryServiceStub);
+       _service = new TestableExtensibleEnumValueDiscoveryService (_typeDiscoveryServiceStub, _globalizationService);
     }
 
     [Test]
@@ -103,15 +110,12 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     {
       var result = _service.GetValueInfosForType (_fakeColorDefinition, typeof (ColorExtensions)).ToArray ();
 
-      //TODO AO: review with MK
+      var expectedResourceManager = _globalizationService.GetResourceManager (typeof (ColorExtensions));
       var expected = new[] { 
-          new { Value = Color.Values.Red () }, 
-          new { Value = Color.Values.Green () } };
+          new { Value = Color.Values.Red (), ResourceManagerName = expectedResourceManager.Name }, 
+          new { Value = Color.Values.Green (), ResourceManagerName = expectedResourceManager.Name }, };
 
-      Assert.That (result.Select (info => new { info.Value }).ToArray (), Is.EquivalentTo (expected));
-      Assert.That (((ResourceManagerSet) result[0].ResourceManager).ResourceManagers.Any(), Is.True);  
-      Assert.That (((ResourceManagerSet) result[1].ResourceManager).ResourceManagers.Any(), Is.True);
-
+      Assert.That (result.Select (info => new { info.Value, ResourceManagerName = info.ResourceManager.Name }).ToArray (), Is.EquivalentTo (expected));
     }
 
     [Test]
@@ -119,10 +123,9 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     {
       var result = _service.GetValueInfosForType (_fakeColorDefinition, typeof (MetallicColorExtensions)).ToArray ();
 
-      var expected = new[] { 
-          new { Value = (Color) Color.Values.RedMetallic (), ResourceManager = (IResourceManager) NullResourceManager.Instance}, };
-
-      Assert.That (result.Select (info => new { info.Value, info.ResourceManager }).ToArray (), Is.EquivalentTo (expected));
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (result[0].Value, Is.EqualTo (Color.Values.RedMetallic()));
+      Assert.That (result[0].ResourceManager.IsNull, Is.True);
     }
 
     [Test]

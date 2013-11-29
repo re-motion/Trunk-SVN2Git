@@ -22,8 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums.Infrastructure
@@ -34,16 +33,24 @@ namespace Remotion.ExtensibleEnums.Infrastructure
   /// </summary>
   public class ExtensibleEnumValueDiscoveryService : IExtensibleEnumValueDiscoveryService
   {
-    //TODO AO: IoC for GlobalizationService??
-    private static readonly IGlobalizationService s_globalizationService =
-        new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>());
+    private readonly IGlobalizationService _globalizationService;
     private readonly ITypeDiscoveryService _typeDiscoveryService;
 
-    public ExtensibleEnumValueDiscoveryService (ITypeDiscoveryService typeDiscoveryService)
+    public ExtensibleEnumValueDiscoveryService (ICompoundGlobalizationService globalizationService)
+    {
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
+      _typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ();
+      _globalizationService = globalizationService;
+    }
+
+    protected ExtensibleEnumValueDiscoveryService (ITypeDiscoveryService typeDiscoveryService, ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
-
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
       _typeDiscoveryService = typeDiscoveryService;
+      _globalizationService = globalizationService;
     }
 
     public ITypeDiscoveryService TypeDiscoveryService
@@ -82,7 +89,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
       var methods = typeDeclaringMethods.GetMethods (BindingFlags.Static | BindingFlags.Public);
       var extensionMethods = GetValueExtensionMethods (typeof (T), methods);
 
-      var resourceManager = s_globalizationService.GetResourceManager (typeDeclaringMethods);
+      var resourceManager = _globalizationService.GetResourceManager(typeDeclaringMethods);
       return from mi in extensionMethods
              let value = (T) mi.Invoke (null, new object[] { definition })
              let positionAttribute = AttributeUtility.GetCustomAttribute<ExtensibleEnumPositionAttribute> (mi, true)

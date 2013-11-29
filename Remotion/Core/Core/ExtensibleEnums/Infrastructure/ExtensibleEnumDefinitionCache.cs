@@ -17,6 +17,7 @@
 using System;
 using Remotion.Collections;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums.Infrastructure
@@ -25,24 +26,20 @@ namespace Remotion.ExtensibleEnums.Infrastructure
   /// Caches <see cref="ExtensibleEnumDefinition{T}"/> instances for non-generic, reflective access.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  // TODO AO: "Change ExtensibleEnumDefinitionCache to be retrieved via IoC
-  // No interface, just conreteimpl attribute, pass IExtensibleEnumValueDiscoveryService into ctor.
-  // pass IGlobSvc into ctor of ExtensibleEnumValueDiscoveryService, provide second, protected ctor accepting both IGlobSvc and ITypeDiscSvc. 
+  // TODO AO: 
   // Implement TestableExtensibleEnumValueDiscoveryService with public ctor within unittests as netsted type in test fixture
   // ConcreteImplAtt on IExtensibleEnumValueDiscoveryService.
+  [ConcreteImplementation(typeof(ExtensibleEnumDefinitionCache),Lifetime = LifetimeKind.Singleton)]
   public sealed class ExtensibleEnumDefinitionCache
   {
-    /// <summary>
-    /// Returns the single instance of the <see cref="ExtensibleEnumDefinitionCache"/> class.
-    /// </summary>
-    public static readonly ExtensibleEnumDefinitionCache Instance = new ExtensibleEnumDefinitionCache();
-
     private readonly LockingCacheDecorator<Type, IExtensibleEnumDefinition> _cache = CacheFactory.CreateWithLocking<Type, IExtensibleEnumDefinition>();
     private readonly IExtensibleEnumValueDiscoveryService _valueDiscoveryService;
 
-    private ExtensibleEnumDefinitionCache ()
+    public ExtensibleEnumDefinitionCache (IExtensibleEnumValueDiscoveryService valueDiscoveryService)
     {
-      _valueDiscoveryService = new ExtensibleEnumValueDiscoveryService (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ());
+      ArgumentUtility.CheckNotNull ("valueDiscoveryService", valueDiscoveryService);
+      
+      _valueDiscoveryService = valueDiscoveryService;
     }
 
     /// <summary>

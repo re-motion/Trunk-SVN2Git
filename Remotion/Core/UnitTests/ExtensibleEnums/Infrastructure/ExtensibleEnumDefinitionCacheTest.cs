@@ -14,12 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Infrastructure;
+using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.ServiceLocation;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
 namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
@@ -28,21 +32,25 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
   public class ExtensibleEnumDefinitionCacheTest
   {
     private ExtensibleEnumDefinitionCache _cache;
+    private DefaultServiceLocator _serviceLocator;
 
     [SetUp]
     public void SetUp ()
     {
-      _cache = ExtensibleEnumDefinitionCache.Instance;
+      _serviceLocator = new DefaultServiceLocator();
+      _cache =
+          new ExtensibleEnumDefinitionCache (
+              new ExtensibleEnumValueDiscoveryService (
+                  new CompoundGlobalizationService (
+                      new[] { new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>()) })));
     }
 
     [Test]
     public void Initialization ()
     {
-      // Important: Create a new instance of the cache - this is the only way how we can be sure that the type discovery service is exactly as expected.
-      var cache = (ExtensibleEnumDefinitionCache) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ExtensibleEnumDefinitionCache));
-
-      Assert.That (cache.ValueDiscoveryService, Is.InstanceOf (typeof (ExtensibleEnumValueDiscoveryService)));
-      Assert.That (((ExtensibleEnumValueDiscoveryService) cache.ValueDiscoveryService).TypeDiscoveryService, 
+      Assert.That (_cache.ValueDiscoveryService, Is.InstanceOf (typeof (ExtensibleEnumValueDiscoveryService)));
+      Assert.That (
+          ((ExtensibleEnumValueDiscoveryService) _cache.ValueDiscoveryService).TypeDiscoveryService,
           Is.SameAs (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService()));
     }
 
@@ -87,6 +95,23 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     public void GetDefinition_ThrowsOnDerivedEnum ()
     {
       _cache.GetDefinition (typeof (MetallicColor));
+    }
+
+    [Test]
+    public void GetInstance_Once ()
+    {
+      var factory = _serviceLocator.GetInstance<ExtensibleEnumDefinitionCache>();
+
+      Assert.That (factory, Is.TypeOf (typeof (ExtensibleEnumDefinitionCache)));
+    }
+
+    [Test]
+    public void GetInstance_Twice_ReturnsSameInstance ()
+    {
+      var factory1 = _serviceLocator.GetInstance<ExtensibleEnumDefinitionCache>();
+      var factory2 = _serviceLocator.GetInstance<ExtensibleEnumDefinitionCache>();
+
+      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }

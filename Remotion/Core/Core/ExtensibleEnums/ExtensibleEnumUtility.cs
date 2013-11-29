@@ -17,6 +17,7 @@
 using System;
 using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums
@@ -83,7 +84,7 @@ namespace Remotion.ExtensibleEnums
     public static IExtensibleEnumDefinition GetDefinition (Type extensibleEnumType)
     {
       ArgumentUtility.CheckNotNull ("extensibleEnumType", extensibleEnumType);
-      return ExtensibleEnumDefinitionCache.Instance.GetDefinition (extensibleEnumType);
+      return SafeServiceLocator.Current.GetInstance<ExtensibleEnumDefinitionCache>().GetDefinition (extensibleEnumType);
     }
   }
 }
