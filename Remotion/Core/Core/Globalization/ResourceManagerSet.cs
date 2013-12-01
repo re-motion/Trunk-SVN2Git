@@ -63,11 +63,10 @@ namespace Remotion.Globalization
 
     public ResourceManagerSet (IEnumerable<IResourceManager> resourceManagers)
     {
-      _resourceManagers = CreateFlatList(resourceManagers).ToArray();
-      SeparatedStringBuilder sb = new SeparatedStringBuilder (", ", 30 * _resourceManagers.Length);
-      foreach (var rm in _resourceManagers)
-        sb.Append (rm.Name);
-      _name = _resourceManagers.Any() ? sb.ToString() : "Empty ResourceManagerSet";
+      ArgumentUtility.CheckNotNull ("resourceManagers", resourceManagers);
+
+      _resourceManagers = CreateFlatList (resourceManagers).ToArray();
+      _name = _resourceManagers.Any() ? SeparatedStringBuilder.Build (", ", _resourceManagers, rm=> rm.Name) : "Empty ResourceManagerSet";
     }
 
     [Obsolete ("Use ResourceManagerSet.Create instead. NOTE: The order of the ResourceMangers is now reversed. (Version 1.13.211)", true)]
@@ -89,7 +88,6 @@ namespace Remotion.Globalization
     /// <summary>
     ///   Searches for all string resources inside the resource manager whose name is prefixed with a matching tag.
     /// </summary>
-    /// <seealso cref="M:Remotion.Globalization.IResourceManager.GetAllStrings(System.String)"/>
     public NameValueCollection GetAllStrings (string prefix)
     {
       var result = new NameValueCollection();
@@ -107,21 +105,16 @@ namespace Remotion.Globalization
     }
 
     /// <summary>
-    ///   Gets the value of the specified string resource. 
+    ///   Tries to get the value of the specified string resource. If the resource is not found, <see langword="false" /> is returned.
     /// </summary>
-    /// <seealso cref="M:Remotion.Globalization.IResourceManager.GetString(System.String)"/>
     public bool TryGetString (string id, out string value)
     {
       //FOR-loop for performance reasons
       // ReSharper disable ForCanBeConvertedToForeach
       for (var i = 0; i < _resourceManagers.Length; i++)
       {
-        var s = _resourceManagers[i].GetStringOrDefault (id);
-        if (s != null && s != id)
-        {
-          value = s;
+        if (_resourceManagers[i].TryGetString (id, out value))
           return true;
-        }
       }
       // ReSharper restore ForCanBeConvertedToForeach
 
@@ -131,7 +124,7 @@ namespace Remotion.Globalization
       return false;
     }
     
-    private static IEnumerable<IResourceManager> CreateFlatList (IEnumerable<IResourceManager> resourceManagers)
+    private IEnumerable<IResourceManager> CreateFlatList (IEnumerable<IResourceManager> resourceManagers)
     {
       foreach (var resourceManager in resourceManagers)
       {
