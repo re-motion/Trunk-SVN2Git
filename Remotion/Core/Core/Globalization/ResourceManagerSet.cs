@@ -80,11 +80,6 @@ namespace Remotion.Globalization
       get { return _resourceManagers.AsReadOnly(); }
     }
 
-    public NameValueCollection GetAllStrings ()
-    {
-      return GetAllStrings (string.Empty);
-    }
-
     /// <summary>
     ///   Searches for all string resources inside the resource manager whose name is prefixed with a matching tag.
     /// </summary>

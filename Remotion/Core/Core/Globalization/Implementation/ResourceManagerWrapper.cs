@@ -65,7 +65,7 @@ namespace Remotion.Globalization.Implementation
     /// <summary>
     ///   Constructor for wrapping multiple resource managers
     /// </summary>
-    /// <include file='doc\include\Globalization\ResourceManagerWrapper.xml' path='ResourceManagerWrapper/Constructor/param[@name="resourceManager"]' />
+    /// <include file='..\..\doc\include\Globalization\ResourceManagerWrapper.xml' path='ResourceManagerWrapper/Constructor/param[@name="resourceManager"]' />
     public ResourceManagerWrapper (ResourceManager resourceManager)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
@@ -92,22 +92,10 @@ namespace Remotion.Globalization.Implementation
     }
 
     /// <summary>
-    ///   Returns all string resources inside the wrapped resource managers.
-    /// </summary>
-    /// <returns>
-    ///   A collection of string pairs, the key being the resource's ID, the vale being the string.
-    /// </returns>
-    public NameValueCollection GetAllStrings ()
-    {
-      return GetAllStrings (string.Empty);
-    }
-
-    /// <summary>
     ///   Searches for all string resources inside the resource manager whose name is prefixed 
     ///   with a matching tag.
     /// </summary>
-    /// <seealso cref="M:Remotion.Globalization.IResourceManager.GetAllStrings(System.String)"/>
-    /// <include file='doc\include\Globalization\ResourceManagerWrapper.xml' path='ResourceManagerWrapper/GetAllStrings/remarks' />
+    /// <include file='..\..\doc\include\Globalization\ResourceManagerWrapper.xml' path='ResourceManagerWrapper/GetAllStrings/remarks' />
     public NameValueCollection GetAllStrings (string prefix)
     {
       return _cachedResourceSet.GetOrCreateValue (
@@ -142,7 +130,6 @@ namespace Remotion.Globalization.Implementation
     /// <summary>
     ///   Gets the value of the specified string resource. 
     /// </summary>
-    /// <seealso cref="M:Remotion.Globalization.IResourceManager.GetString(System.String)"/>
     public bool TryGetString (string id, out string value)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);

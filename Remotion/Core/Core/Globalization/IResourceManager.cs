@@ -25,18 +25,10 @@ namespace Remotion.Globalization
   public interface IResourceManager : INullObject
   {
     /// <summary>
-    ///   Returns all string resources inside the resource manager.
-    /// </summary>
-    /// <returns>
-    ///   A collection of string pairs, the key being the resource's ID, the value being the string.
-    /// </returns>
-    NameValueCollection GetAllStrings ();
-
-    /// <summary>
     ///   Searches for all string resources inside the resource manager whose name is prefixed 
     ///   with a matching tag.
     /// </summary>
-    /// <param name="prefix"> The prefix all returned string resources must have. </param>
+    /// <param name="prefix"> The prefix all returned string resources must have. Use an <see cref="String.Empty"/> to return all strings.</param>
     /// <returns>
     ///   A collection of string pairs, the key being the resource's ID, the value being the string.
     /// </returns>

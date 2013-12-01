@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Specialized;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
@@ -23,6 +24,19 @@ namespace Remotion.Globalization
 {
   public static class ResourceManagerExtensions
   {
+    /// <summary>
+    ///   Returns all string resources inside the resource manager.
+    /// </summary>
+    /// <returns>
+    ///   A collection of string pairs, the key being the resource's ID, the value being the string.
+    /// </returns>
+    public static NameValueCollection GetAllStrings (this IResourceManager resourceManager)
+    {
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+      return resourceManager.GetAllStrings (string.Empty);
+    }
+
+
     /// <summary>
     ///   Gets the value of the specified String resource.
     /// </summary>

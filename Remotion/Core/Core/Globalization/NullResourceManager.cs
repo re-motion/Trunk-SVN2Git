@@ -31,11 +31,6 @@ namespace Remotion.Globalization
     {
     }
 
-    public NameValueCollection GetAllStrings ()
-    {
-      return new NameValueCollection();
-    }
-
     public NameValueCollection GetAllStrings (string prefix)
     {
       return new NameValueCollection();
