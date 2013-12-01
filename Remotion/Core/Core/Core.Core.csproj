@@ -149,10 +149,10 @@
     <Compile Include="Context\SafeContextKeys.cs" />
     <Compile Include="Globalization\GlobalizationServiceExtensions.cs" />
     <Compile Include="Globalization\IEnumerationGlobalizationService.cs" />
-    <Compile Include="Globalization\IExtensibleEnumerationGlobalizationService.cs" />
+    <Compile Include="ExtensibleEnums\Globalization\IExtensibleEnumerationGlobalizationService.cs" />
     <Compile Include="Globalization\Implementation\CompoundGlobalizationService.cs" />
     <Compile Include="Globalization\Implementation\EnumerationGlobalizationService.cs" />
-    <Compile Include="Globalization\Implementation\ExtensibleEnumerationServiceGlobalizationService.cs" />
+    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationServiceGlobalizationService.cs" />
     <Compile Include="Globalization\Implementation\GlobalizationService.cs" />
     <Compile Include="Globalization\ICompoundGlobalizationService.cs" />
     <Compile Include="Globalization\IGlobalizationService.cs" />

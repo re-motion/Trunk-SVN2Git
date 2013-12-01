@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Reflection;
 using Remotion.ExtensibleEnums;
 using Remotion.Globalization;
 
-namespace Remotion.UnitTests.Globalization.TestDomain
+namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
-  [MultiLingualResources ("Remotion.UnitTests.Globalization.Resources.ExtensibleEnumWithResources")]
+  [MultiLingualResources ("Remotion.UnitTests.ExtensibleEnums.TestDomain.Resources.ExtensibleEnumWithResources")]
   public static class ExtensibleEnumWithResourcesExtensions
   {
     public static ExtensibleEnumWithResources Value1 (this ExtensibleEnumDefinition<ExtensibleEnumWithResources> definition)

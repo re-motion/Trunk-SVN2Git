@@ -16,20 +16,19 @@
 // 
 
 using System;
-using Remotion.ExtensibleEnums;
-using Remotion.Utilities;
+using Remotion.ServiceLocation;
 
-namespace Remotion.Globalization.Implementation
+namespace Remotion.ExtensibleEnums.Globalization
 {
   /// <summary>
-  /// Retrieving the human-readable localized representation of extensible-enumeration objects.
+  /// Defines an interface for retrieving the human-readable localized representation of the extensible-enumeration object.
   /// </summary>
-  public class ExtensibleEnumerationServiceGlobalizationService : IExtensibleEnumerationGlobalizationService
+  [ConcreteImplementation (typeof (ExtensibleEnumerationServiceGlobalizationService), Lifetime = LifetimeKind.Singleton)]
+  public interface IExtensibleEnumerationGlobalizationService
   {
-    public string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value)
-    {
-      ArgumentUtility.CheckNotNull ("value", value);
-      return value.GetLocalizedName ();
-    }
+    /// <summary>
+    /// Returns the human-readable extensible-enumeration name of the spefified reflection object.
+    /// </summary>
+    string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value);
   }
 }

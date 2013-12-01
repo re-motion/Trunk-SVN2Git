@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -16,21 +16,16 @@
 // 
 
 using System;
+using System.Reflection;
 using Remotion.ExtensibleEnums;
-using Remotion.Globalization.Implementation;
-using Remotion.ServiceLocation;
 
-namespace Remotion.Globalization
+namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
-  /// <summary>
-  /// Defines an interface for retrieving the human-readable localized representation of the extensible-enumeration object.
-  /// </summary>
-  [ConcreteImplementation (typeof (ExtensibleEnumerationServiceGlobalizationService), Lifetime = LifetimeKind.Singleton)]
-  public interface IExtensibleEnumerationGlobalizationService
+  public class ExtensibleEnumWithResources : ExtensibleEnum<ExtensibleEnumWithResources>
   {
-    /// <summary>
-    /// Returns the human-readable extensible-enumeration name of the spefified reflection object.
-    /// </summary>
-    string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value);
+    public ExtensibleEnumWithResources (MethodBase currentMethod)
+        : base(currentMethod)
+    {
+    }
   }
 }

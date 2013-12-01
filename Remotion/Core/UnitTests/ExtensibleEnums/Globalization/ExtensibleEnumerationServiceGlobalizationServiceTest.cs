@@ -17,10 +17,10 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Globalization.Implementation;
-using Remotion.UnitTests.Globalization.TestDomain;
+using Remotion.ExtensibleEnums.Globalization;
+using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
-namespace Remotion.UnitTests.Globalization
+namespace Remotion.UnitTests.ExtensibleEnums.Globalization
 {
   [TestFixture]
   public class ExtensibleEnumerationServiceGlobalizationServiceTest
@@ -40,7 +40,7 @@ namespace Remotion.UnitTests.Globalization
       Assert.That (_service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value2 ()), Is.EqualTo ("Wert2"));
       Assert.That (
           _service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.ValueWithoutResource ()),
-          Is.EqualTo ("Remotion.UnitTests.Globalization.TestDomain.ExtensibleEnumWithResourcesExtensions.ValueWithoutResource"));
+          Is.EqualTo ("Remotion.UnitTests.ExtensibleEnums.TestDomain.ExtensibleEnumWithResourcesExtensions.ValueWithoutResource"));
     }
   }
 }

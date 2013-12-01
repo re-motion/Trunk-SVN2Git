@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.ExtensibleEnums;
+using Remotion.ExtensibleEnums.Globalization;
 using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;

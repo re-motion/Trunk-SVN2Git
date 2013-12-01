@@ -212,11 +212,11 @@
     <Compile Include="FunctionalProgramming\TestDomain\RecursiveItem.cs" />
     <Compile Include="Globalization\CompoundGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\EnumerationGlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\ExtensibleEnumerationServiceGlobalizationServiceTest.cs" />
+    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationServiceGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\GlobalizationServiceTest.cs" />
     <Compile Include="Globalization\ICompoundGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\IEnumerationGlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\IExtensibleEnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="ExtensibleEnums\Globalization\IExtensibleEnumerationGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\IGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\IMemberInformationGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\IResourceManagerResolverTest.cs" />
@@ -234,16 +234,16 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Globalization\Resources\ExtensibleEnumWithResources.Designer.cs">
+    <Compile Include="ExtensibleEnums\TestDomain\Resources\ExtensibleEnumWithResources.Designer.cs">
       <DependentUpon>ExtensibleEnumWithResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Globalization\TestDomain\ClassWithResources.cs" />
     <Compile Include="Globalization\TestDomain\EnumWithDescription.cs" />
-    <Compile Include="Globalization\TestDomain\EnumWithResoruces.cs" />
-    <Compile Include="Globalization\TestDomain\ExtensibleEnumWithResources.cs" />
-    <Compile Include="Globalization\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
+    <Compile Include="Globalization\TestDomain\EnumWithResources.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithResources.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
     <Compile Include="Globalization\TestDomain\MixinAddingResources.cs" />
     <Compile Include="Globalization\TestDomain\TestEnum.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ILStatement.cs" />
@@ -451,7 +451,7 @@
       <LastGenOutput>EnumWithResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\Resources\ExtensibleEnumWithResources.resx">
+    <EmbeddedResource Include="ExtensibleEnums\TestDomain\Resources\ExtensibleEnumWithResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExtensibleEnumWithResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
