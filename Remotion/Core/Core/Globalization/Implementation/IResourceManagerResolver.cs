@@ -16,10 +16,9 @@
 // 
 
 using System;
-using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
 
-namespace Remotion.Globalization
+namespace Remotion.Globalization.Implementation
 {
   /// <summary>
   /// Defines the interface to retrieve an <see cref="IResourceManager"/> to make a resource-lookup.

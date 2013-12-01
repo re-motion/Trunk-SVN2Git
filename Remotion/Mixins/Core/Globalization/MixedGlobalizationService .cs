@@ -21,6 +21,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
