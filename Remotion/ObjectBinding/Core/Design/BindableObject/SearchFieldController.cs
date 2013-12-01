@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Windows.Forms;
+using Remotion.Globalization;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Design.BindableObject

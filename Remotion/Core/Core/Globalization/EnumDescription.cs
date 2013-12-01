@@ -23,8 +23,9 @@ using System.Reflection;
 using System.Resources;
 using JetBrains.Annotations;
 using Remotion.Collections;
+using Remotion.Utilities;
 
-namespace Remotion.Utilities
+namespace Remotion.Globalization
 {
   /// <summary>
   /// Use this class to get the clear text representations of enumeration values.

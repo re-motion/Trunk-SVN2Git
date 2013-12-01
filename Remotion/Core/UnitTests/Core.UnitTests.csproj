@@ -580,7 +580,7 @@
     </Compile>
     <Compile Include="Utilities\CustomAttributeUtilityTestDomain\ComplexAttribute.cs" />
     <Compile Include="Utilities\ConsoleUtilityTest.cs" />
-    <Compile Include="Utilities\EnumDescriptionTest.cs">
+    <Compile Include="Globalization\EnumDescriptionTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FunctionalProgramming\EnumerableUtilityTest.cs" />

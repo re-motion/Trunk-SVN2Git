@@ -17,8 +17,9 @@
 
 using System;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 
-namespace Remotion.Utilities
+namespace Remotion.Globalization
 {
   public struct EnumValue
   {

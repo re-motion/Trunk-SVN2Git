@@ -18,9 +18,10 @@
 using System;
 using System.Globalization;
 using NUnit.Framework;
+using Remotion.Globalization;
 using Remotion.Utilities;
 
-namespace Remotion.UnitTests.Utilities
+namespace Remotion.UnitTests.Globalization
 {
   public enum EnumWithDescriptions
   {

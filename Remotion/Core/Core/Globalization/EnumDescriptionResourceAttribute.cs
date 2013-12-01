@@ -14,28 +14,32 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 
-namespace Remotion.Utilities
+using System;
+using Remotion.Utilities;
+
+namespace Remotion.Globalization
 {
   /// <summary>
-  /// Use this attribute to specify a non-globalized text representation of a certain enumeration value.
+  /// Use this attribute to specify a resource name for an enum type. 
+  /// The resource file can then contain the localized versions of the individual enum values. The identifier for each enum value is built in the following format:
+  /// "&lt;namespace&gt;.&lt;type name&gt;.&lt;value&gt;"
   /// </summary>
-  [AttributeUsage (AttributeTargets.Field, AllowMultiple = false)]
-  public class EnumDescriptionAttribute: Attribute
+  [AttributeUsage (AttributeTargets.Enum, AllowMultiple = false)]
+  public class EnumDescriptionResourceAttribute: Attribute
   {
-    private readonly string _description;
+    private readonly string _baseName;
 
-    public EnumDescriptionAttribute (string description)
+    public EnumDescriptionResourceAttribute (string baseName)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("description", description);
+      ArgumentUtility.CheckNotNullOrEmpty ("baseName", baseName);
       
-      _description = description;
+      _baseName = baseName;
     }
 
-    public string Description
+    public string BaseName
     {
-      get { return _description; }
+      get { return _baseName; }
     }
   }
 }

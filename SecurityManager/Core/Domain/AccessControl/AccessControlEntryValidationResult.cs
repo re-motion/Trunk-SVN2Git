@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Remotion.Utilities;
+using Remotion.Globalization;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {

@@ -302,9 +302,9 @@
     <Compile Include="Utilities\DelegateBasedDisposable.cs" />
     <Compile Include="Utilities\DelegateBasedEqualityComparer.cs" />
     <Compile Include="Utilities\DesignerUtility.cs" />
-    <Compile Include="Utilities\EnumDescriptionAttribute.cs" />
-    <Compile Include="Utilities\EnumDescriptionResourceAttribute.cs" />
-    <Compile Include="Utilities\EnumValue.cs" />
+    <Compile Include="Globalization\EnumDescriptionAttribute.cs" />
+    <Compile Include="Globalization\EnumDescriptionResourceAttribute.cs" />
+    <Compile Include="Globalization\EnumValue.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyLoaderException.cs" />
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
@@ -515,7 +515,7 @@
     <Compile Include="Utilities\BidirectionalStringConverter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\EnumDescription.cs">
+    <Compile Include="Globalization\EnumDescription.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\EnumUtility.cs">
