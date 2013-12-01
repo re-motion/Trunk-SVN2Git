@@ -70,10 +70,10 @@ namespace Remotion.Globalization
       _name = _resourceManagers.Any() ? sb.ToString() : "Empty ResourceManagerSet";
     }
 
-    [Obsolete ("Use ResourceManagerSet.Create instead. NOTE: The order of the ResourceMangers is now reversed. (Version 1.23.211)", true)]
+    [Obsolete ("Use ResourceManagerSet.Create instead. NOTE: The order of the ResourceMangers is now reversed. (Version 1.13.211)", true)]
     public ResourceManagerSet (params IResourceManager[] resourceManagers)
     {
-      throw new InvalidOperationException ("Use ResourceManagerSet.Create instead. (Version 1.23.211)");
+      throw new InvalidOperationException ("Use ResourceManagerSet.Create instead. (Version 1.13.211)");
     }
 
     public IEnumerable<IResourceManager> ResourceManagers
