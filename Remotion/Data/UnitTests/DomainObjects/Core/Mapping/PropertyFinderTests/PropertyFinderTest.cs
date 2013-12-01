@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
               classDefinition,
               true,
               true,
-              new ReflectionBasedMemberInfoNameResolver(),
+              new ReflectionBasedMemberInformationNameResolver(),
               classDefinition.PersistentMixinFinder,
               new DomainModelConstraintProvider());
 
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
               classDefinition,
               true,
               true,
-              new ReflectionBasedMemberInfoNameResolver(),
+              new ReflectionBasedMemberInformationNameResolver(),
               classDefinition.PersistentMixinFinder,
               new DomainModelConstraintProvider());
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
               classDefinition,
               true,
               true,
-              new ReflectionBasedMemberInfoNameResolver(),
+              new ReflectionBasedMemberInformationNameResolver(),
               classDefinition.PersistentMixinFinder,
               new DomainModelConstraintProvider());
 

@@ -28,23 +28,23 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   public class ReflectionBasedMappingObjectFactory : IMappingObjectFactory
   {
-    private readonly IMemberInfoNameResolver _memberInfoNameResolver;
+    private readonly IMemberInformationNameResolver _memberInformationNameResolver;
     private readonly IClassIDProvider _classIDProvider;
     private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
     private readonly IDomainObjectCreator _instanceCreator;
 
     public ReflectionBasedMappingObjectFactory (
-        IMemberInfoNameResolver memberInfoNameResolver,
+        IMemberInformationNameResolver memberInformationNameResolver,
         IClassIDProvider classIDProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider,
         IDomainObjectCreator instanceCreator)
     {
-      ArgumentUtility.CheckNotNull ("memberInfoNameResolver", memberInfoNameResolver);
+      ArgumentUtility.CheckNotNull ("memberInformationNameResolver", memberInformationNameResolver);
       ArgumentUtility.CheckNotNull ("classIDProvider", classIDProvider);
       ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
       ArgumentUtility.CheckNotNull ("instanceCreator", instanceCreator);
 
-      _memberInfoNameResolver = memberInfoNameResolver;
+      _memberInformationNameResolver = memberInformationNameResolver;
       _classIDProvider = classIDProvider;
       _domainModelConstraintProvider = domainModelConstraintProvider;
       _instanceCreator = instanceCreator;
@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      var classReflector = new ClassReflector (type, this, _memberInfoNameResolver, _classIDProvider, _domainModelConstraintProvider, _instanceCreator);
+      var classReflector = new ClassReflector (type, this, _memberInformationNameResolver, _classIDProvider, _domainModelConstraintProvider, _instanceCreator);
       return classReflector.GetMetadata (baseClass);
     }
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      return new PropertyReflector (classDefinition, propertyInfo, _memberInfoNameResolver, _domainModelConstraintProvider).GetMetadata();
+      return new PropertyReflector (classDefinition, propertyInfo, _memberInformationNameResolver, _domainModelConstraintProvider).GetMetadata();
     }
 
     public RelationDefinition CreateRelationDefinition (
@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      var relationReflector = new RelationReflector (classDefinition, propertyInfo, _memberInfoNameResolver);
+      var relationReflector = new RelationReflector (classDefinition, propertyInfo, _memberInformationNameResolver);
       return relationReflector.GetMetadata (classDefinitions);
     }
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
-          classDefinition, propertyInfo, _memberInfoNameResolver, _domainModelConstraintProvider);
+          classDefinition, propertyInfo, _memberInformationNameResolver, _domainModelConstraintProvider);
       return relationEndPointReflector.GetMetadata();
     }
 
@@ -117,7 +117,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var factory = new RelationEndPointDefinitionCollectionFactory (this, _memberInfoNameResolver);
+      var factory = new RelationEndPointDefinitionCollectionFactory (this, _memberInformationNameResolver);
       return factory.CreateRelationEndPointDefinitionCollection (classDefinition);
     }
   }

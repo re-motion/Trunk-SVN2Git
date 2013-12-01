@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
           PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Unidirectional", typeof (string));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
-      var mappingNameResolverMock = MockRepository.GenerateStub<IMemberInfoNameResolver>();
+      var mappingNameResolverMock = MockRepository.GenerateStub<IMemberInformationNameResolver>();
       mappingNameResolverMock.Stub (mock => mock.GetPropertyName (propertyDefinition.PropertyInfo)).Return (propertyDefinition.PropertyName);
 
       var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (

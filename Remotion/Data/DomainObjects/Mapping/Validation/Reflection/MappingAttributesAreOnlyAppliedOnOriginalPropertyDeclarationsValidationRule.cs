@@ -28,13 +28,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
   /// </summary>
   public class MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule : IPropertyDefinitionValidationRule
   {
-    private readonly IMemberInfoNameResolver _memberInfoNameResolver;
+    private readonly IMemberInformationNameResolver _memberInformationNameResolver;
 
-    public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (IMemberInfoNameResolver memberInfoNameResolver)
+    public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (IMemberInformationNameResolver memberInformationNameResolver)
     {
-      ArgumentUtility.CheckNotNull ("memberInfoNameResolver", memberInfoNameResolver);
+      ArgumentUtility.CheckNotNull ("memberInformationNameResolver", memberInformationNameResolver);
       
-      _memberInfoNameResolver = memberInfoNameResolver;
+      _memberInformationNameResolver = memberInformationNameResolver;
     }
 
     public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
           classDefinition.ClassType,
           isInheritanceRoot,
           true,
-          _memberInfoNameResolver,
+          _memberInformationNameResolver,
           classDefinition.PersistentMixinFinder);
       var propertyInfos = propertyFinder.FindPropertyInfos();
 

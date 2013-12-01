@@ -48,9 +48,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       get { return false; }
     }
 
-    public IMemberInfoNameResolver NameResolver
+    public IMemberInformationNameResolver NameResolver
     {
-      get { return new ReflectionBasedMemberInfoNameResolver(); }
+      get { return new ReflectionBasedMemberInformationNameResolver(); }
     }
 
     public IClassDefinitionValidator CreateClassDefinitionValidator ()

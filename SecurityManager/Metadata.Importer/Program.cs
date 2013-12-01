@@ -98,7 +98,7 @@ namespace Remotion.SecurityManager.Metadata.Importer
                     typeDiscoveryService,
                     new ClassIDProvider(),
                     new DomainModelConstraintProvider(),
-                    new ReflectionBasedMemberInfoNameResolver(),
+                    new ReflectionBasedMemberInformationNameResolver(),
                     MappingReflector.CreateDomainObjectCreator()),
                 new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
 

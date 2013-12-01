@@ -26,6 +26,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader
     ClassDefinition[] GetClassDefinitions();
     RelationDefinition[] GetRelationDefinitions (IDictionary<Type, ClassDefinition> classDefinitions);
     bool ResolveTypes { get; }
-    IMemberInfoNameResolver NameResolver { get; }
+    IMemberInformationNameResolver NameResolver { get; }
   }
 }

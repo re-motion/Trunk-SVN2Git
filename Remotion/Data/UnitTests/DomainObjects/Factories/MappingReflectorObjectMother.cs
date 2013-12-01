@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
           typeDiscoveryService,
           new ClassIDProvider(),
           new DomainModelConstraintProvider(),
-          new ReflectionBasedMemberInfoNameResolver(),
+          new ReflectionBasedMemberInformationNameResolver(),
           DomainObjectCreator);
     }
   }

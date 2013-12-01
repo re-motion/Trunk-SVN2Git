@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private MockRepository _mockRepository;
     private IMappingLoader _mockMappingLoader;
-    private ReflectionBasedMemberInfoNameResolver _memberInfoNameResolver;
+    private ReflectionBasedMemberInformationNameResolver _memberInformationNameResolver;
     private TableDefinition _fakeStorageEntityDefinition;
 
     public override void SetUp ()
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _emptyClassDefinitions = new ClassDefinition[0];
       _emptyRelationDefinitions = new RelationDefinition[0];
 
-      _memberInfoNameResolver = new ReflectionBasedMemberInfoNameResolver();
+      _memberInformationNameResolver = new ReflectionBasedMemberInformationNameResolver();
       _mockRepository = new MockRepository();
       _mockMappingLoader = _mockRepository.StrictMock<IMappingLoader>();
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.VerifyAll();
 
       Assert.That (configuration.ResolveTypes, Is.True);
-      Assert.That (configuration.NameResolver, Is.SameAs (_memberInfoNameResolver));
+      Assert.That (configuration.NameResolver, Is.SameAs (_memberInformationNameResolver));
     }
 
     [Test]
@@ -529,7 +529,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (_emptyClassDefinitions);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (null)).IgnoreArguments().Return (_emptyRelationDefinitions);
       SetupResult.For (_mockMappingLoader.ResolveTypes).Return (false);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (_memberInfoNameResolver);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (_memberInformationNameResolver);
       SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
@@ -550,7 +550,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitions);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (null)).IgnoreArguments().Return (relationDefinitions);
       SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (_memberInfoNameResolver);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (_memberInformationNameResolver);
       SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
@@ -562,7 +562,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitions);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (null)).IgnoreArguments().Return (relationDefinitions);
       SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (_memberInfoNameResolver);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (_memberInformationNameResolver);
       SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (CreateClassDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (CreatePropertyDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (CreateRelationDefinitionValidator());

@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public static RdbmsRelationEndPointReflector CreateRelationEndPointReflector (
         ClassDefinition classDefinition,
         IPropertyInformation propertyInfo,
-        IMemberInfoNameResolver nameResolver,
+        IMemberInformationNameResolver nameResolver,
         IDomainModelConstraintProvider domainModelConstraintProvider)
     {
       return new RdbmsRelationEndPointReflector (classDefinition, propertyInfo, nameResolver, domainModelConstraintProvider);
@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     protected RelationEndPointReflector (
         ClassDefinition classDefinition,
         IPropertyInformation propertyInfo,
-        IMemberInfoNameResolver nameResolver,
+        IMemberInformationNameResolver nameResolver,
         IDomainModelConstraintProvider domainModelConstraintProvider)
         : base (classDefinition, propertyInfo, nameResolver)
     {

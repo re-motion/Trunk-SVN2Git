@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [SetUp]
     public void SetUp ()
     {
-      _validationRule = new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (new ReflectionBasedMemberInfoNameResolver());
+      _validationRule = new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (new ReflectionBasedMemberInformationNameResolver());
     }
 
     [Test]

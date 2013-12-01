@@ -27,15 +27,15 @@ namespace Remotion.Globalization.Implementation
   public class MemberInformationGlobalizationService : IMemberInformationGlobalizationService
   {
     private readonly IGlobalizationService _globalizationService;
-    private readonly IMemberInfoNameResolver _memberInfoNameResolver;
+    private readonly IMemberInformationNameResolver _memberInformationNameResolver;
 
-    public MemberInformationGlobalizationService (ICompoundGlobalizationService globalizationService, IMemberInfoNameResolver memberInfoNameResolver)
+    public MemberInformationGlobalizationService (ICompoundGlobalizationService globalizationService, IMemberInformationNameResolver memberInformationNameResolver)
     {
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
-      ArgumentUtility.CheckNotNull ("memberInfoNameResolver", memberInfoNameResolver);
+      ArgumentUtility.CheckNotNull ("memberInformationNameResolver", memberInformationNameResolver);
 
       _globalizationService = globalizationService;
-      _memberInfoNameResolver = memberInfoNameResolver;
+      _memberInformationNameResolver = memberInformationNameResolver;
     }
 
     public string GetPropertyDisplayName (IPropertyInformation propertyInformation, ITypeInformation typeInformationForResourceResolution)
@@ -43,7 +43,7 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      return GetString (typeInformationForResourceResolution, propertyInformation.Name, _memberInfoNameResolver.GetPropertyName (propertyInformation), "property:");
+      return GetString (typeInformationForResourceResolution, propertyInformation.Name, _memberInformationNameResolver.GetPropertyName (propertyInformation), "property:");
     }
 
     public string GetTypeDisplayName (ITypeInformation typeInformation, ITypeInformation typeInformationForResourceResolution)
@@ -51,7 +51,7 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      return GetString (typeInformationForResourceResolution, typeInformation.Name, _memberInfoNameResolver.GetTypeName (typeInformation), "type:");
+      return GetString (typeInformationForResourceResolution, typeInformation.Name, _memberInformationNameResolver.GetTypeName (typeInformation), "type:");
     }
 
     private string GetString (ITypeInformation typeInformation, string shortMemberName, string longMemberName, string resourcePrefix)

@@ -118,14 +118,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     private MixinPropertyFinder CreatePropertyFinder (Type type, bool includeBaseProperties)
     {
      return new MixinPropertyFinder (CreateNewFinder, new PersistentMixinFinder (type, includeBaseProperties), includeBaseProperties,
-          new ReflectionBasedMemberInfoNameResolver ());
+          new ReflectionBasedMemberInformationNameResolver ());
     }
 
     public PropertyFinderBase CreateNewFinder (
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
-        IMemberInfoNameResolver nameResolver,
+        IMemberInformationNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
       return new StubPropertyFinderBase (

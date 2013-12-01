@@ -36,7 +36,7 @@ namespace Remotion.UnitTests.Globalization
     private IPropertyInformation _propertyInformationStub;
     private IResourceManager _resourceManager1Mock;
     private IResourceManager _resourceManager2Mock;
-    private IMemberInfoNameResolver _memberInfoNameResolverStub;
+    private IMemberInformationNameResolver _memberInformationNameResolverStub;
     private string _shortPropertyResourceID;
     private string _longPropertyResourceID;
     private string _shortTypeResourceID;
@@ -63,9 +63,9 @@ namespace Remotion.UnitTests.Globalization
       _propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
       _propertyInformationStub.Stub (stub => stub.Name).Return ("PropertyName");
 
-      _memberInfoNameResolverStub = MockRepository.GenerateStub<IMemberInfoNameResolver>();
-      _memberInfoNameResolverStub.Stub (stub => stub.GetPropertyName (_propertyInformationStub)).Return ("FakePropertyFullName");
-      _memberInfoNameResolverStub.Stub (stub => stub.GetTypeName (_typeInformationStub)).Return ("FakeTypeFullName");
+      _memberInformationNameResolverStub = MockRepository.GenerateStub<IMemberInformationNameResolver>();
+      _memberInformationNameResolverStub.Stub (stub => stub.GetPropertyName (_propertyInformationStub)).Return ("FakePropertyFullName");
+      _memberInformationNameResolverStub.Stub (stub => stub.GetTypeName (_typeInformationStub)).Return ("FakeTypeFullName");
 
       _shortPropertyResourceID = "property:PropertyName";
       _longPropertyResourceID = "property:FakePropertyFullName";
@@ -73,7 +73,7 @@ namespace Remotion.UnitTests.Globalization
       _longTypeResourceID = "type:FakeTypeFullName";
 
       _service = new MemberInformationGlobalizationService (
-          new CompoundGlobalizationService(new [] { _globalizationServiceMock1, _globalizationServiceMock2 }), _memberInfoNameResolverStub);
+          new CompoundGlobalizationService(new [] { _globalizationServiceMock1, _globalizationServiceMock2 }), _memberInformationNameResolverStub);
     }
 
     [Test]

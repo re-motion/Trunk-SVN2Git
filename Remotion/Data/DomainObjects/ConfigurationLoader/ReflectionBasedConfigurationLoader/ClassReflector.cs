@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   {
     private readonly Type _type;
     private readonly IMappingObjectFactory _mappingObjectFactory;
-    private readonly IMemberInfoNameResolver _nameResolver;
+    private readonly IMemberInformationNameResolver _nameResolver;
     private readonly IClassIDProvider _classIDProvider;
     private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
     private readonly IDomainObjectCreator _instanceCreator;
@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public ClassReflector (
         Type type,
         IMappingObjectFactory mappingObjectFactory,
-        IMemberInfoNameResolver nameResolver,
+        IMemberInformationNameResolver nameResolver,
         IClassIDProvider classIDProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider,
         IDomainObjectCreator instanceCreator)
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return _mappingObjectFactory; }
     }
 
-    public IMemberInfoNameResolver NameResolver
+    public IMemberInformationNameResolver NameResolver
     {
       get { return _nameResolver; }
     }

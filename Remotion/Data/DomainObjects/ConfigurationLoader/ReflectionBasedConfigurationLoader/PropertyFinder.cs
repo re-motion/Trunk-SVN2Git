@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         ClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
-        IMemberInfoNameResolver nameResolver,
+        IMemberInformationNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder,
         IDomainModelConstraintProvider domainModelConstraintProvider)
         : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
-        IMemberInfoNameResolver nameResolver,
+        IMemberInformationNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
       return new PropertyFinder (type, _classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder, _domainModelConstraintProvider);

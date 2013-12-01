@@ -25,7 +25,7 @@ namespace Remotion.Reflection
   /// <summary>
   /// Resolves <see cref="PropertyInfo"/> objects into property names and the other way around.
   /// </summary>
-  public class ReflectionBasedMemberInfoNameResolver : IMemberInfoNameResolver
+  public class ReflectionBasedMemberInformationNameResolver : IMemberInformationNameResolver
   {
     private readonly LockingCacheDecorator<IPropertyInformation, string> s_propertyNameCache =
         CacheFactory.CreateWithLocking<IPropertyInformation, string>();

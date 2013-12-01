@@ -256,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyInfo =
           PropertyInfoAdapter.Create (declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
       var propertyReflector = new PropertyReflector (
-          classDefinition, propertyInfo, new ReflectionBasedMemberInfoNameResolver(), DomainModelConstraintProviderStub);
+          classDefinition, propertyInfo, new ReflectionBasedMemberInformationNameResolver(), DomainModelConstraintProviderStub);
       var propertyDefinition = propertyReflector.GetMetadata();
       var properties = new List<PropertyDefinition>();
       properties.Add (propertyDefinition);
@@ -275,7 +275,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         endPoints.AddRange (endPointDefinitionsOfClass);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));
 
-      return new RelationReflector (classDefinition, propertyInfo, new ReflectionBasedMemberInfoNameResolver());
+      return new RelationReflector (classDefinition, propertyInfo, new ReflectionBasedMemberInformationNameResolver());
     }
   }
 }
