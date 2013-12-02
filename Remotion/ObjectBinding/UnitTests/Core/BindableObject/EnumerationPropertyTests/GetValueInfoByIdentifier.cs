@@ -16,6 +16,8 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.ExtensibleEnums.Globalization;
+using Remotion.Globalization;
 using Rhino.Mocks;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -88,10 +90,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     public void GetDisplayNameFromGlobalizationSerivce ()
     {
       IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<TestEnum>), "Scalar");
-      IBindableObjectGlobalizationService mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
-      _businessObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
+      var mockEnumerationGlobalizationService = _mockRepository.StrictMock<IEnumerationGlobalizationService>();
+      _businessObjectProvider.AddService (
+          typeof (BindableObjectGlobalizationService),
+          new BindableObjectGlobalizationService (
+              MockRepository.GenerateStub<ICompoundGlobalizationService>(),
+              MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
+              mockEnumerationGlobalizationService,
+              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
 
-      Expect.Call (mockGlobalizationService.GetEnumerationValueDisplayName (TestEnum.Value1)).Return ("MockValue1");
+      Expect.Call (mockEnumerationGlobalizationService.GetEnumerationValueDisplayName (TestEnum.Value1)).Return ("MockValue1");
       _mockRepository.ReplayAll();
 
       IEnumerationValueInfo actual = property.GetValueInfoByIdentifier ("Value1", null);

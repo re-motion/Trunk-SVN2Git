@@ -16,19 +16,26 @@
 // 
 
 using System;
-using System.Collections.Generic;
 using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Globalization;
 using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
-  //TODO: doc
-  public class BindableObjectGlobalizationService : IBindableObjectGlobalizationService
+  /// <summary>
+  /// Defines a facade for localizing the information exposed by the <see cref="IBusinessObject"/> interfaces via various globalization services.
+  /// </summary>
+  /// <remarks>
+  /// Implementations of the <see cref="BindableObjectGlobalizationService"/> can be directly registered with <see cref="BusinessObjectProvider"/> 
+  /// using the <see cref="BusinessObjectProvider.AddService"/> method or indirectly by providing a custom implementation of the 
+  /// <see cref="IBusinessObjectServiceFactory"/>.
+  /// </remarks>
+  [ConcreteImplementation(typeof(BindableObjectGlobalizationService), Lifetime = LifetimeKind.Singleton)]
+  public sealed class BindableObjectGlobalizationService : IBusinessObjectService
   {
     [ResourceIdentifiers]
     [MultiLingualResources ("Remotion.ObjectBinding.Globalization.BindableObjectGlobalizationService")]
@@ -44,8 +51,7 @@ namespace Remotion.ObjectBinding.BindableObject
     private readonly IExtensibleEnumerationGlobalizationService _extensibleEnumerationGlobalizationService;
 
     public BindableObjectGlobalizationService (
-      //TOOD AO: replace with ICompoundGloblaizationService
-        IEnumerable<IGlobalizationService> globalizationServices,
+        ICompoundGlobalizationService globalizationServices,
         IMemberInformationGlobalizationService memberInformationGlobalizationService,
         IEnumerationGlobalizationService enumerationGlobalizationService,
         IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService)
@@ -56,51 +62,71 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
       
       _resourceManager =
-          new DoubleCheckedLockingContainer<IResourceManager> (
-              () => new CompoundGlobalizationService (globalizationServices).GetResourceManager (typeof (ResourceIdentifier)));
+          new DoubleCheckedLockingContainer<IResourceManager> (() => globalizationServices.GetResourceManager (typeof (ResourceIdentifier)));
       _memberInformationGlobalizationService = memberInformationGlobalizationService;
       _enumerationGlobalizationService = enumerationGlobalizationService;
       _extensibleEnumerationGlobalizationService = extensibleEnumerationGlobalizationService;
     }
 
+    /// <summary>
+    /// Gets the localized display name of an enumeration value.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>The localized display name.</returns>
     public string GetEnumerationValueDisplayName (Enum value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
       return _enumerationGlobalizationService.GetEnumerationValueDisplayName (value);
     }
 
+    /// <summary>
+    /// Gets the localized display name of the extensible enumeration value.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>The localized display name.</returns>
     public string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value) //move to member info globalization service
     {
       ArgumentUtility.CheckNotNull ("value", value);
       return _extensibleEnumerationGlobalizationService.GetExtensibleEnumerationValueDisplayName (value);
     }
 
+    /// <summary>
+    /// Gets the localized display name of a boolean value.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>The localized display name.</returns>
     public string GetBooleanValueDisplayName (bool value)
     {
       return _resourceManager.Value.GetString (value ? ResourceIdentifier.True : ResourceIdentifier.False);
     }
 
-    public string GetPropertyDisplayName (IPropertyInformation propertyInfo, ITypeInformation typeInfo)
+    /// <summary>
+    /// Gets the localized display name of a property.
+    /// </summary>
+    /// <param name="propertyInformation"></param>
+    /// <param name="typeInformationForResourceResolution"></param>
+    /// <returns>The localized display name.</returns>
+    public string GetPropertyDisplayName (IPropertyInformation propertyInformation, ITypeInformation typeInformationForResourceResolution)
     {
-      ArgumentUtility.CheckNotNull ("typeInfo", typeInfo);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
       // Note: Currently, MixedMultilingualResources requires the concrete mixed type and the concrete implemented property for globalization 
       // attribute analysis. We need to extract that information from BindableObjectMixinIntroducedPropertyInformation. The goal is to redesign mixin-
       // based globalization some time, so that we can work with ordinary IPropertyInformation objects
 
-      var mixinIntroducedPropertyInformation = propertyInfo as BindableObjectMixinIntroducedPropertyInformation;
+      var mixinIntroducedPropertyInformation = propertyInformation as BindableObjectMixinIntroducedPropertyInformation;
       var property = mixinIntroducedPropertyInformation == null
-          ? propertyInfo
+          ? propertyInformation
           : mixinIntroducedPropertyInformation.FindInterfaceDeclarations()  //Is already evaluated within implementation -> not performance relevant
               .Single (
                   () =>
                       new InvalidOperationException (
                           string.Format (
                               "BindableObjectGlobalizationService only supports unique interface declarations but proerty '{0}' is declared on multiply interfaces",
-                              propertyInfo.Name)));
+                              propertyInformation.Name)));
 
-      return _memberInformationGlobalizationService.GetPropertyDisplayName (property, typeInfo);
+      return _memberInformationGlobalizationService.GetPropertyDisplayName (property, typeInformationForResourceResolution);
     }
   }
 }

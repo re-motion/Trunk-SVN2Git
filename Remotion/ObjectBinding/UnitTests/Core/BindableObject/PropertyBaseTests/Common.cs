@@ -19,6 +19,8 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.ExtensibleEnums.Globalization;
+using Remotion.Globalization;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -345,10 +347,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               false,
               false,
               new BindableObjectDefaultValueStrategy()));
-      var mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
-      _bindableObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
+      _bindableObjectProvider.AddService (
+          typeof (BindableObjectGlobalizationService),
+          new BindableObjectGlobalizationService (
+              MockRepository.GenerateStub<ICompoundGlobalizationService>(),
+              MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
+              MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
+              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
 
-      var displayName = property.DisplayName;
+      Dev.Null = property.DisplayName;
     }
 
     [Test]
@@ -367,10 +374,19 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               new BindableObjectDefaultValueStrategy()));
       property.SetReflectedClass (_bindableObjectClass);
 
-      var mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
-      _bindableObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
+      var mockMemberInformationGlobalizationService = _mockRepository.StrictMock<IMemberInformationGlobalizationService>();
+      _bindableObjectProvider.AddService (
+          typeof (BindableObjectGlobalizationService),
+          new BindableObjectGlobalizationService (
+              MockRepository.GenerateStub<ICompoundGlobalizationService>(),
+              mockMemberInformationGlobalizationService,
+              MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
+              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
 
-      Expect.Call (mockGlobalizationService.GetPropertyDisplayName (propertyInfo, TypeAdapter.Create (_bindableObjectClass.TargetType)))
+      Expect.Call (
+          mockMemberInformationGlobalizationService.GetPropertyDisplayName (
+              propertyInfo,
+              TypeAdapter.Create (_bindableObjectClass.TargetType)))
           .Return ("MockString");
       _mockRepository.ReplayAll();
 

@@ -148,7 +148,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        IBindableObjectGlobalizationService globalizationService = BusinessObjectProvider.GetService<IBindableObjectGlobalizationService>();
+        var globalizationService = BusinessObjectProvider.GetService<BindableObjectGlobalizationService>();
         if (globalizationService == null)
           return Identifier;
 

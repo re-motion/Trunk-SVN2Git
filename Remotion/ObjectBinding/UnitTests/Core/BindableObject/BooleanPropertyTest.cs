@@ -15,10 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
+using Remotion.ExtensibleEnums.Globalization;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -97,10 +101,28 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetDisplayName_WithGlobalizationSerivce ()
     {
       IBusinessObjectBooleanProperty property = CreateProperty ("Scalar");
-      IBindableObjectGlobalizationService mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
-      _businessObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
+      var mockCompoundGlobalizationService = _mockRepository.StrictMock<ICompoundGlobalizationService>();
+      _businessObjectProvider.AddService (
+          typeof (BindableObjectGlobalizationService),
+          new BindableObjectGlobalizationService (
+              mockCompoundGlobalizationService,
+              MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
+              MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
+              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
 
-      Expect.Call (mockGlobalizationService.GetBooleanValueDisplayName (true)).Return ("MockTrue");
+      var resourceIdentifierType = typeof (BindableObjectGlobalizationService).GetNestedType ("ResourceIdentifier", BindingFlags.NonPublic);
+
+      var mockResourceManager = _mockRepository.StrictMock<IResourceManager>();
+      Expect.Call (
+          mockCompoundGlobalizationService.GetResourceManager (TypeAdapter.Create (resourceIdentifierType)))
+          .Return (mockResourceManager);
+
+      Expect.Call (
+          mockResourceManager.TryGetString (
+              Arg.Is ("Remotion.ObjectBinding.BindableObject.BindableObjectGlobalizationService.True"),
+              out Arg<string>.Out ("MockTrue").Dummy))
+          .Return (true);
+
       _mockRepository.ReplayAll();
 
       string actual = property.GetDisplayName (true);

@@ -199,7 +199,6 @@
     <Compile Include="BindableObject\IMetadataFactory.cs" />
     <Compile Include="BindableObject\IPropertyFinder.cs" />
     <Compile Include="BindableObject\GetObjectServiceTypeAttribute.cs" />
-    <Compile Include="BindableObject\IBusinessObjectGlobalizationService.cs" />
     <Compile Include="BindableObject\IGetObjectService.cs" />
     <Compile Include="BindableObject\Properties\BooleanProperty.cs" />
     <Compile Include="BindableObject\Properties\GuidProperty.cs" />

@@ -19,6 +19,8 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums;
+using Remotion.ExtensibleEnums.Globalization;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -60,7 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var extensibleEnumInfo = ExtensibleEnumWithResources.Values.Value1 ().GetValueInfo ();
 
-      Assert.That (_businessObjectProvider.GetService (typeof (IBindableObjectGlobalizationService)), Is.Null);
+      Assert.That (_businessObjectProvider.GetService (typeof (BindableObjectGlobalizationService)), Is.Null);
       var info = _propertyWithResources.CreateEnumerationValueInfo (extensibleEnumInfo, null);
 
       Assert.That (info.DisplayName, Is.EqualTo (extensibleEnumInfo.Value.ToString ()));
@@ -70,16 +72,24 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void CreateEnumerationValueInfo_DisplayName_WithGlobalizationService ()
     {
       var extensibleEnumInfo = ExtensibleEnumWithResources.Values.Value1 ().GetValueInfo ();
-      var globalizationServiceMock = MockRepository.GenerateMock<IBindableObjectGlobalizationService> ();
-      
-      globalizationServiceMock.Expect (mock => mock.GetExtensibleEnumerationValueDisplayName (extensibleEnumInfo.Value)).Return ("DisplayName 1");
-      globalizationServiceMock.Replay ();
+      var mockExtensibleEnumerationGlobalizationService = MockRepository.GenerateMock<IExtensibleEnumerationGlobalizationService> ();
 
-      _businessObjectProvider.AddService (globalizationServiceMock);
+      _businessObjectProvider.AddService (
+          typeof (BindableObjectGlobalizationService),
+          new BindableObjectGlobalizationService (
+              MockRepository.GenerateStub<ICompoundGlobalizationService>(),
+              MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
+              MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
+              mockExtensibleEnumerationGlobalizationService));
+
+      mockExtensibleEnumerationGlobalizationService
+          .Expect (mock => mock.GetExtensibleEnumerationValueDisplayName (extensibleEnumInfo.Value))
+          .Return ("DisplayName 1");
+      mockExtensibleEnumerationGlobalizationService.Replay ();
 
       var info = _propertyWithResources.CreateEnumerationValueInfo (extensibleEnumInfo, null);
 
-      globalizationServiceMock.VerifyAllExpectations ();
+      mockExtensibleEnumerationGlobalizationService.VerifyAllExpectations ();
       Assert.That (info.DisplayName, Is.EqualTo ("DisplayName 1"));
     }
 

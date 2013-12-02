@@ -88,7 +88,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="Core\BindableObject\IBindableObjectGlobalizationServiceTest.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectGlobalizationServiceTest.cs" />
     <Compile Include="Core\BindableObject\IntergrationTests\Globalization\GlobalizationIntegrationTests.cs" />
     <Compile Include="Core\BindableObject\IntergrationTests\Globalization\Resources\MixinOfMixinAddingResources.Designer.cs">
       <DependentUpon>MixinOfMixinAddingResources.resx</DependentUpon>
