@@ -19,11 +19,10 @@ using System;
 using System.Collections.Specialized;
 using NUnit.Framework;
 using Remotion.Globalization;
-using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 using Remotion.UnitTests.Globalization.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.UnitTests.ExtensibleEnums.Globalization
+namespace Remotion.UnitTests.Globalization
 {
   [TestFixture]
   public class ResourceManagerExtensionsTest
