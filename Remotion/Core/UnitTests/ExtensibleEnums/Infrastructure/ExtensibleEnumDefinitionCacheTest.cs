@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
           new ExtensibleEnumDefinitionCache (
               new ExtensibleEnumValueDiscoveryService (
                   new CompoundGlobalizationService (
-                      new[] { new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>()) })));
+                      new[] { new GlobalizationService (new ResourceManagerResolver()) })));
     }
 
     [Test]

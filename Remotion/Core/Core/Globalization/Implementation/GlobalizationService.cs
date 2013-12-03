@@ -28,12 +28,12 @@ namespace Remotion.Globalization.Implementation
   /// </summary>
   public sealed class GlobalizationService : IGlobalizationService
   {
-    private readonly IResourceManagerResolver<MultiLingualResourcesAttribute> _resourceManagerResolver;
+    private readonly IResourceManagerResolver _resourceManagerResolver;
 
     private readonly ICache<ITypeInformation, IResourceManager> _resourceManagerCache =
         CacheFactory.CreateWithLocking<ITypeInformation, IResourceManager> ();
 
-    public GlobalizationService (IResourceManagerResolver<MultiLingualResourcesAttribute> resourceManagerResolver)
+    public GlobalizationService (IResourceManagerResolver resourceManagerResolver)
     {
       ArgumentUtility.CheckNotNull ("resourceManagerResolver", resourceManagerResolver);
 

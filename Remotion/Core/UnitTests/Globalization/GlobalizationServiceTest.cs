@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Globalization
   public class GlobalizationServiceTest
   {
     private GlobalizationService _globalizationService;
-    private IResourceManagerResolver<MultiLingualResourcesAttribute> _resolverMock;
+    private IResourceManagerResolver _resolverMock;
     private IResourceManager _resourceManagerStub;
 
     [SetUp]
@@ -37,7 +37,7 @@ namespace Remotion.UnitTests.Globalization
     {
       _resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
 
-      _resolverMock = MockRepository.GenerateStrictMock<IResourceManagerResolver<MultiLingualResourcesAttribute>>();
+      _resolverMock = MockRepository.GenerateStrictMock<IResourceManagerResolver>();
       _globalizationService = new GlobalizationService (_resolverMock);
     }
 

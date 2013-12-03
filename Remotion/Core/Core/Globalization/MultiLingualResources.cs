@@ -17,7 +17,6 @@
 
 using System;
 using Remotion.Globalization.Implementation;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization
@@ -28,15 +27,14 @@ namespace Remotion.Globalization
   [Obsolete ("Retrieve IGlobalizationService from IoC container instead.")]
   public static class MultiLingualResources
   {
-    private static readonly IGlobalizationService s_globalizationService =
-        new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>());
+    private static readonly IGlobalizationService s_globalizationService = new GlobalizationService (new ResourceManagerResolver());
 
     /// <summary>
     ///   Returns an instance of <c>IResourceManager</c> for the resource container specified
     ///   in the class declaration of the type.
     /// </summary>
-    /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/Common/*' />
-    /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/param[@name="objectType" or @name="includeHierarchy"]' />
+    /// <include file='..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/Common/*' />
+    /// <include file='..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/param[@name="objectType" or @name="includeHierarchy"]' />
     public static IResourceManager GetResourceManager (Type objectType, bool includeHierarchy)
     {
       ArgumentUtility.CheckNotNull ("objectType", objectType);
@@ -61,8 +59,8 @@ namespace Remotion.Globalization
     ///   Returns an instance of <c>IResourceManager</c> for the resource container specified
     ///   in the class declaration of the type.
     /// </summary>
-    /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/Common/*' />
-    /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/param[@name="objectType"]' />
+    /// <include file='..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/Common/*' />
+    /// <include file='..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/param[@name="objectType"]' />
     public static IResourceManager GetResourceManager (Type objectType)
     {
       ArgumentUtility.CheckNotNull ("objectType", objectType);

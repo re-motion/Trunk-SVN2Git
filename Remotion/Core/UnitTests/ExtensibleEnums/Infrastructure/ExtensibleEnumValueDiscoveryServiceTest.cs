@@ -55,7 +55,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     {
       _fakeColorDefinition = new ExtensibleEnumDefinition<Color> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
       _fakePlanetDefinition = new ExtensibleEnumDefinition<Planet> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
-      _globalizationService = new CompoundGlobalizationService(new [] { new GlobalizationService(new ResourceManagerResolver<MultiLingualResourcesAttribute>())});
+      _globalizationService = new CompoundGlobalizationService(new [] { new GlobalizationService(new ResourceManagerResolver())});
 
        _typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
        _service = new TestableExtensibleEnumValueDiscoveryService (_typeDiscoveryServiceStub, _globalizationService);

@@ -43,7 +43,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     public virtual void SetUp ()
     {
       GlobalizationService =
-          new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>()) });
+          new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) });
     }
   }
 }

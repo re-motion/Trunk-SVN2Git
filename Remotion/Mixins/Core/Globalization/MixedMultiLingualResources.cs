@@ -46,8 +46,8 @@ namespace Remotion.Mixins.Globalization
         new CompoundGlobalizationService (
             new IGlobalizationService[]
             {
-                new MixinGlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>()),
-                new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>())
+                new MixinGlobalizationService (new ResourceManagerResolver()),
+                new GlobalizationService (new ResourceManagerResolver())
             });
 
     /// <summary>

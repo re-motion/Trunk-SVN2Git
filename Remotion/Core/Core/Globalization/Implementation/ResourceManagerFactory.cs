@@ -34,9 +34,8 @@ namespace Remotion.Globalization.Implementation
     ///   Returns an <b>ResourceManager</b> array for the resource containers specified through the 
     ///   <paramref name="resourceAttributes"/>.
     /// </summary>
-    /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManagers/*' />
-    public ResourceManager[] GetResourceManagers<TAttribute> (Assembly assembly, TAttribute[] resourceAttributes)
-        where TAttribute : Attribute, IResourcesAttribute
+    /// <include file='..\..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManagers/*' />
+    public ResourceManager[] GetResourceManagers (Assembly assembly, IResourcesAttribute[] resourceAttributes)
     {
       ArgumentUtility.CheckNotNull ("assembly", assembly);
       ArgumentUtility.CheckNotNull ("resourceAttributes", resourceAttributes);

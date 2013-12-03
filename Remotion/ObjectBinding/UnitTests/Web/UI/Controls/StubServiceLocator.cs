@@ -54,7 +54,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
           new CompoundGlobalizationService (
               new IGlobalizationService[]
               {
-                  new GlobalizationService (new ResourceManagerResolver<MultiLingualResourcesAttribute>())
+                  new GlobalizationService (new ResourceManagerResolver())
               });
 
       _instances.Add (

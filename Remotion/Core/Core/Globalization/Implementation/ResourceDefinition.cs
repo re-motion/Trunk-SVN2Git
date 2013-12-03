@@ -14,22 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Collections;
 using Remotion.Utilities;
 
-namespace Remotion.Globalization
+namespace Remotion.Globalization.Implementation
 {
-  public class ResourceDefinition<TAttribute>
-      where TAttribute : Attribute, IResourcesAttribute
+  public class ResourceDefinition
   {
     private readonly Type _type;
-    private readonly TAttribute[] _ownAttributes;
-    private readonly List<Tuple<Type, TAttribute[]>> _supplementingAttributes = new List<Tuple<Type, TAttribute[]>>();
+    private readonly IResourcesAttribute[] _ownAttributes;
+    private readonly List<Tuple<Type, IResourcesAttribute[]>> _supplementingAttributes = new List<Tuple<Type, IResourcesAttribute[]>> ();
 
-    public ResourceDefinition (Type type, TAttribute[] ownAttributes)
+    public ResourceDefinition (Type type, IResourcesAttribute[] ownAttributes)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("ownAttributes", ownAttributes);
@@ -42,12 +42,12 @@ namespace Remotion.Globalization
       get { return _type; }
     }
 
-    public TAttribute[] OwnAttributes
+    public IResourcesAttribute[] OwnAttributes
     {
       get { return _ownAttributes; }
     }
 
-    public ReadOnlyCollection<Tuple<Type, TAttribute[]>> SupplementingAttributes
+    public ReadOnlyCollection<Tuple<Type, IResourcesAttribute[]>> SupplementingAttributes
     {
       get { return _supplementingAttributes.AsReadOnly(); }
     }
@@ -57,16 +57,16 @@ namespace Remotion.Globalization
       get { return OwnAttributes.Length > 0 || _supplementingAttributes.Count > 0; }
     }
 
-    public IEnumerable<Tuple<Type, TAttribute[]>> GetAllAttributePairs()
+    public IEnumerable<Tuple<Type, IResourcesAttribute[]>> GetAllAttributePairs ()
     {
       if (OwnAttributes.Length > 0)
-        yield return new Tuple<Type, TAttribute[]> (Type, OwnAttributes);
-      foreach (Tuple<Type, TAttribute[]> supplementingAttributes in SupplementingAttributes)
+        yield return new Tuple<Type, IResourcesAttribute[]> (Type, OwnAttributes);
+      foreach (Tuple<Type, IResourcesAttribute[]> supplementingAttributes in SupplementingAttributes)
         yield return supplementingAttributes;
     }
 
 
-    public void AddSupplementingAttributes (Type type, TAttribute[] attributes)
+    public void AddSupplementingAttributes (Type type, IResourcesAttribute[] attributes)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("attributes", attributes);
@@ -74,11 +74,11 @@ namespace Remotion.Globalization
       _supplementingAttributes.Add (Tuple.Create (type, attributes));
     }
 
-    public void AddSupplementingAttributes (IEnumerable<Tuple<Type, TAttribute[]>> attributePairs)
+    public void AddSupplementingAttributes (IEnumerable<Tuple<Type, IResourcesAttribute[]>> attributePairs)
     {
       ArgumentUtility.CheckNotNull ("attributePairs", attributePairs);
 
-      foreach (Tuple<Type, TAttribute[]> pair in attributePairs)
+      foreach (Tuple<Type, IResourcesAttribute[]> pair in attributePairs)
         AddSupplementingAttributes (pair.Item1, pair.Item2);
     }
   }

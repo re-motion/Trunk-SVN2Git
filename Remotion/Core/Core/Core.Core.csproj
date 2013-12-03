@@ -319,7 +319,7 @@
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
     <Compile Include="Context\CallContextStorageProvider.cs" />
-    <Compile Include="Globalization\ResourceDefinition.cs" />
+    <Compile Include="Globalization\Implementation\ResourceDefinition.cs" />
     <Compile Include="Globalization\Implementation\ResourceManagerFactory.cs" />
     <Compile Include="Reflection\CodeGeneration\SerializationEventRaiser.cs" />
     <Compile Include="Collections\AutoInitDictionary.cs" />

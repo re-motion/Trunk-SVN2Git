@@ -27,12 +27,12 @@ namespace Remotion.UnitTests.Globalization
   [TestFixture]
   public class ResourceManagerResolverTest
   {
-    private ResourceManagerResolver<MultiLingualResourcesAttribute> _resolver;
+    private ResourceManagerResolver _resolver;
 
     [SetUp]
     public void SetUp ()
     {
-      _resolver = new ResourceManagerResolver<MultiLingualResourcesAttribute>();
+      _resolver = new ResourceManagerResolver();
     }
 
     [Test]

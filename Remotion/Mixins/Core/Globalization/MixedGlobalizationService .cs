@@ -33,11 +33,11 @@ namespace Remotion.Mixins.Globalization
   public class MixinGlobalizationService : IGlobalizationService
   {
     private volatile MixinConfiguration _mixinConfiguration;
-    private readonly IResourceManagerResolver<MultiLingualResourcesAttribute> _resourceManagerResolver;
+    private readonly IResourceManagerResolver _resourceManagerResolver;
     private readonly ICache<ITypeInformation, IResourceManager> _resourceManagerCache =
         CacheFactory.CreateWithLocking<ITypeInformation, IResourceManager>();
 
-    public MixinGlobalizationService (IResourceManagerResolver<MultiLingualResourcesAttribute> resourceManagerResolver)
+    public MixinGlobalizationService (IResourceManagerResolver resourceManagerResolver)
     {
       ArgumentUtility.CheckNotNull ("resourceManagerResolver", resourceManagerResolver);
 

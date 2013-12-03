@@ -26,10 +26,8 @@ namespace Remotion.Globalization.Implementation
   /// <summary>
   /// Provides a generalized implementation of the algorithms used to translate resource attributes into <see cref="IResourceManager"/> instances.
   /// </summary>
-  /// <typeparam name="TAttribute">The type of the resource attribute to be resolved by this class.</typeparam>
   /// <threadsafety static="true" instance="true"/>
-  public sealed class ResourceManagerResolver<TAttribute> : IResourceManagerResolver<TAttribute>
-      where TAttribute: Attribute, IResourcesAttribute
+  public sealed class ResourceManagerResolver : IResourceManagerResolver
   {
     private readonly LockingCacheDecorator<Type, ResourceManagerCacheEntry> _resourceManagerWrappersCache =
         CacheFactory.CreateWithLocking<Type, ResourceManagerCacheEntry>();
@@ -87,7 +85,7 @@ namespace Remotion.Globalization.Implementation
       }
     }
 
-    private IEnumerable<ResourceDefinition<TAttribute>> GetResourceDefinitionStream (Type type)
+    private IEnumerable<ResourceDefinition> GetResourceDefinitionStream (Type type)
     {
       var currentType = type;
       while (currentType != null)
@@ -99,13 +97,13 @@ namespace Remotion.Globalization.Implementation
       }
     }
 
-    private ResourceDefinition<TAttribute> GetResourceDefinition (Type type)
+    private ResourceDefinition GetResourceDefinition (Type type)
     {
-      TAttribute[] resourceAttributes = AttributeUtility.GetCustomAttributes<TAttribute> (type, false);
-      return new ResourceDefinition<TAttribute> (type, resourceAttributes);
+      IResourcesAttribute[] resourceAttributes = AttributeUtility.GetCustomAttributes<IResourcesAttribute> (type, false);
+      return new ResourceDefinition (type, resourceAttributes);
     }
 
-    private ResourceManagerSet CreateResourceManagerSet (IEnumerable<ResourceDefinition<TAttribute>> resourceDefinitions)
+    private ResourceManagerSet CreateResourceManagerSet (IEnumerable<ResourceDefinition> resourceDefinitions)
     {
       return ResourceManagerWrapper.CreateWrapperSet (
           resourceDefinitions

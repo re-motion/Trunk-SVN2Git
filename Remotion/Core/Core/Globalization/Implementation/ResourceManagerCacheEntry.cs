@@ -21,7 +21,7 @@ using Remotion.Utilities;
 namespace Remotion.Globalization.Implementation
 {
   /// <summary>
-  /// Holds resource manager information cached by <see cref="ResourceManagerResolver{TAttribute}"/>.
+  /// Holds resource manager information cached by <see cref="ResourceManagerResolver"/>.
   /// </summary>
   public sealed class ResourceManagerCacheEntry
   {

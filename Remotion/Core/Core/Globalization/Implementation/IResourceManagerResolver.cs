@@ -23,10 +23,8 @@ namespace Remotion.Globalization.Implementation
   /// <summary>
   /// Defines the interface to retrieve an <see cref="IResourceManager"/> to make a resource-lookup.
   /// </summary>
-  /// <typeparam name="TAttribute"></typeparam>
-  [ConcreteImplementation (typeof (ResourceManagerResolver<MultiLingualResourcesAttribute>), Lifetime = LifetimeKind.Singleton)]
-  public interface IResourceManagerResolver<TAttribute>
-      where TAttribute: Attribute, IResourcesAttribute
+  [ConcreteImplementation (typeof (ResourceManagerResolver), Lifetime = LifetimeKind.Singleton)]
+  public interface IResourceManagerResolver
   {
     /// <summary>
     /// Returns the <see cref="IResourceManager"/> for a specified <see cref="Type"/>.
