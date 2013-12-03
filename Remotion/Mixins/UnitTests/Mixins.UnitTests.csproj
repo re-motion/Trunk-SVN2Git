@@ -77,7 +77,6 @@
     </Compile>
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\LoadingFlushedCodeTest.cs" />
     <Compile Include="Core\Globalization\MixinGlobalizationServiceTest.cs" />
-    <Compile Include="Core\Globalization\MixedMultiLingualResourcesTest.cs" />
     <Compile Include="Core\Globalization\Resources\ClassWithResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
