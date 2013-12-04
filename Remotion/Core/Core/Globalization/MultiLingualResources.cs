@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using Remotion.Globalization.Implementation;
 using Remotion.Utilities;
 
@@ -27,7 +28,7 @@ namespace Remotion.Globalization
   [Obsolete ("Retrieve IGlobalizationService from IoC container instead.")]
   public static class MultiLingualResources
   {
-    private static readonly IGlobalizationService s_globalizationService = new GlobalizationService (new ResourceManagerResolver());
+    private static readonly ResourceManagerResolver s_resourceManagerResolver = new ResourceManagerResolver ();
 
     /// <summary>
     ///   Returns an instance of <c>IResourceManager</c> for the resource container specified
@@ -40,10 +41,7 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("objectType", objectType);
       ArgumentUtility.CheckNotNull ("includeHierarchy", includeHierarchy);
 
-      if (includeHierarchy == false)
-        throw new NotSupportedException ("Usage of MixedMultiLingualResources.GetResourceManager with includeHierarchy=false is not supported.");
-
-      var resourceManager = s_globalizationService.GetResourceManager (objectType);
+      var resourceManager = s_resourceManagerResolver.GetResourceManager (objectType);
       if (resourceManager.IsNull)
       {
         var message = string.Format (
@@ -52,7 +50,18 @@ namespace Remotion.Globalization
         throw new ResourceException (message);
       }
 
-      return resourceManager;
+      if (includeHierarchy || objectType.BaseType == null)
+        return resourceManager;
+
+      var baseResourceManager = s_resourceManagerResolver.GetResourceManager (objectType.BaseType);
+      if (baseResourceManager.IsNull)
+        return resourceManager;
+
+      var resourceManagerSet = (ResourceManagerSet) resourceManager;
+      var baseResourceManagerSet = (ResourceManagerSet) baseResourceManager;
+
+      return new ResourceManagerSet (
+          resourceManagerSet.ResourceManagers.Take (resourceManagerSet.ResourceManagers.Count - baseResourceManagerSet.ResourceManagers.Count));
     }
 
     /// <summary>
@@ -64,7 +73,7 @@ namespace Remotion.Globalization
     public static IResourceManager GetResourceManager (Type objectType)
     {
       ArgumentUtility.CheckNotNull ("objectType", objectType);
-      return GetResourceManager (objectType, true);
+      return GetResourceManager (objectType, false);
     }
 
     /// <summary>
@@ -80,7 +89,7 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
       ArgumentUtility.CheckNotNull ("name", name);
 
-      var resourceManager = GetResourceManager (objectTypeToGetResourceFor);
+      var resourceManager = GetResourceManager (objectTypeToGetResourceFor, false);
       var text = resourceManager.GetString (name);
       if (text == name)
         return String.Empty;
@@ -118,7 +127,7 @@ namespace Remotion.Globalization
 
       try
       {
-        var resourceManager = GetResourceManager (objectTypeToGetResourceFor);
+        var resourceManager = GetResourceManager (objectTypeToGetResourceFor, false);
         string text = resourceManager.GetString (name);
         return (text != name);
       }
@@ -155,7 +164,7 @@ namespace Remotion.Globalization
     {
       ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
 
-      return !GetResourceManager (objectTypeToGetResourceFor).IsNull;
+      return !GetResourceManager (objectTypeToGetResourceFor, false).IsNull;
     }
 
     /// <summary>

@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using Remotion.Collections;
@@ -75,9 +76,9 @@ namespace Remotion.Globalization
       throw new InvalidOperationException ("Use ResourceManagerSet.Create instead. (Version 1.13.211)");
     }
 
-    public IEnumerable<IResourceManager> ResourceManagers
+    public ReadOnlyCollection<IResourceManager> ResourceManagers
     {
-      get { return _resourceManagers.AsReadOnly(); }
+      get { return new ReadOnlyCollection<IResourceManager> (_resourceManagers); }
     }
 
     /// <summary>
