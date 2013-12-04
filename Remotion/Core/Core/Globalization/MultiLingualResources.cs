@@ -18,7 +18,9 @@
 using System;
 using System.Linq;
 using Remotion.Globalization.Implementation;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Globalization
 {
@@ -28,7 +30,12 @@ namespace Remotion.Globalization
   [Obsolete ("Retrieve IGlobalizationService from IoC container instead.")]
   public static class MultiLingualResources
   {
-    private static readonly ResourceManagerResolver s_resourceManagerResolver = new ResourceManagerResolver ();
+    private static readonly DoubleCheckedLockingContainer<GlobalizationService> s_service =
+        new DoubleCheckedLockingContainer<GlobalizationService> (
+            () => SafeServiceLocator.Current.GetAllInstances<IGlobalizationService>()
+                .OfType<GlobalizationService>()
+                .Single (() => new InvalidOperationException ("GlobalizationService is not registered with Service Locator.")));
+
 
     /// <summary>
     ///   Returns an instance of <c>IResourceManager</c> for the resource container specified
@@ -41,7 +48,7 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("objectType", objectType);
       ArgumentUtility.CheckNotNull ("includeHierarchy", includeHierarchy);
 
-      var resourceManager = s_resourceManagerResolver.GetResourceManager (objectType);
+      var resourceManager = s_service.Value.GetResourceManager (objectType);
       if (resourceManager.IsNull)
       {
         var message = string.Format (
@@ -53,7 +60,7 @@ namespace Remotion.Globalization
       if (includeHierarchy || objectType.BaseType == null)
         return resourceManager;
 
-      var baseResourceManager = s_resourceManagerResolver.GetResourceManager (objectType.BaseType);
+      var baseResourceManager = s_service.Value.GetResourceManager (objectType.BaseType);
       if (baseResourceManager.IsNull)
         return resourceManager;
 
