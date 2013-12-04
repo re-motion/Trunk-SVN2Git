@@ -64,7 +64,7 @@ namespace Remotion.Globalization
     public static IResourceManager GetResourceManager (Type objectType)
     {
       ArgumentUtility.CheckNotNull ("objectType", objectType);
-      return GetResourceManager (objectType, false);
+      return GetResourceManager (objectType, true);
     }
 
     /// <summary>
