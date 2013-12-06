@@ -161,7 +161,6 @@
     <Compile Include="BindableObject\DisabledIdentifiersEnumerationFilter.cs" />
     <Compile Include="BindableObject\DisableExtensibleEnumValuesAttribute.cs" />
     <Compile Include="BindableObject\IBindableObjectBaseImplementation.cs" />
-    <Compile Include="BindableObject\IBindableObjectGlobalizationService.cs" />
     <Compile Include="BindableObject\IBusinessObjectServiceTypeAttribute.cs" />
     <Compile Include="BindableObject\IDefaultValueService.cs" />
     <Compile Include="BindableObject\IDefaultValueStrategy.cs" />

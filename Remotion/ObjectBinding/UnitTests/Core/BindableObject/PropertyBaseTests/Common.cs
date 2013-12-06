@@ -348,7 +348,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               false,
               new BindableObjectDefaultValueStrategy()));
       _bindableObjectProvider.AddService (
-          typeof (IBindableObjectGlobalizationService),
+          typeof (BindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
               MockRepository.GenerateStub<ICompoundGlobalizationService>(),
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
@@ -376,7 +376,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
 
       var mockMemberInformationGlobalizationService = _mockRepository.StrictMock<IMemberInformationGlobalizationService>();
       _bindableObjectProvider.AddService (
-          typeof (IBindableObjectGlobalizationService),
+          typeof (BindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
               MockRepository.GenerateStub<ICompoundGlobalizationService>(),
               mockMemberInformationGlobalizationService,

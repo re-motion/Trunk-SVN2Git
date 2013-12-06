@@ -92,7 +92,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
       IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<TestEnum>), "Scalar");
       var mockEnumerationGlobalizationService = _mockRepository.StrictMock<IEnumerationGlobalizationService>();
       _businessObjectProvider.AddService (
-          typeof (IBindableObjectGlobalizationService),
+          typeof (BindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
               MockRepository.GenerateStub<ICompoundGlobalizationService>(),
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),

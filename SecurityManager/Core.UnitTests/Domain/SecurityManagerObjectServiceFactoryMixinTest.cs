@@ -130,7 +130,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public void GetService_FromBindableObjectGlobalizationService ()
     {
       Assert.That (
-          _serviceFactory.CreateService (_bindableObjectProvider, typeof (IBindableObjectGlobalizationService)),
+          _serviceFactory.CreateService (_bindableObjectProvider, typeof (BindableObjectGlobalizationService)),
           Is.InstanceOf (typeof (BindableObjectGlobalizationService)));
     }
 

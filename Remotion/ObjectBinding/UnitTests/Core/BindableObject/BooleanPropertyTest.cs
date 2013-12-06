@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       IBusinessObjectBooleanProperty property = CreateProperty ("Scalar");
       var mockCompoundGlobalizationService = _mockRepository.StrictMock<ICompoundGlobalizationService>();
       _businessObjectProvider.AddService (
-          typeof (IBindableObjectGlobalizationService),
+          typeof (BindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
               mockCompoundGlobalizationService,
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
