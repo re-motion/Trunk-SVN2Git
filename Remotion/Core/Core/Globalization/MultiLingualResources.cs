@@ -30,8 +30,7 @@ namespace Remotion.Globalization
   public static class MultiLingualResources
   {
     private static readonly DoubleCheckedLockingContainer<IResourceManagerResolver> s_resolver =
-        new DoubleCheckedLockingContainer<IResourceManagerResolver> (
-            () => SafeServiceLocator.Current.GetInstance<IResourceManagerResolver>());
+        new DoubleCheckedLockingContainer<IResourceManagerResolver> (() => SafeServiceLocator.Current.GetInstance<IResourceManagerResolver>());
 
 
     /// <summary>
@@ -45,27 +44,20 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("objectType", objectType);
       ArgumentUtility.CheckNotNull ("includeHierarchy", includeHierarchy);
 
-      var resolvedResourceManager = s_resolver.Value.Resolve (objectType);
-      if (resolvedResourceManager.IsNull)
+      var result = s_resolver.Value.Resolve (objectType);
+
+      if (includeHierarchy)
       {
-        var message = string.Format (
-            "Type {0} and its base classes do not define a resource attribute.",
-            objectType.FullName);
-        throw new ResourceException (message);
+        if (result.IsNull)
+          throw new ResourceException (string.Format ("Type {0} and its base classes do not define a resource attribute.", objectType.FullName));
+        return result.ResourceManager;
       }
-
-      if (includeHierarchy || objectType.BaseType == null)
-        return resolvedResourceManager.ResourceManager;
-
-      var baseResourceResourceManager = s_resolver.Value.Resolve (objectType.BaseType);
-      if (baseResourceResourceManager.IsNull)
-        return resolvedResourceManager.ResourceManager;
-
-      var resourceManagerSet = (ResourceManagerSet) resolvedResourceManager.ResourceManager;
-      var baseResourceManagerSet = (ResourceManagerSet) baseResourceResourceManager.ResourceManager;
-
-      return new ResourceManagerSet (
-          resourceManagerSet.ResourceManagers.Take (resourceManagerSet.ResourceManagers.Count - baseResourceManagerSet.ResourceManagers.Count));
+      else
+      {
+        if (result.DefinedResourceManager.IsNull)
+          throw new ResourceException (string.Format ("Type {0} does not define a resource attribute.", objectType.FullName));
+        return result.DefinedResourceManager;
+      }
     }
 
     /// <summary>
