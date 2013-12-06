@@ -36,59 +36,72 @@ namespace Remotion.UnitTests.Globalization
     }
 
     [Test]
-    public void GetResourceManager_NoSuccess ()
+    public void Resolve_WithTypeDefiningSingleResource_ReturnsResourceManager ()
     {
-      var result = _resolver.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes));
+      var result = _resolver.Resolve (typeof (ClassWithResources));
 
-      Assert.That (result, Is.TypeOf (typeof (NullResourceManager)));
+      Assert.That (result.IsNull, Is.False);
+      Assert.That (result.ResourceManager.IsNull, Is.False);
+      Assert.That (result.ResourceManager.Name, Is.EqualTo ("Remotion.UnitTests.Globalization.Resources.ClassWithResources"));
+      Assert.That (result.DefinedResourceManager, Is.SameAs (result.ResourceManager));
+      Assert.That (result.InheritedResourceManager.IsNull, Is.True);
     }
 
     [Test]
-    public void GetResourceManager_Hierarchy ()
+    public void Resolve_WithTypeDefiningMultipleResources_ReturnsResourceManagersInOrderOfDefinition ()
     {
-      var resourceManagerSet = (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes));
-      Assert.That (resourceManagerSet.ResourceManagers.Count(), Is.EqualTo (5));
-      var names = new[]
-                  {
-                      resourceManagerSet.ResourceManagers.ElementAt (4).Name, resourceManagerSet.ResourceManagers.ElementAt (3).Name,
-                      resourceManagerSet.ResourceManagers.ElementAt (2).Name, resourceManagerSet.ResourceManagers.ElementAt (1).Name,
-                      resourceManagerSet.ResourceManagers.ElementAt (0).Name
-                  };
-      Assert.That (names, Is.EquivalentTo (new[] { "One", "Two", "Three", "Four", "Five" }));
-      Assert.That (Array.IndexOf (names, "One"), Is.LessThan (Array.IndexOf (names, "Four")));
+      var result = _resolver.Resolve (typeof (ClassWithMultiLingualResourcesAttributes));
+
+      Assert.That (result.ResourceManager.IsNull, Is.False);
+      Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
+      Assert.That (result.DefinedResourceManager, Is.SameAs (result.ResourceManager));
+      Assert.That (result.InheritedResourceManager.IsNull, Is.True);
+
+      var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
+
+      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
     }
 
     [Test]
-    public void GetResourceManager_DefiningType_Hierarchy ()
+    public void Resolve_TypeWithoutResources_ReturnsNullResult ()
     {
-      var resourceManagerSet =
-          (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes));
-      Assert.That (resourceManagerSet.ResourceManagers.Count(), Is.EqualTo (5));
-      var names = new[]
-                  {
-                      resourceManagerSet.ResourceManagers.ElementAt (4).Name, resourceManagerSet.ResourceManagers.ElementAt (3).Name,
-                      resourceManagerSet.ResourceManagers.ElementAt (2).Name, resourceManagerSet.ResourceManagers.ElementAt (1).Name,
-                      resourceManagerSet.ResourceManagers.ElementAt (0).Name
-                  };
-      Assert.That (names, Is.EquivalentTo (new[] { "One", "Two", "Three", "Four", "Five" }));
-      Assert.That (Array.IndexOf (names, "One"), Is.LessThan (Array.IndexOf (names, "Four")));
+      var result = _resolver.Resolve (typeof (ClassWithoutMultiLingualResourcesAttributes));
+
+      Assert.That (result.IsNull, Is.True);
     }
 
     [Test]
-    public void GetResourceManager_NoDefiningType_Hierarchy ()
+    public void Resolve_WithTypeDefiningAndInheritingMultipleResources_ReturnsResourceManagersInOrderOfDefinition ()
     {
-      var resourceManagerSet = (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes));
-      Assert.That (resourceManagerSet.ResourceManagers.Count(), Is.EqualTo (5));
-      Assert.That (
-          new[]
-          {
-              resourceManagerSet.ResourceManagers.ElementAt (0).Name,
-              resourceManagerSet.ResourceManagers.ElementAt (1).Name,
-              resourceManagerSet.ResourceManagers.ElementAt (2).Name,
-              resourceManagerSet.ResourceManagers.ElementAt (3).Name,
-              resourceManagerSet.ResourceManagers.ElementAt (4).Name
-          },
-          Is.EquivalentTo (new[] { "One", "Two", "Three", "Four", "Five" }));
+      var result = _resolver.Resolve (typeof (InheritedClassWithMultiLingualResourcesAttributes));
+
+      Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
+      var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
+      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five", "One", "Two", "Three" }));
+      Assert.That (resourceManagerSet.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
+      Assert.That (resourceManagerSet.ResourceManagers.Skip (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+
+      Assert.That (result.DefinedResourceManager, Is.InstanceOf<ResourceManagerSet>());
+      var definedResourceManagerSet = (ResourceManagerSet) result.DefinedResourceManager;
+      Assert.That (definedResourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
+
+      Assert.That (result.InheritedResourceManager, Is.InstanceOf<ResourceManagerSet>());
+      var inheritedResourceManagerSet = (ResourceManagerSet) result.InheritedResourceManager;
+      Assert.That (inheritedResourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+    }
+
+    [Test]
+    public void Resolve_WithTypeOnlyInheritingMultipleResources_ReturnsNullResourceManagerForDefinedResourceManager ()
+    {
+      var result = _resolver.Resolve (typeof (InheritedClassWithoutMultiLingualResourcesAttributes));
+
+      Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
+      var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
+      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+
+      Assert.That (result.DefinedResourceManager.IsNull, Is.True);
+
+      Assert.That (result.InheritedResourceManager, Is.SameAs (result.ResourceManager));
     }
   }
 }

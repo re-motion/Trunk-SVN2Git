@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
-using Remotion.UnitTests.Globalization.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Globalization
@@ -28,36 +27,41 @@ namespace Remotion.UnitTests.Globalization
   [TestFixture]
   public class GlobalizationServiceTest
   {
+    private class ResourceTarget
+    {
+    }
+
     private GlobalizationService _globalizationService;
-    private IResourceManagerResolver _resolverMock;
+    private IResourceManagerResolver _resolverStub;
     private IResourceManager _resourceManagerStub;
+    private ResolvedResourceManagerResult _resolvedResourceManagerResult;
 
     [SetUp]
     public void SetUp ()
     {
       _resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
+      _resolvedResourceManagerResult = ResolvedResourceManagerResult.Create (_resourceManagerStub, NullResourceManager.Instance);
 
-      _resolverMock = MockRepository.GenerateStrictMock<IResourceManagerResolver>();
-      _globalizationService = new GlobalizationService (_resolverMock);
+      _resolverStub = MockRepository.GenerateStub<IResourceManagerResolver>();
+      _globalizationService = new GlobalizationService (_resolverStub);
     }
 
     [Test]
-    public void GetResourceManager ()
+    public void GetResourceManager_WithExpectedType ()
     {
-      var type = typeof (ClassWithResources);
+      var type = typeof (ResourceTarget);
       var typeInformation = TypeAdapter.Create (type);
 
-      string value;
       _resourceManagerStub
-        .Stub (sub => _resourceManagerStub.TryGetString ("property:Value1", out value))
-        .Return (true);
-
-      _resolverMock.Expect (mock => mock.GetResourceManager (type)).Return (_resourceManagerStub);
+          .Stub (stub => stub.TryGetString (Arg.Is ("property:Value1"), out Arg<string>.Out ("TheValue").Dummy))
+          .Return (true);
+      _resolverStub.Stub (stub => stub.Resolve (type)).Return (_resolvedResourceManagerResult);
 
       var resourceManager = _globalizationService.GetResourceManager (typeInformation);
 
-      _resolverMock.VerifyAllExpectations();
+      string value;
       Assert.That (resourceManager.TryGetString ("property:Value1", out value), Is.True);
+      Assert.That (value, Is.EqualTo ("TheValue"));
     }
 
     [Test]
@@ -67,25 +71,27 @@ namespace Remotion.UnitTests.Globalization
 
       var result = _globalizationService.GetResourceManager (typeInformation);
 
-      _resolverMock.VerifyAllExpectations();
-      Assert.That (result, Is.TypeOf (typeof (NullResourceManager)));
+      _resolverStub.AssertWasNotCalled (stub => stub.Resolve (Arg<Type>.Is.Anything));
+      Assert.That (result, Is.EqualTo (NullResourceManager.Instance));
     }
 
     [Test]
     public void GetResourceManagerTwice_SameFromCache ()
     {
-      var type = typeof (ClassWithResources);
+      var type = typeof (ResourceTarget);
       var typeInformation = TypeAdapter.Create (type);
 
-      string value;
-      _resourceManagerStub.Stub (sub => _resourceManagerStub.TryGetString ("property:Value1", out value)).Return (true);
+      _resourceManagerStub
+          .Stub (stub => stub.TryGetString (Arg.Is ("property:Value1"), out Arg<string>.Out ("TheValue").Dummy))
+          .Return (true);
 
-      _resolverMock.Expect (mock => mock.GetResourceManager (type)).Return (_resourceManagerStub).Repeat.Once();
+      _resolverStub.Stub (stub => stub.Resolve (type)).Return (_resolvedResourceManagerResult);
 
       var resourceManager1 = _globalizationService.GetResourceManager (typeInformation);
       var resourceManager2 = _globalizationService.GetResourceManager (typeInformation);
 
       Assert.That (resourceManager1, Is.SameAs (resourceManager2));
+      _resolverStub.AssertWasCalled (stub => stub.Resolve (Arg<Type>.Is.Anything), options=>options.Repeat.Once());
     }
   }
 }

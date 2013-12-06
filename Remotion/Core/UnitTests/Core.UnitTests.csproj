@@ -223,7 +223,7 @@
     <Compile Include="Globalization\IMemberInformationGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\IResourceManagerResolverTest.cs" />
     <Compile Include="Globalization\MemberInformationGlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
+    <Compile Include="Globalization\ResolvedResourceManagerResultTest.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
     <Compile Include="Globalization\Resources\ClassWithResources.Designer.cs">

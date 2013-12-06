@@ -16,24 +16,26 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Globalization.Implementation
 {
   /// <summary>
-  /// Defines the interface to retrieve an <see cref="IResourceManager"/> to make a resource-lookup.
+  /// Defines the interface to resolve an <see cref="IResourceManager"/> to make a resource-lookup.
   /// </summary>
   [ConcreteImplementation (typeof (ResourceManagerResolver), Lifetime = LifetimeKind.Singleton)]
   public interface IResourceManagerResolver
   {
     /// <summary>
-    /// Returns the <see cref="IResourceManager"/> for a specified <see cref="Type"/>.
+    /// Resolves the resource manager for a specified <see cref="Type"/>.
     /// </summary>
-    /// <param name="objectType">The <see cref="Type"/> for that a <see cref="IResourceManager"/> should be returned.</param>
+    /// <param name="objectType">The <see cref="Type"/> for which the resource manager should be returned.</param>
     /// <returns>
-    /// Returns the <see cref="IResourceManager"/> for the specified type. If no resource manager could be found,
-    /// a <see cref="NullResourceManager"/> is returned.
+    /// Returns the <see cref="ResolvedResourceManagerResult"/> for the specified type. If no resource manager could be found,
+    /// a <see cref="ResolvedResourceManagerResult.Null"/> is returned.
     /// </returns>
-    IResourceManager GetResourceManager (Type objectType);
+    [NotNull]
+    ResolvedResourceManagerResult Resolve ([NotNull]Type objectType);
   }
 }

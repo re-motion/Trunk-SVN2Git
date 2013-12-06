@@ -267,7 +267,7 @@
     <Compile Include="ExtensibleEnums\IExtensibleEnumDefinition.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryService.cs" />
     <Compile Include="FunctionalProgramming\Maybe.cs" />
-    <Compile Include="Globalization\Implementation\ResourceManagerCacheEntry.cs" />
+    <Compile Include="Globalization\Implementation\ResolvedResourceManagerResult.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttribute.cs" />
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactory.cs" />
@@ -319,7 +319,6 @@
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
     <Compile Include="Context\CallContextStorageProvider.cs" />
-    <Compile Include="Globalization\Implementation\ResourceDefinition.cs" />
     <Compile Include="Globalization\Implementation\ResourceManagerFactory.cs" />
     <Compile Include="Reflection\CodeGeneration\SerializationEventRaiser.cs" />
     <Compile Include="Collections\AutoInitDictionary.cs" />

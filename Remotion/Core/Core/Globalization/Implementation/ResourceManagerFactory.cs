@@ -16,6 +16,8 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using Remotion.Collections;
@@ -28,40 +30,27 @@ namespace Remotion.Globalization.Implementation
   /// </summary>
   public class ResourceManagerFactory
   {
-    private readonly LockingCacheDecorator<string, ResourceManager> _resourceManagersCache = CacheFactory.CreateWithLocking<string, ResourceManager>();
+    private readonly LockingCacheDecorator<Tuple<Assembly, string>, ResourceManager> _resourceManagersCache =
+        CacheFactory.CreateWithLocking<Tuple<Assembly, string>, ResourceManager>();
 
     /// <summary>
     ///   Returns an <b>ResourceManager</b> array for the resource containers specified through the 
     ///   <paramref name="resourceAttributes"/>.
     /// </summary>
     /// <include file='..\..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManagers/*' />
-    public ResourceManager[] GetResourceManagers (Assembly assembly, IResourcesAttribute[] resourceAttributes)
+    public IEnumerable<ResourceManager> GetResourceManagers (Assembly assembly, IEnumerable<IResourcesAttribute> resourceAttributes)
     {
       ArgumentUtility.CheckNotNull ("assembly", assembly);
       ArgumentUtility.CheckNotNull ("resourceAttributes", resourceAttributes);
 
-      ResourceManager[] resourceManagers = new ResourceManager[resourceAttributes.Length];
+      return resourceAttributes.Select (resourcesAttribute => GetResourceManagerFromCache (assembly, resourcesAttribute));
+    }
 
-      //  Load the ResourceManagers for the type's resources
-
-      for (int index = 0; index < resourceAttributes.Length; index++)
-      {
-        Assembly resourceAssembly = resourceAttributes[index].ResourceAssembly;
-        if (resourceAssembly == null)
-          resourceAssembly = assembly;
-        string key = resourceAttributes[index].BaseName + " in " + resourceAssembly.FullName;
-
-        //  Look in cache 
-        resourceManagers[index] = _resourceManagersCache.GetOrCreateValue (
-            key,
-            delegate
-            {
-              string baseName = resourceAttributes[index].BaseName;
-              return new ResourceManager (baseName, resourceAssembly);
-            });
-      }
-
-      return resourceManagers;
+    private ResourceManager GetResourceManagerFromCache (Assembly assembly, IResourcesAttribute resourcesAttribute)
+    {
+      return _resourceManagersCache.GetOrCreateValue (
+          Tuple.Create (resourcesAttribute.ResourceAssembly ?? assembly, resourcesAttribute.BaseName),
+          key => new ResourceManager (key.Item2, key.Item1));
     }
   }
 }

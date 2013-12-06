@@ -20,7 +20,6 @@ using System.Linq;
 using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.Globalization
 {
@@ -30,11 +29,9 @@ namespace Remotion.Globalization
   [Obsolete ("Retrieve IGlobalizationService from IoC container instead.")]
   public static class MultiLingualResources
   {
-    private static readonly DoubleCheckedLockingContainer<GlobalizationService> s_service =
-        new DoubleCheckedLockingContainer<GlobalizationService> (
-            () => SafeServiceLocator.Current.GetAllInstances<IGlobalizationService>()
-                .OfType<GlobalizationService>()
-                .Single (() => new InvalidOperationException ("GlobalizationService is not registered with Service Locator.")));
+    private static readonly DoubleCheckedLockingContainer<IResourceManagerResolver> s_resolver =
+        new DoubleCheckedLockingContainer<IResourceManagerResolver> (
+            () => SafeServiceLocator.Current.GetInstance<IResourceManagerResolver>());
 
 
     /// <summary>
@@ -48,8 +45,8 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("objectType", objectType);
       ArgumentUtility.CheckNotNull ("includeHierarchy", includeHierarchy);
 
-      var resourceManager = s_service.Value.GetResourceManager (objectType);
-      if (resourceManager.IsNull)
+      var resolvedResourceManager = s_resolver.Value.Resolve (objectType);
+      if (resolvedResourceManager.IsNull)
       {
         var message = string.Format (
             "Type {0} and its base classes do not define a resource attribute.",
@@ -58,14 +55,14 @@ namespace Remotion.Globalization
       }
 
       if (includeHierarchy || objectType.BaseType == null)
-        return resourceManager;
+        return resolvedResourceManager.ResourceManager;
 
-      var baseResourceManager = s_service.Value.GetResourceManager (objectType.BaseType);
-      if (baseResourceManager.IsNull)
-        return resourceManager;
+      var baseResourceResourceManager = s_resolver.Value.Resolve (objectType.BaseType);
+      if (baseResourceResourceManager.IsNull)
+        return resolvedResourceManager.ResourceManager;
 
-      var resourceManagerSet = (ResourceManagerSet) resourceManager;
-      var baseResourceManagerSet = (ResourceManagerSet) baseResourceManager;
+      var resourceManagerSet = (ResourceManagerSet) resolvedResourceManager.ResourceManager;
+      var baseResourceManagerSet = (ResourceManagerSet) baseResourceResourceManager.ResourceManager;
 
       return new ResourceManagerSet (
           resourceManagerSet.ResourceManagers.Take (resourceManagerSet.ResourceManagers.Count - baseResourceManagerSet.ResourceManagers.Count));

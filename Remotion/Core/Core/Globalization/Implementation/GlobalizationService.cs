@@ -53,7 +53,7 @@ namespace Remotion.Globalization.Implementation
       var runtimeType = typeInformation.AsRuntimeType();
       if (runtimeType == null)
         return NullResourceManager.Instance;
-      return _resourceManagerResolver.GetResourceManager (runtimeType);
+      return _resourceManagerResolver.Resolve (runtimeType).ResourceManager;
     }
   }
 }

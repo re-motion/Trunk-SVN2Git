@@ -89,7 +89,7 @@ namespace Remotion.Mixins.Globalization
       foreach (var mixinType in mixinTypes)
         CollectResourceManagersRecursively (mixinType, collectedResourceMangers);
 
-      collectedResourceMangers.AddRange (mixinTypes.Select (mixinType => _resourceManagerResolver.GetResourceManager (mixinType)));
+      collectedResourceMangers.AddRange (mixinTypes.Select (mixinType => _resourceManagerResolver.Resolve (mixinType).ResourceManager));
     }
   }
 }
