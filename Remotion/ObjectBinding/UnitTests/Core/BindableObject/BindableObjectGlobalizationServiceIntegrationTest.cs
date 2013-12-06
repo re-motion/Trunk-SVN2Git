@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
   [TestFixture]
   public class BindableObjectGlobalizationServiceIntegrationTest : TestBase
   {
-    private BindableObjectGlobalizationService _globalizationService;
+    private IBindableObjectGlobalizationService _globalizationService;
     private CultureInfo _uiCultureBackup;
     private DefaultServiceLocator _defaultServiceLocator;
     private TypeAdapter _targetType;
@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       base.SetUp();
 
       _defaultServiceLocator = new DefaultServiceLocator();
-      _globalizationService = _defaultServiceLocator.GetInstance<BindableObjectGlobalizationService>();
+      _globalizationService = _defaultServiceLocator.GetInstance<IBindableObjectGlobalizationService>();
       var bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithResources));
       _targetType = TypeAdapter.Create (bindableObjectClass.TargetType);
 

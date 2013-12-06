@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void GetService_FromBindableObjectGlobalizationService ()
     {
       Assert.That (
-          _serviceFactory.CreateService (_bindableDomainObjectProvider, typeof (BindableObjectGlobalizationService)),
+          _serviceFactory.CreateService (_bindableDomainObjectProvider, typeof (IBindableObjectGlobalizationService)),
           Is.InstanceOf (typeof (BindableObjectGlobalizationService)));
     }
 

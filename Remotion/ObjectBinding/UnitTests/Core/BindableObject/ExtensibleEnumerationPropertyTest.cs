@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var extensibleEnumInfo = ExtensibleEnumWithResources.Values.Value1 ().GetValueInfo ();
 
-      Assert.That (_businessObjectProvider.GetService (typeof (BindableObjectGlobalizationService)), Is.Null);
+      Assert.That (_businessObjectProvider.GetService (typeof (IBindableObjectGlobalizationService)), Is.Null);
       var info = _propertyWithResources.CreateEnumerationValueInfo (extensibleEnumInfo, null);
 
       Assert.That (info.DisplayName, Is.EqualTo (extensibleEnumInfo.Value.ToString ()));
@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var mockExtensibleEnumerationGlobalizationService = MockRepository.GenerateMock<IExtensibleEnumerationGlobalizationService> ();
 
       _businessObjectProvider.AddService (
-          typeof (BindableObjectGlobalizationService),
+          typeof (IBindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
               MockRepository.GenerateStub<ICompoundGlobalizationService>(),
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
