@@ -48,14 +48,6 @@ namespace Remotion.Globalization
     {
       ArgumentUtility.CheckNotNull ("enumType", enumType);
 
-      return GetAllValues (enumType, null);
-    }
-
-    [NotNull]
-    public static EnumValue[] GetAllValues ([NotNull] Type enumType, [CanBeNull] CultureInfo culture)
-    {
-      ArgumentUtility.CheckNotNull ("enumType", enumType);
-
       var resourceManager = GetResourceManagerFromCache (enumType);
       if (resourceManager != null)
       {
@@ -65,7 +57,7 @@ namespace Remotion.Globalization
         for (int i = 0; i < data.Length; ++i)
         {
           var value = data[i].Item2;
-          values[i] = new EnumValue (value, GetDescription (value, resourceManager, culture));
+          values[i] = new EnumValue (value, GetDescription (value, resourceManager));
         }
 
         return values;
@@ -78,22 +70,25 @@ namespace Remotion.Globalization
     }
 
     [NotNull]
-    public static string GetDescription ([NotNull] Enum value)
+    public static EnumValue[] GetAllValues ([NotNull] Type enumType, [CanBeNull] CultureInfo culture)
     {
-      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("enumType", enumType);
 
-      return GetDescription (value, null);
+      using (new CultureScope (CultureInfo.CurrentCulture, culture ?? CultureInfo.CurrentUICulture))
+      {
+        return GetAllValues (enumType);
+      }
     }
 
     [NotNull]
-    public static string GetDescription ([NotNull] Enum value, [CanBeNull] CultureInfo culture)
+    public static string GetDescription ([NotNull] Enum value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
       Type enumType = value.GetType();
       var resourceManager = GetResourceManagerFromCache (enumType);
       if (resourceManager != null)
-        return GetDescription (value, resourceManager, culture);
+        return GetDescription (value, resourceManager);
       else
       {
         var enumValues = GetStaticEnumValuesFromCache (enumType);
@@ -105,9 +100,20 @@ namespace Remotion.Globalization
       }
     }
 
-    private static string GetDescription (Enum value, ResourceManager resourceManager, CultureInfo culture)
+    [NotNull]
+    public static string GetDescription ([NotNull] Enum value, [CanBeNull] CultureInfo culture)
     {
-      return resourceManager.GetString (value.GetType().FullName + "." + value.ToString(), culture) ?? value.ToString();
+      ArgumentUtility.CheckNotNull ("value", value);
+
+      using (new CultureScope (CultureInfo.CurrentCulture, culture ?? CultureInfo.CurrentUICulture))
+      {
+        return GetDescription (value);
+      }
+    }
+
+    private static string GetDescription (Enum value, ResourceManager resourceManager)
+    {
+      return resourceManager.GetString (value.GetType().FullName + "." + value.ToString()) ?? value.ToString();
     }
 
     private static ResourceManager GetResourceManagerFromCache (Type enumType)
