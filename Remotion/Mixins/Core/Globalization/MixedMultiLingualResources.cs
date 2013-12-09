@@ -16,7 +16,13 @@
 // 
 
 using System;
+using System.Linq;
+using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
+using Remotion.Reflection;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Globalization
 {
@@ -35,8 +41,17 @@ namespace Remotion.Mixins.Globalization
   /// </list>
   /// Both possibilities have a certain inconsistency, and none is perfect, so the class leaves it to the user to decide.
   /// </remarks>
-  public class MixedMultiLingualResources
+  public static class MixedMultiLingualResources
   {
+    private static readonly DoubleCheckedLockingContainer<IResourceManagerResolver> s_resolver =
+        new DoubleCheckedLockingContainer<IResourceManagerResolver> (() => SafeServiceLocator.Current.GetInstance<IResourceManagerResolver>());
+
+    private static readonly DoubleCheckedLockingContainer<MixinGlobalizationService> s_mixinGlobalizationService =
+        new DoubleCheckedLockingContainer<MixinGlobalizationService> (
+            () => SafeServiceLocator.Current.GetAllInstances<IGlobalizationService>()
+                .OfType<MixinGlobalizationService>()
+                .Single (() => new InvalidOperationException ("MixinGlobalizationService is not registered with the IoC container")));
+
     /// <summary>
     ///   Returns an instance of <see cref="IResourceManager"/> for the resource container specified in the class declaration of the type.
     /// </summary>
@@ -44,10 +59,37 @@ namespace Remotion.Mixins.Globalization
     /// <param name="includeHierarchy">If set to true, <see cref="MultiLingualResourcesAttribute"/> applied to base classes and mixins will be
     /// included in the resource manager; otherwise, only the <paramref name="objectType"/> is searched for such attributes.</param>
     /// <returns>An instance of <see cref="IResourceManager"/> for <paramref name="objectType"/>.</returns>
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: Order of resolution has changed to return resources for mixins first, then the target types. (1.13.223)", true)]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: When using IGlobalizationService, the order of resolution has changed to return resources for mixins first, then the target types. (1.13.223)")]
     public static IResourceManager GetResourceManager (Type objectType, bool includeHierarchy)
     {
-      throw new NotSupportedException ("Retrieve IGlobalizationService from IoC container instead.");
+      ArgumentUtility.CheckNotNull ("objectType", objectType);
+      ArgumentUtility.CheckNotNull ("includeHierarchy", includeHierarchy);
+
+      var targetType = MixinTypeUtility.GetUnderlyingTargetType (objectType);
+      var result = s_resolver.Value.Resolve (targetType);
+      var mixinResourceManager = s_mixinGlobalizationService.Value.GetResourceManager (TypeAdapter.Create (targetType));
+
+      if (includeHierarchy)
+      {
+        if (result.IsNull && mixinResourceManager.IsNull)
+          throw new ResourceException (string.Format ("Type {0} and its base classes do not define a resource attribute.", objectType.FullName));
+        return ResourceManagerSet.Create (result.DefinedResourceManager, mixinResourceManager, result.InheritedResourceManager);
+      }
+      else
+      {
+        //Reproduce bug on on obsolete API
+        if (result.IsNull && mixinResourceManager.IsNull)
+          throw new ResourceException (string.Format ("Type {0} and its base classes do not define a resource attribute.", objectType.FullName));
+        if (result.DefinedResourceManager.IsNull && mixinResourceManager.IsNull)
+          return result.InheritedResourceManager;
+        if (result.DefinedResourceManager.IsNull)
+          return mixinResourceManager;
+        return ResourceManagerSet.Create (result.DefinedResourceManager, mixinResourceManager);
+        //Correct behavior:
+        //if (result.DefinedResourceManager.IsNull && mixinResourceManager.IsNull)
+        //  throw new ResourceException (string.Format ("Type {0} does not define a resource attribute.", objectType.FullName));
+        //return ResourceManagerSet.Create (result.DefinedResourceManager, mixinResourceManager);
+      }
     }
 
     /// <summary>
@@ -56,10 +98,12 @@ namespace Remotion.Mixins.Globalization
     /// </summary>
     /// <param name="objectType">The type to return an <see cref="IResourceManager"/> for.</param>
     /// <returns>An instance of <see cref="IResourceManager"/> for <paramref name="objectType"/>.</returns>
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: Order of resolution has changed to return resources for mixins first, then the target types. (1.13.223)", true)]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: When using IGlobalizationService, the order of resolution has changed to return resources for mixins first, then the target types. (1.13.223)")]
     public static IResourceManager GetResourceManager (Type objectType)
     {
-      throw new NotSupportedException ("Retrieve IGlobalizationService from IoC container instead.");
+      ArgumentUtility.CheckNotNull ("objectType", objectType);
+
+      return GetResourceManager (objectType, false);
     }
 
     /// <summary>
@@ -70,10 +114,17 @@ namespace Remotion.Mixins.Globalization
     /// </param>
     /// <param name="name"> The ID of the resource. </param>
     /// <returns> The found string resource or an empty string. </returns>
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: Order of resolution has changed to return resources for mixins first, then the target types. (1.13.223)", true)]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: When using IGlobalizationService, the order of resolution has changed to return resources for mixins first, then the target types. (1.13.223)")]
     public static string GetResourceText (Type objectTypeToGetResourceFor, string name)
     {
-      throw new NotSupportedException ("Retrieve IGlobalizationService from IoC container instead.");
+      ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
+      ArgumentUtility.CheckNotNull ("name", name);
+
+      var resourceManager = GetResourceManager (objectTypeToGetResourceFor, false);
+      var text = resourceManager.GetString (name);
+      if (text == name)
+        return String.Empty;
+      return text;
     }
 
     /// <summary>
@@ -84,10 +135,19 @@ namespace Remotion.Mixins.Globalization
     /// </param>
     /// <param name="name"> The ID of the resource. </param>
     /// <returns> <see langword="true"/> if the resource can be found. </returns>
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead and test for IResourceManager.ContainsString(...)", true)]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead and test for IResourceManager.ContainsString(...)")]
     public static bool ExistsResourceText (Type objectTypeToGetResourceFor, string name)
     {
-      throw new NotSupportedException ("Retrieve IGlobalizationService from IoC container instead.");
+      try
+      {
+        var resourceManager = GetResourceManager (objectTypeToGetResourceFor, false);
+        string text = resourceManager.GetString (name);
+        return (text != name);
+      }
+      catch
+      {
+        return false;
+      }
     }
 
     /// <summary>
@@ -97,10 +157,17 @@ namespace Remotion.Mixins.Globalization
     ///   The <see cref="Type"/> for which to check for the resource set.
     /// </param>
     /// <returns> <see langword="true"/> if the resource set can be found. </returns>
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead and test for IResourceManager.IsNull==true", true)]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead and test for IResourceManager.IsNull")]
     public static bool ExistsResource (Type objectTypeToGetResourceFor)
     {
-      throw new NotSupportedException ("Retrieve IGlobalizationService from IoC container instead.");
+      try
+      {
+        return !GetResourceManager (objectTypeToGetResourceFor, false).IsNull;
+      }
+      catch (ResourceException)
+      {
+        return false;
+      }
     }
   }
 }

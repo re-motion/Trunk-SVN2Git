@@ -247,7 +247,6 @@
     <Compile Include="Globalization\TestDomain\EnumWithResources.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithResources.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
-    <Compile Include="Globalization\TestDomain\MixinAddingResources.cs" />
     <Compile Include="Globalization\TestDomain\TestEnum.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ILStatement.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\SetUpFixture.cs">
