@@ -43,10 +43,15 @@ namespace Remotion.Globalization
     /// <summary> This is for enums with the EnumDescriptionResourceAttribute.  </summary>
     private static readonly ICache<Type, ResourceManager> s_enumResourceManagers = CacheFactory.CreateWithLocking<Type, ResourceManager>();
 
+    // TODO RM-5831: Enum.GetValues (type), return new EnumValue for each enum, use service to get description.
+    //    private static readonly DoubleCheckedLockingContainer<IEnumerationGlobalizationService> s_globalizationService =
+    //    new DoubleCheckedLockingContainer<IEnumerationGlobalizationService> (() => SafeServiceLocator.Current.GetInstance<IEnumerationGlobalizationService>());
+
     [NotNull]
     public static EnumValue[] GetAllValues ([NotNull] Type enumType)
     {
       ArgumentUtility.CheckNotNull ("enumType", enumType);
+      // TODO RM-5831: Enum.GetValues (type), return new EnumValue for each enum, use service to get description.
 
       var resourceManager = GetResourceManagerFromCache (enumType);
       if (resourceManager != null)
@@ -113,6 +118,7 @@ namespace Remotion.Globalization
 
     private static string GetDescription (Enum value, ResourceManager resourceManager)
     {
+      // s_enumerationGlobalizationService.Value.GetEnumerationValueDisplayName (value);
       return resourceManager.GetString (value.GetType().FullName + "." + value.ToString()) ?? value.ToString();
     }
 

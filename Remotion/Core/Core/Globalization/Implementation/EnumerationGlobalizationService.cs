@@ -28,6 +28,12 @@ namespace Remotion.Globalization.Implementation
     public string GetEnumerationValueDisplayName (Enum value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
+      // TODO RM-5831: change this to have the implementation in here. Get IGlobalizationService injected into ctor.
+      // cache ResourceManager for EnumType
+      // if has ResourceManager, get globalization from ResourceManager and fallback to value.ToString()
+      // else use EnumDescriptionAttriute as used in EnumDescription-class, but only cache the Enum as key and string as value, also cache the fallback to value.ToString()
+      // Dpublicate existing tests for EnumDescription for GetDescription-API
+      // Inject IMemberInformationNameResolver and add GetEnumerationValueName (Enum value) to API for resolving the identifier.
       return EnumDescription.GetDescription (value);
     }
   }
