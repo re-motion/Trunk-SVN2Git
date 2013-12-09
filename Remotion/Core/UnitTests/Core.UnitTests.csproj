@@ -226,6 +226,7 @@
     <Compile Include="Globalization\ResolvedResourceManagerResultTest.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
+    <Compile Include="Globalization\MultiLingualResourcesTest.cs" />
     <Compile Include="Globalization\Resources\ClassWithResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

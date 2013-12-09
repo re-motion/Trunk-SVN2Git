@@ -54,9 +54,16 @@ namespace Remotion.Globalization
       }
       else
       {
+        //Reproduce bug on on obsolete API
+        if (result.IsNull)
+          throw new ResourceException (string.Format ("Type {0} and its base classes do not define a resource attribute.", objectType.FullName));
         if (result.DefinedResourceManager.IsNull)
-          throw new ResourceException (string.Format ("Type {0} does not define a resource attribute.", objectType.FullName));
+          return result.InheritedResourceManager;
         return result.DefinedResourceManager;
+        //Correct behavior:
+        //if (result.DefinedResourceManager.IsNull)
+        //  throw new ResourceException (string.Format ("Type {0} does not define a resource attribute.", objectType.FullName));
+        //return result.DefinedResourceManager;
       }
     }
 
