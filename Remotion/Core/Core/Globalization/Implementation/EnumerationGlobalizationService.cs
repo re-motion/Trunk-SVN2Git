@@ -30,10 +30,9 @@ namespace Remotion.Globalization.Implementation
   public class EnumerationGlobalizationService : IEnumerationGlobalizationService
   {
     private readonly ICache<Type, IResourceManager> _enumResourceManagers = CacheFactory.CreateWithLocking<Type, IResourceManager>();
-    private readonly ICache<Type, IDictionary<Enum, string>> _staticEnumValues = CacheFactory.CreateWithLocking<Type, IDictionary<Enum, string>>();
+    private readonly ICache<Enum, string> _staticEnumValues = CacheFactory.CreateWithLocking<Enum, string>();
     private readonly IGlobalizationService _globalizationService;
 
-    //TODO RM-5831: review
     public EnumerationGlobalizationService (ICompoundGlobalizationService globalizationService)  
     {
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
@@ -45,11 +44,6 @@ namespace Remotion.Globalization.Implementation
     {
       ArgumentUtility.CheckNotNull ("value", value);
       // TODO RM-5831: change this to have the implementation in here. Get IGlobalizationService injected into ctor.
-      // cache ResourceManager for EnumType
-      // if has ResourceManager, get globalization from ResourceManager and fallback to value.ToString()
-      // else use EnumDescriptionAttriute as used in EnumDescription-class, but only cache the Enum as key and string as value, 
-      //also cache the fallback to value.ToString()
-      // Dpublicate existing tests for EnumDescription for GetDescription-API
       // Inject IMemberInformationNameResolver and add GetEnumerationValueName (Enum value) to API for resolving the identifier.
 
       var enumType = value.GetType();
@@ -63,34 +57,24 @@ namespace Remotion.Globalization.Implementation
         return value.ToString();
       }
 
-      var staticEnumValues = _staticEnumValues.GetOrCreateValue (enumType, GetStaticEnumValues);
-      if (staticEnumValues.ContainsKey (value))
-        return staticEnumValues[value];
+      return _staticEnumValues.GetOrCreateValue (value, GetStaticEnumValues);
+    }
 
+    private string GetStaticEnumValues (Enum value)
+    {
+      var field = GetField (value);
+      if (field != null)
+      {
+        var descriptionAttribute = AttributeUtility.GetCustomAttribute<EnumDescriptionAttribute> (field, false);
+        if (descriptionAttribute != null)
+          return descriptionAttribute.Description;
+      }
       return value.ToString();
     }
 
-    //TODO RM-5831: remove dictionary, cache by Enum value
-    private IDictionary<Enum, string> GetStaticEnumValues (Type enumType)
+    private FieldInfo GetField (Enum value)
     {
-      var dictionary = new Dictionary<Enum, string>();
-      foreach (var enumData in GetEnumData (enumType))
-      {
-        var field = enumData.Item1;
-        var value = enumData.Item2;
-
-        var descriptionAttribute = AttributeUtility.GetCustomAttribute<EnumDescriptionAttribute> (field, false);
-        if (descriptionAttribute != null)
-          dictionary.Add (value, descriptionAttribute.Description);
-        else
-          dictionary.Add (value, value.ToString());
-      }
-      return dictionary;
-    }
-
-    private Tuple<FieldInfo, Enum>[] GetEnumData (Type enumType)
-    {
-      return enumType.GetFields (BindingFlags.Static | BindingFlags.Public).Select (f => Tuple.Create (f, (Enum) f.GetValue (null))).ToArray();
+      return value.GetType().GetField (value.ToString(), BindingFlags.Static | BindingFlags.Public);
     }
   }
 }
