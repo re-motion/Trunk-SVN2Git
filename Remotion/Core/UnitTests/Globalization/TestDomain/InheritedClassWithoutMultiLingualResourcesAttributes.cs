@@ -16,7 +16,7 @@
 // 
 namespace Remotion.UnitTests.Globalization.TestDomain
 {
-  public class InheritedClassWithoutMultiLingualResourcesAttributes : ClassWithMultiLingualResourcesAttributes
+  public class InheritedClassWithoutMultiLingualResourcesAttributes : InheritedClassWithMultiLingualResourcesAttributes
   {
   }
 }

@@ -97,7 +97,9 @@ namespace Remotion.UnitTests.Globalization
 
       Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
-      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five", "One", "Two", "Three" }));
+      Assert.That (resourceManagerSet.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
+      Assert.That (resourceManagerSet.ResourceManagers.Skip (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
 
       Assert.That (result.DefinedResourceManager.IsNull, Is.True);
 

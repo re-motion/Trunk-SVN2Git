@@ -23,6 +23,7 @@ using Remotion.UnitTests.Globalization.TestDomain;
 namespace Remotion.UnitTests.Globalization
 {
   [Obsolete]
+  [TestFixture]
   public class MultiLingualResourcesTest
   {
     [Test]
@@ -97,7 +98,7 @@ namespace Remotion.UnitTests.Globalization
 
       var resourceManagerSet = (ResourceManagerSet) resourceManager;
 
-      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
     }
   }
 }
