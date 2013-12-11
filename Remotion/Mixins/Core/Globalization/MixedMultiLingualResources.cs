@@ -75,21 +75,23 @@ namespace Remotion.Mixins.Globalization
           throw new ResourceException (string.Format ("Type {0} and its base classes do not define a resource attribute.", objectType.FullName));
         return ResourceManagerSet.Create (result.DefinedResourceManager, mixinResourceManager, result.InheritedResourceManager);
       }
-      else
-      {
-        //Reproduce bug on on obsolete API
-        if (result.IsNull && mixinResourceManager.IsNull)
-          throw new ResourceException (string.Format ("Type {0} and its base classes do not define a resource attribute.", objectType.FullName));
-        if (result.DefinedResourceManager.IsNull && mixinResourceManager.IsNull)
-          return result.InheritedResourceManager;
-        if (result.DefinedResourceManager.IsNull)
-          return mixinResourceManager;
-        return ResourceManagerSet.Create (result.DefinedResourceManager, mixinResourceManager);
-        //Correct behavior:
-        //if (result.DefinedResourceManager.IsNull && mixinResourceManager.IsNull)
-        //  throw new ResourceException (string.Format ("Type {0} does not define a resource attribute.", objectType.FullName));
-        //return ResourceManagerSet.Create (result.DefinedResourceManager, mixinResourceManager);
-      }
+
+      //Reproduce bug on on obsolete API
+      if (result.IsNull && mixinResourceManager.IsNull)
+        throw new ResourceException (string.Format ("Type {0} and its base classes do not define a resource attribute.", objectType.FullName));
+
+      if (result.DefinedResourceManager.IsNull && !mixinResourceManager.IsNull)
+        return mixinResourceManager;
+
+      if (result.DefinedResourceManager.IsNull) // we already know there is a resource defined on a base-type so no additional checks are required.
+        return MultiLingualResources.GetResourceManager (targetType.BaseType, false);
+
+      return ResourceManagerSet.Create (result.DefinedResourceManager, mixinResourceManager);
+
+      //Correct behavior:
+      //if (result.DefinedResourceManager.IsNull && mixinResourceManager.IsNull)
+      //  throw new ResourceException (string.Format ("Type {0} does not define a resource attribute.", objectType.FullName));
+      //return ResourceManagerSet.Create (result.DefinedResourceManager, mixinResourceManager);
     }
 
     /// <summary>
