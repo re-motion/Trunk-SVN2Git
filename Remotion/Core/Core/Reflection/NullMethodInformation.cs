@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -89,9 +91,19 @@ namespace Remotion.Reflection
     public Delegate GetFastInvoker (Type delegateType)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("delegateType", delegateType, typeof(Delegate));
-      
-      var methodInfo = typeof (NullMethodInformation).GetMethod ("GetNull", BindingFlags.Static | BindingFlags.NonPublic);
-      return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (methodInfo, delegateType);
+
+      var delegateMethodInfo = delegateType.GetMethod ("Invoke");
+      var returnType = delegateMethodInfo.ReturnType;
+      var body = returnType == typeof (void)
+          ? Expression.Constant (0)
+          : returnType.IsValueType ? Expression.Constant (Activator.CreateInstance (returnType)) : Expression.Constant (null, returnType);
+
+      var nullMethod = Expression.Lambda (
+          delegateType,
+          body,
+          delegateMethodInfo.GetParameters().Select (pi => Expression.Parameter (pi.ParameterType, pi.Name)));
+
+      return nullMethod.Compile();
     }
 
     public ParameterInfo[] GetParameters ()

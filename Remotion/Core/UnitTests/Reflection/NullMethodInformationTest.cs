@@ -93,11 +93,27 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void GetFastInvoker ()
+    public void GetFastInvoker_WithReferenceTypeReturnType ()
     {
-      var invoker = _nullMethodInformation.GetFastInvoker<Func<object, object>> ();
+      var invoker = _nullMethodInformation.GetFastInvoker<Func<object, object, object>> ();
 
-      Assert.That (invoker (typeof(Func<object>)), Is.Null);
+      Assert.That (invoker (new object(), null), Is.Null);
+    }
+
+    [Test]
+    public void GetFastInvoker_WithValueTypeReturnType ()
+    {
+      var invoker = _nullMethodInformation.GetFastInvoker<Func<object, object, int>> ();
+
+      Assert.That (invoker (new object(), null), Is.EqualTo (0));
+    }
+    
+    [Test]
+    public void GetFastInvoker_WithoutReturnType ()
+    {
+      var invoker = _nullMethodInformation.GetFastInvoker<Action<object, object>> ();
+
+     invoker (new object(), null);
     }
 
     [Test]
