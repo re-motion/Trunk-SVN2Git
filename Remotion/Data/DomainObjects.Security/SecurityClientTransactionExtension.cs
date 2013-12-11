@@ -42,6 +42,8 @@ namespace Remotion.Data.DomainObjects.Security
     [NonSerialized]
     private SecurityClient _securityClient;
 
+    private static readonly AccessType s_deleteAccessType = AccessType.Get (GeneralAccessTypes.Delete);
+
     public SecurityClientTransactionExtension ()
         : this (DefaultKey)
     {
@@ -152,7 +154,7 @@ namespace Remotion.Data.DomainObjects.Security
 
         using (EnterScopeOnDemand (clientTransaction))
         {
-          securityClient.CheckAccess (securableObject, AccessType.Get (GeneralAccessTypes.Delete));
+          securityClient.CheckAccess (securableObject, s_deleteAccessType);
         }
       }
       finally
