@@ -18,6 +18,7 @@
 using System;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.Globalization;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -32,6 +33,9 @@ namespace Remotion.Reflection
 
     private readonly LockingCacheDecorator<ITypeInformation, string> s_typeNameCache =
         CacheFactory.CreateWithLocking<ITypeInformation, string> ();
+
+      private readonly LockingCacheDecorator<Enum, string> s_enumCache =
+        CacheFactory.CreateWithLocking<Enum, string> ();
 
     /// <summary>
     /// Returns the mapping name for the given <paramref name="propertyInformation"/>.
@@ -56,6 +60,11 @@ namespace Remotion.Reflection
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
 
       return s_typeNameCache.GetOrCreateValue (typeInformation, GetTypeNameInternal);
+    }
+
+    public string GetEnumName (Enum enumValue)
+    {
+      return s_enumCache.GetOrCreateValue (enumValue, ResourceIdentifiersAttribute.GetResourceIdentifier);
     }
 
     private string GetPropertyName (ITypeInformation type, string shortPropertyName)

@@ -37,6 +37,9 @@ namespace Remotion.Reflection
     /// <returns>The name of the given <paramref name="typeInformation"/> as used internally by the mapping.</returns>
     string GetTypeName (ITypeInformation typeInformation);
 
-    //TODO: string GetEnumName (Enum enumValue)
+    /// <summary>
+    /// Returns the mapping name for the given <paramref name="enumValue"/>.
+    /// </summary>
+    string GetEnumName (Enum enumValue);
   }
 }

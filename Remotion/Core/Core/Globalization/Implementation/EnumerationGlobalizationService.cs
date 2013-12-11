@@ -18,6 +18,7 @@
 using System;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
@@ -30,27 +31,28 @@ namespace Remotion.Globalization.Implementation
     private readonly ICache<Type, IResourceManager> _enumResourceManagers = CacheFactory.CreateWithLocking<Type, IResourceManager>();
     private readonly ICache<Enum, string> _staticEnumValues = CacheFactory.CreateWithLocking<Enum, string>();
     private readonly IGlobalizationService _globalizationService;
+    private readonly IMemberInformationNameResolver _memberInformationNameResolver;
 
-    public EnumerationGlobalizationService (ICompoundGlobalizationService globalizationService)  
+    public EnumerationGlobalizationService (
+        ICompoundGlobalizationService globalizationService,
+        IMemberInformationNameResolver memberInformationNameResolver)
     {
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
 
       _globalizationService = globalizationService;
+      _memberInformationNameResolver = memberInformationNameResolver;
     }
 
     public string GetEnumerationValueDisplayName (Enum value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
-      // TODO RM-5831: change this to have the implementation in here. Get IGlobalizationService injected into ctor.
-      // Inject IMemberInformationNameResolver and add GetEnumerationValueName (Enum value) to API for resolving the identifier.
 
       var enumType = value.GetType();
       var resourceManager = _enumResourceManagers.GetOrCreateValue (enumType, type => _globalizationService.GetResourceManager (type));
-      if (!resourceManager.IsNull) 
+      if (!resourceManager.IsNull)
       {
         string resourceValue;
-        //TODO: use IMemberInformationNameResolver
-        if (resourceManager.TryGetString (ResourceIdentifiersAttribute.GetResourceIdentifier (value), out resourceValue))
+        if (resourceManager.TryGetString (_memberInformationNameResolver.GetEnumName (value), out resourceValue))
           return resourceValue;
         return value.ToString();
       }

@@ -33,12 +33,14 @@ namespace Remotion.UnitTests.Globalization
   {
     private EnumerationGlobalizationService _service;
     private ICompoundGlobalizationService _globalizationServiceStub;
+    private IMemberInformationNameResolver _memberInformationNameResolverStub;
 
     [SetUp]
     public void SetUp ()
     {
       _globalizationServiceStub = MockRepository.GenerateStub<ICompoundGlobalizationService>();
-      _service = new EnumerationGlobalizationService (_globalizationServiceStub);
+      _memberInformationNameResolverStub = MockRepository.GenerateStub<IMemberInformationNameResolver>();
+      _service = new EnumerationGlobalizationService (_globalizationServiceStub, _memberInformationNameResolverStub);
     }
 
     [Test]
@@ -47,9 +49,10 @@ namespace Remotion.UnitTests.Globalization
       var resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
       resourceManagerStub.Stub (_ => _.IsNull).Return (false);
       _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull)).Return (resourceManagerStub);
+      _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
       resourceManagerStub.Stub (
           _ => _.TryGetString (
-              Arg.Is ("Remotion.UnitTests.Globalization.TestDomain.EnumWithResources.Value1"),
+              Arg.Is ("enumName"),
               out Arg<string>.Out ("expected").Dummy))
           .Return (true);
 
@@ -62,9 +65,10 @@ namespace Remotion.UnitTests.Globalization
       var resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
       resourceManagerStub.Stub (_ => _.IsNull).Return (false);
       _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull)).Return (resourceManagerStub);
+      _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
       resourceManagerStub.Stub (
           _ => _.TryGetString (
-              Arg.Is ("Remotion.UnitTests.Globalization.TestDomain.EnumWithResources.Value1"),
+              Arg.Is ("enumName"),
               out Arg<string>.Out (null).Dummy))
           .Return (false);
 
@@ -76,13 +80,14 @@ namespace Remotion.UnitTests.Globalization
     {
       var resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
       resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
       _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull))
           .Return (resourceManagerStub)
           .Repeat.Once();
 
       resourceManagerStub.Stub (
           _ => _.TryGetString (
-              Arg.Is ("Remotion.UnitTests.Globalization.TestDomain.EnumWithResources.Value1"),
+              Arg.Is ("enumName"),
               out Arg<string>.Out ("expected").Dummy))
           .Return (true);
 
@@ -100,7 +105,7 @@ namespace Remotion.UnitTests.Globalization
       Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescriptions.Value3), Is.EqualTo ("Value III"));
       Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescriptions.Value4), Is.EqualTo ("Value4"));
     }
-    
+
     [Test]
     public void GetEnumerationValueDisplayName_NoEnumDescription_FallsBackToValueName ()
     {
@@ -112,7 +117,9 @@ namespace Remotion.UnitTests.Globalization
     [Test]
     public void GetEnumerationValueDisplayName_UsingCultureScope ()
     {
-      var service = new EnumerationGlobalizationService(SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>());
+      var service = new EnumerationGlobalizationService (
+          SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>(),
+          SafeServiceLocator.Current.GetInstance<IMemberInformationNameResolver>());
 
       using (new CultureScope (CultureInfo.InvariantCulture, CultureInfo.InvariantCulture))
       {
@@ -136,6 +143,9 @@ namespace Remotion.UnitTests.Globalization
 
     private void SetupNullResourceManager ()
     {
+      _service = new EnumerationGlobalizationService (
+          _globalizationServiceStub,
+          SafeServiceLocator.Current.GetInstance<IMemberInformationNameResolver>());
       _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull)).Return (NullResourceManager.Instance);
     }
   }
