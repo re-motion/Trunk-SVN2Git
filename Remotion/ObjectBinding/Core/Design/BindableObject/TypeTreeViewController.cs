@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
-using Remotion.Globalization;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Design.BindableObject
@@ -27,11 +27,8 @@ namespace Remotion.ObjectBinding.Design.BindableObject
   {
     public enum TreeViewIcons
     {
-      [EnumDescription ("VSObject_Assembly.bmp")]
       Assembly,
-      [EnumDescription ("VSObject_Namespace.bmp")]
       Namespace,
-      [EnumDescription ("VSObject_Class.bmp")]
       Class = 2
     }
 
@@ -40,7 +37,10 @@ namespace Remotion.ObjectBinding.Design.BindableObject
     public TypeTreeViewController (TreeView treeView)
     {
       _treeView = treeView;
-      _treeView.ImageList = CreateImageList (TreeViewIcons.Assembly, TreeViewIcons.Namespace, TreeViewIcons.Class);
+      _treeView.ImageList = CreateImageList (
+          Tuple.Create ((Enum) TreeViewIcons.Assembly, "VSObject_Assembly.bmp"),
+          Tuple.Create ((Enum) TreeViewIcons.Namespace, "VSObject_Namespace.bmp"),
+          Tuple.Create ((Enum) TreeViewIcons.Class, "VSObject_Class.bmp"));
     }
 
     public TreeView TreeView

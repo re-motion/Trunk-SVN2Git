@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Windows.Forms;
-using Remotion.Globalization;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Design.BindableObject
@@ -25,7 +25,6 @@ namespace Remotion.ObjectBinding.Design.BindableObject
   {
     public enum SearchIcons
     {
-      [EnumDescription ("VS_Search.bmp")]
       Search = 0
     }
 
@@ -39,7 +38,7 @@ namespace Remotion.ObjectBinding.Design.BindableObject
 
       _searchField = searchField;
       _searchButton = searchButton;
-      _searchButton.ImageList = CreateImageList (SearchIcons.Search);
+      _searchButton.ImageList = CreateImageList (Tuple.Create ((Enum) SearchIcons.Search, "VS_Search.bmp"));
       _searchButton.ImageKey = SearchIcons.Search.ToString();
 
       _searchField.Enabled = false;

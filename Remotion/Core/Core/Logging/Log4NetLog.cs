@@ -19,6 +19,7 @@ using System.Globalization;
 using log4net.Core;
 using log4net.Util;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Logging
@@ -36,6 +37,10 @@ namespace Remotion.Logging
   /// </remarks>
   public class Log4NetLog : LogImpl, ILog
   {
+    private static readonly DoubleCheckedLockingContainer<IEnumerationGlobalizationService> s_globalizationService =
+        new DoubleCheckedLockingContainer<IEnumerationGlobalizationService> (
+            () => SafeServiceLocator.Current.GetInstance<IEnumerationGlobalizationService>());
+    
     /// <summary>
     /// Converts <see cref="LogLevel"/> to <see cref="Level"/>.
     /// </summary>
@@ -133,7 +138,7 @@ namespace Remotion.Logging
       LogToLog4NetFormat (
           Convert (logLevel),
           System.Convert.ToInt32 (messageEnum),
-          EnumDescription.GetDescription (messageEnum),
+          s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum),
           args,
           exceptionObject);
     }
@@ -143,7 +148,7 @@ namespace Remotion.Logging
     public void LogFormat (LogLevel logLevel, Enum messageEnum, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Convert (logLevel), System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, null);
+      LogToLog4NetFormat (Convert (logLevel), System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, null);
     }
 
     /// <overloads><inheritdoc cref="ILog.Debug(object)"/></overloads>
@@ -187,7 +192,7 @@ namespace Remotion.Logging
     public void DebugFormat (Enum messageEnum, Exception exceptionObject, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Level.Debug, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, exceptionObject);
+      LogToLog4NetFormat (Level.Debug, System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, exceptionObject);
     }
 
     /// <inheritdoc />
@@ -195,7 +200,7 @@ namespace Remotion.Logging
     public void DebugFormat (Enum messageEnum, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Level.Debug, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, null);
+      LogToLog4NetFormat (Level.Debug, System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, null);
     }
 
     /// <overloads><inheritdoc cref="ILog.Info(object)"/></overloads>
@@ -239,7 +244,7 @@ namespace Remotion.Logging
     public void InfoFormat (Enum messageEnum, Exception exceptionObject, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Level.Info, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, exceptionObject);
+      LogToLog4NetFormat (Level.Info, System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, exceptionObject);
     }
 
     /// <inheritdoc />
@@ -247,7 +252,7 @@ namespace Remotion.Logging
     public void InfoFormat (Enum messageEnum, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Level.Info, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, null);
+      LogToLog4NetFormat (Level.Info, System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, null);
     }
 
 
@@ -292,7 +297,7 @@ namespace Remotion.Logging
     public void WarnFormat (Enum messageEnum, Exception exceptionObject, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Level.Warn, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, exceptionObject);
+      LogToLog4NetFormat (Level.Warn, System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, exceptionObject);
     }
 
     /// <inheritdoc />
@@ -300,7 +305,7 @@ namespace Remotion.Logging
     public void WarnFormat (Enum messageEnum, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Level.Warn, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, null);
+      LogToLog4NetFormat (Level.Warn, System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, null);
     }
 
 
@@ -345,7 +350,7 @@ namespace Remotion.Logging
     public void ErrorFormat (Enum messageEnum, Exception exceptionObject, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Level.Error, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, exceptionObject);
+      LogToLog4NetFormat (Level.Error, System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, exceptionObject);
     }
 
     /// <inheritdoc />
@@ -353,7 +358,7 @@ namespace Remotion.Logging
     public void ErrorFormat (Enum messageEnum, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Level.Error, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, null);
+      LogToLog4NetFormat (Level.Error, System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, null);
     }
 
 
@@ -398,7 +403,7 @@ namespace Remotion.Logging
     public void FatalFormat (Enum messageEnum, Exception exceptionObject, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Level.Fatal, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, exceptionObject);
+      LogToLog4NetFormat (Level.Fatal, System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, exceptionObject);
     }
 
     /// <inheritdoc />
@@ -406,7 +411,7 @@ namespace Remotion.Logging
     public void FatalFormat (Enum messageEnum, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageEnum", messageEnum);
-      LogToLog4NetFormat (Level.Fatal, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, null);
+      LogToLog4NetFormat (Level.Fatal, System.Convert.ToInt32 (messageEnum), s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum), args, null);
     }
 
     /// <inheritdoc />

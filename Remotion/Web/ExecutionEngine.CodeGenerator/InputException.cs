@@ -15,20 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Globalization;
 
 namespace Remotion.Web.ExecutionEngine.CodeGenerator
 {
   public enum InputError
   {
     InvalidSchema = 1,
-
-    [EnumDescription ("Could not detect class declaration.")]
     ClassNotFound = 2,
-
-    [EnumDescription ("Error parsing XML.")]
     XmlError = 3,
-
     Unknown = 4
   }
   
@@ -40,21 +34,12 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     private int _errorCode;
 
     public InputException (InputError error, string path, int line, int position, Exception innerException)
-      : base (
-          (innerException != null) ? innerException.Message : EnumDescription.GetDescription (error), 
-      //TODO:      innerException.Message, //remove EnumDescription usage 
-          innerException)
+      : base (innerException.Message, innerException)
     {
       _path = path;
       _line = line;
       _position = position;
       _errorCode = (int) error;
-    }
-
-    //TODO: remove
-    public InputException (InputError error, string path, int line, int position)
-      : this (error, path, line, position, null)
-    {
     }
 
     public string Path

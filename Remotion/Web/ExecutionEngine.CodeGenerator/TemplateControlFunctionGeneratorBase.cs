@@ -51,7 +51,12 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     public void GenerateClass ()
     {
       if (string.IsNullOrEmpty (_functionDeclaration.TemplateControlCodeBehindType))
-        throw new InputException (InputError.ClassNotFound, _file.FullName, _line, 1);
+        throw new InputException (
+            InputError.ClassNotFound,
+            _file.FullName,
+            _line,
+            1,
+            new ApplicationException ("Could not detect class declaration."));
 
       string nameSpace;
       string typeName;

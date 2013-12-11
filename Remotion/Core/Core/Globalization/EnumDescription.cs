@@ -37,7 +37,7 @@ namespace Remotion.Globalization
       new DoubleCheckedLockingContainer<IEnumerationGlobalizationService> (() => SafeServiceLocator.Current.GetInstance<IEnumerationGlobalizationService>());
 
     [NotNull]
-    //[Obsolete("(Version 1.13.222.0)")]
+    [Obsolete("(Version 1.13.222.0)")]
     public static EnumValue[] GetAllValues ([NotNull] Type enumType)
     {
       ArgumentUtility.CheckNotNull ("enumType", enumType);
@@ -48,7 +48,7 @@ namespace Remotion.Globalization
     }
 
     [NotNull]
-    //[Obsolete("(Version 1.13.222.0)")]
+    [Obsolete("(Version 1.13.222.0)")]
     public static EnumValue[] GetAllValues ([NotNull] Type enumType, [CanBeNull] CultureInfo culture)
     {
       ArgumentUtility.CheckNotNull ("enumType", enumType);
@@ -60,7 +60,7 @@ namespace Remotion.Globalization
     }
 
     [NotNull]
-    //[Obsolete("Use IEnumerationGlobalizationService.GetEnumerationValueDisplayName. (Version 1.13.222.0)")]
+    [Obsolete("Use IEnumerationGlobalizationService.GetEnumerationValueDisplayName. (Version 1.13.222.0)")]
     public static string GetDescription ([NotNull] Enum value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -69,7 +69,7 @@ namespace Remotion.Globalization
     }
 
     [NotNull]
-    //[Obsolete("Use IEnumerationGlobalizationService.GetEnumerationValueDisplayName. (Version 1.13.222.0)")]
+    [Obsolete("Use IEnumerationGlobalizationService.GetEnumerationValueDisplayName. (Version 1.13.222.0)")]
     public static string GetDescription ([NotNull] Enum value, [CanBeNull] CultureInfo culture)
     {
       ArgumentUtility.CheckNotNull ("value", value);

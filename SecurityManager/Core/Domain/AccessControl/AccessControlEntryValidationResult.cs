@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
@@ -58,8 +59,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         errorMessageBuilder.AppendLine();
         errorMessageBuilder.Append ("  ");
 
-        //TODO: retrieve from safeServiceLocator globalization service
-        errorMessageBuilder.Append (EnumDescription.GetDescription (error));
+        var displayName = SafeServiceLocator.Current.GetInstance<IEnumerationGlobalizationService>().GetEnumerationValueDisplayName (error);
+        errorMessageBuilder.Append (displayName);
       }
 
       return errorMessageBuilder.ToString();

@@ -18,6 +18,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Utilities;
 
@@ -29,15 +30,15 @@ namespace Remotion.ObjectBinding.Design.BindableObject
     {
     }
 
-    protected void AppendImage (ImageList imageList, Enum treeViewIcon)
+    protected void AppendImage (ImageList imageList, Tuple<Enum, string> treeViewIcon)
     {
       Type type = GetType();
-      string resourceID = EnumDescription.GetDescription (treeViewIcon);
+      string resourceID = treeViewIcon.Item2;
       Stream stream = type.Assembly.GetManifestResourceStream (type, resourceID);
       Assertion.IsNotNull (stream, string.Format ("Resource '{0}' was not found in namespace '{1}'.", resourceID, type.Namespace));
       try
       {
-        imageList.Images.Add (treeViewIcon.ToString (), Image.FromStream (stream));
+        imageList.Images.Add (treeViewIcon.Item1.ToString(), Image.FromStream (stream));
       }
       catch
       {
@@ -46,15 +47,14 @@ namespace Remotion.ObjectBinding.Design.BindableObject
       }
     }
 
-    //TODO: create {enum, string} tuple instead of enum
-    protected ImageList CreateImageList (params Enum[] resourceEnums)
+    protected ImageList CreateImageList (params Tuple<Enum, string>[] resources)
     {
       ImageList imageList = new ImageList ();
       imageList.TransparentColor = Color.Magenta;
       try
       {
-        foreach (Enum enumValue in resourceEnums)
-          AppendImage (imageList, enumValue);
+        foreach (var resource in resources)
+          AppendImage (imageList, resource);
 
         return imageList;
       }
