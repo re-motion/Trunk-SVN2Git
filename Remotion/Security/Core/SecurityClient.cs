@@ -478,7 +478,7 @@ namespace Remotion.Security
       if (SecurityFreeSection.IsActive)
         return true;
 
-      return _functionalSecurityStrategy.HasAccess (securableClass, _securityProvider, principal, s_createAccessType);
+      return HasStatelessAccess (securableClass, principal, s_createAccessType);
     }
 
     public void CheckConstructorAccess (Type securableClass)
