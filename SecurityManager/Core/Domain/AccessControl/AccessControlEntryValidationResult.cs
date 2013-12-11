@@ -57,6 +57,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       {
         errorMessageBuilder.AppendLine();
         errorMessageBuilder.Append ("  ");
+
+        //TODO: retrieve from safeServiceLocator globalization service
         errorMessageBuilder.Append (EnumDescription.GetDescription (error));
       }
 

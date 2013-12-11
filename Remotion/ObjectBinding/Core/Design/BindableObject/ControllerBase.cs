@@ -46,6 +46,7 @@ namespace Remotion.ObjectBinding.Design.BindableObject
       }
     }
 
+    //TODO: create {enum, string} tuple instead of enum
     protected ImageList CreateImageList (params Enum[] resourceEnums)
     {
       ImageList imageList = new ImageList ();

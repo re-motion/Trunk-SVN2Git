@@ -47,6 +47,7 @@ namespace Remotion.UnitTests.Globalization
   }
 
   [TestFixture]
+  [Obsolete("Version 1.13.222.0")]
   public class EnumDescriptionTest
   {
     [Test]

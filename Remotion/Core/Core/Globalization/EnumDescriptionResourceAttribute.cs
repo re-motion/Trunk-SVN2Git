@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization
@@ -26,7 +27,7 @@ namespace Remotion.Globalization
   /// "&lt;namespace&gt;.&lt;type name&gt;.&lt;value&gt;"
   /// </summary>
   [AttributeUsage (AttributeTargets.Enum, AllowMultiple = false)]
-  public class EnumDescriptionResourceAttribute: Attribute
+  public class EnumDescriptionResourceAttribute: Attribute, IResourcesAttribute
   {
     private readonly string _baseName;
 
@@ -41,5 +42,7 @@ namespace Remotion.Globalization
     {
       get { return _baseName; }
     }
+
+    public Assembly ResourceAssembly { get { return null; } }
   }
 }

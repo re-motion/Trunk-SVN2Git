@@ -36,5 +36,7 @@ namespace Remotion.Reflection
     /// <param name="typeInformation">The type whose mapping name should be retrieved.</param>
     /// <returns>The name of the given <paramref name="typeInformation"/> as used internally by the mapping.</returns>
     string GetTypeName (ITypeInformation typeInformation);
+
+    //TODO: string GetEnumName (Enum enumValue)
   }
 }

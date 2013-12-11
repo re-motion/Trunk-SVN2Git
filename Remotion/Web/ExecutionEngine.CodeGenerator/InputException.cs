@@ -42,6 +42,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     public InputException (InputError error, string path, int line, int position, Exception innerException)
       : base (
           (innerException != null) ? innerException.Message : EnumDescription.GetDescription (error), 
+      //TODO:      innerException.Message, //remove EnumDescription usage 
           innerException)
     {
       _path = path;
@@ -50,6 +51,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       _errorCode = (int) error;
     }
 
+    //TODO: remove
     public InputException (InputError error, string path, int line, int position)
       : this (error, path, line, position, null)
     {
