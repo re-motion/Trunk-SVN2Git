@@ -31,6 +31,8 @@ namespace Remotion.Data.DomainObjects.Security
   [Serializable]
   public class SecurityClientTransactionExtension : ClientTransactionExtensionBase
   {
+    private static readonly AccessType s_findAccessType = AccessType.Get (GeneralAccessTypes.Find);
+
     public static string DefaultKey
     {
       get { return typeof (SecurityClientTransactionExtension).FullName; }
@@ -79,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Security
           try
           {
             _isActive = true;
-            hasAccess = securityClient.HasAccess (securableObject, AccessType.Get (GeneralAccessTypes.Find));
+            hasAccess = securityClient.HasAccess (securableObject, s_findAccessType);
           }
           finally
           {
