@@ -19,33 +19,11 @@ using System;
 using System.Globalization;
 using NUnit.Framework;
 using Remotion.Globalization;
+using Remotion.UnitTests.Globalization.TestDomain;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Globalization
 {
-  public enum EnumWithDescriptions
-  {
-    [EnumDescription ("Value One")]
-    Value1 = 1,
-
-    [EnumDescription ("Value 2")]
-    Value2 = 2,
-
-    [EnumDescription ("Value III")]
-    Value3 = 3,
-
-    Value4 = 4,
-  }
-
-  [EnumDescriptionResource ("Remotion.UnitTests.Resources.strings")]
-  public enum EnumFromResource
-  {
-    Value1 = 1,
-    Value2 = 2,
-    Value3 = 3,
-    Value4 = 4,
-  }
-
   [TestFixture]
   [Obsolete("Version 1.13.222.0")]
   public class EnumDescriptionTest
@@ -58,11 +36,10 @@ namespace Remotion.UnitTests.Globalization
         // try twice to test caching
         for (int i = 0; i < 2; ++i)
         {
-          Assert.That (EnumDescription.GetDescription (EnumWithDescriptions.Value1), Is.EqualTo ("Value One"));
-          Assert.That (EnumDescription.GetDescription (EnumWithDescriptions.Value2), Is.EqualTo ("Value 2"));
-          Assert.That (EnumDescription.GetDescription (EnumWithDescriptions.Value3), Is.EqualTo ("Value III"));
-          Assert.That (EnumDescription.GetDescription (EnumWithDescriptions.Value4), Is.EqualTo ("Value4"));
-          Assert.That (EnumDescription.GetDescription ((EnumWithDescriptions) 100), Is.EqualTo ("100"));
+          Assert.That (EnumDescription.GetDescription (EnumWithDescription.Value1), Is.EqualTo ("Value I"));
+          Assert.That (EnumDescription.GetDescription (EnumWithDescription.Value2), Is.EqualTo ("Value II"));
+          Assert.That (EnumDescription.GetDescription (EnumWithDescription.ValueWithoutDescription), Is.EqualTo ("ValueWithoutDescription"));
+          Assert.That (EnumDescription.GetDescription ((EnumWithDescription) 100), Is.EqualTo ("100"));
         }
       }
     }
@@ -75,28 +52,24 @@ namespace Remotion.UnitTests.Globalization
         // try twice to test caching
         for (int i = 0; i < 2; ++i)
         {
-          EnumValue[] enumValuesInvariant = EnumDescription.GetAllValues (typeof (EnumWithDescriptions));
-          Assert.That (enumValuesInvariant.Length, Is.EqualTo (4));
-          Assert.That (enumValuesInvariant[0].Value, Is.EqualTo (EnumWithDescriptions.Value1));
-          Assert.That (enumValuesInvariant[0].Description, Is.EqualTo ("Value One"));
-          Assert.That (enumValuesInvariant[1].Value, Is.EqualTo (EnumWithDescriptions.Value2));
-          Assert.That (enumValuesInvariant[1].Description, Is.EqualTo ("Value 2"));
-          Assert.That (enumValuesInvariant[2].Value, Is.EqualTo (EnumWithDescriptions.Value3));
-          Assert.That (enumValuesInvariant[2].Description, Is.EqualTo ("Value III"));
-          Assert.That (enumValuesInvariant[3].Value, Is.EqualTo (EnumWithDescriptions.Value4));
-          Assert.That (enumValuesInvariant[3].Description, Is.EqualTo ("Value4"));
+          EnumValue[] enumValuesInvariant = EnumDescription.GetAllValues (typeof (EnumWithDescription));
+          Assert.That (enumValuesInvariant.Length, Is.EqualTo (3));
+          Assert.That (enumValuesInvariant[0].Value, Is.EqualTo (EnumWithDescription.Value1));
+          Assert.That (enumValuesInvariant[0].Description, Is.EqualTo ("Value I"));
+          Assert.That (enumValuesInvariant[1].Value, Is.EqualTo (EnumWithDescription.Value2));
+          Assert.That (enumValuesInvariant[1].Description, Is.EqualTo ("Value II"));
+          Assert.That (enumValuesInvariant[2].Value, Is.EqualTo (EnumWithDescription.ValueWithoutDescription));
+          Assert.That (enumValuesInvariant[2].Description, Is.EqualTo ("ValueWithoutDescription"));
 
           CultureInfo culture = new CultureInfo ("en-US");
-          EnumValue[] enumValuesSpecific = EnumDescription.GetAllValues (typeof (EnumWithDescriptions), culture);
-          Assert.That (enumValuesSpecific.Length, Is.EqualTo (4));
-          Assert.That (enumValuesSpecific[0].Value, Is.EqualTo (EnumWithDescriptions.Value1));
-          Assert.That (enumValuesSpecific[0].Description, Is.EqualTo ("Value One"));
-          Assert.That (enumValuesSpecific[1].Value, Is.EqualTo (EnumWithDescriptions.Value2));
-          Assert.That (enumValuesSpecific[1].Description, Is.EqualTo ("Value 2"));
-          Assert.That (enumValuesSpecific[2].Value, Is.EqualTo (EnumWithDescriptions.Value3));
-          Assert.That (enumValuesSpecific[2].Description, Is.EqualTo ("Value III"));
-          Assert.That (enumValuesSpecific[3].Value, Is.EqualTo (EnumWithDescriptions.Value4));
-          Assert.That (enumValuesSpecific[3].Description, Is.EqualTo ("Value4"));
+          EnumValue[] enumValuesSpecific = EnumDescription.GetAllValues (typeof (EnumWithDescription), culture);
+          Assert.That (enumValuesSpecific.Length, Is.EqualTo (3));
+          Assert.That (enumValuesInvariant[0].Value, Is.EqualTo (EnumWithDescription.Value1));
+          Assert.That (enumValuesInvariant[0].Description, Is.EqualTo ("Value I"));
+          Assert.That (enumValuesInvariant[1].Value, Is.EqualTo (EnumWithDescription.Value2));
+          Assert.That (enumValuesInvariant[1].Description, Is.EqualTo ("Value II"));
+          Assert.That (enumValuesInvariant[2].Value, Is.EqualTo (EnumWithDescription.ValueWithoutDescription));
+          Assert.That (enumValuesInvariant[2].Description, Is.EqualTo ("ValueWithoutDescription"));
         }
       }
     }
@@ -106,18 +79,16 @@ namespace Remotion.UnitTests.Globalization
     {
       using (new CultureScope (CultureInfo.InvariantCulture, CultureInfo.InvariantCulture))
       {
-        Assert.That (EnumDescription.GetDescription (EnumFromResource.Value1), Is.EqualTo ("Wert Eins"));
-        Assert.That (EnumDescription.GetDescription (EnumFromResource.Value2), Is.EqualTo ("Wert 2"));
-        Assert.That (EnumDescription.GetDescription (EnumFromResource.Value3), Is.EqualTo ("Wert III"));
-        Assert.That (EnumDescription.GetDescription (EnumFromResource.Value4), Is.EqualTo ("Value4"));
-        Assert.That (EnumDescription.GetDescription ((EnumFromResource) 100), Is.EqualTo ("100"));
+        Assert.That (EnumDescription.GetDescription (EnumWithResources.Value1), Is.EqualTo ("Value 1"));
+        Assert.That (EnumDescription.GetDescription (EnumWithResources.Value2), Is.EqualTo ("Value 2"));
+        Assert.That (EnumDescription.GetDescription (EnumWithResources.ValueWithoutResource), Is.EqualTo ("ValueWithoutResource"));
+        Assert.That (EnumDescription.GetDescription ((EnumWithResources) 100), Is.EqualTo ("100"));
 
-        CultureInfo culture = new CultureInfo ("en-US");
-        Assert.That (EnumDescription.GetDescription (EnumFromResource.Value1, culture), Is.EqualTo ("Val1"));
-        Assert.That (EnumDescription.GetDescription (EnumFromResource.Value2, culture), Is.EqualTo ("Val2"));
-        Assert.That (EnumDescription.GetDescription (EnumFromResource.Value3, culture), Is.EqualTo ("Val3"));
-        Assert.That (EnumDescription.GetDescription (EnumFromResource.Value4, culture), Is.EqualTo ("Value4"));
-        Assert.That (EnumDescription.GetDescription ((EnumFromResource) 100, culture), Is.EqualTo ("100"));
+        CultureInfo culture = new CultureInfo ("de-AT");
+        Assert.That (EnumDescription.GetDescription (EnumWithResources.Value1, culture), Is.EqualTo ("Wert 1"));
+        Assert.That (EnumDescription.GetDescription (EnumWithResources.Value2, culture), Is.EqualTo ("Wert 2"));
+        Assert.That (EnumDescription.GetDescription (EnumWithResources.ValueWithoutResource, culture), Is.EqualTo ("ValueWithoutResource"));
+        Assert.That (EnumDescription.GetDescription ((EnumWithResources) 100, culture), Is.EqualTo ("100"));
       }
     }
 
@@ -129,16 +100,14 @@ namespace Remotion.UnitTests.Globalization
         // try twice to test caching
         for (int i = 0; i < 2; ++i)
         {
-          EnumValue[] enumValues = EnumDescription.GetAllValues (typeof (EnumFromResource));
-          Assert.That (enumValues.Length, Is.EqualTo (4));
-          Assert.That (enumValues[0].Value, Is.EqualTo (EnumFromResource.Value1));
-          Assert.That (enumValues[0].Description, Is.EqualTo ("Wert Eins"));
-          Assert.That (enumValues[1].Value, Is.EqualTo (EnumFromResource.Value2));
-          Assert.That (enumValues[1].Description, Is.EqualTo ("Wert 2"));
-          Assert.That (enumValues[2].Value, Is.EqualTo (EnumFromResource.Value3));
-          Assert.That (enumValues[2].Description, Is.EqualTo ("Wert III"));
-          Assert.That (enumValues[3].Value, Is.EqualTo (EnumFromResource.Value4));
-          Assert.That (enumValues[3].Description, Is.EqualTo ("Value4"));
+          EnumValue[] enumValues = EnumDescription.GetAllValues (typeof (EnumWithResources));
+          Assert.That (enumValues.Length, Is.EqualTo (3));
+          Assert.That (enumValues[0].Value, Is.EqualTo (EnumWithResources.Value1));
+          Assert.That (enumValues[0].Description, Is.EqualTo ("Value 1"));
+          Assert.That (enumValues[1].Value, Is.EqualTo (EnumWithResources.Value2));
+          Assert.That (enumValues[1].Description, Is.EqualTo ("Value 2"));
+          Assert.That (enumValues[2].Value, Is.EqualTo (EnumWithResources.ValueWithoutResource));
+          Assert.That (enumValues[2].Description, Is.EqualTo ("ValueWithoutResource"));
         }
       }
     }

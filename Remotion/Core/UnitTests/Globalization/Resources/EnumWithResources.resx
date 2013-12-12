@@ -123,7 +123,4 @@
   <data name="Remotion.UnitTests.Globalization.TestDomain.EnumWithResources.Value2" xml:space="preserve">
     <value>Value 2</value>
   </data>
-  <data name="Remotion.UnitTests.Globalization.TestDomain.EnumWithResources.Value3" xml:space="preserve">
-    <value>Value 3</value>
-  </data>
 </root>

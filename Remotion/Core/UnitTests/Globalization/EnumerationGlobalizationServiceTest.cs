@@ -100,10 +100,9 @@ namespace Remotion.UnitTests.Globalization
     {
       SetupNullResourceManager();
 
-      Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescriptions.Value1), Is.EqualTo ("Value One"));
-      Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescriptions.Value2), Is.EqualTo ("Value 2"));
-      Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescriptions.Value3), Is.EqualTo ("Value III"));
-      Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescriptions.Value4), Is.EqualTo ("Value4"));
+      Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescription.Value1), Is.EqualTo ("Value I"));
+      Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescription.Value2), Is.EqualTo ("Value II"));
+      Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescription.ValueWithoutDescription), Is.EqualTo ("ValueWithoutDescription"));
     }
 
     [Test]
@@ -111,7 +110,7 @@ namespace Remotion.UnitTests.Globalization
     {
       SetupNullResourceManager();
 
-      Assert.That (_service.GetEnumerationValueDisplayName ((EnumWithDescriptions) 100), Is.EqualTo ("100"));
+      Assert.That (_service.GetEnumerationValueDisplayName ((EnumWithDescription) 100), Is.EqualTo ("100"));
     }
 
     [Test]
@@ -123,21 +122,19 @@ namespace Remotion.UnitTests.Globalization
 
       using (new CultureScope (CultureInfo.InvariantCulture, CultureInfo.InvariantCulture))
       {
-        Assert.That (service.GetEnumerationValueDisplayName (EnumFromResource.Value1), Is.EqualTo ("Wert Eins"));
-        Assert.That (service.GetEnumerationValueDisplayName (EnumFromResource.Value2), Is.EqualTo ("Wert 2"));
-        Assert.That (service.GetEnumerationValueDisplayName (EnumFromResource.Value3), Is.EqualTo ("Wert III"));
-        Assert.That (service.GetEnumerationValueDisplayName (EnumFromResource.Value4), Is.EqualTo ("Value4"));
-        Assert.That (service.GetEnumerationValueDisplayName ((EnumFromResource) 100), Is.EqualTo ("100"));
+        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.Value1), Is.EqualTo ("Value 1"));
+        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.Value2), Is.EqualTo ("Value 2"));
+        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.ValueWithoutResource), Is.EqualTo ("ValueWithoutResource"));
+        Assert.That (service.GetEnumerationValueDisplayName ((EnumWithResources) 100), Is.EqualTo ("100"));
       }
 
-      var culture = new CultureInfo ("en-US");
+      var culture = new CultureInfo ("de-AT");
       using (new CultureScope (culture, culture))
       {
-        Assert.That (service.GetEnumerationValueDisplayName (EnumFromResource.Value1), Is.EqualTo ("Val1"));
-        Assert.That (service.GetEnumerationValueDisplayName (EnumFromResource.Value2), Is.EqualTo ("Val2"));
-        Assert.That (service.GetEnumerationValueDisplayName (EnumFromResource.Value3), Is.EqualTo ("Val3"));
-        Assert.That (service.GetEnumerationValueDisplayName (EnumFromResource.Value4), Is.EqualTo ("Value4"));
-        Assert.That (service.GetEnumerationValueDisplayName ((EnumFromResource) 100), Is.EqualTo ("100"));
+        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.Value1), Is.EqualTo ("Wert 1"));
+        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.Value2), Is.EqualTo ("Wert 2"));
+        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.ValueWithoutResource), Is.EqualTo ("ValueWithoutResource"));
+        Assert.That (service.GetEnumerationValueDisplayName ((EnumWithResources) 100), Is.EqualTo ("100"));
       }
     }
 

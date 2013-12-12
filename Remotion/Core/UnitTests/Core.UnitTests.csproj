@@ -170,6 +170,7 @@
     <Compile Include="Configuration\TypeDiscovery\IntegrationTests\SpecificRootAssemblies\SpecificRootAssembliesAreNotSubjectToApplicationFilterTest.cs" />
     <Compile Include="Context\SafeContextIntegrationTest.cs" />
     <Compile Include="Context\SafeContextTest.cs" />
+    <Compile Include="Globalization\EnumFromResource.cs" />
     <Compile Include="Globalization\GlobalizationServiceExtensionsTest.cs" />
     <Compile Include="Globalization\ResourceManagerExtensionsTest.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryServiceTest.cs" />
@@ -448,6 +449,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ClassWithResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Resources\EnumWithResources.de-AT.resx">
+      <LastGenOutput>EnumWithResources.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Resources\EnumWithResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EnumWithResources.Designer.cs</LastGenOutput>
@@ -684,19 +689,6 @@
     <EmbeddedResource Include="Xml\SchemaLoaderBaseMock.xsd">
       <SubType>
       </SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\strings.en-US.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\strings.resx">
-      <AutoGen>True</AutoGen>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\xy.en-US.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\xy.resx">
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
