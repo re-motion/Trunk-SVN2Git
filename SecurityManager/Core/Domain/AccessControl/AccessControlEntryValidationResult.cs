@@ -54,12 +54,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       StringBuilder errorMessageBuilder = new StringBuilder(_errors.Count * 100);
       errorMessageBuilder.Append ("The access control entry is in an invalid state:");
+      var enumerationGlobalizationService = SafeServiceLocator.Current.GetInstance<IEnumerationGlobalizationService>();
       foreach (var error in GetErrors())
       {
         errorMessageBuilder.AppendLine();
         errorMessageBuilder.Append ("  ");
 
-        var displayName = SafeServiceLocator.Current.GetInstance<IEnumerationGlobalizationService>().GetEnumerationValueDisplayName (error);
+        var displayName = enumerationGlobalizationService.GetEnumerationValueDisplayName (error);
         errorMessageBuilder.Append (displayName);
       }
 
