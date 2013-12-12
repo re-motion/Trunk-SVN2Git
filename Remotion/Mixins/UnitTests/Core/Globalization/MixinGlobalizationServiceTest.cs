@@ -94,6 +94,24 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization
     }
 
     [Test]
+    public void GetResourceManager_TypeWithInheritedMixin_WithResourceAttribute_ReturnsResourceManagerSet ()
+    {
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<ClassWithMultiLingualResourcesAttributes>()
+          .AddMixin<MixinAddingMultiLingualResourcesAttributes1>()
+          .EnterScope())
+      {
+        var typeInformation = TypeAdapter.Create (typeof (InheritedClassWithoutMultiLingualResourcesAttributes));
+
+        var result = (ResourceManagerSet) _globalizationService.GetResourceManager (typeInformation);
+
+        var innerResourceManager = result.ResourceManagers.Single();
+        Assert.That (innerResourceManager, Is.InstanceOf<ResourceManagerWrapper>());
+        Assert.That (innerResourceManager.Name, Is.EqualTo ("OnMixin1"));
+      }
+    }
+
+    [Test]
     public void GetResourceManagerTwice_TypeWithDynamicMixinScope_NotSameButEqual ()
     {
       using (MixinConfiguration.BuildFromActive()
