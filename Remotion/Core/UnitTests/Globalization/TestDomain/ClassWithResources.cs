@@ -20,7 +20,7 @@ using Remotion.Globalization;
 
 namespace Remotion.UnitTests.Globalization.TestDomain
 {
-  [MultiLingualResources ("Remotion.UnitTests.Globalization.Resources.ClassWithResources")]
+  [MultiLingualResources ("Remotion.UnitTests.Globalization.TestDomain.Resources.ClassWithResources")]
   public class ClassWithResources
   {
     private string _value1;

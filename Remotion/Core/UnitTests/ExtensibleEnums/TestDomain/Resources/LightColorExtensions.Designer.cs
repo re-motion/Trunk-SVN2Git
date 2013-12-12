@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Remotion.UnitTests.Globalization.Resources {
+namespace Remotion.UnitTests.ExtensibleEnums.TestDomain.Resources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Remotion.UnitTests.Globalization.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class EnumWithResources {
+    internal class LightColorExtensions {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal EnumWithResources() {
+        internal LightColorExtensions() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Globalization.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Remotion.UnitTests.Globalization.Resources.EnumWithResources", typeof(EnumWithResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Remotion.UnitTests.ExtensibleEnums.TestDomain.Resources.LightColorExtensions", typeof(LightColorExtensions).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +61,11 @@ namespace Remotion.UnitTests.Globalization.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Value 1.
+        ///   Looks up a localized string similar to Hellrot.
         /// </summary>
-        internal static string Remotion_UnitTests_Globalization_TestDomain_EnumWithResources_Value1 {
+        internal static string LightRed {
             get {
-                return ResourceManager.GetString("Remotion.UnitTests.Globalization.TestDomain.EnumWithResources.Value1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Value 2.
-        /// </summary>
-        internal static string Remotion_UnitTests_Globalization_TestDomain_EnumWithResources_Value2 {
-            get {
-                return ResourceManager.GetString("Remotion.UnitTests.Globalization.TestDomain.EnumWithResources.Value2", resourceCulture);
+                return ResourceManager.GetString("LightRed", resourceCulture);
             }
         }
     }
