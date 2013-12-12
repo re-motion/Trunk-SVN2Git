@@ -64,12 +64,12 @@ namespace Remotion.UnitTests.Globalization
           CultureInfo culture = new CultureInfo ("en-US");
           EnumValue[] enumValuesSpecific = EnumDescription.GetAllValues (typeof (EnumWithDescription), culture);
           Assert.That (enumValuesSpecific.Length, Is.EqualTo (3));
-          Assert.That (enumValuesInvariant[0].Value, Is.EqualTo (EnumWithDescription.Value1));
-          Assert.That (enumValuesInvariant[0].Description, Is.EqualTo ("Value I"));
-          Assert.That (enumValuesInvariant[1].Value, Is.EqualTo (EnumWithDescription.Value2));
-          Assert.That (enumValuesInvariant[1].Description, Is.EqualTo ("Value II"));
-          Assert.That (enumValuesInvariant[2].Value, Is.EqualTo (EnumWithDescription.ValueWithoutDescription));
-          Assert.That (enumValuesInvariant[2].Description, Is.EqualTo ("ValueWithoutDescription"));
+          Assert.That (enumValuesSpecific[0].Value, Is.EqualTo (EnumWithDescription.Value1));
+          Assert.That (enumValuesSpecific[0].Description, Is.EqualTo ("Value I"));
+          Assert.That (enumValuesSpecific[1].Value, Is.EqualTo (EnumWithDescription.Value2));
+          Assert.That (enumValuesSpecific[1].Description, Is.EqualTo ("Value II"));
+          Assert.That (enumValuesSpecific[2].Value, Is.EqualTo (EnumWithDescription.ValueWithoutDescription));
+          Assert.That (enumValuesSpecific[2].Description, Is.EqualTo ("ValueWithoutDescription"));
         }
       }
     }
