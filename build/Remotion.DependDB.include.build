@@ -29,7 +29,7 @@
 -->
 
   <PropertyGroup>
-    <DependDBBuildProcessorTool>$(SolutionDirectory)prereq\tools\DependDB\DependDB.BuildProcessor\DependDB.BuildProcessor.exe</DependDBBuildProcessorTool>
+    <DependDBBuildProcessorTool Condition="'$(DependDBBuildProcessorTool)' == ''">$(SolutionDirectory)prereq\tools\DependDB\DependDB.BuildProcessor\DependDB.BuildProcessor.exe</DependDBBuildProcessorTool>
   </PropertyGroup>
   
   
