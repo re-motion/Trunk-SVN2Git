@@ -48,7 +48,7 @@
       <NuGetToolPath>$(SolutionDirectory)prereq\Tools\NuGet\</NuGetToolPath>
 
       <NuGetTempDirectory>$(TempDirectory)$([System.Guid]::NewGuid())\NuGet\package\</NuGetTempDirectory>
-      <NuGetTempLibDirectory>$(NuGetTempDirectory)lib\net35\</NuGetTempLibDirectory>
+      <NuGetTempLibDirectory>$(NuGetTempDirectory)lib\net45\</NuGetTempLibDirectory>
       <NuGetTempSrcDirectory>$(NuGetTempDirectory)src\</NuGetTempSrcDirectory>
       <NuGetOutputDirectory>$(OutputDirectory)NuGet\</NuGetOutputDirectory>
       

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq.Core", "Relinq\Core\Linq.Core.csproj", "{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq.UnitTests", "Relinq\UnitTests\Linq.UnitTests.csproj", "{17484781-E537-4442-9915-CA47AC5F6858}"

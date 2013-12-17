@@ -56,19 +56,19 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     {
       using (var sandbox = Sandbox.CreateSandbox (_mediumTrustPermissions, new[] { typeof (SandboxTest).Assembly }))
       {
-        sandbox.AppDomain.DoCallBack (DangerousMethod);
+        sandbox.AppDomain.DoCallBack (DangerousMethodAssertingPermission);
       }
     }
 
     [Test]
     [ExpectedException (typeof (SecurityException), ExpectedMessage = 
-        "Request for the permission of type 'System.Security.Permissions.EnvironmentPermission.*' failed.",
+        @"^Request for the permission of type 'System\.Security\.Permissions\.EnvironmentPermission.*' failed\.$",
         MatchType = MessageMatch.Regex)]
     public void ExecuteCodeWhichIsNotAllowedInMediumTrust ()
     {
       using (var sandbox = Sandbox.CreateSandbox (_mediumTrustPermissions, new Assembly[0]))
       {
-        sandbox.AppDomain.DoCallBack (DangerousMethod);
+        sandbox.AppDomain.DoCallBack (DangerousMethodRequiringPermission);
       }
     }
 
@@ -110,9 +110,14 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       }
     }
 
-    public static void DangerousMethod ()
+    public static void DangerousMethodAssertingPermission ()
     {
-      new EnvironmentPermission (PermissionState.Unrestricted).Assert ();
+      new EnvironmentPermission (PermissionState.Unrestricted).Assert();
+      Environment.GetEnvironmentVariable ("USERDOMAIN");
+    }
+
+    public static void DangerousMethodRequiringPermission()
+    {
       Environment.GetEnvironmentVariable ("USERDOMAIN");
     }
   }

@@ -24,6 +24,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
   {
     [CommandLineMode ("schema", Description = "Generate the database setup script(s).")]
     BuildSchema = 1,
+
+    [CommandLineMode ("exportMappingXml", Description = "Export mapping as a xml file.")]
+    ExportMappingXml = 2,
   }
 
   /// <summary>
@@ -33,7 +36,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
   [Serializable]
   public class RdbmsToolsParameters
   {
-    [CommandLineModeArgument (true)]
+    [CommandLineModeArgument (false)]
     public OperationMode Mode = OperationMode.BuildSchema;
 
     [CommandLineStringArgument ("baseDirectory", true,
@@ -52,6 +55,11 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
         Description = "Create schema file(s) in this directory (default: current).",
         Placeholder = "directory")]
     public string SchemaOutputDirectory = string.Empty;
+
+    [CommandLineStringArgument ("exportOutputFile", true,
+        Description = "The output filename for the mapping export.",
+        Placeholder = "filename")]
+    public string MappingExportOutputFileName = string.Empty;
 
     //TODO: remove parameter (1.13.84)
     [CommandLineStringArgument ("schemaBuilder", true,

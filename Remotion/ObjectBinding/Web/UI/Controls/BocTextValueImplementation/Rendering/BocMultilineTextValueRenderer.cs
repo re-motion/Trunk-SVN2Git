@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.Utilities;
@@ -55,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
 
     protected override Label GetLabel (BocRenderingContext<IBocMultilineTextValue> renderingContext)
     {
-      Label label = new Label();
+      Label label = new Label { ClientIDMode = ClientIDMode.Static };
       label.ID = renderingContext.Control.GetValueName();
       label.EnableViewState = false;
 

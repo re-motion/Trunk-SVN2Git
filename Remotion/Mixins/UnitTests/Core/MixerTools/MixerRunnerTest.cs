@@ -39,7 +39,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       Assert.That (_parameters.AssemblyOutputDirectory, Is.EqualTo (Environment.CurrentDirectory));
       Assert.That (_parameters.BaseDirectory, Is.EqualTo (Environment.CurrentDirectory));
       Assert.That (_parameters.ConfigFile, Is.EqualTo (""));
-      Assert.That (_parameters.AssemblyName, Is.EqualTo ("Remotion.Mixins.Persistent"));
+      Assert.That (_parameters.AssemblyName, Is.EqualTo ("Remotion.Mixins.Persistent.{counter}"));
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     {
       _parameters.AssemblyOutputDirectory = "MixerRunnerTest";
       _parameters.BaseDirectory = "MixerRunnerTest_Input";
-      var assemblyPath = Path.Combine (_parameters.AssemblyOutputDirectory, _parameters.AssemblyName + ".dll");
+      var assemblyPath = Path.Combine (_parameters.AssemblyOutputDirectory, "Remotion.Mixins.Persistent.1.dll");
       
       try
       {
@@ -84,7 +84,6 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
 
         var runner = new MixerRunner (_parameters);
         runner.Run ();
-
         Assert.That (Directory.Exists (_parameters.AssemblyOutputDirectory), Is.True);
         Assert.That (File.Exists (assemblyPath), Is.True);
       }

@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.MappingExport;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
@@ -452,7 +453,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void CreateSchemaFileBuilder ()
+    public void CreateSchemaScriptBuilder ()
     {
       IRdbmsStorageObjectFactory testableSqlProviderFactory = new TestableSqlStorageObjectFactory (
           _tableBuilderStub, _viewBuilderStub, _constraintBuilderStub, _indexBuilderStub, _synonymBuilderStub);
@@ -475,6 +476,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                   _indexBuilderStub,
                   _synonymBuilderStub
               }));
+    }
+
+    [Test]
+    public void CreateStorageProviderSerializer ()
+    {
+      var enumSerializerStub = MockRepository.GenerateStub<IEnumSerializer>();
+      var testableSqlProviderFactory = new TestableSqlStorageObjectFactory (null,
+          enumSerializerStub);
+
+      var storageProviderSerializer = testableSqlProviderFactory.CreateStorageProviderSerializer (enumSerializerStub);
+      Assert.That(storageProviderSerializer, Is.InstanceOf<StorageProviderSerializer>());
+      Assert.That (
+          ((StorageProviderSerializer) storageProviderSerializer).ClassSerializer,
+          Is.InstanceOf<ClassSerializer> ());
+    }
+
+    [Test]
+    public void CreateEnumSerializer ()
+    {
+      var testableSqlProviderFactory = new TestableSqlStorageObjectFactory (null, null);
+
+      var enumSerializer = testableSqlProviderFactory.CreateEnumSerializer ();
+      Assert.That(enumSerializer, Is.InstanceOf<ExtensibleEnumSerializerDecorator>());
     }
   }
 }

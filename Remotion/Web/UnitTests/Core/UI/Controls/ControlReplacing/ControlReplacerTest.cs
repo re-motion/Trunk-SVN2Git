@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Web.UI;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
@@ -54,7 +53,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ControlReplacing
       SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new StateLoadingStrategy ());
 
       testPageHolder.PageInvoker.InitRecursive();
-      object viewState = testPageHolder.PageInvoker.SaveViewStateRecursive();
+      object viewState = testPageHolder.PageInvoker.SaveViewStateRecursive (ViewStateMode.Enabled);
 
       Assert.That (viewState, Is.InstanceOf (typeof (Pair)));
       var replacerViewState = (Pair) ((IList) ((Pair) viewState).Second)[3];

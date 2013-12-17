@@ -12,7 +12,7 @@
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>Remotion</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -30,7 +30,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -54,7 +54,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;DEBUG;NET_3_5</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DocumentationFile>bin\Debug\Remotion.XML</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
@@ -81,7 +81,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;NET_3_5</DefineConstants>
+    <DefineConstants>TRACE;</DefineConstants>
     <DocumentationFile>bin\Release\Remotion.xml</DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
@@ -101,7 +101,7 @@
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-3.5 (Client Profile)\log4net.dll</HintPath>
+      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-4.0 (Client Profile)\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -112,7 +112,7 @@
     </Reference>
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <RequiredTargetFramework>4.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml">
@@ -237,7 +237,6 @@
     <Compile Include="Collections\DictionaryExtensions.cs" />
     <Compile Include="Collections\ListAdapter.cs" />
     <Compile Include="FunctionalProgramming\EnumerableExtensions.cs" />
-    <Compile Include="Collections\ReadOnlyDictionary.cs" />
     <Compile Include="Collections\SetBasedCacheKey.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileIncludeRootAssemblyElement.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElement.cs" />
@@ -297,7 +296,6 @@
     <Compile Include="ServiceLocation\DefaultServiceConfigurationDiscoveryService.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocator.cs" />
     <Compile Include="ServiceLocation\ServiceConfigurationEntry.cs" />
-    <Compile Include="Utilities\ConcurrentDictionary.cs" />
     <Compile Include="Utilities\CustomAttributeTypedArgumentUtility.cs" />
     <Compile Include="Utilities\DefaultConverter.cs" />
     <Compile Include="Utilities\DelegateBasedDisposable.cs" />
@@ -326,7 +324,6 @@
     <Compile Include="Collections\MultiDictionary.cs" />
     <Compile Include="Collections\LockingCacheDecorator.cs" />
     <Compile Include="Collections\Set.cs" />
-    <Compile Include="Collections\Tuple.cs" />
     <Compile Include="Configuration\ConfigurationElementCollection.cs" />
     <Compile Include="Configuration\ConfigurationWrapper.cs" />
     <Compile Include="Configuration\ConfigurationWrapperFromConfigurationObject.cs" />
@@ -356,9 +353,6 @@
     <Compile Include="Collections\NameObjectCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Collections\TupleAb.cs" />
-    <Compile Include="Collections\TupleAbc.cs" />
-    <Compile Include="Collections\TupleAbcd.cs" />
     <Compile Include="Configuration\TypeElement.cs" />
     <Compile Include="DisposableBase.cs" />
     <Compile Include="Globalization\IObjectWithResources.cs">
@@ -576,23 +570,6 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>..\..\..\..\..\prereq\Tools\FuncGen\FuncGen.exe "$(ProjectDir)*.template.cs" *.generated.cs /rec</PreBuildEvent>

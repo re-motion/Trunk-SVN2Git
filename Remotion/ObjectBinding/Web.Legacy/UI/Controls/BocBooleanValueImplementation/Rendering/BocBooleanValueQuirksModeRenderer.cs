@@ -213,6 +213,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
 
       imageControl.AlternateText = description;
       imageControl.Style["vertical-align"] = "middle";
+      imageControl.Style["border-style"] = "none";
 
       imageControl.ImageUrl = imageUrl;
       if (renderingContext.Control.ShowDescription)

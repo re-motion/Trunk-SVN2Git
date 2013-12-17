@@ -32,7 +32,7 @@ namespace Remotion.Web.UnitTests.Core.Utilities
     [Test]
     public void HtmlEncode_SingleQuote ()
     {
-      Assert.That (HtmlUtility.HtmlEncode ("a'b"), Is.EqualTo ("a&#039;b"));
+      Assert.That (HtmlUtility.HtmlEncode ("a'b"), Is.EqualTo ("a&#39;b"));
     }
 
     [Test]

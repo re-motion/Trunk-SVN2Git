@@ -35,7 +35,7 @@
     <SyntaxFilters>CSharp, VisualBasic, CPlusPlus</SyntaxFilters>
     <MissingTags>None</MissingTags>
     <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected, SealedProtected</VisibleItems>
-    <FrameworkVersion>.NET 3.5</FrameworkVersion>
+    <FrameworkVersion>.NET 4.5</FrameworkVersion>
 
     <HtmlHelpName>{Placehoder}</HtmlHelpName>
     <OutputPath>{Placehoder}</OutputPath>

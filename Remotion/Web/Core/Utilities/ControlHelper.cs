@@ -28,8 +28,6 @@ namespace Remotion.Web.Utilities
 {
   public static class ControlHelper
   {
-    private static readonly IInternalControlMemberCaller s_memberCaller = new InternalControlMemberCaller();
-
     public static string PostEventSourceID
     {
       get { return Page.postEventSourceID; }
@@ -232,42 +230,6 @@ namespace Remotion.Web.Utilities
         else
           throw;
       }
-    }
-
-    /// <summary> Encapsulates the invocation of <see cref="Control"/>'s LoadViewStateRecursive method. </summary>
-    /// <param name="target"> The <see cref="Control"/> to be restored. </param>
-    /// <param name="viewState"> The view state object used for restoring. </param>
-    public static void LoadViewStateRecursive (Control target, object viewState)
-    {
-      s_memberCaller.LoadViewStateRecursive (target, viewState);
-    }
-
-    /// <summary> Encapsulates the invocation of <see cref="Control"/>'s SaveViewStateRecursive method. </summary>
-    /// <param name="target"> The <see cref="Control"/> to be saved. </param>
-    /// <returns> The view state object for <paramref name="target"/>. </returns>
-    public static object SaveViewStateRecursive (Control target)
-    {
-      return s_memberCaller.SaveViewStateRecursive (target);
-    }
-
-    /// <summary>Encapsulates the invocation of <see cref="Page"/>'s SaveAllState method.</summary>
-    /// <param name="page">The <see cref="Page"/> for which SaveAllState will be invoked. Must not be <see langword="null" />.</param>
-    public static void SaveAllState (Page page)
-    {
-      s_memberCaller.SaveAllState (page);
-    }
-
-    /// <summary>Returns the control states for all controls that are child-controls of the passed <see cref="Control"/>.</summary>
-    public static IDictionary GetChildControlState<TNamingContainer> (TNamingContainer control) where TNamingContainer : Control, INamingContainer
-    {
-      return s_memberCaller.GetChildControlState (control);
-    }
-
-    /// <summary>Sets the control states for the child control of the passed <see cref="Control"/>.</summary>
-    public static void SetChildControlState<TNamingContainer> (TNamingContainer control, IDictionary newControlState)
-        where TNamingContainer : Control, INamingContainer
-    {
-      s_memberCaller.SetChildControlState (control, newControlState);
     }
 
     public static bool IsResponseTextXml (HttpContextBase context)

@@ -158,8 +158,9 @@ namespace Remotion.Web.UnitTests.Core.Utilities
     }
 
     [Test]
-    public void SaveViewStateRecursive ()
+    public void SaveViewStateRecursive_NamingContainerViewStateModeIsEnabled_SavesViewState ()
     {
+      _namingContainer.ViewStateMode = ViewStateMode.Enabled;
       _parent.ValueInViewState = "ParentValue";
       _child.ValueInViewState = "ChildValue";
 
@@ -173,6 +174,71 @@ namespace Remotion.Web.UnitTests.Core.Utilities
       Assert.That (childViewStates.Count, Is.EqualTo (2));
       Assert.That (childViewStates[0], Is.EqualTo (0));
       Assert.That (childViewStates[1], new PairConstraint (new Pair ("ChildValue", null)));
+    }
+
+    [Test]
+    public void SaveViewStateRecursive_ParentViewStateModeIsAlwaysInterited_FallsBackToSaveViewState ()
+    {
+      _page.ViewStateMode = ViewStateMode.Inherit;
+      _namingContainer.ViewStateMode = ViewStateMode.Inherit;
+      _parent.ValueInViewState = "ParentValue";
+      _child.ValueInViewState = "ChildValue";
+
+      object viewState = _memberCaller.SaveViewStateRecursive (_parent);
+
+      Assert.That (viewState, Is.InstanceOf (typeof (Pair)));
+      var parentViewState = (Pair) viewState;
+      Assert.That (parentViewState.First, Is.EqualTo ("ParentValue"));
+      Assert.That (parentViewState.Second, Is.InstanceOf (typeof (ArrayList)));
+      var childViewStates = (IList) parentViewState.Second;
+      Assert.That (childViewStates.Count, Is.EqualTo (2));
+      Assert.That (childViewStates[0], Is.EqualTo (0));
+      Assert.That (childViewStates[1], new PairConstraint (new Pair ("ChildValue", null)));
+    }
+
+    [Test]
+    public void SaveViewStateRecursive_ParentViewStateModeIsAlwaysDisabled_DoesNotSaveViewState ()
+    {
+      _namingContainer.ViewStateMode = ViewStateMode.Disabled;
+      _parent.ValueInViewState = "ParentValue";
+      _child.ValueInViewState = "ChildValue";
+
+      object viewState = _memberCaller.SaveViewStateRecursive (_parent);
+
+      Assert.That (viewState, Is.Null);
+    }
+
+    [Test]
+    public void SaveViewStateRecursive_ParentViewStateModeIsDisabledAndOwnViewStateModeIsEnabled_SavesViewState ()
+    {
+      _namingContainer.ViewStateMode = ViewStateMode.Disabled;
+      _parent.ViewStateMode = ViewStateMode.Enabled;
+      _parent.ValueInViewState = "ParentValue";
+      _child.ValueInViewState = "ChildValue";
+
+      object viewState = _memberCaller.SaveViewStateRecursive (_parent);
+
+      Assert.That (viewState, Is.InstanceOf (typeof (Pair)));
+      var parentViewState = (Pair) viewState;
+      Assert.That (parentViewState.First, Is.EqualTo ("ParentValue"));
+      Assert.That (parentViewState.Second, Is.InstanceOf (typeof (ArrayList)));
+      var childViewStates = (IList) parentViewState.Second;
+      Assert.That (childViewStates.Count, Is.EqualTo (2));
+      Assert.That (childViewStates[0], Is.EqualTo (0));
+      Assert.That (childViewStates[1], new PairConstraint (new Pair ("ChildValue", null)));
+    }
+
+    [Test]
+    public void SaveViewStateRecursive_ParentViewStateModeIsEnabledAndOwnViewStateModeIsDisabled_DoesNotSaveViewState ()
+    {
+      _namingContainer.ViewStateMode = ViewStateMode.Enabled;
+      _parent.ViewStateMode = ViewStateMode.Disabled;
+      _parent.ValueInViewState = "ParentValue";
+      _child.ValueInViewState = "ChildValue";
+
+      object viewState = _memberCaller.SaveViewStateRecursive (_parent);
+
+      Assert.That (viewState, Is.Null);
     }
 
     [Test]
@@ -328,6 +394,22 @@ namespace Remotion.Web.UnitTests.Core.Utilities
 
       Assert.That (exceptionMessage, Is.EqualTo ("error"));
       Assert.That (controlCollection.IsReadOnly, Is.False);
+    }
+
+    [Test]
+    public void SaveAllState ()
+    {
+      _parent.ValueInViewState = "ParentValue";
+      _child.ValueInViewState = "ChildValue";
+      _page.RegisterViewStateHandler();
+
+      _memberCaller.SaveAllState (_page);
+      var viewState = _page.GetPageStatePersister().ViewState;
+
+      Assert.That (viewState, Is.InstanceOf (typeof (Pair)));
+      var pageViewState = (Pair) viewState;
+      var namingContainerViewState = pageViewState.Second;
+      Assert.That (namingContainerViewState, Is.InstanceOf (typeof (Pair)));
     }
   }
 }

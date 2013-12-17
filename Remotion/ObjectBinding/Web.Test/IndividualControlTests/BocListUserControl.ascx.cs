@@ -368,7 +368,6 @@ ChildrenList.RowMenuItemClick += ChildrenList_RowMenuItemClick;
     if (e.BusinessObject is IBusinessObjectWithIdentity)
       ChildrenListEventArgsLabel.Text += string.Format ("BusinessObjectID: {0}<br />", ((IBusinessObjectWithIdentity) e.BusinessObject).UniqueIdentifier);
     ChildrenListEventArgsLabel.Text += string.Format ("ListIndex: {0}<br />", e.ListIndex);
-    throw new ApplicationException ("test");
   }
 
 
@@ -377,7 +376,7 @@ ChildrenList.RowMenuItemClick += ChildrenList_RowMenuItemClick;
     if (e.ListIndex == 3)
     {
       e.SetRowReadonly();
-      e.SetAdditionalCssClassForDataRow ("custom");
+      e.SetAdditionalCssClassForDataRow ("test");
     }
   }
 

@@ -26,6 +26,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// <summary>
   /// A facade that modifies mixin target type by calling the methods on <see cref="TargetTypeGenerator"/> in the proper order.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public class TargetTypeGeneratorFacade : ITargetTypeModifier
   {
     private readonly INextCallProxyGenerator _nextCallProxyGenerator;

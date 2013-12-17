@@ -57,7 +57,7 @@
   
   <PropertyGroup>
     <NUnitToolPath>$(SolutionDirectory)prereq\Tools\NUnit-2.6\bin</NUnitToolPath>
-    <MixinXRefToolPath>$(SolutionDirectory)prereq\Tools\DependDB\DependDB.BuildProcessor\ReportGenerators\XRef\</MixinXRefToolPath>
+    <MixinXRefToolPath>$(SolutionDirectory)prereq\Tools\DependDB\DependDB.BuildProcessor\ReportGenerators\XRef45\</MixinXRefToolPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
   </PropertyGroup>

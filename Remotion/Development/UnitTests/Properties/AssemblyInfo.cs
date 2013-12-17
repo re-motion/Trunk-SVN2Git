@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Reflection;
-using System.Security;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -24,4 +23,4 @@ using System.Security;
 //
 [assembly: AssemblyTitle("Remotion Development Support Library Unit Tests")]
 [assembly: AssemblyCulture ("")]
-[assembly: AllowPartiallyTrustedCallers] // required for sandbox tests
+

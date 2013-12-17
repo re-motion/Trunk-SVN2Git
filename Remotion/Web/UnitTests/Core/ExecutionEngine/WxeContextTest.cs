@@ -29,6 +29,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 {
 
 [TestFixture]
+[Ignore("TODO RM-5569")]
 public class WxeContextTest
 {
   private HttpContext _currentHttpContext;

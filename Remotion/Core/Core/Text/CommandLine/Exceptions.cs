@@ -167,7 +167,7 @@ public class MissingRequiredCommandLineParameterException: CommandLineArgumentEx
 [Serializable]
 public class ConflictCommandLineParameterException: CommandLineArgumentException
 {
-  private const string c_message = "Conflicting Arguments: {0} and {1} cannot be used togehter.";
+  private const string c_message = "Conflicting Arguments: {0} and {1} cannot be used together.";
  
 	public ConflictCommandLineParameterException (CommandLineArgument argument1, CommandLineArgument argument2)
     : base (string.Format (c_message, FormatArgument.Format (argument1), FormatArgument.Format (argument2)))

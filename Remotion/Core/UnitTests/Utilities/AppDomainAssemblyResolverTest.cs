@@ -150,7 +150,7 @@ namespace Remotion.UnitTests.Utilities
 
     [Test]
     [ExpectedException (typeof (FileLoadException), ExpectedMessage =
-        "Could not load file or assembly 'TestDllInvalid'. The located assembly's manifest definition does not match the assembly reference.")]
+        "Could not load file or assembly 'TestDllInvalid' or one of its dependencies. Could not find or load a specific file. (Exception from HRESULT: 0x80131621)")]
     public void Resolve_ManifestDoesntMatch ()
     {
       var resolver = CreateResolver ();

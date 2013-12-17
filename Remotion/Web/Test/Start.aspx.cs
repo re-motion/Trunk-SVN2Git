@@ -16,15 +16,15 @@
 // 
 
 using System;
-using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Web.UI;
 
 namespace Remotion.Web.Test
 {
   /// <summary>
   /// Summary description for Start.
   /// </summary>
-  public class Start : Page
+  public class Start : SmartPage
   {
     protected Button ResetSessionButton;
 

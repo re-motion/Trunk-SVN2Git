@@ -14,7 +14,7 @@
     <AssemblyName>Remotion.UnitTests</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -32,7 +32,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -56,7 +56,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;DEBUG;NET_3_5</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
@@ -80,7 +80,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;NET_3_5</DefineConstants>
+    <DefineConstants>TRACE;</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
@@ -99,11 +99,11 @@
   <ItemGroup>
     <Reference Include="Castle.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\Castle-3.0\net-3.5\Castle.Core.dll</HintPath>
+      <HintPath>..\..\..\prereq\Assemblies\Castle-3.0\net-4.0 (Client Profile)\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-3.5 (Client Profile)\log4net.dll</HintPath>
+      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-4.0 (Client Profile)\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -122,7 +122,7 @@
     </Reference>
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <RequiredTargetFramework>4.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
@@ -131,6 +131,10 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
+      <Project>{b719a305-0493-4c72-88fe-9a2fc6964578}</Project>
+      <Name>Development.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Development\RhinoMocks\Development.RhinoMocks.csproj">
       <Project>{2177143e-345f-4faa-9958-1ae2b5eed242}</Project>
       <Name>Development.RhinoMocks</Name>
@@ -139,10 +143,6 @@
       <Name>Core.Core</Name>
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
-      <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
-      <Name>Development.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -179,7 +179,6 @@
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttributeExtensions.cs" />
     <Compile Include="FunctionalProgramming\TestDomain\Element.cs" />
     <Compile Include="FunctionalProgramming\EnumerableExtensionsTest.cs" />
-    <Compile Include="Collections\ReadOnlyDictionaryTest.cs" />
     <Compile Include="Collections\SetBasedCacheKeyTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElementCollectionTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileRootAssemblyElementCollectionTest.cs" />
@@ -480,9 +479,6 @@
     </Compile>
     <Compile Include="Collections\CacheTest.cs" />
     <Compile Include="Collections\NullCacheTest.cs" />
-    <Compile Include="Collections\TupleAbcdTest.cs" />
-    <Compile Include="Collections\TupleAbcTest.cs" />
-    <Compile Include="Collections\TupleAbTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AttributeAssemblyLoaderFilterTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyFinderIntegrationTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\MarkedExeAssembly\AssemblyInfo.cs" />
@@ -698,24 +694,6 @@
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

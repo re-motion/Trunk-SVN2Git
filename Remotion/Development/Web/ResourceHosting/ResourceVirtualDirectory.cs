@@ -42,12 +42,12 @@ namespace Remotion.Development.Web.ResourceHosting
       _physicalDirectory = physicalDirectory;
     }
 
-    public string AppRelativeVirtualPath
+    public virtual string AppRelativeVirtualPath
     {
       get { return _virtualPath;  }
     }
     
-    public string PhysicalPath
+    public virtual string PhysicalPath
     {
       get
       {
@@ -57,7 +57,7 @@ namespace Remotion.Development.Web.ResourceHosting
       }
     }
 
-    public bool Exists
+    public virtual bool Exists
     {
       get { return _physicalDirectory != null && _physicalDirectory.Exists; }
     }

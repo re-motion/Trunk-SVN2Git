@@ -73,8 +73,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       AddAttributesToRender (renderingContext, false);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Label labelControl = new Label { ID = renderingContext.Control.GetTextValueName() };
-      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetKeyValueName () };
+      Label labelControl = new Label { ID = renderingContext.Control.GetTextValueName(), ClientIDMode = ClientIDMode.Static };
+      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetKeyValueName (), ClientIDMode = ClientIDMode.Static };
       Image imageControl = new Image { ID = renderingContext.Control.ClientID + "Image" };
 
       string description = GetDescription (renderingContext);

@@ -66,6 +66,11 @@ namespace Remotion.Development.Web.UnitTesting.AspNetFramework
       return _pageStatePersister;
     }
 
+    protected override void SavePageStateToPersistenceMedium (object state)
+    {
+      base.SavePageStateToPersistenceMedium (state);
+    }
+
     public void SetPageStatePersister (PageStatePersister pageStatePersister)
     {
       ArgumentUtility.CheckNotNull ("pageStatePersister", pageStatePersister);

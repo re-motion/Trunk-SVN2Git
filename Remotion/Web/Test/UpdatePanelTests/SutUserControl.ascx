@@ -40,24 +40,42 @@
         <br />
         <remotion:DropDownMenu ID="DropDownMenuInsideUpdatePanel" runat="server" TitleText="DropDownMenu Inside UpdatePanel" Width="20em">
         <MenuItems>
-          <remotion:WebMenuItem ItemID="EventWithSyncPostBack" Text="Event With Sync PostBack">
-            <PersistedCommand>
-              <remotion:Command Type="Event" EventCommand-RequiresSynchronousPostBack="True" />
-            </PersistedCommand>
-          </remotion:WebMenuItem>
           <remotion:WebMenuItem ItemID="EventWithAsyncPostBack" Text="Event With Async PostBack">
             <PersistedCommand>
               <remotion:Command Type="Event" />
             </PersistedCommand>
           </remotion:WebMenuItem>
+          <remotion:WebMenuItem ItemID="EventWithSyncPostBack" Text="Event With Sync PostBack">
+            <PersistedCommand>
+              <remotion:Command Type="Event" EventCommand-RequiresSynchronousPostBack="True" />
+            </PersistedCommand>
+          </remotion:WebMenuItem>
         </MenuItems>
         </remotion:DropDownMenu>
+        <div>
+          List Menu
+          <remotion:ListMenu ID="ListMenuInsideUpdatePanel" runat="server">
+          <MenuItems>
+            <remotion:WebMenuItem ItemID="EventWithAsyncPostBack" Text="Event With Async PostBack">
+              <PersistedCommand>
+                <remotion:Command Type="Event" />
+              </PersistedCommand>
+            </remotion:WebMenuItem>
+            <remotion:WebMenuItem ItemID="EventWithSyncPostBack" Text="Event With Sync PostBack">
+              <PersistedCommand>
+                <remotion:Command Type="Event" EventCommand-RequiresSynchronousPostBack="True" />
+              </PersistedCommand>
+            </remotion:WebMenuItem>
+          </MenuItems>
+          </remotion:ListMenu>
+        </div>
       </div>
     </div>
   </ContentTemplate>
   <Triggers>
     <asp:AsyncPostBackTrigger ControlID="AsyncPostBackOutsideUpdatePanelButton" />
     <asp:AsyncPostBackTrigger ControlID="AsyncPostBackOutsideUpdatePanelLinkButton" />
+    <asp:AsyncPostBackTrigger ControlID="AsyncPostBackOutsideUpdatePanelWebButton" />
     <asp:PostBackTrigger ControlID="SyncPostBackInsideUpdatePanelButton" />
     <asp:PostBackTrigger ControlID="SyncPostBackInsideUpdatePanelLinkButton" />
   </Triggers>
@@ -76,4 +94,11 @@
   <asp:LinkButton ID="SyncPostBackOutsideUpdatePanelLinkButton" runat="server" Text="LinkButton: Sync PostBack Outside Update Panel" /><br />
   <remotion:WebButton ID="AsyncPostBackOutsideUpdatePanelWebButton" runat="server" Text="WebButton: Async PostBack Outside Update Panel" /><br />
   <remotion:WebButton ID="SyncPostBackOutsideUpdatePanelWebButton" runat="server" Text="WebButton: Sync PostBack Outside Update Panel" /><br />
+    <button id="B1" name="B1Name" type="submit" class="webButton"
+        onclick="javascript:__doPostBack('B1','');WebButton_Click (this, false);return false;"
+        onmouseout="WebButton_MouseOut (this, 'mouseDown');" onmousedown="WebButton_MouseDown (this, 'mouseDown');" onmouseup="WebButton_MouseUp (this, 'mouseDown');" 
+        ><span class="buttonBody">Test</span></button>
+    
+    <%--<button name="TheMasterPage$FormContent$SutUserControl$SyncPostBackOutsideUpdatePanelWebButton" class="webButton" id="FormContent_SutUserControl_SyncPostBackOutsideUpdatePanelWebButton"onclick="javascript:WebButton_Click (this, false);__doPostBack('TheMasterPage$FormContent$SutUserControl$SyncPostBackOutsideUpdatePanelWebButton','');return false;" type="submit" value="WebButton: Sync PostBack Outside Update Panel"><span class="buttonBody">WebButton: Sync PostBack Outside Update Panel</span></button>--%>
+
 </div>

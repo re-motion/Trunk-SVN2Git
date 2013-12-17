@@ -25,6 +25,7 @@ using Remotion.Development.Web.UnitTesting.AspNetFramework;
 namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   [TestFixture]
+  [Ignore("TODO RM-5569")]
   public class EventCommandTest : BaseTest
   {
     private CommandTestHelper _testHelper;

@@ -40,9 +40,15 @@ namespace Remotion.Mixins.MixerTools
     public string AssemblyOutputDirectory = Environment.CurrentDirectory;
 
     [CommandLineStringArgument ("assemblyName", true,
-        Description = "The simple name of the assembly generated (without extension; default: Remotion.Mixins.Persistent).",
+        Description = "The simple name of the assembly generated (without extension; default: Remotion.Mixins.Persistent.{counter}).",
         Placeholder = "simpleName")]
-    public string AssemblyName = "Remotion.Mixins.Persistent";
+    public string AssemblyName = "Remotion.Mixins.Persistent.{counter}";
+
+    [CommandLineStringArgument ("degreeOfParallelism", true,
+        Description = "The maximum number of threads on which the code generation will be distributed. "
+                      + "If a number greater than 1 is specified, the AssemblyName parameter must contain the {counter} placeholder. (default: 1).",
+        Placeholder = "1")]
+    public int DegreeOfParallelism = 1;
 
     [CommandLineFlagArgument ("verbose", false,
         Description = "Enables verbose output. Verbose output will include all messages from all loggers in the framework.")]

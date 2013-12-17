@@ -10,14 +10,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.SecurityManager</RootNamespace>
     <AssemblyName>Remotion.SecurityManager</AssemblyName>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
+    <FileUpgradeFlags></FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UpgradeBackupLocation></UpgradeBackupLocation>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -44,8 +42,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Remotion.SecurityManager.XML</DocumentationFile>
     <NoWarn>1591;0419</NoWarn>
-    <WarningsAsErrors>
-    </WarningsAsErrors>
+    <WarningsAsErrors></WarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
@@ -69,23 +66,20 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <RequiredTargetFramework>4.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Configuration\SecurityManagerConfiguration.xsd">
-      <SubType>
-      </SubType>
+      <SubType></SubType>
     </EmbeddedResource>
     <None Include="..\SecurityManager AGPL.licenseheader">
       <Link>SecurityManager AGPL.licenseheader</Link>
     </None>
-    <None Include="Database\SecurityManagerCreateDB.sql">
-    </None>
-    <None Include="Database\SecurityManagerSetupDB.sql">
-    </None>
+    <None Include="Database\SecurityManagerCreateDB.sql"></None>
+    <None Include="Database\SecurityManagerSetupDB.sql"></None>
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
@@ -470,8 +464,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Database\SecurityManagerSetupDBSpecialTables.sql">
-    </None>
+    <None Include="Database\SecurityManagerSetupDBSpecialTables.sql"></None>
     <None Include="Doc\include\GettingStartedWithRestrict.aml" />
     <None Include="GenerateSetupDBScript.cmd" />
     <None Include="..\..\remotion.snk">
@@ -507,23 +500,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

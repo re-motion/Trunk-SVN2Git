@@ -130,6 +130,8 @@
   <Target Name="CopyReleaseNotesFromShareToTemp" DependsOnTargets="CreateReleaseNotesProperties">
     <Message Text="Copy release notes from share to local temp directory..." Importance="High"/>
 
+    <MakeDir Directories="$(ReleaseNotesRemoteShareDirectory)" />
+    
     <Error Text="The ReleaseNotesRemoteShareDirectory ('$(ReleaseNotesRemoteShareDirectory)') does not exist - probably remote directory not reachable or new minor version created without creating the corresponding ReleaseNotesRemoteShareDirectory."
            Condition="!Exists('$(ReleaseNotesRemoteShareDirectory)')"/>
     
@@ -307,7 +309,7 @@
                            Username="$(CodeplexUsername)"
                            Password="$(CodeplexPassword)"
                            Description="$(CodePlexDescription)"
-                           IsDefaultRelease="false"
+                           IsDefaultRelease="true"
                            ReleaseDate="$(_releaseDate)"
                            ReleaseStatus="Stable"
                            ShowToPublic="true"/>

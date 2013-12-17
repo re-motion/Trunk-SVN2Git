@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.MappingExport;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
@@ -54,6 +55,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
         IMethodCallTransformerProvider methodCallTransformerProvider,
         ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
         IMappingConfiguration mappingConfiguration)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IStorageProviderSerializer CreateStorageProviderSerializer (IEnumSerializer enumSerializer)
+    {
+      throw new NotImplementedException();
+    }
+    
+    public IEnumSerializer CreateEnumSerializer ()
     {
       throw new NotImplementedException();
     }

@@ -121,7 +121,6 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
       button.Text = "Submit";
       button.UseSubmitBehavior = true;
       button.Click += OnClick;
-
       return button;
     }
 
@@ -224,8 +223,8 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
       HyperLink hyperLink = new HyperLink ();
       hyperLink.ID = CreateID (prefix, "AnchorWithNonPostBackJavascriptInOnClick");
       hyperLink.Text = "OnClick";
-      hyperLink.NavigateUrl = "#";
-      hyperLink.Attributes["onclick"] = "window.alert ('javascript in onclick handler')";
+      hyperLink.NavigateUrl = "invalid";
+      hyperLink.Attributes["onclick"] = "window.alert ('javascript in onclick handler'); return false;";
 
       return hyperLink;
     }
@@ -245,6 +244,8 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
       Image image = new Image ();
       image.ID = CreateID (prefix, "Inner");
       image.AlternateText = text;
+      image.ImageUrl = "~/Images/Image.gif";
+      image.Style.Add (HtmlTextWriterStyle.BorderStyle, "none");
 
       return image;
     }

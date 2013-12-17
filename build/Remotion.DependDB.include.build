@@ -34,8 +34,8 @@
   
   
   <!-- Targets -->
-  <Target Name="CreateDependDBPackages" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBPackagesInternal"/>
-  <Target Name="UploadToDependDB" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;UploadToDependDBInternal"/>
+  <Target Name="CreateDependDBPackages" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBPackagesInternal" />
+  <Target Name="UploadToDependDB" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;UploadToDependDBInternal" />
   
   
   <!-- Abstract internal targets -->
@@ -87,7 +87,7 @@
       <BaseXPath>/c:BuildProcessorConfiguration</BaseXPath>
       <SettingsXPath>$(BaseXPath)/c:Settings</SettingsXPath>
       <DependDBAssemblyXPath>$(SettingsXPath)/c:ProjectAssemblyFiles</DependDBAssemblyXPath>
-      <DependDBXReferencerXPath>$(BaseXPath)/c:ReportGenerators/c:ReportGenerator[@name='XReferencer']</DependDBXReferencerXPath>
+      <DependDBXReferencerXPath>$(BaseXPath)/c:ReportGenerators/c:ReportGenerator[@name='XReferencer45']</DependDBXReferencerXPath>
     </PropertyGroup>
     <ItemGroup>
       <_config Include="DependDBProjectName">
@@ -153,7 +153,7 @@
     <!-- DependDB configuration: XReferencer -->
     <ItemGroup>
       <_configAttributes Include="DependDBXReferencerReflector">
-        <XPath>$(BaseXPath)/c:ReportGenerators/c:ReportGenerator[@name='XReferencer']/c:StringParameter[@name='reflector']</XPath>
+        <XPath>$(BaseXPath)/c:ReportGenerators/c:ReportGenerator[@name='XReferencer45']/c:StringParameter[@name='reflector']</XPath>
         <Key>value</Key>
         <Value>MixinXRef.Reflectors.dll</Value>
       </_configAttributes>

@@ -29,3 +29,4 @@ using System.Security;
 [assembly: CLSCompliant (true)]
 [assembly: AllowPartiallyTrustedCallers] // required for sandboxing
 
+[assembly: SecurityRules(SecurityRuleSet.Level1)]

@@ -85,12 +85,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       var formatter = renderingContext.Control.DateTimeFormatter;
-      var dateTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.GetDateValueName() };
+      var dateTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.GetDateValueName(), ClientIDMode = ClientIDMode.Static };
       Initialize (renderingContext, dateTextBox, renderingContext.Control.DateTextBoxStyle, formatter.GetDateMaxLength ());
       dateTextBox.Text = renderingContext.Control.Value.HasValue ? formatter.FormatDateValue (renderingContext.Control.Value.Value) : renderingContext.Control.DateString;
       dateTextBox.Page = renderingContext.Control.Page.WrappedInstance;
 
-      var timeTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.GetTimeValueName() };
+      var timeTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.GetTimeValueName(), ClientIDMode = ClientIDMode.Static };
       var showSeconds = renderingContext.Control.ShowSeconds;
       Initialize (renderingContext, timeTextBox, renderingContext.Control.TimeTextBoxStyle, formatter.GetTimeMaxLength (showSeconds));
       timeTextBox.Text = renderingContext.Control.Value.HasValue ? formatter.FormatTimeValue (renderingContext.Control.Value.Value, showSeconds) : renderingContext.Control.TimeString;

@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.TypeAssembly;
 using Remotion.TypePipe.TypeAssembly.Implementation;
 using Rhino.Mocks;
 
@@ -174,6 +175,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
       Assert.That(_proxyType.AddedInterfaces, Has.No.Member(typeof(IInterceptedDomainObject)));
       _typeDefinitionProviderMock.AssertWasNotCalled(mock => mock.GetTypeDefinition(Arg<Type>.Is.Anything));
+    }
+
+    [Test]
+    public void GetAdditionalTypeID ()
+    {
+      Assert.That (_participant.GetAdditionalTypeID (typeof (object)), Is.Null);
+    }
+
+    [Test]
+    public void GetOrCreateAdditionalType ()
+    {
+      Assert.That (
+          _participant.GetOrCreateAdditionalType (new object(), MockRepository.GenerateStrictMock<IAdditionalTypeAssemblyContext>()),
+          Is.Null);
     }
 
     private void StubGetPropertyInterceptors (params IAccessorInterceptor[] accessorInterceptors)

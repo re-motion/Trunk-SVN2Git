@@ -18,6 +18,7 @@
 <asp:TextBox ID="Field4" runat="server" AutoPostBack="true" />
 <asp:TextBox ID="Field5" runat="server" AutoPostBack="true" />
 <p></p>
+        Update Panel:
       <asp:UpdatePanel runat="server">
         <ContentTemplate>
 <asp:TextBox ID="UpdatePanelField1" runat="server" AutoPostBack="true" />

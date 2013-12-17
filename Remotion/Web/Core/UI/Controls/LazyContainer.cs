@@ -19,6 +19,8 @@ using System.Collections;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
@@ -151,7 +153,7 @@ namespace Remotion.Web.UI.Controls
         if (_isLazyLoadingEnabled)
         {
           _isLoadingViewStateRecursive = true;
-          ControlHelper.LoadViewStateRecursive (this, _recursiveViewState);
+          MemberCaller.LoadViewStateRecursive (this, _recursiveViewState);
           _isLoadingViewStateRecursive = false;
         }
       }
@@ -165,7 +167,7 @@ namespace Remotion.Web.UI.Controls
       if (_isLazyLoadingEnabled && _isEnsured)
       {
         _isSavingViewStateRecursive = true;
-        _recursiveViewState = ControlHelper.SaveViewStateRecursive (this);
+        _recursiveViewState = MemberCaller.SaveViewStateRecursive (this);
         _isSavingViewStateRecursive = false;
       }
 
@@ -193,14 +195,14 @@ namespace Remotion.Web.UI.Controls
 
     private void RestoreChildControlState ()
     {
-      ControlHelper.SetChildControlState(this, _childControlStatesBackUp);
+      MemberCaller.SetChildControlState (this, _childControlStatesBackUp);
 
       _childControlStatesBackUp = null;
     }
 
     private void BackUpChildControlState ()
     {
-      _childControlStatesBackUp = ControlHelper.GetChildControlState (this);
+      _childControlStatesBackUp = MemberCaller.GetChildControlState (this);
     }
 
     protected override object SaveControlState ()
@@ -217,6 +219,15 @@ namespace Remotion.Web.UI.Controls
 
       return values;
     }
-  }
+    
+    protected virtual IServiceLocator ServiceLocator
+    {
+      get { return SafeServiceLocator.Current; }
+    }
 
+    private IInternalControlMemberCaller MemberCaller
+    {
+      get { return ServiceLocator.GetInstance<IInternalControlMemberCaller>(); }
+    }
+  }
 }

@@ -59,6 +59,7 @@ td.formGridMarkersCell
 td.formGridMarkersCell img
 {
   min-width: 12px;
+  border: none;
 }
 
 /*  Style applied to the cells containing the controls  */

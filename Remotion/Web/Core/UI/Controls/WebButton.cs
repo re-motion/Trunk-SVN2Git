@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using JetBrains.Annotations;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Security;
@@ -159,30 +160,26 @@ namespace Remotion.Web.UI.Controls
           string onClickAttribute = Attributes["onclick"];
           if (onClickAttribute != null)
           {
-            onClick = onClick + EnsureEndWithSemiColon (onClickAttribute);
+            onClick += EnsureEndWithSemiColon (onClickAttribute);
             Attributes.Remove ("onclick");
           }
         }
 
         if (Page != null)
         {
-          PostBackOptions options = GetPostBackOptions();
+          var options = GetPostBackOptions();
           options.ClientSubmit = true;
 
-          string postBackScript = string.Format("WebButton_Click (this, {0});", options.PerformValidation ? "true" : "false");
-
-          string postBackEventReference = Page.ClientScript.GetPostBackEventReference (options, false);
-          if (StringUtility.IsNullOrEmpty (postBackEventReference))
+          var postBackEventReference = Page.ClientScript.GetPostBackEventReference (options, false);
+          if (string.IsNullOrEmpty (postBackEventReference))
             postBackEventReference = Page.ClientScript.GetPostBackEventReference (this, null);
-          postBackScript += EnsureEndWithSemiColon (postBackEventReference);
+          var postBackScript = EnsureEndWithSemiColon (postBackEventReference);
 
-          postBackScript += "return false;";
-
-          if (postBackScript != null)
-            onClick = MergeScript (onClick, postBackScript);
+          onClick += postBackScript;
+          onClick += "return false;";
         }
 
-        if (!StringUtility.IsNullOrEmpty (onClick))
+        if (!string.IsNullOrEmpty (onClick))
           writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onClick);
 
         writer.AddAttribute ("onmousedown", "WebButton_MouseDown (this, '" + CssClassMouseDown + "');");
@@ -199,14 +196,19 @@ namespace Remotion.Web.UI.Controls
       string backUpOnClientClick = OnClientClick;
       OnClientClick = null;
 
+      var cssClassBackup = ControlStyle.CssClass;
+      var originalCssClass = (CssClass ?? "").Replace (DisabledCssClass, "").Trim();
+      var isCssStyleOverridden = !string.IsNullOrEmpty (originalCssClass);
+      var computedCssClass = isCssStyleOverridden ? originalCssClass : CssClassBase;
+      ControlStyle.CssClass = computedCssClass;
+
       base.AddAttributesToRender (writer);
+
+      ControlStyle.CssClass = cssClassBackup;
 
       OnClientClick = backUpOnClientClick;
 
       _options = null;
-
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
     protected override PostBackOptions GetPostBackOptions ()
@@ -352,9 +354,10 @@ namespace Remotion.Web.UI.Controls
       set { _isDefaultButton = value; }
     }
 
+    [NotNull]
     private string EnsureEndWithSemiColon (string value)
     {
-      if (!StringUtility.IsNullOrEmpty (value))
+      if (!string.IsNullOrEmpty (value))
       {
         value = value.Trim();
 
@@ -362,16 +365,7 @@ namespace Remotion.Web.UI.Controls
           value += ";";
       }
 
-      return value;
-    }
-
-    private string MergeScript (string firstScript, string secondScript)
-    {
-      if (!StringUtility.IsNullOrEmpty (firstScript))
-        return (firstScript + secondScript);
-      if (secondScript.TrimStart (new char[0]).StartsWith ("javascript:"))
-        return secondScript;
-      return ("javascript:" + secondScript);
+      return StringUtility.NullToEmpty (value);
     }
 
     protected bool HasAccess ()

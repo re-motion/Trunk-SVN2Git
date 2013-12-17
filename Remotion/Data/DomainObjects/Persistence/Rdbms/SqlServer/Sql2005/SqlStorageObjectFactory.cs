@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.MappingExport;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
@@ -35,6 +36,7 @@ using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Mixins;
 using Remotion.Reflection;
+using Remotion.TypePipe.Dlr.Ast;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
@@ -290,6 +292,40 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           infrastructureStoragePropertyDefinitionProvider);
     }
 
+    public virtual IEnumSerializer CreateEnumSerializer ()
+    {
+      return new ExtensibleEnumSerializerDecorator (new EnumSerializer());
+    }
+
+    public virtual IStorageProviderSerializer CreateStorageProviderSerializer (IEnumSerializer enumSerializer)
+    {
+      ArgumentUtility.CheckNotNull ("enumSerializer", enumSerializer);
+      return new StorageProviderSerializer (CreateClassSerializer(enumSerializer));
+    }
+
+    public virtual IClassSerializer CreateClassSerializer (IEnumSerializer enumSerializer)
+    {
+      ArgumentUtility.CheckNotNull ("enumSerializer", enumSerializer);
+      return new ClassSerializer (CreateTableSerializer(enumSerializer));
+    }
+
+    public virtual ITableSerializer CreateTableSerializer (IEnumSerializer enumSerializer)
+    {
+      ArgumentUtility.CheckNotNull ("enumSerializer", enumSerializer);
+      var propertySerializer = CreatePropertySerializer();
+      var decoratedPropertySerializer = new EnumPropertySerializerDecorator (enumSerializer, propertySerializer);
+      return new TableSerializer (decoratedPropertySerializer);
+    }
+
+    public virtual IPropertySerializer CreatePropertySerializer () 
+    {
+      return new PropertySerializer (CreateColumnSerializer());
+    }
+
+    public virtual ColumnSerializer CreateColumnSerializer ()
+    {
+      return new ColumnSerializer();
+    }
 
     public virtual IScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {

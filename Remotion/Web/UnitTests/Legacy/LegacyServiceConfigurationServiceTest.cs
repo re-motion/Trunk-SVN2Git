@@ -45,6 +45,7 @@ namespace Remotion.Web.UnitTests.Legacy
                                   typeof (IHotkeyFormatter),
                                   typeof (IResourcePathBuilder),
                                   typeof (IHttpContextProvider),
+                                  typeof (IInternalControlMemberCaller)
                               };
 
       var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IResourceUrl).Assembly })

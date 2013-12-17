@@ -29,11 +29,11 @@ namespace Remotion.Development.UnitTesting
       return
           new PEVerifier (
               new CompoundPEVerifyPathSource (
-                  new DotNetSdk20PEVerifyPathSource(),
-                  new WindowsSdk6PEVerifyPathSource(),
-                  new WindowsSdk70aPEVerifyPathSource(),
+                  new WindowsSdk80aPEVerifyPathSource(),
                   new WindowsSdk71PEVerifyPathSource(),
-                  new WindowsSdk80aPEVerifyPathSource()));
+                  new WindowsSdk70aPEVerifyPathSource(),
+                  new WindowsSdk6PEVerifyPathSource(),
+                  new DotNetSdk20PEVerifyPathSource()));
     }
 
     private readonly IPEVerifyPathSource _pathSource;

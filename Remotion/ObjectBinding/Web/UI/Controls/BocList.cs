@@ -345,6 +345,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       _currentPagePostBackTarget = new ScalarLoadPostDataTarget();
       _currentPagePostBackTarget.ID = ID + c_currentPageControlName;
+      _currentPagePostBackTarget.ClientIDMode = ClientIDMode.AutoID;
       _currentPagePostBackTarget.DataChanged += HandleCurrentPageChanged;
       Controls.Add (_currentPagePostBackTarget);
 
@@ -1545,7 +1546,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         foreach (var row in EnsureBocListRowsForCurrentPageGot())
         {
-          commandColumn.Column.Command.RegisterForSynchronousPostBack (
+          commandColumn.Column.Command.RegisterForSynchronousPostBackOnDemand (
               this,
               GetListItemCommandArgument (commandColumn.Index, row.ValueRow),
               string.Format ("BocList '{0}', Column '{1}'", ID, commandColumn.Column.ItemID));

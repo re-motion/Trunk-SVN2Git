@@ -28,6 +28,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// <summary>
   /// A TypePipe <see cref="IParticipant"/> that specifies the code generation needs necessary for re-mix.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public class MixinParticipant : IParticipant
   {
     private readonly IConfigurationProvider _configurationProvider;
@@ -81,16 +82,14 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       _targetTypeModifier.ModifyTargetType (concreteTarget, targetClassDefinition, interfacesToImplement, mixinInfos);
     }
 
-    public void RebuildState (LoadedTypesContext loadedTypesContext)
+    public object GetAdditionalTypeID (Type additionalType)
     {
-      ArgumentUtility.CheckNotNull ("loadedTypesContext", loadedTypesContext);
+      ArgumentUtility.CheckNotNull ("additionalType", additionalType);
 
-      foreach (var additionalType in loadedTypesContext.AdditionalTypes)
-      {
-        var conreteMixinType = _concreteTypeMetadataImporter.GetMetadataForMixinType (additionalType);
-        if (conreteMixinType != null)
-          _mixinTypeProvider.AddLoadedConcreteMixinType (loadedTypesContext.State, conreteMixinType);
-      }
+      var conreteMixinType = _concreteTypeMetadataImporter.GetMetadataForMixinType (additionalType);
+      if (conreteMixinType == null)
+        return null;
+      return conreteMixinType.Identifier;
     }
 
     public Type GetOrCreateAdditionalType (object additionalTypeID, IAdditionalTypeAssemblyContext additionalTypeAssemblyContext)
@@ -105,11 +104,11 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       return _mixinTypeProvider.GetOrGenerateConcreteMixinType (additionalTypeAssemblyContext, concreteMixinTypeIdentifier).GeneratedType;
     }
 
-    public void HandleNonSubclassableType (Type requestedType)
+    public void HandleNonSubclassableType (Type nonSubclassableRequestedType)
     {
-      ArgumentUtility.CheckNotNull ("requestedType", requestedType);
+      ArgumentUtility.CheckNotNull ("nonSubclassableRequestedType", nonSubclassableRequestedType);
 
-      var targetClassDefinition = _configurationProvider.GetTargetClassDefinition (requestedType);
+      var targetClassDefinition = _configurationProvider.GetTargetClassDefinition (nonSubclassableRequestedType);
       Assertion.IsNull (
           targetClassDefinition,
           "There should be no mixin configuration for a non-subclassable type; "

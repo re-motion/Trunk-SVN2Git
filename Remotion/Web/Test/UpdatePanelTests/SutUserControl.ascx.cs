@@ -29,7 +29,6 @@ namespace Remotion.Web.Test.UpdatePanelTests
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
-
       AsyncPostBackInsideUpdatePanelButton.Click += HandlePostBack;
       AsyncPostBackOutsideUpdatePanelButton.Click += HandlePostBack;
       SyncPostBackInsideUpdatePanelButton.Click += HandlePostBack;
@@ -40,9 +39,10 @@ namespace Remotion.Web.Test.UpdatePanelTests
       SyncPostBackOutsideUpdatePanelLinkButton.Click += HandlePostBack;
       AsyncPostBackInsideUpdatePanelWebButton.Click += HandlePostBack;
       AsyncPostBackOutsideUpdatePanelWebButton.Click += HandlePostBack;
-      SyncPostBackOutsideUpdatePanelWebButton.Click += HandlePostBack;
       SyncPostBackInsideUpdatePanelWebButton.Click += HandlePostBack;
+      SyncPostBackOutsideUpdatePanelWebButton.Click += HandlePostBack;
       DropDownMenuInsideUpdatePanel.EventCommandClick += HandlePostBack;
+      ListMenuInsideUpdatePanel.EventCommandClick += HandlePostBack;
 
       _postBackEventHandler = new PostBackEventHandler ();
       _postBackEventHandler.ID = "PostBackEventHandler";

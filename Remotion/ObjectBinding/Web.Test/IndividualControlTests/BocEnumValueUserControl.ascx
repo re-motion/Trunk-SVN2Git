@@ -27,11 +27,11 @@
   <tr>
     <td></td>
     <td><remotion:bocenumvalue id=GenderField runat="server" PropertyIdentifier="Gender" datasourcecontrol="CurrentObject" >
-<listcontrolstyle controltype="RadioButtonList" radiobuttonlistrepeatdirection="Horizontal" >
+<listcontrolstyle controltype="RadioButtonList" radiobuttonlistrepeatdirection="Horizontal" AutoPostBack="true" >
 </ListControlStyle>
 </remotion:bocenumvalue></td>
     <td>
-      bound, radio buttons, required=true</td>
+      bound, radio buttons, AutoPostBack, required=true</td>
     <td style="WIDTH: 20%"><asp:label id=GenderFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
@@ -45,20 +45,20 @@
   <tr>
     <td></td>
     <td><remotion:bocenumvalue id=MarriageStatusField runat="server" PropertyIdentifier="MarriageStatus" datasourcecontrol="CurrentObject" required="False">
-<listcontrolstyle radiobuttonlistrepeatdirection="Horizontal" >
+<listcontrolstyle radiobuttonlistrepeatdirection="Horizontal"  AutoPostBack="true">
 </ListControlStyle>
             </remotion:bocenumvalue></td>
     <td>
-      bound, drop-down, required=false</td>
+      bound, drop-down, AutoPostBack, required=false</td>
     <td style="WIDTH: 20%"><asp:label id=MarriageStatusFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
     <td><remotion:bocenumvalue id=UnboundMarriageStatusField runat="server" >
-<listcontrolstyle listboxrows="2" controltype="ListBox" >
+<listcontrolstyle listboxrows="2" controltype="ListBox"  AutoPostBack="true" >
 </ListControlStyle>
             </remotion:bocenumvalue></td>
     <td>
-      <p>unbound, value not set, list-box, 
+      <p>unbound, value not set, list-box, AutoPostBack, 
     required=true</p></td>
     <td style="WIDTH: 20%"><asp:label id=UnboundMarriageStatusFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
@@ -67,7 +67,7 @@
               <listcontrolstyle radionbuttonlistrepeatlayout="Table" controltype="ListBox"></listcontrolstyle>
             </remotion:bocenumvalue></td>
     <td>
-      unbound, value set, read only</td>
+      unbound, AutoPostBack value set, read only</td>
     <td style="WIDTH: 20%"><asp:label id=UnboundReadOnlyMarriageStatusFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>

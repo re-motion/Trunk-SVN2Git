@@ -14,4 +14,4 @@
  % You should have received a copy of the GNU Lesser General Public License
  % along with re-motion; if not, see http://www.gnu.org/licenses.
 --%>
-<%@ Control Language="vb" AutoEventWireup="false" CodeBehind="AutoUserControl.ascx.vb" Inherits="TestVB.AutoUserControl" %>
+<%@ Control Language="vb" AutoEventWireup="false" CodeBehind="AutoUserControl.ascx.vb" Inherits="AutoUserControl" %>

@@ -16,9 +16,8 @@
 // 
 using System;
 using System.Text;
-using System.Web;
+using System.Web.UI;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
@@ -81,7 +80,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ControlReplacing
         new ControlInvoker (testPageHolder.NamingContainer).LoadControlState (null);
       Assertion.IsTrue (replacer.Controls.Count == 1);
 
-      return testPageHolder.PageInvoker.SaveViewStateRecursive();
+      return testPageHolder.PageInvoker.SaveViewStateRecursive (ViewStateMode.Enabled);
     }
 
     protected object CreateControlState ()

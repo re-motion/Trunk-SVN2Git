@@ -57,10 +57,14 @@ namespace Remotion.Development.UnitTests.Core.TypePipe
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Method FlushCodeToDisk is not supported by DebuggerWorkaroundCodeGenerator.")]
     public void FlushCodeToDisk ()
     {
-      _pipeline.CodeManager.FlushCodeToDisk();
+      var aggregateException = Assert.Throws<AggregateException> (() => _pipeline.CodeManager.FlushCodeToDisk());
+      Assert.That (aggregateException.InnerExceptions.Count, Is.EqualTo (1));
+      Assert.That (aggregateException.InnerExceptions[0], Is.InstanceOf<NotSupportedException>());
+      Assert.That (
+          aggregateException.InnerExceptions[0].Message,
+          Is.EqualTo ("Method FlushCodeToDisk is not supported by DebuggerWorkaroundCodeGenerator."));
     }
 
     [Test]

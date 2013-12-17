@@ -23,6 +23,7 @@ using Remotion.Web.UI.Controls;
 namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   [TestFixture]
+  [Ignore("TODO RM-5569")]
   public class NoneCommandTest : BaseTest
   {
     private CommandTestHelper _testHelper;

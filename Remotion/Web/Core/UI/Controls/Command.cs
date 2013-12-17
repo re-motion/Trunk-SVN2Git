@@ -21,6 +21,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Security;
@@ -858,9 +859,10 @@ namespace Remotion.Web.UI.Controls
         ToolTip = resourceManager.GetString (key);
     }
 
-    public void RegisterForSynchronousPostBack (Control control, string argument, string commandID)
+    public void RegisterForSynchronousPostBackOnDemand ([NotNull]Control control, [NotNull]string argument, [NotNull]string commandID)
     {
       ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNullOrEmpty ("argument", argument);
       ArgumentUtility.CheckNotNullOrEmpty ("commandID", commandID);
 
       bool isSynchronousEventCommand = Type == CommandType.Event && EventCommand.RequiresSynchronousPostBack;

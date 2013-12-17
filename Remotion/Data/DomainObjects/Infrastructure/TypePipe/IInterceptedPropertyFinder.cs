@@ -25,6 +25,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// Retrieves <see cref="IAccessorInterceptor"/>s that can be used to intercept (implement or override) accessor methods declared by 
   /// <see cref="DomainObject"/> derivatives.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public interface IInterceptedPropertyFinder
   {
     IEnumerable<IAccessorInterceptor> GetPropertyInterceptors (ClassDefinition classDefinition, Type concreteBaseType);

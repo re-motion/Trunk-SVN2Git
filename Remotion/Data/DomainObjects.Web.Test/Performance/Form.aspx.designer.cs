@@ -7,6 +7,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Web.UI;
+
 namespace Remotion.Data.DomainObjects.Web.Test.Performance {
     
     

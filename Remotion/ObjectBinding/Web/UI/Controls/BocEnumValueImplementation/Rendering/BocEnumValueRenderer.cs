@@ -101,6 +101,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
     private ListControl GetListControl (BocEnumValueRenderingContext renderingContext)
     {
       ListControl listControl = renderingContext.Control.ListControlStyle.Create (false);
+      listControl.ClientIDMode = ClientIDMode.Static;
       listControl.ID = renderingContext.Control.GetValueName();
       listControl.Enabled = renderingContext.Control.Enabled;
 
@@ -142,7 +143,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
 
     private Label GetLabel (BocEnumValueRenderingContext renderingContext)
     {
-      Label label = new Label { ID = renderingContext.Control.GetValueName() };
+      Label label = new Label { ID = renderingContext.Control.GetValueName(), ClientIDMode = ClientIDMode.Static};
       string text;
       if (renderingContext.Control.IsDesignMode && renderingContext.Control.EnumerationValueInfo == null)
       {

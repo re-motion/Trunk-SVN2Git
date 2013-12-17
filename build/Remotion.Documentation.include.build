@@ -62,9 +62,9 @@
     <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
 
     <PropertyGroup>
-      <DocumentationChmOutputDirectory>$(BinariesDirectory)net-3.5\doc\</DocumentationChmOutputDirectory>
+      <DocumentationChmOutputDirectory>$(BinariesDirectory)net-4.5\doc\</DocumentationChmOutputDirectory>
       <DocumentationWebsiteOutputDirectory>$(TempDirectory)web\</DocumentationWebsiteOutputDirectory>
-      <DocumentationBinariesDirectory>$(BinariesDirectory)net-3.5\bin\debug\</DocumentationBinariesDirectory>
+      <DocumentationBinariesDirectory>$(BinariesDirectory)net-4.5\bin\debug\</DocumentationBinariesDirectory>
       <DocumentationBaseDirectory>$(TempDirectory)doc\$([System.Guid]::NewGuid())\</DocumentationBaseDirectory>
       <DocumentationCompilationOutputDirectory>$(DocumentationBaseDirectory)Output\</DocumentationCompilationOutputDirectory>
       <DocumentationRootPageTarget>$(DocumentationBaseDirectory)GettingStarted.aml</DocumentationRootPageTarget>

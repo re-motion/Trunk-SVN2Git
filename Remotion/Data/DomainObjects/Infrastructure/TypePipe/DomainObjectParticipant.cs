@@ -43,7 +43,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   ///   </item>
   /// </list>
   /// </remarks>
-  public class DomainObjectParticipant : SimpleParticipantBase
+  /// <threadsafety static="true" instance="true"/>
+  public class DomainObjectParticipant : IParticipant
   {
     private static readonly MethodInfo s_getPublicDomainObjectTypeImplementation = GetInfrastructureHook ("GetPublicDomainObjectTypeImplementation");
     private static readonly MethodInfo s_performConstructorCheck = GetInfrastructureHook ("PerformConstructorCheck");
@@ -74,15 +75,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       _interceptedPropertyFinder = interceptedPropertyFinder;
     }
 
-    // Assuming a stable mapping, we do not need any additional keys.
-    // Note: To support modifiable mappings, we could use the ClassDefinition as cache key. However, there is no good way to recreate a 
-    // ClassDefinition within the generated code (without relying on a stable mapping) or to deserialize a ClassDefinition (without a stable mapping).
-    public override ITypeIdentifierProvider PartialTypeIdentifierProvider
+    public ITypeIdentifierProvider PartialTypeIdentifierProvider
     {
-      get { return null; }
+      get
+      {
+        // Assuming a stable mapping, we do not need any additional keys.
+        // Note: To support modifiable mappings, we could use the ClassDefinition as cache key. However, there is no good way to recreate a 
+        // ClassDefinition within the generated code (without relying on a stable mapping) or to deserialize a ClassDefinition (without a stable mapping).
+
+        return null;
+      }
     }
 
-    public override void Participate (object id, IProxyTypeAssemblyContext proxyTypeAssemblyContext)
+    public void Participate (object id, IProxyTypeAssemblyContext proxyTypeAssemblyContext)
     {
       ArgumentUtility.CheckNotNull ("proxyTypeAssemblyContext", proxyTypeAssemblyContext);
 
@@ -107,19 +112,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       InterceptProperties (proxyType, domainObjectType, classDefinition);
     }
 
-    public override void HandleNonSubclassableType (Type requestedType)
+    public void HandleNonSubclassableType (Type nonSubclassableRequestedType)
     {
-      ArgumentUtility.CheckNotNull ("requestedType", requestedType);
+      ArgumentUtility.CheckNotNull ("nonSubclassableRequestedType", nonSubclassableRequestedType);
 
-      if (!typeof (DomainObject).IsTypePipeAssignableFrom (requestedType))
+      if (!typeof (DomainObject).IsTypePipeAssignableFrom (nonSubclassableRequestedType))
         return;
 
-      var classDefinition = _typeDefinitionProvider.GetTypeDefinition (requestedType);
+      var classDefinition = _typeDefinitionProvider.GetTypeDefinition (nonSubclassableRequestedType);
       if (classDefinition != null && !classDefinition.IsAbstract)
       {
-        var message = string.Format ("The requested type '{0}' is derived from DomainObject but cannot be subclassed.", requestedType.Name);
+        var message = string.Format ("The requested type '{0}' is derived from DomainObject but cannot be subclassed.", nonSubclassableRequestedType.Name);
         throw new NotSupportedException (message);
       }
+    }
+
+    public object GetAdditionalTypeID (Type additionalType)
+    {
+      return null; // Does nothing.
+    }
+
+    public Type GetOrCreateAdditionalType (object additionalTypeID, IAdditionalTypeAssemblyContext additionalTypeAssemblyContext)
+    {
+      return null; // Does nothing.
     }
 
     private void OverridePerformConstructorCheck (MutableType proxyType)

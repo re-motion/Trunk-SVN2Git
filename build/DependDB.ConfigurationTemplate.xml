@@ -25,7 +25,7 @@
 				</TrackedReferenceFilter>
 			</ComplexParameter>
 		</ReportGenerator>
-		<ReportGenerator name="XReferencer">
+		<ReportGenerator name="XReferencer45">
 			<StringParameter name="reflector" value=""/>
 			<ComplexParameter name="ignoredAssemblies">
 				<IgnoredAssemblies>

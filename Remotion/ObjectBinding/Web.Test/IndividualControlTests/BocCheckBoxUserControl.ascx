@@ -27,7 +27,7 @@
   <tr>
     <td></td>
     <td><remotion:boccheckbox id="DeceasedField" runat="server" datasourcecontrol="CurrentObject" truedescription="ja" falsedescription="nein" propertyidentifier="Deceased" ShowDescription="True" AutoPostBack="True" ></remotion:boccheckbox></td>
-    <td>bound, description=true</td>
+    <td>bound, AutoPostBack, description=true</td>
     <td style="WIDTH: 20%"><asp:label id="DeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>

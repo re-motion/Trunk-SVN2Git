@@ -14,10 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System.Collections;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.MappingExport;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
@@ -27,6 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   public class TestableSqlStorageObjectFactory : SqlStorageObjectFactory
   {
+    private readonly IStorageProviderSerializer _storageProviderSerializer;
+    private readonly IEnumSerializer _enumSerializer;
     private readonly TableScriptBuilder _tableBuilder;
     private readonly ViewScriptBuilder _viewBuilder;
     private readonly ForeignKeyConstraintScriptBuilder _constraintBuilder;
@@ -71,6 +76,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _sqlQueryGenerator = sqlQueryGenerator;
       _foreignKeyConstraintDefinitionFactory = foreignKeyConstraintDefinitionFactoryFactory;
       _storagePropertyDefinitionResolver = storagePropertyDefinitionResolver;
+    }
+
+    public TestableSqlStorageObjectFactory (IStorageProviderSerializer storageProviderSerializer, IEnumSerializer enumSerializer)
+    {
+      _storageProviderSerializer = storageProviderSerializer;
+      _enumSerializer = enumSerializer;
+    }
+
+    public override IStorageProviderSerializer CreateStorageProviderSerializer (IEnumSerializer enumSerializer)
+    {
+      return _storageProviderSerializer ?? base.CreateStorageProviderSerializer (enumSerializer);
+    }
+
+    public override IEnumSerializer CreateEnumSerializer ()
+    {
+      return _enumSerializer ?? base.CreateEnumSerializer();
     }
 
     public override TableScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition)

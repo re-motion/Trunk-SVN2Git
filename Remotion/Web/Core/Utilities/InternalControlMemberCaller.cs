@@ -17,13 +17,18 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Reflection;
 using System.Web.UI;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Utilities
 {
+  /// <summary>
+  /// Default implementation of the <seealso cref="IInternalControlMemberCaller"/> interface.
+  /// </summary>
   public class InternalControlMemberCaller : IInternalControlMemberCaller
   {
     private const BindingFlags c_bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
@@ -70,8 +75,12 @@ namespace Remotion.Web.Utilities
     {
       ArgumentUtility.CheckNotNull ("target", target);
 
+      var inheritedViewState = target.CreateSequence (c => c.Parent)
+                                     .Select (c => (ViewStateMode?) c.ViewStateMode)
+                                     .FirstOrDefault (m => m != ViewStateMode.Inherit) ?? ViewStateMode.Enabled;
+
       //  internal object System.Web.UI.Control.LoadViewStateRecursive()
-      return MethodCaller.CallFunc<object> ("SaveViewStateRecursive", c_bindingFlags).With (target);
+      return MethodCaller.CallFunc<object> ("SaveViewStateRecursive", c_bindingFlags).With (target, inheritedViewState);
     }
 
     /// <summary>Encapsulates the invocation of <see cref="Page"/>'s SaveAllState method.</summary>

@@ -1406,7 +1406,7 @@ namespace Remotion.Web.UI.Controls
 
       bool enableViewStateBackup = formGrid.Table.EnableViewState;
       formGrid.Table.EnableViewState = true;
-      ControlHelper.LoadViewStateRecursive (formGrid.Table, savedState);
+      MemberCaller.LoadViewStateRecursive (formGrid.Table, savedState);
       formGrid.Table.EnableViewState = enableViewStateBackup;
     }
 
@@ -1418,7 +1418,7 @@ namespace Remotion.Web.UI.Controls
 
       bool enableViewStateBackup = formGrid.Table.EnableViewState;
       formGrid.Table.EnableViewState = true;
-      object viewState = ControlHelper.SaveViewStateRecursive (formGrid.Table);
+      object viewState = MemberCaller.SaveViewStateRecursive (formGrid.Table);
       formGrid.Table.EnableViewState = enableViewStateBackup;
 
       return viewState;
@@ -3262,7 +3262,12 @@ namespace Remotion.Web.UI.Controls
     {
       get { return ServiceLocator.GetInstance<IHotkeyFormatter>(); }
     }
-    
+
+    private IInternalControlMemberCaller MemberCaller
+    {
+      get { return ServiceLocator.GetInstance<IInternalControlMemberCaller>(); }
+    }
+
     #region protected virtual string CssClass...
 
     /// <summary> CSS-Class applied to the form grid tables' <c>table</c> tag. </summary>

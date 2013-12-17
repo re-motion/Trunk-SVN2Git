@@ -20,14 +20,14 @@
   <ItemGroup>
     <AllConfigurations Include="Release">
       <Name>Release</Name>
-      <Framework>net-3.5</Framework>
-      <OutputDirectory>net-3.5\bin\release\</OutputDirectory>
+      <Framework>net-4.5</Framework>
+      <OutputDirectory>net-4.5\bin\release\</OutputDirectory>
     </AllConfigurations>
 
     <AllConfigurations Include="Debug">
       <Name>Debug</Name>
-      <Framework>net-3.5</Framework>
-      <OutputDirectory>net-3.5\bin\debug\</OutputDirectory>
+      <Framework>net-4.5</Framework>
+      <OutputDirectory>net-4.5\bin\debug\</OutputDirectory>
     </AllConfigurations>
   </ItemGroup>
     

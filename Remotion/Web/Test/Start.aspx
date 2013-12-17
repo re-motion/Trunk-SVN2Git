@@ -17,7 +17,7 @@
 <%@ Page language="c#" Codebehind="Start.aspx.cs" AutoEventWireup="false" Inherits="Remotion.Web.Test.Start" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
+<head runat="server">
     <title>Start</title>
   </head>
   <body>
@@ -55,6 +55,9 @@
       <p>
         <a href="../../../prereq/Tools/Selenium/Core/TestRunner.html?test=../../../../Remotion/Web/Test/MultiplePostbackCatching/UpdatePanelTestSuiteForm.aspx">Remotion.Web.Tests.MultiplePostBackCatching for UpdatePanel</a>
       </p>
+      <p>
+        <a href="PostBackFocus.aspx">PostBackFocus.aspx</a>
+      </p>      
       <p>
         <a href="redirected.wxe">redirected.wxe</a>
       </p>

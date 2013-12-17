@@ -67,6 +67,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Resources
       return ResourceUtility.GetResource (typeof (ResourceManager), "ImageLarger1MB.bmp");
     }
 
+    public static byte[] GetMappingExportOutput ()
+    {
+      return ResourceUtility.GetResource (typeof (ResourceManager), "MappingExportOutput.xml");
+    }
+    
+    public static byte[] GetRdbmsMappingSchema ()
+    {
+      return ResourceUtility.GetResource (typeof (ResourceManager), "RdbmsMapping.xsd");
+    }
+
     public static void IsEqualToImage1 (byte[] actual)
     {
       IsEqualToImage1 (actual, null);

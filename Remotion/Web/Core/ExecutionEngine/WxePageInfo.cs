@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Reflection;
 using System.Text;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Globalization;
@@ -163,8 +165,12 @@ namespace Remotion.Web.ExecutionEngine
 
     private void HandlePagePreInit (object sender, EventArgs eventArgs)
     {
-      _wxeForm = WxeForm.Replace (_page.HtmlForm);
-      _page.HtmlForm = _wxeForm;
+      var existingForm = FindHtmlForm();
+      // Can only be NULL without an exception during design mode
+      if (existingForm == null)
+        return;
+
+      _wxeForm = WxeForm.Replace (existingForm);
 
       if (CurrentPageStep != null)
         _page.ClientScript.RegisterHiddenField (_page, WxePageInfo.PageTokenID, CurrentPageStep.PageToken);
@@ -172,6 +178,51 @@ namespace Remotion.Web.ExecutionEngine
       _wxeForm.LoadPostData += Form_LoadPostData;
     }
 
+    private HtmlForm FindHtmlForm ()
+    {
+      bool isDesignMode = ControlHelper.IsDesignMode (_page);
+
+      Control page = _page.WrappedInstance;
+      MemberInfo[] fields;
+      do
+      {
+        fields = page.GetType().FindMembers (
+            MemberTypes.Field,
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+            FindHtmlFormControlFilter,
+            null);
+
+        if (fields.Length == 0)
+        {
+          if (page is Page)
+            page = ((Page) page).Master;
+          else
+            page = ((MasterPage) page).Master;
+        }
+      } while (fields.Length == 0 && page != null);
+
+      if (fields.Length == 0 && !isDesignMode)
+      {
+        throw new ApplicationException (
+            "Page class " + _page.GetType().FullName + " has no field of type HtmlForm. Please add a field or override property IWxePage.HtmlForm.");
+      }
+      else if (fields.Length > 1)
+      {
+        throw new ApplicationException (
+            "Page class " + _page.GetType().FullName
+            + " has more than one field of type HtmlForm. Please remove excessive fields or override property IWxePage.HtmlForm.");
+      }
+
+      if (fields.Length == 1) // Can only be 0 without an exception during design mode
+        return (HtmlForm) ((FieldInfo) fields[0]).GetValue (page);
+      else
+        return null;
+    }
+
+    private bool FindHtmlFormControlFilter (MemberInfo member, object filterCriteria)
+    {
+      return (member is FieldInfo && ((FieldInfo) member).FieldType == typeof (HtmlForm));
+    }
     private void HandlePageInit (object sender, EventArgs e)
     {
       var resourceUrlFactory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory> ();

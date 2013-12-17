@@ -66,9 +66,9 @@ namespace Remotion.Development.Web.UnitTesting.UI.Controls
       PrivateInvoke.InvokeNonPublicMethod (_control, typeof (Control), "LoadViewStateRecursive", new object[] { viewState });
     }
 
-    public object SaveViewStateRecursive ()
+    public object SaveViewStateRecursive (ViewStateMode mode)
     {
-      return PrivateInvoke.InvokeNonPublicMethod (_control, typeof (Control), "SaveViewStateRecursive", new object[0]);
+      return PrivateInvoke.InvokeNonPublicMethod (_control, typeof (Control), "SaveViewStateRecursive", new object[]{ mode });
     }
 
     public void LoadViewState (object viewState)

@@ -23,6 +23,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
+using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
@@ -232,7 +233,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       _validators.Add (invalidDisplayNameValidator);
 
-      return baseValidators.Concat (new[] { invalidDisplayNameValidator }).ToArray();
+      return baseValidators.Concat (invalidDisplayNameValidator).ToArray();
     }
 
     protected virtual IBocAutoCompleteReferenceValueRenderer CreateRenderer ()

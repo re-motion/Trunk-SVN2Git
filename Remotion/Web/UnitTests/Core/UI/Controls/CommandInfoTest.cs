@@ -147,7 +147,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       var result = stringWriter.ToString ();
 
-      Assert.That (result, Is.StringContaining ("title=\"TheTitle&quot;Space'\""));
+      Assert.That (result, Is.StringContaining ("title=\"TheTitle&quot;Space&#39;\""));
     }
 
     [Test]
@@ -165,7 +165,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       var result = stringWriter.ToString ();
 
-      Assert.That (result, Is.StringContaining ("onclick=\"ClickHandler&quot;Space'\""));
+      Assert.That (result, Is.StringContaining ("onclick=\"ClickHandler&quot;Space&#39;\""));
     }
 
     [Test]
@@ -183,7 +183,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       var result = stringWriter.ToString ();
 
-      Assert.That (result, Is.StringContaining ("href=\"Url&quot;Space'\""));
+      Assert.That (result, Is.StringContaining ("href=\"Url&quot;Space&#39;\""));
     }
 
     [Test]

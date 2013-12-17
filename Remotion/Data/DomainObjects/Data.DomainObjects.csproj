@@ -14,7 +14,7 @@
     <AssemblyName>Remotion.Data.DomainObjects</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -32,7 +32,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -107,7 +107,7 @@
     </Reference>
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <RequiredTargetFramework>4.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
@@ -140,6 +140,7 @@
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Core</Name>
     </ProjectReference>
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoShared.cs">
@@ -284,6 +285,22 @@
     <Compile Include="Persistence\Model\IPersistenceModelValidatorFactory.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\QueryResultRow.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\QueryResultRowReader.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\ClassSerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\ColumnSerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\Constants.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\EnumPropertySerializerDecorator.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\EnumSerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\ExtensibleEnumSerializerDecorator.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\IClassSerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\IColumnSerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\IEnumSerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\IPropertySerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\IStorageProviderSerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\ITableSerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\MappingSerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\PropertySerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\StorageProviderSerializer.cs" />
+    <Compile Include="Persistence\Rdbms\MappingExport\TableSerializer.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IRelationStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IValueStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\RelationStoragePropertyDefinitionFactory.cs" />
@@ -1042,26 +1059,12 @@
     </EmbeddedResource>
     <Content Include="Doc\How to add a new property type.txt" />
     <Content Include="Doc\include\Remotion.Data.DomainObjects.NamespaceDoc.xml" />
+    <None Include="Persistence\Rdbms\MappingExport\RdbmsMapping.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

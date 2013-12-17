@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using Microsoft.Scripting.Hosting;
-using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Scripting.UnitTests

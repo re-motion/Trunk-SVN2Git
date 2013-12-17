@@ -19,11 +19,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
@@ -86,9 +85,6 @@ namespace Remotion.Web.UI.SmartPageImplementation
 
     private ResourceManagerSet _cachedResourceManager;
 
-    private Tuple<Control, FieldInfo> _htmlFormField;
-    private bool _htmlFormFieldInitialized;
-    
     public SmartPageInfo (ISmartPage page)
     {
       ArgumentUtility.CheckNotNullAndType<Page> ("page", page);
@@ -164,9 +160,10 @@ namespace Remotion.Web.UI.SmartPageImplementation
       set { _checkFormStateFunction = StringUtility.EmptyToNull (value); }
     }
 
-    public void RegisterCommandForSynchronousPostBack (Control control, string eventArguments)
+    public void RegisterCommandForSynchronousPostBack ([NotNull]Control control, [NotNull]string eventArguments)
     {
       ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNullOrEmpty ("eventArguments", eventArguments);
 
       if (_isPreRenderComplete)
       {
@@ -174,9 +171,23 @@ namespace Remotion.Web.UI.SmartPageImplementation
             "RegisterCommandForSynchronousPostBack must not be called after the PreRenderComplete method of the System.Web.UI.Page has been invoked.");
       }
 
-      Tuple<Control, string> command = new Tuple<Control, string> (control, StringUtility.NullToEmpty (eventArguments));
+      Tuple<Control, string> command = new Tuple<Control, string> (control, eventArguments);
       if (!_synchronousPostBackCommands.Contains (command))
+      {
+        var scriptManager = ScriptManager.GetCurrent (_page.WrappedInstance);
+        if (scriptManager != null)
+          scriptManager.RegisterAsyncPostBackControl (control);
         _synchronousPostBackCommands.Add (command);
+      }
+    }
+
+    public void RegisterControlForSynchronousPostBack (Control control)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      var scriptManager = ScriptManager.GetCurrent (_page.WrappedInstance);
+      if (scriptManager != null)
+        scriptManager.RegisterPostBackControl (control);
     }
 
     /// <summary> Find the <see cref="IResourceManager"/> for this SmartPageInfo. </summary>
@@ -207,88 +218,6 @@ namespace Remotion.Web.UI.SmartPageImplementation
 
       return _cachedResourceManager;
     }
-
-
-    private void EnsureHtmlFormFieldInitialized ()
-    {
-      if (! _htmlFormFieldInitialized)
-      {
-        bool isDesignMode = ControlHelper.IsDesignMode (_page);
-
-        Control page = _page.WrappedInstance;
-        MemberInfo[] fields;
-        do
-        {
-          fields = page.GetType().FindMembers (
-              MemberTypes.Field,
-              BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-              FindHtmlFormControlFilter,
-              null);
-
-          if (fields.Length == 0)
-          {
-            if (page is Page)
-              page = ((Page) page).Master;
-            else
-              page = ((MasterPage) page).Master;
-          }
-        } while (fields.Length == 0 && page != null);
-
-        if (fields.Length == 0 && !isDesignMode)
-        {
-          throw new ApplicationException (
-              "Page class " + _page.GetType().FullName + " has no field of type HtmlForm. Please add a field or override property IWxePage.HtmlForm.");
-        }
-        else if (fields.Length > 1)
-        {
-          throw new ApplicationException (
-              "Page class " + _page.GetType().FullName
-              + " has more than one field of type HtmlForm. Please remove excessive fields or override property IWxePage.HtmlForm.");
-        }
-        if (fields.Length == 1) // Can only be 0 without an exception during design mode
-        {
-          _htmlFormField = new Tuple<Control, FieldInfo> (page, (FieldInfo) fields[0]);
-          _htmlFormFieldInitialized = true;
-        }
-      }
-    }
-
-    private bool FindHtmlFormControlFilter (MemberInfo member, object filterCriteria)
-    {
-      return (member is FieldInfo && ((FieldInfo) member).FieldType == typeof (HtmlForm));
-    }
-
-    /// <summary> 
-    ///   Implements <see cref="ISmartPage.HtmlForm">ISmartPage.HtmlForm</see>.
-    /// </summary>
-    public HtmlForm HtmlForm
-    {
-      get
-      {
-        EnsureHtmlFormFieldInitialized();
-
-        if (_htmlFormField != null) // Can only be null without an exception during design mode
-        {
-          Control page = _htmlFormField.Item1;
-          FieldInfo htmlFormField = _htmlFormField.Item2;
-          return (HtmlForm) htmlFormField.GetValue (page);
-        }
-        else
-          return null;
-      }
-      set
-      {
-        EnsureHtmlFormFieldInitialized();
-
-        if (_htmlFormField != null) // Can only be null without an exception during design mode
-        {
-          Control page = _htmlFormField.Item1;
-          FieldInfo htmlFormField = _htmlFormField.Item2;
-          htmlFormField.SetValue (page, value);
-        }
-      }
-    }
-
 
     private void Page_Init (object sender, EventArgs e)
     {
@@ -354,6 +283,10 @@ namespace Remotion.Web.UI.SmartPageImplementation
 
     private void RegisterSmartPageInitializationScript ()
     {
+      var htmlForm = _page.Form;
+      if (htmlForm == null)
+        throw new InvalidOperationException ("SmartPage requires an HtmlForm control on the page.");
+
       string abortMessage = GetAbortMessage();
       string statusIsSubmittingMessage = GetStatusIsSubmittingMessage();
 
@@ -409,7 +342,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
       initScript.AppendLine();
 
       initScript.AppendLine ("    SmartPage_Context.Instance = new SmartPage_Context (");
-      initScript.Append ("        '").Append (_page.HtmlForm.ClientID).AppendLine ("',");
+      initScript.Append ("        '").Append (htmlForm.ClientID).AppendLine ("',");
       initScript.Append ("        ").Append (isDirtyStateTrackingEnabled).AppendLine (",");
       initScript.Append ("        ").Append (abortMessage).AppendLine (",");
       initScript.Append ("        ").Append (statusIsSubmittingMessage).AppendLine (",");
@@ -435,8 +368,8 @@ namespace Remotion.Web.UI.SmartPageImplementation
         isAsynchronous = "true";
       _page.ClientScript.RegisterStartupScriptBlock (_page, typeof (SmartPageInfo), "smartPageStartUp", "SmartPage_OnStartUp (" + isAsynchronous + ", " + isDirty + ");");
 
-      // Ensure the __doPostBack function on the rendered page
-      _page.ClientScript.GetPostBackEventReference (_page, string.Empty);
+      // Ensure the __doPostBack function and the __EventTarget and __EventArgument hidden fields on the rendered page
+      _page.ClientScript.GetPostBackEventReference (new PostBackOptions (_page.WrappedInstance) { ClientSubmit = true }, false);
     }
 
     private bool IsInAsyncPostBack
@@ -546,7 +479,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
       {
         script.Append ("  ");
         script.Append (array).Append ("[").Append (array).Append (".length] = '");
-        script.Append (command.Item1.ClientID + "|" + command.Item2);
+        script.Append (command.Item1.UniqueID + "|" + command.Item2);
         script.AppendLine ("';");
       }
     }

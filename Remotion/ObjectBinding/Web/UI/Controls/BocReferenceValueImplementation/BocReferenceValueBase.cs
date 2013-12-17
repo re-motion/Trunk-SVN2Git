@@ -48,6 +48,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       IBocMenuItemContainer,
       IResourceDispatchTarget
   {
+    public const string CommandArgumentName = "command";
+
     protected const string c_nullIdentifier = "==null==";
     
     /// <summary> The key identifying a options menu item resource entry. </summary>
@@ -738,7 +740,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       }
 
       if (Command != null)
-        Command.RegisterForSynchronousPostBack (this, null, string.Format ("{0} '{1}', Object Command", GetType().Name, ID));
+        Command.RegisterForSynchronousPostBackOnDemand (this, CommandArgumentName, string.Format ("{0} '{1}', Object Command", GetType().Name, ID));
 
       CheckIconService();
     }

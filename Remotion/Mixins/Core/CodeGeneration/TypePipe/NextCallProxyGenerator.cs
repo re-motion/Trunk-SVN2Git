@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Remotion.FunctionalProgramming;
 using Remotion.Mixins.Definitions;
 using Remotion.TypePipe.Dlr.Ast;
@@ -30,8 +31,13 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// <summary>
   /// Generates <see cref="INextCallProxy"/> instances.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public class NextCallProxyGenerator : INextCallProxyGenerator
   {
+    public NextCallProxyGenerator ()
+    {
+    }
+
     public INextCallProxy Create (
         MutableType concreteTarget,
         FieldInfo extensionsField,

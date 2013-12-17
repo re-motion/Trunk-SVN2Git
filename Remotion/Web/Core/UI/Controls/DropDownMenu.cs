@@ -83,7 +83,7 @@ namespace Remotion.Web.UI.Controls
         WebMenuItem menuItem = MenuItems[i];
         if (menuItem.Command != null)
         {
-          menuItem.Command.RegisterForSynchronousPostBack (
+          menuItem.Command.RegisterForSynchronousPostBackOnDemand (
               this, i.ToString(), string.Format ("DropDownMenu '{0}', MenuItem '{1}'", ID, menuItem.ItemID));
         }
       }

@@ -130,41 +130,41 @@ namespace Remotion.Web.UnitTests.Core.Resources
     [Test]
     public void BuildAbsolutePath_UsesVirtualApplicationPathFromUrl_ComparesUsingDecodedPath ()
     {
-      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C4_%e4_/file"), "/_ _Ä_ä_");
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C3%84_%c3%a4_/file"), "/_ _Ä_ä_");
 
       Assert.That (
           builder.BuildAbsolutePath (GetType().Assembly, "part"),
-          Is.StringStarting ("/_%20_%C4_%e4_/resourceRoot"));
+          Is.StringStarting ("/_%20_%C3%84_%c3%a4_/resourceRoot"));
     }
 
     [Test]
     public void BuildAbsolutePath_UsesVirtualApplicationPathFromUrl_ComparesUsingDecodedPathWithTrailingSlash ()
     {
-      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C4_%e4_/file"), "/_ _Ä_ä_/");
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C3%84_%c3%a4_/file"), "/_ _Ä_ä_/");
 
       Assert.That (
           builder.BuildAbsolutePath (GetType().Assembly, "part"),
-          Is.StringStarting ("/_%20_%C4_%e4_/resourceRoot"));
+          Is.StringStarting ("/_%20_%C3%84_%c3%a4_/resourceRoot"));
     }
 
     [Test]
     public void BuildAbsolutePath_UsesVirtualApplicationPathFromRootUrl_ComparesUsingDecodedPath ()
     {
-      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C4_%e4_"), "/_ _Ä_ä_");
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C3%84_%c3%a4_"), "/_ _Ä_ä_");
 
       Assert.That (
           builder.BuildAbsolutePath (GetType().Assembly, "part"),
-          Is.StringStarting ("/_%20_%C4_%e4_/resourceRoot"));
+          Is.StringStarting ("/_%20_%C3%84_%c3%a4_/resourceRoot"));
     }
 
     [Test]
     public void BuildAbsolutePath_UsesVirtualApplicationPathFromRootUrlWithTrailingSlash_ComparesUsingDecodedPath ()
     {
-      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C4_%e4_/"), "/_ _Ä_ä_");
+      var builder = CreateResourcePathBuilder (new Uri ("http://localhost/_%20_%C3%84_%c3%a4_/"), "/_ _Ä_ä_");
 
       Assert.That (
           builder.BuildAbsolutePath (GetType().Assembly, "part"),
-          Is.StringStarting ("/_%20_%C4_%e4_/resourceRoot"));
+          Is.StringStarting ("/_%20_%C3%84_%c3%a4_/resourceRoot"));
     }
 
     [Test]

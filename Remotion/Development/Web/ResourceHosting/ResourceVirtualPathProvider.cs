@@ -72,6 +72,10 @@ namespace Remotion.Development.Web.ResourceHosting
       ArgumentUtility.CheckNotNullOrEmpty ("virtualPath", virtualPath);
 
       var checkPath = ToAppRelativeVirtualPath (virtualPath);
+
+      if (checkPath.Equals (_resourceRoot, StringComparison.OrdinalIgnoreCase))
+        return true;
+      
       if (!checkPath.StartsWith (_resourceRoot, StringComparison.OrdinalIgnoreCase))
         return false;
 
@@ -186,6 +190,16 @@ namespace Remotion.Development.Web.ResourceHosting
     private ResourceVirtualDirectory GetResourceVirtualDirectory (string virtualDir)
     {
       var appRelativeVirtualPath = ToAppRelativeVirtualPath (virtualDir);
+      if (appRelativeVirtualPath.Equals (_resourceRoot, StringComparison.OrdinalIgnoreCase))
+      {
+        var projectRoot = MapPath (_resourceRoot);
+        return new RootMappingVirtualDirectory (
+            _resourceRoot,
+            _resourcePathMappings.Values,
+            new DirectoryInfo (projectRoot),
+            v => GetResourceVirtualDirectory (v));
+      }
+
       var mapping = GetResourcePathMapping (appRelativeVirtualPath);
 
       DirectoryInfo directoryInfo = null;
@@ -245,6 +259,13 @@ namespace Remotion.Development.Web.ResourceHosting
       ArgumentUtility.CheckNotNullOrEmpty ("virtualPath", virtualPath);
 
       return VirtualPathUtility.ToAppRelative (virtualPath);
+    }
+
+    protected virtual string MapPath (string virtualPath)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("virtualPath", virtualPath);
+
+      return HttpContext.Current.Request.MapPath (virtualPath);
     }
   }
 }

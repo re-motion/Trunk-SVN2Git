@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
@@ -26,10 +27,16 @@ using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.CodeGeneration
 {
+  /// <threadsafety static="true" instance="true"/>
   public class AttributeBasedMetadataImporter : IConcreteTypeMetadataImporter
   {
+    public AttributeBasedMetadataImporter ()
+    {
+    }
+
     // CLS-incompliant version for better testing
     [CLSCompliant (false)]
+    [CanBeNull]
     public virtual ClassContext GetMetadataForMixedType (_Type concreteMixedType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixedType", concreteMixedType);
@@ -44,6 +51,7 @@ namespace Remotion.Mixins.CodeGeneration
 
     // CLS-incompliant version for better testing
     [CLSCompliant (false)]
+    [CanBeNull]
     public virtual ConcreteMixinTypeIdentifier GetIdentifierForMixinType (_Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);

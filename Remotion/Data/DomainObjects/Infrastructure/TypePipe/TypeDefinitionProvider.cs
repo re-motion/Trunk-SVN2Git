@@ -25,13 +25,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// Implements <see cref="ITypeDefinitionProvider"/> by retrieving the <see cref="ClassDefinition"/> of the domain object type from the current 
   /// mapping configuration.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public class TypeDefinitionProvider : ITypeDefinitionProvider
   {
     public ClassDefinition GetTypeDefinition (Type domainObjectType)
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
 
-        var mappingConfiguration = MappingConfiguration.Current;
+      var mappingConfiguration = MappingConfiguration.Current;
       if (!mappingConfiguration.ContainsTypeDefinition (domainObjectType))
         return null;
 

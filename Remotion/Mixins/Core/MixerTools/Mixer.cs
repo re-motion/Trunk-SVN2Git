@@ -40,9 +40,9 @@ namespace Remotion.Mixins.MixerTools
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (Mixer));
 
-    public static Mixer Create (string assemblyName, string assemblyOutputDirectory)
+    public static Mixer Create (string assemblyName, string assemblyOutputDirectory, int degreeOfParallelism)
     {
-      var builderFactory = new MixerPipelineFactory (assemblyName);
+      var builderFactory = new MixerPipelineFactory (assemblyName, degreeOfParallelism);
 
       // Use a custom TypeDiscoveryService with the LoadAllAssemblyLoaderFilter so that mixed types within system assemblies are also considered.
       var assemblyLoader = new FilteringAssemblyLoader (new LoadAllAssemblyLoaderFilter ());
@@ -63,7 +63,7 @@ namespace Remotion.Mixins.MixerTools
     private readonly HashSet<Type> _processedTypes = new HashSet<Type>();
     private readonly Dictionary<Type, Type> _finishedTypes = new Dictionary<Type, Type> ();
 
-    private string _generatedFile;
+    private ReadOnlyCollectionDecorator<string> _generatedFiles;
 
     public Mixer (IMixedTypeFinder mixedTypeFinder, IMixerPipelineFactory mixerPipelineFactory, string assemblyOutputDirectory)
     {
@@ -95,9 +95,9 @@ namespace Remotion.Mixins.MixerTools
       get { return new ReadOnlyDictionary<Type, Type>(_finishedTypes); }
     }
 
-    public string GeneratedFile
+    public ReadOnlyCollectionDecorator<string> GeneratedFiles
     {
-      get { return _generatedFile; }
+      get { return _generatedFiles; }
     }
 
     public void PrepareOutputDirectory ()
@@ -108,7 +108,7 @@ namespace Remotion.Mixins.MixerTools
         Directory.CreateDirectory (AssemblyOutputDirectory);
       }
 
-      CleanupIfExists (MixerPipelineFactory.GetModulePath (AssemblyOutputDirectory));
+      CleanupIfExists (MixerPipelineFactory.GetModulePaths (AssemblyOutputDirectory));
     }
 
     // The MixinConfiguration is passed to Execute in order to be able to call PrepareOutputDirectory before analyzing the configuration (and potentially
@@ -122,7 +122,7 @@ namespace Remotion.Mixins.MixerTools
         _errors.Clear();
         _processedTypes.Clear();
         _finishedTypes.Clear();
-        _generatedFile = null;
+        _generatedFiles = new string[0].AsReadOnly();
 
         s_log.InfoFormat ("The base directory is '{0}'.", AppDomain.CurrentDomain.BaseDirectory);
 
@@ -169,17 +169,21 @@ namespace Remotion.Mixins.MixerTools
 
     private void Save (IPipeline pipeline)
     {
-      _generatedFile = pipeline.CodeManager.FlushCodeToDisk();
+      _generatedFiles = pipeline.CodeManager.FlushCodeToDisk().AsReadOnly();
 
-      s_log.InfoFormat ("Generated assembly file {0}.", _generatedFile);
+      foreach (var generatedFile in _generatedFiles)
+        s_log.InfoFormat ("Generated assembly file '{0}'.", generatedFile);
     }
 
-    private void CleanupIfExists (string path)
+    private void CleanupIfExists (string[] paths)
     {
-      if (File.Exists (path))
+      foreach (var path in paths)
       {
-        s_log.InfoFormat ("Removing file '{0}'.", path);
-        File.Delete (path);
+        if (File.Exists (path))
+        {
+          s_log.InfoFormat ("Removing file '{0}'.", path);
+          File.Delete (path);
+        }
       }
     }
   }

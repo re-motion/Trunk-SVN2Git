@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -24,6 +26,8 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Development.UnitTesting.Data.SqlClient;
+using Remotion.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -144,5 +148,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           sqlSynonymScriptElementFactory,
           new SqlCommentScriptElementFactory());
     }
-  }
+ 
+    protected PropertyDefinition GetPropertyDefinition<TSourceObject, TPropertyType> (Expression<Func<TSourceObject, TPropertyType>> expression)
+        where TSourceObject : DomainObject
+    {
+      var propertyInfo = MemberInfoFromExpressionUtility.GetProperty (expression);
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (TSourceObject));
+      return classDefinition.ResolveProperty (PropertyInfoAdapter.Create (propertyInfo));
+    }}
 }

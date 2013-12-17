@@ -130,6 +130,15 @@ namespace Remotion.Web.Test.UpdatePanelTests {
         protected global::Remotion.Web.UI.Controls.DropDownMenu DropDownMenuInsideUpdatePanel;
         
         /// <summary>
+        /// ListMenuInsideUpdatePanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.ListMenu ListMenuInsideUpdatePanel;
+        
+        /// <summary>
         /// PostBackCountOutsideUpdatePanelLabel control.
         /// </summary>
         /// <remarks>

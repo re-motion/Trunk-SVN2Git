@@ -20,6 +20,8 @@ using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Compilation;
 using Remotion.Web.Configuration;
@@ -160,7 +162,12 @@ public class SmartPage : Page, ISmartPage, ISmartNavigablePage
     _smartPageInfo.RegisterCommandForSynchronousPostBack (control, eventArguments);
   }
 
-  #endregion
+    public void RegisterControlForSynchronousPostBack (Control control)
+    {
+      _smartPageInfo.RegisterControlForSynchronousPostBack (control);
+    }
+
+    #endregion
 
   #region ISmartNavigablePage Implementation
 
@@ -264,26 +271,11 @@ public class SmartPage : Page, ISmartPage, ISmartNavigablePage
       return Request.QueryString;
   }
 
-    /// <summary> Gets or sets the <b>HtmlForm</b> of this page. </summary>
-  /// <remarks> Redirects the call to the <see cref="HtmlForm"/> property. </remarks>
-  HtmlForm ISmartPage.HtmlForm
-  {
-    get { return HtmlForm; }
-    set { HtmlForm = value; }
-  }
-
-  /// <summary> Gets or sets the <b>HtmlForm</b> of this page. </summary>
-  /// <remarks>
-  ///   <note type="inheritinfo"> 
-  ///     Override this property you do not wish to rely on automatic detection of the <see cref="HtmlForm"/>
-  ///     using reflection.
-  ///   </note>
-  /// </remarks>
-  [EditorBrowsable (EditorBrowsableState.Never)]
+  [Obsolete ("Use Page.Form instead. (1.15.5)", true)]
   protected virtual HtmlForm HtmlForm
   {
-    get { return _smartPageInfo.HtmlForm; }
-    set { _smartPageInfo.HtmlForm = value; }
+    get { throw new NotSupportedException ("Use Page.Form instead. (1.15.5"); }
+    set { throw new NotSupportedException ("Use Page.Form instead. (1.15.5"); }
   }
 
 
@@ -530,7 +522,7 @@ public class SmartPage : Page, ISmartPage, ISmartNavigablePage
 
   void ISmartPage.SaveAllState ()
   {
-    ControlHelper.SaveAllState (this);
+    MemberCaller.SaveAllState (this);
   }
 
   public override void ProcessRequest (HttpContext httpContext)
@@ -538,6 +530,16 @@ public class SmartPage : Page, ISmartPage, ISmartNavigablePage
     ArgumentUtility.CheckNotNull ("httpContext", httpContext);
     _httpContext = new HttpContextWrapper (httpContext);
     base.ProcessRequest (httpContext);
+  }
+
+  protected virtual IServiceLocator ServiceLocator
+  {
+    get { return SafeServiceLocator.Current; }
+  }
+
+  private IInternalControlMemberCaller MemberCaller
+  {
+    get { return ServiceLocator.GetInstance<IInternalControlMemberCaller>(); }
   }
 
   IPage IControl.Page

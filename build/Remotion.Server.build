@@ -231,7 +231,6 @@
          BuildInParallel="false"
          Properties="
             SolutionDirectory=$(SolutionDirectory);
-            ReleaseType=LOCAL;
             Version=$(_newVersion);"
          Targets="UpdateAssemblyInfosLocalBuild"/>
 

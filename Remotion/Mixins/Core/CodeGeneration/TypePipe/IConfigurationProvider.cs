@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 
@@ -26,10 +27,14 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// Provides <see cref="TargetClassDefinition"/>s for requested types and <see cref="ClassContext"/>s.
   /// This interface is an implementation detail of <see cref="MixinParticipant"/>.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public interface IConfigurationProvider
   {
-    TargetClassDefinition GetTargetClassDefinition (ClassContext classContext);
-    TargetClassDefinition GetTargetClassDefinition (Type requestedType);
+    [CanBeNull]
+    TargetClassDefinition GetTargetClassDefinition ([CanBeNull]ClassContext classContext);
+
+    [CanBeNull]
+    TargetClassDefinition GetTargetClassDefinition ([NotNull]Type requestedType);
 
     IEnumerable<Type> GetInterfacesToImplement (TargetClassDefinition targetClassDefinition, IEnumerable<IMixinInfo> mixinInfos);
   }

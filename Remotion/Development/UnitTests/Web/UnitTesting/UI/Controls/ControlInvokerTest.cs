@@ -146,7 +146,7 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
       _child.Text = "Foo Bar";
       _invoker.PreRenderRecursive();
 
-      object viewState = _invoker.SaveViewStateRecursive ();
+      object viewState = _invoker.SaveViewStateRecursive (ViewStateMode.Enabled);
 
       _invokerAfterPostBack.InitRecursive();
       Assert.That (_childAfterPostBack.Text, Is.EqualTo (string.Empty));

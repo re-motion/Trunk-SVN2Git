@@ -529,7 +529,7 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Ensures that this <see cref="DomainObject"/>'s data has been loaded into the default transaction, ie. in its binding transaction or - if
-    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If it hasn't, this method causes the object's data to be loaded.
+    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If it hasn't, this method causes the objec's data to be loaded.
     /// If the object's data can't be found, an exception is thrown.
     /// </summary>
     /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>

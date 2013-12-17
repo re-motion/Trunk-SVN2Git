@@ -27,6 +27,7 @@ using TestFunction=Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions.Tes
 namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   [TestFixture]
+  [Ignore("TODO RM-5569")]
   public class WxeFunctionCommandTest : BaseTest
   {
     private CommandTestHelper _testHelper;

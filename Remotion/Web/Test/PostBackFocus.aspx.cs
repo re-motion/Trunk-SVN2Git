@@ -15,11 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using Remotion.Web.UI;
 
 namespace Remotion.Web.Test
 {
   public partial class PostBackFocus : SmartPage
   {
+    protected override void OnLoad (EventArgs e)
+    {
+      base.OnLoad (e);
+    }
   }
 }

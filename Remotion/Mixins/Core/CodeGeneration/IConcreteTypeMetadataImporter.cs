@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.CodeGeneration
@@ -25,7 +26,10 @@ namespace Remotion.Mixins.CodeGeneration
   /// </summary>
   public interface IConcreteTypeMetadataImporter
   {
+    [CanBeNull]
     ClassContext GetMetadataForMixedType (Type concreteMixedType);
+
+    [CanBeNull]
     ConcreteMixinType GetMetadataForMixinType (Type concreteMixinType);
   }
 }

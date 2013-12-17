@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+using System.IO;
 using NUnit.Framework;
 using Remotion.Mixins.MixerTools;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
@@ -26,34 +29,88 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
   [TestFixture]
   public class MixerPipelineFactoryTest
   {
-    private MixerPipelineFactory _factory;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _factory = new MixerPipelineFactory ("Assembly");
-    }
-    
     [Test]
     public void CreatePipeline ()
     {
-      var pipeline = _factory.CreatePipeline (@"c:\directory");
+      var factory = new MixerPipelineFactory ("Assembly_{counter}", 2);
+      var pipeline = factory.CreatePipeline (@"c:\directory");
 
       CheckRemotionPipelineFactoryWasUsedForCreation (pipeline);
 
       var defaultPipeline = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>().DefaultPipeline;
       Assert.That (pipeline.ParticipantConfigurationID, Is.EqualTo (defaultPipeline.ParticipantConfigurationID));
-      Assert.That (pipeline.Settings, Is.SameAs (defaultPipeline.Settings));
       Assert.That (pipeline.Participants, Is.EqualTo (defaultPipeline.Participants));
 
-      Assert.That (pipeline.CodeManager.AssemblyNamePattern, Is.EqualTo ("Assembly"));
-      Assert.That (pipeline.CodeManager.AssemblyDirectory, Is.EqualTo (@"c:\directory"));
+      Assert.That (pipeline.Settings.AssemblyNamePattern, Is.EqualTo ("Assembly_{counter}"));
+      Assert.That (pipeline.Settings.AssemblyDirectory, Is.EqualTo (@"c:\directory"));
+      Assert.That (
+          pipeline.Settings.EnableSerializationWithoutAssemblySaving,
+          Is.EqualTo (defaultPipeline.Settings.EnableSerializationWithoutAssemblySaving));
+      Assert.That (pipeline.Settings.ForceStrongNaming, Is.EqualTo (defaultPipeline.Settings.ForceStrongNaming));
+      Assert.That (pipeline.Settings.KeyFilePath, Is.EqualTo (defaultPipeline.Settings.KeyFilePath));
+      Assert.That (pipeline.Settings.DegreeOfParallelism, Is.EqualTo (2));
     }
 
     [Test]
-    public void GetModulePath ()
+    public void GetModulePaths_WithoutCounterPattern_WithoutGeneratedFiles_ReturnsEmptyList ()
     {
-      Assert.That (_factory.GetModulePath (@"c:\directory"), Is.EqualTo (@"c:\directory\Assembly.dll"));
+      var tempDirectory = Directory.CreateDirectory (Path.Combine (Path.GetTempPath(), Guid.NewGuid().ToString()));
+      try
+      {
+        var factory = new MixerPipelineFactory ("Assembly", 1);
+        File.Create (Path.Combine (tempDirectory.FullName, "AssemblyOther.dll")).Close();
+
+        Assert.That (factory.GetModulePaths (tempDirectory.FullName), Is.Empty);
+      }
+      finally
+      {
+        tempDirectory.Delete (true);
+      }
+    }
+
+    [Test]
+    public void GetModulePaths_WithoutCounterPattern_WithGeneratedFiles_ReturnsMatchingFiles ()
+    {
+      var tempDirectory = Directory.CreateDirectory (Path.Combine (Path.GetTempPath(), Guid.NewGuid().ToString()));
+      try
+      {
+        var factory = new MixerPipelineFactory ("Assembly", 1);
+
+        var assembly = Path.Combine (tempDirectory.FullName, "Assembly.dll");
+        File.Create (assembly).Close();
+
+        File.Create (Path.Combine (tempDirectory.FullName, "AssemblyOther.dll")).Close();
+
+        Assert.That (factory.GetModulePaths (tempDirectory.FullName), Is.EqualTo (new[] { assembly }));
+      }
+      finally
+      {
+        tempDirectory.Delete (true);
+      }
+    }
+
+    [Test]
+    public void GetModulePaths_WithCounterPattern_WithGeneratedFiles_ReturnsMatchingFiles ()
+    {
+      var tempDirectory = Directory.CreateDirectory (Path.Combine (Path.GetTempPath(), Guid.NewGuid().ToString()));
+      try
+      {
+        var factory = new MixerPipelineFactory ("Assembly.{counter}", 1);
+
+        var assembly1 = Path.Combine (tempDirectory.FullName, "Assembly.1.dll");
+        File.Create (assembly1).Close();
+
+        var assembly2 = Path.Combine (tempDirectory.FullName, "Assembly.2.dll");
+        File.Create (assembly2).Close();
+
+        File.Create (Path.Combine (tempDirectory.FullName, "AssemblyOther.dll")).Close();
+
+        Assert.That (factory.GetModulePaths (tempDirectory.FullName), Is.EqualTo (new[] { assembly1, assembly2 }));
+      }
+      finally
+      {
+        tempDirectory.Delete (true);
+      }
     }
 
     private void CheckRemotionPipelineFactoryWasUsedForCreation (IPipeline pipeline)

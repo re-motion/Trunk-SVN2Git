@@ -288,40 +288,6 @@ namespace Remotion.FunctionalProgramming
       return new HashSet<T> (sequence1).SetEquals (sequence2);
     }
 
-#if NET_3_5
-    /// <summary>
-    /// Combines two sequences into a single sequence. The resulting sequence's item type is calculated using the given 
-    /// <paramref name="resultSelector"/>.
-    /// </summary>
-    /// <typeparam name="T1">The item type of the first sequence.</typeparam>
-    /// <typeparam name="T2">The item type of the second sequence.</typeparam>
-    /// <typeparam name="TResult">The item type of the result sequence.</typeparam>
-    /// <param name="first">The first sequence.</param>
-    /// <param name="second">The second sequence.</param>
-    /// <param name="resultSelector">A selector delegate that combines items of the <paramref name="first"/> and the <paramref name="second"/> 
-    /// sequence.</param>
-    /// <returns>
-    /// A "zipped" sequence, consisting of the combined elements of the <paramref name="first"/> and the <paramref name="second"/> sequence.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">One of the parameters is null.</exception>
-    /// <remarks>
-    /// If the input sequences do not have the same number of arguments, the result sequence will have as many arguments as the smaller input sequence.
-    /// </remarks>
-    public static IEnumerable<TResult> Zip<T1, T2, TResult> (this IEnumerable<T1> first, IEnumerable<T2> second, Func<T1, T2, TResult> resultSelector)
-    {
-      ArgumentUtility.CheckNotNull ("first", first);
-      ArgumentUtility.CheckNotNull ("second", second);
-      ArgumentUtility.CheckNotNull ("resultSelector", resultSelector);
-
-      using (var enumerator1 = first.GetEnumerator())
-      using (var enumerator2 = second.GetEnumerator())
-      {
-        while (enumerator1.MoveNext() && enumerator2.MoveNext())
-          yield return resultSelector (enumerator1.Current, enumerator2.Current);
-      }
-    }
-#endif
-
     /// <summary>
     /// Combines two sequences into a single sequence of <see cref="Tuple{T1,T2}"/> values.
     /// </summary>

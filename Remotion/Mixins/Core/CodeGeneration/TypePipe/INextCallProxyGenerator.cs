@@ -25,6 +25,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// <summary>
   /// An abstraction for generating <see cref="INextCallProxy"/>.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public interface INextCallProxyGenerator
   {
     INextCallProxy Create (

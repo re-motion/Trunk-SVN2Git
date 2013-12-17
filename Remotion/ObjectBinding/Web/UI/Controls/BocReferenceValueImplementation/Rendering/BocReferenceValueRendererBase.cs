@@ -1,3 +1,19 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
 using System;
 using System.Collections.Specialized;
 using System.Text;
@@ -17,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// Provides a common base class for Standards Mode renderers or <see cref="BocReferenceValue"/> and <see cref="BocAutoCompleteReferenceValue"/>.
   /// </summary>
   public abstract class BocReferenceValueRendererBase<TControl> : BocRendererBase<TControl>
-    where TControl : IBocReferenceValueBase
+      where TControl: IBocReferenceValueBase
   {
     protected BocReferenceValueRendererBase (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
         : base(resourceUrlFactory, globalizationService)
@@ -31,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude();
 
       string scriptKey = typeof (BocReferenceValueRendererBase<>).FullName + "_Script";
       htmlHeadAppender.RegisterJavaScriptInclude (
@@ -48,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       RenderContents (renderingContext);
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
 
       RegisterInitializationScript (renderingContext);
 
@@ -77,7 +93,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.Append (");");
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
-          renderingContext.Control, typeof (BocReferenceValueRendererBase<>), key, script.ToString ());
+          renderingContext.Control, typeof (BocReferenceValueRendererBase<>), key, script.ToString());
     }
 
     protected string GetIconServicePath (RenderingContext<TControl> renderingContext)
@@ -109,7 +125,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       AppendStringValueOrNullToScript (jsonBuilder, iconServiceContext.Arguments);
       jsonBuilder.Append (" }");
 
-      return jsonBuilder.ToString ();
+      return jsonBuilder.ToString();
     }
 
     protected string GetCommandInfoAsJson (BocRenderingContext<TControl> renderingContext)
@@ -155,14 +171,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       jsonBuilder.Append (" }");
 
-      return jsonBuilder.ToString ();
+      return jsonBuilder.ToString();
     }
 
     protected virtual void RenderContents (BocRenderingContext<TControl> renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
-      
-      if (IsEmbedInOptionsMenu(renderingContext))
+
+      if (IsEmbedInOptionsMenu (renderingContext))
         RenderContentsWithIntegratedOptionsMenu (renderingContext);
       else
         RenderContentsWithSeparateOptionsMenu (renderingContext);
@@ -172,7 +188,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (writer => RenderOptionsMenuTitle(renderingContext));
+      renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (writer => RenderOptionsMenuTitle (renderingContext));
       renderingContext.Control.OptionsMenu.RenderControl (renderingContext.Writer);
       renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
     }
@@ -188,9 +204,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
       if (renderingContext.Control.IsReadOnly)
-      {
         RenderReadOnlyValue (renderingContext, postBackEvent, string.Empty, objectID);
-      }
       else
       {
         RenderSeparateIcon (renderingContext, postBackEvent, string.Empty, objectID);
@@ -199,7 +213,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
         RenderEditModeValueWithSeparateOptionsMenu (renderingContext);
 
-        renderingContext.Writer.RenderEndTag ();
+        renderingContext.Writer.RenderEndTag();
       }
 
       bool hasOptionsMenu = renderingContext.Control.HasOptionsMenu;
@@ -211,10 +225,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         renderingContext.Control.OptionsMenu.Width = renderingContext.Control.OptionsMenuWidth;
         renderingContext.Control.OptionsMenu.RenderControl (renderingContext.Writer);
 
-        renderingContext.Writer.RenderEndTag ();
+        renderingContext.Writer.RenderEndTag();
       }
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     public void RenderOptionsMenuTitle (BocRenderingContext<TControl> renderingContext)
@@ -225,9 +239,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
       if (renderingContext.Control.IsReadOnly)
-      {
         RenderReadOnlyValue (renderingContext, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
-      }
       else
       {
         RenderSeparateIcon (renderingContext, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
@@ -236,7 +248,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
         RenderEditModeValueWithIntegratedOptionsMenu (renderingContext);
 
-        renderingContext.Writer.RenderEndTag ();
+        renderingContext.Writer.RenderEndTag();
       }
     }
 
@@ -245,7 +257,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (renderingContext.Control.IsDesignMode)
         return "";
 
-      string argument = string.Empty;
+      string argument = BocReferenceValueBase.CommandArgumentName;
       return renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
     }
 
@@ -333,10 +345,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private Label GetLabel (BocRenderingContext<TControl> renderingContext)
     {
-      var label = new Label { ID = renderingContext.Control.ClientID + "_Label", EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
+      var label = new Label
+                  {
+                      ID = renderingContext.Control.ClientID + "_Label",
+                      ClientIDMode = ClientIDMode.Static,
+                      EnableViewState = false,
+                      Height = Unit.Empty,
+                      Width = Unit.Empty
+                  };
       label.ApplyStyle (renderingContext.Control.CommonStyle);
       label.ApplyStyle (renderingContext.Control.LabelStyle);
-      label.Text = HttpUtility.HtmlEncode (renderingContext.Control.GetLabelText ());
+      label.Text = HttpUtility.HtmlEncode (renderingContext.Control.GetLabelText());
       label.Attributes.Add ("data-value", renderingContext.Control.BusinessObjectUniqueIdentifier);
       return label;
     }
@@ -344,7 +363,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private bool IsEmbedInOptionsMenu (BocRenderingContext<TControl> renderingContext)
     {
       return renderingContext.Control.HasValueEmbeddedInsideOptionsMenu == true && renderingContext.Control.HasOptionsMenu
-               || renderingContext.Control.HasValueEmbeddedInsideOptionsMenu == null && renderingContext.Control.IsReadOnly && renderingContext.Control.HasOptionsMenu;
+             || renderingContext.Control.HasValueEmbeddedInsideOptionsMenu == null && renderingContext.Control.IsReadOnly
+             && renderingContext.Control.HasOptionsMenu;
     }
 
     private string GetCssClassInnerContent (BocRenderingContext<TControl> renderingContext)
@@ -353,7 +373,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       if (!renderingContext.Control.HasOptionsMenu)
         cssClass += " " + CssClassWithoutOptionsMenu;
-      else if (IsEmbedInOptionsMenu(renderingContext))
+      else if (IsEmbedInOptionsMenu (renderingContext))
         cssClass += " " + CssClassEmbeddedOptionsMenu;
       else
         cssClass += " " + CssClassSeparateOptionsMenu;

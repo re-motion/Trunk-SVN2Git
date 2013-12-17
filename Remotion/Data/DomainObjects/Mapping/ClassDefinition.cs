@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
@@ -46,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly Type _classType;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
     private readonly IDomainObjectCreator _instanceCreator;
-    private readonly Func<ObjectID, IDomainObjectHandle<DomainObject>> _handleCreator;
+    private readonly Lazy<Func<ObjectID, IDomainObjectHandle<DomainObject>>> _handleCreator;
 
     public ClassDefinition (
         string id,
@@ -77,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _baseClass = baseClass;
       _instanceCreator = instanceCreator;
-      _handleCreator = BuildHandleCreator();
+      _handleCreator = new Lazy<Func<ObjectID, IDomainObjectHandle<DomainObject>>> (BuildHandleCreator, LazyThreadSafetyMode.PublicationOnly);
     }
 
     // methods and properties
@@ -364,7 +365,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public Func<ObjectID, IDomainObjectHandle<DomainObject>> HandleCreator
     {
-      get { return _handleCreator; }
+      get { return _handleCreator.Value; }
     }
 
     public PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)

@@ -22,8 +22,13 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
+  /// <threadsafety static="true" instance="true"/>
   public class ConfigurationProvider : IConfigurationProvider
   {
+    public ConfigurationProvider ()
+    {
+    }
+
     public TargetClassDefinition GetTargetClassDefinition (ClassContext classContext)
     {
       if (classContext == null)

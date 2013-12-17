@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.MixerTools;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
@@ -78,7 +77,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
 
       _mixedTypeFinderStub.Stub (stub => stub.FindMixedTypes (_configuration)).Return (new[] { _fakeMixedType });
 
-      _mixerPipelineFactoryStub.Stub (stub => stub.GetModulePath (_assemblyOutputDirectoy)).Return (_modulePath);
+      _mixerPipelineFactoryStub.Stub (stub => stub.GetModulePaths (_assemblyOutputDirectoy)).Return (new[] { _modulePath });
       _mixerPipelineFactoryStub.Stub (stub => stub.CreatePipeline (_assemblyOutputDirectoy)).Return (_pipelineStub);
     }
 
@@ -129,6 +128,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       var mixedTypeFinderMock = new MockRepository().StrictMock<IMixedTypeFinder> ();
       mixedTypeFinderMock.Expect (mock => mock.FindMixedTypes (_configuration)).Return (new Type[0]);
       mixedTypeFinderMock.Replay ();
+      _codeManagerDynamicMock.Stub (stub => stub.FlushCodeToDisk()).Return (new string[0]);
 
       var mixer = new Mixer (mixedTypeFinderMock, _mixerPipelineFactoryStub, _assemblyOutputDirectoy);
       mixer.Execute (_configuration);
@@ -139,6 +139,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     [Test]
     public void Execute_RaisesClassContextBeingProcessed ()
     {
+      _codeManagerDynamicMock.Stub (stub => stub.FlushCodeToDisk()).Return (new string[0]);
       object eventSender = null;
       TypeEventArgs eventArgs = null;
 
@@ -158,6 +159,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
           .Expect (mock => _reflectionServiceDynamicMock.GetAssembledType (_fakeMixedType))
           .Return (typeof (FakeConcreteMixedType))
           .WhenCalled (mi => activeConfiguration = MixinConfiguration.ActiveConfiguration);
+      _codeManagerDynamicMock.Stub (stub => stub.FlushCodeToDisk()).Return (new string[0]);
       
       _mixer.Execute (_configuration);
 
@@ -175,6 +177,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       _reflectionServiceDynamicMock
           .Expect (mock => _reflectionServiceDynamicMock.GetAssembledType (_fakeMixedType))
           .Throw (validationException);
+      _codeManagerDynamicMock.Stub (stub => stub.FlushCodeToDisk()).Return (new string[0]);
 
       object eventSender = null;
       ValidationErrorEventArgs eventArgs = null;
@@ -196,6 +199,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       _reflectionServiceDynamicMock
           .Expect (mock => _reflectionServiceDynamicMock.GetAssembledType (_fakeMixedType))
           .Throw (exception);
+      _codeManagerDynamicMock.Stub (stub => stub.FlushCodeToDisk()).Return (new string[0]);
 
       object eventSender = null;
       ErrorEventArgs eventArgs = null;
@@ -212,18 +216,18 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     [Test]
     public void Execute_Saves ()
     {
-      _codeManagerDynamicMock.Expect (mock => mock.FlushCodeToDisk()).Return ("a");
+      _codeManagerDynamicMock.Expect (mock => mock.FlushCodeToDisk()).Return (new[] { "a" });
 
       _mixer.Execute (_configuration);
 
       _codeManagerDynamicMock.VerifyAllExpectations();
-      Assert.That (_mixer.GeneratedFile, Is.EqualTo ("a"));
+      Assert.That (_mixer.GeneratedFiles, Is.EqualTo (new[] { "a" }));
     }
 
     [Test]
     public void Create ()
     {
-      var mixer = Mixer.Create ("A", "D");
+      var mixer = Mixer.Create ("A", "D", 1);
       Assert.That (mixer.MixerPipelineFactory, Is.TypeOf (typeof (MixerPipelineFactory)));
       Assert.That (((MixerPipelineFactory) mixer.MixerPipelineFactory).AssemblyName, Is.EqualTo ("A"));
 

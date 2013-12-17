@@ -322,6 +322,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       return new HiddenField
       {
+        ClientIDMode = ClientIDMode.Static,
         ID = renderingContext.Control.GetKeyValueName(),
         Page = renderingContext.Control.Page.WrappedInstance,
         EnableViewState = true,
@@ -332,6 +333,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private TextBox GetTextBox (BocRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
       var textBox = _textBoxFactory();
+      textBox.ClientIDMode = ClientIDMode.Static;
       textBox.ID = renderingContext.Control.GetTextValueName();
       textBox.Text = renderingContext.Control.GetLabelText ();
       textBox.Enabled = renderingContext.Control.Enabled;

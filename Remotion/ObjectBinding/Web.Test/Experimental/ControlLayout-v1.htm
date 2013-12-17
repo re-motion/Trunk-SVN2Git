@@ -3,13 +3,25 @@
 <head>
   <title></title>
   <style type="text/css">
+    h1
+    {
+      font-size: 1em;
+      margin-top: 0.5em;
+      margin-bottom: 0;
+    }
+
+    .dateTimeValue input::-ms-clear
+    {
+      display: none;
+    }
+
     .dateTimeValue input.dateField
     {
       box-sizing: border-box;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
       
-      width: 8em;
+      width: 8.1em;
       padding-right: 26px;
     }
     
@@ -19,7 +31,7 @@
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
 
-      width: 4.5em;
+      width: 4.4em;
     }
     
     .dateTimeValue a.datePicker
@@ -45,10 +57,19 @@
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
       
+      /*padding: 3px;*/
       width: 12.8em;
       padding-right: 15px;
+      /*border: 1px solid darkgrey;
+      border-radius: 3px;*/
     }
     
+    /*.ie9 .autoCompleteReferenceValue input.textField
+    {
+      padding-right: 3px;
+      border-right: 15px solid transparent;
+    }*/
+
     .autoCompleteReferenceValue a.dropDownButton
     {
       border: solid 1px ThreeDShadow;
@@ -80,48 +101,172 @@
     .bocCheckBoxStyled input[type=checkbox]
     {
       position: absolute;
-      left: -10000px; /*Hide from visible screen but show for screen reader*/
-      left: 0px; /* for debugging */
+      left: -1000%; /*Hide from visible screen but show for screen reader*/
     }
-    .bocCheckBoxStyled input[type=checkbox] + label img
+    
+    .bocCheckBoxStyled input[type=checkbox]
+    {
+      /* for debugging */
+      left: 30%; 
+    }
+
+    .bocCheckBoxStyled label
+    {
+      min-width: 16px;
+      min-height: 16px;
+      padding: 0px;
+      padding-left: 20px;
+      background-repeat: no-repeat;
+      background-position: left center;
+      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
+    }
+
+    .bocCheckBoxStyled input[type=checkbox]:checked + label
+    {
+      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
+    }
+
+    .bocCheckBoxStyled input[type=checkbox]:focus + label
+    {
+      outline-style: dotted;
+      outline-width: 1px;
+    }
+
+    .bocCheckBoxStyled input[type=checkbox]:checked + label:after
+    {
+      content: "yes";
+    }
+
+    .bocCheckBoxStyled input[type=checkbox] + label:after
+    {
+      content: "no";
+    }
+
+    .bocTriStateStyled input[type=radio]
+    {
+      position: absolute;
+      left: -1000%; /*Hide from visible screen but show for screen reader*/
+    }
+
+    .bocTriStateStyled input[type=radio][value="null"]
+    {
+       /* for debugging */
+       left: 30em;
+    }
+
+    .bocTriStateStyled input[type=radio][value="true"]
+    {
+       /* for debugging */
+      left: 31em;
+    }
+
+    .bocTriStateStyled input[type=radio][value="false"]
+    {
+       /* for debugging */
+      left: 32em;
+    }
+
+    .bocTriStateStyled label
     {
       width: 16px;
       height: 16px;
       padding: 0px;
-      border: none;
-      vertical-align: top;
-      background-position: center center;
-      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
+      padding-left: 20px;
+      background-repeat: no-repeat;
+      background-position: left center;
+      background-image: none;
+      display: none;
     }
-    .bocCheckBoxStyled input[type=checkbox]:checked + label img
+
+    .bocTriStateStyled input[type=radio][value="null"]:checked + label
+    {
+      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxNull.gif');
+      display: inline;
+    }
+
+    .bocTriStateStyled input[type=radio][value="true"]:checked + label
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
+      display: inline;
     }
-    .bocCheckBoxStyled input[type=checkbox]:focus + label img
+
+    .bocTriStateStyled input[type=radio][value="false"]:checked + label
+    {
+      background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
+      display: inline;
+    }
+
+    .bocTriStateStyled input[type=radio]:focus + label
     {
       outline-style: dotted;
       outline-width: 1px;
+    }
+
+    .bocTriStateStyled input[type=radio][value="null"]:checked + label:after
+    {
+      content: "undefined";
+    }
+
+    .bocTriStateStyled input[type=radio][value="true"]:checked + label:after
+    {
+      content: "yes";
+    }
+
+    .bocTriStateStyled input[type=radio][value="false"]:checked + label:after
+    {
+      content: "no";
     }
   </style>
 </head>
 <body>
   <form action="/" method="post">
-  Date Time Value:<br />
+  <h1>Checkbox using image:</h1>
+  <span class="bocCheckBoxStyled">
+    <input id="bocCheckBoxStyled_Value" type="checkbox"/>
+    <label for="bocCheckBoxStyled_Value"></label>
+  </span>
+  M<br/>
+
+  <h1>Tri-State using image:</h1>
+  <span class="bocTriStateStyled">
+    <input id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" value="null" title="undefined" checked="checked"/>
+    <label for="bocTriStateStyles_ValueTrue" aria-hidden="true" title="select 'no'"></label>
+    <input id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio" value="true"title="yes"/>
+    <label for="bocTriStateStyles_ValueFalse" aria-hidden="true" title="select 'yes'"></label>
+    <input id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" type="radio" value="false" title="no"/>
+    <label for="bocTriStateStyles_ValueNull" aria-hidden="true" title="reset"></label>
+  </span>
+  M<br/>
+
+  <h1>Tri-State with disabled NULL value using image:</h1>
+  (only selecting the disabled value the first time does not work yet)<br/>
+  <span class="bocTriStateStyled">
+    <input id="bocTriStateStyles2_ValueNull" name="bocTriStateStyles2_Value" type="radio" value="null" title="undefined" checked="checked"/>
+    <label for="bocTriStateStyles2_ValueTrue" aria-hidden="true" title="select 'no'"></label>
+    <input id="bocTriStateStyles2_ValueTrue" name="bocTriStateStyles2_Value" type="radio" value="true" title="yes"/>
+    <label for="bocTriStateStyles2_ValueFalse" aria-hidden="true" title="select 'yes'"></label>
+    <input id="bocTriStateStyles2_ValueFalse" name="bocTriStateStyles2_Value" type="radio" value="false" title="no"/>
+    <label for="bocTriStateStyles2_ValueNull" aria-hidden="true" title="reset"></label>
+  </span>
+  M
+  <h1>Date Time Value:</h1>
   <span class="dateTimeValue">
     <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
     <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
     <input name="timeValue" type="text" class="timeField" maxlength="10" value="12:24:59" />
   </span>
-  M
-  <br />
-  Date Value:<br />
+  M<br/>
+  Note: The clear-button (IE10) was disabled on the date and time input elements.
+
+  <h1>Date Value:</h1>
   <span class="dateTimeValue">
     <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
     <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
   </span>
-  M
-  <br />
-  Reference Value:<br />
+  M<br/>
+  Note: The clear-button (IE10) was disabled on the date input element.
+
+  <h1>Reference Value:</h1>
   <span class="referenceValue">
     <select name="referenceValue" class="dropDownList" >
       <option value="1" >Value 1</option>
@@ -129,22 +274,17 @@
     </select>
   </span>
   M
-  <br />
-  Auto Complete Reference Value: (Issue in IE: text will end up behind the dropdown until IE moves back to left)<br />
+  <h1>Auto Complete Reference Value:</h1>
+  (Issue in IE&lt;10: text will end up behind the dropdown until IE moves back to left. Can be solved with CSS-tricks, currently commented out)<br/>
   <span class="autoCompleteReferenceValue">
     <input name="autoCompleteReferenceValue" type="text" class="textField" />
     <a href="#" class="dropDownButton" title="Show the value list">&nbsp;</a>
   </span>
   M
-  <br />
-  Multiline tooltip: <span title="Line 1&#13&#10Line 2">The Tooltip Target</span><br/>
-  Checkbox using transparent image: 
-    <span class="bocCheckBoxStyled">
-      <input id="bocCheckBoxStyled_Value" type="checkbox"/>
-      <label for="bocCheckBoxStyled_Value"><img src="../res/Remotion.Web/Image/Spacer.gif"/></label>
-    </span>
-    M
+  <h1>Multiline tooltip:</h1>
+   <span title="Line 1&#13&#10Line 2">The Tooltip Target</span><br/>
     <br/>
+    See Chosen (http://harvesthq.github.io/chosen/) for Reference Values and Enum Values
   </form>
 </body>
 </html>

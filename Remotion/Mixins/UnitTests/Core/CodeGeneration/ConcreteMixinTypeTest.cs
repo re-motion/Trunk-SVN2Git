@@ -60,10 +60,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No public wrapper was generated for method 'System.Text.StringBuilder.ReplaceString'.")]
+    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No public wrapper was generated for method 'System.Object.MemberwiseClone'.")]
     public void GetPubliclyCallableMixinMethod_NotFound ()
     {
-      var method = typeof (StringBuilder).GetMethod ("ReplaceString", BindingFlags.NonPublic | BindingFlags.Instance);
+      var method = typeof (StringBuilder).GetMethod ("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
       _concreteMixinType.GetPubliclyCallableMixinMethod (method);
     }
 

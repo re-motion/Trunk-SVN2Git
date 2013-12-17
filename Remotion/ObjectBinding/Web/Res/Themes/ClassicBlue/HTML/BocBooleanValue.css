@@ -31,6 +31,7 @@
 .bocBooleanValue img
 {
   vertical-align: middle;
+  border: none;
 }
 
 .bocBooleanValue.disabled img

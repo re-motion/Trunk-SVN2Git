@@ -33,6 +33,7 @@ namespace Remotion.Development.UnitTests.Core.TypePipe
     private int _maximumTypesPerAssembly;
 
     private DebuggerWorkaroundCodeGenerator _generator;
+    private string _assemblyNamePattern;
 
     [SetUp]
     public void SetUp ()
@@ -40,8 +41,16 @@ namespace Remotion.Development.UnitTests.Core.TypePipe
       _moduleBuilderFactoryMock = MockRepository.GenerateStrictMock<IModuleBuilderFactory>();
       _debuggerInterfaceMock = MockRepository.GenerateStrictMock<IDebuggerInterface>();
       _maximumTypesPerAssembly = 2;
+      _assemblyNamePattern = "assemblyName";
 
-      _generator = new DebuggerWorkaroundCodeGenerator (_moduleBuilderFactoryMock, false, null, _debuggerInterfaceMock, _maximumTypesPerAssembly);
+      _generator = new DebuggerWorkaroundCodeGenerator (
+          _moduleBuilderFactoryMock,
+          false,
+          null,
+          _debuggerInterfaceMock,
+          _maximumTypesPerAssembly,
+          null,
+          _assemblyNamePattern);
     }
 
     [Test]
@@ -58,21 +67,20 @@ namespace Remotion.Development.UnitTests.Core.TypePipe
       var moduleBuilderMock2 = MockRepository.GenerateStrictMock<IModuleBuilder>();
       var moduleBuilderMock3 = MockRepository.GenerateStrictMock<IModuleBuilder>();
       _debuggerInterfaceMock.Expect (mock => mock.IsAttached).Return (true).Repeat.Times (5);
-      _generator.SetAssemblyNamePattern ("assemblyName");
       Assert.That (_maximumTypesPerAssembly, Is.EqualTo (2));
 
       // Initialize for first type.
-      _moduleBuilderFactoryMock.Expect (mock => mock.CreateModuleBuilder ("assemblyName", null, false, null)).Return (moduleBuilderMock1);
+      _moduleBuilderFactoryMock.Expect (mock => mock.CreateModuleBuilder (_assemblyNamePattern, null, false, null)).Return (moduleBuilderMock1);
       ExpectAndDefineType (moduleBuilderMock1);
       ExpectAndDefineType (moduleBuilderMock1);
 
       // Start new assembly if threshold is exceeded.
-      _moduleBuilderFactoryMock.Expect (mock => mock.CreateModuleBuilder ("assemblyName", null, false, null)).Return (moduleBuilderMock2);
+      _moduleBuilderFactoryMock.Expect (mock => mock.CreateModuleBuilder (_assemblyNamePattern, null, false, null)).Return (moduleBuilderMock2);
       ExpectAndDefineType (moduleBuilderMock2);
       ExpectAndDefineType (moduleBuilderMock2);
 
       // Ensure that counter is reset.
-      _moduleBuilderFactoryMock.Expect (mock => mock.CreateModuleBuilder ("assemblyName", null, false, null)).Return (moduleBuilderMock3);
+      _moduleBuilderFactoryMock.Expect (mock => mock.CreateModuleBuilder (_assemblyNamePattern, null, false, null)).Return (moduleBuilderMock3);
       ExpectAndDefineType (moduleBuilderMock3);
 
       Assert.That (_generator.TypeCountForCurrentAssembly, Is.EqualTo (1));
@@ -90,11 +98,10 @@ namespace Remotion.Development.UnitTests.Core.TypePipe
     {
       var moduleBuilderMock = MockRepository.GenerateStrictMock<IModuleBuilder> ();
       _debuggerInterfaceMock.Expect (mock => mock.IsAttached).Return (false).Repeat.Times (3);
-      _generator.SetAssemblyNamePattern ("assemblyName");
       Assert.That (_maximumTypesPerAssembly, Is.EqualTo (2));
 
       // Initialize for first type.
-      _moduleBuilderFactoryMock.Expect (mock => mock.CreateModuleBuilder ("assemblyName", null, false, null)).Return (moduleBuilderMock);
+      _moduleBuilderFactoryMock.Expect (mock => mock.CreateModuleBuilder (_assemblyNamePattern, null, false, null)).Return (moduleBuilderMock);
       ExpectAndDefineType (moduleBuilderMock);
       ExpectAndDefineType (moduleBuilderMock);
       ExpectAndDefineType (moduleBuilderMock); // No new assembly was started.

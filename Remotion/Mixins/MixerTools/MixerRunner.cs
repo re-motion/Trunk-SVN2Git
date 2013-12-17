@@ -100,7 +100,7 @@ namespace Remotion.Mixins.MixerTools
 
     private Mixer CreateMixer ()
     {
-      var mixer = Mixer.Create (_parameters.AssemblyName, _parameters.AssemblyOutputDirectory);
+      var mixer = Mixer.Create (_parameters.AssemblyName, _parameters.AssemblyOutputDirectory, _parameters.DegreeOfParallelism);
       
       mixer.ValidationErrorOccurred += Mixer_ValidationErrorOccurred;
       mixer.ErrorOccurred += Mixer_ErrorOccurred;

@@ -26,8 +26,13 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// <summary>
   /// Generates concrete mixin types and meta data by calling the methods on <see cref="MixinTypeGenerator"/> in proper order.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public class MixinTypeGeneratorFacade : IMixinTypeProvider
   {
+    public MixinTypeGeneratorFacade ()
+    {
+    }
+
     public IMixinInfo GetMixinInfo (IProxyTypeAssemblyContext context, MixinDefinition mixin)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -40,24 +45,12 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       return GetOrGenerateConcreteMixinType (context, concreteMixinTypeIdentifier);
     }
 
-    public void AddLoadedConcreteMixinType (IDictionary<string, object> participantState, ConcreteMixinType concreteMixinType)
-    {
-      ArgumentUtility.CheckNotNull ("participantState", participantState);
-      ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
-
-      var concreteMixinTypeCache = GetOrCreateConcreteMixinTypeCache (participantState);
-
-      // Might already be present when an assembly is loaded twice, or when a type requiring an equivalent ConcreteMixinType was already requested.
-      if (!concreteMixinTypeCache.ContainsKey (concreteMixinType.Identifier))
-        concreteMixinTypeCache.Add (concreteMixinType.Identifier, concreteMixinType);
-    }
-
     public ConcreteMixinType GetOrGenerateConcreteMixinType (ITypeAssemblyContext context, ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
 
-      var concreteMixinTypeCache = GetOrCreateConcreteMixinTypeCache (context.State);
+      var concreteMixinTypeCache = GetOrCreateConcreteMixinTypeCache (context.ParticipantState);
 
       ConcreteMixinType concreteMixinType;
       if (!concreteMixinTypeCache.TryGetValue (concreteMixinTypeIdentifier, out concreteMixinType))
@@ -76,7 +69,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
 
     private ConcreteMixinType GenerateConcreteMixinType (ITypeAssemblyContext context, ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
     {
-      var mixinProxyType = context.CreateProxy (concreteMixinTypeIdentifier.MixinType);
+      var mixinProxyType = context.CreateAddtionalProxyType (concreteMixinTypeIdentifier, concreteMixinTypeIdentifier.MixinType);
 
       var generator = new MixinTypeGenerator (concreteMixinTypeIdentifier, mixinProxyType, new AttributeGenerator(), context.ParticipantConfigurationID);
       generator.AddInterfaces();
@@ -95,14 +88,14 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
     }
 
     private IDictionary<ConcreteMixinTypeIdentifier, ConcreteMixinType> GetOrCreateConcreteMixinTypeCache (
-        IDictionary<string, object> participantState)
+        IParticipantState participantState)
     {
       const string key = "ConcreteMixinTypes";
-      var concreteMixinTypeCache = (Dictionary<ConcreteMixinTypeIdentifier, ConcreteMixinType>) participantState.GetValueOrDefault (key);
+      var concreteMixinTypeCache = (Dictionary<ConcreteMixinTypeIdentifier, ConcreteMixinType>) participantState.GetState (key);
       if (concreteMixinTypeCache == null)
       {
         concreteMixinTypeCache = new Dictionary<ConcreteMixinTypeIdentifier, ConcreteMixinType>();
-        participantState.Add (key, concreteMixinTypeCache);
+        participantState.AddState (key, concreteMixinTypeCache);
       }
 
       return concreteMixinTypeCache;

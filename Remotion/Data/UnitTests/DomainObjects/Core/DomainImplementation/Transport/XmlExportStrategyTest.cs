@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
@@ -27,6 +29,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
   [TestFixture]
   public class XmlExportStrategyTest : ClientTransactionBaseTest
   {
+    private string ReplaceKnownXmlNamespaceDeclarations (string xml)
+    {
+      return xml
+          .Replace (@"xmlns:xsd=""http://www.w3.org/2001/XMLSchema""", "XmlnsDeclaration")
+          .Replace (@"xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""", "XmlnsDeclaration");
+    }
+
     [Test]
     public void Export_SerializesData ()
     {
@@ -40,8 +49,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       using (var stream = new MemoryStream ())
       {
         XmlExportStrategy.Instance.Export (stream, items);
-        string actualString = Encoding.UTF8.GetString (stream.ToArray());
-        Assert.That (actualString, Is.EqualTo (XmlSerializationStrings.XmlForOrder1Order2));
+        var actualString = ReplaceKnownXmlNamespaceDeclarations (Encoding.UTF8.GetString (stream.ToArray()));
+
+        Assert.That (actualString, Is.EqualTo (ReplaceKnownXmlNamespaceDeclarations (XmlSerializationStrings.XmlForOrder1Order2)));
       }
     }
 

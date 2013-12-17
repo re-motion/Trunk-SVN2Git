@@ -33,6 +33,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
 
 [TestFixture]
+[Ignore("TODO RM-5569")]
 public class NavigationCommandTest
 {
   private HttpContext _currentHttpContext;

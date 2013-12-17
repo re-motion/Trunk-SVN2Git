@@ -15,13 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Reflection;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
-using AttributeCollection = System.Web.UI.AttributeCollection;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -29,13 +26,11 @@ namespace Remotion.Web.UI.Controls
   /// Extends the ASP.NET <see cref="UpdatePanel"/> with support for HTML attributes, allowing specification of a <see cref="CssClass"/> 
   /// or inline styles.
   /// </summary>
-  public class WebUpdatePanel : UpdatePanel, IAttributeAccessor
+  public class WebUpdatePanel : UpdatePanel
   {
     private string _cssClass = "";
-    private AttributeCollection _attributeCollection;
-    private StateBag _attributeStateBag;
     private WebUpdatePanelRenderMode _renderMode;
-    private InternalControlMemberCaller _memberCaller = new InternalControlMemberCaller();
+    private readonly InternalControlMemberCaller _memberCaller = new InternalControlMemberCaller();
 
     public WebUpdatePanel ()
     {
@@ -58,26 +53,6 @@ namespace Remotion.Web.UI.Controls
       get { return Attributes.CssStyle; }
     }
 
-    [Browsable (false)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    public AttributeCollection Attributes
-    {
-      get
-      {
-        if (_attributeCollection == null)
-        {
-          if (_attributeStateBag == null)
-          {
-            _attributeStateBag = new StateBag (true);
-            if (IsTrackingViewState)
-              ((IStateManager) _attributeStateBag).TrackViewState();
-          }
-          _attributeCollection = new AttributeCollection (_attributeStateBag);
-        }
-        return _attributeCollection;
-      }
-    }
-
     [Description ("Indicates whether the UpdatePanel should render as a block tag (<div>), an inline tag (<span>), or a table section (tbody, thead, tfoot).")]
     [DefaultValue (WebUpdatePanelRenderMode.Div)]
     [Category ("Layout")]
@@ -97,21 +72,11 @@ namespace Remotion.Web.UI.Controls
     {
       if (savedState != null)
       {
-        var triplet = (Triplet) savedState;
+        var pair = (Pair) savedState;
 
-        base.LoadViewState (triplet.First);
+        base.LoadViewState (pair.First);
 
-        if (triplet.Second != null)
-        {
-          if (_attributeStateBag == null)
-          {
-            _attributeStateBag = new StateBag (true);
-            ((IStateManager) _attributeStateBag).TrackViewState();
-          }
-          ((IStateManager) _attributeStateBag).LoadViewState (triplet.Second);
-        }
-
-        _cssClass = StringUtility.NullToEmpty ((string) triplet.Third);
+        _cssClass = StringUtility.NullToEmpty ((string) pair.Second);
       }
     }
 
@@ -119,13 +84,9 @@ namespace Remotion.Web.UI.Controls
     {
       object baseViewState = base.SaveViewState();
 
-      object attributesViewState = null;
-      if (_attributeStateBag != null)
-        attributesViewState = ((IStateManager) _attributeStateBag).SaveViewState();
-
-      if ((baseViewState == null) && (attributesViewState == null) && string.IsNullOrEmpty (_cssClass))
+      if ((baseViewState == null) && string.IsNullOrEmpty (_cssClass))
         return null;
-      return new Triplet (baseViewState, attributesViewState, _cssClass);
+      return new Pair (baseViewState, _cssClass);
     }
 
     protected virtual void AddAttributesToRender (HtmlTextWriter writer)
@@ -133,11 +94,7 @@ namespace Remotion.Web.UI.Controls
       if (!string.IsNullOrEmpty (_cssClass))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, _cssClass);
 
-      if (_attributeStateBag != null)
-      {
-        foreach (string key in Attributes.Keys)
-          writer.AddAttribute (key, Attributes[key]);
-      }
+      Attributes.AddAttributes(writer);
     }
 
     protected override void RenderChildren (HtmlTextWriter writer)
@@ -186,18 +143,6 @@ namespace Remotion.Web.UI.Controls
           throw new InvalidOperationException(string.Format ("The RenderMode '{0}' is not valid.", _renderMode));
       }
 #pragma warning restore 612,618
-    }
-
-    string IAttributeAccessor.GetAttribute (string name)
-    {
-      if (_attributeStateBag == null)
-        return null;
-      return (string) _attributeStateBag[name];
-    }
-
-    void IAttributeAccessor.SetAttribute (string name, string value)
-    {
-      Attributes[name] = value;
     }
   }
 }

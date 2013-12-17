@@ -58,11 +58,11 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
                 .ForClass<Page> ().AddMixin (typeof (NullMixin))
                 .EnterScope())
             {
-              Mixer mixer = Mixer.Create ("Assembly", _assemblyOutputDirectory);
+              Mixer mixer = Mixer.Create ("Assembly", _assemblyOutputDirectory, 1);
               mixer.PrepareOutputDirectory();
               mixer.Execute (MixinConfiguration.ActiveConfiguration);
 
-              Assembly theAssembly = Assembly.LoadFile (mixer.MixerPipelineFactory.GetModulePath (_assemblyOutputDirectory));
+              Assembly theAssembly = Assembly.LoadFile (mixer.MixerPipelineFactory.GetModulePaths (_assemblyOutputDirectory).Single());
               var types = theAssembly.GetTypes();
 
               var concreteType = types.SingleOrDefault(t => t.BaseType == typeof (BaseType1));

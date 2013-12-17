@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
+using JetBrains.Annotations;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.SmartPageImplementation;
 
@@ -108,11 +109,24 @@ namespace Remotion.Web.UI
     /// </summary>
     string CheckFormStateFunction { get; set; }
 
-    void RegisterCommandForSynchronousPostBack (Control control, string eventArguments);
+    /// <summary>
+    /// Registers individual event arguments for a control as a synchronous postback target.
+    /// </summary>
+    /// <param name="control">The <see cref="Control"/> for which a synchronous postback target is registered. Must not be <see langword="null" />.</param>
+    /// <param name="eventArguments">The event argument to register. Must not be <see langword="null" /> or empty.</param>
+    /// <remarks>
+    /// The <paramref name="control"/> must not be registered as a synchronous postback target in addition to registering individual event arguments.
+    /// </remarks>
+    void RegisterCommandForSynchronousPostBack ([NotNull]Control control, [NotNull]string eventArguments);
 
-    /// <summary> Gets or sets the <see cref="HtmlForm"/> of the ASP.NET page. </summary>
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    HtmlForm HtmlForm { get; set; }
+    /// <summary>
+    /// Registers a control as a synchronous postback target.
+    /// </summary>
+    /// <param name="control">The <see cref="Control"/> registered for a synchronous postback. Must not be <see langword="null" />.</param>
+    /// <remarks>
+    /// The <paramref name="control"/> must not be registered as a synchronous postback target in addition to registering individual event arguments.
+    /// </remarks>
+    void RegisterControlForSynchronousPostBack ([NotNull] Control control);
 
     /// <summary> Saves the ControlState and the ViewState of the ASP.NET page. </summary>
     [EditorBrowsable (EditorBrowsableState.Never)]

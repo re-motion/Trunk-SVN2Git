@@ -17,6 +17,7 @@
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.MappingExport;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
@@ -50,11 +51,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition);
     IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (RdbmsProviderDefinition storageProviderDefinition);
 
+    IStorageProviderSerializer CreateStorageProviderSerializer (IEnumSerializer enumSerializer);
+
     IScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition);
     TableScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition);
     ViewScriptBuilder CreateViewBuilder (RdbmsProviderDefinition storageProviderDefinition);
     ForeignKeyConstraintScriptBuilder CreateConstraintBuilder (RdbmsProviderDefinition storageProviderDefinition);
     IndexScriptBuilder CreateIndexBuilder (RdbmsProviderDefinition storageProviderDefinition);
     SynonymScriptBuilder CreateSynonymBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    IEnumSerializer CreateEnumSerializer ();
   }
 }

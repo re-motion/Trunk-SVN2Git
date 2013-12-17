@@ -180,7 +180,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       if (renderingContext.Control.IsDesignMode)
         return "";
 
-      string argument = string.Empty;
+      string argument = BocReferenceValueBase.CommandArgumentName;
       return renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
     }
 

@@ -23,12 +23,12 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyConfiguration (".NET Framework: net-3.5, build type: Debug")]
+[assembly: AssemblyConfiguration (".NET Framework: net-4.5, build type: Debug")]
 [assembly: AssemblyCompany("rubicon IT GmbH")]
 [assembly: AssemblyProduct ("re-strict (www.re-motion.org)")]
 [assembly: AssemblyCopyright ("Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU AGPL 3.0")]
 [assembly: AssemblyTrademark ("")]
-[assembly: AssemblyInformationalVersion ("1.13.223.10000")]
+[assembly: AssemblyInformationalVersion ("1.15.6.10000  Debug; ")]
 
 //
 // Version information for an assembly consists of the following four values:
@@ -41,5 +41,5 @@ using System.Reflection;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.13.223.10000")]
-[assembly: AssemblyFileVersion ("1.13.223.10000")]
+[assembly: AssemblyVersion("1.15.6.10000")]
+[assembly: AssemblyFileVersion ("1.15.6.10000")]

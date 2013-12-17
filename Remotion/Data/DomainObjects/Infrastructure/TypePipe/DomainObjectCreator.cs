@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
 
       var concreteType = Pipeline.ReflectionService.GetAssembledType (objectID.ClassDefinition.ClassType);
       var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
-      Pipeline.PrepareExternalUninitializedObject (instance, InitializationSemantics.Construction);
+      Pipeline.ReflectionService.PrepareExternalUninitializedObject (instance, InitializationSemantics.Construction);
 
       // These calls are normally performed by DomainObject's ctor
       instance.Initialize (objectID, objectInitializationContext.RootTransaction);

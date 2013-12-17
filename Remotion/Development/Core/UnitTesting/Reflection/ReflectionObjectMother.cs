@@ -29,7 +29,7 @@ namespace Remotion.Development.UnitTesting.Reflection
   {
     private static readonly Random s_random = new Random ();
 
-    private static readonly Type[] s_nonGenericTypes = EnsureNoNulls (new[] { typeof (DateTime), typeof (Random) });
+    private static readonly Type[] s_nonGenericTypes = EnsureNoNulls (new[] { typeof (DateTime), typeof (Random), typeof (sbyte), typeof (Uri) });
     private static readonly Type[] s_otherTypes = EnsureNoNulls (new[] { typeof (decimal), typeof (StringBuilder) });
     private static readonly Type[] s_genericTypeDefinition = EnsureNoNulls (new[] { typeof (IComparable<>), typeof (Dictionary<,>) });
     private static readonly Type[] s_genericParameters = EnsureNoNulls (typeof (Dictionary<,>).GetGenericArguments());

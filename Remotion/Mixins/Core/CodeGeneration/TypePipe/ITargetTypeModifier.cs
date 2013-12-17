@@ -26,6 +26,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// An abstraction that encapsulates the modifications applied to a mixin target type.
   /// This interface is an implementation detail of <see cref="MixinParticipant"/>.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public interface ITargetTypeModifier
   {
     void ModifyTargetType (

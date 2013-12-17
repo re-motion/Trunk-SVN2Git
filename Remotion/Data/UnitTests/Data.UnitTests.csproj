@@ -14,7 +14,7 @@
     <AssemblyName>Remotion.Data.UnitTests</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -32,7 +32,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -102,7 +102,7 @@
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-3.5 (Client Profile)\log4net.dll</HintPath>
+      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-4.0 (Client Profile)\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -121,7 +121,7 @@
     </Reference>
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <RequiredTargetFramework>4.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
@@ -212,6 +212,7 @@
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Core</Name>
     </ProjectReference>
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoShared.cs">
@@ -288,6 +289,16 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithStorageGroupAttributeAndBaseClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithStorageGroupAttributeAndIgnoredForMappingConfigurationAttributeAndBaseClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\DerivedClassInMappingDerivedFromClassNotInMapping.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MappingExport\ClassSerializerTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MappingExport\ColumnSerializerTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MappingExport\ExtensibleEnumSerializerDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MappingExport\EnumPropertySerializerDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MappingExport\MappingSerializerIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MappingExport\EnumSerializerTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MappingExport\MappingSerializerTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MappingExport\PropertySerializerTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MappingExport\StorageProviderSerializerTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MappingExport\TableSerializerTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\StoragePropertyDefinitionUnificationUtilityTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\BaseClassWithDBTable.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\TargetClassBelowDBTable.cs" />
@@ -2030,6 +2041,10 @@
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
+    <EmbeddedResource Include="..\DomainObjects\Persistence\Rdbms\MappingExport\RdbmsMapping.xsd">
+      <Link>DomainObjects\Core\Resources\RdbmsMapping.xsd</Link>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="DomainObjects\TestDomain\TableInheritance\AbstractClassWithHierarchy.cd" />
     <None Include="DomainObjects\TestDomain\TableInheritance\TestDomain.cd" />
@@ -2069,6 +2084,9 @@
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithResolvedInterfaceStorageObjectFactory.xml" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithUnresolvedInterfaceStorageObjectFactory.xml" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithMixedStorageObjectFactory.xml" />
+    <EmbeddedResource Include="DomainObjects\Core\Resources\MappingExportOutput.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Content Include="DomainObjects\Database\DataDomainObjects_CreateTableInheritanceTestData.sql" />
     <Content Include="DomainObjects\Database\DataDomainObjects_CreateDB.sql" />
     <Content Include="DomainObjects\Database\DataDomainObjects_CreateTestData.sql">
@@ -2095,23 +2113,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DomainObjects\Core\Mapping\Validation\Persistence\" />

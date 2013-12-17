@@ -171,7 +171,7 @@ namespace Remotion.Web.UI.Controls
       {
         if (menuTab.Command != null && menuTab.Command.Type == CommandType.Event)
         {
-          menuTab.Command.RegisterForSynchronousPostBack (
+          menuTab.Command.RegisterForSynchronousPostBackOnDemand (
               _mainMenuTabStrip, menuTab.ItemID, string.Format ("TabbedMenu '{0}', MenuTab '{1}'", ID, menuTab.ItemID));
         }
       }
@@ -182,7 +182,7 @@ namespace Remotion.Web.UI.Controls
         {
           if (menuTab.Command != null && menuTab.Command.Type == CommandType.Event)
           {
-            menuTab.Command.RegisterForSynchronousPostBack (
+            menuTab.Command.RegisterForSynchronousPostBackOnDemand (
                 _subMenuTabStrip, 
                 menuTab.ItemID, 
                 string.Format ("TabbedMenu '{0}', MainMenuTab '{1}', SubMenuTab '{2}'", ID, SelectedMainMenuTab.ItemID, menuTab.ItemID));

@@ -26,6 +26,14 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
   [TestFixture]
   public class SerializerTest
   {
+
+    private string ReplaceKnownXmlNamespaceDeclarations (string xml)
+    {
+      return xml
+        .Replace (@"xmlns:xsd=""http://www.w3.org/2001/XMLSchema""", "XmlnsDeclaration")
+        .Replace (@"xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""", "XmlnsDeclaration");
+    }
+
     [Test]
     public void SerializeAndDeserialize()
     {
@@ -44,15 +52,15 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     {
       int[] array = new int[] {1, 2, 3};
       byte[] serializedArray = Serializer.XmlSerialize (array);
-      string serializedArrayString = Encoding.UTF8.GetString (serializedArray);
+      var serializedArrayString = ReplaceKnownXmlNamespaceDeclarations (Encoding.UTF8.GetString (serializedArray));
 
-      Assert.That (serializedArrayString, Is.EqualTo (GetExpectedXmlString()));
+      Assert.That (serializedArrayString, Is.EqualTo (ReplaceKnownXmlNamespaceDeclarations(GetExpectedXmlString())));
     }
 
     private string GetExpectedXmlString ()
     {
       return @"<?xml version=""1.0""?>
-<ArrayOfInt xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+<ArrayOfInt xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
   <int>1</int>
   <int>2</int>
   <int>3</int>

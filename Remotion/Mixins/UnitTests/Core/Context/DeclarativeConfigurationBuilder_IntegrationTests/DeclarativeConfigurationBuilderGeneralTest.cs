@@ -21,6 +21,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Design;
 using Remotion.Development.UnitTesting;
+using Remotion.FunctionalProgramming;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection.TypeDiscovery;
@@ -102,7 +103,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     public void BuildDefault_DoesNotLockPersistedFile ()
     {
       TypeGenerationHelper.ForceTypeGeneration (typeof (object));
-      string path = TypeGenerationHelper.Pipeline.CodeManager.FlushCodeToDisk();
+      string[] paths = TypeGenerationHelper.Pipeline.CodeManager.FlushCodeToDisk();
 
       try
       {
@@ -111,6 +112,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
       }
       finally
       {
+        var path = paths[0];
         File.Delete (path);
         File.Delete (path.Replace (".dll", ".pdb"));
       }

@@ -16,7 +16,7 @@
 // 
 
 using System;
-using System.Collections.Generic;
+using JetBrains.Annotations;
 using Remotion.Mixins.Definitions;
 using Remotion.TypePipe.TypeAssembly;
 
@@ -26,12 +26,13 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// Generates concrete mixin types and meta data.
   /// This interface is an abstraction for <see cref="MixinParticipant"/>.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public interface IMixinTypeProvider
   {
+    [NotNull]
     IMixinInfo GetMixinInfo (IProxyTypeAssemblyContext context, MixinDefinition mixin);
 
-    void AddLoadedConcreteMixinType (IDictionary<string, object> participantState, ConcreteMixinType concreteMixinType);
-
+    [NotNull]
     ConcreteMixinType GetOrGenerateConcreteMixinType (ITypeAssemblyContext context, ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier);
   }
 }

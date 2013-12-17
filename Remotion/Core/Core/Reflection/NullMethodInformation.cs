@@ -94,14 +94,11 @@ namespace Remotion.Reflection
 
       var delegateMethodInfo = delegateType.GetMethod ("Invoke");
       var returnType = delegateMethodInfo.ReturnType;
-      var body = returnType == typeof (void)
-          ? Expression.Constant (0)
-          : returnType.IsValueType ? Expression.Constant (Activator.CreateInstance (returnType)) : Expression.Constant (null, returnType);
 
       var nullMethod = Expression.Lambda (
           delegateType,
-          body,
-          delegateMethodInfo.GetParameters().Select (pi => Expression.Parameter (pi.ParameterType, pi.Name)));
+          Expression.Default (returnType),
+          delegateMethodInfo.GetParameters().Select (pi => Expression.Parameter (pi.ParameterType)));
 
       return nullMethod.Compile();
     }

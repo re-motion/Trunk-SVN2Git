@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.FunctionalProgramming;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
 
@@ -62,7 +63,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       return from p in previous.DefaultIfEmpty (new PropertyStateTuple[0])
              from c in current
-             select p.Concat (new[] { c });
+             select p.Concat (c);
     }
   }
 }

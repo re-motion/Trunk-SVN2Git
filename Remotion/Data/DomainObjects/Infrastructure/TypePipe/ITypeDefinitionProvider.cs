@@ -16,6 +16,7 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
@@ -23,8 +24,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// <summary>
   /// Defines an interface for classes retrieving the non-abstract <see cref="ClassDefinition"/> for a domain object type.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public interface ITypeDefinitionProvider
   {
+    [CanBeNull]
     ClassDefinition GetTypeDefinition (Type domainObjectType);
   }
 }

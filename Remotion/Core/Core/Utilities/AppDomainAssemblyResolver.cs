@@ -42,7 +42,6 @@ namespace Remotion.Utilities
                                              null,
                                              new[] { applicationBase },
                                              null,
-                                             null,
                                              null);
     }
 

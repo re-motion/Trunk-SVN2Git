@@ -87,7 +87,7 @@ namespace Remotion.Development.UnitTests.Web.ResourceHosting
     {
       var provider = new TestableResourceVirtualPathProvider (new[] { new ResourcePathMapping ("test", "testResourceFolder") }, _testDirectory);
 
-      Assert.That (provider.IsMappedPath ("~/res/"), Is.False);
+      Assert.That (provider.IsMappedPath ("~/res/"));
     }
 
     [Test]
@@ -207,6 +207,19 @@ namespace Remotion.Development.UnitTests.Web.ResourceHosting
     }
 
     [Test]
+    public void DirectoryExists_ResourceRootDirectory ()
+    {
+      var provider = new TestableResourceVirtualPathProvider (new[] { new ResourcePathMapping ("test", "testResourceFolder") }, _testDirectory);
+      provider.SetMakeRelativeVirtualPathOverride ((a, b) => "subfolder");
+      provider.SetCombineVirtualPathOverride ((a, b) => "~/res/test/");
+      provider.SetMapPathOverride ((a) => "c:\\temp");
+
+      Directory.CreateDirectory (Path.Combine (_testDirectory, "testResourceFolder\\subfolder"));
+
+      Assert.That (provider.DirectoryExists ("~/res/"));
+    }
+
+    [Test]
     public void DirectoryExists_PhysicalDirectoryDoesNotExist ()
     {
       var provider = new TestableResourceVirtualPathProvider (new[] { new ResourcePathMapping ("test", "testResourceFolder") }, _testDirectory);
@@ -242,6 +255,25 @@ namespace Remotion.Development.UnitTests.Web.ResourceHosting
 
       Assert.That (actual.PhysicalPath, Is.EqualTo (expectedDirectoryPath));
       Assert.That (actual.Exists);
+    }
+
+    [Test]
+    public void GetDirectory_ResourceRootDirectory ()
+    {
+      var expectedDirectoryPath = "c:\\temp";
+     
+      var provider = new TestableResourceVirtualPathProvider (new[] { new ResourcePathMapping ("test", "testResourceFolder") }, _testDirectory);
+      provider.SetMakeRelativeVirtualPathOverride ((a, b) => "testDirectory");
+      provider.SetCombineVirtualPathOverride ((a, b) => "~/res/test/");
+      provider.SetMapPathOverride ((a) => expectedDirectoryPath);
+
+      Directory.CreateDirectory (expectedDirectoryPath);
+
+      var actual = (ResourceVirtualDirectory) provider.GetDirectory ("~/res/");
+
+      Assert.That (actual.PhysicalPath, Is.EqualTo (expectedDirectoryPath));
+      Assert.That (actual.Exists);
+      Assert.That (actual, Is.InstanceOf<RootMappingVirtualDirectory>());
     }
 
     [Test]

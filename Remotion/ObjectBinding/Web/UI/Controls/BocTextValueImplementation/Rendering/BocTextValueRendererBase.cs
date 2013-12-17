@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     /// <returns>A <see cref="TextBox"/> control with the all relevant properties set and all appropriate styles applied to it.</returns>
     protected virtual TextBox GetTextBox (BocRenderingContext<T> renderingContext)
     {
-      TextBox textBox = new RenderOnlyTextBox();
+      TextBox textBox = new RenderOnlyTextBox { ClientIDMode = ClientIDMode.Static };
       textBox.Text = renderingContext.Control.Text;
       textBox.ID = renderingContext.Control.GetValueName();
       textBox.EnableViewState = false;
