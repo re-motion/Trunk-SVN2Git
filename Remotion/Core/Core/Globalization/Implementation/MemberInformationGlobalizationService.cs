@@ -24,6 +24,13 @@ namespace Remotion.Globalization.Implementation
   /// <summary>
   /// Retrieving the human-readable localized representation of reflection objects.
   /// </summary>
+  /// <remarks>
+  ///   <list type="bullet">
+  ///     <item><see cref="GetTypeDisplayName"/> performs the lookup based on the long and the short name of the type, prefixed with <c>type:</c>.</item>
+  ///     <item><see cref="GetPropertyDisplayName"/> performs the lookup based on the long and the short name of the property, prefixed with <c>property:</c>.</item>
+  ///   </list>
+  /// The long name is resolved using <see cref="IMemberInformationNameResolver"/>.
+  /// </remarks>
   /// <threadsafety static="true" instance="true"/>
   public sealed class MemberInformationGlobalizationService : IMemberInformationGlobalizationService
   {
