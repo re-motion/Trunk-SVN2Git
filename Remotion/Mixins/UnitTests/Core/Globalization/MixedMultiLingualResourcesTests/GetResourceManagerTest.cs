@@ -38,16 +38,6 @@ namespace Remotion.Mixins.UnitTests.Core.Globalization.MixedMultiLingualResource
     }
 
     [Test]
-    [Ignore ("Should throw a ResourceException, but instead returns inherited resource manager")]
-    [ExpectedException (typeof (ResourceException), ExpectedMessage =
-        "Type Remotion.Mixins.UnitTests.Core.Globalization.TestDomain.InheritedClassWithoutMultiLingualResourcesAttributes "
-        + "and its base classes do not define a resource attribute.")]
-    public void NoAttributesOnDerivedClass_NoInheritance ()
-    {
-      MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false);
-    }
-
-    [Test]
     [ExpectedException (typeof (ResourceException), ExpectedMessage =
         "Type Remotion.Mixins.UnitTests.Core.Globalization.TestDomain.ClassWithoutMultiLingualResourcesAttributes "
         + "and its base classes do not define a resource attribute.")]

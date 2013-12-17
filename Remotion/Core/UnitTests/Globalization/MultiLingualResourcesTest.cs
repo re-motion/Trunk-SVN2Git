@@ -80,15 +80,6 @@ namespace Remotion.UnitTests.Globalization
     }
 
     [Test]
-    [Ignore ("Should throw a ResourceException, but instead returns inherited resource manager")]
-    public void GetResourceManager_TypeWithOnlyInheritedResources_AndDoNotGetInheritedResources_ThrowsResourceException ()
-    {
-      Assert.That (
-          () => MultiLingualResources.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false),
-          Throws.TypeOf<ResourceException>());
-    }
-
-    [Test]
     public void GetResourceManager_TypeWithOnlyInheritedResources_AndDoNotGetInheritedResources_DoesNotThrowResourceExceptionBecauseOfBug ()
     {
       var resourceManager = MultiLingualResources.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false);
