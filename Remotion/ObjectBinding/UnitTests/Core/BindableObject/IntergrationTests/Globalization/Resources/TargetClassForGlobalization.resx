@@ -123,7 +123,7 @@
   <data name="property:Property2" xml:space="preserve">
     <value>Property2 display name from TargetClassForGlobalization</value>
   </data>
-  <data name="property:PropertyForMixinOverriddeTest" xml:space="preserve">
+  <data name="property:PropertyForMixinOverrideTest" xml:space="preserve">
     <value>default value</value>
   </data>
   <data name="property:Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests.Globalization.TestDomain.IMixinAddingResources.MixedExplicitProperty" xml:space="preserve">

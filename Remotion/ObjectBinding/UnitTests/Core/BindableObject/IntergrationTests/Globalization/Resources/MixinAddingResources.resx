@@ -120,7 +120,7 @@
   <data name="property:Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests.Globalization.TestDomain.IMixinAddingResources.MixedProperty2" xml:space="preserve">
     <value>MixedProperty2 display name from MixinAddingResources</value>
   </data>
-  <data name="property:Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests.Globalization.TestDomain.TargetClassForGlobalization.PropertyForMixinOverriddeTest" xml:space="preserve">
+  <data name="property:Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests.Globalization.TestDomain.TargetClassForGlobalization.PropertyForMixinOverrideTest" xml:space="preserve">
     <value>PropertyForMixinOverrideTest display name from MixinAddingResources</value>
   </data>
 </root>

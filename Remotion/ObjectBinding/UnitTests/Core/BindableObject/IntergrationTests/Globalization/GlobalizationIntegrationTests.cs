@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests.Globalization.TestDomain;
-using Is = NUnit.Framework.Is;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests.Globalization
 {
@@ -33,11 +32,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     {
       base.SetUp();
 
-      _factory = BindableObjectMetadataFactory.Create ();
+      _factory = BindableObjectMetadataFactory.Create();
     }
 
     [Test]
-    public void DisplayName_NotInherited_NotOverridden_NotMixed ()
+    public void PropertyDisplayName_NotInherited_NotOverridden_NotMixed ()
     {
       var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "Property2");
 
@@ -45,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_InheritedAndOverridden_NotMixed_BaseClass ()
+    public void PropertyDisplayName_InheritedAndOverridden_NotMixed_PropertyEvaluatedForBaseClass ()
     {
       var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "Property1");
 
@@ -53,7 +52,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_InheritedAndOverridden_NotMixed_DerivedClass ()
+    public void PropertyDisplayName_InheritedAndOverridden_NotMixed_PropertyEvaluatedForDerivedClass ()
     {
       var resourceString = GetResourceStringForType (typeof (DerivedTargetClassForGlobalization), "Property1");
 
@@ -61,26 +60,26 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_OveriddenByMixin ()
+    public void PropertyDisplayName_ResourceOveriddenByMixin ()
     {
-      using (MixinConfiguration.BuildFromActive ()
-          .ForClass<TargetClassForGlobalization> ()
-          .AddMixin<MixinAddingResources> ()
-          .EnterScope ())
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<TargetClassForGlobalization>()
+          .AddMixin<MixinAddingResources>()
+          .EnterScope())
       {
-        var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "PropertyForMixinOverriddeTest");
+        var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "PropertyForMixinOverrideTest");
 
         Assert.That (resourceString, Is.EqualTo ("PropertyForMixinOverrideTest display name from MixinAddingResources"));
       }
     }
 
     [Test]
-    public void DisplayName_AddedViaMixin ()
+    public void PropertyDisplayName_PropertyAddedViaMixin ()
     {
-      using (MixinConfiguration.BuildFromActive ()
-          .ForClass<TargetClassForGlobalization> ()
-          .AddMixin<MixinAddingResources> ()
-          .EnterScope ())
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<TargetClassForGlobalization>()
+          .AddMixin<MixinAddingResources>()
+          .EnterScope())
       {
         var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "MixedProperty1");
 
@@ -89,12 +88,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_MixedProperty ()
+    public void PropertyDisplayName_MixedProperty ()
     {
-      using (MixinConfiguration.BuildFromActive ()
-          .ForClass<TargetClassForGlobalization> ()
-          .AddMixin<MixinAddingResources> ()
-          .EnterScope ())
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<TargetClassForGlobalization>()
+          .AddMixin<MixinAddingResources>()
+          .EnterScope())
       {
         var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "MixedProperty2");
 
@@ -103,7 +102,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_ImplicitInterfaceProperty ()
+    public void PropertyDisplayName_ImplicitInterfaceProperty ()
     {
       var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "ImplicitImplementedProperty");
 
@@ -111,7 +110,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_ExplicitInterfaceProperty ()
+    public void PropertyDisplayName_ExplicitInterfaceProperty ()
     {
       var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "ExplicitImplementedProperty");
 
@@ -119,12 +118,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_MixedExplicitProperty ()
+    public void PropertyDisplayName_MixedExplicitProperty ()
     {
-      using (MixinConfiguration.BuildFromActive ()
-          .ForClass<TargetClassForGlobalization> ()
-          .AddMixin<MixinAddingResources> ()
-          .EnterScope ())
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<TargetClassForGlobalization>()
+          .AddMixin<MixinAddingResources>()
+          .EnterScope())
       {
         var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "MixedExplicitProperty");
 
@@ -133,12 +132,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_MixedPropertyInDerivedClass ()
+    public void PropertyDisplayName_MixedPropertyInDerivedClass ()
     {
-      using (MixinConfiguration.BuildFromActive ()
-          .ForClass<DerivedTargetClassForGlobalization> ()
-          .AddMixin<DerivedMixinAddingResources> ()
-          .EnterScope ())
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<DerivedTargetClassForGlobalization>()
+          .AddMixin<DerivedMixinAddingResources>()
+          .EnterScope())
       {
         var resourceString = GetResourceStringForType (typeof (DerivedTargetClassForGlobalization), "MixedProperty3");
 
@@ -147,12 +146,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_OverridenMixedPropertyInDerivedClass ()
+    public void PropertyDisplayName_OverridenMixedPropertyInDerivedClass ()
     {
-      using (MixinConfiguration.BuildFromActive ()
-          .ForClass<DerivedTargetClassForGlobalization> ()
-          .AddMixin<DerivedMixinAddingResources> ()
-          .EnterScope ())
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<DerivedTargetClassForGlobalization>()
+          .AddMixin<DerivedMixinAddingResources>()
+          .EnterScope())
       {
         var resourceString = GetResourceStringForType (typeof (DerivedTargetClassForGlobalization), "MixedProperty2");
 
@@ -161,12 +160,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_PropertyAddedInDerivedClass_OverridenInDerivedMixin ()
+    public void PropertyDisplayName_PropertyAddedInDerivedClass_OverridenInDerivedMixin ()
     {
-      using (MixinConfiguration.BuildFromActive ()
-          .ForClass<DerivedTargetClassForGlobalization> ()
-          .AddMixin<DerivedMixinAddingResources> ()
-          .EnterScope ())
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<DerivedTargetClassForGlobalization>()
+          .AddMixin<DerivedMixinAddingResources>()
+          .EnterScope())
       {
         var resourceString = GetResourceStringForType (typeof (DerivedTargetClassForGlobalization), "Property4");
 
@@ -175,14 +174,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_PropertyOverridenInMixinOfMixin ()
+    public void PropertyDisplayName_PropertyOverridenInMixinOfMixin ()
     {
-      using (MixinConfiguration.BuildFromActive ()
-          .ForClass<TargetClassForGlobalization> ()
-          .AddMixin<MixinAddingResources> ()
-            .ForClass<MixinAddingResources> ()
-            .AddMixin<MixinOfMixinAddingResources> ()
-            .EnterScope ())
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<TargetClassForGlobalization>()
+          .AddMixin<MixinAddingResources>()
+          .ForClass<MixinAddingResources>()
+          .AddMixin<MixinOfMixinAddingResources>()
+          .EnterScope())
       {
         var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "Property1");
 
@@ -191,24 +190,24 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
     }
 
     [Test]
-    public void DisplayName_MixedPropertyOverridenInMixinOfMixin ()
+    public void PropertyDisplayName_MixedPropertyOverridenInMixinOfMixin ()
     {
-      using (MixinConfiguration.BuildFromActive ()
-          .ForClass<TargetClassForGlobalization> ()
-          .AddMixin<MixinAddingResources> ()
-            .ForClass<MixinAddingResources> ()
-            .AddMixin<MixinOfMixinAddingResources> ()
-            .EnterScope ())
-        {
-          var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "MixedProperty2");
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<TargetClassForGlobalization>()
+          .AddMixin<MixinAddingResources>()
+          .ForClass<MixinAddingResources>()
+          .AddMixin<MixinOfMixinAddingResources>()
+          .EnterScope())
+      {
+        var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "MixedProperty2");
 
-          Assert.That (resourceString, Is.EqualTo ("MixedProperty2 display name from MixinOfMixinAddingResources"));
-        }
+        Assert.That (resourceString, Is.EqualTo ("MixedProperty2 display name from MixinOfMixinAddingResources"));
+      }
     }
-    
+
     private string GetResourceStringForType (Type targetType, string propertyName)
     {
-      var classReflector = _factory.CreateClassReflector (targetType, new BindableObjectProvider ());
+      var classReflector = _factory.CreateClassReflector (targetType, new BindableObjectProvider());
       var @class = classReflector.GetMetadata();
       return @class.GetPropertyDefinition (propertyName).DisplayName;
     }

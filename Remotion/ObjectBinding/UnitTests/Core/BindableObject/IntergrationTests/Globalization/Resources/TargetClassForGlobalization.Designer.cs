@@ -82,9 +82,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
         /// <summary>
         ///   Looks up a localized string similar to default value.
         /// </summary>
-        internal static string property_PropertyForMixinOverriddeTest {
+        internal static string property_PropertyForMixinOverrideTest {
             get {
-                return ResourceManager.GetString("property:PropertyForMixinOverriddeTest", resourceCulture);
+                return ResourceManager.GetString("property:PropertyForMixinOverrideTest", resourceCulture);
             }
         }
         

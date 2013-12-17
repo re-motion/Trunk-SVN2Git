@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
    
     public string Property2 { get; set; }
     
-    public string PropertyForMixinOverriddeTest
+    public string PropertyForMixinOverrideTest
     {
       get { return Property1; }
       set { Property1 = value; }

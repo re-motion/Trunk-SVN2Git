@@ -74,7 +74,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
         /// <summary>
         ///   Looks up a localized string similar to PropertyForMixinOverrideTest display name from MixinAddingResources.
         /// </summary>
-        internal static string property_Remotion_ObjectBinding_UnitTests_Core_BindableObject_IntergrationTests_Globalization_TestDomain_TargetClassForGlobalization_PropertyForMixinOverriddeTest {
+        internal static string property_Remotion_ObjectBinding_UnitTests_Core_BindableObject_IntergrationTests_Globalization_TestDomain_TargetClassForGlobalization_PropertyForMixinOverrideTest {
             get {
                 return ResourceManager.GetString("property:Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests.G" +
                         "lobalization.TestDomain.TargetClassForGlobalization.PropertyForMixinOverriddeTes" +
