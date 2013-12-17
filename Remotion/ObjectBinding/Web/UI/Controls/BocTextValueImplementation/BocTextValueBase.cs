@@ -256,7 +256,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     }
 
     /// <summary> Loads the resources into the control's properties. </summary>
-    protected override void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
+    protected override void LoadResources (IResourceManager resourceManager, IGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);

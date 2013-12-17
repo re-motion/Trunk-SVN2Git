@@ -425,7 +425,7 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Loads the resources into the control's properties. </summary>
-    protected virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
+    protected virtual void LoadResources (IResourceManager resourceManager, IGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);

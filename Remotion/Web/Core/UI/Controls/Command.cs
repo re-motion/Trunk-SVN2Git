@@ -848,7 +848,7 @@ namespace Remotion.Web.UI.Controls
       set { _itemID = StringUtility.NullToEmpty (value); }
     }
 
-    public virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
+    public virtual void LoadResources (IResourceManager resourceManager, IGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);

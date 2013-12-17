@@ -201,7 +201,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "RowEditModeColumnDefinition"; }
     }
 
-    public override void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
+    public override void LoadResources (IResourceManager resourceManager, IGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);

@@ -361,7 +361,7 @@ public class WebTab: IWebTab, IControlStateManager
   {
   }
 
-  public virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
+  public virtual void LoadResources (IResourceManager resourceManager, IGlobalizationService globalizationService)
   {
     ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
     ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);

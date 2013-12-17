@@ -420,7 +420,7 @@ namespace Remotion.Web.UI.Controls
       return true;
     }
 
-    public virtual void LoadResources (IResourceManager resourceManager, ICompoundGlobalizationService globalizationService)
+    public virtual void LoadResources (IResourceManager resourceManager, IGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
