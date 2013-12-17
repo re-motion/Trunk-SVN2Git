@@ -559,7 +559,9 @@
     </EmbeddedResource>
     <None Include="doc\include\GettingStartedWithRemotion.aml" />
     <Content Include="doc\include\Globalization\MultiLingualResourcesAttribute.xml" />
-    <Content Include="doc\include\Globalization\ResourceManagerWrapper.xml" />
+    <Content Include="doc\include\Globalization\ResourceManagerWrapper.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="doc\include\Logging\ILog.xml" />
     <Content Include="doc\include\Logging\Log4NetTraceListener.xml" />
     <Content Include="doc\include\Reflection\TypesafeInvoker.xml" />

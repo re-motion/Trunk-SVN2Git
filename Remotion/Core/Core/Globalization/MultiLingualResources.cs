@@ -36,7 +36,7 @@ namespace Remotion.Globalization
     /// </summary>
     /// <include file='..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/Common/*' />
     /// <include file='..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/param[@name="objectType" or @name="includeHierarchy"]' />
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. (1.13.223)")]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. (Version 1.13.223.0)")]
     public static IResourceManager GetResourceManager (Type objectType, bool includeHierarchy)
     {
       ArgumentUtility.CheckNotNull ("objectType", objectType);
@@ -70,7 +70,7 @@ namespace Remotion.Globalization
     /// </summary>
     /// <include file='..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/Common/*' />
     /// <include file='..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/param[@name="objectType"]' />
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. (1.13.223)")]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. (Version 1.13.223.0)")]
     public static IResourceManager GetResourceManager (Type objectType)
     {
       ArgumentUtility.CheckNotNull ("objectType", objectType);
@@ -85,7 +85,7 @@ namespace Remotion.Globalization
     /// </param>
     /// <param name="name"> The ID of the resource. </param>
     /// <returns> The found string resource or an empty string. </returns>
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. (1.13.223)")]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. (Version 1.13.223.0)")]
     public static string GetResourceText (Type objectTypeToGetResourceFor, string name)
     {
       ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
@@ -106,7 +106,7 @@ namespace Remotion.Globalization
     /// </param>
     /// <param name="name"> The ID of the resource. </param>
     /// <returns> The found string resource or an empty string. </returns>
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. (1.13.223)")]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. (Version 1.13.223.0)")]
     public static string GetResourceText (object objectToGetResourceFor, string name)
     {
       ArgumentUtility.CheckNotNull ("objectToGetResourceFor", objectToGetResourceFor);

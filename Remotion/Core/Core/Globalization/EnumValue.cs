@@ -25,7 +25,6 @@ namespace Remotion.Globalization
   {
     public readonly Enum Value;
 
-    [NotNull]
     public readonly string Description;
 
     public long NumericValue

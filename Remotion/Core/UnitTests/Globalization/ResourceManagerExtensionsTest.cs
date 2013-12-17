@@ -42,7 +42,9 @@ namespace Remotion.UnitTests.Globalization
     public void GetAllStrings ()
     {
       var fakeResult = new NameValueCollection();
-      _resourceManagerMock.Expect (mock => mock.GetAllStrings (string.Empty)).Return (fakeResult);
+      _resourceManagerMock
+          .Expect (mock => mock.GetAllStrings (null))
+          .Return (fakeResult);
 
       var result = _resourceManagerMock.GetAllStrings();
 
@@ -53,22 +55,26 @@ namespace Remotion.UnitTests.Globalization
     [Test]
     public void GetString_ResourceExists ()
     {
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_fakeResourceID), out Arg<string>.Out ("Test").Dummy)).Return (true);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg.Is (_fakeResourceID), out Arg<string>.Out ("Test").Dummy))
+          .Return (true);
 
       var result = _resourceManagerMock.GetString (_fakeResourceID);
 
       _resourceManagerMock.VerifyAllExpectations();
-      Assert.That (result, Is.EqualTo("Test"));
+      Assert.That (result, Is.EqualTo ("Test"));
     }
 
     [Test]
     public void GetString_ResourceDoesNotExist ()
     {
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_fakeResourceID), out Arg<string>.Out (null).Dummy)).Return (false);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg.Is (_fakeResourceID), out Arg<string>.Out (null).Dummy))
+          .Return (false);
 
       var result = _resourceManagerMock.GetString (_fakeResourceID);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo (_fakeResourceID));
     }
 
@@ -79,18 +85,20 @@ namespace Remotion.UnitTests.Globalization
 
       var result = _resourceManagerMock.GetStringOrDefault (_fakeResourceID);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo ("Test"));
     }
 
     [Test]
     public void GetStringOrDefault_ResourceDoesNotExist ()
     {
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_fakeResourceID), out Arg<string>.Out (null).Dummy)).Return (false);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg.Is (_fakeResourceID), out Arg<string>.Out (null).Dummy))
+          .Return (false);
 
       var result = _resourceManagerMock.GetStringOrDefault (_fakeResourceID);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.Null);
     }
 
@@ -100,11 +108,13 @@ namespace Remotion.UnitTests.Globalization
       var enumValue = EnumWithDescription.Value1;
       var enumResourceID = ResourceIdentifiersAttribute.GetResourceIdentifier (enumValue);
 
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg<string>.Is.Equal(enumResourceID), out Arg<string>.Out ("Test").Dummy)).Return (true);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy))
+          .Return (true);
 
       var result = _resourceManagerMock.GetString (enumValue);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo ("Test"));
     }
 
@@ -114,11 +124,13 @@ namespace Remotion.UnitTests.Globalization
       var enumValue = EnumWithDescription.Value1;
       var enumResourceID = ResourceIdentifiersAttribute.GetResourceIdentifier (enumValue);
 
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy)).Return (false);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy))
+          .Return (false);
 
       var result = _resourceManagerMock.GetString (enumValue);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo (enumResourceID));
     }
 
@@ -128,11 +140,13 @@ namespace Remotion.UnitTests.Globalization
       var enumValue = EnumWithDescription.Value1;
       var enumResourceID = ResourceIdentifiersAttribute.GetResourceIdentifier (enumValue);
 
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy)).Return (true);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy))
+          .Return (true);
 
       var result = _resourceManagerMock.GetStringOrDefault (enumValue);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo ("Test"));
     }
 
@@ -142,33 +156,39 @@ namespace Remotion.UnitTests.Globalization
       var enumValue = EnumWithDescription.Value1;
       var enumResourceID = ResourceIdentifiersAttribute.GetResourceIdentifier (enumValue);
 
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy)).Return (false);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy))
+          .Return (false);
 
       var result = _resourceManagerMock.GetStringOrDefault (enumValue);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.Null);
     }
 
     [Test]
     public void ContainsString_ResourceExists ()
     {
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_fakeResourceID), out Arg<string>.Out ("Test").Dummy)).Return (true);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg.Is (_fakeResourceID), out Arg<string>.Out ("Test").Dummy))
+          .Return (true);
 
       var result = _resourceManagerMock.ContainsString (_fakeResourceID);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
     }
 
     [Test]
     public void ContainsString_ResourceDoesNotExist ()
     {
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_fakeResourceID), out Arg<string>.Out (null).Dummy)).Return (false);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg.Is (_fakeResourceID), out Arg<string>.Out (null).Dummy))
+          .Return (false);
 
       var result = _resourceManagerMock.ContainsString (_fakeResourceID);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.False);
     }
 
@@ -178,11 +198,13 @@ namespace Remotion.UnitTests.Globalization
       var enumValue = EnumWithDescription.Value1;
       var enumResourceID = ResourceIdentifiersAttribute.GetResourceIdentifier (enumValue);
 
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy)).Return (true);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy))
+          .Return (true);
 
       var result = _resourceManagerMock.ContainsString (enumValue);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
     }
 
@@ -192,11 +214,13 @@ namespace Remotion.UnitTests.Globalization
       var enumValue = EnumWithDescription.Value1;
       var enumResourceID = ResourceIdentifiersAttribute.GetResourceIdentifier (enumValue);
 
-      _resourceManagerMock.Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy)).Return (false);
+      _resourceManagerMock
+          .Expect (mock => mock.TryGetString (Arg<string>.Is.Equal (enumResourceID), out Arg<string>.Out ("Test").Dummy))
+          .Return (false);
 
       var result = _resourceManagerMock.ContainsString (enumValue);
 
-      _resourceManagerMock.VerifyAllExpectations ();
+      _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.False);
     }
   }

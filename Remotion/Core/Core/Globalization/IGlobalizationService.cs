@@ -26,6 +26,9 @@ namespace Remotion.Globalization
   /// <summary>
   /// Defines an interface for resolving the <see cref="IResourceManager"/> for an <see cref="ITypeInformation"/>.
   /// </summary>
+  /// <seealso cref="GlobalizationService"/>
+  /// <seealso cref="T:Remotion.Mixins.Globalization.MixinGlobalizationService"/>
+  /// <threadsafety static="true" instance="true" />
   [ConcreteImplementation (
       "Remotion.Mixins.Globalization.MixinGlobalizationService, Remotion.Mixins, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
       ignoreIfNotFound: true,
@@ -37,8 +40,19 @@ namespace Remotion.Globalization
     /// Resolves the <see cref="IResourceManager"/> for the specified <paramref name="typeInformation"/>.
     /// </summary>
     /// <remarks>
-    /// If not resource manager can be found for the specified <see cref="ITypeInformation"/> a <see cref="NullResourceManager"/> is returned.
+    /// If multiple resource managers are defined for a type via the base-class hierarchy or mixins, the following rules are applied to the order 
+    /// in which the resource managers are aggregated:
+    /// <list type="number">
+    ///   <item>The resource managers for the mixins of mixin.</item>
+    ///   <item>The resource managers for the mixins.</item>
+    ///   <item>The resource manager for the type.</item>
+    ///   <item>The resource managers for the base-types.</item>
+    /// </list>
     /// </remarks>
+    /// <returns>
+    /// The <see cref="IResourceManager"/> for the speficied <paramref name="typeInformation"/>, 
+    /// or a <see cref="NullResourceManager"/> if no resources are defined.
+    /// </returns>
     [NotNull]
     IResourceManager GetResourceManager ([NotNull] ITypeInformation typeInformation);
   }

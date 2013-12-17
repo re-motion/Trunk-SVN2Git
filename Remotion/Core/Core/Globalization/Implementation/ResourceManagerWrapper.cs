@@ -40,7 +40,8 @@ namespace Remotion.Globalization.Implementation
   ///     make sure to sort the resource managers in the order of inheritance before wrapping them.
   ///   </para>
   /// </remarks>
-  public class ResourceManagerWrapper : IResourceManager
+  /// <threadsafety static="true" instance="true" />
+  public sealed class ResourceManagerWrapper : IResourceManager
   {
     //  static members
 
@@ -92,8 +93,7 @@ namespace Remotion.Globalization.Implementation
     }
 
     /// <summary>
-    ///   Searches for all string resources inside the resource manager whose name is prefixed 
-    ///   with a matching tag.
+    ///   Searches for all string resources inside the resource manager whose name is prefixed with a matching tag.
     /// </summary>
     /// <include file='..\..\doc\include\Globalization\ResourceManagerWrapper.xml' path='ResourceManagerWrapper/GetAllStrings/remarks' />
     public NameValueCollection GetAllStrings (string prefix)

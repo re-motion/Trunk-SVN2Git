@@ -22,20 +22,20 @@ using Remotion.ServiceLocation;
 namespace Remotion.Globalization.Implementation
 {
   /// <summary>
-  /// Defines the interface to resolve an <see cref="IResourceManager"/> to make a resource-lookup.
+  /// Defines the interface to resolve the resource managers for a type.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   [ConcreteImplementation (typeof (ResourceManagerResolver), Lifetime = LifetimeKind.Singleton)]
   public interface IResourceManagerResolver
   {
     /// <summary>
     /// Resolves the resource manager for a specified <see cref="Type"/>.
     /// </summary>
-    /// <param name="objectType">The <see cref="Type"/> for which the resource manager should be returned.</param>
     /// <returns>
-    /// Returns the <see cref="ResolvedResourceManagerResult"/> for the specified type. If no resource manager could be found,
-    /// a <see cref="ResolvedResourceManagerResult.Null"/> is returned.
+    /// Returns the <see cref="ResolvedResourceManagerResult"/> for the specified <see cref="Type"/>. If no resource manager could be found,
+    /// <see cref="ResolvedResourceManagerResult.Null"/> is returned.
     /// </returns>
     [NotNull]
-    ResolvedResourceManagerResult Resolve ([NotNull]Type objectType);
+    ResolvedResourceManagerResult Resolve ([NotNull]Type type);
   }
 }

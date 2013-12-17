@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
@@ -29,9 +28,10 @@ namespace Remotion.Globalization.Implementation
   /// Combines one or more <see cref="IGlobalizationService"/>-instances and 
   /// delegates to it to retrieve an <see cref="IResourceManager"/> for a specified type.
   /// </summary>
-  public class CompoundGlobalizationService : ICompoundGlobalizationService
+  /// <threadsafety static="true" instance="true" />
+  public sealed class CompoundGlobalizationService : ICompoundGlobalizationService
   {
-    private readonly IGlobalizationService[] _globalizationServices;
+    private readonly ReadOnlyCollectionDecorator<IGlobalizationService> _globalizationServices;
 
     /// <summary>
     ///   Combines several <see cref="IGlobalizationService"/>-instances to a single CompoundGlobalizationService.
@@ -41,12 +41,12 @@ namespace Remotion.Globalization.Implementation
     {
       ArgumentUtility.CheckNotNull ("globalizationServices", globalizationServices);
 
-      _globalizationServices = globalizationServices.Reverse().ToArray();
+      _globalizationServices = globalizationServices.Reverse().ToArray().AsReadOnly();
     }
 
     public IEnumerable<IGlobalizationService> GlobalizationServices
     {
-      get { return _globalizationServices.AsReadOnly(); }
+      get { return _globalizationServices; }
     }
 
     public IResourceManager GetResourceManager (ITypeInformation typeInformation)

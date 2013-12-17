@@ -16,14 +16,14 @@
 // 
 
 using System;
-using System.Linq;
 using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
 {
   /// <summary>
-  /// Default implementation of the <see cref="IResourceManagerResolver"/>.
+  /// Default implementation of the <see cref="IResourceManagerResolver"/>. 
+  /// Resource managers are resolved based on the <see cref="IResourcesAttribute"/> applied to the type.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
   public sealed class ResourceManagerResolver : IResourceManagerResolver
@@ -33,32 +33,36 @@ namespace Remotion.Globalization.Implementation
 
     private readonly ResourceManagerFactory _resourceManagerFactory = new ResourceManagerFactory();
 
-    public ResolvedResourceManagerResult Resolve (Type objectType)
+    public ResourceManagerResolver ()
     {
-      ArgumentUtility.CheckNotNull ("objectType", objectType);
-
-      return GetResolvedResourceManagerFromCache (objectType);
     }
 
-    private ResolvedResourceManagerResult GetResolvedResourceManagerFromCache (Type objectType)
+    public ResolvedResourceManagerResult Resolve (Type type)
     {
-      if (objectType == null)
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      return GetResolvedResourceManagerFromCache (type);
+    }
+
+    private ResolvedResourceManagerResult GetResolvedResourceManagerFromCache (Type type)
+    {
+      if (type == null)
         return ResolvedResourceManagerResult.Null;
 
-      return _resourceManagerWrappersCache.GetOrCreateValue (objectType, CreateResolvedResourceManagerResult);
+      return _resourceManagerWrappersCache.GetOrCreateValue (type, CreateResolvedResourceManagerResult);
     }
 
-    private ResolvedResourceManagerResult CreateResolvedResourceManagerResult (Type objectType)
+    private ResolvedResourceManagerResult CreateResolvedResourceManagerResult (Type type)
     {
-      var definedResourceManager = CreateResourceManager (objectType);
-      var inheritedResourceManager = GetResolvedResourceManagerFromCache (objectType.BaseType).ResourceManager;
+      var definedResourceManager = CreateResourceManager (type);
+      var inheritedResourceManager = GetResolvedResourceManagerFromCache (type.BaseType).ResourceManager;
       return ResolvedResourceManagerResult.Create (definedResourceManager, inheritedResourceManager);
     }
 
     private IResourceManager CreateResourceManager (Type type)
     {
       var resourceAttributes = AttributeUtility.GetCustomAttributes<IResourcesAttribute> (type, false);
-      return ResourceManagerWrapper.CreateWrapperSet (_resourceManagerFactory.GetResourceManagers (type.Assembly, resourceAttributes.ToArray()));
+      return ResourceManagerWrapper.CreateWrapperSet (_resourceManagerFactory.GetResourceManagers (type.Assembly, resourceAttributes));
     }
   }
 }

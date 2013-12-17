@@ -26,7 +26,8 @@ namespace Remotion.Globalization.Implementation
   /// <summary>
   /// Retrieving the human-readable localized representation of enumeration objects.
   /// </summary>
-  public class EnumerationGlobalizationService : IEnumerationGlobalizationService
+  /// <threadsafety static="true" instance="true"/>
+  public sealed class EnumerationGlobalizationService : IEnumerationGlobalizationService
   {
     private readonly ICache<Type, IResourceManager> _enumResourceManagers = CacheFactory.CreateWithLocking<Type, IResourceManager>();
     private readonly ICache<Enum, string> _staticEnumValues = CacheFactory.CreateWithLocking<Enum, string>();

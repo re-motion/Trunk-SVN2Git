@@ -24,14 +24,15 @@ using Remotion.Utilities;
 namespace Remotion.Globalization.Implementation
 {
   /// <summary>
-  /// Retrieves and caches <see cref="IResourceManager"/>'s for types.
+  /// Retrieves and caches <see cref="IResourceManager"/>s for types.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public sealed class GlobalizationService : IGlobalizationService
   {
     private readonly IResourceManagerResolver _resourceManagerResolver;
 
     private readonly ICache<ITypeInformation, IResourceManager> _resourceManagerCache =
-        CacheFactory.CreateWithLocking<ITypeInformation, IResourceManager> ();
+        CacheFactory.CreateWithLocking<ITypeInformation, IResourceManager>();
 
     public GlobalizationService (IResourceManagerResolver resourceManagerResolver)
     {
@@ -53,7 +54,9 @@ namespace Remotion.Globalization.Implementation
       var runtimeType = typeInformation.AsRuntimeType();
       if (runtimeType == null)
         return NullResourceManager.Instance;
-      return _resourceManagerResolver.Resolve (runtimeType).ResourceManager;
+
+      var result = _resourceManagerResolver.Resolve (runtimeType);
+      return result.ResourceManager;
     }
   }
 }

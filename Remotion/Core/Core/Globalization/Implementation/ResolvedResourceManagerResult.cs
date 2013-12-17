@@ -24,6 +24,7 @@ namespace Remotion.Globalization.Implementation
   /// <summary>
   /// Holds resource manager information cached by <see cref="ResourceManagerResolver"/>.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public sealed class ResolvedResourceManagerResult : INullObject
   {
     public static readonly ResolvedResourceManagerResult Null = new ResolvedResourceManagerResult (
@@ -59,16 +60,19 @@ namespace Remotion.Globalization.Implementation
       _inheritedResourceManger = inheritedResourceManger;
     }
 
+    [NotNull]
     public IResourceManager ResourceManager
     {
       get { return _resourceManager; }
     }
 
+    [NotNull]
     public IResourceManager DefinedResourceManager
     {
       get { return _definedResourceManager; }
     }
 
+    [NotNull]
     public IResourceManager InheritedResourceManager
     {
       get { return _inheritedResourceManger; }

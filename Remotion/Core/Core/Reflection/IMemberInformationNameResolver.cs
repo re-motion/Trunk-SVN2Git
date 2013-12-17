@@ -16,30 +16,41 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Reflection
 {
+  /// <summary>
+  /// Defines an API for retrieving the a fully-qualified name for reflection objects.
+  /// </summary>
+  /// <seealso cref="ReflectionBasedMemberInformationNameResolver"/>
+  /// <threadsafety static="true" instance="true"/>
   [ConcreteImplementation (typeof (ReflectionBasedMemberInformationNameResolver), Lifetime = LifetimeKind.Singleton)]
   public interface IMemberInformationNameResolver
   {
     /// <summary>
     /// Returns the mapping name for the given <paramref name="propertyInformation"/>.
     /// </summary>
-    /// <param name="propertyInformation">The property whose mapping name should be retrieved.</param>
-    /// <returns>The name of the given <paramref name="propertyInformation"/> as used internally by the mapping.</returns>
-    string GetPropertyName (IPropertyInformation propertyInformation);
+    /// <param name="propertyInformation">The property whose name should be retrieved. Must not be <see langword="null" />.</param>
+    /// <returns>The name of the given <paramref name="propertyInformation"/> as used internally by type-member lookups.</returns>
+    [NotNull]
+    string GetPropertyName ([NotNull]IPropertyInformation propertyInformation);
 
     /// <summary>
     /// Returns the mapping name for the given <paramref name="typeInformation"/>.
     /// </summary>
-    /// <param name="typeInformation">The type whose mapping name should be retrieved.</param>
-    /// <returns>The name of the given <paramref name="typeInformation"/> as used internally by the mapping.</returns>
-    string GetTypeName (ITypeInformation typeInformation);
+    /// <param name="typeInformation">The type whose name should be retrieved. Must not be <see langword="null" />.</param>
+    /// <returns>The name of the given <paramref name="typeInformation"/> as used internally  by type-member lookups.</returns>
+    [NotNull]
+    string GetTypeName ([NotNull]ITypeInformation typeInformation);
 
     /// <summary>
     /// Returns the mapping name for the given <paramref name="enumValue"/>.
     /// </summary>
-    string GetEnumName (Enum enumValue);
+    /// <param name="enumValue">The enum value whose name should be retrieved. Must not be <see langword="null" />.</param>
+    /// <returns>The name of the given <paramref name="enumValue"/> as used internally  by type-member lookups.</returns>
+    [NotNull]
+    string GetEnumName ([NotNull]Enum enumValue);
   }
 }

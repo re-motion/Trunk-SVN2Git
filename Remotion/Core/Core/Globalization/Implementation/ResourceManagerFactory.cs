@@ -28,16 +28,19 @@ namespace Remotion.Globalization.Implementation
   /// <summary>
   /// Provides methods to create resource managers for given resource management information.
   /// </summary>
-  public class ResourceManagerFactory
+  /// <threadsafety static="true" instance="true"/>
+  public sealed class ResourceManagerFactory
   {
     private readonly LockingCacheDecorator<Tuple<Assembly, string>, ResourceManager> _resourceManagersCache =
         CacheFactory.CreateWithLocking<Tuple<Assembly, string>, ResourceManager>();
 
     /// <summary>
-    ///   Returns an <b>ResourceManager</b> array for the resource containers specified through the 
-    ///   <paramref name="resourceAttributes"/>.
+    ///   Returns a <see cref="ResourceManager"/> array for the resource containers specified through the <paramref name="resourceAttributes"/>.
     /// </summary>
-    /// <include file='..\..\doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManagers/*' />
+    /// <remarks><see cref="ResourceManager"/>s are cached after their first initalization.</remarks>
+    /// <param name="assembly">The <see cref="Assembly"/> used as fallback when the <see cref="IResourcesAttribute"/> does not specify an assembly.</param>
+    /// <param name="resourceAttributes">The <see cref="IResourcesAttribute"/> instances specifying the the resource managers.</param>
+    /// <returns>A sequence of <see cref="ResourceManager"/>s resolved for the <paramref name="resourceAttributes"/>.</returns>
     public IEnumerable<ResourceManager> GetResourceManagers (Assembly assembly, IEnumerable<IResourcesAttribute> resourceAttributes)
     {
       ArgumentUtility.CheckNotNull ("assembly", assembly);

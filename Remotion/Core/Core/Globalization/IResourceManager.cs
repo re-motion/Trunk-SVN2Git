@@ -16,35 +16,29 @@
 // 
 using System;
 using System.Collections.Specialized;
+using JetBrains.Annotations;
 
 namespace Remotion.Globalization
 {
   /// <summary>
   ///   An interface for defining a string resource manager.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public interface IResourceManager : INullObject
   {
-    /// <summary>
-    ///   Searches for all string resources inside the resource manager whose name is prefixed 
-    ///   with a matching tag.
-    /// </summary>
-    /// <param name="prefix"> The prefix all returned string resources must have. Use an <see cref="String.Empty"/> to return all strings.</param>
-    /// <returns>
-    ///   A collection of string pairs, the key being the resource's ID, the value being the string.
-    /// </returns>
-    NameValueCollection GetAllStrings (string prefix);
+    /// <summary>Searches for all string resources inside the resource manager whose name is prefixed with a matching tag.</summary>
+    /// <param name="prefix"> The prefix all returned string resources must have. Use <see langword="null"/> to return all strings.</param>
+    /// <returns>A collection of string pairs, the key being the resource's ID, the value being the string.</returns>
+    [NotNull]
+    NameValueCollection GetAllStrings ([CanBeNull]string prefix);
 
-    /// <summary>
-    ///   Tries to get the value of the specified String resource.
-    /// </summary>
-    /// <param name="id">The ID of the resource to get. </param>
+    /// <summary>Tries to get the value of the specified string resource.</summary>
+    /// <param name="id">The ID of the resource to get. Must not be <see langword="null" />.</param>
     /// <param name="value">The value of the resource lookup result.</param>
     /// <returns><see langword="true"/> if the <see cref="IResourceManager"/> contains the specified resource.</returns>
-    bool TryGetString (string id, out string value);
+    bool TryGetString ([NotNull]string id, out string value);
 
-    /// <summary>
-    ///   Returns the name of the resource manager.
-    /// </summary>
+    /// <summary>Returns the name of the resource manager.</summary>
     string Name { get; }
   }
 }

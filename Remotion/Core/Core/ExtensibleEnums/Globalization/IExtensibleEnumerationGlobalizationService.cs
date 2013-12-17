@@ -16,6 +16,7 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.ServiceLocation;
 
 namespace Remotion.ExtensibleEnums.Globalization
@@ -23,12 +24,15 @@ namespace Remotion.ExtensibleEnums.Globalization
   /// <summary>
   /// Defines an interface for retrieving the human-readable localized representation of the extensible-enumeration object.
   /// </summary>
+  /// <seealso cref="ExtensibleEnumerationServiceGlobalizationService"/>
+  /// <threadsafety static="true" instance="true" />
   [ConcreteImplementation (typeof (ExtensibleEnumerationServiceGlobalizationService), Lifetime = LifetimeKind.Singleton)]
   public interface IExtensibleEnumerationGlobalizationService
   {
     /// <summary>
     /// Returns the human-readable extensible-enumeration name of the spefified reflection object.
     /// </summary>
-    string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value);
+    [NotNull]
+    string GetExtensibleEnumerationValueDisplayName ([NotNull]IExtensibleEnum value);
   }
 }

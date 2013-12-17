@@ -22,6 +22,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Globalization
 {
+  /// <summary>
+  /// Defines extension methods for the <see cref="IResourceManager"/> interface.
+  /// </summary>
   public static class ResourceManagerExtensions
   {
     /// <summary>
@@ -30,10 +33,11 @@ namespace Remotion.Globalization
     /// <returns>
     ///   A collection of string pairs, the key being the resource's ID, the value being the string.
     /// </returns>
-    public static NameValueCollection GetAllStrings (this IResourceManager resourceManager)
+    [NotNull]
+    public static NameValueCollection GetAllStrings ([NotNull] this IResourceManager resourceManager)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-      return resourceManager.GetAllStrings (string.Empty);
+      return resourceManager.GetAllStrings (null);
     }
 
 
@@ -46,7 +50,7 @@ namespace Remotion.Globalization
     ///   The value of the resource. If no match is possible, the identifier is returned.
     /// </returns>
     [NotNull]
-    public static string GetString (this IResourceManager resourceManager, string id)
+    public static string GetString ([NotNull] this IResourceManager resourceManager, [NotNull] string id)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("id", id);
@@ -67,7 +71,7 @@ namespace Remotion.Globalization
     ///   The value of the resource. If no match is possible, <see langword="null"/> is returned.
     /// </returns>
     [CanBeNull]
-    public static string GetStringOrDefault (this IResourceManager resourceManager, string id)
+    public static string GetStringOrDefault ([NotNull] this IResourceManager resourceManager, [NotNull] string id)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("id", id);
@@ -78,7 +82,7 @@ namespace Remotion.Globalization
 
       return default(string);
     }
-    
+
     /// <summary>
     ///   Gets the value of the specified string resource. The resource is identified by
     ///   concatenating type and value name.
@@ -88,11 +92,11 @@ namespace Remotion.Globalization
     ///   The value of the resource. If no match is possible, the identifier is returned.
     /// </returns>
     [NotNull]
-    public static string GetString (this IResourceManager resourceManager, Enum enumValue)
+    public static string GetString ([NotNull] this IResourceManager resourceManager, [NotNull] Enum enumValue)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("enumValue", enumValue);
-      
+
       return resourceManager.GetString (ResourceIdentifiersAttribute.GetResourceIdentifier (enumValue));
     }
 
@@ -105,7 +109,7 @@ namespace Remotion.Globalization
     ///   The value of the resource. If no match is possible, null is returned.
     /// </returns>
     [CanBeNull]
-    public static string GetStringOrDefault (this IResourceManager resourceManager, Enum enumValue)
+    public static string GetStringOrDefault ([NotNull] this IResourceManager resourceManager, [NotNull] Enum enumValue)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("enumValue", enumValue);
@@ -117,7 +121,7 @@ namespace Remotion.Globalization
     /// <param name="resourceManager">The <see cref="IResourceManager"/> that is used for the resource lookup.</param>
     /// <param name="enumValue">The ID of the resource to look for.</param>
     /// <returns><see langword="true"/> if the <see cref="IResourceManager"/> contains the specified resource.</returns>
-    public static bool ContainsString (this IResourceManager resourceManager, Enum enumValue)
+    public static bool ContainsString ([NotNull] this IResourceManager resourceManager, [NotNull] Enum enumValue)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("enumValue", enumValue);
@@ -129,7 +133,7 @@ namespace Remotion.Globalization
     /// <param name="resourceManager">The <see cref="IResourceManager"/> that is used for the resource lookup.</param>
     /// <param name="id">The ID of the resource to look for.</param>
     /// <returns><see langword="true"/> if the <see cref="IResourceManager"/> contains the specified resource.</returns>
-    public static bool ContainsString (this IResourceManager resourceManager, string id)
+    public static bool ContainsString ([NotNull] this IResourceManager resourceManager, [NotNull] string id)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("id", id);
@@ -142,8 +146,8 @@ namespace Remotion.Globalization
     /// <param name="resourceManager">The <see cref="IResourceManager"/> that is used for the resource lookup.</param>
     /// <param name="enumValue">The ID of the resource to look for.</param>
     /// <returns><see langword="true"/> if the <see cref="IResourceManager"/> contains the specified resource.</returns>
-    [Obsolete ("Use 'ContainsString' instead.")]
-    public static bool ContainsResource (this IResourceManager resourceManager, Enum enumValue)
+    [Obsolete ("Use ContainsString(...) instead. (Version 1.13.223.0)")]
+    public static bool ContainsResource ([NotNull] this IResourceManager resourceManager, [NotNull] Enum enumValue)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("enumValue", enumValue);
@@ -155,8 +159,8 @@ namespace Remotion.Globalization
     /// <param name="resourceManager">The <see cref="IResourceManager"/> that is used for the resource lookup.</param>
     /// <param name="id">The ID of the resource to get. </param>
     /// <returns><see langword="true"/> if the <see cref="IResourceManager"/> contains the specified resource.</returns>
-    [Obsolete("Use 'ContainsString' instead.")]
-    public static bool ContainsResource (this IResourceManager resourceManager, string id)
+    [Obsolete ("Use ContainsString(...) instead. (Version 1.13.223.0)")]
+    public static bool ContainsResource ([NotNull] this IResourceManager resourceManager, [NotNull] string id)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
       ArgumentUtility.CheckNotNull ("id", id);

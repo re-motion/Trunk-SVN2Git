@@ -16,14 +16,22 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization
 {
+  /// <summary>
+  /// Defines extension methods for the <see cref="IGlobalizationService"/> interface.
+  /// </summary>
   public static class GlobalizationServiceExtensions
   {
-    public static IResourceManager GetResourceManager (this IGlobalizationService globalizationService, Type type)
+    /// <summary>
+    /// Gets the <see cref="IResourceManager"/> for the specified <see cref="Type"/>.
+    /// </summary>
+    [NotNull]
+    public static IResourceManager GetResourceManager ([NotNull] this IGlobalizationService globalizationService, [NotNull] Type type)
     {
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
       ArgumentUtility.CheckNotNull ("type", type);

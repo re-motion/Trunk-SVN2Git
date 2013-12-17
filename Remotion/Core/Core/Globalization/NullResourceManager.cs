@@ -23,6 +23,7 @@ namespace Remotion.Globalization
   /// <remarks> 
   ///   Use <see cref="Instance"/> to access the well defined instance of the <see cref="NullResourceManager"/>.
   /// </remarks>
+  /// <threadsafety static="true" instance="true" />
   public sealed class NullResourceManager : IResourceManager
   {
     public static readonly NullResourceManager Instance = new NullResourceManager();

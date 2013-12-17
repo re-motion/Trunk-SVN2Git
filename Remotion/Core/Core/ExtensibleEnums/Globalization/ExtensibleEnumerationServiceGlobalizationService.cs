@@ -16,15 +16,14 @@
 // 
 
 using System;
-using Remotion.Globalization;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums.Globalization
 {
   /// <summary>
-  /// Retrieving the human-readable localized representation of extensible-enumeration objects.
+  /// Default implementation for the <see cref="IExtensibleEnumerationGlobalizationService"/>.
   /// </summary>
-  public class ExtensibleEnumerationServiceGlobalizationService : IExtensibleEnumerationGlobalizationService
+  public sealed class ExtensibleEnumerationServiceGlobalizationService : IExtensibleEnumerationGlobalizationService
   {
     public string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value)
     {

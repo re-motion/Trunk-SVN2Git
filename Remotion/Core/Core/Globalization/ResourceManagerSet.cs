@@ -20,16 +20,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization
 {
-  /// <summary>
-  ///   Combines one or more <see cref="IResourceManager"/> instances to a set that can be accessed using a single interface.
-  /// </summary>
+  /// <summary>Combines one or more <see cref="IResourceManager"/> instances to a set that can be accessed using a single interface.</summary>
+  /// <threadsafety static="true" instance="true" />
   public class ResourceManagerSet : IResourceManager
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (ResourceManagerSet));
@@ -38,10 +36,10 @@ namespace Remotion.Globalization
     private readonly string _name;
 
     /// <summary>
-    ///   Combines several IResourceManager instances to a single ResourceManagerSet, starting with the first entry of the first set.
+    ///   Combines several <see cref="IResourceManager"/> instances to a single <see cref="ResourceManagerSet"/>.
     /// </summary>
     /// <remarks>
-    ///   For parameters that are ResourceManagerSet instances, the contained IResourceManagers are added directly.
+    ///   For parameters that are <see cref="ResourceManagerSet"/> instances, the contained <see cref="IResourceManager"/>s are added directly.
     /// </remarks>
     /// <example>
     ///   <para>
@@ -54,7 +52,7 @@ namespace Remotion.Globalization
     ///     rmset (rm1, rm2, rm3, rm4, rm5, rm6, rm7, rm8)
     ///   </para>
     /// </example>
-    /// <param name="resourceManagers"> The resource manager, starting with the most specific. </param>
+    /// <param name="resourceManagers"> The resource managers, starting with the most specific. </param>
     public static ResourceManagerSet Create (params IResourceManager[] resourceManagers)
     {
       ArgumentUtility.CheckNotNull ("resourceManagers", resourceManagers);
@@ -62,6 +60,13 @@ namespace Remotion.Globalization
       return new ResourceManagerSet (resourceManagers.AsEnumerable());
     }
 
+    /// <summary>
+    ///   Creates a <see cref="ResourceManagerSet"/> from a sequence of <see cref="IResourceManager"/>s.
+    /// </summary>
+    /// <remarks>
+    ///   For parameters that are <see cref="ResourceManagerSet"/> instances, the contained <see cref="IResourceManager"/>s are added directly.
+    /// </remarks>
+    /// <param name="resourceManagers"> The resource managers, starting with the most specific. </param>
     public ResourceManagerSet (IEnumerable<IResourceManager> resourceManagers)
     {
       ArgumentUtility.CheckNotNull ("resourceManagers", resourceManagers);
@@ -70,7 +75,11 @@ namespace Remotion.Globalization
       _name = _resourceManagers.Any() ? SeparatedStringBuilder.Build (", ", _resourceManagers, rm=> rm.Name) : "Empty ResourceManagerSet";
     }
 
-    [Obsolete ("Use ResourceManagerSet.Create instead. NOTE: The order of the ResourceMangers is now reversed. (Version 1.13.211)", true)]
+    /// <summary>
+    ///   Creates a <see cref="ResourceManagerSet"/> from a sequence of <see cref="IResourceManager"/>s.
+    /// </summary>
+    /// <param name="resourceManagers"> The resource managers, starting with the least specific. </param>
+    [Obsolete ("Use ResourceManagerSet.Create or the sequence-based constructor instead. NOTE: The order of the ResourceMangers is now reversed; the most significant ResourceManager should be added first. (Version 1.13.211)", true)]
     public ResourceManagerSet (params IResourceManager[] resourceManagers)
     {
       throw new InvalidOperationException ("Use ResourceManagerSet.Create instead. (Version 1.13.211)");

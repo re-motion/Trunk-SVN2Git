@@ -59,7 +59,7 @@ namespace Remotion.Mixins.Globalization
     /// <param name="includeHierarchy">If set to true, <see cref="MultiLingualResourcesAttribute"/> applied to base classes and mixins will be
     /// included in the resource manager; otherwise, only the <paramref name="objectType"/> is searched for such attributes.</param>
     /// <returns>An instance of <see cref="IResourceManager"/> for <paramref name="objectType"/>.</returns>
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: When using IGlobalizationService, the order of resolution has changed to return resources for mixins first, then the target types. (1.13.223)")]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: When using IGlobalizationService, the order of resolution has changed to return resources for mixins first, then the target types. (Version 1.13.223.0)")]
     public static IResourceManager GetResourceManager (Type objectType, bool includeHierarchy)
     {
       ArgumentUtility.CheckNotNull ("objectType", objectType);
@@ -100,7 +100,7 @@ namespace Remotion.Mixins.Globalization
     /// </summary>
     /// <param name="objectType">The type to return an <see cref="IResourceManager"/> for.</param>
     /// <returns>An instance of <see cref="IResourceManager"/> for <paramref name="objectType"/>.</returns>
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: When using IGlobalizationService, the order of resolution has changed to return resources for mixins first, then the target types. (1.13.223)")]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: When using IGlobalizationService, the order of resolution has changed to return resources for mixins first, then the target types. (Version 1.13.223.0)")]
     public static IResourceManager GetResourceManager (Type objectType)
     {
       ArgumentUtility.CheckNotNull ("objectType", objectType);
@@ -116,7 +116,7 @@ namespace Remotion.Mixins.Globalization
     /// </param>
     /// <param name="name"> The ID of the resource. </param>
     /// <returns> The found string resource or an empty string. </returns>
-    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: When using IGlobalizationService, the order of resolution has changed to return resources for mixins first, then the target types. (1.13.223)")]
+    [Obsolete ("Retrieve IGlobalizationService from IoC container instead. Note: When using IGlobalizationService, the order of resolution has changed to return resources for mixins first, then the target types. (Version 1.13.223.0)")]
     public static string GetResourceText (Type objectTypeToGetResourceFor, string name)
     {
       ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);

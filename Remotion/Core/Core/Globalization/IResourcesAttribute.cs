@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Remotion.Globalization
 {
@@ -27,8 +28,10 @@ namespace Remotion.Globalization
     /// The base name of the resource conantainer to be used by this type
     /// (&lt;assembly&gt;.&lt;path inside project&gt;.&lt;resource file name without extension&gt;).
     /// </remarks>
+    [NotNull]
     string BaseName { get; }
 
+    [CanBeNull]
     Assembly ResourceAssembly { get; }
   }
 }

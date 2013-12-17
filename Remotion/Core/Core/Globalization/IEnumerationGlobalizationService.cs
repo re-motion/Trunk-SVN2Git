@@ -16,6 +16,7 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
 
@@ -24,12 +25,19 @@ namespace Remotion.Globalization
   /// <summary>
   /// Defines an interface for retrieving the human-readable localized representation of the enumeration object.
   /// </summary>
+  /// <seealso cref="EnumerationGlobalizationService"/>
+  /// <threadsafety static="true" instance="true" />
   [ConcreteImplementation (typeof (EnumerationGlobalizationService), Lifetime = LifetimeKind.Singleton)]
   public interface IEnumerationGlobalizationService
   {
     /// <summary>
     /// Returns the human-readable enumeration name of the spefified reflection object.
     /// </summary>
-    string GetEnumerationValueDisplayName (Enum value);
+    /// <param name="value">
+    /// The <see cref="Enum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>The human-readable localized representation of the type or a version of the type name if no resource could be found.</returns>
+    [NotNull]
+    string GetEnumerationValueDisplayName ([NotNull]Enum value);
   }
 }
