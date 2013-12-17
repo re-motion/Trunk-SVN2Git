@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (_globalizationService.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value2()), Is.EqualTo ("Wert2"));
       Assert.That (
           _globalizationService.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.ValueWithoutResource()),
-          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.ExtensibleEnumWithResourcesExtensions.ValueWithoutResource"));
+          Is.EqualTo ("ValueWithoutResource"));
     }
 
     [Test]
