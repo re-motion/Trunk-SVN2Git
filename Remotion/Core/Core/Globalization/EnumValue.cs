@@ -16,11 +16,11 @@
 // 
 
 using System;
-using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization
 {
+  [Obsolete ("This struct is only used when retrieving enum values via EnumDescription, which is no obsolete, too. (Version 1.13.223.0)")]
   public struct EnumValue
   {
     public readonly Enum Value;

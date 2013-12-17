@@ -37,7 +37,7 @@ namespace Remotion.Globalization
       new DoubleCheckedLockingContainer<IEnumerationGlobalizationService> (() => SafeServiceLocator.Current.GetInstance<IEnumerationGlobalizationService>());
 
     [NotNull]
-    [Obsolete("Use Enum.GetValues (enumType) to get the values, then use IEnumerationGlobalizationService.GetEnumerationValueDisplayName (...) for each value. (Version 1.13.222.0)")]
+    [Obsolete("Use Enum.GetValues (enumType) to get the values, then use IEnumerationGlobalizationService.GetEnumerationValueDisplayName (...) for each value. (Version 1.13.223.0)")]
     public static EnumValue[] GetAllValues ([NotNull] Type enumType)
     {
       ArgumentUtility.CheckNotNull ("enumType", enumType);
@@ -48,7 +48,7 @@ namespace Remotion.Globalization
     }
 
     [NotNull]
-    [Obsolete("Use Enum.GetValues (enumType) to get the values, then use IEnumerationGlobalizationService.GetEnumerationValueDisplayName (...) for each value. Use a CultureScope set the CurrentUICulture. (Version 1.13.222.0)")]
+    [Obsolete("Use Enum.GetValues (enumType) to get the values, then use IEnumerationGlobalizationService.GetEnumerationValueDisplayName (...) for each value. Use a CultureScope set the CurrentUICulture. (Version 1.13.223.0)")]
     public static EnumValue[] GetAllValues ([NotNull] Type enumType, [CanBeNull] CultureInfo culture)
     {
       ArgumentUtility.CheckNotNull ("enumType", enumType);
