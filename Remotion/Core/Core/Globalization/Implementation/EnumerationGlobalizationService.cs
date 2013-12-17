@@ -29,7 +29,6 @@ namespace Remotion.Globalization.Implementation
   /// <threadsafety static="true" instance="true"/>
   public sealed class EnumerationGlobalizationService : IEnumerationGlobalizationService
   {
-    private readonly ICache<Type, IResourceManager> _enumResourceManagers = CacheFactory.CreateWithLocking<Type, IResourceManager>();
     private readonly ICache<Enum, string> _staticEnumValues = CacheFactory.CreateWithLocking<Enum, string>();
     private readonly IGlobalizationService _globalizationService;
     private readonly IMemberInformationNameResolver _memberInformationNameResolver;
@@ -39,7 +38,8 @@ namespace Remotion.Globalization.Implementation
         IMemberInformationNameResolver memberInformationNameResolver)
     {
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
-
+      ArgumentUtility.CheckNotNull ("memberInformationNameResolver", memberInformationNameResolver);
+      
       _globalizationService = globalizationService;
       _memberInformationNameResolver = memberInformationNameResolver;
     }
@@ -48,8 +48,7 @@ namespace Remotion.Globalization.Implementation
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
-      var enumType = value.GetType();
-      var resourceManager = _enumResourceManagers.GetOrCreateValue (enumType, type => _globalizationService.GetResourceManager (type));
+      var resourceManager = _globalizationService.GetResourceManager (value.GetType());
       if (!resourceManager.IsNull)
       {
         string resourceValue;

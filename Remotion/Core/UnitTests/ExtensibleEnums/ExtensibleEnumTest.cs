@@ -286,23 +286,6 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
-    public void GetLocalizedName ()
-    {
-      var value = new Color ("Red");
-      Assert.That (value.GetLocalizedName(), Is.EqualTo ("Rot"));
-    }
-
-    [Test]
-    public void GetLocalizedName_IntegrationTest ()
-    {
-      Assert.That (Color.Values.Red ().GetLocalizedName (), Is.EqualTo ("Rot"));
-      Assert.That (Color.Values.Green ().GetLocalizedName (), Is.EqualTo ("Grün"));
-      Assert.That (Color.Values.RedMetallic ().GetLocalizedName (), Is.EqualTo ("RedMetallic"));
-      Assert.That (Color.Values.LightRed ().GetLocalizedName (), Is.EqualTo ("Hellrot"));
-      Assert.That (Color.Values.LightBlue ().GetLocalizedName (), Is.EqualTo ("LightBlue"));
-    }
-
-    [Test]
     public void GetValueInfo ()
     {
       var value = new Color ("Red");

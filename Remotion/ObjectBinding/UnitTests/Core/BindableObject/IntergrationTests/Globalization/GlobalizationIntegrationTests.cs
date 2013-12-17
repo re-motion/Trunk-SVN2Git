@@ -69,6 +69,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.IntergrationTests
       {
         var resourceString = GetResourceStringForType (typeof (TargetClassForGlobalization), "PropertyForMixinOverrideTest");
 
+        var ct = MixinTypeUtility.GetConcreteMixedType (typeof (TargetClassForGlobalization));
+        var a = ct.GetCustomAttributes(false);
+
         Assert.That (resourceString, Is.EqualTo ("PropertyForMixinOverrideTest display name from MixinAddingResources"));
       }
     }

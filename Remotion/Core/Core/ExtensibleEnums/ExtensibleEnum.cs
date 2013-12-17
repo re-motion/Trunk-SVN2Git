@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Globalization;
+using Remotion.ExtensibleEnums.Globalization;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums
@@ -152,16 +152,6 @@ namespace Remotion.ExtensibleEnums
     public string ValueName { get; private set; }
 
     /// <summary>
-    /// Gets the localized name of the value represented by this instance by using the <see cref="ExtensibleEnumInfo{T}.ResourceManager"/> associated
-    /// with the declaring type of the extension method which defines the value.
-    /// </summary>
-    /// <returns>The localized name of this value.</returns>
-    public string GetLocalizedName ()
-    {
-      return GetValueInfo().ResourceManager.GetString (ID);
-    }
-
-    /// <summary>
     /// Gets the <see cref="ExtensibleEnumInfo{T}"/> object describing the value represented by this instance.
     /// </summary>
     /// <returns>The <see cref="ExtensibleEnumInfo{T}"/> for this value.</returns>
@@ -184,8 +174,8 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <param name="obj">The <typeparamref name="T"/> value to compare with this instance.</param>
     /// <returns>
-    /// 	<see langword="true" /> if the specified <typeparamref name="T"/> value is an extensible enum value of the same
-    /// 	type and with an equal <see cref="ID"/> as this instance; otherwise, <see langword="false" />.
+    ///   <see langword="true" /> if the specified <typeparamref name="T"/> value is an extensible enum value of the same
+    ///   type and with an equal <see cref="ID"/> as this instance; otherwise, <see langword="false" />.
     /// </returns>
     public bool Equals (T obj)
     {
@@ -198,8 +188,8 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
     /// <returns>
-    /// 	<see langword="true" /> if the specified <see cref="System.Object"/> is an extensible enum value of the same
-    /// 	type and with an equal <see cref="ID"/> as this instance; otherwise, <see langword="false" />.
+    ///   <see langword="true" /> if the specified <see cref="System.Object"/> is an extensible enum value of the same
+    ///   type and with an equal <see cref="ID"/> as this instance; otherwise, <see langword="false" />.
     /// </returns>
     public override bool Equals (object obj)
     {
@@ -214,8 +204,8 @@ namespace Remotion.ExtensibleEnums
 
     /// <summary>
     /// Returns a <see cref="System.String"/> that represents this <see cref="ExtensibleEnum{T}"/> value. The string returned by this method is meant
-    /// to be read, not parsed. Use <see cref="ID"/> to get a string that can be used to get back to the actual value. Use 
-    /// <see cref="GetLocalizedName()"/> to get a localized name of the value.
+    /// to be read, not parsed. Use <see cref="ID"/> to get a string that can be used to get back to the actual value.
+    /// Use <see cref="IExtensibleEnumerationGlobalizationService.GetExtensibleEnumerationValueDisplayName"/> to get a localized name of the value.
     /// </summary>
     /// <returns>
     /// A <see cref="System.String"/> that represents this <see cref="ExtensibleEnum{T}"/> value.

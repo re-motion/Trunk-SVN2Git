@@ -16,13 +16,10 @@
 // 
 
 using System;
-using Remotion.Globalization;
 
 namespace Remotion.UnitTests.Globalization.TestDomain
 {
-  [MultiLingualResources ("Remotion.UnitTests.Globalization.TestDomain.Resources.ClassWithResources")]
-  public class ClassWithResources
+  public class ClassWithLongResourceIdentifier
   {
-    public string Value1 { get; set; }
   }
 }

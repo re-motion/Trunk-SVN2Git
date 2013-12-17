@@ -20,8 +20,6 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Infrastructure;
-using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
@@ -38,11 +36,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     public void SetUp ()
     {
       _serviceLocator = new DefaultServiceLocator();
-      _cache =
-          new ExtensibleEnumDefinitionCache (
-              new ExtensibleEnumValueDiscoveryService (
-                  new CompoundGlobalizationService (
-                      new[] { new GlobalizationService (new ResourceManagerResolver()) })));
+      _cache = new ExtensibleEnumDefinitionCache (new ExtensibleEnumValueDiscoveryService ());
     }
 
     [Test]

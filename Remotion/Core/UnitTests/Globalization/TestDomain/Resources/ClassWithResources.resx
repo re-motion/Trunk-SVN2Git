@@ -117,7 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="property:PropertyWithShortIdentifier" xml:space="preserve">
+    <value>Short Property ID</value>
+  </data>
+  <data name="property:Remotion.UnitTests.Globalization.TestDomain.ClassWithProperties.PropertyWithLongIdentifier" xml:space="preserve">
+    <value>Long Property ID</value>
+  </data>
   <data name="property:Value1" xml:space="preserve">
     <value>Value 1</value>
+  </data>
+  <data name="type:ClassWithShortResourceIdentifier" xml:space="preserve">
+    <value>Short Type ID</value>
+  </data>
+  <data name="type:Remotion.UnitTests.Globalization.TestDomain.ClassWithLongResourceIdentifier" xml:space="preserve">
+    <value>Long Type ID</value>
   </data>
 </root>

@@ -337,7 +337,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     private ExtensibleEnumInfo<T> CreateInfo<T> (T value,  double positionalKey) 
         where T: ExtensibleEnum<T>
     {
-      return new ExtensibleEnumInfo<T> (value, _fakeMethod, NullResourceManager.Instance, positionalKey);
+      return new ExtensibleEnumInfo<T> (value, _fakeMethod, positionalKey);
     }
 
     private ExtensibleEnumDefinition<T> CreateDefinition<T> (params T[] values) 

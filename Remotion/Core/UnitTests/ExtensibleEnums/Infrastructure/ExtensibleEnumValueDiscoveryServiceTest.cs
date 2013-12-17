@@ -34,8 +34,8 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
   {
     public class TestableExtensibleEnumValueDiscoveryService : ExtensibleEnumValueDiscoveryService
     {
-      public TestableExtensibleEnumValueDiscoveryService (ITypeDiscoveryService typeDiscoveryService, ICompoundGlobalizationService globalizationService)
-          : base(typeDiscoveryService, globalizationService)
+      public TestableExtensibleEnumValueDiscoveryService (ITypeDiscoveryService typeDiscoveryService)
+          : base (typeDiscoveryService)
       {
       }
     }
@@ -46,7 +46,6 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
 
     private ExtensibleEnumDefinition<Color> _fakeColorDefinition;
     private ExtensibleEnumDefinition<Planet> _fakePlanetDefinition;
-    private ICompoundGlobalizationService _globalizationService;
     private ITypeDiscoveryService _typeDiscoveryServiceStub;
     private ExtensibleEnumValueDiscoveryService _service;
 
@@ -55,10 +54,9 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     {
       _fakeColorDefinition = new ExtensibleEnumDefinition<Color> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
       _fakePlanetDefinition = new ExtensibleEnumDefinition<Planet> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
-      _globalizationService = new CompoundGlobalizationService(new [] { new GlobalizationService(new ResourceManagerResolver())});
 
        _typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
-       _service = new TestableExtensibleEnumValueDiscoveryService (_typeDiscoveryServiceStub, _globalizationService);
+       _service = new TestableExtensibleEnumValueDiscoveryService (_typeDiscoveryServiceStub);
     }
 
     [Test]
@@ -103,29 +101,6 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
           new { Value = Color.Values.Green (), DeclaringMethod = _greenMethod }, };
 
       Assert.That (result.Select (info => new { info.Value, DeclaringMethod = info.DefiningMethod }).ToArray (), Is.EquivalentTo (expected));
-    }
-
-    [Test]
-    public void GetValueInfosForType_ResourceManager ()
-    {
-      var result = _service.GetValueInfosForType (_fakeColorDefinition, typeof (ColorExtensions)).ToArray ();
-
-      var expectedResourceManager = _globalizationService.GetResourceManager (typeof (ColorExtensions));
-      var expected = new[] { 
-          new { Value = Color.Values.Red (), ResourceManagerName = expectedResourceManager.Name }, 
-          new { Value = Color.Values.Green (), ResourceManagerName = expectedResourceManager.Name }, };
-
-      Assert.That (result.Select (info => new { info.Value, ResourceManagerName = info.ResourceManager.Name }).ToArray (), Is.EquivalentTo (expected));
-    }
-
-    [Test]
-    public void GetValueInfosForType_NullResourceManager ()
-    {
-      var result = _service.GetValueInfosForType (_fakeColorDefinition, typeof (MetallicColorExtensions)).ToArray ();
-
-      Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0].Value, Is.EqualTo (Color.Values.RedMetallic()));
-      Assert.That (result[0].ResourceManager.IsNull, Is.True);
     }
 
     [Test]

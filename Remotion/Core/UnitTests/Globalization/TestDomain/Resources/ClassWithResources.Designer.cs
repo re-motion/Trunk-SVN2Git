@@ -61,11 +61,48 @@ namespace Remotion.UnitTests.Globalization.TestDomain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Short Property ID.
+        /// </summary>
+        internal static string property_PropertyWithShortIdentifier {
+            get {
+                return ResourceManager.GetString("property:PropertyWithShortIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Long Property ID.
+        /// </summary>
+        internal static string property_Remotion_UnitTests_Globalization_TestDomain_ClassWithProperties_PropertyWithLongIdentifier {
+            get {
+                return ResourceManager.GetString("property:Remotion.UnitTests.Globalization.TestDomain.ClassWithProperties.Property" +
+                        "WithLongIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Value 1.
         /// </summary>
         internal static string property_Value1 {
             get {
                 return ResourceManager.GetString("property:Value1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short Type ID.
+        /// </summary>
+        internal static string type_ClassWithShortResourceIdentifier {
+            get {
+                return ResourceManager.GetString("type:ClassWithShortResourceIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Long Type ID.
+        /// </summary>
+        internal static string type_Remotion_UnitTests_Globalization_TestDomain_ClassWithLongResourceIdentifier {
+            get {
+                return ResourceManager.GetString("type:Remotion.UnitTests.Globalization.TestDomain.ClassWithLongResourceIdentifier", resourceCulture);
             }
         }
     }

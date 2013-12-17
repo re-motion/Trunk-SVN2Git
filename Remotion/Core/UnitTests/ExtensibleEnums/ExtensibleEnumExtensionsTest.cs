@@ -16,13 +16,20 @@
 // 
 
 using System;
-using Remotion.Globalization;
+using NUnit.Framework;
+using Remotion.ExtensibleEnums;
+using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
-namespace Remotion.UnitTests.Globalization.TestDomain
+namespace Remotion.UnitTests.ExtensibleEnums
 {
-  [MultiLingualResources ("Remotion.UnitTests.Globalization.TestDomain.Resources.ClassWithResources")]
-  public class ClassWithResources
+  [TestFixture]
+  public class ExtensibleEnumExtensionsTest
   {
-    public string Value1 { get; set; }
+    [Obsolete]
+    [Test]
+    public void GetExtensibleEnumerationValueDisplayName_IntegrationTest ()
+    {
+      Assert.That (ExtensibleEnumWithResources.Values.Value1().GetLocalizedName(), Is.EqualTo ("Wert1"));
+    }
   }
 }

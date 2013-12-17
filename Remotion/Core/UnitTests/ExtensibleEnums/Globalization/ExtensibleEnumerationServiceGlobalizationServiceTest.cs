@@ -18,7 +18,11 @@
 using System;
 using NUnit.Framework;
 using Remotion.ExtensibleEnums.Globalization;
+using Remotion.Globalization;
+using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.ExtensibleEnums.Globalization
 {
@@ -26,21 +30,56 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
   public class ExtensibleEnumerationServiceGlobalizationServiceTest
   {
     private ExtensibleEnumerationServiceGlobalizationService _service;
+    private ICompoundGlobalizationService _globalizationServiceStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _service = new ExtensibleEnumerationServiceGlobalizationService();
+      _globalizationServiceStub = MockRepository.GenerateStub<ICompoundGlobalizationService>();
+      _service = new ExtensibleEnumerationServiceGlobalizationService (_globalizationServiceStub);
     }
 
     [Test]
-    public void GetExtensibleEnumerationValueDisplayName ()
+    public void GetEnumerationValueDisplayName_WithResourceManager_ReturnsLocalizedValue ()
     {
-      Assert.That (_service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1 ()), Is.EqualTo ("Wert1"));
-      Assert.That (_service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value2 ()), Is.EqualTo ("Wert2"));
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
+      resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _globalizationServiceStub
+          .Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (ExtensibleEnumWithResourcesExtensions))))
+          .Return (resourceManagerStub);
+      resourceManagerStub
+          .Stub (
+              _ => _.TryGetString (
+                  Arg.Is ("Remotion.UnitTests.ExtensibleEnums.TestDomain.ExtensibleEnumWithResourcesExtensions.Value1"),
+                  out Arg<string>.Out ("expected").Dummy))
+          .Return (true);
+
+      Assert.That (_service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1()), Is.EqualTo ("expected"));
+    }
+
+    [Test]
+    public void GetEnumerationValueDisplayName_WithoutResourceManager_ReturnsValueName ()
+    {
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull)).Return (NullResourceManager.Instance);
+
+      Assert.That (_service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1()), Is.EqualTo ("Value1"));
+    }
+
+    [Test]
+    public void GetExtensibleEnumerationValueDisplayName_IntegrationTest ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IExtensibleEnumerationGlobalizationService>();
+      Assert.That (service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1()), Is.EqualTo ("Wert1"));
+      Assert.That (service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value2()), Is.EqualTo ("Wert2"));
       Assert.That (
-          _service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.ValueWithoutResource ()),
-          Is.EqualTo ("Remotion.UnitTests.ExtensibleEnums.TestDomain.ExtensibleEnumWithResourcesExtensions.ValueWithoutResource"));
+          service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.ValueWithoutResource()),
+          Is.EqualTo ("ValueWithoutResource"));
+
+      Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.Red()), Is.EqualTo ("Rot"));
+      Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.Green()), Is.EqualTo ("Grün"));
+      Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.RedMetallic()), Is.EqualTo ("RedMetallic"));
+      Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.LightRed()), Is.EqualTo ("Hellrot"));
+      Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.LightBlue()), Is.EqualTo ("LightBlue"));
     }
   }
 }

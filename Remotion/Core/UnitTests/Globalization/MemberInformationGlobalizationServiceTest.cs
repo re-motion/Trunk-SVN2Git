@@ -20,6 +20,8 @@ using NUnit.Framework;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
+using Remotion.UnitTests.Globalization.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Globalization
@@ -280,6 +282,42 @@ namespace Remotion.UnitTests.Globalization
       _resourceManager1Mock.VerifyAllExpectations();
       _resourceManager2Mock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo ("TestLong"));
+    }
+
+    [Test]
+    public void GetTypeDisplayName_IntegrationTest ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();
+
+      Assert.That (
+          service.GetTypeDisplayName (
+              TypeAdapter.Create (typeof (ClassWithShortResourceIdentifier)),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.EqualTo ("Short Type ID"));
+
+      Assert.That (
+          service.GetTypeDisplayName (
+              TypeAdapter.Create (typeof (ClassWithLongResourceIdentifier)),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.EqualTo ("Long Type ID"));
+    }
+
+    [Test]
+    public void GetPropertyDisplayName_IntegrationTest ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();
+
+      Assert.That (
+          service.GetPropertyDisplayName (
+              PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithShortIdentifier")),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.EqualTo ("Short Property ID"));
+
+      Assert.That (
+          service.GetPropertyDisplayName (
+              PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithLongIdentifier")),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.EqualTo ("Long Property ID"));
     }
   }
 }

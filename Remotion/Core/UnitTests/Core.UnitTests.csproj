@@ -170,6 +170,7 @@
     <Compile Include="Configuration\TypeDiscovery\IntegrationTests\SpecificRootAssemblies\SpecificRootAssembliesAreNotSubjectToApplicationFilterTest.cs" />
     <Compile Include="Context\SafeContextIntegrationTest.cs" />
     <Compile Include="Context\SafeContextTest.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnumExtensionsTest.cs" />
     <Compile Include="Globalization\EnumFromResource.cs" />
     <Compile Include="Globalization\GlobalizationServiceExtensionsTest.cs" />
     <Compile Include="Globalization\ResourceManagerExtensionsTest.cs" />
@@ -228,6 +229,9 @@
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
     <Compile Include="Globalization\MultiLingualResourcesTest.cs" />
+    <Compile Include="Globalization\TestDomain\ClassWithLongResourceIdentifier.cs" />
+    <Compile Include="Globalization\TestDomain\ClassWithProperties.cs" />
+    <Compile Include="Globalization\TestDomain\ClassWithShortResourceIdentifier.cs" />
     <Compile Include="Globalization\TestDomain\Resources\ClassWithResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -33,24 +33,18 @@ namespace Remotion.ExtensibleEnums.Infrastructure
   /// </summary>
   public class ExtensibleEnumValueDiscoveryService : IExtensibleEnumValueDiscoveryService
   {
-    private readonly IGlobalizationService _globalizationService;
     private readonly ITypeDiscoveryService _typeDiscoveryService;
 
-    public ExtensibleEnumValueDiscoveryService (ICompoundGlobalizationService globalizationService)
+    public ExtensibleEnumValueDiscoveryService ()
     {
-      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
-      
       _typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ();
-      _globalizationService = globalizationService;
     }
 
-    protected ExtensibleEnumValueDiscoveryService (ITypeDiscoveryService typeDiscoveryService, ICompoundGlobalizationService globalizationService)
+    protected ExtensibleEnumValueDiscoveryService (ITypeDiscoveryService typeDiscoveryService)
     {
       ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
-      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
       
       _typeDiscoveryService = typeDiscoveryService;
-      _globalizationService = globalizationService;
     }
 
     public ITypeDiscoveryService TypeDiscoveryService
@@ -89,12 +83,11 @@ namespace Remotion.ExtensibleEnums.Infrastructure
       var methods = typeDeclaringMethods.GetMethods (BindingFlags.Static | BindingFlags.Public);
       var extensionMethods = GetValueExtensionMethods (typeof (T), methods);
 
-      var resourceManager = _globalizationService.GetResourceManager(typeDeclaringMethods);
       return from mi in extensionMethods
              let value = (T) mi.Invoke (null, new object[] { definition })
              let positionAttribute = AttributeUtility.GetCustomAttribute<ExtensibleEnumPositionAttribute> (mi, true)
              let positionalKey = positionAttribute != null ? positionAttribute.PositionalKey : 0.0
-             select new ExtensibleEnumInfo<T> (value, mi, resourceManager, positionalKey);
+             select new ExtensibleEnumInfo<T> (value, mi, positionalKey);
     }
 
     public IEnumerable<Type> GetStaticTypes (IEnumerable<Type> types)

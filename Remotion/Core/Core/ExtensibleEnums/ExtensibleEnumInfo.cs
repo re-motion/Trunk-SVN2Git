@@ -22,8 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.ExtensibleEnums
 {
   /// <summary>
-  /// Holds information about an extensible enum value, including the <see cref="Value"/> itself and meta-info such as the 
-  /// <see cref="DefiningMethod"/> and the associated <see cref="ResourceManager"/>.
+  /// Holds information about an extensible enum value, including the <see cref="Value"/> itself and meta-info such as the <see cref="DefiningMethod"/>.
   /// </summary>
   /// <typeparam name="T">The extensible enum type.</typeparam>
   /// <remarks>
@@ -38,17 +37,14 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="declaringMethod">The declaring method of the value.</param>
-    /// <param name="resourceManager">The resource manager for the value.</param>
     /// <param name="positionalKey">The positional key of the value.</param>
-    public ExtensibleEnumInfo (T value, MethodInfo declaringMethod, IResourceManager resourceManager, double positionalKey)
+    public ExtensibleEnumInfo (T value, MethodInfo declaringMethod, double positionalKey)
     {
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("declaringMethod", declaringMethod);
-      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
       Value = value;
       DefiningMethod = declaringMethod;
-      ResourceManager = resourceManager;
       PositionalKey = positionalKey;
     }
     
@@ -69,12 +65,6 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The defining method of the <see cref="Value"/>.</value>
     public MethodInfo DefiningMethod { get; private set; }
-
-    /// <summary>
-    /// Gets the resource manager associated with the <see cref="DefiningMethod"/> of the <see cref="Value"/> described by this instance.
-    /// </summary>
-    /// <value>The resource manager of this <see cref="Value"/>.</value>
-    public IResourceManager ResourceManager { get; private set; }
 
     /// <summary>
     /// Gets the positional key associated with the <see cref="Value"/>. The positional key determines the position of the <see cref="Value"/>

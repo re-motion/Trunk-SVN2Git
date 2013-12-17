@@ -28,22 +28,20 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
   public class ExtensibleEnumInfoComparerTest
   {
     private MethodInfo _fakeMethod;
-    private NullResourceManager _fakeResourceManager;
     private ExtensibleEnumInfoComparer<ExtensibleEnumInfo<Planet>> _comparer;
 
     [SetUp]
     public void SetUp ()
     {
       _fakeMethod = typeof (ColorExtensions).GetMethod ("Red");
-      _fakeResourceManager = NullResourceManager.Instance;
       _comparer = ExtensibleEnumInfoComparer<ExtensibleEnumInfo<Planet>>.Instance;
     }
 
     [Test]
     public void Compare_PositionalKeys ()
     {
-      var x = new ExtensibleEnumInfo<Planet> (new Planet ("x"), _fakeMethod, _fakeResourceManager, 2.0);
-      var y = new ExtensibleEnumInfo<Planet> (new Planet ("y"), _fakeMethod, _fakeResourceManager, 1.0);
+      var x = new ExtensibleEnumInfo<Planet> (new Planet ("x"), _fakeMethod, 2.0);
+      var y = new ExtensibleEnumInfo<Planet> (new Planet ("y"), _fakeMethod, 1.0);
 
       Assert.That (_comparer.Compare (x, y), Is.EqualTo (1));
       Assert.That (_comparer.Compare (y, x), Is.EqualTo (-1));
@@ -52,8 +50,8 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     [Test]
     public void Compare_EqualPositionalKeys_Alphabetic ()
     {
-      var x = new ExtensibleEnumInfo<Planet> (new Planet ("x"), _fakeMethod, _fakeResourceManager, 1.0);
-      var y = new ExtensibleEnumInfo<Planet> (new Planet ("y"), _fakeMethod, _fakeResourceManager, 1.0);
+      var x = new ExtensibleEnumInfo<Planet> (new Planet ("x"), _fakeMethod, 1.0);
+      var y = new ExtensibleEnumInfo<Planet> (new Planet ("y"), _fakeMethod, 1.0);
 
       Assert.That (_comparer.Compare (x, y), Is.EqualTo (-1));
       Assert.That (_comparer.Compare (y, x), Is.EqualTo (1));
@@ -62,8 +60,8 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     [Test]
     public void Compare_EqualPositionalKeys_EqualID ()
     {
-      var x = new ExtensibleEnumInfo<Planet> (new Planet ("x"), _fakeMethod, _fakeResourceManager, 1.0);
-      var y = new ExtensibleEnumInfo<Planet> (new Planet ("x"), _fakeMethod, _fakeResourceManager, 1.0);
+      var x = new ExtensibleEnumInfo<Planet> (new Planet ("x"), _fakeMethod, 1.0);
+      var y = new ExtensibleEnumInfo<Planet> (new Planet ("x"), _fakeMethod, 1.0);
 
       Assert.That (_comparer.Compare (x, y), Is.EqualTo (0));
       Assert.That (_comparer.Compare (y, x), Is.EqualTo (0));

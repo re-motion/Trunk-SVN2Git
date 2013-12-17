@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using Remotion.ExtensibleEnums.Infrastructure;
-using Remotion.Globalization;
 
 namespace Remotion.ExtensibleEnums
 {
@@ -41,12 +40,6 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The defining method of the <see cref="Value"/>.</value>
     MethodInfo DefiningMethod { get; }
-
-    /// <summary>
-    /// Gets the resource manager associated with the <see cref="DefiningMethod"/> of the <see cref="Value"/> described by this instance.
-    /// </summary>
-    /// <value>The resource manager of this <see cref="Value"/>.</value>
-    IResourceManager ResourceManager { get; }
 
     /// <summary>
     /// Gets the positional key associated with the <see cref="Value"/>. The positional key determines the position of the <see cref="Value"/>
