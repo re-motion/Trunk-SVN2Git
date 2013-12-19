@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.UnitTests.Globalization.TestDomain;
@@ -28,7 +29,7 @@ namespace Remotion.UnitTests.Globalization
   public class MemberInformationGlobalizationServiceIntegrationTest
   {
     [Test]
-    public void TryGetTypeDisplayName_IntegrationTest ()
+    public void TryGetTypeDisplayName ()
     {
       var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService> ();
 
@@ -50,7 +51,43 @@ namespace Remotion.UnitTests.Globalization
     }
 
     [Test]
-    public void TryGetPropertyDisplayName_IntegrationTest ()
+    public void GetTypeDisplayName ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService> ();
+
+      Assert.That (
+          service.GetTypeDisplayName (
+              TypeAdapter.Create (typeof (ClassWithShortResourceIdentifier)),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.EqualTo ("Short Type ID"));
+      
+      Assert.That (
+          service.GetTypeDisplayName (
+              TypeAdapter.Create (typeof (ClassWithLongResourceIdentifier)),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.EqualTo ("Long Type ID"));
+    }
+
+    [Test]
+    public void ContainsTypeDisplayName ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService> ();
+
+      Assert.That (
+          service.ContainsTypeDisplayName (
+              TypeAdapter.Create (typeof (ClassWithShortResourceIdentifier)),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.True);
+
+      Assert.That (
+          service.ContainsTypeDisplayName (
+              TypeAdapter.Create (typeof (ClassWithLongResourceIdentifier)),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.True);
+    }
+
+    [Test]
+    public void TryGetPropertyDisplayName ()
     {
       var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService> ();
 
@@ -68,6 +105,42 @@ namespace Remotion.UnitTests.Globalization
               TypeAdapter.Create (typeof (ClassWithResources)), out resourceValue),
           Is.True);
       Assert.That (resourceValue, Is.EqualTo ("Long Property ID"));
+    }
+
+    [Test]
+    public void GetPropertyDisplayName ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService> ();
+
+      Assert.That (
+          service.GetPropertyDisplayName (
+              PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithShortIdentifier")),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.EqualTo ("Short Property ID"));
+      
+      Assert.That (
+          service.GetPropertyDisplayName (
+              PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithLongIdentifier")),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.EqualTo ("Long Property ID"));
+    }
+
+    [Test]
+    public void ContainsPropertyDisplayName ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService> ();
+
+      Assert.That (
+          service.ContainsPropertyDisplayName (
+              PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithShortIdentifier")),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.True);
+
+      Assert.That (
+          service.ContainsPropertyDisplayName (
+              PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithLongIdentifier")),
+              TypeAdapter.Create (typeof (ClassWithResources))),
+          Is.True);
     }
 
   }
