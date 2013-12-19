@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         errorMessageBuilder.AppendLine();
         errorMessageBuilder.Append ("  ");
 
-        var displayName = enumerationGlobalizationService.GetEnumerationValueDisplayName (error);
+        var displayName = enumerationGlobalizationService.TryGetEnumerationValueDisplayName (error);
         errorMessageBuilder.Append (displayName);
       }
 

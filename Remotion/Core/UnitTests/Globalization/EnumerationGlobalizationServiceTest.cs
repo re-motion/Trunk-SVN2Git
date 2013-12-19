@@ -16,14 +16,12 @@
 // 
 
 using System;
-using System.Globalization;
 using NUnit.Framework;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.UnitTests.Globalization.TestDomain;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Globalization
@@ -34,6 +32,7 @@ namespace Remotion.UnitTests.Globalization
     private EnumerationGlobalizationService _service;
     private ICompoundGlobalizationService _globalizationServiceStub;
     private IMemberInformationNameResolver _memberInformationNameResolverStub;
+    private string _resourceValue;
 
     [SetUp]
     public void SetUp ()
@@ -44,9 +43,22 @@ namespace Remotion.UnitTests.Globalization
     }
 
     [Test]
-    public void GetEnumerationValueDisplayName_WithResourceManager ()
+    public void TryGetEnumerationValueDisplayName_WithResourceManager ()
     {
       var resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
+      resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (EnumWithResources)))).Return (resourceManagerStub);
+      _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
+      resourceManagerStub.Stub (_ => _.TryGetString (Arg.Is ("enumName"), out Arg<string>.Out ("expected").Dummy)).Return (true);
+
+      Assert.That (_service.TryGetEnumerationValueDisplayName (EnumWithResources.Value1, out _resourceValue), Is.True);
+      Assert.That (_resourceValue, Is.EqualTo ("expected"));
+    }
+
+    [Test]
+    public void GetEnumerationValueDisplayName_WithResourceManager ()
+    {
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager> ();
       resourceManagerStub.Stub (_ => _.IsNull).Return (false);
       _globalizationServiceStub.Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (EnumWithResources)))).Return (resourceManagerStub);
       _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
@@ -56,9 +68,45 @@ namespace Remotion.UnitTests.Globalization
     }
 
     [Test]
-    public void GetEnumerationValueDisplayName_WithResourceManager_ResourceIDIsUnknown_FallsBackToEnumValueName ()
+    public void GetEnumerationValueDisplayNameOrDefault_WithResourceManager ()
+    {
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager> ();
+      resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (EnumWithResources)))).Return (resourceManagerStub);
+      _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
+      resourceManagerStub.Stub (_ => _.TryGetString (Arg.Is ("enumName"), out Arg<string>.Out ("expected").Dummy)).Return (true);
+
+      Assert.That (_service.GetEnumerationValueDisplayNameOrDefault (EnumWithResources.Value1), Is.EqualTo ("expected"));
+    }
+
+    [Test]
+    public void ContainsEnumerationValueDisplayName_WithResourceManager ()
+    {
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager> ();
+      resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (EnumWithResources)))).Return (resourceManagerStub);
+      _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
+      resourceManagerStub.Stub (_ => _.TryGetString (Arg.Is ("enumName"), out Arg<string>.Out ("expected").Dummy)).Return (true);
+
+      Assert.That (_service.ContainsEnumerationValueDisplayName (EnumWithResources.Value1), Is.True);
+    }
+
+    [Test]
+    public void TryGetEnumerationValueDisplayName_WithResourceManager_ResourceIDIsUnknown ()
     {
       var resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
+      resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (EnumWithResources)))).Return (resourceManagerStub);
+      _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
+      resourceManagerStub.Stub (_ => _.TryGetString (Arg.Is ("enumName"), out Arg<string>.Out (null).Dummy)).Return (false);
+
+      Assert.That (_service.TryGetEnumerationValueDisplayName (EnumWithResources.Value1, out _resourceValue), Is.False);
+    }
+
+    [Test]
+    public void GetEnumerationValueDisplayName_WithResourceManager_ResourceIDIsUnknown_FallsBackToEnumValueName ()
+    {
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager> ();
       resourceManagerStub.Stub (_ => _.IsNull).Return (false);
       _globalizationServiceStub.Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (EnumWithResources)))).Return (resourceManagerStub);
       _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
@@ -68,13 +116,39 @@ namespace Remotion.UnitTests.Globalization
     }
 
     [Test]
-    public void GetEnumerationValueDisplayName_WithoutResourceManager_UsesEnumDescriptions ()
+    public void GetEnumerationValueDisplayNameOrDefault_WithResourceManager_ResourceIDIsUnknown_ReturnsNull ()
+    {
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager> ();
+      resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (EnumWithResources)))).Return (resourceManagerStub);
+      _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
+      resourceManagerStub.Stub (_ => _.TryGetString (Arg.Is ("enumName"), out Arg<string>.Out (null).Dummy)).Return (false);
+
+      Assert.That (_service.GetEnumerationValueDisplayNameOrDefault (EnumWithResources.Value1), Is.Null);
+    }
+
+    [Test]
+    public void ContainsEnumerationValueDisplayName_WithResourceManager_ResourceIDIsUnknown ()
+    {
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager> ();
+      resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (EnumWithResources)))).Return (resourceManagerStub);
+      _memberInformationNameResolverStub.Stub (_ => _.GetEnumName (EnumWithResources.Value1)).Return ("enumName");
+      resourceManagerStub.Stub (_ => _.TryGetString (Arg.Is ("enumName"), out Arg<string>.Out (null).Dummy)).Return (false);
+
+      Assert.That (_service.ContainsEnumerationValueDisplayName (EnumWithResources.Value1), Is.False);
+    }
+
+    [Test]
+    public void TryGetEnumerationValueDisplayName_WithoutResourceManager_UsesEnumDescriptions ()
     {
       SetupNullResourceManager();
 
-      Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescription.Value1), Is.EqualTo ("Value I"));
-      Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescription.Value2), Is.EqualTo ("Value II"));
-      Assert.That (_service.GetEnumerationValueDisplayName (EnumWithDescription.ValueWithoutDescription), Is.EqualTo ("ValueWithoutDescription"));
+      Assert.That (_service.TryGetEnumerationValueDisplayName (EnumWithDescription.Value1, out _resourceValue), Is.True);
+      Assert.That (_resourceValue, Is.EqualTo ("Value I"));
+      Assert.That (_service.TryGetEnumerationValueDisplayName (EnumWithDescription.Value2, out _resourceValue), Is.True);
+      Assert.That (_resourceValue, Is.EqualTo ("Value II"));
+      Assert.That (_service.TryGetEnumerationValueDisplayName (EnumWithDescription.ValueWithoutDescription, out _resourceValue), Is.False);
     }
 
     [Test]
@@ -82,34 +156,23 @@ namespace Remotion.UnitTests.Globalization
     {
       SetupNullResourceManager();
 
-      Assert.That (_service.GetEnumerationValueDisplayName ((EnumWithDescription) 100), Is.EqualTo ("100"));
+      Assert.That (_service.GetEnumerationValueDisplayName ((EnumWithDescription) 100), Is.EqualTo("100"));
     }
 
     [Test]
-    public void GetEnumerationValueDisplayName_IntegrationTest ()
+    public void GetEnumerationValueDisplayNameOrDefault_NoEnumDescription_FallsBackToValueName ()
     {
-      var service = SafeServiceLocator.Current.GetInstance<IEnumerationGlobalizationService>();
+      SetupNullResourceManager ();
 
-      using (new CultureScope (CultureInfo.InvariantCulture, CultureInfo.InvariantCulture))
-      {
-        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.Value1), Is.EqualTo ("Value 1"));
-        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.Value2), Is.EqualTo ("Value 2"));
-        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.ValueWithoutResource), Is.EqualTo ("ValueWithoutResource"));
-        Assert.That (service.GetEnumerationValueDisplayName ((EnumWithResources) 100), Is.EqualTo ("100"));
-      }
+      Assert.That (_service.GetEnumerationValueDisplayNameOrDefault ((EnumWithDescription) 100), Is.Null);
+    }
 
-      var culture = new CultureInfo ("de-AT");
-      using (new CultureScope (culture, culture))
-      {
-        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.Value1), Is.EqualTo ("Wert 1"));
-        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.Value2), Is.EqualTo ("Wert 2"));
-        Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.ValueWithoutResource), Is.EqualTo ("ValueWithoutResource"));
-        Assert.That (service.GetEnumerationValueDisplayName ((EnumWithResources) 100), Is.EqualTo ("100"));
-      }
+    [Test]
+    public void GetEnumerationValueDisplayNameOrDefault_NoEnumDescription_ReturnsFalse ()
+    {
+      SetupNullResourceManager ();
 
-      Assert.That (service.GetEnumerationValueDisplayName (EnumWithDescription.Value1), Is.EqualTo ("Value I"));
-      Assert.That (service.GetEnumerationValueDisplayName (EnumWithDescription.Value2), Is.EqualTo ("Value II"));
-      Assert.That (service.GetEnumerationValueDisplayName (EnumWithDescription.ValueWithoutDescription), Is.EqualTo ("ValueWithoutDescription"));
+      Assert.That (_service.ContainsEnumerationValueDisplayName ((EnumWithDescription) 100), Is.False);
     }
 
     private void SetupNullResourceManager ()

@@ -19,6 +19,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using JetBrains.Annotations;
+using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 

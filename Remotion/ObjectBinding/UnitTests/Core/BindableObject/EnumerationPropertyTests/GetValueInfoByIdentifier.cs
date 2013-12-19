@@ -14,15 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.ExtensibleEnums.Globalization;
 using Remotion.Globalization;
-using Rhino.Mocks;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationPropertyTests
 {
@@ -37,7 +38,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     {
       base.SetUp();
 
-      _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
+      _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
 
       _mockRepository = new MockRepository();
       _mockRepository.StrictMock<IBusinessObject>();
@@ -99,7 +100,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
               mockEnumerationGlobalizationService,
               MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
 
-      Expect.Call (mockEnumerationGlobalizationService.GetEnumerationValueDisplayName (TestEnum.Value1)).Return ("MockValue1");
+      Expect.Call (
+          mockEnumerationGlobalizationService.TryGetEnumerationValueDisplayName (Arg.Is (TestEnum.Value1), out Arg<string>.Out ("MockValue1").Dummy))
+          .Return (true);
       _mockRepository.ReplayAll();
 
       IEnumerationValueInfo actual = property.GetValueInfoByIdentifier ("Value1", null);
@@ -111,7 +114,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     private EnumerationProperty CreateProperty (Type type, string propertyName)
     {
       return new EnumerationProperty (
-        GetPropertyParameters (GetPropertyInfo (type, propertyName), _businessObjectProvider));
+          GetPropertyParameters (GetPropertyInfo (type, propertyName), _businessObjectProvider));
     }
   }
 }

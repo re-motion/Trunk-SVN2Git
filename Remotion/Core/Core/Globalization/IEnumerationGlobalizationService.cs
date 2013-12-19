@@ -36,8 +36,8 @@ namespace Remotion.Globalization
     /// <param name="value">
     /// The <see cref="Enum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
     /// </param>
-    /// <returns>The human-readable localized representation of the type or a version of the type name if no resource could be found.</returns>
-    [NotNull]
-    string GetEnumerationValueDisplayName ([NotNull]Enum value);
+    /// <param name="result">The human-readable localized representation of the type or a version of the type name if no resource could be found.</param>
+    /// <returns><value>True</value> if a resource could be found.</returns>
+    bool TryGetEnumerationValueDisplayName ([NotNull]Enum value, out string result);
   }
 }

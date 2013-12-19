@@ -148,6 +148,7 @@
     <Compile Include="Context\SafeContext.cs" />
     <Compile Include="Context\SafeContextKeys.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumExtensions.cs" />
+    <Compile Include="Globalization\Implementation\EnumerationGlobalizationServiceExtensions.cs" />
     <Compile Include="Globalization\GlobalizationServiceExtensions.cs" />
     <Compile Include="Globalization\IEnumerationGlobalizationService.cs" />
     <Compile Include="ExtensibleEnums\Globalization\IExtensibleEnumerationGlobalizationService.cs" />

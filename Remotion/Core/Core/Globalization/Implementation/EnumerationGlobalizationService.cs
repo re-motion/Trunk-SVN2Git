@@ -44,20 +44,16 @@ namespace Remotion.Globalization.Implementation
       _memberInformationNameResolver = memberInformationNameResolver;
     }
 
-    public string GetEnumerationValueDisplayName (Enum value)
+    public bool TryGetEnumerationValueDisplayName (Enum value, out string result)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
       var resourceManager = _globalizationService.GetResourceManager (value.GetType());
       if (!resourceManager.IsNull)
-      {
-        string resourceValue;
-        if (resourceManager.TryGetString (_memberInformationNameResolver.GetEnumName (value), out resourceValue))
-          return resourceValue;
-        return value.ToString();
-      }
-
-      return _staticEnumValues.GetOrCreateValue (value, GetStaticEnumValues);
+        return resourceManager.TryGetString (_memberInformationNameResolver.GetEnumName (value), out result);
+      
+      result = _staticEnumValues.GetOrCreateValue (value, GetStaticEnumValues);
+      return result != value.ToString(); //TODO AO: check with MK!
     }
 
     private string GetStaticEnumValues (Enum value)
