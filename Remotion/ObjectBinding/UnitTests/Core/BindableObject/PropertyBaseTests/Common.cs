@@ -384,10 +384,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
 
       Expect.Call (
-          mockMemberInformationGlobalizationService.GetPropertyDisplayName (
-              propertyInfo,
-              TypeAdapter.Create (_bindableObjectClass.TargetType)))
-          .Return ("MockString");
+          mockMemberInformationGlobalizationService.TryGetPropertyDisplayName (
+              Arg.Is(propertyInfo),
+              Arg<ITypeInformation>.Matches(c=>c.ConvertToRuntimeType()==_bindableObjectClass.TargetType),
+              out Arg<string>.Out("MockString").Dummy))
+          .Return (true);
       _mockRepository.ReplayAll();
 
       string actual = property.DisplayName;

@@ -26,8 +26,8 @@ namespace Remotion.Globalization.Implementation
   /// </summary>
   /// <remarks>
   ///   <list type="bullet">
-  ///     <item><see cref="GetTypeDisplayName"/> performs the lookup based on the long and the short name of the type, prefixed with <c>type:</c>.</item>
-  ///     <item><see cref="GetPropertyDisplayName"/> performs the lookup based on the long and the short name of the property, prefixed with <c>property:</c>.</item>
+  ///     <item><see cref="TryGetTypeDisplayName"/> performs the lookup based on the long and the short name of the type, prefixed with <c>type:</c>.</item>
+  ///     <item><see cref="TryGetPropertyDisplayName"/> performs the lookup based on the long and the short name of the property, prefixed with <c>property:</c>.</item>
   ///   </list>
   /// The long name is resolved using <see cref="IMemberInformationNameResolver"/>.
   /// </remarks>
@@ -48,37 +48,40 @@ namespace Remotion.Globalization.Implementation
       _memberInformationNameResolver = memberInformationNameResolver;
     }
 
-    public string GetPropertyDisplayName (IPropertyInformation propertyInformation, ITypeInformation typeInformationForResourceResolution)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
-      ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
-
-      return GetString (
-          typeInformationForResourceResolution,
-          propertyInformation.Name,
-          _memberInformationNameResolver.GetPropertyName (propertyInformation),
-          "property:");
-    }
-
-    public string GetTypeDisplayName (ITypeInformation typeInformation, ITypeInformation typeInformationForResourceResolution)
+    public bool TryGetTypeDisplayName (ITypeInformation typeInformation, ITypeInformation typeInformationForResourceResolution, out string value)
     {
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      return GetString (
+      value = GetStringOrDefault (
           typeInformationForResourceResolution,
           typeInformation.Name,
           _memberInformationNameResolver.GetTypeName (typeInformation),
           "type:");
+
+      return value != null;
     }
 
-    private string GetString (ITypeInformation typeInformation, string shortMemberName, string longMemberName, string resourcePrefix)
+    public bool TryGetPropertyDisplayName (IPropertyInformation propertyInformation, ITypeInformation typeInformationForResourceResolution, out string value)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
+
+      value = GetStringOrDefault (
+          typeInformationForResourceResolution,
+          propertyInformation.Name,
+          _memberInformationNameResolver.GetPropertyName (propertyInformation),
+          "property:");
+
+      return value != null;
+    }
+
+    private string GetStringOrDefault (ITypeInformation typeInformation, string shortMemberName, string longMemberName, string resourcePrefix)
     {
       var resourceManager = _globalizationService.GetResourceManager (typeInformation);
 
       return resourceManager.GetStringOrDefault (resourcePrefix + longMemberName)
-             ?? resourceManager.GetStringOrDefault (resourcePrefix + shortMemberName)
-             ?? shortMemberName;
+             ?? resourceManager.GetStringOrDefault (resourcePrefix + shortMemberName);
     }
   }
 }

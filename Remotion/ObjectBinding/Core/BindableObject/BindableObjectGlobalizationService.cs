@@ -20,6 +20,7 @@ using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Globalization;
 using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -126,7 +127,7 @@ namespace Remotion.ObjectBinding.BindableObject
                               "BindableObjectGlobalizationService only supports unique interface declarations but proerty '{0}' is declared on multiply interfaces",
                               propertyInformation.Name)));
 
-      return _memberInformationGlobalizationService.GetPropertyDisplayName (property, typeInformationForResourceResolution);
+      return _memberInformationGlobalizationService.GetPropertyDisplayName(property, typeInformationForResourceResolution);
     }
   }
 }
