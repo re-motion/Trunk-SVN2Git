@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
@@ -40,7 +41,7 @@ namespace Remotion.ObjectBinding.BindableObject
       Assertion.IsFalse (concreteType.IsValueType, "mixed types cannot be value types");
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
       ArgumentUtility.CheckNotNull ("properties", properties);
-      
+
       _targetType = MixinTypeUtility.GetUnderlyingTargetType (concreteType);
       _concreteType = concreteType;
       _businessObjectProvider = businessObjectProvider;
@@ -49,6 +50,19 @@ namespace Remotion.ObjectBinding.BindableObject
 
       foreach (PropertyBase property in _properties.ToArray())
         property.SetReflectedClass (this);
+    }
+
+    /// <summary> Gets the type name as presented to the user. </summary>
+    /// <returns> The human readable identifier of this type. </returns>
+    /// <remarks> The result of this method may depend on the current culture. </remarks>
+    public string GetDisplayName ()
+    {
+      var globalizationService = BusinessObjectProvider.GetService<BindableObjectGlobalizationService> ();
+      if (globalizationService == null)
+        return Identifier;
+
+      var type = TypeAdapter.Create (_targetType);
+      return globalizationService.GetTypeDisplayName (type, type);
     }
 
     /// <summary> Returns the <see cref="IBusinessObjectProperty"/> for the passed <paramref name="propertyIdentifier"/>. </summary>
@@ -63,7 +77,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);
 
-      if (!Properties.Contains  (propertyIdentifier))
+      if (!Properties.Contains (propertyIdentifier))
         return null;
 
       return Properties[propertyIdentifier];
@@ -76,7 +90,8 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <returns>
     ///   <see langword="true" /> if a property with the <paramref name="propertyIdentifier"/> exists, otherwise <see langword="false" />.
     /// </returns>
-    [Obsolete ("Use GetPropertyDefinition (string) instead. If the call returns null, the property does not exist on the BindableObjectClass. (1.13.177.0)")]
+    [Obsolete (
+        "Use GetPropertyDefinition (string) instead. If the call returns null, the property does not exist on the BindableObjectClass. (1.13.177.0)")]
     public bool HasPropertyDefinition (string propertyIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);

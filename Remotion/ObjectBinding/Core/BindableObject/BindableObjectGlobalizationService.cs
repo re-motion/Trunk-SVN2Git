@@ -101,6 +101,14 @@ namespace Remotion.ObjectBinding.BindableObject
       return _resourceManager.Value.GetString (value ? ResourceIdentifier.True : ResourceIdentifier.False);
     }
 
+    public string GetTypeDisplayName (ITypeInformation typeInformation, ITypeInformation typeInformationForResourceResolution)
+    {
+      ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
+      ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
+
+      return _memberInformationGlobalizationService.GetTypeDisplayName (typeInformation, typeInformationForResourceResolution);
+    }
+
     /// <summary>
     /// Gets the localized display name of a property.
     /// </summary>
@@ -109,8 +117,8 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <returns>The localized display name.</returns>
     public string GetPropertyDisplayName (IPropertyInformation propertyInformation, ITypeInformation typeInformationForResourceResolution)
     {
-      ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
       // Note: Currently, MixedMultilingualResources requires the concrete mixed type and the concrete implemented property for globalization 
       // attribute analysis. We need to extract that information from BindableObjectMixinIntroducedPropertyInformation. The goal is to redesign mixin-

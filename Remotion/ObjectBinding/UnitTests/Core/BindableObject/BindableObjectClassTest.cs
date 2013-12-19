@@ -17,10 +17,13 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.ExtensibleEnums.Globalization;
+using Remotion.Globalization;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -53,12 +56,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     private BindableObjectProvider _bindableObjectProvider;
+    private MockRepository _mockRepository;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _bindableObjectProvider = new BindableObjectProvider();
+      _bindableObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
+      BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProvider);
+      BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectProvider);
+      _mockRepository = new MockRepository ();
     }
 
     public void Initialize_WithTypeNotUsingBindableObjectMixin ()
@@ -98,6 +105,45 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       PropertyReflector propertyReflector = PropertyReflector.Create (GetPropertyInfo (type, propertyName), _bindableObjectProvider);
       return propertyReflector.GetMetadata();
+    }
+
+    [Test]
+    public void GetDisplayName_WithoutGlobalizationService ()
+    {
+      var classReflector = new ClassReflector (
+          typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create ());
+      var bindableObjectClass = classReflector.GetMetadata ();
+
+      Assert.That (bindableObjectClass.GetDisplayName (), 
+        Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes, Remotion.ObjectBinding.UnitTests"));
+    }
+
+    [Test]
+    public void GetDisplayName_WithGlobalizationService ()
+    {
+      var classReflector = new ClassReflector (
+          typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create ());
+      var bindableObjectClass = classReflector.GetMetadata ();
+
+      var mockMemberInformationGlobalizationService = _mockRepository.StrictMock<IMemberInformationGlobalizationService> ();
+      _bindableObjectProvider.AddService (
+          typeof (BindableObjectGlobalizationService),
+          new BindableObjectGlobalizationService (
+              MockRepository.GenerateStub<ICompoundGlobalizationService> (),
+              mockMemberInformationGlobalizationService,
+              MockRepository.GenerateStub<IEnumerationGlobalizationService> (),
+              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService> ()));
+
+      Expect.Call (
+          mockMemberInformationGlobalizationService.TryGetTypeDisplayName (
+              Arg<ITypeInformation>.Matches (c => c.ConvertToRuntimeType () == bindableObjectClass.TargetType),
+              Arg<ITypeInformation>.Matches (c => c.ConvertToRuntimeType () == bindableObjectClass.TargetType),
+              out Arg<string>.Out ("MockString").Dummy))
+          .Return (true);
+      _mockRepository.ReplayAll ();
+
+      Assert.That (bindableObjectClass.GetDisplayName (),
+        Is.EqualTo ("MockString"));
     }
 
     [Test]

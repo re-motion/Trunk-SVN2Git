@@ -32,6 +32,11 @@ namespace Remotion.ObjectBinding
   /// </remarks>
   public interface IBusinessObjectClass
   {
+    /// <summary> Gets the type name as presented to the user. </summary>
+    /// <returns> The human readable identifier of this type. </returns>
+    /// <remarks> The result of this method may depend on the current culture. </remarks>
+    string GetDisplayName ();
+
     /// <summary> Returns the <see cref="IBusinessObjectProperty"/> for the passed <paramref name="propertyIdentifier"/>. </summary>
     /// <param name="propertyIdentifier"> 
     ///   A <see cref="String"/> uniquely identifying an <see cref="IBusinessObjectProperty"/> in this <see cref="IBusinessObjectClass"/>.

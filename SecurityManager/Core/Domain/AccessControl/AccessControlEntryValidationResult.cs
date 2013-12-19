@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
@@ -60,7 +61,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         errorMessageBuilder.AppendLine();
         errorMessageBuilder.Append ("  ");
 
-        var displayName = enumerationGlobalizationService.TryGetEnumerationValueDisplayName (error);
+        var displayName = enumerationGlobalizationService.GetEnumerationValueDisplayName (error);
         errorMessageBuilder.Append (displayName);
       }
 

@@ -99,6 +99,19 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    public void GetTypeDisplayName_TypeWithResourceEntry ()
+    {
+      Assert.That (_globalizationService.GetTypeDisplayName (_targetType, _targetType), Is.EqualTo ("Localized Typename"));
+    }
+
+    [Test]
+    public void GetTypeDisplayName_TypeWithoutResourceEntryForTypename ()
+    {
+      var typeInfo = TypeAdapter.Create (typeof (SimpleBusinessObjectClass));
+      Assert.That (_globalizationService.GetTypeDisplayName (typeInfo, typeInfo), Is.EqualTo ("SimpleBusinessObjectClass"));
+    }
+
+    [Test]
     public void GetPropertyDisplayName ()
     {
       IPropertyInformation propertyInformation = GetPropertyInfo (typeof (ClassWithResources), "Value1");
