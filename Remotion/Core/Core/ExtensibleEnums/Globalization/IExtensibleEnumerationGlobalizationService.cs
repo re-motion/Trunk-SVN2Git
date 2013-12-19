@@ -32,7 +32,6 @@ namespace Remotion.ExtensibleEnums.Globalization
     /// <summary>
     /// Returns the human-readable extensible-enumeration name of the spefified reflection object.
     /// </summary>
-    [NotNull]
-    string GetExtensibleEnumerationValueDisplayName ([NotNull]IExtensibleEnum value);
+    bool TryGetExtensibleEnumerationValueDisplayName ([NotNull]IExtensibleEnum value, out string result);
   }
 }

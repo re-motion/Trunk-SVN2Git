@@ -36,13 +36,14 @@ namespace Remotion.ExtensibleEnums.Globalization
       _globalizationService = globalizationService;
     }
 
-    public string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value)
+    public bool TryGetExtensibleEnumerationValueDisplayName (IExtensibleEnum value, out string result)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
       var resourceType = value.GetValueInfo().DefiningMethod.DeclaringType;
       var resourceManager = _globalizationService.GetResourceManager (TypeAdapter.Create (resourceType));
-      return resourceManager.GetStringOrDefault (value.ID) ?? value.ValueName;
+
+      return resourceManager.TryGetString(value.ID, out result);
     }
   }
 }

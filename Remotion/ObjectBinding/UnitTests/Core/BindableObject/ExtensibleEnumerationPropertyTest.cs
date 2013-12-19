@@ -83,8 +83,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               mockExtensibleEnumerationGlobalizationService));
 
       mockExtensibleEnumerationGlobalizationService
-          .Expect (mock => mock.GetExtensibleEnumerationValueDisplayName (extensibleEnumInfo.Value))
-          .Return ("DisplayName 1");
+          .Expect (mock => mock.TryGetExtensibleEnumerationValueDisplayName (Arg.Is(extensibleEnumInfo.Value), out Arg<string>.Out("DisplayName 1").Dummy))
+          .Return (true);
       mockExtensibleEnumerationGlobalizationService.Replay ();
 
       var info = _propertyWithResources.CreateEnumerationValueInfo (extensibleEnumInfo, null);

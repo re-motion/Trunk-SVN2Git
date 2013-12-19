@@ -31,6 +31,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
   {
     private ExtensibleEnumerationServiceGlobalizationService _service;
     private ICompoundGlobalizationService _globalizationServiceStub;
+    private string _resourceValue;
 
     [SetUp]
     public void SetUp ()
@@ -40,7 +41,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
     }
 
     [Test]
-    public void GetEnumerationValueDisplayName_WithResourceManager_ReturnsLocalizedValue ()
+    public void TryGetEnumerationValueDisplayName_WithResourceManager_ReturnsLocalizedValue ()
     {
       var resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
       resourceManagerStub.Stub (_ => _.IsNull).Return (false);
@@ -54,7 +55,70 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
                   out Arg<string>.Out ("expected").Dummy))
           .Return (true);
 
-      Assert.That (_service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1()), Is.EqualTo ("expected"));
+      Assert.That (_service.TryGetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1(), out _resourceValue), Is.True);
+      Assert.That (_resourceValue, Is.EqualTo ("expected"));
+    }
+
+    [Test]
+    public void GetEnumerationValueDisplayName_WithResourceManager_ReturnsLocalizedValue ()
+    {
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager> ();
+      resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _globalizationServiceStub
+          .Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (ExtensibleEnumWithResourcesExtensions))))
+          .Return (resourceManagerStub);
+      resourceManagerStub
+          .Stub (
+              _ => _.TryGetString (
+                  Arg.Is ("Remotion.UnitTests.ExtensibleEnums.TestDomain.ExtensibleEnumWithResourcesExtensions.Value1"),
+                  out Arg<string>.Out ("expected").Dummy))
+          .Return (true);
+
+      Assert.That (_service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1 ()), Is.EqualTo ("expected"));
+    }
+
+    [Test]
+    public void GetEnumerationValueDisplayNameOrDefault_WithResourceManager_ReturnsLocalizedValue ()
+    {
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager> ();
+      resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _globalizationServiceStub
+          .Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (ExtensibleEnumWithResourcesExtensions))))
+          .Return (resourceManagerStub);
+      resourceManagerStub
+          .Stub (
+              _ => _.TryGetString (
+                  Arg.Is ("Remotion.UnitTests.ExtensibleEnums.TestDomain.ExtensibleEnumWithResourcesExtensions.Value1"),
+                  out Arg<string>.Out ("expected").Dummy))
+          .Return (true);
+
+      Assert.That (_service.GetExtensibleEnumerationValueDisplayNameOrDefault (ExtensibleEnumWithResources.Values.Value1 ()), Is.EqualTo ("expected"));
+    }
+
+    [Test]
+    public void ContainsExtensibleEnumerationValueDisplayName_WithResourceManager_ReturnsLocalizedValue ()
+    {
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager> ();
+      resourceManagerStub.Stub (_ => _.IsNull).Return (false);
+      _globalizationServiceStub
+          .Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (ExtensibleEnumWithResourcesExtensions))))
+          .Return (resourceManagerStub);
+      resourceManagerStub
+          .Stub (
+              _ => _.TryGetString (
+                  Arg.Is ("Remotion.UnitTests.ExtensibleEnums.TestDomain.ExtensibleEnumWithResourcesExtensions.Value1"),
+                  out Arg<string>.Out ("expected").Dummy))
+          .Return (true);
+
+      Assert.That (_service.ContainsExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1 ()), Is.True);
+    }
+
+    [Test]
+    public void TryGetEnumerationValueDisplayName_WithoutResourceManager_ReturnsFalse ()
+    {
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull)).Return (NullResourceManager.Instance);
+
+      Assert.That (_service.TryGetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1 (), out _resourceValue), Is.False);
     }
 
     [Test]
@@ -62,24 +126,23 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
     {
       _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull)).Return (NullResourceManager.Instance);
 
-      Assert.That (_service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1()), Is.EqualTo ("Value1"));
+      Assert.That (_service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1 ()), Is.EqualTo ("Value1"));
     }
 
     [Test]
-    public void GetExtensibleEnumerationValueDisplayName_IntegrationTest ()
+    public void GetEnumerationValueDisplayNameOrDefault_WithoutResourceManager_ReturnsNull ()
     {
-      var service = SafeServiceLocator.Current.GetInstance<IExtensibleEnumerationGlobalizationService>();
-      Assert.That (service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1()), Is.EqualTo ("Wert1"));
-      Assert.That (service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value2()), Is.EqualTo ("Wert2"));
-      Assert.That (
-          service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.ValueWithoutResource()),
-          Is.EqualTo ("ValueWithoutResource"));
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull)).Return (NullResourceManager.Instance);
 
-      Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.Red()), Is.EqualTo ("Rot"));
-      Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.Green()), Is.EqualTo ("Grün"));
-      Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.RedMetallic()), Is.EqualTo ("RedMetallic"));
-      Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.LightRed()), Is.EqualTo ("Hellrot"));
-      Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.LightBlue()), Is.EqualTo ("LightBlue"));
+      Assert.That (_service.GetExtensibleEnumerationValueDisplayNameOrDefault (ExtensibleEnumWithResources.Values.Value1 ()), Is.Null);
+    }
+
+    [Test]
+    public void ContainsExtensibleEnumerationValueDisplayName_WithoutResourceManager_ReturnsFalse ()
+    {
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull)).Return (NullResourceManager.Instance);
+
+      Assert.That (_service.ContainsExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1 ()), Is.False);
     }
   }
 }
