@@ -30,8 +30,15 @@ namespace Remotion.ExtensibleEnums.Globalization
   public interface IExtensibleEnumerationGlobalizationService
   {
     /// <summary>
-    /// Returns the human-readable extensible-enumeration name of the spefified reflection object.
+    /// Tries to get the human-readable extensible-enumeration name of the spefified reflection object.
     /// </summary>
-    bool TryGetExtensibleEnumerationValueDisplayName ([NotNull]IExtensibleEnum value, out string result);
+    /// <param name="value">
+    /// The <see cref="IExtensibleEnum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="result">
+    /// The human-readable localized representation of the <paramref name="value"/> or <see langword="null" /> if no localization could be found.
+    /// </param>
+    /// <returns><see langword="true" /> if a resource could be found.</returns>
+    bool TryGetExtensibleEnumerationValueDisplayName ([NotNull] IExtensibleEnum value, out string result);
   }
 }
