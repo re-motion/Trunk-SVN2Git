@@ -131,8 +131,6 @@
     </Compile>
     <Compile Include="TypePipe\AssemblyTrackingCodeManager.cs" />
     <Compile Include="TypePipe\AssemblyTrackingPipelineFactory.cs" />
-    <Compile Include="TypePipe\DebuggerWorkaroundCodeGenerator.cs" />
-    <Compile Include="TypePipe\DebuggerWorkaroundPipelineFactory.cs" />
     <Compile Include="UnitTesting\AppDomainRunner.cs" />
     <Compile Include="UnitTesting\AssemblyCompiler.cs" />
     <Compile Include="UnitTesting\AssemblyCompilationException.cs" />

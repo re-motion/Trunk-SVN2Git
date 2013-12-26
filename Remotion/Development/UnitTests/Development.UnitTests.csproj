@@ -166,11 +166,6 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="Core\TypePipe\DebuggerWorkaroundIntegrationTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\TypePipe\DebuggerWorkaroundCodeGeneratorTest.cs" />
-    <Compile Include="Core\TypePipe\DebuggerWorkaroundPipelineFactoryTest.cs" />
     <Compile Include="Core\UnitTesting\Configuration\XmlSchemaValidationTest.cs" />
     <Compile Include="Core\UnitTesting\Enumerables\EnumerableExtensionsTest.cs" />
     <Compile Include="Core\UnitTesting\Enumerables\OneTimeEnumerableTest.cs" />
