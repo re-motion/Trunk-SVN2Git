@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Web;
 using NUnit.Framework;
@@ -410,6 +411,66 @@ namespace Remotion.Web.UnitTests.Core.Utilities
       var pageViewState = (Pair) viewState;
       var namingContainerViewState = pageViewState.Second;
       Assert.That (namingContainerViewState, Is.InstanceOf (typeof (Pair)));
+    }
+
+    [Test]
+    public void SetControlState_CanInvoke ()
+    {
+      _memberCaller.SetControlState (_parent, ControlState.Initialized);
+    }
+
+    [Test]
+    public void GetControlState_CanInvoke ()
+    {
+      _memberCaller.GetControlState (_parent);
+    }
+    
+    [Test]
+    public void InitRecursive_CanInvoke ()
+    {
+      _memberCaller.InitRecursive (_child, _namingContainer);
+    }
+
+    [Test]
+    public void LoadViewStateRecursive_CanInvoke ()
+    {
+      _memberCaller.LoadViewStateRecursive (_parent, null);
+    }
+
+    [Test]
+    public void SaveViewStateRecursive_CanInvoke ()
+    {
+      _memberCaller.SaveViewStateRecursive (_parent);
+    }
+
+    [Test]
+    public void SaveAllState_CanInvoke ()
+    {
+      _memberCaller.SaveAllState (_page);
+    }
+
+    [Test]
+    public void ClearChildControlState_CanInvoke ()
+    {
+      _memberCaller.ClearChildControlState (_namingContainer);
+    }
+
+    [Test]
+    public void GetPageStatePersister_CanInvoke ()
+    {
+      _memberCaller.GetPageStatePersister (_page);
+    }
+
+    [Test]
+    public void SetCollectionReadOnly_CanInvoke ()
+    {
+      _memberCaller.SetCollectionReadOnly (_parent.Controls, "Message");
+    }
+
+    [Test]
+    public void RenderChildrenInternal_CanInvoke ()
+    {
+      _memberCaller.RenderChildrenInternal (_parent, new HtmlTextWriter(new StringWriter()), _parent.Controls);
     }
   }
 }
