@@ -17,7 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Mixins;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions

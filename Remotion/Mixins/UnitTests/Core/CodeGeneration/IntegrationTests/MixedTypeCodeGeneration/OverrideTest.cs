@@ -19,9 +19,8 @@ using System.Reflection;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
-using Remotion.Reflection;
 using System.Linq;
-using Remotion.Text;
+using Remotion.TypePipe;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {
@@ -158,7 +157,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       [UsedImplicitly]
       public virtual string M (byte[][] bytes)
       {
-        return SeparatedStringBuilder.Build(",", bytes.Select (bs => "{"  + SeparatedStringBuilder.Build (",", bs) + "}"));
+        return string.Join (",", bytes.Select (bs => "{"  + string.Join (",", bs) + "}"));
       }
     }
 

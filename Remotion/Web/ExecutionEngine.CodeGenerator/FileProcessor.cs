@@ -22,7 +22,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Remotion.Text;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.CodeGenerator.Schema;
 
@@ -44,7 +43,13 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     {
       CommentLineContext commentLineContext = new CommentLineContext (null, null, false);
       List<string> importNamespaces = new List<string>(); // namespaces to import
-      SeparatedStringBuilder currentNamespace = new SeparatedStringBuilder (".");
+      StringBuilder currentNamespaceBuilder = new StringBuilder();
+      Action<string> currentNamespaceAppender = s =>
+      {
+        if (currentNamespaceBuilder.Length > 0)
+          currentNamespaceBuilder.Append (".");
+        currentNamespaceBuilder.Append (s);
+      };
 
       StreamReader reader = new StreamReader (file.FullName, true);
       int lineNumber = 1;
@@ -57,7 +62,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
         if (lineType == CodeLineType.NamespaceImport)
           ProcessNamespaceImportLine (importNamespaces, lineArgument);
         else if (lineType == CodeLineType.NamespaceDeclaration)
-          ProcessNamespaceDeclarationLine (lineArgument, currentNamespace);
+          ProcessNamespaceDeclarationLine (lineArgument, currentNamespaceAppender);
         else if (lineType == CodeLineType.LineComment)
         {
           commentLineContext = ProcessCommentLine (file, line, lineArgument, commentLineContext, whitespace, lineNumber);
@@ -69,7 +74,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
           if (!commentLineContext.IsXmlFragmentComplete && commentLineContext.XmlFragmentContext != null)
             ProcessXmlFragment (commentLineContext.XmlFragmentContext, file);
 
-          ProcessClassDeclarationLine (lineArgument, currentNamespace, commentLineContext.FunctionDeclaration);
+          ProcessClassDeclarationLine (lineArgument, currentNamespaceBuilder.ToString(), commentLineContext.FunctionDeclaration);
           break;
         }
       }
@@ -84,9 +89,9 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
         importNamespaces.Add (lineArgument);
     }
 
-    private void ProcessNamespaceDeclarationLine (string lineArgument, SeparatedStringBuilder currentNamespace)
+    private void ProcessNamespaceDeclarationLine (string lineArgument, Action<string> currentNamespaceAppender)
     {
-      currentNamespace.Append (lineArgument);
+      currentNamespaceAppender (lineArgument);
     }
 
     private CommentLineContext ProcessCommentLine (
@@ -205,7 +210,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       }
     }
 
-    private void ProcessClassDeclarationLine (string lineArgument, SeparatedStringBuilder currentNamespace, FunctionDeclaration declaration)
+    private void ProcessClassDeclarationLine (string lineArgument, string currentNamespace, FunctionDeclaration declaration)
     {
       if (declaration != null && string.IsNullOrEmpty (declaration.TemplateControlCodeBehindType))
       {

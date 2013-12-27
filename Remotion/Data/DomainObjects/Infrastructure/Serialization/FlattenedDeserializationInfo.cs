@@ -16,15 +16,20 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Remotion.Reflection;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 {
-  public class FlattenedDeserializationInfo
+  public sealed class FlattenedDeserializationInfo
   {
+    private static readonly ICache<Type, Func<FlattenedDeserializationInfo, object>> s_instanceFactoryCache =
+        CacheFactory.CreateWithLocking<Type, Func<FlattenedDeserializationInfo, object>>();
+
     public event EventHandler DeserializationFinished;
 
     private readonly FlattenedSerializationReader<object> _objectReader;
@@ -83,12 +88,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
       Type type = GetValueForHandle<Type>();
       if (type == null)
         return default (T);
-      else
+
+      var instanceFactory = s_instanceFactoryCache.GetOrCreateValue (type, GetInstanceFactory);
+      object instance = instanceFactory (this);
+      var originalPosition = _objectReader.ReadPosition;
+      return CastValue<T> (instance, originalPosition, "Object");
+    }
+
+    private Func<FlattenedDeserializationInfo, object> GetInstanceFactory (Type type)
+    {
+      var ctorInfo = type.GetConstructor (
+          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+          null,
+          new[] { typeof (FlattenedDeserializationInfo) },
+          new ParameterModifier[0]);
+
+      if (ctorInfo == null)
       {
-        object instance = TypesafeActivator.CreateInstance (type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With (this);
-        var originalPosition = _objectReader.ReadPosition;
-        return CastValue<T> (instance, originalPosition, "Object");
+        throw new NotSupportedException (
+            string.Format (
+                "Type '{0}' does not contain a public or non-public constructor accepting a FlattenedDeserializationInfo as its sole argument.",
+                type));
       }
+
+      var parameter = Expression.Parameter (typeof (FlattenedDeserializationInfo));
+      var factoryLambda = Expression.Lambda<Func<FlattenedDeserializationInfo, object>> (Expression.New (ctorInfo, parameter), parameter);
+      return factoryLambda.Compile();
     }
 
     private T CastValue<T> (object uncastValue, int originalPosition, string streamName)

@@ -72,7 +72,7 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("resourceManagers", resourceManagers);
 
       _resourceManagers = CreateFlatList (resourceManagers).ToArray();
-      _name = _resourceManagers.Any() ? SeparatedStringBuilder.Build (", ", _resourceManagers, rm=> rm.Name) : "Empty ResourceManagerSet";
+      _name = _resourceManagers.Any() ? string.Join (", ", _resourceManagers.Select (rm=> rm.Name)) : "Empty ResourceManagerSet";
     }
 
     /// <summary>

@@ -24,7 +24,7 @@ namespace Remotion.Utilities.ReSharperAnnotations
   /// This attribute is intended to mark API used only via reflection and should not be removed and so is treated as used.
   /// </summary>
   [MeansImplicitUse]
-  public sealed class ReflectionAPIAttribute : Attribute
+  public sealed partial class ReflectionAPIAttribute : Attribute
   {
     public ReflectionAPIAttribute () { }
   }

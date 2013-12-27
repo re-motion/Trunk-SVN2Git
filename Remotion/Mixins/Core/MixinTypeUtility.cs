@@ -22,7 +22,7 @@ using Remotion.Collections;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Utilities;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 using ReflectionUtility = Remotion.Utilities.ReflectionUtility;
 
@@ -276,7 +276,7 @@ namespace Remotion.Mixins
     /// specified <paramref name="args"/>.</returns>
     /// <remarks>
     /// This is just a wrapper around 
-    /// <see cref="ObjectFactory.Create(bool,System.Type,Remotion.Reflection.ParamList,object[])"/>
+    /// <see cref="ObjectFactory.Create(bool,System.Type,Remotion.TypePipe.ParamList,object[])"/>
     /// with a Reflection-like interface.
     /// </remarks>
     public static object CreateInstance (Type type, params object[] args)

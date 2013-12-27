@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 {

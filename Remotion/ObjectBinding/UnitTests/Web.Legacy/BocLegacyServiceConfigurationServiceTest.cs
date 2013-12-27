@@ -23,6 +23,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ServiceLocation;
+using Remotion.TypePipe;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
 {
@@ -33,6 +34,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
     public void GetConfiguration ()
     {
       var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IBocList).Assembly })
+          .Where (e => e.ServiceType.Assembly != typeof (IParticipant).Assembly) //TODO RM-5506: This condition can be removed once the ImplementationForAttribute is implemented.
           .Select (e => e.ServiceType).ToList();
       var nonLegacyServices = new[] { typeof (BocListCssClassDefinition), typeof (IDateTimeFormatter) };
       var expectedLegacyServiceTypes = allServiceTypes

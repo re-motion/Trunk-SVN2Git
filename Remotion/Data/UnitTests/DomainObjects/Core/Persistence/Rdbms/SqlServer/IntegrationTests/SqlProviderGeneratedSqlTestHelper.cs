@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using NUnit.Framework;
@@ -146,23 +147,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       {
         Console.WriteLine (sqlCommand.CommandText);
         Console.WriteLine (sqlCommand.CommandType);
-        Console.WriteLine (SeparatedStringBuilder.Build (
-          "," + Environment.NewLine,
-          sqlCommand.Parameters.Cast<IDataParameter>(),
-          parameter =>
-          {
-            string valueString;
-            if (parameter.Value == DBNull.Value)
-              valueString = "DBNull.Value";
-            else if (parameter.Value is string)
-              valueString = "\"" + parameter.Value + "\"";
-            else if (parameter.Value == null)
-              valueString = "null";
-            else
-              valueString = parameter.Value.ToString();
+        Console.WriteLine (string.Join ("," + Environment.NewLine, sqlCommand.Parameters.Cast<IDataParameter>().Select (parameter =>
+        {
+          string valueString;
+          if (parameter.Value == DBNull.Value)
+            valueString = "DBNull.Value";
+          else if (parameter.Value is string)
+            valueString = "\"" + parameter.Value + "\"";
+          else if (parameter.Value == null)
+            valueString = "null";
+          else
+            valueString = parameter.Value.ToString();
 
-            return string.Format ("Tuple.Create (\"{0}\", DbType.{1}, (object) {2})", parameter.ParameterName, parameter.DbType, valueString);
-          }));
+          return string.Format ("Tuple.Create (\"{0}\", DbType.{1}, (object) {2})", parameter.ParameterName, parameter.DbType, valueString);
+        })));
 
         throw;
       }

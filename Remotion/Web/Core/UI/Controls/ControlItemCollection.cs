@@ -102,7 +102,7 @@ namespace Remotion.Web.UI.Controls
       IControlItem controlItem = ArgumentUtility.CheckNotNullAndType<IControlItem> ("value", value);
 
       if (! IsSupportedType (controlItem))
-        throw new ArgumentTypeException ("value", controlItem.GetType());
+        throw ArgumentUtility.CreateArgumentTypeException ("value", controlItem.GetType(), null);
       if (Find (controlItem.ItemID) != null)
         throw new ArgumentException (string.Format ("The collection already contains an item with ItemID '{0}'.", controlItem.ItemID), "value");
     }

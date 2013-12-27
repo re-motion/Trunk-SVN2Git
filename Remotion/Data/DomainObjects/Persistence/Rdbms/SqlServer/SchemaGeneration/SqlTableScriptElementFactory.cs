@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
@@ -33,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      var columnDeclarationList = SeparatedStringBuilder.Build (",\r\n", tableDefinition.GetAllColumns().Select (GetColumnDeclaration));
+      var columnDeclarationList = string.Join (",\r\n", tableDefinition.GetAllColumns().Select (GetColumnDeclaration));
       var primaryKeyConstraintString = GetPrimaryKeyDeclaration (tableDefinition);
       return
           new ScriptStatement (

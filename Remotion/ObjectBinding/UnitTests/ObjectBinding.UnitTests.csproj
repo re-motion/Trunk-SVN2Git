@@ -10,12 +10,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.ObjectBinding.UnitTests</RootNamespace>
     <AssemblyName>Remotion.ObjectBinding.UnitTests</AssemblyName>
-    <FileUpgradeFlags></FileUpgradeFlags>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UpgradeBackupLocation></UpgradeBackupLocation>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -361,7 +363,8 @@
     <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithBooleanProperty.cs" />
     <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithEnumerationProperty.cs" />
     <Compile Include="Core\Design\BindableObject\BindableObjectTypeFinderTest.cs" />
-    <Compile Include="Core\Design\DropDownEditorBaseTest.cs"></Compile>
+    <Compile Include="Core\Design\DropDownEditorBaseTest.cs">
+    </Compile>
     <Compile Include="Core\Design\MockDropDownEditorBase.cs" />
     <Compile Include="Core\Globalization\ClassWithResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -582,6 +585,10 @@
     <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\TypePipe\Core\TypePipe.Core.csproj">
+      <Project>{98E7F7AA-12B2-4A6B-8922-52C8E53B378E}</Project>
+      <Name>TypePipe.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>

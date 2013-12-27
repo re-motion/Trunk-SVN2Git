@@ -27,8 +27,6 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
-using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Rhino.Mocks;
 using System.Linq;

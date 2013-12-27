@@ -376,7 +376,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private string GetObjectIDString (IEnumerable<ObjectID> objectIDs)
     {
-      return SeparatedStringBuilder.Build (", ", ConvertToStringAndCount (objectIDs, 10, GetObjectIDString));
+      return string.Join (", ", ConvertToStringAndCount (objectIDs, 10, GetObjectIDString));
     }
 
     private string GetObjectIDString (ObjectID id)
@@ -386,7 +386,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private string GetDomainObjectsString (IEnumerable<DomainObject> domainObjects)
     {
-      return SeparatedStringBuilder.Build (", ", ConvertToStringAndCount (domainObjects, 10, GetDomainObjectString));
+      return string.Join (", ", ConvertToStringAndCount (domainObjects, 10, GetDomainObjectString));
     }
 
     private string GetDomainObjectString (DomainObject domainObject)

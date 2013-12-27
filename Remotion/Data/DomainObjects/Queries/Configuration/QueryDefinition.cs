@@ -65,7 +65,7 @@ public class QueryDefinition : ISerializable, IObjectReference
   ///   <paramref name="storageProviderDefinition"/> is <see langword="null"/>.<br /> -or- <br />
   ///   <paramref name="statement"/> is <see langword="null"/>.
   /// </exception>
-  /// <exception cref="Remotion.Utilities.ArgumentEmptyException">
+  /// <exception cref="System.ArgumentException">
   ///   <paramref name="queryID"/> is an empty string.<br /> -or- <br />
   ///   <paramref name="statement"/> is an empty string.
   /// </exception>
@@ -88,7 +88,7 @@ public class QueryDefinition : ISerializable, IObjectReference
   ///   <paramref name="storageProviderDefinition"/> is <see langword="null"/>.<br /> -or- <br />
   ///   <paramref name="statement"/> is <see langword="null"/>.
   /// </exception>
-  /// <exception cref="Remotion.Utilities.ArgumentEmptyException">
+  /// <exception cref="System.ArgumentException">
   ///   <paramref name="queryID"/> is an empty string.<br /> -or- <br />
   ///   <paramref name="statement"/> is an empty string.
   /// </exception>

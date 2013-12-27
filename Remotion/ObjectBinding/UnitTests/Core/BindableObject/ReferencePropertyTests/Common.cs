@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests
 {
@@ -36,9 +35,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = 
-        "Argument concreteType is a Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes, "
-        +"which cannot be assigned to type Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass."
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "Parameter 'concreteType' is a 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes', "
+        +"which cannot be assigned to type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass'."
         + "\r\nParameter name: concreteType")]
     public void Initialize_WithMissmatchedConcreteType ()
     {
@@ -55,9 +54,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
-        "Argument parameters.ConcreteType is a Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, "
-        + "which cannot be assigned to type Remotion.ObjectBinding.IBusinessObject."
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'parameters.ConcreteType' is a 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass', "
+        + "which cannot be assigned to type 'Remotion.ObjectBinding.IBusinessObject'."
         + "\r\nParameter name: parameters.ConcreteType")]
     public void Initialize_WithConcreteTypeNotImplementingIBusinessObject ()
     {
@@ -71,12 +70,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
           false,
           new BindableObjectDefaultValueStrategy ());
       new ReferenceProperty (parameters);
-    }
-
-    private ReferenceProperty CreateProperty (string propertyName)
-    {
-      return new ReferenceProperty (
-          GetPropertyParameters (GetPropertyInfo (typeof (ClassWithReferenceType<SimpleBusinessObjectClass>), propertyName), _businessObjectProvider));
     }
   }
 }

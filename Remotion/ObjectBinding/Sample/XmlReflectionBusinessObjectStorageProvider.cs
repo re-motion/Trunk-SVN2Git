@@ -23,6 +23,7 @@ using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Sample

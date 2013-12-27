@@ -347,7 +347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentEmptyException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'propertyName' cannot be empty.\r\nParameter name: propertyName")]
     public void GetRelationEndPointDefinitionFromEmptyPropertyName ()
     {
       _orderClass.GetRelationEndPointDefinition (string.Empty);
@@ -424,7 +424,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentEmptyException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'propertyName' cannot be empty.\r\nParameter name: propertyName")]
     public void GetEmptyPropertyDefinition ()
     {
       _orderClass.GetPropertyDefinition (string.Empty);

@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
       {
         mainMessage = string.Format (
             "While the objects {0} are being loaded, only these object can be modified.",
-            SeparatedStringBuilder.Build (", ", _currentlyLoadingObjectIDs, id => "'" + id + "'"));
+            string.Join (", ", _currentlyLoadingObjectIDs.Select (id => "'" + id + "'")));
       }
       var message = mainMessage + " " + specificErrorMessage;
       return new InvalidOperationException (message);

@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       ArgumentUtility.CheckNotNull ("dbCommand", dbCommand);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      var columNames = SeparatedStringBuilder.Build (", ", _columnValues, cv => sqlDialect.DelimitIdentifier (cv.Column.Name));
+      var columNames = string.Join (", ", _columnValues.Select (cv => sqlDialect.DelimitIdentifier (cv.Column.Name)));
       statement.Append (columNames);
     }
 
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
             return parameter;
           });
 
-      var parameterNames = SeparatedStringBuilder.Build (", ", parameters, p => p.ParameterName);
+      var parameterNames = string.Join (", ", parameters.Select (p => p.ParameterName));
       statement.Append (parameterNames);
     }
   }

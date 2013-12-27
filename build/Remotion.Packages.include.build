@@ -18,7 +18,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-    <!-- Important: Keep list order! Core depends on Relinq, so Relinq should be
+    <!-- Important: Keep list order! Core depends on Relinq and TypePipe, so Relinq and TypePipe should be
          ordered first. Especially required for DependDB import (DependDB.Receiver) -->
     
     <AllPackages Include="Relinq">
@@ -31,7 +31,18 @@
       <ProductName>re-linq project (relinq.codeplex.com)</ProductName>
       <ProductNameShort>re-linq</ProductNameShort>
     </AllPackages>
-      
+
+    <AllPackages Include="TypePipe">
+      <PackageDeclaration>Remotion.Packaging.TypePipe.build</PackageDeclaration>
+      <DocumentationDeclaration>Remotion.Documentation.TypePipe.build</DocumentationDeclaration>
+      <AssemblyInfoFile>TypePipe\AssemblyInfoShared.*</AssemblyInfoFile>
+      <CompanyName>rubicon IT GmbH</CompanyName>
+      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
+      <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under Apache License, Version 2.0</Copyright>
+      <ProductName>re-motion code generation library (typepipe.codeplex.com)</ProductName>
+      <ProductNameShort>TypePipe</ProductNameShort>
+    </AllPackages>
+
     <AllPackages Include="Core">
       <PackageDeclaration>Remotion.Packaging.Core.build</PackageDeclaration>
       <DocumentationDeclaration>Remotion.Documentation.Core.build</DocumentationDeclaration>
@@ -74,17 +85,6 @@
       <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
       <ProductName>re-motion mixins library (remix.codeplex.com)</ProductName>
       <ProductNameShort>re-mix</ProductNameShort>
-    </AllPackages>
-
-    <AllPackages Include="TypePipe">
-      <PackageDeclaration>Remotion.Packaging.TypePipe.build</PackageDeclaration>
-      <DocumentationDeclaration>Remotion.Documentation.TypePipe.build</DocumentationDeclaration>
-      <AssemblyInfoFile>Remotion\TypePipe\AssemblyInfoShared.*</AssemblyInfoFile>
-      <CompanyName>rubicon IT GmbH</CompanyName>
-      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
-      <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under Apache License, Version 2.0</Copyright>
-      <ProductName>re-motion code generation library (typepipe.codeplex.com)</ProductName>
-      <ProductNameShort>TypePipe</ProductNameShort>
     </AllPackages>
   </ItemGroup>
 

@@ -21,6 +21,8 @@ using Remotion.Logging;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
+using Remotion.ServiceLocation;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins

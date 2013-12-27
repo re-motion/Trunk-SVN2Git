@@ -245,7 +245,7 @@ namespace Remotion.Utilities
       if (value == null && !isNullableDestinationType)
         throw new NotSupportedException (string.Format ("Cannot convert value 'null' to non-nullable type '{0}'.", destinationType));
       else if (value != null && !sourceType.IsInstanceOfType (value))
-        throw new ArgumentTypeException ("value", sourceType, value.GetType());
+        throw ArgumentUtility.CreateArgumentTypeException ("value", value.GetType(), sourceType);
       
       if (AreUnderlyingTypesEqual (sourceType, destinationType))
         return GetValueOrEmptyString (destinationType, value);

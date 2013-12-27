@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
                                  orderby count descending
                                  select new { g.Key, Count = count };
 
-        var statisticsString = SeparatedStringBuilder.Build (Environment.NewLine, groupingsWithCount, g => g.Key + ": " + g.Count);
+        var statisticsString = string.Join (Environment.NewLine, groupingsWithCount.Select (g => g.Key + ": " + g.Count));
         log.Debug (statisticsString);
       }
       

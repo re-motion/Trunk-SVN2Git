@@ -24,7 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration.TypePipe;
-using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Implementation;
 using Rhino.Mocks;
@@ -47,8 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 
       var remixParticipant = new MixinParticipant();
       var restoreParticipant = new DomainObjectParticipant();
-      _pipeline = PipelineFactory.Create ("DomainObjectCreatorTest", remixParticipant, restoreParticipant);
-      var pipelineRegistry = new PipelineRegistry (_pipeline);
+      _pipeline = SafeServiceLocator.Current.GetInstance<IPipelineFactory>().Create ("DomainObjectCreatorTest", remixParticipant, restoreParticipant);
+      var pipelineRegistry = new DefaultPipelineRegistry (_pipeline);
       _domainObjectCreator = new DomainObjectCreator (pipelineRegistry);
 
       _transaction = ClientTransaction.CreateRootTransaction();

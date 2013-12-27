@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Security;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain

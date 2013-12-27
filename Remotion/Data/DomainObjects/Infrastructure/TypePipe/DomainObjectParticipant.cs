@@ -18,6 +18,7 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection.CodeGeneration.TypePipe;
 using Remotion.TypePipe.Dlr.Ast;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Caching;
@@ -46,6 +47,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// <threadsafety static="true" instance="true"/>
   public class DomainObjectParticipant : IParticipant
   {
+    static DomainObjectParticipant ()
+    {
+      PipelineRegistryInitializer.InitializeWithServiceLocator();
+    }
+
     private static readonly MethodInfo s_getPublicDomainObjectTypeImplementation = GetInfrastructureHook ("GetPublicDomainObjectTypeImplementation");
     private static readonly MethodInfo s_performConstructorCheck = GetInfrastructureHook ("PerformConstructorCheck");
 

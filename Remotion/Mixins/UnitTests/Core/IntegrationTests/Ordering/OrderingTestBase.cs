@@ -96,14 +96,14 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 
     private static string BuildMixinListForExceptionMessage (IEnumerable<Type> mixinTypes)
     {
-      return SeparatedStringBuilder.Build ("," + Environment.NewLine, mixinTypes.Select (m => "'" + m.FullName + "'"));
+      return string.Join ("," + Environment.NewLine, mixinTypes.Select (m => "'" + m.FullName + "'"));
     }
 
     private static string BuildMixinListForExceptionMessage (IEnumerable<Tuple<Type[], string>> mixinTypeGroups)
     {
       var groupStrings = mixinTypeGroups
-          .Select (g => "{" + SeparatedStringBuilder.Build (", ", g.Item1, m => "'" + m.FullName + "'") + "} (overriding: '" + g.Item2 + "')");
-      return SeparatedStringBuilder.Build ("," + Environment.NewLine, groupStrings, groupString => groupString);
+          .Select (g => "{" + string.Join (", ", g.Item1.Select (m => "'" + m.FullName + "'")) + "} (overriding: '" + g.Item2 + "')");
+      return string.Join ("," + Environment.NewLine, groupStrings.Select (groupString => groupString));
     }
   }
 }

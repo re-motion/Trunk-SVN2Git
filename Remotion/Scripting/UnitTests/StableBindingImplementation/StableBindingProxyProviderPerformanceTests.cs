@@ -18,8 +18,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using Remotion.Mixins;
-using Remotion.Reflection;
 using Remotion.Scripting.StableBindingImplementation;
+using Remotion.TypePipe;
 
 namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 {

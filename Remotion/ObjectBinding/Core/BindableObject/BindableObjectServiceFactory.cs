@@ -15,13 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
-using Remotion.Globalization;
 using Remotion.Mixins;
 using Remotion.ServiceLocation;
+using Remotion.TypePipe;
 using Remotion.Utilities;
-using Remotion.Reflection;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.ObjectBinding.BindableObject
 {

@@ -16,8 +16,8 @@
 // 
 using System;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Reflection;
 using Remotion.ServiceLocation;
+using Remotion.TypePipe;
 
 namespace Remotion.Mixins
 {

@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      stringBuilder.Append (SeparatedStringBuilder.Build (", ", _selectedColumns, c => c == null ? "NULL" : sqlDialect.DelimitIdentifier(c.Name)));
+      stringBuilder.Append (string.Join (", ", _selectedColumns.Select (c => c == null ? "NULL" : sqlDialect.DelimitIdentifier(c.Name))));
     }
 
     public ISelectedColumnsSpecification Union (IEnumerable<ColumnDefinition> additionalColumns)

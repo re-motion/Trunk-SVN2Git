@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -52,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     private string GetNullColumnList (IEnumerable<ColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNull ("columns", columns);
-      return SeparatedStringBuilder.Build (", ", columns, cd => "CONVERT(" + cd.StorageTypeInfo.StorageTypeName + ",NULL) AS ["+ cd.Name + "]");
+      return String.Join ((string) ", ", (IEnumerable<string>) columns.Select (cd => "CONVERT(" + cd.StorageTypeInfo.StorageTypeName + ",NULL) AS ["+ cd.Name + "]"));
     }
   }
 }

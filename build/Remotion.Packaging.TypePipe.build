@@ -28,10 +28,9 @@
       <CodePlexProjectName>typepipe</CodePlexProjectName>
       <CodePlexReleaseName>"$(Version) (.NET 4.5)"</CodePlexReleaseName>
       <CodePlexDescription>This is build $(Version) of the TypePipe for .NET 4.5. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D'$(ReleaseNotesComponentName)'+AND+issuetype+in+%28Bug%2C+'New+Feature'%2C+'Breaking+Change'%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D'$(Version)'+AND+resolution%3DFixed+ORDER+BY+issuetype%2Ccomponent].</CodePlexDescription>
-      <!-- Do not upload Remotion.TypePipe to DependDB, it's part of Remotion.Core! -->
-      <UploadToDependDB>False</UploadToDependDB>
-      <DependDBProjectName></DependDBProjectName>
-      <DependDBExecuteXReferencer></DependDBExecuteXReferencer>
+      <UploadToDependDB>True</UploadToDependDB>
+      <DependDBProjectName>re-motion TypePipe</DependDBProjectName>
+      <DependDBExecuteXReferencer>False</DependDBExecuteXReferencer>
     </PropertyGroup>
   </Target>
 
@@ -42,23 +41,14 @@
       <SourceFiles Remove="@(SourceFiles)"/>
       <SourceFiles Include="$(SolutionDirectory)Remotion-TypePipe.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)How to build TypePipe.txt" Exclude="@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Castle-3.0\**" Exclude="@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\log4net.*" Exclude="@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Microsoft.Practices.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Rhino.Mocks*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\NUnit-2.6\**" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\ThirdPartyDependencies.txt" Exclude="@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)prereq\Tools\FuncGen\**" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Generate-Snk.cmd" Exclude="@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)Remotion\*.*" Exclude="@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)Remotion\Core\**"
-                   Exclude="$(SolutionDirectory)Remotion\Core\**\bin\**;$(SolutionDirectory)Remotion\Core\**\obj\**;@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)Remotion\TypePipe\**"
-                   Exclude="$(SolutionDirectory)Remotion\TypePipe\**\bin\**;$(SolutionDirectory)Remotion\TypePipe\**\obj\**;@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)Remotion\Development\Core\**"
-                   Exclude="$(SolutionDirectory)Remotion\Development\Core\**\bin\**;$(SolutionDirectory)Remotion\Development\Core\**\obj\**;@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)Remotion\Development\RhinoMocks\**"
-                   Exclude="$(SolutionDirectory)Remotion\Development\RhinoMocks\**\bin\**;$(SolutionDirectory)Remotion\Development\RhinoMocks\**\obj\**;@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)SharedSource\**"
+                   Exclude="$(SolutionDirectory)SharedSource\**\bin\**;$(SolutionDirectory)SharedSource\**\obj\**;$(SolutionDirectory)SharedSource\**\*.zip;@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)TypePipe\**"
+                   Exclude="$(SolutionDirectory)TypePipe\**\bin\**;$(SolutionDirectory)Remotion\TypePipe\**\obj\**;@(StandardExcludes)" />
     </ItemGroup>
   </Target>
 
@@ -67,22 +57,11 @@
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
 
     <ItemGroup>
-      <_includedBinaryFiles Remove="@(_includedBinaryFiles)"/>
-      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.dll" />
-      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.xml" />
-      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.pdb" />
-      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.TypePipe.dll" />
-      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.TypePipe.xml" />
-      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.TypePipe.pdb" />
-      <_includedBinaryFiles Include="$(BinariesDirectory)**\log4net.*" />
-      <_includedBinaryFiles Include="$(BinariesDirectory)**\Microsoft.Practices.*" />
-      <_includedBinaryFiles Include="$(BinariesDirectory)**\TypePipe.chm" />
-    </ItemGroup>
-
-    <ItemGroup>
       <BinaryFiles Remove="@(BinaryFiles)"/>
-      <BinaryFiles Include="@(_includedBinaryFiles)"
-                   Exclude="@(StandardExcludes);"/>
+      <BinaryFiles Include="$(BinariesDirectory)**\Remotion.TypePipe.*"
+                            Exclude="@(StandardExcludes)"/>
+      <BinaryFiles Include="$(BinariesDirectory)**\TypePipe.chm"
+                            Exclude="@(StandardExcludes)"/>
     </ItemGroup>
   </Target>
 
@@ -91,12 +70,18 @@
 
     <ItemGroup>
       <LicenseFiles Remove="@(LicenseFiles)"/>
-      <LicenseFiles Include="$(SolutionDirectory)Remotion\license\*.*" Exclude="@(StandardExcludes)" />
+      <LicenseFiles Include="$(SolutionDirectory)TypePipe\license\*.*" Exclude="@(StandardExcludes)" />
     </ItemGroup>
   </Target>
-  
+
   <Target Name="CreateDependDBBinaryFiles" DependsOnTargets="CreateStandardExcludes">
-    <Error Text="TypePipe is no standalone DependDB project." />
+    <Error Text="The property 'DependDBBinariesDirectory' is not set." Condition="'$(DependDBBinariesDirectory)' == ''" />
+    <Error Text="DependDB requires the debug configuration build - not found at '$(DependDBBinariesDirectory)'." Condition="!Exists($(DependDBBinariesDirectory))"/>
+    <ItemGroup>
+      <DependDBBinaryFiles Remove="@(DependDBBinaryFiles)"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.TypePipe.dll"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.TypePipe.Development.dll"/>
+    </ItemGroup>
   </Target>
   
 </Project>

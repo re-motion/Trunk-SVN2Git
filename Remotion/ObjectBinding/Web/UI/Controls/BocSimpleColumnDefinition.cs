@@ -25,7 +25,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 

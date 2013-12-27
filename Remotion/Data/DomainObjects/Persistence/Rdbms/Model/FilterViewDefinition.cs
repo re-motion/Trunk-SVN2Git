@@ -54,13 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNullOrEmpty ("classIDs", classIDs);
 
       if (!(baseEntity is TableDefinition || baseEntity is FilterViewDefinition))
-      {
-        throw new ArgumentTypeException (
-            "The base entity must either be a TableDefinition or a FilterViewDefinition.",
-            "baseEntity",
-            null,
-            baseEntity.GetType());
-      }
+        throw new ArgumentException ("The base entity must either be a TableDefinition or a FilterViewDefinition.", "baseEntity");
 
       _baseEntity = baseEntity;
       _classIDs = classIDs.ToList().AsReadOnly();

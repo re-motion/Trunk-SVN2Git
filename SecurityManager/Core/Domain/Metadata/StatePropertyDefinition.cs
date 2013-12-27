@@ -16,14 +16,12 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Linq.Expressions;
 using Remotion.Data.DomainObjects;
 using Remotion.FunctionalProgramming;
-using Remotion.Reflection;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata

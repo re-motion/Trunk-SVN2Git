@@ -75,14 +75,12 @@ namespace Remotion.Reflection.CodeGeneration
     {
       if (!wrapperParameterTypes[0].IsAssignableFrom (wrappedMethod.DeclaringType))
       {
-        throw new ArgumentTypeException (
+        throw new ArgumentException (
             string.Format (
                 "The wrapperParameterType #0 ('{0}') cannot be assigned to the declaring type ('{1}') of the wrappedMethod.",
                 wrapperParameterTypes[0].Name,
                 wrappedMethod.DeclaringType.Name),
-            "wrapperParameterTypes",
-            wrappedMethod.DeclaringType,
-            wrapperParameterTypes[0]);
+            "wrapperParameterTypes");
       }
     }
 
@@ -93,16 +91,14 @@ namespace Remotion.Reflection.CodeGeneration
         var wrapperParameterType = wrapperParameterTypes[wrappedParameter.Position + 1];
         if (!wrapperParameterType.IsAssignableFrom (wrappedParameter.ParameterType))
         {
-          throw new ArgumentTypeException (
+          throw new ArgumentException (
               string.Format (
                   "The wrapperParameterType #{1} ('{0}') cannot be assigned to the type ('{2}') of parameter '{3}' of the wrappedMethod.",
                   wrapperParameterType.Name,
                   wrappedParameter.Position + 1,
                   wrappedParameter.ParameterType.Name,
                   wrappedParameter.Name),
-              "wrapperParameterTypes",
-              wrappedParameter.ParameterType,
-              wrapperParameterType);
+              "wrapperParameterTypes");
         }
 
         if (wrappedParameter.IsOut)
@@ -138,14 +134,12 @@ namespace Remotion.Reflection.CodeGeneration
     {
       if (!wrapperReturnType.IsAssignableFrom (wrappedMethod.ReturnType))
       {
-        throw new ArgumentTypeException (
+        throw new ArgumentException (
             string.Format (
                 "The wrapperReturnType ('{0}') cannot be assigned from the return type ('{1}') of the wrappedMethod.",
                 wrapperReturnType.Name,
                 wrappedMethod.ReturnType.Name),
-            "wrapperReturnType",
-            wrappedMethod.ReturnType,
-            wrapperReturnType);
+            "wrapperReturnType");
       }
     }
 

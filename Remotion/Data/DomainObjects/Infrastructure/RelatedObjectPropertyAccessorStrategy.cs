@@ -130,16 +130,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void CheckNewRelatedObjectType (IObjectEndPoint objectEndPoint, DomainObject newRelatedObject)
     {
-      if (!objectEndPoint.Definition.GetOppositeEndPointDefinition ().ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
+      if (!objectEndPoint.Definition.GetOppositeEndPointDefinition().ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
       {
         var message = string.Format (
-            "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}', because it is not compatible "
-            + "with the type of the property.",
-            newRelatedObject.ID, objectEndPoint.Definition.PropertyName, objectEndPoint.ObjectID);
-        throw new ArgumentTypeException (
+            "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}', because it is not compatible with the type of the property.",
+            newRelatedObject.ID,
+            objectEndPoint.Definition.PropertyName,
+            objectEndPoint.ObjectID);
+        throw new ArgumentException (
             message,
-            "newRelatedObject", objectEndPoint.Definition.GetOppositeEndPointDefinition ().ClassDefinition.ClassType,
-            newRelatedObject.ID.ClassDefinition.ClassType);
+            "newRelatedObject");
       }
     }
   }

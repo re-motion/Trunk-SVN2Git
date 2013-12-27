@@ -70,7 +70,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
           var orderedUnprocessedMixins = unprocessedMixins.OrderBy (m => m.FullName, StringComparer.Ordinal);
           var message = string.Format (
               "The following group of mixins contains circular dependencies:{1}{0}.",
-              SeparatedStringBuilder.Build ("," + Environment.NewLine, orderedUnprocessedMixins, m => "'" + m.FullName + "'"),
+              string.Join ("," + Environment.NewLine, orderedUnprocessedMixins.Select (m => "'" + m.FullName + "'")),
               Environment.NewLine);
           throw new InvalidOperationException (message);
         }
@@ -102,15 +102,15 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       if (badGroups.Any ())
       {
         var badGroupStrings = badGroups
-            .Select (g => new { Text = SeparatedStringBuilder.Build (", ", g, m => "'" + m.Mixin.FullName + "'"), Group = g })
+            .Select (g => new { Text = string.Join (", ", g.Select (m => "'" + m.Mixin.FullName + "'")), Group = g })
             .GroupBy (g => g.Text, g => g.Group.Key)
-            .Select (g => string.Format ("{{{0}}} (overriding: {1})", g.Key, SeparatedStringBuilder.Build (", ", g, m => "'" + m.Name + "'")));
+            .Select (g => string.Format ("{{{0}}} (overriding: {1})", g.Key, string.Join (", ", g.Select (m => "'" + m.Name + "'"))));
         
         var message = string.Format (
             "The following mixin groups require a clear base call ordering, but do not provide enough dependency information:{1}{0}.{1}"
             + "Please supply additional dependencies to the mixin definitions, use the AcceptsAlphabeticOrderingAttribute, or adjust the mixin "
             + "configuration accordingly.",
-            SeparatedStringBuilder.Build ("," + Environment.NewLine, badGroupStrings),
+            string.Join ("," + Environment.NewLine, badGroupStrings),
             Environment.NewLine);
         throw new InvalidOperationException (message);
       }

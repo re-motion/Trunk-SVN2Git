@@ -26,7 +26,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 

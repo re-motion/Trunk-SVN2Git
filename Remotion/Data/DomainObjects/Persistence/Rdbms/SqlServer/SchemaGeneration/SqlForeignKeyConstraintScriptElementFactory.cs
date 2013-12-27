@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
@@ -74,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
     private string GetColumnNameList (IEnumerable<ColumnDefinition> columns)
     {
-      return SeparatedStringBuilder.Build (", ", columns, c => "[" + c.Name + "]");
+      return String.Join ((string) ", ", (IEnumerable<string>) columns.Select (c => "[" + c.Name + "]"));
     }
   }
 }

@@ -41,6 +41,8 @@
       <SourceFiles Include="$(SolutionDirectory)*.cmd" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\**" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)build\*.*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)SharedSource\**"
+                   Exclude="$(SolutionDirectory)SharedSource\**\bin\**;$(SolutionDirectory)SharedSource\**\obj\**;$(SolutionDirectory)SharedSource\**\*.zip;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\**"
                    Exclude="$(SolutionDirectory)Remotion\**\bin\**;$(SolutionDirectory)Remotion\**\obj\**;@(StandardExcludes)" />
     </ItemGroup>
@@ -92,6 +94,7 @@
       <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.Dms*.dll"/>
       <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.Linq*.dll"/>
       <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager*.dll"/>
+      <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.TypePipe*.dll"/>
     </ItemGroup>
     <ItemGroup>
       <DependDBBinaryFiles Remove="@(DependDBBinaryFiles)"/>

@@ -33,7 +33,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoint
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMothers;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Rhino.Mocks;
 using System.Linq;
 

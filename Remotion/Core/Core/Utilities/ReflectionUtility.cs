@@ -314,7 +314,7 @@ namespace Remotion.Utilities
         if (ascribeeType.IsAssignableFrom (type))
           return Type.EmptyTypes;
         else
-          throw new ArgumentTypeException ("type", ascribeeType, type);
+          throw ArgumentUtility.CreateArgumentTypeException ("type", type, ascribeeType);
       }
       else if (ascribeeType.IsInterface)
         return GetAscribedGenericInterfaceArgumentsInternal (type, ascribeeType);
@@ -354,7 +354,7 @@ namespace Remotion.Utilities
       }
 
       if (conreteSpecialization == null)
-        throw new ArgumentTypeException ("type", ascribeeType, type);
+        throw ArgumentUtility.CreateArgumentTypeException ("type", type, ascribeeType);
 
       Assertion.IsTrue (conreteSpecialization.GetGenericTypeDefinition () == ascribeeType.GetGenericTypeDefinition ());
       return conreteSpecialization.GetGenericArguments ();
@@ -375,7 +375,7 @@ namespace Remotion.Utilities
       if (currentType != null)
         return currentType.GetGenericArguments ();
       else
-        throw new ArgumentTypeException ("type", ascribeeType, type);
+        throw ArgumentUtility.CreateArgumentTypeException ("type", type, ascribeeType);
     }
 
     private static bool CanDirectlyAscribeToGenericTypeInternalFromCache (Type type, Type ascribeeType, Type ascribeeGenericTypeDefinition)

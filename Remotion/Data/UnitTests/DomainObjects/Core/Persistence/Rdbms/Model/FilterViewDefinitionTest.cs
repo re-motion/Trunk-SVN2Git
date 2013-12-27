@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The base entity must either be a TableDefinition or a FilterViewDefinition.\r\nParameter name: baseEntity")]
     public void Initialization_WithInvalidBaseEntity ()
     {

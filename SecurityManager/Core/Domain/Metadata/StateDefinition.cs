@@ -17,7 +17,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 
 namespace Remotion.SecurityManager.Domain.Metadata
 {

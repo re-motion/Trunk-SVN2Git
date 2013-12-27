@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Remotion.Text
@@ -25,61 +26,56 @@ namespace Remotion.Text
 /// <summary>
 /// Builds a string adding separators between appended strings.
 /// </summary>
+[Obsolete ("Use StringBuilder instead. (Version 1.15.7.0)")]
 public class SeparatedStringBuilder
 {
   /// <summary>
   /// Appends the result of selector(item) for each item in the specified list.
   /// </summary>
+  [Obsolete ("Use string.Join (separator, list.Select (selector)) instead. (Version 1.15.7.0)")]
   public static string Build<T> (string separator, IEnumerable<T> list, Func<T, string> selector)
   {
-    SeparatedStringBuilder sb = new SeparatedStringBuilder (separator);
-    foreach (T item in list)
-      sb.Append (selector (item));
-    return sb.ToString ();
+    return string.Join (separator, list.Select (selector));
   }
 
   /// <summary>
   /// Appends each item in the specified list.
   /// </summary>
+  [Obsolete ("Use string.Join (separator, list) instead. (Version 1.15.7.0)")]
   public static string Build<T> (string separator, IEnumerable<T> list)
   {
-    SeparatedStringBuilder sb = new SeparatedStringBuilder (separator);
-    foreach (T item in list)
-      sb.Append (item);
-    return sb.ToString ();
+    return string.Join (separator, list);
   }
 
   /// <summary>
   /// Appends the result of selector(item) for each item in the specified list.
   /// </summary>
+  [Obsolete ("Use string.Join (separator, list.Cast<T>().Select (selector)) instead. (Version 1.15.7.0)")]
   public static string Build<T> (string separator, IEnumerable list, Func<T, string> selector)
   {
-    SeparatedStringBuilder sb = new SeparatedStringBuilder (separator);
-    foreach (T item in list)
-      sb.Append (selector (item));
-    return sb.ToString ();
+    return string.Join (separator, list.Cast<T>().Select (selector));
   }
 
   /// <summary>
   /// Appends each item in the specified list.
   /// </summary>
+  [Obsolete ("Use string.Join (separator, list.Cast<object>()) instead. (Version 1.15.7.0)")]
   public static string Build (string separator, IEnumerable list)
   {
-    SeparatedStringBuilder sb = new SeparatedStringBuilder (separator);
-    foreach (var obj in list)
-      sb.Append (obj);
-    return sb.ToString ();
+    return string.Join (separator, list.Cast<object>());
   }
 
   private string _separator;
   private StringBuilder _stringBuilder;
 
-	public SeparatedStringBuilder (string separator, int capacity)
-	{
+  [Obsolete ("Use StringBuilder instead. (Version 1.15.7.0)")]
+  public SeparatedStringBuilder (string separator, int capacity)
+  {
     _stringBuilder = new StringBuilder (capacity);
     _separator = separator;
-	}
+  }
 
+  [Obsolete ("Use StringBuilder instead. (Version 1.15.7.0)")]
   public SeparatedStringBuilder (string separator)
   {
     _stringBuilder = new StringBuilder ();

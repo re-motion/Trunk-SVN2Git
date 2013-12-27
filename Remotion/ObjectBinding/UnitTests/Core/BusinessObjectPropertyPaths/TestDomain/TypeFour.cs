@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Mixins;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.TestDomain
 {

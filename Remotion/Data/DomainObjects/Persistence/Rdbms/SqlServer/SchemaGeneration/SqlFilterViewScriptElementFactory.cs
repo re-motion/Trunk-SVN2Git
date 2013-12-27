@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
     private string GetClassIDList (IEnumerable<string> classIDs)
     {
-      return SeparatedStringBuilder.Build (", ", classIDs, id => "'" + id + "'");
+      return string.Join (", ", classIDs.Select (id => "'" + id + "'"));
     }
   }
 }

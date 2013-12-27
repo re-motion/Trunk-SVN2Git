@@ -101,7 +101,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void GetReferencedInstance_NoHandleInstance ()
     {
-      Assert.That (() => _attribute.GetReferencedInstance (new object()), Throws.TypeOf<ArgumentTypeException>());
+      Assert.That (
+          () => _attribute.GetReferencedInstance (new object()),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Parameter 'handleInstance' has type 'System.Object' "
+              + "when type 'Remotion.Data.DomainObjects.IDomainObjectHandle`1[Remotion.Data.DomainObjects.DomainObject]' was expected."
+              + "\r\nParameter name: handleInstance"));
     }
 
     [Test]

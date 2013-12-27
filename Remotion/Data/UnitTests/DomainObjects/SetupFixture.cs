@@ -17,6 +17,8 @@
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using Remotion.ServiceLocation;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 using log4net;
 using Microsoft.Practices.ServiceLocation;

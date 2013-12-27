@@ -16,8 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.ObjectBinding;
-using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -48,7 +46,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'value' has type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.UndefinedEnumValueAttributeTest' "
+        + "when type 'System.Enum' was expected.\r\nParameter name: value")]
     public void InitializeWithObjectOfInvalidType ()
     {
       UndefinedEnumValueAttribute undefinedValueAttribute = new UndefinedEnumValueAttribute (this);

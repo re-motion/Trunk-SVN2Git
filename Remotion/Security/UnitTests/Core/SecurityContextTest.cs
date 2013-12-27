@@ -84,7 +84,10 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'type' is a 'Remotion.Security.UnitTests.Core.SampleDomain.SimpleType', "
+        + "which cannot be assigned to type 'Remotion.Security.ISecurableObject'."
+        + "\r\nParameter name: type")]
     public void CreateSecurityContextWithInvalidType ()
     {
       CreateTestSecurityContextForType (typeof (SimpleType));

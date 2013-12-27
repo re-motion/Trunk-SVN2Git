@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentEmptyException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'columnValues' cannot be empty.\r\nParameter name: columnValues")]
     public void Initialization_Empty ()
     {
       new UpdatedColumnsSpecification (new ColumnValue[0]);

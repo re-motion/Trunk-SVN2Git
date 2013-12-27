@@ -10,12 +10,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.SecurityManager.UnitTests</RootNamespace>
     <AssemblyName>Remotion.SecurityManager.UnitTests</AssemblyName>
-    <FileUpgradeFlags></FileUpgradeFlags>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UpgradeBackupLocation></UpgradeBackupLocation>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -343,6 +345,10 @@
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
+      <Project>{98E7F7AA-12B2-4A6B-8922-52C8E53B378E}</Project>
+      <Name>TypePipe.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\SecurityManager.Core.csproj">
       <Project>{990B8638-A08F-4A94-B01A-E7DAEF089F27}</Project>
       <Name>SecurityManager.Core</Name>
@@ -362,10 +368,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <DatabaseFiles Include="..\Core\Database\SecurityManagerCreateDB.sql"></DatabaseFiles>
-    <DatabaseFiles Include="..\Core\Database\SecurityManagerSetupDB.sql"></DatabaseFiles>
-    <DatabaseFiles Include="..\Core\Database\SecurityManagerSetupConstraints.sql"></DatabaseFiles>
-    <DatabaseFiles Include="..\Core\Database\SecurityManagerSetupDBSpecialTables.sql"></DatabaseFiles>
+    <DatabaseFiles Include="..\Core\Database\SecurityManagerCreateDB.sql">
+    </DatabaseFiles>
+    <DatabaseFiles Include="..\Core\Database\SecurityManagerSetupDB.sql">
+    </DatabaseFiles>
+    <DatabaseFiles Include="..\Core\Database\SecurityManagerSetupConstraints.sql">
+    </DatabaseFiles>
+    <DatabaseFiles Include="..\Core\Database\SecurityManagerSetupDBSpecialTables.sql">
+    </DatabaseFiles>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -373,9 +383,9 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-    <Delete Files="@(DatabaseFiles-&gt;'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
-    <Delete Files="@(MappingFiles-&gt;'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
-    <Copy SourceFiles="@(DatabaseFiles-&gt;'%(Fullpath)')" DestinationFiles="@(DatabaseFiles-&gt;'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
-    <Copy SourceFiles="@(MappingFiles-&gt;'%(Fullpath)')" DestinationFiles="@(MappingFiles-&gt;'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
+    <Delete Files="@(DatabaseFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
+    <Delete Files="@(MappingFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
+    <Copy SourceFiles="@(DatabaseFiles->'%(Fullpath)')" DestinationFiles="@(DatabaseFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
+    <Copy SourceFiles="@(MappingFiles->'%(Fullpath)')" DestinationFiles="@(MappingFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
   </Target>
 </Project>

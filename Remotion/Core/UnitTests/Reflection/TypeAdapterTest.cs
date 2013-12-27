@@ -832,7 +832,9 @@ namespace Remotion.UnitTests.Reflection
       var type = typeof (List<int>);
       Assert.That (
           () => TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (string))),
-          Throws.TypeOf<ArgumentTypeException>());
+          Throws.ArgumentException.And.Message.EqualTo (
+              "Parameter 'type' has type 'System.Collections.Generic.List`1[System.Int32]' "
+              + "when type 'System.String' was expected.\r\nParameter name: type"));
     }
 
     [Test]
@@ -848,10 +850,12 @@ namespace Remotion.UnitTests.Reflection
     public void GetAscribedGenericArgumentsFor_DifferentITypeInformationImplementation ()
     {
       var currentType = typeof (SystemException);
-      var otherType = MockRepository.GenerateStub<ITypeInformation> ();
+      var otherType = MockRepository.GenerateStub<ITypeInformation>();
       Assert.That (
           () => TypeAdapter.Create (currentType).GetAscribedGenericArgumentsFor (otherType),
-          Throws.TypeOf<ArgumentTypeException> ());
+          Throws.ArgumentException.And.Message.EqualTo (
+              "Parameter 'c' has type '" + otherType.GetType().Name + "' when type 'Remotion.Reflection.TypeAdapter' was expected."
+              + "\r\nParameter name: c"));
     }
 
     [Test]

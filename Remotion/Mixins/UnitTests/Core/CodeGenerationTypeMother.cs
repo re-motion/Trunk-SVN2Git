@@ -16,10 +16,11 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Development.TypePipe.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
+using Remotion.ServiceLocation;
+using Remotion.TypePipe;
 
 namespace Remotion.Mixins.UnitTests.Core
 {
@@ -61,7 +62,7 @@ namespace Remotion.Mixins.UnitTests.Core
 
       var mixinTypeIdentifier = mixinDefinition.GetConcreteMixinTypeIdentifier();
 
-      var pipeline = PipelineRegistryTestHelper.GloablRegistry.DefaultPipeline;
+      var pipeline = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>().DefaultPipeline;
       var generatedMixinType = pipeline.ReflectionService.GetAdditionalType (mixinTypeIdentifier);
       return new AttributeBasedMetadataImporter().GetMetadataForMixinType (generatedMixinType);
     }

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
@@ -39,20 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (_parameter.Name, Is.EqualTo ("name"));
       Assert.That (_parameter.Value, Is.EqualTo ("value"));
       Assert.That (_parameter.ParameterType, Is.EqualTo (QueryParameterType.Value));
-    }
-
-    [Test]
-    public void SetValue ()
-    {
-      _parameter.Value = "NewValue";
-      Assert.That (_parameter.Value, Is.EqualTo ("NewValue"));
-    }
-
-    [Test]
-    public void SetParameterType ()
-    {
-      _parameter.ParameterType = QueryParameterType.Text;
-      Assert.That (_parameter.ParameterType, Is.EqualTo (QueryParameterType.Text));
     }
 
     [Test]

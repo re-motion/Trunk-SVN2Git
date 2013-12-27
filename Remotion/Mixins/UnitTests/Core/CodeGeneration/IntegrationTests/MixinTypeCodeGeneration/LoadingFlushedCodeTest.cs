@@ -21,8 +21,10 @@ using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.IO;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using System.Linq;
+using Remotion.TypePipe.Implementation;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration
 {
@@ -118,7 +120,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
 
     private IPipeline CreatePipeline ()
     {
-      return PipelineFactory.Create (Pipeline.ParticipantConfigurationID, Pipeline.Participants.ToArray ());
+      return SafeServiceLocator.Current.GetInstance<IPipelineFactory>().Create (Pipeline.ParticipantConfigurationID, Pipeline.Participants.ToArray());
     }
 
     private Assembly FlushAndLoadAssemblyWithoutLocking ()

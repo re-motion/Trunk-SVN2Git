@@ -41,6 +41,8 @@
       <!--<SourceFiles Include="$(SolutionDirectory)*.cmd" Exclude="@(StandardExcludes)" />-->
       <SourceFiles Include="$(SolutionDirectory)prereq\**" Exclude="@(StandardExcludes)" />
       <!--<SourceFiles Include="$(SolutionDirectory)build\*.*" Exclude="@(StandardExcludes)" />-->
+      <SourceFiles Include="$(SolutionDirectory)SharedSource\**"
+                   Exclude="$(SolutionDirectory)SharedSource\**\bin\**;$(SolutionDirectory)SharedSource\**\obj\**;$(SolutionDirectory)SharedSource\**\*.zip;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Dms\**"
                    Exclude="$(SolutionDirectory)Dms\**\bin\**;$(SolutionDirectory)Dms\**\obj\**;@(StandardExcludes)" />
     </ItemGroup>

@@ -126,9 +126,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentItemTypeException), ExpectedMessage =
-        "Item 0 of argument domainObjects has the type Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer instead of "
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Item 0 of parameter 'domainObjects' has the type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer' "
+        + "instead of 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: domainObjects")]
     public void Initialization_WithEnumerable_ChecksItems ()
     {
       new DomainObjectCollection (new[] { _customer1 }, typeof (Order));
@@ -335,7 +335,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentItemNullException), ExpectedMessage = "Item 1 of argument domainObjects is null.")]
+    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage = 
+        "Item 1 of parameter 'domainObjects' is null.\r\nParameter name: domainObjects")]
     public void AddRange_ChecksItems ()
     {
       var collection = new DomainObjectCollection();

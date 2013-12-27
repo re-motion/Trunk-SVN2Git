@@ -49,8 +49,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization_EmptyNames ()
     {
-      Assert.That (() => new EntityNameDefinition ("", "entity"), Throws.TypeOf<ArgumentEmptyException> ());
-      Assert.That (() => new EntityNameDefinition ("schema", ""), Throws.TypeOf<ArgumentEmptyException> ());
+      Assert.That (
+          () => new EntityNameDefinition ("", "entity"),
+          Throws.ArgumentException.And.Message.EqualTo ("Parameter 'schemaName' cannot be empty.\r\nParameter name: schemaName"));
+      Assert.That (
+          () => new EntityNameDefinition ("schema", ""),
+          Throws.ArgumentException.And.Message.EqualTo ("Parameter 'entityName' cannot be empty.\r\nParameter name: entityName"));
     }
 
     [Test]

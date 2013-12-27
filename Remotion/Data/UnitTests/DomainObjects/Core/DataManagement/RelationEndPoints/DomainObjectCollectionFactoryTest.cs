@@ -103,7 +103,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentItemNullException))]
+    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage = 
+        "Item 0 of parameter 'domainObjects' is null.\r\nParameter name: domainObjects")]
     public void CreateCollection_ForStandaloneCollection_PerformsItemChecks ()
     {
       DomainObjectCollection collection = _factory.CreateCollection (typeof (ObjectList<Order>), new Order[] { null }, typeof (Order));

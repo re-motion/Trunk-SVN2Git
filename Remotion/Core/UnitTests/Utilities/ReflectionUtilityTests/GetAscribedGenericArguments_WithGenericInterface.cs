@@ -143,11 +143,10 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException),
-        ExpectedMessage =
-        "Argument type has type Remotion.UnitTests.Utilities.ReflectionUtilityTests.TypeWithBaseInterface when type "
-        + "Remotion.UnitTests.Utilities.ReflectionUtilityTests.IGenericInterface`1[T] was expected.\r\n"
-        + "Parameter name: type")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'type' has type 'Remotion.UnitTests.Utilities.ReflectionUtilityTests.TypeWithBaseInterface' "
+        + "when type 'Remotion.UnitTests.Utilities.ReflectionUtilityTests.IGenericInterface`1[T]' was expected."
+        + "\r\nParameter name: type")]
     public void BaseType ()
     {
       ReflectionUtility.GetAscribedGenericArguments (typeof (TypeWithBaseInterface), typeof (IGenericInterface<>));

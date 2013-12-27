@@ -21,7 +21,7 @@ using Remotion.Mixins.UnitTests.Core.CodeGeneration;
 using Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.Utilities;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 
 namespace Remotion.Mixins.UnitTests.Core
 {

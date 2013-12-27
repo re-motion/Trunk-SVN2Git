@@ -25,7 +25,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Linq.Parsing.Structure;
 using Remotion.Linq.SqlBackend.SqlPreparation;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {

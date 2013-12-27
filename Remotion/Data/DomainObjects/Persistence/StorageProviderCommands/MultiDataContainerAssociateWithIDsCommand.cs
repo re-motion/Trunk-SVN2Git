@@ -87,11 +87,11 @@ namespace Remotion.Data.DomainObjects.Persistence.StorageProviderCommands
                 t => string.Format (
                     "Loaded DataContainer ID: {0}, expected ObjectID(s): {1}",
                     t.LoadedID,
-                    t.ExpectedIDs.Any() ? SeparatedStringBuilder.Build (", ", t.ExpectedIDs.Distinct()) : "none"));
+                    t.ExpectedIDs.Any() ? string.Join (", ", t.ExpectedIDs.Distinct()) : "none"));
         var message = string.Format (
             "The ObjectID of one or more loaded DataContainers does not match the expected ObjectIDs:{0}{1}",
             Environment.NewLine,
-            SeparatedStringBuilder.Build (Environment.NewLine, nonMatchingIDDescriptions));
+            string.Join (Environment.NewLine, nonMatchingIDDescriptions));
         throw new PersistenceException (message);
       }
     }

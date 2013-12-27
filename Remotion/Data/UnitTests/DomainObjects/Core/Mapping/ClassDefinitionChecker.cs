@@ -21,9 +21,9 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Linq.Utilities;
+using Remotion.Text;
+using Remotion.Utilities;
 using System.Linq;
-using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -209,7 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           actualDefinitions.Count,
           "Number of property definitions in class definition '{0}' does not match. Expected: {1}",
           expectedClassDefinition.ID,
-          SeparatedStringBuilder.Build (", ", actualDefinitions.Select (pd => pd.PropertyName)));
+          string.Join (", ", actualDefinitions.Select (pd => pd.PropertyName)));
 
       foreach (PropertyDefinition expectedDefinition in expectedDefinitions)
       {

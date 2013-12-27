@@ -70,7 +70,7 @@ public class QueryParameterCollection : CommonCollection
   /// <param name="parameterName">The <see cref="QueryParameter.Name"/> of the new parameter. Must not be <see langword="null"/>.</param>
   /// <param name="parameterValue">The <see cref="QueryParameter.Value"/> of the new parameter.</param>
   /// <exception cref="System.ArgumentNullException"><paramref name="parameterName"/> is <see langword="null"/>.</exception>
-  /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="parameterName"/> is an empty string.</exception>
+  /// <exception cref="System.ArgumentException"><paramref name="parameterName"/> is an empty string.</exception>
   public void Add (string parameterName, object parameterValue)
   {
     ArgumentUtility.CheckNotNullOrEmpty ("parameterName", parameterName);
@@ -84,10 +84,8 @@ public class QueryParameterCollection : CommonCollection
   /// <param name="parameterName">The <see cref="QueryParameter.Name"/> of the new parameter. Must not be <see langword="null"/>.</param>
   /// <param name="parameterValue">The <see cref="QueryParameter.Value"/> of the new parameter.</param>
   /// <param name="parameterType">The <see cref="QueryParameterType"/> of the new parameter.</param>
-  /// <exception cref="System.ArgumentNullException">
-  ///   <paramref name="parameterName"/> is <see langword="null"/>.
-  /// </exception>
-  /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="parameterName"/> is an empty string.</exception>
+  /// <exception cref="System.ArgumentNullException"><paramref name="parameterName"/> is <see langword="null"/>.</exception>
+  /// <exception cref="System.ArgumentException"><paramref name="parameterName"/> is an empty string.</exception>
   /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="parameterType"/> is not a valid enum value.</exception>
   public void Add (string parameterName, object parameterValue, QueryParameterType parameterType)
   {

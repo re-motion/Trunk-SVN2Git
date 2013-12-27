@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Insert_WrongType ()
     {
-      CheckThrows<ArgumentTypeException> (
+      CheckThrows<ArgumentException> (
           () => _modificationCheckingDecorator.Insert (0, _orderItem1),
           "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'"
           + " cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' or derived from "
@@ -204,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       StubInnerData (_order1);
 
-      CheckThrows<ArgumentTypeException> (
+      CheckThrows<ArgumentException> (
           () => _modificationCheckingDecorator.Replace (0, _orderItem1),
           "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'"
           + " cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' or derived from "

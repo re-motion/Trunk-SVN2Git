@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -26,9 +27,8 @@ using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using System.Linq;
 using Remotion.Mixins;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.TypePipe
 {

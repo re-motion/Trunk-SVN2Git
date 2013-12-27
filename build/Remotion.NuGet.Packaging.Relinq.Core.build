@@ -30,6 +30,7 @@
     <PropertyGroup>
       <_libDirectory>$(BinariesDirectory)net-4.5\bin\release\</_libDirectory>
       <_srcDirectory>$(SolutionDirectory)Relinq\Core\</_srcDirectory>
+      <_sharedSrcDirectory>$(SolutionDirectory)SharedSource\</_sharedSrcDirectory>
     </PropertyGroup>
     
     <ItemGroup>
@@ -40,6 +41,8 @@
     </ItemGroup>
     <ItemGroup>
       <NuGetSrcFiles Remove="@(NuGetSrcFiles)"/>
+      <NuGetSrcFiles Include="$(_sharedSrcDirectory)**\*.*" 
+                     Exclude="$(_sharedSrcDirectory)**\bin\**;$(_sharedSrcDirectory)**\obj\**;"/>
       <NuGetSrcFiles Include="$(_srcDirectory)**\*.*" 
                      Exclude="$(_srcDirectory)**\bin\**;$(_srcDirectory)**\obj\**;"/>
     </ItemGroup>

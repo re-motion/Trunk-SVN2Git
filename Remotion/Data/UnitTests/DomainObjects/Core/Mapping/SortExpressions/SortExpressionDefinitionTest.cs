@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 {
@@ -40,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentEmptyException), ExpectedMessage = 
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "A SortExpressionDefinition must contain at least one sorted property.\r\nParameter name: sortedProperties")]
     public void Initialization_Empty ()
     {

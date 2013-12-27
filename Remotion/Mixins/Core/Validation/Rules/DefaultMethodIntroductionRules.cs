@@ -18,8 +18,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Remotion.Mixins.Definitions;
-using Remotion.Reflection;
-using Remotion.Reflection.MemberSignatures;
+using Remotion.TypePipe.MutableReflection.MemberSignatures;
 
 namespace Remotion.Mixins.Validation.Rules
 {

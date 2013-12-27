@@ -10,12 +10,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.SecurityManager</RootNamespace>
     <AssemblyName>Remotion.SecurityManager</AssemblyName>
-    <FileUpgradeFlags></FileUpgradeFlags>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UpgradeBackupLocation></UpgradeBackupLocation>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -42,7 +44,8 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Remotion.SecurityManager.XML</DocumentationFile>
     <NoWarn>1591;0419</NoWarn>
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
@@ -73,13 +76,16 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Configuration\SecurityManagerConfiguration.xsd">
-      <SubType></SubType>
+      <SubType>
+      </SubType>
     </EmbeddedResource>
     <None Include="..\SecurityManager AGPL.licenseheader">
       <Link>SecurityManager AGPL.licenseheader</Link>
     </None>
-    <None Include="Database\SecurityManagerCreateDB.sql"></None>
-    <None Include="Database\SecurityManagerSetupDB.sql"></None>
+    <None Include="Database\SecurityManagerCreateDB.sql">
+    </None>
+    <None Include="Database\SecurityManagerSetupDB.sql">
+    </None>
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
@@ -462,9 +468,14 @@
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
+      <Project>{98E7F7AA-12B2-4A6B-8922-52C8E53B378E}</Project>
+      <Name>TypePipe.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Database\SecurityManagerSetupDBSpecialTables.sql"></None>
+    <None Include="Database\SecurityManagerSetupDBSpecialTables.sql">
+    </None>
     <None Include="Doc\include\GettingStartedWithRestrict.aml" />
     <None Include="GenerateSetupDBScript.cmd" />
     <None Include="..\..\remotion.snk">

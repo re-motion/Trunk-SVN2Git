@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
          ownerName.EntityName,
          GetIndexedColumnNames (indexDefinition.Columns),
          indexDefinition.IncludedColumns != null
-             ? "\r\n  INCLUDE (" + SeparatedStringBuilder.Build (", ", indexDefinition.IncludedColumns.Select (c => "[" + c.Name + "]")) + ")"
+             ? "\r\n  INCLUDE (" + string.Join (", ", indexDefinition.IncludedColumns.Select (c => "[" + c.Name + "]")) + ")"
              : string.Empty,
          GetCreateIndexOptions (GetCreateIndexOptionItems (indexDefinition))));
     }

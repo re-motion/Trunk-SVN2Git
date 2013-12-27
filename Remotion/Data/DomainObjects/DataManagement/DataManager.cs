@@ -379,7 +379,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (problematicDataContainers.Count != 0)
       {
-        var itemList = SeparatedStringBuilder.Build (", ", problematicDataContainers.Select (dc => string.Format ("'{0}' ({1})", dc.ID, dc.State)));
+        var itemList = string.Join (", ", problematicDataContainers.Select (dc => string.Format ("'{0}' ({1})", dc.ID, dc.State)));
         var message = string.Format (
             "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: {0}.",
             itemList);
@@ -409,7 +409,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (endPointsOfNewOrDeletedObjects.Count > 0)
       {
         var message = "Cannot unload the following relation end-points because they belong to new or deleted objects: "
-            + SeparatedStringBuilder.Build (", ", endPointsOfNewOrDeletedObjects) + ".";
+            + string.Join (", ", endPointsOfNewOrDeletedObjects) + ".";
         var exception = new InvalidOperationException (message);
         return new ExceptionCommand (exception);
       }

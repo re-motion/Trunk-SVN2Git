@@ -22,7 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
 

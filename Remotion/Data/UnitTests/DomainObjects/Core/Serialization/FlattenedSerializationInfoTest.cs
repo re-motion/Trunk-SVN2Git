@@ -170,6 +170,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Serialization.FlattenedSerializableWithoutCtorStub' "
+        + "does not contain a public or non-public constructor accepting a FlattenedDeserializationInfo as its sole argument.")]
+    public void MissingDeserializationCtor ()
+    {
+      FlattenedSerializationInfo serializationInfo = new FlattenedSerializationInfo();
+      serializationInfo.AddValue (new FlattenedSerializableWithoutCtorStub());
+      object[] data = serializationInfo.GetData();
+
+      FlattenedDeserializationInfo deserializationInfo = new FlattenedDeserializationInfo (data);
+      deserializationInfo.GetValue<FlattenedSerializableWithoutCtorStub>();
+    }
+
+    [Test]
     public void Handles ()
     {
       DateTime dt1 = DateTime.MinValue;

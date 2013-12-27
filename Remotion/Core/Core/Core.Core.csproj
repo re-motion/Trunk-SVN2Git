@@ -120,16 +120,111 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\SharedSource\Core\FunctionalProgramming\EnumerableExtensions.cs">
+      <Link>SharedSource\FunctionalProgramming\EnumerableExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\FunctionalProgramming\EnumerableUtility.cs">
+      <Link>SharedSource\FunctionalProgramming\EnumerableUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\FunctionalProgramming\Maybe.cs">
+      <Link>SharedSource\FunctionalProgramming\Maybe.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\AssertionConditionAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\AssertionConditionAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\AssertionMethodAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\AssertionMethodAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\BaseTypeRequiredAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\BaseTypeRequiredAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\CanBeNullAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\CanBeNullAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\CannotApplyEqualityOperatorAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\CannotApplyEqualityOperatorAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\ContractAnnotationAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\ContractAnnotationAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\InstantHandleAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\InstantHandleAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\InvokerParameterNameAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\InvokerParameterNameAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\LinqTunnelAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\LinqTunnelAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\LocalizationRequiredAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\LocalizationRequiredAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\MeansImplicitUseAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\MeansImplicitUseAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\NoEnumerationAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\NoEnumerationAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\NotifyPropertyChangedInvocatorAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\NotifyPropertyChangedInvocatorAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\NotNullAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\NotNullAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\PathReferenceAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\PathReferenceAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ReSharperAnnotations\PublicAPIAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\PublicAPIAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\PureAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\PureAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\StringFormatMethodAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\StringFormatMethodAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\TerminatesProgramAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\TerminatesProgramAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\ResharperAnnotations\UsedImplicitlyAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\UsedImplicitlyAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\Utilities\ArgumentUtility.cs">
+      <Link>SharedSource\Utilities\ArgumentUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\Utilities\Assertion.cs">
+      <Link>SharedSource\Utilities\Assertion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\Utilities\AttributeUtility.cs">
+      <Link>SharedSource\Utilities\AttributeUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\Utilities\EqualityUtility.cs">
+      <Link>SharedSource\Utilities\EqualityUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\Utilities\ExceptionUtility.cs">
+      <Link>SharedSource\Utilities\ExceptionUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\Utilities\FileUtility.cs">
+      <Link>SharedSource\Utilities\FileUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\Utilities\MemberInfoEqualityComparer.cs">
+      <Link>SharedSource\Utilities\MemberInfoEqualityComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\Utilities\MemberInfoFromExpressionUtility.cs">
+      <Link>SharedSource\Utilities\MemberInfoFromExpressionUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\Utilities\NullableTypeUtility.cs">
+      <Link>SharedSource\Utilities\NullableTypeUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\Core\Utilities\ReferenceEqualityComparer.cs">
+      <Link>SharedSource\Utilities\ReferenceEqualityComparer.cs</Link>
+    </Compile>
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="AdapterRegistry.cs" />
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
-    <Compile Include="BridgeImplementations\ParamListCreateImplementation.generated.cs" />
-    <Compile Include="BridgeImplementations\ParamListCreateImplementation.template.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementation.cs" />
-    <Compile Include="BridgeInterfaces\IParamListCreateImplementation.generated.cs" />
-    <Compile Include="BridgeInterfaces\IParamListCreateImplementation.template.cs" />
     <Compile Include="Collections\CacheFactory.cs" />
     <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Collections\DataStoreFactory.cs" />
@@ -149,6 +244,9 @@
     <Compile Include="Context\SafeContextKeys.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumExtensions.cs" />
     <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationServiceExtensions.cs" />
+    <Compile Include="FunctionalProgramming\EnumerableExtensions.Partial.cs" />
+    <Compile Include="FunctionalProgramming\EnumerableUtility.Partial.cs" />
+    <Compile Include="FunctionalProgramming\Maybe.Partial.cs" />
     <Compile Include="Globalization\Implementation\EnumerationGlobalizationServiceExtensions.cs" />
     <Compile Include="Globalization\GlobalizationServiceExtensions.cs" />
     <Compile Include="Globalization\IEnumerationGlobalizationService.cs" />
@@ -168,15 +266,7 @@
     <Compile Include="Reflection\DelegateFactory.cs" />
     <Compile Include="Reflection\IDelegateFactory.cs" />
     <Compile Include="Reflection\IMemberInformationNameResolver.cs" />
-    <Compile Include="Reflection\MemberSignatures\EventSignature.cs" />
-    <Compile Include="Reflection\MemberSignatures\FieldSignature.cs" />
-    <Compile Include="Reflection\MemberSignatures\IMemberSignature.cs" />
-    <Compile Include="Reflection\MemberSignatures\IMethodSignatureStringBuilderHelper.cs" />
-    <Compile Include="Reflection\MemberSignatures\MemberNameAndSignatureEqualityComparer.cs" />
-    <Compile Include="Reflection\MemberSignatures\MemberSignatureProvider.cs" />
-    <Compile Include="Reflection\MemberSignatures\MethodSignature.cs" />
-    <Compile Include="Reflection\MemberSignatures\NestedTypeSignature.cs" />
-    <Compile Include="Reflection\MemberSignatures\PropertySignature.cs" />
+    <Compile Include="Reflection\ParamList.Obsolete.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInformationNameResolver.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyNameCache.cs">
       <SubType>Code</SubType>
@@ -217,8 +307,6 @@
     <Compile Include="Reflection\IPropertyInformation.cs" />
     <Compile Include="Reflection\ITypeInformation.cs" />
     <Compile Include="Reflection\MethodInfoAdapterConverter.cs" />
-    <Compile Include="Reflection\ParamList.generated.cs" />
-    <Compile Include="Reflection\ParamList.template.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterConverter.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Reflection\TypeAdapter.cs" />
@@ -226,6 +314,17 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CachingAssemblyFinderDecorator.cs" />
     <Compile Include="Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="ServiceLocation\SafeServiceLocator.cs" />
+    <Compile Include="SharedSource\ResharperAnnotations\AssertionConditionType.cs" />
+    <Compile Include="SharedSource\ResharperAnnotations\ImplicitUseKindFlags.cs" />
+    <Compile Include="SharedSource\ResharperAnnotations\ImplicitUseTargetFlags.cs" />
+    <Compile Include="Utilities\AssertionException.cs" />
+    <Compile Include="Utilities\Assertion.Partial.cs" />
+    <Compile Include="Utilities\EqualityUtility.Partial.cs" />
+    <Compile Include="Utilities\ExceptionUtility.Partial.cs" />
+    <Compile Include="Utilities\MemberInfoEqualityComparer.Partial.cs" />
+    <Compile Include="Utilities\MemberInfoFromExpressionUtility.Partial.cs" />
+    <Compile Include="Utilities\ReferenceEqualityComparer.Partial.cs" />
+    <Compile Include="Utilities\ReSharperAnnotations\PartialDeclarations.cs" />
     <Compile Include="StandardDelegates.cs" />
     <Compile Include="SuppressAttributesAttribute.cs" />
     <Compile Include="Utilities\ArgumentEmptyException.cs" />
@@ -233,13 +332,13 @@
     <Compile Include="Utilities\ArgumentItemNullException.cs" />
     <Compile Include="Utilities\ArgumentItemTypeException.cs" />
     <Compile Include="Utilities\ArgumentTypeException.cs" />
+    <Compile Include="Utilities\ArgumentUtility.Partial.cs" />
     <Compile Include="Utilities\AttributeRetrieval\EventCustomAttributeRetriever.cs" />
     <Compile Include="Utilities\CompoundComparer.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparer.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapper.cs" />
     <Compile Include="Collections\DictionaryExtensions.cs" />
     <Compile Include="Collections\ListAdapter.cs" />
-    <Compile Include="FunctionalProgramming\EnumerableExtensions.cs" />
     <Compile Include="Collections\SetBasedCacheKey.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileIncludeRootAssemblyElement.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElement.cs" />
@@ -269,18 +368,15 @@
     <Compile Include="ExtensibleEnums\IExtensibleEnum.cs" />
     <Compile Include="ExtensibleEnums\IExtensibleEnumDefinition.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryService.cs" />
-    <Compile Include="FunctionalProgramming\Maybe.cs" />
     <Compile Include="Globalization\Implementation\ResolvedResourceManagerResult.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttribute.cs" />
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactory.cs" />
     <Compile Include="Reflection\MethodInfoAdapter.cs" />
     <Compile Include="Reflection\MethodResolver.cs" />
-    <Compile Include="Reflection\MemberSignatures\MemberSignatureEqualityComparer.cs" />
     <Compile Include="Reflection\NullMethodInformation.cs" />
     <Compile Include="Reflection\NullPropertyInformation.cs" />
     <Compile Include="Reflection\PropertyInfoAdapter.cs" />
-    <Compile Include="Reflection\MemberSignatures\MethodSignatureStringBuilderHelper.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyNameSpecification.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CompositeRootAssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FilePatternRootAssemblyFinder.cs" />
@@ -299,7 +395,6 @@
     <Compile Include="ServiceLocation\DefaultServiceConfigurationDiscoveryService.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocator.cs" />
     <Compile Include="ServiceLocation\ServiceConfigurationEntry.cs" />
-    <Compile Include="Utilities\CustomAttributeTypedArgumentUtility.cs" />
     <Compile Include="Utilities\DefaultConverter.cs" />
     <Compile Include="Utilities\DelegateBasedDisposable.cs" />
     <Compile Include="Utilities\DelegateBasedEqualityComparer.cs" />
@@ -312,17 +407,13 @@
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\FilteringAssemblyLoader.cs" />
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
-    <Compile Include="Reflection\DynamicParamList.cs" />
     <Compile Include="Reflection\MemberLookupInfo.cs" />
     <Compile Include="Reflection\MethodLookupInfo.cs" />
-    <Compile Include="Reflection\ParamListImplementation.generated.cs" />
-    <Compile Include="Reflection\ParamListImplementation.template.cs" />
     <Compile Include="Collections\LockingDataStoreDecorator.cs" />
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
     <Compile Include="Context\CallContextStorageProvider.cs" />
     <Compile Include="Globalization\Implementation\ResourceManagerFactory.cs" />
-    <Compile Include="Reflection\CodeGeneration\SerializationEventRaiser.cs" />
     <Compile Include="Collections\AutoInitDictionary.cs" />
     <Compile Include="Collections\MultiDictionary.cs" />
     <Compile Include="Collections\LockingCacheDecorator.cs" />
@@ -444,8 +535,7 @@
     <Compile Include="Text\StringExtensions\StringExtensions.cs" />
     <Compile Include="Utilities\AppDomainAssemblyResolver.cs" />
     <Compile Include="Utilities\AppDomainRunnerBase.cs" />
-    <Compile Include="Utilities\AttributeUtility.cs" />
-    <Compile Include="Utilities\Assertion.cs" />
+    <Compile Include="Utilities\AttributeUtility.Partial.cs" />
     <Compile Include="Utilities\AttributeWithMetadata.cs" />
     <Compile Include="Utilities\ConsoleApplication\ConsoleApplication.cs" />
     <Compile Include="Utilities\ConsoleApplication\ConsoleApplicationSettings.cs" />
@@ -455,55 +545,23 @@
     <Compile Include="Utilities\ConsoleUtility.cs" />
     <Compile Include="Utilities\CultureScope.cs" />
     <Compile Include="Utilities\DefaultConsoleManager.cs" />
-    <Compile Include="FunctionalProgramming\EnumerableUtility.cs" />
-    <Compile Include="Utilities\EqualityUtility.cs" />
-    <Compile Include="Utilities\ExceptionUtility.cs" />
-    <Compile Include="Utilities\FileUtility.cs" />
+    <Compile Include="Utilities\FileUtility.Partial.cs" />
     <Compile Include="Utilities\IConsoleManager.cs" />
     <Compile Include="Utilities\DelegateBasedComparer.cs" />
     <Compile Include="Utilities\InvertedComparerDecorator.cs" />
     <Compile Include="Utilities\IUtcNowProvider.cs" />
     <Compile Include="Utilities\AttributeRetrieval\InheritanceAwareCustomAttributeRetriever.cs" />
-    <Compile Include="Utilities\MemberInfoEqualityComparer.cs" />
-    <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
-    <Compile Include="Utilities\NullableTypeUtility.cs" />
+    <Compile Include="Utilities\NullableTypeUtility.Partial.cs" />
     <Compile Include="Utilities\NullComparer.cs" />
     <Compile Include="Utilities\NullValueConverter.cs" />
     <Compile Include="Utilities\PostActionDisposableDecorator.cs" />
     <Compile Include="Utilities\AttributeRetrieval\PropertyCustomAttributeRetriever.cs" />
-    <Compile Include="Utilities\ReferenceEqualityComparer.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\AssertionConditionAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\AssertionConditionType.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\AssertionMethodAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\BaseTypeRequiredAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\CanBeNullAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\CannotApplyEqualityOperatorAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\ContractAnnotationAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\ImplicitUseKindFlags.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\ImplicitUseTargetFlags.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\InstantHandleAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\InvokerParameterNameAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\LinqTunnelAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\LocalizationRequiredAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\MeansImplicitUseAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\NoEnumerationAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\NotifyPropertyChangedInvocatorAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\NotNullAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\PathReferenceAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\PublicAPIAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\PureAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\ReflectionAPIAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\StringFormatMethodAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\TerminatesProgramAttribute.cs" />
-    <Compile Include="Utilities\ReSharperAnnotations\UsedImplicitlyAttribute.cs" />
     <Compile Include="Utilities\StopwatchScope.cs" />
     <Compile Include="Utilities\TypeConverterResult.cs" />
     <Compile Include="Utilities\TypeConverterType.cs" />
     <Compile Include="Utilities\TypeNameConverter.cs" />
     <Compile Include="Utilities\AdvancedEnumConverter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Utilities\ArgumentUtility.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\ArrayUtility.cs">
@@ -566,10 +624,10 @@
     <Content Include="doc\include\Remotion.NamespaceDoc.xml" />
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
     <Content Include="doc\include\Diagnostics\OuterProduct.xml" />
-    <Content Include="doc\include\Utilities\EqualityUtility.xml" />
     <Content Include="doc\include\Utilities\WorkContext.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup />

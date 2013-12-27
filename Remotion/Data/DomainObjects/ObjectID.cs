@@ -83,10 +83,8 @@ namespace Remotion.Data.DomainObjects
     ///   An <see cref="ObjectID"/> instance equivalent to the object ID contained in <paramref name="objectIDString"/>. Must not be <see langword="null"/>.
     /// </returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="objectIDString"/> is <see langword="null"/>.</exception>
-    /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="objectIDString"/> is an empty string.</exception>
-    /// <exception cref="System.FormatException">
-    ///   <paramref name="objectIDString"/> does not contain the string representation of an object ID.
-    /// </exception>
+    /// <exception cref="System.ArgumentException"><paramref name="objectIDString"/> is an empty string.</exception>
+    /// <exception cref="System.FormatException"><paramref name="objectIDString"/> does not contain the string representation of an object ID.</exception>
     /// <remarks>
     /// If the probability that parsing fails is high, consider using <see cref="TryParse"/> instead, as it is more performant in the error case.
     /// </remarks>
@@ -106,7 +104,7 @@ namespace Remotion.Data.DomainObjects
     /// <see langword="true" /> if the conversion completed successfully, <see langword="false" /> otherwise.
     /// </returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="objectIDString"/> is <see langword="null"/>.</exception>
-    /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="objectIDString"/> is an empty string.</exception>
+    /// <exception cref="System.ArgumentException"><paramref name="objectIDString"/> is an empty string.</exception>
     /// <remarks>
     /// If you expect <paramref name="objectIDString"/> to always hold a valid <see cref="ObjectID"/> string, use <see cref="Parse"/> instead. Use
     /// this method only if an invalid string constitutes a supported use case.
@@ -130,12 +128,10 @@ namespace Remotion.Data.DomainObjects
     ///   <paramref name="classID"/> is <see langword="null"/>.<br /> -or- <br />
     ///   <paramref name="value"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="Remotion.Utilities.ArgumentEmptyException">
+    /// <exception cref="System.ArgumentException">
     ///   <paramref name="classID"/> is an empty <see cref="System.String"/>.<br /> -or- <br />
     ///   <paramref name="value"/> is an empty <see cref="System.String"/>.<br /> -or- <br />
-    ///   <paramref name="value"/> is an empty <see cref="System.Guid"/>.
-    /// </exception>
-    /// <exception cref="System.ArgumentException">
+    ///   <paramref name="value"/> is an empty <see cref="System.Guid"/>.<br /> -or- <br />
     ///   <paramref name="value"/> has an unsupported type or is a string and contains invalid characters. Supported types are <see cref="System.Guid"/>, <see cref="System.Int32"/> and <see cref="System.String"/>.
     /// </exception>
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.IdentityTypeNotSupportedException">
@@ -156,11 +152,9 @@ namespace Remotion.Data.DomainObjects
     ///   <paramref name="classType"/> is <see langword="null"/>.<br /> -or- <br />
     ///   <paramref name="value"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="Remotion.Utilities.ArgumentEmptyException">
-    ///   <paramref name="value"/> is an empty <see cref="System.String"/>.<br /> -or- <br />
-    ///   <paramref name="value"/> is an empty <see cref="System.Guid"/>.
-    /// </exception>
     /// <exception cref="System.ArgumentException">
+    ///   <paramref name="value"/> is an empty <see cref="System.String"/>.<br /> -or- <br />
+    ///   <paramref name="value"/> is an empty <see cref="System.Guid"/>.<br /> -or- <br />
     ///   <paramref name="value"/> has an unsupported type or is a string and contains invalid characters. Supported types are <see cref="System.Guid"/>, <see cref="System.Int32"/> and <see cref="System.String"/>.
     /// </exception>
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.IdentityTypeNotSupportedException">
@@ -181,11 +175,9 @@ namespace Remotion.Data.DomainObjects
     ///   <paramref name="classDefinition"/> is <see langword="null"/>.<br /> -or- <br />
     ///   <paramref name="value"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="Remotion.Utilities.ArgumentEmptyException">
-    ///   <paramref name="value"/> is an empty <see cref="System.String"/>.<br /> -or- <br />
-    ///   <paramref name="value"/> is an empty <see cref="System.Guid"/>.
-    /// </exception>
     /// <exception cref="System.ArgumentException">
+    ///   <paramref name="value"/> is an empty <see cref="System.String"/>.<br /> -or- <br />
+    ///   <paramref name="value"/> is an empty <see cref="System.Guid"/>.<br /> -or- <br />
     ///   <paramref name="value"/> has an unsupported type or is a string and contains invalid characters. Supported types are <see cref="System.Guid"/>, <see cref="System.Int32"/> and <see cref="System.String"/>.
     /// </exception>
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.IdentityTypeNotSupportedException">
@@ -369,11 +361,11 @@ namespace Remotion.Data.DomainObjects
       if (valueType == typeof (string))
         ObjectIDStringSerializer.Instance.CheckSerializableStringValue ((string) value);
 
-      if (valueType == typeof (string) && string.Empty.Equals (value))
-        throw new ArgumentEmptyException (argumentName);
+      if (valueType == typeof (string))
+        ArgumentUtility.CheckNotEmpty (argumentName, (string) value);
 
-      if (valueType == typeof (Guid) && Guid.Empty.Equals (value))
-        throw new ArgumentEmptyException (argumentName);
+      if (valueType == typeof (Guid))
+        ArgumentUtility.CheckNotEmpty(argumentName, (Guid)value);
     }
 
     private ArgumentException CreateArgumentException (string argumentName, string message, params object[] args)

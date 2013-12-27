@@ -17,8 +17,8 @@
 using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Development.TypePipe.UnitTesting.ObjectMothers.CodeGeneration;
 using Remotion.Development.UnitTesting;
+using Remotion.TypePipe.Development.UnitTesting.ObjectMothers.CodeGeneration;
 using Remotion.TypePipe.Dlr.Ast;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;

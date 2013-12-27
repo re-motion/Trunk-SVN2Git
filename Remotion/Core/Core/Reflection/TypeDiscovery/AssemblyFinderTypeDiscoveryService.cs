@@ -97,7 +97,7 @@ namespace Remotion.Reflection.TypeDiscovery
             "The types from assembly '{0}' could not be loaded.{1}{2}",
             assembly.GetName(),
             Environment.NewLine,
-            SeparatedStringBuilder.Build (Environment.NewLine, ex.LoaderExceptions, e => e.Message));
+            string.Join (Environment.NewLine, ex.LoaderExceptions.Select (e => e.Message)));
         throw new TypeLoadException (message, ex);
       }
 

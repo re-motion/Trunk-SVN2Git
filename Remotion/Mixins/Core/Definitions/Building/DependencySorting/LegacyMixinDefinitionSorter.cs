@@ -75,7 +75,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
                 {
                   string message = string.Format (
                       "The following group of mixins contains circular dependencies:{1}{0}.",
-                      SeparatedStringBuilder.Build ("," + Environment.NewLine, ex.Circulars, m => "'" + m.FullName + "'"),
+                      string.Join ("," + Environment.NewLine, ex.Circulars.Select (m => "'" + m.FullName + "'")),
                       Environment.NewLine);
                   throw new InvalidOperationException (message, ex);
                 }

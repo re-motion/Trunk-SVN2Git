@@ -19,12 +19,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.TypePipe;
 using Remotion.Utilities;
-using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
 {

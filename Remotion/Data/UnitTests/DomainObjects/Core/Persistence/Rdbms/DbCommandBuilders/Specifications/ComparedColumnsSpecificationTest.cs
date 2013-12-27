@@ -65,9 +65,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Initialization_Empty ()
     {
       Assert.That (
-          () => new ComparedColumnsSpecification (Enumerable.Empty <ColumnValue>()),
-          Throws.Exception.TypeOf<ArgumentEmptyException>().With.Message.EqualTo (
-              "The sequence of compared column values must contain at least one element.\r\nParameter name: comparedColumnValues"));
+          () => new ComparedColumnsSpecification (Enumerable.Empty<ColumnValue>()),
+          Throws.ArgumentException.With.Message.EqualTo (
+                  "The sequence of compared column values must contain at least one element.\r\nParameter name: comparedColumnValues"));
     }
 
     [Test]

@@ -22,7 +22,7 @@
   <Target Name="CreateDocumentationProperties">
     <PropertyGroup>
       <PackageID>TypePipe</PackageID>
-      <DocumentationRootPageSource>Remotion\TypePipe\Core\doc\include\GettingStartedWithTypePipe.aml</DocumentationRootPageSource>
+      <DocumentationRootPageSource>TypePipe\Core\doc\include\GettingStartedWithTypePipe.aml</DocumentationRootPageSource>
     </PropertyGroup>
   </Target>
 
@@ -31,7 +31,6 @@
 
     <ItemGroup>
       <BinaryFiles Remove="@(BinaryFiles)"/>
-      <BinaryFiles Include="$(DocumentationBinariesDirectory)Remotion.dll" />
       <BinaryFiles Include="$(DocumentationBinariesDirectory)Remotion.TypePipe.dll" />
     </ItemGroup>
   </Target>
@@ -41,7 +40,7 @@
 
     <ItemGroup>
       <NamespaceSummaryFiles Remove="@(NamespaceSummaryFiles)"/>
-      <NamespaceSummaryFiles Include="$(SolutionDirectory)Remotion\Core\**\doc\include\*.NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
+      <NamespaceSummaryFiles Include="$(SolutionDirectory)TypePipe\Core\**\doc\include\*.NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
     </ItemGroup>
   </Target>
 

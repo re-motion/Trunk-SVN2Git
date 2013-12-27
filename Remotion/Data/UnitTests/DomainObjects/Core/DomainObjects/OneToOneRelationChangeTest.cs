@@ -510,29 +510,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetRelatedObjectWithInvalidObjectClassOnRelationEndPoint ()
     {
-      try
-      {
-        OrderTicket orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket> ();
-        orderTicket.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", DomainObjectIDs.Customer1.GetObject<Customer> ());
+      var orderTicket = DomainObjectIDs.OrderTicket1.GetObject<OrderTicket>();
+      var newRelatedObject = DomainObjectIDs.Customer1.GetObject<Customer>();
 
-        Assert.Fail ("DataManagementException was expected");
-      }
-      catch (ArgumentTypeException ex)
-      {
-        string expectedMessage = string.Format (
-            "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}',"
-            + " because it is not compatible with the type of the property.\r\nParameter name: newRelatedObject",
-            DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", DomainObjectIDs.OrderTicket1);
+      var expectedMessage = string.Format (
+          "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}',"
+          + " because it is not compatible with the type of the property.\r\nParameter name: newRelatedObject",
+          DomainObjectIDs.Customer1,
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order",
+          DomainObjectIDs.OrderTicket1);
 
-        Assert.That (ex.Message, Is.EqualTo (expectedMessage));
-      }
+      Assert.That (
+          () => orderTicket.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", newRelatedObject),
+          Throws.ArgumentException.And.Message.EqualTo (expectedMessage));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
     public void SetRelatedObjectWithInvalidObjectClassOnVirtualRelationEndPoint ()
     {
-      _order.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", Ceo.NewObject ());
+      var newRelatedObject = Ceo.NewObject();
+
+      var expectedMessage = string.Format (
+          "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}',"
+          + " because it is not compatible with the type of the property.\r\nParameter name: newRelatedObject",
+          newRelatedObject,
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket",
+          _order);
+
+      Assert.That (
+          () => _order.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", newRelatedObject),
+          Throws.ArgumentException.And.Message.EqualTo (expectedMessage));
     }
   }
 }

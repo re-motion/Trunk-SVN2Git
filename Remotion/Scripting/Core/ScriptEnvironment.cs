@@ -97,7 +97,7 @@ namespace Remotion.Scripting
 import clr
 clr.AddReferenceByPartialName('" + assembly + "')" +
 @"
-from " + nameSpace + " import " + SeparatedStringBuilder.Build (",", (IEnumerable) symbols);
+from " + nameSpace + " import " + string.Join (",", symbols);
 
       const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);

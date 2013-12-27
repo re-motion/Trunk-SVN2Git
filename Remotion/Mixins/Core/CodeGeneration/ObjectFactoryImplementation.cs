@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Mixins.Utilities;
-using Remotion.Reflection;
 using Remotion.TypePipe;
 using Remotion.Utilities;
 

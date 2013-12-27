@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -84,8 +83,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <see cref="PropertyAccessFinished"/> yourself, be sure to finish the property access with exactly one call to 
     /// <see cref="PropertyAccessFinished"/> from a finally-block.</remarks>
     /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="propertyName"/> is an empty string.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="propertyName"/> parameter does not denote a valid property.</exception>
+    /// <exception cref="ArgumentException">
+    ///   <paramref name="propertyName"/> is an empty string.<br /> -or- <br />
+    ///   The <paramref name="propertyName"/> parameter does not denote a valid property.
+    /// </exception>
     public static void PreparePropertyAccess (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);

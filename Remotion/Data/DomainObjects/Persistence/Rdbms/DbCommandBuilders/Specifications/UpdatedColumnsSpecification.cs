@@ -60,10 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
             return new { ColumnDefinition = cv.Column, Parameter = parameter };
           });
 
-      var updateStatement = SeparatedStringBuilder.Build (
-          ", ", 
-          columnsWithParameters, 
-          cp => string.Format ("{0} = {1}", sqlDialect.DelimitIdentifier (cp.ColumnDefinition.Name), cp.Parameter.ParameterName));
+      var updateStatement = string.Join (", ", columnsWithParameters.Select (cp => string.Format ("{0} = {1}", sqlDialect.DelimitIdentifier (cp.ColumnDefinition.Name), cp.Parameter.ParameterName)));
       statement.Append (updateStatement);
     }
   }

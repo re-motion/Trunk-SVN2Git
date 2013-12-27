@@ -340,16 +340,16 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Argument value has type System.DBNull when type System.Int32 was expected."
-                                                                          + "\r\nParameter name: value")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'value' has type 'System.DBNull' when type 'System.Int32' was expected.\r\nParameter name: value")]
     public void Convert_FromInt32_ToInt32_WithDBNull ()
     {
       _provider.Convert (_int32, _int32, DBNull.Value);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Argument value has type System.String when type System.Int32 was expected."
-                                                                          + "\r\nParameter name: value")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'value' has type 'System.String' when type 'System.Int32' was expected.\r\nParameter name: value")]
     public void Convert_WithInvalidValue ()
     {
       _provider.Convert (_int32, _nullableInt32, "pwned!");

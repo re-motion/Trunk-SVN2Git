@@ -283,14 +283,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentEmptyException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'value' cannot be empty.\r\nParameter name: value")]
     public void Initialize_WithEmptyGuid ()
     {
       new ObjectID (MappingConfiguration.Current.GetClassDefinition ("Order"), Guid.Empty);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentEmptyException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'value' cannot be empty.\r\nParameter name: value")]
     public void Initialize_WithEmptyString ()
     {
       new ObjectID (MappingConfiguration.Current.GetClassDefinition ("Order"), string.Empty);

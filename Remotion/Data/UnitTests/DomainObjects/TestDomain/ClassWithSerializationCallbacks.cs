@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.Mixins.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 

@@ -51,10 +51,10 @@
       <SourceFiles Include="$(SolutionDirectory)prereq\Tools\FuncGen\**" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Generate-Snk.cmd" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\*.*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)TypePipe\**"
+                   Exclude="$(SolutionDirectory)TypePipe\**\bin\**;$(SolutionDirectory)Remotion\TypePipe\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Core\**"
                    Exclude="$(SolutionDirectory)Remotion\Core\**\bin\**;$(SolutionDirectory)Remotion\Core\**\obj\**;@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)Remotion\TypePipe\**"
-                   Exclude="$(SolutionDirectory)Remotion\TypePipe\**\bin\**;$(SolutionDirectory)Remotion\TypePipe\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Development\Core\**"
                    Exclude="$(SolutionDirectory)Remotion\Development\Core\**\bin\**;$(SolutionDirectory)Remotion\Development\Core\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Development\RhinoMocks\**"

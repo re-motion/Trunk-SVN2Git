@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
         Assert.That (
             results.Length,
             Is.EqualTo (expected.Length),
-            "Number of returned objects doesn't match; returned: " + SeparatedStringBuilder.Build (", ", results, obj => obj.ID.ToString()));
+            "Number of returned objects doesn't match; returned: " + string.Join (", ", results.Select (obj => obj.ID.ToString())));
       }
       Assert.That (results, Is.EquivalentTo (expected));
     }
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
         Assert.That (
             results.Length,
             Is.EqualTo (expected.Length),
-            "Number of returned objects doesn't match; returned: " + SeparatedStringBuilder.Build (", ", results, obj => obj.ID.ToString ()));
+            "Number of returned objects doesn't match; returned: " + string.Join (", ", results.Select (obj => obj.ID.ToString ())));
       }
       Assert.That (results, Is.EqualTo (expected));
     }

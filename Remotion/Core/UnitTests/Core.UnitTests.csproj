@@ -146,6 +146,108 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\SharedSource\UnitTests\FunctionalProgramming\EnumerableExtensionsTest.cs">
+      <Link>SharedSource\FunctionalProgramming\EnumerableExtensionsTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\FunctionalProgramming\EnumerableUtilityTest.cs">
+      <Link>SharedSource\FunctionalProgramming\EnumerableUtilityTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\FunctionalProgramming\MaybeTest.cs">
+      <Link>SharedSource\FunctionalProgramming\MaybeTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\FunctionalProgramming\TestDomain\Element.cs">
+      <Link>SharedSource\FunctionalProgramming\TestDomain\Element.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\FunctionalProgramming\TestDomain\FakeElementEqualityComparer.cs">
+      <Link>SharedSource\FunctionalProgramming\TestDomain\FakeElementEqualityComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\FunctionalProgramming\TestDomain\RecursiveItem.cs">
+      <Link>SharedSource\FunctionalProgramming\TestDomain\RecursiveItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckNotEmpty.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckNotEmpty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckNotNull.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckNotNull.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckNotNullAndType.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckNotNullAndType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckNotNullAndTypeIsAssignableFrom.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckNotNullAndTypeIsAssignableFrom.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckNotNullOrEmpty.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckNotNullOrEmpty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckNotNullOrEmptyOrItemsNull.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckNotNullOrEmptyOrItemsNull.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckNotNullOrItemsNull.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckNotNullOrItemsNull.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckType.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckType2.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckType2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckTypeIsAssignableFrom.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckTypeIsAssignableFrom.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\CheckTypeObsolete.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\CheckTypeObsolete.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ArgumentUtilityTests\NonDisposableEnumerable.cs">
+      <Link>SharedSource\Utilities\ArgumentUtilityTests\NonDisposableEnumerable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\AssertionTest.cs">
+      <Link>SharedSource\Utilities\AssertionTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\AttributeUtilityTests\AttributeUsageTest.cs">
+      <Link>SharedSource\Utilities\AttributeUtilityTest\AttributeUsageTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\EqualityUtilityTest.cs">
+      <Link>SharedSource\Utilities\EqualityUtilityTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\FileUtilityTest.cs">
+      <Link>SharedSource\Utilities\FileUtilityTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\MemberInfoEqualityComparerTest.cs">
+      <Link>SharedSource\Utilities\MemberInfoEqualityComparerTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\MemberInfoEqualityComparerTestDomain\ClassWithFields.cs">
+      <Link>SharedSource\Utilities\MemberInfoEqualityComparerTestDomain\ClassWithFields.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\MemberInfoEqualityComparerTestDomain\ClassWithMethods.cs">
+      <Link>SharedSource\Utilities\MemberInfoEqualityComparerTestDomain\ClassWithMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\MemberInfoEqualityComparerTestDomain\ClassWithProperties.cs">
+      <Link>SharedSource\Utilities\MemberInfoEqualityComparerTestDomain\ClassWithProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithFields.cs">
+      <Link>SharedSource\Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithFields.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithMethods.cs">
+      <Link>SharedSource\Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithProperties.cs">
+      <Link>SharedSource\Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\MemberInfoEqualityComparerTestDomain\FakeMemberInfo.cs">
+      <Link>SharedSource\Utilities\MemberInfoEqualityComparerTestDomain\FakeMemberInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\MemberInfoEqualityComparerTestDomain\GenericClassWithMethods.cs">
+      <Link>SharedSource\Utilities\MemberInfoEqualityComparerTestDomain\GenericClassWithMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\MemberInfoFromExpressionUtilityTest.cs">
+      <Link>SharedSource\Utilities\MemberInfoFromExpressionUtilityTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\NullableTypeUtilityTest.cs">
+      <Link>SharedSource\Utilities\NullableTypeUtilityTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Utilities\ReferenceEqualityComparerTest.cs">
+      <Link>SharedSource\Utilities\ReferenceEqualityComparerTest.cs</Link>
+    </Compile>
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
@@ -180,8 +282,6 @@
     <Compile Include="ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryServiceTest.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttribute.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttributeExtensions.cs" />
-    <Compile Include="FunctionalProgramming\TestDomain\Element.cs" />
-    <Compile Include="FunctionalProgramming\EnumerableExtensionsTest.cs" />
     <Compile Include="Collections\SetBasedCacheKeyTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElementCollectionTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileRootAssemblyElementCollectionTest.cs" />
@@ -213,9 +313,6 @@
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColor.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColorExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValuesGeneric.cs" />
-    <Compile Include="FunctionalProgramming\MaybeTest.cs" />
-    <Compile Include="FunctionalProgramming\TestDomain\FakeElementEqualityComparer.cs" />
-    <Compile Include="FunctionalProgramming\TestDomain\RecursiveItem.cs" />
     <Compile Include="Globalization\CompoundGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\EnumerationGlobalizationServiceTest.cs" />
     <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationServiceGlobalizationServiceTest.cs" />
@@ -229,7 +326,6 @@
     <Compile Include="Globalization\MemberInformationGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\ResolvedResourceManagerResultTest.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
-    <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
     <Compile Include="Globalization\MultiLingualResourcesTest.cs" />
     <Compile Include="Globalization\TestDomain\ClassWithLongResourceIdentifier.cs" />
     <Compile Include="Globalization\TestDomain\ClassWithProperties.cs" />
@@ -259,13 +355,7 @@
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\SetUpFixture.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Reflection\CodeGeneration\TestDomain\BaseClassWithDeserializationEvents.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithConstrainedGenericMethod.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithDeserializationEvents.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Reflection\CodeGeneration\TestDomain\GenericClassWithGenericMethod.cs">
@@ -274,18 +364,11 @@
     <Compile Include="Reflection\DelegateFactoryTest.cs" />
     <Compile Include="Reflection\IMemberInfoNameResolverTest.cs" />
     <Compile Include="Reflection\MemberLookupInfoTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\EventSignatureTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\FieldSignatureTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\MemberNameAndSignatureEqualityComparerTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\MemberSignatureProviderTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\MethodSignatureTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\NestedTypeSignatureTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\PropertySignatureTest.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInfoNameResolverTest.cs" />
     <Compile Include="Reflection\TestDomain\AbstractClass.cs" />
-    <Compile Include="Reflection\TestDomain\ClassForSignatureComparisons2.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\AssemblyFinding\TestAssemblies\AssemblyFinderTest\RemotionCoreReferencingAssembly\AssemblyInfo.cs" />
+    <Compile Include="Reflection\TypesafeActivatorTest.cs" />
     <Compile Include="SafeContextSingletonTest.cs" />
     <Compile Include="ServiceLocation\BootstrapServiceConfigurationTest.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocatorProviderTest.cs" />
@@ -321,7 +404,6 @@
     <Compile Include="Reflection\PropertyInfoAdapterConverterTest.cs" />
     <Compile Include="Reflection\ReflectionExtensionsTest.cs" />
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\DerivedClassWithReferenceType.cs" />
-    <Compile Include="Reflection\MemberSignatures\MemberSignatureEqualityComparerTest.cs" />
     <Compile Include="Reflection\MethodInfoAdapterTest.cs" />
     <Compile Include="Reflection\NullMethodInformationTest.cs" />
     <Compile Include="Reflection\NullPropertyInformationTest.cs" />
@@ -331,9 +413,6 @@
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\ClassWithReferenceType.cs" />
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\IInterfaceWithReferenceType.cs" />
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\SampleAttribute.cs" />
-    <Compile Include="Reflection\MemberSignatures\MethodSignatureIntegrationTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\MethodSignatureStringBuilderHelperTest.cs" />
-    <Compile Include="Reflection\TestDomain\ClassForSignatureComparisons.cs" />
     <Compile Include="Reflection\TypeAdapterConverterTest.cs" />
     <Compile Include="Reflection\TypeAdapterTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CachingAssemblyFinderDecoratorTest.cs" />
@@ -375,11 +454,6 @@
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionForServiceWithoutConcreteImplementationAttribute.cs" />
     <Compile Include="Utilities\AppDomainAssemblyResolverTest.cs" />
     <Compile Include="Reflection\MethodResolverTest.cs" />
-    <Compile Include="Reflection\DynamicParamListTest.cs" />
-    <Compile Include="Reflection\ParamListImplementationTest.cs" />
-    <Compile Include="Reflection\ParamListTest.cs" />
-    <Compile Include="Reflection\TestDomain\ClassWithManyConstructorArguments.cs" />
-    <Compile Include="Utilities\ArgumentTypeExceptionTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromEventInfoTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromMethodInfoTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromMemberInfoTestBase.cs" />
@@ -388,7 +462,6 @@
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\DerivedShadowingNonMultipleAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\NotInheritedAttribute.cs" />
     <Compile Include="Utilities\CompoundComparerTest.cs" />
-    <Compile Include="Utilities\CustomAttributeTypedArgumentUtilityTest.cs" />
     <Compile Include="Utilities\DefaultConverterTest.cs" />
     <Compile Include="Utilities\DelegateBasedComparerTest.cs" />
     <Compile Include="Utilities\DelegateBasedDisposableTest.cs" />
@@ -408,7 +481,6 @@
     <Compile Include="Collections\SimpleDataStoreTest.cs" />
     <Compile Include="Context\CallContextStorageProviderTest.cs" />
     <Compile Include="Globalization\ResourceManagerFactoryTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\SerializationEventRaiserTest.cs" />
     <Compile Include="Collections\LockingCacheDecoratorTest.cs" />
     <Compile Include="Collections\SetTest.cs" />
     <Compile Include="Collections\AutoInitDictionaryTest.cs" />
@@ -508,7 +580,6 @@
     <Compile Include="Reflection\MethodCallerTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\NonApplicationMarkedAssembly\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\NonApplicationMarkedAssembly\SampleType.cs" />
-    <Compile Include="Reflection\TypesafeActivatorTest.cs" />
     <Compile Include="Text\CommandLine\CommandLineClassParserTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -529,25 +600,10 @@
     <Compile Include="Utilities\AdvancedEnumConverterTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\ArgumentEmptyExceptionTest.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotEmpty.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNull.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckType.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckTypeObsolete.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullAndTypeIsAssignableFrom.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckTypeIsAssignableFrom.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullOrItemsNull.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullOrEmpty.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullAndType.cs" />
     <Compile Include="Utilities\ArgumentUtilityTests\CheckEnums.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullOrEmptyOrItemsNull.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\CheckType2.cs" />
-    <Compile Include="Utilities\ArgumentUtilityTests\NonDisposableEnumerable.cs" />
     <Compile Include="Utilities\ArrayUtilityTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\AssertionTest.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\AttributeUsageTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\AttributeWithMetadataTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\IsDefined_WithSuppressTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromType_WithSuppressTest.cs" />
@@ -593,7 +649,6 @@
     <Compile Include="Globalization\EnumDescriptionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FunctionalProgramming\EnumerableUtilityTest.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt16Enum.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt32Enum.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt64Enum.cs" />
@@ -605,33 +660,21 @@
     <Compile Include="Utilities\EnumUtilityTests\Common.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\EqualityUtilityTest.cs" />
     <Compile Include="Utilities\FileUtilityTest.cs" />
     <Compile Include="Utilities\InvertedComparerDecoratorTest.cs" />
-    <Compile Include="Utilities\MemberInfoFromExpressionUtilityTest.cs" />
     <Compile Include="Utilities\NameValueCollectionUtilityTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\NullableTypeUtilityTest.cs" />
     <Compile Include="Utilities\NullComparerTest.cs" />
     <Compile Include="Utilities\NullValueConverterTest.cs" />
     <Compile Include="Utilities\PostActionDisposableDecoratorTest.cs" />
-    <Compile Include="Utilities\ReferenceEqualityComparerTest.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericClass.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericInterface.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericClass.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericInterface.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\IsOriginalDeclaration.cs" />
-    <Compile Include="Utilities\MemberInfoEqualityComparerTest.cs" />
-    <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\ClassWithProperties.cs" />
-    <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\ClassWithMethods.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\ClassWithDifferentProperties.cs" />
-    <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\ClassWithFields.cs" />
-    <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithFields.cs" />
-    <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithMethods.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedClosedGenericClassWithDifferentProperties.cs" />
-    <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithProperties.cs" />
-    <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\FakeMemberInfo.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\GenericClassWithDifferentProperties.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedOpenGenericClassWithDifferentProperties.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedClassWithDifferentProperties.cs" />
@@ -642,7 +685,6 @@
     <Compile Include="Utilities\ReflectionUtilityTests\GetOriginalDeclaringType.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\GuessIsExplicitInterfaceProperty.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\SampleTypes.cs" />
-    <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\GenericClassWithMethods.cs" />
     <Compile Include="Utilities\StopwatchScopeTest.cs" />
     <Compile Include="Utilities\StubStringUtility.cs">
       <SubType>Code</SubType>
@@ -697,6 +739,7 @@
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

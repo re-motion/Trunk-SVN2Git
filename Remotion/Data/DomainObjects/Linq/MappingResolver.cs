@@ -27,7 +27,6 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using ArgumentUtility = Remotion.Linq.Utilities.ArgumentUtility;
 using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.Linq

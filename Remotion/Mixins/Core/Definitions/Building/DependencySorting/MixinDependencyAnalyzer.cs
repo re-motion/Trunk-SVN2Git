@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Mixins.Utilities.DependencySort;
 using Remotion.Text;
@@ -91,7 +92,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
               "The following mixins require a clear base call ordering, but do not "
               + "provide enough dependency information:{1}{0}.{1}Please supply additional dependencies to the mixin definitions, use the "
               + "AcceptsAlphabeticOrderingAttribute, or adjust the mixin configuration accordingly.",
-              SeparatedStringBuilder.Build ("," + Environment.NewLine, equalRoots, m => "'" + m.FullName + "'"),
+              String.Join ("," + Environment.NewLine, (IEnumerable<string>) equalRoots.Select (m => "'" + m.FullName + "'")),
               Environment.NewLine);
       return new InvalidOperationException (message);
     }

@@ -168,10 +168,10 @@
     <Compile Include="MethodEmitterTest.cs" />
     <Compile Include="MethodGenerationTestBase.cs" />
     <Compile Include="PopStatementTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyEmitterTest.cs" />
     <Compile Include="PropertyReferenceTest.cs" />
     <Compile Include="SameConditionExpressionTest.cs" />
-    <Compile Include="SerializationImplementerTest.cs" />
     <Compile Include="SetUpFixture.cs" />
     <Compile Include="SnippetGenerationBaseTest.cs" />
     <Compile Include="TestDomain\BaseClassWithDeserializationEvents.cs" />

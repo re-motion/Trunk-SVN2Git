@@ -184,8 +184,8 @@ namespace Remotion.Mixins.Context
           "ClassContext: '{0}'{1}  Mixins: {2}{1}  ComposedInterfaces: ({3})",
           Type,
           Environment.NewLine,
-          SeparatedStringBuilder.Build ("", Mixins, mc => Environment.NewLine + "    " + mc), 
-          SeparatedStringBuilder.Build (",", ComposedInterfaces, ifc => ifc.Name));
+          string.Join ("", Mixins.Select (mc => Environment.NewLine + "    " + mc)), 
+          string.Join (",", ComposedInterfaces.Select (ifc => ifc.Name)));
     }
 
     /// <summary>
@@ -307,7 +307,7 @@ namespace Remotion.Mixins.Context
               "The dependency specification for '{0}' applied to class '{1}' is ambiguous; matching mixins: {2}.",
               mixinType,
               Type,
-              SeparatedStringBuilder.Build (", ", matchingMixins, mc => "'" + mc.MixinType + "'"));
+              string.Join (", ", matchingMixins.Select (mc => "'" + mc.MixinType + "'")));
           throw new InvalidOperationException (message, ex);
         }
       }

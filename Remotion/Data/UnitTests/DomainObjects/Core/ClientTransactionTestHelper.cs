@@ -29,7 +29,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyManagement;
 using Remotion.Development.UnitTesting;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Rhino.Mocks;
 using System.Linq;
 

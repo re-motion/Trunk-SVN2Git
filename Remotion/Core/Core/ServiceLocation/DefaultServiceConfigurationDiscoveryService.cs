@@ -17,10 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Remotion.Reflection;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
@@ -67,9 +67,57 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("types", types);
 
       return (from type in types
-              let concreteImplementationAttributes = AttributeUtility.GetCustomAttributes<ConcreteImplementationAttribute> (type, false)
-              where concreteImplementationAttributes.Length != 0
-              select CreateServiceConfigurationEntry (type, concreteImplementationAttributes));
+        let concreteImplementationAttributes = AttributeUtility.GetCustomAttributes<ConcreteImplementationAttribute> (type, false)
+        where concreteImplementationAttributes.Length != 0
+        select CreateServiceConfigurationEntry (type, concreteImplementationAttributes))
+          .Concat (GetTypePipeConfiguration());
+    }
+
+    public static IEnumerable<ServiceConfigurationEntry> GetTypePipeConfiguration ()
+    {
+      //TODO RM-5506: Drop this method after ConcreteImplementationAttribute has been changed to ImpementationForAttribute and been applied to MixinParticipant and DomainObjectParticipant.
+
+      Type partipantInterfaceType;
+      Type pipelineFactoryInterfaceType;
+      Type pipelineRegistryInterfaceType;
+      try
+      {
+        partipantInterfaceType = TypeNameTemplateResolver.ResolveToType (
+            "Remotion.TypePipe.IParticipant, Remotion.TypePipe, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+            typeof (DefaultServiceConfigurationDiscoveryService).Assembly);
+        pipelineFactoryInterfaceType = TypeNameTemplateResolver.ResolveToType (
+            "Remotion.TypePipe.IPipelineFactory, Remotion.TypePipe, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+            typeof (DefaultServiceConfigurationDiscoveryService).Assembly);
+        pipelineRegistryInterfaceType = TypeNameTemplateResolver.ResolveToType (
+            "Remotion.TypePipe.IPipelineRegistry, Remotion.TypePipe, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+            typeof (DefaultServiceConfigurationDiscoveryService).Assembly);
+      }
+      catch (FileNotFoundException) // Invalid assembly
+      {
+        yield break;
+      }
+
+      var mixinAttribute = new ConcreteImplementationAttribute (
+          "Remotion.Mixins.CodeGeneration.TypePipe.MixinParticipant, Remotion.Mixins, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+          ignoreIfNotFound: true) { Position = 1 };
+
+      var domainObjectAttribute = new ConcreteImplementationAttribute (
+          "Remotion.Data.DomainObjects.Infrastructure.TypePipe.DomainObjectParticipant, Remotion.Data.DomainObjects, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+          ignoreIfNotFound: true) { Position = 2 };
+
+      var remotionPipelineFactoryAttribute = new ConcreteImplementationAttribute (
+          "Remotion.Reflection.CodeGeneration.TypePipe.RemotionPipelineFactory, Remotion.Reflection.CodeGeneration.TypePipe, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+          ignoreIfNotFound: true) { Lifetime = LifetimeKind.Singleton };
+
+      var remotionPipelineRegistryAttribute = new ConcreteImplementationAttribute (
+          "Remotion.Reflection.CodeGeneration.TypePipe.RemotionPipelineRegistry, Remotion.Reflection.CodeGeneration.TypePipe, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+          ignoreIfNotFound: true) { Lifetime = LifetimeKind.Singleton };
+
+      yield return ServiceConfigurationEntry.CreateFromAttributes (partipantInterfaceType, new[] { mixinAttribute, domainObjectAttribute });
+
+      yield return ServiceConfigurationEntry.CreateFromAttributes (pipelineFactoryInterfaceType, new[] { remotionPipelineFactoryAttribute });
+
+      yield return ServiceConfigurationEntry.CreateFromAttributes (pipelineRegistryInterfaceType, new[] { remotionPipelineRegistryAttribute });
     }
 
     /// <summary>

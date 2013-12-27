@@ -112,7 +112,7 @@ public class WxeParameterConverter
   protected string ConvertObjectToString (object value)
   {
     if (value != null && ! _parameter.Type.IsAssignableFrom (value.GetType()))
-      throw new ArgumentTypeException ("value", _parameter.Type, value.GetType());
+      throw ArgumentUtility.CreateArgumentTypeException ("value", value.GetType(), _parameter.Type);
 
     if (! _parameter.Required && value == null)
       return null;

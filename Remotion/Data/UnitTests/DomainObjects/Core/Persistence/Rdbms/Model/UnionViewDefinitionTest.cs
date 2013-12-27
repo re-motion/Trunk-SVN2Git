@@ -126,8 +126,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentItemTypeException), ExpectedMessage =
-        "The unioned entities must either be a TableDefinitions or UnionViewDefinitions.\r\nParameter name: unionedEntities")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Item 0 is of type 'Remotion.Data.DomainObjects.Persistence.Rdbms.Model.FilterViewDefinition', "
+        + "but the unioned entities must either be a TableDefinitions or UnionViewDefinitions.\r\nParameter name: unionedEntities")]
     public void Initialization_WithInvalidUnionedEntity ()
     {
       var filterViewDefinition = new FilterViewDefinition (

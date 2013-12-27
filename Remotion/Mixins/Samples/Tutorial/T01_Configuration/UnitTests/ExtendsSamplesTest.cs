@@ -16,7 +16,7 @@
 // 
 using NUnit.Framework;
 using Remotion.Mixins.Samples.Tutorial.T01_Configuration.Core.Extends.ExtendsSamples;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 
 namespace Remotion.Mixins.Samples.Tutorial.T01_Configuration.UnitTests
 {

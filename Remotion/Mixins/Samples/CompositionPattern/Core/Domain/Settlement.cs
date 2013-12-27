@@ -17,7 +17,7 @@
 using System;
 using Remotion.Mixins.Samples.CompositionPattern.Core.Domain.Mixins;
 using Remotion.Mixins.Samples.CompositionPattern.Core.Framework;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 
 namespace Remotion.Mixins.Samples.CompositionPattern.Core.Domain
 {

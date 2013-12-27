@@ -429,30 +429,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer' cannot be added to this collection. "
+        + "Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem' "
+        + "or derived from 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'.\r\nParameter name: domainObject")]
     public void CheckRequiredItemTypeForExisting ()
     {
-      Order order = DomainObjectIDs.Order1.GetObject<Order> ();
+      Order order = DomainObjectIDs.Order1.GetObject<Order>();
       DomainObjectCollection orderItems = order.OrderItems;
 
-      orderItems.Add (Customer.NewObject ());
+      orderItems.Add (Customer.NewObject());
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer' cannot be added to this collection. "
+        + "Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem' "
+        + "or derived from 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'.\r\nParameter name: domainObject")]
     public void CheckRequiredItemTypeForNew ()
     {
-      Order order = Order.NewObject ();
+      Order order = Order.NewObject();
       DomainObjectCollection orderItems = order.OrderItems;
 
-      orderItems.Add (Customer.NewObject ());
+      orderItems.Add (Customer.NewObject());
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "DomainObject 'Company|c4954da8-8870-45c1-b7a3-c7e5e6ad641a|System.Guid' cannot be assigned "
+        + "to property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' "
+        + "of DomainObject 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', because it is not compatible with the type of the property."
+        + "\r\nParameter name: newRelatedObject")]
     public void SetRelatedObjectWithInvalidObjectClass ()
     {
-      _order1.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", DomainObjectIDs.Company1.GetObject<Company> ());  
+      _order1.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", DomainObjectIDs.Company1.GetObject<Company>());
     }
 
     [Test]

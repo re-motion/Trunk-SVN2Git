@@ -136,10 +136,12 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'type' is a 'Remotion.Security.UnitTests.TestDomain.Role', which cannot be assigned to type 'Remotion.Security.ISecurableObject'."
+        + "\r\nParameter name: type")]
     public void GetMetadataWithInvalidType ()
     {
-      new ClassReflector ().GetMetadata (typeof (Role), _cache);
+      new ClassReflector().GetMetadata (typeof (Role), _cache);
     }
 
     [Test]

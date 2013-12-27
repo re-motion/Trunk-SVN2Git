@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       _comparedColumnValues = comparedColumnValues.ToArray();
 
       if (_comparedColumnValues.Length == 0)
-        throw new ArgumentEmptyException ("comparedColumnValues", "The sequence of compared column values must contain at least one element.");
+        throw new ArgumentException ("The sequence of compared column values must contain at least one element.", "comparedColumnValues");
     }
 
     public ReadOnlyCollection<ColumnValue> ComparedColumnValues

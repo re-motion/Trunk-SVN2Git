@@ -32,8 +32,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Reflection;
-using Remotion.Text;
+using Remotion.TypePipe;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -278,7 +277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
               relationEndPointDefinition.PropertyName,
               ValueAccess.Current,
               _domainObject.ID,
-              SeparatedStringBuilder.Build (", ", values.Take (10))));
+              string.Join (", ", values.Take (10))));
     }
 
     [Test]

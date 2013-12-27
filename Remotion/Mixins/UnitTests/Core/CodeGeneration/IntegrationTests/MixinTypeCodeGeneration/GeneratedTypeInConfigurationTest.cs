@@ -19,8 +19,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using NUnit.Framework;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration.TestDomain;
-using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.TypePipe;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration
 {

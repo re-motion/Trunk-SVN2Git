@@ -14,36 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
   /// <summary>
   /// This exception is thrown if a list argument contains a null reference.
   /// </summary>
-  [Serializable]
+  [Obsolete ("Use ArgumentNullException instead. (1.15.8.0)", true)]
   public class ArgumentItemNullException : ArgumentException
   {
-    public ArgumentItemNullException ([InvokerParameterName] string argumentName, int index)
-        : base (FormatMessage (argumentName, index))
+    private ArgumentItemNullException ()
     {
-    }
-
-    public ArgumentItemNullException ([InvokerParameterName] string argumentName, string message)
-      : base (message, argumentName)
-    {
-    }
-
-    public ArgumentItemNullException (SerializationInfo info, StreamingContext context)
-        : base (info, context)
-    {
-    }
-
-    private static string FormatMessage (string argumentName, int index)
-    {
-      return string.Format ("Item {0} of argument {1} is null.", index, argumentName);
     }
   }
 }

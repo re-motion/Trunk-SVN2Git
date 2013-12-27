@@ -16,11 +16,11 @@
 // 
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
-using System.Linq;
 
 namespace Remotion.UnitTests.Globalization
 {
@@ -32,24 +32,23 @@ namespace Remotion.UnitTests.Globalization
     [SetUp]
     public void SetUp ()
     {
-      _serviceLocator = new DefaultServiceLocator ();
+      _serviceLocator = new DefaultServiceLocator();
     }
 
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetAllInstances<IGlobalizationService> ().ToArray();
+      var factory = _serviceLocator.GetAllInstances<IGlobalizationService>().ToArray();
 
-      Assert.That (factory.Count (), Is.EqualTo (2));
-      Assert.That (factory[1].GetType ().Name, Is.EqualTo ("MixinGlobalizationService"));
-      Assert.That (factory[0].GetType (), Is.EqualTo (typeof (GlobalizationService)));
+      Assert.That (factory.Count(), Is.EqualTo (1));
+      Assert.That (factory[0], Is.TypeOf<GlobalizationService>());
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetAllInstances<IGlobalizationService> ().ToArray ();
-      var factory2 = _serviceLocator.GetAllInstances<IGlobalizationService> ().ToArray ();
+      var factory1 = _serviceLocator.GetAllInstances<IGlobalizationService>().ToArray();
+      var factory2 = _serviceLocator.GetAllInstances<IGlobalizationService>().ToArray();
 
       Assert.That (factory1, Is.EqualTo (factory2));
     }

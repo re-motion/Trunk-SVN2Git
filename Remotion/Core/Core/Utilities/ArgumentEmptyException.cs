@@ -15,35 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
   /// <summary>
-  /// This exception is thrown if an argument is empty although it must have a content.
+  /// This exception is thrown if an argument has an invalid type.
   /// </summary>
-  [Serializable]
+  [Obsolete ("Use ArgumentException instead. (1.15.8.0)", true)]
   public class ArgumentEmptyException : ArgumentException
   {
-    public ArgumentEmptyException ([InvokerParameterName] string paramName)
-        : base (FormatMessage (paramName), paramName)
+    private ArgumentEmptyException ()
     {
-    }
-
-    public ArgumentEmptyException ([InvokerParameterName] string paramName, string message)
-      : base (message, paramName)
-    {
-    }
-
-    public ArgumentEmptyException (SerializationInfo info, StreamingContext context)
-        : base (info, context)
-    {
-    }
-
-    private static string FormatMessage (string paramName)
-    {
-      return string.Format ("Parameter '{0}' cannot be empty.", paramName);
     }
   }
 }

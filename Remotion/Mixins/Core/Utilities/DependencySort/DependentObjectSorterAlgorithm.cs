@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -81,7 +82,7 @@ namespace Remotion.Mixins.Utilities.DependencySort
       if (rootCandidates.Count == 0)
       {
         string message = string.Format ("The object graph contains circular dependencies involving items {{{0}}}, no root object can be found.",
-            SeparatedStringBuilder.Build (", ", _objects, delegate (T t) { return t.ToString (); })); 
+            String.Join ((string) ", ", (IEnumerable<string>) _objects.Select (delegate (T t) { return t.ToString (); }))); 
         throw new CircularDependenciesException<T> (message, _objects);
       }
       else if (rootCandidates.Count == 1)

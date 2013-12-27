@@ -48,10 +48,9 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException),
-        ExpectedMessage =
-        "Argument type has type Remotion.UnitTests.Utilities.ReflectionUtilityTests.BaseType when type "
-        + "Remotion.UnitTests.Utilities.ReflectionUtilityTests.IDerivedInterface was expected.\r\n"
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'type' has type 'Remotion.UnitTests.Utilities.ReflectionUtilityTests.BaseType' "
+        + "when type 'Remotion.UnitTests.Utilities.ReflectionUtilityTests.IDerivedInterface' was expected.\r\n"
         + "Parameter name: type")]
     public void BaseType ()
     {
@@ -59,10 +58,9 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException),
-        ExpectedMessage =
-        "Argument type has type Remotion.UnitTests.Utilities.ReflectionUtilityTests.IBaseInterface when type "
-        + "Remotion.UnitTests.Utilities.ReflectionUtilityTests.IDerivedInterface was expected.\r\n"
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'type' has type 'Remotion.UnitTests.Utilities.ReflectionUtilityTests.IBaseInterface' "
+        + "when type 'Remotion.UnitTests.Utilities.ReflectionUtilityTests.IDerivedInterface' was expected.\r\n"
         + "Parameter name: type")]
     public void BaseInterface ()
     {

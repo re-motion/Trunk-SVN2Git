@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Mixins.Samples.GenericMixins.Core;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 
 namespace Remotion.Mixins.Samples.GenericMixins.UnitTests
 {

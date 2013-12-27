@@ -213,7 +213,7 @@ namespace Remotion.Mixins.Context
           MixinType,
           MixinKind,
           IntroducedMemberVisibility,
-          SeparatedStringBuilder.Build (",", ExplicitDependencies, t => t.Name));
+          string.Join (",", ExplicitDependencies.Select (t => t.Name)));
     }
   }
 }

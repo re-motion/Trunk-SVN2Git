@@ -92,14 +92,16 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.CheckValidEnumValueAndTypeAndNotNull<TestFlags> ("arg", (TestFlags) (1 | 8));
 		}
 
-		[Test]
-		[ExpectedExceptionAttribute (typeof (ArgumentTypeException))]
-    public void Fail_WrongType ()
-    {
-      ArgumentUtility.CheckValidEnumValueAndTypeAndNotNull<TestFlags> ("arg", TestEnum.Value1);
-    }
+	  [Test]
+	  [ExpectedExceptionAttribute (typeof (ArgumentException), ExpectedMessage =
+	      "Parameter 'arg' has type 'Remotion.UnitTests.Utilities.ArgumentUtilityTests.TestEnum' "
+	      + "when type 'Remotion.UnitTests.Utilities.ArgumentUtilityTests.TestFlags' was expected.\r\nParameter name: arg")]
+	  public void Fail_WrongType ()
+	  {
+	    ArgumentUtility.CheckValidEnumValueAndTypeAndNotNull<TestFlags> ("arg", TestEnum.Value1);
+	  }
 
-    [Test]
+	  [Test]
 		public void Succeed_SingleValue ()
 		{
       TestEnum result = ArgumentUtility.CheckValidEnumValueAndTypeAndNotNull<TestEnum> ("arg", TestEnum.Value1);
@@ -137,14 +139,16 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.CheckValidEnumValueAndType<TestFlags> ("arg", (TestFlags) (1 | 8));
 		}
 
-		[Test]
-		[ExpectedExceptionAttribute (typeof (ArgumentTypeException))]
-    public void Fail_WrongType ()
-    {
-      ArgumentUtility.CheckValidEnumValueAndType<TestFlags> ("arg", TestEnum.Value1);
-    }
+	  [Test]
+	  [ExpectedExceptionAttribute (typeof (ArgumentException), ExpectedMessage =
+	      "Parameter 'arg' has type 'Remotion.UnitTests.Utilities.ArgumentUtilityTests.TestEnum' "
+	      + "when type 'Remotion.UnitTests.Utilities.ArgumentUtilityTests.TestFlags' was expected.\r\nParameter name: arg")]
+	  public void Fail_WrongType ()
+	  {
+	    ArgumentUtility.CheckValidEnumValueAndType<TestFlags> ("arg", TestEnum.Value1);
+	  }
 
-    [Test]
+	  [Test]
 		public void Succeed_SingleValue ()
 		{
       TestEnum? result = ArgumentUtility.CheckValidEnumValueAndType<TestEnum> ("arg", TestEnum.Value1);

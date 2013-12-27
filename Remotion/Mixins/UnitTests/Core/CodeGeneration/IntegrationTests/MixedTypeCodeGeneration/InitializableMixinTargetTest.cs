@@ -22,7 +22,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.Utilities;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.TypePipe.Implementation;
 
 // ReSharper disable SuspiciousTypeConversion.Global

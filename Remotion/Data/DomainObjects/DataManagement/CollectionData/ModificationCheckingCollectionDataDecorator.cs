@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
             "Values of type '{0}' cannot be added to this collection. Values must be of type '{1}' or derived from '{1}'.",
             domainObject.GetPublicDomainObjectType(),
             _requiredItemType);
-        throw new ArgumentTypeException (message, argumentName, _requiredItemType, domainObject.GetPublicDomainObjectType());
+        throw new ArgumentException (message, argumentName);
       }
     }
   }

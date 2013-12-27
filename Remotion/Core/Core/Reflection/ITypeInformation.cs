@@ -384,7 +384,7 @@ namespace Remotion.Reflection
     /// represented by <paramref name="c"/> as it is inherited or implemented by the current type.
     /// </returns>
     /// <param name="c">The <see cref="ITypeInformation"/> to retrieve the ascribed generic arguments for Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentTypeException">
+    /// <exception cref="ArgumentException">
     /// Thrown if the type represented by <paramref name="c"/> is not equal to the current type, 
     /// or if <paramref name="c"/> is in the inheritance hierarchy of the current type,
     /// or if the implementation of <paramref name="c"/> does not match the implementation of the current <see cref="ITypeInformation"/> object.

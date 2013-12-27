@@ -42,8 +42,7 @@ namespace Remotion.UnitTests.Globalization
 
       Assert.That (factory, Is.TypeOf (typeof (CompoundGlobalizationService)));
       var compoundGlobalizationServices = ((CompoundGlobalizationService) factory).GlobalizationServices.ToArray();
-      Assert.That (compoundGlobalizationServices[0].GetType().Name, Is.EqualTo("MixinGlobalizationService"));
-      Assert.That (compoundGlobalizationServices[1], Is.TypeOf(typeof(GlobalizationService)));
+      Assert.That (compoundGlobalizationServices[0], Is.TypeOf<GlobalizationService>());
     }
 
     [Test]

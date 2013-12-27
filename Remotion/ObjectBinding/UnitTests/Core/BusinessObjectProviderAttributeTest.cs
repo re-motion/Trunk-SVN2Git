@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Core
 {
@@ -41,7 +40,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'businessObjectProviderType' is a 'System.Object', which cannot be assigned to type 'Remotion.ObjectBinding.IBusinessObjectProvider'."
+        + "\r\nParameter name: businessObjectProviderType")]
     public void Initialize_WithInvalidType ()
     {
       new StubBusinessObjectProviderAttribute (typeof (object));

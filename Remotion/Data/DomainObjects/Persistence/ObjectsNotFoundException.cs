@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Persistence
   {
     private static string BuildMessage (IEnumerable<ObjectID> ids)
     {
-      return string.Format ("Object(s) could not be found: {0}.", SeparatedStringBuilder.Build (", ", ids, id => "'" + id + "'"));
+      return string.Format ("Object(s) could not be found: {0}.", string.Join (", ", ids.Select (id => "'" + id + "'")));
     }
     
     private readonly ObjectID[] _ids;

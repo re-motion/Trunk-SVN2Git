@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Mixins.Samples.UsesAndExtends.Core;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 
 namespace Remotion.Mixins.Samples.UsesAndExtends.UnitTests
 {

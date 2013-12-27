@@ -45,6 +45,8 @@
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\NUnit-2.6\**" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\ThirdPartyDependencies.txt" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Generate-Snk.cmd" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)SharedSource\**"
+                   Exclude="$(SolutionDirectory)SharedSource\**\bin\**;$(SolutionDirectory)SharedSource\**\obj\**;$(SolutionDirectory)SharedSource\**\*.zip;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Relinq\**"
                    Exclude="$(SolutionDirectory)Relinq\**\bin\**;$(SolutionDirectory)Relinq\**\obj\**;$(SolutionDirectory)Relinq\**\*.zip;@(StandardExcludes)" />
     </ItemGroup>

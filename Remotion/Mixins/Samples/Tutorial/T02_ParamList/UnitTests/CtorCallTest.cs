@@ -18,7 +18,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins.Samples.Tutorial.T02_ParamList.Core;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 
 namespace Remotion.Mixins.Samples.Tutorial.T02_ParamList.UnitTests
 {
@@ -50,6 +50,7 @@ namespace Remotion.Mixins.Samples.Tutorial.T02_ParamList.UnitTests
     }
 
     [Test]
+    [Obsolete]
     public void ParamList_ArrayPassed ()
     {
       var theObject1 = TheObjectFactory.Create<TheClass> (ParamList.Create (new[] { "my", "home", "is", "my", "castle" }));
@@ -57,6 +58,7 @@ namespace Remotion.Mixins.Samples.Tutorial.T02_ParamList.UnitTests
     }
 
     [Test]
+    [Obsolete]
     public void ParamList_SingleNullPassed ()
     {
       var theObject1 = TheObjectFactory.Create<TheClass> (ParamList.Create ((string) null));
@@ -64,6 +66,7 @@ namespace Remotion.Mixins.Samples.Tutorial.T02_ParamList.UnitTests
     }
 
     [Test]
+    [Obsolete]
     public void ParamList_OtherNullPassed ()
     {
       var theObject1 = TheObjectFactory.Create<TheClass> (ParamList.Create ((string[]) null));

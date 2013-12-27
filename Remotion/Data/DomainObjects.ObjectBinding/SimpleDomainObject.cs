@@ -16,16 +16,16 @@
 // 
 
 using System;
+using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Reflection;
-using System.Runtime.Serialization;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
   /// <summary>
-  /// Represents a <see cref="DomainObject"/> that can be instantiated (via <see cref="NewObject(Remotion.Reflection.ParamList)"/>), retrieved (via
+  /// Represents a <see cref="DomainObject"/> that can be instantiated (via <see cref="NewObject(ParamList)"/>), retrieved (via
   /// <see cref="ObjectIDExtensions.GetObject{T}"/> and <see cref="DomainObjectHandleExtensions.GetObject{T}"/>), and deleted via public methods.
   /// </summary>
   /// <typeparam name="TDomainObject">The type derived from <see cref="SimpleDomainObject{TDomainObject}"/>.</typeparam>

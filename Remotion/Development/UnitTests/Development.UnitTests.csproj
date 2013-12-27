@@ -128,6 +128,10 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Reflection.CodeGeneration.TypePipe\Core.Reflection.CodeGeneration.TypePipe.csproj">
+      <Project>{EC62E06A-4AC6-48A0-8A81-69250ABC35B6}</Project>
+      <Name>Core.Reflection.CodeGeneration.TypePipe</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Data\DomainObjects\Data.DomainObjects.csproj">
       <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>
       <Name>Data.DomainObjects</Name>
@@ -136,7 +140,7 @@
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
       <Name>Mixins.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
+    <ProjectReference Include="..\..\..\TypePipe\Core\TypePipe.Core.csproj">
       <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
       <Name>TypePipe.Core</Name>
     </ProjectReference>
@@ -153,23 +157,52 @@
       <Project>{2177143e-345f-4faa-9958-1ae2b5eed242}</Project>
       <Name>Development.RhinoMocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TypePipe\Development.TypePipe.csproj">
-      <Project>{F6FAF727-9405-4BCC-9153-803F73853E67}</Project>
-      <Name>Development.TypePipe</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Web\Development.Web.csproj">
       <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
       <Name>Development.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\DevNullTest.cs">
+      <Link>SharedSource\Core\UnitTesting\DevNullTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\Enumerables\EnumerableExtensionsTest.cs">
+      <Link>SharedSource\Core\UnitTesting\Enumerables\EnumerableExtensionsTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\Enumerables\OneTimeEnumerableTest.cs">
+      <Link>SharedSource\Core\UnitTesting\Enumerables\OneTimeEnumerableTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\ObjectMothers\ObjectMotherTest.cs">
+      <Link>SharedSource\Core\UnitTesting\ObjectMothers\ObjectMotherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\PEVerifierTest.cs">
+      <Link>SharedSource\Core\UnitTesting\PEVerifierTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\Reflection\NormalizingMemberInfoFromExpressionUtilityTest.cs">
+      <Link>SharedSource\Core\UnitTesting\Reflection\NormalizingMemberInfoFromExpressionUtilityTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\SerializerTest.cs">
+      <Link>SharedSource\Core\UnitTesting\SerializerTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\ThreadRunnerTest.cs">
+      <Link>SharedSource\Core\UnitTesting\ThreadRunnerTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\RhinoMocks\UnitTesting\DecoratorTestHelperTest.cs">
+      <Link>SharedSource\RhinoMocks\UnitTesting\DecoratorTestHelperTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\RhinoMocks\UnitTesting\ListArgExtensionsTest.cs">
+      <Link>SharedSource\RhinoMocks\UnitTesting\ListArgExtensionsTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\RhinoMocks\UnitTesting\Threading\LockingDecoratorTestHelperTest.cs">
+      <Link>SharedSource\RhinoMocks\UnitTesting\Threading\LockingDecoratorTestHelperTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\RhinoMocks\UnitTesting\Threading\LockTestHelperTest.cs">
+      <Link>SharedSource\RhinoMocks\UnitTesting\Threading\LockTestHelperTest.cs</Link>
+    </Compile>
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Core\UnitTesting\Configuration\XmlSchemaValidationTest.cs" />
-    <Compile Include="Core\UnitTesting\Enumerables\EnumerableExtensionsTest.cs" />
-    <Compile Include="Core\UnitTesting\Enumerables\OneTimeEnumerableTest.cs" />
-    <Compile Include="Core\UnitTesting\Reflection\NormalizingMemberInfoFromExpressionUtilityTest.cs" />
     <Compile Include="Core\UnitTesting\Reflection\TypeDiscovery\FilteringTypeDiscoveryServiceTest.cs" />
     <Compile Include="Core\UnitTesting\Reflection\TypeDiscovery\FixedTypeDiscoveryServiceTest.cs" />
     <Compile Include="Core\UnitTesting\Resources\ResourceUtilityTest.cs" />
@@ -183,24 +216,20 @@
     <Compile Include="Core\UnitTesting\Sandboxing\SandboxTestRunnerTest.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\SandboxTest.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\TestResultTest.cs" />
+    <Compile Include="Core\UnitTesting\XmlSerializationHelperTest.cs" />
     <Compile Include="Core\UnitTesting\ServiceLocatorScopeTest.cs" />
-    <Compile Include="Core\UnitTesting\ThreadRunnerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\Linq\ExpressionTreeComparerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\SetUpFixture.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\TestDomain\TestDomainObject.cs" />
-    <Compile Include="Core\UnitTesting\ObjectMothers\ObjectMotherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\UnitTesting\AppDomainRunnerTest.cs" />
     <Compile Include="Core\UnitTesting\Data\SqlClient\DatabaseAgentTest.cs" />
     <Compile Include="Core\UnitTesting\Data\SqlClient\TestableDatabaseAgent.cs" />
-    <Compile Include="Core\UnitTesting\DevNullTest.cs" />
     <Compile Include="Core\UnitTesting\IO\TempFileTest.cs" />
-    <Compile Include="Core\UnitTesting\PEVerifierTest.cs" />
     <Compile Include="Core\UnitTesting\RhinoMocksRepositoryAdapter.cs" />
     <Compile Include="Core\UnitTesting\SerializationCallbackTesterTest.cs" />
-    <Compile Include="Core\UnitTesting\SerializerTest.cs" />
     <Compile Include="Core\UnitTesting\TestCreateInstance.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -213,10 +242,6 @@
     <Compile Include="Core\UnitTesting\TestPropertyAccess.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RhinoMocks\UnitTesting\DecoratorTestHelperTest.cs" />
-    <Compile Include="RhinoMocks\UnitTesting\ListArgExtensionsTest.cs" />
-    <Compile Include="RhinoMocks\UnitTesting\Threading\LockingDecoratorTestHelperTest.cs" />
-    <Compile Include="RhinoMocks\UnitTesting\Threading\LockTestHelperTest.cs" />
     <Compile Include="Web\ResourceHosting\ResourceVirtualDirectoryTest.cs" />
     <Compile Include="Web\ResourceHosting\ResourceVirtualFileTest.cs" />
     <Compile Include="Web\ResourceHosting\ResourceVirtualPathProviderTest.cs" />

@@ -87,11 +87,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentItemTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Item 0 of parameter 'domainObjects' has the type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' "
+        + "instead of 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer'."
+        + "\r\nParameter name: domainObjects")]
     public void UnionWith_ChecksItems ()
     {
-      var secondCollection = new DomainObjectCollection ();
-      secondCollection.Add (DomainObjectIDs.Order1.GetObject<Order> ());
+      var secondCollection = new DomainObjectCollection();
+      secondCollection.Add (DomainObjectIDs.Order1.GetObject<Order>());
 
       _collection.UnionWith (secondCollection);
     }

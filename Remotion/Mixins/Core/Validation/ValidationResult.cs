@@ -52,7 +52,7 @@ namespace Remotion.Mixins.Validation
 
     public string GetDefinitionContextPath()
     {
-      return SeparatedStringBuilder.Build (" -> ", ValidatedDefinition.Parent.CreateSequence (d => d.Parent).Select (d => d.FullName));
+      return string.Join (" -> ", ValidatedDefinition.Parent.CreateSequence (d => d.Parent).Select (d => d.FullName));
     }
 
     public int TotalRulesExecuted

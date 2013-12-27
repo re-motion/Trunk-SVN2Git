@@ -19,10 +19,8 @@ using System;
 using System.Reflection;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Reflection.CodeGeneration.UnitTests.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.Reflection.CodeGeneration.UnitTests
 {
@@ -52,8 +50,9 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Argument attributeOwner is a System.String, which cannot be assigned "
-        + "to type System.Reflection.ICustomAttributeProvider.\r\nParameter name: attributeOwner")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'attributeOwner' is a 'System.String', which cannot be assigned to type 'System.Reflection.ICustomAttributeProvider'."
+        + "\r\nParameter name: attributeOwner")]
     public void CustomAttributeExpressionThrowsOnWrongReferenceType ()
     {
       new CustomAttributeExpression (new LocalReference (typeof (string)), typeof (SimpleAttribute), 0, true);

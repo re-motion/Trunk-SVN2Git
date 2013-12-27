@@ -151,13 +151,13 @@
       <Project>{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}</Project>
       <Name>Development.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Development\Mixins\Development.Mixins.csproj">
+      <Project>{e2ecd01b-1321-498e-8228-d6d16b5f647c}</Project>
+      <Name>Development.Mixins</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Development\RhinoMocks\Development.RhinoMocks.csproj">
       <Project>{2177143e-345f-4faa-9958-1ae2b5eed242}</Project>
       <Name>Development.RhinoMocks</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Development\TypePipe\Development.TypePipe.csproj">
-      <Project>{f6faf727-9405-4bcc-9153-803f73853e67}</Project>
-      <Name>Development.TypePipe</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Development\Web\Development.Web.csproj">
       <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
@@ -175,9 +175,13 @@
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
+    <ProjectReference Include="..\..\..\TypePipe\Core\TypePipe.Core.csproj">
       <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
       <Name>TypePipe.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\TypePipe\Development\TypePipe.Development.csproj">
+      <Project>{f6faf727-9405-4bcc-9153-803f73853e67}</Project>
+      <Name>TypePipe.Development</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
@@ -241,6 +245,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\NewObject\RecursiveNewObjectCallTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\HierarchyBoundObjects\OperationsInRootTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\LoadingRelationsWithInvalidMandatoryRelationsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\ServiceLocation\ParticipantRegistrationTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\AllowedOperations\CollectionQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\AllowedOperations\CustomQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyTransactions\AllowedOperations\DiscardTest.cs" />
@@ -305,6 +310,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\LayerSupertype.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\PersistentMixinAddedTwice.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\MixinAddedTwiceWithDifferentNullability\TargetClassWithDBTable.cs" />
+    <Compile Include="DomainObjects\Core\Serialization\FlattenedSerializableWithoutCtorStub.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleConverterTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\ImplementingAccessorInterceptorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\InterceptedPropertyCollectorAdapterTest.cs" />
@@ -2045,7 +2051,9 @@
       <Link>DomainObjects\Core\Resources\RdbmsMapping.xsd</Link>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="DomainObjects\TestDomain\TableInheritance\AbstractClassWithHierarchy.cd" />
     <None Include="DomainObjects\TestDomain\TableInheritance\TestDomain.cd" />
     <None Include="DomainObjects\TestDomain\TableInheritance\FileSystem.cd" />

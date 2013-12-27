@@ -50,7 +50,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
     {
       ArgumentUtility.CheckNotNull ("assemblyMatchStrings", assemblyMatchStrings);
 
-      return "^((" + SeparatedStringBuilder.Build (")|(", assemblyMatchStrings) + "))$";
+      return "^((" + string.Join (")|(", assemblyMatchStrings) + "))$";
     }
 
     private List<string> _nonApplicationAssemblyNames;

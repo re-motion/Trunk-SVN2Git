@@ -27,7 +27,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Mixins;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 using System.Linq;

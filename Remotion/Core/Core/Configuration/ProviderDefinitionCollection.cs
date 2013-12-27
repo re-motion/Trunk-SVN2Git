@@ -41,9 +41,9 @@ namespace Remotion.Configuration
     /// <param name="provider">The provider to be added.</param>
     /// <exception cref="System.ArgumentException">
     /// The <see cref="ProviderBase.Name"/> of <paramref name="provider"/> is <see langword="null"/>.<para>- or -</para>
-    /// The length of the <see cref="ProviderBase.Name"/> of <paramref name="provider"/> is less than 1.
+    /// The length of the <see cref="ProviderBase.Name"/> of <paramref name="provider"/> is less than 1.<para>- or -</para>
+    /// The <paramref name="provider"/> is not derived from <see cref="ProviderBase"/>.
     /// </exception>
-    /// <exception cref="ArgumentTypeException">The <paramref name="provider"/> is not derived from <see cref="ProviderBase"/>.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="provider"/> is null.</exception>
     /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
     public void Add (T provider)
@@ -56,8 +56,8 @@ namespace Remotion.Configuration
     /// <exception cref="System.ArgumentException">
     /// The <see cref="ProviderBase.Name"/> of <paramref name="provider"/> is <see langword="null"/>.<para>- or -</para>
     /// The length of the <see cref="ProviderBase.Name"/> of <paramref name="provider"/> is less than 1.<para>- or -</para>
+    /// The <paramref name="provider"/> is not assignable to <typeparamref name="T"/>.
     /// </exception>
-    /// <exception cref="ArgumentTypeException">The <paramref name="provider"/> is not assignable to <typeparamref name="T"/>.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="provider"/> is null.</exception>
     /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
     public override void Add (ProviderBase provider)

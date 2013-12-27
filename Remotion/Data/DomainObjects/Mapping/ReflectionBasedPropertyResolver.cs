@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Mapping
             "The property '{0}' is ambiguous, it is implemented by the following types valid in the context of class '{1}': {2}.",
             propertyInformation.Name,
             classDefinition.ClassType.Name,
-            SeparatedStringBuilder.Build (", ", implementingTypeNames));
+            string.Join (", ", implementingTypeNames));
         throw new InvalidOperationException (message);
       }
 

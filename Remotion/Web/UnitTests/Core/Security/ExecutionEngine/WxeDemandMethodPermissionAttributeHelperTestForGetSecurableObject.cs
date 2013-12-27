@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Web.Security.ExecutionEngine;
 using Remotion.Web.UnitTests.Core.Security.Domain;
-using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
@@ -126,39 +125,42 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'function' has type 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithoutPermissions' "
+        + "when type 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithThisObject' was expected.\r\nParameter name: function")]
     public void TestWithInvalidFunctionType ()
     {
       WxeDemandMethodPermissionAttributeHelper helper = new WxeDemandMethodPermissionAttributeHelper (
           typeof (TestFunctionWithThisObject),
           _attribute);
 
-      helper.GetSecurableObject (new TestFunctionWithoutPermissions ());
+      helper.GetSecurableObject (new TestFunctionWithoutPermissions());
     }
 
     [Test]
-    [ExpectedException (typeof (WxeException),
-       ExpectedMessage = "WxeFunction 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithoutParameters' has a WxeDemandTargetMethodPermissionAttribute"
-       + " applied, but does not define any parameters to supply the 'this-object'.")]
+    [ExpectedException (typeof (WxeException), ExpectedMessage =
+        "WxeFunction 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithoutParameters' "
+        + "has a WxeDemandTargetMethodPermissionAttribute applied, but does not define any parameters to supply the 'this-object'.")]
     public void TestWithFunctionWithoutParameters ()
     {
       WxeDemandMethodPermissionAttributeHelper helper = new WxeDemandMethodPermissionAttributeHelper (
           typeof (TestFunctionWithoutParameters),
           _attribute);
 
-      helper.GetSecurableObject (new TestFunctionWithoutParameters ());
+      helper.GetSecurableObject (new TestFunctionWithoutParameters());
     }
 
     [Test]
-    [ExpectedException (typeof (WxeException), ExpectedMessage = "The parameter 'Invalid' specified by the WxeDemandTargetMethodPermissionAttribute applied to"
-        + " WxeFunction 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithThisObjectAsSecondParameter' is not a valid parameter"
+    [ExpectedException (typeof (WxeException), ExpectedMessage =
+        "The parameter 'Invalid' specified by the WxeDemandTargetMethodPermissionAttribute "
+        + "applied to WxeFunction 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithThisObjectAsSecondParameter' is not a valid parameter"
         + " of this function.")]
     public void TestWithInvalidParameterName ()
     {
       _attribute.ParameterName = "Invalid";
 
       WxeDemandMethodPermissionAttributeHelper helper = new WxeDemandMethodPermissionAttributeHelper (
-          _functionWithThisObjectAsSecondParamter.GetType (),
+          _functionWithThisObjectAsSecondParamter.GetType(),
           _attribute);
 
       helper.GetSecurableObject (_functionWithThisObjectAsSecondParamter);

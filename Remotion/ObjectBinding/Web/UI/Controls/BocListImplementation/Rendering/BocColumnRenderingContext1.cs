@@ -32,8 +32,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
             renderingContext.ColumnIndex)
     {
       if (!(renderingContext.ColumnDefinition is TBocColumnDefinition))
-        throw new ArgumentTypeException (
-            "renderingContext.ColumnDefinition", typeof (TBocColumnDefinition), renderingContext.ColumnDefinition.GetType());
+        throw ArgumentUtility.CreateArgumentTypeException (
+            "renderingContext.ColumnDefinition", renderingContext.ColumnDefinition.GetType(), typeof (TBocColumnDefinition));
     }
     
     public new TBocColumnDefinition ColumnDefinition

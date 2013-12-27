@@ -51,13 +51,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
       foreach (var domainObject in domainObjects)
       {
         if (domainObject == null)
-          throw new ArgumentItemNullException ("domainObjects", index);
-        if (data.ContainsObjectID (domainObject.ID))
-          throw new ArgumentItemDuplicateException ("domainObjects", index, domainObject.ID);
-
+          throw ArgumentUtility.CreateArgumentItemNullException ("domainObjects", index);
         if (requiredItemType != null && !requiredItemType.IsInstanceOfType (domainObject))
+          throw ArgumentUtility.CreateArgumentItemTypeException ("domainObjects", index, requiredItemType, domainObject.ID.ClassDefinition.ClassType);
+        if (data.ContainsObjectID (domainObject.ID))
         {
-          throw new ArgumentItemTypeException ("domainObjects", index, requiredItemType, domainObject.ID.ClassDefinition.ClassType);
+          throw new ArgumentException (
+              string.Format ("Item {1} of parameter '{0}' is a duplicate ('{2}').", "domainObjects", index, domainObject.ID),
+              "domainObjects");
         }
 
         data.Add (domainObject);

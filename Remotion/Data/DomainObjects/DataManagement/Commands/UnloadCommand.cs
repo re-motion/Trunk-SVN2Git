@@ -37,16 +37,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         IDataManagementCommand unloadDataCommand,
         IClientTransactionEventSink transactionEventSink)
     {
-      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+      ArgumentUtility.CheckNotNullOrEmpty ("domainObjects", domainObjects);
       ArgumentUtility.CheckNotNull ("unloadDataCommand", unloadDataCommand);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
       _domainObjects = domainObjects.ToArray();
       _unloadDataCommand = unloadDataCommand;
       _transactionEventSink = transactionEventSink;
-
-      if (_domainObjects.Length == 0)
-        throw new ArgumentEmptyException ("domainObjects");
     }
 
     public ReadOnlyCollection<DomainObject> DomainObjects

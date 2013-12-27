@@ -29,17 +29,12 @@
   <Target Name="CreateNuGetStructureProperties">
     <PropertyGroup>
       <_libDirectory>$(BinariesDirectory)net-4.5\bin\release\</_libDirectory>
-      <_srcDirectory>$(SolutionDirectory)Remotion\TypePipe\Core\</_srcDirectory>
+      <_srcDirectory>$(SolutionDirectory)TypePipe\Core\</_srcDirectory>
     </PropertyGroup>
     
     <ItemGroup>
       <NuGetLibFiles Remove="@(NuGetLibFiles)"/>
-      <NuGetLibFiles Include="$(_libDirectory)log4net.*" Exclude="*.pdb"/>
-      <NuGetLibFiles Include="$(_libDirectory)Microsoft.Practices.ServiceLocation.*" Exclude="*.pdb"/>
 
-      <NuGetLibFiles Include="$(_libDirectory)Remotion.dll"/>
-      <NuGetLibFiles Include="$(_libDirectory)Remotion.xml"/>
-      
       <NuGetLibFiles Include="$(_libDirectory)Remotion.TypePipe.*"/>
     </ItemGroup>
     <ItemGroup>

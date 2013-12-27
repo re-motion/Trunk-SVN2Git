@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionData
 {
@@ -70,24 +71,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentItemNullException), ExpectedMessage = "Item 1 of argument domainObjects is null.")]
+    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage =
+        "Item 1 of parameter 'domainObjects' is null.\r\nParameter name: domainObjects")]
     public void AddRangeAndCheckItems_NullItem ()
     {
       _data.AddRangeAndCheckItems (new[] { _order3, null }, typeof (Order));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentItemDuplicateException), ExpectedMessage =
-        "Item 1 of argument domainObjects is a duplicate ('Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid').")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Item 1 of parameter 'domainObjects' is a duplicate ('Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid')."
+        + "\r\nParameter name: domainObjects")]
     public void AddRangeAndCheckItems_DuplicateItem ()
     {
       _data.AddRangeAndCheckItems (new[] { _order3, _order3 }, typeof (Order));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentItemTypeException), ExpectedMessage = 
-        "Item 0 of argument domainObjects has the type Remotion.Data.UnitTests.DomainObjects.TestDomain.Order instead of "
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "Item 0 of parameter 'domainObjects' has the type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' " +
+        "instead of 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer'.\r\nParameter name: domainObjects")]
     public void AddRangeAndCheckItems_InvalidType ()
     {
       _data.AddRangeAndCheckItems (new[] { _order3 }, typeof (Customer));

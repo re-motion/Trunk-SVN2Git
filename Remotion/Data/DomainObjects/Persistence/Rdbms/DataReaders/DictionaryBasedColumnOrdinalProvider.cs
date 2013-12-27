@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       var message = string.Format (
           "The column '{0}' is not included in the query result and is not expected for this operation. The included and expected columns are: {1}.",
           columnDefinition.Name,
-          SeparatedStringBuilder.Build (", ", _ordinals.OrderBy (o => o.Value).Select (o => o.Key)));
+          string.Join (", ", _ordinals.OrderBy (o => o.Value).Select (o => o.Key)));
       throw new RdbmsProviderException (message);
     }
   }

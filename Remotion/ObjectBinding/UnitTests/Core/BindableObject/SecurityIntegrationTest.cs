@@ -18,7 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
-using Remotion.Reflection;
+using Remotion.TypePipe;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Rhino.Mocks;

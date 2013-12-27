@@ -17,9 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using NUnit.Framework;
-using Remotion.Reflection;
 using Remotion.Web.Resources;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -35,7 +33,7 @@ namespace Remotion.Web.UnitTests.Core.UI
     [SetUp]
     public void SetUp ()
     {
-      _htmlHeadAppender = TypesafeActivator.CreateInstance<HtmlHeadAppender> (BindingFlags.NonPublic | BindingFlags.Instance).With();
+      _htmlHeadAppender = (HtmlHeadAppender) Activator.CreateInstance (typeof (HtmlHeadAppender), nonPublic: true);
     }
 
     [Test]

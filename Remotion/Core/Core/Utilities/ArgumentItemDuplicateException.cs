@@ -14,31 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
   /// <summary>
   /// This exception is thrown if a list argument contains duplicates.
   /// </summary>
-  [Serializable]
+  [Obsolete ("Use ArgumentException instead. (1.15.8.0)", true)]
   public class ArgumentItemDuplicateException : ArgumentException
   {
-    public ArgumentItemDuplicateException ([InvokerParameterName] string argumentName, int index, object value)
-        : base (FormatMessage (argumentName, index, value))
+    private ArgumentItemDuplicateException ()
     {
-    }
-
-    protected ArgumentItemDuplicateException (SerializationInfo info, StreamingContext context)
-        : base (info, context)
-    {
-    }
-
-    private static string FormatMessage (string argumentName, int index, object value)
-    {
-      return string.Format ("Item {0} of argument {1} is a duplicate ('{2}').", index, argumentName, value);
     }
   }
 }

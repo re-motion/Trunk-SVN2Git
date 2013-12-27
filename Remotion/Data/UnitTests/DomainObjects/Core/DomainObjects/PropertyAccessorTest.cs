@@ -279,11 +279,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "DomainObject 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid' cannot be assigned "
+        + "to property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' "
+        + "of DomainObject 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', because it is not compatible with the type of the property."
+        + "\r\nParameter name: newRelatedObject")]
     public void SetValue_WithRelatedObject_WithInvalidType ()
     {
-      var order = DomainObjectIDs.Order1.GetObject<Order> ();
-      var customer = DomainObjectIDs.Customer1.GetObject<Company> ();
+      var order = DomainObjectIDs.Order1.GetObject<Order>();
+      var customer = DomainObjectIDs.Customer1.GetObject<Company>();
 
       CreateAccessor (order, "OrderTicket").SetValueWithoutTypeCheck (customer);
     }
@@ -300,11 +304,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "DomainObject 'Company|c4954da8-8870-45c1-b7a3-c7e5e6ad641a|System.Guid' cannot be assigned "
+        + "to property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.AssociatedPartnerCompany' "
+        + "of DomainObject 'Person|2001bf42-2aa4-4c81-ad8e-73e9145411e9|System.Guid', because it is not compatible with the type of the property."
+        + "\r\nParameter name: newRelatedObject")]
     public void SetValue_WithRelatedObject_WithInvalidBaseType ()
     {
       var person = DomainObjectIDs.Person1.GetObject<Person>();
-      var company = DomainObjectIDs.Company1.GetObject<Company> ();
+      var company = DomainObjectIDs.Company1.GetObject<Company>();
 
       CreateAccessor (person, "AssociatedPartnerCompany").SetValueWithoutTypeCheck (company);
     }

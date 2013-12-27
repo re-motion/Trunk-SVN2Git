@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using JetBrains.Annotations;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -65,6 +64,11 @@ namespace Remotion.ServiceLocation
   /// <threadsafety static="true" instance="true" />
   public class DefaultServiceLocator : IServiceLocator
   {
+    //TODO RM-5506: Drop member after ConcreteImplementationAttribute has been changed to ImpementationForAttribute and been applied to MixinParticipant and DomainObjectParticipant.
+    private static readonly Lazy<Dictionary<Type, ServiceConfigurationEntry>> s_typePipeParticipantConfiguration =
+        new Lazy<Dictionary<Type, ServiceConfigurationEntry>> (
+            () => DefaultServiceConfigurationDiscoveryService.GetTypePipeConfiguration().ToDictionary (e => e.ServiceType));
+
     private static readonly MethodInfo s_resolveIndirectDependencyMethod =
         MemberInfoFromExpressionUtility.GetMethod ((DefaultServiceLocator sl) => sl.ResolveIndirectDependency<object> (null))
         .GetGenericMethodDefinition();
@@ -340,6 +344,12 @@ namespace Remotion.ServiceLocation
 
     private IEnumerable<Func<object>> CreateInstanceFactories (Type serviceType)
     {
+      {
+        //TODO RM-5506: Drop this block after ConcreteImplementationAttribute has been changed to ImpementationForAttribute and been applied to MixinParticipant and DomainObjectParticipant.
+        if (s_typePipeParticipantConfiguration.Value.ContainsKey (serviceType))
+          return CreateInstanceFactories (s_typePipeParticipantConfiguration.Value[serviceType]);
+      }
+
       var attributes = AttributeUtility.GetCustomAttributes<ConcreteImplementationAttribute> (serviceType, false);
       ServiceConfigurationEntry entry;
       try
