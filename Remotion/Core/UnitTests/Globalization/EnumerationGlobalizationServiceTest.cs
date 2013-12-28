@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.UnitTests.Globalization.TestDomain;
 using Rhino.Mocks;
 

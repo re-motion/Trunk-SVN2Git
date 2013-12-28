@@ -51,9 +51,9 @@ namespace Remotion.Globalization.Implementation
       var resourceManager = _globalizationService.GetResourceManager (value.GetType());
       if (!resourceManager.IsNull)
         return resourceManager.TryGetString (_memberInformationNameResolver.GetEnumName (value), out result);
-      
+
       result = _staticEnumValues.GetOrCreateValue (value, GetStaticEnumValues);
-      return result != value.ToString(); //TODO AO: check with MK!
+      return result != null;
     }
 
     private string GetStaticEnumValues (Enum value)
@@ -65,7 +65,7 @@ namespace Remotion.Globalization.Implementation
         if (descriptionAttribute != null)
           return descriptionAttribute.Description;
       }
-      return value.ToString();
+      return null;
     }
 
     private FieldInfo GetField (Enum value)
