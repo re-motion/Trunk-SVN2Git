@@ -23,5 +23,7 @@ namespace Remotion.UnitTests.Globalization.TestDomain
     public string PropertyWithShortIdentifier { get; set; }
 
     public string PropertyWithLongIdentifier { get; set; }
+
+    public string PropertyWithoutResources { get; set; }
   }
 }
