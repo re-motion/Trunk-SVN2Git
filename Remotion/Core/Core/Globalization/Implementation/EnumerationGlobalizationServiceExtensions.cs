@@ -21,10 +21,30 @@ using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
 {
+  /// <summary>
+  /// Provides extension methods for retrieving for retrieving the human-readable localized representation of an <see cref="Enum"/>
+  /// using the <see cref="IEnumerationGlobalizationService"/>.
+  /// </summary>
   public static class EnumerationGlobalizationServiceExtensions
   {
+    /// <summary>
+    ///   Gets the human-readable enumeration name of the spefified reflection object,
+    ///   using the <paramref name="value"/>'s name as fallback.
+    /// </summary>
+    /// <param name="enumerationGlobalizationService">
+    ///   The <see cref="IEnumerationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="value">
+    ///   The <see cref="Enum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>
+    ///   The human-readable localized representation of the <paramref name="value"/> 
+    ///   or the <paramref name="value"/>'s name if no resource could be found.
+    /// </returns>
     [NotNull]
-    public static string GetEnumerationValueDisplayName (this IEnumerationGlobalizationService enumerationGlobalizationService, Enum value)
+    public static string GetEnumerationValueDisplayName (
+        [NotNull] this IEnumerationGlobalizationService enumerationGlobalizationService,
+        [NotNull] Enum value)
     {
       ArgumentUtility.CheckNotNull ("enumerationGlobalizationService", enumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
@@ -33,8 +53,23 @@ namespace Remotion.Globalization.Implementation
              ?? value.ToString();
     }
 
+    /// <summary>
+    ///   Gets the human-readable enumeration name of the spefified reflection object, using <see langword="null" /> as fallback.
+    /// </summary>
+    /// <param name="enumerationGlobalizationService">
+    ///   The <see cref="IEnumerationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="value">
+    ///   The <see cref="Enum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>
+    ///   The human-readable localized representation of the <paramref name="value"/> 
+    ///   or <see langword="null" /> if no resource could be found.
+    /// </returns>
     [CanBeNull]
-    public static string GetEnumerationValueDisplayNameOrDefault (this IEnumerationGlobalizationService enumerationGlobalizationService, Enum value)
+    public static string GetEnumerationValueDisplayNameOrDefault (
+        [NotNull] this IEnumerationGlobalizationService enumerationGlobalizationService,
+        [NotNull] Enum value)
     {
       ArgumentUtility.CheckNotNull ("enumerationGlobalizationService", enumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
@@ -46,7 +81,19 @@ namespace Remotion.Globalization.Implementation
       return null;
     }
 
-    public static bool ContainsEnumerationValueDisplayName (this IEnumerationGlobalizationService enumerationGlobalizationService, Enum value)
+    /// <summary>
+    ///   Checks whether a human-readable enumeration name of the spefified reflection object exists.
+    /// </summary>
+    /// <param name="enumerationGlobalizationService">
+    ///   The <see cref="IEnumerationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="value">
+    ///   The <see cref="Enum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> if a resource could be found.</returns>
+    public static bool ContainsEnumerationValueDisplayName (
+        [NotNull] this IEnumerationGlobalizationService enumerationGlobalizationService,
+        [NotNull] Enum value)
     {
       ArgumentUtility.CheckNotNull ("enumerationGlobalizationService", enumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
