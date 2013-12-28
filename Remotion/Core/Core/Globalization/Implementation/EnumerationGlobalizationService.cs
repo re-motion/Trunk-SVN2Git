@@ -24,7 +24,7 @@ using Remotion.Utilities;
 namespace Remotion.Globalization.Implementation
 {
   /// <summary>
-  /// Retrieving the human-readable localized representation of enumeration objects.
+  /// Retrieves the human-readable localized representation of enumeration objects.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
   public sealed class EnumerationGlobalizationService : IEnumerationGlobalizationService
