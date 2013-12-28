@@ -30,7 +30,6 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
   {
     private ExtensibleEnumerationGlobalizationService _service;
     private ICompoundGlobalizationService _globalizationServiceStub;
-    private string _resourceValue;
 
     [SetUp]
     public void SetUp ()
@@ -54,8 +53,9 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
                   out Arg<string>.Out ("expected").Dummy))
           .Return (true);
 
-      Assert.That (_service.TryGetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1(), out _resourceValue), Is.True);
-      Assert.That (_resourceValue, Is.EqualTo ("expected"));
+      string resourceValue;
+      Assert.That (_service.TryGetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1(), out resourceValue), Is.True);
+      Assert.That (resourceValue, Is.EqualTo ("expected"));
     }
 
     [Test]
@@ -63,7 +63,8 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
     {
       _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull)).Return (NullResourceManager.Instance);
 
-      Assert.That (_service.TryGetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1 (), out _resourceValue), Is.False);
+      string resourceValue;
+      Assert.That (_service.TryGetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1 (), out resourceValue), Is.False);
     }
   }
 }
