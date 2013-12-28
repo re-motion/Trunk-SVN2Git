@@ -40,14 +40,14 @@ namespace Remotion.Globalization
     /// <param name="typeInformationForResourceResolution">
     ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
     /// </param>
-    /// <param name="value">
+    /// <param name="result">
     ///   The human-readable localized representation of the type or <see langword="null" /> if no resource could be found.
     /// </param>
     /// <returns><see langword="true" /> if a resource could be found.</returns>
     bool TryGetTypeDisplayName (
         [NotNull] ITypeInformation typeInformation,
         [NotNull] ITypeInformation typeInformationForResourceResolution,
-        out string value);
+        out string result);
 
     /// <summary>
     ///   Tries to get the human-readable property name of the spefified reflection object.
@@ -58,13 +58,13 @@ namespace Remotion.Globalization
     /// <param name="typeInformationForResourceResolution">
     ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
     /// </param>
-    /// <param name="value">
+    /// <param name="result">
     ///   The human-readable localized representation of the property or <see langword="null" /> if no resource could be found.
     /// </param>
     /// <returns><see langword="true" /> if a resource could be found.</returns>
     bool TryGetPropertyDisplayName (
         [NotNull] IPropertyInformation propertyInformation,
         [NotNull] ITypeInformation typeInformationForResourceResolution,
-        out string value);
+        out string result);
   }
 }

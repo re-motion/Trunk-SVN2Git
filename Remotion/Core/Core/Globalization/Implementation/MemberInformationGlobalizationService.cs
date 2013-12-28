@@ -51,35 +51,35 @@ namespace Remotion.Globalization.Implementation
     public bool TryGetTypeDisplayName (
         ITypeInformation typeInformation,
         ITypeInformation typeInformationForResourceResolution,
-        out string value)
+        out string result)
     {
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      value = GetStringOrDefault (
+      result = GetStringOrDefault (
           typeInformationForResourceResolution,
           typeInformation.Name,
           _memberInformationNameResolver.GetTypeName (typeInformation),
           "type:");
 
-      return value != null;
+      return result != null;
     }
 
     public bool TryGetPropertyDisplayName (
         IPropertyInformation propertyInformation,
         ITypeInformation typeInformationForResourceResolution,
-        out string value)
+        out string result)
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      value = GetStringOrDefault (
+      result = GetStringOrDefault (
           typeInformationForResourceResolution,
           propertyInformation.Name,
           _memberInformationNameResolver.GetPropertyName (propertyInformation),
           "property:");
 
-      return value != null;
+      return result != null;
     }
 
     private string GetStringOrDefault (ITypeInformation typeInformation, string shortMemberName, string longMemberName, string resourcePrefix)
