@@ -35,7 +35,9 @@
     <ItemGroup>
       <NuGetLibFiles Remove="@(NuGetLibFiles)"/>
 
-      <NuGetLibFiles Include="$(_libDirectory)Remotion.TypePipe.*"/>
+      <NuGetLibFiles Include="$(_libDirectory)Remotion.TypePipe.dll"/>
+      <NuGetLibFiles Include="$(_libDirectory)Remotion.TypePipe.pdb"/>
+      <NuGetLibFiles Include="$(_libDirectory)Remotion.TypePipe.xml"/>
     </ItemGroup>
     <ItemGroup>
       <NuGetSrcFiles Remove="@(NuGetSrcFiles)"/>
