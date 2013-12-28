@@ -23,8 +23,8 @@ using Remotion.Utilities;
 namespace Remotion.Globalization.Implementation
 {
   /// <summary>
-  /// Provides extension methods for retrieving for retrieving the human-readable localized representation 
-  /// using the <see cref="IMemberInformationGlobalizationService"/>.
+  /// Provides extension methods for retrieving for retrieving the human-readable localized representation of an <see cref="ITypeInformation"/>
+  /// or an <see cref="IPropertyInformation"/> using the <see cref="IMemberInformationGlobalizationService"/>.
   /// </summary>
   public static class MemberInformationGlobalizationServiceExtensions
   {
