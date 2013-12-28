@@ -32,7 +32,7 @@ namespace Remotion.Globalization
   public interface IMemberInformationGlobalizationService
   {
     /// <summary>
-    /// Tries to get the human-readable type name of the specified reflection object.
+    ///   Tries to get the human-readable type name of the specified reflection object.
     /// </summary>
     /// <param name="typeInformation">
     ///   The <see cref="ITypeInformation"/> that defines the type name for the resource lookup. Must not be <see langword="null" />.
@@ -41,7 +41,7 @@ namespace Remotion.Globalization
     ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
     /// </param>
     /// <param name="value">
-    /// The human-readable localized representation of the type or a version of the type name if no resource could be found.
+    ///   The human-readable localized representation of the type or <see langword="null" /> if no resource could be found.
     /// </param>
     /// <returns><see langword="true" /> if a resource could be found.</returns>
     bool TryGetTypeDisplayName (
@@ -50,7 +50,7 @@ namespace Remotion.Globalization
         out string value);
 
     /// <summary>
-    /// Tries to get the human-readable property name of the spefified reflection object.
+    ///   Tries to get the human-readable property name of the spefified reflection object.
     /// </summary>
     /// <param name="propertyInformation">
     ///   The <see cref="IPropertyInformation"/> that defines the property name for the resource lookup. Must not be <see langword="null" />.
@@ -59,7 +59,7 @@ namespace Remotion.Globalization
     ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
     /// </param>
     /// <param name="value">
-    /// The human-readable localized representation of the property or a version of the property name if no resource could be found.
+    ///   The human-readable localized representation of the property or <see langword="null" /> if no resource could be found.
     /// </param>
     /// <returns><see langword="true" /> if a resource could be found.</returns>
     bool TryGetPropertyDisplayName (

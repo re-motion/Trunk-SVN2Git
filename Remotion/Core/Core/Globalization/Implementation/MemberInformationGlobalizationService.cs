@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Globalization.Implementation
 {
   /// <summary>
-  /// Retrieving the human-readable localized representation of reflection objects.
+  /// Retrieves  the human-readable localized representation of reflection objects based on their names.
   /// </summary>
   /// <remarks>
   ///   <list type="bullet">
@@ -48,7 +48,10 @@ namespace Remotion.Globalization.Implementation
       _memberInformationNameResolver = memberInformationNameResolver;
     }
 
-    public bool TryGetTypeDisplayName (ITypeInformation typeInformation, ITypeInformation typeInformationForResourceResolution, out string value)
+    public bool TryGetTypeDisplayName (
+        ITypeInformation typeInformation,
+        ITypeInformation typeInformationForResourceResolution,
+        out string value)
     {
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
@@ -62,7 +65,10 @@ namespace Remotion.Globalization.Implementation
       return value != null;
     }
 
-    public bool TryGetPropertyDisplayName (IPropertyInformation propertyInformation, ITypeInformation typeInformationForResourceResolution, out string value)
+    public bool TryGetPropertyDisplayName (
+        IPropertyInformation propertyInformation,
+        ITypeInformation typeInformationForResourceResolution,
+        out string value)
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);

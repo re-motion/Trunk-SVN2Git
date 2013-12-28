@@ -22,13 +22,34 @@ using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
 {
+  /// <summary>
+  /// Provides extension methods for retrieving for retrieving the human-readable localized representation 
+  /// using the <see cref="IMemberInformationGlobalizationService"/>.
+  /// </summary>
   public static class MemberInformationGlobalizationServiceExtensions
   {
+    /// <summary>
+    ///   Gets the human-readable type name of the specified reflection object, 
+    ///   using the <paramref name="typeInformation"/>'s <see cref="IMemberInformation.Name"/> as fallback.
+    /// </summary>
+    /// <param name="memberInformationGlobalizationService">
+    ///   The <see cref="IMemberInformationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="typeInformation">
+    ///   The <see cref="ITypeInformation"/> that defines the type name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="typeInformationForResourceResolution">
+    ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>
+    ///   The human-readable localized representation of the type 
+    ///   or the <paramref name="typeInformation"/>'s <see cref="IMemberInformation.Name"/> if no resource could be found.
+    /// </returns>
     [NotNull]
     public static string GetTypeDisplayName (
-        this IMemberInformationGlobalizationService memberInformationGlobalizationService,
-        ITypeInformation typeInformation,
-        ITypeInformation typeInformationForResourceResolution)
+        [NotNull] this IMemberInformationGlobalizationService memberInformationGlobalizationService,
+        [NotNull] ITypeInformation typeInformation,
+        [NotNull] ITypeInformation typeInformationForResourceResolution)
     {
       ArgumentUtility.CheckNotNull ("memberInformationGlobalizationService", memberInformationGlobalizationService);
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
@@ -38,11 +59,26 @@ namespace Remotion.Globalization.Implementation
              ?? typeInformation.Name;
     }
 
+    /// <summary>
+    ///   Gets the human-readable type name of the specified reflection object, using <see langword="null" /> as fallback.
+    /// </summary>
+    /// <param name="memberInformationGlobalizationService">
+    ///   The <see cref="IMemberInformationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="typeInformation">
+    ///   The <see cref="ITypeInformation"/> that defines the type name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="typeInformationForResourceResolution">
+    ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>
+    ///   The human-readable localized representation of the type or <see langword="null" /> if no resource could be found.
+    /// </returns>
     [CanBeNull]
     public static string GetTypeDisplayNameOrDefault (
-        this IMemberInformationGlobalizationService memberInformationGlobalizationService,
-        ITypeInformation typeInformation,
-        ITypeInformation typeInformationForResourceResolution)
+        [NotNull] this IMemberInformationGlobalizationService memberInformationGlobalizationService,
+        [NotNull] ITypeInformation typeInformation,
+        [NotNull] ITypeInformation typeInformationForResourceResolution)
     {
       ArgumentUtility.CheckNotNull ("memberInformationGlobalizationService", memberInformationGlobalizationService);
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
@@ -55,11 +91,54 @@ namespace Remotion.Globalization.Implementation
       return null;
     }
 
+    /// <summary>
+    ///   Checks whether a human-readable type name of the spefified reflection object exists.
+    /// </summary>
+    /// <param name="memberInformationGlobalizationService">
+    ///   The <see cref="IMemberInformationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="typeInformation">
+    ///   The <see cref="ITypeInformation"/> that defines the type name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="typeInformationForResourceResolution">
+    ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> if a resource could be found.</returns>
+    public static bool ContainsTypeDisplayName (
+        [NotNull] this IMemberInformationGlobalizationService memberInformationGlobalizationService,
+        [NotNull] ITypeInformation typeInformation,
+        [NotNull] ITypeInformation typeInformationForResourceResolution)
+    {
+      ArgumentUtility.CheckNotNull ("memberInformationGlobalizationService", memberInformationGlobalizationService);
+      ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
+      ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
+
+      return GetTypeDisplayNameOrDefault (memberInformationGlobalizationService, typeInformation, typeInformationForResourceResolution)
+             != null;
+    }
+
+    /// <summary>
+    ///   Tries to get the human-readable property name of the spefified reflection object,
+    ///   using the <paramref name="propertyInformation"/>'s <see cref="IMemberInformation.Name"/> as fallback.
+    /// </summary>
+    /// <param name="memberInformationGlobalizationService">
+    ///   The <see cref="IMemberInformationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="propertyInformation">
+    ///   The <see cref="IPropertyInformation"/> that defines the property name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="typeInformationForResourceResolution">
+    ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>
+    ///   The human-readable localized representation of the property 
+    ///   or the <paramref name="propertyInformation"/>'s <see cref="IMemberInformation.Name"/> if no resource could be found.
+    /// </returns>
     [NotNull]
     public static string GetPropertyDisplayName (
-        this IMemberInformationGlobalizationService memberInformationGlobalizationService,
-        IPropertyInformation propertyInformation,
-        ITypeInformation typeInformationForResourceResolution)
+        [NotNull] this IMemberInformationGlobalizationService memberInformationGlobalizationService,
+        [NotNull] IPropertyInformation propertyInformation,
+        [NotNull] ITypeInformation typeInformationForResourceResolution)
     {
       ArgumentUtility.CheckNotNull ("memberInformationGlobalizationService", memberInformationGlobalizationService);
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
@@ -69,6 +148,21 @@ namespace Remotion.Globalization.Implementation
              ?? propertyInformation.Name;
     }
 
+    /// <summary>
+    ///   Tries to get the human-readable property name of the spefified reflection object, using <see langword="null" /> as fallback.
+    /// </summary>
+    /// <param name="memberInformationGlobalizationService">
+    ///   The <see cref="IMemberInformationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="propertyInformation">
+    ///   The <see cref="IPropertyInformation"/> that defines the property name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="typeInformationForResourceResolution">
+    ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>
+    ///   The human-readable localized representation of the property or <see langword="null" /> if no resource could be found.
+    /// </returns>
     [CanBeNull]
     public static string GetPropertyDisplayNameOrDefault (
         this IMemberInformationGlobalizationService memberInformationGlobalizationService,
@@ -89,23 +183,23 @@ namespace Remotion.Globalization.Implementation
       return null;
     }
 
-    public static bool ContainsTypeDisplayName (
-        this IMemberInformationGlobalizationService memberInformationGlobalizationService,
-        ITypeInformation typeInformation,
-        ITypeInformation typeInformationForResourceResolution)
-    {
-      ArgumentUtility.CheckNotNull ("memberInformationGlobalizationService", memberInformationGlobalizationService);
-      ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
-      ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
-
-      return GetTypeDisplayNameOrDefault (memberInformationGlobalizationService, typeInformation, typeInformationForResourceResolution)
-             != null;
-    }
-
+    /// <summary>
+    ///   Checks whether a human-readable property name of the spefified reflection object exists.
+    /// </summary>
+    /// <param name="memberInformationGlobalizationService">
+    ///   The <see cref="IMemberInformationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="propertyInformation">
+    ///   The <see cref="IPropertyInformation"/> that defines the property name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="typeInformationForResourceResolution">
+    ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> if a resource could be found.</returns>
     public static bool ContainsPropertyDisplayName (
-        this IMemberInformationGlobalizationService memberInformationGlobalizationService,
-        IPropertyInformation propertyInformation,
-        ITypeInformation typeInformationForResourceResolution)
+        [NotNull] this IMemberInformationGlobalizationService memberInformationGlobalizationService,
+        [NotNull] IPropertyInformation propertyInformation,
+        [NotNull] ITypeInformation typeInformationForResourceResolution)
     {
       ArgumentUtility.CheckNotNull ("memberInformationGlobalizationService", memberInformationGlobalizationService);
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
