@@ -38,7 +38,6 @@ namespace Remotion.UnitTests.Globalization
     private string _longPropertyResourceID;
     private string _shortTypeResourceID;
     private string _longTypeResourceID;
-    private string _resourceValue;
 
     [SetUp]
     public void SetUp ()
@@ -77,12 +76,13 @@ namespace Remotion.UnitTests.Globalization
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_longPropertyResourceID), out Arg<string>.Out (null).Dummy)).Return (false);
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_shortPropertyResourceID), out Arg<string>.Out (null).Dummy)).Return (false);
 
-      var result = _service.TryGetPropertyDisplayName (_propertyInformationStub, _typeInformationStub, out _resourceValue);
+      string resourceValue;
+      var result = _service.TryGetPropertyDisplayName (_propertyInformationStub, _typeInformationStub, out resourceValue);
 
       _globalizationServiceMock.VerifyAllExpectations();
       _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.False);
-      Assert.That (_resourceValue, Is.Null);
+      Assert.That (resourceValue, Is.Null);
     }
 
     [Test]
@@ -92,12 +92,13 @@ namespace Remotion.UnitTests.Globalization
 
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_longPropertyResourceID), out Arg<string>.Out ("Test").Dummy)).Return (true);
 
-      var result = _service.TryGetPropertyDisplayName (_propertyInformationStub, _typeInformationStub, out _resourceValue);
+      string resourceValue;
+      var result = _service.TryGetPropertyDisplayName (_propertyInformationStub, _typeInformationStub, out resourceValue);
 
       _globalizationServiceMock.VerifyAllExpectations();
       _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
-      Assert.That (_resourceValue, Is.EqualTo ("Test"));
+      Assert.That (resourceValue, Is.EqualTo ("Test"));
     }
 
     [Test]
@@ -108,12 +109,13 @@ namespace Remotion.UnitTests.Globalization
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_longPropertyResourceID), out Arg<string>.Out (null).Dummy)).Return (false);
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_shortPropertyResourceID), out Arg<string>.Out ("Test").Dummy)).Return (true);
 
-      var result = _service.TryGetPropertyDisplayName (_propertyInformationStub, _typeInformationStub, out _resourceValue);
+      string resourceValue;
+      var result = _service.TryGetPropertyDisplayName (_propertyInformationStub, _typeInformationStub, out resourceValue);
 
       _globalizationServiceMock.VerifyAllExpectations();
       _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
-      Assert.That (_resourceValue, Is.EqualTo ("Test"));
+      Assert.That (resourceValue, Is.EqualTo ("Test"));
     }
 
     [Test]
@@ -124,12 +126,13 @@ namespace Remotion.UnitTests.Globalization
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_longPropertyResourceID), out Arg<string>.Out ("TestLong").Dummy)).Return (true);
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_shortPropertyResourceID), out Arg<string>.Out ("TestShort").Dummy)).Repeat.Never();
 
-      var result = _service.TryGetPropertyDisplayName (_propertyInformationStub, _typeInformationStub, out _resourceValue);
+      string resourceValue;
+      var result = _service.TryGetPropertyDisplayName (_propertyInformationStub, _typeInformationStub, out resourceValue);
 
       _globalizationServiceMock.VerifyAllExpectations();
       _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
-      Assert.That (_resourceValue, Is.EqualTo ("TestLong"));
+      Assert.That (resourceValue, Is.EqualTo ("TestLong"));
     }
 
     [Test]
@@ -139,13 +142,14 @@ namespace Remotion.UnitTests.Globalization
 
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_longTypeResourceID), out Arg<string>.Out (null).Dummy)).Return (false);
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_shortTypeResourceID), out Arg<string>.Out (null).Dummy)).Return (false);
- 
-      var result = _service.TryGetTypeDisplayName (_typeInformationStub, _typeInformationForResourceResolutionStub, out _resourceValue);
+
+      string resourceValue;
+      var result = _service.TryGetTypeDisplayName (_typeInformationStub, _typeInformationForResourceResolutionStub, out resourceValue);
 
       _globalizationServiceMock.VerifyAllExpectations();
       _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.False);
-      Assert.That (_resourceValue, Is.Null);
+      Assert.That (resourceValue, Is.Null);
     }
 
     [Test]
@@ -155,12 +159,13 @@ namespace Remotion.UnitTests.Globalization
 
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_longTypeResourceID), out Arg<string>.Out ("Test").Dummy)).Return (true);
 
-      var result = _service.TryGetTypeDisplayName (_typeInformationStub, _typeInformationForResourceResolutionStub, out _resourceValue);
+      string resourceValue;
+      var result = _service.TryGetTypeDisplayName (_typeInformationStub, _typeInformationForResourceResolutionStub, out resourceValue);
 
       _globalizationServiceMock.VerifyAllExpectations();
       _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
-      Assert.That (_resourceValue, Is.EqualTo ("Test"));
+      Assert.That (resourceValue, Is.EqualTo ("Test"));
     }
 
     [Test]
@@ -171,12 +176,13 @@ namespace Remotion.UnitTests.Globalization
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_longTypeResourceID), out Arg<string>.Out (null).Dummy)).Return (false);
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_shortTypeResourceID), out Arg<string>.Out ("Test").Dummy)).Return (true);
 
-      var result = _service.TryGetTypeDisplayName (_typeInformationStub, _typeInformationForResourceResolutionStub, out _resourceValue);
+      string resourceValue;
+      var result = _service.TryGetTypeDisplayName (_typeInformationStub, _typeInformationForResourceResolutionStub, out resourceValue);
 
       _globalizationServiceMock.VerifyAllExpectations();
       _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
-      Assert.That (_resourceValue, Is.EqualTo ("Test"));
+      Assert.That (resourceValue, Is.EqualTo ("Test"));
     }
 
     [Test]
@@ -187,12 +193,13 @@ namespace Remotion.UnitTests.Globalization
       _resourceManagerMock.Expect (mock => mock.TryGetString (Arg.Is (_longTypeResourceID), out Arg<string>.Out ("TestLong").Dummy)).Return (true);
       _resourceManagerMock.Expect (stub => stub.TryGetString (Arg.Is (_shortTypeResourceID), out Arg<string>.Out ("TestShort").Dummy)).Repeat.Never();
 
-      var result = _service.TryGetTypeDisplayName (_typeInformationStub, _typeInformationForResourceResolutionStub, out _resourceValue);
+      string resourceValue;
+      var result = _service.TryGetTypeDisplayName (_typeInformationStub, _typeInformationForResourceResolutionStub, out resourceValue);
 
       _globalizationServiceMock.VerifyAllExpectations();
       _resourceManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
-      Assert.That (_resourceValue, Is.EqualTo ("TestLong"));
+      Assert.That (resourceValue, Is.EqualTo ("TestLong"));
     }
   }
 }
