@@ -276,6 +276,7 @@
     <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationServiceExtensionsTest.cs" />
     <Compile Include="Globalization\EnumerationGlobalizationServiceIntegrationTest.cs" />
+    <Compile Include="Globalization\EnumerationGlobalizationServiceExtensionsTest.cs" />
     <Compile Include="Globalization\EnumFromResource.cs" />
     <Compile Include="Globalization\GlobalizationServiceExtensionsTest.cs" />
     <Compile Include="Globalization\MemberInformationGlobalizationServiceIntegrationTest.cs" />
