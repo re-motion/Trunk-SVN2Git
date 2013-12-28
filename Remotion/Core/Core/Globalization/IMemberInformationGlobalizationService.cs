@@ -41,7 +41,8 @@ namespace Remotion.Globalization
     ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
     /// </param>
     /// <param name="result">
-    ///   The human-readable localized representation of the type or <see langword="null" /> if no resource could be found.
+    ///   The human-readable localized representation of the <paramref name="typeInformation"/> 
+    ///   or <see langword="null" /> if no resource could be found.
     /// </param>
     /// <returns><see langword="true" /> if a resource could be found.</returns>
     bool TryGetTypeDisplayName (
@@ -59,7 +60,8 @@ namespace Remotion.Globalization
     ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
     /// </param>
     /// <param name="result">
-    ///   The human-readable localized representation of the property or <see langword="null" /> if no resource could be found.
+    ///   The human-readable localized representation of the <paramref name="propertyInformation"/> 
+    ///   or <see langword="null" /> if no resource could be found.
     /// </param>
     /// <returns><see langword="true" /> if a resource could be found.</returns>
     bool TryGetPropertyDisplayName (

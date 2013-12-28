@@ -42,7 +42,7 @@ namespace Remotion.Globalization.Implementation
     ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
     /// </param>
     /// <returns>
-    ///   The human-readable localized representation of the type 
+    ///   The human-readable localized representation of the <paramref name="typeInformation"/> 
     ///   or the <paramref name="typeInformation"/>'s <see cref="IMemberInformation.Name"/> if no resource could be found.
     /// </returns>
     [NotNull]
@@ -72,7 +72,8 @@ namespace Remotion.Globalization.Implementation
     ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
     /// </param>
     /// <returns>
-    ///   The human-readable localized representation of the type or <see langword="null" /> if no resource could be found.
+    ///   The human-readable localized representation of the <paramref name="typeInformation"/>
+    ///   or <see langword="null" /> if no resource could be found.
     /// </returns>
     [CanBeNull]
     public static string GetTypeDisplayNameOrDefault (
@@ -131,7 +132,7 @@ namespace Remotion.Globalization.Implementation
     ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
     /// </param>
     /// <returns>
-    ///   The human-readable localized representation of the property 
+    ///   The human-readable localized representation of the <paramref name="propertyInformation"/> 
     ///   or the <paramref name="propertyInformation"/>'s <see cref="IMemberInformation.Name"/> if no resource could be found.
     /// </returns>
     [NotNull]
@@ -161,7 +162,8 @@ namespace Remotion.Globalization.Implementation
     ///   The <see cref="ITypeInformation"/> that should be used for the resource resolution. Must not be <see langword="null" />.
     /// </param>
     /// <returns>
-    ///   The human-readable localized representation of the property or <see langword="null" /> if no resource could be found.
+    ///   The human-readable localized representation of the <paramref name="propertyInformation"/> 
+    ///   or <see langword="null" /> if no resource could be found.
     /// </returns>
     [CanBeNull]
     public static string GetPropertyDisplayNameOrDefault (
