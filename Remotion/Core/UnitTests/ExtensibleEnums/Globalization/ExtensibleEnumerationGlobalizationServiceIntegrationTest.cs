@@ -32,6 +32,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
       string resourceValue;
 
       var service = SafeServiceLocator.Current.GetInstance<IExtensibleEnumerationGlobalizationService> ();
+
       Assert.That (service.TryGetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1 (), out resourceValue), Is.True);
       Assert.That (resourceValue, Is.EqualTo ("Wert1"));
       Assert.That (service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1 ()), Is.EqualTo ("Wert1"));
@@ -45,6 +46,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
       Assert.That (service.ContainsExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value2 ()), Is.True);
 
       Assert.That (service.TryGetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.ValueWithoutResource (), out resourceValue), Is.False);
+      Assert.That (resourceValue, Is.Null);
       Assert.That (service.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.ValueWithoutResource ()), Is.EqualTo ("ValueWithoutResource"));
       Assert.That (service.GetExtensibleEnumerationValueDisplayNameOrDefault (ExtensibleEnumWithResources.Values.ValueWithoutResource ()), Is.Null);
       Assert.That (service.ContainsExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.ValueWithoutResource ()), Is.False);
@@ -73,6 +75,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Globalization
       Assert.That (service.ContainsExtensibleEnumerationValueDisplayName (Color.Values.LightRed ()), Is.True);
 
       Assert.That (service.TryGetExtensibleEnumerationValueDisplayName (Color.Values.LightBlue (), out resourceValue), Is.False);
+      Assert.That (resourceValue, Is.Null);
       Assert.That (service.GetExtensibleEnumerationValueDisplayName (Color.Values.LightBlue ()), Is.EqualTo ("LightBlue"));
       Assert.That (service.GetExtensibleEnumerationValueDisplayNameOrDefault (Color.Values.LightBlue ()), Is.Null);
       Assert.That (service.ContainsExtensibleEnumerationValueDisplayName (Color.Values.LightBlue ()), Is.False);
