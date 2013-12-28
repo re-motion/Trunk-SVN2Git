@@ -101,6 +101,12 @@ namespace Remotion.ObjectBinding.BindableObject
       return _resourceManager.Value.GetString (value ? ResourceIdentifier.True : ResourceIdentifier.False);
     }
 
+    /// <summary>
+    /// Gets the localized display name of a type.
+    /// </summary>
+    /// <param name="typeInformation">The <see cref="ITypeInformation"/> for which to lookup the resource.</param>
+    /// <param name="typeInformationForResourceResolution">The <see cref="ITypeInformation"/> providing the resources.</param>
+    /// <returns>The localized display name.</returns>
     public string GetTypeDisplayName (ITypeInformation typeInformation, ITypeInformation typeInformationForResourceResolution)
     {
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
@@ -112,8 +118,8 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <summary>
     /// Gets the localized display name of a property.
     /// </summary>
-    /// <param name="propertyInformation"></param>
-    /// <param name="typeInformationForResourceResolution"></param>
+    /// <param name="propertyInformation">The <see cref="IPropertyInformation"/> for which to lookup the resource.</param>
+    /// <param name="typeInformationForResourceResolution">The <see cref="ITypeInformation"/> providing the resources.</param>
     /// <returns>The localized display name.</returns>
     public string GetPropertyDisplayName (IPropertyInformation propertyInformation, ITypeInformation typeInformationForResourceResolution)
     {

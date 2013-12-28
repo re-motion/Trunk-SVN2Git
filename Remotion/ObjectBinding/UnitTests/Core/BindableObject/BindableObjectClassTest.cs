@@ -109,40 +109,37 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetDisplayName_WithoutGlobalizationService ()
     {
-      var classReflector = new ClassReflector (
-          typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create ());
+      var classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create ());
       var bindableObjectClass = classReflector.GetMetadata ();
 
       Assert.That (bindableObjectClass.GetDisplayName (), 
-        Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes, Remotion.ObjectBinding.UnitTests"));
+          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes, Remotion.ObjectBinding.UnitTests"));
     }
 
     [Test]
     public void GetDisplayName_WithGlobalizationService ()
     {
-      var classReflector = new ClassReflector (
-          typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create ());
+      var classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create ());
       var bindableObjectClass = classReflector.GetMetadata ();
 
       var mockMemberInformationGlobalizationService = _mockRepository.StrictMock<IMemberInformationGlobalizationService> ();
       _bindableObjectProvider.AddService (
           typeof (BindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
-              MockRepository.GenerateStub<ICompoundGlobalizationService> (),
+              MockRepository.GenerateStub<ICompoundGlobalizationService>(),
               mockMemberInformationGlobalizationService,
-              MockRepository.GenerateStub<IEnumerationGlobalizationService> (),
-              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService> ()));
+              MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
+              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
 
       Expect.Call (
           mockMemberInformationGlobalizationService.TryGetTypeDisplayName (
-              Arg<ITypeInformation>.Matches (c => c.ConvertToRuntimeType () == bindableObjectClass.TargetType),
-              Arg<ITypeInformation>.Matches (c => c.ConvertToRuntimeType () == bindableObjectClass.TargetType),
+              Arg<ITypeInformation>.Matches (c => c.ConvertToRuntimeType() == bindableObjectClass.TargetType),
+              Arg<ITypeInformation>.Matches (c => c.ConvertToRuntimeType() == bindableObjectClass.TargetType),
               out Arg<string>.Out ("MockString").Dummy))
           .Return (true);
       _mockRepository.ReplayAll ();
 
-      Assert.That (bindableObjectClass.GetDisplayName (),
-        Is.EqualTo ("MockString"));
+      Assert.That (bindableObjectClass.GetDisplayName (), Is.EqualTo ("MockString"));
     }
 
     [Test]

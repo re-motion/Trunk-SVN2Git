@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetTypeDisplayName_TypeWithoutResourceEntryForTypename ()
     {
       var typeInfo = TypeAdapter.Create (typeof (SimpleBusinessObjectClass));
-      Assert.That (_globalizationService.GetTypeDisplayName (typeInfo, typeInfo), Is.EqualTo ("SimpleBusinessObjectClass"));
+      Assert.That (_globalizationService.GetTypeDisplayName (_targetType, typeInfo), Is.EqualTo ("ClassWithResources"));
     }
 
     [Test]
