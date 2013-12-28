@@ -19,9 +19,6 @@ using System;
 using NUnit.Framework;
 using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Globalization;
-using Remotion.Globalization;
-using Remotion.Reflection;
-using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.ExtensibleEnums.Globalization
