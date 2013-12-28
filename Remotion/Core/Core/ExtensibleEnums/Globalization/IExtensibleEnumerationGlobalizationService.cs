@@ -22,7 +22,7 @@ using Remotion.ServiceLocation;
 namespace Remotion.ExtensibleEnums.Globalization
 {
   /// <summary>
-  /// Defines an interface for retrieving the human-readable localized representation of the extensible-enumeration object.
+  ///  Defines an interface for retrieving the human-readable localized representation of the extensible-enumeration object.
   /// </summary>
   /// <seealso cref="ExtensibleEnumerationServiceGlobalizationService"/>
   /// <threadsafety static="true" instance="true" />

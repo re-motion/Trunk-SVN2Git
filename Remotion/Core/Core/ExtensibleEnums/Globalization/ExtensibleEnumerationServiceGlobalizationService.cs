@@ -23,8 +23,9 @@ using Remotion.Utilities;
 namespace Remotion.ExtensibleEnums.Globalization
 {
   /// <summary>
-  /// Default implementation for the <see cref="IExtensibleEnumerationGlobalizationService"/>.
+  /// Retrieves the human-readable localized representation of extensible-enumeration objects.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   public sealed class ExtensibleEnumerationServiceGlobalizationService : IExtensibleEnumerationGlobalizationService
   {
     private readonly IGlobalizationService _globalizationService;

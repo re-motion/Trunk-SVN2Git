@@ -16,13 +16,35 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums.Globalization
 {
+  /// <summary>
+  /// Provides extension methods for retrieving for retrieving the human-readable localized representation of an <see cref="IExtensibleEnum"/> object
+  /// using the <see cref="IExtensibleEnumerationGlobalizationService"/>.
+  /// </summary>
   public static class ExtensibleEnumerationGlobalizationServiceExtensions
   {
-    public static string GetExtensibleEnumerationValueDisplayName (this IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService, IExtensibleEnum value)
+    /// <summary>
+    ///   Gets the human-readable extensible-enumeration name of the spefified reflection object,
+    ///   using the <paramref name="value"/>'s name as fallback.
+    /// </summary>
+    /// <param name="extensibleEnumerationGlobalizationService">
+    ///   The <see cref="IExtensibleEnumerationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="value">
+    ///   The <see cref="IExtensibleEnum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>
+    ///   The human-readable localized representation of the <paramref name="value"/> 
+    ///   or the <paramref name="value"/>'s <see cref="IExtensibleEnum.ValueName"/> if no resource could be found.
+    /// </returns>
+    [NotNull]
+    public static string GetExtensibleEnumerationValueDisplayName (
+        [NotNull] this IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService,
+        [NotNull] IExtensibleEnum value)
     {
       ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
@@ -30,7 +52,23 @@ namespace Remotion.ExtensibleEnums.Globalization
       return GetExtensibleEnumerationValueDisplayNameOrDefault (extensibleEnumerationGlobalizationService, value) ?? value.ValueName;
     }
 
-    public static string GetExtensibleEnumerationValueDisplayNameOrDefault (this IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService, IExtensibleEnum value)
+    /// <summary>
+    ///   Gets the human-readable extensible-enumeration name of the spefified reflection object, using <see langword="null" /> as fallback.
+    /// </summary>
+    /// <param name="extensibleEnumerationGlobalizationService">
+    ///   The <see cref="IExtensibleEnumerationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="value">
+    ///   The <see cref="IExtensibleEnum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>
+    ///   The human-readable localized representation of the <paramref name="value"/> 
+    ///   or <see langword="null" /> if no resource could be found.
+    /// </returns>
+    [CanBeNull]
+    public static string GetExtensibleEnumerationValueDisplayNameOrDefault (
+        [NotNull] this IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService,
+        [NotNull] IExtensibleEnum value)
     {
       ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
@@ -42,7 +80,19 @@ namespace Remotion.ExtensibleEnums.Globalization
       return null;
     }
 
-    public static bool ContainsExtensibleEnumerationValueDisplayName (this IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService, IExtensibleEnum value)
+    /// <summary>
+    ///   Checks whether a human-readable extensible-enumeration name of the spefified reflection object exists.
+    /// </summary>
+    /// <param name="extensibleEnumerationGlobalizationService">
+    ///   The <see cref="IExtensibleEnumerationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="value">
+    ///   The <see cref="IExtensibleEnum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> if a resource could be found.</returns>
+    public static bool ContainsExtensibleEnumerationValueDisplayName (
+        [NotNull] this IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService,
+        [NotNull] IExtensibleEnum value)
     {
       ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
