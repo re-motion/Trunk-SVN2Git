@@ -49,7 +49,11 @@ namespace Remotion.ExtensibleEnums.Globalization
       ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
 
-      return GetExtensibleEnumerationValueDisplayNameOrDefault (extensibleEnumerationGlobalizationService, value) ?? value.ValueName;
+      string result;
+      if (extensibleEnumerationGlobalizationService.TryGetExtensibleEnumerationValueDisplayName (value, out result))
+        return result;
+
+      return value.ValueName;
     }
 
     /// <summary>
@@ -97,7 +101,8 @@ namespace Remotion.ExtensibleEnums.Globalization
       ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
 
-      return GetExtensibleEnumerationValueDisplayNameOrDefault (extensibleEnumerationGlobalizationService, value) != null;
+      string result;
+      return extensibleEnumerationGlobalizationService.TryGetExtensibleEnumerationValueDisplayName (value, out result);
     }
   }
 }

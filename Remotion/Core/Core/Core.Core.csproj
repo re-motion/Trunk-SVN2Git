@@ -253,7 +253,7 @@
     <Compile Include="ExtensibleEnums\Globalization\IExtensibleEnumerationGlobalizationService.cs" />
     <Compile Include="Globalization\Implementation\CompoundGlobalizationService.cs" />
     <Compile Include="Globalization\Implementation\EnumerationGlobalizationService.cs" />
-    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationServiceGlobalizationService.cs" />
+    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationService.cs" />
     <Compile Include="Globalization\Implementation\GlobalizationService.cs" />
     <Compile Include="Globalization\ICompoundGlobalizationService.cs" />
     <Compile Include="Globalization\IGlobalizationService.cs" />

@@ -274,6 +274,7 @@
     <Compile Include="Context\SafeContextTest.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumExtensionsTest.cs" />
     <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationServiceIntegrationTest.cs" />
+    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationServiceExtensionsTest.cs" />
     <Compile Include="Globalization\EnumerationGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="Globalization\EnumFromResource.cs" />
     <Compile Include="Globalization\GlobalizationServiceExtensionsTest.cs" />
@@ -315,7 +316,7 @@
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValuesGeneric.cs" />
     <Compile Include="Globalization\CompoundGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\EnumerationGlobalizationServiceTest.cs" />
-    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationServiceGlobalizationServiceTest.cs" />
+    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\GlobalizationServiceTest.cs" />
     <Compile Include="Globalization\ICompoundGlobalizationServiceTest.cs" />
     <Compile Include="Globalization\IEnumerationGlobalizationServiceTest.cs" />

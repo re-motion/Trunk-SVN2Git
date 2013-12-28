@@ -26,11 +26,11 @@ namespace Remotion.ExtensibleEnums.Globalization
   /// Retrieves the human-readable localized representation of extensible-enumeration objects.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
-  public sealed class ExtensibleEnumerationServiceGlobalizationService : IExtensibleEnumerationGlobalizationService
+  public sealed class ExtensibleEnumerationGlobalizationService : IExtensibleEnumerationGlobalizationService
   {
     private readonly IGlobalizationService _globalizationService;
 
-    public ExtensibleEnumerationServiceGlobalizationService (ICompoundGlobalizationService globalizationService)
+    public ExtensibleEnumerationGlobalizationService (ICompoundGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
 
