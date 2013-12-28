@@ -88,20 +88,25 @@ namespace Remotion.UnitTests.Globalization
 
       Assert.That (service.TryGetEnumerationValueDisplayName (EnumWithDescription.Value1, out resourceValue), Is.True);
       Assert.That (resourceValue, Is.EqualTo ("Value I"));
-      Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.Value1), Is.EqualTo ("Value 1"));
-      Assert.That (service.GetEnumerationValueDisplayNameOrDefault (EnumWithResources.Value1), Is.EqualTo ("Value 1"));
-      Assert.That (service.ContainsEnumerationValueDisplayName (EnumWithResources.Value1), Is.True);
+      Assert.That (service.GetEnumerationValueDisplayName (EnumWithDescription.Value1), Is.EqualTo ("Value I"));
+      Assert.That (service.GetEnumerationValueDisplayNameOrDefault (EnumWithDescription.Value1), Is.EqualTo ("Value I"));
+      Assert.That (service.ContainsEnumerationValueDisplayName (EnumWithDescription.Value1), Is.True);
 
       Assert.That (service.TryGetEnumerationValueDisplayName (EnumWithDescription.Value2, out resourceValue), Is.True);
       Assert.That (resourceValue, Is.EqualTo ("Value II"));
-      Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.Value2), Is.EqualTo ("Value 2"));
-      Assert.That (service.GetEnumerationValueDisplayNameOrDefault (EnumWithResources.Value2), Is.EqualTo ("Value 2"));
-      Assert.That (service.ContainsEnumerationValueDisplayName (EnumWithResources.Value2), Is.True);
+      Assert.That (service.GetEnumerationValueDisplayName (EnumWithDescription.Value2), Is.EqualTo ("Value II"));
+      Assert.That (service.GetEnumerationValueDisplayNameOrDefault (EnumWithDescription.Value2), Is.EqualTo ("Value II"));
+      Assert.That (service.ContainsEnumerationValueDisplayName (EnumWithDescription.Value2), Is.True);
 
       Assert.That (service.TryGetEnumerationValueDisplayName (EnumWithDescription.ValueWithoutDescription, out resourceValue), Is.False);
-      Assert.That (service.GetEnumerationValueDisplayName (EnumWithResources.ValueWithoutResource), Is.EqualTo ("ValueWithoutResource"));
-      Assert.That (service.GetEnumerationValueDisplayNameOrDefault (EnumWithResources.ValueWithoutResource), Is.Null);
-      Assert.That (service.ContainsEnumerationValueDisplayName (EnumWithResources.ValueWithoutResource), Is.False);
+      Assert.That (service.GetEnumerationValueDisplayName (EnumWithDescription.ValueWithoutDescription), Is.EqualTo ("ValueWithoutDescription"));
+      Assert.That (service.GetEnumerationValueDisplayNameOrDefault (EnumWithDescription.ValueWithoutDescription), Is.Null);
+      Assert.That (service.ContainsEnumerationValueDisplayName (EnumWithDescription.ValueWithoutDescription), Is.False);
+
+      Assert.That (service.TryGetEnumerationValueDisplayName ((EnumWithDescription) 100, out resourceValue), Is.False);
+      Assert.That (service.GetEnumerationValueDisplayName ((EnumWithDescription) 100), Is.EqualTo ("100"));
+      Assert.That (service.GetEnumerationValueDisplayNameOrDefault ((EnumWithDescription) 100), Is.Null);
+      Assert.That (service.ContainsEnumerationValueDisplayName ((EnumWithDescription) 100), Is.False);
     }
   }
 }
