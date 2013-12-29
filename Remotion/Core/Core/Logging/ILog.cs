@@ -32,7 +32,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' 
     ///     path='ILog/Log/param[@name="logLevel" or @name="eventID" or @name="message" or @name="exceptionObject"]' />
-    void Log (LogLevel logLevel, int eventID, object message, Exception exceptionObject);
+    void Log (LogLevel logLevel, int? eventID, object message, Exception exceptionObject);
 
     /// <summary>
     /// Log a message object with the specified <paramref name="logLevel"/> and <paramref name="eventID"/>.
@@ -61,7 +61,7 @@ namespace Remotion.Logging
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="logLevel" or @name="eventID" or @name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
     [StringFormatMethod ("format")]
-    void LogFormat (LogLevel logLevel, int eventID, Exception exceptionObject, string format, params object[] args);
+    void LogFormat (LogLevel logLevel, int? eventID, Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
     /// Log a formatted string with the specified <paramref name="logLevel"/> and <paramref name="eventID"/>.
