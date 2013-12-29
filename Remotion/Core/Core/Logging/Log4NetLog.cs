@@ -99,31 +99,6 @@ namespace Remotion.Logging
         _logger.Log (CreateLoggingEvent (level, eventID, new SystemStringFormat (CultureInfo.InvariantCulture, format, args), exceptionObject));
     }
 
-    public bool IsDebugEnabled
-    {
-      get { return IsEnabled (LogLevel.Debug); }
-    }
-
-    public bool IsInfoEnabled
-    {
-      get { return IsEnabled (LogLevel.Info); }
-    }
-
-    public bool IsWarnEnabled
-    {
-      get { return IsEnabled (LogLevel.Warn); }
-    }
-
-    public bool IsErrorEnabled
-    {
-      get { return IsEnabled (LogLevel.Error); }
-    }
-
-    public bool IsFatalEnabled
-    {
-      get { return IsEnabled (LogLevel.Fatal); }
-    }
-
     /// <inheritdoc />
     public bool IsEnabled (LogLevel logLevel)
     {

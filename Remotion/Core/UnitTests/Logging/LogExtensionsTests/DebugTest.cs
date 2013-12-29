@@ -29,21 +29,21 @@ namespace Remotion.UnitTests.Logging.LogExtensionsTests
     public void IsEnabled_WithLevelAll ()
     {
       Logger.Repository.Threshold = Level.All;
-      Assert.That (Log.IsDebugEnabled, Is.True);
+      Assert.That (Log.IsDebugEnabled(), Is.True);
     }
 
     [Test]
     public void IsEnabled_WithLevelDebug ()
     {
       SetLoggingThreshold (Level.Debug);
-      Assert.That (Log.IsDebugEnabled, Is.True);
+      Assert.That (Log.IsDebugEnabled(), Is.True);
     }
 
     [Test]
     public void IsEnabled_WithLevelWarn ()
     {
       SetLoggingThreshold (Level.Warn);
-      Assert.That (Log.IsDebugEnabled, Is.False);
+      Assert.That (Log.IsDebugEnabled(), Is.False);
     }
 
     [Test]

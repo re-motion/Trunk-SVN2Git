@@ -57,37 +57,6 @@ namespace Remotion.Logging
     [StringFormatMethod ("format")]
     void LogFormat (LogLevel logLevel, int? eventID, Exception exceptionObject, string format, params object[] args);
 
-
-
-
-
-
-    
-    /// <summary>
-    /// Checks if this logger is enabled for the <see cref="LogLevel.Debug"/> level.
-    /// </summary>
-    bool IsDebugEnabled { get; }
-
-    /// <summary>
-    /// Checks if this logger is enabled for the <see cref="LogLevel.Info"/> level.
-    /// </summary>
-    bool IsInfoEnabled { get; }
-
-    /// <summary>
-    /// Checks if this logger is enabled for the <see cref="LogLevel.Warn"/> level.
-    /// </summary>
-    bool IsWarnEnabled { get; }
-
-    /// <summary>
-    /// Checks if this logger is enabled for the <see cref="LogLevel.Error"/> level.
-    /// </summary>
-    bool IsErrorEnabled { get; }
-
-    /// <summary>
-    /// Checks if this logger is enabled for the <see cref="LogLevel.Fatal"/> level.
-    /// </summary>
-    bool IsFatalEnabled { get; }
-
     /// <summary>
     /// Checks if this logger is enabled for the given <see cref="LogLevel"/>.
     /// </summary>

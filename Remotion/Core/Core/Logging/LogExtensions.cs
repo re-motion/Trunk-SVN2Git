@@ -779,5 +779,50 @@ namespace Remotion.Logging
       ArgumentUtility.CheckNotNull ("log", log);
       log.LogFormat (LogLevel.Fatal, messageEnum, (Exception) null, args);
     }
+
+    /// <summary>
+    /// Checks if <paramref name="log"/> is enabled for the <see cref="LogLevel.Debug"/> level.
+    /// </summary>
+    public static bool IsDebugEnabled (this ILog log)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      return log.IsEnabled (LogLevel.Debug);
+    }
+
+    /// <summary>
+    /// Checks if <paramref name="log"/> is enabled for the <see cref="LogLevel.Info"/> level.
+    /// </summary>
+    public static bool IsInfoEnabled (this ILog log)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      return log.IsEnabled (LogLevel.Info);
+    }
+
+    /// <summary>
+    /// Checks if <paramref name="log"/> is enabled for the <see cref="LogLevel.Warn"/> level.
+    /// </summary>
+    public static bool IsWarnEnabled (this ILog log)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      return log.IsEnabled (LogLevel.Warn);
+    }
+
+    /// <summary>
+    /// Checks if <paramref name="log"/> is enabled for the <see cref="LogLevel.Error"/> level.
+    /// </summary>
+    public static bool IsErrorEnabled (this ILog log)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      return log.IsEnabled (LogLevel.Error);
+    }
+
+    /// <summary>
+    /// Checks if <paramref name="log"/> is enabled for the <see cref="LogLevel.Fatal"/> level.
+    /// </summary>
+    public static bool IsFatalEnabled (this ILog log)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      return log.IsEnabled (LogLevel.Fatal);
+    }
   }
 }

@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
       ArgumentUtility.CheckNotNull ("ints", ints);
       ArgumentUtility.CheckNotNull ("bools", bools);
 
-      if (log.IsDebugEnabled)
+      if (log.IsDebugEnabled())
       {
         log.DebugFormat (
             "Flattened serialization: {0} objects ({1} unique), {2} integers, and {3} boolean values.",

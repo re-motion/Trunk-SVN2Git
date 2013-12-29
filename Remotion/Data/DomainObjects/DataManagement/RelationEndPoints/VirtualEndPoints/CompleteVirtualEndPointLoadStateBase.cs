@@ -163,7 +163,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       if (_unsynchronizedOppositeEndPoints.ContainsKey (oppositeEndPoint.ObjectID))
       {
-        if (s_log.IsDebugEnabled)
+        if (s_log.IsDebugEnabled())
         {
           s_log.DebugFormat (
               "Unsynchronized ObjectEndPoint '{0}' is unregistered from virtual end-point '{1}'.",
@@ -175,7 +175,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       }
       else
       {
-        if (s_log.IsInfoEnabled)
+        if (s_log.IsInfoEnabled())
         {
           s_log.InfoFormat (
               "ObjectEndPoint '{0}' is unregistered from virtual end-point '{1}'. The virtual end-point is transitioned to incomplete state.",
@@ -220,7 +220,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      if (Log.IsDebugEnabled)
+      if (Log.IsDebugEnabled())
         Log.DebugFormat ("End-point '{0}' is being synchronized.", endPoint.ID);
 
       foreach (var item in GetOriginalItemsWithoutEndPoints ())
@@ -231,7 +231,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      if (s_log.IsDebugEnabled)
+      if (s_log.IsDebugEnabled())
         s_log.DebugFormat ("ObjectEndPoint '{0}' is being marked as synchronized.", oppositeEndPoint.ID);
 
       if (!_unsynchronizedOppositeEndPoints.Remove (oppositeEndPoint.ObjectID))
