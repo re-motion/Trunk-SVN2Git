@@ -18,6 +18,7 @@ using System;
 using System.Globalization;
 using log4net.Core;
 using log4net.Util;
+using Remotion.Utilities;
 
 namespace Remotion.Logging
 {
@@ -32,7 +33,7 @@ namespace Remotion.Logging
   /// truncated event id before the exception is thrown.
   /// </note>
   /// </remarks>
-  public class Log4NetLog : LogImpl, ILog
+  public class Log4NetLog : ILog
   {
     /// <summary>
     /// Converts <see cref="LogLevel"/> to <see cref="Level"/>.
@@ -58,51 +59,80 @@ namespace Remotion.Logging
       }
     }
 
+    private readonly ILogger _logger;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Log4NetLog"/> class 
     /// using the specified <see cref="log4net.Core.ILogger"/>.
     /// </summary>
     /// <param name="logger">The <see cref="ILogger"/> the log messages are written to.</param>
     public Log4NetLog (ILogger logger)
-      : base (logger)
     {
+      ArgumentUtility.CheckNotNull ("logger", logger);
+
+      _logger = logger;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="ILogger"/> used by this <see cref="Log4NetLog"/>.
+    /// </summary>
+    public ILogger Logger
+    {
+      get { return _logger; }
     }
 
     /// <inheritdoc />
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
     public void Log (LogLevel logLevel, int? eventID, object message, Exception exceptionObject)
     {
-      LogToLog4Net (Convert (logLevel), eventID, message, exceptionObject);
+      var level = Convert (logLevel);
+      if (_logger.IsEnabledFor (level))
+        _logger.Log (CreateLoggingEvent (level, eventID, message, exceptionObject));
     }
 
     /// <inheritdoc />
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
     public void LogFormat (LogLevel logLevel, int? eventID, Exception exceptionObject, string format, params object[] args)
     {
-      LogToLog4NetFormat (Convert (logLevel), eventID, format, args, exceptionObject);
+      var level = Convert (logLevel);
+      if (_logger.IsEnabledFor (level))
+        _logger.Log (CreateLoggingEvent (level, eventID, new SystemStringFormat (CultureInfo.InvariantCulture, format, args), exceptionObject));
+    }
+
+    public bool IsDebugEnabled
+    {
+      get { return IsEnabled (LogLevel.Debug); }
+    }
+
+    public bool IsInfoEnabled
+    {
+      get { return IsEnabled (LogLevel.Info); }
+    }
+
+    public bool IsWarnEnabled
+    {
+      get { return IsEnabled (LogLevel.Warn); }
+    }
+
+    public bool IsErrorEnabled
+    {
+      get { return IsEnabled (LogLevel.Error); }
+    }
+
+    public bool IsFatalEnabled
+    {
+      get { return IsEnabled (LogLevel.Fatal); }
     }
 
     /// <inheritdoc />
     public bool IsEnabled (LogLevel logLevel)
     {
-      return base.Logger.IsEnabledFor (Convert (logLevel));
-    }
-
-    private void LogToLog4NetFormat (Level level, int? eventID, string format, object[] args, Exception exceptionObject)
-    {
-      if (Logger.IsEnabledFor (level))
-        LogToLog4Net (level, eventID, new SystemStringFormat (CultureInfo.InvariantCulture, format, args), exceptionObject);
-    }
-
-    private void LogToLog4Net (Level level, int? eventID, object message, Exception exceptionObject)
-    {
-      if (Logger.IsEnabledFor (level))
-        Logger.Log (CreateLoggingEvent (level, eventID, message, exceptionObject));
+      return _logger.IsEnabledFor (Convert (logLevel));
     }
 
     private LoggingEvent CreateLoggingEvent (Level level, int? eventID, object message, Exception exceptionObject)
     {
-      LoggingEvent loggingEvent = new LoggingEvent (typeof (Log4NetLog), null, Logger.Name, level, message, exceptionObject);
+      LoggingEvent loggingEvent = new LoggingEvent (typeof (Log4NetLog), null, _logger.Name, level, message, exceptionObject);
 
       if (eventID.HasValue)
       {
@@ -129,13 +159,23 @@ namespace Remotion.Logging
         safeEventID  = 0xFFFF;
       else
         safeEventID = eventID;
-          
-      LogToLog4NetFormat (
-          Level.Error,
-          safeEventID,
-          "Failure during logging of message:\r\n{0}\r\nEvent ID: {1}",
-          new object[] { message.ToString (), eventID },
-          exceptionObject);
+
+      Level level = Level.Error;
+      if (_logger.IsEnabledFor (level))
+      {
+        if (_logger.IsEnabledFor (level))
+        {
+          _logger.Log (
+              CreateLoggingEvent (
+                  level,
+                  safeEventID,
+                  new SystemStringFormat (
+                      CultureInfo.InvariantCulture,
+                      "Failure during logging of message:\r\n{0}\r\nEvent ID: {1}",
+                      new object[] { message.ToString(), eventID }),
+                  exceptionObject));
+        }
+      }
     }
   }
 }
