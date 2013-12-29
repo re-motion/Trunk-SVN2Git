@@ -354,6 +354,13 @@
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithResources.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
     <Compile Include="Globalization\TestDomain\TestEnum.cs" />
+    <Compile Include="Logging\Log4NetLogTests\DebugTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\ErrorTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\FatalTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\InfoTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\WarningTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\BaseTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\LogTest.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ILStatement.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\SetUpFixture.cs">
       <SubType>Code</SubType>
@@ -515,13 +522,13 @@
     <Compile Include="Logging\Log4NetLogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\BaseTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\ConvertTest.cs" />
-    <Compile Include="Logging\Log4NetLogTests\DebugTest.cs" />
-    <Compile Include="Logging\Log4NetLogTests\ErrorTest.cs" />
-    <Compile Include="Logging\Log4NetLogTests\FatalTest.cs" />
-    <Compile Include="Logging\Log4NetLogTests\InfoTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\DebugTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\ErrorTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\FatalTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\InfoTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\LogTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\LogToEventLogTest.cs" />
-    <Compile Include="Logging\Log4NetLogTests\WarningTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\WarningTest.cs" />
     <Compile Include="Logging\Log4NetTraceListenerTest.cs" />
     <Compile Include="Logging\LogManagerTest.cs" />
     <Compile Include="Logging\LogMessages.cs" />

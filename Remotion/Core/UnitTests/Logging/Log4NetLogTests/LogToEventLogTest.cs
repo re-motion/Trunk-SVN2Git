@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Diagnostics;
-using System.Reflection;
 using System.Security;
 using log4net.Appender;
 using log4net.Config;
@@ -100,7 +99,7 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
     {
       _logger.Repository.Threshold = Level.Info;
 
-      _log.Log (LogLevel.Info, 1, (object) "The message.");
+      _log.Log (LogLevel.Info, 1, (object) "The message.", (Exception) null);
       Assert.That (_testEventLog.Entries.Count, Is.EqualTo (1));
       EventLogEntry eventLogEntry = _testEventLog.Entries[0];
       Assert.That (eventLogEntry.EntryType, Is.EqualTo (EventLogEntryType.Information));
@@ -116,7 +115,7 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
 
       try
       {
-        _log.Log (LogLevel.Info, 0x10000, (object) "The message.");
+        _log.Log (LogLevel.Info, 0x10000, (object) "The message.", (Exception) null);
       }
       catch (Exception)
       {
@@ -138,7 +137,7 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
 
       try
       {
-        _log.Log (LogLevel.Info, -1, (object) "The message.");
+        _log.Log (LogLevel.Info, -1, (object) "The message.", (Exception) null);
       }
       catch (Exception)
       {

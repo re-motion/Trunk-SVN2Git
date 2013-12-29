@@ -14,47 +14,57 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using log4net.Appender;
+using log4net.Config;
 using log4net.Core;
 using NUnit.Framework;
 using Remotion.Logging;
+using LogManager = log4net.LogManager;
 
-namespace Remotion.UnitTests.Logging.Log4NetLogTests
+namespace Remotion.UnitTests.Logging.LogExtensionsTests
 {
-  [TestFixture]
-  public class InfoTest : BaseTest
+  public class BaseTest
   {
-    [Test]
-    public void IsEnabled_WithLevelDebug ()
+    private ILogger _logger;
+    private ILog _log;
+    private MemoryAppender _memoryAppender;
+
+    [SetUp]
+    public virtual void SetUp ()
     {
-      SetLoggingThreshold (Level.Debug);
-      Assert.That (Log.IsEnabled (LogLevel.Info), Is.True);
+      _memoryAppender = new MemoryAppender ();
+      BasicConfigurator.Configure (_memoryAppender);
+
+      _logger = LogManager.GetLogger ("The Name").Logger;
+      _log = new Log4NetLog (_logger);
     }
 
-    [Test]
-    public void IsEnabled_WithLevelInfo ()
+    [TearDown]
+    public virtual void TearDown ()
     {
-      SetLoggingThreshold (Level.Info);
-      Assert.That (Log.IsEnabled (LogLevel.Info), Is.True);
+      LogManager.ResetConfiguration ();
     }
 
-    [Test]
-    public void IsEnabled_WithLevelWarn ()
+    protected ILog Log
     {
-      SetLoggingThreshold (Level.Error);
-      Assert.That (Log.IsEnabled (LogLevel.Info), Is.False);
+      get { return _log; }
     }
 
-    [Test]
-    public void Logger_Log ()
+    protected ILogger Logger
     {
-      SetLoggingThreshold (Level.Info);
-      Log.Log (LogLevel.Info, (int?) null, "The message.", (Exception) null);
+      get { return _logger; }
+    }
 
-      LoggingEvent[] events = GetLoggingEvents ();
-      Assert.That (events.Length, Is.EqualTo (1));
-      Assert.That (events[0].Level, Is.EqualTo (Level.Info));
-      Assert.That (events[0].MessageObject, Is.EqualTo ("The message."));
+    protected LoggingEvent[] GetLoggingEvents ()
+    {
+      return _memoryAppender.GetEvents ();
+    }
+
+    protected void SetLoggingThreshold (Level threshold)
+    {
+      _logger.Repository.Threshold = threshold;
     }
   }
 }
