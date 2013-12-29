@@ -54,7 +54,7 @@
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Core\UnitTests\Core.UnitTests.csproj">
       <IsDatabaseTest>False</IsDatabaseTest>
     </UnitTestProjectFiles>
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Extensions.UnitTests\Extensions.UnitTests.csproj">
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Extensions.UnitTests\Core.Extensions.UnitTests.csproj">
       <IsDatabaseTest>False</IsDatabaseTest>
     </UnitTestProjectFiles>
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Reflection.CodeGeneration.UnitTests\Core.Reflection.CodeGeneration.UnitTests.csproj">
