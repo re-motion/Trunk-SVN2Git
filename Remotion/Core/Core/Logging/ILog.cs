@@ -22,25 +22,38 @@ namespace Remotion.Logging
   /// <summary>
   /// The <see cref="ILog"/> interface declares methods for logging messages.
   /// </summary>
-  /// <include file='doc\include\Logging\ILog.xml' path='ILog/Class/remarks' />
+  /// <remarks>
+  ///     The <see cref="ILog"/> interface is intended for implementing adapters to various logging frameworks.
+  ///   <note>
+  ///     The range of valid event ids is only guarenteed within the range of unsigned 16-bit integers.
+  ///   </note>
+  ///   <note type="inheritinfo">
+  ///     Implementors must support event ids within the range of unsigned 16-bit integers. The behavior outside this range is can be either truncation 
+  ///     of the event id or an <see cref="ArgumentOutOfRangeException"/>. Implementors must ensure that the log message is logged before an 
+  ///     <see cref="ArgumentOutOfRangeException"/> is thrown.
+  ///  </note>
+  /// </remarks>
   public interface ILog
   {
-    /// <overloads>Log a message object with the specified <paramref name="logLevel"/>.</overloads>
     /// <summary>
     /// Log a message object with the specified <paramref name="logLevel"/> and <paramref name="eventID"/>,
     /// including the stack trace of <paramref name="exceptionObject"/>.
     /// </summary>
-    /// <include file='doc\include\Logging\ILog.xml' 
-    ///     path='ILog/Log/param[@name="logLevel" or @name="eventID" or @name="message" or @name="exceptionObject"]' />
+    /// <param name="logLevel">The <see cref="LogLevel"/> of the message to be logged.</param>
+    /// <param name="eventID">The numeric identifier for the event.</param>
+    /// <param name="message">The message object to log.</param>
+    /// <param name="exceptionObject">The <see cref="Exception"/> to log, including its stack trace. Pass <see langword="null"/> to not log an exception.</param>
     void Log (LogLevel logLevel, int? eventID, object message, Exception exceptionObject);
 
-    /// <overloads>Log a formatted string with the specified <paramref name="logLevel"/>.</overloads>
     /// <summary>
     /// Log a formatted string with the specified <paramref name="logLevel"/> and <paramref name="eventID"/>,
     /// including the stack trace of <paramref name="exceptionObject"/>.
     /// </summary>
-    /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="logLevel" or @name="eventID" or @name="exceptionObject"]' />
-    /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <param name="logLevel">The <see cref="LogLevel"/> of the message to be logged.</param>
+    /// <param name="eventID">The numeric identifier for the event.</param>
+    /// <param name="format">A String containing zero or more format items.</param>
+    /// <param name="args">An Object array containing zero or more objects to format.</param>
+    /// <param name="exceptionObject">The <see cref="Exception"/> to log, including its stack trace. Pass <see langword="null"/> to not log an exception.</param>
     [StringFormatMethod ("format")]
     void LogFormat (LogLevel logLevel, int? eventID, Exception exceptionObject, string format, params object[] args);
 

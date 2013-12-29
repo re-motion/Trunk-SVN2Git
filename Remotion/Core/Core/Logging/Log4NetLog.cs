@@ -18,10 +18,6 @@ using System;
 using System.Globalization;
 using log4net.Core;
 using log4net.Util;
-using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
-using Remotion.ServiceLocation;
-using Remotion.Utilities;
 
 namespace Remotion.Logging
 {
