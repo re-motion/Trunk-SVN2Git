@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Logging
       var logMock = MockRepository.GenerateMock<ILog> ();
 
       "test".LogAndReturn (logMock, LogLevel.Debug, value => string.Format ("x{0}y", value));
-      logMock.AssertWasNotCalled (mock => mock.Log (Arg<LogLevel>.Is.Anything, Arg<object>.Is.Anything));
+      logMock.AssertWasNotCalled (mock => mock.Log (Arg<LogLevel>.Is.Anything, Arg<int?>.Is.Anything, Arg<object>.Is.Anything, Arg<Exception>.Is.Anything));
     }
 
     [Test]
@@ -50,7 +50,7 @@ namespace Remotion.UnitTests.Logging
       logMock.Replay ();
 
       "test".LogAndReturn (logMock, LogLevel.Debug, value => string.Format ("x{0}y", value));
-      logMock.AssertWasCalled (mock => mock.Log (LogLevel.Debug, "xtesty"));
+      logMock.AssertWasCalled (mock => mock.Log (LogLevel.Debug, (int?) null, "xtesty", (Exception) null));
     }
   }
 }

@@ -246,7 +246,14 @@ namespace Remotion.UnitTests.Utilities
           firstElapsedCP.ToString(), 
           firstElapsedCP.TotalMilliseconds.ToString() 
       };
-      logMock.AssertWasCalled (mock => mock.LogFormat (Arg.Is (LogLevel.Error), Arg.Is ("{0}#{1}#{2}#{3}#{4}"), Arg<object[]>.List.Equal (expectedFirstArgs)));
+      logMock.AssertWasCalled (
+          mock =>
+              mock.LogFormat (
+                  Arg.Is (LogLevel.Error),
+                  Arg<int>.Is.Null,
+                  Arg<Exception>.Is.Null,
+                  Arg.Is ("{0}#{1}#{2}#{3}#{4}"),
+                  Arg<object[]>.List.Equal (expectedFirstArgs)));
 
       var expectedSecondArgs = new[] { 
           "end", 
@@ -255,7 +262,13 @@ namespace Remotion.UnitTests.Utilities
           secondElapsedCP.ToString(), 
           secondElapsedCP.TotalMilliseconds.ToString() 
       };
-      logMock.AssertWasCalled (mock => mock.LogFormat (Arg.Is (LogLevel.Error), Arg.Is ("{0}#{1}#{2}#{3}#{4}"), Arg<object[]>.List.Equal (expectedSecondArgs)));
+      logMock.AssertWasCalled (
+          mock => mock.LogFormat (
+              Arg.Is (LogLevel.Error),
+              Arg<int>.Is.Null,
+              Arg<Exception>.Is.Null,
+              Arg.Is ("{0}#{1}#{2}#{3}#{4}"),
+              Arg<object[]>.List.Equal (expectedSecondArgs)));
     }
 
     [Test]

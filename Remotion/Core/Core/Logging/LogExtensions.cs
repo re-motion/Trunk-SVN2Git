@@ -15,6 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
+using Remotion.Globalization;
+using Remotion.Globalization.Implementation;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.Logging
 {
@@ -23,6 +28,11 @@ namespace Remotion.Logging
   /// </summary>
   public static class LogExtensions
   {
+    private static readonly DoubleCheckedLockingContainer<IEnumerationGlobalizationService> s_globalizationService =
+        new DoubleCheckedLockingContainer<IEnumerationGlobalizationService> (
+            () => SafeServiceLocator.Current.GetInstance<IEnumerationGlobalizationService>());
+    
+
     /// <summary>
     /// Logs the given value and returns it to the caller. This is typically used to log a value returned by a method directly in the return 
     /// statement.
@@ -38,9 +48,736 @@ namespace Remotion.Logging
     {
       if (log.IsEnabled (logLevel))
       {
-        log.Log (logLevel, messageCreator (value));
+        log.Log (logLevel, (int?) null, messageCreator (value), (Exception) null);
       }
       return value;
+    }
+
+    /// <summary>
+    /// Log a message object with the specified <paramref name="logLevel"/> and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="logLevel" or @name="eventID" or @name="message"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Log (this ILog log, LogLevel logLevel, int eventID, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (logLevel, eventID, message, (Exception) null);
+    }
+
+    /// <summary>
+    /// Log a message object with the specified <paramref name="logLevel"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="logLevel" or @name="message" or @name="exceptionObject"]' />
+    public static void Log (this ILog log, LogLevel logLevel, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (logLevel, (int?) null, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the specified <paramref name="logLevel"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="logLevel" or @name="message"]' />
+    public static void Log (this ILog log, LogLevel logLevel, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (logLevel, (int?) null, message, (Exception) null);
+    }
+
+    /// <overloads>Log a formatted string with the specified <paramref name="logLevel"/>.</overloads>
+    /// <summary>
+    /// Log a formatted string with the specified <paramref name="logLevel"/> and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="logLevel" or @name="eventID"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void LogFormat (this ILog log, LogLevel logLevel, int eventID, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (logLevel, eventID, (Exception) null, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the specified <paramref name="logLevel"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="logLevel"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void LogFormat (this ILog log, LogLevel logLevel, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (logLevel, (int?) null, (Exception) null, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the specified <paramref name="logLevel"/>,  including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="logLevel" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void LogFormat (this ILog log, LogLevel logLevel, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (logLevel, (int?) null, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log a message and event id derived from the <paramref name="messageEnum"/> with the specified <paramref name="logLevel"/>, including the stack 
+    /// trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="logLevel" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void LogFormat (this ILog log, LogLevel logLevel, Enum messageEnum, Exception exceptionObject, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+
+      log.LogFormat (
+          logLevel,
+          Convert.ToInt32 (messageEnum),
+          exceptionObject,
+          s_globalizationService.Value.GetEnumerationValueDisplayName (messageEnum),
+          args);
+    }
+
+    /// <summary>
+    /// Log a message and event id derived from the <paramref name="messageEnum"/> with the specified <paramref name="logLevel"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="logLevel"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void LogFormat (this ILog log, LogLevel logLevel, Enum messageEnum, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (logLevel, messageEnum, (Exception) null, args);
+    }
+
+    /// <overloads>Log a message object with the <see cref="LogLevel.Debug"/> level.</overloads>
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Debug"/> level and <paramref name="eventID"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="message" or @name="exceptionObject"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Debug (this ILog log, int eventID, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Debug, eventID, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Debug"/> level and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="message"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Debug (this ILog log, int eventID, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Debug, eventID, message, (Exception)  null);
+    }
+    
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Debug"/> level,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="message" or @name="exceptionObject"]' />
+    public static void Debug (this ILog log, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Debug, (int?) null, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Debug"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="message"]' />
+    public static void Debug (this ILog log, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Debug, (int?) null, message, (Exception) null);
+    }
+
+    /// <overloads>Log a formatted string with the <see cref="LogLevel.Debug"/> level.</overloads>
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Debug"/> level and <paramref name="eventID"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void DebugFormat (this ILog log, int eventID, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Debug, eventID, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Debug"/> level and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void DebugFormat (this ILog log, int eventID, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Debug, eventID, (Exception) null, format, args);
+    }
+        /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Debug"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void DebugFormat (this ILog log, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Debug, (int?) null, (Exception) null, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Debug"/> level,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void DebugFormat (this ILog log, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Debug, (int?) null, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log message and event id derived from the <paramref name="messageEnum"/> with the <see cref="LogLevel.Debug"/> level, including the stack 
+    /// trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void DebugFormat (this ILog log, Enum messageEnum, Exception exceptionObject, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Debug, messageEnum, exceptionObject, args);
+    }
+
+    /// <summary>
+    /// Log message and event id derived from the <paramref name="messageEnum"/> with the <see cref="LogLevel.Debug"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void DebugFormat (this ILog log, Enum messageEnum, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Debug, messageEnum, (Exception) null, args);
+    }
+
+    /// <overloads>Log a message object with the <see cref="LogLevel.Info"/> level.</overloads>
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Info"/> level and <paramref name="eventID"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="message" or @name="exceptionObject"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Info (this ILog log, int eventID, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Info, eventID, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Info"/> level and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="message"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Info (this ILog log, int eventID, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Info, eventID, message, (Exception) null);
+    }
+    
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Info"/> level,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="message" or @name="exceptionObject"]' />
+    public static void Info (this ILog log, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Info,  (int?) null, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Info"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="message"]' />
+    public static void Info (this ILog log, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Info, (int?) null, message, (Exception) null);
+    }
+
+    /// <overloads>Log a formatted string with the <see cref="LogLevel.Info"/> level.</overloads>
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Info"/> level and <paramref name="eventID"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void InfoFormat (this ILog log, int eventID, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Info, eventID, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Info"/> level and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void InfoFormat (this ILog log, int eventID, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Info, eventID, (Exception) null, format, args);
+    }
+    
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Info"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void InfoFormat (this ILog log, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Info, (int?) null, (Exception) null, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Info"/> level,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void InfoFormat (this ILog log, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Info, (int?) null, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log message and event id derived from the <paramref name="messageEnum"/> with the <see cref="LogLevel.Info"/> level, including the stack 
+    /// trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void InfoFormat (this ILog log, Enum messageEnum, Exception exceptionObject, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Info, messageEnum, exceptionObject, args);
+    }
+
+    /// <summary>
+    /// Log message and event id derived from the <paramref name="messageEnum"/> with the <see cref="LogLevel.Info"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void InfoFormat (this ILog log, Enum messageEnum, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Info, messageEnum, (Exception) null, args);
+    }
+
+    /// <overloads>Log a message object with the <see cref="LogLevel.Warn"/> level.</overloads>
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Warn"/> level and <paramref name="eventID"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="message" or @name="exceptionObject"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Warn (this ILog log, int eventID, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Warn, eventID, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Warn"/> level and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="message"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Warn (this ILog log, int eventID, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Warn, eventID, message, (Exception) null);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Warn"/> level,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="message" or @name="exceptionObject"]' />
+    public static void Warn (this ILog log, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Warn, (int?) null, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Warn"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="message"]' />
+    public static void Warn (this ILog log, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Warn, (int?) null, message, (Exception) null);
+    }
+
+    /// <overloads>Log a formatted string with the <see cref="LogLevel.Warn"/> level.</overloads>
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Warn"/> level and <paramref name="eventID"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void WarnFormat (this ILog log, int eventID, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Warn, eventID, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Warn"/> level and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void WarnFormat (this ILog log, int eventID, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Warn, eventID, (Exception) null, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Warn"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void WarnFormat (this ILog log, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Warn, (int?) null, (Exception) null, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Warn"/> level,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void WarnFormat (this ILog log, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Warn, (int?) null, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log a message and event id derived from the <paramref name="messageEnum"/> with the <see cref="LogLevel.Warn"/> level, including the stack 
+    /// trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void WarnFormat (this ILog log, Enum messageEnum, Exception exceptionObject, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Warn, messageEnum, exceptionObject, args);
+    }
+
+    /// <summary>
+    /// Log a message and event id derived from the <paramref name="messageEnum"/> with the <see cref="LogLevel.Warn"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void WarnFormat (this ILog log, Enum messageEnum, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Warn, messageEnum, (Exception) null, args);
+    }
+
+    /// <overloads>Log a message object with the <see cref="LogLevel.Error"/> level.</overloads>
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Error"/> level and <paramref name="eventID"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="message" or @name="exceptionObject"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Error (this ILog log, int eventID, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Error, eventID, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Error"/> level and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="message"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Error (this ILog log, int eventID, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Error, eventID, message, (Exception) null);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Error"/> level,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="message" or @name="exceptionObject"]' />
+    public static void Error (this ILog log, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Error, (int?) null, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Error"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="message"]' />
+    public static void Error (this ILog log, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Error, (int?) null, message, (Exception) null);
+    }
+
+    /// <overloads>Log a formatted string with the <see cref="LogLevel.Error"/> level.</overloads>
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Error"/> level and <paramref name="eventID"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void ErrorFormat (this ILog log, int eventID, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Error, eventID, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Error"/> level and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void ErrorFormat (this ILog log, int eventID, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Error, eventID, (Exception) null, format, args);
+    }
+    
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Error"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void ErrorFormat (this ILog log, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Error, (int?) null, (Exception) null, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Error"/> level,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void ErrorFormat (this ILog log, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Error, (int?) null, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log a message and event id derived from the <paramref name="messageEnum"/> with the <see cref="LogLevel.Error"/> level, including the stack 
+    /// trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void ErrorFormat (this ILog log, Enum messageEnum, Exception exceptionObject, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Error, messageEnum, exceptionObject, args);
+    }
+
+    /// <summary>
+    /// Log a message and event id derived from the <paramref name="messageEnum"/> with the <see cref="LogLevel.Error"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void ErrorFormat (this ILog log, Enum messageEnum, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Error, messageEnum, (Exception) null, args);
+    }
+
+    /// <overloads>Log a message object with the <see cref="LogLevel.Fatal"/> level.</overloads>
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Fatal"/> level and <paramref name="eventID"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="message" or @name="exceptionObject"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Fatal (this ILog log, int eventID, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Fatal, eventID, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Fatal"/> level and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="message"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    public static void Fatal (this ILog log, int eventID, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Fatal, eventID, message, (Exception) null);
+    }
+    
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Fatal"/> level,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="message" or @name="exceptionObject"]' />
+    public static void Fatal (this ILog log, object message, Exception exceptionObject)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Fatal, (int?) null, message, exceptionObject);
+    }
+
+    /// <summary>
+    /// Log a message object with the <see cref="LogLevel.Fatal"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="message"]' />
+    public static void Fatal (this ILog log, object message)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.Log (LogLevel.Fatal, (int?) null, message, (Exception) null);
+    }
+
+    /// <overloads>Log a formatted string with the <see cref="LogLevel.Fatal"/> level.</overloads>
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Fatal"/> level and <paramref name="eventID"/>,
+    /// including the stack trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void FatalFormat (this ILog log, int eventID, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Fatal, eventID, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Fatal"/> level and <paramref name="eventID"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="eventID"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="eventID"/> is outside the range of an unsigned 16-bit integer. </exception>
+    [StringFormatMethod ("format")]
+    public static void FatalFormat (this ILog log, int eventID, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Fatal, eventID, (Exception) null, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Fatal"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void FatalFormat (this ILog log, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Fatal, (int?) null, (Exception) null, format, args);
+    }
+
+    /// <summary>
+    /// Log a formatted string with the <see cref="LogLevel.Fatal"/> level,
+    /// including the stack trace of <paramref name="exceptionObject"/>. 
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
+    public static void FatalFormat (this ILog log, Exception exceptionObject, string format, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Fatal, (int?) null, exceptionObject, format, args);
+    }
+
+    /// <summary>
+    /// Log a message and event id derived from the <paramref name="messageEnum"/> with the <see cref="LogLevel.Fatal"/> level, including the stack 
+    /// trace of <paramref name="exceptionObject"/>.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log" or @name="exceptionObject"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void FatalFormat (this ILog log, Enum messageEnum, Exception exceptionObject, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Fatal, messageEnum, exceptionObject, args);
+    }
+
+    /// <summary>
+    /// Log a message and event id derived from the <paramref name="messageEnum"/> with the <see cref="LogLevel.Fatal"/> level.
+    /// </summary>
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="log"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="messageEnum" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\ILog.xml' path='ILog/LogFormatWithEnum/remarks' />
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="messageEnum"/>'s underlying value is outside the range of an unsigned 16-bit integer. </exception>
+    public static void FatalFormat (this ILog log, Enum messageEnum, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("log", log);
+      log.LogFormat (LogLevel.Fatal, messageEnum, (Exception) null, args);
     }
   }
 }

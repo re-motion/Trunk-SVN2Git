@@ -30,6 +30,7 @@
     </remarks>
   </Class>
   <Log>
+    <param name="log">The <see cref="ILog"/> instance where the message is to be logged.</param>
     <param name="logLevel">The <see cref="LogLevel"/> of the message to be logged.</param>
     <param name="eventID">The numeric identifier for the event.</param>
     <param name="message">The message object to log.</param>
