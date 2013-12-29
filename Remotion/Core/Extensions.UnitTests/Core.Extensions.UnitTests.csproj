@@ -40,6 +40,10 @@
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-4.0 (Client Profile)\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\CommonServiceLocator-1.0\net-2.0\Microsoft.Practices.ServiceLocation.dll</HintPath>
@@ -58,6 +62,14 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Logging\LogExtensionsTests\BaseTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\DebugTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\ErrorTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\FatalTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\InfoTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\LogMessages.cs" />
+    <Compile Include="Logging\LogExtensionsTests\LogTest.cs" />
+    <Compile Include="Logging\LogExtensionsTests\WarningTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +88,10 @@
     <ProjectReference Include="..\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Extensions\Core.Extensions.csproj">
+      <Project>{25811f76-8d00-496d-afd0-8225569f666d}</Project>
+      <Name>Core.Extensions</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

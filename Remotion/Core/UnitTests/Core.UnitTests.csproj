@@ -531,7 +531,6 @@
     <Compile Include="Logging\LogExtensionsTests\WarningTest.cs" />
     <Compile Include="Logging\Log4NetTraceListenerTest.cs" />
     <Compile Include="Logging\LogManagerTest.cs" />
-    <Compile Include="Logging\LogMessages.cs" />
     <Compile Include="Logging\SampleType.cs" />
     <EmbeddedResource Include="Globalization\TestDomain\Resources\ClassWithResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
