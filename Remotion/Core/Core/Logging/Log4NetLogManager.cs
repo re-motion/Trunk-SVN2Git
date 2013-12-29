@@ -95,9 +95,13 @@ namespace Remotion.Logging
 
       foreach (var logThreshold in logThresholds)
       {
-        var log4netLog = logThreshold.Logger as Log4NetLog;
+        var log4netLog = logThreshold.Logger as ILoggerWrapper;
         if (log4netLog == null)
-          throw new ArgumentException ("This LogManager only supports ILog implementations of type Log4NetLog.", "logThresholds");
+        {
+          throw new ArgumentException (
+              "This LogManager only supports ILog implementations that also implement the log4net.Core.ILoggerWrapper interface.",
+              "logThresholds");
+        }
 
         var log4netLogger = log4netLog.Logger as Logger;
         if (log4netLogger == null)

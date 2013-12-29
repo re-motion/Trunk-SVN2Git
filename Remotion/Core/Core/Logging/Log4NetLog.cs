@@ -33,7 +33,7 @@ namespace Remotion.Logging
   /// truncated event id before the exception is thrown.
   /// </note>
   /// </remarks>
-  public class Log4NetLog : ILog
+  public class Log4NetLog : ILog, ILoggerWrapper
   {
     /// <summary>
     /// Converts <see cref="LogLevel"/> to <see cref="Level"/>.
