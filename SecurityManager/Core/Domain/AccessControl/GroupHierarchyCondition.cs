@@ -21,7 +21,7 @@ using Remotion.ObjectBinding;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
-  [EnumDescriptionResource ("Remotion.SecurityManager.Globalization.Domain.AccessControl.GroupHierarchyCondition")]
+  [MultiLingualResources ("Remotion.SecurityManager.Globalization.Domain.AccessControl.GroupHierarchyCondition")]
   [UndefinedEnumValue (Undefined)]
   //[Flags] //Must not be official flags enum since business objects interface does not support this.
   [DisableEnumValues (Parent, Children)]

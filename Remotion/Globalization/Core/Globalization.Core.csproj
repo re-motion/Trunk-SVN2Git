@@ -55,7 +55,7 @@
     </Compile>
     <Compile Include="Obsolete\EnumDescription.cs" />
     <Compile Include="EnumDescriptionAttribute.cs" />
-    <Compile Include="EnumDescriptionResourceAttribute.cs" />
+    <Compile Include="Obsolete\EnumDescriptionResourceAttribute.cs" />
     <Compile Include="Obsolete\EnumValue.cs" />
     <Compile Include="GlobalizationServiceExtensions.cs" />
     <Compile Include="ICompoundGlobalizationService.cs" />

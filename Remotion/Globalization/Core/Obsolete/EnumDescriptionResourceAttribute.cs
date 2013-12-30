@@ -19,6 +19,7 @@ using System;
 using System.Reflection;
 using Remotion.Utilities;
 
+// ReSharper disable once CheckNamespace
 namespace Remotion.Globalization
 {
   /// <summary>
@@ -26,6 +27,7 @@ namespace Remotion.Globalization
   /// The resource file can then contain the localized versions of the individual enum values. The identifier for each enum value is built in the following format:
   /// "&lt;namespace&gt;.&lt;type name&gt;.&lt;value&gt;"
   /// </summary>
+  [Obsolete ("Use MultiLingualResourcesAttribute instead. (Version 1.15.8.0")]
   [AttributeUsage (AttributeTargets.Enum, AllowMultiple = false)]
   public class EnumDescriptionResourceAttribute: Attribute, IResourcesAttribute
   {
