@@ -247,10 +247,10 @@
     <Compile Include="FunctionalProgramming\EnumerableUtility.Partial.cs" />
     <Compile Include="FunctionalProgramming\Maybe.Partial.cs" />
     <Compile Include="IHandleAttribute.cs" />
-    <Compile Include="Obsolete\Globalization\EnumDescription.cs" />
-    <Compile Include="Obsolete\Globalization\EnumDescriptionAttribute.cs" />
-    <Compile Include="Obsolete\Globalization\EnumDescriptionResourceAttribute.cs" />
-    <Compile Include="Obsolete\Globalization\EnumValue.cs" />
+    <Compile Include="Obsolete\Utilities\EnumDescription.cs" />
+    <Compile Include="Obsolete\Utilities\EnumDescriptionAttribute.cs" />
+    <Compile Include="Obsolete\Utilities\EnumDescriptionResourceAttribute.cs" />
+    <Compile Include="Obsolete\Utilities\EnumValue.cs" />
     <Compile Include="Obsolete\Globalization\IObjectWithResources.cs" />
     <Compile Include="Obsolete\Globalization\IResourceManager.cs" />
     <Compile Include="Obsolete\Globalization\MultiLingualResources.cs" />
@@ -261,7 +261,7 @@
     <Compile Include="Reflection\DelegateFactory.cs" />
     <Compile Include="Reflection\IDelegateFactory.cs" />
     <Compile Include="Reflection\IMemberInformationNameResolver.cs" />
-    <Compile Include="Obsolete\Globalization\ParamList.cs" />
+    <Compile Include="Obsolete\Reflection\ParamList.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInformationNameResolver.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyNameCache.cs">
       <SubType>Code</SubType>
