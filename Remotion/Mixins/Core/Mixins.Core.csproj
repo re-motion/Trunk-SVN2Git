@@ -277,6 +277,8 @@
     <Compile Include="MixinTypeUtility.cs" />
     <Compile Include="NonIntroducedAttribute.cs" />
     <Compile Include="ObjectFactory.cs" />
+    <Compile Include="Obsolete\Globalization\IResourceManager.cs" />
+    <Compile Include="Obsolete\Globalization\MixedMultiLingualResources.cs" />
     <Compile Include="OverrideMixinAttribute.cs" />
     <Compile Include="OverrideTargetAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
