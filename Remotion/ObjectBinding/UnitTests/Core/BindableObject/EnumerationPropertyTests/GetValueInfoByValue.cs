@@ -115,7 +115,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
               MockRepository.GenerateStub<ICompoundGlobalizationService>(),
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
               mockEnumerationGlobalizationService,
-              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
+              MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>()));
 
       Expect.Call (
           mockEnumerationGlobalizationService.TryGetEnumerationValueDisplayName (Arg.Is (TestEnum.Value1), out Arg<string>.Out ("MockValue1").Dummy))

@@ -28,7 +28,7 @@ namespace Remotion.ExtensibleEnums
   {
     private delegate bool TryGetDisplayName (IExtensibleEnum extensibleEnum, out string name);
 
-    private static readonly Lazy<TryGetDisplayName> s_tryGetExtensibleEnumerationValueDisplayName = new Lazy<TryGetDisplayName> (GetLocalizedNameFunc);
+    private static readonly Lazy<TryGetDisplayName> s_tryGetExtensibleEnumValueDisplayName = new Lazy<TryGetDisplayName> (GetLocalizedNameFunc);
 
     /// <summary>
     /// Gets the localized name of the value represented by this <see cref="IExtensibleEnum"/> value.
@@ -38,7 +38,7 @@ namespace Remotion.ExtensibleEnums
     {
       ArgumentUtility.CheckNotNull ("extensibleEnum", extensibleEnum);
       string name;
-      if (s_tryGetExtensibleEnumerationValueDisplayName.Value (extensibleEnum, out name))
+      if (s_tryGetExtensibleEnumValueDisplayName.Value (extensibleEnum, out name))
         return name;
       return extensibleEnum.ValueName;
     }
@@ -46,10 +46,10 @@ namespace Remotion.ExtensibleEnums
     private static TryGetDisplayName GetLocalizedNameFunc ()
     {
       var serviceType = TypeNameTemplateResolver.ResolveToType (
-          "Remotion.Globalization.ExtensibleEnums.IExtensibleEnumerationGlobalizationService, Remotion.Globalization.ExtensibleEnums, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+          "Remotion.Globalization.ExtensibleEnums.IExtensibleEnumGlobalizationService, Remotion.Globalization.ExtensibleEnums, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
           typeof (ExtensibleEnumExtensions).Assembly);
-      var method = serviceType.GetMethod ("TryGetExtensibleEnumerationValueDisplayName");
-      Assertion.IsNotNull (method, "IExtensibleEnumerationGlobalizationService does not contain method 'GetExtensibleEnumerationValueDisplayName'.");
+      var method = serviceType.GetMethod ("TryGetExtensibleEnumValueDisplayName");
+      Assertion.IsNotNull (method, "IExtensibleEnumGlobalizationService does not contain method 'GetExtensibleEnumValueDisplayName'.");
 
       var service = SafeServiceLocator.Current.GetInstance (serviceType);
 

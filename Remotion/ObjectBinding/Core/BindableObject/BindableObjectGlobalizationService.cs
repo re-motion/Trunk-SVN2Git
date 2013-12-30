@@ -49,24 +49,24 @@ namespace Remotion.ObjectBinding.BindableObject
     private readonly IMemberInformationGlobalizationService _memberInformationGlobalizationService;
     private readonly DoubleCheckedLockingContainer<IResourceManager> _resourceManager;
     private readonly IEnumerationGlobalizationService _enumerationGlobalizationService;
-    private readonly IExtensibleEnumerationGlobalizationService _extensibleEnumerationGlobalizationService;
+    private readonly IExtensibleEnumGlobalizationService _extensibleEnumGlobalizationService;
 
     public BindableObjectGlobalizationService (
         ICompoundGlobalizationService globalizationServices,
         IMemberInformationGlobalizationService memberInformationGlobalizationService,
         IEnumerationGlobalizationService enumerationGlobalizationService,
-        IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService)
+        IExtensibleEnumGlobalizationService extensibleEnumGlobalizationService)
     {
       ArgumentUtility.CheckNotNull ("globalizationServices", globalizationServices);
       ArgumentUtility.CheckNotNull ("memberInformationGlobalizationService", memberInformationGlobalizationService);
       ArgumentUtility.CheckNotNull ("enumerationGlobalizationService", enumerationGlobalizationService);
-      ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
+      ArgumentUtility.CheckNotNull ("extensibleEnumGlobalizationService", extensibleEnumGlobalizationService);
       
       _resourceManager =
           new DoubleCheckedLockingContainer<IResourceManager> (() => globalizationServices.GetResourceManager (typeof (ResourceIdentifier)));
       _memberInformationGlobalizationService = memberInformationGlobalizationService;
       _enumerationGlobalizationService = enumerationGlobalizationService;
-      _extensibleEnumerationGlobalizationService = extensibleEnumerationGlobalizationService;
+      _extensibleEnumGlobalizationService = extensibleEnumGlobalizationService;
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.BindableObject
     public string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value) //move to member info globalization service
     {
       ArgumentUtility.CheckNotNull ("value", value);
-      return _extensibleEnumerationGlobalizationService.GetExtensibleEnumerationValueDisplayName (value);
+      return _extensibleEnumGlobalizationService.GetExtensibleEnumValueDisplayName (value);
     }
 
     /// <summary>

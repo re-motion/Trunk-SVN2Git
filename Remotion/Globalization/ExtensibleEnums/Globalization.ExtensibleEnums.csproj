@@ -53,9 +53,9 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="ExtensibleEnumerationGlobalizationService.cs" />
-    <Compile Include="ExtensibleEnumerationGlobalizationServiceExtensions.cs" />
-    <Compile Include="IExtensibleEnumerationGlobalizationService.cs" />
+    <Compile Include="ExtensibleEnumGlobalizationService.cs" />
+    <Compile Include="ExtensibleEnumGlobalizationServiceExtensions.cs" />
+    <Compile Include="IExtensibleEnumGlobalizationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

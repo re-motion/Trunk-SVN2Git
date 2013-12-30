@@ -23,15 +23,15 @@ using Rhino.Mocks;
 namespace Remotion.Globalization.ExtensibleEnums.UnitTests
 {
   [TestFixture]
-  public class ExtensibleEnumerationGlobalizationServiceExtensionsTest
+  public class ExtensibleEnumGlobalizationServiceExtensionsTest
   {
-    private IExtensibleEnumerationGlobalizationService _serviceStub;
+    private IExtensibleEnumGlobalizationService _serviceStub;
     private IExtensibleEnum _valueStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _serviceStub = MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>();
+      _serviceStub = MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>();
       _valueStub = MockRepository.GenerateStub<IExtensibleEnum>();
     }
 
@@ -39,30 +39,30 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests
     public void GetEnumerationValueDisplayName_WithResourceManager_ReturnsLocalizedValue ()
     {
       _serviceStub
-          .Stub (_ => _.TryGetExtensibleEnumerationValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out ("expected").Dummy))
+          .Stub (_ => _.TryGetExtensibleEnumValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out ("expected").Dummy))
           .Return (true);
 
-      Assert.That (_serviceStub.GetExtensibleEnumerationValueDisplayName (_valueStub), Is.EqualTo ("expected"));
+      Assert.That (_serviceStub.GetExtensibleEnumValueDisplayName (_valueStub), Is.EqualTo ("expected"));
     }
 
     [Test]
     public void GetEnumerationValueDisplayNameOrDefault_WithResourceManager_ReturnsLocalizedValue ()
     {
       _serviceStub
-          .Stub (_ => _.TryGetExtensibleEnumerationValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out ("expected").Dummy))
+          .Stub (_ => _.TryGetExtensibleEnumValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out ("expected").Dummy))
           .Return (true);
 
-      Assert.That (_serviceStub.GetExtensibleEnumerationValueDisplayNameOrDefault (_valueStub), Is.EqualTo ("expected"));
+      Assert.That (_serviceStub.GetExtensibleEnumValueDisplayNameOrDefault (_valueStub), Is.EqualTo ("expected"));
     }
 
     [Test]
     public void ContainsExtensibleEnumerationValueDisplayName_WithResourceManager_ReturnsLocalizedValue ()
     {
       _serviceStub
-          .Stub (_ => _.TryGetExtensibleEnumerationValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out ("expected").Dummy))
+          .Stub (_ => _.TryGetExtensibleEnumValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out ("expected").Dummy))
           .Return (true);
 
-      Assert.That (_serviceStub.ContainsExtensibleEnumerationValueDisplayName (_valueStub), Is.True);
+      Assert.That (_serviceStub.ContainsExtensibleEnumValueDisplayName (_valueStub), Is.True);
     }
 
     [Test]
@@ -70,30 +70,30 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests
     {
       _valueStub.Stub (_ => _.ValueName).Return ("expected");
       _serviceStub
-          .Stub (_ => _.TryGetExtensibleEnumerationValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out (null).Dummy))
+          .Stub (_ => _.TryGetExtensibleEnumValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out (null).Dummy))
           .Return (false);
 
-      Assert.That (_serviceStub.GetExtensibleEnumerationValueDisplayName (_valueStub), Is.EqualTo ("expected"));
+      Assert.That (_serviceStub.GetExtensibleEnumValueDisplayName (_valueStub), Is.EqualTo ("expected"));
     }
 
     [Test]
     public void GetEnumerationValueDisplayNameOrDefault_WithoutResourceManager_ReturnsNull ()
     {
       _serviceStub
-          .Stub (_ => _.TryGetExtensibleEnumerationValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out (null).Dummy))
+          .Stub (_ => _.TryGetExtensibleEnumValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out (null).Dummy))
           .Return (false);
 
-      Assert.That (_serviceStub.GetExtensibleEnumerationValueDisplayNameOrDefault (_valueStub), Is.Null);
+      Assert.That (_serviceStub.GetExtensibleEnumValueDisplayNameOrDefault (_valueStub), Is.Null);
     }
 
     [Test]
     public void ContainsExtensibleEnumerationValueDisplayName_WithoutResourceManager_ReturnsFalse ()
     {
       _serviceStub
-          .Stub (_ => _.TryGetExtensibleEnumerationValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out (null).Dummy))
+          .Stub (_ => _.TryGetExtensibleEnumValueDisplayName (Arg.Is (_valueStub), out Arg<string>.Out (null).Dummy))
           .Return (false);
 
-      Assert.That (_serviceStub.ContainsExtensibleEnumerationValueDisplayName (_valueStub), Is.False);
+      Assert.That (_serviceStub.ContainsExtensibleEnumValueDisplayName (_valueStub), Is.False);
     }
   }
 }

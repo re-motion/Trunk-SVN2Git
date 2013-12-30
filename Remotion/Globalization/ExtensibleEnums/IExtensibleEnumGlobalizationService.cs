@@ -25,10 +25,10 @@ namespace Remotion.Globalization.ExtensibleEnums
   /// <summary>
   ///  Defines an interface for retrieving the human-readable localized representation of the extensible-enumeration object.
   /// </summary>
-  /// <seealso cref="ExtensibleEnumerationGlobalizationService"/>
+  /// <seealso cref="ExtensibleEnumGlobalizationService"/>
   /// <threadsafety static="true" instance="true" />
-  [ConcreteImplementation (typeof (ExtensibleEnumerationGlobalizationService), Lifetime = LifetimeKind.Singleton)]
-  public interface IExtensibleEnumerationGlobalizationService
+  [ConcreteImplementation (typeof (ExtensibleEnumGlobalizationService), Lifetime = LifetimeKind.Singleton)]
+  public interface IExtensibleEnumGlobalizationService
   {
     /// <summary>
     /// Tries to get the human-readable extensible-enumeration name of the spefified reflection object.
@@ -40,6 +40,6 @@ namespace Remotion.Globalization.ExtensibleEnums
     /// The human-readable localized representation of the <paramref name="value"/> or <see langword="null" /> if no localization could be found.
     /// </param>
     /// <returns><see langword="true" /> if a resource could be found.</returns>
-    bool TryGetExtensibleEnumerationValueDisplayName ([NotNull] IExtensibleEnum value, out string result);
+    bool TryGetExtensibleEnumValueDisplayName ([NotNull] IExtensibleEnum value, out string result);
   }
 }

@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void CreateEnumerationValueInfo_DisplayName_WithGlobalizationService ()
     {
       var extensibleEnumInfo = ExtensibleEnumWithResources.Values.Value1 ().GetValueInfo ();
-      var mockExtensibleEnumerationGlobalizationService = MockRepository.GenerateMock<IExtensibleEnumerationGlobalizationService> ();
+      var mockExtensibleEnumerationGlobalizationService = MockRepository.GenerateMock<IExtensibleEnumGlobalizationService> ();
 
       _businessObjectProvider.AddService (
           typeof (BindableObjectGlobalizationService),
@@ -83,7 +83,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               mockExtensibleEnumerationGlobalizationService));
 
       mockExtensibleEnumerationGlobalizationService
-          .Expect (mock => mock.TryGetExtensibleEnumerationValueDisplayName (Arg.Is(extensibleEnumInfo.Value), out Arg<string>.Out("DisplayName 1").Dummy))
+          .Expect (mock => mock.TryGetExtensibleEnumValueDisplayName (Arg.Is(extensibleEnumInfo.Value), out Arg<string>.Out("DisplayName 1").Dummy))
           .Return (true);
       mockExtensibleEnumerationGlobalizationService.Replay ();
 

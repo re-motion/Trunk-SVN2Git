@@ -24,20 +24,20 @@ using Rhino.Mocks;
 namespace Remotion.Globalization.ExtensibleEnums.UnitTests
 {
   [TestFixture]
-  public class ExtensibleEnumerationGlobalizationServiceTest
+  public class ExtensibleEnumGlobalizationServiceTest
   {
-    private ExtensibleEnumerationGlobalizationService _service;
+    private ExtensibleEnumGlobalizationService _service;
     private ICompoundGlobalizationService _globalizationServiceStub;
 
     [SetUp]
     public void SetUp ()
     {
       _globalizationServiceStub = MockRepository.GenerateStub<ICompoundGlobalizationService>();
-      _service = new ExtensibleEnumerationGlobalizationService (_globalizationServiceStub);
+      _service = new ExtensibleEnumGlobalizationService (_globalizationServiceStub);
     }
 
     [Test]
-    public void TryGetEnumerationValueDisplayName_WithResourceManager_ReturnsLocalizedValue ()
+    public void TryGetExtensibleEnumValueDisplayName_WithResourceManager_ReturnsLocalizedValue ()
     {
       var resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
       resourceManagerStub.Stub (_ => _.IsNull).Return (false);
@@ -52,17 +52,17 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests
           .Return (true);
 
       string resourceValue;
-      Assert.That (_service.TryGetExtensibleEnumerationValueDisplayName (Color.Values.Red(), out resourceValue), Is.True);
+      Assert.That (_service.TryGetExtensibleEnumValueDisplayName (Color.Values.Red(), out resourceValue), Is.True);
       Assert.That (resourceValue, Is.EqualTo ("expected"));
     }
 
     [Test]
-    public void TryGetEnumerationValueDisplayName_WithoutResourceManager_ReturnsFalse ()
+    public void TryGetExtensibleEnumValueDisplayName_WithoutResourceManager_ReturnsFalse ()
     {
       _globalizationServiceStub.Stub (_ => _.GetResourceManager (Arg<ITypeInformation>.Is.NotNull)).Return (NullResourceManager.Instance);
 
       string resourceValue;
-      Assert.That (_service.TryGetExtensibleEnumerationValueDisplayName (Color.Values.Red(), out resourceValue), Is.False);
+      Assert.That (_service.TryGetExtensibleEnumValueDisplayName (Color.Values.Red(), out resourceValue), Is.False);
       Assert.That (resourceValue, Is.Null);
     }
   }

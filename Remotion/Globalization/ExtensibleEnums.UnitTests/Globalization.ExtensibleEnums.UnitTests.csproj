@@ -57,11 +57,11 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="ExtensibleEnumerationGlobalizationServiceExtensionsTest.cs" />
-    <Compile Include="ExtensibleEnumerationGlobalizationServiceIntegrationTest.cs" />
-    <Compile Include="ExtensibleEnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="ExtensibleEnumGlobalizationServiceExtensionsTest.cs" />
+    <Compile Include="ExtensibleEnumGlobalizationServiceIntegrationTest.cs" />
+    <Compile Include="ExtensibleEnumGlobalizationServiceTest.cs" />
     <Compile Include="Obsolete\ExtensibleEnumExtensionsIntegrationTest.cs" />
-    <Compile Include="IExtensibleEnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="IExtensibleEnumGlobalizationServiceTest.cs" />
     <Compile Include="TestDomain\Color.cs" />
     <Compile Include="TestDomain\ColorExtensions.cs" />
     <Compile Include="TestDomain\LightColorExtensions.cs" />

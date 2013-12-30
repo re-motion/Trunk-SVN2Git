@@ -22,7 +22,7 @@ using Remotion.ServiceLocation;
 namespace Remotion.Globalization.ExtensibleEnums.UnitTests
 {
   [TestFixture]
-  public class IExtensibleEnumerationGlobalizationServiceTest
+  public class IExtensibleEnumGlobalizationServiceTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -35,17 +35,17 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IExtensibleEnumerationGlobalizationService> ();
+      var factory = _serviceLocator.GetInstance<IExtensibleEnumGlobalizationService> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (ExtensibleEnumerationGlobalizationService)));
+      Assert.That (factory, Is.TypeOf (typeof (ExtensibleEnumGlobalizationService)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IExtensibleEnumerationGlobalizationService> ();
-      var factory2 = _serviceLocator.GetInstance<IExtensibleEnumerationGlobalizationService> ();
+      var factory1 = _serviceLocator.GetInstance<IExtensibleEnumGlobalizationService> ();
+      var factory2 = _serviceLocator.GetInstance<IExtensibleEnumGlobalizationService> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

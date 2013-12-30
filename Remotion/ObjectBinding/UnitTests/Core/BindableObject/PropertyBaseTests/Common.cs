@@ -354,7 +354,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               MockRepository.GenerateStub<ICompoundGlobalizationService>(),
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
               MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
-              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
+              MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>()));
 
       Dev.Null = property.DisplayName;
     }
@@ -382,7 +382,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               MockRepository.GenerateStub<ICompoundGlobalizationService>(),
               mockMemberInformationGlobalizationService,
               MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
-              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
+              MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>()));
 
       Expect.Call (
           mockMemberInformationGlobalizationService.TryGetPropertyDisplayName (

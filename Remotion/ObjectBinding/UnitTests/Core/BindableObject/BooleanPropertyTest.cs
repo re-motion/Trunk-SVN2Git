@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               mockCompoundGlobalizationService,
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
               MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
-              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
+              MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>()));
 
       var resourceIdentifierType = typeof (BindableObjectGlobalizationService).GetNestedType ("ResourceIdentifier", BindingFlags.NonPublic);
 

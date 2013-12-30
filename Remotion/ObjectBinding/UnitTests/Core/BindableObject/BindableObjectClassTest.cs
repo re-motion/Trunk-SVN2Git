@@ -129,7 +129,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               MockRepository.GenerateStub<ICompoundGlobalizationService>(),
               mockMemberInformationGlobalizationService,
               MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
-              MockRepository.GenerateStub<IExtensibleEnumerationGlobalizationService>()));
+              MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>()));
 
       Expect.Call (
           mockMemberInformationGlobalizationService.TryGetTypeDisplayName (

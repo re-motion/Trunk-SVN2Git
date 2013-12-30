@@ -24,16 +24,16 @@ namespace Remotion.Globalization.ExtensibleEnums
 {
   /// <summary>
   /// Provides extension methods for retrieving for retrieving the human-readable localized representation of an <see cref="IExtensibleEnum"/> object
-  /// using the <see cref="IExtensibleEnumerationGlobalizationService"/>.
+  /// using the <see cref="IExtensibleEnumGlobalizationService"/>.
   /// </summary>
-  public static class ExtensibleEnumerationGlobalizationServiceExtensions
+  public static class ExtensibleEnumGlobalizationServiceExtensions
   {
     /// <summary>
     ///   Gets the human-readable extensible-enumeration name of the spefified reflection object,
     ///   using the <paramref name="value"/>'s name as fallback.
     /// </summary>
-    /// <param name="extensibleEnumerationGlobalizationService">
-    ///   The <see cref="IExtensibleEnumerationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// <param name="extensibleEnumGlobalizationService">
+    ///   The <see cref="IExtensibleEnumGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
     /// </param>
     /// <param name="value">
     ///   The <see cref="IExtensibleEnum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
@@ -43,15 +43,15 @@ namespace Remotion.Globalization.ExtensibleEnums
     ///   or the <paramref name="value"/>'s <see cref="IExtensibleEnum.ValueName"/> if no resource could be found.
     /// </returns>
     [NotNull]
-    public static string GetExtensibleEnumerationValueDisplayName (
-        [NotNull] this IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService,
+    public static string GetExtensibleEnumValueDisplayName (
+        [NotNull] this IExtensibleEnumGlobalizationService extensibleEnumGlobalizationService,
         [NotNull] IExtensibleEnum value)
     {
-      ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
+      ArgumentUtility.CheckNotNull ("extensibleEnumGlobalizationService", extensibleEnumGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
 
       string result;
-      if (extensibleEnumerationGlobalizationService.TryGetExtensibleEnumerationValueDisplayName (value, out result))
+      if (extensibleEnumGlobalizationService.TryGetExtensibleEnumValueDisplayName (value, out result))
         return result;
 
       return value.ValueName;
@@ -60,8 +60,8 @@ namespace Remotion.Globalization.ExtensibleEnums
     /// <summary>
     ///   Gets the human-readable extensible-enumeration name of the spefified reflection object, using <see langword="null" /> as fallback.
     /// </summary>
-    /// <param name="extensibleEnumerationGlobalizationService">
-    ///   The <see cref="IExtensibleEnumerationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// <param name="extensibleEnumGlobalizationService">
+    ///   The <see cref="IExtensibleEnumGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
     /// </param>
     /// <param name="value">
     ///   The <see cref="IExtensibleEnum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
@@ -71,15 +71,15 @@ namespace Remotion.Globalization.ExtensibleEnums
     ///   or <see langword="null" /> if no resource could be found.
     /// </returns>
     [CanBeNull]
-    public static string GetExtensibleEnumerationValueDisplayNameOrDefault (
-        [NotNull] this IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService,
+    public static string GetExtensibleEnumValueDisplayNameOrDefault (
+        [NotNull] this IExtensibleEnumGlobalizationService extensibleEnumGlobalizationService,
         [NotNull] IExtensibleEnum value)
     {
-      ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
+      ArgumentUtility.CheckNotNull ("extensibleEnumGlobalizationService", extensibleEnumGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
 
       string result;
-      if (extensibleEnumerationGlobalizationService.TryGetExtensibleEnumerationValueDisplayName (value, out result))
+      if (extensibleEnumGlobalizationService.TryGetExtensibleEnumValueDisplayName (value, out result))
         return result;
 
       return null;
@@ -88,22 +88,22 @@ namespace Remotion.Globalization.ExtensibleEnums
     /// <summary>
     ///   Checks whether a human-readable extensible-enumeration name of the spefified reflection object exists.
     /// </summary>
-    /// <param name="extensibleEnumerationGlobalizationService">
-    ///   The <see cref="IExtensibleEnumerationGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
+    /// <param name="extensibleEnumGlobalizationService">
+    ///   The <see cref="IExtensibleEnumGlobalizationService"/> to use during the lookup. Must not be <see langword="null" />.
     /// </param>
     /// <param name="value">
     ///   The <see cref="IExtensibleEnum"/> that defines the name for the resource lookup. Must not be <see langword="null" />.
     /// </param>
     /// <returns><see langword="true" /> if a resource could be found.</returns>
-    public static bool ContainsExtensibleEnumerationValueDisplayName (
-        [NotNull] this IExtensibleEnumerationGlobalizationService extensibleEnumerationGlobalizationService,
+    public static bool ContainsExtensibleEnumValueDisplayName (
+        [NotNull] this IExtensibleEnumGlobalizationService extensibleEnumGlobalizationService,
         [NotNull] IExtensibleEnum value)
     {
-      ArgumentUtility.CheckNotNull ("extensibleEnumerationGlobalizationService", extensibleEnumerationGlobalizationService);
+      ArgumentUtility.CheckNotNull ("extensibleEnumGlobalizationService", extensibleEnumGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
 
       string result;
-      return extensibleEnumerationGlobalizationService.TryGetExtensibleEnumerationValueDisplayName (value, out result);
+      return extensibleEnumGlobalizationService.TryGetExtensibleEnumValueDisplayName (value, out result);
     }
   }
 }
