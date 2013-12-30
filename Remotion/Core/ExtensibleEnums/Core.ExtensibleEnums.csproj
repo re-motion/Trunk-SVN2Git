@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E585C288-E534-42F0-8F43-96F98BB18BE2}</ProjectGuid>
+    <ProjectGuid>{BDAE7146-01A8-4DC1-80C2-0E67291AC3ED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.Globalization.ExtensibleEnums</RootNamespace>
-    <AssemblyName>Remotion.Globalization.ExtensibleEnums</AssemblyName>
+    <RootNamespace>Remotion.ExtensibleEnums</RootNamespace>
+    <AssemblyName>Remotion.ExtensibleEnums</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -22,7 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591;0419</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Debug\Remotion.Globalization.ExtensibleEnums.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Remotion.ExtensibleEnums.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591;0419</NoWarn>
-    <DocumentationFile>bin\Release\Remotion.Globalization.ExtensibleEnums.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Remotion.ExtensibleEnums.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -53,9 +53,22 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="ExtensibleEnumGlobalizationService.cs" />
-    <Compile Include="ExtensibleEnumGlobalizationServiceExtensions.cs" />
-    <Compile Include="IExtensibleEnumGlobalizationService.cs" />
+    <Compile Include="ExtensibleEnum.cs" />
+    <Compile Include="ExtensibleEnumConverter.cs" />
+    <Compile Include="ExtensibleEnumDefinition.cs" />
+    <Compile Include="ExtensibleEnumExtensions.cs" />
+    <Compile Include="ExtensibleEnumInfo.cs" />
+    <Compile Include="ExtensibleEnumPositionAttribute.cs" />
+    <Compile Include="ExtensibleEnumUtility.cs" />
+    <Compile Include="IExtensibleEnum.cs" />
+    <Compile Include="IExtensibleEnumDefinition.cs" />
+    <Compile Include="IExtensibleEnumInfo.cs" />
+    <Compile Include="Infrastructure\ExtensibleEnumDefinitionCache.cs" />
+    <Compile Include="Infrastructure\ExtensibleEnumInfoComparer.cs" />
+    <Compile Include="Infrastructure\ExtensibleEnumTypeConverterFactory.cs" />
+    <Compile Include="Infrastructure\ExtensibleEnumValueDiscoveryService.cs" />
+    <Compile Include="Infrastructure\IExtensibleEnumValueDiscoveryService.cs" />
+    <Compile Include="InvalidExtensibleEnumDefinitionException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,17 +80,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
+    <ProjectReference Include="..\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\ExtensibleEnums\Core.ExtensibleEnums.csproj">
-      <Project>{BDAE7146-01A8-4DC1-80C2-0E67291AC3ED}</Project>
-      <Name>Core.ExtensibleEnums</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Core\Globalization.Core.csproj">
-      <Project>{AC6AB6EB-F6AC-45A4-88A7-877D11A65CCB}</Project>
-      <Name>Globalization.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

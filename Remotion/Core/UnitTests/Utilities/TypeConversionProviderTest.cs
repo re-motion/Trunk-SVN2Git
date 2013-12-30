@@ -17,9 +17,7 @@
 using System;
 using System.ComponentModel;
 using NUnit.Framework;
-using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
-using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
 namespace Remotion.UnitTests.Utilities
 {
@@ -230,18 +228,6 @@ namespace Remotion.UnitTests.Utilities
     public void CanConvert_FromDBNull_ToInt32 ()
     {
       Assert.That (_provider.CanConvert (typeof (DBNull), _int32), Is.False);
-    }
-
-    [Test]
-    public void CanConvert_FromExtensibleEnum_ToString ()
-    {
-      Assert.That (_provider.CanConvert (typeof (Color), _string), Is.True);
-    }
-
-    [Test]
-    public void CanConvert_FromString_ToExtensibleEnum ()
-    {
-      Assert.That (_provider.CanConvert (_string, typeof (Color)), Is.True);
     }
 
     [Test]
@@ -534,18 +520,6 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    public void Convert_FromExtensibleEnum_ToString ()
-    {
-      Assert.That (_provider.Convert (typeof (Color), typeof (string), Color.Values.Red()), Is.EqualTo ("Red"));
-    }
-
-    [Test]
-    public void Convert_FromString_ToExtensibleEnum ()
-    {
-      Assert.That (_provider.Convert (typeof (string), typeof (Color), "Red"), Is.EqualTo (Color.Values.Red()));
-    }
-
-    [Test]
     public void GetTypeConverter_FromInt32_ToInt32 ()
     {
       TypeConverterResult converterResult = _provider.GetTypeConverter (_int32, _int32);
@@ -614,25 +588,6 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (converterResult.TypeConverterType, Is.EqualTo (TypeConverterType.SourceTypeConverter));
       Assert.That (converterResult.TypeConverter.GetType(), Is.EqualTo (typeof (BidirectionalStringConverter)));
     }
-
-    [Test]
-    public void GetTypeConverter_FromExtensibleEnum_ToString ()
-    {
-      TypeConverterResult converterResult = _provider.GetTypeConverter (typeof (Color), _string);
-      Assert.That (converterResult.TypeConverterType, Is.EqualTo (TypeConverterType.SourceTypeConverter));
-      Assert.That (converterResult.TypeConverter, Is.InstanceOf (typeof (ExtensibleEnumConverter)));
-      Assert.That (((ExtensibleEnumConverter) converterResult.TypeConverter).ExtensibleEnumType, Is.SameAs (typeof (Color)));
-    }
-
-    [Test]
-    public void GetTypeConverter_FromString_ToExtensibleEnum ()
-    {
-      TypeConverterResult converterResult = _provider.GetTypeConverter (_string, typeof (Color));
-      Assert.That (converterResult.TypeConverterType, Is.EqualTo (TypeConverterType.DestinationTypeConverter));
-      Assert.That (converterResult.TypeConverter, Is.InstanceOf (typeof (ExtensibleEnumConverter)));
-      Assert.That (((ExtensibleEnumConverter) converterResult.TypeConverter).ExtensibleEnumType, Is.SameAs (typeof (Color)));
-    }
-
 
     [Test]
     public void GetTypeConverter_ForNaByte ()
@@ -811,18 +766,6 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (converterSecondRun, Is.Not.Null, "TypeConverter from second run is null.");
       Assert.That (converterSecondRun, Is.SameAs (converterFirstRun));
       Assert.That (converterFirstRun.GetType(), Is.EqualTo (typeof (AdvancedEnumConverter)));
-    }
-
-    [Test]
-    public void GetBasicTypeConverter_ForExtensibleEnum ()
-    {
-      TypeConverter converterFirstRun = _provider.GetBasicTypeConverter (typeof (Color));
-      TypeConverter converterSecondRun = _provider.GetBasicTypeConverter (typeof (Color));
-      Assert.That (converterFirstRun, Is.Not.Null, "TypeConverter from first run is null.");
-      Assert.That (converterSecondRun, Is.Not.Null, "TypeConverter from second run is null.");
-      Assert.That (converterSecondRun, Is.SameAs (converterFirstRun));
-      Assert.That (converterFirstRun, Is.InstanceOf (typeof (ExtensibleEnumConverter)));
-      Assert.That (((ExtensibleEnumConverter) converterFirstRun).ExtensibleEnumType, Is.SameAs (typeof (Color)));
     }
 
     [Test]

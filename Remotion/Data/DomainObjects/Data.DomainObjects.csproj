@@ -128,6 +128,10 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\ExtensibleEnums\Core.ExtensibleEnums.csproj">
+      <Project>{BDAE7146-01A8-4DC1-80C2-0E67291AC3ED}</Project>
+      <Name>Core.ExtensibleEnums</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Reflection.CodeGeneration.TypePipe\Core.Reflection.CodeGeneration.TypePipe.csproj">
       <Project>{EC62E06A-4AC6-48A0-8A81-69250ABC35B6}</Project>
       <Name>Core.Reflection.CodeGeneration.TypePipe</Name>

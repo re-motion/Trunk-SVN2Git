@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.ComponentModel;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities
@@ -27,6 +27,11 @@ namespace Remotion.UnitTests.Utilities
 /// <summary> Exposes non-public members of the <see cref="TypeConversionProvider"/> type. </summary>
 public class StubTypeConversionProvider: TypeConversionProvider
 {
+  public StubTypeConversionProvider ()
+      : base (SafeServiceLocator.Current.GetAllInstances<ITypeConverterFactory>())
+  {
+  }
+
   public new TypeConverter GetTypeConverterByAttribute (Type type)
   {
     return base.GetTypeConverterByAttribute (type);

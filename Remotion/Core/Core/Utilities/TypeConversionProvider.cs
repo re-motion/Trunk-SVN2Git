@@ -18,9 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
+using JetBrains.Annotations;
 using Remotion.Collections;
-using Remotion.ExtensibleEnums;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Utilities
 {
@@ -53,6 +55,19 @@ namespace Remotion.Utilities
   /// </remarks>
   public class TypeConversionProvider
   {
+    /// <summary>
+    /// Creates a <see cref="TypeConverter"/> if the type is supported by the factory.
+    /// </summary>
+    [ConcreteImplementation (
+        "Remotion.ExtensibleEnums.Infrastructure.ExtensibleEnumTypeConverterFactory, Remotion.ExtensibleEnums, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+        ignoreIfNotFound: true,
+        Lifetime = LifetimeKind.Singleton)]
+    public interface ITypeConverterFactory
+    {
+      [CanBeNull]
+      TypeConverter CreateTypeConverterOrDefault ([NotNull]Type type);
+    }
+
     private static readonly LockingDataStoreDecorator<Type, TypeConverter> s_typeConverters = DataStoreFactory.CreateWithLocking<Type, TypeConverter>();
 
     private static readonly DoubleCheckedLockingContainer<TypeConversionProvider> s_current =
@@ -62,7 +77,7 @@ namespace Remotion.Utilities
     /// <returns> An instance of the <see cref="TypeConversionProvider"/> type. </returns>
     public static TypeConversionProvider Create ()
     {
-      return new TypeConversionProvider();
+      return new TypeConversionProvider(SafeServiceLocator.Current.GetAllInstances<ITypeConverterFactory>());
     }
 
     /// <summary> Gets the current <see cref="TypeConversionProvider"/>. </summary>
@@ -80,11 +95,15 @@ namespace Remotion.Utilities
       s_current.Value = provider;
     }
 
+    private readonly IEnumerable<ITypeConverterFactory> _typeConverterFactories;
     private readonly Dictionary<Type, TypeConverter> _additionalTypeConverters = new Dictionary<Type, TypeConverter>();
     private readonly BidirectionalStringConverter _stringConverter = new BidirectionalStringConverter();
 
-    protected TypeConversionProvider ()
+    protected TypeConversionProvider (IEnumerable<ITypeConverterFactory> typeConverterFactories)
     {
+      ArgumentUtility.CheckNotNull ("typeConverterFactories", typeConverterFactories);
+
+      _typeConverterFactories = typeConverterFactories.ToArray();
     }
 
     /// <summary> 
@@ -328,8 +347,8 @@ namespace Remotion.Utilities
         if (converter == null && (Nullable.GetUnderlyingType (type) ?? type).IsEnum)
           converter = new AdvancedEnumConverter (type);
 
-        if (converter == null && ExtensibleEnumUtility.IsExtensibleEnumType (type))
-          converter = new ExtensibleEnumConverter (type);
+        if (converter == null)
+          converter = _typeConverterFactories.Select (f => f.CreateTypeConverterOrDefault (type)).FirstOrDefault (c => c != null);
 
         AddTypeConverterToCache (type, converter);
       }
