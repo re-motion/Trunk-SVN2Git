@@ -22,7 +22,7 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Remotion Code Generation Library (based on TypePipe)")]
-[assembly: AssemblyDescription("Code generation library based on TypePipe")]
+[assembly: AssemblyTitle("Remotion Extensible Enums Library")]
+[assembly: AssemblyDescription("Support for setting up enum-like types in an application's domain")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
