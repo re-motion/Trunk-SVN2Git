@@ -17,49 +17,66 @@
 
 using System;
 
+// ReSharper disable once CheckNamespace
+
 namespace Remotion.Reflection
 {
-  [Obsolete ("Moved to TypePipe. (Version 1.15.7.0)")]
+  [Obsolete ("Dummy declaration for DependDB.", true)]
   internal abstract class ParamList
   {
     public static ParamList Empty
     {
-      get { return null; }
+      get { throw new NotImplementedException(); }
     }
 
     public static ParamList Create<A1> (A1 a1)
     {
-      return null;
+      throw new NotImplementedException();
     }
 
     public static ParamList Create<A1, A2> (A1 a1, A2 a2)
     {
-      return null;
+      throw new NotImplementedException();
     }
 
     public static ParamList Create<A1, A2, A3> (A1 a1, A2 a2, A3 a3)
     {
-      return null;
+      throw new NotImplementedException();
     }
 
     public static ParamList Create<A1, A2, A3, A4> (A1 a1, A2 a2, A3 a3, A4 a4)
     {
-      return null;
+      throw new NotImplementedException();
     }
 
     public static ParamList Create<A1, A2, A3, A4, A5> (A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
     {
-      return null;
+      throw new NotImplementedException();
     }
 
     public static ParamList Create<A1, A2, A3, A4, A5, A6> (A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
     {
-      return null;
+      throw new NotImplementedException();
     }
 
     public static ParamList Create<A1, A2, A3, A4, A5, A6, A7> (A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
     {
-      return null;
+      throw new NotImplementedException();
+    }
+
+    public static ParamList Create ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public static ParamList CreateDynamic (Type[] parameterTypes, object[] parameterValues)
+    {
+      throw new NotImplementedException();
+    }
+
+    public static ParamList CreateDynamic (params object[] parameterValues)
+    {
+      throw new NotImplementedException();
     }
   }
 }
