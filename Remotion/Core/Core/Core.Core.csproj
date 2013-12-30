@@ -247,6 +247,17 @@
     <Compile Include="FunctionalProgramming\EnumerableUtility.Partial.cs" />
     <Compile Include="FunctionalProgramming\Maybe.Partial.cs" />
     <Compile Include="IHandleAttribute.cs" />
+    <Compile Include="Obsolete\Globalization\EnumDescription.cs" />
+    <Compile Include="Obsolete\Globalization\EnumDescriptionAttribute.cs" />
+    <Compile Include="Obsolete\Globalization\EnumDescriptionResourceAttribute.cs" />
+    <Compile Include="Obsolete\Globalization\EnumValue.cs" />
+    <Compile Include="Obsolete\Globalization\IObjectWithResources.cs" />
+    <Compile Include="Obsolete\Globalization\IResourceManager.cs" />
+    <Compile Include="Obsolete\Globalization\MultiLingualResources.cs" />
+    <Compile Include="Obsolete\Globalization\MultiLingualResourcesAttribute.cs" />
+    <Compile Include="Obsolete\Globalization\ResourceIdentifiersAttribute.cs" />
+    <Compile Include="Obsolete\Globalization\ResourceManagerSet.cs" />
+    <Compile Include="Obsolete\Globalization\ResourceManagerWrapper.cs" />
     <Compile Include="Reflection\DelegateFactory.cs" />
     <Compile Include="Reflection\IDelegateFactory.cs" />
     <Compile Include="Reflection\IMemberInformationNameResolver.cs" />
