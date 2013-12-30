@@ -17,8 +17,8 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.ExtensibleEnums.Globalization;
 using Remotion.Globalization;
+using Remotion.Globalization.ExtensibleEnums;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;

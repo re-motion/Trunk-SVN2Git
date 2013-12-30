@@ -16,11 +16,10 @@
 // 
 using System;
 using Remotion.ExtensibleEnums;
-using Remotion.Globalization;
 
 namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
-  [MultiLingualResources ("Remotion.UnitTests.ExtensibleEnums.TestDomain.Resources.ColorExtensions")]
+  [Sample]
   public static class ColorExtensions
   {
     public static ExtensibleEnumDefinition<Color> LastCallArgument;

@@ -272,16 +272,6 @@
     <Compile Include="Configuration\TypeDiscovery\IntegrationTests\SpecificRootAssemblies\SpecificRootAssembliesAreNotSubjectToApplicationFilterTest.cs" />
     <Compile Include="Context\SafeContextIntegrationTest.cs" />
     <Compile Include="Context\SafeContextTest.cs" />
-    <Compile Include="ExtensibleEnums\ExtensibleEnumExtensionsTest.cs" />
-    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationServiceIntegrationTest.cs" />
-    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationServiceExtensionsTest.cs" />
-    <Compile Include="Globalization\EnumerationGlobalizationServiceIntegrationTest.cs" />
-    <Compile Include="Globalization\EnumerationGlobalizationServiceExtensionsTest.cs" />
-    <Compile Include="Globalization\EnumFromResource.cs" />
-    <Compile Include="Globalization\GlobalizationServiceExtensionsTest.cs" />
-    <Compile Include="Globalization\MemberInformationGlobalizationServiceIntegrationTest.cs" />
-    <Compile Include="Globalization\MemberInformationGlobalizationServiceExtensionsTest.cs" />
-    <Compile Include="Globalization\ResourceManagerExtensionsTest.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryServiceTest.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttribute.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttributeExtensions.cs" />
@@ -308,7 +298,9 @@
     <Compile Include="ExtensibleEnums\TestDomain\DwarfPlanetExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\EnumWithDifferentCtors.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\EnumWithDifferentCtorsExtensions.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\ISampleAttribute.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\LargePlanetExtensions.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\SampleAttribute.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\SmallPlanetExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\LightColorExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\Planet.cs" />
@@ -316,44 +308,7 @@
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColor.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColorExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValuesGeneric.cs" />
-    <Compile Include="Globalization\CompoundGlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\EnumerationGlobalizationServiceTest.cs" />
-    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\GlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\ICompoundGlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\IEnumerationGlobalizationServiceTest.cs" />
-    <Compile Include="ExtensibleEnums\Globalization\IExtensibleEnumerationGlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\IGlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\IMemberInformationGlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\IResourceManagerResolverTest.cs" />
-    <Compile Include="Globalization\MemberInformationGlobalizationServiceTest.cs" />
-    <Compile Include="Globalization\ResolvedResourceManagerResultTest.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
-    <Compile Include="Globalization\MultiLingualResourcesTest.cs" />
-    <Compile Include="Globalization\TestDomain\ClassWithLongResourceIdentifier.cs" />
-    <Compile Include="Globalization\TestDomain\ClassWithProperties.cs" />
-    <Compile Include="Globalization\TestDomain\ClassWithShortResourceIdentifier.cs" />
-    <Compile Include="Globalization\TestDomain\Resources\ClassWithResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ClassWithResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\TestDomain\Resources\EnumWithResources.Designer.cs">
-      <DependentUpon>EnumWithResources.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="ExtensibleEnums\TestDomain\Resources\ExtensibleEnumWithResources.Designer.cs">
-      <DependentUpon>ExtensibleEnumWithResources.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Globalization\TestDomain\ClassWithResources.cs" />
-    <Compile Include="Globalization\TestDomain\EnumWithDescription.cs" />
-    <Compile Include="Globalization\TestDomain\EnumWithResources.cs" />
-    <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithResources.cs" />
-    <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
-    <Compile Include="Globalization\TestDomain\TestEnum.cs" />
     <Compile Include="Logging\Log4NetLogTests\DebugTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\ErrorTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\FatalTest.cs" />
@@ -436,16 +391,6 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FilePatternRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\RegexAssemblyLoaderFilterTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\SearchPathRootAssemblyFinderTest.cs" />
-    <Compile Include="ExtensibleEnums\TestDomain\Resources\ColorExtensions.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ColorExtensions.resx</DependentUpon>
-    </Compile>
-    <Compile Include="ExtensibleEnums\TestDomain\Resources\LightColorExtensions.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LightColorExtensions.resx</DependentUpon>
-    </Compile>
     <Compile Include="ServiceLocation\ActivationPerformanceTest.cs" />
     <Compile Include="ServiceLocation\DefaultServiceConfigurationDiscoveryServiceTest.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocatorTest.cs" />
@@ -490,7 +435,6 @@
     <Compile Include="Collections\LockingDataStoreDecoratorTest.cs" />
     <Compile Include="Collections\SimpleDataStoreTest.cs" />
     <Compile Include="Context\CallContextStorageProviderTest.cs" />
-    <Compile Include="Globalization\ResourceManagerFactoryTest.cs" />
     <Compile Include="Collections\LockingCacheDecoratorTest.cs" />
     <Compile Include="Collections\SetTest.cs" />
     <Compile Include="Collections\AutoInitDictionaryTest.cs" />
@@ -513,11 +457,6 @@
     <Compile Include="Design\DesignModeHelperBaseTest.cs" />
     <Compile Include="Design\StubDesignModeHelper.cs" />
     <Compile Include="DoubleCheckedLockingContainerTest.cs" />
-    <Compile Include="Globalization\ResourceManagerResolverTest.cs" />
-    <Compile Include="Globalization\TestDomain\ClassWithMultiLingualResourcesAttributes.cs" />
-    <Compile Include="Globalization\TestDomain\ClassWithoutMultiLingualResourcesAttributes.cs" />
-    <Compile Include="Globalization\TestDomain\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
-    <Compile Include="Globalization\TestDomain\InheritedClassWithMultiLingualResourcesAttributes.cs" />
     <Compile Include="ServiceLocation\ConcreteImplementationAttributeTest.cs" />
     <Compile Include="Logging\Log4NetLogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\BaseTest.cs" />
@@ -532,31 +471,6 @@
     <Compile Include="Logging\Log4NetTraceListenerTest.cs" />
     <Compile Include="Logging\LogManagerTest.cs" />
     <Compile Include="Logging\SampleType.cs" />
-    <EmbeddedResource Include="Globalization\TestDomain\Resources\ClassWithResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ClassWithResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\TestDomain\Resources\EnumWithResources.de-AT.resx">
-      <LastGenOutput>EnumWithResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\TestDomain\Resources\EnumWithResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>EnumWithResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ExtensibleEnums\TestDomain\Resources\ExtensibleEnumWithResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ExtensibleEnumWithResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ExtensibleEnums\TestDomain\Resources\ColorExtensions.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ColorExtensions.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ExtensibleEnums\TestDomain\Resources\LightColorExtensions.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LightColorExtensions.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Utilities\TestData\WriteEmbeddedStringResourceToFileTestData.txt" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -655,9 +569,6 @@
     </Compile>
     <Compile Include="Utilities\CustomAttributeUtilityTestDomain\ComplexAttribute.cs" />
     <Compile Include="Utilities\ConsoleUtilityTest.cs" />
-    <Compile Include="Globalization\EnumDescriptionTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Utilities\EnumUtilityTests\UInt16Enum.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt32Enum.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt64Enum.cs" />

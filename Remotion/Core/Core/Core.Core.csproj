@@ -243,25 +243,9 @@
     <Compile Include="Context\SafeContext.cs" />
     <Compile Include="Context\SafeContextKeys.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumExtensions.cs" />
-    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationServiceExtensions.cs" />
     <Compile Include="FunctionalProgramming\EnumerableExtensions.Partial.cs" />
     <Compile Include="FunctionalProgramming\EnumerableUtility.Partial.cs" />
     <Compile Include="FunctionalProgramming\Maybe.Partial.cs" />
-    <Compile Include="Globalization\Implementation\EnumerationGlobalizationServiceExtensions.cs" />
-    <Compile Include="Globalization\GlobalizationServiceExtensions.cs" />
-    <Compile Include="Globalization\IEnumerationGlobalizationService.cs" />
-    <Compile Include="ExtensibleEnums\Globalization\IExtensibleEnumerationGlobalizationService.cs" />
-    <Compile Include="Globalization\Implementation\CompoundGlobalizationService.cs" />
-    <Compile Include="Globalization\Implementation\EnumerationGlobalizationService.cs" />
-    <Compile Include="ExtensibleEnums\Globalization\ExtensibleEnumerationGlobalizationService.cs" />
-    <Compile Include="Globalization\Implementation\GlobalizationService.cs" />
-    <Compile Include="Globalization\ICompoundGlobalizationService.cs" />
-    <Compile Include="Globalization\IGlobalizationService.cs" />
-    <Compile Include="Globalization\IMemberInformationGlobalizationService.cs" />
-    <Compile Include="Globalization\Implementation\IResourceManagerResolver.cs" />
-    <Compile Include="Globalization\Implementation\MemberInformationGlobalizationService.cs" />
-    <Compile Include="Globalization\Implementation\MemberInformationGlobalizationServiceExtensions.cs" />
-    <Compile Include="Globalization\ResourceManagerExtensions.cs" />
     <Compile Include="IHandleAttribute.cs" />
     <Compile Include="Reflection\DelegateFactory.cs" />
     <Compile Include="Reflection\IDelegateFactory.cs" />
@@ -368,7 +352,6 @@
     <Compile Include="ExtensibleEnums\IExtensibleEnum.cs" />
     <Compile Include="ExtensibleEnums\IExtensibleEnumDefinition.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryService.cs" />
-    <Compile Include="Globalization\Implementation\ResolvedResourceManagerResult.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttribute.cs" />
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactory.cs" />
@@ -399,9 +382,6 @@
     <Compile Include="Utilities\DelegateBasedDisposable.cs" />
     <Compile Include="Utilities\DelegateBasedEqualityComparer.cs" />
     <Compile Include="Utilities\DesignerUtility.cs" />
-    <Compile Include="Globalization\EnumDescriptionAttribute.cs" />
-    <Compile Include="Globalization\EnumDescriptionResourceAttribute.cs" />
-    <Compile Include="Globalization\EnumValue.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyLoaderException.cs" />
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
@@ -413,7 +393,6 @@
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
     <Compile Include="Context\CallContextStorageProvider.cs" />
-    <Compile Include="Globalization\Implementation\ResourceManagerFactory.cs" />
     <Compile Include="Collections\AutoInitDictionary.cs" />
     <Compile Include="Collections\MultiDictionary.cs" />
     <Compile Include="Collections\LockingCacheDecorator.cs" />
@@ -429,9 +408,6 @@
     <Compile Include="Design\DesignModeHelperBase.cs" />
     <Compile Include="Design\EnvDteDesignModeHelper.cs" />
     <Compile Include="DoubleCheckedLockingContainer.cs" />
-    <Compile Include="Globalization\IResourcesAttribute.cs" />
-    <Compile Include="Globalization\MultiLingualResources.cs" />
-    <Compile Include="Globalization\Implementation\ResourceManagerResolver.cs" />
     <Compile Include="Collections\ArrayComparer.cs" />
     <Compile Include="Logging\Log4NetLog.cs" />
     <Compile Include="Logging\Log4NetLogManager.cs" />
@@ -449,30 +425,6 @@
     </Compile>
     <Compile Include="Configuration\TypeElement.cs" />
     <Compile Include="DisposableBase.cs" />
-    <Compile Include="Globalization\IObjectWithResources.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Globalization\IResourceManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Globalization\MultiLingualResourcesAttribute.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Globalization\NullResourceManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Globalization\ResourceException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Globalization\ResourceIdentifiersAttribute.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Globalization\ResourceManagerSet.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Globalization\Implementation\ResourceManagerWrapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinderTypeDiscoveryService.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AttributeAssemblyLoaderFilter.cs" />
@@ -568,9 +520,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\BidirectionalStringConverter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Globalization\EnumDescription.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\EnumUtility.cs">

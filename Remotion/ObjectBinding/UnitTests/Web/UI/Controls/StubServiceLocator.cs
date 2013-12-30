@@ -22,7 +22,6 @@ using Remotion.Collections;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
-using Remotion.Mixins.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;

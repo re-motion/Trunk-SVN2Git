@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using System.Resources;
+using Remotion.Globalization.Mixins;
 
 [assembly: NeutralResourcesLanguage ("en")]
 
@@ -29,3 +30,4 @@ using System.Resources;
 [assembly: AssemblyDescription("Generic interfaces and classes for BusinessObjects and data binding.")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]
+[assembly: EnsureGlobalizationSupportForMixins]

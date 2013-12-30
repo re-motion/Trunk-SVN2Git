@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.ExtensibleEnums;
-using Remotion.Globalization;
 
 namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
-  [MultiLingualResources ("Remotion.UnitTests.ExtensibleEnums.TestDomain.Resources.LightColorExtensions")]
+  [Sample]
   public static class LightColorExtensions
   {
     public static Color LightRed (this ExtensibleEnumDefinition<Color> definition)

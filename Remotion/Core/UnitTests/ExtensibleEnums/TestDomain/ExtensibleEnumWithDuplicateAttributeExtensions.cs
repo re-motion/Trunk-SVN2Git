@@ -16,12 +16,11 @@
 // 
 using System;
 using Remotion.ExtensibleEnums;
-using Remotion.Globalization;
 
 namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
-  [MultiLingualResources ("Remotion.UnitTests.Resources.ExtensibleEnumWithDuplicateAttributeExtensions")]
-  [MultiLingualResources ("Remotion.UnitTests.Resources.ExtensibleEnumWithDuplicateAttributeExtensions")]
+  [Sample (Value = "A")]
+  [Sample (Value = "B")]
   public static class ExtensibleEnumWithDuplicateAttributeExtensions
   {
     public static ExtensibleEnumWithDuplicateAttribute Value1 (this ExtensibleEnumDefinition<ExtensibleEnumWithDuplicateAttribute> definition)

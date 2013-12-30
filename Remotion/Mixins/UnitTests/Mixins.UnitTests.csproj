@@ -79,26 +79,6 @@
     </Compile>
     <Compile Include="Core\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\LoadingFlushedCodeTest.cs" />
     <Compile Include="Core\CodeGeneration\IntegrationTests\ServiceLocation\ParticipantRegistrationTest.cs" />
-    <Compile Include="Core\Globalization\ICompoundGlobalizationServiceTest.cs" />
-    <Compile Include="Core\Globalization\IGlobalizationServiceTest.cs" />
-    <Compile Include="Core\Globalization\MixedMultiLingualResourcesTests\ExistsResourceTest.cs" />
-    <Compile Include="Core\Globalization\MixedMultiLingualResourcesTests\GetResourceManagerTest.cs" />
-    <Compile Include="Core\Globalization\MixinGlobalizationServiceTest.cs" />
-    <Compile Include="Core\Globalization\Resources\ClassWithResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ClassWithResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Core\Globalization\Resources\MixinAddingResources.Designer.cs">
-      <DependentUpon>MixinAddingResources.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Core\Globalization\TestDomain\ClassWithMixinResource.cs" />
-    <Compile Include="Core\Globalization\TestDomain\ClassWithResources.cs" />
-    <Compile Include="Core\Globalization\TestDomain\MixinAddingResources.cs" />
-    <Compile Include="Core\Globalization\TestDomain\MixinOfMixinWithResources.cs" />
-    <Compile Include="Core\Globalization\TestDomain\MixinWithoutResourceAttribute.cs" />
     <Compile Include="Core\IntegrationTests\Overrides\OverridingTargetMethodsWithShadowing.cs" />
     <Compile Include="Core\CodeGeneration\TypePipe\CodeGenerationClassContextSerializerTest.cs" />
     <Compile Include="Core\CodeGeneration\TypePipe\CodeGenerationMixinContextOriginSerializerTest.cs" />
@@ -349,14 +329,6 @@
     <Compile Include="Core\Definitions\TestDomain\RequiredMethodDefinitionBuilding\MixinRequiringSingleMethod.cs" />
     <Compile Include="Core\Definitions\TestDomain\RequiredMethodDefinitionBuilding\MixinRequiringSingleProperty.cs" />
     <Compile Include="Core\Definitions\TestDomain\TestClassDefinition.cs" />
-    <Compile Include="Core\Globalization\TestDomain\ClassWithMultiLingualResourcesAttributes.cs" />
-    <Compile Include="Core\Globalization\TestDomain\ClassWithoutMultiLingualResourcesAttributes.cs" />
-    <Compile Include="Core\Globalization\TestDomain\InheritedClassWithMultiLingualResourcesAttributes.cs" />
-    <Compile Include="Core\Globalization\TestDomain\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
-    <Compile Include="Core\Globalization\TestDomain\InheritedMixinAddingMultiLingualResourcesAttributes.cs" />
-    <Compile Include="Core\Globalization\TestDomain\InheritedMixinWithoutMultiLingualResourcesAttributes1.cs" />
-    <Compile Include="Core\Globalization\TestDomain\MixinAddingMultiLingualResourcesAttributes1.cs" />
-    <Compile Include="Core\Globalization\TestDomain\MixinAddingMultiLingualResourcesAttributes2.cs" />
     <Compile Include="Core\MixAttributeTest.cs" />
     <Compile Include="Core\MixerTools\MixedTypeFinderTest.cs" />
     <Compile Include="Core\MixerTools\MixerPipelineFactoryTest.cs" />
@@ -681,16 +653,6 @@
       <Project>{9731FCDD-0F9F-41C5-B691-8AA9101CE249}</Project>
       <Name>Mixins.Samples</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\Globalization\Resources\ClassWithResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ClassWithResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Core\Globalization\Resources\MixinAddingResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MixinAddingResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

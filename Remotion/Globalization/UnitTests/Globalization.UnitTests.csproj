@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7602CDF2-DD09-4180-9777-1EA5EC0D933C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion.Globalization.UnitTests</RootNamespace>
+    <AssemblyName>Remotion.Globalization.UnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>0067</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0067</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\CommonServiceLocator-1.0\net-2.0\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\prereq\Assemblies\NUnit-2.6\net-2.0\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks">
+      <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks-3.6\net-3.5\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
+    <Compile Include="Implementation\CompoundGlobalizationServiceTest.cs" />
+    <Compile Include="Obsolete\EnumDescriptionTest.cs" />
+    <Compile Include="EnumerationGlobalizationServiceExtensionsTest.cs" />
+    <Compile Include="IntegrationTests\EnumerationGlobalizationServiceIntegrationTest.cs" />
+    <Compile Include="Implementation\EnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="GlobalizationServiceExtensionsTest.cs" />
+    <Compile Include="Implementation\GlobalizationServiceTest.cs" />
+    <Compile Include="ICompoundGlobalizationServiceTest.cs" />
+    <Compile Include="IEnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="IGlobalizationServiceTest.cs" />
+    <Compile Include="IMemberInformationGlobalizationServiceTest.cs" />
+    <Compile Include="Implementation\IResourceManagerResolverTest.cs" />
+    <Compile Include="MemberInformationGlobalizationServiceExtensionsTest.cs" />
+    <Compile Include="IntegrationTests\MemberInformationGlobalizationServiceIntegrationTest.cs" />
+    <Compile Include="Implementation\MemberInformationGlobalizationServiceTest.cs" />
+    <Compile Include="Obsolete\MultiLingualResourcesTest.cs" />
+    <Compile Include="Implementation\ResolvedResourceManagerResultTest.cs" />
+    <Compile Include="ResourceManagerExtensionsTest.cs" />
+    <Compile Include="Implementation\ResourceManagerFactoryTest.cs" />
+    <Compile Include="Implementation\ResourceManagerResolverTest.cs" />
+    <Compile Include="TestDomain\ClassWithLongResourceIdentifier.cs" />
+    <Compile Include="TestDomain\ClassWithMultiLingualResourcesAttributes.cs" />
+    <Compile Include="TestDomain\ClassWithoutMultiLingualResourcesAttributes.cs" />
+    <Compile Include="TestDomain\ClassWithProperties.cs" />
+    <Compile Include="TestDomain\ClassWithResources.cs" />
+    <Compile Include="TestDomain\ClassWithShortResourceIdentifier.cs" />
+    <Compile Include="TestDomain\EnumWithDescription.cs" />
+    <Compile Include="TestDomain\EnumWithResources.cs" />
+    <Compile Include="TestDomain\InheritedClassWithMultiLingualResourcesAttributes.cs" />
+    <Compile Include="TestDomain\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
+    <Compile Include="TestDomain\Resources\ClassWithResources.Designer.cs">
+      <DependentUpon>ClassWithResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TestDomain\Resources\EnumWithResources.Designer.cs">
+      <DependentUpon>EnumWithResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TestDomain\TestEnum.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
+    <None Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
+      <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
+      <Name>Core.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
+      <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
+      <Name>Development.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Globalization.Core.csproj">
+      <Project>{AC6AB6EB-F6AC-45A4-88A7-877D11A65CCB}</Project>
+      <Name>Globalization.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestDomain\Resources\ClassWithResources.resx" />
+    <EmbeddedResource Include="TestDomain\Resources\EnumWithResources.de-AT.resx" />
+    <EmbeddedResource Include="TestDomain\Resources\EnumWithResources.resx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

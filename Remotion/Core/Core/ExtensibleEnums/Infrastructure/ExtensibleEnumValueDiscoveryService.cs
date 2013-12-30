@@ -21,7 +21,6 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Remotion.Globalization;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 

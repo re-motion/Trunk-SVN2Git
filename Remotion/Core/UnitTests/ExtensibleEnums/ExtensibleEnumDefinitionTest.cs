@@ -21,7 +21,6 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Infrastructure;
-using Remotion.Globalization;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 using Rhino.Mocks;
 using System.Reflection;
@@ -244,34 +243,34 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void GetCustomAttributes_NonGeneric ()
     {
-      var customAttributes = Color.Values.GetCustomAttributes (typeof (MultiLingualResourcesAttribute));
+      var customAttributes = Color.Values.GetCustomAttributes (typeof (SampleAttribute));
 
-      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false)
-          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false))
+      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (SampleAttribute), false)
+          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (SampleAttribute), false))
           .ToArray();
       Assert.That (customAttributes, Is.EquivalentTo (expected));
-      Assert.That (customAttributes, Is.TypeOf (typeof (MultiLingualResourcesAttribute[])));
+      Assert.That (customAttributes, Is.TypeOf (typeof (SampleAttribute[])));
     }
 
     [Test]
     public void GetCustomAttributes_NonGeneric_Interface ()
     {
-      var customAttributes = Color.Values.GetCustomAttributes (typeof (IResourcesAttribute));
+      var customAttributes = Color.Values.GetCustomAttributes (typeof (ISampleAttribute));
 
-      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false)
-          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false))
+      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (SampleAttribute), false)
+          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (SampleAttribute), false))
           .ToArray ();
       Assert.That (customAttributes, Is.EquivalentTo (expected));
-      Assert.That (customAttributes, Is.TypeOf (typeof (IResourcesAttribute[])));
+      Assert.That (customAttributes, Is.TypeOf (typeof (ISampleAttribute[])));
     }
 
     [Test]
     public void GetCustomAttributes_Generic ()
     {
-      var customAttributes = Color.Values.GetCustomAttributes<MultiLingualResourcesAttribute>();
+      var customAttributes = Color.Values.GetCustomAttributes<SampleAttribute>();
 
-      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false)
-          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false))
+      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (SampleAttribute), false)
+          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (SampleAttribute), false))
           .ToArray ();
        Assert.That (customAttributes, Is.EquivalentTo (expected));
     }
@@ -279,10 +278,10 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void GetCustomAttributes_Generic_Interface ()
     {
-      var customAttributes = Color.Values.GetCustomAttributes<IResourcesAttribute> ();
+      var customAttributes = Color.Values.GetCustomAttributes<ISampleAttribute> ();
 
-      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false)
-          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false))
+      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (SampleAttribute), false)
+          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (SampleAttribute), false))
           .ToArray ();
       Assert.That (customAttributes, Is.EquivalentTo (expected));
     }
@@ -290,7 +289,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void GetCustomAttributes_EqualAttributes_ExtensionTypesAreFiltered ()
     {
-      var customAttributes = ExtensibleEnumWithDuplicateAttribute.Values.GetCustomAttributes<IResourcesAttribute> ();
+      var customAttributes = ExtensibleEnumWithDuplicateAttribute.Values.GetCustomAttributes<ISampleAttribute> ();
 
       Assert.That (customAttributes.Length, Is.EqualTo (2));
     }

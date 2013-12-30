@@ -16,9 +16,6 @@
 // 
 using System;
 using JetBrains.Annotations;
-using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Logging

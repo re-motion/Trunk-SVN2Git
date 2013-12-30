@@ -79,6 +79,19 @@
       <IsDatabaseTest>False</IsDatabaseTest>
     </UnitTestProjectFiles>
 
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Globalization\Core\Globalization.Core.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Globalization\ExtensibleEnums\Globalization.ExtensibleEnums.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Globalization\Mixins\Globalization.Mixins.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Globalization\UnitTests\Globalization.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Globalization\ExtensibleEnums.UnitTests\Globalization.ExtensibleEnums.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Globalization\Mixins.UnitTests\Globalization.Mixins.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
+
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\Core\Data.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects\Data.DomainObjects.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.ObjectBinding\Data.DomainObjects.ObjectBinding.csproj" />
