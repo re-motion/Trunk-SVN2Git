@@ -17,7 +17,6 @@
 
 using System;
 using Remotion.Collections;
-using Remotion.Globalization;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -32,10 +31,10 @@ namespace Remotion.Reflection
         CacheFactory.CreateWithLocking<IPropertyInformation, string>();
 
     private readonly LockingCacheDecorator<ITypeInformation, string> s_typeNameCache =
-        CacheFactory.CreateWithLocking<ITypeInformation, string> ();
+        CacheFactory.CreateWithLocking<ITypeInformation, string>();
 
-      private readonly LockingCacheDecorator<Enum, string> s_enumCache =
-        CacheFactory.CreateWithLocking<Enum, string> ();
+    private readonly LockingCacheDecorator<Enum, string> s_enumCache =
+        CacheFactory.CreateWithLocking<Enum, string>();
 
     /// <summary>
     /// Returns the mapping name for the given <paramref name="propertyInformation"/>.
@@ -47,7 +46,8 @@ namespace Remotion.Reflection
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
       return s_propertyNameCache.GetOrCreateValue (
-          propertyInformation, pi => GetPropertyName (pi.GetOriginalDeclaringType(), pi.Name));
+          propertyInformation,
+          pi => GetPropertyName (pi.GetOriginalDeclaringType(), pi.Name));
     }
 
     /// <summary>
@@ -64,20 +64,28 @@ namespace Remotion.Reflection
 
     public string GetEnumName (Enum enumValue)
     {
-      return s_enumCache.GetOrCreateValue (enumValue, ResourceIdentifiersAttribute.GetResourceIdentifier);
+      ArgumentUtility.CheckNotNull ("enumValue", enumValue);
+
+      return s_enumCache.GetOrCreateValue (enumValue, GetEnumNameInternal);
     }
+
 
     private string GetPropertyName (ITypeInformation type, string shortPropertyName)
     {
-      return GetTypeName(type) + "." + shortPropertyName;
+      return GetTypeName (type) + "." + shortPropertyName;
     }
 
     private string GetTypeNameInternal (ITypeInformation typeInformation)
     {
       if (typeInformation.IsGenericType && !typeInformation.IsGenericTypeDefinition)
-        typeInformation = typeInformation.GetGenericTypeDefinition ();
+        typeInformation = typeInformation.GetGenericTypeDefinition();
 
       return typeInformation.FullName;
+    }
+
+    private static string GetEnumNameInternal (Enum enumValue)
+    {
+      return enumValue.GetType().FullName + "." + enumValue;
     }
   }
 }
