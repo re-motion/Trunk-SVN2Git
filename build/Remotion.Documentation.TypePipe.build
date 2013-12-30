@@ -40,7 +40,7 @@
 
     <ItemGroup>
       <NamespaceSummaryFiles Remove="@(NamespaceSummaryFiles)"/>
-      <NamespaceSummaryFiles Include="$(SolutionDirectory)TypePipe\Core\**\doc\include\*.NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
+      <NamespaceSummaryFiles Include="$(SolutionDirectory)TypePipe\**\doc\include\*.NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
     </ItemGroup>
   </Target>
 
