@@ -18,13 +18,12 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Infrastructure;
+using Remotion.ExtensibleEnums.UnitTests.TestDomain;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
-using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
-namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
+namespace Remotion.ExtensibleEnums.UnitTests.Infrastructure
 {
   [TestFixture]
   public class ExtensibleEnumDefinitionCacheTest
@@ -84,7 +83,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Type 'Remotion.UnitTests.ExtensibleEnums.TestDomain.MetallicColor' is not an extensible enum type "
+        "Type 'Remotion.ExtensibleEnums.UnitTests.TestDomain.MetallicColor' is not an extensible enum type "
         + "derived from ExtensibleEnum<T>.\r\nParameter name: extensibleEnumType")]
     public void GetDefinition_ThrowsOnDerivedEnum ()
     {

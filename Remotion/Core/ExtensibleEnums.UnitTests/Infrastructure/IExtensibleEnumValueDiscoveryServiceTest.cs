@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.ServiceLocation;
 
-namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
+namespace Remotion.ExtensibleEnums.UnitTests.Infrastructure
 {
   [TestFixture]
   public class IExtensibleEnumValueDiscoveryServiceTest

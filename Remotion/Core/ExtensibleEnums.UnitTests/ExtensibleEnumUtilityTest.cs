@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
-using Remotion.ExtensibleEnums;
+using Remotion.ExtensibleEnums.UnitTests.TestDomain;
 using Remotion.Reflection;
-using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
-namespace Remotion.UnitTests.ExtensibleEnums
+namespace Remotion.ExtensibleEnums.UnitTests
 {
   [TestFixture]
   public class ExtensibleEnumUtilityTest

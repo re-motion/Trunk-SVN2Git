@@ -20,12 +20,10 @@ using System.ComponentModel;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
-using Remotion.ExtensibleEnums;
-using Remotion.ServiceLocation;
-using Remotion.UnitTests.ExtensibleEnums.TestDomain;
+using Remotion.ExtensibleEnums.UnitTests.TestDomain;
 using Remotion.Utilities;
 
-namespace Remotion.UnitTests.ExtensibleEnums
+namespace Remotion.ExtensibleEnums.UnitTests
 {
   [TestFixture]
   public class TypeConversionProviderTest

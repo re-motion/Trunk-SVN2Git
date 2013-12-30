@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.ExtensibleEnums;
-using Remotion.UnitTests.ExtensibleEnums.TestDomain;
+using Remotion.ExtensibleEnums.UnitTests.TestDomain;
 
-namespace Remotion.UnitTests.ExtensibleEnums
+namespace Remotion.ExtensibleEnums.UnitTests
 {
   [TestFixture]
   public class ExtensibleEnumConverterTest
@@ -86,7 +86,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
     [Test]
     [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = 
-        "The extensible enum type 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' does not define a value called '?'.")]
+        "The extensible enum type 'Remotion.ExtensibleEnums.UnitTests.TestDomain.Color' does not define a value called '?'.")]
     public void ConvertFrom_String_WrongID ()
     {
       _converter.ConvertFrom (null, null, "?");
@@ -94,7 +94,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Cannot convert value from type 'System.Int32' to type 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color'.")]
+        "Cannot convert value from type 'System.Int32' to type 'Remotion.ExtensibleEnums.UnitTests.TestDomain.Color'.")]
     public void ConvertFrom_WrongType ()
     {
       _converter.ConvertFrom (null, null, 1);
@@ -117,7 +117,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
         "Cannot convert values of type 'System.Int32' to type 'System.String'. This converter only supports values of type "
-        + "'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color'.")]
+        + "'Remotion.ExtensibleEnums.UnitTests.TestDomain.Color'.")]
     public void ConvertTo_String_InvalidValue ()
     {
       _converter.ConvertTo (null, null, 12, typeof (string));

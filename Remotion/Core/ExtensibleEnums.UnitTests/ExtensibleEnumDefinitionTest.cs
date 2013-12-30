@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using NUnit.Framework;
-using Remotion.ExtensibleEnums;
-using Remotion.ExtensibleEnums.Infrastructure;
-using Remotion.UnitTests.ExtensibleEnums.TestDomain;
-using Rhino.Mocks;
 using System.Reflection;
+using NUnit.Framework;
+using Remotion.ExtensibleEnums.Infrastructure;
+using Remotion.ExtensibleEnums.UnitTests.TestDomain;
+using Rhino.Mocks;
 
-namespace Remotion.UnitTests.ExtensibleEnums
+namespace Remotion.ExtensibleEnums.UnitTests
 {
   [TestFixture]
   public class ExtensibleEnumDefinitionTest
@@ -172,7 +172,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
     [Test]
     [ExpectedException (typeof (InvalidExtensibleEnumDefinitionException), ExpectedMessage =
-        "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' defines two values with ID 'Red'.")]
+        "Extensible enum 'Remotion.ExtensibleEnums.UnitTests.TestDomain.Color' defines two values with ID 'Red'.")]
     public void GetValueInfos_DuplicateIDs ()
     {
       var definition = CreateDefinition (_red, _red);
@@ -181,7 +181,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
     [Test]
     [ExpectedException (typeof (InvalidExtensibleEnumDefinitionException), ExpectedMessage =
-        "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' does not define any values.")]
+        "Extensible enum 'Remotion.ExtensibleEnums.UnitTests.TestDomain.Color' does not define any values.")]
     public void GetValueInfos_NoValues ()
     {
       var definition = CreateDefinition<Color>();
@@ -199,7 +199,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
     [Test]
     [ExpectedException (typeof (KeyNotFoundException),
-        ExpectedMessage = "The extensible enum type 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' does not define a value called '?'.")]
+        ExpectedMessage = "The extensible enum type 'Remotion.ExtensibleEnums.UnitTests.TestDomain.Color' does not define a value called '?'.")]
     public void GetValueInfoByID_WrongIDThrows ()
     {
       var definition = CreateDefinition (_red, _green);
@@ -208,7 +208,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
     [Test]
     [ExpectedException (typeof (InvalidExtensibleEnumDefinitionException), ExpectedMessage =
-        "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' defines two values with ID 'Red'.")]
+        "Extensible enum 'Remotion.ExtensibleEnums.UnitTests.TestDomain.Color' defines two values with ID 'Red'.")]
     public void GetValueInfoByID_DuplicateIDs ()
     {
       var definition = CreateDefinition (_red, _red);

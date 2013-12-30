@@ -14,15 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums.Infrastructure;
+using Remotion.ExtensibleEnums.UnitTests.TestDomain;
 using Remotion.ServiceLocation;
-using Remotion.UnitTests.ExtensibleEnums.TestDomain;
-using System.Linq;
 
-namespace Remotion.UnitTests.ExtensibleEnums
+namespace Remotion.ExtensibleEnums.UnitTests
 {
   [TestFixture]
   public class ExtensibleEnumTest
@@ -74,7 +75,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
       Assert.That (EnumWithDifferentCtors.Values.DeclaringTypeAndName().DeclarationSpace, Is.EqualTo (typeof (EnumWithDifferentCtorsExtensions).FullName));
       Assert.That (
           EnumWithDifferentCtors.Values.DeclaringTypeAndName().ID,
-          Is.EqualTo ("Remotion.UnitTests.ExtensibleEnums.TestDomain.EnumWithDifferentCtorsExtensions.ValueName"));
+          Is.EqualTo ("Remotion.ExtensibleEnums.UnitTests.TestDomain.EnumWithDifferentCtorsExtensions.ValueName"));
     }
 
     [Test]
@@ -84,7 +85,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
       Assert.That (EnumWithDifferentCtors.Values.CurrentMethod().DeclarationSpace, Is.EqualTo (typeof (EnumWithDifferentCtorsExtensions).FullName));
       Assert.That (
           EnumWithDifferentCtors.Values.CurrentMethod().ID,
-          Is.EqualTo ("Remotion.UnitTests.ExtensibleEnums.TestDomain.EnumWithDifferentCtorsExtensions.CurrentMethod"));
+          Is.EqualTo ("Remotion.ExtensibleEnums.UnitTests.TestDomain.EnumWithDifferentCtorsExtensions.CurrentMethod"));
     }
 
     [Test]
