@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 
@@ -22,7 +23,8 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Remotion Extensible Enums Library")]
-[assembly: AssemblyDescription("Support for setting up enum-like types in an application's domain")]
-[assembly: AssemblyCulture("")]
-[assembly: CLSCompliant(true)]
+
+[assembly: AssemblyTitle ("Remotion Extensible Enums Library")]
+[assembly: AssemblyDescription ("Support for setting up enum-like types in an application's domain")]
+[assembly: AssemblyCulture ("")]
+[assembly: CLSCompliant (true)]

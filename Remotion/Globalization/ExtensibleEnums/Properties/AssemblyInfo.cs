@@ -22,8 +22,8 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Remotion Core Library")]
-[assembly: AssemblyDescription("General .NET classes and utilities.")]
-[assembly: AssemblyCulture("")]		
-[assembly: CLSCompliant(true)]
 
+[assembly: AssemblyTitle ("Remotion Globalization for Extensible Enums Library")]
+[assembly: AssemblyDescription ("Infrastructure for globalizing the extensible enums in an application.")]
+[assembly: AssemblyCulture("")]
+[assembly: CLSCompliant(true)]
