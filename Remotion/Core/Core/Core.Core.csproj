@@ -269,6 +269,11 @@
     <Compile Include="Obsolete\Globalization\ResourceManagerWrapper.cs" />
     <Compile Include="Reflection\DelegateFactory.cs" />
     <Compile Include="Reflection\IDelegateFactory.cs" />
+    <Compile Include="Reflection\IFuncInvoker.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IFuncInvoker.tt</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\IMemberInformationNameResolver.cs" />
     <Compile Include="Obsolete\Reflection\ParamList.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInformationNameResolver.cs" />
@@ -304,8 +309,7 @@
     <Compile Include="Reflection\IActionInvoker.generated.cs" />
     <Compile Include="Reflection\IActionInvoker.template.cs" />
     <Compile Include="Reflection\IConstructorLookupInfo.cs" />
-    <Compile Include="Reflection\IFuncInvoker.generated.cs" />
-    <Compile Include="Reflection\IFuncInvoker.template.cs" />
+    <Compile Include="Reflection\IFuncInvoker.Partial.cs" />
     <Compile Include="Reflection\IMemberInformation.cs" />
     <Compile Include="Reflection\IMethodInformation.cs" />
     <Compile Include="Reflection\IPropertyInformation.cs" />
@@ -580,6 +584,10 @@
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
     <Content Include="doc\include\Diagnostics\OuterProduct.xml" />
     <Content Include="doc\include\Utilities\WorkContext.xml" />
+    <None Include="Reflection\IFuncInvoker.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IFuncInvoker.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
