@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections;
+using JetBrains.Annotations;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Security;
@@ -26,7 +27,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 {
   public abstract class PropertyBase : IBusinessObjectProperty
   {
-    public struct Parameters
+    public sealed class Parameters
     {
       public readonly BindableObjectProvider BusinessObjectProvider;
       public readonly IPropertyInformation PropertyInfo;
@@ -36,6 +37,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       public readonly bool IsRequired;
       public readonly bool IsReadOnly;
       public readonly IDefaultValueStrategy DefaultValueStrategy;
+      public readonly IObjectSecurityAdapter ObjectSecurityAdapter;
 
       public Parameters (
           BindableObjectProvider businessObjectProvider,
@@ -45,12 +47,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
           IListInfo listInfo,
           bool isRequired,
           bool isReadOnly,
-          IDefaultValueStrategy defaultValueStrategy)
+          IDefaultValueStrategy defaultValueStrategy,
+          [CanBeNull]IObjectSecurityAdapter objectSecurityAdapter)
       {
         ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
         ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
         ArgumentUtility.CheckNotNull ("underlyingType", underlyingType);
         ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("concreteType", concreteType, underlyingType);
+        ArgumentUtility.CheckNotNull ("defaultValueStrategy", defaultValueStrategy);
 
         BusinessObjectProvider = businessObjectProvider;
         PropertyInfo = propertyInfo;
@@ -60,6 +64,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
         IsRequired = isRequired;
         IsReadOnly = isReadOnly;
         DefaultValueStrategy = defaultValueStrategy;
+        ObjectSecurityAdapter = objectSecurityAdapter;
       }
     }
 
@@ -74,9 +79,12 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly IDefaultValueStrategy _defaultValueStrategy;
     private readonly Func<object, object> _valueGetter;
     private readonly Action<object, object> _valueSetter;
+    private readonly IObjectSecurityAdapter _objectSecurityAdapter;
 
     protected PropertyBase (Parameters parameters)
     {
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
+
       if (parameters.PropertyInfo.GetIndexParameters().Length > 0)
         throw new InvalidOperationException ("Indexed properties are not supported.");
 
@@ -87,6 +95,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _isRequired = parameters.IsRequired;
       _isReadOnly = parameters.IsReadOnly;
       _defaultValueStrategy = parameters.DefaultValueStrategy;
+      _objectSecurityAdapter = parameters.ObjectSecurityAdapter;
       _isNullable = GetNullability();
       _valueGetter = Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Select (mi => mi.GetFastInvoker<Func<object, object>>()).ValueOrDefault();
       _valueSetter = Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (mi => mi.GetFastInvoker<Action<object, object>>()).ValueOrDefault();
@@ -181,11 +190,10 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (securableObject == null)
         return true;
 
-      IObjectSecurityAdapter objectSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IObjectSecurityAdapter>();
-      if (objectSecurityAdapter == null)
+      if (_objectSecurityAdapter == null)
         return true;
 
-      return objectSecurityAdapter.HasAccessOnGetAccessor (securableObject, _propertyInfo);
+      return _objectSecurityAdapter.HasAccessOnGetAccessor (securableObject, _propertyInfo);
     }
 
     public object GetValue (IBusinessObject obj)
@@ -228,11 +236,10 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (securableObject == null)
         return false;
 
-      IObjectSecurityAdapter objectSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IObjectSecurityAdapter>();
-      if (objectSecurityAdapter == null)
+      if (_objectSecurityAdapter == null)
         return false;
 
-      return !objectSecurityAdapter.HasAccessOnSetAccessor (securableObject, _propertyInfo);
+      return !_objectSecurityAdapter.HasAccessOnSetAccessor (securableObject, _propertyInfo);
     }
 
     /// <summary> Gets the <see cref="BindableObjectProvider"/> for this property. </summary>

@@ -32,6 +32,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.Reflection;
+using Remotion.Security;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -65,8 +66,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
                   null,
                   true,
                   false,
-                  new BindableObjectDefaultValueStrategy ())
-              );
+                  new BindableObjectDefaultValueStrategy(),
+                  (IObjectSecurityAdapter) null));
+
       _enumValue.Property = property;
       _enumValue.Stub (stub => stub.ClientID).Return (c_clientID);
       _enumValue.Stub (mock => mock.IsDesignMode).Return (false);

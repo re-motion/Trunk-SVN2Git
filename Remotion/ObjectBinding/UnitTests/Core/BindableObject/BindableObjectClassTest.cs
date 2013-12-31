@@ -23,6 +23,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
+using Remotion.Security;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -356,7 +357,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy (),
+              (IObjectSecurityAdapter) null));
     }
   }
 }

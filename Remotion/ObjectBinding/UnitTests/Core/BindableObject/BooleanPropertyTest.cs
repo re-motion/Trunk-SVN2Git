@@ -67,15 +67,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetDefaultValue_Array ()
     {
       IBusinessObjectBooleanProperty property = new BooleanProperty (
-          new PropertyBase.Parameters (
+          CreateParameters (
               _businessObjectProvider,
               GetPropertyInfo (typeof (ClassWithValueType<bool>), "Array"),
               typeof (bool),
               typeof (bool),
               new ListInfo (typeof (bool[]), typeof (bool)),
               false,
-              false,
-              new BindableObjectDefaultValueStrategy ()));
+              false));
 
       Assert.That (property.GetDefaultValue (_businessObjectClass), Is.False);
     }
@@ -84,15 +83,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetDefaultValue_NullableArray ()
     {
       IBusinessObjectBooleanProperty property = new BooleanProperty (
-          new PropertyBase.Parameters (
+          CreateParameters (
               _businessObjectProvider,
               GetPropertyInfo (typeof (ClassWithValueType<bool>), "NullableArray"),
               typeof (bool),
               typeof (bool),
               new ListInfo (typeof (bool?[]), typeof (bool?)),
               false,
-              false,
-              new BindableObjectDefaultValueStrategy ()));
+              false));
 
       Assert.That (property.GetDefaultValue (_businessObjectClass), Is.Null);
     }

@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Security;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -40,8 +41,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void Initialize ()
     {
       IBusinessObjectStringProperty property = new GuidProperty (
-          new PropertyBase.Parameters (_businessObjectProvider, GetPropertyInfo (typeof (ClassWithAllDataTypes), "Guid"),
-          typeof (Guid), typeof (Guid), null, true, false, new BindableObjectDefaultValueStrategy ()));
+          CreateParameters (
+              _businessObjectProvider,
+              GetPropertyInfo (typeof (ClassWithAllDataTypes), "Guid"),
+              typeof (Guid),
+              typeof (Guid),
+              null,
+              true,
+              false));
 
       Assert.That (property.MaxLength, Is.EqualTo (38));
     }
@@ -114,36 +121,40 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     private PropertyBase GetScalarProperty ()
     {
       return new GuidProperty (
-          new PropertyBase.Parameters (_businessObjectProvider, GetPropertyInfo (typeof (ClassWithValueType<Guid>), "Scalar"),
-          typeof (Guid), typeof (Guid), null, true, false, new BindableObjectDefaultValueStrategy ()));
+          CreateParameters (
+              _businessObjectProvider,
+              GetPropertyInfo (typeof (ClassWithValueType<Guid>), "Scalar"),
+              typeof (Guid),
+              typeof (Guid),
+              null,
+              true,
+              false));
     }
 
     private PropertyBase GetArrayProperty ()
     {
       return new GuidProperty (
-          new PropertyBase.Parameters (
+          CreateParameters (
               _businessObjectProvider,
               GetPropertyInfo (typeof (ClassWithValueType<Guid>), "Array"),
               typeof (Guid),
               typeof (Guid),
               new ListInfo (typeof (Guid[]), typeof (Guid)),
               false,
-              false,
-              new BindableObjectDefaultValueStrategy ()));
+              false));
     }
 
     private PropertyBase GetNullableArrayProperty ()
     {
       return new GuidProperty (
-          new PropertyBase.Parameters (
+          CreateParameters (
               _businessObjectProvider,
               GetPropertyInfo (typeof (ClassWithValueType<Guid>), "NullableArray"),
               typeof (Guid),
               typeof (Guid),
               new ListInfo (typeof (Guid?[]), typeof (Guid?)),
               false,
-              false, 
-              new BindableObjectDefaultValueStrategy ()));
+              false));
     }
   }
 }

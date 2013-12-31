@@ -103,5 +103,26 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       return new BindableObjectProvider(BindableObjectMetadataFactory.Create(),MockRepository.GenerateStub<IBusinessObjectServiceFactory>());
     }
+
+    protected PropertyBase.Parameters CreateParameters (
+        BindableObjectProvider businessObjectProvider,
+        IPropertyInformation propertyInfo,
+        Type underlyingType,
+        Type concreteType,
+        IListInfo listInfo,
+        bool isRequired,
+        bool isReadOnly)
+    {
+      return new PropertyBase.Parameters (
+          businessObjectProvider,
+          propertyInfo,
+          underlyingType,
+          concreteType,
+          listInfo,
+          isRequired,
+          isReadOnly,
+          new BindableObjectDefaultValueStrategy(),
+          (IObjectSecurityAdapter) null);
+    }
   }
 }

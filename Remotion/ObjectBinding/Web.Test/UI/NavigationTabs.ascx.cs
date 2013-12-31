@@ -22,6 +22,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Reflection;
+using Remotion.Security;
 using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.Configuration;
@@ -66,7 +67,8 @@ namespace OBWTest.UI
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy (), 
+              (IObjectSecurityAdapter) null));
 
       WaiConformanceLevelField.Property = property;
       WaiConformanceLevelField.LoadUnboundValue (ConformanceLevel, IsPostBack);

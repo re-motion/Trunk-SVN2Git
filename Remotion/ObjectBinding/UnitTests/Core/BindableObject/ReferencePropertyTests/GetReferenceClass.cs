@@ -22,6 +22,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Security;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests
@@ -57,7 +58,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy (),
+              (IObjectSecurityAdapter) null));
 
       Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithIdentity))));
       Assert.That (
@@ -81,7 +83,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              new BindableObjectDefaultValueStrategy (),
+              (IObjectSecurityAdapter) null));
 
       Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectBase))));
       Assert.That (

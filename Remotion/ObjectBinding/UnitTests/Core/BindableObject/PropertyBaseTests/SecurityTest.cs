@@ -36,6 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     private IBusinessObjectProperty _securableExplicitInterfaceProperty;
     private IBusinessObjectProperty _nonSecurableProperty;
     private IBusinessObjectProperty _nonSecurablePropertyReadOnly;
+    private IBusinessObjectProperty _propertyWithoutSecurity;
     private IBusinessObject _securableObject;
     private IBusinessObject _nonSecurableObject;
 
@@ -47,8 +48,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       _businessObjectProvider = new BindableObjectProvider();
       _mockObjectSecurityAdapter = _mocks.StrictMock<IObjectSecurityAdapter>();
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), _mockObjectSecurityAdapter);
-
       _securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithReferenceType<SimpleReferenceType>>(ParamList.Create (_mocks.StrictMock<IObjectSecurityStrategy>()));
 
       _nonSecurableObject = (IBusinessObject) ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
@@ -57,38 +56,36 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       _securableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (SecurableClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, instance));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, instance, _mockObjectSecurityAdapter));
+
+      _propertyWithoutSecurity = new StubPropertyBase (
+          new PropertyBase.Parameters (
+              _businessObjectProvider, GetPropertyInfo (typeof (SecurableClassWithReferenceType<SimpleReferenceType>), "Scalar"),
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, instance, (IObjectSecurityAdapter) null));
 
       _securableExplicitInterfaceProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
-              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, instance));
+                  "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"),
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, instance, _mockObjectSecurityAdapter));
       
       _nonSecurablePropertyReadOnly = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "ReadOnlyScalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, true, instance));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, true, instance, _mockObjectSecurityAdapter));
       
       _nonSecurableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, instance));
-    }
-
-    public override void TearDown ()
-    {
-      base.TearDown();
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, instance, _mockObjectSecurityAdapter));
     }
 
     [Test]
     public void IsAccessibleWithoutObjectSecurityProvider ()
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
       _mocks.ReplayAll();
 
-      bool isAccessible = _securableProperty.IsAccessible (_securableObject.BusinessObjectClass, _securableObject);
+      bool isAccessible = _propertyWithoutSecurity.IsAccessible (_securableObject.BusinessObjectClass, _securableObject);
 
       _mocks.VerifyAll();
       Assert.That (isAccessible, Is.True);
@@ -147,10 +144,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [Test]
     public void IsNotReadOnlyWithoutObjectSecurityProvider ()
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
       _mocks.ReplayAll();
 
-      bool isReadOnly = _securableProperty.IsReadOnly (_securableObject);
+      bool isReadOnly = _propertyWithoutSecurity.IsReadOnly (_securableObject);
 
       _mocks.VerifyAll();
       Assert.That (isReadOnly, Is.False);

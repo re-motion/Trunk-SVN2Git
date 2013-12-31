@@ -53,17 +53,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void Initialize ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
-      PropertyBase propertyBase =
-          new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy()));
+      PropertyBase propertyBase = new StubPropertyBase (
+          CreateParameters (
+              propertyInfo: propertyInfo,
+              underlyingType: propertyInfo.PropertyType,
+              concreteType: propertyInfo.PropertyType,
+              listInfo: null,
+              isRequired: true,
+              isReadOnly: true));
 
       Assert.That (propertyBase.PropertyInfo, Is.SameAs (propertyInfo));
       Assert.That (propertyBase.PropertyType, Is.SameAs (propertyInfo.PropertyType));
@@ -80,32 +77,27 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       IPropertyInformation propertyInfo =
           PropertyInfoAdapter.Create (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }));
       new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              propertyInfo,
-              propertyInfo.PropertyType,
-              propertyInfo.PropertyType,
-              null,
-              true,
-              true,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: propertyInfo,
+              underlyingType: propertyInfo.PropertyType,
+              concreteType: propertyInfo.PropertyType,
+              listInfo: null,
+              isRequired: true,
+              isReadOnly: true));
     }
 
     [Test]
     public void GetValue ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
-      PropertyBase propertyBase =
-          new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy()));
+      PropertyBase propertyBase = new StubPropertyBase (
+          CreateParameters (
+              propertyInfo: propertyInfo,
+              underlyingType: propertyInfo.PropertyType,
+              concreteType: propertyInfo.PropertyType,
+              listInfo: null,
+              isRequired: true,
+              isReadOnly: true));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
@@ -119,17 +111,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void GetValue_WithPrivatAccessor ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "PrivateProperty");
-      PropertyBase propertyBase =
-          new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy()));
+      PropertyBase propertyBase = new StubPropertyBase (
+          CreateParameters (
+              propertyInfo: propertyInfo,
+              underlyingType: propertyInfo.PropertyType,
+              concreteType: propertyInfo.PropertyType,
+              listInfo: null,
+              isRequired: true,
+              isReadOnly: true));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
@@ -147,17 +136,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       propertyInfo.Stub (stub => stub.PropertyType).Return (typeof (bool));
       propertyInfo.Stub (stub => stub.GetIndexParameters()).Return (new ParameterInfo[0]);
       propertyInfo.Stub (stub => stub.GetSetMethod (true)).Return (null);
-      PropertyBase propertyBase =
-          new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy()));
+      PropertyBase propertyBase = new StubPropertyBase (
+          CreateParameters (
+              propertyInfo: propertyInfo,
+              underlyingType: propertyInfo.PropertyType,
+              concreteType: propertyInfo.PropertyType,
+              listInfo: null,
+              isRequired: true,
+              isReadOnly: true));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
@@ -168,17 +154,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void SetValue ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
-      PropertyBase propertyBase =
-          new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy()));
+      PropertyBase propertyBase = new StubPropertyBase (
+          CreateParameters (
+              propertyInfo: propertyInfo,
+              underlyingType: propertyInfo.PropertyType,
+              concreteType: propertyInfo.PropertyType,
+              listInfo: null,
+              isRequired: true,
+              isReadOnly: true));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
@@ -192,17 +175,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void SetValue_PrivateAccessor ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "PrivateProperty");
-      PropertyBase propertyBase =
-          new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy()));
+      PropertyBase propertyBase = new StubPropertyBase (
+          CreateParameters (
+              propertyInfo: propertyInfo,
+              underlyingType: propertyInfo.PropertyType,
+              concreteType: propertyInfo.PropertyType,
+              listInfo: null,
+              isRequired: true,
+              isReadOnly: true));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
@@ -220,17 +200,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       propertyInfo.Stub (stub => stub.PropertyType).Return (typeof (bool));
       propertyInfo.Stub (stub => stub.GetIndexParameters()).Return (new ParameterInfo[0]);
       propertyInfo.Stub (stub => stub.GetSetMethod (true)).Return (null);
-      PropertyBase propertyBase =
-          new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy()));
+      PropertyBase propertyBase = new StubPropertyBase (
+          CreateParameters (
+              propertyInfo: propertyInfo,
+              underlyingType: propertyInfo.PropertyType,
+              concreteType: propertyInfo.PropertyType,
+              listInfo: null,
+              isRequired: true,
+              isReadOnly: true));
 
       var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
@@ -244,15 +221,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
       PropertyBase propertyBase =
           new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy()));
+              CreateParameters (
+                  propertyInfo: propertyInfo,
+                  underlyingType: propertyInfo.PropertyType,
+                  concreteType: propertyInfo.PropertyType,
+                  listInfo: null,
+                  isRequired: true,
+                  isReadOnly: true));
 
       Assert.That (propertyBase.IsDefaultValue (businessObject), Is.False);
     }
@@ -262,15 +237,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     {
       IListInfo expected = new ListInfo (typeof (SimpleReferenceType[]), typeof (SimpleReferenceType));
       PropertyBase property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Array"),
-              typeof (SimpleReferenceType),
-              typeof (SimpleReferenceType),
-              expected,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Array"),
+              underlyingType: typeof (SimpleReferenceType),
+              concreteType: typeof (SimpleReferenceType),
+              listInfo: expected,
+              isRequired: false,
+              isReadOnly: false));
 
       Assert.That (property.IsList, Is.True);
       Assert.That (property.ListInfo, Is.SameAs (expected));
@@ -281,15 +254,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void GetListInfo_WithNonListProperty ()
     {
       PropertyBase property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType),
-              typeof (SimpleReferenceType),
-              null,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
+              underlyingType: typeof (SimpleReferenceType),
+              concreteType: typeof (SimpleReferenceType),
+              listInfo: null,
+              isRequired: false,
+              isReadOnly: false));
 
       Assert.That (property.IsList, Is.False);
       Dev.Null = property.ListInfo;
@@ -300,15 +271,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void ConvertFromNativePropertyType ()
     {
       PropertyBase property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType),
-              typeof (SimpleReferenceType),
-              null,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
+              underlyingType: typeof (SimpleReferenceType),
+              concreteType: typeof (SimpleReferenceType),
+              listInfo: null,
+              isRequired: false,
+              isReadOnly: false));
       var expected = new SimpleReferenceType();
 
       Assert.That (property.ConvertFromNativePropertyType (expected), Is.SameAs (expected));
@@ -318,15 +287,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void ConvertToNativePropertyType_Scalar ()
     {
       PropertyBase property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType),
-              typeof (SimpleReferenceType),
-              null,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
+              underlyingType: typeof (SimpleReferenceType),
+              concreteType: typeof (SimpleReferenceType),
+              listInfo: null,
+              isRequired: false,
+              isReadOnly: false));
       var expected = new SimpleReferenceType();
 
       Assert.That (property.ConvertToNativePropertyType (expected), Is.SameAs (expected));
@@ -339,15 +306,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     {
       var propertyInfo = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
       var property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              propertyInfo,
-              typeof (string),
-              typeof (string),
-              null,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: propertyInfo,
+              underlyingType: typeof (string),
+              concreteType: typeof (string),
+              listInfo: null,
+              isRequired: false,
+              isReadOnly: false));
       _bindableObjectProvider.AddService (
           typeof (BindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
@@ -364,15 +329,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
       PropertyBase property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              propertyInfo,
-              typeof (string),
-              typeof (string),
-              null,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: propertyInfo,
+              underlyingType: typeof (string),
+              concreteType: typeof (string),
+              listInfo: null,
+              isRequired: false,
+              isReadOnly: false));
       property.SetReflectedClass (_bindableObjectClass);
 
       var mockMemberInformationGlobalizationService = _mockRepository.StrictMock<IMemberInformationGlobalizationService>();
@@ -386,9 +349,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
 
       Expect.Call (
           mockMemberInformationGlobalizationService.TryGetPropertyDisplayName (
-              Arg.Is(propertyInfo),
-              Arg<ITypeInformation>.Matches(c=>c.ConvertToRuntimeType()==_bindableObjectClass.TargetType),
-              out Arg<string>.Out("MockString").Dummy))
+              Arg.Is (propertyInfo),
+              Arg<ITypeInformation>.Matches (c => c.ConvertToRuntimeType() == _bindableObjectClass.TargetType),
+              out Arg<string>.Out ("MockString").Dummy))
           .Return (true);
       _mockRepository.ReplayAll();
 
@@ -402,15 +365,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void GetDisplayName_WithoutGlobalizationSerivce ()
     {
       PropertyBase property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
-              typeof (string),
-              typeof (string),
-              null,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
+              underlyingType: typeof (string),
+              concreteType: typeof (string),
+              listInfo: null,
+              isRequired: false,
+              isReadOnly: false));
 
       Assert.That (property.DisplayName, Is.EqualTo ("String"));
     }
@@ -419,15 +380,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void SetAndGetReflectedClass ()
     {
       PropertyBase property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
-              typeof (string),
-              typeof (string),
-              null,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
+              underlyingType: typeof (string),
+              concreteType: typeof (string),
+              listInfo: null,
+              isRequired: false,
+              isReadOnly: false));
 
       property.SetReflectedClass (_bindableObjectClass);
 
@@ -447,15 +406,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
 
       PropertyBase property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              provider,
-              GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
-              typeof (string),
-              typeof (string),
-              null,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              businessObjectProvider: provider,
+              propertyInfo: GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
+              underlyingType: typeof (string),
+              concreteType: typeof (string),
+              listInfo: null,
+              isRequired: false,
+              isReadOnly: false));
 
       property.SetReflectedClass (bindableObjectClass);
 
@@ -473,15 +431,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
 
       PropertyBase property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
-              typeof (string),
-              typeof (string),
-              null,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
+              underlyingType: typeof (string),
+              concreteType: typeof (string),
+              listInfo: null,
+              isRequired: false,
+              isReadOnly: false));
 
       property.SetReflectedClass (bindableObjectClass);
       property.SetReflectedClass (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithIdentity)));
@@ -494,17 +450,35 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void GetReflectedClass_WithoutBusinessObjectClass ()
     {
       PropertyBase property = new StubPropertyBase (
-          new PropertyBase.Parameters (
-              _bindableObjectProvider,
-              GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
-              typeof (string),
-              typeof (string),
-              null,
-              false,
-              false,
-              new BindableObjectDefaultValueStrategy()));
+          CreateParameters (
+              propertyInfo: GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
+              underlyingType: typeof (string),
+              concreteType: typeof (string),
+              listInfo: null,
+              isRequired: false,
+              isReadOnly: false));
 
       Dev.Null = property.ReflectedClass;
     }
+
+    private new PropertyBase.Parameters CreateParameters (
+        BindableObjectProvider businessObjectProvider = null,
+        IPropertyInformation propertyInfo = null,
+        Type underlyingType = null,
+        Type concreteType = null,
+        IListInfo listInfo = null,
+        bool isRequired = false,
+        bool isReadOnly = false)
+    {
+      return base.CreateParameters (
+          businessObjectProvider ?? _bindableObjectProvider,
+          propertyInfo,
+          underlyingType,
+          concreteType,
+          listInfo,
+          isRequired,
+          isReadOnly);
+    }
+
   }
 }

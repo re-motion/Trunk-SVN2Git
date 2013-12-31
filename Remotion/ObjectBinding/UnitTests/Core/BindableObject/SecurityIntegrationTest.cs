@@ -43,6 +43,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       
       SecurityConfiguration.Current.SecurityProvider = _securityProviderStub;
       SecurityConfiguration.Current.PrincipalProvider = _principalProviderStub;
+
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
     }
 
     [Test]
@@ -54,8 +62,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
@@ -78,8 +84,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
-
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
       {
@@ -100,8 +104,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
@@ -124,8 +126,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
-
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
       {
@@ -146,8 +146,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
@@ -170,8 +168,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
-
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
       {
@@ -192,8 +188,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
@@ -216,8 +210,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
-
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
       {
@@ -238,8 +230,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
@@ -262,8 +252,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
-
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
       {
@@ -285,8 +273,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
-
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
       {
@@ -307,8 +293,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
@@ -333,8 +317,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
-
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
       {
@@ -355,8 +337,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
@@ -379,8 +359,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
-
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())
       {
@@ -401,8 +379,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
 
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
       IBusinessObject bindableSecurableObject;
       using (new SecurityFreeSection ())

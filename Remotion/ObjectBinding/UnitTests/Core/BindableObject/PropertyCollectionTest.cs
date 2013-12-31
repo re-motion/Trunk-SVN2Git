@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     private StubPropertyBase CreateProperty ()
     {
       return new StubPropertyBase (
-          new PropertyBase.Parameters (
+          CreateParameters (
               new BindableObjectProvider (
                   MockRepository.GenerateStub<IMetadataFactory>(), MockRepository.GenerateStub<IBusinessObjectServiceFactory>()),
               GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
@@ -73,8 +73,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               typeof (SimpleReferenceType),
               null,
               false,
-              false,
-              new BindableObjectDefaultValueStrategy ()));
+              false));
     }
   }
 }

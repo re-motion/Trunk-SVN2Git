@@ -41,15 +41,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
         + "\r\nParameter name: concreteType")]
     public void Initialize_WithMissmatchedConcreteType ()
     {
-      PropertyBase.Parameters parameters = new PropertyBase.Parameters (
+      PropertyBase.Parameters parameters = CreateParameters (
           _businessObjectProvider,
           GetPropertyInfo (typeof (ClassWithReferenceType<SimpleBusinessObjectClass>), "Scalar"),
           typeof (SimpleBusinessObjectClass),
           typeof (ClassWithAllDataTypes),
           null,
           false,
-          false,
-          new BindableObjectDefaultValueStrategy ());
+          false);
       new ReferenceProperty (parameters);
     }
 
@@ -60,15 +59,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
         + "\r\nParameter name: parameters.ConcreteType")]
     public void Initialize_WithConcreteTypeNotImplementingIBusinessObject ()
     {
-      PropertyBase.Parameters parameters = new PropertyBase.Parameters (
+      PropertyBase.Parameters parameters = CreateParameters (
           _businessObjectProvider,
           GetPropertyInfo (typeof (ClassWithReferenceType<SimpleBusinessObjectClass>), "Scalar"),
           typeof (SimpleBusinessObjectClass),
           typeof (SimpleBusinessObjectClass),
           null,
           false,
-          false,
-          new BindableObjectDefaultValueStrategy ());
+          false);
       new ReferenceProperty (parameters);
     }
   }

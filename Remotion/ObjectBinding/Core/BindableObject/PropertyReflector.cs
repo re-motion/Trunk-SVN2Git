@@ -22,6 +22,7 @@ using Remotion.ExtensibleEnums;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
+using Remotion.Security;
 using Remotion.TypePipe;
 using Remotion.Utilities;
 
@@ -40,6 +41,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private readonly IPropertyInformation _propertyInfo;
     private readonly BindableObjectProvider _businessObjectProvider;
+    private readonly IObjectSecurityAdapter _objectSecurityAdapter;
 
     protected PropertyReflector (IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
     {
@@ -48,6 +50,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
       _propertyInfo = propertyInfo;
       _businessObjectProvider = businessObjectProvider;
+      _objectSecurityAdapter =  AdapterRegistry.Instance.GetAdapter<IObjectSecurityAdapter>();
     }
 
     public IPropertyInformation PropertyInfo
@@ -197,7 +200,8 @@ namespace Remotion.ObjectBinding.BindableObject
           GetListInfo(),
           GetIsRequired(),
           GetIsReadOnly(),
-          GetDefaultValueStrategy());
+          GetDefaultValueStrategy(),
+          _objectSecurityAdapter);
     }
 
     private Type GetItemTypeFromAttribute ()
