@@ -268,6 +268,11 @@
     <Compile Include="Obsolete\Globalization\ResourceManagerSet.cs" />
     <Compile Include="Obsolete\Globalization\ResourceManagerWrapper.cs" />
     <Compile Include="Reflection\DelegateFactory.cs" />
+    <Compile Include="Reflection\IActionInvoker.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IActionInvoker.tt</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\IDelegateFactory.cs" />
     <Compile Include="Reflection\IFuncInvoker.cs">
       <AutoGen>True</AutoGen>
@@ -306,8 +311,7 @@
     <Compile Include="Reflection\ActionInvokerWrapper.template.cs" />
     <Compile Include="Reflection\FuncInvokerWrapper.generated.cs" />
     <Compile Include="Reflection\FuncInvokerWrapper.template.cs" />
-    <Compile Include="Reflection\IActionInvoker.generated.cs" />
-    <Compile Include="Reflection\IActionInvoker.template.cs" />
+    <Compile Include="Reflection\IActionInvoker.Partial.cs" />
     <Compile Include="Reflection\IConstructorLookupInfo.cs" />
     <Compile Include="Reflection\IFuncInvoker.Partial.cs" />
     <Compile Include="Reflection\IMemberInformation.cs" />
@@ -584,6 +588,10 @@
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
     <Content Include="doc\include\Diagnostics\OuterProduct.xml" />
     <Content Include="doc\include\Utilities\WorkContext.xml" />
+    <None Include="Reflection\IActionInvoker.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IActionInvoker.cs</LastGenOutput>
+    </None>
     <None Include="Reflection\IFuncInvoker.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>IFuncInvoker.cs</LastGenOutput>
