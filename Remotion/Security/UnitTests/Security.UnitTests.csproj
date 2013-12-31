@@ -10,12 +10,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.Security.UnitTests</RootNamespace>
     <AssemblyName>Remotion.Security.UnitTests</AssemblyName>
-    <FileUpgradeFlags></FileUpgradeFlags>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UpgradeBackupLocation></UpgradeBackupLocation>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -93,6 +95,7 @@
     <Compile Include="Core\EnumWrapperTest.cs" />
     <Compile Include="Core\FunctionalSecurityContextFactoryTest.cs" />
     <Compile Include="Core\IFunctionalSecurityStrategyTest.cs" />
+    <Compile Include="Core\IObjectSecurityAdapterTest.cs" />
     <Compile Include="Core\Metadata\IMemberResolverTest.cs" />
     <Compile Include="Core\Metadata\IPermissionProviderTest.cs" />
     <Compile Include="Core\Metadata\EnumValueInfoListContentsConstraint.cs" />
@@ -262,9 +265,9 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-    <Delete Files="@(LocalizationFiles-&gt;'$(MSBuildProjectDirectory)\$(OutputPath)\%(Identity)')" />
-    <Delete Files="@(MappingFiles-&gt;'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
-    <Copy SourceFiles="@(LocalizationFiles-&gt;'%(Fullpath)')" DestinationFiles="@(LocalizationFiles-&gt;'$(MSBuildProjectDirectory)\$(OutputPath)\%(Identity)')" />
-    <Copy SourceFiles="@(MappingFiles-&gt;'%(Fullpath)')" DestinationFiles="@(MappingFiles-&gt;'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
+    <Delete Files="@(LocalizationFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Identity)')" />
+    <Delete Files="@(MappingFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
+    <Copy SourceFiles="@(LocalizationFiles->'%(Fullpath)')" DestinationFiles="@(LocalizationFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Identity)')" />
+    <Copy SourceFiles="@(MappingFiles->'%(Fullpath)')" DestinationFiles="@(MappingFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
   </Target>
 </Project>

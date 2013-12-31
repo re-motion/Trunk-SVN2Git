@@ -16,10 +16,15 @@
 // 
 using System;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Web.ExecutionEngine
 {
   //verwendet in wxe um security abfragen zu tun.
+  [ConcreteImplementation (
+      "Remotion.Web.Security.ExecutionEngine.WxeSecurityAdapter, Remotion.Web.Security, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+      ignoreIfNotFound: true,
+      Lifetime = LifetimeKind.Singleton)]
   public interface IWxeSecurityAdapter : ISecurityAdapter
   {
     // verwendet wenn function läuft. 

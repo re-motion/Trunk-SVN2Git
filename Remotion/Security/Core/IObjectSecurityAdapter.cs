@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Security
 {
@@ -28,6 +29,7 @@ namespace Remotion.Security
   /// <see cref="IObjectSecurityStrategy"/> retrieved from the <see cref="ISecurableObject"/>.
   /// </note>
   /// </remarks>
+  [ConcreteImplementation (typeof (ObjectSecurityAdapter), Lifetime = LifetimeKind.Singleton)]
   public interface IObjectSecurityAdapter : ISecurityAdapter
   {
     /// <summary>Determines whether read access to a property of <paramref name="securableObject"/> is granted.</summary>

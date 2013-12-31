@@ -16,12 +16,16 @@
 // 
 using System;
 using Remotion.Security;
-using System.Web.UI;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Web.UI
 {
   //TODO FS: Move to SecurityInterfaces
   //verwendet in web-controls um security abfragen zu tun.
+  [ConcreteImplementation (
+      "Remotion.Web.Security.UI.WebSecurityAdapter, Remotion.Web.Security, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+      ignoreIfNotFound: true,
+      Lifetime = LifetimeKind.Singleton)]
   public interface IWebSecurityAdapter : ISecurityAdapter
   {
     //verwendet fuer buttons etc, secObj = isntanz fur die sec gecheckt wird. handler ist eventhandler von butonclock etc der geschuetz werden soll.
