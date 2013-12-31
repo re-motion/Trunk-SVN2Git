@@ -91,17 +91,16 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="ExpressionScript.cs" />
+    <Compile Include="ScriptFunction.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ScriptFunction.tt</DependentUpon>
+    </Compile>
     <Compile Include="ScriptVariable.cs" />
     <Compile Include="StableBindingImplementation\ForwardingProxyBuilder.cs" />
     <Compile Include="StableBindingImplementation\IProxy.cs" />
     <Compile Include="StableBindingImplementation\MethodMetadataToken.cs" />
     <Compile Include="StableBindingImplementation\ReflectionHelper.cs" />
-    <Compile Include="ScriptFunction.generated.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ScriptFunction.template.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ScriptEnvironment.cs" />
     <Compile Include="ScriptLanguageType.cs" />
     <Compile Include="StableBindingImplementation\ITypeFilter.cs" />
@@ -140,9 +139,16 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <None Include="ScriptFunction.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ScriptFunction.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -153,6 +159,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>..\..\..\..\..\prereq\Tools\FuncGen\FuncGen.exe "$(ProjectDir)*.template.cs" *.generated.cs /rec</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

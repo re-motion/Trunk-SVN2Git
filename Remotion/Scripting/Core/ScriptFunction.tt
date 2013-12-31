@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,14 +14,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+  int parameterCount = 9;
+#>
 using System;
 using Microsoft.Scripting;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
-  // @begin-template first=1 template=1 generate=0..9 suppressTemplate=true
-
+<#
+for (int i = 0; i <= parameterCount; i++)
+{
+  var hasParameters = i > 0;
+  var parameters = Enumerable.Range (1, i);
+  var typeArguments = string.Join (", ", parameters.Select (p => string.Format ("TFixedArg{0}", p))) + (hasParameters ? ", " : "");
+  var signature = string.Join (", ", parameters.Select (p => string.Format ("TFixedArg{0} a{0}", p)));
+  var arguments = string.Join (", ", parameters.Select (p => string.Format ("a{0}", p)));
+#>
 #pragma warning disable 1712 // Some template parameters do not have documentation comments
   /// <summary>
   /// Encapsulates a script containing multiple statements and a main function definition. For script execution, this
@@ -29,15 +45,13 @@ namespace Remotion.Scripting
   /// </summary>
   /// <typeparam name="TResult">The result type of the function definition.</typeparam>
   /// <remarks>
-  /// Under IronPython, <see cref="ScriptFunction{TResult}"/> scripts are less safe than <see cref="ExpressionScript{TResult}"/>-based scripts because
+  /// Under IronPython, <see cref="ScriptFunction{<#= typeArguments #>TResult}"/> scripts are less safe than <see cref="ExpressionScript{TResult}"/>-based scripts because
   /// they can contain import statements, allowing them to access objects and classes not directly accessible via their <see cref="ScriptEnvironment"/>.
   /// </remarks>
-  // @replace "TFixedArg<n>, "
-  public class ScriptFunction<TFixedArg1, TResult> : ScriptBase
+  public class ScriptFunction<<#= typeArguments #>TResult> : ScriptBase
 #pragma warning restore 1712
   {
-    // @replace "TFixedArg<n>, "
-    private readonly Func<TFixedArg1, TResult> _func;
+    private readonly Func<<#= typeArguments #>TResult> _func;
 
     /// <summary>
     /// Initializes a new script instance. This immediately executes the given 
@@ -82,16 +96,16 @@ namespace Remotion.Scripting
       // and store it as a delegate.
       scriptSource.Execute (scriptEnvironment.ScriptScope);
 
-      // @replace "TFixedArg<n>, "
-      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<<#= typeArguments #>TResult>> (scriptFunctionName);
     }
 
-    // @replace "TFixedArg<n> a<n>" ", "
-    public TResult Execute (TFixedArg1 a1)
+    public TResult Execute (<#= signature #>)
     {
-      // @replace "a<n>" ", "
-      return ScriptContext.Execute (() => _func (a1));
+      return ScriptContext.Execute (() => _func (<#= arguments #>));
     }
   }
-  // @end-template
+
+<#
+}
+#>
 }
