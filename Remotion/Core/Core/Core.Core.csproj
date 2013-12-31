@@ -267,38 +267,8 @@
     <Compile Include="Obsolete\Globalization\ResourceIdentifiersAttribute.cs" />
     <Compile Include="Obsolete\Globalization\ResourceManagerSet.cs" />
     <Compile Include="Obsolete\Globalization\ResourceManagerWrapper.cs" />
-    <Compile Include="Reflection\ActionInvoker.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ActionInvoker.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Reflection\ActionInvokerWrapper.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ActionInvokerWrapper.tt</DependentUpon>
-    </Compile>
     <Compile Include="Reflection\DelegateFactory.cs" />
-    <Compile Include="Reflection\FuncInvoker.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FuncInvoker.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Reflection\FuncInvokerWrapper.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FuncInvokerWrapper.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Reflection\IActionInvoker.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>IActionInvoker.tt</DependentUpon>
-    </Compile>
     <Compile Include="Reflection\IDelegateFactory.cs" />
-    <Compile Include="Reflection\IFuncInvoker.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>IFuncInvoker.tt</DependentUpon>
-    </Compile>
     <Compile Include="Reflection\IMemberInformationNameResolver.cs" />
     <Compile Include="Obsolete\Reflection\ParamList.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInformationNameResolver.cs" />
@@ -327,11 +297,6 @@
     <Compile Include="Logging\LogManager.cs" />
     <Compile Include="Logging\LogThreshold.cs" />
     <Compile Include="PermanentGuidAttribute.cs" />
-    <Compile Include="Reflection\ActionInvokerWrapper.Partial.cs" />
-    <Compile Include="Reflection\FuncInvokerWrapper.Partial.cs" />
-    <Compile Include="Reflection\IActionInvoker.Partial.cs" />
-    <Compile Include="Reflection\IConstructorLookupInfo.cs" />
-    <Compile Include="Reflection\IFuncInvoker.Partial.cs" />
     <Compile Include="Reflection\IMemberInformation.cs" />
     <Compile Include="Reflection\IMethodInformation.cs" />
     <Compile Include="Reflection\IPropertyInformation.cs" />
@@ -418,9 +383,6 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyLoaderException.cs" />
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\FilteringAssemblyLoader.cs" />
-    <Compile Include="Reflection\ConstructorLookupInfo.cs" />
-    <Compile Include="Reflection\MemberLookupInfo.cs" />
-    <Compile Include="Reflection\MethodLookupInfo.cs" />
     <Compile Include="Collections\LockingDataStoreDecorator.cs" />
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
@@ -464,13 +426,7 @@
     <Compile Include="Reflection\TypeDiscovery\NonApplicationAssemblyAttribute.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\RegexAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\ApplicationAssemblyLoaderFilter.cs" />
-    <Compile Include="Reflection\DelegateSelector.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Reflection\InvokerUtility.cs" />
-    <Compile Include="Reflection\MethodCaller.cs" />
     <Compile Include="Reflection\InheritanceHierarchyFilter.cs" />
-    <Compile Include="Reflection\TypesafeActivator.cs" />
     <Compile Include="Utilities\ActionUtility.cs" />
     <Compile Include="Text\CommandLine\CommandLineArgument.cs">
       <SubType>Code</SubType>
@@ -602,30 +558,6 @@
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
     <Content Include="doc\include\Diagnostics\OuterProduct.xml" />
     <Content Include="doc\include\Utilities\WorkContext.xml" />
-    <None Include="Reflection\ActionInvoker.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ActionInvoker.cs</LastGenOutput>
-    </None>
-    <None Include="Reflection\ActionInvokerWrapper.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ActionInvokerWrapper.cs</LastGenOutput>
-    </None>
-    <None Include="Reflection\FuncInvoker.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>FuncInvoker.cs</LastGenOutput>
-    </None>
-    <None Include="Reflection\FuncInvokerWrapper.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>FuncInvokerWrapper.cs</LastGenOutput>
-    </None>
-    <None Include="Reflection\IActionInvoker.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>IActionInvoker.cs</LastGenOutput>
-    </None>
-    <None Include="Reflection\IFuncInvoker.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>IFuncInvoker.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

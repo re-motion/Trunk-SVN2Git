@@ -303,12 +303,9 @@
     </Compile>
     <Compile Include="Reflection\DelegateFactoryTest.cs" />
     <Compile Include="Reflection\IMemberInfoNameResolverTest.cs" />
-    <Compile Include="Reflection\MemberLookupInfoTest.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInfoNameResolverTest.cs" />
-    <Compile Include="Reflection\TestDomain\AbstractClass.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\AssemblyFinding\TestAssemblies\AssemblyFinderTest\RemotionCoreReferencingAssembly\AssemblyInfo.cs" />
-    <Compile Include="Reflection\TypesafeActivatorTest.cs" />
     <Compile Include="SafeContextSingletonTest.cs" />
     <Compile Include="ServiceLocation\BootstrapServiceConfigurationTest.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocatorProviderTest.cs" />
@@ -400,13 +397,6 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\FilteringAssemblyLoaderTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\FileLoadExceptionConsoleApplication\Program.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttributeTest.cs" />
-    <Compile Include="Reflection\ConstructorLookupInfoTest.cs" />
-    <Compile Include="Reflection\MethodLookupInfoTest.cs" />
-    <Compile Include="Reflection\TestDomain\Base.cs" />
-    <Compile Include="Reflection\TestDomain\Derived.cs" />
-    <Compile Include="Reflection\TestDomain\DerivedDerived.cs" />
-    <Compile Include="Reflection\TestDomain\Struct.cs" />
-    <Compile Include="Reflection\TestDomain\TestClass.cs" />
     <Compile Include="Collections\LockingDataStoreDecoratorTest.cs" />
     <Compile Include="Collections\SimpleDataStoreTest.cs" />
     <Compile Include="Context\CallContextStorageProviderTest.cs" />
@@ -472,10 +462,8 @@
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\MarkedExeAssemblyInDynamicDirectory\AssemblyInfo.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinderTypeDiscoveryServiceTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtilityTest.cs" />
-    <Compile Include="Reflection\FuncInvokerWrapperTest.cs" />
     <Compile Include="Reflection\InheritanceHierarchyFilterTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\MarkedAssemblyWithOtherFileNameInRelativeSearchPath\AssemblyInfo.cs" />
-    <Compile Include="Reflection\MethodCallerTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\NonApplicationMarkedAssembly\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\NonApplicationMarkedAssembly\SampleType.cs" />
     <Compile Include="Text\CommandLine\CommandLineClassParserTest.cs">

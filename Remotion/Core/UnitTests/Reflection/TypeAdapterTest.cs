@@ -151,7 +151,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void IsValueType_ValueType ()
     {
-      var type = typeof (TestDomain.Struct);
+      var type = typeof (int);
       Assert.That (TypeAdapter.Create (type).IsValueType, Is.EqualTo (type.IsValueType).And.True);
     }
 
