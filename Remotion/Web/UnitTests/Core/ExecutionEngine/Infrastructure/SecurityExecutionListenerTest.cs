@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Security;
@@ -29,7 +30,6 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
   {
     private MockRepository _mockRepository;
     private IWxeSecurityAdapter _securityAdapterMock;
-    private IWxeFunctionExecutionListener _securityListener;
     private IWxeFunctionExecutionListener _innerListenerMock;
     private TestFunction _function;
     private WxeContext _wxeContext;
@@ -45,27 +45,22 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       _innerListenerMock = _mockRepository.StrictMock<IWxeFunctionExecutionListener>();
 
       _function = new TestFunction();
-      _securityListener = new SecurityExecutionListener (_function, _innerListenerMock);
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _securityAdapterMock);
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (((SecurityExecutionListener) _securityListener).Function, Is.SameAs (_function));
-      Assert.That (((SecurityExecutionListener) _securityListener).InnerListener, Is.SameAs (_innerListenerMock));
+      var securityListener = CreateSecurityListener (_securityAdapterMock);
+
+      Assert.That (((SecurityExecutionListener) securityListener).Function, Is.SameAs (_function));
+      Assert.That (((SecurityExecutionListener) securityListener).InnerListener, Is.SameAs (_innerListenerMock));
     }
 
     [Test]
     public void ExecutionPlay_WithAccessGranted ()
     {
+      var securityListener = CreateSecurityListener (_securityAdapterMock);
+
       using (_mockRepository.Ordered())
       {
         _securityAdapterMock.Expect (mock => mock.CheckAccess (_function));
@@ -73,7 +68,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       }
       _mockRepository.ReplayAll();
 
-      _securityListener.OnExecutionPlay (_wxeContext);
+      securityListener.OnExecutionPlay (_wxeContext);
 
       _mockRepository.VerifyAll();
     }
@@ -85,7 +80,9 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       _securityAdapterMock.Expect (mock => mock.CheckAccess (_function)).Throw (new PermissionDeniedException());
       _mockRepository.ReplayAll();
 
-      _securityListener.OnExecutionPlay (_wxeContext);
+      var securityListener = CreateSecurityListener (_securityAdapterMock);
+
+      securityListener.OnExecutionPlay (_wxeContext);
 
       _mockRepository.VerifyAll();
     }
@@ -93,13 +90,14 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     [Test]
     public void ExecutionPlay_WithoutWxeSecurityProvider ()
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
       _innerListenerMock.Expect (mock => mock.OnExecutionPlay (_wxeContext));
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      _securityListener.OnExecutionPlay (_wxeContext);
+      var securityListener = CreateSecurityListener (null);
 
-      _mockRepository.VerifyAll ();
+      securityListener.OnExecutionPlay (_wxeContext);
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]
@@ -108,51 +106,66 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       _function.Execute (_wxeContext);
       _mockRepository.BackToRecordAll();
       _innerListenerMock.Expect (mock => mock.OnExecutionPlay (_wxeContext));
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      _securityListener.OnExecutionPlay (_wxeContext);
+      var securityListener = CreateSecurityListener (_securityAdapterMock);
 
-      _mockRepository.VerifyAll ();
+      securityListener.OnExecutionPlay (_wxeContext);
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void OnExecutionStop ()
     {
       _innerListenerMock.Expect (mock => mock.OnExecutionStop (_wxeContext));
-      _mockRepository.ReplayAll ();
-      
-      _securityListener.OnExecutionStop (_wxeContext);
-      
-      _mockRepository.VerifyAll ();
+      _mockRepository.ReplayAll();
+
+      var securityListener = CreateSecurityListener (_securityAdapterMock);
+
+      securityListener.OnExecutionStop (_wxeContext);
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void OnExecutionPause ()
     {
       _innerListenerMock.Expect (mock => mock.OnExecutionPause (_wxeContext));
-      _mockRepository.ReplayAll ();
-      
-      _securityListener.OnExecutionPause (_wxeContext);
-      
-      _mockRepository.VerifyAll ();
+      _mockRepository.ReplayAll();
+
+      var securityListener = CreateSecurityListener (_securityAdapterMock);
+
+      securityListener.OnExecutionPause (_wxeContext);
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void OnExecutionFail ()
     {
-      Exception exception = new Exception ();
+      Exception exception = new Exception();
       _innerListenerMock.Expect (mock => mock.OnExecutionFail (_wxeContext, exception));
-      _mockRepository.ReplayAll ();
-      
-      _securityListener.OnExecutionFail (_wxeContext, exception);
-      
-      _mockRepository.VerifyAll ();
+      _mockRepository.ReplayAll();
+
+      var securityListener = CreateSecurityListener (_securityAdapterMock);
+
+      securityListener.OnExecutionFail (_wxeContext, exception);
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void IsNull ()
     {
-      Assert.That (_securityListener.IsNull, Is.False);
+      var securityListener = CreateSecurityListener (_securityAdapterMock);
+
+      Assert.That (securityListener.IsNull, Is.False);
+    }
+
+    private IWxeFunctionExecutionListener CreateSecurityListener (IWxeSecurityAdapter securityAdapter)
+    {
+      return new SecurityExecutionListener (_function, _innerListenerMock, securityAdapter);
     }
   }
 }

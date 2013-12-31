@@ -17,10 +17,12 @@
 using System;
 using System.ComponentModel;
 using System.Web.UI;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -109,12 +111,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private BocWxeFunctionCommandInfo _wxeFunctionCommand;
 
     public BocCommand ()
-        : this (CommandType.None)
+        : this (CommandType.None, GetWebSecurityAdapter(), GetWxeSecurityAdapter())
     {
     }
 
     public BocCommand (CommandType defaultType)
-        : base (defaultType)
+        : this (defaultType, GetWebSecurityAdapter(), GetWxeSecurityAdapter())
+    {
+    }
+
+    public BocCommand (
+        CommandType defaultType,
+        [CanBeNull] IWebSecurityAdapter webSecurityAdapter,
+        [CanBeNull] IWxeSecurityAdapter wxeSecurityAdapter)
+        : base (defaultType, webSecurityAdapter, wxeSecurityAdapter)
     {
       _hrefCommand = new BocHrefCommandInfo();
       _wxeFunctionCommand = new BocWxeFunctionCommandInfo();

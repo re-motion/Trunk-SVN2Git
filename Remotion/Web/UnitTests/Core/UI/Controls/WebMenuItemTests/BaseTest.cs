@@ -16,9 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Security;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UI;
 using Remotion.Development.Web.UnitTesting.Configuration;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
@@ -29,8 +26,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
     public virtual void TearDown ()
     {
       WebConfigurationMock.Current = null;
-      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
     }
   }
 }

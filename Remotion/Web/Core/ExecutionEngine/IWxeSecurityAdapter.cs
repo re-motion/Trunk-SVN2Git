@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Security;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Web.ExecutionEngine
@@ -25,7 +24,7 @@ namespace Remotion.Web.ExecutionEngine
       "Remotion.Web.Security.ExecutionEngine.WxeSecurityAdapter, Remotion.Web.Security, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
       ignoreIfNotFound: true,
       Lifetime = LifetimeKind.Singleton)]
-  public interface IWxeSecurityAdapter : ISecurityAdapter
+  public interface IWxeSecurityAdapter
   {
     // verwendet wenn function läuft. 
     bool HasAccess (WxeFunction function);

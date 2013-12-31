@@ -370,7 +370,7 @@ namespace Remotion.Web.UI.Controls
 
     protected bool HasAccess ()
     {
-      IWebSecurityAdapter securityAdapter = AdapterRegistry.Instance.GetAdapter<IWebSecurityAdapter>();
+      var securityAdapter = WebSecurityAdapter;
       if (securityAdapter == null)
         return true;
 
@@ -479,6 +479,11 @@ namespace Remotion.Web.UI.Controls
     private IHotkeyFormatter HotkeyFormatter
     {
       get { return ServiceLocator.GetInstance<IHotkeyFormatter>(); }
+    }
+
+    private IWebSecurityAdapter WebSecurityAdapter
+    {
+      get { return UI.Controls.Command.GetWebSecurityAdapter(); }
     }
 
     #region protected virtual string CssClass...

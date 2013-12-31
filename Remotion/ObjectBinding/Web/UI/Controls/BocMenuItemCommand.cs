@@ -17,9 +17,11 @@
 using System;
 using System.ComponentModel;
 using System.Web.UI;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -109,13 +111,21 @@ public class BocMenuItemCommand: BocCommand
   [Browsable (false)]
   public new WebMenuItemClickEventHandler Click;
 
-  public BocMenuItemCommand()
-    : this (CommandType.Event)
+  public BocMenuItemCommand ()
+      : this (CommandType.Event, GetWebSecurityAdapter(), GetWxeSecurityAdapter())
   {
   }
 
   public BocMenuItemCommand (CommandType defaultType)
-    : base (defaultType)
+      : this (defaultType, GetWebSecurityAdapter(), GetWxeSecurityAdapter())
+  {
+  }
+
+  public BocMenuItemCommand (
+      CommandType defaultType,
+      [CanBeNull] IWebSecurityAdapter webSecurityAdapter,
+      [CanBeNull] IWxeSecurityAdapter wxeSecurityAdapter)
+      : base (defaultType, webSecurityAdapter, wxeSecurityAdapter)
   {
     _hrefCommand = new MenuItemHrefCommandInfo();
     _wxeFunctionCommand = new MenuItemWxeFunctionCommandInfo();

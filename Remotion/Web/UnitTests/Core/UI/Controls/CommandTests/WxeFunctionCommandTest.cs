@@ -14,20 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 using NUnit.Framework;
-using Remotion.Security;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
-using TestFunction=Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions.TestFunction;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   [TestFixture]
-  [Ignore("TODO RM-5569")]
+  [Ignore ("TODO RM-5569")]
   public class WxeFunctionCommandTest : BaseTest
   {
     private CommandTestHelper _testHelper;
@@ -35,63 +33,59 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
     [SetUp]
     public virtual void SetUp ()
     {
-      _testHelper = new CommandTestHelper ();
+      _testHelper = new CommandTestHelper();
       HttpContextHelper.SetCurrent (_testHelper.HttpContext);
     }
 
     [Test]
     public void HasAccess_WithoutSeucrityProvider ()
     {
-      Command command = _testHelper.CreateWxeFunctionCommand ();
-      _testHelper.ReplayAll ();
+      Command command = _testHelper.CreateWxeFunctionCommand();
+      _testHelper.ReplayAll();
 
       bool hasAccess = command.HasAccess (null);
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
       Assert.That (hasAccess, Is.True);
     }
 
     [Test]
     public void HasAccess_WithAccessGranted ()
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _testHelper.WebSecurityAdapter);
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _testHelper.WxeSecurityAdapter);
-      Command command = _testHelper.CreateWxeFunctionCommand ();
+      Command command = _testHelper.CreateWxeFunctionCommand (_testHelper.WebSecurityAdapter, _testHelper.WxeSecurityAdapter);
       _testHelper.ExpectWxeSecurityProviderHasStatelessAccess (typeof (TestFunction), true);
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
       bool hasAccess = command.HasAccess (null);
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
       Assert.That (hasAccess, Is.True);
     }
 
     [Test]
     public void HasAccess_WithAccessDenied ()
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _testHelper.WebSecurityAdapter);
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _testHelper.WxeSecurityAdapter);
-      Command command = _testHelper.CreateWxeFunctionCommand ();
+      Command command = _testHelper.CreateWxeFunctionCommand (_testHelper.WebSecurityAdapter, _testHelper.WxeSecurityAdapter);
       _testHelper.ExpectWxeSecurityProviderHasStatelessAccess (typeof (TestFunction), false);
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
       bool hasAccess = command.HasAccess (null);
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
       Assert.That (hasAccess, Is.False);
     }
 
     [Test]
     public void Render_WithAccessGranted ()
     {
-      Command command = _testHelper.CreateWxeFunctionCommandAsPartialMock ();
+      Command command = _testHelper.CreateWxeFunctionCommandAsPartialMock();
       string expectedOnClick = _testHelper.PostBackEvent + _testHelper.OnClick;
       _testHelper.ExpectOnceOnHasAccess (command, true);
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
       command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
       Assert.IsNotNull (_testHelper.HtmlWriter.Tag, "Missing Tag");
       Assert.AreEqual (HtmlTextWriterTag.A, _testHelper.HtmlWriter.Tag, "Wrong Tag");
 
@@ -105,19 +99,18 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
       Assert.AreEqual (_testHelper.ToolTip, _testHelper.HtmlWriter.Attributes[HtmlTextWriterAttribute.Title], "Wrong Title");
 
       Assert.IsNull (_testHelper.HtmlWriter.Attributes[HtmlTextWriterAttribute.Target], "Has Target");
-
     }
 
     [Test]
     public void Render_WithAccessDenied ()
     {
-      Command command = _testHelper.CreateWxeFunctionCommandAsPartialMock ();
+      Command command = _testHelper.CreateWxeFunctionCommandAsPartialMock();
       _testHelper.ExpectOnceOnHasAccess (command, false);
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
       command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
       Assert.IsNotNull (_testHelper.HtmlWriter.Tag, "Missing Tag");
       Assert.AreEqual (HtmlTextWriterTag.A, _testHelper.HtmlWriter.Tag, "Wrong Tag");
       Assert.AreEqual (0, _testHelper.HtmlWriter.Attributes.Count, "Has Attributes");

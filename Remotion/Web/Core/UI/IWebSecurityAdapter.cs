@@ -26,7 +26,7 @@ namespace Remotion.Web.UI
       "Remotion.Web.Security.UI.WebSecurityAdapter, Remotion.Web.Security, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
       ignoreIfNotFound: true,
       Lifetime = LifetimeKind.Singleton)]
-  public interface IWebSecurityAdapter : ISecurityAdapter
+  public interface IWebSecurityAdapter
   {
     //verwendet fuer buttons etc, secObj = isntanz fur die sec gecheckt wird. handler ist eventhandler von butonclock etc der geschuetz werden soll.
     bool HasAccess (ISecurableObject securableObject, Delegate handler);

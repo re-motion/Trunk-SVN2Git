@@ -15,24 +15,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Runtime.Serialization;
 using System.Threading;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   [Serializable]
-  public class SecurityExecutionListener : IWxeFunctionExecutionListener
+  public class SecurityExecutionListener : IWxeFunctionExecutionListener, IDeserializationCallback
   {
     private readonly WxeFunction _function;
     private readonly IWxeFunctionExecutionListener _innerListener;
+    [NonSerialized]
+    private IWxeSecurityAdapter _wxeSecurityAdapter;
 
-    public SecurityExecutionListener (WxeFunction function, IWxeFunctionExecutionListener innerListener)
+    public SecurityExecutionListener (WxeFunction function, IWxeFunctionExecutionListener innerListener, [CanBeNull] IWxeSecurityAdapter wxeSecurityAdapter)
     {
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("innerListener", innerListener);
 
       _function = function;
       _innerListener = innerListener;
+      _wxeSecurityAdapter = wxeSecurityAdapter;
     }
 
     public WxeFunction Function
@@ -60,9 +65,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       if (!_function.IsExecutionStarted)
       {
-        IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter>();
-        if (wxeSecurityAdapter != null)
-          wxeSecurityAdapter.CheckAccess (_function);
+        if (_wxeSecurityAdapter != null)
+          _wxeSecurityAdapter.CheckAccess (_function);
       }
 
       _innerListener.OnExecutionPlay (context);
@@ -90,6 +94,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("context", context);
       _innerListener.OnExecutionFail (context, exception);
+    }
+
+    public void OnDeserialization (object sender)
+    {
+      _wxeSecurityAdapter = WxeFunction.GetWxeSecurityAdapter();
     }
   }
 }

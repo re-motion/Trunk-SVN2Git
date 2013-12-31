@@ -17,9 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
-using Remotion.Security;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UI;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
@@ -32,8 +29,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
       HttpContextHelper.SetCurrent (null);
       WebConfigurationMock.Current = null;
       Remotion.Web.ExecutionEngine.UrlMapping.UrlMappingConfiguration.SetCurrent (null);
-      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
     }
   }
 }

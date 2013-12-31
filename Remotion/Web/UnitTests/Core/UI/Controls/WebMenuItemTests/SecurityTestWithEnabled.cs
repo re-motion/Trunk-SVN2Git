@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Web.ExecutionEngine;
 using Rhino.Mocks;
 using Remotion.Security;
 using Remotion.Web.UI;
@@ -37,9 +38,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
       _mocks = new MockRepository ();
       _mockWebSecurityAdapter = _mocks.StrictMock<IWebSecurityAdapter> ();
       _mockSecurableObject = _mocks.StrictMock<ISecurableObject> ();
-      _mockCommand = _mocks.StrictMock<Command> ();
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _mockWebSecurityAdapter);
+      _mockCommand = _mocks.StrictMock<Command> (CommandType.None, _mockWebSecurityAdapter, (IWxeSecurityAdapter) null);
     }
 
     [Test]

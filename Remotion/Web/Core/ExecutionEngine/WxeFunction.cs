@@ -21,6 +21,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Remotion.Collections;
+using Remotion.FunctionalProgramming;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
@@ -156,7 +158,7 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("functionType", functionType, typeof (WxeFunction));
 
-      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
+      var wxeSecurityAdapter = GetWxeSecurityAdapter ();
       if (wxeSecurityAdapter == null)
         return true;
 
@@ -198,7 +200,8 @@ namespace Remotion.Web.ExecutionEngine
       if (!IsExecutionStarted)
       {
         _variablesContainer.EnsureParametersInitialized (null);
-        _executionListener = new SecurityExecutionListener (this, _executionListener);
+        var wxeSecurityAdapter = GetWxeSecurityAdapter();
+        _executionListener = new SecurityExecutionListener (this, _executionListener, wxeSecurityAdapter);
 
         _transactionStrategy = _transactionMode.CreateTransactionStrategy (this, context);
         Assertion.IsNotNull (_transactionStrategy);
@@ -363,6 +366,12 @@ namespace Remotion.Web.ExecutionEngine
       }
       sb.Append (")");
       return sb.ToString ();
+    }
+
+    internal static IWxeSecurityAdapter GetWxeSecurityAdapter ()
+    {
+      return SafeServiceLocator.Current.GetAllInstances<IWxeSecurityAdapter>()
+          .SingleOrDefault (() => new InvalidOperationException ("Only a single IWxeSecurityAdapter can be registered."));
     }
   }
 }

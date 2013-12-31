@@ -16,9 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Security;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UI;
 using Remotion.Development.Web.UnitTesting.Configuration;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
@@ -31,8 +28,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       base.TearDown ();
 
       WebConfigurationMock.Current = null;
-      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
     }
   }
 }

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Web;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
@@ -29,12 +30,20 @@ namespace Remotion.Web.UI.Controls
   public class NavigationCommand : Command
   {
     public NavigationCommand ()
-        : this (CommandType.Href)
+        : this (CommandType.Href, GetWebSecurityAdapter(), GetWxeSecurityAdapter())
     {
     }
 
     public NavigationCommand (CommandType defaultType)
-        : base (defaultType)
+        : this (defaultType, GetWebSecurityAdapter(), GetWxeSecurityAdapter())
+    {
+    }
+
+    public NavigationCommand (
+        CommandType defaultType,
+        [CanBeNull] IWebSecurityAdapter webSecurityAdapter,
+        [CanBeNull] IWxeSecurityAdapter wxeSecurityAdapter)
+        : base (defaultType, webSecurityAdapter, wxeSecurityAdapter)
     {
     }
 

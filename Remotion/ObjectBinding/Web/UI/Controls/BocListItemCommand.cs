@@ -17,11 +17,13 @@
 using System;
 using System.ComponentModel;
 using System.Web.UI;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -122,12 +124,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private ListItemWxeFunctionCommandInfo _wxeFunctionCommand;
 
     public BocListItemCommand ()
-        : this (CommandType.None)
+        : this (CommandType.None, GetWebSecurityAdapter(), GetWxeSecurityAdapter())
     {
     }
 
     public BocListItemCommand (CommandType defaultType)
-        : base (defaultType)
+        : this (defaultType, GetWebSecurityAdapter(), GetWxeSecurityAdapter())
+    {
+    }
+
+    public BocListItemCommand (
+        CommandType defaultType,
+        [CanBeNull] IWebSecurityAdapter webSecurityAdapter,
+        [CanBeNull] IWxeSecurityAdapter wxeSecurityAdapter)
+        : base (defaultType, webSecurityAdapter, wxeSecurityAdapter)
     {
       _hrefCommand = new ListItemHrefCommandInfo();
       _wxeFunctionCommand = new ListItemWxeFunctionCommandInfo();

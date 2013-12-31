@@ -22,19 +22,17 @@ using Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegration
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
-using Remotion.Security.Metadata;
 using Remotion.ServiceLocation;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Security.ExecutionEngine;
+using Remotion.Web.UI;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests
 {
   public class SecuredFunctionTestBase : WxeTransactedFunctionIntegrationTestBase
   {
-    private IWxeSecurityAdapter _previousAdapter;
-
     private ISecurityProvider _securityProviderStub;
     private ISecurityPrincipal _securityPrincipalStub;
     private IFunctionalSecurityStrategy _functionalSecurityStrategyStub;
@@ -45,9 +43,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     public override void SetUp ()
     {
       base.SetUp ();
-
-      _previousAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), new WxeSecurityAdapter ());
 
       _securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
       _securityProviderStub.Stub (stub => stub.IsNull).Return (false);
@@ -64,6 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
       var serviceLocator = new DefaultServiceLocator();
       serviceLocator.Register (typeof (IFunctionalSecurityStrategy), () => _functionalSecurityStrategyStub);
+      serviceLocator.Register (typeof (IWebSecurityAdapter));
+      serviceLocator.Register (typeof (IWxeSecurityAdapter), () => new WxeSecurityAdapter());
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
       _testAccessTypeValue = AccessType.Get (TestAccessTypes.Value);
@@ -71,7 +68,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
     public override void TearDown ()
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _previousAdapter);
       SecurityConfiguration.Current.SecurityProvider = null;
       SecurityConfiguration.Current.PrincipalProvider = null;
 

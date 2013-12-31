@@ -16,6 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
+using Remotion.ServiceLocation;
+using Remotion.Web.ExecutionEngine;
 using Rhino.Mocks;
 using Remotion.Security;
 using Remotion.Web.UI;
@@ -29,6 +32,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
     private MockRepository _mocks;
     private IWebSecurityAdapter _mockWebSecurityAdapter;
     private ISecurableObject _mockSecurableObject;
+    private ServiceLocatorScope _serviceLocatorStub;
 
     [SetUp]
     public void Setup ()
@@ -37,7 +41,16 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       _mockWebSecurityAdapter = _mocks.StrictMock<IWebSecurityAdapter> ();
       _mockSecurableObject = _mocks.StrictMock<ISecurableObject> ();
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _mockWebSecurityAdapter);
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IWebSecurityAdapter), () => _mockWebSecurityAdapter);
+      serviceLocator.Register (typeof (IWxeSecurityAdapter));
+      _serviceLocatorStub = new ServiceLocatorScope (serviceLocator);
+    }
+
+    public override void TearDown ()
+    {
+      base.TearDown();
+      _serviceLocatorStub.Dispose();
     }
 
     [Test]
@@ -71,29 +84,39 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
     [Test]
     public void EvaluateTrue_FromTrueAndWithoutWebSeucrityProvider ()
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
-      WebButton button = CreateButtonWithClickEventHandler ();
-      button.Visible = true;
-      _mocks.ReplayAll ();
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IWebSecurityAdapter));
+      serviceLocator.Register (typeof (IWxeSecurityAdapter));
+      using (new ServiceLocatorScope (serviceLocator))
+      {
+        WebButton button = CreateButtonWithClickEventHandler();
+        button.Visible = true;
+        _mocks.ReplayAll();
 
-      bool isVisible = button.Visible;
+        bool isVisible = button.Visible;
 
-      _mocks.VerifyAll ();
-      Assert.That (isVisible, Is.True);
+        _mocks.VerifyAll();
+        Assert.That (isVisible, Is.True);
+      }
     }
 
     [Test]
     public void EvaluateFalse_FromFalseAndWithoutWebSeucrityProvider ()
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
-      WebButton button = CreateButtonWithClickEventHandler ();
-      button.Visible = false;
-      _mocks.ReplayAll ();
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IWebSecurityAdapter));
+      serviceLocator.Register (typeof (IWxeSecurityAdapter));
+      using (new ServiceLocatorScope (serviceLocator))
+      {
+        WebButton button = CreateButtonWithClickEventHandler();
+        button.Visible = false;
+        _mocks.ReplayAll();
 
-      bool isVisible = button.Visible;
+        bool isVisible = button.Visible;
 
-      _mocks.VerifyAll ();
-      Assert.That (isVisible, Is.False);
+        _mocks.VerifyAll();
+        Assert.That (isVisible, Is.False);
+      }
     }
 
     [Test]
