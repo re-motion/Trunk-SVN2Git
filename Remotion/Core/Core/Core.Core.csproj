@@ -462,7 +462,6 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AttributeAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\IAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\TypeDiscovery\NonApplicationAssemblyAttribute.cs" />
-    <Compile Include="Reflection\ActionInvoker.Partial.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\RegexAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\ApplicationAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\DelegateSelector.cs">
