@@ -324,7 +324,6 @@
     <Compile Include="Utilities\MemberInfoFromExpressionUtility.Partial.cs" />
     <Compile Include="Utilities\ReferenceEqualityComparer.Partial.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\PartialDeclarations.cs" />
-    <Compile Include="StandardDelegates.cs" />
     <Compile Include="SuppressAttributesAttribute.cs" />
     <Compile Include="Utilities\ArgumentEmptyException.cs" />
     <Compile Include="Utilities\ArgumentItemDuplicateException.cs" />
