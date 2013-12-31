@@ -23,7 +23,7 @@ namespace Remotion.Development.UnitTesting.IO
   /// <summary>
   /// The <see cref="TempFile"/> class represents a disposable temp file created via the <see cref="Path.GetTempFileName"/> method.
   /// </summary>
-  public class TempFile : DisposableBase
+  public class TempFile : IDisposable
   {
     private string _fileName;
 
@@ -32,7 +32,7 @@ namespace Remotion.Development.UnitTesting.IO
       _fileName = Path.GetTempFileName();
     }
 
-    protected override void Dispose (bool disposing)
+    public void Dispose ()
     {
       if (_fileName != null && File.Exists (_fileName))
       {
@@ -45,7 +45,8 @@ namespace Remotion.Development.UnitTesting.IO
     {
       get
       {
-        AssertNotDisposed();
+        if (_fileName == null)
+          throw new InvalidOperationException ("Object disposed.");
         return _fileName;
       }
     }
