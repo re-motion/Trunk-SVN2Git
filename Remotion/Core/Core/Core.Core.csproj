@@ -256,6 +256,10 @@
     <Compile Include="Obsolete\ExtensibleEnums\IExtensibleEnumInfo.cs" />
     <Compile Include="Obsolete\ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryService.cs" />
     <Compile Include="Obsolete\ExtensibleEnums\InvalidExtensibleEnumDefinitionException.cs" />
+    <Compile Include="Obsolete\Reflection\FuncInvoker.cs" />
+    <Compile Include="Obsolete\Reflection\MemberLookupInfo.cs" />
+    <Compile Include="Obsolete\Reflection\MethodLookupInfo.cs" />
+    <Compile Include="Obsolete\Reflection\TypesafeActivator.cs" />
     <Compile Include="Obsolete\Utilities\EnumDescription.cs" />
     <Compile Include="Obsolete\Utilities\EnumDescriptionAttribute.cs" />
     <Compile Include="Obsolete\Utilities\EnumDescriptionResourceAttribute.cs" />
