@@ -267,6 +267,11 @@
     <Compile Include="Obsolete\Globalization\ResourceIdentifiersAttribute.cs" />
     <Compile Include="Obsolete\Globalization\ResourceManagerSet.cs" />
     <Compile Include="Obsolete\Globalization\ResourceManagerWrapper.cs" />
+    <Compile Include="Reflection\ActionInvoker.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ActionInvoker.tt</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\ActionInvokerWrapper.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -457,8 +462,7 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AttributeAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\IAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\TypeDiscovery\NonApplicationAssemblyAttribute.cs" />
-    <Compile Include="Reflection\ActionInvoker.generated.cs" />
-    <Compile Include="Reflection\ActionInvoker.template.cs" />
+    <Compile Include="Reflection\ActionInvoker.Partial.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\RegexAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\ApplicationAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\DelegateSelector.cs">
@@ -599,6 +603,10 @@
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
     <Content Include="doc\include\Diagnostics\OuterProduct.xml" />
     <Content Include="doc\include\Utilities\WorkContext.xml" />
+    <None Include="Reflection\ActionInvoker.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ActionInvoker.cs</LastGenOutput>
+    </None>
     <None Include="Reflection\ActionInvokerWrapper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ActionInvokerWrapper.cs</LastGenOutput>
