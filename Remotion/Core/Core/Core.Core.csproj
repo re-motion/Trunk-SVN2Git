@@ -273,6 +273,11 @@
       <DependentUpon>ActionInvokerWrapper.tt</DependentUpon>
     </Compile>
     <Compile Include="Reflection\DelegateFactory.cs" />
+    <Compile Include="Reflection\FuncInvoker.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FuncInvoker.tt</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\FuncInvokerWrapper.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -450,8 +455,6 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinderTypeDiscoveryService.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AttributeAssemblyLoaderFilter.cs" />
-    <Compile Include="Reflection\FuncInvoker.generated.cs" />
-    <Compile Include="Reflection\FuncInvoker.template.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\IAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\TypeDiscovery\NonApplicationAssemblyAttribute.cs" />
     <Compile Include="Reflection\ActionInvoker.generated.cs" />
@@ -599,6 +602,10 @@
     <None Include="Reflection\ActionInvokerWrapper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ActionInvokerWrapper.cs</LastGenOutput>
+    </None>
+    <None Include="Reflection\FuncInvoker.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FuncInvoker.cs</LastGenOutput>
     </None>
     <None Include="Reflection\FuncInvokerWrapper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
