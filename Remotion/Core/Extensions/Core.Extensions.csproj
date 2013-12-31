@@ -100,6 +100,8 @@
     <Compile Include="Reflection\MethodCaller.cs" />
     <Compile Include="Reflection\MethodLookupInfo.cs" />
     <Compile Include="Reflection\TypesafeActivator.cs" />
+    <Compile Include="Utilities\ActionUtility.cs" />
+    <Compile Include="Utilities\FuncUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\remotion.snk">

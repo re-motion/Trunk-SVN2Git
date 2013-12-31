@@ -383,7 +383,6 @@
     <Compile Include="Utilities\DelegateBasedDisposable.cs" />
     <Compile Include="Utilities\DelegateBasedEqualityComparer.cs" />
     <Compile Include="Utilities\DesignerUtility.cs" />
-    <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyLoaderException.cs" />
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\FilteringAssemblyLoader.cs" />
@@ -431,7 +430,6 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\RegexAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\ApplicationAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\InheritanceHierarchyFilter.cs" />
-    <Compile Include="Utilities\ActionUtility.cs" />
     <Compile Include="Text\CommandLine\CommandLineArgument.cs">
       <SubType>Code</SubType>
     </Compile>
