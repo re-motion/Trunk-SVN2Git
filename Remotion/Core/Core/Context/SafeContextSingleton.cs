@@ -14,13 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using Remotion.Context;
 using Remotion.Utilities;
 
-// ReSharper disable CheckNamespace
-namespace Remotion
-// ReSharper restore CheckNamespace
+namespace Remotion.Context
 {
   /// <summary>
   /// Provides automatic "Singleton" behavior based on the <see cref="SafeContext"/> class.
