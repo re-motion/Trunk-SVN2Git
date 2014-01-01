@@ -22,8 +22,10 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+using Remotion.Globalization.Mixins;
 
 [assembly: AssemblyTitle ("Remotion Integration Library for Application Domains")]
 [assembly: AssemblyDescription ("This assembly can be linked to ensure that all domain-layer-related dependencies are integrated in the build output of a project.")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
+[assembly: EnsureGlobalizationSupportForMixins]

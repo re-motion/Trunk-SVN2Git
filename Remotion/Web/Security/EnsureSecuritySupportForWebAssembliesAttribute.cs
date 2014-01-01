@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,18 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Reflection;
 
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
-using Remotion.Web.Security;
-
-[assembly: AssemblyTitle ("Remotion Integration Library for Web-Applications")]
-[assembly: AssemblyDescription ("This assembly can be linked to ensure that all web-related dependencies are integrated in the build output of a web project.")]
-[assembly: AssemblyCulture("")]
-[assembly: CLSCompliant(true)]
-[assembly: EnsureSecuritySupportForWebAssemblies]
+namespace Remotion.Web.Security
+{
+  /// <summary>
+  /// Apply this <see cref="Attribute"/> to a web assembly to force the inclusing of the security-extension for web applications.
+  /// </summary>
+  [AttributeUsage (AttributeTargets.Assembly)]
+  public class EnsureSecuritySupportForWebAssembliesAttribute : Attribute
+  {
+  }
+}
