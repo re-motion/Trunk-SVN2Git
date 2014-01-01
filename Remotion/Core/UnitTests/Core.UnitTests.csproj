@@ -251,8 +251,6 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="AdapterRegistryMock.cs" />
-    <Compile Include="AdapterRegistryTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Collections\CacheFactoryTest.cs" />
     <Compile Include="Collections\CollectionExtensionsTest.cs" />
@@ -283,7 +281,6 @@
     <Compile Include="Diagnostics\ByteValueTest.cs" />
     <Compile Include="Diagnostics\BugReportTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
-    <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\DebugTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\ErrorTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\FatalTest.cs" />

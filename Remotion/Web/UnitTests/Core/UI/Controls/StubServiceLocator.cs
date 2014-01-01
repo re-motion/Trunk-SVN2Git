@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.BridgeInterfaces;
 using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.ServiceLocation;
@@ -39,7 +38,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       _instances.Add (typeof (IInfrastructureResourceUrlFactory), new StubInfrastructureResourceUrlFactory());
       _instances.Add (typeof (IScriptUtility), MockRepository.GenerateStub<IScriptUtility>());
       _instances.Add (typeof (ILogManager), new Log4NetLogManager());
-      _instances.Add (typeof (IAdapterRegistryImplementation), MockRepository.GenerateStub<IAdapterRegistryImplementation> ());
     }
 
     public void SetFactory<T> (T factory)
