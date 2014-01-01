@@ -20,7 +20,6 @@ using System.Diagnostics;
 using System.Web;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Development.Web.ResourceHosting;
-using Remotion.Security;
 
 namespace Remotion.Data.DomainObjects.Web.Test
 {
@@ -45,8 +44,6 @@ namespace Remotion.Data.DomainObjects.Web.Test
     {
       MappingConfiguration mappingConfiguration = MappingConfiguration.Current;
       Trace.WriteLine (mappingConfiguration.GetTypeDefinitions().Length);
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
 
       _resourceVirtualPathProvider = new ResourceVirtualPathProvider (
           new[]

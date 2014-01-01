@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 
 namespace Remotion.SecurityManager.Clients.Web
@@ -25,7 +24,6 @@ namespace Remotion.SecurityManager.Clients.Web
   {
     protected void Application_Start (object sender, EventArgs e)
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
     }
 
     protected void Application_End (object sender, EventArgs e)

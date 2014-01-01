@@ -14,25 +14,31 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
-using Remotion.Data.DomainObjects.ObjectBinding;
-using Remotion.ObjectBinding;
+using NUnit.Framework;
+using Remotion.Development.UnitTesting;
+using Remotion.Security;
+using Remotion.ServiceLocation;
 
-namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
-  public class ObjectBindingBaseTest : ClientTransactionBaseTest
+  [SetUpFixture]
+  public class SetUpFixture
   {
-    public override void SetUp ()
+    private ServiceLocatorScope _serviceLocatorScope;
+
+    [SetUp]
+    public virtual void SetUp ()
     {
-      base.SetUp();
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IObjectSecurityAdapter));
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 
-    public override void TearDown ()
+    [TearDown]
+    public virtual void TearDown ()
     {
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-      base.TearDown();
+      _serviceLocatorScope.Dispose();
     }
   }
 }

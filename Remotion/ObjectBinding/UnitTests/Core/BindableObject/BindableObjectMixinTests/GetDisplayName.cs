@@ -16,7 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Rhino.Mocks;
 using Remotion.Mixins;
@@ -31,6 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
   {
     private MockRepository _mockRepository;
     private IObjectSecurityAdapter _mockObjectSecurityAdapter;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     public override void SetUp ()
     {
@@ -38,13 +41,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
 
       _mockRepository = new MockRepository();
       _mockObjectSecurityAdapter = _mockRepository.StrictMock<IObjectSecurityAdapter>();
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), _mockObjectSecurityAdapter);
+
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IObjectSecurityAdapter), () => _mockObjectSecurityAdapter);
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 
     public override void TearDown ()
     {
       base.TearDown();
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
+      _serviceLocatorScope.Dispose();
     }
 
     [Test]

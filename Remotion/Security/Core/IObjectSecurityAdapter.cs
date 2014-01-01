@@ -30,7 +30,7 @@ namespace Remotion.Security
   /// </note>
   /// </remarks>
   [ConcreteImplementation (typeof (ObjectSecurityAdapter), Lifetime = LifetimeKind.Singleton)]
-  public interface IObjectSecurityAdapter : ISecurityAdapter
+  public interface IObjectSecurityAdapter
   {
     /// <summary>Determines whether read access to a property of <paramref name="securableObject"/> is granted.</summary>
     /// <param name="securableObject">The <see cref="ISecurableObject"/> whose permissions are checked.</param>

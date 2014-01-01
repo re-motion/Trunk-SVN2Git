@@ -19,7 +19,6 @@
 using System;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Development.Web.ResourceHosting;
-using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.ServiceLocation;
 
@@ -38,8 +37,6 @@ namespace Remotion.SecurityManager.Clients.Web.Test
       //defaultServiceLocator.Register (typeof (IOrganizationalStructureEditControlFormGridRowProvider<EditUserControl>), typeof (EditUserControlFormGridRowProvider), LifetimeKind.Singleton);
 
       ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
-
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
 
       _resourceVirtualPathProvider = new ResourceVirtualPathProvider (
           new[]

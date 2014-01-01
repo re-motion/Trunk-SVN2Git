@@ -33,7 +33,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [SetUp]
     public virtual void SetUp ()
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
       BusinessObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), null);
       BusinessObjectProvider.SetProvider (typeof (BindableObjectWithIdentityProviderAttribute), null);
     }

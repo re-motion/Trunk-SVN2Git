@@ -19,11 +19,12 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.Reflection;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObjectMixinTests
@@ -33,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
   {
     private MockRepository _mockRepository;
     private IObjectSecurityAdapter _mockObjectSecurityAdapter;
-    private IPropertyInformation _mockPropertyInformation;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     public override void SetUp ()
     {
@@ -41,14 +42,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
 
       _mockRepository = new MockRepository();
       _mockObjectSecurityAdapter = _mockRepository.StrictMock<IObjectSecurityAdapter>();
-      _mockPropertyInformation = _mockRepository.StrictMock<IPropertyInformation>();
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), _mockObjectSecurityAdapter);
+
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IObjectSecurityAdapter), () => _mockObjectSecurityAdapter);
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 
     public override void TearDown ()
     {
       base.TearDown();
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
+      _serviceLocatorScope.Dispose();
     }
 
     [Test]

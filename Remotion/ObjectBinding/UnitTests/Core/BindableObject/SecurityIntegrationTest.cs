@@ -16,8 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.Security;
 using Remotion.Security.Configuration;
@@ -31,6 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     private ISecurityProvider _securityProviderStub;
     private IPrincipalProvider _principalProviderStub;
     private ISecurityPrincipal _securityPrincipalStub;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     [SetUp]
     public void SetUp ()
@@ -44,13 +47,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       SecurityConfiguration.Current.SecurityProvider = _securityProviderStub;
       SecurityConfiguration.Current.PrincipalProvider = _principalProviderStub;
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IObjectSecurityAdapter), () => new ObjectSecurityAdapter());
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 
     [TearDown]
     public void TearDown ()
     {
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
+      _serviceLocatorScope.Dispose();
     }
 
     [Test]

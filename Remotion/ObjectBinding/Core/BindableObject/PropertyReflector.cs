@@ -19,10 +19,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.ExtensibleEnums;
+using Remotion.FunctionalProgramming;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.Utilities;
 
@@ -50,7 +52,9 @@ namespace Remotion.ObjectBinding.BindableObject
 
       _propertyInfo = propertyInfo;
       _businessObjectProvider = businessObjectProvider;
-      _objectSecurityAdapter =  AdapterRegistry.Instance.GetAdapter<IObjectSecurityAdapter>();
+      _objectSecurityAdapter = SafeServiceLocator.Current.GetAllInstances<IObjectSecurityAdapter>()
+          .SingleOrDefault (() => new InvalidOperationException ("Only a single IObjectSecurityAdapter can be registered."));
+
     }
 
     public IPropertyInformation PropertyInfo

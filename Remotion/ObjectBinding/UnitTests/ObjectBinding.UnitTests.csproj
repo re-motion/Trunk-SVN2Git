@@ -119,6 +119,7 @@
     <Compile Include="Core\BindableObject\IntergrationTests\MixedProperties\TestDomain\MixinClass.cs" />
     <Compile Include="Core\BindableObject\IntergrationTests\MixedProperties\TestDomain\TargetClassWithPrivatelyIntroducedMembers.cs" />
     <Compile Include="Core\BindableObject\IntergrationTests\MixedProperties\TestDomain\TargetClassWithPubliclyIntroducedMembers.cs" />
+    <Compile Include="Core\BindableObject\SetUpFixture.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedListPropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\SingleValuePropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\BusinessObjectPropertyPathTestHelper.cs" />

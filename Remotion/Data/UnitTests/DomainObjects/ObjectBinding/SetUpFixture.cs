@@ -14,16 +14,32 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.BridgeInterfaces;
 
-namespace Remotion.Security
+using System;
+using NUnit.Framework;
+using Remotion.Development.UnitTesting;
+using Remotion.Security;
+using Remotion.ServiceLocation;
+
+namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 {
-  /// <summary>
-  /// Marker interface, used as type parameter for the <see cref="IAdapterRegistryImplementation.SetAdapter"/> and 
-  /// <see cref="IAdapterRegistryImplementation.GetAdapter{T}"/> methods of <see cref="AdapterRegistry"/>.
-  /// </summary>
-  public interface ISecurityAdapter : IAdapter
+  [SetUpFixture]
+  public class SetUpFixture
   {
+    private ServiceLocatorScope _serviceLocatorScope;
+
+    [SetUp]
+    public virtual void SetUp ()
+    {
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IObjectSecurityAdapter));
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
+    }
+
+    [TearDown]
+    public virtual void TearDown ()
+    {
+      _serviceLocatorScope.Dispose();
+    }
   }
 }

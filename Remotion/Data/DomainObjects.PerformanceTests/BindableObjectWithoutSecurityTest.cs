@@ -16,19 +16,30 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
   [TestFixture]
   public class BindableObjectWithoutSecurityTest : BindableObjectTestBase
   {
+    private ServiceLocatorScope _serviceLocatorScope;
+
+    [TestFixtureSetUp]
+    public virtual void TestFixtureSetUp ()
+    {
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IObjectSecurityAdapter));
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
+    }
+
     [SetUp]
     public void SetUp ()
     {
       SecurityConfiguration.Current.SecurityProvider = null;
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
       ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ();
     }
 
@@ -36,6 +47,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public void TearDown ()
     {
       ClientTransactionScope.ResetActiveScope ();
+    }
+
+    [TestFixtureTearDown]
+    public virtual void TestFixtureTearDown ()
+    {
+      _serviceLocatorScope.Dispose();
     }
 
     [Test]

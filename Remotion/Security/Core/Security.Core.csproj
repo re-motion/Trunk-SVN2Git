@@ -10,12 +10,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.Security</RootNamespace>
     <AssemblyName>Remotion.Security</AssemblyName>
-    <FileUpgradeFlags></FileUpgradeFlags>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UpgradeBackupLocation></UpgradeBackupLocation>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -42,7 +44,8 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Remotion.Security.XML</DocumentationFile>
     <NoWarn>1591;0419</NoWarn>
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
@@ -72,7 +75,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Metadata\SecurityMetadataLocalization.xsd">
-      <SubType></SubType>
+      <SubType>
+      </SubType>
     </EmbeddedResource>
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
@@ -96,7 +100,6 @@
     <Compile Include="IObjectSecurityStrategy.cs" />
     <Compile Include="IPrincipalProvider.cs" />
     <Compile Include="ISecurableObject.cs" />
-    <Compile Include="ISecurityAdapter.cs" />
     <Compile Include="ISecurityContext.cs" />
     <Compile Include="ISecurityContextFactory.cs" />
     <Compile Include="ISecurityPrincipal.cs" />
@@ -164,10 +167,12 @@
     <Compile Include="SecurityStrategy.cs" />
     <Compile Include="ThreadPrincipalProvider.cs" />
     <EmbeddedResource Include="Configuration\SecurityConfiguration.xsd">
-      <SubType></SubType>
+      <SubType>
+      </SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Metadata\SecurityMetadata.xsd">
-      <SubType></SubType>
+      <SubType>
+      </SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
