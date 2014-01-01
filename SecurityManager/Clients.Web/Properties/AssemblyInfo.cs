@@ -23,10 +23,8 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-using Remotion.Web.Security;
 
 [assembly: AssemblyTitle ("Remotion Security Manager Web Interface")]
 //[assembly: AssemblyDescription("")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]
-[assembly: EnsureSecuritySupportForWebAssemblies]

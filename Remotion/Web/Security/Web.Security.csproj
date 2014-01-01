@@ -83,7 +83,6 @@
     <Compile Include="ExecutionEngine\WxeDemandTargetPermissionAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeDemandTargetStaticMethodPermissionAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeSecurityAdapter.cs" />
-    <Compile Include="HttpContextPrincipalProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\DemandTargetMethodPermissionAttribute.cs" />
     <Compile Include="UI\DemandTargetPermissionAttribute.cs" />
