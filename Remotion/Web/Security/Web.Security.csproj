@@ -76,13 +76,13 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="EnsureSecuritySupportForWebAssembliesAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeDemandCreatePermissionAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeDemandMethodPermissionAttributeHelper.cs" />
     <Compile Include="ExecutionEngine\WxeDemandTargetMethodPermissionAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeDemandTargetPermissionAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeDemandTargetStaticMethodPermissionAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeSecurityAdapter.cs" />
+    <Compile Include="HttpContextPrincipalProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\DemandTargetMethodPermissionAttribute.cs" />
     <Compile Include="UI\DemandTargetPermissionAttribute.cs" />
