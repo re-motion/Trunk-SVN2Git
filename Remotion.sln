@@ -287,6 +287,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.ExtensibleEnums", "Rem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.ExtensibleEnums.UnitTests", "Remotion\Core\ExtensibleEnums.UnitTests\Core.ExtensibleEnums.UnitTests.csproj", "{66633A01-B399-4AA5-A3B5-8237FF85F8B6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{A289495D-35D0-4C14-A3FA-D9DFE5EF9432}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Domain", "Remotion\Integration\Domain\Integration.Domain.csproj", "{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Web", "Remotion\Integration\Web\Integration.Web.csproj", "{DFCD4E02-5B99-49C3-87AE-613600C71818}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1013,6 +1019,22 @@ Global
 		{66633A01-B399-4AA5-A3B5-8237FF85F8B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{66633A01-B399-4AA5-A3B5-8237FF85F8B6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{66633A01-B399-4AA5-A3B5-8237FF85F8B6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DFCD4E02-5B99-49C3-87AE-613600C71818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFCD4E02-5B99-49C3-87AE-613600C71818}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFCD4E02-5B99-49C3-87AE-613600C71818}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DFCD4E02-5B99-49C3-87AE-613600C71818}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DFCD4E02-5B99-49C3-87AE-613600C71818}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFCD4E02-5B99-49C3-87AE-613600C71818}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFCD4E02-5B99-49C3-87AE-613600C71818}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DFCD4E02-5B99-49C3-87AE-613600C71818}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1108,6 +1130,8 @@ Global
 		{7602CDF2-DD09-4180-9777-1EA5EC0D933C} = {A4439E9E-20EE-4A49-A988-253A66FCEB09}
 		{DE668AD9-4C26-4771-B641-9E4B3E06558A} = {A4439E9E-20EE-4A49-A988-253A66FCEB09}
 		{FFEF40DB-3E0C-4F8A-BC6D-4483ACE3A136} = {A4439E9E-20EE-4A49-A988-253A66FCEB09}
+		{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17} = {A289495D-35D0-4C14-A3FA-D9DFE5EF9432}
+		{DFCD4E02-5B99-49C3-87AE-613600C71818} = {A289495D-35D0-4C14-A3FA-D9DFE5EF9432}
 	EndGlobalSection
 	GlobalSection(TextTemplating) = postSolution
 		TextTemplating = 1
