@@ -18,6 +18,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Remotion.FunctionalProgramming;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -186,7 +188,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public static string ShortName (this StateDefinition stateDefinition)
     {
-      return stateDefinition.Name.LeftUntilChar ('|');
+      return stateDefinition.Name.Split ('|').First();
       //return stateDefinition.DisplayName;
     }
   }
@@ -195,7 +197,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public static string ShortName (this SecurableClassDefinition securableClassDefinition)
     {
-      return securableClassDefinition.Name.RightUntilChar ('.');
+      return securableClassDefinition.Name.Split ('.').Last();
       //return securableClassDefinition.DisplayName;
     }
   }

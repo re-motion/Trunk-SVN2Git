@@ -190,7 +190,7 @@ namespace Remotion.Utilities.ConsoleApplication
     {
       try
       {
-        string applicationName = Process.GetCurrentProcess().MainModule.FileName.RightUntilChar('\\');
+        string applicationName = Path.GetFileName (Process.GetCurrentProcess().MainModule.FileName);
         _synopsis = _parser.GetAsciiSynopsis (applicationName, _bufferWidth);
       }
       catch (Exception e)
