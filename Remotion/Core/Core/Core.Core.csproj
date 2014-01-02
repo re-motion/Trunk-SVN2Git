@@ -513,9 +513,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\UtcNowProvider.cs" />
-    <Compile Include="Utilities\WorkContext.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Xml\SchemaLoaderBase.cs" />
     <Compile Include="Xml\XmlSchemaValidationErrorInfo.cs" />
     <Compile Include="Xml\XmlSchemaValidationHandler.cs">
@@ -539,7 +536,6 @@
     <Content Include="doc\include\Logging\Log4NetTraceListener.xml" />
     <Content Include="doc\include\Remotion.NamespaceDoc.xml" />
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
-    <Content Include="doc\include\Utilities\WorkContext.xml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

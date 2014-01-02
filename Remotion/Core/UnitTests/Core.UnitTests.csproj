@@ -582,9 +582,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\UtcNowProviderTest.cs" />
-    <Compile Include="Utilities\WorkContextTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Xml\SampleClass.cs" />
     <Compile Include="Xml\SchemaLoaderBaseMock.cs">
       <SubType>Code</SubType>

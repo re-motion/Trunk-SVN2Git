@@ -87,6 +87,7 @@
     <Compile Include="Reflection\TestDomain\Struct.cs" />
     <Compile Include="Reflection\TestDomain\TestClass.cs" />
     <Compile Include="Reflection\TypesafeActivatorTest.cs" />
+    <Compile Include="Utilities\WorkContextTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\remotion.snk">
@@ -114,9 +115,7 @@
       <Name>Core.Extensions</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utilities\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
