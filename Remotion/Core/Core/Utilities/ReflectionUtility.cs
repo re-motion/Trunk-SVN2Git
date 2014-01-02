@@ -271,7 +271,7 @@ namespace Remotion.Utilities
     /// <param name="ascribeeType">The <see cref="Type"/> to check the <paramref name="type"/> against. Must not be <see langword="null" />.</param>
     /// <returns>A <see cref="Type"/> array containing the generic arguments of the <paramref name="ascribeeType"/> as it is inherited or implemented
     /// by <paramref name="type"/>.</returns>
-    /// <exception cref="ArgumentTypeException">
+    /// <exception cref="ArgumentException">
     /// Thrown if the <paramref name="type"/> is not the <paramref name="ascribeeType"/> or its instantiation, its subclass or the implementation
     /// of an interface in case the <paramref name="ascribeeType"/> is an interface.
     /// </exception>

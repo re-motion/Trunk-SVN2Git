@@ -261,7 +261,7 @@ namespace Remotion.Data.DomainObjects
     /// A <see cref="Type"/> if the <paramref name="type"/> is a closed <see cref="ObjectList{T}"/> or <see langword="null"/> if the generic 
     /// <see cref="ObjectList{T}"/> is open.
     /// </returns>
-    /// <exception cref="ArgumentTypeException">
+    /// <exception cref="ArgumentException">
     /// Thrown if the type is not an <see cref="ObjectList{T}"/> or derived from <see cref="ObjectList{T}"/>.
     /// </exception>
     public static Type GetObjectListTypeParameter (Type type)

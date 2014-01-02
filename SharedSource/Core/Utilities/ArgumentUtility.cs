@@ -185,7 +185,7 @@ namespace Remotion.Utilities
     ///// <summary>Returns the value itself if it is not <see langword="null"/> and of the specified value type.</summary>
     ///// <typeparam name="TExpected"> The type that <paramref name="actualValue"/> must have. </typeparam>
     ///// <exception cref="ArgumentNullException"> <paramref name="actualValue"/> is <see langword="null"/>.</exception>
-    ///// <exception cref="ArgumentTypeException"> <paramref name="actualValue"/> is an instance of another type (which is not a subclass of <typeparamref name="TExpected"/>).</exception>
+    ///// <exception cref="ArgumentException"> <paramref name="actualValue"/> is an instance of another type (which is not a subclass of <typeparamref name="TExpected"/>).</exception>
     //public static TExpected CheckNotNullAndType<TExpected> (string argumentName, object actualValue)
     //  where TExpected: class
     //{

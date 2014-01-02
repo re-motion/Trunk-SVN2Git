@@ -420,7 +420,7 @@ namespace Remotion.Data.DomainObjects
     /// <returns>The zero-based index where the <paramref name="domainObject"/> has been added.</returns>
     /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentTypeException"><paramref name="domainObject"/> is not of type <see cref="RequiredItemType"/> or one of its derived types.</exception>
+    /// <exception cref="ArgumentException"><paramref name="domainObject"/> is not of type <see cref="RequiredItemType"/> or one of its derived types.</exception>
     /// <exception cref="DataManagement.ClientTransactionsDifferException">
     ///   <paramref name="domainObject"/> belongs to a <see cref="ClientTransaction"/> that is different from the <see cref="ClientTransaction"/> 
     ///   managing this collection. 
@@ -439,11 +439,15 @@ namespace Remotion.Data.DomainObjects
     /// Adds a range of <see cref="DomainObject"/> instances to this collection, calling <see cref="Add"/> for each single item.
     /// </summary>
     /// <param name="domainObjects">The domain objects to add.</param>
-    /// <exception cref="ArgumentNullException">The <paramref name="domainObjects"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentItemNullException">The range contains a <see langword="null"/> element.</exception>
-    /// <exception cref="ArgumentItemDuplicateException">The range contains a duplicate element.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// The <paramref name="domainObjects"/> parameter is <see langword="null"/>.<para>- or -</para>
+    /// The range contains a <see langword="null"/> element.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The range contains a duplicate element.<para>- or -</para>
+    /// An element in the range is not of type <see cref="RequiredItemType"/> or one of its derived types.
+    /// </exception>
     /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
-    /// <exception cref="ArgumentItemTypeException">An element in the range is not of type <see cref="RequiredItemType"/> or one of its derived types.</exception>
     /// <exception cref="DataManagement.ClientTransactionsDifferException">
     ///   An element in the range belongs to a <see cref="ClientTransaction"/> that is different from the <see cref="ClientTransaction"/> 
     ///   managing this collection. 
