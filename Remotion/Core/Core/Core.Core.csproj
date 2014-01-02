@@ -385,7 +385,6 @@
     <Compile Include="Collections\AutoInitDictionary.cs" />
     <Compile Include="Collections\MultiDictionary.cs" />
     <Compile Include="Collections\LockingCacheDecorator.cs" />
-    <Compile Include="Collections\Set.cs" />
     <Compile Include="Configuration\ConfigurationElementCollection.cs" />
     <Compile Include="Configuration\ConfigurationWrapper.cs" />
     <Compile Include="Configuration\ConfigurationWrapperFromConfigurationObject.cs" />

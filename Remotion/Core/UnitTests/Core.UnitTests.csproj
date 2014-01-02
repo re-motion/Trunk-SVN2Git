@@ -397,7 +397,6 @@
     <Compile Include="Collections\SimpleDataStoreTest.cs" />
     <Compile Include="Context\CallContextStorageProviderTest.cs" />
     <Compile Include="Collections\LockingCacheDecoratorTest.cs" />
-    <Compile Include="Collections\SetTest.cs" />
     <Compile Include="Collections\AutoInitDictionaryTest.cs" />
     <Compile Include="Configuration\ConstructorException.cs" />
     <Compile Include="Configuration\ThrowingFakeProvider.cs" />
