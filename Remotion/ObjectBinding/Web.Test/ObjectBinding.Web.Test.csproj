@@ -138,6 +138,10 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Extensions\Core.Extensions.csproj">
+      <Project>{25811F76-8D00-496D-AFD0-8225569F666D}</Project>
+      <Name>Core.Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Development\Web\Development.Web.csproj">
       <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
       <Name>Development.Web</Name>

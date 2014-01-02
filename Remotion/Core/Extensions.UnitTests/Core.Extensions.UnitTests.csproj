@@ -87,6 +87,8 @@
     <Compile Include="Reflection\TestDomain\Struct.cs" />
     <Compile Include="Reflection\TestDomain\TestClass.cs" />
     <Compile Include="Reflection\TypesafeActivatorTest.cs" />
+    <Compile Include="Text\IdentifierGeneratorTest.cs" />
+    <Compile Include="Text\StringExtensions\StringExtensionsTest.cs" />
     <Compile Include="Utilities\WorkContextTest.cs" />
   </ItemGroup>
   <ItemGroup>

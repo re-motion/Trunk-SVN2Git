@@ -373,6 +373,9 @@
     <Compile Include="ServiceLocation\TestDomain\ITestTypeWithTooManyPublicConstructors.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConcreteImplementationAttributeType.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionForServiceWithoutConcreteImplementationAttribute.cs" />
+    <Compile Include="Text\MonospaceTextFormatTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\AppDomainAssemblyResolverTest.cs" />
     <Compile Include="Reflection\MethodResolverTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromEventInfoTest.cs" />
@@ -466,16 +469,6 @@
     <Compile Include="Text\CommandLine\CommandLineParserTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Text\IdentifierGeneratorTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\MonospaceTextFormatTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\SimpleParserTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\StringExtensions\StringExtensionsTest.cs" />
     <Compile Include="Utilities\AdvancedEnumConverterTest.cs">
       <SubType>Code</SubType>
     </Compile>

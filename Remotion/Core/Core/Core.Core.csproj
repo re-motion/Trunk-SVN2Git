@@ -313,6 +313,9 @@
     <Compile Include="SharedSource\ResharperAnnotations\AssertionConditionType.cs" />
     <Compile Include="SharedSource\ResharperAnnotations\ImplicitUseKindFlags.cs" />
     <Compile Include="SharedSource\ResharperAnnotations\ImplicitUseTargetFlags.cs" />
+    <Compile Include="Text\MonospaceTextFormat.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\AssertionException.cs" />
     <Compile Include="Utilities\Assertion.Partial.cs" />
     <Compile Include="Utilities\EqualityUtility.Partial.cs" />
@@ -450,13 +453,6 @@
     <Compile Include="Text\CommandLine\Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Text\IdentifierGenerator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\MonospaceTextFormat.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\StringExtensions\StringExtensions.cs" />
     <Compile Include="Utilities\AppDomainAssemblyResolver.cs" />
     <Compile Include="Utilities\AppDomainRunnerBase.cs" />
     <Compile Include="Utilities\AttributeUtility.Partial.cs" />
