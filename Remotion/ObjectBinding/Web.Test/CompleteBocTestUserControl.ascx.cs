@@ -33,8 +33,8 @@ public class CompleteBocUserControl :
     IFormGridRowProvider //  Provides new rows and rows to hide to the FormGridManager
 {
 
-  private AutoInitHashtable _listOfFormGridRowInfos = new AutoInitHashtable (typeof (FormGridRowInfoCollection));
-  private AutoInitHashtable _listOfHiddenRows = new AutoInitHashtable (typeof (StringCollection));
+  private AutoInitDictionary<HtmlTable,FormGridRowInfoCollection> _listOfFormGridRowInfos = new AutoInitDictionary<HtmlTable,FormGridRowInfoCollection>();
+  private AutoInitDictionary<HtmlTable,StringCollection> _listOfHiddenRows = new AutoInitDictionary<HtmlTable,StringCollection>();
 
   protected BocTextValue FirstNameField;
   protected BocTextValue LastNameField;

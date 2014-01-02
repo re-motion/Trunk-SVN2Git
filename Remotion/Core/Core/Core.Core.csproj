@@ -397,7 +397,6 @@
     <Compile Include="Design\DesignModeHelperBase.cs" />
     <Compile Include="Design\EnvDteDesignModeHelper.cs" />
     <Compile Include="DoubleCheckedLockingContainer.cs" />
-    <Compile Include="Collections\ArrayComparer.cs" />
     <Compile Include="Logging\Log4NetLog.cs" />
     <Compile Include="Logging\Log4NetLogManager.cs" />
     <Compile Include="Logging\Log4NetTraceListener.cs" />
@@ -405,9 +404,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Collections\Cache.cs" />
-    <Compile Include="Collections\AutoInitHashtable.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Collections\NullCache.cs" />
     <Compile Include="Collections\NameObjectCollection.cs">
       <SubType>Code</SubType>

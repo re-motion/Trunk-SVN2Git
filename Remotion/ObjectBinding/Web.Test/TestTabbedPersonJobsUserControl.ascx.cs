@@ -34,10 +34,8 @@ public class TestTabbedPersonJobsUserControl :
   protected BocMultilineTextValue MultilineTextField;
 
   protected BindableObjectDataSourceControl CurrentObject;
-  private AutoInitHashtable _listOfFormGridRowInfos =
-      new AutoInitHashtable (typeof (FormGridRowInfoCollection));
-  private AutoInitHashtable _listOfHiddenRows = 
-      new AutoInitHashtable (typeof (StringCollection));
+  private AutoInitDictionary<HtmlTable,FormGridRowInfoCollection> _listOfFormGridRowInfos = new AutoInitDictionary<HtmlTable,FormGridRowInfoCollection>();
+  private AutoInitDictionary<HtmlTable,StringCollection> _listOfHiddenRows = new AutoInitDictionary<HtmlTable,StringCollection>();
   private Control _incomeField;
 
   protected override void OnLoad(EventArgs e)

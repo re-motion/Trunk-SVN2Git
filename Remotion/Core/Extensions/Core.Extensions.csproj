@@ -56,6 +56,8 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Collections\ArrayComparer.cs" />
+    <Compile Include="Collections\AutoInitHashtable.cs" />
     <Compile Include="Diagnostics\ByteValue.cs" />
     <Compile Include="Diagnostics\DebuggerInterface.cs" />
     <Compile Include="Diagnostics\IDebuggerInterface.cs" />

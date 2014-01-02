@@ -39,8 +39,8 @@ public class TestTabbedPersonDetailsUserControl :
   protected BocEnumValue MarriageStatusField;
   protected HtmlTable FormGrid;
   protected PlaceHolder ExtraFormGridPlaceHolder;
-  private AutoInitHashtable _listOfFormGridRowInfos = new AutoInitHashtable (typeof (FormGridRowInfoCollection));
-  private AutoInitHashtable _listOfHiddenRows = new AutoInitHashtable (typeof (StringCollection));
+  private AutoInitDictionary<HtmlTable,FormGridRowInfoCollection> _listOfFormGridRowInfos = new AutoInitDictionary<HtmlTable,FormGridRowInfoCollection>();
+  private AutoInitDictionary<HtmlTable,StringCollection> _listOfHiddenRows = new AutoInitDictionary<HtmlTable,StringCollection>();
 
   public override IBusinessObjectDataSourceControl DataSource
   {
