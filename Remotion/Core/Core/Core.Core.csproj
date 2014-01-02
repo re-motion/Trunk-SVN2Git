@@ -335,7 +335,6 @@
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapper.cs" />
     <Compile Include="Collections\DictionaryExtensions.cs" />
     <Compile Include="Collections\ListAdapter.cs" />
-    <Compile Include="Collections\SetBasedCacheKey.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileIncludeRootAssemblyElement.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElement.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileRootAssemblyElement.cs" />

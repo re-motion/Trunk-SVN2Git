@@ -59,6 +59,7 @@
     <Compile Include="Collections\ArrayComparer.cs" />
     <Compile Include="Collections\AutoInitHashtable.cs" />
     <Compile Include="Collections\Set.cs" />
+    <Compile Include="Collections\SetBasedCacheKey.cs" />
     <Compile Include="Diagnostics\ByteValue.cs" />
     <Compile Include="Diagnostics\DebuggerInterface.cs" />
     <Compile Include="Diagnostics\IDebuggerInterface.cs" />
