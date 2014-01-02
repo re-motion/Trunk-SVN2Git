@@ -270,7 +270,6 @@
     <Compile Include="Configuration\TypeDiscovery\IntegrationTests\SpecificRootAssemblies\SpecificRootAssembliesAreNotSubjectToApplicationFilterTest.cs" />
     <Compile Include="Context\SafeContextIntegrationTest.cs" />
     <Compile Include="Context\SafeContextTest.cs" />
-    <Compile Include="Collections\SetBasedCacheKeyTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElementCollectionTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileRootAssemblyElementCollectionTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\FakeRootAssemblyFinder.cs" />
