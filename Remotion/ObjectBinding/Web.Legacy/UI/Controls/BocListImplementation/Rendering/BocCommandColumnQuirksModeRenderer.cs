@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       if (renderingContext.ColumnDefinition.Icon.HasRenderingInformation)
         renderingContext.ColumnDefinition.Icon.Render (renderingContext.Writer, renderingContext.Control);
 
-      if (!StringUtility.IsNullOrEmpty (renderingContext.ColumnDefinition.Text))
+      if (!string.IsNullOrEmpty (renderingContext.ColumnDefinition.Text))
         renderingContext.Writer.Write (renderingContext.ColumnDefinition.Text); // Do not HTML encode
     }
 

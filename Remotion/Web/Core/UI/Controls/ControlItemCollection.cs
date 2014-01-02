@@ -212,7 +212,7 @@ namespace Remotion.Web.UI.Controls
     /// <returns> An <see cref="IControlItem"/> or <see langword="null"/> if no matching item was found. </returns>
     public IControlItem Find (string id)
     {
-      if (StringUtility.IsNullOrEmpty (id))
+      if (string.IsNullOrEmpty (id))
         return null;
 
       for (int i = 0; i < InnerList.Count; i++)

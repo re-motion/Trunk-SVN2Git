@@ -152,7 +152,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       bool hasIcon = icon.HasRenderingInformation;
-      bool hasText = !StringUtility.IsNullOrEmpty (text);
+      bool hasText = !string.IsNullOrEmpty (text);
 
       if (hasIcon && hasText)
       {
@@ -161,7 +161,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       }
       else if (hasIcon)
       {
-        bool hasAlternateText = !StringUtility.IsNullOrEmpty (icon.AlternateText);
+        bool hasAlternateText = !string.IsNullOrEmpty (icon.AlternateText);
         if (!hasAlternateText)
           icon.AlternateText = renderingContext.Control.GetResourceManager().GetString (alternateText);
 

@@ -99,7 +99,7 @@ namespace Remotion.ObjectBinding
     /// <returns> An <see cref="IEnumerationValueInfo"/> or <see langword="null"/>. </returns>
     public IEnumerationValueInfo GetValueInfoByIdentifier (string identifier)
     {
-      if (StringUtility.IsNullOrEmpty (identifier))
+      if (string.IsNullOrEmpty (identifier))
         return null;
       else if (identifier == _enumInfoTrue.Identifier)
         return _enumInfoTrue;

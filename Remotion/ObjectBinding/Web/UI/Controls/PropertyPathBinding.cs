@@ -106,7 +106,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (_propertyPath != null)
         return _propertyPath;
 
-      if (StringUtility.IsNullOrEmpty (_propertyPathIdentifier))
+      if (string.IsNullOrEmpty (_propertyPathIdentifier))
       {
         _propertyPath = new NullBusinessObjectPropertyPath();
       }

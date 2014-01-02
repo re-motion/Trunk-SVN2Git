@@ -45,7 +45,7 @@ namespace Remotion.Web.UI.Controls
     {
       string text = GetControlValidationValue (ControlToValidate);
 
-      if (StringUtility.IsNullOrEmpty (text))
+      if (string.IsNullOrEmpty (text))
         return true;
 
       switch (_dataType)

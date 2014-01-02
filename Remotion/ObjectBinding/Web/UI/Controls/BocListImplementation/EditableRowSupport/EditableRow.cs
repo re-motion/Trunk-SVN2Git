@@ -418,9 +418,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
       if (editModeControlStyle != null)
       {
-        if (StringUtility.IsNullOrEmpty (editModeControlStyle["width"]) && isEditModeControlWidthEmpty)
+        if (string.IsNullOrEmpty (editModeControlStyle["width"]) && isEditModeControlWidthEmpty)
           editModeControlStyle["width"] = "100%";
-        if (StringUtility.IsNullOrEmpty (editModeControlStyle["vertical-align"]))
+        if (string.IsNullOrEmpty (editModeControlStyle["vertical-align"]))
           editModeControlStyle["vertical-align"] = "middle";
       }        
 
@@ -446,7 +446,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
           isCellValid &= validator.IsValid;
           if (! validator.IsValid)
           {
-            if (StringUtility.IsNullOrEmpty (validationErrorMarker.ToolTip))
+            if (string.IsNullOrEmpty (validationErrorMarker.ToolTip))
             {
               validationErrorMarker.ToolTip = validator.ErrorMessage;
             }
@@ -484,7 +484,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
                && validator.Display == ValidatorDisplay.None
                && ! _editModeHost.DisableEditModeValidationMessages)
         {
-          if (! StringUtility.IsNullOrEmpty (validator.CssClass))
+          if (! string.IsNullOrEmpty (validator.CssClass))
             writer.AddAttribute (HtmlTextWriterAttribute.Class, validator.CssClass);
           else
             writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassEditModeValidationMessage);

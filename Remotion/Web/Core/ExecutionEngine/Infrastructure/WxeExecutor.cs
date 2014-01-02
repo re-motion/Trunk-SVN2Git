@@ -142,7 +142,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
             throw new InvalidOperationException ("The IWxePage has no PostBackCollection even though this is a post back.");
           return false;
         }
-        return !StringUtility.IsNullOrEmpty (postBackCollection[ControlHelper.PostEventSourceID]);
+        return !string.IsNullOrEmpty (postBackCollection[ControlHelper.PostEventSourceID]);
       }
     }
 

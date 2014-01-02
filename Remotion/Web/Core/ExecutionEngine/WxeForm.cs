@@ -38,15 +38,15 @@ namespace Remotion.Web.ExecutionEngine
     {
       WxeForm newForm = new WxeForm ();
 
-      if (!StringUtility.IsNullOrEmpty (htmlForm.Method))
+      if (!string.IsNullOrEmpty (htmlForm.Method))
         newForm.Method = htmlForm.Method;
-      if (!StringUtility.IsNullOrEmpty (htmlForm.Enctype))
+      if (!string.IsNullOrEmpty (htmlForm.Enctype))
         newForm.Enctype = htmlForm.Enctype;
-      if (!StringUtility.IsNullOrEmpty (htmlForm.Target))
+      if (!string.IsNullOrEmpty (htmlForm.Target))
         newForm.Target = htmlForm.Target;
-      if (!StringUtility.IsNullOrEmpty (htmlForm.DefaultButton))
+      if (!string.IsNullOrEmpty (htmlForm.DefaultButton))
         newForm.DefaultButton = htmlForm.DefaultButton;
-      if (!StringUtility.IsNullOrEmpty (htmlForm.DefaultFocus))
+      if (!string.IsNullOrEmpty (htmlForm.DefaultFocus))
         newForm.DefaultFocus = htmlForm.DefaultFocus;
 
       while (htmlForm.Controls.Count > 0)

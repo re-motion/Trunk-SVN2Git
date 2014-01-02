@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (_customCell == null)
         {
-          if (StringUtility.IsNullOrEmpty (_customCellType))
+          if (string.IsNullOrEmpty (_customCellType))
           {
             throw new InvalidOperationException (
                 string.Format (
@@ -192,7 +192,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        bool isTitleEmpty = StringUtility.IsNullOrEmpty (ColumnTitle);
+        bool isTitleEmpty = string.IsNullOrEmpty (ColumnTitle);
 
         if (! isTitleEmpty)
           return ColumnTitle;
@@ -479,7 +479,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _arguments = arguments;
 
       string propertyValuePairs = arguments.ColumnDefinition.CustomCellArgument;
-      if (! StringUtility.IsNullOrEmpty (propertyValuePairs))
+      if (! string.IsNullOrEmpty (propertyValuePairs))
       {
         NameValueCollection values = new NameValueCollection();
         StringUtility.ParsedItem[] items = StringUtility.ParseSeparatedList (propertyValuePairs, ',');

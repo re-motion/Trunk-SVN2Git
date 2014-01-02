@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
         return new string ((char) 9679, 5);
 
       string text;
-      if (textMode == BocTextBoxMode.MultiLine && !StringUtility.IsNullOrEmpty (renderingContext.Control.Text))
+      if (textMode == BocTextBoxMode.MultiLine && !string.IsNullOrEmpty (renderingContext.Control.Text))
       {
         //  Allows for an optional \r
         string temp = renderingContext.Control.Text.Replace ("\r", "");
@@ -100,7 +100,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       else
         text = HttpUtility.HtmlEncode (renderingContext.Control.Text);
 
-      if (StringUtility.IsNullOrEmpty (text) && renderingContext.Control.IsDesignMode)
+      if (string.IsNullOrEmpty (text) && renderingContext.Control.IsDesignMode)
       {
         text = c_designModeEmptyLabelContents;
         //  Too long, can't resize in designer to less than the content's width

@@ -147,7 +147,7 @@ public class ValidationError
     if (_validatedControl != null)
       label.Attributes["for"] = _validatedControl.ClientID;
 
-    if (! StringUtility.IsNullOrEmpty (cssClass))
+    if (! string.IsNullOrEmpty (cssClass))
       label.Attributes ["class"] = cssClass;
 
     return label;
@@ -167,7 +167,7 @@ public class ValidationError
     if (_validatedControl != null)
       hyperLink.Attributes.Add ("href", "#" + _validatedControl.ClientID);
 
-    if (! StringUtility.IsNullOrEmpty (cssClass))
+    if (! string.IsNullOrEmpty (cssClass))
       hyperLink.CssClass = cssClass;
 
     return hyperLink;
@@ -203,7 +203,7 @@ public class ValidationError
   private HtmlGenericControl ToGenericControl (string cssClass, string tag)
   {
     HtmlGenericControl genericControl = new HtmlGenericControl (tag);
-    if (! StringUtility.IsNullOrEmpty (cssClass))
+    if (! string.IsNullOrEmpty (cssClass))
       genericControl.Attributes["class"] = cssClass;
     genericControl.InnerText = ValidationMessage;
     return genericControl;

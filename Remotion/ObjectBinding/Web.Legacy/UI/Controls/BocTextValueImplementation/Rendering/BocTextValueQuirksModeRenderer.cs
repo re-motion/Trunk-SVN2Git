@@ -85,7 +85,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
 
       string text;
       if (textMode == BocTextBoxMode.MultiLine
-          && !StringUtility.IsNullOrEmpty (renderingContext.Control.Text))
+          && !string.IsNullOrEmpty (renderingContext.Control.Text))
       {
         //  Allows for an optional \r
         string temp = renderingContext.Control.Text.Replace ("\r", "");
@@ -97,7 +97,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
       else
         text = HttpUtility.HtmlEncode (renderingContext.Control.Text);
 
-      if (StringUtility.IsNullOrEmpty (text))
+      if (string.IsNullOrEmpty (text))
       {
         if (renderingContext.Control.IsDesignMode)
         {

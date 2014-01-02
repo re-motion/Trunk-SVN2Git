@@ -92,12 +92,12 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("postCollection", postCollection);
 
       string eventTarget = postCollection[ControlHelper.PostEventSourceID];
-      bool isScriptedPostBack = !StringUtility.IsNullOrEmpty (eventTarget);
+      bool isScriptedPostBack = !string.IsNullOrEmpty (eventTarget);
       if (!isScriptedPostBack && IsLegacyButtonEnabled)
       {
         // The button can only fire a click event if client script is active or the button is used in legacy mode
         // A more general fallback is not possible becasue of compatibility issues with ExecuteFunctionNoRepost
-        bool isSuccessfulControl = !StringUtility.IsNullOrEmpty (postCollection[postDataKey]);
+        bool isSuccessfulControl = !string.IsNullOrEmpty (postCollection[postDataKey]);
         if (isSuccessfulControl)
           Page.RegisterRequiresRaiseEvent (this);
       }
@@ -266,7 +266,7 @@ namespace Remotion.Web.UI.Controls
       else
       {
         bool hasIcon = _icon != null && _icon.HasRenderingInformation;
-        bool hasText = !StringUtility.IsNullOrEmpty (text);
+        bool hasText = !string.IsNullOrEmpty (text);
         if (hasIcon)
         {
           writer.AddAttribute (HtmlTextWriterAttribute.Src, _icon.Url);
@@ -311,15 +311,15 @@ namespace Remotion.Web.UI.Controls
 
       //  Dispatch simple properties
       string key = ResourceManagerUtility.GetGlobalResourceKey (Text);
-      if (!StringUtility.IsNullOrEmpty (key))
+      if (!string.IsNullOrEmpty (key))
         Text = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (AccessKey);
-      if (!StringUtility.IsNullOrEmpty (key))
+      if (!string.IsNullOrEmpty (key))
         AccessKey = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (ToolTip);
-      if (!StringUtility.IsNullOrEmpty (key))
+      if (!string.IsNullOrEmpty (key))
         ToolTip = resourceManager.GetString (key);
 
       if (Icon != null)

@@ -88,7 +88,7 @@ namespace Remotion.Web.ExecutionEngine
       if (mappingEntry == null)
       {
         string defaultWxeHandler = Configuration.WebConfiguration.Current.ExecutionEngine.DefaultWxeHandler;
-        if (StringUtility.IsNullOrEmpty (defaultWxeHandler))
+        if (string.IsNullOrEmpty (defaultWxeHandler))
         {
           if (fallbackOnCurrentUrl)
             path = httpContext.Request.Url.AbsolutePath;
@@ -360,7 +360,7 @@ namespace Remotion.Web.ExecutionEngine
         int count = GetMergeablePermanentUrlCount (permanentUrl, parentPermanentUrls, maxLength);
         string parentPermanentUrl = FormatParentPermanentUrl (parentPermanentUrls, count);
 
-        if (!StringUtility.IsNullOrEmpty (parentPermanentUrl))
+        if (!string.IsNullOrEmpty (parentPermanentUrl))
           permanentUrl = UrlUtility.AddParameter (permanentUrl, WxeHandler.Parameters.ReturnUrl, parentPermanentUrl, _httpContext.Response.ContentEncoding);
       }
       return permanentUrl;
@@ -404,12 +404,12 @@ namespace Remotion.Web.ExecutionEngine
     {
       StringCollection returnUrls = new StringCollection ();
 
-      while (!StringUtility.IsNullOrEmpty (url))
+      while (!string.IsNullOrEmpty (url))
       {
         string currentUrl = url;
         url = UrlUtility.GetParameter (currentUrl, WxeHandler.Parameters.ReturnUrl, _httpContext.Request.ContentEncoding);
 
-        if (!StringUtility.IsNullOrEmpty (url))
+        if (!string.IsNullOrEmpty (url))
           currentUrl = UrlUtility.DeleteParameter (currentUrl, WxeHandler.Parameters.ReturnUrl);
 
         returnUrls.Add (currentUrl);
@@ -426,7 +426,7 @@ namespace Remotion.Web.ExecutionEngine
       for (int i = count - 1; i >= 0; i--)
       {
         string temp = parentPermanentUrls[i];
-        if (StringUtility.IsNullOrEmpty (parentPermanentUrl))
+        if (string.IsNullOrEmpty (parentPermanentUrl))
         {
           parentPermanentUrl = temp;
         }

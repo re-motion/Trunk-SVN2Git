@@ -108,7 +108,7 @@ public class FormGridLabel: Label, ISmartControl
       return;
 
     string key = ResourceManagerUtility.GetGlobalResourceKey (Text);
-    if (!StringUtility.IsNullOrEmpty (key))
+    if (!string.IsNullOrEmpty (key))
       Text = resourceManager.GetString (key);
   }
 

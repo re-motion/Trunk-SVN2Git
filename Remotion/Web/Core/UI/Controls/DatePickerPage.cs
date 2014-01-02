@@ -123,7 +123,7 @@ public class DatePickerPage : Page
     //  Initalize the calendar
     try
     {
-      if (! StringUtility.IsNullOrEmpty (dateValue))
+      if (! string.IsNullOrEmpty (dateValue))
       {
         Calendar.SelectedDate = DateTime.Parse (dateValue);
         Calendar.VisibleDate = Calendar.SelectedDate;

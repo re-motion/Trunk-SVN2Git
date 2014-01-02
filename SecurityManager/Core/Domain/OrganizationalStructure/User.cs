@@ -160,10 +160,10 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       string formattedName = LastName;
 
-      if (!StringUtility.IsNullOrEmpty (FirstName))
+      if (!string.IsNullOrEmpty (FirstName))
         formattedName += " " + FirstName;
 
-      if (!StringUtility.IsNullOrEmpty (Title))
+      if (!string.IsNullOrEmpty (Title))
         formattedName += ", " + Title;
 
       return formattedName;

@@ -164,7 +164,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       InvalidateTreeNodes ();
       InitializeRootWebTreeNodes ();
 
-      if (!StringUtility.IsNullOrEmpty (selectedNodePath))
+      if (!string.IsNullOrEmpty (selectedNodePath))
       {
         string[] pathSegments;
         selectedNode = (BocTreeNode) _treeView.ParseNodePath (selectedNodePath, out pathSegments);
@@ -179,7 +179,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override void AddAttributesToRender (HtmlTextWriter writer)
     {
       base.AddAttributesToRender (writer);
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
+      if (string.IsNullOrEmpty (CssClass) && string.IsNullOrEmpty (Attributes["class"]))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 

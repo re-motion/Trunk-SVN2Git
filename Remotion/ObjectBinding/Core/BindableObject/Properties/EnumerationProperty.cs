@@ -104,7 +104,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// </returns>
     public IEnumerationValueInfo GetValueInfoByIdentifier (string identifier, IBusinessObject businessObject)
     {
-      if (StringUtility.IsNullOrEmpty (identifier))
+      if (string.IsNullOrEmpty (identifier))
         return null;
 
       return GetValueInfoByValue (StringUtility.Parse (UnderlyingType, identifier, null), businessObject);

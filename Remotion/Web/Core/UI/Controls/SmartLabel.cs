@@ -153,7 +153,7 @@ public class SmartLabel: WebControl, IControl
 
   public string GetText()
   {
-    if (! StringUtility.IsNullOrEmpty (_text))
+    if (! string.IsNullOrEmpty (_text))
       return _text;
 
     string forControlBackUp = ForControl;
@@ -212,7 +212,7 @@ public class SmartLabel: WebControl, IControl
       return;
 
     string key = ResourceManagerUtility.GetGlobalResourceKey (Text);
-    if (!StringUtility.IsNullOrEmpty (key))
+    if (!string.IsNullOrEmpty (key))
       Text = resourceManager.GetString (key);
   }
 

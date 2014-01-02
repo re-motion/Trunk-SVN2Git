@@ -128,7 +128,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       notNullItemValidator.ControlToValidate = ID;
       notNullItemValidator.ValueToCompare = c_nullString;
       notNullItemValidator.Operator = ValidationCompareOperator.NotEqual;
-      if (StringUtility.IsNullOrEmpty (_errorMessage))
+      if (string.IsNullOrEmpty (_errorMessage))
         notNullItemValidator.ErrorMessage = GetResourceManager ().GetString (ResourceIdentifier.NullItemValidationMessage);
       else
         notNullItemValidator.ErrorMessage = _errorMessage;
@@ -413,19 +413,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       string key;
       key = ResourceManagerUtility.GetGlobalResourceKey (TrueDescription);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         TrueDescription = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (FalseDescription);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         FalseDescription = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (NullDescription);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         NullDescription = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         ErrorMessage = resourceManager.GetString (key);
     }
 

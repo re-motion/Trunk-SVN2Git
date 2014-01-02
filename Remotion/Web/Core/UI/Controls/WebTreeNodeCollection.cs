@@ -55,7 +55,7 @@ namespace Remotion.Web.UI.Controls
       WebTreeNode node = ArgumentUtility.CheckNotNullAndType<WebTreeNode> ("value", value);
 
       EnsureDesignModeTreeNodeInitialized (node);
-      if (StringUtility.IsNullOrEmpty (node.ItemID))
+      if (string.IsNullOrEmpty (node.ItemID))
         throw new ArgumentException ("The node does not contain an 'ItemID' and can therfor not be inserted into the collection.", "value");
 
       base.ValidateNewValue (value);
@@ -64,7 +64,7 @@ namespace Remotion.Web.UI.Controls
     private void EnsureDesignModeTreeNodeInitialized (WebTreeNode node)
     {
       ArgumentUtility.CheckNotNull ("node", node);
-      if (StringUtility.IsNullOrEmpty (node.ItemID)
+      if (string.IsNullOrEmpty (node.ItemID)
           && _treeView != null && ControlHelper.IsDesignMode (_treeView))
       {
         int index = InnerList.Count;
@@ -75,7 +75,7 @@ namespace Remotion.Web.UI.Controls
           if (Find (itemID) == null)
           {
             node.ItemID = itemID;
-            if (StringUtility.IsNullOrEmpty (node.Text))
+            if (string.IsNullOrEmpty (node.Text))
               node.Text = "Node " + index;
             break;
           }

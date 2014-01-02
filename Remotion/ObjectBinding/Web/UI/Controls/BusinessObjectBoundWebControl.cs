@@ -504,11 +504,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       string key;
       key = ResourceManagerUtility.GetGlobalResourceKey (AccessKey);
-      if (!StringUtility.IsNullOrEmpty (key))
+      if (!string.IsNullOrEmpty (key))
         AccessKey = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (ToolTip);
-      if (!StringUtility.IsNullOrEmpty (key))
+      if (!string.IsNullOrEmpty (key))
         ToolTip = resourceManager.GetString (key);
     }
 

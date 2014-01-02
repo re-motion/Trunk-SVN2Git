@@ -123,9 +123,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (controlStyle == null)
         return;
 
-      if (StringUtility.IsNullOrEmpty (controlStyle["width"]) && isControlWidthEmpty)
+      if (string.IsNullOrEmpty (controlStyle["width"]) && isControlWidthEmpty)
         controlStyle["width"] = "100%";
-      if (StringUtility.IsNullOrEmpty (controlStyle["vertical-align"]))
+      if (string.IsNullOrEmpty (controlStyle["vertical-align"]))
         controlStyle["vertical-align"] = "middle";
     }
 

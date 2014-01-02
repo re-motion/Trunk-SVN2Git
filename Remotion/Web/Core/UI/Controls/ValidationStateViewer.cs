@@ -128,7 +128,7 @@ public class ValidationStateViewer : WebControl, IControl
       return;
 
     string key = ResourceManagerUtility.GetGlobalResourceKey (NoticeText);
-    if (!StringUtility.IsNullOrEmpty (key))
+    if (!string.IsNullOrEmpty (key))
       NoticeText = resourceManager.GetString (key);
   }
 
@@ -183,7 +183,7 @@ public class ValidationStateViewer : WebControl, IControl
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
       
       string noticeText;
-      if (StringUtility.IsNullOrEmpty (_noticeText))
+      if (string.IsNullOrEmpty (_noticeText))
       {
         IResourceManager resourceManager = GetResourceManager();
         noticeText = resourceManager.GetString (ResourceIdentifier.NoticeText);

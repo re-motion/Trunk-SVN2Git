@@ -654,7 +654,7 @@ namespace Remotion.Web.UI.Controls
       /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/FormGridRow/GetControlForID/*' />
       public virtual Control GetControlForID (string id)
       {
-        StringUtility.IsNullOrEmpty (id);
+        string.IsNullOrEmpty (id);
         return (Control)_controls[id];
       }
 
@@ -2856,7 +2856,7 @@ namespace Remotion.Web.UI.Controls
         Control control = (Control) dataRow.ControlsCell.Controls[i];
         BaseValidator validator = control as BaseValidator;
         if (   validator != null
-            && ! StringUtility.IsNullOrEmpty (validator.CssClass))
+            && ! string.IsNullOrEmpty (validator.CssClass))
         {
           validator.CssClass = CssClassValidator;
         }

@@ -105,7 +105,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       string availableViewsListTitle;
-      if (StringUtility.IsNullOrEmpty (renderingContext.Control.AvailableViewsListTitle))
+      if (string.IsNullOrEmpty (renderingContext.Control.AvailableViewsListTitle))
         availableViewsListTitle = renderingContext.Control.GetResourceManager().GetString (BocList.ResourceIdentifier.AvailableViewsListTitle);
       else
         availableViewsListTitle = renderingContext.Control.AvailableViewsListTitle;

@@ -186,7 +186,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
       requiredValidator.ID = ID + "_ValidatorRequried";
       requiredValidator.ControlToValidate = TargetControl.ID;
-      if (StringUtility.IsNullOrEmpty (_errorMessage))
+      if (string.IsNullOrEmpty (_errorMessage))
       {
         requiredValidator.ErrorMessage =
             GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
@@ -627,7 +627,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       //  Dispatch simple properties
       string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         ErrorMessage = resourceManager.GetString (key);
     }
 

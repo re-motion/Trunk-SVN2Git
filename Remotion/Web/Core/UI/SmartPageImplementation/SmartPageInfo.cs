@@ -291,7 +291,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
       string statusIsSubmittingMessage = GetStatusIsSubmittingMessage();
 
       string checkFormStateFunction = "null";
-      if (! StringUtility.IsNullOrEmpty (_checkFormStateFunction))
+      if (! string.IsNullOrEmpty (_checkFormStateFunction))
         checkFormStateFunction = "'" + _checkFormStateFunction + "'";
 
       string smartScrollingFieldID = "null";
@@ -389,7 +389,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
       if (_page.IsAbortConfirmationEnabled)
       {
         string temp;
-        if (StringUtility.IsNullOrEmpty (_page.AbortMessage))
+        if (string.IsNullOrEmpty (_page.AbortMessage))
           temp = resourceManager.GetString (ResourceIdentifier.AbortMessage);
         else
           temp = _page.AbortMessage;
@@ -407,7 +407,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
       if (_page.IsStatusIsSubmittingMessageEnabled)
       {
         string temp;
-        if (StringUtility.IsNullOrEmpty (_page.StatusIsSubmittingMessage))
+        if (string.IsNullOrEmpty (_page.StatusIsSubmittingMessage))
           temp = resourceManager.GetString (ResourceIdentifier.StatusIsSubmittingMessage);
         else
           temp = _page.StatusIsSubmittingMessage;
@@ -505,7 +505,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
         string smartFocusValue = null;
         if (postBackCollection != null && ! _isSmartNavigationDataDisacarded)
           smartFocusValue = postBackCollection[c_smartFocusID];
-        if (! StringUtility.IsNullOrEmpty (_smartFocusID))
+        if (! string.IsNullOrEmpty (_smartFocusID))
           smartFocusValue = _smartFocusID;
         _page.ClientScript.RegisterHiddenField (_page, c_smartFocusID, smartFocusValue);
       }
@@ -551,7 +551,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
     public void SetFocus (IFocusableControl control)
     {
       ArgumentUtility.CheckNotNull ("control", control);
-      if (StringUtility.IsNullOrEmpty (control.FocusID))
+      if (string.IsNullOrEmpty (control.FocusID))
         return;
       SetFocus (control.FocusID);
     }

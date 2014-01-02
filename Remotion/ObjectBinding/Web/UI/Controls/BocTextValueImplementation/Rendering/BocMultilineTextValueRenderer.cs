@@ -68,7 +68,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
           lines[i] = HttpUtility.HtmlEncode (lines[i]);
         text = StringUtility.ConcatWithSeparator (lines, "<br />");
       }
-      if (StringUtility.IsNullOrEmpty (text) && renderingContext.Control.IsDesignMode)
+      if (string.IsNullOrEmpty (text) && renderingContext.Control.IsDesignMode)
       {
         text = c_designModeEmptyLabelContents;
         //  Too long, can't resize in designer to less than the content's width

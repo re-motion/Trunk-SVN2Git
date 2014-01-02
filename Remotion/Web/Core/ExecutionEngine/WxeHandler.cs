@@ -130,7 +130,7 @@ namespace Remotion.Web.ExecutionEngine
       CheckTimeoutConfiguration (context);
 
       string functionToken = context.Request.Params[Parameters.WxeFunctionToken];
-      bool hasFunctionToken = ! StringUtility.IsNullOrEmpty (functionToken);
+      bool hasFunctionToken = ! string.IsNullOrEmpty (functionToken);
 
       if (! hasFunctionToken)
       {
@@ -180,7 +180,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("context", context);
 
       string typeName = context.Request.Params[Parameters.WxeFunctionType];
-      bool hasTypeName = ! StringUtility.IsNullOrEmpty (typeName);
+      bool hasTypeName = ! string.IsNullOrEmpty (typeName);
       if (hasTypeName)
         return GetTypeByTypeName (typeName);
       else
@@ -247,11 +247,11 @@ namespace Remotion.Web.ExecutionEngine
 
       string returnUrlArg = context.Request.QueryString[Parameters.ReturnUrl];
       string returnToSelfArg = context.Request.QueryString[Parameters.WxeReturnToSelf];
-      if (! StringUtility.IsNullOrEmpty (returnUrlArg))
+      if (! string.IsNullOrEmpty (returnUrlArg))
       {
         function.ReturnUrl = returnUrlArg;
       }
-      else if (! StringUtility.IsNullOrEmpty (returnToSelfArg))
+      else if (! string.IsNullOrEmpty (returnToSelfArg))
       {
         if (bool.Parse (returnToSelfArg))
           function.ReturnUrl = context.Request.RawUrl;
@@ -353,7 +353,7 @@ namespace Remotion.Web.ExecutionEngine
       //  This point is only reached after the WxeFunction has completed execution.
       string returnUrl = functionState.Function.ReturnUrl;
       CleanUpFunctionState (functionState);
-      if (! StringUtility.IsNullOrEmpty (returnUrl))
+      if (! string.IsNullOrEmpty (returnUrl))
         ProcessReturnUrl (context, returnUrl);
     }
 

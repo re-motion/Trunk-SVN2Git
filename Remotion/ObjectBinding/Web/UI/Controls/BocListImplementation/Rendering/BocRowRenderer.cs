@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
       string emptyListMessage;
-      if (StringUtility.IsNullOrEmpty (renderingContext.Control.EmptyListMessage))
+      if (string.IsNullOrEmpty (renderingContext.Control.EmptyListMessage))
         emptyListMessage = renderingContext.Control.GetResourceManager().GetString (BocList.ResourceIdentifier.EmptyListMessage);
       else
         emptyListMessage = renderingContext.Control.EmptyListMessage;

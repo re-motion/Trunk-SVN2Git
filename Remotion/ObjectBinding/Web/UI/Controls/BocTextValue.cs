@@ -220,7 +220,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (text != null)
         text = text.Trim();
 
-      if (StringUtility.IsNullOrEmpty (text))
+      if (string.IsNullOrEmpty (text))
         return null;
 
       var valueType = ActualValueType;
@@ -475,7 +475,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
         requiredValidator.ID = baseID + "Required";
         requiredValidator.ControlToValidate = TargetControl.ID;
-        if (StringUtility.IsNullOrEmpty (ErrorMessage))
+        if (string.IsNullOrEmpty (ErrorMessage))
           requiredValidator.ErrorMessage = resourceManager.GetString (ResourceIdentifier.RequiredErrorMessage);
         else
           requiredValidator.ErrorMessage = ErrorMessage;
@@ -489,7 +489,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         lengthValidator.ID = baseID + "MaxLength";
         lengthValidator.ControlToValidate = TargetControl.ID;
         lengthValidator.MaximumLength = TextBoxStyle.MaxLength.Value;
-        if (StringUtility.IsNullOrEmpty (ErrorMessage))
+        if (string.IsNullOrEmpty (ErrorMessage))
         {
           string maxLengthMessage = GetResourceManager().GetString (ResourceIdentifier.MaxLengthValidationMessage);
           lengthValidator.ErrorMessage = string.Format (maxLengthMessage, TextBoxStyle.MaxLength.Value);
@@ -515,7 +515,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           DateTimeValidator typeValidator = new DateTimeValidator();
           typeValidator.ID = baseID + "Type";
           typeValidator.ControlToValidate = TargetControl.ID;
-          if (StringUtility.IsNullOrEmpty (ErrorMessage))
+          if (string.IsNullOrEmpty (ErrorMessage))
             typeValidator.ErrorMessage = resourceManager.GetString (ResourceIdentifier.InvalidDateAndTimeErrorMessage);
           else
             typeValidator.ErrorMessage = ErrorMessage;
@@ -529,7 +529,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           typeValidator.ControlToValidate = TargetControl.ID;
           typeValidator.Operator = ValidationCompareOperator.DataTypeCheck;
           typeValidator.Type = ValidationDataType.Date;
-          if (StringUtility.IsNullOrEmpty (ErrorMessage))
+          if (string.IsNullOrEmpty (ErrorMessage))
             typeValidator.ErrorMessage = resourceManager.GetString (ResourceIdentifier.InvalidDateErrorMessage);
           else
             typeValidator.ErrorMessage = ErrorMessage;
@@ -551,7 +551,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             typeValidator.AllowNegative = ((IBusinessObjectNumericProperty) Property).AllowNegative;
           typeValidator.DataType = GetNumericValidatorDataType (valueType);
           typeValidator.NumberStyle = GetNumberStyle (valueType);
-          if (StringUtility.IsNullOrEmpty (ErrorMessage))
+          if (string.IsNullOrEmpty (ErrorMessage))
             typeValidator.ErrorMessage = resourceManager.GetString (GetNumericValidatorErrorMessage (GetNumericValidatorDataType (valueType)));
           else
             typeValidator.ErrorMessage = ErrorMessage;

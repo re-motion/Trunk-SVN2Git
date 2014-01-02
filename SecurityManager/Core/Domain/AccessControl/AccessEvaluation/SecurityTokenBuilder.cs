@@ -152,7 +152,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     private IDomainObjectHandle<Tenant> GetTenant (string uniqueIdentifier)
     {
-      if (StringUtility.IsNullOrEmpty (uniqueIdentifier))
+      if (string.IsNullOrEmpty (uniqueIdentifier))
         return null;
 
       return _securityContextRepository.GetTenant (uniqueIdentifier);
@@ -160,7 +160,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     private IDomainObjectHandle<User> GetUser (string userName)
     {
-      if (StringUtility.IsNullOrEmpty (userName))
+      if (string.IsNullOrEmpty (userName))
         return null;
 
       return _securityContextRepository.GetUser (userName);
@@ -168,7 +168,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 
     private IDomainObjectHandle<Group> GetGroup (string uniqueIdentifier)
     {
-      if (StringUtility.IsNullOrEmpty (uniqueIdentifier))
+      if (string.IsNullOrEmpty (uniqueIdentifier))
         return null;
 
       return _securityContextRepository.GetGroup (uniqueIdentifier);

@@ -104,7 +104,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
 
       if (renderingContext.Control.IsDesignMode)
         renderingContext.Writer.AddStyleAttribute ("width", "100%");
-      if (StringUtility.IsNullOrEmpty (renderingContext.Control.CssClass) && StringUtility.IsNullOrEmpty (renderingContext.Control.Attributes["class"]))
+      if (string.IsNullOrEmpty (renderingContext.Control.CssClass) && string.IsNullOrEmpty (renderingContext.Control.Attributes["class"]))
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 

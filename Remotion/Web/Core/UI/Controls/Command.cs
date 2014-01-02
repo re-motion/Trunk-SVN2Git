@@ -300,7 +300,7 @@ namespace Remotion.Web.UI.Controls
         UrlMappingEntry mapping = UrlMappingConfiguration.Current.Mappings.FindByID (_mappingID);
 
         bool hasMapping = mapping != null;
-        bool hasTypeName = !StringUtility.IsNullOrEmpty (_typeName);
+        bool hasTypeName = !string.IsNullOrEmpty (_typeName);
 
         Type functionType = null;
         if (hasTypeName)
@@ -694,7 +694,7 @@ namespace Remotion.Web.UI.Controls
       if (!wxePage.IsReturningPostBack)
       {
         string target = WxeFunctionCommand.Target;
-        bool hasTarget = !StringUtility.IsNullOrEmpty (target);
+        bool hasTarget = !string.IsNullOrEmpty (target);
         WxeFunction function = WxeFunctionCommand.InitializeFunction (additionalWxeParameters);
 
         IWxeCallArguments callArguments;
@@ -867,7 +867,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
 
       var key = ResourceManagerUtility.GetGlobalResourceKey (ToolTip);
-      if (!StringUtility.IsNullOrEmpty (key))
+      if (!string.IsNullOrEmpty (key))
         ToolTip = resourceManager.GetString (key);
     }
 
@@ -878,7 +878,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNullOrEmpty ("commandID", commandID);
 
       bool isSynchronousEventCommand = Type == CommandType.Event && EventCommand.RequiresSynchronousPostBack;
-      bool isSynchronousWxeFunctionCommand = Type == CommandType.WxeFunction && StringUtility.IsNullOrEmpty (WxeFunctionCommand.Target);
+      bool isSynchronousWxeFunctionCommand = Type == CommandType.WxeFunction && string.IsNullOrEmpty (WxeFunctionCommand.Target);
 
       if (!isSynchronousEventCommand && !isSynchronousWxeFunctionCommand)
         return;

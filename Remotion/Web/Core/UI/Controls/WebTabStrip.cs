@@ -460,7 +460,7 @@ namespace Remotion.Web.UI.Controls
         if (Tabs.Count > 0)
         {
           EnsureTabsRestored();
-          if (! StringUtility.IsNullOrEmpty (_tabToBeSelected))
+          if (! string.IsNullOrEmpty (_tabToBeSelected))
             SetSelectedTab (_tabToBeSelected);
         }
         return _selectedTab;

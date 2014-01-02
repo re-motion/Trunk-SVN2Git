@@ -48,11 +48,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public override string ToString ()
     {
       string displayName = ItemID;
-      if (StringUtility.IsNullOrEmpty (displayName))
+      if (string.IsNullOrEmpty (displayName))
         displayName = ColumnTitle;
-      if (StringUtility.IsNullOrEmpty (displayName))
+      if (string.IsNullOrEmpty (displayName))
         displayName = Text;
-      if (StringUtility.IsNullOrEmpty (displayName))
+      if (string.IsNullOrEmpty (displayName))
         return DisplayedTypeName;
       else
         return string.Format ("{0}: {1}", displayName, DisplayedTypeName);

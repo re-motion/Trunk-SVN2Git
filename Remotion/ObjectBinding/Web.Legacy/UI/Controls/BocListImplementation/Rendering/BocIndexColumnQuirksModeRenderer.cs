@@ -74,7 +74,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       string indexColumnTitle = renderingContext.Control.IndexColumnTitle;
-      if (StringUtility.IsNullOrEmpty (renderingContext.Control.IndexColumnTitle))
+      if (string.IsNullOrEmpty (renderingContext.Control.IndexColumnTitle))
         indexColumnTitle = renderingContext.Control.GetResourceManager().GetString (BocList.ResourceIdentifier.IndexColumnTitle);
 
       // Do not HTML encode.

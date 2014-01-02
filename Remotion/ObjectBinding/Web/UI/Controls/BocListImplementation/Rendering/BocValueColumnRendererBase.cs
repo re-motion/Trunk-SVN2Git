@@ -136,7 +136,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         BocColumnRenderingContext<TBocColumnDefinition> renderingContext, int originalRowIndex, IBusinessObject businessObject, string valueColumnText)
     {
       bool isCommandEnabled = false;
-      if (!StringUtility.IsNullOrEmpty (valueColumnText))
+      if (!string.IsNullOrEmpty (valueColumnText))
         isCommandEnabled = RenderBeginTagDataCellCommand (renderingContext, businessObject, originalRowIndex);
       if (!isCommandEnabled)
       {

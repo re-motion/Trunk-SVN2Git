@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (_dataSourceChanged)
       {
         // set _dataSource from ID in _dataSourceControl
-        if (StringUtility.IsNullOrEmpty (_dataSourceControl))
+        if (string.IsNullOrEmpty (_dataSourceControl))
         {
           SetDataSource (null);
         }
@@ -233,7 +233,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           if (_property == null
               && DataSource != null
               && DataSource.BusinessObjectClass != null
-              && !StringUtility.IsNullOrEmpty (_propertyIdentifier))
+              && !string.IsNullOrEmpty (_propertyIdentifier))
           {
             IBusinessObjectProperty property =
                 DataSource.BusinessObjectClass.GetPropertyDefinition (_propertyIdentifier);

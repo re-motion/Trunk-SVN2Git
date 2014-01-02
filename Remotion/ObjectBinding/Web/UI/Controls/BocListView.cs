@@ -70,9 +70,9 @@ public class BocListView: BusinessObjectControlItem
   public override string ToString()
   {
     string displayName = ItemID;
-    if (StringUtility.IsNullOrEmpty (displayName))
+    if (string.IsNullOrEmpty (displayName))
       displayName = Title;
-    if (StringUtility.IsNullOrEmpty (displayName))
+    if (string.IsNullOrEmpty (displayName))
       return DisplayedTypeName;
     else
       return string.Format ("{0}: {1}", displayName, DisplayedTypeName);

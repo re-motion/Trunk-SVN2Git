@@ -267,7 +267,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
 
       //  Dispatch simple properties
       string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         ErrorMessage = resourceManager.GetString (key);
     }
 

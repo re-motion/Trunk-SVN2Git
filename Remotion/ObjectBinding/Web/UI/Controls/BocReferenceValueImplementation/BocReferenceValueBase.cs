@@ -881,7 +881,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         NullItemErrorMessage = resourceManager.GetString (key);
   
       key = ResourceManagerUtility.GetGlobalResourceKey (OptionsTitle);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         OptionsTitle = resourceManager.GetString (key);
 
       if (Command != null)

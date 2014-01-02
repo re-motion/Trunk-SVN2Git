@@ -122,7 +122,7 @@ public class BocDropDownMenu : BusinessObjectBoundWebControl, IBocMenuItemContai
         WebMenuItem menuItem = (WebMenuItem) menuItems[idxItems];
         if (! menuItem.IsVisible)
           continue;
-        if (StringUtility.IsNullOrEmpty (menuItem.ItemID))
+        if (string.IsNullOrEmpty (menuItem.ItemID))
           continue;
         
         if (isSuffix)

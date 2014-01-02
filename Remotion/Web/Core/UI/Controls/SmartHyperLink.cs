@@ -41,7 +41,7 @@ public class SmartHyperLink : HyperLink, IControl
   protected override void AddAttributesToRender(HtmlTextWriter writer)
   {
     string navigateUrlBackup = NavigateUrl;
-    bool hasNavigateUrl = ! StringUtility.IsNullOrEmpty (NavigateUrl);
+    bool hasNavigateUrl = ! string.IsNullOrEmpty (NavigateUrl);
     bool isDesignMode = ControlHelper.IsDesignMode (this);
 
     if (! isDesignMode && Page is ISmartNavigablePage && hasNavigateUrl)

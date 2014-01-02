@@ -124,7 +124,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return false;
 
       string newValue = PageUtility.GetPostBackCollectionItem (Page, GetKeyValueName());
-      bool newBooleanValue = ! StringUtility.IsNullOrEmpty (newValue);
+      bool newBooleanValue = ! string.IsNullOrEmpty (newValue);
       bool isDataChanged = _value != newBooleanValue;
       if (isDataChanged)
       {
@@ -211,11 +211,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       string key;
       key = ResourceManagerUtility.GetGlobalResourceKey (TrueDescription);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         TrueDescription = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (FalseDescription);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         FalseDescription = resourceManager.GetString (key);
     }
 

@@ -189,7 +189,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.LoadResources (resourceManager, globalizationService);
 
       var key = ResourceManagerUtility.GetGlobalResourceKey (Select);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         Select = resourceManager.GetString (key);
     }
 
@@ -420,7 +420,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         text = _displayName;
       else
         text = String.Empty;
-      if (StringUtility.IsNullOrEmpty (text) && IsDesignMode)
+      if (string.IsNullOrEmpty (text) && IsDesignMode)
       {
         text = c_designModeEmptyLabelContents;
         //  Too long, can't resize in designer to less than the content's width

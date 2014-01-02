@@ -212,7 +212,7 @@ namespace Remotion.Web.UI.Controls
       base.AddAttributesToRender (writer);
       if (IsDesignMode)
         writer.AddStyleAttribute ("width", "100%");
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
+      if (string.IsNullOrEmpty (CssClass) && string.IsNullOrEmpty (Attributes["class"]))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
@@ -567,7 +567,7 @@ namespace Remotion.Web.UI.Controls
         return;
 
       string key = ResourceManagerUtility.GetGlobalResourceKey (StatusText);
-      if (!StringUtility.IsNullOrEmpty (key))
+      if (!string.IsNullOrEmpty (key))
         StatusText = resourceManager.GetString (key);
     }
 

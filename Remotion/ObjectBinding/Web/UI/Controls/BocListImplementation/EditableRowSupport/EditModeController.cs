@@ -527,7 +527,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       EditModeValidator editModeValidator = new EditModeValidator (this);
       editModeValidator.ID = ID + "_ValidatorEditMode";
       editModeValidator.ControlToValidate = _editModeHost.ID;
-      if (StringUtility.IsNullOrEmpty (_editModeHost.ErrorMessage))
+      if (string.IsNullOrEmpty (_editModeHost.ErrorMessage))
       {
         if (IsRowEditModeActive)
           editModeValidator.ErrorMessage = resourceManager.GetString (UI.Controls.BocList.ResourceIdentifier.RowEditModeErrorMessage);

@@ -301,7 +301,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
         requiredValidator.ID = ID + "_ValidatorRequired";
         requiredValidator.ControlToValidate = TargetControl.ID;
-        if (StringUtility.IsNullOrEmpty (ErrorMessage))
+        if (string.IsNullOrEmpty (ErrorMessage))
         {
           requiredValidator.ErrorMessage =
               GetResourceManager().GetString (ResourceIdentifier.RequiredValidationMessage);
@@ -317,7 +317,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         lengthValidator.ID = ID + "_ValidatorMaxLength";
         lengthValidator.ControlToValidate = TargetControl.ID;
         lengthValidator.MaximumLength = TextBoxStyle.MaxLength.Value;
-        if (StringUtility.IsNullOrEmpty (ErrorMessage))
+        if (string.IsNullOrEmpty (ErrorMessage))
         {
           string maxLengthMessage = GetResourceManager().GetString (ResourceIdentifier.MaxLengthValidationMessage);
           lengthValidator.ErrorMessage = string.Format (maxLengthMessage, TextBoxStyle.MaxLength.Value);

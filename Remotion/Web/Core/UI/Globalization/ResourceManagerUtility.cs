@@ -35,7 +35,7 @@ public static class ResourceManagerUtility
 
   public static bool IsGlobalResourceKey (string elementValue)
   {
-    if (StringUtility.IsNullOrEmpty (elementValue))
+    if (string.IsNullOrEmpty (elementValue))
       return false;
     return elementValue.StartsWith (c_globalResourceKeyPrefix);
   }

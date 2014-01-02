@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
           lines[i] = HttpUtility.HtmlEncode (lines[i]);
         text = StringUtility.ConcatWithSeparator (lines, "<br />");
       }
-      if (StringUtility.IsNullOrEmpty (text))
+      if (string.IsNullOrEmpty (text))
       {
         if (renderingContext.Control.IsDesignMode)
         {

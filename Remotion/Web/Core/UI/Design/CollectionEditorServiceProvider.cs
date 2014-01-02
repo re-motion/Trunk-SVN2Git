@@ -87,7 +87,7 @@ public class CollectionEditorServiceProvider: IServiceProvider, IWindowsFormsEdi
     propertyGrid.HelpVisible = true;
     propertyGrid.BackColor = SystemColors.Control;
     
-    if (! Remotion.Utilities.StringUtility.IsNullOrEmpty (_title))
+    if (! string.IsNullOrEmpty (_title))
       dialog.Text = _title;
     return dialog.ShowDialog();
   }

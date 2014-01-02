@@ -434,11 +434,11 @@ namespace Remotion.Web.UI.Controls
         return;
 
       string key = ResourceManagerUtility.GetGlobalResourceKey (AccessKey);
-      if (!StringUtility.IsNullOrEmpty (key))
+      if (!string.IsNullOrEmpty (key))
         AccessKey = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (ToolTip);
-      if (!StringUtility.IsNullOrEmpty (key))
+      if (!string.IsNullOrEmpty (key))
         ToolTip = resourceManager.GetString (key);
 
       Nodes.LoadResources (resourceManager, globalizationService);
@@ -649,7 +649,7 @@ namespace Remotion.Web.UI.Controls
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassNodeHeadSelected);
       else
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassNodeHead);
-      if (!StringUtility.IsNullOrEmpty (node.ToolTip))
+      if (!string.IsNullOrEmpty (node.ToolTip))
         writer.AddAttribute (HtmlTextWriterAttribute.Title, node.ToolTip);
 
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -666,7 +666,7 @@ namespace Remotion.Web.UI.Controls
           node.Icon.Render (writer, this);
           writer.Write ("&nbsp;");
         }
-        if (!StringUtility.IsNullOrEmpty (node.Text))
+        if (!string.IsNullOrEmpty (node.Text))
           writer.WriteEncodedText (node.Text);
       }
       else

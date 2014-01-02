@@ -64,7 +64,7 @@ namespace Remotion.Web.UI.Controls
     {
       WebTab tab = ArgumentUtility.CheckNotNullAndType<WebTab> ("value", value);
       EnsureDesignModeTabInitialized (tab);
-      if (StringUtility.IsNullOrEmpty (tab.ItemID))
+      if (string.IsNullOrEmpty (tab.ItemID))
         throw new ArgumentException ("The tab does not have an 'ItemID'. It can therfor not be inserted into the collection.", "value");
       base.ValidateNewValue (value);
     }
@@ -84,7 +84,7 @@ namespace Remotion.Web.UI.Controls
           if (Find (itemID) == null)
           {
             tab.ItemID = itemID;
-            if (StringUtility.IsNullOrEmpty (tab.Text))
+            if (string.IsNullOrEmpty (tab.Text))
               tab.Text = "Tab " + index;
             break;
           }

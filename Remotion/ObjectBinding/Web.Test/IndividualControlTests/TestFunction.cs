@@ -59,7 +59,7 @@ public class TestFunction: WxeFunction
   // steps
   private void Step1()
   {
-    if (StringUtility.IsNullOrEmpty (UserControl))
+    if (string.IsNullOrEmpty (UserControl))
       UserControl = "BocBooleanValueUserControl.ascx";
 
     ExceptionHandler.AppendCatchExceptionTypes (typeof (WxeUserCancelException));

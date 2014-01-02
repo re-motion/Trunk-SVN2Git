@@ -138,7 +138,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected void RequiredStateCombinationValidator_ServerValidate (object source, ServerValidateEventArgs args)
     {
-      args.IsValid = !StringUtility.IsNullOrEmpty (StateDefinitionField.BusinessObjectUniqueIdentifier);
+      args.IsValid = !string.IsNullOrEmpty (StateDefinitionField.BusinessObjectUniqueIdentifier);
     }
   }
 }

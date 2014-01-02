@@ -177,7 +177,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       get
       {
-        if (StringUtility.IsNullOrEmpty (ShortName))
+        if (string.IsNullOrEmpty (ShortName))
           return Name;
         else
           return string.Format ("{0} ({1})", ShortName, Name);

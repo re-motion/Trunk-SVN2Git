@@ -55,7 +55,7 @@ public class UrlMappingConfiguration: ConfigurationBase
   private static UrlMappingConfiguration CreateConfig ()
   {
     string mappingFile = WebConfiguration.Current.ExecutionEngine.UrlMappingFile;
-    if (StringUtility.IsNullOrEmpty (mappingFile))
+    if (string.IsNullOrEmpty (mappingFile))
       return new UrlMappingConfiguration();
     else
       return UrlMappingConfiguration.CreateUrlMappingConfiguration (WebConfiguration.Current.ExecutionEngine.UrlMappingFile);
@@ -292,7 +292,7 @@ public class UrlMappingCollection: CollectionBase
   /// </returns>
   public string FindResource (string typeName)
   {
-    if (StringUtility.IsNullOrEmpty (typeName))
+    if (string.IsNullOrEmpty (typeName))
       return null;
     Type type = WebTypeUtility.GetType (typeName, true, true);
     return FindResource (type);
@@ -306,7 +306,7 @@ public class UrlMappingCollection: CollectionBase
   /// </returns>
   public UrlMappingEntry Find (string path)
   {
-    if (StringUtility.IsNullOrEmpty (path))
+    if (string.IsNullOrEmpty (path))
       return null;
     for (int i = 0; i < Count; i++)
     {
@@ -341,7 +341,7 @@ public class UrlMappingCollection: CollectionBase
   /// </returns>
   public UrlMappingEntry FindByID (string id)
   {
-    if (StringUtility.IsNullOrEmpty (id))
+    if (string.IsNullOrEmpty (id))
       return null;
     for (int i = 0; i < Count; i++)
     {

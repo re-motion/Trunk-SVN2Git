@@ -142,7 +142,7 @@ namespace Remotion.Web.Security.ExecutionEngine
             _attribute.GetType ().Name, _functionType.FullName));
       }
 
-      if (StringUtility.IsNullOrEmpty (_attribute.ParameterName))
+      if (string.IsNullOrEmpty (_attribute.ParameterName))
         return parameterDeclarations[0];
 
       for (int i = 0; i < parameterDeclarations.Length; i++)
@@ -158,7 +158,7 @@ namespace Remotion.Web.Security.ExecutionEngine
 
     private void CheckMethodNameNotNullOrEmpty (Type functionType, string methodName)
     {
-      if (StringUtility.IsNullOrEmpty (methodName))
+      if (string.IsNullOrEmpty (methodName))
       {
         throw new WxeException (string.Format (
             "The {0} applied to WxeFunction '{1}' does not specify the method to get the required permissions from.",

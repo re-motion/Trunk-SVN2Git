@@ -107,7 +107,7 @@ public class ExecutionEngineConfiguration
     get { return _defaultWxeHandler; }
     set 
     {
-      if (StringUtility.IsNullOrEmpty (value))
+      if (string.IsNullOrEmpty (value))
       {
         _defaultWxeHandler = string.Empty;
       }

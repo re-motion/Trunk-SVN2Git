@@ -137,9 +137,9 @@ public class WebTab: IWebTab, IControlStateManager
   public override string ToString()
   {
     string displayName = ItemID;
-    if (StringUtility.IsNullOrEmpty (displayName))
+    if (string.IsNullOrEmpty (displayName))
       displayName = Text;
-    if (StringUtility.IsNullOrEmpty (displayName))
+    if (string.IsNullOrEmpty (displayName))
       return DisplayedTypeName;
     else
       return string.Format ("{0}: {1}", displayName, DisplayedTypeName);
@@ -158,7 +158,7 @@ public class WebTab: IWebTab, IControlStateManager
     set
     {
       ArgumentUtility.CheckNotNullOrEmpty ("value", value);
-      if (! StringUtility.IsNullOrEmpty (value))
+      if (! string.IsNullOrEmpty (value))
       {
         WebTabCollection tabs = null;
         if (_tabStrip != null)
@@ -176,7 +176,7 @@ public class WebTab: IWebTab, IControlStateManager
   // TODO: Test if still required in VS 2005. Workaround for Designer bug: Get Accessor does not evalute.
   internal bool HasItemID()
   {
-    return ! StringUtility.IsNullOrEmpty (_itemID);
+    return ! string.IsNullOrEmpty (_itemID);
   }
 
   /// <summary> Gets or sets the text displayed in this tab. </summary>
@@ -367,7 +367,7 @@ public class WebTab: IWebTab, IControlStateManager
     ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
     
     var key = ResourceManagerUtility.GetGlobalResourceKey (Text);
-    if (! StringUtility.IsNullOrEmpty (key))
+    if (! string.IsNullOrEmpty (key))
       Text = resourceManager.GetString (key);
     
     if (Icon != null)

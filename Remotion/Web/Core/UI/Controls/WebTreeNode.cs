@@ -168,9 +168,9 @@ namespace Remotion.Web.UI.Controls
     public override string ToString ()
     {
       string displayName = ItemID;
-      if (StringUtility.IsNullOrEmpty (displayName))
+      if (string.IsNullOrEmpty (displayName))
         displayName = Text;
-      if (StringUtility.IsNullOrEmpty (displayName))
+      if (string.IsNullOrEmpty (displayName))
         return DisplayedTypeName;
       else
         return string.Format ("{0}: {1}", displayName, DisplayedTypeName);
@@ -196,7 +196,7 @@ namespace Remotion.Web.UI.Controls
     private void ValidateItemId (string value)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("value", value);
-      if (! StringUtility.IsNullOrEmpty (value))
+      if (! string.IsNullOrEmpty (value))
       {
         WebTreeNodeCollection nodes = null;
         if (ParentNode != null)
@@ -369,7 +369,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
 
       string key = ResourceManagerUtility.GetGlobalResourceKey (Text);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         Text = resourceManager.GetString (key);
 
       if (Icon != null)

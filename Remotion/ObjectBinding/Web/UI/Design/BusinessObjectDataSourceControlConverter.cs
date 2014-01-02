@@ -43,7 +43,7 @@ public class BusinessObjectDataSourceControlConverter : StringConverter
     {
       IComponent component = (IComponent) components[idxComponents];
       IBusinessObjectDataSourceControl dataSource = component as IBusinessObjectDataSourceControl;
-      if (dataSource != null && ! StringUtility.IsNullOrEmpty (dataSource.ID))
+      if (dataSource != null && ! string.IsNullOrEmpty (dataSource.ID))
       {
         bool hasSelfReference = false;
         foreach (IBusinessObjectBoundWebControl control in controls)

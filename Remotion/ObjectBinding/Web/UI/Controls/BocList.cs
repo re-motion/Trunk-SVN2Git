@@ -1977,23 +1977,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       string key;
       key = ResourceManagerUtility.GetGlobalResourceKey (IndexColumnTitle);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         IndexColumnTitle = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (EmptyListMessage);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         EmptyListMessage = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (OptionsTitle);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         OptionsTitle = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (AvailableViewsListTitle);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         AvailableViewsListTitle = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         ErrorMessage = resourceManager.GetString (key);
 
       _fixedColumns.LoadResources (resourceManager, globalizationService);

@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       contents = HttpUtility.HtmlEncode (contents);
-      if (StringUtility.IsNullOrEmpty (contents))
+      if (string.IsNullOrEmpty (contents))
         contents = c_whiteSpace;
       renderingContext.Writer.Write (contents);
 
