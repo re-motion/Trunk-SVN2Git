@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
 <!-- This file is part of the re-motion Core Framework (www.re-motion.org)
  ! Copyright (c) rubicon IT GmbH, www.rubicon.eu
  ! 
@@ -33,7 +34,7 @@ method.Invoke (new object[] { integer, str, ctrl });
 ]]>
       </code><para>
         A common workaround is to accept an array of values and determine the types from those values via GetType(), like Activator.CreateInstance()
-        does. In fact, this is just what InvokeWith.Invoke (object[]) does.
+        does. In fact, this is just what IFuncInvoker.Invoke (object[]) does.
       </para><para>
         The problem with this type of overload is that the types are determined at runtime. In the previous example, different methods would be called
         depending on the runtime value of ctrl. If ctrl is null, the first overload would be called (because the runtime type of null can only be resolved
@@ -55,7 +56,7 @@ invoker.CallMethod (obj, "SampleMethod").With&lt;int,string,Control&gt; (integer
         The following table gives an overview on which overloads would be selected given a value of ctrl:
       </para><code>
 <![CDATA[
-Value of ctrl         Dynamic (get types from object[])   InvokeWith.With<A1,A2,A3>
+Value of ctrl         Dynamic (get types from object[])   IFuncInvoker.With<A1,A2,A3>
 ---------------------------------------------------------------------------------------------
 null                  SampleMethod (int, string, object)  SampleMethod (int, string, Control)
 new Control()         SampleMethod (int, string, Control) SampleMethod (int, string, Control)

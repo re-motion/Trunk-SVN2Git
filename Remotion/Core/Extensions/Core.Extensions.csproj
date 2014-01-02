@@ -159,6 +159,7 @@
   <ItemGroup>
     <Content Include="doc\include\Diagnostics\OuterProduct.xml" />
     <Content Include="doc\include\Logging\LogExtensions.xml" />
+    <Content Include="doc\include\Reflection\TypesafeInvoker.xml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

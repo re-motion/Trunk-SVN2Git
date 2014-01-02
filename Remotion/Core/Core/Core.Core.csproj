@@ -537,7 +537,6 @@
     <None Include="doc\include\GettingStartedWithRemotion.aml" />
     <Content Include="doc\include\Logging\LogExtensions.xml" />
     <Content Include="doc\include\Logging\Log4NetTraceListener.xml" />
-    <Content Include="doc\include\Reflection\TypesafeInvoker.xml" />
     <Content Include="doc\include\Remotion.NamespaceDoc.xml" />
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
     <Content Include="doc\include\Utilities\WorkContext.xml" />
