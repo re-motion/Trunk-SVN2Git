@@ -29,13 +29,13 @@ namespace Remotion.Mixins.Utilities.DependencySort
   public class DependentObjectSorterAlgorithm<T>
   {
     private IDependencyAnalyzer<T> _analyzer;
-    private Set<T> _objects;
+    private HashSet<T> _objects;
 
     public DependentObjectSorterAlgorithm (IDependencyAnalyzer<T> analyzer, IEnumerable<T> objects)
     {
       ArgumentUtility.CheckNotNull ("objects", objects);
       _analyzer = analyzer;
-      _objects = new Set<T> (objects);
+      _objects = new HashSet<T> (objects);
     }
 
     public IEnumerable<T> Execute ()
@@ -50,7 +50,7 @@ namespace Remotion.Mixins.Utilities.DependencySort
 
     private T GetRoot ()
     {
-      Set<T> rootCandidates = new Set<T> (_objects);
+      HashSet<T> rootCandidates = new HashSet<T> (_objects);
       foreach (T first in _objects)
       {
         foreach (T second in _objects)

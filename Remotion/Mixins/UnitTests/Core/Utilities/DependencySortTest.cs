@@ -30,17 +30,17 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
   {
     private class SimpleDependencyAnalyzer<T> : IDependencyAnalyzer<T>
     {
-      private Dictionary<T, Set<T>> _dependencies = new Dictionary<T, Set<T>> ();
+      private Dictionary<T, HashSet<T>> _dependencies = new Dictionary<T, HashSet<T>> ();
 
       public void AddDependency (T first, T second)
       {
         GetDependencies (first).Add (second);
       }
 
-      private Set<T> GetDependencies (T first)
+      private HashSet<T> GetDependencies (T first)
       {
         if (!_dependencies.ContainsKey (first))
-          _dependencies.Add (first, new Set<T>());
+          _dependencies.Add (first, new HashSet<T>());
         return _dependencies[first];
       }
 
