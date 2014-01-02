@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="Reflection\ActionInvokerWrapper.Partial.cs" />
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
+    <Compile Include="Reflection\DelegateFactory.cs" />
     <Compile Include="Reflection\DelegateSelector.cs" />
     <Compile Include="Reflection\FuncInvoker.cs">
       <AutoGen>True</AutoGen>
@@ -98,6 +99,7 @@
     </Compile>
     <Compile Include="Reflection\IActionInvoker.Partial.cs" />
     <Compile Include="Reflection\IConstructorLookupInfo.cs" />
+    <Compile Include="Reflection\IDelegateFactory.cs" />
     <Compile Include="Reflection\IFuncInvoker.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

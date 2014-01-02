@@ -271,8 +271,6 @@
     <Compile Include="Obsolete\Globalization\ResourceIdentifiersAttribute.cs" />
     <Compile Include="Obsolete\Globalization\ResourceManagerSet.cs" />
     <Compile Include="Obsolete\Globalization\ResourceManagerWrapper.cs" />
-    <Compile Include="Reflection\DelegateFactory.cs" />
-    <Compile Include="Reflection\IDelegateFactory.cs" />
     <Compile Include="Reflection\IMemberInformationNameResolver.cs" />
     <Compile Include="Obsolete\Reflection\ParamList.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInformationNameResolver.cs" />

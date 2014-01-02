@@ -76,6 +76,7 @@
     <Compile Include="Logging\LogExtensionsTests\WarningTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\ConstructorLookupInfoTest.cs" />
+    <Compile Include="Reflection\DelegateFactoryTest.cs" />
     <Compile Include="Reflection\FuncInvokerWrapperTest.cs" />
     <Compile Include="Reflection\MemberLookupInfoTest.cs" />
     <Compile Include="Reflection\MethodCallerTest.cs" />
