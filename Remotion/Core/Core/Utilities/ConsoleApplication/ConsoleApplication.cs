@@ -18,7 +18,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using Remotion.Text.CommandLine;
-using Remotion.Text.StringExtensions;
 
 namespace Remotion.Utilities.ConsoleApplication
 {
