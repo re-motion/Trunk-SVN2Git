@@ -62,6 +62,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Collections\SetTest.cs" />
     <Compile Include="Diagnostics\BugReportTest.cs" />
     <Compile Include="Diagnostics\ByteValueTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
@@ -118,9 +119,7 @@
       <Name>Core.Extensions</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Collections\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
