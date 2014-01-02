@@ -56,6 +56,14 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Diagnostics\ByteValue.cs" />
+    <Compile Include="Diagnostics\DebuggerInterface.cs" />
+    <Compile Include="Diagnostics\IDebuggerInterface.cs" />
+    <Compile Include="Diagnostics\IOuterProductProcessor.cs" />
+    <Compile Include="Diagnostics\MemoryUsageInfo.cs" />
+    <Compile Include="Diagnostics\OuterProductIndexGenerator.cs" />
+    <Compile Include="Diagnostics\OuterProductProcessingState.cs" />
+    <Compile Include="Diagnostics\OuterProductProcessorBase.cs" />
     <Compile Include="DisposableBase.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -149,6 +157,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="doc\include\Diagnostics\OuterProduct.xml" />
     <Content Include="doc\include\Logging\LogExtensions.xml" />
   </ItemGroup>
   <ItemGroup />

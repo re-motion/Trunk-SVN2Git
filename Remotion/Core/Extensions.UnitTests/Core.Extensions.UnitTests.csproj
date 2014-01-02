@@ -62,6 +62,10 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Diagnostics\BugReportTest.cs" />
+    <Compile Include="Diagnostics\ByteValueTest.cs" />
+    <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
+    <Compile Include="Diagnostics\OuterProductTest.cs" />
     <Compile Include="Logging\LogExtensionsTests\BaseTest.cs" />
     <Compile Include="Logging\LogExtensionsTests\DebugTest.cs" />
     <Compile Include="Logging\LogExtensionsTests\ErrorTest.cs" />
@@ -109,6 +113,9 @@
       <Project>{25811f76-8d00-496d-afd0-8225569f666d}</Project>
       <Name>Core.Extensions</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utilities\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

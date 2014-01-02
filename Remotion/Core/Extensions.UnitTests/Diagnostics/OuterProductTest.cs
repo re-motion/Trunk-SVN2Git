@@ -191,25 +191,25 @@ namespace Remotion.UnitTests.Diagnostics
     /// </summary>
     public class RectangularArrayToString : Remotion.Diagnostics.OuterProductProcessorBase
     {
-      protected Array _rectangularArray;
-      public readonly StringBuilder _result = new StringBuilder(); // To keep sample concise
+      private readonly Array RectangularArray;
+      public readonly StringBuilder Result = new StringBuilder(); // To keep sample concise
 
       public RectangularArrayToString (Array rectangularArray)
       {
-        _rectangularArray = rectangularArray;
+        RectangularArray = rectangularArray;
       }
 
       public override bool DoBeforeLoop ()
       {
         if (ProcessingState.IsInnermostLoop)
         {
-          _result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
-          _result.Append (_rectangularArray.GetValue (ProcessingState.DimensionIndices).ToString());
+          Result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
+          Result.Append (RectangularArray.GetValue (ProcessingState.DimensionIndices).ToString());
         }
         else
         {
-          _result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
-          _result.Append ("{");
+          Result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
+          Result.Append ("{");
         }
         return true;
       }
@@ -217,7 +217,7 @@ namespace Remotion.UnitTests.Diagnostics
       public override bool DoAfterLoop ()
       {
         if (!ProcessingState.IsInnermostLoop)
-          _result.Append ("}");
+          Result.Append ("}");
         return true;
       }
     }
@@ -517,9 +517,9 @@ namespace Remotion.UnitTests.Diagnostics
         var outerProduct = new OuterProductIndexGenerator (array);
         var processor = new RectangularArrayToString (array);
         outerProduct.ProcessOuterProduct (processor);
-        //System.Console.WriteLine (processor._result.ToString());
+        //System.Console.WriteLine (processor.Result.ToString());
 
-        string result = processor._result.ToString();
+        string result = processor.Result.ToString();
         Assert.That (new List<String> { result }, Is.SubsetOf (resultStrings));
       }
     }
