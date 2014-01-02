@@ -295,7 +295,6 @@
     <Compile Include="Reflection\CodeGeneration\TestDomain\GenericClassWithGenericMethod.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Reflection\DelegateFactoryTest.cs" />
     <Compile Include="Reflection\IMemberInfoNameResolverTest.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInfoNameResolverTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
