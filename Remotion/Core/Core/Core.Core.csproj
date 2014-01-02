@@ -323,11 +323,11 @@
     <Compile Include="Utilities\ReferenceEqualityComparer.Partial.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\PartialDeclarations.cs" />
     <Compile Include="SuppressAttributesAttribute.cs" />
-    <Compile Include="Utilities\ArgumentEmptyException.cs" />
-    <Compile Include="Utilities\ArgumentItemDuplicateException.cs" />
-    <Compile Include="Utilities\ArgumentItemNullException.cs" />
-    <Compile Include="Utilities\ArgumentItemTypeException.cs" />
-    <Compile Include="Utilities\ArgumentTypeException.cs" />
+    <Compile Include="Obsolete\Utilities\ArgumentEmptyException.cs" />
+    <Compile Include="Obsolete\Utilities\ArgumentItemDuplicateException.cs" />
+    <Compile Include="Obsolete\Utilities\ArgumentItemNullException.cs" />
+    <Compile Include="Obsolete\Utilities\ArgumentItemTypeException.cs" />
+    <Compile Include="Obsolete\Utilities\ArgumentTypeException.cs" />
     <Compile Include="Utilities\ArgumentUtility.Partial.cs" />
     <Compile Include="Utilities\AttributeRetrieval\EventCustomAttributeRetriever.cs" />
     <Compile Include="Utilities\CompoundComparer.cs" />

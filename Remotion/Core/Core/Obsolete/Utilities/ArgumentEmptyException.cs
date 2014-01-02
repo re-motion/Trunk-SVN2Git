@@ -16,6 +16,7 @@
 // 
 using System;
 
+// ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
   /// <summary>

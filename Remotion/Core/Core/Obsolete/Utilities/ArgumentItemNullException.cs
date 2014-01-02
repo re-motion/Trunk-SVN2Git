@@ -17,15 +17,16 @@
 
 using System;
 
+// ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
   /// <summary>
-  /// This exception is thrown if an argument has an invalid type.
+  /// This exception is thrown if a list argument contains a null reference.
   /// </summary>
-  [Obsolete ("Use ArgumentException instead. (1.15.8.0)", true)]
-  public class ArgumentTypeException : ArgumentException
+  [Obsolete ("Use ArgumentNullException instead. (1.15.8.0)", true)]
+  public class ArgumentItemNullException : ArgumentException
   {
-    private ArgumentTypeException ()
+    private ArgumentItemNullException ()
     {
     }
   }
