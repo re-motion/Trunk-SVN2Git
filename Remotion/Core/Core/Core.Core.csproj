@@ -259,6 +259,7 @@
     <Compile Include="Obsolete\Reflection\MemberLookupInfo.cs" />
     <Compile Include="Obsolete\Reflection\MethodLookupInfo.cs" />
     <Compile Include="Obsolete\Reflection\TypesafeActivator.cs" />
+    <Compile Include="Obsolete\Text\SeparatedStringBuilder.cs" />
     <Compile Include="Obsolete\Utilities\EnumDescription.cs" />
     <Compile Include="Obsolete\Utilities\EnumDescriptionAttribute.cs" />
     <Compile Include="Obsolete\Utilities\EnumDescriptionResourceAttribute.cs" />
@@ -461,9 +462,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Text\MonospaceTextFormat.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\SeparatedStringBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Text\StringExtensions\StringExtensions.cs" />
