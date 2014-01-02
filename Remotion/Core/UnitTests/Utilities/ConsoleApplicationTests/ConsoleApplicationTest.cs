@@ -19,7 +19,6 @@ using System.Diagnostics;
 using System.IO;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Text.StringExtensions;
 using Remotion.Utilities.ConsoleApplication;
 using Rhino.Mocks;
 using NUnitText = NUnit.Framework; //. .SyntaxHelpers.Text;
@@ -51,7 +50,7 @@ namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
       Assert.That (outResult, Is.StringContaining ("/stringArg  stringArg description."));
       Assert.That (outResult, Is.StringContaining ("/flagArg    flagArg description."));
       Assert.That (outResult, Is.StringContaining ("/?          Show usage"));
-      Assert.That (outResult, Is.StringContaining (Process.GetCurrentProcess ().MainModule.FileName.RightUntilChar ('\\')));
+      Assert.That (outResult, Is.StringContaining (Path.GetFileName (Process.GetCurrentProcess ().MainModule.FileName)));
 
       Assert.That (errorResult, Is.EqualTo (""));
     }
