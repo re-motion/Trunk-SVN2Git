@@ -83,7 +83,7 @@ public class ClientForm : TestWxeBasePage
     //if (formPageControl != null)
     //  formPageControl.FormPageObject = formPage;
 
-    view.Controls.Add (control);
+    view.LazyControls.Add (control);
 
     IDataEditControl dataEditControl = control as IDataEditControl;
     if (dataEditControl != null)

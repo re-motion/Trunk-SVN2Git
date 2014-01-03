@@ -376,7 +376,7 @@ namespace Remotion.Web.ExecutionEngine
       ExecuteFunction (functionState.Function, wxeContext, isNewFunction);
     }
 
-    /// <summary>  Invokes <see cref="WxeFunction.Execute"/> on the <paramref name="function"/>. </summary>
+    /// <summary>  Invokes <see cref="WxeFunction.Execute(WxeContext)"/> on the <paramref name="function"/>. </summary>
     /// <include file='..\doc\include\ExecutionEngine\WxeHandler.xml' path='WxeHandler/ExecuteFunction/*' />
     protected virtual void ExecuteFunction (WxeFunction function, WxeContext context, bool isNew)
     {
