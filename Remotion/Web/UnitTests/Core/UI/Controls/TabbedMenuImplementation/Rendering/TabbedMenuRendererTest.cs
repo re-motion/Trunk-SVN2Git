@@ -21,6 +21,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Globalization.Implementation;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation;

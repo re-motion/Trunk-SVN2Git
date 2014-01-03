@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web;
 using System.Web.UI;
@@ -25,10 +26,9 @@ using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
-using Remotion.Web.UnitTests.Core.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.Legacy.UI.Controls
+namespace Remotion.Web.Legacy.UnitTests.UI.Controls
 {
   [TestFixture]
   public class SingleViewQuirksModeRendererTest : RendererTestBase

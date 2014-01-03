@@ -14,25 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
-using System.Web;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
-using Remotion.Web.UnitTests.Core.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.Legacy.UI.Controls
+namespace Remotion.Web.Legacy.UnitTests.UI.Controls
 {
   [TestFixture]
   public class DropDownMenuQuirksModeRendererTest : RendererTestBase

@@ -165,6 +165,8 @@
     <Compile Include="Core\TestDomain\ClassWithResources.cs" />
     <Compile Include="Core\TestDomain\MixinAddingResources.cs" />
     <Compile Include="Core\TestDomain\MixinAddingResources2.cs" />
+    <Compile Include="Web.Legacy\SetUpFixture.cs" />
+    <Compile Include="Web\SetUpFixture.cs" />
     <Compile Include="Web\UI\Controls\BocCompundColumnDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocCustomColumnDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\DateTimeFormatterTest.cs" />
@@ -557,7 +559,6 @@
     <Compile Include="Web\UI\Controls\StubInfrastructureResourceUrlFactory.cs" />
     <Compile Include="Web\UI\Controls\StubServiceLocator.cs" />
     <Compile Include="Web\UI\Controls\RendererTestBase.cs" />
-    <Compile Include="Web\UI\Controls\XmlNodeExtensions.cs" />
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>

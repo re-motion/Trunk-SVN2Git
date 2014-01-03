@@ -159,10 +159,6 @@
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
-    <ProjectReference Include="..\Legacy\Web.Legacy.csproj">
-      <Project>{DD30FC13-485F-425D-8FA0-0CE8998B925D}</Project>
-      <Name>Web.Legacy</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Security\Web.Security.csproj">
       <Project>{9B6F6D1A-A7EA-4EE8-B36E-E31CF7E518E3}</Project>
       <Name>Web.Security</Name>
@@ -235,12 +231,12 @@
     <Compile Include="Core\UI\Controls\Hotkey\UnderscoreHotkeyFormatterTest.cs" />
     <Compile Include="Core\UI\Controls\IClientScriptBehaviorTest.cs" />
     <Compile Include="Core\UI\Controls\ListMenuImplementation\Rendering\IListMenuRendererTest.cs" />
+    <Compile Include="Core\SetUpFixture.cs" />
     <Compile Include="Core\UI\Controls\SingleViewImplementation\Rendering\ISingleViewRendererTest.cs" />
     <Compile Include="Core\UI\Controls\StubStyleSheetElement.cs" />
     <Compile Include="Core\UI\Controls\StyleSheetBlockTest.cs" />
     <Compile Include="Core\UI\Controls\StyleSheetImportRuleTest.cs" />
     <Compile Include="Core\UI\Controls\JavaScriptIncludeTest.cs" />
-    <Compile Include="Core\UI\Controls\StubInfrastructureResourceUrlFactory.cs" />
     <Compile Include="Core\UI\Controls\TabbedMenuImplementation\Rendering\IMenuTabRendererTest.cs" />
     <Compile Include="Core\UI\Controls\TabbedMenuImplementation\Rendering\ITabbedMenuRendererTest.cs" />
     <Compile Include="Core\UI\Controls\TabbedMultiViewImplementation\Rendering\ITabbedMultiViewRendererTest.cs" />
@@ -258,22 +254,6 @@
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckJsonService.cs" />
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckScriptService.cs" />
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckWebService.cs" />
-    <Compile Include="Legacy\LegacyServiceConfigurationServiceTest.cs" />
-    <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRendererTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Legacy\UI\Controls\ListMenuQuirksModeRendererTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Legacy\UI\Controls\SingleViewQuirksModeRendererTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Legacy\UI\Controls\TabbedMultiViewQuirksModeRendererTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Legacy\UI\Controls\WebTabStripQuirksModeRendererTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Core\UI\Controls\ControlReplacing\StateClearingStrategyTest.cs" />
     <Compile Include="Core\UI\Controls\ControlReplacing\IAddedControl.cs" />
     <Compile Include="Core\UI\Controls\ControlReplacing\StateReplacingStrategyTest.cs" />
@@ -286,13 +266,11 @@
     <Compile Include="Core\UI\Controls\ListMenuImplementation\Rendering\ListMenuRendererTest.cs" />
     <Compile Include="Core\UI\Controls\RendererTestBase.cs" />
     <Compile Include="Core\UI\Controls\SingleViewImplementation\Rendering\SingleViewRendererTest.cs" />
-    <Compile Include="Core\UI\Controls\StubServiceLocator.cs" />
     <Compile Include="Core\UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRendererTest.cs" />
     <Compile Include="Core\UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRendererTest.cs" />
     <Compile Include="Core\UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRendererTest.cs" />
     <Compile Include="Core\UI\Controls\TabbedMultiViewImplementation\TabbedMultiViewMock.cs" />
     <Compile Include="Core\UI\Controls\WebTabStripImplementation\WebTabStripMock.cs" />
-    <Compile Include="Core\UI\Controls\XmlNodeExtensions.cs" />
     <Compile Include="Core\UI\Controls\ReplaceableControlMock.cs" />
     <Compile Include="Core\UI\Controls\RequestMode.cs" />
     <Compile Include="Core\UI\Controls\TestPageHolder.cs" />

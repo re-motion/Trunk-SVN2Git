@@ -14,35 +14,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using Microsoft.Practices.ServiceLocation;
-using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting;
-using Remotion.Globalization.Implementation;
+using Remotion.Web;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.Resources;
 
-namespace Remotion.Web.UnitTests.Core.UI.Controls
+namespace Remotion.Development.Web.UnitTesting.Infrastructure
 {
-  public abstract class RendererTestBase
+  public class FakeInfrastructureResourceUrlFactory : IInfrastructureResourceUrlFactory
   {
-    protected CompoundGlobalizationService GlobalizationService;
-
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
+    public FakeInfrastructureResourceUrlFactory ()
     {
-      ServiceLocator.SetLocatorProvider (() => new FakeServiceLocator());
     }
 
-    [TestFixtureTearDown]
-    public void TestFixtureTearDown ()
+    public IResourceUrl CreateThemedResourceUrl (ResourceType resourceType, string relativeUrl)
     {
-      ServiceLocator.SetLocatorProvider (null);
-    }
-
-    [SetUp]
-    public virtual void SetUp ()
-    {
-      GlobalizationService =
-          new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) });
+      return new StaticResourceUrl ("/" + relativeUrl);
     }
   }
 }

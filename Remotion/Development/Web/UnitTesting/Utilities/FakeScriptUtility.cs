@@ -15,34 +15,28 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Microsoft.Practices.ServiceLocation;
-using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting;
-using Remotion.Globalization.Implementation;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UnitTests.Core.UI.Controls
+namespace Remotion.Development.Web.UnitTesting.Utilities
 {
-  public abstract class RendererTestBase
+  public class FakeScriptUtility : IScriptUtility
   {
-    protected CompoundGlobalizationService GlobalizationService;
-
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
+    public FakeScriptUtility ()
     {
-      ServiceLocator.SetLocatorProvider (() => new FakeServiceLocator());
     }
 
-    [TestFixtureTearDown]
-    public void TestFixtureTearDown ()
+    public void RegisterJavaScriptInclude (IControl control, HtmlHeadAppender htmlHeadAppender)
     {
-      ServiceLocator.SetLocatorProvider (null);
     }
 
-    [SetUp]
-    public virtual void SetUp ()
+    public void RegisterElementForBorderSpans (IControl control, string jQuerySelectorForBorderSpanTarget)
     {
-      GlobalizationService =
-          new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) });
+    }
+
+    public void RegisterResizeOnElement (IControl control, string jquerySelector, string eventHandler)
+    {
     }
   }
 }

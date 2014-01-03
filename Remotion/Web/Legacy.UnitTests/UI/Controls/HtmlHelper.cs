@@ -14,35 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting;
-using Remotion.Globalization.Implementation;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 
-namespace Remotion.Web.UnitTests.Core.UI.Controls
+namespace Remotion.Web.Legacy.UnitTests.UI.Controls
 {
-  public abstract class RendererTestBase
+  public class HtmlHelper : HtmlHelperBase
   {
-    protected CompoundGlobalizationService GlobalizationService;
-
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
+    public HtmlHelper ()
+        : base (Assert.AreEqual, Assert.Greater, Assert.IsNotNull, Assert.IsNull, Assert.IsTrue)
     {
-      ServiceLocator.SetLocatorProvider (() => new FakeServiceLocator());
-    }
-
-    [TestFixtureTearDown]
-    public void TestFixtureTearDown ()
-    {
-      ServiceLocator.SetLocatorProvider (null);
-    }
-
-    [SetUp]
-    public virtual void SetUp ()
-    {
-      GlobalizationService =
-          new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) });
     }
   }
 }

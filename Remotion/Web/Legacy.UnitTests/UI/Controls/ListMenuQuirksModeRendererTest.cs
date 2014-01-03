@@ -14,22 +14,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
-using Remotion.Web.UnitTests.Core.UI.Controls;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.Legacy.UI.Controls
+namespace Remotion.Web.Legacy.UnitTests.UI.Controls
 {
   [TestFixture]
   public class ListMenuQuirksModeRendererTest : RendererTestBase

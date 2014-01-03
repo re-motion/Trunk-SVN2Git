@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,17 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Web.Infrastructure;
-using Remotion.Web.Resources;
 
-namespace Remotion.Web.UnitTests.Core.UI.Controls
+using System;
+using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
+
+namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
 {
-  public class StubInfrastructureResourceUrlFactory : IInfrastructureResourceUrlFactory
+  [SetUpFixture]
+  public class SetUpFixture
   {
-    public IResourceUrl CreateThemedResourceUrl (ResourceType resourceType, string relativeUrl)
+    [SetUp]
+    public void SetUp ()
     {
-      return new StaticResourceUrl ("/" + relativeUrl);
+      XmlNodeExtensions.Helper = new HtmlHelper();
     }
   }
 }

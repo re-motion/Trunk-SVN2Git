@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Linq;
 using NUnit.Framework;
@@ -21,7 +22,6 @@ using Remotion.ServiceLocation;
 using Remotion.Web.Compilation;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Legacy;
 using Remotion.Web.Resources;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Hotkey;
@@ -29,7 +29,7 @@ using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UnitTests.Legacy
+namespace Remotion.Web.Legacy.UnitTests
 {
   [TestFixture]
   public class LegacyServiceConfigurationServiceTest

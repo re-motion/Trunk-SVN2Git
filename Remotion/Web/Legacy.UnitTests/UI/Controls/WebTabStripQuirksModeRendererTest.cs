@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -22,7 +23,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
-using Remotion.Utilities;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI;
@@ -30,10 +31,10 @@ using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
-using Remotion.Web.UnitTests.Core.UI.Controls;
 using Rhino.Mocks;
+using AttributeCollection = System.Web.UI.AttributeCollection;
 
-namespace Remotion.Web.UnitTests.Legacy.UI.Controls
+namespace Remotion.Web.Legacy.UnitTests.UI.Controls
 {
   [TestFixture]
   public class WebTabStripQuirksModeRendererTest : RendererTestBase
@@ -73,8 +74,6 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _webTabStrip.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
 
       _style = new WebTabStyle();
-
-      new FakeResourceUrlFactory();
     }
 
     [Test]

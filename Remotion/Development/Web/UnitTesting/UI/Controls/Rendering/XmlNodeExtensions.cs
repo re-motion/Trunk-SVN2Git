@@ -14,19 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Xml;
-using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
+namespace Remotion.Development.Web.UnitTesting.UI.Controls.Rendering
 {
   public static class XmlNodeExtensions
   {
-    private static readonly HtmlHelper s_helper = new HtmlHelper ();
+    private static HtmlHelperBase s_helper;
 
-    private static HtmlHelper Helper
+    public static HtmlHelperBase Helper
     {
-      get { return s_helper; }
+      get { return Assertion.IsNotNull (s_helper, "XmlNodeExtensions.Hepler must be set during test-setup."); }
+      set { s_helper = ArgumentUtility.CheckNotNull ("value", value); }
     }
 
     public static void AssertChildElementCount (this XmlNode element, int childElementCount)

@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,35 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting;
-using Remotion.Globalization.Implementation;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.Core.UI.Controls
+namespace Remotion.ObjectBinding.UnitTests.Web
 {
-  public abstract class RendererTestBase
+  [SetUpFixture]
+  public class SetUpFixture
   {
-    protected CompoundGlobalizationService GlobalizationService;
-
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
-    {
-      ServiceLocator.SetLocatorProvider (() => new FakeServiceLocator());
-    }
-
-    [TestFixtureTearDown]
-    public void TestFixtureTearDown ()
-    {
-      ServiceLocator.SetLocatorProvider (null);
-    }
-
     [SetUp]
-    public virtual void SetUp ()
+    public void SetUp ()
     {
-      GlobalizationService =
-          new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) });
+      XmlNodeExtensions.Helper = new HtmlHelper();
     }
   }
 }
