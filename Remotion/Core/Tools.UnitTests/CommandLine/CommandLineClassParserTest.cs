@@ -39,8 +39,8 @@ namespace Remotion.UnitTests.Text.CommandLine
   }
 
   [TestFixture]
-	public class CommandLineClassParserTest
-	{
+  public class CommandLineClassParserTest
+  {
     [Test] 
     public void TestParser ()
     {

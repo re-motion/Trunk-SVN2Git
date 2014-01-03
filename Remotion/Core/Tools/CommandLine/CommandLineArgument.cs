@@ -39,10 +39,10 @@ public abstract class CommandLineArgument
   /// <summary>
   /// Creates a positional command line argument.
   /// </summary>
-	protected CommandLineArgument (bool isOptional)
-	{
+  protected CommandLineArgument (bool isOptional)
+  {
     _isOptional = isOptional;
-	}
+  }
 
   /// <summary>
   /// Creates a named command line argument.

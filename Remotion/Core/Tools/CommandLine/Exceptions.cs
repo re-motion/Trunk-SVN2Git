@@ -77,20 +77,20 @@ public class InvalidCommandLineArgumentValueException: CommandLineArgumentExcept
 { 
   private const string c_message = "Invalid argument value";
 
-	public InvalidCommandLineArgumentValueException (CommandLineArgument argument)
+  public InvalidCommandLineArgumentValueException (CommandLineArgument argument)
     : this (argument, c_message)
-	{
-	}
+  {
+  }
 
-	public InvalidCommandLineArgumentValueException (CommandLineArgument argument, string message)
+  public InvalidCommandLineArgumentValueException (CommandLineArgument argument, string message)
     : this (FormatArgument.Format (argument) + ": " + message)
-	{
-	}
+  {
+  }
 
   public InvalidCommandLineArgumentValueException (string message)
     : base (message)
-	{
-	}
+  {
+  }
 
   protected InvalidCommandLineArgumentValueException (SerializationInfo info, StreamingContext context)
     : base (info, context)
@@ -112,10 +112,10 @@ public class InvalidCommandLineArgumentNameException: CommandLineArgumentExcepti
   internal const string MessageNotFound = "Argument /{0}: invalid argument name.";
   internal const string MessageAmbiguous = "Argument /{0}: ambiguous argument name.";
  
-	public InvalidCommandLineArgumentNameException (string name, string message)
+  public InvalidCommandLineArgumentNameException (string name, string message)
     : base (string.Format (message, name))
-	{
-	}
+  {
+  }
 
   protected InvalidCommandLineArgumentNameException (SerializationInfo info, StreamingContext context)
     : base (info, context)
@@ -131,10 +131,10 @@ public class InvalidNumberOfCommandLineArgumentsException: CommandLineArgumentEx
 {
   private const string c_message = "Argument /{0}: unexpected argument. Only {1} unnamed arguments are allowed.";
  
-	public InvalidNumberOfCommandLineArgumentsException (string argument, int number)
+  public InvalidNumberOfCommandLineArgumentsException (string argument, int number)
     : base (string.Format (c_message, argument, number))
-	{
-	}
+  {
+  }
 
   protected InvalidNumberOfCommandLineArgumentsException (SerializationInfo info, StreamingContext context)
     : base (info, context)
@@ -150,10 +150,10 @@ public class MissingRequiredCommandLineParameterException: CommandLineArgumentEx
 {
   private const string c_message = ": Required Argument not specified.";
  
-	public MissingRequiredCommandLineParameterException (CommandLineArgument argument)
+  public MissingRequiredCommandLineParameterException (CommandLineArgument argument)
     : base (FormatArgument.Format (argument) + c_message)
-	{
-	}
+  {
+  }
 
   protected MissingRequiredCommandLineParameterException (SerializationInfo info, StreamingContext context)
     : base (info, context)
@@ -169,10 +169,10 @@ public class ConflictCommandLineParameterException: CommandLineArgumentException
 {
   private const string c_message = "Conflicting Arguments: {0} and {1} cannot be used together.";
  
-	public ConflictCommandLineParameterException (CommandLineArgument argument1, CommandLineArgument argument2)
+  public ConflictCommandLineParameterException (CommandLineArgument argument1, CommandLineArgument argument2)
     : base (string.Format (c_message, FormatArgument.Format (argument1), FormatArgument.Format (argument2)))
-	{
-	}
+  {
+  }
 
   protected ConflictCommandLineParameterException (SerializationInfo info, StreamingContext context)
     : base (info, context)
@@ -190,15 +190,15 @@ public class ConflictCommandLineParameterException: CommandLineArgumentException
 [Serializable]
 public class CommandLineArgumentApplicationException: CommandLineArgumentException
 {
-	public CommandLineArgumentApplicationException (string message)
+  public CommandLineArgumentApplicationException (string message)
     : base (message)
-	{
-	}
+  {
+  }
 
-	public CommandLineArgumentApplicationException (string message, Exception innerException)
+  public CommandLineArgumentApplicationException (string message, Exception innerException)
     : base (message, innerException)
-	{
-	}
+  {
+  }
 
   protected CommandLineArgumentApplicationException (SerializationInfo info, StreamingContext context)
     : base (info, context)

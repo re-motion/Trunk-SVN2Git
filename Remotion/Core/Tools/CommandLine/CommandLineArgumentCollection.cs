@@ -29,14 +29,14 @@ public class CommandLineArgumentCollection: CollectionBase
   
   private CommandLineParser _parser = null;
 
-	public CommandLineArgumentCollection (CommandLineParser parser)
+  public CommandLineArgumentCollection (CommandLineParser parser)
   {
     _parser = parser;
   }
 
-	public CommandLineArgumentCollection ()
-	{
-	}
+  public CommandLineArgumentCollection ()
+  {
+  }
 
   public CommandLineArgument this[int index]
   {
