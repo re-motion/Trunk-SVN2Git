@@ -293,7 +293,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     
     protected override sealed string NormalizeText (string text)
     {
-      return StringUtility.NullToEmpty (text);
+      return text ?? string.Empty;
     }
 
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>

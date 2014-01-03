@@ -453,7 +453,7 @@ namespace Remotion.Web.Infrastructure
     {
       ArgumentUtility.CheckNotNullAndType<Control> ("registratorControl", registratorControl);
       ScriptManager.RegisterExpandoAttribute (
-          (Control) registratorControl, controlId, attributeName, StringUtility.NullToEmpty (attributeValue), encode);
+          (Control) registratorControl, controlId, attributeName, attributeValue ?? string.Empty, encode);
     }
 
     /// <summary>
@@ -484,7 +484,7 @@ namespace Remotion.Web.Infrastructure
     public void RegisterHiddenField (IControl control, string hiddenFieldName, string hiddenFieldInitialValue)
     {
       ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-      ScriptManager.RegisterHiddenField ((Control) control, hiddenFieldName, StringUtility.NullToEmpty (hiddenFieldInitialValue));
+      ScriptManager.RegisterHiddenField ((Control) control, hiddenFieldName, hiddenFieldInitialValue ?? string.Empty);
     }
 
     /// <summary>
@@ -614,7 +614,7 @@ namespace Remotion.Web.Infrastructure
     public void RegisterOnSubmitStatement (IControl control, Type type, string key, string script)
     {
       ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-      ScriptManager.RegisterOnSubmitStatement ((Control) control, type, key, StringUtility.NullToEmpty (script));
+      ScriptManager.RegisterOnSubmitStatement ((Control) control, type, key, script ?? string.Empty);
     }
 
     /// <summary>

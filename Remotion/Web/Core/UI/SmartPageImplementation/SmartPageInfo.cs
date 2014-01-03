@@ -525,7 +525,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
     public string StatusIsSubmittingMessage
     {
       get { return _statusIsSubmittingMessage; }
-      set { _statusIsSubmittingMessage = StringUtility.NullToEmpty (value); }
+      set { _statusIsSubmittingMessage = value ?? string.Empty; }
     }
 
     /// <summary>
@@ -534,7 +534,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
     public string AbortMessage
     {
       get { return _abortMessage; }
-      set { _abortMessage = StringUtility.NullToEmpty (value); }
+      set { _abortMessage = value ?? string.Empty; }
     }
 
     /// <summary>

@@ -276,11 +276,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string CommandStateType
     {
       get { return _commandStateType; }
-      set
-      {
-        _commandStateType = StringUtility.NullToEmpty (value);
-        _commandStateType = _commandStateType.Trim();
-      }
+      set { _commandStateType = (value ?? string.Empty).Trim(); }
     }
   }
 

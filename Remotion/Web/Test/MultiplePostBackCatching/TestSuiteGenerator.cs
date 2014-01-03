@@ -79,7 +79,7 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
 
     private string CreateID (string prefix, string id)
     {
-      return (string.IsNullOrEmpty (prefix) ? string.Empty : StringUtility.NullToEmpty (prefix) + "_") + id;
+      return (string.IsNullOrEmpty (prefix) ? string.Empty : prefix + "_") + id;
     }
   }
 }

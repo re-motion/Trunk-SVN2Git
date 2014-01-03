@@ -43,7 +43,7 @@ namespace Remotion.Web.UI.Controls
     public string CssClass
     {
       get { return _cssClass; }
-      set { _cssClass = StringUtility.NullToEmpty (value); }
+      set { _cssClass = value ?? string.Empty; }
     }
 
     [Browsable (false)]
@@ -76,7 +76,7 @@ namespace Remotion.Web.UI.Controls
 
         base.LoadViewState (pair.First);
 
-        _cssClass = StringUtility.NullToEmpty ((string) pair.Second);
+        _cssClass = (string) pair.Second ?? string.Empty;
       }
     }
 

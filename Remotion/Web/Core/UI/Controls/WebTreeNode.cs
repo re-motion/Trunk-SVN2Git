@@ -50,8 +50,8 @@ namespace Remotion.Web.UI.Controls
     {
       ValidateItemId (itemID);
       _itemID = itemID;
-      _text = StringUtility.NullToEmpty (text);
-      _toolTip = StringUtility.NullToEmpty (toolTip);
+      _text = text ?? string.Empty;
+      _toolTip = toolTip ?? string.Empty;
       _icon = icon;
       _children = new WebTreeNodeCollection (null);
       _children.SetParent (null, this);
@@ -220,7 +220,10 @@ namespace Remotion.Web.UI.Controls
     public virtual string Text
     {
       get { return _text; }
-      set { _text = StringUtility.NullToEmpty (value); }
+      set
+      {
+        _text = value ?? string.Empty;
+      }
     }
 
     /// <summary> Gets or sets the tool-tip displayed in this node. </summary>
@@ -232,7 +235,10 @@ namespace Remotion.Web.UI.Controls
     public string ToolTip
     {
       get { return _toolTip; }
-      set { _toolTip = StringUtility.NullToEmpty (value); }
+      set
+      {
+        _toolTip = value ?? string.Empty;
+      }
     }
 
     /// <summary> Gets or sets the icon displayed in this tree node. </summary>

@@ -387,14 +387,14 @@ namespace Remotion.Web.ExecutionEngine
     public string StatusIsCachedMessage
     {
       get { return _statusIsCachedMessage; }
-      set { _statusIsCachedMessage = StringUtility.NullToEmpty (value); }
+      set { _statusIsCachedMessage = value ?? string.Empty; }
     }
 
     /// <summary> Implements <see cref="IWxePage.StatusIsAbortingMessage">IWxePage.StatusIsAbortingMessage</see>. </summary>
     public string StatusIsAbortingMessage
     {
       get { return _statusIsAbortingMessage; }
-      set { _statusIsAbortingMessage = StringUtility.NullToEmpty (value); }
+      set { _statusIsAbortingMessage = value ?? string.Empty; }
     }
 
     /// <summary> Implements <see cref="IWxePage.ExecuteNextStep">IWxePage.ExecuteNextStep</see>. </summary>

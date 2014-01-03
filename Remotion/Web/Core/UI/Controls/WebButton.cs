@@ -365,7 +365,7 @@ namespace Remotion.Web.UI.Controls
           value += ";";
       }
 
-      return StringUtility.NullToEmpty (value);
+      return value ?? string.Empty;
     }
 
     protected bool HasAccess ()

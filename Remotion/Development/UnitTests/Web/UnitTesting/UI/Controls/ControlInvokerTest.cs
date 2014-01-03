@@ -187,7 +187,7 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
 
     private string AppendEvents (Control control, string events, string eventName)
     {
-      events = StringUtility.NullToEmpty (events);
+      events = events ?? string.Empty;
       if (events.Length > 0)
         events += ", ";
 

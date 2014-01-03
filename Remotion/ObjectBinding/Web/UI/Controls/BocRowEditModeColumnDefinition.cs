@@ -69,7 +69,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string EditText
     {
       get { return _editText; }
-      set { _editText = StringUtility.NullToEmpty (value); }
+      set { _editText = value ?? string.Empty; }
     }
 
     /// <summary>
@@ -113,7 +113,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string SaveText
     {
       get { return _saveText; }
-      set { _saveText = StringUtility.NullToEmpty (value); }
+      set
+      {
+        _saveText = value ?? string.Empty;
+      }
     }
 
     /// <summary> 
@@ -156,7 +159,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string CancelText
     {
       get { return _cancelText; }
-      set { _cancelText = StringUtility.NullToEmpty (value); }
+      set
+      {
+        _cancelText = value ?? string.Empty;
+      }
     }
 
     /// <summary> 

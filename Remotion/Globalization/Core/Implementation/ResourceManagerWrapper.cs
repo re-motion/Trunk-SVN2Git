@@ -123,7 +123,7 @@ namespace Remotion.Globalization.Implementation
     public NameValueCollection GetAllStrings (string prefix)
     {
       return _cachedResourceSet.GetOrCreateValue (
-          Tuple.Create (CultureInfo.CurrentUICulture, StringUtility.NullToEmpty (prefix)),
+          Tuple.Create (CultureInfo.CurrentUICulture, prefix ?? string.Empty),
           key =>
           {
             //  Loop through all entries in the resource managers

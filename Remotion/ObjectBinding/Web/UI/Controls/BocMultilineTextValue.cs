@@ -237,7 +237,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override sealed string NormalizeText (string text)
     {
-      string temp = StringUtility.NullToEmpty (text);
+      string temp = text ?? string.Empty;
       temp = temp.Replace ("\r", "");
       return StringUtility.ConcatWithSeparator (temp.Split ('\n'), "\r\n");
     }

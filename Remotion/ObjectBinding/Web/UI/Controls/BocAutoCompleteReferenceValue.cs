@@ -455,7 +455,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string SearchServicePath
     {
       get { return _searchServicePath; }
-      set { _searchServicePath = StringUtility.NullToEmpty (value); }
+      set { _searchServicePath = value ?? string.Empty; }
     }
 
     [Category ("AutoComplete")]

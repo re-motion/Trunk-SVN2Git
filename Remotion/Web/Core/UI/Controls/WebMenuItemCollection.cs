@@ -44,7 +44,7 @@ namespace Remotion.Web.UI.Controls
       {
         WebMenuItem menuItem = menuItems[i];
 
-        string category = StringUtility.NullToEmpty (menuItem.Category);
+        string category = menuItem.Category ?? string.Empty;
         ArrayList menuItemsForCategory;
         if (groupedMenuItems.Contains (category))
           menuItemsForCategory = (ArrayList) groupedMenuItems[category];

@@ -98,7 +98,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
         string imageUrl = GetResolvedImageUrl ();
 
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl);
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (renderingContext.Control.AlternateText));
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Alt, renderingContext.Control.AlternateText ?? string.Empty);
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Img);
         renderingContext.Writer.RenderEndTag ();
       }

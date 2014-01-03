@@ -152,7 +152,7 @@ namespace Remotion.Web.UI.Controls
     public string ItemID
     {
       get { return _itemID; }
-      set { _itemID = StringUtility.NullToEmpty (value); }
+      set { _itemID = value ?? string.Empty; }
     }
 
     [PersistenceMode (PersistenceMode.Attribute)]
@@ -163,7 +163,7 @@ namespace Remotion.Web.UI.Controls
     public string Category
     {
       get { return _category; }
-      set { _category = StringUtility.NullToEmpty (value); }
+      set { _category = value ?? string.Empty; }
     }
 
     [PersistenceMode (PersistenceMode.Attribute)]
@@ -174,7 +174,7 @@ namespace Remotion.Web.UI.Controls
     public string Text
     {
       get { return _text; }
-      set { _text = StringUtility.NullToEmpty (value); }
+      set { _text = value ?? string.Empty; }
     }
 
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]

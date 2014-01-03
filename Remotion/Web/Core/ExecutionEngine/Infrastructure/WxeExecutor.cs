@@ -119,7 +119,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
           functionName,
           href,
           options.Target,
-          StringUtility.NullToEmpty (options.Features));
+          options.Features ?? string.Empty);
       _page.ClientScript.RegisterClientScriptBlock (_page, typeof (WxeExecutor), "WxeExecuteFunction", openScript);
       _page.RegisterClientSidePageEventHandler (SmartPageEvents.OnLoad, "WxeExecuteFunction", functionName);
 

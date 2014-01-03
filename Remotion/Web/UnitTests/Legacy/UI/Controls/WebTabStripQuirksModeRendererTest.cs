@@ -357,12 +357,12 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       var anchorBody = link.GetAssertedChildElement ("span", 0);
       anchorBody.AssertAttributeValueEquals ("class", _renderer.CssClassTabAnchorBody);
 
-      string text = StringUtility.NullToEmpty (tab.Text);
+      string text = tab.Text ?? string.Empty;
       var hasIcon = tab.Icon != null && !string.IsNullOrEmpty (tab.Icon.Url);
       if (hasIcon)
       {
         string url = tab.Icon.Url.TrimStart ('~');
-        string alt = StringUtility.NullToEmpty (tab.Icon.AlternateText);
+        string alt = tab.Icon.AlternateText ?? string.Empty;
         text = HtmlHelper.WhiteSpace + text;
 
         var image = anchorBody.GetAssertedChildElement ("img", 0);

@@ -104,7 +104,7 @@ namespace Remotion.Web.UI.Controls
     public string Url
     {
       get { return _url; }
-      set { _url = StringUtility.NullToEmpty (value); }
+      set { _url = value ?? string.Empty; }
     }
 
     [PersistenceMode (PersistenceMode.Attribute)]
@@ -113,7 +113,7 @@ namespace Remotion.Web.UI.Controls
     public string AlternateText
     {
       get { return _alternateText; }
-      set { _alternateText = StringUtility.NullToEmpty (value); }
+      set { _alternateText = value ?? string.Empty; }
     }
 
     [PersistenceMode (PersistenceMode.Attribute)]
@@ -122,7 +122,7 @@ namespace Remotion.Web.UI.Controls
     public string ToolTip
     {
       get { return _toolTip; }
-      set { _toolTip = StringUtility.NullToEmpty (value); }
+      set { _toolTip = value ?? string.Empty; }
     }
 
     [PersistenceMode (PersistenceMode.Attribute)]
@@ -164,7 +164,7 @@ namespace Remotion.Web.UI.Controls
 
       writer.AddAttribute ("class", "Icon");
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (_alternateText));
+      writer.AddAttribute (HtmlTextWriterAttribute.Alt, _alternateText ?? string.Empty);
 
       if (! string.IsNullOrEmpty (_toolTip))
         writer.AddAttribute (HtmlTextWriterAttribute.Title, _toolTip);

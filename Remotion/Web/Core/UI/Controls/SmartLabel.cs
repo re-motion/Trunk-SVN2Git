@@ -157,7 +157,7 @@ public class SmartLabel: WebControl, IControl
       return _text;
 
     string forControlBackUp = ForControl;
-    ForControl = StringUtility.NullToEmpty (ForControl);
+    ForControl = ForControl ?? string.Empty;
     string text = string.Empty;
 
     if (ForControl == string.Empty)

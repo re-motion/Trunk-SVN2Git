@@ -94,7 +94,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string CustomCellType
     {
       get { return _customCellType; }
-      set { _customCellType = StringUtility.NullToEmpty (value); }
+      set { _customCellType = value ?? string.Empty; }
     }
 
     /// <summary> 
@@ -109,7 +109,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string CustomCellArgument
     {
       get { return _customCellArgument; }
-      set { _customCellArgument = StringUtility.NullToEmpty (value); }
+      set { _customCellArgument = value ?? string.Empty; }
     }
 
     [NotNull]

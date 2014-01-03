@@ -222,7 +222,7 @@ namespace Remotion.ObjectBinding
 
     private string GetStringValueForStringProperty (object value)
     {
-      return StringUtility.NullToEmpty ((string) value);
+      return (string) value ?? string.Empty;
     }
 
     private string GetStringValueForFormattableValue (IFormattable value, string format)

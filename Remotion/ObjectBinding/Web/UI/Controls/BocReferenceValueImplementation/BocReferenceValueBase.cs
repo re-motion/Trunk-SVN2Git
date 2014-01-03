@@ -386,14 +386,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     [Description ("Flag that determines whether to show the icon in front of the value.")]
     [DefaultValue (true)]
     public bool EnableIcon { get; set; }
-    
+
     [Editor (typeof (UrlEditor), typeof (UITypeEditor))]
     [Category ("Appearance")]
     [DefaultValue ("")]
     public string IconServicePath
     {
       get { return _iconServicePath; }
-      set { _iconServicePath = StringUtility.NullToEmpty (value); }
+      set { _iconServicePath = value ?? string.Empty; }
     }
 
     [Category ("Appearance")]

@@ -85,7 +85,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string FormatString
     {
       get { return _formatString; }
-      set { _formatString = StringUtility.NullToEmpty (value); }
+      set { _formatString = value ?? string.Empty; }
     }
 
     /// <summary>

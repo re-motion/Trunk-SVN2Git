@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.Services
     public string IconUrl
     {
       get { return _iconUrl; }
-      set { _iconUrl = StringUtility.NullToEmpty (value); }
+      set { _iconUrl = value ?? string.Empty; }
     }
   }
 }

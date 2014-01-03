@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public override string ItemID
     {
       get { return _itemID; }
-      set { _itemID = StringUtility.NullToEmpty (value); }
+      set { _itemID = value ?? string.Empty; }
     }
 
     /// <summary> Gets the displayed value of the column title. </summary>
@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public virtual string ColumnTitle
     {
       get { return _columnTitle; }
-      set { _columnTitle = StringUtility.NullToEmpty (value); }
+      set { _columnTitle = value ?? string.Empty; }
     }
 
     /// <summary> Gets or sets the width of the column definition. </summary>
@@ -129,7 +129,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string CssClass
     {
       get { return _cssClass; }
-      set { _cssClass = StringUtility.NullToEmpty (value); }
+      set { _cssClass = value ?? string.Empty; }
     }
 
 

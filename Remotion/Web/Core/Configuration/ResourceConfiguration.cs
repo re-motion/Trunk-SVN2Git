@@ -33,7 +33,7 @@ public class ResourceConfiguration
   public string Root
   {
     get { return _root; }
-    set { _root = Remotion.Utilities.StringUtility.NullToEmpty(value).Trim ('/'); }
+    set { _root = (value ?? string.Empty).Trim ('/'); }
   }
 
 }

@@ -168,7 +168,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       string newDateValue = PageUtility.GetPostBackCollectionItem (Page, GetDateValueName());
       bool isDateChanged = newDateValue != null
-                           && StringUtility.NullToEmpty (_internalDateValue) != newDateValue;
+                           && (_internalDateValue ?? string.Empty) != newDateValue;
       if (isDateChanged)
       {
         InternalDateValue = StringUtility.EmptyToNull (newDateValue);
@@ -183,7 +183,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       string newTimeValue = PageUtility.GetPostBackCollectionItem (Page, GetTimeValueName());
       bool isTimeChanged = newTimeValue != null
-                           && StringUtility.NullToEmpty (_internalTimeValue) != newTimeValue;
+                           && (_internalTimeValue ?? string.Empty) != newTimeValue;
       if (isTimeChanged)
       {
         InternalTimeValue = StringUtility.EmptyToNull (newTimeValue);

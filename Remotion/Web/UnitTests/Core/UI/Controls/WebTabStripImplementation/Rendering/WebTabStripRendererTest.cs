@@ -391,12 +391,12 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       anchorBody.AssertAttributeValueEquals ("class", _renderer.CssClassTabAnchorBody);
 
       var textWithHotkey = HotkeyParser.Parse (tab.Text);
-      string text = StringUtility.NullToEmpty (textWithHotkey.Text);
+      string text = textWithHotkey.Text ?? string.Empty;
       var hasIcon = tab.Icon != null && !string.IsNullOrEmpty (tab.Icon.Url);
       if (hasIcon)
       {
         string url = tab.Icon.Url.TrimStart ('~');
-        string alt = StringUtility.NullToEmpty (tab.Icon.AlternateText);
+        string alt = tab.Icon.AlternateText ?? string.Empty;
         text = HtmlHelper.WhiteSpace + text;
         
         var image = anchorBody.GetAssertedChildElement ("img", 0);

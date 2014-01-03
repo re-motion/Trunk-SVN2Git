@@ -102,7 +102,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string FormatString
     {
       get { return _formatString; }
-      set { _formatString = StringUtility.NullToEmpty (value); }
+      set { _formatString = value ?? string.Empty; }
     }
 
     public IBusinessObjectPropertyPath GetPropertyPath ()
@@ -168,7 +168,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string EditModeControlType
     {
       get { return _editModeControlType; }
-      set { _editModeControlType = StringUtility.NullToEmpty (value); }
+      set { _editModeControlType = value ?? string.Empty; }
     }
 
     /// <summary>

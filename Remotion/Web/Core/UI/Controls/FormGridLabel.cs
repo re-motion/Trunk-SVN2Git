@@ -53,7 +53,7 @@ public class FormGridLabel: Label, ISmartControl
   public string HelpUrl
   {
     get { return _helpUrl; }
-    set { _helpUrl = StringUtility.NullToEmpty (value); }
+    set { _helpUrl = value ?? string.Empty; }
   }
 
   [Browsable (false)]

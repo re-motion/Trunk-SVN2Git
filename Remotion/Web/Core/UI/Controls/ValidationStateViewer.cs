@@ -237,7 +237,7 @@ public class ValidationStateViewer : WebControl, IControl
             else if (control is LiteralControl)
               text = ((LiteralControl) control).Text;
 
-            text = StringUtility.NullToEmpty (text);
+            text = text ?? string.Empty;
             // Do not HTML enocde.
             writer.Write (text);
 

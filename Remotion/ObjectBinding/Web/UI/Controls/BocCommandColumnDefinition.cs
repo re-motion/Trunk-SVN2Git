@@ -69,7 +69,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string Text
     {
       get { return _text; }
-      set { _text = StringUtility.NullToEmpty (value); }
+      set { _text = value ?? string.Empty; }
     }
 
     /// <summary> 

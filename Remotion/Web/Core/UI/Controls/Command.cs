@@ -128,11 +128,7 @@ namespace Remotion.Web.UI.Controls
       public virtual string Href
       {
         get { return _href; }
-        set
-        {
-          _href = StringUtility.NullToEmpty (value);
-          _href = _href.Trim();
-        }
+        set { _href = (value ?? string.Empty).Trim(); }
       }
 
       /// <summary> 
@@ -151,11 +147,7 @@ namespace Remotion.Web.UI.Controls
       public virtual string Target
       {
         get { return _target; }
-        set
-        {
-          _target = StringUtility.NullToEmpty (value);
-          _target = _target.Trim();
-        }
+        set { _target = (value ?? string.Empty).Trim(); }
       }
     }
 
@@ -208,11 +200,7 @@ namespace Remotion.Web.UI.Controls
       public virtual string TypeName
       {
         get { return _typeName; }
-        set
-        {
-          _typeName = StringUtility.NullToEmpty (value);
-          _typeName = _typeName.Trim();
-        }
+        set { _typeName = (value ?? string.Empty).Trim(); }
       }
 
       /// <summary> 
@@ -231,11 +219,7 @@ namespace Remotion.Web.UI.Controls
       public string MappingID
       {
         get { return _mappingID; }
-        set
-        {
-          _mappingID = StringUtility.NullToEmpty (value);
-          _mappingID = _mappingID.Trim();
-        }
+        set { _mappingID = (value ?? string.Empty).Trim(); }
       }
 
       /// <summary> 
@@ -254,11 +238,7 @@ namespace Remotion.Web.UI.Controls
       public virtual string Parameters
       {
         get { return _parameters; }
-        set
-        {
-          _parameters = StringUtility.NullToEmpty (value);
-          _parameters = _parameters.Trim();
-        }
+        set { _parameters = (value ?? string.Empty).Trim(); }
       }
 
       /// <summary> 
@@ -277,11 +257,7 @@ namespace Remotion.Web.UI.Controls
       public string Target
       {
         get { return _target; }
-        set
-        {
-          _target = StringUtility.NullToEmpty (value);
-          _target = _target.Trim();
-        }
+        set { _target = (value ?? string.Empty).Trim(); }
       }
 
 
@@ -572,7 +548,7 @@ namespace Remotion.Web.UI.Controls
 
       return CommandInfo.CreateForPostBack (
           StringUtility.EmptyToNull (_toolTip),
-          postBackEvent + StringUtility.NullToEmpty (onClick));
+          postBackEvent + (onClick ?? string.Empty));
     }
 
     /// <summary> Creates a <see cref="CommandInfo"/> for the <see cref="WxeFunctionCommand"/>. </summary>
@@ -610,7 +586,7 @@ namespace Remotion.Web.UI.Controls
 
       return CommandInfo.CreateForPostBack (
           StringUtility.EmptyToNull (_toolTip),
-          postBackEvent + StringUtility.NullToEmpty (onClick));
+          postBackEvent + (onClick ?? string.Empty));
     }
 
     /// <summary> Renders the closing tag for the command. </summary>
@@ -735,7 +711,7 @@ namespace Remotion.Web.UI.Controls
       get { return _toolTip; }
       set
       {
-        _toolTip = StringUtility.NullToEmpty (value);
+        _toolTip = value ?? string.Empty;
         _toolTip = _toolTip.Trim();
       }
     }
@@ -858,7 +834,10 @@ namespace Remotion.Web.UI.Controls
     public string ItemID
     {
       get { return _itemID; }
-      set { _itemID = StringUtility.NullToEmpty (value); }
+      set
+      {
+        _itemID = value ?? string.Empty;
+      }
     }
 
     public virtual void LoadResources (IResourceManager resourceManager, IGlobalizationService globalizationService)

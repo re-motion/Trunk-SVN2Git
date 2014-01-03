@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string MenuTitleText
     {
       get { return _menuTitleText; }
-      set { _menuTitleText = StringUtility.NullToEmpty (value); }
+      set { _menuTitleText = value ?? string.Empty; }
     }
 
     /// <summary> Gets or sets the icon displayed in the menu's title field. </summary>

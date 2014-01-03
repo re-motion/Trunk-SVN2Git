@@ -169,7 +169,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
           renderingContext.Control.Value.Value ? c_trueIcon : c_falseIcon);
 
       imageControl.ImageUrl = imageUrl.GetUrl();
-      imageControl.AlternateText = StringUtility.NullToEmpty(description);
+      imageControl.AlternateText = description ?? string.Empty;
       imageControl.GenerateEmptyAlternateText = true;
       imageControl.Style["vertical-align"] = "middle";
     }
