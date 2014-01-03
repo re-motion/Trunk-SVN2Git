@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.Web.UnitTests.Domain;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueTests
 {
   [TestFixture]
   public class AllDataTypes : BocTest

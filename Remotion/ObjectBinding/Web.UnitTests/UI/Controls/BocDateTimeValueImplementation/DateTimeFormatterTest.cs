@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImplementation
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocDateTimeValueImplementation
 {
   [TestFixture]
   public class DateTimeFormatterTest

@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.Web.Services;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImplementation
 {
   [TestFixture]
   public class BusinessObjectServiceContextTest

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Specialized;
 using System.Web;
@@ -23,16 +24,15 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.UnitTests.Web.Domain;
-using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
+using Remotion.ObjectBinding.Web.UnitTests.Domain;
 using Remotion.Web.Services;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
 {
   [TestFixture]
   public class BocAutoCompleteReferenceValueTest : BocTest

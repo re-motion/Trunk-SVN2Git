@@ -39,7 +39,7 @@ using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
 {
   public class StubServiceLocator : ServiceLocatorImplBase
   {

@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BusinessObjectBoundEditableWebControlTests.TestDomain
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BusinessObjectBoundEditableWebControlTests.TestDomain
 {
   public class TestableBusinessObjectBoundEditableWebControl : BusinessObjectBoundEditableWebControl
   {

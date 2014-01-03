@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
@@ -23,7 +24,7 @@ using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
 {
   public class RendererTestBase
   {

@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 {
   [TestFixture]
   public class BocListRowTest

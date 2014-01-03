@@ -20,7 +20,7 @@ using System.Collections;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 {
   public class FakeRowIDProvider : IRowIDProvider
   {

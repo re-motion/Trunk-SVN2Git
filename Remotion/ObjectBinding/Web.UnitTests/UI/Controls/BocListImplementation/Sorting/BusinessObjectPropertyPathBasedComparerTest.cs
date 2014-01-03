@@ -19,13 +19,12 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject;
-using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
+using Remotion.ObjectBinding.Web.UnitTests.Domain;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Sorting
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.Sorting
 {
   [TestFixture]
   public class BusinessObjectPropertyPathBasedComparerTest

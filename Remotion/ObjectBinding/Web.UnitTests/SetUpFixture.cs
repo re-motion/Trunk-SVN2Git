@@ -18,9 +18,9 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UnitTests.UI.Controls;
 
-namespace Remotion.ObjectBinding.UnitTests.Web
+namespace Remotion.ObjectBinding.Web.UnitTests
 {
   [SetUpFixture]
   public class SetUpFixture

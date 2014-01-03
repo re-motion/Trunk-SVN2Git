@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using System.Web;
@@ -25,7 +26,7 @@ using Remotion.Development.Web.UnitTesting.UI;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
 {
 
 public class BocTest

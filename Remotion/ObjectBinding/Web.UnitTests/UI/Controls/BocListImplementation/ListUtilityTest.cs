@@ -20,9 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
-using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 {
   [TestFixture]
   public class ListUtilityTest
