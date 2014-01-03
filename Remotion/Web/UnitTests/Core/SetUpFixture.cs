@@ -22,7 +22,9 @@ using Remotion.Development.Web.UnitTesting.Infrastructure;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Development.Web.UnitTesting.Utilities;
 using Remotion.ServiceLocation;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UnitTests.Core.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -41,6 +43,8 @@ namespace Remotion.Web.UnitTests.Core
       var serviceLocator = new DefaultServiceLocator();
       serviceLocator.Register (typeof (IInfrastructureResourceUrlFactory), () => new FakeInfrastructureResourceUrlFactory());
       serviceLocator.Register (typeof (IScriptUtility), () => new FakeScriptUtility());
+      serviceLocator.Register (typeof (IWebSecurityAdapter));
+      serviceLocator.Register (typeof (IWxeSecurityAdapter));
 
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
