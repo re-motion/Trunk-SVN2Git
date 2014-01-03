@@ -51,25 +51,25 @@
     </Compile>
     <Compile Include="AppDomainAssemblyResolver.cs" />
     <Compile Include="AppDomainRunnerBase.cs" />
-    <Compile Include="CommandLine\CommandLineArgument.cs" />
-    <Compile Include="CommandLine\CommandLineArgumentCollection.cs" />
-    <Compile Include="CommandLine\CommandLineAttributes.cs" />
-    <Compile Include="CommandLine\CommandLineClassParser.cs" />
-    <Compile Include="CommandLine\CommandLineEnumArgument.cs" />
-    <Compile Include="CommandLine\CommandLineFlagArgument.cs" />
-    <Compile Include="CommandLine\CommandLineModeArgument.cs" />
-    <Compile Include="CommandLine\CommandLineParser.cs" />
-    <Compile Include="CommandLine\CommandLineValueArgument.cs" />
-    <Compile Include="CommandLine\Exceptions.cs" />
-    <Compile Include="ConsoleApplication\ConsoleApplication.cs" />
-    <Compile Include="ConsoleApplication\ConsoleApplicationSettings.cs" />
-    <Compile Include="ConsoleApplication\ConsoleKeypressWaiter.cs" />
-    <Compile Include="ConsoleApplication\IApplicationRunner.cs" />
-    <Compile Include="ConsoleApplication\IWaiter.cs" />
-    <Compile Include="ConsoleUtility.cs" />
-    <Compile Include="DefaultConsoleManager.cs" />
-    <Compile Include="IConsoleManager.cs" />
-    <Compile Include="MonospaceTextFormat.cs" />
+    <Compile Include="Console\CommandLine\CommandLineArgument.cs" />
+    <Compile Include="Console\CommandLine\CommandLineArgumentCollection.cs" />
+    <Compile Include="Console\CommandLine\CommandLineAttributes.cs" />
+    <Compile Include="Console\CommandLine\CommandLineClassParser.cs" />
+    <Compile Include="Console\CommandLine\CommandLineEnumArgument.cs" />
+    <Compile Include="Console\CommandLine\CommandLineFlagArgument.cs" />
+    <Compile Include="Console\CommandLine\CommandLineModeArgument.cs" />
+    <Compile Include="Console\CommandLine\CommandLineParser.cs" />
+    <Compile Include="Console\CommandLine\CommandLineValueArgument.cs" />
+    <Compile Include="Console\CommandLine\Exceptions.cs" />
+    <Compile Include="Console\ConsoleApplication\ConsoleApplication.cs" />
+    <Compile Include="Console\ConsoleApplication\ConsoleApplicationSettings.cs" />
+    <Compile Include="Console\ConsoleApplication\ConsoleKeypressWaiter.cs" />
+    <Compile Include="Console\ConsoleApplication\IApplicationRunner.cs" />
+    <Compile Include="Console\ConsoleApplication\IWaiter.cs" />
+    <Compile Include="Console\ConsoleUtility.cs" />
+    <Compile Include="Console\DefaultConsoleManager.cs" />
+    <Compile Include="Console\IConsoleManager.cs" />
+    <Compile Include="Console\MonospaceTextFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -87,7 +87,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="doc\include\CommandLine\CommandLineParser.xml" />
+    <Content Include="doc\include\Console\CommandLine\CommandLineParser.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

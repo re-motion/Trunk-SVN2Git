@@ -55,13 +55,13 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="AppDomainAssemblyResolverTest.cs" />
-    <Compile Include="CommandLine\CommandLineClassParserTest.cs" />
-    <Compile Include="CommandLine\CommandLineParserTest.cs" />
-    <Compile Include="ConsoleApplicationTests\ConsoleApplicationTest.cs" />
-    <Compile Include="ConsoleApplicationTests\ConsoleApplicationTestApplicationRunner.cs" />
-    <Compile Include="ConsoleApplicationTests\ConsoleApplicationTestSettings.cs" />
+    <Compile Include="Console\CommandLine\CommandLineClassParserTest.cs" />
+    <Compile Include="Console\CommandLine\CommandLineParserTest.cs" />
+    <Compile Include="Console\ConsoleApplicationTests\ConsoleApplicationTest.cs" />
+    <Compile Include="Console\ConsoleApplicationTests\ConsoleApplicationTestApplicationRunner.cs" />
+    <Compile Include="Console\ConsoleApplicationTests\ConsoleApplicationTestSettings.cs" />
     <Compile Include="ConsoleUtilityTest.cs" />
-    <Compile Include="MonospaceTextFormatTest.cs" />
+    <Compile Include="Console\MonospaceTextFormatTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +86,7 @@
       <Name>Core.Tools</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
