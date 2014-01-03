@@ -17,11 +17,8 @@
 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using NUnit.Framework;
 using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
-using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
@@ -33,26 +30,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
 
     protected ICompoundGlobalizationService GlobalizationService
     {
-      get
-      {
-        return new CompoundGlobalizationService(new [] { new GlobalizationService (new ResourceManagerResolver()) });
-      }
+      get { return new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) }); }
     }
 
     protected RendererTestBase ()
     {
-    }
-
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
-    {
-      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator ());
-    }
-    
-    [TestFixtureTearDown]
-    public void TestFixtureTearDown ()
-    {
-      ServiceLocator.SetLocatorProvider (() => new DefaultServiceLocator());
     }
 
     protected virtual void Initialize ()

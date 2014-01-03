@@ -17,18 +17,41 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
+using Remotion.Development.Web.UnitTesting.Infrastructure;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.Development.Web.UnitTesting.Utilities;
 using Remotion.ObjectBinding.Web.UnitTests.UI.Controls;
+using Remotion.ServiceLocation;
+using Remotion.Web;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UnitTests
 {
   [SetUpFixture]
   public class SetUpFixture
   {
+    private ServiceLocatorScope _serviceLocatorScope;
+
     [SetUp]
     public void SetUp ()
     {
       XmlNodeExtensions.Helper = new HtmlHelper();
+
+      var serviceLocator = new DefaultServiceLocator();
+      serviceLocator.Register (typeof (IInfrastructureResourceUrlFactory), () => new FakeInfrastructureResourceUrlFactory());
+      serviceLocator.Register (typeof (IScriptUtility), () => new FakeScriptUtility());
+      serviceLocator.Register (typeof (IResourceUrlFactory), () => new FakeResourceUrlFactory());
+
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      _serviceLocatorScope.Dispose();
     }
   }
 }

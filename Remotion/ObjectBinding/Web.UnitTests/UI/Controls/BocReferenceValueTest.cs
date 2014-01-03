@@ -55,18 +55,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
     {
     }
 
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
-    {
-      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
-    }
-
-    [TestFixtureTearDown]
-    public void TestFixtureTearDown ()
-    {
-      ServiceLocator.SetLocatorProvider (() => new DefaultServiceLocator());
-    }
-
     [SetUp]
     public override void SetUp ()
     {

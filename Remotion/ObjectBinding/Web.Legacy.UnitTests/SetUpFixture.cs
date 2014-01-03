@@ -52,5 +52,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
     public void TearDown ()
     {
       _serviceLocatorScope.Dispose();
-    }  }
+    }
+  }
 }

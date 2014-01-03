@@ -192,7 +192,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\Controls\StubInfrastructureResourceUrlFactory.cs" />
-    <Compile Include="UI\Controls\StubServiceLocator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\remotion.snk">

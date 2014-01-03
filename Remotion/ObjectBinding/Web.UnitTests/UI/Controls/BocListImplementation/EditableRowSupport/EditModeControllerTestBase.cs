@@ -59,18 +59,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     private BocSimpleColumnDefinition _stringValueSimpleColumn;
     private BocSimpleColumnDefinition _int32ValueSimpleColumn;
 
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
-    {
-      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator ());
-    }
-
-    [TestFixtureTearDown]
-    public void TestFixtureTearDown ()
-    {
-      ServiceLocator.SetLocatorProvider (() => new DefaultServiceLocator());
-    }
-
     public override void SetUp ()
     {
       base.SetUp();
