@@ -48,10 +48,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
     private HtmlHelper _htmlHelper;
     private WebTabStyle _style;
 
-    public override void SetUp ()
+    [SetUp]
+    public void SetUp ()
     {
-      base.SetUp();
-
       _htmlHelper = new HtmlHelper();
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
 

@@ -43,10 +43,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.
     private HttpContextBase _httpContext;
     private HtmlHelper _htmlHelper;
 
-    public override void SetUp ()
+    [SetUp]
+    public void SetUp ()
     {
-      base.SetUp();
-
       _htmlHelper = new HtmlHelper ();
       _httpContext = MockRepository.GenerateStub<HttpContextBase> ();
 

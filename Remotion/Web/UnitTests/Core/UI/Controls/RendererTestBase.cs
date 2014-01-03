@@ -16,20 +16,16 @@
 // 
 
 using System;
-using NUnit.Framework;
+using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
   public abstract class RendererTestBase
   {
-    protected CompoundGlobalizationService GlobalizationService;
-
-    [SetUp]
-    public virtual void SetUp ()
+    protected ICompoundGlobalizationService GlobalizationService
     {
-      GlobalizationService =
-          new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) });
+      get { return new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) }); }
     }
   }
 }

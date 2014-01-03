@@ -52,10 +52,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
     private HtmlHelper _htmlHelper;
     private FakeResourceUrlFactory _resourceUrlFactory;
 
-    public override void SetUp ()
+    [SetUp]
+    public void SetUp ()
     {
-      base.SetUp();
-
       _htmlHelper = new HtmlHelper();
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
 

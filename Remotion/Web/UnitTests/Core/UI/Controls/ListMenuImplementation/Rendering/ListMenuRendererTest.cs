@@ -41,10 +41,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
     private HtmlHelper _htmlHelper;
 
     [SetUp]
-    public override void SetUp ()
+    public void SetUp ()
     {
-      base.SetUp();
-
       _htmlHelper = new HtmlHelper ();
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase> ();
 
