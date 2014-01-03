@@ -21,7 +21,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.Resources
 {
   /// <summary>
-  /// Represents the absolute URL for a resource file that is not constructed using the <see cref="ResourceUrlResolver"/> infrastrcuture.
+  /// Represents the absolute URL for a resource file that is not constructed using the <see cref="IResourceUrlFactory"/> infrastrcuture.
   /// </summary>
   public class StaticResourceUrl : IResourceUrl
   {

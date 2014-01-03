@@ -131,7 +131,7 @@ namespace Remotion.Web.Utilities
     /// <returns> The string with special characters escaped. </returns>
     /// <remarks>
     ///   This is required when adding client script to the page containing special characters. ASP.NET automatically 
-    ///   escapes client scripts created by <see cref="Page.GetPostBackEventReference">Page.GetPostBackEventReference</see>.
+    ///   escapes client scripts created by <see cref="O:System.Web.UI.ClientScriptManager.GetPostBackEventReference">ClientScript.GetPostBackEventReference</see>.
     /// </remarks>
     public static string EscapeClientScript (string input)
     {

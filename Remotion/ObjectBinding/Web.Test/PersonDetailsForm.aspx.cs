@@ -52,9 +52,11 @@ public class PersonDetailsForm : SingleBocTestWxeBasePage
 	  var  personID = new Guid (((ViewPersonDetailsWxeFunction)CurrentFunction).ID);
 
     Person person = Person.GetObject (personID);
+#pragma warning disable 219 // unused variable
     Person partner;
     if (person != null)
       partner = person.Partner;
+#pragma warning restore 219
 
     CurrentObject.BusinessObject = (IBusinessObjectWithIdentity) person;
     CurrentObject.LoadValues (IsPostBack);
