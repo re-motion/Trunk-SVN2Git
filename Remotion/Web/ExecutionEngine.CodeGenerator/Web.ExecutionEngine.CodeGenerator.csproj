@@ -10,13 +10,19 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.Web.ExecutionEngine.CodeGenerator</RootNamespace>
     <AssemblyName>wxegen</AssemblyName>
-    <SccProjectName></SccProjectName>
-    <SccLocalPath></SccLocalPath>
-    <SccAuxPath></SccAuxPath>
-    <SccProvider></SccProvider>
-    <FileUpgradeFlags></FileUpgradeFlags>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation></UpgradeBackupLocation>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
@@ -44,7 +50,8 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <DocumentationFile>bin\Debug\wxegen.XML</DocumentationFile>
     <NoWarn>1591;0419</NoWarn>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -101,6 +108,10 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Tools\Core.Tools.csproj">
+      <Project>{18269689-DC0F-4975-879B-A6ACBA0FA596}</Project>
+      <Name>Core.Tools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Data\Core\Data.Core.csproj">
       <Project>{70273934-12f1-49af-975a-303baefe1cae}</Project>
       <Name>Data.Core</Name>
@@ -119,7 +130,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Schema\FunctionDeclaration.xsd">
-      <SubType></SubType>
+      <SubType>
+      </SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

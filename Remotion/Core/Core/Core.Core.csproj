@@ -311,9 +311,6 @@
     <Compile Include="SharedSource\ResharperAnnotations\AssertionConditionType.cs" />
     <Compile Include="SharedSource\ResharperAnnotations\ImplicitUseKindFlags.cs" />
     <Compile Include="SharedSource\ResharperAnnotations\ImplicitUseTargetFlags.cs" />
-    <Compile Include="Text\MonospaceTextFormat.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Utilities\AssertionException.cs" />
     <Compile Include="Utilities\Assertion.Partial.cs" />
     <Compile Include="Utilities\EqualityUtility.Partial.cs" />
@@ -414,50 +411,10 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\RegexAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\ApplicationAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\InheritanceHierarchyFilter.cs" />
-    <Compile Include="Text\CommandLine\CommandLineArgument.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\CommandLine\CommandLineArgumentCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\CommandLine\CommandLineAttributes.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\CommandLine\CommandLineClassParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\CommandLine\CommandLineEnumArgument.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\CommandLine\CommandLineFlagArgument.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\CommandLine\CommandLineModeArgument.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\CommandLine\CommandLineParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\CommandLine\CommandLineValueArgument.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\CommandLine\Exceptions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Utilities\AppDomainAssemblyResolver.cs" />
-    <Compile Include="Utilities\AppDomainRunnerBase.cs" />
     <Compile Include="Utilities\AttributeUtility.Partial.cs" />
     <Compile Include="Utilities\AttributeWithMetadata.cs" />
-    <Compile Include="Utilities\ConsoleApplication\ConsoleApplication.cs" />
-    <Compile Include="Utilities\ConsoleApplication\ConsoleApplicationSettings.cs" />
-    <Compile Include="Utilities\ConsoleApplication\IApplicationRunner.cs" />
-    <Compile Include="Utilities\ConsoleApplication\IWaiter.cs" />
-    <Compile Include="Utilities\ConsoleApplication\ConsoleKeypressWaiter.cs" />
-    <Compile Include="Utilities\ConsoleUtility.cs" />
     <Compile Include="Utilities\CultureScope.cs" />
-    <Compile Include="Utilities\DefaultConsoleManager.cs" />
     <Compile Include="Utilities\FileUtility.Partial.cs" />
-    <Compile Include="Utilities\IConsoleManager.cs" />
     <Compile Include="Utilities\DelegateBasedComparer.cs" />
     <Compile Include="Utilities\InvertedComparerDecorator.cs" />
     <Compile Include="Utilities\IUtcNowProvider.cs" />
@@ -521,7 +478,6 @@
     <Content Include="doc\include\Logging\LogExtensions.xml" />
     <Content Include="doc\include\Logging\Log4NetTraceListener.xml" />
     <Content Include="doc\include\Remotion.NamespaceDoc.xml" />
-    <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

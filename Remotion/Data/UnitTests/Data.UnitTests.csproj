@@ -147,6 +147,10 @@
       <Project>{BDAE7146-01A8-4DC1-80C2-0E67291AC3ED}</Project>
       <Name>Core.ExtensibleEnums</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Tools\Core.Tools.csproj">
+      <Project>{18269689-DC0F-4975-879B-A6ACBA0FA596}</Project>
+      <Name>Core.Tools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>

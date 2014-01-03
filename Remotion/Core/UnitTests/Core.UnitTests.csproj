@@ -97,6 +97,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Tools\Core.Tools.csproj">
+      <Project>{18269689-DC0F-4975-879B-A6ACBA0FA596}</Project>
+      <Name>Core.Tools</Name>
+    </ProjectReference>
     <Reference Include="Castle.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\Castle-3.0\net-4.0 (Client Profile)\Castle.Core.dll</HintPath>
@@ -371,10 +375,6 @@
     <Compile Include="ServiceLocation\TestDomain\ITestTypeWithTooManyPublicConstructors.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConcreteImplementationAttributeType.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionForServiceWithoutConcreteImplementationAttribute.cs" />
-    <Compile Include="Text\MonospaceTextFormatTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Utilities\AppDomainAssemblyResolverTest.cs" />
     <Compile Include="Reflection\MethodResolverTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromEventInfoTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromMethodInfoTest.cs" />
@@ -459,12 +459,6 @@
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\MarkedAssemblyWithOtherFileNameInRelativeSearchPath\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\NonApplicationMarkedAssembly\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\NonApplicationMarkedAssembly\SampleType.cs" />
-    <Compile Include="Text\CommandLine\CommandLineClassParserTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Text\CommandLine\CommandLineParserTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Utilities\AdvancedEnumConverterTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -477,9 +471,6 @@
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromType_WithSuppressTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesWithMetadataTest.cs" />
     <Compile Include="Utilities\AdvancedEnumConverterTest_Flags.cs" />
-    <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTest.cs" />
-    <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTestApplicationRunner.cs" />
-    <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTestSettings.cs" />
     <Compile Include="Utilities\CultureScopeTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\BaseInheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\BaseClassWithAttribute.cs" />
@@ -513,7 +504,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\CustomAttributeUtilityTestDomain\ComplexAttribute.cs" />
-    <Compile Include="Utilities\ConsoleUtilityTest.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt16Enum.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt32Enum.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt64Enum.cs" />
