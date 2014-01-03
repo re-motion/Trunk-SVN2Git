@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
   /// Responsible for rendering <see cref="BocBooleanValue"/> controls.
   /// <seealso cref="IBocBooleanValue"/>
   /// </summary>
-  /// <include file='doc\include\UI\Controls\BocBooleanValueRenderer.xml' path='BocBooleanValueRenderer/Class/*'/>
+  /// <include file='..\..\..\..\doc\include\UI\Controls\BocBooleanValueRenderer.xml' path='BocBooleanValueRenderer/Class/*'/>
   public class BocBooleanValueQuirksModeRenderer : BocBooleanValueQuirksModeRendererBase<IBocBooleanValue>, IBocBooleanValueRenderer
   {
     private const string c_nullString = "null";

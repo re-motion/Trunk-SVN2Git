@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// <summary>
   /// Responsible for rendering a <see cref="BocList"/> object.
   /// </summary>
-  /// <include file='doc\include\UI\Controls\BocListRenderer.xml' path='BocListRenderer/Class/*'/>
+  /// <include file='..\..\..\..\doc\include\UI\Controls\BocListRenderer.xml' path='BocListRenderer/Class/*'/>
   /// <seealso cref="BocListNavigationBlockQuirksModeRenderer"/>
   public class BocListQuirksModeRenderer : BocQuirksModeRendererBase<IBocList>, IBocListRenderer
   {

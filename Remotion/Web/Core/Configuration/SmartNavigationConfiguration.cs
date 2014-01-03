@@ -21,7 +21,7 @@ namespace Remotion.Web.Configuration
 {
 
 /// <summary> Configuration section entry for configuring the <b>Remotion.Web.ExecutionEngine</b>. </summary>
-/// <include file='doc\include\Configuration\SmartNavigationConfiguration.xml' path='SmartNavigationConfiguration/Class/*' />
+/// <include file='..\doc\include\Configuration\SmartNavigationConfiguration.xml' path='SmartNavigationConfiguration/Class/*' />
 [XmlType (Namespace = WebConfiguration.SchemaUri)]
 public class SmartNavigationConfiguration
 {

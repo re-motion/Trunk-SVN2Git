@@ -26,7 +26,7 @@ namespace Remotion.Web.Configuration
 {
 
 /// <summary> The configuration section for <b>Remotion.Web</b>. </summary>
-/// <include file='doc\include\Configuration\WebConfiguration.xml' path='WebConfiguration/Class/*' />
+/// <include file='..\doc\include\Configuration\WebConfiguration.xml' path='WebConfiguration/Class/*' />
 [XmlType (WebConfiguration.ElementName, Namespace = WebConfiguration.SchemaUri)]
 public class WebConfiguration: IConfigurationSectionHandler
 {

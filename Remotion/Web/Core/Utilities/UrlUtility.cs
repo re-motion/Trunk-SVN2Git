@@ -283,7 +283,7 @@ namespace Remotion.Web.Utilities
     }
 
     /// <summary> Builds a query string from the <paramref name="queryStringCollection"/>. </summary>
-    /// <include file='doc\include\Utilities\UrlUtility.xml' path='UrlUtility/FormatQueryString/*' />
+    /// <include file='..\doc\include\Utilities\UrlUtility.xml' path='UrlUtility/FormatQueryString/*' />
     public static string FormatQueryString (NameValueCollection queryStringCollection, Encoding encoding)
     {
       return AddParameters (string.Empty, queryStringCollection, encoding);

@@ -37,7 +37,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
-  /// <include file='doc\include\UI\Controls\WebTabStrip.xml' path='WebTabStrip/Class/*' />
+  /// <include file='..\..\doc\include\UI\Controls\WebTabStrip.xml' path='WebTabStrip/Class/*' />
   [ToolboxData ("<{0}:WebTabStrip runat=server></{0}:WebTabStrip>")]
   [Designer (typeof (WebControlDesigner))]
   public class WebTabStrip

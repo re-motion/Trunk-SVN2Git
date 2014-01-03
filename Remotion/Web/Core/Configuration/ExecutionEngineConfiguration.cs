@@ -23,7 +23,7 @@ namespace Remotion.Web.Configuration
 {
 
 /// <summary> Configuration section entry for configuring the <b>Remotion.Web.ExecutionEngine</b>. </summary>
-/// <include file='doc\include\Configuration\ExecutionEngineConfiguration.xml' path='ExecutionEngineConfiguration/Class/*' />
+/// <include file='..\doc\include\Configuration\ExecutionEngineConfiguration.xml' path='ExecutionEngineConfiguration/Class/*' />
 [XmlType (Namespace = WebConfiguration.SchemaUri)]
 public class ExecutionEngineConfiguration
 {
@@ -52,7 +52,7 @@ public class ExecutionEngineConfiguration
   }
 
   /// <summary> Gets or sets a flag that determines whether session management is employed. </summary>
-  /// <include file='doc\include\Configuration\ExecutionEngineConfiguration.xml' path='ExecutionEngineConfiguration/EnableSessionManagement/*' />
+  /// <include file='..\doc\include\Configuration\ExecutionEngineConfiguration.xml' path='ExecutionEngineConfiguration/EnableSessionManagement/*' />
   [XmlAttribute ("enableSessionManagement")]
   public bool EnableSessionManagement
   {
@@ -61,7 +61,7 @@ public class ExecutionEngineConfiguration
   }
 
   /// <summary> Gets or sets the default refresh interval for a function. </summary>
-  /// <include file='doc\include\Configuration\ExecutionEngineConfiguration.xml' path='ExecutionEngineConfiguration/RefreshInterval/*' />
+  /// <include file='..\doc\include\Configuration\ExecutionEngineConfiguration.xml' path='ExecutionEngineConfiguration/RefreshInterval/*' />
   [XmlAttribute ("refreshInterval")]
   public int RefreshInterval
   {

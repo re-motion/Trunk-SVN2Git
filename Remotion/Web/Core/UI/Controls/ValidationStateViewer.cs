@@ -20,8 +20,6 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
-using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
@@ -35,7 +33,7 @@ namespace Remotion.Web.UI.Controls
 ///   Collects the validation errors from all <see cref="FormGridManager"/> instances on the page
 ///   and displays the validation state.
 /// </summary>
-/// <include file='doc\include\UI\Controls\ValidationStateViewer.xml' path='ValidationStateViewer/Class/*' />
+/// <include file='..\..\doc\include\UI\Controls\ValidationStateViewer.xml' path='ValidationStateViewer/Class/*' />
 [ToolboxData("<{0}:ValidationStateViewer runat='server'></{0}:ValidationStateViewer>")]
 [ToolboxItemFilter("System.Web.UI")]
 public class ValidationStateViewer : WebControl, IControl

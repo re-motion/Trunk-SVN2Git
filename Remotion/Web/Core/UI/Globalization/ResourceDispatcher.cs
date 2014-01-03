@@ -33,7 +33,7 @@ namespace Remotion.Web.UI.Globalization
 ///   Provides methods for dispatching the resources inside an IResourceManager container
 ///   to a control.
 /// </summary>
-/// <include file='doc\include\ResourceDispatcher.xml' path='/ResourceDispatcher/Class/example' />
+/// <include file='..\..\doc\include\ResourceDispatcher.xml' path='/ResourceDispatcher/Class/example' />
 public sealed class ResourceDispatcher
 {
   // types
@@ -49,7 +49,7 @@ public sealed class ResourceDispatcher
   /// <summary>
   ///   Dispatches resources.
   /// </summary>
-  /// <include file='doc\include\ResourceDispatcher.xml' path='/ResourceDispatcher/Dispatch/remarks' />
+  /// <include file='..\..\doc\include\ResourceDispatcher.xml' path='/ResourceDispatcher/Dispatch/remarks' />
   /// <param name="control">
   ///   The control for which resources are to be dispatched. Must not be <see langname="null"/>.
   /// </param>
@@ -96,7 +96,7 @@ public sealed class ResourceDispatcher
   /// <summary>
   ///   Dispatches an IDictonary of elementID/IDictonary pairs to the specified control.
   /// </summary>
-  /// <include file='doc\include\ResourceDispatcher.xml' path='/ResourceDispatcher/DispatchMain/*' />
+  /// <include file='..\..\doc\include\ResourceDispatcher.xml' path='/ResourceDispatcher/DispatchMain/*' />
   public static void Dispatch (Control control, IDictionary elements, string resourceSource)
   {
     ArgumentUtility.CheckNotNull ("control", control);
@@ -138,7 +138,7 @@ public sealed class ResourceDispatcher
   /// <summary>
   ///   Dispatches the resources passed in <paramref name="values"/> to the properties of <paramref name="obj"/>.
   /// </summary>
-  /// <include file='doc\include\ResourceDispatcher.xml' path='/ResourceDispatcher/DispatchGeneric/*' />
+  /// <include file='..\..\doc\include\ResourceDispatcher.xml' path='/ResourceDispatcher/DispatchGeneric/*' />
   public static void DispatchGeneric (object obj, IDictionary values)
   {
     ArgumentUtility.CheckNotNull ("obj", obj);

@@ -43,7 +43,7 @@ public enum WcagDebugMode
 }
 
 /// <summary> Configuration section entry for specifying the application wide WAI level. </summary>
-/// <include file='doc\include\Configuration\WcagConfiguration.xml' path='WcagConfiguration/Class/*' />
+/// <include file='..\doc\include\Configuration\WcagConfiguration.xml' path='WcagConfiguration/Class/*' />
 [XmlType (Namespace = WebConfiguration.SchemaUri)]
 public class WcagConfiguration
 {
@@ -63,7 +63,7 @@ public class WcagConfiguration
   ///   Gets or sets a value specifying if and how the developer will be notified on WAI compliancy issues in the 
   ///   controls' configuration.
   /// </summary>
-  /// <include file='doc\include\Configuration\WcagConfiguration.xml' path='WcagConfiguration/Debugging/*' />
+  /// <include file='..\doc\include\Configuration\WcagConfiguration.xml' path='WcagConfiguration/Debugging/*' />
   [XmlAttribute ("debugging")]
   public WcagDebugMode Debugging
   {

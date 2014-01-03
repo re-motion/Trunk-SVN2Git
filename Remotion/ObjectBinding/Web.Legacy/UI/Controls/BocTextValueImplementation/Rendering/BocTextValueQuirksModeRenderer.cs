@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
   /// Provides a label for rendering a <see cref="BocTextValue"/> control in read-only mode. 
   /// Rendering is done by the parent class.
   /// </summary>
-  /// <include file='doc\include\UI\Controls\BocTextValueRenderer.xml' path='BocTextValueQuirksModeRenderer/Class/*'/>
+  /// <include file='..\..\..\..\doc\include\UI\Controls\BocTextValueRenderer.xml' path='BocTextValueQuirksModeRenderer/Class/*'/>
   public class BocTextValueQuirksModeRenderer : BocTextValueQuirksModeRendererBase<IBocTextValue>, IBocTextValueRenderer
   {
     public BocTextValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory) 

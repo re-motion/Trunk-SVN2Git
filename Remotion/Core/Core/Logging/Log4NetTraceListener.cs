@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Diagnostics;
-using Remotion.Utilities;
 
 namespace Remotion.Logging
 {
@@ -34,7 +32,7 @@ namespace Remotion.Logging
     /// <summary>
     /// Converts <see cref="TraceEventType"/> to <see cref="LogLevel"/>.
     /// </summary>
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Convert/param[@name="eventType"]' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Convert/param[@name="eventType"]' />
     /// <returns>Corresponding <see cref="LogLevel"/> needed when logging through the <see cref="ILog"/> interface.</returns>
     public static LogLevel Convert (TraceEventType eventType)
     {
@@ -70,7 +68,7 @@ namespace Remotion.Logging
     /// <summary>
     /// Initializes a new instance of the <see cref="Log4NetTraceListener"/> class using the specified name. 
     /// </summary>
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Constructor/param[@name="name"]' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Constructor/param[@name="name"]' />
     public Log4NetTraceListener (string name) : base (name)
     {
     }
@@ -88,7 +86,7 @@ namespace Remotion.Logging
     /// <summary>
     /// Writes a message to the <b>log4net</b> log. 
     /// </summary>
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/param[@name="message"]' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/param[@name="message"]' />
     /// <remarks>
     /// <see cref="Write(string)"/> does not use <see cref="TraceFilter"/>, even though the inherited overloads
     /// use it; this follows the behavior of the standard <see cref="TraceListener"/> implementations like 
@@ -104,7 +102,7 @@ namespace Remotion.Logging
     /// <summary>
     /// Writes a message to the <b>log4net</b> log. 
     /// </summary>
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/param[@name="message"]' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/param[@name="message"]' />
     /// <remarks>
     /// <see cref="WriteLine"/> has identical behavior to <see cref="Write(String)"/>.
     /// </remarks>
@@ -117,9 +115,9 @@ namespace Remotion.Logging
     /// <summary>
     /// Writes trace and event information to the <b>log4net</b> log.
     /// </summary>
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' 
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' 
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="eventType" or @name="id"]' />
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
     public override void TraceEvent (TraceEventCache eventCache, string source, TraceEventType eventType, int id)
     {
       TraceEvent (eventCache, source, eventType, id, string.Empty, new object[0]);
@@ -128,9 +126,9 @@ namespace Remotion.Logging
     /// <summary>
     /// Writes trace information, a message, and event information to the <b>log4net</b> log.
     /// </summary>
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' 
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' 
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="eventType" or @name="id" or @name="message"]' />
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
     public override void TraceEvent (TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
     {
       TraceEvent (eventCache, source, eventType, id, message, new object[0]);
@@ -139,10 +137,10 @@ namespace Remotion.Logging
     /// <summary>
     /// Writes trace information, a formatted array of objects and event information to the <b>log4net</b> log.
     /// </summary>
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' 
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' 
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="eventType" or @name="id"]' />
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceEvent/param[@name="format" or @name="args"]' />
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceEvent/param[@name="format" or @name="args"]' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
     public override void TraceEvent (
         TraceEventCache eventCache, 
         string source, 
@@ -159,10 +157,10 @@ namespace Remotion.Logging
     /// <summary>
     /// Writes trace information, a data object and event information to the <b>log4net</b> log.
     /// </summary>
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' 
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' 
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="eventType" or @name="id"]' />
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceData_Object/param[@name="data"]' />
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceData_Object/param[@name="data"]' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
     public override void TraceData (TraceEventCache eventCache, string source, TraceEventType eventType, int id, Object data)
     {
       TraceData (eventCache, source, eventType, id, new object[] { data } );
@@ -171,10 +169,10 @@ namespace Remotion.Logging
     /// <summary>
     /// Writes trace information, an array of data objects and event information to the <b>log4net</b> log.
     /// </summary>
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' 
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' 
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="eventType" or @name="id"]' />
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceData_Array/param[@name="data"]' />
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceData_Array/param[@name="data"]' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
     public override void TraceData (TraceEventCache eventCache, string source, TraceEventType eventType, int id, params Object[] data)
     {
       if (ShouldTrace (eventCache, source, eventType, id, null, null, null, data)) 
@@ -204,10 +202,10 @@ namespace Remotion.Logging
     /// <summary>
     /// Writes trace information, a message, a related activity identity and event information to the <b>log4net</b> log.
     /// </summary>
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' 
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' 
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="id" or @name="message"]' />
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceTransfer/param[@name="relatedActivityId"]' />
-    /// <include file='doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceTransfer/param[@name="relatedActivityId"]' />
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
     public override void TraceTransfer (TraceEventCache eventCache, string source, int id, string message, Guid relatedActivityId) 
     {
       TraceEvent (eventCache, source, TraceEventType.Information, id,

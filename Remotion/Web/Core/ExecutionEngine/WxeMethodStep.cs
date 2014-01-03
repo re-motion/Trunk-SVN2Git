@@ -30,7 +30,7 @@ public delegate void WxeMethod ();
 public delegate void WxeMethodWithContext (WxeContext context);
 
 /// <summary> Performs a step implemented by an instance method of a <see cref="WxeFunction"/>. </summary>
-/// <include file='doc\include\ExecutionEngine\WxeMethodStep.xml' path='WxeMethodStep/Class/*' />
+/// <include file='..\doc\include\ExecutionEngine\WxeMethodStep.xml' path='WxeMethodStep/Class/*' />
 [Serializable]
 public class WxeMethodStep: WxeStep
 {
@@ -71,7 +71,7 @@ public class WxeMethodStep: WxeStep
   private WxeMethodWithContext _methodWithContext;
 
   /// <summary> Initalizes a new instance of the <b>WxeMethodStep</b> type. </summary>
-  /// <include file='doc\include\ExecutionEngine\WxeMethodStep.xml' path='WxeMethodStep/Ctor/*' />
+  /// <include file='..\doc\include\ExecutionEngine\WxeMethodStep.xml' path='WxeMethodStep/Ctor/*' />
   public WxeMethodStep (WxeStepList target, MethodInfo method)
   {
     ArgumentUtility.CheckNotNull ("target", target);

@@ -30,7 +30,7 @@ using Remotion.Web.UI.Controls;
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary> This control can be used to display or edit values that can be edited in a text box. </summary>
-  /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/Class/*' />
+  /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/Class/*' />
   public class BocTextValue : BocTextValueBase, IBocTextValue
   {
     //  statics
@@ -81,7 +81,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
       if (interim)
@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> A <see cref="String"/> to load or <see langword="null"/>. </param>
-    /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (string value, bool interim)
     {
       LoadValueInternal (value, interim);
@@ -111,7 +111,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> The <see cref="Int32"/> value to load or <see langword="null"/>. </param>
-    /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (int? value, bool interim)
     {
       LoadValueInternal (value, interim);
@@ -119,7 +119,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> The <see cref="Double"/> value to load or <see langword="null"/>. </param>
-    /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (double? value, bool interim)
     {
       LoadValueInternal (value, interim);
@@ -127,7 +127,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> The <see cref="DateTime"/> value to load or <see langword="null"/>. </param>
-    /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (DateTime? value, bool interim)
     {
       LoadValueInternal (value, interim);
@@ -144,7 +144,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/SaveValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/SaveValue/*' />
     public override void SaveValue (bool interim)
     {
       if (interim)

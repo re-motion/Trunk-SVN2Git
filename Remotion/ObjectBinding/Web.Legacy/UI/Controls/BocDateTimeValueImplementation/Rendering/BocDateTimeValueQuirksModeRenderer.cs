@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
   /// For that, see <see cref="DatePickerButtonRenderer"/>.
   /// <seealso cref="IBocDateTimeValue"/>
   /// </summary>
-  /// <include file='doc\include\UI\Controls\BocDateTimeValueRenderer.xml' path='BocDateTimeValueRenderer/Class/*'/>
+  /// <include file='..\..\..\..\doc\include\UI\Controls\BocDateTimeValueRenderer.xml' path='BocDateTimeValueRenderer/Class/*'/>
   public class BocDateTimeValueQuirksModeRenderer : BocQuirksModeRendererBase<IBocDateTimeValue>, IBocDateTimeValueRenderer
   {
     /// <summary> Text displayed when control is displayed in desinger and is read-only has no contents. </summary>

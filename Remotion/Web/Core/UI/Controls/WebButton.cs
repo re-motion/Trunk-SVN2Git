@@ -35,7 +35,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls
 {
   /// <summary> A <c>Button</c> using <c>&amp;</c> as access key prefix in <see cref="Button.Text"/>. </summary>
-  /// <include file='doc\include\UI\Controls\WebButton.xml' path='WebButton/Class/*' />
+  /// <include file='..\..\doc\include\UI\Controls\WebButton.xml' path='WebButton/Class/*' />
   [ToolboxData ("<{0}:WebButton runat=server></{0}:WebButton>")]
   public class WebButton
       :

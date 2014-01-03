@@ -36,7 +36,7 @@
         <item>
           <term>WAI WCAG 1.0</term>
           <description>
-            Priority 1 checkpoint 6.3 is not met by calls to <see cref="WxePageExtensions.ExecuteFunctionExternal"/> since the 
+            Priority 1 checkpoint 6.3 is not met by calls to <see cref="Remotion.Web.ExecutionEngine.Obsolete.WxePageExtensions.ExecuteFunctionExternal"/> since the 
             <see cref="WxePage"/> uses javascript to open the new window. This is currently <b>not</b> 
             enforced or validated by setting the <see cref="Remotion.Web.Configuration.WebConfiguration.Wcag"/> 
             configuration entry.
