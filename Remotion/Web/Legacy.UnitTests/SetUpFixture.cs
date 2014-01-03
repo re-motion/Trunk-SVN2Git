@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.Infrastructure;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Development.Web.UnitTesting.Utilities;
 using Remotion.ServiceLocation;
@@ -41,6 +42,7 @@ namespace Remotion.Web.Legacy.UnitTests
       var serviceLocator = new DefaultServiceLocator();
       serviceLocator.Register (typeof (IInfrastructureResourceUrlFactory), () => new FakeInfrastructureResourceUrlFactory());
       serviceLocator.Register (typeof (IScriptUtility), () => new FakeScriptUtility());
+      serviceLocator.Register (typeof (IResourceUrlFactory), () => new FakeResourceUrlFactory());
 
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
