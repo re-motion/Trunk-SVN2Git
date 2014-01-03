@@ -55,6 +55,8 @@
                    Exclude="$(SolutionDirectory)TypePipe\**\bin\**;$(SolutionDirectory)Remotion\TypePipe\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Core\**"
                    Exclude="$(SolutionDirectory)Remotion\Core\**\bin\**;$(SolutionDirectory)Remotion\Core\**\obj\**;@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)Remotion\Tools\**"
+                   Exclude="$(SolutionDirectory)Remotion\Tools\**\bin\**;$(SolutionDirectory)Remotion\Tools\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Development\Core\**"
                    Exclude="$(SolutionDirectory)Remotion\Development\Core\**\bin\**;$(SolutionDirectory)Remotion\Development\Core\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Development\RhinoMocks\**"
@@ -73,6 +75,9 @@
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.dll" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.xml" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.pdb" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Tools.dll" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Toolsxml" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Toolspdb" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Reflection.CodeGeneration.dll" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Reflection.CodeGeneration.xml" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Reflection.CodeGeneration.pdb" />
