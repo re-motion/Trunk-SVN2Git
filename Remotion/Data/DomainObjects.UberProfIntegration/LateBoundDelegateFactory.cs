@@ -62,14 +62,14 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       Assertion.IsTrue (typeof (Delegate).IsAssignableFrom (signatureType));
       MethodInfo invoke = signatureType.GetMethod ("Invoke");
       Type returnType = invoke.ReturnType;
-      Type[] parameters = invoke.GetParameters().Select (p => p.ParameterType).ToArray();
+      var parameters = invoke.GetParameters().Select (p => p.ParameterType);
 
       return new MissingMethodException (
           String.Format (
               "Type {0} does not define a method {3} {1}({2}).",
               targetType.AssemblyQualifiedName,
               methodName,
-              StringUtility.ConcatWithSeparator (parameters, ", "),
+              string.Join (", ", parameters),
               returnType == typeof (void) ? "void" : returnType.FullName),
           innerException);
     }

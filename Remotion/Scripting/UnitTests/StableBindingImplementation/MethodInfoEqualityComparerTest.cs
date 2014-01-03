@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Scripting.UnitTests.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 {
@@ -267,13 +267,13 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       Console.WriteLine (methods[1].Attributes);
       Console.WriteLine (methodFromBaseType.Attributes);
 
-      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methods[0].GetParameters().Select (pi => pi.Attributes).ToArray(), ",") + "}");
-      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methods[1].GetParameters().Select (pi => pi.Attributes).ToArray(), ",") + "}");
-      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methodFromBaseType.GetParameters().Select (pi => pi.Attributes).ToArray(), ",") + "}");
+      Console.WriteLine ("{" + string.Join (",", methods[0].GetParameters().Select (pi => pi.Attributes)) + "}");
+      Console.WriteLine ("{" + string.Join (",", methods[1].GetParameters().Select (pi => pi.Attributes)) + "}");
+      Console.WriteLine ("{" + string.Join (",", methodFromBaseType.GetParameters().Select (pi => pi.Attributes)) + "}");
 
-      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methods[0].GetParameters().Select (pi => pi.ParameterType).ToArray(), ",") + "}");
-      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methods[1].GetParameters().Select (pi => pi.ParameterType).ToArray(), ",") + "}");
-      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methodFromBaseType.GetParameters().Select (pi => pi.ParameterType).ToArray(), ",") + "}");
+      Console.WriteLine ("{" + string.Join (",", methods[0].GetParameters().Select (pi => pi.ParameterType)) + "}");
+      Console.WriteLine ("{" + string.Join (",", methods[1].GetParameters().Select (pi => pi.ParameterType)) + "}");
+      Console.WriteLine ("{" + string.Join (",", methodFromBaseType.GetParameters().Select (pi => pi.ParameterType)) + "}");
 
       var a0 = methods[0].GetParameters()[2];
       var a1 = methods[1].GetParameters()[2];

@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Scripting;
-using Remotion.Utilities;
 
 namespace Remotion.Scripting.UnitTests
 {
@@ -167,8 +167,8 @@ namespace Remotion.Scripting.UnitTests
     {
       var timings = ExecuteAndTime (nrLoopsArray, func);
 
-      Console.WriteLine ("Timings \"{0}\", nrLoopsArray={{{1}}}:", testName, StringUtility.ConcatWithSeparator (nrLoopsArray, ", "));
-      Console.WriteLine ("(" + StringUtility.ConcatWithSeparator (timings, ", ") + ")");
+      Console.WriteLine ("Timings \"{0}\", nrLoopsArray={{{1}}}:", testName, string.Join (", ", (IList) nrLoopsArray));
+      Console.WriteLine ("(" + string.Join (", ", timings) + ")");
     }
 
 

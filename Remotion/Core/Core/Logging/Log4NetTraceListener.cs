@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Diagnostics;
 using Remotion.Utilities;
 
@@ -180,7 +181,9 @@ namespace Remotion.Logging
       {
         string message = string.Empty;
         if (data != null)
-          message = StringUtility.ConcatWithSeparator(data, ", ");
+        {
+          message = string.Join (", ", data);
+        }
 
         _logManager.GetLogger (source).Log (Convert (eventType), id, message);
       }

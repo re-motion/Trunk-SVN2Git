@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Linq;
 using System.Web;
 using System.Web.UI.HtmlControls;
@@ -114,8 +115,10 @@ public class BocMultilineTextValueUserControl : BaseUserControl
   private void SetDebugLabel (BocMultilineTextValue control, Label label)
   {
    if (control.Value != null)
-      label.Text = StringUtility.ConcatWithSeparator (control.Value.Select (HttpUtility.HtmlEncode).ToList(), "<br />");
-    else
+   {
+     label.Text = string.Join ("<br />", control.Value.Select (HttpUtility.HtmlEncode));
+   }
+   else
       label.Text = "not set";
   }
 
