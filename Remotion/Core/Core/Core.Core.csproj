@@ -371,7 +371,6 @@
     <Compile Include="ServiceLocation\DefaultServiceLocator.cs" />
     <Compile Include="ServiceLocation\ServiceConfigurationEntry.cs" />
     <Compile Include="Utilities\DefaultConverter.cs" />
-    <Compile Include="Utilities\DelegateBasedDisposable.cs" />
     <Compile Include="Utilities\DelegateBasedEqualityComparer.cs" />
     <Compile Include="Utilities\DesignerUtility.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyLoaderException.cs" />
@@ -466,7 +465,6 @@
     <Compile Include="Utilities\NullableTypeUtility.Partial.cs" />
     <Compile Include="Utilities\NullComparer.cs" />
     <Compile Include="Utilities\NullValueConverter.cs" />
-    <Compile Include="Utilities\PostActionDisposableDecorator.cs" />
     <Compile Include="Utilities\AttributeRetrieval\PropertyCustomAttributeRetriever.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\ReflectionAPIAttribute.cs" />
     <Compile Include="Utilities\StopwatchScope.cs" />
