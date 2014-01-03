@@ -25,7 +25,7 @@ namespace Remotion.Collections
   ///   A dictionary that automatically creates new value objects when queried for a specific key.
   /// </summary>
   /// <remarks>
-  ///		This collection should usually not be modified using <see cref="IDictionary{TKey,TValue}.Add"/>, setting values through 
+  ///		This collection should usually not be modified using <see cref="IDictionary{TKey,TValue}.Add(TKey,TValue)"/>, setting values through 
   ///   the indexer or removing items. Getting values through the indexer will assign a new object to the specified key if none exists.
   /// </remarks>
   [Serializable]
