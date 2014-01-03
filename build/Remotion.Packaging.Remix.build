@@ -53,14 +53,12 @@
       <SourceFiles Include="$(SolutionDirectory)Remotion\*.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)TypePipe\**"
                    Exclude="$(SolutionDirectory)TypePipe\**\bin\**;$(SolutionDirectory)Remotion\TypePipe\**\obj\**;@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)Remotion\Core\**"
-                   Exclude="$(SolutionDirectory)Remotion\Core\**\bin\**;$(SolutionDirectory)Remotion\Core\**\obj\**;@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)Remotion\Tools\**"
-                   Exclude="$(SolutionDirectory)Remotion\Tools\**\bin\**;$(SolutionDirectory)Remotion\Tools\**\obj\**;@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)Remotion\**"
+                   Exclude="$(SolutionDirectory)Remotion\**\bin\**;$(SolutionDirectory)Remotion\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Development\Core\**"
                    Exclude="$(SolutionDirectory)Remotion\Development\Core\**\bin\**;$(SolutionDirectory)Remotion\Development\Core\**\obj\**;@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)Remotion\Development\RhinoMocks\**"
-                   Exclude="$(SolutionDirectory)Remotion\Development\RhinoMocks\**\bin\**;$(SolutionDirectory)Remotion\Development\RhinoMocks\**\obj\**;@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)Remotion\Development\Mixins\**"
+                   Exclude="$(SolutionDirectory)Remotion\Development\Mixins\**\bin\**;$(SolutionDirectory)Remotion\Development\Mixins\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Mixins\**"
                    Exclude="$(SolutionDirectory)Remotion\Mixins\**\bin\**;$(SolutionDirectory)Remotion\Mixins\**\obj\**;@(StandardExcludes)" />
     </ItemGroup>
