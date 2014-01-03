@@ -304,7 +304,6 @@
     <Compile Include="Utilities\Singleton\ServiceLocatorInstanceCreator.cs" />
     <Compile Include="Utilities\Singleton\ThreadSafeSingletonBase.cs" />
     <Compile Include="Utilities\UncastableEnumerableWrapper.cs" />
-    <Compile Include="Validation\ConsoleDumper.cs" />
     <Compile Include="Validation\DefaultValidationLog.cs" />
     <Compile Include="Validation\DelegateRuleDescriptionAttribute.cs" />
     <Compile Include="Validation\DelegateValidationRule.cs" />

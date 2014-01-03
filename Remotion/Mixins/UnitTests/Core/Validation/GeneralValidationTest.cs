@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Development.Mixins.Validation;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;

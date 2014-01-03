@@ -14,12 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
+using Remotion.Mixins.Validation;
 using Remotion.Tools.Console;
 using Remotion.Utilities;
 
-namespace Remotion.Mixins.Validation
+namespace Remotion.Development.Mixins.Validation
 {
   public static class ConsoleDumper
   {
