@@ -458,7 +458,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       LoadValueInternal (value, interim);
     }
 
-    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
+    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="O:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView.LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (object value, bool interim)
     {
       ValueImplementation = value;

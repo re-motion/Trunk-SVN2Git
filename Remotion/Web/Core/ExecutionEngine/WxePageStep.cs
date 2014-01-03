@@ -98,7 +98,7 @@ namespace Remotion.Web.ExecutionEngine
 
     /// <summary> 
     ///   Displays the <see cref="WxePageStep"/>'s page or the sub-function that has been invoked by the 
-    ///   <see cref="ExecuteFunction"/> method.
+    ///   <see cref="ExecuteFunction(Infrastructure.WxePageStepExecutionStates.PreProcessingSubFunctionStateParameters,Infrastructure.WxeRepostOptions)"/> method.
     /// </summary>
     /// <include file='..\doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Execute/*' />
     public override void Execute (WxeContext context)

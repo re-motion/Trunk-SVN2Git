@@ -31,7 +31,7 @@ namespace Remotion.Utilities
   public static class StringUtility
   {
     /// <summary>
-    ///   The result of <see cref="ParseSeparatedList"/>.
+    ///   The result of <see cref="StringUtility.ParseSeparatedList(string,char,char,char,char,string,bool)"/>.
     /// </summary>
     public class ParsedItem
     {
@@ -353,7 +353,7 @@ namespace Remotion.Utilities
     ///   a public <see langword="static"/> <b>Parse</b> method with either no arguments or a single 
     ///   <see cref="IFormatProvider"/>argument. 
     ///   If <paramref name="type"/> is an array type, the values must be comma-separated. (Escaping is 
-    ///   handled as for <see cref="ParseSeparatedList"/>.) </param>
+    ///   handled as for <see cref="ParseSeparatedList(string,char,char,char,char,string,bool)"/>.) </param>
     /// <param name="value"> The string value to be parsed. </param>
     /// <param name="formatProvider"> The format provider to be passed to the type's <b>Parse</b> method (if present). </param>
     /// <returns> An instance of the specified type. </returns>

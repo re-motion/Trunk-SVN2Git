@@ -74,7 +74,7 @@ namespace Remotion.Web.Utilities
     /// <param name="javascript"> 
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
-    /// <seealso cref="ScriptManager.RegisterStartupScript"/>
+    /// <seealso cref="ScriptManager.RegisterStartupScript(System.Web.UI.Control,System.Type,string,string,bool)"/>
     [Obsolete ("Use IPage.ClientScript.RegisterStartupScriptBlock (IControl, Type, string, string) instead.")]
     public static void RegisterStartupScriptBlock (Control control, string key, string javascript)
     {

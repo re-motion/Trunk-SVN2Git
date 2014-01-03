@@ -99,6 +99,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> The <see cref="String"/> <see cref="Array"/> to load or <see langword="null"/>. </param>
+    /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <include file='..\..\doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (string[] value, bool interim)
     {

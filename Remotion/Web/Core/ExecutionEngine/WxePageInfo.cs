@@ -420,7 +420,7 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     /// <summary>
-    ///   Implements <see cref="IWxePage.GetPermanentUrl">IWxePage.GetPermanentUrl()</see>.
+    ///   Implements <see cref="IWxePage.GetPermanentUrl()">IWxePage.GetPermanentUrl()</see>.
     /// </summary>
     public string GetPermanentUrl ()
     {

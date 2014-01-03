@@ -113,7 +113,7 @@ public class BidirectionalStringConverter: TypeConverter
 
   /// <summary>
   ///   Returns whether the collection of standard values returned by 
-  ///   <see cref="TypeConverter.GetStandardValues "/> is an exclusive list.
+  ///   <see cref="TypeConverter.GetStandardValues()"/> is an exclusive list.
   /// </summary>
   /// <param name="context"> An <see cref="ITypeDescriptorContext"/> that provides a format context. </param>
   /// <returns> <see langword="false"/>. </returns>

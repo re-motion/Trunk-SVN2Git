@@ -104,11 +104,12 @@ namespace Remotion.Xml
     {
       if (_errors > 0)
       {
-        string lineInfoMessage = string.Empty;
-        if (_firstError.HasLineInfo())
-          lineInfoMessage = string.Format (" Line {0}, position {1}.", _firstError.LineNumber, _firstError.LinePosition);
-
         throw _firstException;
+
+        //string lineInfoMessage = string.Empty;
+        //if (_firstError.HasLineInfo())
+        //  lineInfoMessage = string.Format (" Line {0}, position {1}.", _firstError.LineNumber, _firstError.LinePosition);
+
         //throw new RemotionXmlSchemaValidationException (
         //    string.Format (
         //        "Schema verification failed with {0} errors and {1} warnings in '{2}'. First error: {3}{4}",

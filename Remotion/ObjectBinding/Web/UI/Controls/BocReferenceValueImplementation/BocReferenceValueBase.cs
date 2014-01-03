@@ -496,7 +496,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     }
 
     /// <summary> 
-    ///   Calls the <see cref="BocMenuItemCommand.OnClick"/> method of the <paramref name="menuItem"/>'s 
+    ///   Calls the <see cref="BocMenuItemCommand.OnClick(BocMenuItem)"/> method of the <paramref name="menuItem"/>'s 
     ///   <see cref="BocMenuItem.Command"/> and raises <see cref="MenuItemClick"/> event. 
     /// </summary>
     /// <param name="menuItem"> The <see cref="BocMenuItem"/> that has been clicked. </param>
@@ -528,7 +528,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     }
 
     /// <summary> 
-    ///   Calls the <see cref="BocMenuItemCommand.ExecuteWxeFunction"/> method of the <paramref name="menuItem"/>'s 
+    ///   Calls the <see cref="BocMenuItemCommand.ExecuteWxeFunction(IWxePage,int[],IBusinessObject[])"/> method of the <paramref name="menuItem"/>'s 
     ///   <see cref="BocMenuItem.Command"/>.
     /// </summary>
     /// <param name="menuItem"> The <see cref="BocMenuItem"/> that has been clicked. </param>

@@ -1277,7 +1277,7 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Calls <see cref="EnsureTransformationStep"/> with 
+    ///   Calls <see cref="EnsureTransformationStep(FormGrid,TransformationStep)"/> with 
     ///   <see cref="TransformationStep.PreLoadViewStateTransformationCompleted"/>.
     /// </summary>
     private void Table_Load (object sender, EventArgs e)
@@ -1295,7 +1295,7 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Calls <see cref="EnsureTransformationStep"/> with 
+    ///   Calls <see cref="EnsureTransformationStep(FormGrid,TransformationStep)"/> with 
     ///   <see cref="TransformationStep.PostValidationTransformationCompleted"/>.
     /// </summary>
     private void Table_PreRender (object sender, EventArgs e)

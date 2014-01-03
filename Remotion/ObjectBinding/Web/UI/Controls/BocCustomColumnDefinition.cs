@@ -520,7 +520,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary>
   ///   Contains the arguments provided to the <see cref="BocCustomColumnDefinitionCell.CreateControl"/>,
   ///   <see cref="BocCustomColumnDefinitionCell.OnInit"/>, and  
-  ///   <see cref="BocCustomColumnDefinitionCell.OnPreRender"/> methods.
+  ///   <see cref="BocCustomColumnDefinitionCell.OnPreRender(BocCustomCellPreRenderArguments)"/> methods.
   /// </summary>
   public class BocCustomCellArguments
   {

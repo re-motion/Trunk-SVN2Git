@@ -145,6 +145,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> The enumeration value or <see langword="null"/>. </param>
+    /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <include file='..\..\doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadUnboundValue/*' />
     public void LoadUnboundValue<TEnum> (TEnum? value, bool interim)
         where TEnum: struct
@@ -155,6 +156,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> The enumeration value. </param>
+    /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <include file='..\..\doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadUnboundValue/*' />
     public void LoadUnboundValue<TEnum> (TEnum value, bool interim)
         where TEnum: struct
@@ -599,7 +601,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return HtmlTextWriterTag.Div; }
     }
 
-    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
+    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="O:Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue.LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (object value, bool interim)
     {
       if (interim)

@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     public virtual bool IsInAccessTypesContributingAces (AccessControlEntry ace)
     {
       ArgumentUtility.CheckNotNull ("ace", ace);
-      return AccessTypesSupplyingAces.Contains(ace);;
+      return AccessTypesSupplyingAces.Contains(ace);
     }
 
 

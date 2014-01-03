@@ -103,6 +103,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> A <see cref="String"/> to load or <see langword="null"/>. </param>
+    /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (string value, bool interim)
     {
@@ -111,6 +112,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> The <see cref="Int32"/> value to load or <see langword="null"/>. </param>
+    /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (int? value, bool interim)
     {
@@ -119,6 +121,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> The <see cref="Double"/> value to load or <see langword="null"/>. </param>
+    /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (double? value, bool interim)
     {
@@ -127,13 +130,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> The <see cref="DateTime"/> value to load or <see langword="null"/>. </param>
+    /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <include file='..\..\doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (DateTime? value, bool interim)
     {
       LoadValueInternal (value, interim);
     }
 
-    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
+    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="O:Remotion.ObjectBinding.Web.UI.Controls.BocTextValue.LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (object value, bool interim)
     {
       if (interim)

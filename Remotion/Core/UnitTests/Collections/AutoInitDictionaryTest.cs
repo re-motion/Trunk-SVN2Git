@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Xml.Schema;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.UnitTests.Collections
 {
@@ -45,8 +47,8 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Count()
     {
-      object o = _dictionary["a"];
-      o = _dictionary["b"];
+      Dev.Null = _dictionary["a"];
+      Dev.Null = _dictionary["b"];
       Assert.That (_dictionary.Count, Is.EqualTo (2));
     }
 

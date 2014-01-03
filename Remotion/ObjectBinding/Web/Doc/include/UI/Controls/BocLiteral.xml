@@ -80,7 +80,6 @@
     <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
   </LoadValue>
   <LoadUnboundValue>
-    <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     <remarks>
       <para>
         Loads the <see cref="Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/>. 

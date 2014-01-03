@@ -16,12 +16,15 @@
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
 <CommandLineParser>
-  <SharedParameters>
+  <Parameters>
     <param name="includeFirstArgument">
       If <see langword="true"/>, the first argument (which is usually the file name of
       the program) is included, otherwise only the arguments after the first one are included.
     </param>
-  </SharedParameters>
+    <param name="commandLine">
+        The string that contains the command line arguments. See <see cref="SplitCommandLine"/> for information on how command lines are parsed.
+    </param>
+  </Parameters>
   <SplitCommandLine>
     <param name="commandLine">The command line (as available from <see cref="System.Environment.CommandLine"/>.)</param>
     <returns>An array of command line arguments.</returns>

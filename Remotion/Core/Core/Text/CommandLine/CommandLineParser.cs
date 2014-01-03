@@ -165,9 +165,7 @@ public class CommandLineParser
   /// <summary>
   /// This method reads a command line and initializes the arguments contained in <see cref="Arguments"/>.
   /// </summary>
-  /// <param name="commandLine">The string that contains the command line arguments. See <see cref="SplitCommandLine"/> for information on how
-  /// command lines are parsed.</param>
-  /// <include file='..\..\doc\include\Text\CommandLine\CommandLineParser.xml' path='CommandLineParser/SharedParameters/param[@name="includeFirstArgument"]' />
+  /// <include file='..\..\doc\include\Text\CommandLine\CommandLineParser.xml' path='CommandLineParser/SharedParameters/param[@name="commandLine" or @name="includeFirstArgument"]' />
   /// <exception cref="InvalidCommandLineArgumentValueException">The value of a parameter cannot be interpreted.</exception>
   /// <exception cref="InvalidCommandLineArgumentNameException">The command line contains a named argument that is not defined.</exception>
   /// <exception cref="InvalidNumberOfCommandLineArgumentsException">The command line contains too many unnamed arguments.</exception>

@@ -32,7 +32,4 @@
     </remarks>
     <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
   </LoadValue>
-  <LoadUnboundValue>
-    <param name="interim"> Not used. </param>
-  </LoadUnboundValue>
 </BocDropDownMenu>

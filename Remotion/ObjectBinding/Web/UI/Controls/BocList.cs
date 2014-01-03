@@ -1378,6 +1378,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The <see cref="Array"/> of objects implementing <see cref="IBusinessObject"/> to load,
     ///   or <see langword="null"/>. 
     /// </param>
+    /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/LoadUnboundValue/*' />
     public void LoadUnboundValue (IBusinessObject[] value, bool interim)
     {
@@ -1389,13 +1390,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The <see cref="IList"/> of objects implementing <see cref="IBusinessObject"/> to load,
     ///   or <see langword="null"/>. 
     /// </param>
+    /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/LoadUnboundValue/*' />
     public void LoadUnboundValue (IList value, bool interim)
     {
       LoadValueInternal (value, interim);
     }
 
-    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
+    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="O:Remotion.ObjectBinding.Web.UI.Controls.BocList.LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (IList value, bool interim)
     {
       if (! interim)

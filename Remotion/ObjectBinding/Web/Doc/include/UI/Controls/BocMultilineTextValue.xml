@@ -173,7 +173,6 @@
     <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
   </LoadValue>
   <LoadUnboundValue>
-    <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     <remarks>
       <para>
         Populates the <see cref="Value"/> with the provided <paramref name="value"/> if <paramref name="interim"/> 

@@ -261,7 +261,7 @@ namespace Remotion.Web.UI
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///     All calls to <see cref="RegisterJavaScriptInclude"/> must be completed before
+    ///     All calls to <see cref="RegisterJavaScriptInclude(string,Remotion.Web.IResourceUrl)"/> must be completed before
     ///     <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
     ///   </para><para>
     ///     Registeres the javascript file with a default priority of Page.
@@ -287,7 +287,7 @@ namespace Remotion.Web.UI
     /// <summary> Registers a javascript file. </summary>
     /// <remarks>
     ///   <para>
-    ///     All calls to <see cref="RegisterJavaScriptInclude"/> must be completed before
+    ///     All calls to <see cref="RegisterJavaScriptInclude(string,string)"/> must be completed before
     ///     <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
     ///   </para><para>
     ///     Registeres the javascript file with a default priority of Page.

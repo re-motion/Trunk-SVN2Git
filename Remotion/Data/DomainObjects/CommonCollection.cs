@@ -226,7 +226,7 @@ public class CommonCollection : ICollection
   /// <returns><see langword="true"/> if the <see cref="CommonCollection"/> contains the key and the object found for the key is equal to <paramref name="value"/>; 
   /// otherwise <see langword="false"/>.</returns>
   /// <remarks>This method locates the object with the given <paramref name="key"/> in the collection and compares it with the given <paramref name="value"/>. 
-  /// <see cref="System.Object.Equals"/> is used for the comparison.</remarks>
+  /// <see cref="object.Equals(object,object)"/> is used for the comparison.</remarks>
   protected bool BaseContains (object key, object value)
   {
     ArgumentUtility.CheckNotNull ("key", key);

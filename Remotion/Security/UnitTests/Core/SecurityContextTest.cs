@@ -429,7 +429,6 @@ namespace Remotion.Security.UnitTests.Core
     private static Enum[] CreateTwoAbstractRoles ()
     {
       return new Enum[] { TestAbstractRoles.QualityEngineer, TestAbstractRoles.Developer };
-      ;
     }
 
     private SecurityContext CreateTestSecurityContextForType (Type type)
