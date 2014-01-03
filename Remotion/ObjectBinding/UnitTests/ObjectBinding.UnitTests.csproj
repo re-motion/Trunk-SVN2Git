@@ -165,7 +165,6 @@
     <Compile Include="Core\TestDomain\ClassWithResources.cs" />
     <Compile Include="Core\TestDomain\MixinAddingResources.cs" />
     <Compile Include="Core\TestDomain\MixinAddingResources2.cs" />
-    <Compile Include="Web.Legacy\SetUpFixture.cs" />
     <Compile Include="Web\SetUpFixture.cs" />
     <Compile Include="Web\UI\Controls\BocCompundColumnDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocCustomColumnDefinitionTest.cs" />
@@ -173,7 +172,6 @@
     <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\IDateTimeFormatterTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\BocListRowTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\ListUtilityTest.cs" />
-    <Compile Include="Web.Legacy\BocLegacyServiceConfigurationServiceTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseImplementationTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseIntegrationTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseTest.cs" />
@@ -403,30 +401,6 @@
     <Compile Include="Core\StubBusinessObjectDataSource.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocColumnQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocCommandColumnQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocCompoundColumnQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocCustomColumnQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocDropDownMenuColumnQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocIndexColumnQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListMenuBlockQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListNavigationBlockQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListQuirksModeCssClassDefinitionTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListTableBlockQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocRowEditModeColumnQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocRowQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocSelectorColumnQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocSimpleColumnQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubColumnDefinition.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubColumnQuirksModeRenderer.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubCustomCellDefinition.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubQuirksModeRenderer.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubRowQuirksModeRenderer.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocReferenceValueImplementation\Rendering\TestableBocAutoCompleteReferenceValueQuirksModeRenderer.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocReferenceValueImplementation\Rendering\TestableBocReferenceValueQuirksModeRenderer.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocTextValueImplementation\Rendering\BocTextValueQuirksModeRendererTestBase.cs" />
     <Compile Include="Web\Domain\TypeWithAllDataTypes.cs" />
     <Compile Include="Web\Domain\TypeWithBoolean.cs" />
     <Compile Include="Web\Domain\TypeWithDateTime.cs" />
@@ -510,13 +484,9 @@
     <Compile Include="Web\UI\Controls\BocListImplementation\EditableRowSupport\EditModeControllerWithoutEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\StubTextBox.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckBoxQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckBoxRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocColumnRendererBaseTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocCommandColumnRendererTest.cs" />
@@ -534,12 +504,9 @@
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\ColumnRendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocCompoundColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocListRendererTestBase.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\StubDropDownList.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\StubDropDownMenu.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocTextValueImplementation\Rendering\BocTextValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRendererTestBase.cs" />

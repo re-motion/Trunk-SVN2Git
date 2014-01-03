@@ -23,8 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Contains all the CSS class definitions needed throughout <see cref="BocList"/> rendering.
   /// </summary>
-  [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListCssClassDefinition, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    Lifetime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof (BocListCssClassDefinition), Lifetime = LifetimeKind.Singleton)]
   public class BocListCssClassDefinition
   {
     /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> itself. </summary>
