@@ -16,7 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Text.CommandLine;
+using Remotion.Tools.Console.CommandLine;
 
 namespace Remotion.SecurityManager.Metadata.Importer
 {

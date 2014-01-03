@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.IO;
 using System.Reflection;
+using Remotion.Utilities;
 
-namespace Remotion.Utilities
+namespace Remotion.Tools
 {
   /// <summary>
   /// Helper class for resolving assemblies when executing code in a separate <see cref="AppDomain"/>. Create an instance of this class in the

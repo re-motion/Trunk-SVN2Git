@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.IO;
 
-namespace Remotion.Utilities.ConsoleApplication
+namespace Remotion.Tools.Console.ConsoleApplication
 {
   /// <summary>
   /// Interface for application classes turned into console applications by "wrapping" them in a 

@@ -22,8 +22,8 @@ using System.Reflection;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
+using Remotion.Tools.Console.ConsoleApplication;
 using Remotion.Utilities;
-using Remotion.Utilities.ConsoleApplication;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 { 

@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 
-namespace Remotion.Utilities.ConsoleApplication
+namespace Remotion.Tools.Console.ConsoleApplication
 {
   /// <summary>
   /// Interface for classes that support some sort of wait functionality. The <see cref="Wait"/>-method 

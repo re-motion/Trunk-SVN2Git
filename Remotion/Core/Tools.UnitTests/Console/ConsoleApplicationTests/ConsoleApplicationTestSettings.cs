@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Text.CommandLine;
-using Remotion.Utilities.ConsoleApplication;
 
-namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
+using System;
+using Remotion.Tools.Console.CommandLine;
+using Remotion.Tools.Console.ConsoleApplication;
+
+namespace Remotion.Tools.UnitTests.Console.ConsoleApplicationTests
 {
   public class ConsoleApplicationTestSettings : ConsoleApplicationSettings
   {

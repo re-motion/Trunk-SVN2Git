@@ -14,16 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Diagnostics;
 using System.IO;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities.ConsoleApplication;
+using Remotion.Tools.Console.ConsoleApplication;
 using Rhino.Mocks;
-using NUnitText = NUnit.Framework; //. .SyntaxHelpers.Text;
 
-namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
+//. .SyntaxHelpers.Text;
+
+namespace Remotion.Tools.UnitTests.Console.ConsoleApplicationTests
 {
   [TestFixture]
   public class ConsoleApplicationTest
@@ -135,8 +137,8 @@ namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
     public void DefaultCtorTest ()
     {
       var consoleApplication = new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings>();
-      Assert.That (PrivateInvoke.GetNonPublicField (consoleApplication, "_errorWriter"), Is.EqualTo (Console.Error));
-      Assert.That (PrivateInvoke.GetNonPublicField (consoleApplication, "_logWriter"), Is.EqualTo (Console.Out));
+      Assert.That (PrivateInvoke.GetNonPublicField (consoleApplication, "_errorWriter"), Is.EqualTo (System.Console.Error));
+      Assert.That (PrivateInvoke.GetNonPublicField (consoleApplication, "_logWriter"), Is.EqualTo (System.Console.Out));
       Assert.That (consoleApplication.BufferWidth, Is.EqualTo (80));
       Assert.That (PrivateInvoke.GetNonPublicField (consoleApplication, "_waitAtEnd"), Is.TypeOf (typeof (ConsoleKeypressWaiter)));
     }

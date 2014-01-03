@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 
-namespace Remotion.Utilities
+namespace Remotion.Tools.Console
 {
   /// <summary>
   /// Provides a default implementation of the <see cref="IConsoleManager"/> interface for the console represented by the <see cref="Console"/>
@@ -39,8 +40,8 @@ namespace Remotion.Utilities
     /// <value>The console's foreground color. Returns <see cref="ConsoleColor.Gray"/> if there is no console attached to the current process.</value>
     public ConsoleColor ForegroundColor
     {
-      get { return Console.ForegroundColor; }
-      set { Console.ForegroundColor = value; }
+      get { return System.Console.ForegroundColor; }
+      set { System.Console.ForegroundColor = value; }
     }
 
     /// <summary>
@@ -49,8 +50,8 @@ namespace Remotion.Utilities
     /// <value>The console's background color. Returns <see cref="ConsoleColor.Black"/> if there is no console attached to the current process.</value>
     public ConsoleColor BackgroundColor
     {
-      get { return Console.BackgroundColor; }
-      set { Console.BackgroundColor = value; }
+      get { return System.Console.BackgroundColor; }
+      set { System.Console.BackgroundColor = value; }
     }
   }
 }

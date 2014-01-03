@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using System.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Text.CommandLine
+namespace Remotion.Tools.Console.CommandLine
 {
   /// <summary>
   /// Use descendants of <see cref="CommandLineArgumentAttribute"/> (<see cref="CommandLineStringArgument"/>, <see cref="CommandLineFlagArgument"/>,...)

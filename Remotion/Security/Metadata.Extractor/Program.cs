@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Globalization;
-using Remotion.Text.CommandLine;
+using Remotion.Tools.Console.CommandLine;
 
 namespace Remotion.Security.Metadata.Extractor
 {

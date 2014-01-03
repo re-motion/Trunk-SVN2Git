@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Text.CommandLine;
 
-namespace Remotion.Utilities.ConsoleApplication
+using System;
+using Remotion.Tools.Console.CommandLine;
+
+namespace Remotion.Tools.Console.ConsoleApplication
 {
   /// <summary>
   /// Supplies command line arguments for <see cref="ConsoleApplication{TApplication,TApplicationSettings}"/>|s:

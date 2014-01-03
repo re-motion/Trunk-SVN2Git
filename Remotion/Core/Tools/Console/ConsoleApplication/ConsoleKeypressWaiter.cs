@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 
-namespace Remotion.Utilities.ConsoleApplication
+namespace Remotion.Tools.Console.ConsoleApplication
 {
   /// <summary>
   /// Class implementing <see cref="Wait"/> to wait for a keypress on the console.
@@ -26,7 +27,7 @@ namespace Remotion.Utilities.ConsoleApplication
   {
     public void Wait ()
     {
-      Console.ReadKey ();
+      System.Console.ReadKey ();
     }
   }
 }

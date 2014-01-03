@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
-using Remotion.Utilities;
+using Remotion.Tools.Console;
 using Rhino.Mocks;
 
-namespace Remotion.UnitTests.Utilities
+namespace Remotion.Tools.UnitTests
 {
   [TestFixture]
   public class ConsoleUtilityTest

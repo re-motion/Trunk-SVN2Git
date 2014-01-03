@@ -31,7 +31,7 @@ using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Security.Metadata;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.Text.CommandLine;
+using Remotion.Tools.Console.CommandLine;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Metadata.Importer

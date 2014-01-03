@@ -22,6 +22,8 @@ using Remotion.Mixins.Validation;
 using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.ServiceLocation;
+using Remotion.Tools;
+using Remotion.Tools.Console;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.MixerTools

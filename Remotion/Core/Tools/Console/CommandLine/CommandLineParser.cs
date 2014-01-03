@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using System.Globalization;
 using System.Text;
 
-namespace Remotion.Text.CommandLine
+namespace Remotion.Tools.Console.CommandLine
 {
 /// <summary>
 /// Provides methods for declaring command line syntax and providing values.

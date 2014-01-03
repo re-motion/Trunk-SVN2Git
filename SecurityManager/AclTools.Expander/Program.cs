@@ -17,7 +17,7 @@
 // 
 using Microsoft.Practices.ServiceLocation;
 using Remotion.SecurityManager.AclTools.Expansion;
-using Remotion.Utilities.ConsoleApplication;
+using Remotion.Tools.Console.ConsoleApplication;
 
 namespace Remotion.SecurityManager.AclTools.Expander
 {

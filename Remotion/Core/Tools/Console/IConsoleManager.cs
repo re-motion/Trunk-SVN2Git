@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-namespace Remotion.Utilities
+
+namespace Remotion.Tools.Console
 {
   /// <summary>
   /// Provides an API for manipulating the Console. This abstracts the <see cref="Console"/> class and thus enables unit testing of
