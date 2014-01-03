@@ -286,9 +286,6 @@
     <Compile Include="Core\Definitions\Building\RequirementsAnalyzerTest.cs" />
     <Compile Include="Core\Definitions\Building\TargetClassDefinitionBuilderTest.cs" />
     <Compile Include="Core\Definitions\ClassDefinitionBaseTest.cs" />
-    <Compile Include="Core\Definitions\DependencySorting\DependentMixinGrouperTest.cs" />
-    <Compile Include="Core\Definitions\DependencySorting\LegacyMixinDefinitionSorterTest.cs" />
-    <Compile Include="Core\Definitions\DependencySorting\MixinDependencyAnalyzerTest.cs" />
     <Compile Include="Core\Definitions\DependencySorting\TestDomain\IndependentMixin1.cs" />
     <Compile Include="Core\Definitions\DependencySorting\TestDomain\IndependentMixin2.cs" />
     <Compile Include="Core\Definitions\DependencySorting\TestDomain\INextCallDependency1.cs" />
@@ -346,7 +343,6 @@
     <Compile Include="Core\TestDomain\InheritableAttribute.cs" />
     <Compile Include="Core\TypeExtensionsTest.cs" />
     <Compile Include="Core\Utilities\ConstraintBasedGenericParameterInstantiatorTest.cs" />
-    <Compile Include="Core\Utilities\DependencySortTest.cs" />
     <Compile Include="Core\Utilities\MixedObjectInstantiationScopeTest.cs" />
     <Compile Include="Core\Utilities\MixinGenericArgumentFinderTest.cs" />
     <Compile Include="Core\Utilities\MixinReflectorTest.cs" />
