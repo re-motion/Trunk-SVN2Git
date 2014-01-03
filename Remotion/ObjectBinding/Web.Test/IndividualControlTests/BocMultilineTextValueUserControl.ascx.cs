@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Linq;
 using System.Web;
 using System.Web.UI.HtmlControls;
@@ -23,7 +22,6 @@ using System.Web.UI.WebControls;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -145,7 +143,7 @@ public class BocMultilineTextValueUserControl : BaseUserControl
   private void CVField_TextChanged(object sender, EventArgs e)
   {
     if (CVField.Value != null)
-      CVFieldTextChangedLabel.Text = StringUtility.ConcatWithSeparator (CVField.Value, "<br />");
+      CVFieldTextChangedLabel.Text = string.Join ("<br />", CVField.Value);
     else
       CVFieldTextChangedLabel.Text = "not set";
   }

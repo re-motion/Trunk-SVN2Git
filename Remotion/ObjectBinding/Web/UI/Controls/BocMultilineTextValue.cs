@@ -23,7 +23,6 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -232,14 +231,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (value == null)
         _text = null;
       else
-        _text = StringUtility.ConcatWithSeparator (value, "\r\n");
+        _text = string.Join ("\r\n", value);
     }
 
     protected override sealed string NormalizeText (string text)
     {
       string temp = text ?? string.Empty;
       temp = temp.Replace ("\r", "");
-      return StringUtility.ConcatWithSeparator (temp.Split ('\n'), "\r\n");
+      return string.Join ("\r\n", temp.Split ('\n'));
     }
 
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>

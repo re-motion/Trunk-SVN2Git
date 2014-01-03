@@ -92,7 +92,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
         string[] lines = temp.Split ('\n');
         for (int i = 0; i < lines.Length; i++)
           lines[i] = HttpUtility.HtmlEncode (lines[i]);
-        text = StringUtility.ConcatWithSeparator (lines, "<br />");
+        text = string.Join ("<br />", lines);
       }
       else
         text = HttpUtility.HtmlEncode (renderingContext.Control.Text);

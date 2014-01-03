@@ -201,7 +201,7 @@ public abstract class CompoundValidator: WebControl, IBaseValidator
     get 
     { 
       string[] messages = GetErrorMessages();
-      return StringUtility.ConcatWithSeparator (messages, "<b>");
+      return string.Join ("<b>", messages);
     }
     set { throw new NotSupportedException ("CompoundValidator.ErrorMessage is not supported."); }
   }
