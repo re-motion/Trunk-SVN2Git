@@ -106,7 +106,7 @@
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.RdbmsTools\Data.DomainObjects.RdbmsTools.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.Security\Data.DomainObjects.Security.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.UberProfIntegration\Data.DomainObjects.UberProfIntegration.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Data\UnitTests\Data.UnitTests.csproj">
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.UnitTests\Data.DomainObjects.UnitTests.csproj">
       <IsDatabaseTest>True</IsDatabaseTest>
     </UnitTestProjectFiles>
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.ObjectBinding.UnitTests\Data.DomainObjects.ObjectBinding.UnitTests.csproj">

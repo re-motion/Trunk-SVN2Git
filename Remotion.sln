@@ -102,7 +102,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.Web.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Core", "Remotion\Data\Core\Data.Core.csproj", "{70273934-12F1-49AF-975A-303BAEFE1CAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.UnitTests", "Remotion\Data\UnitTests\Data.UnitTests.csproj", "{6DEF9C11-1D5A-4B14-A4EB-F4C7E7CC3E7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.UnitTests", "Remotion\Data\DomainObjects.UnitTests\Data.DomainObjects.UnitTests.csproj", "{6DEF9C11-1D5A-4B14-A4EB-F4C7E7CC3E7B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Development.Core", "Remotion\Development\Core\Development.Core.csproj", "{B719A305-0493-4C72-88FE-9A2FC6964578}"
 EndProject
