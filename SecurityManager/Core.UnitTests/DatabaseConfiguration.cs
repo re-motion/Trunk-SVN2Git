@@ -15,11 +15,11 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using Remotion.Collections;
 
 namespace Remotion.SecurityManager.UnitTests
 {

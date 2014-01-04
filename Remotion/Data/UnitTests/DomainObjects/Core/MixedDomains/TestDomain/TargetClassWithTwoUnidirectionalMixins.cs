@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 
@@ -26,7 +26,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   [Uses (typeof (MixinAddingUnidirectionalRelation2))]
   [DBTable ("MixedDomains_TargetWithTwoUnidirectionalMixins")]
   [TestDomain]
-  public class TargetClassWithTwoUnidirectionalMixins : SimpleDomainObject<TargetClassWithTwoUnidirectionalMixins>
+  public class TargetClassWithTwoUnidirectionalMixins : DomainObject, ISupportsGetObject
   {
+    public static TargetClassWithTwoUnidirectionalMixins NewObject ()
+    {
+      return NewObject<TargetClassWithTwoUnidirectionalMixins>();
+    }
   }
 }

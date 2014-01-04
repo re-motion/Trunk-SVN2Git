@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.RhinoMocks.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
@@ -165,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       var objectEventReceiverMock = MockRepository.GenerateMock<DomainObjectMockEventReceiver> (newObject);
       var transactionEventReceiverMock = MockRepository.GenerateMock<ClientTransactionMockEventReceiver> (TestableClientTransaction);
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
       
       SetDatabaseModifyable ();
       CommitTransactionAndCheckTimestamps (newObject, changedObject, unchangedObject);
@@ -237,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         var objectEventReceiverMock = MockRepository.GenerateMock<DomainObjectMockEventReceiver> (newObject);
         var transactionEventReceiverMock = MockRepository.GenerateMock<ClientTransactionMockEventReceiver> (ClientTransaction.Current);
-        var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransaction.Current);
+        var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (ClientTransaction.Current);
         try
         {
           ClientTransaction.Current.Commit();
@@ -386,7 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       var objectEventReceiverMock = MockRepository.GenerateMock<DomainObjectMockEventReceiver> (unchangedObject);
       var transactionEventReceiverMock = MockRepository.GenerateMock<ClientTransactionMockEventReceiver> (TestableClientTransaction);
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
 
       TestableClientTransaction.Rollback();
 

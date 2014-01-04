@@ -126,7 +126,6 @@
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
@@ -167,21 +166,9 @@
       <Project>{2177143e-345f-4faa-9958-1ae2b5eed242}</Project>
       <Name>Development.RhinoMocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Development\Web\Development.Web.csproj">
-      <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
-      <Name>Development.Web</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Mixins\Core\Mixins.Core.csproj">
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
       <Name>Mixins.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.Core.csproj">
-      <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
-      <Name>ObjectBinding.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
-      <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
-      <Name>Security.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\TypePipe\Core\TypePipe.Core.csproj">
       <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
@@ -190,30 +177,6 @@
     <ProjectReference Include="..\..\..\TypePipe\Development\TypePipe.Development.csproj">
       <Project>{f6faf727-9405-4bcc-9153-803f73853e67}</Project>
       <Name>TypePipe.Development</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
-      <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
-      <Name>Web.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Web\Security\Web.Security.csproj">
-      <Project>{9b6f6d1a-a7ea-4ee8-b36e-e31cf7e518e3}</Project>
-      <Name>Web.Security</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DomainObjects.ObjectBinding\Data.DomainObjects.ObjectBinding.csproj">
-      <Project>{f3935d12-39e6-4f06-8316-98cd7ed60c6b}</Project>
-      <Name>Data.DomainObjects.ObjectBinding</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DomainObjects.RdbmsTools\Data.DomainObjects.RdbmsTools.csproj">
-      <Project>{A6505EE0-0F6B-4CB6-ACC7-1C05C0E236BC}</Project>
-      <Name>Data.DomainObjects.RdbmsTools</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DomainObjects.Security\Data.DomainObjects.Security.csproj">
-      <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>
-      <Name>Data.DomainObjects.Security</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DomainObjects.UberProfIntegration\Data.DomainObjects.UberProfIntegration.csproj">
-      <Project>{81E5BEC0-B845-4470-BD19-9FCB121CB413}</Project>
-      <Name>Data.DomainObjects.UberProfIntegration</Name>
     </ProjectReference>
     <ProjectReference Include="..\DomainObjects\Data.DomainObjects.csproj">
       <Name>Data.DomainObjects</Name>
@@ -230,6 +193,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="DomainObjects\Core\ClientTransactionTestHelperWithMocks.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionHierarchyFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableFetchEnabledPersistenceStrategyFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLoadedObjectDataProviderFake.cs" />
@@ -324,7 +288,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\InterceptedPropertyCollectorAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\DomainObjectCreatorTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\WrappingAccessorInterceptorTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\SetUpFixture.cs" />
     <Compile Include="DomainObjects\ObjectIDExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\DataManagementCommandDecoratorBaseTest.cs" />
@@ -351,16 +314,6 @@
     <Compile Include="DomainObjects\TestDomain\OrderExtensions.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleExtensionsTest.cs" />
     <Compile Include="DomainObjects\DomainObjectHandleTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeParameterIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\DomainObjectParametersTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SecuredFunctionViaDomainObjectHandleParameterTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SecuredFunctionTestBase.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SecuredFunctionViaDomainObjectParameterTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\DomainObjectHandleParameterTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\FunctionWithSecuredDomainObjectHandleParameter.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\FunctionWithSecuredDomainObjectParameter.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\SecurableDomainObject.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\TestAccessTypes.cs" />
     <Compile Include="UnitTesting\RootPersistenceStrategyMockFacade.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Transport\PostActionDisposableDecorator.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />
@@ -370,7 +323,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\ReadOnlyClientTransactionListenerWithLoadRulesTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerServiceTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\NonInterceptableTypeExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NotFoundObjectsClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectCleanupExceptionTest.cs" />
@@ -528,18 +480,12 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassWithSameInterfaceAsPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\ObjectsNotFoundExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectGetObjectServiceTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\ResetTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SerializationTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\ThreadAbortExceptionTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\TransactionScopeTest.cs" />
     <Compile Include="UnitTesting\ConstraintExpressionExtensions.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionBaseTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionTest.cs" />
-    <Compile Include="DomainObjects\Core\ClientTransactionTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Cloning\CloneContextTest.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Cloning\CompleteCloneStrategyTest.cs" />
@@ -730,9 +676,6 @@
     <Compile Include="DomainObjects\Core\Validation\MandatoryRelationValidatorTest.cs" />
     <Compile Include="DomainObjects\Database\ScriptDumper.cs" />
     <Compile Include="DomainObjects\Factories\SerializedObjectIDStoragePropertyDefinitionObjectMother.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectAboveInheritanceRoot.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectOnInheritanceRoot.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SubTransactionInitializeTest.cs" />
     <Compile Include="DomainObjects\TestDomain\TableInheritance\AbstractClassWithoutHierarchy.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithObjectLoaderDecorator.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />
@@ -914,7 +857,6 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\TargetClass2ForMixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\AbstractClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\Ceo.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassDerivedFromSimpleDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassNotDerivedFromDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithAllDataTypes.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithGuidKey.cs" />
@@ -1210,12 +1152,6 @@
     <Compile Include="DomainObjects\Factories\DomainObjectIDs.cs" />
     <Compile Include="DomainObjects\Factories\MappingReflectorObjectMother.cs" />
     <Compile Include="DomainObjects\Factories\StorageTypeInformationObjectMother.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\GetDefaultValueIntegrationTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\BaseClassWithMixinWithInterface.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\DerivedClassWithMixinWithDuplicateInterface.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\IMixinAddingProperty.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\MixinAddingProperty.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\MixinAddingPropertyBase.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\PersistentMixinsInInheritanceHierarchyTest.cs" />
     <Compile Include="DomainObjects\Core\LinqPropertyRedirectionAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryableTest.cs" />
@@ -1311,7 +1247,6 @@
     <Compile Include="DomainObjects\Core\Queries\Configuration\QueryFileElementTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Cloning\DomainObjectClonerTest.cs" />
-    <Compile Include="DomainObjects\Core\DomainObjects\SimpleDomainObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\CollectionSetterTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\StorageClassTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExtensionMethodsTest.cs" />
@@ -1342,56 +1277,6 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionWithCustomITransaction.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Transport\DomainObjectTransporterTestHelper.cs" />
     <Compile Include="DomainObjects\Factories\ReflectionMappingHelper.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectDefaultValueStrategyTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\ObjectBindingToMappingTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectServiceFactoryMixinTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectWithMixedPersistentPropertiesTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectImplementationTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectSearchAllServiceTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectQuerySearchServiceTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\SearchServiceTestHelper.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectWithMixedPersistentProperties.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableNonDomainObjectReferencingDomainObject.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObject_AccessingImplementationFromCtor.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinWithOverridableMethod.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObject_ImplementingISerializable.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObjectWithOverriddenDisplayName.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObject.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\IBindableDomainObjectWithProperties.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\IMixinAddingPersistentProperties.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinAddingPersistentProperties.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinStub.cs" />
-    <Compile Include="DomainObjects\RdbmsTools\RdbmsToolsRunnerTest.cs" />
-    <Compile Include="DomainObjects\Security\DomainObjectSecurityStrategyTest.cs" />
-    <Compile Include="DomainObjects\Security\ObjectBindingIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\FilterQueryResultTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\InterfaceTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\NewObjectCreatingTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\ObjectDeletingTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\PropertyValueChangingTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\PropertyValueReadingTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\RelationChangingTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\RelationReadingTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\TestHelper.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SerializationTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionFactoryTest.cs" />
-    <Compile Include="DomainObjects\Security\SetupFixture.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\BindableSecurableObject.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\BindableSecurableObjectMixin.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\DerivedBindableSecurableObject.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\IBindableSecurableObjectMixin.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\ISecurableObjectMixin.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\NonSecurableObject.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\SecurableObject.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\SecurableObjectMixin.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\StubStorageFactory.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\StubStorageProvider.cs" />
-    <Compile Include="DomainObjects\Security\TestDomain\TestAccessTypes.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\NullEndPointModificationCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointSetCommandTestBase.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\LifetimeServiceTest.cs" />
@@ -1435,23 +1320,6 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassWithUnidirectionalMixin2.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\SerializationCallbackTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\SerializationTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\CommonTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\DefaultValueTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\DomainObjectSpecificsTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\GetBusinessObjectClassTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\GetDisplayNameTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\IdentityTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\PropertyIntegrationTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\SearchTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectIntegrationTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\ObjectBindingBaseTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableBaseDomainObject.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectWithProperties.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableMixinDomainObject.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableMixinDomainObjectWithOverriddenDisplayName.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\OppositeBidirectionalBindableDomainObject.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\OppositeAnonymousBindableDomainObject.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\TestDomain\SecurableBindableMixinDomainObjectWithOverriddenDisplayName.cs" />
     <Compile Include="DomainObjects\Core\Persistence\MixedStorageProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\SqlProviderLoadDataContainersTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderMixin.cs" />
@@ -1477,7 +1345,6 @@
     <Compile Include="DomainObjects\Core\Serialization\ObjectIDTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RelationEndPointManagerTest.cs" />
     <Compile Include="DomainObjects\TestDomain\TableInheritance\TISpecificFolder.cs" />
-    <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithEnumNotDefiningZero.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithMixedProperty.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithNonPublicProperties.cs" />
@@ -1486,7 +1353,6 @@
     <Compile Include="DomainObjects\Core\Serialization\SerializationCallbackTest.cs" />
     <Compile Include="DomainObjects\StandardMappingTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TypePipe\InterceptedPropertyIntegrationTest.cs" />
-    <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject_ImplementingISerializable.cs" />
     <Compile Include="DomainObjects\TestDomain\Color.cs" />
     <Compile Include="DomainObjects\TestDomain\ColorExtensions.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\ConcreteInheritance\ConcreteInheritanceBaseClass.cs" />
@@ -1510,12 +1376,6 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceFirstDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritancePersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceSecondDerivedClass.cs" />
-    <Compile Include="DomainObjects\UberProfIntegration\FakeLinqToSqlProfiler.cs" />
-    <Compile Include="DomainObjects\UberProfIntegration\IntegrationTest.cs" />
-    <Compile Include="DomainObjects\UberProfIntegration\TracingLinqToSqlAppender.cs" />
-    <Compile Include="DomainObjects\UberProfIntegration\UberProfIntegrationTestBase.cs" />
-    <Compile Include="DomainObjects\UberProfIntegration\MockableLinqToSqlAppender.cs" />
-    <Compile Include="DomainObjects\UberProfIntegration\LinqToSqlExtensionFactoryTest.cs" />
     <Compile Include="UnitTesting\MethodOptionsExtensions.cs" />
     <Compile Include="UnitTesting\OrderedExpectationCounter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -2038,20 +1898,6 @@
     <Compile Include="DomainObjects\Core\UnitTestStorageProviderStubDefinition.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeTransactedFunctionIntegrationTestBase.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\DelegateExecutingTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\ThreadAbortTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\SerializationTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\TransactedFunctionWithChildFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\DomainObjectParameterTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\TransactionModeTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\AutoCommitTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\CreateChildIfParentTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\CreateNoneTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\CreateRootTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\CreateRootWithChildTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\NoAutoCommitTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\RemoveCurrentTransactionScopeFunction.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollection.IListTest.cs" />
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
@@ -2068,17 +1914,11 @@
     <None Include="DomainObjects\TestDomain\TableInheritance\FileSystem.cd" />
     <None Include="DomainObjects\Database\DataDomainObjects_DropFulltextIndices.sql" />
     <None Include="DomainObjects\Database\DataDomainObjects_CreateFulltextIndices.sql" />
-    <None Include="DomainObjects\RdbmsTools\Test.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithFakeMappingLoader.xml" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithMinimumSettings.xml" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithCustomSectionGroupName.xml" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
-    </None>
-    <None Include="DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\SetupDB_FirstStorageProvider.sql" />
     <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\SetupDB_FirstStorageProviderWithoutTables.sql" />

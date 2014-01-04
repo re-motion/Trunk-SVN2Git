@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -436,7 +437,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       int loadedObjectsBefore = TestableClientTransaction.DataManager.DataContainers.Count;
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {

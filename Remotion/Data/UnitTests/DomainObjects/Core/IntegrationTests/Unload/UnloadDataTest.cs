@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchronization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
@@ -417,7 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (TestableClientTransaction.GetEnlistedDomainObject (DomainObjectIDs.Order1), Is.SameAs (order1));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
 
@@ -427,7 +428,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void UnloadData_NonLoadedObject ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       UnloadService.UnloadData (TestableClientTransaction, DomainObjectIDs.Order1);
 
@@ -494,7 +495,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
 
       Dev.Null = order1.OrderNumber;
 
@@ -509,7 +510,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
 
       order1.OrderNumber = 4711;
 
@@ -541,7 +542,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
 
       Dev.Null = order1.Timestamp;
 
@@ -556,7 +557,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
 
       order1.RegisterForCommit();
 
@@ -571,7 +572,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
 
       order1.EnsureDataAvailable ();
 
@@ -645,7 +646,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (customerOrders.IsDataComplete, Is.False);
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
 
       customer.Orders.Add (Order.NewObject ()); // reloads the relation contents and thus the object
 
@@ -757,7 +758,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var customer = order1.Customer;
 
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       Assert.That (order1.Customer, Is.SameAs (customer)); // reloads the object because the foreign key is stored in order1
@@ -773,7 +774,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var order1 = DomainObjectIDs.Order1.GetObject<Order> ();
 
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       order1.Customer = Customer.NewObject (); // reloads the object because the foreign key is stored in order1
@@ -789,7 +790,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var customer = order1.Customer;
 
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       Assert.That (customer.Orders, Has.Member (order1)); // enumerating reloads the relation contents because the foreign key is stored in order1
@@ -825,7 +826,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadData (TestableClientTransaction, order3.ID);
       Assert.That (order3.State, Is.EqualTo (StateType.NotLoadedYet));
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
 
       customer.Orders.Add (order3); // reloads order3 because order3's foreign key is changed
 

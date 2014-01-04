@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -105,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       ClientTransactionTestHelper.RegisterDataContainer (transaction, dataContainer1);
       ClientTransactionTestHelper.RegisterDataContainer (transaction, dataContainer2);
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (transaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (transaction);
 
       var specification = new SortedPropertySpecification (_orderNumberPropertyDefinition, SortOrder.Descending);
       var comparer = new SortedPropertyComparer (specification, _dataManagerStub);

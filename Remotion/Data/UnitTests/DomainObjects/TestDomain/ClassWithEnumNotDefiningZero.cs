@@ -15,14 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 {
   [DBTable]
   [TestDomain]
-  public class ClassWithEnumNotDefiningZero : SimpleDomainObject<ClassWithEnumNotDefiningZero>
+  public class ClassWithEnumNotDefiningZero : DomainObject
   {
+    public static ClassWithEnumNotDefiningZero NewObject ()
+    {
+      return NewObject<ClassWithEnumNotDefiningZero>();
+    }
+
     public virtual EnumNotDefiningZero EnumValue { get; set; }
   }
 }

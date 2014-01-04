@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Linq;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -416,7 +417,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void ChangesToDataState_CauseTransactionListenerNotifications ()
     {
-      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (_customerEndPoint.ClientTransaction);
+      var listener = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (_customerEndPoint.ClientTransaction);
 
       _customerEndPoint.Collection.Add (_order3);
 

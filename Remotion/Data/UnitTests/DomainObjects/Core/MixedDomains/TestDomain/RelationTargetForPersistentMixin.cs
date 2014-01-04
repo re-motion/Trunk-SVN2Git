@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
@@ -24,8 +23,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   [DBTable ("MixedDomains_RelationTarget")]
   [Instantiable]
   [TestDomain]
-  public abstract class RelationTargetForPersistentMixin : SimpleDomainObject<RelationTargetForPersistentMixin>
+  public abstract class RelationTargetForPersistentMixin : DomainObject
   {
+    public static RelationTargetForPersistentMixin NewObject ()
+    {
+      return NewObject<RelationTargetForPersistentMixin>();
+    }
+
     [DBBidirectionalRelation ("RelationProperty")]
     public abstract TargetClassForPersistentMixin RelationProperty1 { get; set; }
 

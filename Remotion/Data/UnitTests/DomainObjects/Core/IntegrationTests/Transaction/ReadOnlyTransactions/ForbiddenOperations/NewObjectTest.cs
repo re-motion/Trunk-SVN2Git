@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction.ReadOnlyTransactions.ForbiddenOperations
 {

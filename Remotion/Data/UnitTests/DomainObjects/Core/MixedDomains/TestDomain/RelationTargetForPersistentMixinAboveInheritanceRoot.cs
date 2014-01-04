@@ -16,13 +16,17 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
   [DBTable]
-  public class RelationTargetForPersistentMixinAboveInheritanceRoot : SimpleDomainObject<RelationTargetForPersistentMixinAboveInheritanceRoot>
+  public class RelationTargetForPersistentMixinAboveInheritanceRoot : DomainObject
   {
+    public static RelationTargetForPersistentMixinAboveInheritanceRoot NewObject ()
+    {
+      return NewObject<RelationTargetForPersistentMixinAboveInheritanceRoot>();
+    }
+
     [DBBidirectionalRelation("PersistentRelationProperty", ContainsForeignKey = false)]
     public virtual InheritanceRootInheritingPersistentMixin RelationProperty1 { get; set; }
   }

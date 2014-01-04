@@ -39,5 +39,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
       Assert.That (configuration.Storage, Is.SameAs (storage));
       Assert.That (configuration.Query, Is.SameAs (query));
     }
+
+    [Test]
+    public void InitializeWithDefaults()
+    {
+      IDomainObjectsConfiguration configuration = new FakeDomainObjectsConfiguration ();
+
+      Assert.That (configuration.MappingLoader, Is.TypeOf<MappingLoaderConfiguration>());
+      Assert.That (configuration.Storage,  Is.TypeOf<StorageConfiguration>());
+      Assert.That (configuration.Query, Is.TypeOf<QueryConfiguration>());
+    }
   }
 }

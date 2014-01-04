@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
@@ -34,11 +33,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void Serializable ()
     {
-      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
-      instance.IntProperty = 6;
-      Tuple<ClientTransaction, ClassDerivedFromSimpleDomainObject> deserializedData =
-          Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
-      ClassDerivedFromSimpleDomainObject deserializedInstance = deserializedData.Item2;
+      var instance = Order.NewObject ();
+      instance.DeliveryDate = new DateTime (2010, 1, 13);
+      Assert.That (typeof(ISerializable).IsAssignableFrom (instance.GetPublicDomainObjectType()), Is.False);
+
+      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
+      var deserializedInstance = deserializedData.Item2;
 
       Assert.That (deserializedInstance.ID, Is.EqualTo (instance.ID));
       Assert.That (deserializedInstance.RootTransaction, Is.SameAs (deserializedData.Item1));
@@ -46,18 +46,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       using (deserializedData.Item1.EnterNonDiscardingScope ())
       {
         Assert.That (deserializedInstance, Is.Not.SameAs (instance));
-        Assert.That (deserializedInstance.IntProperty, Is.EqualTo (6));
+        Assert.That (deserializedInstance.DeliveryDate, Is.EqualTo (new DateTime (2010, 1, 13)));
       }
     }
 
     [Test]
     public void Serializable_WithISerializable ()
     {
-      ClassWithAllDataTypes instance = ClassWithAllDataTypes.NewObject ();
+      var instance = ClassWithAllDataTypes.NewObject ();
       instance.Int32Property = 5;
-      Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
-          Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
-      ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
+      Assert.That (instance, Is.InstanceOf<ISerializable>());
+
+      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
+      var deserializedInstance = deserializedData.Item2;
       
       Assert.That (deserializedInstance.ID, Is.EqualTo (instance.ID));
       Assert.That (deserializedInstance.RootTransaction, Is.SameAs (deserializedData.Item1));

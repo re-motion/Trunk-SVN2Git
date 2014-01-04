@@ -18,6 +18,8 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
@@ -40,9 +42,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _notLoadedObject1 = DomainObjectMother.GetNotLoadedObject (TestableClientTransaction, DomainObjectIDs.Order4);
       _notLoadedObject2 = DomainObjectMother.GetNotLoadedObject (TestableClientTransaction, DomainObjectIDs.Order5);
       _invalidObject = DomainObjectMother.GetInvalidObject (TestableClientTransaction);
-      _notLoadedNonExistingObject = DomainObjectMother.GetNotLoadedNonExistingObject (TestableClientTransaction);
+      _notLoadedNonExistingObject = DomainObjectMother.GetNotLoadedObject (TestableClientTransaction, new ObjectID(typeof (ClassWithAllDataTypes), Guid.NewGuid()));
 
-      _listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      _listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
     }
 
     protected DomainObject LoadedObject1

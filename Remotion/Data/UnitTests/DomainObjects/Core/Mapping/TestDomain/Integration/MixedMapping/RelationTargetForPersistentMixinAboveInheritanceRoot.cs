@@ -15,12 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping
 {
   [DBTable]
-  public class RelationTargetForPersistentMixinAboveInheritanceRoot : SimpleDomainObject<RelationTargetForPersistentMixinAboveInheritanceRoot>
+  public class RelationTargetForPersistentMixinAboveInheritanceRoot : DomainObject
   {
     [DBBidirectionalRelation("PersistentRelationProperty", ContainsForeignKey = false)]
     public virtual InheritanceRootInheritingPersistentMixin RelationProperty1 { get; set; }

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -148,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
 
     private void InstallUnlockWatcher (ClientTransaction clientTransaction)
     {
-      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (clientTransaction);
+      var listener = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (clientTransaction);
       listener
           .Stub (stub => stub.ObjectMarkedInvalid (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything))
           .WhenCalled (

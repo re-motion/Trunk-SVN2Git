@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -286,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void TryEnsureDataAvailable_False ()
     {
-      var notFoundObjectReference = DomainObjectMother.GetNotLoadedNonExistingObject (TestableClientTransaction);
+      var notFoundObjectReference = DomainObjectMother.GetNotLoadedObject (TestableClientTransaction, new ObjectID(typeof (ClassWithAllDataTypes), Guid.NewGuid()));
       var notFoundContext = new DomainObjectTransactionContext (notFoundObjectReference, TestableClientTransaction);
       Assert.That (TestableClientTransaction.DataManager.DataContainers[notFoundObjectReference.ID], Is.Null);
 

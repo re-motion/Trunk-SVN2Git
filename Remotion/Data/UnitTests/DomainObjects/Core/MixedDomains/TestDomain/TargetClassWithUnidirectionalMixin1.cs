@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 
@@ -25,13 +25,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   [Uses (typeof (MixinAddingUnidirectionalRelation1))]
   [DBTable ("MixedDomains_TargetWithUnidirectionalMixin1")]
   [TestDomain]
-  public class TargetClassWithUnidirectionalMixin1 : SimpleDomainObject<TargetClassWithUnidirectionalMixin1>
+  public class TargetClassWithUnidirectionalMixin1 : DomainObject, ISupportsGetObject
   {
+    public static TargetClassWithUnidirectionalMixin1 NewObject ()
+    {
+      return NewObject<TargetClassWithUnidirectionalMixin1>();
+    }
+
     [StorageClassNone]
     public Computer RedirectedComputer
     {
-      [LinqPropertyRedirection (typeof (MixinAddingUnidirectionalRelation1), "Computer")]
-      get { throw new NotImplementedException (); }
+      [LinqPropertyRedirection (typeof (MixinAddingUnidirectionalRelation1), "Computer")] get { throw new NotImplementedException(); }
     }
   }
 }

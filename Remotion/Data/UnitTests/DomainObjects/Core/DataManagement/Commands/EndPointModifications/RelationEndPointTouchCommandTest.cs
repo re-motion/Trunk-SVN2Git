@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
@@ -60,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Begin_DoesNothing ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (_transaction);
 
       _command.Begin ();
     }
@@ -68,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void End_DoesNothing ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (_transaction);
 
       _command.End ();
     }

@@ -15,14 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping
 {
   [DBTable ("MixedDomains_RelationTarget")]
   [Instantiable]
   [TestDomain]
-  public abstract class RelationTargetForPersistentMixin : SimpleDomainObject<RelationTargetForPersistentMixin>
+  public abstract class RelationTargetForPersistentMixin : DomainObject
   {
     [DBBidirectionalRelation ("RelationProperty")]
     public abstract TargetClassForPersistentMixin RelationProperty1 { get; set; }

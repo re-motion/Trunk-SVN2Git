@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -87,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
     protected void EnsureTransactionThrowsOnLoad ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvent (
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvent (
           ClientTransaction.Current,
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
     }

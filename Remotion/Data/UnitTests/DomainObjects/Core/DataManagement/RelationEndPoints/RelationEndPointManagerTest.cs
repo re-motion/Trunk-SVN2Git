@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
@@ -799,7 +800,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPointStub.Stub (stub => stub.ID).Return (endPointID);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub);
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_relationEndPointManager.ClientTransaction);
+      var listenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (_relationEndPointManager.ClientTransaction);
 
       _relationEndPointManager.Reset ();
 

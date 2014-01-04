@@ -15,13 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors
 {
   [DBTable]
   [Instantiable]
-  public abstract class RelationTargetForMixinAddingBidirectionalRelationTwice : SimpleDomainObject<RelationTargetForMixinAddingBidirectionalRelationTwice>
+  public abstract class RelationTargetForMixinAddingBidirectionalRelationTwice : DomainObject
   {
     [DBBidirectionalRelation ("RealSide")]
     public abstract TargetClass1ForMixinAddingBidirectionalRelationTwice VirtualSide { get; set; }

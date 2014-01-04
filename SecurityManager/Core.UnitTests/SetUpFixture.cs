@@ -66,13 +66,12 @@ namespace Remotion.SecurityManager.UnitTests
         serviceLocator.Register (typeof (IGlobalAccessTypeCache), () => new NullGlobalAccessTypeCache());
         ServiceLocator.SetLocatorProvider (() => serviceLocator);
 
-        ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
+        var providers = new ProviderCollection<StorageProviderDefinition>();
         providers.Add (new RdbmsProviderDefinition ("SecurityManager", new SecurityManagerSqlStorageObjectFactory(), TestDomainConnectionString));
-        StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["SecurityManager"]);
+        var storageConfiguration = new StorageConfiguration (providers, providers["SecurityManager"]);
         storageConfiguration.StorageGroups.Add (new StorageGroupElement (new SecurityManagerStorageGroupAttribute(), "SecurityManager"));
 
-        DomainObjectsConfiguration.SetCurrent (
-            new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), storageConfiguration, new QueryConfiguration()));
+        DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (storage: storageConfiguration));
 
         var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (BaseSecurityManagerObject).Assembly, true));
         var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
@@ -108,11 +107,6 @@ namespace Remotion.SecurityManager.UnitTests
     public void TearDown ()
     {
       SqlConnection.ClearAllPools();
-    }
-
-    private string GetFullPath (string fileName)
-    {
-      return Path.Combine (AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
   }
 }

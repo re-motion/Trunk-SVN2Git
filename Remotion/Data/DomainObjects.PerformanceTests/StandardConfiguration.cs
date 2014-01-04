@@ -44,8 +44,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       providers.Add (new RdbmsProviderDefinition ("PerformanceTestDomain", new SqlStorageObjectFactory(), ConnectionString));
       StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["PerformanceTestDomain"]);
 
-      DomainObjectsConfiguration.SetCurrent (
-          new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), storageConfiguration, new QueryConfiguration()));
+      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (storage: storageConfiguration));
 
 
       var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (StandardConfiguration).Assembly, true));

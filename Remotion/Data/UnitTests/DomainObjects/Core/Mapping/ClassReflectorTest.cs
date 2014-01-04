@@ -22,11 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
-using
-    Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.
-        StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule;
 using Remotion.Reflection;
 using Rhino.Mocks;
 
@@ -226,10 +222,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassWithoutStorageGroupAttribute ()
     {
-      ClassIDProviderStub.Stub(stub => stub.GetClassID (typeof (ClassDerivedFromSimpleDomainObject))).Return ("ClassID");
-      
+      var type = typeof (ClassWithoutStorageGroupWithDifferentProperties);
+      ClassIDProviderStub.Stub(stub => stub.GetClassID (type)).Return ("ClassID");
+      Assert.That (type.IsDefined (typeof (DBStorageGroupAttribute), false), Is.False);
+  
       var classReflector = new ClassReflector (
-          typeof (ClassDerivedFromSimpleDomainObject),
+          type,
           MappingObjectFactory,
           Configuration.NameResolver,
           ClassIDProviderStub,
@@ -245,10 +243,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassWithStorageGroupAttribute ()
     {
-      ClassIDProviderStub.Stub (stub => stub.GetClassID (typeof (DerivedClassWithStorageGroupAttribute))).Return ("ClassID");
+      var type = typeof (ClassWithStorageGroupAttributeAndBaseClass);
+      ClassIDProviderStub.Stub (stub => stub.GetClassID (type)).Return ("ClassID");
+      Assert.That (type.IsDefined (typeof (DBStorageGroupAttribute), false), Is.True);
 
       var classReflector = new ClassReflector (
-          typeof (DerivedClassWithStorageGroupAttribute),
+          type,
           MappingObjectFactory,
           Configuration.NameResolver,
           ClassIDProviderStub,

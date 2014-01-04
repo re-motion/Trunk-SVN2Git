@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
@@ -140,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var endPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPoint.ID);
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
       Assert.That (endPoint.IsDataComplete, Is.False);
 
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPoint.ID);
@@ -284,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, false);
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
     }

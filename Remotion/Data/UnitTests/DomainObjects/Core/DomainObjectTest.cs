@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
@@ -339,7 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Not.Null);
       Assert.That (_transaction.DataManager.DataContainers[order.ID].DomainObject, Is.SameAs (order));
 
-      var nonExistingOrder = DomainObjectMother.GetNotLoadedNonExistingObject (_transaction);
+      var nonExistingOrder = DomainObjectMother.GetNotLoadedObject (_transaction, new ObjectID(typeof (ClassWithAllDataTypes), Guid.NewGuid()));
       Assert.That (_transaction.DataManager.DataContainers[nonExistingOrder.ID], Is.Null);
 
       _transaction.ExecuteInScope (() => Assert.That (() => nonExistingOrder.TryEnsureDataAvailable (), Is.False));

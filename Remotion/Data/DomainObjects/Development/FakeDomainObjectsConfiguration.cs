@@ -19,7 +19,6 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Development
 {
@@ -33,15 +32,11 @@ namespace Remotion.Data.DomainObjects.Development
     private readonly MappingLoaderConfiguration _mappingLoader;
     private readonly QueryConfiguration _query;
 
-    public FakeDomainObjectsConfiguration (MappingLoaderConfiguration mappingLoader, StorageConfiguration storage, QueryConfiguration query)
+    public FakeDomainObjectsConfiguration (MappingLoaderConfiguration mappingLoader = null, StorageConfiguration storage = null, QueryConfiguration query = null)
     {
-      ArgumentUtility.CheckNotNull ("mappingLoader", mappingLoader);
-      ArgumentUtility.CheckNotNull ("storage", storage);
-      ArgumentUtility.CheckNotNull ("query", query);
-
-      _mappingLoader = mappingLoader;
-      _storage = storage;
-      _query = query;
+      _mappingLoader = mappingLoader ?? new MappingLoaderConfiguration();
+      _storage = storage ?? new StorageConfiguration();
+      _query = query ?? new QueryConfiguration();
     }
 
     public MappingLoaderConfiguration MappingLoader

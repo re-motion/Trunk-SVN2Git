@@ -23,6 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoint
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 {
@@ -479,7 +480,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, endPointID);
 
@@ -496,7 +497,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       Assert.That (ordersEndPoint.IsDataComplete, Is.False);
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, ordersEndPoint.ID);
 
@@ -661,7 +662,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       var result = UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, endPointID);
 
@@ -677,7 +678,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, ordersEndPoint.ID);
       Assert.That (ordersEndPoint.IsDataComplete, Is.False);
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       var result = UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, ordersEndPoint.ID);
 

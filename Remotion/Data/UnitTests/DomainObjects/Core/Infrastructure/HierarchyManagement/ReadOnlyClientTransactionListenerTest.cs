@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyManagement
 {

@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
@@ -134,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       var orderCollection = _owningCustomer.Orders;
       orderCollection.SetEventReceiver (eventReceiverMock);
 
-      var eventListenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      var eventListenerMock = ClientTransactionTestHelperWithMocks.CreateAndAddListenerMock (TestableClientTransaction);
       try
       {
         eventListenerMock

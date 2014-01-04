@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums;
 
@@ -612,7 +613,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         var dataContainer = Order.NewObject ().InternalDataContainer;
         var propertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
 
-        ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (clientTransactionMock);
+        ClientTransactionTestHelperWithMocks.EnsureTransactionThrowsOnEvents (clientTransactionMock);
 
         dataContainer.GetValueWithoutEvents (propertyDefinition, ValueAccess.Current);
       }

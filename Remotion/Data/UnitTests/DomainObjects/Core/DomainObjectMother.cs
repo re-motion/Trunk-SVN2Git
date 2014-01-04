@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.TypePipe;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
@@ -115,12 +116,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       LifetimeService.DeleteObject (transaction, deletedInstance);
       Assert.That (deletedInstance.TransactionContext[transaction].State, Is.EqualTo (StateType.Deleted));
       return deletedInstance;
-    }
-
-    public static DomainObject GetNotLoadedNonExistingObject (ClientTransaction transaction)
-    {
-      var objectID = new ObjectID(typeof (ClassWithAllDataTypes), Guid.NewGuid());
-      return GetNotLoadedObject (transaction, objectID);
     }
   }
 }
