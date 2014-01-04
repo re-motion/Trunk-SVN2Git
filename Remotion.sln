@@ -303,13 +303,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Legacy.Un
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.UnitTests", "Remotion\ObjectBinding\Web.UnitTests\ObjectBinding.Web.UnitTests.csproj", "{AB09FD88-9422-4BE7-8605-8A0EB8F9051B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.RdbmsTools.UnitTests", "Remotion\Data\RdbmsTools.UnitTests\Data.DomainObjects.RdbmsTools.UnitTests.csproj", "{0AF7960E-B65F-4E5E-AEEC-00EA23B1DF47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.RdbmsTools.UnitTests", "Remotion\Data\DomainObjects.RdbmsTools.UnitTests\Data.DomainObjects.RdbmsTools.UnitTests.csproj", "{0AF7960E-B65F-4E5E-AEEC-00EA23B1DF47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.UberProfIntegration.UnitTests", "Remotion\Data\UberProfIntegration.UnitTests\Data.DomainObjects.UberProfIntegration.UnitTests.csproj", "{1203D162-42F9-46AE-9416-4D4CA12E824F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.UberProfIntegration.UnitTests", "Remotion\Data\DomainObjects.UberProfIntegration.UnitTests\Data.DomainObjects.UberProfIntegration.UnitTests.csproj", "{1203D162-42F9-46AE-9416-4D4CA12E824F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.Security.UnitTests", "Remotion\Data\Security.UnitTests\Data.DomainObjects.Security.UnitTests.csproj", "{ABDD62A5-7490-418E-8D30-23E480621E8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.Security.UnitTests", "Remotion\Data\DomainObjects.Security.UnitTests\Data.DomainObjects.Security.UnitTests.csproj", "{ABDD62A5-7490-418E-8D30-23E480621E8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.ObjectBinding.UnitTests", "Remotion\Data\ObjectBinding.UnitTests\Data.DomainObjects.ObjectBinding.UnitTests.csproj", "{FBEAC696-BF2A-4839-9587-44DDF80E8C6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.ObjectBinding.UnitTests", "Remotion\Data\DomainObjects.ObjectBinding.UnitTests\Data.DomainObjects.ObjectBinding.UnitTests.csproj", "{FBEAC696-BF2A-4839-9587-44DDF80E8C6A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.Web.IntegrationTests", "Remotion\Data\DomainObjects.Web.IntegrationTests\Data.DomainObjects.Web.IntegrationTests.csproj", "{7A088A69-24BE-49C5-92CC-036C94D0E870}"
 EndProject
