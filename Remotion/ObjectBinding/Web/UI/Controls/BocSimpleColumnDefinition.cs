@@ -71,20 +71,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
           BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
 
-      string formatString = _formatString;
-      if (string.IsNullOrEmpty (formatString))
-      {
-        var lastProperty = result.ResultProperty as IBusinessObjectDateTimeProperty;
-        if (lastProperty != null)
-        {
-          if (lastProperty.Type == DateTimeType.Date)
-            formatString = "d";
-          else
-            formatString = "g";
-        }
-      }
-
-      return result.GetString (formatString);
+      return result.GetString (_formatString);
     }
 
     /// <summary>

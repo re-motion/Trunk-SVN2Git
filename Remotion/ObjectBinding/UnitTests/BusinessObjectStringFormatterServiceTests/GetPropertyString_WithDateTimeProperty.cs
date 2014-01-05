@@ -41,10 +41,11 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectStringFormatterServiceT
     }
 
     [Test]
-    public void Scalar_WithValue ()
+    public void Scalar_WithValu_AndDateTimeProperty ()
     {
+      Expect.Call (_mockProperty.Type).Return (DateTimeType.DateTime);
       Expect.Call (_mockProperty.IsList).Return (false);
-      Expect.Call (_mockBusinessObject.GetProperty (_mockProperty)).Return (new DateTime (2000, 1, 1));
+      Expect.Call (_mockBusinessObject.GetProperty (_mockProperty)).Return (new DateTime (2000, 4, 14, 3, 45, 10));
       _mockRepository.ReplayAll();
 
       using (new CultureScope (new CultureInfo ("de-de"), new CultureInfo ("de-de")))
@@ -52,7 +53,40 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectStringFormatterServiceT
         string actual = _stringFormatterService.GetPropertyString (_mockBusinessObject, _mockProperty, null);
 
         _mockRepository.VerifyAll();
-        Assert.That (actual, Is.EqualTo ("01.01.2000 00:00:00"));
+        Assert.That (actual, Is.EqualTo ("14.04.2000 03:45"));
+      }
+    }
+
+    [Test]
+    public void Scalar_WithValu_AndDateProperty ()
+    {
+      Expect.Call (_mockProperty.Type).Return (DateTimeType.Date);
+      Expect.Call (_mockProperty.IsList).Return (false);
+      Expect.Call (_mockBusinessObject.GetProperty (_mockProperty)).Return (new DateTime (2000, 6, 17, 1, 1, 1));
+      _mockRepository.ReplayAll();
+
+      using (new CultureScope (new CultureInfo ("de-de"), new CultureInfo ("de-de")))
+      {
+        string actual = _stringFormatterService.GetPropertyString (_mockBusinessObject, _mockProperty, null);
+
+        _mockRepository.VerifyAll();
+        Assert.That (actual, Is.EqualTo ("17.06.2000"));
+      }
+    }
+
+    [Test]
+    public void Scalar_WithValu_AndDateProperty_AndExplicitFormatString ()
+    {
+      Expect.Call (_mockProperty.IsList).Return (false);
+      Expect.Call (_mockBusinessObject.GetProperty (_mockProperty)).Return (new DateTime (2000, 6, 17, 1, 2, 3));
+      _mockRepository.ReplayAll();
+
+      using (new CultureScope (new CultureInfo ("de-de"), new CultureInfo ("de-de")))
+      {
+        string actual = _stringFormatterService.GetPropertyString (_mockBusinessObject, _mockProperty, "yyyy-dd-MM HH:mm:ss");
+
+        _mockRepository.VerifyAll();
+        Assert.That (actual, Is.EqualTo ("2000-17-06 01:02:03"));
       }
     }
 

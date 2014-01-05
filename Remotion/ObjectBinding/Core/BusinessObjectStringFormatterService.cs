@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.Text;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
@@ -100,6 +99,9 @@ namespace Remotion.ObjectBinding
     /// </exception>
     public string GetPropertyString (IBusinessObject businessObject, IBusinessObjectProperty property, string format)
     {
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+      ArgumentUtility.CheckNotNull ("property", property);
+      
       if (property.IsList)
       {
         Tuple<int, string> result = GetLineCountAndFormatString (format);
@@ -174,7 +176,7 @@ namespace Remotion.ObjectBinding
       if (property is IBusinessObjectBooleanProperty)
         return GetStringValueForBooleanProperty (value, (IBusinessObjectBooleanProperty) property);
       if (property is IBusinessObjectDateTimeProperty)
-        return GetStringValueForDateTimeProperty (value, format);
+        return GetStringValueForDateTimeProperty (value, (IBusinessObjectDateTimeProperty) property, format);
       if (property is IBusinessObjectEnumerationProperty)
         return GetStringValueForEnumerationProperty (value, (IBusinessObjectEnumerationProperty) property, businessObject);
       if (property is IBusinessObjectNumericProperty)
@@ -187,8 +189,16 @@ namespace Remotion.ObjectBinding
       return (value != null) ? value.ToString() : string.Empty;
     }
 
-    private string GetStringValueForDateTimeProperty (object value, string format)
+    private string GetStringValueForDateTimeProperty (object value, IBusinessObjectDateTimeProperty property, string format)
     {
+      if (string.IsNullOrEmpty (format))
+      {
+        if (property.Type == DateTimeType.Date)
+          format = "d";
+        else
+          format = "g";
+      }
+
       return GetStringValueForFormattableValue ((IFormattable) value, format);
     }
 
