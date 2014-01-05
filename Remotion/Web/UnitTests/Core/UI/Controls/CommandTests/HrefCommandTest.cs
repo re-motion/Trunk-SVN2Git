@@ -26,7 +26,6 @@ using Remotion.Web.Utilities;
 namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   [TestFixture]
-  [Ignore("TODO RM-5569")]
   public class HrefCommandTest : BaseTest
   {
     private CommandTestHelper _testHelper;

@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.Web;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Development.Web.UnitTesting.Configuration;
@@ -29,7 +30,6 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 {
 
 [TestFixture]
-[Ignore("TODO RM-5569")]
 public class WxeContextTest
 {
   private HttpContext _currentHttpContext;
@@ -47,7 +47,7 @@ public class WxeContextTest
     _currentHttpContext = WxeContextMock.CreateHttpContext (queryString);
 
     _functionType = typeof (TestFunction);
-    _functionTypeName = WebTypeUtility.GetQualifiedName (_functionType);
+    _functionTypeName = TypeUtility.GetPartialAssemblyQualifiedName (_functionType);
     _resource = "~/Test.wxe";
 
     UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (_functionType, _resource));

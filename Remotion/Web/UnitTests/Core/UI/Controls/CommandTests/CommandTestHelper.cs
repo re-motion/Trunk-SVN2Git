@@ -19,11 +19,11 @@ using System.Text;
 using System.Web;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Security;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
-using Remotion.Web.Utilities;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 
@@ -64,7 +64,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
       _httpContext.Response.ContentEncoding = Encoding.UTF8;
 
       _functionType = typeof (TestFunction);
-      _functionTypeName = WebTypeUtility.GetQualifiedName (_functionType);
+      _functionTypeName = TypeUtility.GetPartialAssemblyQualifiedName (_functionType);
 
       _mocks = new MockRepository();
       _mockWebSecurityAdapter = _mocks.StrictMock<IWebSecurityAdapter>();
