@@ -15,39 +15,26 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
-using Remotion.ServiceLocation;
-using Remotion.Web.Infrastructure;
+using System.ComponentModel;
 
-namespace Remotion.Web.UnitTests.Core.Infrastructure
+namespace Remotion.Utilities
 {
-  [TestFixture]
-  public class IHttpContextProviderTest
+  /// <summary>
+  /// Creates an <see cref="AdvancedEnumConverter"/> if the requested type is an enum.
+  /// </summary>
+  public class EnumTypeConverterFactory : ITypeConverterFactory
   {
-    private DefaultServiceLocator _serviceLocator;
-
-    [SetUp]
-    public void SetUp ()
+    public EnumTypeConverterFactory ()
     {
-      _serviceLocator = new DefaultServiceLocator();
     }
 
-    [Test]
-    public void GetInstance_Once ()
+    public TypeConverter CreateTypeConverterOrDefault (Type type)
     {
-      var instance = _serviceLocator.GetInstance<IHttpContextProvider>();
+      ArgumentUtility.CheckNotNull ("type", type);
 
-      Assert.That (instance, Is.Not.Null);
-      Assert.That (instance, Is.TypeOf (typeof (HttpContextProvider)));
-    }
-
-    [Test]
-    public void GetInstance_Twice_ReturnsSameInstance ()
-    {
-      var instance1 = _serviceLocator.GetInstance<IHttpContextProvider>();
-      var instance2 = _serviceLocator.GetInstance<IHttpContextProvider>();
-
-      Assert.That (instance1, Is.SameAs (instance2));
+      if ((Nullable.GetUnderlyingType (type) ?? type).IsEnum)
+        return new AdvancedEnumConverter (type);
+      return null;
     }
   }
 }

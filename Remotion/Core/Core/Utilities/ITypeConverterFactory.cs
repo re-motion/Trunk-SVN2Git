@@ -14,41 +14,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
-using NUnit.Framework;
+using System.ComponentModel;
+using JetBrains.Annotations;
 using Remotion.ServiceLocation;
-using Remotion.Utilities;
 
-namespace Remotion.UnitTests.Utilities
+namespace Remotion.Utilities
 {
-  [TestFixture]
-  public class ITypeConversionProviderTest
+  /// <summary>
+  /// Creates a <see cref="TypeConverter"/> if the type is supported by the factory.
+  /// </summary>
+  [ConcreteImplementation (
+      "Remotion.ExtensibleEnums.Infrastructure.ExtensibleEnumTypeConverterFactory, Remotion.ExtensibleEnums, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+      ignoreIfNotFound: true,
+      Lifetime = LifetimeKind.Singleton, Position = 2)]
+  [ConcreteImplementation (typeof (EnumTypeConverterFactory), Lifetime = LifetimeKind.Singleton, Position = 1)]
+  [ConcreteImplementation (typeof (AttributeBasedTypeConverterFactory), Lifetime = LifetimeKind.Singleton, Position = 0)]
+  public interface ITypeConverterFactory
   {
-    private DefaultServiceLocator _serviceLocator;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _serviceLocator = new DefaultServiceLocator();
-    }
-
-    [Test]
-    public void GetInstance_Once ()
-    {
-      var instance = _serviceLocator.GetInstance<ITypeConversionProvider>();
-
-      Assert.That (instance, Is.Not.Null);
-      Assert.That (instance, Is.TypeOf (typeof (TypeConversionProvider)));
-    }
-
-    [Test]
-    public void GetInstance_Twice_ReturnsSameInstance ()
-    {
-      var instance1 = _serviceLocator.GetInstance<ITypeConversionProvider>();
-      var instance2 = _serviceLocator.GetInstance<ITypeConversionProvider>();
-
-      Assert.That (instance1, Is.SameAs (instance2));
-    }
+    [CanBeNull]
+    TypeConverter CreateTypeConverterOrDefault ([NotNull]Type type);
   }
 }

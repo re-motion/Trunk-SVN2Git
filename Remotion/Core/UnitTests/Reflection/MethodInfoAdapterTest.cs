@@ -21,6 +21,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
 using Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter;
 using Remotion.Utilities;
@@ -542,7 +543,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void IsSupportedByTypeConversionProvider ()
     {
-      var typeConversionProvider = new TypeConversionProvider (Enumerable.Empty<TypeConversionProvider.ITypeConverterFactory>());
+      var typeConversionProvider = SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();
 
       Assert.That (typeConversionProvider.CanConvert (typeof (MethodInfoAdapter), typeof (MethodInfo)), Is.True);
     }

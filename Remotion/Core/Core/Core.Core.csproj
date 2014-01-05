@@ -313,9 +313,12 @@
     <Compile Include="SharedSource\ResharperAnnotations\ImplicitUseTargetFlags.cs" />
     <Compile Include="Utilities\AssertionException.cs" />
     <Compile Include="Utilities\Assertion.Partial.cs" />
+    <Compile Include="Utilities\AttributeBasedTypeConverterFactory.cs" />
+    <Compile Include="Utilities\EnumTypeConverterFactory.cs" />
     <Compile Include="Utilities\EqualityUtility.Partial.cs" />
     <Compile Include="Utilities\ExceptionUtility.Partial.cs" />
     <Compile Include="Utilities\ITypeConversionProvider.cs" />
+    <Compile Include="Utilities\ITypeConverterFactory.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparer.Partial.cs" />
     <Compile Include="Utilities\MemberInfoFromExpressionUtility.Partial.cs" />
     <Compile Include="Utilities\ReferenceEqualityComparer.Partial.cs" />

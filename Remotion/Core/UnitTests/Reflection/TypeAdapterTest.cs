@@ -22,6 +22,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -894,7 +895,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void IsSupportedByTypeConversionProvider ()
     {
-      var typeConversionProvider = new TypeConversionProvider (Enumerable.Empty<TypeConversionProvider.ITypeConverterFactory>());
+      var typeConversionProvider = SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();
 
       Assert.That (typeConversionProvider.CanConvert (typeof (TypeAdapter), typeof (Type)), Is.True);
     }

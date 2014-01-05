@@ -46,7 +46,7 @@ namespace Remotion.UnitTests.Utilities
     [SetUp]
     public void SetUp ()
     {
-      _provider = new StubTypeConversionProvider();
+      _provider = new StubTypeConversionProvider(SafeServiceLocator.Current.GetAllInstances<ITypeConverterFactory>());
     }
 
     [Test]
@@ -720,38 +720,24 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    public void GetTypeConverterByAttribute_ForInt32 ()
+    public void GetTypeConverterFromFactory_ForInt32 ()
     {
-      TypeConverter converter = _provider.GetTypeConverterByAttribute (_int32);
+      TypeConverter converter = _provider.GetTypeConverterFromFactory (_int32);
       Assert.That (converter, Is.Null, "TypeConverter is not null.");
     }
 
     [Test]
-    public void GetTypeConverterByAttribute_ForNullableInt32 ()
+    public void GetTypeConverterFromFactory_ForNullableInt32 ()
     {
-      TypeConverter converter = _provider.GetTypeConverterByAttribute (_nullableInt32);
-      Assert.That (converter, Is.Null, "TypeConverter is not null.");
-    }
-
-    [Test]
-    public void GetBasicTypeConverter_ForInt32 ()
-    {
-      TypeConverter converter = _provider.GetBasicTypeConverter (_int32);
-      Assert.That (converter, Is.Null, "TypeConverter is not null.");
-    }
-
-    [Test]
-    public void GetBasicTypeConverter_ForNullableInt32 ()
-    {
-      TypeConverter converter = _provider.GetBasicTypeConverter (_nullableInt32);
+      TypeConverter converter = _provider.GetTypeConverterFromFactory (_nullableInt32);
       Assert.That (converter, Is.Null);
     }
 
     [Test]
-    public void GetBasicTypeConverter_ForInt32Enum ()
+    public void GetTypeConverterFromFactory_ForInt32Enum ()
     {
-      TypeConverter converterFirstRun = _provider.GetBasicTypeConverter (_int32Enum);
-      TypeConverter converterSecondRun = _provider.GetBasicTypeConverter (_int32Enum);
+      TypeConverter converterFirstRun = _provider.GetTypeConverterFromFactory (_int32Enum);
+      TypeConverter converterSecondRun = _provider.GetTypeConverterFromFactory (_int32Enum);
       Assert.That (converterFirstRun, Is.Not.Null, "TypeConverter from first run is null.");
       Assert.That (converterSecondRun, Is.Not.Null, "TypeConverter from second run is null.");
       Assert.That (converterSecondRun, Is.SameAs (converterFirstRun));

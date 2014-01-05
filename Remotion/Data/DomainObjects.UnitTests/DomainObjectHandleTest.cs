@@ -229,7 +229,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
 
     private ITypeConversionProvider GetTypeConversionProvider ()
     {
-      return new TypeConversionProvider (Enumerable.Empty<TypeConversionProvider.ITypeConverterFactory>());
+      return SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();
     }
   }
 }

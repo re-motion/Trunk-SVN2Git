@@ -17,26 +17,28 @@
 
 using System;
 using System.ComponentModel;
-using Remotion.Utilities;
+using Remotion.Reflection.TypeDiscovery;
 
-namespace Remotion.ExtensibleEnums.Infrastructure
+namespace Remotion.Utilities
 {
   /// <summary>
-  /// Creates an <see cref="ExtensibleEnumConverter"/> if the requested type is an extensible enum.
+  /// Creates the <see cref="TypeConverter"/> specified by the <see cref="TypeConverterAttribute"/> if the requested type has the attribute applied.
   /// </summary>
-  public class ExtensibleEnumTypeConverterFactory : ITypeConverterFactory
+  public class AttributeBasedTypeConverterFactory : ITypeConverterFactory
   {
-    public ExtensibleEnumTypeConverterFactory ()
+    public AttributeBasedTypeConverterFactory ()
     {
     }
 
     public TypeConverter CreateTypeConverterOrDefault (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
+      TypeConverterAttribute typeConverter = AttributeUtility.GetCustomAttribute<TypeConverterAttribute> (type, true);
+      if (typeConverter == null)
+        return null;
 
-      if (ExtensibleEnumUtility.IsExtensibleEnumType (type))
-        return new ExtensibleEnumConverter (type);
-      return null;
+      var typeConverterType = ContextAwareTypeDiscoveryUtility.GetType (typeConverter.ConverterTypeName, true);
+      return (TypeConverter) Activator.CreateInstance (typeConverterType);
     }
   }
 }

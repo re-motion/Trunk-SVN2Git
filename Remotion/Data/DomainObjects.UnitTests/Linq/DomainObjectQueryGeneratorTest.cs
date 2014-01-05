@@ -35,6 +35,7 @@ using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.EagerFetching;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -43,7 +44,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
   public class DomainObjectQueryGeneratorTest : StandardMappingTest
   {
     private ISqlQueryGenerator _sqlQueryGeneratorMock;
-    private TypeConversionProvider _typeConversionProvider;
+    private ITypeConversionProvider _typeConversionProvider;
     private IStorageTypeInformationProvider _storageTypeInformationProviderStub;
 
     private DomainObjectQueryGenerator _generator;
@@ -56,7 +57,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       base.SetUp();
 
       _sqlQueryGeneratorMock = MockRepository.GenerateStrictMock<ISqlQueryGenerator> ();
-      _typeConversionProvider = new TypeConversionProvider (Enumerable.Empty<TypeConversionProvider.ITypeConverterFactory>());
+      _typeConversionProvider = SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();
       _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider>();
 
       _generator = new DomainObjectQueryGenerator (

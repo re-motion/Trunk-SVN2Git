@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
@@ -32,19 +31,6 @@ namespace Remotion.Utilities
   /// </summary>
   public class TypeConversionProvider : ITypeConversionProvider
   {
-    /// <summary>
-    /// Creates a <see cref="TypeConverter"/> if the type is supported by the factory.
-    /// </summary>
-    [ConcreteImplementation (
-        "Remotion.ExtensibleEnums.Infrastructure.ExtensibleEnumTypeConverterFactory, Remotion.ExtensibleEnums, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-        ignoreIfNotFound: true,
-        Lifetime = LifetimeKind.Singleton)]
-    public interface ITypeConverterFactory
-    {
-      [CanBeNull]
-      TypeConverter CreateTypeConverterOrDefault ([NotNull]Type type);
-    }
-
     private readonly LockingDataStoreDecorator<Type, TypeConverter> _typeConverters = DataStoreFactory.CreateWithLocking<Type, TypeConverter>();
 
     /// <summary> Creates a new instace of the <see cref="TypeConversionProvider"/> type. </summary>
@@ -92,9 +78,9 @@ namespace Remotion.Utilities
       if (!additionalTypeConverterResult.Equals (TypeConverterResult.Empty))
         return additionalTypeConverterResult;
 
-      TypeConverterResult basicTypeConverterResult = GetBasicTypeConverter (sourceType, destinationType);
-      if (!basicTypeConverterResult.Equals (TypeConverterResult.Empty))
-        return basicTypeConverterResult;
+      TypeConverterResult typeConverterResult = GetTypeConverterFromFactory (sourceType, destinationType);
+      if (!typeConverterResult.Equals (TypeConverterResult.Empty))
+        return typeConverterResult;
 
       TypeConverterResult stringConverterResult = GetStringConverter (sourceType, destinationType);
       if (!stringConverterResult.Equals (TypeConverterResult.Empty))
@@ -111,7 +97,7 @@ namespace Remotion.Utilities
       if (converter != null)
         return converter;
 
-      converter = GetBasicTypeConverter (type);
+      converter = GetTypeConverterFromFactory (type);
       if (converter != null)
         return converter;
 
@@ -237,37 +223,30 @@ namespace Remotion.Utilities
       return null;
     }
 
-    protected TypeConverterResult GetBasicTypeConverter (Type sourceType, Type destinationType)
+    protected TypeConverterResult GetTypeConverterFromFactory (Type sourceType, Type destinationType)
     {
       ArgumentUtility.CheckNotNull ("sourceType", sourceType);
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 
-      TypeConverter sourceTypeConverter = GetBasicTypeConverter (sourceType);
+      TypeConverter sourceTypeConverter = GetTypeConverterFromFactory (sourceType);
       if (sourceTypeConverter != null && sourceTypeConverter.CanConvertTo (destinationType))
         return new TypeConverterResult (TypeConverterType.SourceTypeConverter, sourceTypeConverter);
 
-      TypeConverter destinationTypeConverter = GetBasicTypeConverter (destinationType);
+      TypeConverter destinationTypeConverter = GetTypeConverterFromFactory (destinationType);
       if (destinationTypeConverter != null && destinationTypeConverter.CanConvertFrom (sourceType))
         return new TypeConverterResult (TypeConverterType.DestinationTypeConverter, destinationTypeConverter);
 
       return TypeConverterResult.Empty;
     }
 
-    protected TypeConverter GetBasicTypeConverter (Type type)
+    protected TypeConverter GetTypeConverterFromFactory (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
       TypeConverter converter = GetTypeConverterFromCache (type);
       if (converter == null && !HasTypeInCache (type))
       {
-        converter = GetTypeConverterByAttribute (type);
-
-        if (converter == null && (Nullable.GetUnderlyingType (type) ?? type).IsEnum)
-          converter = new AdvancedEnumConverter (type);
-
-        if (converter == null)
-          converter = _typeConverterFactories.Select (f => f.CreateTypeConverterOrDefault (type)).FirstOrDefault (c => c != null);
-
+        converter = _typeConverterFactories.Select (f => f.CreateTypeConverterOrDefault (type)).FirstOrDefault (c => c != null);
         AddTypeConverterToCache (type, converter);
       }
       return converter;
@@ -285,19 +264,6 @@ namespace Remotion.Utilities
         return new TypeConverterResult (TypeConverterType.DestinationTypeConverter, _stringConverter);
 
       return TypeConverterResult.Empty;
-    }
-
-    protected TypeConverter GetTypeConverterByAttribute (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      TypeConverterAttribute typeConverter = AttributeUtility.GetCustomAttribute<TypeConverterAttribute> (type, true);
-      if (typeConverter != null)
-      {
-        Type typeConverterType = ContextAwareTypeDiscoveryUtility.GetType (typeConverter.ConverterTypeName, true);
-        return (TypeConverter) Activator.CreateInstance (typeConverterType);
-      }
-      return null;
     }
 
     protected void AddTypeConverterToCache (Type type, TypeConverter converter)

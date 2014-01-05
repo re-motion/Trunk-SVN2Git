@@ -504,6 +504,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\CustomAttributeUtilityTestDomain\ComplexAttribute.cs" />
+    <Compile Include="Utilities\AttributeBasedTypeConverterFactoryTest.cs" />
+    <Compile Include="Utilities\EnumTypeConverterFactoryTest.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt16Enum.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt32Enum.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt64Enum.cs" />
@@ -518,6 +520,7 @@
     <Compile Include="Utilities\FileUtilityTest.cs" />
     <Compile Include="Utilities\InvertedComparerDecoratorTest.cs" />
     <Compile Include="Utilities\ITypeConversionProviderTest.cs" />
+    <Compile Include="Utilities\ITypeConverterFactoryTest.cs" />
     <Compile Include="Utilities\NameValueCollectionUtilityTest.cs">
       <SubType>Code</SubType>
     </Compile>
