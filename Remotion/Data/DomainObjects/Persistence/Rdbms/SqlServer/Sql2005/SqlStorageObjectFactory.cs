@@ -35,6 +35,7 @@ using Remotion.Linq;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Mixins;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.Utilities;
 
@@ -45,8 +46,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   /// </summary>
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
+    private readonly ITypeConversionProvider _typeConversionProvider;
+
     public SqlStorageObjectFactory ()
     {
+      _typeConversionProvider = SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();
     }
 
     public StorageProvider CreateStorageProvider (StorageProviderDefinition storageProviderDefinition, IPersistenceExtension persistenceExtension)
@@ -117,10 +121,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var storageTypeInformationProvider = CreateStorageTypeInformationProvider (rdmsStorageProviderDefinition);
       var sqlQueryGenerator = CreateSqlQueryGenerator (rdmsStorageProviderDefinition, methodCallTransformerProvider, resultOperatorHandlerRegistry);
-      var typeConversionProvider = TypeConversionProvider.Create();
 
       return ObjectFactory.Create<DomainObjectQueryGenerator> (
-          ParamList.Create (sqlQueryGenerator, typeConversionProvider, storageTypeInformationProvider, mappingConfiguration));
+          ParamList.Create (sqlQueryGenerator, _typeConversionProvider, storageTypeInformationProvider, mappingConfiguration));
     }
 
 

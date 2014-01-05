@@ -21,6 +21,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
@@ -32,6 +33,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   [Serializable]
   public class WxeVariablesContainer
   {
+    private static readonly ITypeConversionProvider s_typeConversionProvider = SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();
     private static readonly LockingCacheDecorator<Type, WxeParameterDeclaration[]> s_parameterDeclarations =
         CacheFactory.CreateWithLocking<Type, WxeParameterDeclaration[]>();
 
@@ -127,7 +129,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
             if (paramDecl.Type == typeof (string)) // string constant
               arguments.Add (item.Value);
             else // parse constant
-              arguments.Add (TypeConversionProvider.Current.Convert (null, culture, typeof (string), paramDecl.Type, item.Value));
+              arguments.Add (s_typeConversionProvider.Convert (null, culture, typeof (string), paramDecl.Type, item.Value));
           }
           else
           {
@@ -136,7 +138,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
             else if (string.CompareOrdinal (item.Value, "false") == 0) // false
               arguments.Add (false);
             else if (item.Value.Length > 0 && char.IsDigit (item.Value[0])) // starts with digit -> parse constant
-              arguments.Add (TypeConversionProvider.Current.Convert (null, culture, typeof (string), paramDecl.Type, item.Value));
+              arguments.Add (s_typeConversionProvider.Convert (null, culture, typeof (string), paramDecl.Type, item.Value));
             else // variable name
               arguments.Add (new WxeVariableReference (item.Value));
           }
@@ -243,8 +245,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         {
           try
           {
-            _variables[paramDeclaration.Name] = TypeConversionProvider.Current.Convert (
-                null, CultureInfo.InvariantCulture, typeof (string), paramDeclaration.Type, strval);
+            _variables[paramDeclaration.Name] = 
+                s_typeConversionProvider.Convert (null, CultureInfo.InvariantCulture, typeof (string), paramDeclaration.Type, strval);
           }
           catch (Exception e)
           {

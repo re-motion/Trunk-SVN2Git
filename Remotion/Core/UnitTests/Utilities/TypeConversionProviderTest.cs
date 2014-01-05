@@ -17,6 +17,7 @@
 using System;
 using System.ComponentModel;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities
@@ -46,24 +47,13 @@ namespace Remotion.UnitTests.Utilities
     public void SetUp ()
     {
       _provider = new StubTypeConversionProvider();
-
-      StubTypeConversionProvider.ClearCache();
     }
 
     [Test]
-    public void Create ()
-    {
-      Assert.That (TypeConversionProvider.Create(), Is.Not.Null);
-    }
-
-    [Test]
+    [Obsolete]
     public void TestCurrent ()
     {
-      Assert.That (TypeConversionProvider.Current, Is.Not.Null);
-      TypeConversionProvider provider = TypeConversionProvider.Create();
-      TypeConversionProvider.SetCurrent (provider);
-      Assert.That (TypeConversionProvider.Current, Is.Not.Null);
-      Assert.That (TypeConversionProvider.Current, Is.SameAs (provider));
+      Assert.That (TypeConversionProvider.Current, Is.SameAs (SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>()));
     }
 
     [Test]

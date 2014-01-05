@@ -33,8 +33,6 @@ namespace Remotion.Data.DomainObjects
   /// </summary>
   public static class ReflectionUtility
   {
-    private static readonly TypeConversionProvider s_typeConversionProvider = TypeConversionProvider.Create();
-
     private static readonly Type s_stringPropertyValueType = typeof (string);
     private static readonly Type s_binaryPropertyValueType = typeof (byte[]);
     private static readonly Type s_typePropertyValueType = typeof (Type);

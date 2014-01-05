@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection.Implementation;
 using Remotion.Utilities;
 
@@ -30,9 +31,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   public class InterceptedPropertyCollectorAdapter : IInterceptedPropertyFinder
   {
     private static readonly IRelatedMethodFinder s_relatedMethodFinder = new RelatedMethodFinder();
+    private readonly ITypeConversionProvider _typeConversionProvider;
 
     public InterceptedPropertyCollectorAdapter ()
     {
+      _typeConversionProvider = SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();
     }
 
     public IEnumerable<IAccessorInterceptor> GetPropertyInterceptors (ClassDefinition classDefinition, Type concreteBaseType)
@@ -40,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("concreteBaseType", concreteBaseType, typeof (DomainObject));
 
-      var properties = new InterceptedPropertyCollector (classDefinition, TypeConversionProvider.Current).GetProperties();
+      var properties = new InterceptedPropertyCollector (classDefinition, _typeConversionProvider).GetProperties();
 
       var interceptors = new List<IAccessorInterceptor>();
       foreach (var propertyEntry in properties)

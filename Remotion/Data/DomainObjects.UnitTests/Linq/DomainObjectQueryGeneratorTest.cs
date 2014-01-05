@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       base.SetUp();
 
       _sqlQueryGeneratorMock = MockRepository.GenerateStrictMock<ISqlQueryGenerator> ();
-      _typeConversionProvider = TypeConversionProvider.Create();
+      _typeConversionProvider = new TypeConversionProvider (Enumerable.Empty<TypeConversionProvider.ITypeConverterFactory>());
       _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider>();
 
       _generator = new DomainObjectQueryGenerator (

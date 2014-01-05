@@ -17,6 +17,7 @@
 using System;
 using System.Globalization;
 using Remotion.Collections;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
@@ -25,6 +26,7 @@ namespace Remotion.Web.ExecutionEngine
 public class WxeParameterConverter
 {
   private WxeParameterDeclaration _parameter;
+  private static readonly ITypeConversionProvider s_typeConversionProvider= SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();
 
   public WxeParameterConverter (WxeParameterDeclaration parameter)
   {
@@ -139,11 +141,10 @@ public class WxeParameterConverter
     Type destinationType = typeof (string);
 
     //TODO: #if DEBUG
-    if (! TypeConversionProvider.Current.CanConvert (sourceType, destinationType))
+    if (! s_typeConversionProvider.CanConvert (sourceType, destinationType))
       return value;
 
-    return TypeConversionProvider.Current.Convert (
-        null, CultureInfo.InvariantCulture, sourceType, destinationType, value);
+    return s_typeConversionProvider.Convert (null, CultureInfo.InvariantCulture, sourceType, destinationType, value);
   }
 
   protected void CheckForRequiredOutParameter ()

@@ -517,6 +517,7 @@
     </Compile>
     <Compile Include="Utilities\FileUtilityTest.cs" />
     <Compile Include="Utilities\InvertedComparerDecoratorTest.cs" />
+    <Compile Include="Utilities\ITypeConversionProviderTest.cs" />
     <Compile Include="Utilities\NameValueCollectionUtilityTest.cs">
       <SubType>Code</SubType>
     </Compile>

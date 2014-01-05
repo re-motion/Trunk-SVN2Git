@@ -46,9 +46,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
     private readonly HashSet<Tuple<PropertyInfo, string>> _properties = new HashSet<Tuple<PropertyInfo, string>> ();
     private readonly HashSet<MethodInfo> _validatedMethods = new HashSet<MethodInfo> ();
     private readonly ClassDefinition _classDefinition;
-    private readonly TypeConversionProvider _typeConversionProvider;
+    private readonly ITypeConversionProvider _typeConversionProvider;
 
-    public InterceptedPropertyCollector (ClassDefinition classDefinition, TypeConversionProvider typeConversionProvider)
+    public InterceptedPropertyCollector (ClassDefinition classDefinition, ITypeConversionProvider typeConversionProvider)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);

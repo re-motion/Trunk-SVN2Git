@@ -15,12 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.UnitTests;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.FunctionalProgramming;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -196,8 +199,8 @@ namespace Remotion.Data.DomainObjects.UnitTests
     [Test]
     public void TypeProvider_OnInterface ()
     {
-      Assert.That (TypeConversionProvider.Current.CanConvert (typeof (IDomainObjectHandle<Order>), typeof (string)), Is.True);
-      Assert.That (TypeConversionProvider.Current.CanConvert (typeof (string), typeof (IDomainObjectHandle<Order>)), Is.True);
+      Assert.That (GetTypeConversionProvider().CanConvert (typeof (IDomainObjectHandle<Order>), typeof (string)), Is.True);
+      Assert.That (GetTypeConversionProvider().CanConvert (typeof (string), typeof (IDomainObjectHandle<Order>)), Is.True);
     }
 
     [Test]
@@ -206,8 +209,8 @@ namespace Remotion.Data.DomainObjects.UnitTests
       // Using the DomainObjectHandle<T> class in APIs is not recommended, IDomainObjectHandle<T> should be used instead.
       // To get a type converter, the source type should always be explicitly given (as IDomainObjectHandle<T>), not inferred via value.GetType().
       // Therefore, we don't need a TypeConverter for DomainObjectHandle<T>.
-      Assert.That (TypeConversionProvider.Current.CanConvert (typeof (DomainObjectHandle<Order>), typeof (string)), Is.False);
-      Assert.That (TypeConversionProvider.Current.CanConvert (typeof (string), typeof (DomainObjectHandle<Order>)), Is.False);
+      Assert.That (GetTypeConversionProvider().CanConvert (typeof (DomainObjectHandle<Order>), typeof (string)), Is.False);
+      Assert.That (GetTypeConversionProvider().CanConvert (typeof (string), typeof (DomainObjectHandle<Order>)), Is.False);
     }
 
     [Test]
@@ -222,6 +225,11 @@ namespace Remotion.Data.DomainObjects.UnitTests
       // Using the DomainObjectHandle<T> class in APIs is not recommended, IDomainObjectHandle<T> should be used instead.
       // Therefore, we don't need the handle attribute on DomainObjectHandle<T>.
       Assert.That (typeof (DomainObjectHandle<>).IsDefined (typeof (DomainObjectHandleAttribute), false), Is.False);
+    }
+
+    private ITypeConversionProvider GetTypeConversionProvider ()
+    {
+      return new TypeConversionProvider (Enumerable.Empty<TypeConversionProvider.ITypeConverterFactory>());
     }
   }
 }

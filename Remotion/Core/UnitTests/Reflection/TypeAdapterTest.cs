@@ -894,7 +894,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void IsSupportedByTypeConversionProvider ()
     {
-      var typeConversionProvider = TypeConversionProvider.Create ();
+      var typeConversionProvider = new TypeConversionProvider (Enumerable.Empty<TypeConversionProvider.ITypeConverterFactory>());
 
       Assert.That (typeConversionProvider.CanConvert (typeof (TypeAdapter), typeof (Type)), Is.True);
     }

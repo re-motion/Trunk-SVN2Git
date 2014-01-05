@@ -18,9 +18,8 @@
 using System;
 using System.ComponentModel;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums.UnitTests.TestDomain;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums.UnitTests
@@ -29,17 +28,12 @@ namespace Remotion.ExtensibleEnums.UnitTests
   public class TypeConversionProviderTest
   {
     private readonly Type _string = typeof (string);
-    private TypeConversionProvider _provider;
+    private ITypeConversionProvider _provider;
 
     [SetUp]
     public void SetUp ()
     {
-      _provider = TypeConversionProvider.Create();
-
-        var cache =
-            (LockingDataStoreDecorator<Type, TypeConverter>)
-                PrivateInvoke.GetNonPublicStaticField (typeof (TypeConversionProvider), "s_typeConverters");
-        cache.Clear();
+      _provider = SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();
     }
 
     [Test]

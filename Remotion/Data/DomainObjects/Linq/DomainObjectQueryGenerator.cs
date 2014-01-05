@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
@@ -43,13 +42,13 @@ namespace Remotion.Data.DomainObjects.Linq
   public class DomainObjectQueryGenerator : IDomainObjectQueryGenerator
   {
     private readonly ISqlQueryGenerator _sqlQueryGenerator;
-    private readonly TypeConversionProvider _typeConversionProvider;
+    private readonly ITypeConversionProvider _typeConversionProvider;
     private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
     private readonly IMappingConfiguration _mappingConfiguration;
 
     public DomainObjectQueryGenerator (
         ISqlQueryGenerator sqlQueryGenerator,
-        TypeConversionProvider typeConversionProvider,
+        ITypeConversionProvider typeConversionProvider,
         IStorageTypeInformationProvider storageTypeInformationProvider, 
         IMappingConfiguration mappingConfiguration)
     {
@@ -69,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Linq
       get { return _sqlQueryGenerator; }
     }
 
-    public TypeConversionProvider TypeConversionProvider
+    public ITypeConversionProvider TypeConversionProvider
     {
       get { return _typeConversionProvider; }
     }
