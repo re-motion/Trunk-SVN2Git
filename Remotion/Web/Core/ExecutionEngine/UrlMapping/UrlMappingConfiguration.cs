@@ -151,7 +151,7 @@ public class UrlMappingEntry
     set
     {
       ArgumentUtility.CheckNotNullOrEmpty ("FunctionTypeName", value);
-      FunctionType = WebTypeUtility.GetType (value, true, true);
+      FunctionType = WebTypeUtility.GetType (value, true);
     }
   }
 
@@ -294,7 +294,7 @@ public class UrlMappingCollection: CollectionBase
   {
     if (string.IsNullOrEmpty (typeName))
       return null;
-    Type type = WebTypeUtility.GetType (typeName, true, true);
+    Type type = WebTypeUtility.GetType (typeName, true);
     return FindResource (type);
   }
 

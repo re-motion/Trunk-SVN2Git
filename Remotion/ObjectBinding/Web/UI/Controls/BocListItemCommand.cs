@@ -253,7 +253,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (_commandState == null && !string.IsNullOrEmpty (_commandStateType))
         {
-          Type type = WebTypeUtility.GetType (_commandStateType, true, false);
+          Type type = WebTypeUtility.GetType (_commandStateType, true);
           _commandState = (IBocListItemCommandState) Activator.CreateInstance (type, null);
         }
         return _commandState;

@@ -173,8 +173,10 @@
     <Compile Include="Core\Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Core\Context\SafeContextWebIntegrationTest.cs" />
     <Compile Include="Core\ExecutionEngine\WxePageTests\InfrastructureExceptionHandling_WxePageTest.cs" />
+    <Compile Include="Core\Infrastructure\IBuildManagerTest.cs" />
     <Compile Include="Core\Infrastructure\IHttpContextProviderTest.cs" />
     <Compile Include="Core\Infrastructure\IInfrastructureResourceUrlFactoryTest.cs" />
+    <Compile Include="Core\Infrastructure\NonHostedBuildManagerTest.cs" />
     <Compile Include="Core\IResourceUrlFactoryTest.cs" />
     <Compile Include="Core\Resources\IResourcePathBuilderTest.cs" />
     <Compile Include="Core\Resources\ResourcePathBuilderTest.cs" />

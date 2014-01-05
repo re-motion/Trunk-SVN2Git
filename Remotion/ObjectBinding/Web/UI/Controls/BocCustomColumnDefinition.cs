@@ -74,7 +74,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                     ItemID,
                     OwnerControl.ID));
           }
-          Type type = WebTypeUtility.GetType (_customCellType, true, false);
+          Type type = WebTypeUtility.GetType (_customCellType, true);
           _customCell = (BocCustomColumnDefinitionCell) Activator.CreateInstance (type);
         }
         return _customCell;

@@ -73,6 +73,9 @@ namespace Remotion.Web.Services
     {
       var compiledType = _buildManager.GetCompiledType (virtualPath);
 
+      if (compiledType == null)
+        throw new InvalidOperationException (string.Format ("Web service '{0}' could not be compiled.", virtualPath));
+
       if (!typeof (T).IsAssignableFrom (compiledType))
       {
         var message = typeof (T).IsInterface

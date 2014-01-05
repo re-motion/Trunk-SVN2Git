@@ -96,7 +96,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceFactoryTests
 
       Assert.That (
           () => _webServiceFactory.CreateScriptService<IInvalidInterface> ("~/VirtualServicePath"),
-          Throws.TypeOf<ArgumentException>().And.Message.EqualTo (
+          Throws.ArgumentException.And.Message.EqualTo (
               "Web service '~/VirtualServicePath' does not implement mandatory interface "
               + "'Remotion.Web.UnitTests.Core.Services.WebServiceFactoryTests.CreateScriptService+IInvalidInterface'."));
     }
@@ -108,7 +108,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceFactoryTests
 
       Assert.That (
           () => _webServiceFactory.CreateScriptService<InvalidBaseType> ("~/VirtualServicePath"),
-          Throws.TypeOf<ArgumentException>().And.Message.EqualTo (
+          Throws.ArgumentException.And.Message.EqualTo (
               "Web service '~/VirtualServicePath' is not based on type "
               + "'Remotion.Web.UnitTests.Core.Services.WebServiceFactoryTests.CreateScriptService+InvalidBaseType'."));
     }
@@ -120,8 +120,18 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceFactoryTests
 
       Assert.That (
           () => _webServiceFactory.CreateScriptService<IInvalidScriptServiceWithMissingScriptMethodAttribute> ("~/VirtualServicePath"),
-          Throws.TypeOf<ArgumentException>().And.Message.ContainsSubstring (
+          Throws.ArgumentException.And.Message.ContainsSubstring (
               " does not have the 'System.Web.Script.Services.ScriptMethodAttribute' applied."));
+    }
+
+    [Test]
+    public void Test_VirtualPathCannotBeCompiled ()
+    {
+      _buildManagerStub.Stub (stub => stub.GetCompiledType ("~/VirtualServicePath")).Return (null);
+
+      Assert.That (
+          () => _webServiceFactory.CreateWebService<IInvalidInterface> ("~/VirtualServicePath"),
+          Throws.InvalidOperationException.And.Message.EqualTo ("Web service '~/VirtualServicePath' could not be compiled."));
     }
   }
 }

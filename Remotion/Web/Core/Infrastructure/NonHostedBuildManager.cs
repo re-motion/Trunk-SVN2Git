@@ -17,52 +17,36 @@
 
 using System;
 using System.Collections;
-using System.Web;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Infrastructure
 {
   /// <summary>
-  /// Implements the <see cref="IBuildManager"/> interface and delegates calls to <see cref="IISBuildManager"/> or <see cref="NonHostedBuildManager"/>,
-  /// depending on whether a hosted environment is detected.
+  /// Implementation of <see cref="IBuildManager"/> intended for use 
+  /// when the application code is not running in a hosted environment, e.g. during Unit Testing.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  public class BuildManagerWrapper : IBuildManager
+  public class NonHostedBuildManager : IBuildManager
   {
-    private readonly IBuildManager _innerBuildManager;
-
-    public BuildManagerWrapper ()
+    public NonHostedBuildManager ()
     {
-      if (IsUsingWebServer())
-        _innerBuildManager = new IISBuildManager();
-      else
-        _innerBuildManager = new NonHostedBuildManager();
     }
 
     public Type GetType (string typeName, bool throwOnError, bool ignoreCase)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
-      return _innerBuildManager.GetType (typeName, throwOnError, ignoreCase);
+
+      return Type.GetType (typeName, throwOnError: throwOnError, ignoreCase: ignoreCase);
     }
 
     public Type GetCompiledType (string virtualPath)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("virtualPath", virtualPath);
-      return _innerBuildManager.GetCompiledType (virtualPath);
+      return null;
     }
 
     public IList CodeAssemblies
     {
-      get { return _innerBuildManager.CodeAssemblies; }
-    }
-
-    private bool IsUsingWebServer ()
-    {
-      if (HttpRuntime.IISVersion != null)
-        return true;
-      if (HttpRuntime.AppDomainId != null)
-        return true;
-      return false;
+      get { return null; }
     }
   }
 }

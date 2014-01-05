@@ -97,7 +97,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceFactoryTests
 
       Assert.That (
           () => _webServiceFactory.CreateJsonService<IInvalidInterface> ("~/VirtualServicePath"),
-          Throws.TypeOf<ArgumentException>().And.Message.EqualTo (
+          Throws.ArgumentException.And.Message.EqualTo (
               "Web service '~/VirtualServicePath' does not implement mandatory interface "
               + "'Remotion.Web.UnitTests.Core.Services.WebServiceFactoryTests.CreateJsonService+IInvalidInterface'."));
     }
@@ -109,7 +109,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceFactoryTests
 
       Assert.That (
           () => _webServiceFactory.CreateJsonService<InvalidBaseType> ("~/VirtualServicePath"),
-          Throws.TypeOf<ArgumentException>().And.Message.EqualTo (
+          Throws.ArgumentException.And.Message.EqualTo (
               "Web service '~/VirtualServicePath' is not based on type "
               + "'Remotion.Web.UnitTests.Core.Services.WebServiceFactoryTests.CreateJsonService+InvalidBaseType'."));
     }
@@ -121,8 +121,18 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceFactoryTests
 
       Assert.That (
           () => _webServiceFactory.CreateJsonService<IInvalidJsonServiceWithWrongResponseFormat> ("~/VirtualServicePath"),
-          Throws.TypeOf<ArgumentException>().And.Message.ContainsSubstring (
+          Throws.ArgumentException.And.Message.ContainsSubstring (
               " does not have the ResponseFormat property of the ScriptMethodAttribute set to Json."));
+    }
+
+    [Test]
+    public void Test_VirtualPathCannotBeCompiled ()
+    {
+      _buildManagerStub.Stub (stub => stub.GetCompiledType ("~/VirtualServicePath")).Return (null);
+
+      Assert.That (
+          () => _webServiceFactory.CreateWebService<IInvalidInterface> ("~/VirtualServicePath"),
+          Throws.InvalidOperationException.And.Message.EqualTo ("Web service '~/VirtualServicePath' could not be compiled."));
     }
   }
 }

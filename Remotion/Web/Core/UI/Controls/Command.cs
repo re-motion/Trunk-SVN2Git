@@ -280,7 +280,7 @@ namespace Remotion.Web.UI.Controls
 
         Type functionType = null;
         if (hasTypeName)
-          functionType = WebTypeUtility.GetType (_typeName, true, false);
+          functionType = WebTypeUtility.GetType (_typeName, true);
 
         if (hasMapping)
         {

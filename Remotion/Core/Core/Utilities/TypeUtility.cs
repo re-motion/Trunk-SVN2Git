@@ -18,6 +18,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Text;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Reflection.TypeDiscovery;
 
@@ -151,6 +152,7 @@ namespace Remotion.Utilities
     /// This method uses <see cref="ContextAwareTypeDiscoveryUtility"/>. By default, it will search all assemblies for the requested type.
     /// In the designer context, <see cref="IDesignerHost"/> is used for the lookup.
     /// </remarks>
+    [CanBeNull]
     public static Type GetType (string abbreviatedTypeName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
@@ -164,6 +166,7 @@ namespace Remotion.Utilities
     /// This method uses <see cref="ContextAwareTypeDiscoveryUtility"/>. By default, it will search all assemblies for the requested type.
     /// In the designer context, <see cref="IDesignerHost"/> is used for the lookup.
     /// </remarks>
+    [CanBeNull]
     public static Type GetType (string abbreviatedTypeName, bool throwOnError)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
@@ -176,6 +179,7 @@ namespace Remotion.Utilities
     [Obsolete (
         "GetType is now designer-aware, and the designer does not support case-insensitive type lookup. If type lookup with case insensitivity "
         + "is required, use Type.GetType. To use abbreviated type names for the lookup, use ParseAbbreviatedTypeName.", true)]
+    [CanBeNull]
     public static Type GetType (string abbreviatedTypeName, bool throwOnError, bool ignoreCase)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);

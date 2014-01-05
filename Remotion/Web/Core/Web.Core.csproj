@@ -149,6 +149,8 @@
     <Compile Include="Infrastructure\HttpContextProvider.cs" />
     <Compile Include="Infrastructure\IBuildManager.cs" />
     <Compile Include="Infrastructure\IHttpContextProvider.cs" />
+    <Compile Include="Infrastructure\IISBuildManager.cs" />
+    <Compile Include="Infrastructure\NonHostedBuildManager.cs" />
     <Compile Include="Resources\IResourcePathBuilder.cs" />
     <Compile Include="Resources\ResourcePathBuilder.cs" />
     <Compile Include="Resources\ResourcePathBuilderBase.cs" />

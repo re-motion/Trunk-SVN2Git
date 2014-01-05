@@ -14,55 +14,39 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 using System.Collections;
-using System.Web;
+using System.Web.Compilation;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Infrastructure
 {
   /// <summary>
-  /// Implements the <see cref="IBuildManager"/> interface and delegates calls to <see cref="IISBuildManager"/> or <see cref="NonHostedBuildManager"/>,
-  /// depending on whether a hosted environment is detected.
+  /// Implementation of <see cref="IBuildManager"/> intended to be used when the code is running as an application in <b>IIS</b> 
+  /// or the Visual Studio development web server (Cassini). Calls are delegated to <see cref="BuildManager"/>.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  public class BuildManagerWrapper : IBuildManager
+  public class IISBuildManager : IBuildManager
   {
-    private readonly IBuildManager _innerBuildManager;
-
-    public BuildManagerWrapper ()
+    public IISBuildManager ()
     {
-      if (IsUsingWebServer())
-        _innerBuildManager = new IISBuildManager();
-      else
-        _innerBuildManager = new NonHostedBuildManager();
     }
 
     public Type GetType (string typeName, bool throwOnError, bool ignoreCase)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
-      return _innerBuildManager.GetType (typeName, throwOnError, ignoreCase);
+      return BuildManager.GetType (typeName, throwOnError: throwOnError, ignoreCase: ignoreCase);
     }
 
     public Type GetCompiledType (string virtualPath)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("virtualPath", virtualPath);
-      return _innerBuildManager.GetCompiledType (virtualPath);
+      return BuildManager.GetCompiledType (virtualPath);
     }
 
     public IList CodeAssemblies
     {
-      get { return _innerBuildManager.CodeAssemblies; }
-    }
-
-    private bool IsUsingWebServer ()
-    {
-      if (HttpRuntime.IISVersion != null)
-        return true;
-      if (HttpRuntime.AppDomainId != null)
-        return true;
-      return false;
+      get { return BuildManager.CodeAssemblies; }
     }
   }
 }

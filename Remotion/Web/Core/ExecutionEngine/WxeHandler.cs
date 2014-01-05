@@ -209,7 +209,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
       try
       {
-        var type = WebTypeUtility.GetType (typeName, true, true);
+        var type = WebTypeUtility.GetType (typeName, true, ignoreCase : true);
         if (!typeof (WxeFunction).IsAssignableFrom (type))
         {
           throw new WxeException (
