@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.UnitTests.Reflection
+namespace Remotion.Extensions.UnitTests.Reflection
 {
   [TestFixture]
   public class DelegateFactoryTest

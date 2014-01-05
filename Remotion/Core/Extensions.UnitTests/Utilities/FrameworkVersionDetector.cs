@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Microsoft.Win32;
 using NUnit.Framework;
 using Remotion.Utilities;
 
-namespace Remotion.UnitTests.Utilities
+namespace Remotion.Extensions.UnitTests.Utilities
 {
   [TestFixture]
   public class FrameworkVersionDetectorTest

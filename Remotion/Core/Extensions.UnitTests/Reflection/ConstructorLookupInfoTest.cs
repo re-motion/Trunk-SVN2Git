@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Extensions.UnitTests.Reflection.TestDomain;
 using Remotion.Reflection;
-using Remotion.UnitTests.Reflection.TestDomain;
 
-namespace Remotion.UnitTests.Reflection
+namespace Remotion.Extensions.UnitTests.Reflection
 {
   [TestFixture]
   public class ConstructorLookupInfoTest
@@ -62,7 +63,7 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (
           () => info.GetDelegate (typeof (Func<AbstractClass>)),
           Throws.InvalidOperationException.With.Message.EqualTo (
-              "Cannot create an instance of 'Remotion.UnitTests.Reflection.TestDomain.AbstractClass' because it is an abstract type."));
+              "Cannot create an instance of 'Remotion.Extensions.UnitTests.Reflection.TestDomain.AbstractClass' because it is an abstract type."));
     }
 
     [Test]
@@ -142,7 +143,7 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (
           () => info.DynamicInvoke (new Type[0], new object[0]),
           Throws.InvalidOperationException.With.Message.EqualTo (
-              "Cannot create an instance of 'Remotion.UnitTests.Reflection.TestDomain.AbstractClass' because it is an abstract type."));
+              "Cannot create an instance of 'Remotion.Extensions.UnitTests.Reflection.TestDomain.AbstractClass' because it is an abstract type."));
     }
 
     [Test]

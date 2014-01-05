@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Extensions.UnitTests.Reflection.TestDomain;
 using Remotion.Reflection;
-using Remotion.UnitTests.Reflection.TestDomain;
 
-namespace Remotion.UnitTests.Reflection
+namespace Remotion.Extensions.UnitTests.Reflection
 {
   [TestFixture]
   public class TypesafeActivatorTest
@@ -94,9 +95,9 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    [ExpectedExceptionAttribute (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'type' is a 'Remotion.UnitTests.Reflection.TestDomain.Base', "
-        + "which cannot be assigned to type 'Remotion.UnitTests.Reflection.TestDomain.Derived'.\r\nParameter name: type")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'type' is a 'Remotion.Extensions.UnitTests.Reflection.TestDomain.Base', "
+        + "which cannot be assigned to type 'Remotion.Extensions.UnitTests.Reflection.TestDomain.Derived'.\r\nParameter name: type")]
     public void TestWithUntypedAndTMinimalThrowsOnIncompatibleTypes ()
     {
       TypesafeActivator.CreateInstance<Derived> (typeof (Base)).With();

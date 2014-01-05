@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Text.StringExtensions;
 
-namespace Remotion.UnitTests.Text.StringExtensions
+namespace Remotion.Extensions.UnitTests.Text.StringExtensions
 {
   [TestFixture]
   public class StringExtensionsTest
