@@ -14,13 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Threading;
-using System.Web.Compilation;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Remotion.Web.UI;
-using Remotion.Web.Utilities;
 
 namespace OBWTest
 {
@@ -28,8 +25,6 @@ namespace OBWTest
   {
     protected override void OnPreRender (EventArgs e)
     {
-      var testService = (ITestService) BuildManager.CreateInstanceFromVirtualPath ("~/TestService.asmx", typeof (ITestService));
-
       HtmlHeadAppender.Current.RegisterUtilitiesJavaScriptInclude();
       base.OnPreRender (e);
     }
