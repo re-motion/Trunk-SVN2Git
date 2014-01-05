@@ -550,9 +550,6 @@
     <Compile Include="Utilities\StringUtilityTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\StubTypeConversionProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Utilities\CustomAttributeUtilityTestDomain\TestAttributeApplicationWithCtorArgumentsAndNamedFields.cs" />
     <Compile Include="Utilities\CustomAttributeUtilityTestDomain\TestAttributeApplicationWithCtorArgumentsAndNamedProperties.cs" />
     <Compile Include="Utilities\CustomAttributeUtilityTestDomain\TestAttributeApplicationWithCtorArgumentsNamedPropertiesAndNamedFields.cs" />

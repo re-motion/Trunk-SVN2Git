@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Utilities
     }
     // ReSharper restore EnumUnderlyingTypeIsInt
 
-    private StubTypeConversionProvider _provider;
+    private ITypeConversionProvider _provider;
     private readonly Type _int32 = typeof (int);
     private readonly Type _nullableInt32 = typeof (int?);
     private readonly Type _string = typeof (string);
@@ -46,7 +46,7 @@ namespace Remotion.UnitTests.Utilities
     [SetUp]
     public void SetUp ()
     {
-      _provider = new StubTypeConversionProvider(SafeServiceLocator.Current.GetAllInstances<ITypeConverterFactory>());
+      _provider = new TypeConversionProvider (SafeServiceLocator.Current.GetAllInstances<ITypeConverterFactory>());
     }
 
     [Test]
@@ -720,44 +720,21 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    public void GetTypeConverterFromFactory_ForInt32 ()
+    public void GetTypeConverter_ForInt32Enum ()
     {
-      TypeConverter converter = _provider.GetTypeConverterFromFactory (_int32);
-      Assert.That (converter, Is.Null, "TypeConverter is not null.");
-    }
-
-    [Test]
-    public void GetTypeConverterFromFactory_ForNullableInt32 ()
-    {
-      TypeConverter converter = _provider.GetTypeConverterFromFactory (_nullableInt32);
-      Assert.That (converter, Is.Null);
-    }
-
-    [Test]
-    public void GetTypeConverterFromFactory_ForInt32Enum ()
-    {
-      TypeConverter converterFirstRun = _provider.GetTypeConverterFromFactory (_int32Enum);
-      TypeConverter converterSecondRun = _provider.GetTypeConverterFromFactory (_int32Enum);
+      TypeConverter converterFirstRun = _provider.GetTypeConverter (_int32Enum);
+      TypeConverter converterSecondRun = _provider.GetTypeConverter (_int32Enum);
       Assert.That (converterFirstRun, Is.Not.Null, "TypeConverter from first run is null.");
       Assert.That (converterSecondRun, Is.Not.Null, "TypeConverter from second run is null.");
       Assert.That (converterSecondRun, Is.SameAs (converterFirstRun));
       Assert.That (converterFirstRun.GetType(), Is.EqualTo (typeof (AdvancedEnumConverter)));
+      Assert.That (((AdvancedEnumConverter)converterFirstRun).EnumType, Is.EqualTo (_int32Enum));
     }
 
     [Test]
-    public void GetTypeConverter_FromCache ()
+    public void GetTypeConverter_UsesCache ()
     {
-      var converter = new NullableConverter (typeof (int?));
-      _provider.AddTypeConverterToCache (_nullableInt32, converter);
-      Assert.That (_provider.GetTypeConverterFromCache (_nullableInt32), Is.SameAs (converter));
-    }
-
-    [Test]
-    public void HasTypeInCache ()
-    {
-      var converter = new NullableConverter (typeof (int?));
-      _provider.AddTypeConverterToCache (_nullableInt32, converter);
-      Assert.That (_provider.HasTypeInCache (_nullableInt32), Is.True);
+      Assert.That (_provider.GetTypeConverter (_nullableInt32), Is.SameAs (_provider.GetTypeConverter (_nullableInt32)));
     }
 
     [Test]
@@ -765,7 +742,7 @@ namespace Remotion.UnitTests.Utilities
     {
       var converter = new NullableConverter (typeof (Guid?));
       Assert.That (_provider.GetTypeConverter (_guid), Is.Null);
-      _provider.AddTypeConverter (_guid, converter);
+      ((TypeConversionProvider) _provider).AddTypeConverter (_guid, converter);
       Assert.That (_provider.GetTypeConverter (_guid), Is.SameAs (converter));
     }
 
@@ -773,9 +750,9 @@ namespace Remotion.UnitTests.Utilities
     public void RemoveTypeConverter ()
     {
       var converter = new NullableConverter (typeof (Guid?));
-      _provider.AddTypeConverter (_guid, converter);
+      ((TypeConversionProvider) _provider).AddTypeConverter (_guid, converter);
       Assert.That (_provider.GetTypeConverter (_guid), Is.SameAs (converter));
-      _provider.RemoveTypeConverter (_guid);
+      ((TypeConversionProvider) _provider).RemoveTypeConverter (_guid);
       Assert.That (_provider.GetTypeConverter (_guid), Is.Null);
     }
   }
