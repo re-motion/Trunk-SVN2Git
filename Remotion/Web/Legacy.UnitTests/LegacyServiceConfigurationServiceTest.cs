@@ -48,6 +48,7 @@ namespace Remotion.Web.Legacy.UnitTests
                                   typeof (IResourcePathBuilder),
                                   typeof (IHttpContextProvider),
                                   typeof (IInternalControlMemberCaller),
+                                  typeof (IBuildManager),
                                   typeof (IWebSecurityAdapter),
                                   typeof (IWxeSecurityAdapter),
                               };
