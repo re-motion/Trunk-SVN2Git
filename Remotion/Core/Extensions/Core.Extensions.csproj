@@ -121,6 +121,8 @@
     <Compile Include="Text\StringExtensions\StringExtensions.cs" />
     <Compile Include="Utilities\ActionUtility.cs" />
     <Compile Include="Utilities\DelegateBasedDisposable.cs" />
+    <Compile Include="Utilities\FrameworkVersion.cs" />
+    <Compile Include="Utilities\FrameworkVersionDetector.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Utilities\PostActionDisposableDecorator.cs" />
     <Compile Include="Utilities\WorkContext.cs" />

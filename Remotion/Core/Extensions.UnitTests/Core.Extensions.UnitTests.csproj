@@ -93,6 +93,7 @@
     <Compile Include="Text\IdentifierGeneratorTest.cs" />
     <Compile Include="Text\StringExtensions\StringExtensionsTest.cs" />
     <Compile Include="Utilities\DelegateBasedDisposableTest.cs" />
+    <Compile Include="Utilities\FrameworkVersionDetector.cs" />
     <Compile Include="Utilities\PostActionDisposableDecoratorTest.cs" />
     <Compile Include="Utilities\WorkContextTest.cs" />
   </ItemGroup>
