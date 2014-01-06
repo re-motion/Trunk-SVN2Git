@@ -20,7 +20,7 @@ using JetBrains.Annotations;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Globalization.Implementation
+namespace Remotion.Globalization
 {
   /// <summary>
   /// Provides extension methods for retrieving for retrieving the human-readable localized representation of an <see cref="ITypeInformation"/>
@@ -55,8 +55,11 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      return GetTypeDisplayNameOrDefault (memberInformationGlobalizationService, typeInformation, typeInformationForResourceResolution)
-             ?? typeInformation.Name;
+      string resourceValue;
+      if (memberInformationGlobalizationService.TryGetTypeDisplayName (typeInformation, typeInformationForResourceResolution, out resourceValue))
+        return resourceValue;
+
+      return typeInformation.Name;
     }
 
     /// <summary>
@@ -114,8 +117,8 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      return GetTypeDisplayNameOrDefault (memberInformationGlobalizationService, typeInformation, typeInformationForResourceResolution)
-             != null;
+      string resourceValue;
+      return memberInformationGlobalizationService.TryGetTypeDisplayName (typeInformation, typeInformationForResourceResolution, out resourceValue);
     }
 
     /// <summary>
@@ -145,8 +148,14 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      return GetPropertyDisplayNameOrDefault (memberInformationGlobalizationService, propertyInformation, typeInformationForResourceResolution)
-             ?? propertyInformation.Name;
+      string resourceValue;
+      if (memberInformationGlobalizationService.TryGetPropertyDisplayName (
+          propertyInformation,
+          typeInformationForResourceResolution,
+          out resourceValue))
+        return resourceValue;
+
+      return propertyInformation.Name;
     }
 
     /// <summary>
@@ -207,8 +216,11 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      return GetPropertyDisplayNameOrDefault (memberInformationGlobalizationService, propertyInformation, typeInformationForResourceResolution)
-             != null;
+      string resourceValue;
+      return memberInformationGlobalizationService.TryGetPropertyDisplayName (
+          propertyInformation,
+          typeInformationForResourceResolution,
+          out resourceValue);
     }
   }
 }

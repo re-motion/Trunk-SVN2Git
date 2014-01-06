@@ -64,11 +64,11 @@
     <Compile Include="IMemberInformationGlobalizationService.cs" />
     <Compile Include="Implementation\CompoundGlobalizationService.cs" />
     <Compile Include="Implementation\EnumerationGlobalizationService.cs" />
-    <Compile Include="Implementation\EnumerationGlobalizationServiceExtensions.cs" />
+    <Compile Include="EnumerationGlobalizationServiceExtensions.cs" />
     <Compile Include="Implementation\GlobalizationService.cs" />
     <Compile Include="Implementation\IResourceManagerResolver.cs" />
     <Compile Include="Implementation\MemberInformationGlobalizationService.cs" />
-    <Compile Include="Implementation\MemberInformationGlobalizationServiceExtensions.cs" />
+    <Compile Include="MemberInformationGlobalizationServiceExtensions.cs" />
     <Compile Include="Implementation\ResolvedResourceManagerResult.cs" />
     <Compile Include="Implementation\ResourceManagerFactory.cs" />
     <Compile Include="Implementation\ResourceManagerResolver.cs" />

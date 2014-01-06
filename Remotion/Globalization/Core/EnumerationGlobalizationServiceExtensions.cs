@@ -19,7 +19,7 @@ using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
-namespace Remotion.Globalization.Implementation
+namespace Remotion.Globalization
 {
   /// <summary>
   /// Provides extension methods for retrieving for retrieving the human-readable localized representation of an <see cref="Enum"/>
@@ -49,8 +49,11 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("enumerationGlobalizationService", enumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
 
-      return GetEnumerationValueDisplayNameOrDefault (enumerationGlobalizationService, value)
-             ?? value.ToString();
+      string result;
+      if (enumerationGlobalizationService.TryGetEnumerationValueDisplayName (value, out result))
+        return result;
+
+      return value.ToString();
     }
 
     /// <summary>
@@ -98,7 +101,8 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("enumerationGlobalizationService", enumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("value", value);
 
-      return GetEnumerationValueDisplayNameOrDefault (enumerationGlobalizationService, value) != null;
+      string result;
+      return enumerationGlobalizationService.TryGetEnumerationValueDisplayName (value, out result);
     }
   }
 }
