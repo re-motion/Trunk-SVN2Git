@@ -17,14 +17,11 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Resources;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using Remotion.Development.Data.UnitTesting.DomainObjects;
-using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DataManagement

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.BindableObject

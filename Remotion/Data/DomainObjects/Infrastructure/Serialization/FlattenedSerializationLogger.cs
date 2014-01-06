@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using Remotion.Logging;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.Serialization

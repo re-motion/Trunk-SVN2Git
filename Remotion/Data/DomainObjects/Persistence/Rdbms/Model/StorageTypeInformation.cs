@@ -18,9 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using Remotion.Collections;
-using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
 using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Xml.Schema;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;

@@ -16,11 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 {

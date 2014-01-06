@@ -17,8 +17,6 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 

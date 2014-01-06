@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DataManagement

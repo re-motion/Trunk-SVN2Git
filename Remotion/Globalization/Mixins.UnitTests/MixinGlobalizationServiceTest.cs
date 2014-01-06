@@ -18,7 +18,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
 using Remotion.Globalization.Mixins.UnitTests.TestDomain;
 using Remotion.Mixins;

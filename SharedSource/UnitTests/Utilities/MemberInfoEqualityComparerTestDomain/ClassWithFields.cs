@@ -16,6 +16,9 @@
 // 
 
 // ReSharper disable once CheckNamespace
+
+using System;
+
 namespace Remotion.UnitTests.Utilities.MemberInfoEqualityComparerTestDomain
 {
   public class ClassWithFields

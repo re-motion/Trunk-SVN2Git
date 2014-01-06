@@ -17,7 +17,6 @@
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.UI.Design;
 using Remotion.Web.Utilities;

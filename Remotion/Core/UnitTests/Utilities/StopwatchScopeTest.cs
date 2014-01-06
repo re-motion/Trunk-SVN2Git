@@ -15,14 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using System.Collections.Generic;
 
 namespace Remotion.UnitTests.Utilities
 {

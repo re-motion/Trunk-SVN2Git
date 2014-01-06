@@ -16,10 +16,10 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Web.Security.ExecutionEngine;
 using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Security.ExecutionEngine;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure
 {

@@ -16,6 +16,9 @@
 // 
 
 // ReSharper disable once CheckNamespace
+
+using System;
+
 namespace Remotion.Development.UnitTesting.PEVerifyPathSources
 {
   partial interface IPEVerifyPathSource

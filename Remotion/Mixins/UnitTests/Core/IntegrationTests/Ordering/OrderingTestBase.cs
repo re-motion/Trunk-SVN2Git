@@ -19,12 +19,9 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
-using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
-using Remotion.Text;
-using Castle.Core.Internal;
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 {

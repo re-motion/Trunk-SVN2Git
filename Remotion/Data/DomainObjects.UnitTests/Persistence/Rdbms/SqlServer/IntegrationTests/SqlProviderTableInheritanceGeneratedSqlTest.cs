@@ -16,10 +16,9 @@
 // 
 using System;
 using System.Data;
-using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects.Mapping;
 using System.Linq;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain.TableInheritance;
 

@@ -17,11 +17,10 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain.ConcreteInheritance;
 using Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain.SingleInheritance;
-using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain.TableInheritance;
 

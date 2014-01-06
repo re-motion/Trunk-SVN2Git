@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -29,10 +28,10 @@ using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
 {

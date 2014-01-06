@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
 
 namespace Remotion.Data.DomainObjects.UnitTests

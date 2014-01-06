@@ -22,7 +22,7 @@ using NUnit.Framework;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.XmlAsserter;
 using Remotion.Security.UnitTests.TestDomain;
-using File=Remotion.Security.UnitTests.TestDomain.File;
+using File = Remotion.Security.UnitTests.TestDomain.File;
 using IOFile = System.IO.File;
 
 namespace Remotion.Security.UnitTests.Core.Metadata

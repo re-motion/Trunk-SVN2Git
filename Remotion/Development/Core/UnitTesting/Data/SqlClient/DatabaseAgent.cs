@@ -20,7 +20,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Data.SqlClient

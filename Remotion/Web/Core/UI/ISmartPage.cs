@@ -18,7 +18,6 @@ using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using JetBrains.Annotations;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.SmartPageImplementation;

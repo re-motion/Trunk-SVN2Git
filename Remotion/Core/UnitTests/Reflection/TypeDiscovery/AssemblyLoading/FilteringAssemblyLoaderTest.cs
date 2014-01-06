@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using log4net;
 using log4net.Appender;
@@ -27,7 +28,6 @@ using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Mocks_Property = Rhino.Mocks.Constraints.Property;
-using System.Linq;
 
 namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
 {

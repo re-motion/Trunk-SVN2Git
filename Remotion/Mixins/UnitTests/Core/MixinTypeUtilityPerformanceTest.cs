@@ -19,7 +19,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 
 namespace Remotion.Mixins.UnitTests.Core

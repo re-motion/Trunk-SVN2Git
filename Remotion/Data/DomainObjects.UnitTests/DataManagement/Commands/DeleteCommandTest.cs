@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
@@ -25,8 +26,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using Remotion.Data.DomainObjects;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.Commands
 {

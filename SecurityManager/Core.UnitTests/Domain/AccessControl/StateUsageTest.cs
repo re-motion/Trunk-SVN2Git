@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
-using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.TestDomain;
 

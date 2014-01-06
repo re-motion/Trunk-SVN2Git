@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
@@ -23,7 +24,6 @@ using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.Web;
 using Remotion.Web.UI;

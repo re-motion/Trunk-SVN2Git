@@ -16,10 +16,10 @@
 // 
 
 using System;
+using Remotion.Logging;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.Validation;
-using Remotion.Logging;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 

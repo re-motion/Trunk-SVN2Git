@@ -19,10 +19,10 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.UnitTests.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
-using Rhino.Mocks;
+using Remotion.Data.DomainObjects.UnitTests.Mapping;
 using Remotion.Data.UnitTests.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model.Building
 {

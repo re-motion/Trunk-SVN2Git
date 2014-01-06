@@ -19,7 +19,6 @@ using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls

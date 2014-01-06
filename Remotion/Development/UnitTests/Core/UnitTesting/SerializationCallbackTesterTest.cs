@@ -17,8 +17,8 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Rhino.Mocks.Exceptions;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks.Exceptions;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
 {

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints

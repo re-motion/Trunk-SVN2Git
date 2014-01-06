@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection.Emit;
-using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Utilities;
 

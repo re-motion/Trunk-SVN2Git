@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
 

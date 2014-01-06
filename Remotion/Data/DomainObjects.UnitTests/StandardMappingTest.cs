@@ -17,18 +17,15 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Configuration;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.UnitTests;
 using Remotion.Data.DomainObjects.UnitTests.Database;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Utilities;
-using DomainObjectIDs = Remotion.Data.DomainObjects.UnitTests.Factories.DomainObjectIDs;
 
 namespace Remotion.Data.DomainObjects.UnitTests
 {

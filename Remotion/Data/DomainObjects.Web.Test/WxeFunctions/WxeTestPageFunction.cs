@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-
-using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions

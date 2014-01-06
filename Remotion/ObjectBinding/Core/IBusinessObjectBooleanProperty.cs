@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+
 namespace Remotion.ObjectBinding
 {
   /// <summary> The <b>IBusinessObjectBooleanProperty</b> interface is used for accessing <see cref="bool"/> values. </summary>

@@ -16,15 +16,13 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.DomainObjects.UnitTests.IntegrationTests;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
+using Remotion.Data.DomainObjects.Validation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Validation

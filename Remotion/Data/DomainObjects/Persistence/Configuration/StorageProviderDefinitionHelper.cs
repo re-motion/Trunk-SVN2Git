@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Configuration;
-using System.Configuration.Provider;
 using Remotion.Configuration;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration

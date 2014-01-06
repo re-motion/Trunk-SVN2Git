@@ -20,7 +20,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.Utilities;
-using System.Web;
 
 namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
 {

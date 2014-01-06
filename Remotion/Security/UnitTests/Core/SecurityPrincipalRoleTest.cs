@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
 
 namespace Remotion.Security.UnitTests.Core
 {

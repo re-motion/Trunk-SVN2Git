@@ -20,7 +20,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using Remotion.Collections;
-using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Utilities

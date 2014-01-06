@@ -18,9 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using Remotion.Logging;
 using Remotion.Mixins.Context;
 using Remotion.Utilities;
-using Remotion.Logging;
 
 namespace Remotion.Mixins.MixerTools
 {

@@ -25,12 +25,12 @@ using Remotion.Globalization;
 using Remotion.Security;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Controls.WebButtonImplementation;
 using Remotion.Web.UI.Controls.WebButtonImplementation.Rendering;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {

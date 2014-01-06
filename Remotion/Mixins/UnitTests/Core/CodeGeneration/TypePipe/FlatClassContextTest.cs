@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.Context;
-using Remotion.Mixins.Context.Serialization;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
 {

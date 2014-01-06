@@ -17,14 +17,13 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Queries
 {
-  [TestFixtureAttribute]
+  [TestFixture]
   public class QueryCacheTest : StandardMappingTest
   {
     private QueryCache _cache;

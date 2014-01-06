@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;

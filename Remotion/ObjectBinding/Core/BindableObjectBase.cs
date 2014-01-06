@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
-using System.Runtime.Serialization;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;

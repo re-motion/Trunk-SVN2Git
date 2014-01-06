@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.Utilities;
 

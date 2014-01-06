@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -27,7 +26,6 @@ using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ServiceLocation;
 using Remotion.Web;
-using Remotion.Web.Resources;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 

@@ -17,7 +17,6 @@
 using System;
 using Remotion.Tools.Console;
 using Remotion.Tools.Console.CommandLine;
-using Remotion.Utilities;
 
 namespace Remotion.Mixins.MixerTools
 {

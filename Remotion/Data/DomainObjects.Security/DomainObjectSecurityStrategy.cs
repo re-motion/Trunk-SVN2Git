@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Remotion.Security;
 
 namespace Remotion.Data.DomainObjects.Security

@@ -1,4 +1,5 @@
-﻿using Remotion.Utilities;
+﻿using System;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {

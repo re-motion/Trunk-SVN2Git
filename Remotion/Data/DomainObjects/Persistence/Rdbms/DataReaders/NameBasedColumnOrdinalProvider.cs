@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders

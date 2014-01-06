@@ -15,15 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Remotion.Utilities;
-using System.Web.Compilation;
 using System.CodeDom;
+using System.Web.Compilation;
 using System.Web.UI;
-using Remotion.Collections;
 using Remotion.Globalization;
+using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
 
 namespace Remotion.Web.Compilation

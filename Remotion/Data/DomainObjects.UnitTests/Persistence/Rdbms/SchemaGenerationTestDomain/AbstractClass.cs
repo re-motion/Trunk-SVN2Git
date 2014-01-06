@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  [FirstStorageGroupAttribute]
+  [FirstStorageGroup]
   [DBTable]
   public abstract class AbstractClass : DomainObject
   {

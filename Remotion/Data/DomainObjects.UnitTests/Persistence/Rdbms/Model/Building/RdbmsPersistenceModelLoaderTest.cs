@@ -25,12 +25,10 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
-using Remotion.Data.DomainObjects.UnitTests.Mapping;
-using Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model.RdbmsPersistenceModelLoaderTestDomain;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
+using Remotion.Data.DomainObjects.UnitTests.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain.TableInheritance;
-using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model.Building

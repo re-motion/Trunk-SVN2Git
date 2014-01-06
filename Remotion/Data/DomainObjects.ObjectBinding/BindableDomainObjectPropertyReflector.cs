@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Reflection;
-using Remotion.TypePipe;
 using Remotion.Utilities;
 using ParamList = Remotion.TypePipe.ParamList;
 using PropertyReflector = Remotion.ObjectBinding.BindableObject.PropertyReflector;

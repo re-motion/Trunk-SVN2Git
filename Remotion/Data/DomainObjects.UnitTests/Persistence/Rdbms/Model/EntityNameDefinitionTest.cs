@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model
 {

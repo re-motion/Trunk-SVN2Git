@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using Remotion.Web.UI;
 
 namespace Remotion.Web.Test.Theming

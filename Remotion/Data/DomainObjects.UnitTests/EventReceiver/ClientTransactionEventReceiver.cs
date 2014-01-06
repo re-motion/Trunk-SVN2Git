@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.DomainObjects.UnitTests.EventReceiver
 {

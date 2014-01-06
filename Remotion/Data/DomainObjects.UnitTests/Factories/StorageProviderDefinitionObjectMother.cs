@@ -19,7 +19,6 @@ using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
-using Remotion.Data.DomainObjects.UnitTests;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Factories
 {

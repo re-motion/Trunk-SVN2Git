@@ -16,8 +16,8 @@
 // 
 using System;
 using JetBrains.Annotations;
-using Remotion.Utilities;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {

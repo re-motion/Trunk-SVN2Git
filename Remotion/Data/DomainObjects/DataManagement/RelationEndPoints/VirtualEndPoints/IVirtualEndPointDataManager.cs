@@ -1,4 +1,5 @@
-﻿using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+﻿using System;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints
 {

@@ -29,12 +29,12 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
 
   [Extends (typeof (BaseType1))]
   [Serializable]
-  [BT1M1Attribute]
+  [BT1M1]
   [AcceptsAlphabeticOrdering]
   public class BT1Mixin1 : IBT1Mixin1
   {
     [OverrideTarget]
-    [BT1M1Attribute]
+    [BT1M1]
     public string VirtualMethod ()
     {
       return "BT1Mixin1.VirtualMethod";
@@ -43,7 +43,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
     public string BackingField = "BT1Mixin1.BackingField";
 
     [OverrideTarget]
-    [BT1M1Attribute]
+    [BT1M1]
     public virtual string VirtualProperty
     {
       set { BackingField = value; } // no getter
@@ -53,7 +53,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
     public bool VirtualEventRemoveCalled = false;
 
     [OverrideTarget]
-    [BT1M1Attribute]
+    [BT1M1]
     public virtual event EventHandler VirtualEvent
     {
       add { VirtualEventAddCalled = true; }
@@ -61,19 +61,19 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
     }
 
 
-    [BT1M1Attribute]
+    [BT1M1]
     public string IntroducedMethod ()
     {
       return "BT1Mixin1.IntroducedMethod";
     }
 
-    [BT1M1Attribute]
+    [BT1M1]
     public string IntroducedProperty
     {
       get { return "BT1Mixin1.IntroducedProperty"; }
     }
 
-    [BT1M1Attribute]
+    [BT1M1]
     public event EventHandler IntroducedEvent;
   }
 }

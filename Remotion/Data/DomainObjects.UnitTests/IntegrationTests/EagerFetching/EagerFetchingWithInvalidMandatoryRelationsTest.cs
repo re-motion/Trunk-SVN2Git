@@ -17,9 +17,9 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using Remotion.Data.DomainObjects.Linq;
 
 namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.EagerFetching
 {

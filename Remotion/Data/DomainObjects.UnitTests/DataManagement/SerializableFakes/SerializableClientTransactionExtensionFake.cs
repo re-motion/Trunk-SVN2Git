@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.SerializableFakes
 {

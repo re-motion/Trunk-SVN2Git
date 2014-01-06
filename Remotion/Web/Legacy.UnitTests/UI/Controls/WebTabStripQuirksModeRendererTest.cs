@@ -32,7 +32,6 @@ using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Rhino.Mocks;
-using AttributeCollection = System.Web.UI.AttributeCollection;
 
 namespace Remotion.Web.Legacy.UnitTests.UI.Controls
 {

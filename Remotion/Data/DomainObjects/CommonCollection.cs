@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections;
-using Remotion.Utilities;
 using System.Diagnostics;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
 {

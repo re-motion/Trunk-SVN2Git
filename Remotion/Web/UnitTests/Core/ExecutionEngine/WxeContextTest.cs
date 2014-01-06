@@ -18,13 +18,13 @@ using System;
 using System.Collections.Specialized;
 using System.Web;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
-using Remotion.Development.Web.UnitTesting.Configuration;
+using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 using Remotion.Web.Utilities;
-using TestFunction=Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions.TestFunction;
 
 namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 {

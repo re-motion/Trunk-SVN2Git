@@ -16,12 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Mixins;
-using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.UnitTests.MixedDomains
 {

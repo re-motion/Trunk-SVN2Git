@@ -16,10 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Text;
-using Remotion.Utilities;
 using System.Linq;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {

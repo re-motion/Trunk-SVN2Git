@@ -15,11 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Configuration;
 using System.Data.SqlClient;
-using Remotion.ServiceLocation;
-using Remotion.TypePipe;
-using Remotion.Utilities;
 using log4net;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;

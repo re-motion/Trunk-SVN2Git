@@ -16,7 +16,6 @@
 // 
 using System;
 using System.ComponentModel;
-using System.Threading;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;

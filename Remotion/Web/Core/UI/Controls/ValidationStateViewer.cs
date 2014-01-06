@@ -22,9 +22,9 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -292,7 +292,7 @@ public class ValidationStateViewer : WebControl, IControl
   ///   <see cref="Remotion.Web.UI.Controls.ValidationErrorStyle.Notice"/>
   /// </summary>
   /// <value> A string. </value>
-  [CategoryAttribute("Appearance")]
+  [Category("Appearance")]
   [Description("Sets the Text to be displayed if ValidationErrorStyle is set to Notice.")]
   [DefaultValue("")]
   public string NoticeText
@@ -303,7 +303,7 @@ public class ValidationStateViewer : WebControl, IControl
 
   /// <summary> Gets or sets a value that defines how the validation errors are displayed on the page. </summary>
   /// <value> A symbol defined in the <see cref="ValidationErrorStyle"/>enumeration. </value>
-  [CategoryAttribute("Behavior")]
+  [Category("Behavior")]
   [Description("Defines how the validation messages are displayed.")]
   [DefaultValue(ValidationErrorStyle.Notice)]
   public ValidationErrorStyle ValidationErrorStyle

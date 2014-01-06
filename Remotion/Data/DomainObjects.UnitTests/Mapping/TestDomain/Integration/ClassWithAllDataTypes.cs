@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration
 {

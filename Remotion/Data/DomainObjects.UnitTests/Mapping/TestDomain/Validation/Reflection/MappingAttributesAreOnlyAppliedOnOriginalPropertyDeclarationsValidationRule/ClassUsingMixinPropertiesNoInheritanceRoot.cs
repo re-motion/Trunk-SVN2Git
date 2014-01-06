@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Mixins;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.Reflection.

@@ -15,13 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.Compilation;
 using System.Web.UI;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Globalization
 {

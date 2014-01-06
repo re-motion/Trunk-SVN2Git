@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Linq;
 using Remotion.Linq.EagerFetching;
 

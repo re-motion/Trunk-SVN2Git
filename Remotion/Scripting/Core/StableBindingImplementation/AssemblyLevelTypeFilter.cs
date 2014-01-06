@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting.StableBindingImplementation

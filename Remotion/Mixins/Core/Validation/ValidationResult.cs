@@ -16,11 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Mixins.Definitions;
-using Remotion.Text;
-using Remotion.Utilities;
-using Remotion.FunctionalProgramming;
 using System.Linq;
+using Remotion.FunctionalProgramming;
+using Remotion.Mixins.Definitions;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Validation
 {

@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Mixins.Definitions;
 using Remotion.TypePipe.MutableReflection;
-using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe

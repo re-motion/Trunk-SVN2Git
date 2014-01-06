@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
 using Remotion.Utilities;
 

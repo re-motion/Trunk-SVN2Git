@@ -17,7 +17,6 @@
 using System;
 using System.Xml.Schema;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Schemas;
 

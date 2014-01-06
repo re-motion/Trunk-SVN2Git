@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;

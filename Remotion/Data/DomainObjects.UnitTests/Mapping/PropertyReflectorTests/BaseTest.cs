@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyReflectorTests
 {

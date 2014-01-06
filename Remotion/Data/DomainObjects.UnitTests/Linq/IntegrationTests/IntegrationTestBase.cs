@@ -18,10 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Text;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
 {

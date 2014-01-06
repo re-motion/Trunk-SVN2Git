@@ -16,15 +16,13 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Development.UnitTesting;
-using Remotion.TypePipe.Development.UnitTesting.ObjectMothers.CodeGeneration;
-using Remotion.TypePipe.Dlr.Ast;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.UnitTests.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
+using Remotion.Development.UnitTesting;
+using Remotion.TypePipe.Development.UnitTesting.ObjectMothers.CodeGeneration;
+using Remotion.TypePipe.Dlr.Ast;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 using Remotion.TypePipe.TypeAssembly.Implementation;

@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins.Definitions.Building;
-using System.Linq;
 using Remotion.Mixins.UnitTests.Core.Definitions.TestDomain.MemberFiltering;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.Building

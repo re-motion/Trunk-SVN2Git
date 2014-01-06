@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Mapping;
@@ -29,11 +28,10 @@ using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain.TableInheritance;
+using Remotion.Development.UnitTesting.Enumerables;
 using Remotion.Mixins;
 using Remotion.Reflection;
-using Remotion.Utilities;
 using Rhino.Mocks;
-using Remotion.Development.UnitTesting.Enumerables;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 {

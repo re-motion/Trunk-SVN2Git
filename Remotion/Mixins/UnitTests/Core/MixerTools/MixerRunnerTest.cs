@@ -19,7 +19,6 @@ using System.IO;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.MixerTools;
-using Remotion.Utilities;
 
 namespace Remotion.Mixins.UnitTests.Core.MixerTools
 {

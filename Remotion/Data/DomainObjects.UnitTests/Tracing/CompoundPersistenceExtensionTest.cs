@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Tracing;
 using Rhino.Mocks;
-using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Tracing
 {

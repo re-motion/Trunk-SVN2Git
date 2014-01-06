@@ -17,10 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Remotion.Logging;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Mixins.Context.FluentBuilders
 {

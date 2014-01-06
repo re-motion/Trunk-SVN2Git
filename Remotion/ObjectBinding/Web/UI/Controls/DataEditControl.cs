@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <remarks>
   ///   This class must be inherited from, overwriting <see cref="DataSource"/>.
   /// </remarks>
-  [FileLevelControlBuilderAttribute(typeof(CodeProcessingUserControlBuilder))]
+  [FileLevelControlBuilder(typeof(CodeProcessingUserControlBuilder))]
   //public class DataEditUserControl : UserControl, IDataEditControl
   public abstract class DataEditUserControl : UserControl, IDataEditControl
   {

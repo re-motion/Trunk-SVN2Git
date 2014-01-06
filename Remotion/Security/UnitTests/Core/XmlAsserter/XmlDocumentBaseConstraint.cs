@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using NUnit.Framework.Constraints;
-using System.Linq;
 
 namespace Remotion.Security.UnitTests.Core.XmlAsserter
 {

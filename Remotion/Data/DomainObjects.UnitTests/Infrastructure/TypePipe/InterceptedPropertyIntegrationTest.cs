@@ -20,7 +20,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;

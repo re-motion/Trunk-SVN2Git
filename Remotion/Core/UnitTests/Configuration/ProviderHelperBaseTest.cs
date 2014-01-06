@@ -227,14 +227,14 @@ namespace Remotion.UnitTests.Configuration
     }
 
     [Test]
-    [ExpectedExceptionAttribute (typeof (ConfigurationErrorsException), ExpectedMessage = "Type name must be specified for this provider.")]
+    [ExpectedException (typeof (ConfigurationErrorsException), ExpectedMessage = "Type name must be specified for this provider.")]
     public void InstantiateProvider_WithMissingTypeName ()
     {
       _providerHelper.InstantiateProvider (new ProviderSettings(), typeof (FakeProviderBase));
     }
 
     [Test]
-    [ExpectedExceptionAttribute (typeof (ConfigurationErrorsException),
+    [ExpectedException (typeof (ConfigurationErrorsException),
         ExpectedMessage = "Provider must implement the class 'Remotion.UnitTests.Configuration.FakeProviderBase'.")]
     public void InstantiateProvider_WithTypeNotDerivedFromRequiredBaseType ()
     {
@@ -243,7 +243,7 @@ namespace Remotion.UnitTests.Configuration
     }
 
     [Test]
-    [ExpectedExceptionAttribute (typeof (ConfigurationErrorsException),
+    [ExpectedException (typeof (ConfigurationErrorsException),
         ExpectedMessage = "Provider must implement the interface 'Remotion.UnitTests.Configuration.IFakeProvider'.")]
     public void InstantiateProvider_WithTypeNotImplementingRequiredInterface ()
     {

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;

@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Configuration;
-using TypeNameConverter=Remotion.Utilities.TypeNameConverter;
+using TypeNameConverter = Remotion.Utilities.TypeNameConverter;
 
 namespace Remotion.Configuration
 {

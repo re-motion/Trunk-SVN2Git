@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Web;
 using System.Web.SessionState;
-using Remotion.Collections;
 using Remotion.Context;
 using Remotion.Logging;
 using Remotion.Utilities;

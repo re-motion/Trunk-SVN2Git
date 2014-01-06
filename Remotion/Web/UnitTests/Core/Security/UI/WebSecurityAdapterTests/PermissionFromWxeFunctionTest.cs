@@ -18,10 +18,10 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.ServiceLocation;
-using Remotion.Web.Security.UI;
-using Remotion.Web.UnitTests.Core.Security.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Security.UI;
 using Remotion.Web.UI;
+using Remotion.Web.UnitTests.Core.Security.ExecutionEngine;
 
 namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
 {

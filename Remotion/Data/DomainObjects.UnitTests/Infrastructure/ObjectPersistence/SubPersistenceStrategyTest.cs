@@ -26,10 +26,9 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.UnitTests.DataManagement;
 using Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using Remotion.Data.DomainObjects;
-using Rhino.Mocks;
-using Remotion.Development.UnitTesting.Enumerables;
 using Remotion.Data.UnitTests.UnitTesting;
+using Remotion.Development.UnitTesting.Enumerables;
+using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure.ObjectPersistence
 {

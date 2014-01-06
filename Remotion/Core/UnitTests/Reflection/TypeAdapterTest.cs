@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;

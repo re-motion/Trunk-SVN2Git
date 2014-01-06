@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Security;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.Security;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Web.Test.Domain
 {

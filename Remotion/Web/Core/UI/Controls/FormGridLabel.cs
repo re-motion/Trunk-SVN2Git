@@ -20,10 +20,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
-using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction

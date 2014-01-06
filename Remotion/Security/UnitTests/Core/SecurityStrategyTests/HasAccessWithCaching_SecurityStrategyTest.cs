@@ -17,11 +17,11 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Rhino.Mocks;
 using Remotion.Collections;
 using Remotion.Security.Configuration;
 using Remotion.Security.UnitTests.Core.Configuration;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;
 using Mocks_Property = Rhino.Mocks.Constraints.Property;

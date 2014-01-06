@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -23,8 +24,6 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
-using System.Linq;
-using Remotion.TypePipe.Implementation;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration
 {

@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Remotion.Security.UnitTests.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.Security.UnitTests.Core
 {

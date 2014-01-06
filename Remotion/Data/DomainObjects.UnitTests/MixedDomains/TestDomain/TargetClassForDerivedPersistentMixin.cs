@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Mixins;
 
 namespace Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain

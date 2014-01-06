@@ -17,13 +17,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.ServiceLocation;
-using System.Linq;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
 {

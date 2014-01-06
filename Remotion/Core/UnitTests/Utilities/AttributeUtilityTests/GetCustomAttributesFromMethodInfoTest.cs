@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting.Reflection;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain;
 
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests

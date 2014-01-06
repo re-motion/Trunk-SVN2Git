@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.ComponentModel;
-using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Design;
 

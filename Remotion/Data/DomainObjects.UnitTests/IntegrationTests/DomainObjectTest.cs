@@ -18,16 +18,15 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.DomainObjects.UnitTests.EventReceiver;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
+using Remotion.Data.DomainObjects.Validation;
+using Remotion.FunctionalProgramming;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests
 {

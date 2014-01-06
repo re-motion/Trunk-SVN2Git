@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
@@ -26,11 +27,10 @@ using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.DomainObjects.Validation;
+using Remotion.FunctionalProgramming;
 using Remotion.Mixins;
 using Remotion.TypePipe;
 using Remotion.Utilities;
-using Remotion.FunctionalProgramming;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {

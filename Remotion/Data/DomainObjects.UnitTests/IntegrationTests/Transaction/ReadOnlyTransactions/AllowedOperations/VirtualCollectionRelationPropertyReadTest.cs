@@ -20,8 +20,8 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 
 namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction.ReadOnlyTransactions.AllowedOperations
 {

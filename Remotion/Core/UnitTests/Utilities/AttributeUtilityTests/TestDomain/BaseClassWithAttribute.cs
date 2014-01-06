@@ -14,13 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
 {
-  [BaseInheritedAttribute ("BaseClass")]
-  [DerivedInheritedAttribute ("BaseClass")]
-  [BaseNonInheritedAttribute ("BaseClass")]
-  [DerivedNonInheritedAttribute ("BaseClass")]
-  [InheritedNotMultipleAttribute ("BaseClass")]
+  [BaseInherited ("BaseClass")]
+  [DerivedInherited ("BaseClass")]
+  [BaseNonInherited ("BaseClass")]
+  [DerivedNonInherited ("BaseClass")]
+  [InheritedNotMultiple ("BaseClass")]
   public class BaseClassWithAttribute
   {
     

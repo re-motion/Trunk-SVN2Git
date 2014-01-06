@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Rhino.Mocks;
 

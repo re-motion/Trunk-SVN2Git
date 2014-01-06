@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection.MemberSignatures;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Mixins.Definitions.Building
 {

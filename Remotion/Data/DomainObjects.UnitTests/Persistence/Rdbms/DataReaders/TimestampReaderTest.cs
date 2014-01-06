@@ -18,8 +18,6 @@ using System;
 using System.Data;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;

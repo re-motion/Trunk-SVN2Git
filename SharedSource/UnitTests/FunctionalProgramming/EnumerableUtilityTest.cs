@@ -17,9 +17,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.FunctionalProgramming;
-using System.Linq;
 using Remotion.UnitTests.FunctionalProgramming.TestDomain;
 
 // ReSharper disable once CheckNamespace

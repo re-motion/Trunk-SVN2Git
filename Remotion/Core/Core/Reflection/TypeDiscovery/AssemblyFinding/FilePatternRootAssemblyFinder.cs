@@ -18,9 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 {

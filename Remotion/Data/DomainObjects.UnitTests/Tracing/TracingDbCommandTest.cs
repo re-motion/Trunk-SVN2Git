@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Tracing;

@@ -20,7 +20,6 @@ using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.Utilities;
-using Remotion.Reflection;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Implementation;
 using Rhino.Mocks;

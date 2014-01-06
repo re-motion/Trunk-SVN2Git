@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Web.UI.WebControls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport

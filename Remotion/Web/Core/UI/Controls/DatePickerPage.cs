@@ -20,7 +20,6 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.ServiceLocation;
-using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Remotion.Web.Utilities;

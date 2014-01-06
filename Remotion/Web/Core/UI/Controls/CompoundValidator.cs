@@ -19,7 +19,6 @@ using System.Collections;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {

@@ -19,19 +19,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 {

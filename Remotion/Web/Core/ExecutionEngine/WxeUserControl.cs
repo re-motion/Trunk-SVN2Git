@@ -30,7 +30,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  [FileLevelControlBuilderAttribute(typeof(CodeProcessingUserControlBuilder))]
+  [FileLevelControlBuilder(typeof(CodeProcessingUserControlBuilder))]
   public class WxeUserControl : UserControl, IWxeTemplateControl, IReplaceableControl
   {
     private readonly WxeTemplateControlInfo _wxeInfo;

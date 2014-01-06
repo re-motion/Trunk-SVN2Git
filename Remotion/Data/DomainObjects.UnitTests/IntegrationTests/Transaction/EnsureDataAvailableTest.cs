@@ -18,10 +18,8 @@
 using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.RhinoMocks.UnitTesting;
 using Rhino.Mocks;
 

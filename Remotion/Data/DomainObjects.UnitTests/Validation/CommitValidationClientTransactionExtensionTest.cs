@@ -16,9 +16,8 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.DomainObjects.UnitTests.IntegrationTests;
+using Remotion.Data.DomainObjects.Validation;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 

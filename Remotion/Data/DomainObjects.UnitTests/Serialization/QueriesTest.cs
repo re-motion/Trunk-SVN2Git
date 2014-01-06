@@ -17,7 +17,6 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Development;
 using Remotion.Data.DomainObjects.Queries;

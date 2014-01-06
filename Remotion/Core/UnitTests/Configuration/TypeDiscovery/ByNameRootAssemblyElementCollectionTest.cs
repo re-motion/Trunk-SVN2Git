@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Development.UnitTesting.Configuration;
-using System.Linq;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Rhino.Mocks;
 

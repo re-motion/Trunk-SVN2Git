@@ -30,7 +30,6 @@ using Remotion.Linq.Parsing.Structure.NodeTypeProviders;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.Utilities;
 using Remotion.Utilities;
-using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.Queries
 {

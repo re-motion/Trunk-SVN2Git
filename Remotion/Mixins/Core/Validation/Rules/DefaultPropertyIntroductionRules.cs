@@ -17,9 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Mixins.Definitions;
 using System.Reflection;
-using Remotion.Utilities;
+using Remotion.Mixins.Definitions;
 
 namespace Remotion.Mixins.Validation.Rules
 {

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Scripting.Hosting;
-using Remotion.Collections;
 using Remotion.Context;
 
 

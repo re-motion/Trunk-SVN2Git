@@ -16,11 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {

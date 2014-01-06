@@ -19,7 +19,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -34,12 +33,12 @@ using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.RhinoMocks.UnitTesting;
 using Remotion.Development.UnitTesting;
+using Remotion.FunctionalProgramming;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
 using Rhino.Mocks.Interfaces;
 using Is = NUnit.Framework.Is;
 using Rhino_Is = Rhino.Mocks.Constraints.Is;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
 {

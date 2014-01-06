@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Xml.Serialization;
-using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.Sample;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Sample

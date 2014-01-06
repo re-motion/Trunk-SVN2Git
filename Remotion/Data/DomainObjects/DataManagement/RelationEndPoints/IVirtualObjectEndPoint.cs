@@ -1,4 +1,6 @@
-﻿namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
+﻿using System;
+
+namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
   /// Represents a virtual <see cref="IRelationEndPoint"/> holding a single opposite <see cref="ObjectID"/>, i.e. the non-foreign key side in a 

@@ -17,7 +17,7 @@
 
 using System;
 using NUnit.Framework;
-using Assertion=Remotion.Utilities.Assertion;
+using Remotion.Utilities;
 
 // ReSharper disable once CheckNamespace
 namespace Remotion.UnitTests.Utilities

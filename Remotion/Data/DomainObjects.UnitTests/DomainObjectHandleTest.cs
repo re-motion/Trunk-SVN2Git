@@ -15,14 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.UnitTests;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Rhino.Mocks;

@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Web.UI.Controls.ControlReplacing;
-using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.ControlReplacing
 {

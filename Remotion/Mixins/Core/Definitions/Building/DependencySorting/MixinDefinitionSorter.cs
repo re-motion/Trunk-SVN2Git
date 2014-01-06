@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Text;
 using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting

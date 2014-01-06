@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using Remotion.Utilities;
 using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {

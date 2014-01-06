@@ -16,6 +16,7 @@
 // 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using NUnit.Framework;
@@ -23,7 +24,6 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins.MixerTools;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection.TypeDiscovery;
-using System.Linq;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 

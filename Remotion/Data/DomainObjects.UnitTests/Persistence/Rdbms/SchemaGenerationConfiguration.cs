@@ -19,7 +19,6 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Reflection;
 using Remotion.Configuration;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Development;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration;
@@ -28,8 +27,8 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SchemaGenerationTestDomain;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
+using Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SchemaGenerationTestDomain;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms

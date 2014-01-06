@@ -16,6 +16,7 @@
 // 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -24,7 +25,6 @@ using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Rhino_Is = Rhino.Mocks.Constraints.Is;
-using System.Linq;
 
 namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 {

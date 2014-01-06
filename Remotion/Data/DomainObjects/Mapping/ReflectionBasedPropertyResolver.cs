@@ -18,10 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping

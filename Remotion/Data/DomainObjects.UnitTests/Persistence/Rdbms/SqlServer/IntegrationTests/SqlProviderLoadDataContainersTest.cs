@@ -15,9 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using System.Linq;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.IntegrationTests

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Mixins.Context;
@@ -28,7 +29,6 @@ using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Implementation;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Mixins.MixerTools
 {

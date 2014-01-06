@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
 using System.CodeDom;
 using System.IO;
+using System.Text;
 
 namespace Remotion.Development.CodeDom
 {

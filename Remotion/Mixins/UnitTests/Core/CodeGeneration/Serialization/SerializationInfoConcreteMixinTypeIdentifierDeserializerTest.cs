@@ -16,12 +16,12 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.Serialization;
-using System.Linq;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 

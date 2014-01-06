@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Rhino.Mocks.Constraints;
 using Remotion.Utilities;
+using Rhino.Mocks.Constraints;
 
 namespace Remotion.Security.UnitTests.Core.MockConstraints
 {

@@ -19,7 +19,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
@@ -29,7 +28,6 @@ using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using File = System.IO.File;
-using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 
 namespace Remotion.Data.DomainObjects.UnitTests
 {

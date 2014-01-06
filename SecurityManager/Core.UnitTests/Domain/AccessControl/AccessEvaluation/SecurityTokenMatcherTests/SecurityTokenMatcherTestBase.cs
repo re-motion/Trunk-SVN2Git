@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessEvaluation.SecurityTokenMatcherTests

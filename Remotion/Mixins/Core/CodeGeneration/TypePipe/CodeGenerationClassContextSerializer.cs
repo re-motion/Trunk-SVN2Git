@@ -21,8 +21,8 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;
+using Remotion.TypePipe.Dlr.Ast;
 using Remotion.Utilities;
-using Expression = Remotion.TypePipe.Dlr.Ast.Expression;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {

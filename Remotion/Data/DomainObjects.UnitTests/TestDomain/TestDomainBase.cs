@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.UnitTests.EventReceiver;

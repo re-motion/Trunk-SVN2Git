@@ -16,7 +16,6 @@
 // 
 using System;
 using IronPython.Runtime;
-using Microsoft.Scripting.Runtime;
 using NUnit.Framework;
 using Remotion.Scripting.UnitTests.TestDomain;
 

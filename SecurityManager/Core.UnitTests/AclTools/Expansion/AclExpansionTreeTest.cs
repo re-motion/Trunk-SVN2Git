@@ -16,13 +16,13 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
-using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion

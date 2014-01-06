@@ -17,7 +17,6 @@
 using System;
 using System.Xml.Serialization;
 using Remotion.Mixins;
-using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.ObjectBinding.Sample
 {

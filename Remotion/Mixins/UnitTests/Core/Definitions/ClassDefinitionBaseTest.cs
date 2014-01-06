@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins.Definitions;
-using System.Linq;
 using Remotion.Mixins.UnitTests.Core.Definitions.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Rhino.Mocks;

@@ -20,10 +20,10 @@ using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
-using Assertion=Remotion.Utilities.Assertion;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.ControlReplacing
 {

@@ -15,9 +15,10 @@
 // under the License.
 // 
 
+using System;
 using System.Collections.Generic;
-using Remotion.Utilities;
 using System.Linq;
+using Remotion.Utilities;
 
 // ReSharper disable once CheckNamespace
 namespace Remotion.Development.UnitTesting.Enumerables

@@ -16,14 +16,12 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
-using Remotion.Utilities;
 using Remotion.Web.Compilation;
 
 namespace Remotion.SecurityManager.Clients.Web.UI
 {
-  [FileLevelControlBuilderAttribute(typeof(CodeProcessingUserControlBuilder))]
+  [FileLevelControlBuilder(typeof(CodeProcessingUserControlBuilder))]
   public partial class SecurityManagerNavigationTabs : UserControl
   {
   }

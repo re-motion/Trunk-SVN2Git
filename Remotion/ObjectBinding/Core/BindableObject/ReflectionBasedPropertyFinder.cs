@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
@@ -23,7 +24,6 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.ObjectBinding.BindableObject
 {

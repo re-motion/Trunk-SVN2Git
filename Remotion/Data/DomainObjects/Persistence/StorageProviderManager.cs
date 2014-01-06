@@ -16,9 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence

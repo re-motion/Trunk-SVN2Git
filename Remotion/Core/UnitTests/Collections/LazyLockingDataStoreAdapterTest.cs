@@ -23,7 +23,6 @@ using Remotion.Development.RhinoMocks.UnitTesting.Threading;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMothers;
 using Rhino.Mocks;
-
 using Wrapper = Remotion.Collections.LazyLockingDataStoreAdapter<string, object>.Wrapper;
 
 namespace Remotion.UnitTests.Collections

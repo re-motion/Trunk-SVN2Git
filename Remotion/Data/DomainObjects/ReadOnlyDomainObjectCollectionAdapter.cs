@@ -17,11 +17,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.DataManagement;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects
 {

@@ -15,6 +15,9 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
+using System;
+
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpansionHtmlWriterSettings

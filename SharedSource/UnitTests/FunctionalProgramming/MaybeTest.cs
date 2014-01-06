@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.FunctionalProgramming;
 

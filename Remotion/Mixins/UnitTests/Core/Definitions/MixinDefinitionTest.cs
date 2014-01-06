@@ -16,12 +16,12 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
-using System.Linq;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
 

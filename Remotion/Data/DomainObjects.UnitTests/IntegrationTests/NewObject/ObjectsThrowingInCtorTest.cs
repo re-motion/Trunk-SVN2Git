@@ -17,7 +17,6 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 

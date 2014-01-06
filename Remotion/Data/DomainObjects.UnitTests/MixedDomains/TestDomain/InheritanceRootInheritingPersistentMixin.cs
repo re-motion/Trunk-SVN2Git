@@ -15,10 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain
 {

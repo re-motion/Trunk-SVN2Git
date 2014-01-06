@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.UnitTests.DataManagement.SerializableFakes;

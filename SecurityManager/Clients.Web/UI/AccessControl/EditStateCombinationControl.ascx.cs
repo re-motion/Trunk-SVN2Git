@@ -24,7 +24,6 @@ using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;

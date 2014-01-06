@@ -16,17 +16,14 @@
 // 
 using System;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using System.Linq;
-using SortOrder = Remotion.Data.DomainObjects.Mapping.SortExpressions.SortOrder;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.IntegrationTests
 {

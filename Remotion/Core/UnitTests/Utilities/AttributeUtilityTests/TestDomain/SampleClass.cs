@@ -65,7 +65,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
       set { Dev.Null = value; }
     }
 
-    [NotInheritedAttribute]
+    [NotInherited]
     [UsedImplicitly]
     public virtual string PropertyWithNotInheritedAttribute
     {
@@ -91,7 +91,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain
     [UsedImplicitly]
     public virtual event EventHandler EventWithMultipleAttribute;
 
-    [NotInheritedAttribute]
+    [NotInherited]
     [UsedImplicitly]
     public virtual event EventHandler EventWithNotInheritedAttribute;
 

@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.ObjectBinding;
-using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Web.Test.Domain
 {

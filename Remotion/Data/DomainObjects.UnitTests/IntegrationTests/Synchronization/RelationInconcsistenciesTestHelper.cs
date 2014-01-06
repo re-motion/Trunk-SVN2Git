@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Mapping;

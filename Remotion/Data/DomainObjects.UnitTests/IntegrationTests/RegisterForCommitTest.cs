@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
@@ -26,9 +26,8 @@ using Remotion.Data.DomainObjects.UnitTests.EventReceiver;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.RhinoMocks.UnitTesting;
-using Rhino.Mocks;
-using System.Linq;
 using Remotion.FunctionalProgramming;
+using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests
 {

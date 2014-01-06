@@ -16,13 +16,9 @@
 // 
 
 using System;
-using System.CodeDom.Compiler;
-using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
-using Microsoft.CSharp;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 

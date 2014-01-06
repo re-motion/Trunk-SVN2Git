@@ -17,11 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Utilities;
-using Remotion.Data.DomainObjects.Infrastructure;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
 {

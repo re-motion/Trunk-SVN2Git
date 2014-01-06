@@ -16,13 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Development.UnitTesting;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Queries
 {

@@ -16,13 +16,13 @@
 // 
 using System;
 using System.IO;
+using System.Linq;
 using Remotion.Logging;
 using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Reflection.CodeGeneration.TypePipe;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Mixins.MixerTools
 {

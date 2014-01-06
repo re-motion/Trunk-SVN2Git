@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using NUnit.Framework;
 using Remotion.Mixins.Samples.Tutorial.T01_Configuration.Core.Extends.ExtendsSamples;
 using Remotion.TypePipe;

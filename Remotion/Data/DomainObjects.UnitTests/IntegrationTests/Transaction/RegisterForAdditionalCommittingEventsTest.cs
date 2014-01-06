@@ -17,8 +17,6 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
 {

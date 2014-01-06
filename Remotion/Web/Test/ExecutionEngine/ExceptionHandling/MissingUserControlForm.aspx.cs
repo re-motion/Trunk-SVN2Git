@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Web.UI;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Test.ExecutionEngine.ExceptionHandling

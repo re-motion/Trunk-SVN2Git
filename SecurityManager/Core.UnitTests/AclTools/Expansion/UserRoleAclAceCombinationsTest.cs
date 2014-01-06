@@ -16,13 +16,13 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {

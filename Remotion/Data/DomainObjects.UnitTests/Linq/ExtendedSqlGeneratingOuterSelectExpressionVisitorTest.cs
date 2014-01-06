@@ -17,14 +17,12 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Utilities;
 using Rhino.Mocks;
 

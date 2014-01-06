@@ -16,7 +16,6 @@
 // 
 using System;
 using System.ComponentModel;
-using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
 

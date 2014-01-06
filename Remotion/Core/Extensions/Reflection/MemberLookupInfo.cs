@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection

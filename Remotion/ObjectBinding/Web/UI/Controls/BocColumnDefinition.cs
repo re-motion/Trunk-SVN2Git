@@ -21,10 +21,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.UI.Globalization;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls

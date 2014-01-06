@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
-using System.Linq;
 using Remotion.TypePipe;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration

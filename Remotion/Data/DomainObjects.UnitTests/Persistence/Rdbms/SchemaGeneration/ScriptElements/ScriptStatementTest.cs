@@ -17,9 +17,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
-using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SchemaGeneration.ScriptElements
 {

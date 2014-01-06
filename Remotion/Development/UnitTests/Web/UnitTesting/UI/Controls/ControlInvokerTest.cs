@@ -22,7 +22,6 @@ using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
-using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
 {

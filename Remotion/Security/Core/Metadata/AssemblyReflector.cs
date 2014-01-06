@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using Remotion.Reflection;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
 namespace Remotion.Security.Metadata

@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.ObjectBinding
 {

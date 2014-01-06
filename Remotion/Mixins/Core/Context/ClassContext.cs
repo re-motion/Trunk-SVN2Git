@@ -16,13 +16,12 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Context.Suppression;
-using Remotion.Text;
 using Remotion.Utilities;
-using System.Linq;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.Context
 {

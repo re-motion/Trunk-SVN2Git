@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting.StableBindingImplementation

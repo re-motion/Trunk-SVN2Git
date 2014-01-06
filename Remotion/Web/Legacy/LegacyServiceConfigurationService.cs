@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using Remotion.ServiceLocation;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Legacy.Factories;
 using Remotion.Web.Legacy.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls;

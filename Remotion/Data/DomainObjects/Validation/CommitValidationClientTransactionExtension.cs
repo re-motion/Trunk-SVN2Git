@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Utilities;
 

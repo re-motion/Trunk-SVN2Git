@@ -16,6 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -25,9 +28,6 @@ using Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection.CodeGeneration;
 using Rhino.Mocks;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 {

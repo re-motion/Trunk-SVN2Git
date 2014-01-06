@@ -19,7 +19,6 @@ using System;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;

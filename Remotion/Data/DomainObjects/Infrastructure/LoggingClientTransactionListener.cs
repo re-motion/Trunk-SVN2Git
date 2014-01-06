@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Logging;
-using Remotion.Text;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {

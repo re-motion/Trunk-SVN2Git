@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using Remotion.Collections;
 using Remotion.Reflection;
 using Remotion.Utilities;

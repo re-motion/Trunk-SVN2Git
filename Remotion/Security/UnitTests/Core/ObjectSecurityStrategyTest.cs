@@ -16,12 +16,12 @@
 // 
 using System;
 using NUnit.Framework;
-using Rhino.Mocks;
 using Remotion.Collections;
+using Remotion.Development.UnitTesting;
 using Remotion.Security.Configuration;
 using Remotion.Security.UnitTests.Core.Configuration;
-using Remotion.Development.UnitTesting;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core
 {

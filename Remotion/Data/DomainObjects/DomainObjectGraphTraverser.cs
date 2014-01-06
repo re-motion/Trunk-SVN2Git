@@ -16,10 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
+using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects
 {

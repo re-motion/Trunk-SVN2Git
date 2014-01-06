@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {

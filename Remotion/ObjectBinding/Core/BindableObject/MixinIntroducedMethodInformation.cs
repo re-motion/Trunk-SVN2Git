@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.ObjectBinding.BindableObject
 {

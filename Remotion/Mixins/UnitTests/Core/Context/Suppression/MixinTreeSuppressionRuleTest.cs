@@ -18,8 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Mixins.Context.Suppression;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.Suppression;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 
 namespace Remotion.Mixins.UnitTests.Core.Context.Suppression

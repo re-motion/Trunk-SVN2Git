@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Web.UI;
 using Remotion.Collections;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Data.DomainObjects.Web.Test.WxeFunctions;
 using Remotion.Utilities;

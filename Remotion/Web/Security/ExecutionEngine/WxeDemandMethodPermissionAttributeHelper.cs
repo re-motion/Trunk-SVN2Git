@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using JetBrains.Annotations;
-using Remotion.Collections;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;

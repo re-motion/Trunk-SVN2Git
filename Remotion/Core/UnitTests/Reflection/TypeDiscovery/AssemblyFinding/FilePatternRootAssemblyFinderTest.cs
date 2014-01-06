@@ -16,13 +16,13 @@
 // 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Enumerables;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Rhino.Mocks;
-using System.Linq;
-using Remotion.Development.UnitTesting.Enumerables;
 
 namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 {

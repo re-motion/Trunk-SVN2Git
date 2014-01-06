@@ -21,12 +21,12 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
   public class BT1Attribute : Attribute { }
 
   [Serializable]
-  [BT1Attribute]
+  [BT1]
   public class BaseType1
   {
     public int I;
 
-    [BT1Attribute]
+    [BT1]
     public virtual string VirtualMethod ()
     {
       return "BaseType1.VirtualMethod";
@@ -39,7 +39,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
 
     private string _backingField = "BaseType1.BackingField";
 
-    [BT1Attribute]
+    [BT1]
     public virtual string VirtualProperty
     {
       get { return _backingField; }
@@ -56,7 +56,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
       set { }
     }
 
-    [BT1Attribute]
+    [BT1]
     public virtual event EventHandler VirtualEvent;
 
     public event EventHandler ExplicitEvent

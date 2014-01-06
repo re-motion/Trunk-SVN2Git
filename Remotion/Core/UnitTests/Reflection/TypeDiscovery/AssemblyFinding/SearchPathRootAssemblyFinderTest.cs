@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 {

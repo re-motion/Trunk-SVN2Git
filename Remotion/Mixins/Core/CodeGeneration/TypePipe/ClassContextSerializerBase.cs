@@ -18,10 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {

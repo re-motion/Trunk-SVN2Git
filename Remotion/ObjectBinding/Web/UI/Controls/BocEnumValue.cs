@@ -25,7 +25,6 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;

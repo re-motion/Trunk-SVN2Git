@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
-using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {

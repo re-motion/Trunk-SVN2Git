@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Collections;
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 {

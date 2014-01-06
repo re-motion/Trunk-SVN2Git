@@ -20,11 +20,11 @@ using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.TypePipe;
 using Remotion.Utilities;
-using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.DomainObjects
 {

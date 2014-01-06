@@ -16,9 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects;
-using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.Utilities;

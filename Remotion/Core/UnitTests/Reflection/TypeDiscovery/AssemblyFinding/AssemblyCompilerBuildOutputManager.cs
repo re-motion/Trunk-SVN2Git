@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 {

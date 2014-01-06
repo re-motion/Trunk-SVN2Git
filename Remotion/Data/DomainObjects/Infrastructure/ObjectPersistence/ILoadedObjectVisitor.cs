@@ -1,4 +1,6 @@
-﻿namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
+﻿using System;
+
+namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
   /// Provides a method to dispatch on <see cref="ILoadedObjectData"/> implementations.

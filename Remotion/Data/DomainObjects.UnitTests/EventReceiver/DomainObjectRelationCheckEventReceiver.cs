@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 

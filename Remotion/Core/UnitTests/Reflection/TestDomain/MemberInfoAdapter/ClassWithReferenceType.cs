@@ -107,7 +107,7 @@ namespace Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter
 
     public T ReadOnlyNonPublicSetterScalar { get; protected set; }
 
-    [SampleAttribute]
+    [Sample]
     public T NotVisibleAttributeScalar { get; set; }
 
     public T NotVisibleNonPublicGetterScalar { protected get; set; }

@@ -18,9 +18,9 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;
-using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Rhino.Mocks;
 
 

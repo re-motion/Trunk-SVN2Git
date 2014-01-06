@@ -20,7 +20,6 @@ using Remotion.ExtensibleEnums;
 using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.Globalization.ExtensibleEnums;
-using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;

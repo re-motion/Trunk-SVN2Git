@@ -17,12 +17,10 @@
 using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints;
-using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Utilities;
 using Rhino.Mocks;
 

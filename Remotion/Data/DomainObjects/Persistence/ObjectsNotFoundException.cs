@@ -17,10 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Remotion.Text;
-using Remotion.Utilities;
 using System.Linq;
+using System.Runtime.Serialization;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {

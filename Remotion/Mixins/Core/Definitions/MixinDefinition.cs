@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Utilities;
-using System.Reflection;
 
 namespace Remotion.Mixins.Definitions
 {

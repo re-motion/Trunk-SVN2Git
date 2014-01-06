@@ -16,8 +16,8 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 {

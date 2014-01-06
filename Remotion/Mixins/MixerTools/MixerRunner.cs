@@ -15,13 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using Remotion.Logging;
-using Remotion.Mixins.Validation;
 using Remotion.Reflection;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
-using Remotion.ServiceLocation;
 using Remotion.Tools;
 using Remotion.Tools.Console;
 using Remotion.Utilities;

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
@@ -30,13 +29,13 @@ using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
-using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain;
+using Remotion.Data.DomainObjects.Validation;
+using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Rhino.Mocks;
-using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
 {

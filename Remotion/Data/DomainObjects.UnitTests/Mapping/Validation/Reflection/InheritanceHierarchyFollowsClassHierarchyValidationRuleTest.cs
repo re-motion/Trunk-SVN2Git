@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text.RegularExpressions;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation;
 using Remotion.Development.UnitTesting;

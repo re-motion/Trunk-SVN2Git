@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
-using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions

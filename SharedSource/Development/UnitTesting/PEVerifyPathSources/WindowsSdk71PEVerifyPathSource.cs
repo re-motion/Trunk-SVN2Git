@@ -15,6 +15,7 @@
 // under the License.
 // 
 
+using System;
 using System.IO;
 using Microsoft.Win32;
 using Remotion.FunctionalProgramming;

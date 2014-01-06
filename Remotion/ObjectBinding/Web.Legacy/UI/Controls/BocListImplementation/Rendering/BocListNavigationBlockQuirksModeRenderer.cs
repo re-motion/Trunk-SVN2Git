@@ -23,7 +23,6 @@ using System.Web.UI;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;

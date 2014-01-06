@@ -18,7 +18,6 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration

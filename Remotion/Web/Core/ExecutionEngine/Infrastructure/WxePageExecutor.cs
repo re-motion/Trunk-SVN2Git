@@ -18,7 +18,6 @@
 using System;
 using System.Web;
 using Remotion.Utilities;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {

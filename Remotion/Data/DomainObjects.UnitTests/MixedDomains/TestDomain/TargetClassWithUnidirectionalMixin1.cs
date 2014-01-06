@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Mixins;
 

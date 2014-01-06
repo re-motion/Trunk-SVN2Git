@@ -15,8 +15,9 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
+using System;
 using System.IO;
-using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory

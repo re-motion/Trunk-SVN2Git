@@ -24,7 +24,6 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;

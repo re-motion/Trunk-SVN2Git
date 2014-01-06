@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.UnitTests.Configuration.TypeDiscovery
 {

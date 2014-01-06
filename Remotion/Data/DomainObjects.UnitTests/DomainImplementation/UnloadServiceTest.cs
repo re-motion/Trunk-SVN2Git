@@ -19,10 +19,9 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation

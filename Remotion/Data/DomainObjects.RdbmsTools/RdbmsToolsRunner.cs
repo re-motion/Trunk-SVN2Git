@@ -16,6 +16,7 @@
 // 
 using System;
 using System.IO;
+using System.Linq;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Development;
@@ -29,8 +30,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Logging;
 using Remotion.Tools;
-using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools
 {

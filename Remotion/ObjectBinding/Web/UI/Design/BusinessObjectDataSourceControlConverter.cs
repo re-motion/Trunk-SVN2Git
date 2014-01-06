@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Design
 {

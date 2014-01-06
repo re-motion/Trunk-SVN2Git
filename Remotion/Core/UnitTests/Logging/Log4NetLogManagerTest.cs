@@ -16,10 +16,10 @@
 // 
 using System;
 using System.IO;
+using System.Linq;
 using log4net.Core;
 using NUnit.Framework;
 using Remotion.Logging;
-using System.Linq;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Logging

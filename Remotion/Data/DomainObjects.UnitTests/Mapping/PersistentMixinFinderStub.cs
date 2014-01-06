@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 {

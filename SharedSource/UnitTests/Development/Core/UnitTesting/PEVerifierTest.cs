@@ -16,9 +16,9 @@
 // 
 
 using System;
+using System.IO;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using System.IO;
 using Remotion.Development.UnitTesting.PEVerifyPathSources;
 using Rhino.Mocks;
 

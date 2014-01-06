@@ -19,8 +19,6 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
-using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
-using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation;
 using Rhino.Mocks;
 

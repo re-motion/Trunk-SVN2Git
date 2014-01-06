@@ -1,4 +1,5 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="UpdatePanelMasterPage.master.cs" Inherits="Remotion.Web.Test.UpdatePanelTests.UpdatePanelMasterPage" %>
+<%@ Import Namespace="System" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 

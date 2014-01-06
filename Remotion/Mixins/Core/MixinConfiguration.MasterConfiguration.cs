@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Logging;
 using Remotion.Mixins.Context;
 using Remotion.Utilities;
-using Remotion.Logging;
 
 namespace Remotion.Mixins
 {

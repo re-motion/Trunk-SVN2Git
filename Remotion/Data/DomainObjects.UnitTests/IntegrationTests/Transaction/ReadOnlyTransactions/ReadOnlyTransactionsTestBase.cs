@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.Data.UnitTesting.DomainObjects;

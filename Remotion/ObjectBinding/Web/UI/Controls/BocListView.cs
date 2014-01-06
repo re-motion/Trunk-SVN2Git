@@ -19,7 +19,6 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Design;
-using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {

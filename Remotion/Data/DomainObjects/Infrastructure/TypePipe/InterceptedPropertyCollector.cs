@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.TypePipe.MutableReflection.Implementation;

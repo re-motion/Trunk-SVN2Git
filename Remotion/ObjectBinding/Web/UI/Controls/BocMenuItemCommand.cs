@@ -16,7 +16,6 @@
 // 
 using System;
 using System.ComponentModel;
-using System.Web.UI;
 using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Utilities;

@@ -18,11 +18,11 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
+using Remotion.Mixins;
 using Remotion.Scripting;
 using Remotion.Scripting.StableBindingImplementation;
 using Remotion.Scripting.UnitTests;
 using Remotion.Scripting.UnitTests.TestDomain;
-using Remotion.Mixins;
 using Remotion.TypePipe;
 
 [assembly:Mix (typeof (MixinTestChildAssemblyMix), typeof (StableBindingMixin))]

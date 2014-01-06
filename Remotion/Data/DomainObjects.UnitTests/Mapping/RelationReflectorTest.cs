@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Errors;
@@ -29,9 +28,7 @@ using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.RelationReflector
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
-using Class1 =
-    Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.RelationReflector.
-    RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot.Class1;
+using Class1 = Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot.Class1;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 {

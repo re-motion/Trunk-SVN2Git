@@ -18,8 +18,6 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Remotion.Collections;
-using Remotion.Globalization;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Design.BindableObject

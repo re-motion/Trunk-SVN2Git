@@ -16,11 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
-using System.Linq;
-using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
 {

@@ -15,9 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
 using System.Collections.Generic;
-using Remotion.ServiceLocation;
 using System.Linq;
+using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {

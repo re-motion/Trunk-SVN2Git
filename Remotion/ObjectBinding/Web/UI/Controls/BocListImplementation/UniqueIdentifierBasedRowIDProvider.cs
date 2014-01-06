@@ -19,7 +19,6 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.Text;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation

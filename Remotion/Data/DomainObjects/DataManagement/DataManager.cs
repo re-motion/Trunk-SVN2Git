@@ -16,17 +16,16 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.FunctionalProgramming;
-using Remotion.Text;
 using Remotion.Utilities;
-using Remotion.Data.DomainObjects.Infrastructure;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {

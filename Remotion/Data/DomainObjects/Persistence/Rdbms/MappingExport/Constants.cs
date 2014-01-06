@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
 using System.Xml.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.MappingExport

@@ -16,8 +16,8 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Security.UnitTests.Core.SampleDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Security.UnitTests.Core.SampleDomain;
 
 namespace Remotion.Security.UnitTests.Core
 {

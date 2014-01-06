@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Development.Mixins.UnitTesting;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Serialization
 {

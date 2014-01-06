@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins.Context.Serialization;
-using System.Linq;
 
 namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
 {

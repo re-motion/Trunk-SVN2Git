@@ -22,7 +22,6 @@ using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Rhino.Mocks;
 

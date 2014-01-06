@@ -16,8 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.UnitTests.EventReceiver;
 using Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;

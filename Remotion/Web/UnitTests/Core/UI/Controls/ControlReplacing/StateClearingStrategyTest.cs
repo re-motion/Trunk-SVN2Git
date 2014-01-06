@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Web.UI;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;

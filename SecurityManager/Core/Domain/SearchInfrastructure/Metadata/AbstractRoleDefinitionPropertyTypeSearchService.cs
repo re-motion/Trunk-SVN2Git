@@ -20,7 +20,6 @@ using System.Linq;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure.Metadata
 {

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.Validation;

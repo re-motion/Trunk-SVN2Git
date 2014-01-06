@@ -17,12 +17,9 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
-using Remotion.Utilities;
 using Rhino.Mocks;
-using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 {

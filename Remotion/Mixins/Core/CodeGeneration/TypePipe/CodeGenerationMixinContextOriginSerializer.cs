@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.TypePipe.Dlr.Ast;
 using Remotion.Utilities;
-using System.Reflection;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {

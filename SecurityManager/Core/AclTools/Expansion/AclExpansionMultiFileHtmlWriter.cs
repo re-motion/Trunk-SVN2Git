@@ -17,13 +17,12 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Utilities;
 using Remotion.SecurityManager.Globalization.AclTools.Expansion;
+using Remotion.Utilities;
 
 
 namespace Remotion.SecurityManager.AclTools.Expansion

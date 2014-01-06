@@ -21,8 +21,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
+using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
 {

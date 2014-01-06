@@ -21,7 +21,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.Design.BindableObject;
-using TypeUtility=Remotion.Utilities.TypeUtility;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Design
 {

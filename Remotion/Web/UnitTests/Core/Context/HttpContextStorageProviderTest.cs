@@ -18,8 +18,8 @@ using System;
 using System.Runtime.Remoting.Messaging;
 using System.Web;
 using NUnit.Framework;
-using Remotion.Web.Context;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Web.Context;
 
 namespace Remotion.Web.UnitTests.Core.Context
 {

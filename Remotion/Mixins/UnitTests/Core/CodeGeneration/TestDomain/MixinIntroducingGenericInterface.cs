@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
+
 #pragma warning disable 0693
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain

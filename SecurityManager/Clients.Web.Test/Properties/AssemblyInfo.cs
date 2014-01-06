@@ -15,8 +15,9 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
+using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 

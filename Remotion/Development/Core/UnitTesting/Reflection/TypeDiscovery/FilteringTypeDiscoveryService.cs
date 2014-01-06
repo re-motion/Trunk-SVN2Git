@@ -17,8 +17,8 @@
 using System;
 using System.Collections;
 using System.ComponentModel.Design;
-using Remotion.Utilities;
 using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Reflection.TypeDiscovery
 {

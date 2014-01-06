@@ -17,10 +17,8 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 {

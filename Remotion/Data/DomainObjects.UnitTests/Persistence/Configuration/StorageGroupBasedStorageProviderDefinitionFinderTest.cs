@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Configuration;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;

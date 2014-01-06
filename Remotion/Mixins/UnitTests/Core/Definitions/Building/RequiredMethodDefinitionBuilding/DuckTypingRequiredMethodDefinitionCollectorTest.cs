@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins.Definitions.Building.RequiredMethodDefinitionBuilding;
-using System.Linq;
 using Remotion.Mixins.UnitTests.Core.Definitions.Building.RequiredMethodDefinitionBuilding.TestDomain;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.Building.RequiredMethodDefinitionBuilding

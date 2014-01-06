@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Linq;
-using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries

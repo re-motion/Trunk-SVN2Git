@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
 using Remotion.Security;

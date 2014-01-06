@@ -15,14 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Web.UI;
 using JetBrains.Annotations;
-using Remotion.Collections;
-using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
-using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Globalization
 {

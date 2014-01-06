@@ -17,7 +17,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.AclTools.Expansion;

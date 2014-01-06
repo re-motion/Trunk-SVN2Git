@@ -16,10 +16,8 @@
 // 
 
 using System;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UnitTests.Domain;
-using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
 {

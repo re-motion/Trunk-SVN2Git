@@ -18,8 +18,8 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
-using Remotion.Security;
 using Remotion.Data.DomainObjects.Security;
+using Remotion.Security;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {

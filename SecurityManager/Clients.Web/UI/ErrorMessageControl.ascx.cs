@@ -22,7 +22,7 @@ using Remotion.Web.Compilation;
 
 namespace Remotion.SecurityManager.Clients.Web.UI
 {
-  [FileLevelControlBuilderAttribute(typeof(CodeProcessingUserControlBuilder))]
+  [FileLevelControlBuilder(typeof(CodeProcessingUserControlBuilder))]
   public partial class ErrorMessageControl : UserControl
   {
     // types

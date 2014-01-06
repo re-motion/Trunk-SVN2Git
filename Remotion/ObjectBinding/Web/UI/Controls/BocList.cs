@@ -27,7 +27,6 @@ using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using JetBrains.Annotations;
-using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
@@ -46,7 +45,7 @@ using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.UI.Controls.PostBackTargets;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
-using StringArrayConverter=Remotion.Web.UI.Design.StringArrayConverter;
+using StringArrayConverter = Remotion.Web.UI.Design.StringArrayConverter;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {

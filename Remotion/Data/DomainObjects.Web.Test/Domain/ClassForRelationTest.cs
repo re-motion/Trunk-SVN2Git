@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Security;
-using Remotion.ObjectBinding;
 using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Globalization;
+using Remotion.ObjectBinding;
 using Remotion.Security;
 
 namespace Remotion.Data.DomainObjects.Web.Test.Domain

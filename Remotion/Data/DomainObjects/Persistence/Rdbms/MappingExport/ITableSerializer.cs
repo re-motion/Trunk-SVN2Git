@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Remotion.Data.DomainObjects.Mapping;

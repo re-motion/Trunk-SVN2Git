@@ -19,13 +19,11 @@ using System;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UnitTests.Domain;
-using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.EditableRowSupport

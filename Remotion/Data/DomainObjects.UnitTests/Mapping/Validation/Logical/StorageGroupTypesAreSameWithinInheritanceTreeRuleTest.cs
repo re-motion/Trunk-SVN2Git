@@ -16,8 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation;
 using Remotion.Data.DomainObjects.UnitTests.Persistence.Configuration;

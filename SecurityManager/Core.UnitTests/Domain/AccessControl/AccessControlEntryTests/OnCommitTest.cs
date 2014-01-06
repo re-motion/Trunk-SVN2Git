@@ -19,7 +19,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryTests

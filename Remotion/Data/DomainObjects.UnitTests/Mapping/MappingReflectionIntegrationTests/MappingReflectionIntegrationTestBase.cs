@@ -21,16 +21,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Reflection;
-using Remotion.Utilities;
 using Rhino.Mocks;
-using ReflectionUtility = Remotion.Utilities.ReflectionUtility;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping.MappingReflectionIntegrationTests
 {

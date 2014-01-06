@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using Remotion.Configuration;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationLoader;
 using Remotion.Development.UnitTesting.Configuration;
 

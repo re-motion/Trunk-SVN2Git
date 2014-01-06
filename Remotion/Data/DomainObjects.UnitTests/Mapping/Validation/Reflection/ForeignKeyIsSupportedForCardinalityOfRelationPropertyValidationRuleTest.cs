@@ -18,9 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
-using
-    Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.Reflection.
-        ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule;
+using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.Reflection.ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule;
 using Remotion.Reflection;
 using Rhino.Mocks;
 

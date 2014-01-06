@@ -17,7 +17,6 @@
 using System;
 using System.Text;
 using System.Web.UI;
-using Remotion.Collections;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 

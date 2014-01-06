@@ -21,11 +21,11 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
-using Remotion.Web;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplementation.Rendering

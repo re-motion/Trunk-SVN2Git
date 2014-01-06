@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Globalization;
 using NUnit.Framework;
 using Remotion.Utilities;
 

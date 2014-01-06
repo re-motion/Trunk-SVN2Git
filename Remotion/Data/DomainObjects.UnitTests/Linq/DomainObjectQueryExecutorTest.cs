@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -29,7 +28,6 @@ using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.EagerFetching;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Linq

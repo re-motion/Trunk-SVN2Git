@@ -16,12 +16,11 @@
 // 
 using System;
 using System.Linq;
-using JetBrains.Annotations;
+using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using System.Reflection;
 using Remotion.Utilities;
 using Remotion.Utilities.ReSharperAnnotations;
 

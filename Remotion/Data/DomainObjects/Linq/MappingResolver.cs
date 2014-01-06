@@ -19,6 +19,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.FunctionalProgramming;
 using Remotion.Linq;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.MappingResolution;
@@ -27,7 +28,6 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.Linq
 {

@@ -16,14 +16,12 @@
 // 
 
 using System;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UnitTests.Domain;
-using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls

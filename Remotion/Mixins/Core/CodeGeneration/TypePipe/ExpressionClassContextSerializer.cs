@@ -16,12 +16,12 @@
 // 
 
 using System;
+using System.Linq;
 using System.Reflection;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.TypePipe.Dlr.Ast;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {

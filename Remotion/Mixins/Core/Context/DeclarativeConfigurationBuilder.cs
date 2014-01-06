@@ -18,15 +18,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
 using System.Reflection;
+using Remotion.Logging;
 using Remotion.Mixins.Context.DeclarativeAnalyzers;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
-using System.Linq;
-using Remotion.Logging;
 
 namespace Remotion.Mixins.Context
 {

@@ -17,7 +17,6 @@
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {

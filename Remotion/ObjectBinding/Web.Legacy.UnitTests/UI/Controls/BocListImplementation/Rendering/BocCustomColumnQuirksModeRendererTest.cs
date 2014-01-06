@@ -21,7 +21,6 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;

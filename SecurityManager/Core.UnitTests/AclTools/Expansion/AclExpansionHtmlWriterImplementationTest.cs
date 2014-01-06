@@ -20,8 +20,6 @@ using System.IO;
 using NUnit.Framework;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
-using Remotion.SecurityManager.Domain.Metadata;
-using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {

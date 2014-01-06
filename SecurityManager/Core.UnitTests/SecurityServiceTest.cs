@@ -19,27 +19,27 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
 using log4net.Core;
+using log4net.Filter;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Security;
-using Remotion.Security.Configuration;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Rhino.Mocks;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
+using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.TestDomain;
+using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;
 using Mocks_Property = Rhino.Mocks.Constraints.Property;
-using log4net.Filter;
 using PrincipalTestHelper = Remotion.SecurityManager.UnitTests.Domain.AccessControl.PrincipalTestHelper;
-using SecurityContext=Remotion.Security.SecurityContext;
+using SecurityContext = Remotion.Security.SecurityContext;
 
 namespace Remotion.SecurityManager.UnitTests
 {

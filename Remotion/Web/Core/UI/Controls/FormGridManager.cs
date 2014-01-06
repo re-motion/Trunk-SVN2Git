@@ -25,9 +25,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
 using Remotion.Logging;
-using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
@@ -3127,7 +3125,7 @@ namespace Remotion.Web.UI.Controls
 
     /// <summary> The suffix identifying all tables managed by this <c>FormGridManager</c>. </summary>
     /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/FormGridSuffix/*' />
-    [CategoryAttribute("Behaviour")]
+    [Category("Behaviour")]
     [DefaultValue(c_formGridSuffix)]
     [Description("The suffix that must be appended to all tables to be used as a form grid.")]
     public string FormGridSuffix
@@ -3141,7 +3139,7 @@ namespace Remotion.Web.UI.Controls
     ///   Must be less than the value of <see cref="ControlsColumn"/>.
     /// </summary>
     /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/LabelsColumn/*' />
-    [CategoryAttribute("Appearance")]
+    [Category("Appearance")]
     [DefaultValue(0)]
     [Description("The index of the label column in the form grid tables. Must be less than the ControlsColumn's index")]
     public int LabelsColumn
@@ -3164,7 +3162,7 @@ namespace Remotion.Web.UI.Controls
     ///   Must be higher than the value of <see cref="LabelsColumn"/>.
     /// </summary>
     /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/ControlsColumn/*' />
-    [CategoryAttribute("Appearance")]
+    [Category("Appearance")]
     [DefaultValue(1)]
     [Description("The index of the control column in the form grid tables. Must be higher than the LabelsColumn's index")]
     public int ControlsColumn
@@ -3184,7 +3182,7 @@ namespace Remotion.Web.UI.Controls
 
     /// <summary> Defines how the validation messages are displayed. </summary>
     /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/ValidatorVisibility/*' />
-    [CategoryAttribute("Behavior")]
+    [Category("Behavior")]
     [DefaultValue(ValidatorVisibility.ValidationMessageInControlsColumn)]
     [Description("The position of the validation messages in the form grids.")]
     public ValidatorVisibility ValidatorVisibility
@@ -3197,7 +3195,7 @@ namespace Remotion.Web.UI.Controls
 
     /// <summary> Enables/Disables the validation markers. </summary>
     /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/ShowValidationMarkers/*' />
-    [CategoryAttribute("Behavior")]
+    [Category("Behavior")]
     [DefaultValue(true)]
     [Description("Enables/Disables the validation markers.")]
     public bool ShowValidationMarkers
@@ -3208,7 +3206,7 @@ namespace Remotion.Web.UI.Controls
 
     /// <summary> Enables/Disables the required markers. </summary>
     /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/ShowRequiredMarkers/*' />
-    [CategoryAttribute("Behavior")]
+    [Category("Behavior")]
     [DefaultValue(true)]
     [Description("Enables/Disables the required markers.")]
     public bool ShowRequiredMarkers
@@ -3219,7 +3217,7 @@ namespace Remotion.Web.UI.Controls
 
     /// <summary> Enables/Disables the help providers. </summary>
     /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/ShowHelpProviders/*' />
-    [CategoryAttribute("Behavior")]
+    [Category("Behavior")]
     [DefaultValue(true)]
     [Description("Enables/Disables the help providers.")]
     public bool ShowHelpProviders

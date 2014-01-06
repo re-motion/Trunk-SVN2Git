@@ -15,10 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.UnitTests.EventReceiver
 {

@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;

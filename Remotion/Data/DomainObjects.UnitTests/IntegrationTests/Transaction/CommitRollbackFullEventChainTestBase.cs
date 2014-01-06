@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.UnitTests.EventReceiver;
@@ -30,7 +29,6 @@ using Remotion.Development.RhinoMocks.UnitTesting;
 using Remotion.FunctionalProgramming;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
-using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
 {

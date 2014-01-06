@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Utilities;
-using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
+using ReflectionUtility = Remotion.Mixins.Utilities.ReflectionUtility;
 
 namespace Remotion.Mixins.Definitions.Building
 {

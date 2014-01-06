@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using Remotion.Logging;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization

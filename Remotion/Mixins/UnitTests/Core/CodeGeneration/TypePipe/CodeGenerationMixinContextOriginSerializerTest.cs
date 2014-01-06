@@ -18,7 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.Context;
-using Expression = Remotion.TypePipe.Dlr.Ast.Expression;
+using Remotion.TypePipe.Dlr.Ast;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
 {

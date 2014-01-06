@@ -16,13 +16,11 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain.TableInheritance;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectIDs
 {

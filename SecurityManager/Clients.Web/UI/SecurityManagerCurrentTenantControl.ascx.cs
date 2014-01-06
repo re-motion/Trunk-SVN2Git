@@ -30,7 +30,7 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.SecurityManager.Clients.Web.UI
 {
-  [FileLevelControlBuilderAttribute(typeof(CodeProcessingUserControlBuilder))]
+  [FileLevelControlBuilder(typeof(CodeProcessingUserControlBuilder))]
   public partial class CurrentTenantControl : UserControl
   {
     private static readonly string s_isTenantSelectionEnabledKey = typeof (CurrentTenantControl).FullName + "_IsTenantSelectionEnabled";

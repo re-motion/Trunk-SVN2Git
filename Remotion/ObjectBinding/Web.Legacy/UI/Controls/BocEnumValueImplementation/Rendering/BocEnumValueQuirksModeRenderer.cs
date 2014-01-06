@@ -17,7 +17,6 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;

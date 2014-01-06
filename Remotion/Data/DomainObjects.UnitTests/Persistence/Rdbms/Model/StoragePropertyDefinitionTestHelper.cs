@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model
 {

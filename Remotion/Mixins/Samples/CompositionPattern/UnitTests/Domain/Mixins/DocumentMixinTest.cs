@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Mixins.Samples.CompositionPattern.Core.Domain;
 using Remotion.Mixins.Samples.CompositionPattern.Core.Domain.Mixins;
-using Rhino.Mocks;
 
 namespace Remotion.Mixins.Samples.CompositionPattern.UnitTests.Domain.Mixins
 {

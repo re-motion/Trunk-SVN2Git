@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
-using Remotion.Globalization;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {

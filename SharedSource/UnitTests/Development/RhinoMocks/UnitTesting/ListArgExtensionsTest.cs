@@ -18,8 +18,8 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Rhino.Mocks;
 using Remotion.Development.RhinoMocks.UnitTesting;
+using Rhino.Mocks;
 
 // ReSharper disable once CheckNamespace
 namespace Remotion.UnitTests.Development.RhinoMocks.UnitTesting

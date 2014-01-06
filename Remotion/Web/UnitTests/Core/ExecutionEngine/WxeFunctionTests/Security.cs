@@ -18,10 +18,9 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.ServiceLocation;
-using Remotion.Web.UI;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
-using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
 {

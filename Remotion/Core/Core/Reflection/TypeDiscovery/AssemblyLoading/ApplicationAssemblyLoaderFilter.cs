@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading

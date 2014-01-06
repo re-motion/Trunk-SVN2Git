@@ -19,11 +19,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects;
 using Remotion.FunctionalProgramming;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {

@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Rhino.Mocks;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
 {

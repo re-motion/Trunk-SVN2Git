@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Collections;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;

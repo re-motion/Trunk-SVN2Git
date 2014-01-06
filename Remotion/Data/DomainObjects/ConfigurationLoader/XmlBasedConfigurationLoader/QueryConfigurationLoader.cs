@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;

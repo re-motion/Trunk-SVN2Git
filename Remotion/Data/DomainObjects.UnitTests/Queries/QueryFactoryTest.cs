@@ -21,10 +21,10 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Linq;
-using Remotion.Linq.Parsing.Structure;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Linq;
+using Remotion.Linq.Parsing.Structure;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Queries

@@ -16,6 +16,7 @@
  % Additional permissions are listed in the file re-motion_exceptions.txt.
 --%>
 <%@ Master Language="C#" AutoEventWireup="true" CodeBehind="SecurityManagerMasterPage.Master.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.SecurityManagerMasterPage" %>
+<%@ Import Namespace="System" %>
 
 <%@ Register TagPrefix="securityManager" Src="SecurityManagerNavigationTabs.ascx" TagName="NavigationTabs" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

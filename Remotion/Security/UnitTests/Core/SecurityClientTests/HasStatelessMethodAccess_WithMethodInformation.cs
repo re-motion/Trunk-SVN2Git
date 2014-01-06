@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
-using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;
 

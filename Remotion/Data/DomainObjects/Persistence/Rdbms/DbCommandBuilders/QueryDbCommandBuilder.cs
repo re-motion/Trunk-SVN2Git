@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {

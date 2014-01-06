@@ -18,8 +18,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 {

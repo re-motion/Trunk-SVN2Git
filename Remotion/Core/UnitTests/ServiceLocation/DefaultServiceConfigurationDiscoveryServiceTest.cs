@@ -17,9 +17,9 @@
 using System;
 using System.Collections;
 using System.ComponentModel.Design;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
-using System.Linq;
 using Remotion.UnitTests.ServiceLocation.TestDomain;
 using Rhino.Mocks;
 

@@ -175,7 +175,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     }
 
     [Test]
-    [ExpectedExceptionAttribute (typeof (ConfigurationErrorsException), ExpectedMessage = 
+    [ExpectedException (typeof (ConfigurationErrorsException), ExpectedMessage = 
       "Provider must implement the interface 'Remotion.Security.IPrincipalProvider'.")]
     public void InstantiateProvider_WithTypeNotImplementingRequiredInterface ()
     {

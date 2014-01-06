@@ -17,8 +17,6 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation.Cloning;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Rhino.Mocks;

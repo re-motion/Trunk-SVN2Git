@@ -17,10 +17,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
-using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests

@@ -25,10 +25,10 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Compilation;
 using Remotion.Web.Configuration;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.SmartPageImplementation;
 using Remotion.Web.Utilities;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI
 {
@@ -37,7 +37,7 @@ namespace Remotion.Web.UI
 ///   a base class for pages that should supress multiple postbacks, require smart navigation, or have a dirty-state.
 /// </summary>
 /// <include file='..\doc\include\UI\SmartPage.xml' path='SmartPage/Class/*' />
-[FileLevelControlBuilderAttribute(typeof(CodeProcessingPageControlBuilder))]
+[FileLevelControlBuilder(typeof(CodeProcessingPageControlBuilder))]
 public class SmartPage : Page, ISmartPage, ISmartNavigablePage
 {
   #region IPage Implementation

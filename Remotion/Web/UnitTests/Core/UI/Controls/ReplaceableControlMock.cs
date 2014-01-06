@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Collections;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;

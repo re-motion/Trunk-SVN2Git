@@ -16,16 +16,12 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
-using Remotion.Reflection;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;

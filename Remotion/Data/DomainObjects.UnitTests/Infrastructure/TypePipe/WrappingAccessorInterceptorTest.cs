@@ -17,11 +17,11 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using Remotion.TypePipe.Dlr.Ast;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.TypePipe.Dlr.Ast;
 using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.Expressions.ReflectionAdapters;
 using Remotion.TypePipe.MutableReflection;

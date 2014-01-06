@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary> Defines when the <see cref="BocRowEditModeColumnDefinition"/> will be shown in the <see cref="BocList"/>. </summary>

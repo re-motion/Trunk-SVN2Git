@@ -15,16 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Security;
 using System.Security.Permissions;
-using System.Security.Policy;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Sandboxing;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
 {

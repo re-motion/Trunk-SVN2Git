@@ -18,8 +18,8 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
+using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyReflectorTests
 {

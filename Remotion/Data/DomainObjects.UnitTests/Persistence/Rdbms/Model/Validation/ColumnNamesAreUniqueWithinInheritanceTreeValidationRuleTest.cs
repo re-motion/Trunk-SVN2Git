@@ -15,16 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
+using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.Validation;
-using System.Linq;
-using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model.Validation

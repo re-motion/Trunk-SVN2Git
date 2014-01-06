@@ -15,17 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
-using Remotion.Reflection;
 using Remotion.ServiceLocation;
-using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
-using Remotion.Web.Utilities;
 
 namespace OBWTest
 {

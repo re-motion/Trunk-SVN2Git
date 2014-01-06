@@ -21,7 +21,6 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Design;
 using Remotion.Development.UnitTesting;
-using Remotion.FunctionalProgramming;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection.TypeDiscovery;

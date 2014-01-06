@@ -18,8 +18,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Remotion.Utilities;
 using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.Collections
 {

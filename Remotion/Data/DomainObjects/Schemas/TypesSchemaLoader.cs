@@ -15,10 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Xml.Schema;
-using Remotion.Data.DomainObjects.ConfigurationLoader;
-using Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationLoader;
-using Remotion.Utilities;
 using Remotion.Xml;
 
 namespace Remotion.Data.DomainObjects.Schemas

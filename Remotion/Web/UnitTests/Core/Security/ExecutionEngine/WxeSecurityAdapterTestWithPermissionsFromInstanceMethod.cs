@@ -15,18 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
+using Remotion.Security.Configuration;
+using Remotion.Security.Metadata;
 using Remotion.ServiceLocation;
+using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Security.ExecutionEngine;
 using Remotion.Web.UnitTests.Core.Security.Configuration;
 using Remotion.Web.UnitTests.Core.Security.Domain;
 using Rhino.Mocks;
-using Remotion.Security.Configuration;
-using Remotion.Security.Metadata;
-using Remotion.Web.Security.ExecutionEngine;
-using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
 {

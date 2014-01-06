@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.HtmlTagWriter
 {

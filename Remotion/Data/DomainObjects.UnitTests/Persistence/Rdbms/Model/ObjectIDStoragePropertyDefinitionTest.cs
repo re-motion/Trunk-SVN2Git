@@ -17,13 +17,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model
 {

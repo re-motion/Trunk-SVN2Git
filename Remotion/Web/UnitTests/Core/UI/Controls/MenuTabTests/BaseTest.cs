@@ -17,8 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UI;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
 {

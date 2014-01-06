@@ -19,7 +19,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;

@@ -17,9 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
-using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Sample
 {

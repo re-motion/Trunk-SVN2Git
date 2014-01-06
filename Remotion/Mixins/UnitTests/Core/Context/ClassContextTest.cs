@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
@@ -24,7 +25,6 @@ using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Context.Suppression;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Mixins.UnitTests.Core.Context
 {

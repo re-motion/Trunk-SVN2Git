@@ -22,8 +22,8 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {

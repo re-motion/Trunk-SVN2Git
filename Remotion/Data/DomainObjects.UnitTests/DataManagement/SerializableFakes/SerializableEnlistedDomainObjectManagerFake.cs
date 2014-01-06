@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.SerializableFakes

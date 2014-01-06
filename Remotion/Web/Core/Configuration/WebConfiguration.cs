@@ -19,7 +19,6 @@ using System.Configuration;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
-using Remotion.Utilities;
 using Remotion.Xml;
 
 namespace Remotion.Web.Configuration

@@ -22,7 +22,6 @@ using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries.Configuration

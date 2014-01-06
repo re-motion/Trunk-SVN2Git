@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
-using System.Linq;
 using Remotion.Mixins.UnitTests.Core.Context.Suppression.TestDomain;
 
 namespace Remotion.Mixins.UnitTests.Core.Context.Suppression

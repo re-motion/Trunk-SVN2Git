@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Collections.Specialized;
 using System.Text;
 using System.Web.UI;
@@ -22,7 +24,6 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Legacy.Factories;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 

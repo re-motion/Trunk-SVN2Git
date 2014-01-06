@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Reflection;
+using NUnit.Framework;
 using Remotion.UnitTests.Reflection.CodeGeneration.TestDomain;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration

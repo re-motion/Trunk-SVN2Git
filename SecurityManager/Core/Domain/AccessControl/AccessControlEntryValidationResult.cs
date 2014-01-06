@@ -17,10 +17,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Text;
 using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain.AccessControl

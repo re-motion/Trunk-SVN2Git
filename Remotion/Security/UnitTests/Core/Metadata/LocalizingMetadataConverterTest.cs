@@ -19,10 +19,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using NUnit.Framework;
-using Rhino.Mocks;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Remotion.Security.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.Metadata
 {

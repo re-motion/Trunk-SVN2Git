@@ -17,13 +17,13 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Data.DomainObjects;
-using Remotion.Development.UnitTesting;
 using Remotion.TypePipe;
 
 namespace Remotion.SecurityManager.UnitTests.Domain

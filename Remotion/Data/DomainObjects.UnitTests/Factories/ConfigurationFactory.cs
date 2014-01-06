@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Configuration;
-using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting.IO;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Factories

@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {

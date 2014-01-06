@@ -18,10 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.Collections;
 
 namespace Remotion.Mixins.CodeGeneration.Serialization
 {

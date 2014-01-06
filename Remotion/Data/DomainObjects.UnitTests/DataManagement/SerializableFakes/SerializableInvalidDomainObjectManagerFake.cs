@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.SerializableFakes

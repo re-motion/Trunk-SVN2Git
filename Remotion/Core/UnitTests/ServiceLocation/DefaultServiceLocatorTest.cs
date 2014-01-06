@@ -159,7 +159,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedExceptionAttribute (typeof (ActivationException), ExpectedMessage =
+    [ExpectedException (typeof (ActivationException), ExpectedMessage =
         "Invalid ConcreteImplementationAttribute configuration for service type "
         + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType'. "
         + "Ambiguous ConcreteImplementationAttribute: Position must be unique.")]
@@ -169,7 +169,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedExceptionAttribute (typeof (ActivationException), ExpectedMessage =
+    [ExpectedException (typeof (ActivationException), ExpectedMessage =
         "Invalid ConcreteImplementationAttribute configuration for service type "
         + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestMultipleConcreteImplementationAttributesWithDuplicateImplementationType'. "
         + "Ambiguous ConcreteImplementationAttribute: Implementation type must be unique.")]
@@ -179,7 +179,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedExceptionAttribute (typeof (ActivationException), ExpectedMessage =
+    [ExpectedException (typeof (ActivationException), ExpectedMessage =
         "Invalid ConcreteImplementationAttribute configuration for service type "
         + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestConcreteImplementationAttributeTypeWithInvalidImplementation'. "
         + "The implementation type 'Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType' does not implement "

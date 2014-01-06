@@ -21,7 +21,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Development.UnitTesting;
-using Remotion.Logging;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {

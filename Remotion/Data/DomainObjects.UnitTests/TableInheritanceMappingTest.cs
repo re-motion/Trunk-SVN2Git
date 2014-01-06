@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Configuration;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;

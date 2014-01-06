@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration
 {
@@ -42,7 +41,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration
       }
     }
 
-    [DBBidirectionalRelationAttribute ("IndustrialSector")]
+    [DBBidirectionalRelation ("IndustrialSector")]
     [Mandatory]
     public virtual ObjectList<Company> Companies
     {

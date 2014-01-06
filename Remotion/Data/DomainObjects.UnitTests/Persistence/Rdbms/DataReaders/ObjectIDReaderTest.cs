@@ -16,12 +16,11 @@
 // 
 using System;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
 {

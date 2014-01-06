@@ -16,11 +16,10 @@
 // 
 using System;
 using System.ComponentModel.Design;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.MixerTools;
-using System.Linq;
 using Remotion.Mixins.UnitTests.Core.MixerTools.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Rhino.Mocks;

@@ -18,14 +18,12 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests

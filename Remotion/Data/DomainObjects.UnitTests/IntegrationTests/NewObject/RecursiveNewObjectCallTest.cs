@@ -17,7 +17,6 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.NewObject
 {

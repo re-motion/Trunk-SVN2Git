@@ -1,4 +1,5 @@
-﻿using Remotion.Mixins.Samples.CompositionPattern.Core.Domain;
+﻿using System;
+using Remotion.Mixins.Samples.CompositionPattern.Core.Domain;
 using Remotion.Mixins.Samples.CompositionPattern.Core.ExternalDomainMixins;
 
 // ReSharper disable CheckNamespace

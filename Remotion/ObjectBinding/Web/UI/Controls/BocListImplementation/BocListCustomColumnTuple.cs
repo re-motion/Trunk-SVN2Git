@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation

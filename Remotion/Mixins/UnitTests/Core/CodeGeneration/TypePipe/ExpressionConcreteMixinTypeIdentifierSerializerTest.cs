@@ -22,8 +22,8 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.TypePipe;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Remotion.TypePipe.Dlr.Ast;
 using Remotion.Utilities;
-using Expression = Remotion.TypePipe.Dlr.Ast.Expression;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
 {

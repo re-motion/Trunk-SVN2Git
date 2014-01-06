@@ -17,11 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using Remotion.Utilities;
 using System.Linq;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
 {

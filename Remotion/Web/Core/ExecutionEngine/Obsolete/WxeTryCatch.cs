@@ -17,9 +17,7 @@
 using System;
 using System.Collections;
 using System.Reflection;
-using System.Web;
 using Remotion.Web.ExecutionEngine.Infrastructure;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Obsolete
 {

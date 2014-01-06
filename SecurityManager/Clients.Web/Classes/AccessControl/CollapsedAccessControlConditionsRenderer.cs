@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;

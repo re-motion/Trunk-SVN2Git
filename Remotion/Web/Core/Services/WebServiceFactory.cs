@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using Remotion.Collections;
-using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 

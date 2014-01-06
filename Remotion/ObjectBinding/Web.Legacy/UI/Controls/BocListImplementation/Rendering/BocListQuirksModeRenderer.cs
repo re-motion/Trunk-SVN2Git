@@ -15,17 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Web.UI;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
-using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {

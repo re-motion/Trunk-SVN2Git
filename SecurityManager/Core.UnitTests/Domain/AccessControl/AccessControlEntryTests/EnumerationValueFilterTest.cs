@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.UnitTests.Configuration;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryTests
 {

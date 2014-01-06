@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.SerializableFakes

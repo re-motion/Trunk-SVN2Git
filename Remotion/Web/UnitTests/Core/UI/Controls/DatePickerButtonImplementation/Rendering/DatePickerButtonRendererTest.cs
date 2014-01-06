@@ -18,7 +18,6 @@ using System;
 using System.Web;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
-using Remotion.Globalization.Implementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Rhino.Mocks;

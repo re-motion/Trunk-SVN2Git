@@ -34,7 +34,7 @@ namespace Remotion.Mixins.Context.Serialization
       if (typeof (T) == typeof (Type[]))
       {
         var convertedTypes = ConvertFromStorageFormat<string[]> (value, index);
-        return (T) (object) convertedTypes.Select (ConvertFromStorageFormat<Type>).ToArray ();
+        return (T) (object) Enumerable.ToArray (convertedTypes.Select (ConvertFromStorageFormat<Type>));
       }
 
       if (typeof (T) == typeof (Type))

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Utilities;

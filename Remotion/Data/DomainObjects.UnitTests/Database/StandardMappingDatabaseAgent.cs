@@ -17,9 +17,8 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.UnitTests.Resources;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
+using Remotion.Data.DomainObjects.UnitTests.Resources;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Database

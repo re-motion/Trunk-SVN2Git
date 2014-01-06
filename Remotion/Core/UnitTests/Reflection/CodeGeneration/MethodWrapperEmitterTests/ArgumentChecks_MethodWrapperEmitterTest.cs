@@ -21,7 +21,6 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {

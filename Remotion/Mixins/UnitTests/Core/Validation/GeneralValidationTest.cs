@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Development.Mixins.Validation;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
@@ -25,7 +26,6 @@ using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain;
 using Remotion.Mixins.Validation;
 using Remotion.Mixins.Validation.Rules;
-using System.Linq;
 using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Mixins.UnitTests.Core.Validation

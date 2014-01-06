@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.UnitTests.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Reflection;
 using Rhino.Mocks;
 

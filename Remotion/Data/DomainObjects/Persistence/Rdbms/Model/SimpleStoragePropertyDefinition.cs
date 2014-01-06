@@ -16,10 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
+using System.Linq;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {

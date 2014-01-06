@@ -17,7 +17,6 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
 using Rhino.Mocks;
 

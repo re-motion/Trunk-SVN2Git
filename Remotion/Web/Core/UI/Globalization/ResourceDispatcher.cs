@@ -18,14 +18,12 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
-using System.Resources;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.UI.Globalization
 {

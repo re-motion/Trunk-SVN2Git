@@ -16,11 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
 {

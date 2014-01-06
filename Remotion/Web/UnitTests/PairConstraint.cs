@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web.UI;
-using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
 namespace Remotion.Web.UnitTests

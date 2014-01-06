@@ -16,9 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
-using Rhino.Mocks;
 using Remotion.Security.Configuration;
 using Remotion.Security.UnitTests.Core.Configuration;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 {

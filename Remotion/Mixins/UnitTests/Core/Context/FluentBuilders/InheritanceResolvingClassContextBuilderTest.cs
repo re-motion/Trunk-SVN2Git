@@ -16,13 +16,12 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
 {

@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting

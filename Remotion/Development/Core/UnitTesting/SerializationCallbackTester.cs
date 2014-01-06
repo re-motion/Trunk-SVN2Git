@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Runtime.Serialization;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Development.UnitTesting
 {

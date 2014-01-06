@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Rhino.Mocks;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.Metadata
 {

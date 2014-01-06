@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation;
-using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping.Validation.Logical
 {

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;

@@ -23,11 +23,11 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.UnitTests.DataManagement;
+using Remotion.Data.DomainObjects.UnitTests.DomainImplementation.Transport;
 using Remotion.Mixins;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
-using PostActionDisposableDecorator = Remotion.Data.DomainObjects.UnitTests.DomainImplementation.Transport.PostActionDisposableDecorator;
 
 namespace Remotion.Data.UnitTests.UnitTesting
 {

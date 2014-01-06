@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 

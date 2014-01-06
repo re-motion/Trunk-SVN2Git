@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -29,7 +29,6 @@ using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.TypePipe;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation.Transport
 {

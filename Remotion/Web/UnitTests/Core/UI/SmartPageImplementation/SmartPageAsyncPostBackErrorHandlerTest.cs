@@ -20,7 +20,6 @@ using System.Collections;
 using System.Web;
 using System.Web.UI;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.UI;
 using Remotion.Web.UI.SmartPageImplementation;
 using Remotion.Web.Utilities;
