@@ -59,7 +59,7 @@
     </Compile>
     <Compile Include="ExtensibleEnumGlobalizationServiceExtensionsTest.cs" />
     <Compile Include="ExtensibleEnumGlobalizationServiceIntegrationTest.cs" />
-    <Compile Include="ExtensibleEnumGlobalizationServiceTest.cs" />
+    <Compile Include="Implementation\ExtensibleEnumGlobalizationServiceTest.cs" />
     <Compile Include="Obsolete\ExtensibleEnumExtensionsIntegrationTest.cs" />
     <Compile Include="IExtensibleEnumGlobalizationServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

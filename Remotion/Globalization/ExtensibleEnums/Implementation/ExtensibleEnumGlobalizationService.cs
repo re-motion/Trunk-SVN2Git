@@ -20,7 +20,7 @@ using Remotion.ExtensibleEnums;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Globalization.ExtensibleEnums
+namespace Remotion.Globalization.ExtensibleEnums.Implementation
 {
   /// <summary>
   /// Retrieves the human-readable localized representation of extensible-enumeration objects.
