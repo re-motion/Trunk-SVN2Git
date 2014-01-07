@@ -30,6 +30,7 @@
     <PropertyGroup>
       <_libDirectory>$(BinariesDirectory)net-4.5\bin\release\</_libDirectory>
       <_srcDirectory>$(SolutionDirectory)TypePipe\Core\</_srcDirectory>
+      <_sharedSrcDirectory>$(SolutionDirectory)SharedSource\</_sharedSrcDirectory>
     </PropertyGroup>
     
     <ItemGroup>
@@ -43,6 +44,8 @@
       <NuGetSrcFiles Remove="@(NuGetSrcFiles)"/>
       <NuGetSrcFiles Include="$(_srcDirectory)**\*.*"
                      Exclude="$(_srcDirectory)**\bin\**;$(_srcDirectory)**\obj\**;"/>
+      <NuGetSrcFiles Include="$(_sharedSrcDirectory)**\*.*" 
+                     Exclude="$(_sharedSrcDirectory)**\bin\**;$(_sharedSrcDirectory)**\obj\**;"/>
     </ItemGroup>
   </Target>
   
