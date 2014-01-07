@@ -110,7 +110,7 @@
 
   <Target Name="UploadNuGetPackage" DependsOnTargets="CreateRequiresUpload;UploadNuGetPackageInternal" />
   
-  <Target Name="UploadNuGetPackageInternal" DependsOnTargets="CreateNuGetProperties;CreateNuGetPackageProperties" Condition="$(UploadToNuGet) == 'True' AND '1' == '0'">
+  <Target Name="UploadNuGetPackageInternal" DependsOnTargets="CreateNuGetProperties;CreateNuGetPackageProperties" Condition="$(UploadToNuGet) == 'True'">
     <Error Text="The property 'NuGetApiKey' is not set." Condition="'$(NuGetApiKey)' == ''" />
     
     <ItemGroup>
