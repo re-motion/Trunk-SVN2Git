@@ -3,3 +3,4 @@
 CodeplexPassword=[^ ]*
 /password:[^ ]*
 NuGet.exe push "[^"]*" [^ ]*
+NuGetApiKey=[^ ]*
