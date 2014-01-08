@@ -114,10 +114,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.Validation.IntegrationTe
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
       "Property 'RelationProperty1' of class 'InvalidRelationClass1' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
       + "Declaring type: Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
-      + "OneToOneWithSortExpression.InvalidRelationClass1\r\nProperty: RelationProperty1")]
-    public void OneToOneWithSortExpression ()
+      + "OneToOne_WithSortExpression.InvalidRelationClass1\r\nProperty: RelationProperty1")]
+    public void OneToOne_WithSortExpression ()
     {
-      ValidateMapping ("NotSupportedRelations.OneToOneWithSortExpression");
+      ValidateMapping ("NotSupportedRelations.OneToOne_WithSortExpression");
     }
 
     //SortExpressionIsValidValidationRule
@@ -127,10 +127,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.Validation.IntegrationTe
       +"'InvalidRelationClass1' class or its base classes. Alternatively, to resolve ambiguities or to use a property declared by a mixin or a "
       +"derived class of 'InvalidRelationClass1', the full unique re-store property identifier can be specified.\r\n\r\n"
       +"Declaring type: Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
-      +"OneToManyWithInvalidSortExpression.InvalidRelationClass2\r\nProperty: RelationProperty2")]
-    public void OneToManyWithInvalidSortExpression ()
+      +"OneToMany_WithInvalidSortExpression.InvalidRelationClass2\r\nProperty: RelationProperty2")]
+    public void OneToMany_WithInvalidSortExpression ()
     {
-      ValidateMapping ("NotSupportedRelations.OneToManyWithInvalidSortExpression");
+      ValidateMapping ("NotSupportedRelations.OneToMany_WithInvalidSortExpression");
     }
 
     //RelationEndPointNamesAreConsistentValidationRule
@@ -138,11 +138,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.Validation.IntegrationTe
     [ExpectedException (typeof (MappingException), ExpectedMessage =
       "Opposite relation property 'RelationProperty1' declared on type 'InvalidRelationClass1' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
       + "Declaring type: Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
-      + "BidirectionalWithBidirectionalRelationAttributeOnOneSite.InvalidRelationClass2\r\n"
+      + "Bidirectional_WithBidirectionalRelationAttributeOnOneSite.InvalidRelationClass2\r\n"
       + "Property: RelationProperty2")]
-    public void BidirectionalWithBidirectionalRelationAttributeOnOneSite ()
+    public void Bidirectional_WithBidirectionalRelationAttributeOnOneSite ()
     {
-      ValidateMapping ("NotSupportedRelations.BidirectionalWithBidirectionalRelationAttributeOnOneSite");
+      ValidateMapping ("NotSupportedRelations.Bidirectional_WithBidirectionalRelationAttributeOnOneSite");
     }
 
     //RelationEndPointNamesAreConsistentValidationRule / CheckForInvalidRelationEndPointsValidationRule
