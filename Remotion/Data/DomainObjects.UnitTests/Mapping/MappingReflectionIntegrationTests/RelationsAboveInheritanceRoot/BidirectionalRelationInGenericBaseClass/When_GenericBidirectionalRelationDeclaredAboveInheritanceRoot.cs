@@ -22,8 +22,9 @@ using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.BidirectionalRelationInGenericBaseClass
 {
+  // Filename has reached max-length
   [TestFixture]
-  public class When_AGenericBidirectionalRelationIsDeclaredAboveTheInheritanceRoot : MappingReflectionIntegrationTestBase
+  public class When_GenericBidirectionalRelationDeclaredAboveInheritanceRoot : MappingReflectionIntegrationTestBase
   {
     private ClassDefinition _inheritanceRootClass;
     private ClassDefinition _relationTarget;

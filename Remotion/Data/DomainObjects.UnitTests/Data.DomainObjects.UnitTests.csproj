@@ -450,7 +450,7 @@
     <Compile Include="Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\BidirectionalRelationInGenericBaseClass\GenericClassAboveInheritanceRoot.cs" />
     <Compile Include="Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\BidirectionalRelationInGenericBaseClass\InheritanceRoot.cs" />
     <Compile Include="Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\BidirectionalRelationInGenericBaseClass\RelationTarget.cs" />
-    <Compile Include="Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\BidirectionalRelationInGenericBaseClass\When_AGenericBidirectionalRelationIsDeclaredAboveTheInheritanceRoot.cs" />
+    <Compile Include="Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\BidirectionalRelationInGenericBaseClass\When_GenericBidirectionalRelationDeclaredAboveInheritanceRoot.cs" />
     <Compile Include="Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\TwoClassesInheritingTheSameRelation\When_TwoClasses_InheritARelation_FromAboveInheritanceRoot.cs" />
     <Compile Include="Mapping\MappingReflectionIntegrationTests\ShadowedProperties\Base.cs" />
     <Compile Include="Mapping\MappingReflectionIntegrationTests\ShadowedProperties\When_ADerivedClass_RedefinesAProperty.cs" />
