@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.In
     OneToMany_ContainsForeignKeyIsTrueOnBothSites
 {
   [DBTable]
-  [ClassID ("OneToManyBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites_InvalidRelationClass1")]
+  [ClassID ("OneToMany_ContainsForeignKeyIsTrueOnBothSites_InvalidRelationClass1")]
   public class InvalidRelationClass1 : DomainObject
   {
     [DBBidirectionalRelation ("RelationProperty2", ContainsForeignKey = true)]

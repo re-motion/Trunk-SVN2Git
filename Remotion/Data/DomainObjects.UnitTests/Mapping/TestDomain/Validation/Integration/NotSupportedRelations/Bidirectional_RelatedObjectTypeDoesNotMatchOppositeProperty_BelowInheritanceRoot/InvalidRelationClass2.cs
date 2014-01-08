@@ -20,7 +20,7 @@ using System;
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.Integration.NotSupportedRelations.
     Bidirectional_RelatedObjectTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot
 {
-  [ClassID ("BidirectionalRelationWithInvalidPropertyReferences_InvalidRelationClass2")]
+  [ClassID ("Bidirectional_WithInvalidPropertyReferences_InvalidRelationClass2")]
   public class InvalidRelationClass2 : BaseRelationClass2
   {
    

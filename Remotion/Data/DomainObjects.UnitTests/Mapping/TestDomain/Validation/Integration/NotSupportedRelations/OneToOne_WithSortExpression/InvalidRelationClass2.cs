@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.In
     OneToOne_WithSortExpression
 {
   [DBTable]
-  [ClassID ("OneToManyBidirectionalRelation_SortExpressionOnTheOneSite_InvalidRelationClass2")]
+  [ClassID ("OneToMany_SortExpressionOnTheOneSite_InvalidRelationClass2")]
   public class InvalidRelationClass2 : DomainObject
   {
     [DBBidirectionalRelation ("RelationProperty1", ContainsForeignKey = true)]

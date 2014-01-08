@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.In
     Bidirectional_RelationEndPointDefinitionsDoNotMatch
 {
   [DBTable]
-  [ClassID ("BidirectionalRelation_RelationEndPointDefinitionsDoNotMatch_InvalidRelationClass1")]
+  [ClassID ("Bidirectional_RelationEndPointDefinitionsDoNotMatch_InvalidRelationClass1")]
   public class InvalidRelationClass1 : DomainObject
   {
     [DBBidirectionalRelation("RelationProperty1", ContainsForeignKey = true)]

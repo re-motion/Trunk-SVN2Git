@@ -20,7 +20,7 @@ using System;
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Validation.Integration.NotSupportedRelations.Bidirectional_ReferencingObject
 {
   [DBTable]
-  [ClassID ("BidirectionalRelation_ReferencingObject_ClassReferencingObject")]
+  [ClassID ("Bidirectional_ReferencingObject_ClassReferencingObject")]
   public class ClassReferencingObject : DomainObject
   {
     [DBBidirectionalRelation ("Whatever")]
