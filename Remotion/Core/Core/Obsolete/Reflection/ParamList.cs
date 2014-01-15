@@ -21,7 +21,7 @@ using System;
 
 namespace Remotion.Reflection
 {
-  [Obsolete ("Dummy declaration for DependDB.", true)]
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.TypePipe.dll", true)]
   internal abstract class ParamList
   {
     public static ParamList Empty

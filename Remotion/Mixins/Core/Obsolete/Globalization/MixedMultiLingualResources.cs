@@ -22,7 +22,7 @@ using Remotion.Globalization;
 
 namespace Remotion.Mixins.Globalization
 {
-  [Obsolete ("Dummy declaration for DependDB.", true)]
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Globalization.Mixins.dll", true)]
   internal static class MixedMultiLingualResources
   {
     public static IResourceManager GetResourceManager (Type objectType, bool includeHierarchy)

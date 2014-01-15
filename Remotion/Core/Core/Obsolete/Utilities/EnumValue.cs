@@ -3,7 +3,7 @@ using System;
 // ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
-  [Obsolete ("Dummy declaration for DependDB.", true)]
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Globalization.dll", true)]
   internal struct EnumValue
   {
     public readonly Enum Value;

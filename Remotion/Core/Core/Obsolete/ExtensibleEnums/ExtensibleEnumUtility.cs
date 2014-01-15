@@ -22,7 +22,7 @@ using Remotion.Reflection;
 
 namespace Remotion.ExtensibleEnums
 {
-  [Obsolete ("Dummy declaration for DependDB.", true)]
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.ExtensibleEnums.dll", true)]
   internal static class ExtensibleEnumUtility
   {
     public static bool IsExtensibleEnumType (Type type)

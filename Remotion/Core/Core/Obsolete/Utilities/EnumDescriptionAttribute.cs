@@ -21,7 +21,7 @@ using System;
 
 namespace Remotion.Utilities
 {
-  [Obsolete ("Dummy declaration for DependDB.", true)]
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Globalization.dll", true)]
   internal abstract class EnumDescriptionAttribute : Attribute
   {
     public EnumDescriptionAttribute (string description)

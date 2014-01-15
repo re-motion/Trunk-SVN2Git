@@ -21,7 +21,7 @@ using System;
 
 namespace Remotion.Globalization
 {
-  [Obsolete ("Dummy declaration for DependDB.", true)]
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Globalization.dll", true)]
   internal interface IResourceManager
   {
   }
