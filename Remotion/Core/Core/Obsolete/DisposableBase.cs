@@ -20,7 +20,7 @@ using System;
 namespace Remotion
 {
   [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Extensions.dll", true)]
-  public abstract class DisposableBase
+  internal abstract class DisposableBase
   {
     public DisposableBase ()
     {
