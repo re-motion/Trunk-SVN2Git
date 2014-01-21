@@ -55,7 +55,7 @@ namespace Remotion.Extensions.UnitTests.Utilities
         var release = (int?) key.GetValue ("Release");
         Assertion.IsNotNull (release, "Registry value 'Release' not found.");
 
-        var net_4_5_1_ReleaseVersion = 378758;
+        var net_4_5_1_ReleaseVersion = 378675;
         return release >= net_4_5_1_ReleaseVersion;
       }
     }
