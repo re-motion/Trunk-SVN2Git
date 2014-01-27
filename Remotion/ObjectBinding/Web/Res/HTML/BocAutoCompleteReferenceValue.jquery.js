@@ -1360,12 +1360,13 @@
         popUp.show(); // provide initial dimensions to popUp
       }
 
-      var contentHeight = Math.max(0, Math.max(popUp.children('div').children().map(function () { return this.offsetHeight + this.offsetTop; }).get()));
+      var popUpDiv = popUp.children ('div');
+      var contentHeight = Math.max(0, Math.max(popUpDiv.children().map(function () { return this.offsetHeight + this.offsetTop; }).get()));
 
       var contentWidth = popUp.data('popUpContentWidth');
       if (!isVisibe)
       {
-        contentWidth = Math.max(0, Math.max(popUp.children('div').children().map(function () { return this.offsetWidth + this.offsetLeft; }).get()));
+        contentWidth = Math.max(0, Math.max(popUpDiv.children().map(function () { return this.offsetWidth + this.offsetLeft; }).get()));
         if (BrowserUtility.GetIEVersion() == 7)
         {
           // IE7 has problem with getting the content width
@@ -1398,10 +1399,10 @@
       }
 
       var popUpOuterHeight = popUp.outerHeight();
-      var popUpInnerHeight = popUp.children ('div').innerHeight();
+      var popUpInnerHeight = popUpDiv.innerHeight();
 
-      var scrollLeft = popUp.children ('div')[0].scrollLeft;
-      var scrollTop = popUp.children('div')[0].scrollTop;
+      var scrollLeft = popUpDiv[0].scrollLeft;
+      var scrollTop = popUpDiv[0].scrollTop;
 
       if (requiredHeight > popUpOuterHeight || requiredHeight < popUpInnerHeight)
       {
@@ -1435,14 +1436,14 @@
         'max-width' : 'none'
       });
 
-      popUp.children ('div')[0].scrollLeft = scrollLeft;
-      popUp.children ('div')[0].scrollTop = scrollTop;
+      popUpDiv[0].scrollLeft = scrollLeft;
+      popUpDiv[0].scrollTop = scrollTop;
 
       if (BrowserUtility.GetIEVersion() == 8)
       {
         //IE8 shows scrollbar because of 1px margin error
         var overflowY = (requiredHeight > popUpInnerHeight && requiredHeight < maxHeightSafe) ? 'hidden' : '';
-        popUp.children('div').css('overflow-y', overflowY);
+        popUpDiv.css('overflow-y', overflowY);
       }
     };
 })(jQuery);
