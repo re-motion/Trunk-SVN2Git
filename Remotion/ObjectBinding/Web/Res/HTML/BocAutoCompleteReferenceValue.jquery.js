@@ -1400,6 +1400,9 @@
       var popUpOuterHeight = popUp.outerHeight();
       var popUpInnerHeight = popUp.children ('div').innerHeight();
 
+      var scrollLeft = popUp.children ('div')[0].scrollLeft;
+      var scrollTop = popUp.children('div')[0].scrollTop;
+
       if (requiredHeight > popUpOuterHeight || requiredHeight < popUpInnerHeight)
       {
         //Reset height if content has changed to calculate new height
@@ -1431,6 +1434,9 @@
         width : elementWidth,
         'max-width' : 'none'
       });
+
+      popUp.children ('div')[0].scrollLeft = scrollLeft;
+      popUp.children ('div')[0].scrollTop = scrollTop;
 
       if (BrowserUtility.GetIEVersion() == 8)
       {
