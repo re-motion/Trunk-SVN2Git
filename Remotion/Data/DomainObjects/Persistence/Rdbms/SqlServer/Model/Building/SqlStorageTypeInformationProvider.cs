@@ -34,6 +34,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
   {
     public virtual IStorageTypeInformation GetStorageTypeForID (bool isStorageTypeNullable)
     {
+      // storageType Type and dotNetType Type should always be a nullable dotNet types. 
+      // Otherwise, special logic is needed to ensure that the ID-types are compatible when performing a LiNQ join.
+      // Also, for converting from the DB type, it is only required that the DB type can be converted to the in-memory type, not the other way around.
       return new StorageTypeInformation (
           typeof (Guid?),
           "uniqueidentifier",
@@ -45,7 +48,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
 
     public virtual IStorageTypeInformation GetStorageTypeForSerializedObjectID (bool isStorageTypeNullable)
     {
-      return new StorageTypeInformation (typeof (string), 
+      return new StorageTypeInformation (
+          typeof (string), 
           "varchar (255)", 
           DbType.String, 
           isStorageTypeNullable, 
