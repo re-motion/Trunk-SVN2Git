@@ -199,7 +199,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.UberProf
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Relinq", "Relinq", "{955E99DD-2136-40BB-9EAF-24CED6006803}"
 	ProjectSection(SolutionItems) = preProject
-		Relinq\HowToContribute.txt = Relinq\HowToContribute.txt
+		Relinq\How to Contribute.txt = Relinq\How to Contribute.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq.Core", "Relinq\Core\Linq.Core.csproj", "{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}"
