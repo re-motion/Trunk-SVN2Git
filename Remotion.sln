@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{5B3CB3F6-DE69-41D6-8BBC-EFF4932F0F7E}"
 	ProjectSection(FolderStartupServices) = postProject
@@ -198,6 +198,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.UberProfIntegration", "Remotion\Data\DomainObjects.UberProfIntegration\Data.DomainObjects.UberProfIntegration.csproj", "{81E5BEC0-B845-4470-BD19-9FCB121CB413}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Relinq", "Relinq", "{955E99DD-2136-40BB-9EAF-24CED6006803}"
+	ProjectSection(SolutionItems) = preProject
+		Relinq\HowToContribute.txt = Relinq\HowToContribute.txt
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq.Core", "Relinq\Core\Linq.Core.csproj", "{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}"
 EndProject
