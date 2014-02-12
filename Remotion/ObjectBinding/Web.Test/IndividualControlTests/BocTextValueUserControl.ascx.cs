@@ -63,6 +63,12 @@ public class BocTextValueUserControl : BaseUserControl
   protected WebButton ReadOnlyFirstNameTestSetNewValueButton;
   protected HtmlTable FormGrid;
   protected BindableObjectDataSourceControl CurrentObject;
+  protected BocTextValue PasswordRenderMasked;
+  protected BocTextValue PasswordNoRender;
+  protected BocTextValue PasswordRenderMaskedReadOnly;
+  protected BocTextValue PasswordNoRenderReadOnly;
+  protected BocTextValue Multiline;
+  protected BocTextValue MultilineReadOnly;
 
   protected override void RegisterEventHandlers ()
   {
@@ -114,6 +120,13 @@ public class BocTextValueUserControl : BaseUserControl
     DisabledUnboundFirstNameField.LoadUnboundValue (person.FirstName, IsPostBack);
     DisabledUnboundReadOnlyFirstNameField.Property = (IBusinessObjectStringProperty) CurrentObject.BusinessObjectClass.GetPropertyDefinition("FirstName");
     DisabledUnboundReadOnlyFirstNameField.LoadUnboundValue (person.FirstName, IsPostBack);
+    PasswordNoRender.LoadUnboundValue ("Password", IsPostBack);
+    PasswordRenderMasked.LoadUnboundValue ("Password", IsPostBack);
+    PasswordNoRenderReadOnly.LoadUnboundValue ("Password", IsPostBack);
+    PasswordRenderMaskedReadOnly.LoadUnboundValue ("Password", IsPostBack);
+    MultilineReadOnly.LoadUnboundValue (@"line 1
+line 2
+line 3", IsPostBack);
 
     if (!IsPostBack)
     {

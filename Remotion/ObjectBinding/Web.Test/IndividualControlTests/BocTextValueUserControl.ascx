@@ -110,44 +110,42 @@
     <td style="WIDTH: 20%"></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boctextvalue id="Multiline" runat="server" ValueType="String">
-    <TextBoxStyle TextMode="MultiLine"/>
+    <td><remotion:boctextvalue id="Multiline" runat="server" ValueType="String" Height="6em">
+    <TextBoxStyle TextMode="MultiLine" Height="5em" AutoPostBack="true"/>
     </remotion:boctextvalue></td>
     <td></td>
     <td style="WIDTH: 20%"></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boctextvalue id="MultilineReadOnly" runat="server" ValueType="String" ReadOnly="true" Text="line 1
-line 2
-line 3">
+    <td><remotion:boctextvalue id="MultilineReadOnly" runat="server" ValueType="String" ReadOnly="true">
     <TextBoxStyle TextMode="MultiLine"/>
     </remotion:boctextvalue></td>
     <td></td>
     <td style="WIDTH: 20%"></td></tr>
   <tr>
     <td>Password displayed</td>
-    <td><remotion:boctextvalue id="PasswordRenderMasked" runat="server" ValueType="String" Text="PasswordValue">
+    <td><remotion:boctextvalue id="PasswordRenderMasked" runat="server" ValueType="String">
           <TextBoxStyle TextMode="PasswordRenderMasked"></TextBoxStyle>
         </remotion:boctextvalue></td>
     <td></td>
     <td style="WIDTH: 20%">unbound</td></tr>
   <tr>
     <td>Password not displayed</td>
-    <td><remotion:boctextvalue id="PasswordNoRender" runat="server" ValueType="String" Text="PasswordValue">
+    <td><remotion:boctextvalue id="PasswordNoRender" runat="server" ValueType="String">
           <TextBoxStyle TextMode="PasswordNoRender"></TextBoxStyle>
         </remotion:boctextvalue></td>
     <td></td>
     <td style="WIDTH: 20%">unbound</td></tr>
   <tr>
     <td>Password displayed</td>
-    <td><remotion:boctextvalue id="PasswordRenderMaskedReadOnly" runat="server" ValueType="String" Text="PasswordValue" ReadOnly="true">
+    <td><remotion:boctextvalue id="PasswordRenderMaskedReadOnly" runat="server" ValueType="String" ReadOnly="true">
           <TextBoxStyle TextMode="PasswordRenderMasked"></TextBoxStyle>
         </remotion:boctextvalue></td>
     <td></td>
     <td style="WIDTH: 20%">unbound, readonly</td></tr>
   <tr>
     <td>Password not displayed</td>
-    <td><remotion:boctextvalue id="PasswordNoRenderReadOnly" runat="server" ValueType="String" Text="PasswordValue" ReadOnly="true">
+    <td><remotion:boctextvalue id="PasswordNoRenderReadOnly" runat="server" ValueType="String" ReadOnly="true">
           <TextBoxStyle TextMode="PasswordNoRender"></TextBoxStyle>
         </remotion:boctextvalue></td>
     <td></td>
