@@ -139,7 +139,7 @@ namespace Remotion.ObjectBinding.BindableObject
       return _propertyInfo.PropertyType;
     }
 
-    protected virtual ListInfo GetListInfo ()
+    protected virtual IListInfo GetListInfo ()
     {
       if (IsListProperty())
         return new ListInfo (_propertyInfo.PropertyType, GetItemType());
