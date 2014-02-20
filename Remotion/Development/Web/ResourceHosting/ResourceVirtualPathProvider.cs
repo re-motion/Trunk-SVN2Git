@@ -20,9 +20,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Caching;
+using System.Web.Configuration;
 using System.Web.Hosting;
+using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
 
@@ -33,11 +38,25 @@ namespace Remotion.Development.Web.ResourceHosting
   /// </summary>
   public class ResourceVirtualPathProvider : VirtualPathProvider
   {
-    private readonly string _resourceRoot;
-    private readonly IHttpHandler _staticFileHandler;
-    private readonly Dictionary<string, ResourcePathMapping> _resourcePathMappings;
+    private static readonly IHttpHandler s_staticFileHandler;
+    
+  
+    static ResourceVirtualPathProvider ()
+    {
+      var staticFileHandlerType = typeof (HttpApplication).Assembly.GetType ("System.Web.StaticFileHandler", true);
+      s_staticFileHandler = (IHttpHandler) Activator.CreateInstance (staticFileHandlerType, true);
+    }
+    
+    public static IHttpHandler StaticFileHandler
+    {
+      get { return s_staticFileHandler; }
+    }
 
-    public ResourceVirtualPathProvider (ResourcePathMapping[] mappings)
+    private readonly string _resourceRoot;
+    private readonly Dictionary<string, ResourcePathMapping> _resourcePathMappings;
+    private readonly Dictionary<string, FileExtensionHandlerMapping> _fileExtensionHandlerMappings;
+
+    public ResourceVirtualPathProvider (ResourcePathMapping[] mappings, FileExtensionHandlerMapping[] fileExtensionHandlerMappings = null)
     {
       ArgumentUtility.CheckNotNull ("mappings", mappings);
 
@@ -47,8 +66,8 @@ namespace Remotion.Development.Web.ResourceHosting
       foreach (var mapping in mappings)
         _resourcePathMappings.Add (CombineVirtualPath (_resourceRoot, mapping.VirtualPath), mapping);
 
-      var staticFileHandlerType = typeof (HttpApplication).Assembly.GetType ("System.Web.StaticFileHandler", true);
-      _staticFileHandler = (IHttpHandler) Activator.CreateInstance (staticFileHandlerType, true);
+      _fileExtensionHandlerMappings = (fileExtensionHandlerMappings ?? new FileExtensionHandlerMapping[0])
+          .ToDictionary (f => f.Extension, StringComparer.OrdinalIgnoreCase);
     }
 
     public void Register ()
@@ -63,7 +82,11 @@ namespace Remotion.Development.Web.ResourceHosting
         if (DirectoryExists (HttpContext.Current.Request.AppRelativeCurrentExecutionFilePath))
           HttpContext.Current.RemapHandler (new DirectoryListingHandler());
         else
-          HttpContext.Current.RemapHandler (_staticFileHandler);
+        {
+          var extension = VirtualPathUtility.GetExtension (HttpContext.Current.Request.AppRelativeCurrentExecutionFilePath).TrimStart('.');
+          if (_fileExtensionHandlerMappings.ContainsKey(extension))
+            HttpContext.Current.RemapHandler (_fileExtensionHandlerMappings[extension].Handler);
+        }
       }
     }
 
@@ -203,8 +226,10 @@ namespace Remotion.Development.Web.ResourceHosting
       var mapping = GetResourcePathMapping (appRelativeVirtualPath);
 
       DirectoryInfo directoryInfo = null;
+      string displayName = null;
       if (mapping != null)
       {
+        displayName = mapping.VirtualPath.TrimEnd('/');
         var resourceRootPath = CombineVirtualPath (_resourceRoot, mapping.VirtualPath);
         var directoryRelativePath = MakeRelativeVirtualPath (resourceRootPath, appRelativeVirtualPath).Replace ('/', '\\');
         var mappedRootDirectory = Path.GetFullPath (Path.Combine (GetProjectRoot(), mapping.RelativeFileSystemPath));
@@ -213,7 +238,7 @@ namespace Remotion.Development.Web.ResourceHosting
         directoryInfo = new DirectoryInfo (absolutePath);
       }
 
-      return new ResourceVirtualDirectory (virtualDir, directoryInfo);
+      return new ResourceVirtualDirectory (virtualDir, directoryInfo, displayName);
     }
 
     private ResourcePathMapping GetResourcePathMapping (string appRelativePath)

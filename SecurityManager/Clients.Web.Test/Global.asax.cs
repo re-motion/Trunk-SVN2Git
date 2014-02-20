@@ -48,7 +48,8 @@ namespace Remotion.SecurityManager.Clients.Web.Test
               new ResourcePathMapping ("Remotion.SecurityManager.Clients.Web/Html", @"..\Clients.Web\res\Html"),
               new ResourcePathMapping ("Remotion.SecurityManager.Clients.Web/Themes", @"..\Clients.Web\res\Themes"),
               new ResourcePathMapping ("Remotion.SecurityManager.Clients.Web/UI", @"..\Clients.Web\UI"),
-          });
+          },
+          FileExtensionHandlerMapping.Default);
       _resourceVirtualPathProvider.Register();
     }
 

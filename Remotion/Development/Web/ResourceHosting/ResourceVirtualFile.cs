@@ -33,7 +33,6 @@ namespace Remotion.Development.Web.ResourceHosting
         : base (virtualPath)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("virtualPath", virtualPath);
-      ArgumentUtility.CheckNotNull ("physicalFile", physicalFile);
       
       _physicalFile = physicalFile;
     }

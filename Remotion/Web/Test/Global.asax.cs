@@ -41,7 +41,8 @@ namespace Remotion.Web.Test
           new[]
           {
               new ResourcePathMapping ("Remotion.Web", @"..\Core\res"),
-          });
+          },
+          FileExtensionHandlerMapping.Default);
       _resourceVirtualPathProvider.Register ();
     }
 

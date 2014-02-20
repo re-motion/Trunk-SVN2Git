@@ -31,8 +31,9 @@ namespace Remotion.Development.Web.ResourceHosting
   {
     private readonly string _virtualPath;
     private readonly DirectoryInfo _physicalDirectory;
+    private readonly string _displayName;
 
-    public ResourceVirtualDirectory (string virtualPath, DirectoryInfo physicalDirectory)
+    public ResourceVirtualDirectory (string virtualPath, DirectoryInfo physicalDirectory, string displayName = null)
         : base (virtualPath)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("virtualPath", virtualPath);
@@ -40,6 +41,7 @@ namespace Remotion.Development.Web.ResourceHosting
 
       _virtualPath = virtualPath;
       _physicalDirectory = physicalDirectory;
+      _displayName = displayName;
     }
 
     public virtual string AppRelativeVirtualPath
@@ -60,6 +62,11 @@ namespace Remotion.Development.Web.ResourceHosting
     public virtual bool Exists
     {
       get { return _physicalDirectory != null && _physicalDirectory.Exists; }
+    }
+
+    public override string Name
+    {
+      get { return _displayName ?? base.Name; }
     }
 
     public override IEnumerable Directories

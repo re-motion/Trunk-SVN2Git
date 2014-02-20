@@ -52,7 +52,8 @@ namespace Remotion.Data.DomainObjects.Web.Test
               new ResourcePathMapping ("Remotion.Web.Legacy", @"..\..\Web\Legacy\Res"),
               new ResourcePathMapping ("Remotion.ObjectBinding.Web", @"..\..\ObjectBinding\Web\res"),
               new ResourcePathMapping ("Remotion.ObjectBinding.Web.Legacy", @"..\..\ObjectBinding\Web.Legacy\Res")
-          });
+          },
+          FileExtensionHandlerMapping.Default);
       _resourceVirtualPathProvider.Register();
     }
 

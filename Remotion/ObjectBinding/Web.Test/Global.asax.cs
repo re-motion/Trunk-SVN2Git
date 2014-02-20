@@ -106,7 +106,8 @@ namespace OBWTest
           {
               new ResourcePathMapping ("Remotion.Web", @"..\..\Web\Core\res"),
               new ResourcePathMapping ("Remotion.ObjectBinding.Web", @"..\..\ObjectBinding\Web\res")
-          });
+          },
+          FileExtensionHandlerMapping.Default);
       _resourceVirtualPathProvider.Register ();
 
       //var bundle = new Bundle ("~/bundles/css");
