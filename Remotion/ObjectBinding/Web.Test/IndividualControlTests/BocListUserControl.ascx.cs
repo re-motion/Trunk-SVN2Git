@@ -264,6 +264,7 @@ ChildrenList.RowMenuItemClick += ChildrenList_RowMenuItemClick;
 
     BocSimpleColumnDefinition cvColumnDefinition = new BocSimpleColumnDefinition();
     cvColumnDefinition.SetPropertyPath (BusinessObjectPropertyPath.CreateStatic (new []{cv}));
+    cvColumnDefinition.FormatString = "lines=3";
 
     BocSimpleColumnDefinition incomeColumnDefinition = new BocSimpleColumnDefinition();
     incomeColumnDefinition.SetPropertyPath (BusinessObjectPropertyPath.CreateStatic (new []{income}));
