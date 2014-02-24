@@ -29,6 +29,19 @@
     <asp:UpdatePanel ID="UpdatePanel" runat="server">
       <ContentTemplate>
         <asp:PlaceHolder ID="SutPlaceHolder" runat="server" />
+        <br/>
+        Auto Postback:
+        <asp:DropDownList ID="AutoPostbackList" runat="server" AutoPostBack="True" EnableViewState="false">
+          <asp:ListItem Value="1" Text="1" Selected="True" />
+          <asp:ListItem Value="2" Text="2" />
+          <asp:ListItem Value="3" Text="3" />
+        </asp:DropDownList>
+        <br/>
+        Auto Postback:
+        <asp:TextBox ID="AutoPostbackTextBox" runat="server" AutoPostBack="True" EnableViewState="False"/>
+        <br/>
+        Normal:
+        <asp:TextBox ID="TextBox" runat="server" AutoPostBack="False" EnableViewState="False"/>
       </ContentTemplate>
     </asp:UpdatePanel>
   </form>

@@ -52,8 +52,7 @@ function SmartPage_Context(
   var _abortMessage = abortMessage;
   var _isAbortConfirmationEnabled = abortMessage != null;
 
-  var _submitter = null;
-  var _isSubmitting = false;
+  var _submitState = null;
   var _hasSubmitted = false;
   // Special flag to support the OnBeforeUnload part
   var _isSubmittingBeforeUnload = false;
@@ -410,7 +409,7 @@ function SmartPage_Context(
   // Event handler for window.OnUnload.
   this.OnUnload = function ()
   {
-    if ((!_isSubmitting || _isAbortingBeforeUnload)
+    if ((!this.IsSubmitting() || _isAbortingBeforeUnload)
         && !_isAborting)
     {
       _isAborting = true;
@@ -450,7 +449,7 @@ function SmartPage_Context(
         _theForm.__EVENTTARGET.value = eventTarget;
         _theForm.__EVENTARGUMENT.value = eventArgument;
 
-        this.SetIsSubmitting();
+        this.SetIsSubmitting(false);
         _isSubmittingBeforeUnload = true;
 
         this.Backup();
@@ -501,7 +500,7 @@ function SmartPage_Context(
           var continueRequest = this.CheckFormState();
           if (continueRequest)
           {
-            this.SetIsSubmitting();
+            this.SetIsSubmitting(true);
             _isSubmittingBeforeUnload = true;
 
             this.Backup();
@@ -519,14 +518,14 @@ function SmartPage_Context(
       if (ieVersion == 8 || ieVersion == 7 || ieVersion == 6)
       {
         //IE8 and earlier receive two submit-events when using doPostBack
-        if (this.IsSubmitting() && _submitter != null && _submitter.tagName.toLowerCase() == 'button' && _submitter == GetSubmitterOrActiveElement())
+        if (this.IsSubmitting() && _submitState.Submitter != null && _submitState.Submitter.tagName.toLowerCase() == 'button' && _submitState.Submitter == GetSubmitterOrActiveElement())
           return false;
       }
 
       var continueRequest = this.CheckFormState();
       if (continueRequest)
       {
-        this.SetIsSubmitting();
+        this.SetIsSubmitting(false);
         _isSubmittingBeforeUnload = true;
 
         this.Backup();
@@ -606,7 +605,7 @@ function SmartPage_Context(
     {
       return false;
     }
-    else if (_isSubmitting)
+    else if (this.IsSubmitting())
     {
       this.ShowStatusIsSubmittingMessage();
       return false;
@@ -952,27 +951,29 @@ function SmartPage_Context(
     return Array.contains(_synchronousPostBackCommands, postBackSettings.asyncTarget + '|' + _theForm.__EVENTARGUMENT.value);
   };
 
-  this.SetIsSubmitting = function ()
+  this.SetIsSubmitting = function (isAsynchronous)
   {
-    _isSubmitting = true;
-
     var submitterElement = GetSubmitterOrActiveElement();
     if (submitterElement != null)
     {
-      _submitter = submitterElement;
-      $(_submitter).addClass('SmartPageSubmitter');
+      $(submitterElement).addClass('SmartPageSubmitter');
     }
 
     $('html').addClass('SmartPageBusy');
+
+    _submitState = {
+      IsAsynchronous : isAsynchronous,
+      Submitter : submitterElement
+    };
   };
 
   this.ClearIsSubmitting = function (isAsynchronous)
   {
     if (isAsynchronous)
     {
-      if (_submitter != null && _submitter.ownerDocument != null)
+      if (_submitState != null && _submitState.Submitter != null && _submitState.Submitter.ownerDocument != null)
       {
-        $(_submitter).removeClass('SmartPageSubmitter');
+        $(_submitState.Submitter).removeClass('SmartPageSubmitter');
       }
       //setTimeout (function ()
     //{
@@ -991,13 +992,12 @@ function SmartPage_Context(
     //}, 0);
     }
 
-    _isSubmitting = false;
-    _submitter = null;
+    _submitState = null;
   };
 
   this.IsSubmitting = function ()
   {
-    return _isSubmitting;
+    return _submitState != null;
   };
 
   this.DisableAbortConfirmation = function ()
