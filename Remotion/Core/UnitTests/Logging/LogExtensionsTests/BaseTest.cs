@@ -17,11 +17,11 @@
 
 using System;
 using log4net.Appender;
-using log4net.Config;
 using log4net.Core;
+using log4net.Repository;
+using log4net.Repository.Hierarchy;
 using NUnit.Framework;
 using Remotion.Logging;
-using LogManager = log4net.LogManager;
 
 namespace Remotion.UnitTests.Logging.LogExtensionsTests
 {
@@ -35,16 +35,10 @@ namespace Remotion.UnitTests.Logging.LogExtensionsTests
     public virtual void SetUp ()
     {
       _memoryAppender = new MemoryAppender ();
-      BasicConfigurator.Configure (_memoryAppender);
-
-      _logger = LogManager.GetLogger ("The Name").Logger;
+      var hierarchy = new Hierarchy();
+      ((IBasicRepositoryConfigurator) hierarchy).Configure (_memoryAppender);
+      _logger = hierarchy.GetLogger ("The Name");
       _log = new Log4NetLog (_logger);
-    }
-
-    [TearDown]
-    public virtual void TearDown ()
-    {
-      LogManager.ResetConfiguration ();
     }
 
     protected ILog Log
