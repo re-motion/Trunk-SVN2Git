@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,21 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  [ConcreteImplementation (typeof (TestConcreteImplementationAttributeTypeThrowingExceptionInCtor), Lifetime = LifetimeKind.Instance)]
-  public interface ITestConcreteImplementationAttributeTypeThrowingExceptionInCtor
+  [ImplementationFor (typeof (StubService))]
+  public class StubService
   {
-  }
-
-  public class TestConcreteImplementationAttributeTypeThrowingExceptionInCtor : ITestConcreteImplementationAttributeTypeThrowingExceptionInCtor
-  {
-    public TestConcreteImplementationAttributeTypeThrowingExceptionInCtor ()
+    public StubService ()
     {
-      throw new InvalidOperationException ("This exception comes from the ctor.");
     }
   }
 }

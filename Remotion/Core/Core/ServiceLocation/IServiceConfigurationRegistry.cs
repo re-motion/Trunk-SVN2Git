@@ -15,19 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ServiceLocation;
 
-namespace Remotion.UnitTests.ServiceLocation.TestDomain
+namespace Remotion.ServiceLocation
 {
-  [ConcreteImplementation (typeof (TestTypeWithOnlyProtectedConstructor))]
-  public interface ITestTypeWithOnlyProtectedConstructor
+  /// <summary>
+  /// Defines an API for registering a <see cref="ServiceConfigurationEntry"/>.
+  /// </summary>
+  public interface IServiceConfigurationRegistry
   {
-  }
-
-  public class TestTypeWithOnlyProtectedConstructor : ITestTypeWithOnlyProtectedConstructor
-  {
-    protected TestTypeWithOnlyProtectedConstructor ()
-    {
-    }
+    /// <summary>
+    /// Registers a concrete implementation.
+    /// </summary>
+    /// <param name="serviceConfigurationEntry">A <see cref="ServiceConfigurationEntry"/> describing the concrete implementation to be registered.</param>
+    /// <exception cref="InvalidOperationException">An instance of the service type described by the <paramref name="serviceConfigurationEntry"/>
+    /// has already been retrieved. Registering factories or concrete implementations can only be done before any instances are retrieved.</exception>
+    void Register (ServiceConfigurationEntry serviceConfigurationEntry);
   }
 }

@@ -22,8 +22,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="DropDownMenuRenderer"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (DropDownMenuRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IDropDownMenuRenderer
+ public interface IDropDownMenuRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (DropDownMenuRenderingContext renderingContext);

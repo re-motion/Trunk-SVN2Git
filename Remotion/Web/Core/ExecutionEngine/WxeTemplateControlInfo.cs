@@ -135,7 +135,7 @@ namespace Remotion.Web.ExecutionEngine
     {
       get
       {
-        return SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>();
+        return SafeServiceLocator.Current.GetInstance<IGlobalizationService>();
       }
     }
 

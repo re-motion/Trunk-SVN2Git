@@ -23,8 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
   /// <summary>
   /// Defines the API for rendering a <see cref="BocEnumValue"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (BocEnumValueRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocEnumValueRenderer
+ public interface IBocEnumValueRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (BocEnumValueRenderingContext renderingContext);

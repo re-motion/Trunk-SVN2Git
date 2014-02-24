@@ -23,8 +23,6 @@ namespace Remotion.Logging
   /// The <see cref="ILogManager"/> interface declares the methods available for retrieving a logger that implements
   /// <see cref="ILog"/> and initializing the respective logging framework.
   /// </summary>
-  [ConcreteImplementation ("Remotion.Logging.Log4NetLogManager, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    Lifetime = LifetimeKind.Singleton)]
   public interface ILogManager
   {
     /// <summary>

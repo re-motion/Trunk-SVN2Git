@@ -27,8 +27,7 @@ namespace Remotion.SecurityManager.Domain
   /// </summary>
   /// <seealso cref="UserRevisionProvider"/>
   /// <threadsafety static="true" instance="true"/>
-  [ConcreteImplementation (typeof (UserRevisionProvider), Lifetime = LifetimeKind.Singleton)]
-  public interface IUserRevisionProvider : IRevisionProvider<UserRevisionKey, GuidRevisionValue>
+ public interface IUserRevisionProvider : IRevisionProvider<UserRevisionKey, GuidRevisionValue>
   {
   }
 }

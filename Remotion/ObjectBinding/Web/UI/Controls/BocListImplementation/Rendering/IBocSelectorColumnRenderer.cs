@@ -22,8 +22,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Interface for classes that render the selector column of <see cref="IBocList"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof (BocSelectorColumnRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocSelectorColumnRenderer
+ public interface IBocSelectorColumnRenderer
   {
     /// <summary>
     /// Renders the cell for the title row.

@@ -18,6 +18,7 @@
 using System;
 using System.Collections;
 using System.Web;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Infrastructure
@@ -27,6 +28,7 @@ namespace Remotion.Web.Infrastructure
   /// depending on whether a hosted environment is detected.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
+  [ImplementationFor (typeof (IBuildManager), Lifetime = LifetimeKind.Singleton)]
   public class BuildManagerWrapper : IBuildManager
   {
     private readonly IBuildManager _innerBuildManager;

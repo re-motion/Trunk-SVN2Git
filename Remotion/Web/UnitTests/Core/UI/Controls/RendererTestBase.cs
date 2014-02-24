@@ -23,7 +23,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
   public abstract class RendererTestBase
   {
-    protected ICompoundGlobalizationService GlobalizationService
+    protected IGlobalizationService GlobalizationService
     {
       get { return new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) }); }
     }

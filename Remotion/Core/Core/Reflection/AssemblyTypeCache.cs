@@ -29,14 +29,20 @@ namespace Remotion.Reflection
   /// </summary>
   public static class AssemblyTypeCache
   {
-    private static readonly ConcurrentDictionary<_Assembly, ReadOnlyCollection<Type>> s_typeCache =
-        new ConcurrentDictionary<_Assembly, ReadOnlyCollection<Type>>();
+    private static readonly ConcurrentDictionary<_Assembly, Tuple<ReadOnlyCollection<Type>, bool>> s_typeCache =
+        new ConcurrentDictionary<_Assembly, Tuple<ReadOnlyCollection<Type>, bool>>();
+
+    [CLSCompliant (false)]
+    public static bool IsGacAssembly (_Assembly assembly)
+    {
+      return s_typeCache.GetOrAdd (assembly, a => Tuple.Create (Array.AsReadOnly (a.GetTypes()), a.GlobalAssemblyCache)).Item2;
+    }
 
     [CLSCompliant (false)]
     public static ReadOnlyCollection<Type> GetTypes (_Assembly assembly)
     {
       ArgumentUtility.CheckNotNull ("assembly", assembly);
-      return s_typeCache.GetOrAdd (assembly, a => Array.AsReadOnly (a.GetTypes()));
+      return s_typeCache.GetOrAdd (assembly, a => Tuple.Create (Array.AsReadOnly (a.GetTypes()), a.GlobalAssemblyCache)).Item1;
     }
   }
 }

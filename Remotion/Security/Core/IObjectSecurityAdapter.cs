@@ -30,7 +30,6 @@ namespace Remotion.Security
   /// <see cref="IObjectSecurityStrategy"/> retrieved from the <see cref="ISecurableObject"/>.
   /// </note>
   /// </remarks>
-  [ConcreteImplementation (typeof (ObjectSecurityAdapter), Lifetime = LifetimeKind.Singleton)]
   public interface IObjectSecurityAdapter
   {
     /// <summary>Determines whether read access to a property of <paramref name="securableObject"/> is granted.</summary>

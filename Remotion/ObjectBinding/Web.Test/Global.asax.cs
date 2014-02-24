@@ -67,7 +67,7 @@ namespace OBWTest
 
       if (useClassicBlueTheme)
       {
-        DefaultServiceLocator defaultServiceLocator = new DefaultServiceLocator();
+        DefaultServiceLocator defaultServiceLocator = DefaultServiceLocator.Create();
         defaultServiceLocator.Register (typeof (ResourceTheme), typeof (ResourceTheme.ClassicBlue), LifetimeKind.Singleton);
         ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
       }
@@ -89,7 +89,7 @@ namespace OBWTest
 
       if (PreferQuirksModeRendering)
       {
-        DefaultServiceLocator defaultServiceLocator = new DefaultServiceLocator();
+        DefaultServiceLocator defaultServiceLocator = DefaultServiceLocator.Create();
         foreach (var entry in LegacyServiceConfigurationService.GetConfiguration())
           defaultServiceLocator.Register (entry);
         foreach (var entry in BocLegacyServiceConfigurationService.GetConfiguration())

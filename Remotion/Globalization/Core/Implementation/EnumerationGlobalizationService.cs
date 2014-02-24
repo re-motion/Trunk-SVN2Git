@@ -19,6 +19,7 @@ using System;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
@@ -27,6 +28,7 @@ namespace Remotion.Globalization.Implementation
   /// Retrieves the human-readable localized representation of enumeration objects.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (IEnumerationGlobalizationService), Lifetime = LifetimeKind.Singleton)]
   public sealed class EnumerationGlobalizationService : IEnumerationGlobalizationService
   {
     private readonly ICache<Enum, string> _staticEnumValues = CacheFactory.CreateWithLocking<Enum, string>();
@@ -34,7 +36,7 @@ namespace Remotion.Globalization.Implementation
     private readonly IMemberInformationNameResolver _memberInformationNameResolver;
 
     public EnumerationGlobalizationService (
-        ICompoundGlobalizationService globalizationService,
+        IGlobalizationService globalizationService,
         IMemberInformationNameResolver memberInformationNameResolver)
     {
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);

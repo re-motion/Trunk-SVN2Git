@@ -51,11 +51,10 @@ namespace Remotion.UnitTests.Context
     public void Instance_AutoInitialization_UsesFirstInstance_FromServiceLocator ()
     {
       var fakeProvider1 = MockRepository.GenerateStub<ISafeContextStorageProvider> ();
-      var fakeProvider2 = MockRepository.GenerateStub<ISafeContextStorageProvider> ();
       var serviceLocatorStub = MockRepository.GenerateStub<IServiceLocator> ();
       serviceLocatorStub
-          .Stub (stub => stub.GetAllInstances<ISafeContextStorageProvider>())
-          .Return (new[] { fakeProvider1, fakeProvider2 });
+          .Stub (stub => stub.GetInstance<ISafeContextStorageProvider>())
+          .Return (fakeProvider1);
 
       using (new ServiceLocatorScope (serviceLocatorStub))
       {

@@ -22,8 +22,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="TabbedMultiView"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (TabbedMultiViewRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface ITabbedMultiViewRenderer
+ public interface ITabbedMultiViewRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control);
     void Render (TabbedMultiViewRenderingContext renderingContext);

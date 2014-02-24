@@ -28,13 +28,13 @@ namespace Remotion.Globalization.UnitTests.Implementation
   public class EnumerationGlobalizationServiceTest
   {
     private EnumerationGlobalizationService _service;
-    private ICompoundGlobalizationService _globalizationServiceStub;
+    private IGlobalizationService _globalizationServiceStub;
     private IMemberInformationNameResolver _memberInformationNameResolverStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _globalizationServiceStub = MockRepository.GenerateStub<ICompoundGlobalizationService>();
+      _globalizationServiceStub = MockRepository.GenerateStub<IGlobalizationService>();
       _memberInformationNameResolverStub = MockRepository.GenerateStub<IMemberInformationNameResolver>();
       _service = new EnumerationGlobalizationService (_globalizationServiceStub, _memberInformationNameResolverStub);
     }

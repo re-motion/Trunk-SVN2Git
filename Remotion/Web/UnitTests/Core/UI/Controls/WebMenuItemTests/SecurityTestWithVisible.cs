@@ -43,9 +43,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
       _mockSecurableObject = _mocks.StrictMock<ISecurableObject> ();
       _mockCommand = _mocks.StrictMock<Command> ();
 
-      var serviceLocator = new DefaultServiceLocator();
-      serviceLocator.Register (typeof (IWebSecurityAdapter), () => _mockWebSecurityAdapter);
-      serviceLocator.Register (typeof (IWxeSecurityAdapter));
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterMultiple<IWebSecurityAdapter> (() => _mockWebSecurityAdapter);
+      serviceLocator.RegisterMultiple<IWxeSecurityAdapter>();
       _serviceLocatorStub = new ServiceLocatorScope (serviceLocator);
     }
 

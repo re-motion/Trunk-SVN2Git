@@ -17,6 +17,7 @@
 // 
 
 using System;
+using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain
 {
@@ -24,6 +25,7 @@ namespace Remotion.SecurityManager.Domain
   /// Cache-based implementation of the <see cref="IRevisionProvider{TKey, TValue}"/> interface.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (IDomainRevisionProvider), Lifetime = LifetimeKind.Singleton)]
   public class RevisionProvider : RevisionProviderBase<RevisionKey>, IDomainRevisionProvider
   {
     public RevisionProvider ()

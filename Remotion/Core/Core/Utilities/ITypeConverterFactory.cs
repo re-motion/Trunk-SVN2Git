@@ -17,19 +17,12 @@
 using System;
 using System.ComponentModel;
 using JetBrains.Annotations;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Utilities
 {
   /// <summary>
   /// Creates a <see cref="TypeConverter"/> if the type is supported by the factory.
   /// </summary>
-  [ConcreteImplementation (
-      "Remotion.ExtensibleEnums.Infrastructure.ExtensibleEnumTypeConverterFactory, Remotion.ExtensibleEnums, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-      ignoreIfNotFound: true,
-      Lifetime = LifetimeKind.Singleton, Position = 2)]
-  [ConcreteImplementation (typeof (EnumTypeConverterFactory), Lifetime = LifetimeKind.Singleton, Position = 1)]
-  [ConcreteImplementation (typeof (AttributeBasedTypeConverterFactory), Lifetime = LifetimeKind.Singleton, Position = 0)]
   public interface ITypeConverterFactory
   {
     [CanBeNull]

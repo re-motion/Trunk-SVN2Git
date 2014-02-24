@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using JetBrains.Annotations;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
 using Remotion.Web.Infrastructure;
@@ -30,6 +31,7 @@ namespace Remotion.Web.Resources
   /// Default implementation of the <see cref="IResourcePathBuilder"/> interface. 
   /// Builds the resource path rooted to the application virtual directory.
   /// </summary>
+  [ImplementationFor (typeof (IResourcePathBuilder), Lifetime = LifetimeKind.Singleton)]
   public class ResourcePathBuilder : ResourcePathBuilderBase
   {
     private readonly IHttpContextProvider _httpContextProvider;

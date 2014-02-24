@@ -30,7 +30,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [SetUp]
     public void SetUp ()
     {
-      _serviceLocator = new DefaultServiceLocator ();
+      _serviceLocator = DefaultServiceLocator.Create();
     }
 
     [Test]

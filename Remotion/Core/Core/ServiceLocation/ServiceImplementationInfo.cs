@@ -22,21 +22,60 @@ namespace Remotion.ServiceLocation
   /// <summary>
   /// Encapsulates a service implementation type and <see cref="LifetimeKind"/>.
   /// </summary>
-  public struct ServiceImplementationInfo
+  public sealed class ServiceImplementationInfo
   {
-    private readonly Type _implementationType;
-    private readonly LifetimeKind _lifetime;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ServiceImplementationInfo"/> class 
+    /// with <see cref="RegistrationType"/> set to <see cref="ServiceLocation.RegistrationType.Single"/>.
+    /// </summary>
+    /// <param name="factory">The factory delegate that creates an instance of the service implementation.</param>
+    /// <param name="lifetime">The lifetime of the instances created by the <paramref name="factory"/>.</param>
+    public static ServiceImplementationInfo CreateSingle<T> (Func<T> factory, LifetimeKind lifetime = LifetimeKind.Instance)
+        where T : class
+    {
+      ArgumentUtility.CheckNotNull ("factory", factory);
+      return new ServiceImplementationInfo (typeof (T), factory, lifetime, RegistrationType.Single);
+    }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServiceImplementationInfo"/> struct.
+    /// Initializes a new instance of the <see cref="ServiceImplementationInfo"/> class
+    /// with <see cref="RegistrationType"/> set to <see cref="ServiceLocation.RegistrationType.Multiple"/>.
+    /// </summary>
+    /// <param name="factory">The factory delegate that creates an instance of the service implementation.</param>
+    /// <param name="lifetime">The lifetime of the instances created by the <paramref name="factory"/>.</param>
+    public static ServiceImplementationInfo CreateMultiple<T> (Func<T> factory, LifetimeKind lifetime = LifetimeKind.Instance)
+        where T : class
+    {
+      ArgumentUtility.CheckNotNull ("factory", factory);
+      return new ServiceImplementationInfo (typeof(T), factory, lifetime, RegistrationType.Multiple);
+    }
+
+    private readonly Func<object> _factory;
+    private readonly Type _implementationType;
+    private readonly LifetimeKind _lifetime;
+    private readonly RegistrationType _registrationType;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ServiceImplementationInfo"/> class.
     /// </summary>
     /// <param name="implementationType">The concrete implementation of the service type.</param>
     /// <param name="lifetime">The lifetime of the instances of <paramref name="implementationType"/>.</param>
-    public ServiceImplementationInfo (Type implementationType, LifetimeKind lifetime)
+    /// <param name="registrationType"></param>
+    public ServiceImplementationInfo (Type implementationType, LifetimeKind lifetime, RegistrationType registrationType = RegistrationType.Single)
     {
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);
       _implementationType = implementationType;
       _lifetime = lifetime;
+      _registrationType = registrationType;
+      _factory = null;
+    }
+
+    private ServiceImplementationInfo (Type implementationType, Func<object> factory, LifetimeKind lifetime, RegistrationType registrationType)
+    {
+      _factory = factory;
+      _lifetime = lifetime;
+      _implementationType = implementationType;
+      _registrationType = registrationType;
     }
 
     /// <summary>
@@ -57,10 +96,23 @@ namespace Remotion.ServiceLocation
       get { return _lifetime; }
     }
 
+    /// <summary>
+    /// The factory delegate that creates an instance of the service implementation.
+    /// </summary>
+    public Func<object> Factory
+    {
+      get { return _factory; }
+    }
+
+    public RegistrationType RegistrationType
+    {
+      get { return _registrationType; }
+    }
+
     /// <inheritdoc />
     public override string ToString ()
     {
-      return string.Format ("{{{0}, {1}}}", _implementationType, _lifetime);
+      return string.Format ("{{{0}, {1}, {2}}}", _implementationType, _lifetime, _registrationType);
     }
   }
 }

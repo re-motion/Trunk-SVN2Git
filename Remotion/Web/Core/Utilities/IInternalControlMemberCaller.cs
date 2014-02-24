@@ -25,8 +25,7 @@ namespace Remotion.Web.Utilities
   /// Defines an API for performing operations on ASP.NET WebForms which are only possible by invoking non-public APIs.
   /// </summary>
   /// <seealso cref="InternalControlMemberCaller"/>
-  [ConcreteImplementation(typeof (InternalControlMemberCaller), Lifetime = LifetimeKind.Singleton)]
-  public interface IInternalControlMemberCaller
+ public interface IInternalControlMemberCaller
   {
     void SetControlState (Control control, ControlState value);
     ControlState GetControlState (Control control);

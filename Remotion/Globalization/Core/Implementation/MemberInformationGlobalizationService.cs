@@ -17,12 +17,13 @@
 
 using System;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
 {
   /// <summary>
-  /// Retrieves  the human-readable localized representation of reflection objects based on their names.
+  /// Retrieves the human-readable localized representation of reflection objects based on their names.
   /// </summary>
   /// <remarks>
   ///   <list type="bullet">
@@ -32,13 +33,14 @@ namespace Remotion.Globalization.Implementation
   /// The long name is resolved using <see cref="IMemberInformationNameResolver"/>.
   /// </remarks>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (IMemberInformationGlobalizationService), Lifetime = LifetimeKind.Singleton)]
   public sealed class MemberInformationGlobalizationService : IMemberInformationGlobalizationService
   {
     private readonly IGlobalizationService _globalizationService;
     private readonly IMemberInformationNameResolver _memberInformationNameResolver;
 
     public MemberInformationGlobalizationService (
-        ICompoundGlobalizationService globalizationService,
+        IGlobalizationService globalizationService,
         IMemberInformationNameResolver memberInformationNameResolver)
     {
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);

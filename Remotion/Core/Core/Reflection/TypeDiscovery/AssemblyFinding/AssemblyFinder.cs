@@ -29,9 +29,23 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// used to find a set of root assemblies, the <see cref="AssemblyFinder"/> automatically traverses the assembly references to (transitively)
   /// find all referenced assemblies as well. The root assemblies and referenced assemblies are loaded with the <see cref="IAssemblyLoader"/>.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public class AssemblyFinder : IAssemblyFinder
   {
-    private readonly static ILog s_log = LogManager.GetLogger (typeof (AssemblyFinder));
+    // This class holds lazy, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a nested static
+    // class with a static constructor as lazily as possible on first access of the static field.
+    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
+    static class LazyStaticFields
+    {
+      public readonly static ILog s_log = LogManager.GetLogger (typeof (AssemblyFinder));
+
+      // ReSharper disable EmptyConstructor
+      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
+      static LazyStaticFields ()
+      {
+      }
+      // ReSharper restore EmptyConstructor
+    }
 
     private readonly IRootAssemblyFinder _rootAssemblyFinder;
     private readonly IAssemblyLoader _assemblyLoader;
@@ -65,51 +79,55 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     /// assemblies. The assemblies are loaded via the <see cref="AssemblyLoader"/>.
     /// </summary>
     /// <returns>The root assemblies and their referenced assemblies.</returns>
-    public virtual Assembly[] FindAssemblies ()
+    public virtual IEnumerable<Assembly> FindAssemblies ()
     {
-      s_log.Debug ("Finding assemblies...");
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time spent for finding and loading assemblies: {elapsed}."))
+      LazyStaticFields.s_log.Debug ("Finding assemblies...");
+      using (StopwatchScope.CreateScope (LazyStaticFields.s_log, LogLevel.Info, "Time spent for finding and loading assemblies: {elapsed}."))
       {
-        RootAssembly[] rootAssemblies = FindRootAssemblies ();
+        var rootAssemblies = FindRootAssemblies().ToList();
         var resultSet = new HashSet<Assembly> (rootAssemblies.Select (root => root.Assembly));
 
         resultSet.UnionWith (FindReferencedAssemblies (rootAssemblies));
-        return resultSet.ToArray ().LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Found {0} assemblies.", result.Length));
+
+        // Forcing the enumeration at this point does not have a measurable impact on performance.
+        // Instead, decoupling the assembly loading from the rest of the system is actually helpful for concurrency.
+        return resultSet.LogAndReturnItems (LazyStaticFields.s_log, LogLevel.Info, count => string.Format ("Found {0} assemblies.", count))
+            .ToList();
       }
     }
 
-    private RootAssembly[] FindRootAssemblies ()
+    private IEnumerable<RootAssembly> FindRootAssemblies ()
     {
-      s_log.Debug ("Finding root assemblies...");
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time spent for finding and loading root assemblies: {elapsed}."))
+      LazyStaticFields.s_log.Debug ("Finding root assemblies...");
+      using (StopwatchScope.CreateScope (LazyStaticFields.s_log, LogLevel.Debug, "Time spent for finding and loading root assemblies: {elapsed}."))
       {
         return _rootAssemblyFinder.FindRootAssemblies ()
-            .LogAndReturn (s_log, LogLevel.Debug, result => string.Format ("Found {0} root assemblies.", result.Length));
+            .LogAndReturnItems (LazyStaticFields.s_log, LogLevel.Debug, count => string.Format ("Found {0} root assemblies.", count));
       }
     }
 
-    private IEnumerable<Assembly> FindReferencedAssemblies (RootAssembly[] rootAssemblies)
+    private IEnumerable<Assembly> FindReferencedAssemblies (IEnumerable<RootAssembly> rootAssemblies)
     {
-      s_log.Debug ("Finding referenced assemblies...");
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time spent for finding and loading referenced assemblies: {elapsed}."))
+      LazyStaticFields.s_log.Debug ("Finding referenced assemblies...");
+      using (StopwatchScope.CreateScope (LazyStaticFields.s_log, LogLevel.Debug, "Time spent for finding and loading referenced assemblies: {elapsed}."))
       {
         var processedAssemblyNames = new HashSet<string>(); // used to avoid loading assemblies twice
         var referenceRoots = new HashSet<RootAssembly> (rootAssemblies); // referenced assemblies added later in order to get their references as well
 
         while (referenceRoots.Count > 0)
         {
-          RootAssembly currentRoot = referenceRoots.First(); // take any reference
+          var currentRoot = referenceRoots.First(); // take any reference
           referenceRoots.Remove (currentRoot); // don't handle again
 
           if (currentRoot.FollowReferences)
           {
-            foreach (AssemblyName referencedAssemblyName in currentRoot.Assembly.GetReferencedAssemblies())
+            foreach (var referencedAssemblyName in currentRoot.Assembly.GetReferencedAssemblies())
             {
               if (!processedAssemblyNames.Contains (referencedAssemblyName.FullName)) // don't process an assembly name twice
               {
                 processedAssemblyNames.Add (referencedAssemblyName.FullName);
 
-                Assembly referencedAssembly = _assemblyLoader.TryLoadAssembly (referencedAssemblyName, currentRoot.Assembly.FullName);
+                var referencedAssembly = _assemblyLoader.TryLoadAssembly (referencedAssemblyName, currentRoot.Assembly.FullName);
                 if (referencedAssembly != null) // might return null if filtered by the loader
                 {
                   referenceRoots.Add (new RootAssembly (referencedAssembly, true)); // store as a root in order to process references transitively

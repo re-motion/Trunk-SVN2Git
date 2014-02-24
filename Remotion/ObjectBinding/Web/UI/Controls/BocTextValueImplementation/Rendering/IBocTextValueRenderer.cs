@@ -23,8 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   /// <summary>
   /// Defines the API for rendering a <see cref="BocTextValue"/>.
   /// </summary>
-  [ConcreteImplementation(typeof(BocTextValueRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocTextValueRenderer
+ public interface IBocTextValueRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, TextBoxStyle textBoxStyle);
     void Render (BocTextValueRenderingContext renderingContext);

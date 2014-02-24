@@ -40,7 +40,7 @@ namespace Remotion.Web.UI.Controls
     /// <summary>
     /// Initializes the <see cref="Context"/> and the <see cref="Control"/> properties from the arguments.
     /// </summary>
-    protected RendererBase (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+    protected RendererBase (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);

@@ -16,12 +16,14 @@
 // 
 using System;
 using System.ComponentModel;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Utilities
 {
   /// <summary>
   /// Creates an <see cref="AdvancedEnumConverter"/> if the requested type is an enum.
   /// </summary>
+  [ImplementationFor (typeof (ITypeConverterFactory), Lifetime = LifetimeKind.Singleton, Position = 1, RegistrationType = RegistrationType.Multiple)]
   public class EnumTypeConverterFactory : ITypeConverterFactory
   {
     public EnumTypeConverterFactory ()

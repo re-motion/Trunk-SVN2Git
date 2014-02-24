@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Queries
@@ -190,7 +191,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries
     public void CreateLinqQuery_WithParserAndExecutor ()
     {
       var factoryMock = MockRepository.GenerateStrictMock<ILinqProviderComponentFactory> ();
-      using (new ServiceLocatorScope (typeof (ILinqProviderComponentFactory), () => factoryMock))
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle<ILinqProviderComponentFactory> (() => factoryMock);
+      using (new ServiceLocatorScope (serviceLocator))
       {
         var executorStub = MockRepository.GenerateStub<IQueryExecutor>();
         var queryParserStub = MockRepository.GenerateStub<IQueryParser>();
@@ -211,7 +214,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries
     public void CreateLinqQuery_WithoutParserAndExecutor ()
     {
       var factoryMock = MockRepository.GenerateStrictMock<ILinqProviderComponentFactory> ();
-      using (new ServiceLocatorScope (typeof (ILinqProviderComponentFactory), () => factoryMock))
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle<ILinqProviderComponentFactory> (() => factoryMock);
+      using (new ServiceLocatorScope (serviceLocator))
       {
         var fakeExecutor = MockRepository.GenerateStub<IQueryExecutor> ();
         var fakeQueryParser = MockRepository.GenerateStub<IQueryParser> ();

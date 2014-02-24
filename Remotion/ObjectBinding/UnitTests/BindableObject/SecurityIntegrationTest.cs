@@ -48,8 +48,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       SecurityConfiguration.Current.SecurityProvider = _securityProviderStub;
       SecurityConfiguration.Current.PrincipalProvider = _principalProviderStub;
 
-      var serviceLocator = new DefaultServiceLocator();
-      serviceLocator.Register (typeof (IObjectSecurityAdapter), () => new ObjectSecurityAdapter());
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterMultiple<IObjectSecurityAdapter> (() => new ObjectSecurityAdapter());
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 

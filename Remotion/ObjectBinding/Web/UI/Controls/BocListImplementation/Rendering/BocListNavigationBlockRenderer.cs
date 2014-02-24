@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Web.UI;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
@@ -29,6 +30,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// Responsible for rendering the navigation block of a <see cref="BocList"/>.
   /// </summary>
   /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
+  [ImplementationFor (typeof (IBocListNavigationBlockRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocListNavigationBlockRenderer : RendererBase<BocList>, IBocListNavigationBlockRenderer
   {
     /// <summary> A list of control specific resources. </summary>
@@ -106,7 +108,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// factory to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService, BocListCssClassDefinition cssClasses)
+    public BocListNavigationBlockRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, BocListCssClassDefinition cssClasses)
       :base (resourceUrlFactory, globalizationService)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);

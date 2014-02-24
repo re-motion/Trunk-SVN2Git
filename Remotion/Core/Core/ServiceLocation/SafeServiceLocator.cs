@@ -102,7 +102,7 @@ namespace Remotion.ServiceLocation
     /// <see cref="ServiceLocationConfiguration"/>. Building the default provider, which may include construction of an IoC container, can be a
     /// complex operation. When the code building the default locator accesses the <see cref="Current"/> property, it will get a reference to a
     /// bootstrapping <see cref="IServiceLocator"/>, which behaves just like the <see cref="DefaultServiceLocator"/> (i.e., it evaluates
-    /// <see cref="ConcreteImplementationAttribute"/> declarations and such).
+    /// <see cref="ImplementationForAttribute"/> declarations and such).
     /// The <see cref="BootstrapConfiguration"/> allows clients to register additional services with the bootstrapping <see cref="IServiceLocator"/>.
     /// </para>
     /// </remarks>

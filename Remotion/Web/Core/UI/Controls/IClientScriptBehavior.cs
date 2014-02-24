@@ -23,8 +23,7 @@ namespace Remotion.Web.UI.Controls
   /// <summary>
   /// Defines an API for determining whether the browser used for the current request supports client script.
   /// </summary>
-  [ConcreteImplementation (typeof (ClientScriptBehavior), Lifetime = LifetimeKind.Singleton)]
-  public interface IClientScriptBehavior
+ public interface IClientScriptBehavior
   {
     bool IsBrowserCapableOfScripting (HttpContextBase httpContext, IControl control);
   }

@@ -72,7 +72,7 @@ public class SingleBocTestBasePage:
 
   protected IGlobalizationService GlobalizationService
   {
-    get { return SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>(); }
+    get { return SafeServiceLocator.Current.GetInstance<IGlobalizationService>(); }
   }
 
 //  public string GetResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)

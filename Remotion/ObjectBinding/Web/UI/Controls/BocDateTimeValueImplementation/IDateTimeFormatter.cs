@@ -23,8 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation
   /// Declares the API for formatting the date and time value representation of a <see cref="BocDateTimeValue"/>.
   /// </summary>
   /// <seealso cref="DateTimeFormatter"/>
-  [ConcreteImplementation(typeof (DateTimeFormatter), Lifetime = LifetimeKind.Singleton)]
-  public interface IDateTimeFormatter
+ public interface IDateTimeFormatter
   {
     /// <summary> Formats the <see cref="DateTime"/> value's date component according to the current culture. </summary>
     /// <param name="dateValue"> The <see cref="DateTime"/> value to be formatted. </param>

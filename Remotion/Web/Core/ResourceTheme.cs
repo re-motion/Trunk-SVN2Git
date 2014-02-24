@@ -19,9 +19,9 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.Web
 {
-  [ConcreteImplementation (typeof (ResourceTheme.NovaBlue), Lifetime = LifetimeKind.Singleton)]
   public class ResourceTheme
   {
+    [ImplementationFor (typeof (ResourceTheme), Lifetime = LifetimeKind.Singleton)]
     public class NovaBlue : ResourceTheme
     {
       public NovaBlue ()

@@ -58,7 +58,6 @@
     <Compile Include="Obsolete\EnumDescriptionResourceAttribute.cs" />
     <Compile Include="Obsolete\EnumValue.cs" />
     <Compile Include="GlobalizationServiceExtensions.cs" />
-    <Compile Include="ICompoundGlobalizationService.cs" />
     <Compile Include="IEnumerationGlobalizationService.cs" />
     <Compile Include="IGlobalizationService.cs" />
     <Compile Include="IMemberInformationGlobalizationService.cs" />

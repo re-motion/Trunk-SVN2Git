@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -29,6 +30,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// Responsible for rendering <see cref="BocCheckBox"/> controls.
   /// <seealso cref="IBocCheckBox"/>
   /// </summary>
+  [ImplementationFor (typeof (IBocCheckBoxRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocCheckBoxRenderer : BocBooleanValueRendererBase<IBocCheckBox>, IBocCheckBoxRenderer
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";
@@ -36,7 +38,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
 
     private static readonly string s_startUpScriptKey = typeof (BocCheckBoxRenderer).FullName + "_Startup";
 
-    public BocCheckBoxRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+    public BocCheckBoxRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
         : base (resourceUrlFactory, globalizationService)
     {
     }

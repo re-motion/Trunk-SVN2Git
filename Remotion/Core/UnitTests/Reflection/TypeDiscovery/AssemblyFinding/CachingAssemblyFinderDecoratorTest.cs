@@ -64,32 +64,5 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       Assert.That (result1, Is.EqualTo (assemblies));
       Assert.That (result2, Is.EqualTo (result1));
     }
-
-    [Test]
-    public void ClearCache ()
-    {
-      var assemblies1 = new[] { typeof (object).Assembly, GetType ().Assembly };
-      var assemblies2 = new[] { GetType ().Assembly };
-      using (_innerFinder.GetMockRepository ().Ordered ())
-      {
-        _innerFinder
-            .Expect (mock => mock.FindAssemblies())
-            .Return (assemblies1);
-        _innerFinder
-            .Expect (mock => mock.FindAssemblies())
-            .Return (assemblies2);
-      }
-      _innerFinder.Replay ();
-
-      var result1 = _decorator.FindAssemblies ();
-
-      _decorator.ClearCache();
-
-      var result2 = _decorator.FindAssemblies ();
-
-      _innerFinder.VerifyAllExpectations ();
-      Assert.That (result1, Is.EqualTo (assemblies1));
-      Assert.That (result2, Is.EqualTo (assemblies2));
-    }
   }
 }

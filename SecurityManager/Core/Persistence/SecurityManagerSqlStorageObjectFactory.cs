@@ -23,14 +23,12 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Mixins;
-using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Persistence
 {
-  [ConcreteImplementation (typeof (SecurityManagerSqlStorageObjectFactory))]
-  public class SecurityManagerSqlStorageObjectFactory : SqlStorageObjectFactory
+ public class SecurityManagerSqlStorageObjectFactory : SqlStorageObjectFactory
   {
     protected override StorageProvider CreateStorageProvider (
         IPersistenceExtension persistenceExtension,

@@ -22,8 +22,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Interface for classes that render the index column of <see cref="IBocList"/> controls.
   /// </summary>
-  [ConcreteImplementation(typeof(BocIndexColumnRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocIndexColumnRenderer
+ public interface IBocIndexColumnRenderer
   {
     /// <summary>
     /// Renders the index cell for the title row.

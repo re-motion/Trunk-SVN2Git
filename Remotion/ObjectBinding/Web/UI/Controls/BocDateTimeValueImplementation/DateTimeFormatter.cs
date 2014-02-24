@@ -17,12 +17,14 @@
 
 using System;
 using System.Globalization;
+using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation
 {
   /// <summary>
   /// Default implementation of the <seealso cref="IDateTimeFormatter"/> interface.
   /// </summary>
+  [ImplementationFor (typeof (IDateTimeFormatter), Lifetime = LifetimeKind.Singleton)]
   public class DateTimeFormatter : IDateTimeFormatter
   {
     public DateTimeFormatter ()

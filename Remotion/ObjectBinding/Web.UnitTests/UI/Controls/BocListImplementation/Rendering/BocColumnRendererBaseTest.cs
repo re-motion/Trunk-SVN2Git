@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     [Test]
     public void IsNull ()
     {
-      Assert.That (Column.GetRenderer (new DefaultServiceLocator()).IsNull, Is.False);
+      Assert.That (Column.GetRenderer (DefaultServiceLocator.Create()).IsNull, Is.False);
     }
 
     [Test]

@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
-using System;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins.UnitTests.Core.Utilities.Singleton.TestDomain
 {
+  [ImplementationFor (typeof (IInterfaceWithConcreteImplementation))]
   public class ConcreteImplementationOfInterface : IInterfaceWithConcreteImplementation
   {
   }

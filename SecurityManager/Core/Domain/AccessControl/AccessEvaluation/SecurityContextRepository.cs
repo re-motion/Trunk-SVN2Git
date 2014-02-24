@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
@@ -30,6 +31,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
   /// Cache-based implementation of the <see cref="ISecurityContextRepository"/> interface.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (ISecurityContextRepository), Lifetime = LifetimeKind.Singleton)]
   public sealed class SecurityContextRepository : ISecurityContextRepository
   {
     //TODO RM-5640: test

@@ -25,8 +25,7 @@ namespace Remotion.Security.Metadata
   /// <summary>
   /// Class is used to get 
   /// </summary>
-  [ConcreteImplementation (typeof (ReflectionBasedMemberResolver), Lifetime = LifetimeKind.Singleton)]
-  public interface IMemberResolver : INullObject
+ public interface IMemberResolver : INullObject
   {
     IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation);
     IMethodInformation GetMethodInformation (Type type, MethodInfo methodInfo, MemberAffiliation memberAffiliation);

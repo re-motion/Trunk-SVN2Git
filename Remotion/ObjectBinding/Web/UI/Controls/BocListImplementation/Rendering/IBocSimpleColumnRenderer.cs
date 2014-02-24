@@ -22,8 +22,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Marker interface for the renderer responsible for rendering a <see cref="BocSimpleColumnDefinition"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (BocSimpleColumnRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocSimpleColumnRenderer : IBocColumnRenderer
+ public interface IBocSimpleColumnRenderer : IBocColumnRenderer
   {
   }
 }

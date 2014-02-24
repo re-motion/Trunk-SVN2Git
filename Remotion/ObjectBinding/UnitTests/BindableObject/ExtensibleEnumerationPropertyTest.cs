@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       _businessObjectProvider.AddService (
           typeof (BindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
-              MockRepository.GenerateStub<ICompoundGlobalizationService>(),
+              MockRepository.GenerateStub<IGlobalizationService>(),
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
               MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
               mockExtensibleEnumerationGlobalizationService));

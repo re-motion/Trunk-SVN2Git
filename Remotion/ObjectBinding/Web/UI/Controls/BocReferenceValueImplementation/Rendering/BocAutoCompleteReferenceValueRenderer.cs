@@ -20,6 +20,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.Services;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -35,6 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.TextBox"/> and a pop-up element.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
+  [ImplementationFor (typeof (IBocAutoCompleteReferenceValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocAutoCompleteReferenceValueRenderer : BocReferenceValueRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValueRenderer
   {
     /// <summary> A list of control specific resources. </summary>
@@ -59,12 +61,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private readonly Func<TextBox> _textBoxFactory;
 
-    public BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+    public BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
       : this (resourceUrlFactory, globalizationService, () => new RenderOnlyTextBox())
     {
     }
 
-    protected BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService, Func<TextBox> textBoxFactory)
+    protected BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, Func<TextBox> textBoxFactory)
       : base (resourceUrlFactory, globalizationService)
     {
       ArgumentUtility.CheckNotNull ("textBoxFactory", textBoxFactory);

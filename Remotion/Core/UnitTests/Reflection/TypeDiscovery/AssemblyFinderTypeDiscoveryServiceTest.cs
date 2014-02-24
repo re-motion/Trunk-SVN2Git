@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection.TypeDiscovery;
@@ -68,7 +69,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
 
       _mockRepository.ReplayAll ();
       ICollection types = service.GetTypes (typeof (object), true);
-      Assert.That (types, Is.EquivalentTo (allTypes));
+
+      Assert.That (allTypes, Is.SubsetOf (types));
       _mockRepository.VerifyAll ();
     }
 
@@ -94,14 +96,11 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     {
       var service = new AssemblyFinderTypeDiscoveryService (_finderMock);
 
-      _finderMock.Expect (mock => mock.FindAssemblies ()).Return (new[] { _testAssembly, _mscorlibAssembly });
-
-      var allTypes = new List<Type> ();
-      allTypes.AddRange (_testAssembly.GetTypes ());
+      _finderMock.Expect (mock => mock.FindAssemblies ()).Return (new[] { _mscorlibAssembly });
 
       _mockRepository.ReplayAll ();
       ICollection types = service.GetTypes (typeof (object), true);
-      Assert.That (types, Is.EquivalentTo (allTypes));
+      Assert.That (types, Is.Empty);
       _mockRepository.VerifyAll ();
     }
 
@@ -112,12 +111,11 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
 
       _finderMock.Expect (mock => mock.FindAssemblies ()).Return (new[] { _testAssembly });
 
-      var allTypes = new List<Type> ();
-      allTypes.AddRange (_testAssembly.GetTypes ());
+      var allTypes = new List<Type> (_testAssembly.GetTypes ());
 
       _mockRepository.ReplayAll ();
       ICollection types = service.GetTypes (null, true);
-      Assert.That (types, Is.EquivalentTo (allTypes));
+      Assert.That (allTypes, Is.SubsetOf (types));
       _mockRepository.VerifyAll ();
     }
 

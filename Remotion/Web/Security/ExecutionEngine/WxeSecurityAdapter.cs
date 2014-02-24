@@ -16,11 +16,13 @@
 // 
 using System;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Security.ExecutionEngine
 {
+  [ImplementationFor (typeof (IWxeSecurityAdapter), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
   public class WxeSecurityAdapter : IWxeSecurityAdapter
   {
     // types

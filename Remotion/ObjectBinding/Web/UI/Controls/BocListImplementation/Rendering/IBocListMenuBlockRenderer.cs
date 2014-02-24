@@ -22,8 +22,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Interface for classes responsible for rendering the menu block of <see cref="IBocList"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof (BocListMenuBlockRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocListMenuBlockRenderer
+ public interface IBocListMenuBlockRenderer
   {
     void Render (BocListRenderingContext renderingContext);
   }

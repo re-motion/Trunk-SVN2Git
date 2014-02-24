@@ -15,12 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Implementation;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration
 {
+  [ImplementationFor (typeof (ITypeFactoryImplementation), Lifetime = LifetimeKind.Singleton)]
   public class TypeFactoryImplementation : ITypeFactoryImplementation
   {
     private readonly IPipelineRegistry _pipelineRegistry;

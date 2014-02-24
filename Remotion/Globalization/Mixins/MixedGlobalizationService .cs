@@ -18,11 +18,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Globalization.Implementation;
 using Remotion.Mixins;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Mixins
@@ -35,6 +37,7 @@ namespace Remotion.Globalization.Mixins
   /// <see cref="MixinConfiguration.SetMasterConfiguration"/> or <see cref="MixinConfiguration.ResetMasterConfiguration"/>.
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
+  [ImplementationFor (typeof (IGlobalizationService), Position = 1, Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
   public sealed class MixinGlobalizationService : IGlobalizationService
   {
     private volatile MixinConfiguration _mixinConfiguration;

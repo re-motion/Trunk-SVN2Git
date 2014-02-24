@@ -193,7 +193,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       rootAssemblyFinderStub.Replay ();
 
       var finder = new AssemblyFinder (rootAssemblyFinderStub, loaderMock);
-      var result = finder.FindAssemblies ();
+      var result = finder.FindAssemblies ().ToArray();
 
       loaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.EquivalentTo (new[] { _assembly2, _assembly3 }));

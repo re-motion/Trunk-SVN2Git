@@ -22,8 +22,7 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="WebTreeView"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (WebTreeViewRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IWebTreeViewRenderer
+ public interface IWebTreeViewRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
 

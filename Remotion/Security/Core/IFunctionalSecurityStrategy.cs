@@ -22,8 +22,7 @@ namespace Remotion.Security
 {
   /// <summary>Encapsulates the security checks for static access to the business object.</summary>
   /// <remarks><note type="inotes">Implementations are free to decide whether they provide object-independent caching.</note></remarks>
-  [ConcreteImplementation (typeof (FunctionalSecurityStrategy), Lifetime = LifetimeKind.Singleton)]
-  public interface IFunctionalSecurityStrategy
+ public interface IFunctionalSecurityStrategy
   {
     /// <summary>Determines whether the requested access is granted.</summary>
     /// <param name="type">The <see cref="Type"/> of the business object.</param>

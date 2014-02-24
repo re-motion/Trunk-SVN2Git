@@ -58,7 +58,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     }
 
     private readonly string _searchPath;
-    private readonly FilePatternSpecification[] _specifications;
+    private readonly IReadOnlyList<FilePatternSpecification> _specifications;
     private readonly IFileSearchService _fileSearchService;
     private readonly IAssemblyLoader _assemblyLoader;
 
@@ -74,7 +74,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       ArgumentUtility.CheckNotNull ("assemblyLoader", assemblyLoader);
 
       _searchPath = searchPath;
-      _specifications = specifications.ToArray();
+      _specifications = specifications.ToList().AsReadOnly();
       _fileSearchService = fileSearchService;
       _assemblyLoader = assemblyLoader;
     }
@@ -84,9 +84,9 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _searchPath; }
     }
 
-    public ReadOnlyCollection<FilePatternSpecification> Specifications
+    public IReadOnlyList<FilePatternSpecification> Specifications
     {
-      get { return Array.AsReadOnly (_specifications); }
+      get { return _specifications; }
     }
 
     public IFileSearchService FileSearchService
@@ -99,7 +99,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _assemblyLoader; }
     }
 
-    public RootAssembly[] FindRootAssemblies ()
+    public IEnumerable<RootAssembly> FindRootAssemblies ()
     {
       var fileDescriptions = ConsolidateSpecifications ();
 
@@ -107,7 +107,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
                            let assembly = _assemblyLoader.TryLoadAssembly (fileDescription.FilePath)
                            where assembly != null
                            select new RootAssembly (assembly, fileDescription.FollowReferences);
-      return rootAssemblies.Distinct ().ToArray ();
+      return rootAssemblies.Distinct ();
     }
 
     private IEnumerable<FileDescription> ConsolidateSpecifications ()

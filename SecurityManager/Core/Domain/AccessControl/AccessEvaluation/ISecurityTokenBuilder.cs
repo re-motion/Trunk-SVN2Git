@@ -22,8 +22,7 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
-  [ConcreteImplementation (typeof (SecurityTokenBuilder), Lifetime = LifetimeKind.Singleton)]
-  public interface ISecurityTokenBuilder
+ public interface ISecurityTokenBuilder
   {
     SecurityToken CreateToken (ISecurityPrincipal principal, ISecurityContext context);
   }

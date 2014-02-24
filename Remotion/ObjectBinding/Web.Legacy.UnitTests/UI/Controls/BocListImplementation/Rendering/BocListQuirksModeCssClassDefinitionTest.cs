@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       [SetUp]
       public void SetUp ()
       {
-        _serviceLocator = new DefaultServiceLocator ();
+        _serviceLocator = DefaultServiceLocator.Create();
       }
 
       [Test]

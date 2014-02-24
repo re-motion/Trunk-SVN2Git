@@ -22,14 +22,15 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  [ConcreteImplementation (typeof (ClassWithIndirectActivationExceptionForCollectionParameter))]
   public interface IInterfaceWithIndirectActivationExceptionForCollectionParameter
   {
   }
 
+  [ImplementationFor (typeof (IInterfaceWithIndirectActivationExceptionForCollectionParameter))]
   public class ClassWithIndirectActivationExceptionForCollectionParameter : IInterfaceWithIndirectActivationExceptionForCollectionParameter
   {
-    public ClassWithIndirectActivationExceptionForCollectionParameter (IEnumerable<ITestConcreteImplementationAttributeTypeThrowingExceptionInCtor> innerDependency)
+    public ClassWithIndirectActivationExceptionForCollectionParameter (
+        IEnumerable<ITestRegistrationTypeMultipleTypeThrowingExceptionInCtor> innerDependency)
     {
       innerDependency.ToArray();
     }

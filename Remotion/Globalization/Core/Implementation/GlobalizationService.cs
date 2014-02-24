@@ -19,6 +19,7 @@ using System;
 using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
@@ -27,6 +28,7 @@ namespace Remotion.Globalization.Implementation
   /// Retrieves and caches <see cref="IResourceManager"/>s for types.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
+  [ImplementationFor (typeof (IGlobalizationService), Position = 0, Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
   public sealed class GlobalizationService : IGlobalizationService
   {
     private readonly IResourceManagerResolver _resourceManagerResolver;

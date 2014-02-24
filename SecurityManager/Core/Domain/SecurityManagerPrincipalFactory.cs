@@ -19,6 +19,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain
@@ -26,6 +27,7 @@ namespace Remotion.SecurityManager.Domain
   /// <summary>
   /// Default implementation of the <see cref="ISecurityManagerPrincipalFactory"/> interface.
   /// </summary>
+  [ImplementationFor (typeof (ISecurityManagerPrincipalFactory), Lifetime = LifetimeKind.Singleton)]
   public class SecurityManagerPrincipalFactory : ISecurityManagerPrincipalFactory
   {
     public SecurityManagerPrincipalFactory ()

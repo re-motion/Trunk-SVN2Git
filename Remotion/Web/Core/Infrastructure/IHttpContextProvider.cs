@@ -21,8 +21,7 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.Web.Infrastructure
 {
-  [ConcreteImplementation (typeof (HttpContextProvider), Lifetime = LifetimeKind.Singleton)]
-  public interface IHttpContextProvider
+ public interface IHttpContextProvider
   {
     HttpContextBase GetCurrentHttpContext ();
   }

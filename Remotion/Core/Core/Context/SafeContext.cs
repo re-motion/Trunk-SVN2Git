@@ -52,7 +52,7 @@ namespace Remotion.Context
         {
           if (s_instance == null)
           {
-            s_instance = SafeServiceLocator.Current.GetAllInstances<ISafeContextStorageProvider>().FirstOrDefault();
+            s_instance = SafeServiceLocator.Current.GetInstance<ISafeContextStorageProvider>();
             if (s_instance == null)
               throw new InvalidOperationException ("No instance of ISafeContextStorageProvider has been registered with the ServiceLocator.");
           }

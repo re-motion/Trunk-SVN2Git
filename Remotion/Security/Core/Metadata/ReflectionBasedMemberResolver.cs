@@ -19,10 +19,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Security.Metadata
 {
+  [ImplementationFor (typeof (IMemberResolver), Lifetime = LifetimeKind.Singleton)]
   public class ReflectionBasedMemberResolver : IMemberResolver
   {
     private class CacheKey : IEquatable<CacheKey>

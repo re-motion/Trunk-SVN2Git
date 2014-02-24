@@ -20,8 +20,7 @@ using Remotion.TypePipe;
 
 namespace Remotion.Mixins.CodeGeneration
 {
-  [ConcreteImplementation (typeof (ObjectFactoryImplementation), Lifetime = LifetimeKind.Singleton)]
-  public interface IObjectFactoryImplementation
+ public interface IObjectFactoryImplementation
   {
     object CreateInstance (bool allowNonPublicConstructors, Type targetOrConcreteType, ParamList constructorParameters, params object[] preparedMixins);
   }

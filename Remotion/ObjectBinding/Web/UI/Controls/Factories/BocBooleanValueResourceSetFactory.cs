@@ -18,6 +18,7 @@ using System;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 
@@ -26,6 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
   /// <summary>
   /// Responsible for creating the <see cref="BocBooleanValue"/> <see cref="BocBooleanValueResourceSet"/>.
   /// </summary>
+  [ImplementationFor (typeof (IBocBooleanValueResourceSetFactory), Lifetime = LifetimeKind.Singleton)]
   public class BocBooleanValueResourceSetFactory : IBocBooleanValueResourceSetFactory
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";

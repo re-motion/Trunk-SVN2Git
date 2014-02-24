@@ -33,16 +33,14 @@ namespace Remotion.Globalization.Mixins.Obsolete
   /// </summary>
   [Obsolete]
   [ReflectionAPI]
+  [ImplementationFor (typeof (MixedMultiLingualResources.IImplementation), Position = 1, Lifetime = LifetimeKind.Singleton)]
   internal class MixedMultiLingualResourcesImplementation : MixedMultiLingualResources.IImplementation
   {
     private static readonly DoubleCheckedLockingContainer<IResourceManagerResolver> s_resolver =
         new DoubleCheckedLockingContainer<IResourceManagerResolver> (() => SafeServiceLocator.Current.GetInstance<IResourceManagerResolver>());
 
     private static readonly DoubleCheckedLockingContainer<MixinGlobalizationService> s_mixinGlobalizationService =
-        new DoubleCheckedLockingContainer<MixinGlobalizationService> (
-            () => SafeServiceLocator.Current.GetAllInstances<IGlobalizationService>()
-                .OfType<MixinGlobalizationService>()
-                .Single (() => new InvalidOperationException ("MixinGlobalizationService is not registered with the IoC container")));
+        new DoubleCheckedLockingContainer<MixinGlobalizationService> (() => new MixinGlobalizationService (s_resolver.Value));
 
     public IResourceManager GetResourceManager (Type objectType, bool includeHierarchy)
     {

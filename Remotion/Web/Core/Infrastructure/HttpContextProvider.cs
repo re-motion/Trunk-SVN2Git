@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -17,9 +17,11 @@
 
 using System;
 using System.Web;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Web.Infrastructure
 {
+  [ImplementationFor (typeof (IHttpContextProvider), Lifetime = LifetimeKind.Singleton)]
   public class HttpContextProvider : IHttpContextProvider
   {
     public HttpContextBase GetCurrentHttpContext ()

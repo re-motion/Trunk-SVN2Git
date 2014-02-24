@@ -57,7 +57,6 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="ICompoundGlobalizationServiceTest.cs" />
     <Compile Include="IGlobalizationServiceTest.cs" />
     <Compile Include="Obsolete\MixedMultiLingualResourcesTests\ExistsResourceTest.cs" />
     <Compile Include="Obsolete\MixedMultiLingualResourcesTests\GetResourceManagerTest.cs" />

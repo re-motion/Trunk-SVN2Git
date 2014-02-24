@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// <summary>
   /// Contains all the CSS class definitions needed throughout <see cref="BocList"/> rendering.
   /// </summary>
-  [ConcreteImplementation (typeof (BocListQuirksModeCssClassDefinition), Lifetime = LifetimeKind.Singleton)]
+  [ImplementationFor (typeof(BocListQuirksModeCssClassDefinition), Lifetime = LifetimeKind.Singleton)]
   public class BocListQuirksModeCssClassDefinition
   {
     private static readonly DoubleCheckedLockingContainer<BocListQuirksModeCssClassDefinition> s_instance =

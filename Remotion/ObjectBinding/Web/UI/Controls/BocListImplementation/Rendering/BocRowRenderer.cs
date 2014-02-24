@@ -17,6 +17,7 @@
 using System;
 using System.Web.UI;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -26,6 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// Responsible for rendering single data rows or the title row of a specific <see cref="BocList"/>.
   /// </summary>
   /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
+  [ImplementationFor (typeof (IBocRowRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocRowRenderer : IBocRowRenderer
   {
     /// <summary>Text displayed when control is displayed in desinger and is read-only has no contents.</summary>

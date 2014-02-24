@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
@@ -28,8 +29,8 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     /// Finds root assemblies as defined by the concrete implementation. Root assemblies are used by <see cref="AssemblyFinder"/> as an entry
     /// point into assembly discovery.
     /// </summary>
-    /// <returns>An array of <see cref="RootAssembly"/> instances holding distinct, non-<see langword="null" /> <see cref="Assembly"/> objects
+    /// <returns>A sequence of <see cref="RootAssembly"/> instances holding distinct, non-<see langword="null" /> <see cref="Assembly"/> objects
     /// as well as flags indicating whether to follow the references of the respective assembly or not.</returns>
-    RootAssembly[] FindRootAssemblies ();
+    IEnumerable<RootAssembly> FindRootAssemblies ();
   }
 }

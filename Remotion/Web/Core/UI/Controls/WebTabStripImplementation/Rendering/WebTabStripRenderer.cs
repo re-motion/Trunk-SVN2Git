@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -27,9 +28,10 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   /// Implements <see cref="IWebTabStripRenderer"/> for standard mode rendering of <see cref="WebTabStrip"/> controls.
   /// <seealso cref="IWebTabStrip"/>
   /// </summary>
+  [ImplementationFor (typeof (IWebTabStripRenderer), Lifetime = LifetimeKind.Singleton)]
   public class WebTabStripRenderer : RendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
-    public WebTabStripRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+    public WebTabStripRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
       : base (resourceUrlFactory, globalizationService)
     {
     }

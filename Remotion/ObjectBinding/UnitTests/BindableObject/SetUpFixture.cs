@@ -31,8 +31,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [SetUp]
     public virtual void SetUp ()
     {
-      var serviceLocator = new DefaultServiceLocator();
-      serviceLocator.Register (typeof (IObjectSecurityAdapter));
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterMultiple<IObjectSecurityAdapter>();
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 

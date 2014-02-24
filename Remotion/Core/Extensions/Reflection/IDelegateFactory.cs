@@ -17,7 +17,6 @@
 
 using System;
 using System.Reflection;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Reflection
 {
@@ -25,7 +24,6 @@ namespace Remotion.Reflection
   /// Extracts signatures from delegate types and delegates for their efficient invocation.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
-  [ConcreteImplementation (typeof (DelegateFactory))]
   public interface IDelegateFactory
   {
     Tuple<Type[], Type> GetSignature (Type delegateType);

@@ -19,7 +19,6 @@ using System;
 using System.Collections;
 using System.Web.Compilation;
 using JetBrains.Annotations;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Web.Infrastructure
 {
@@ -27,7 +26,6 @@ namespace Remotion.Web.Infrastructure
   /// Represents a <see cref="BuildManager"/> compatible type.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  [ConcreteImplementation (typeof (BuildManagerWrapper), Lifetime = LifetimeKind.Singleton)]
   public interface IBuildManager
   {
     /// <summary>

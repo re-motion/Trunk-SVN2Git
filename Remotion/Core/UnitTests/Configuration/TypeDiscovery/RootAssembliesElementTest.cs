@@ -69,7 +69,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       var element = DeserializeFromXmlFragment (_emptyXmlFragment);
 
       var finder = element.CreateRootAssemblyFinder (_loaderStub);
-      Assert.That (finder.InnerFinders.Length, Is.EqualTo (2));
+      Assert.That (finder.InnerFinders.Count, Is.EqualTo (2));
 
       Assert.That (finder.InnerFinders[0], Is.InstanceOf (typeof (NamedRootAssemblyFinder)));
       var namedFinder = (NamedRootAssemblyFinder) finder.InnerFinders[0];
@@ -89,7 +89,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       var element = DeserializeFromXmlFragment (_xmlFragmentWithFilesAndNames);
 
       var finder = element.CreateRootAssemblyFinder (_loaderStub);
-      Assert.That (finder.InnerFinders.Length, Is.EqualTo (2));
+      Assert.That (finder.InnerFinders.Count, Is.EqualTo (2));
 
       Assert.That (finder.InnerFinders[0], Is.InstanceOf (typeof (NamedRootAssemblyFinder)));
       var namedFinder = (NamedRootAssemblyFinder) finder.InnerFinders[0];

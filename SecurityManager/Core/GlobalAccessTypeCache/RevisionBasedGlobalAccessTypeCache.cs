@@ -28,6 +28,7 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.GlobalAccessTypeCache
 {
   [Serializable]
+  [ImplementationFor (typeof(IGlobalAccessTypeCache), Position = 0, Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
   public sealed class RevisionBasedGlobalAccessTypeCache : IGlobalAccessTypeCache, ISerializable, IObjectReference
   {
     //TODO RM-5521: test

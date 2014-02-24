@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
@@ -36,13 +38,42 @@ namespace Remotion.Logging
     /// <paramref name="messageCreator"/> is not called.</param>
     /// <param name="messageCreator">A function object building the message to be logged.</param>
     /// <returns>The <paramref name="value"/> passed in to the method.</returns>
-    public static T LogAndReturn<T> (this T value, ILog log, LogLevel logLevel, Func<T, string> messageCreator)
+    public static T LogAndReturnValue<T> (this T value, ILog log, LogLevel logLevel, Func<T, string> messageCreator)
     {
       if (log.IsEnabled (logLevel))
       {
         log.Log (logLevel, (int?) null, messageCreator (value), (Exception) null);
       }
       return value;
+    }
+
+    public static IEnumerable<T> LogAndReturnItems<T> (
+        this IEnumerable<T> sequence,
+        ILog log,
+        LogLevel logLevel,
+        Func<int, string> iterationCompletedMessageCreator)
+    {
+      if (log.IsEnabled (logLevel))
+        return LogAndReturnWithIteration (sequence, log, logLevel, iterationCompletedMessageCreator);
+      return sequence;
+    }
+
+
+    private static IEnumerable<T> LogAndReturnWithIteration<T> (
+        IEnumerable<T> sequence,
+        ILog log,
+        LogLevel logLevel,
+        Func<int, string> iterationCompletedMessageCreator)
+    {
+      int count = 0;
+      foreach (var item in sequence)
+      {
+        count++;
+        yield return item;
+      }
+
+
+      log.Log (logLevel, iterationCompletedMessageCreator (count));
     }
 
     /// <summary>

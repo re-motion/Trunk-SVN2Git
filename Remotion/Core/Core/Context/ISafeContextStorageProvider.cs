@@ -23,11 +23,6 @@ namespace Remotion.Context
   /// Common interface for classes implementing a storage mechanism for <see cref="SafeContext"/>.
   /// </summary>
   // By default, use HttpContextStorageProvider. Only if not available, use CallContextStorageProvider.
-  [ConcreteImplementation (
-      "Remotion.Web.Context.HttpContextStorageProvider, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>", 
-      ignoreIfNotFound: true, 
-      Position = 0)]
-  [ConcreteImplementation (typeof (CallContextStorageProvider), Position = 1)]
   public interface ISafeContextStorageProvider
   {
     /// <summary>

@@ -14,24 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  [ConcreteImplementation (typeof (TestTypeWithTooManyPublicConstructors))]
-  public interface ITestTypeWithTooManyPublicConstructors
+  public interface ITestRegistrationTypeSingleTypeThrowingExceptionInCtor
   {
   }
 
-  public class TestTypeWithTooManyPublicConstructors : ITestTypeWithTooManyPublicConstructors
+  [ImplementationFor (typeof (ITestRegistrationTypeSingleTypeThrowingExceptionInCtor), Lifetime = LifetimeKind.Instance, RegistrationType = RegistrationType.Single)]
+  public class TestRegistrationTypeSingleTypeThrowingExceptionInCtor : ITestRegistrationTypeSingleTypeThrowingExceptionInCtor
   {
-    public TestTypeWithTooManyPublicConstructors ()
+    public TestRegistrationTypeSingleTypeThrowingExceptionInCtor ()
     {
-    }
-
-    public TestTypeWithTooManyPublicConstructors (ITestSingletonConcreteImplementationAttributeType param)
-    {
+      throw new InvalidOperationException ("This exception comes from the ctor.");
     }
   }
 }

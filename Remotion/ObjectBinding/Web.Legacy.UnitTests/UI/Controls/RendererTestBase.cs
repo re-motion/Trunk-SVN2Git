@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     protected HttpContextBase HttpContext { get; private set; }
     protected HtmlHelper Html { get; private set; }
 
-    protected ICompoundGlobalizationService GlobalizationService
+    protected IGlobalizationService GlobalizationService
     {
       get { return new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) }); }
     }

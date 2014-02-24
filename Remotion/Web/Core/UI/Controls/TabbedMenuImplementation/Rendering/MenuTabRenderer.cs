@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
@@ -26,6 +27,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   /// Responsible for rendering a <see cref="MenuTab"/> in quirks mode.
   /// <seealso cref="IMenuTab"/>
   /// </summary>
+  [ImplementationFor (typeof (IMenuTabRenderer), Lifetime = LifetimeKind.Instance)]
   public class MenuTabRenderer : WebTabRenderer, IMenuTabRenderer
   {
     private Command _renderingCommand;

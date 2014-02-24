@@ -18,7 +18,6 @@
 using System;
 using JetBrains.Annotations;
 using Remotion.Globalization.Implementation;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Globalization
 {
@@ -27,7 +26,6 @@ namespace Remotion.Globalization
   /// </summary>
   /// <seealso cref="EnumerationGlobalizationService"/>
   /// <threadsafety static="true" instance="true" />
-  [ConcreteImplementation (typeof (EnumerationGlobalizationService), Lifetime = LifetimeKind.Singleton)]
   public interface IEnumerationGlobalizationService
   {
     /// <summary>

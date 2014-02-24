@@ -23,8 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// <summary>
   /// Defines the API for rendering a <see cref="BocAutoCompleteReferenceValue"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (BocAutoCompleteReferenceValueRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocAutoCompleteReferenceValueRenderer
+ public interface IBocAutoCompleteReferenceValueRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (BocAutoCompleteReferenceValueRenderingContext renderingContext);

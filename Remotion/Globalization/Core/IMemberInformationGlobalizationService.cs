@@ -19,7 +19,6 @@ using System;
 using JetBrains.Annotations;
 using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Globalization
 {
@@ -28,7 +27,6 @@ namespace Remotion.Globalization
   /// </summary>
   /// <seealso cref="MemberInformationGlobalizationService"/>
   /// <threadsafety static="true" instance="true" />
-  [ConcreteImplementation (typeof (MemberInformationGlobalizationService), Lifetime = LifetimeKind.Singleton)]
   public interface IMemberInformationGlobalizationService
   {
     /// <summary>

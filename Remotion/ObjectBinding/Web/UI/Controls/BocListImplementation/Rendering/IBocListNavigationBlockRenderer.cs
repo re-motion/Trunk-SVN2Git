@@ -22,8 +22,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Interface for classes responsible for rendering the navigation block of <see cref="IBocList"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof (BocListNavigationBlockRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocListNavigationBlockRenderer
+ public interface IBocListNavigationBlockRenderer
   {
     void Render (BocListRenderingContext renderingContext);
   }

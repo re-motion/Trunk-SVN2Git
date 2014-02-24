@@ -17,41 +17,39 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Collections;
+using Remotion.Logging;
 using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
 {
   /// <summary>
-  /// Provides a default implementation of the <see cref="IServiceLocator"/> interface based on the <see cref="ConcreteImplementationAttribute"/>.
+  /// Provides a default implementation of the <see cref="IServiceLocator"/> interface based on the <see cref="ImplementationForAttribute"/>.
   /// The <see cref="SafeServiceLocator"/> uses (and registers) an instance of this class unless an application registers its own service locator via 
   /// <see cref="ServiceLocator.SetLocatorProvider"/>.
   /// </summary>
   /// <remarks>
   /// <para>
-  /// This implementation of <see cref="IServiceLocator"/> uses the <see cref="ConcreteImplementationAttribute"/> to resolve implementations of
+  /// This implementation of <see cref="IServiceLocator"/> uses the <see cref="ImplementationForAttribute"/> to resolve implementations of
   /// "service types" (usually interfaces or abstract classes). When the <see cref="DefaultServiceLocator"/> is asked to get an instance of a specific 
-  /// service type for the first time, that type is checked for a <see cref="ConcreteImplementationAttribute"/>, which is then inspected to determine 
+  /// service type for the first time, that type is checked for a <see cref="ImplementationForAttribute"/>, which is then inspected to determine 
   /// the actual concrete type to be instantiated, its lifetime, and similar properties. An instance is then returned that fulfills the properties 
-  /// defined by the <see cref="ConcreteImplementationAttribute"/>. After the first resolution of a service type, the instance (or a factory, 
+  /// defined by the <see cref="ImplementationForAttribute"/>. After the first resolution of a service type, the instance (or a factory, 
   /// depending on the <see cref="LifetimeKind"/> associated with the type) is cached, so subsequent lookups for the same type are very fast.
   /// </para>
   /// <para>
   /// The <see cref="DefaultServiceLocator"/> also provides a set of <see cref="DefaultServiceLocator.Register(ServiceConfigurationEntry)"/> methods 
   /// that allow to registration of custom 
-  /// implementations or factories for service types even if those types do not have the <see cref="ConcreteImplementationAttribute"/> applied. 
-  /// Applications can use this to override the configuration defined by the <see cref="ConcreteImplementationAttribute"/> and to register 
-  /// implementations of service types that do not have the <see cref="ConcreteImplementationAttribute"/> applied. Custom implementations or factories
+  /// implementations or factories for service types even if those types do not have the <see cref="ImplementationForAttribute"/> applied. 
+  /// Applications can use this to override the configuration defined by the <see cref="ImplementationForAttribute"/> and to register 
+  /// implementations of service types that do not have the <see cref="ImplementationForAttribute"/> applied. Custom implementations or factories
   /// must be registered before an instance of the respective service type is retrieved for the first time.
   /// </para>
   /// <para>
   /// In order to be instantiable by the <see cref="DefaultServiceLocator"/>, a concrete type indicated by the 
-  /// <see cref="ConcreteImplementationAttribute"/> must have exactly one public constructor. The constructor may have parameters, in which case
+  /// <see cref="ImplementationForAttribute"/> must have exactly one public constructor. The constructor may have parameters, in which case
   /// the <see cref="DefaultServiceLocator"/> will try to get an instance for each of the parameters using the same <see cref="IServiceLocator"/>
-  /// methods. If a parameter cannot be resolved (because the parameter type has no <see cref="ConcreteImplementationAttribute"/> applied and no
+  /// methods. If a parameter cannot be resolved (because the parameter type has no <see cref="ImplementationForAttribute"/> applied and no
   /// custom implementation or factory was manually registered), an exception is thrown. Dependency cycles are not detected and will lead to a 
   /// <see cref="StackOverflowException"/> or infinite loop. Use the <see cref="Register(ServiceConfigurationEntry)"/> method to manually 
   /// register a factory for types that do not apply to these constructor rules.
@@ -62,30 +60,31 @@ namespace Remotion.ServiceLocation
   /// </para>
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
-  public class DefaultServiceLocator : IServiceLocator
+  public sealed partial class DefaultServiceLocator : IServiceLocator
   {
-    //TODO RM-5506: Drop member after ConcreteImplementationAttribute has been changed to ImpementationForAttribute and been applied to MixinParticipant and DomainObjectParticipant.
-    private static readonly Lazy<Dictionary<Type, ServiceConfigurationEntry>> s_typePipeParticipantConfiguration =
-        new Lazy<Dictionary<Type, ServiceConfigurationEntry>> (
-            () => DefaultServiceConfigurationDiscoveryService.GetTypePipeConfiguration().ToDictionary (e => e.ServiceType));
+    private readonly IServiceConfigurationDiscoveryService _serviceConfigurationDiscoveryService;
 
-    private static readonly MethodInfo s_resolveIndirectDependencyMethod =
-        MemberInfoFromExpressionUtility.GetMethod ((DefaultServiceLocator sl) => sl.ResolveIndirectDependency<object> (null))
-        .GetGenericMethodDefinition();
-    private static readonly MethodInfo s_resolveIndirectCollectionDependencyMethod =
-        MemberInfoFromExpressionUtility.GetMethod ((DefaultServiceLocator sl) => sl.ResolveIndirectCollectionDependency<object> (null))
-        .GetGenericMethodDefinition();
+    public static DefaultServiceLocator Create ()
+    {
+      return new DefaultServiceLocator (DefaultServiceConfigurationDiscoveryService.Create());
+    }
 
-    private readonly IDataStore<Type, Func<object>[]> _dataStore = DataStoreFactory.CreateWithLocking<Type, Func<object>[]> ();
+    public DefaultServiceLocator (IServiceConfigurationDiscoveryService serviceConfigurationDiscoveryService)
+    {
+      ArgumentUtility.CheckNotNull ("serviceConfigurationDiscoveryService", serviceConfigurationDiscoveryService);
+
+      _serviceConfigurationDiscoveryService = serviceConfigurationDiscoveryService;
+      Register (new ServiceConfigurationEntry (typeof (ILogManager), new ServiceImplementationInfo (typeof (Log4NetLogManager), LifetimeKind.Singleton)));
+    }
 
     /// <summary>
-    /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ConcreteImplementationAttribute"/>, or
+    /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ImplementationForAttribute"/>, or
     /// a concrete implementation or factory must have been registered using one of the <see cref="Register(ServiceConfigurationEntry)"/> methods.
     /// </summary>
     /// <param name="serviceType">The type of object requested.</param>
     /// <returns>The requested service instance.</returns>
     /// <exception cref="T:Microsoft.Practices.ServiceLocation.ActivationException">There was an error resolving the service instance: The 
-    /// <see cref="ConcreteImplementationAttribute"/> could not be found on the <paramref name="serviceType"/>, or the concrete implementation could
+    /// <see cref="ImplementationForAttribute"/> could not be found on the <paramref name="serviceType"/>, or the concrete implementation could
     /// not be instantiated. Inspect the <see cref="Exception.InnerException"/> property for the reason of the exception.</exception>
     public object GetInstance (Type serviceType)
     {
@@ -93,25 +92,20 @@ namespace Remotion.ServiceLocation
 
       var instance = GetInstanceOrNull (serviceType);
       if (instance == null)
-      {
-        string message = string.Format (
-            "Cannot get a concrete implementation of type '{0}': Expected 'ConcreteImplementationAttribute' could not be found.",
-            serviceType.FullName);
-        throw new ActivationException (message);
-      }
+        throw new ActivationException (string.Format ("No implementation is registered for service type '{0}'.", serviceType));
 
       return instance;
     }
 
     /// <summary>
-    /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ConcreteImplementationAttribute"/>, or
+    /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ImplementationForAttribute"/>, or
     /// a concrete implementation or factory must have been registered using one of the <see cref="Register(ServiceConfigurationEntry)"/> methods.
     /// </summary>
     /// <param name="serviceType">The type of object requested.</param>
     /// <param name="key">The name the object was registered with. This parameter is ignored by this implementation of <see cref="IServiceLocator"/>.</param>
     /// <returns>The requested service instance.</returns>
     /// <exception cref="T:Microsoft.Practices.ServiceLocation.ActivationException">There was an error resolving the service instance: The 
-    /// <see cref="ConcreteImplementationAttribute"/> could not be found on the <paramref name="serviceType"/>, or the concrete implementation could
+    /// <see cref="ImplementationForAttribute"/> could not be found on the <paramref name="serviceType"/>, or the concrete implementation could
     /// not be instantiated. Inspect the <see cref="Exception.InnerException"/> property for the reason of the exception.</exception>
     public object GetInstance (Type serviceType, string key)
     {
@@ -126,7 +120,7 @@ namespace Remotion.ServiceLocation
     /// <param name="serviceType">The type of object requested.</param>
     /// <returns>
     /// A sequence of instances of the requested <paramref name="serviceType"/>. The <paramref name="serviceType"/> must either have a 
-    /// <see cref="ConcreteImplementationAttribute"/>, or a concrete implementation or factory must have been registered using one of the 
+    /// <see cref="ImplementationForAttribute"/>, or a concrete implementation or factory must have been registered using one of the 
     /// <see cref="Register(ServiceConfigurationEntry)"/> methods. Otherwise, the sequence is empty.
     /// </returns>
     /// <exception cref="T:Microsoft.Practices.ServiceLocation.ActivationException">There was an error resolving the service instances: The concrete 
@@ -135,17 +129,17 @@ namespace Remotion.ServiceLocation
     {
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
 
-      return GetOrCreateFactories (serviceType).Select (factory => SafeInvokeInstanceFactory (factory, serviceType));
+      return GetAllInstances (serviceType, false);
     }
 
     /// <summary>
-    /// Get an instance of the given <typeparamref name="TService"/> type. The type must either have a <see cref="ConcreteImplementationAttribute"/>, 
+    /// Get an instance of the given <typeparamref name="TService"/> type. The type must either have a <see cref="ImplementationForAttribute"/>, 
     /// or a concrete implementation or factory must have been registered using one of the <see cref="Register(ServiceConfigurationEntry)"/> methods.
     /// </summary>
     ///<typeparam name="TService">The type of object requested.</typeparam>
     /// <returns>The requested service instance.</returns>
     /// <exception cref="T:Microsoft.Practices.ServiceLocation.ActivationException">There was an error resolving the service instance: The 
-    /// <see cref="ConcreteImplementationAttribute"/> could not be found on the <typeparamref name="TService"/>, type or the concrete implementation 
+    /// <see cref="ImplementationForAttribute"/> could not be found on the <typeparamref name="TService"/>, type or the concrete implementation 
     /// could not be instantiated. Inspect the <see cref="Exception.InnerException"/> property for the reason of the exception.</exception>
     public TService GetInstance<TService> ()
     {
@@ -153,14 +147,14 @@ namespace Remotion.ServiceLocation
     }
 
     /// <summary>
-    /// Get an instance of the given <typeparamref name="TService"/> type. The type must either have a <see cref="ConcreteImplementationAttribute"/>,
+    /// Get an instance of the given <typeparamref name="TService"/> type. The type must either have a <see cref="ImplementationForAttribute"/>,
     /// or a concrete implementation or factory must have been registered using one of the <see cref="Register(ServiceConfigurationEntry)"/> methods.
     /// </summary>
     /// <typeparam name="TService">The type of object requested.</typeparam>
     /// <param name="key">The name the object was registered with. This parameter is ignored by this implementation of <see cref="IServiceLocator"/>.</param>
     /// <returns>The requested service instance.</returns>
     /// <exception cref="T:Microsoft.Practices.ServiceLocation.ActivationException">There was an error resolving the service instance: The
-    /// <see cref="ConcreteImplementationAttribute"/> could not be found on the <typeparamref name="TService"/>, type or the concrete implementation
+    /// <see cref="ImplementationForAttribute"/> could not be found on the <typeparamref name="TService"/>, type or the concrete implementation
     /// could not be instantiated. Inspect the <see cref="Exception.InnerException"/> property for the reason of the exception.</exception>
     public TService GetInstance<TService> (string key)
     {
@@ -173,7 +167,7 @@ namespace Remotion.ServiceLocation
     /// <typeparam name="TService">The type of object requested.</typeparam>
     /// <returns>
     /// A sequence of instances of the requested <typeparamref name="TService"/> type. The <typeparamref name="TService"/> type must either have a 
-    /// <see cref="ConcreteImplementationAttribute"/>, or a concrete implementation or factory must have been registered using one of the 
+    /// <see cref="ImplementationForAttribute"/>, or a concrete implementation or factory must have been registered using one of the 
     /// <see cref="Register(ServiceConfigurationEntry)"/> methods. Otherwise, the sequence is empty.
     /// </returns>
     /// <exception cref="T:Microsoft.Practices.ServiceLocation.ActivationException">There was an error resolving the service instances: The concrete 
@@ -184,7 +178,7 @@ namespace Remotion.ServiceLocation
     }
 
     /// <summary>
-    /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ConcreteImplementationAttribute"/>, or
+    /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ImplementationForAttribute"/>, or
     /// a concrete implementation or factory must have been registered using one of the <see cref="Register(ServiceConfigurationEntry)"/> methods. Otherwise, 
     /// the method returns <see langword="null"/>.
     /// </summary>
@@ -199,112 +193,51 @@ namespace Remotion.ServiceLocation
       return GetInstanceOrNull (serviceType);
     }
 
-    /// <summary>
-    /// Registers factories for the specified <paramref name="serviceType"/>. 
-    /// The factories are subsequently invoked whenever instances for the <paramref name="serviceType"/> is requested.
-    /// </summary>
-    /// <param name="serviceType">The service type to register the factories for.</param>
-    /// <param name="instanceFactories">The instance factories to use when resolving instances for the <paramref name="serviceType"/>. These factories
-    /// must return non-null instances implementing the <paramref name="serviceType"/>, otherwise an <see cref="ActivationException"/> is thrown
-    /// when an instance of <paramref name="serviceType"/> is requested.</param>
-    /// <exception cref="InvalidOperationException">Factories have already been registered or an instance of the <paramref name="serviceType"/> has 
-    /// already been retrieved. Registering factories or concrete implementations can only be done before any instances are retrieved.</exception>
-    public void Register (Type serviceType, params Func<object>[] instanceFactories)
-    {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      ArgumentUtility.CheckNotNull ("instanceFactories", instanceFactories);
-
-      Register (serviceType, (IEnumerable<Func<object>>) instanceFactories);
-    }
-
-    /// <summary>
-    /// Registers factories for the specified <paramref name="serviceType"/>. 
-    /// The factories are subsequently invoked whenever instances for the <paramref name="serviceType"/> is requested.
-    /// </summary>
-    /// <param name="serviceType">The service type to register the factories for.</param>
-    /// <param name="instanceFactories">The instance factories to use when resolving instances for the <paramref name="serviceType"/>. These factories
-    /// must return non-null instances implementing the <paramref name="serviceType"/>, otherwise an <see cref="ActivationException"/> is thrown
-    /// when an instance of <paramref name="serviceType"/> is requested.</param>
-    /// <exception cref="InvalidOperationException">Factories have already been registered or an instance of the <paramref name="serviceType"/> has 
-    /// already been retrieved. Registering factories or concrete implementations can only be done before any instances are retrieved.</exception>
-    public void Register (Type serviceType, IEnumerable<Func<object>> instanceFactories)
-    {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      ArgumentUtility.CheckNotNull ("instanceFactories", instanceFactories);
-
-      var factoryArray = instanceFactories.ToArray();
-      var factories = _dataStore.GetOrCreateValue (serviceType, t => factoryArray);
-      if (factories != factoryArray)
-      {
-        var message = string.Format ("Register cannot be called twice or after GetInstance for service type: '{0}'.", serviceType.Name);
-        throw new InvalidOperationException (message);
-      }
-    }
-
-    /// <summary>
-    /// Registers a concrete implementation for the specified <paramref name="serviceType"/>.
-    /// </summary>
-    /// <param name="serviceType">The service type to register a concrete implementation for.</param>
-    /// <param name="concreteImplementationType">The type of the concrete implementation to be instantiated when an instance of the 
-    /// <paramref name="serviceType"/> is retrieved.</param>
-    /// <param name="lifetime">The lifetime of the instances.</param>
-    /// <exception cref="InvalidOperationException">An instance of the <paramref name="serviceType"/> has already been retrieved. Registering factories
-    /// or concrete implementations can only be done before any instances are retrieved.</exception>
-    public void Register (Type serviceType, Type concreteImplementationType, LifetimeKind lifetime)
-    {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      ArgumentUtility.CheckNotNull ("concreteImplementationType", concreteImplementationType);
-
-      var serviceImplemetation = new ServiceImplementationInfo (concreteImplementationType, lifetime);
-      ServiceConfigurationEntry serviceConfigurationEntry;
-      try
-      {
-        serviceConfigurationEntry = new ServiceConfigurationEntry (serviceType, serviceImplemetation);
-      }
-      catch (ArgumentException ex)
-      {
-        throw new ArgumentException ("Implementation type must implement service type.", "concreteImplementationType", ex);
-      }
-
-      Register (serviceConfigurationEntry);
-    }
-
-    /// <summary>
-    /// Registers a concrete implementation.
-    /// </summary>
-    /// <param name="serviceConfigurationEntry">A <see cref="ServiceConfigurationEntry"/> describing the concrete implementation to be registered.</param>
-    /// <exception cref="InvalidOperationException">An instance of the service type described by the <paramref name="serviceConfigurationEntry"/>
-    /// has already been retrieved. Registering factories or concrete implementations can only be done before any instances are retrieved.</exception>
-    public void Register (ServiceConfigurationEntry serviceConfigurationEntry)
-    {
-      ArgumentUtility.CheckNotNull ("serviceConfigurationEntry", serviceConfigurationEntry);
-
-      var factories = CreateInstanceFactories (serviceConfigurationEntry);
-      Register (serviceConfigurationEntry.ServiceType, factories);
-    }
-
-    private Func<Object>[] GetOrCreateFactories (Type serviceType)
-    {
-      return _dataStore.GetOrCreateValue (serviceType, t => CreateInstanceFactories (t).ToArray ());
-    }
-
     private object GetInstanceOrNull (Type serviceType)
     {
-      var factories = GetOrCreateFactories (serviceType);
-      if (factories.Length > 1)
-      {
-        var message = string.Format (
-          "Multiple implemetations are configured for service type: '{0}'. Consider using 'GetAllInstances'.", serviceType.Name);
-        throw new ActivationException (message);
-      }
-      if (factories.Length == 0)
-        return null;
+      var registration = GetOrCreateRegistrationWithActivationException (serviceType);
 
-      var factory = factories.Single();
-      return SafeInvokeInstanceFactory (factory, serviceType);
+      if (registration.CompoundFactory != null)
+        return InvokeInstanceFactoryWithActivationException (registration.CompoundFactory, serviceType);
+
+      if (registration.SingleFactory == null && registration.MultipleFactories.Any())
+      {
+        throw new ActivationException (
+            string.Format (
+                "Multiple implementations are configured for service type '{0}'. Use GetAllInstances() to retrieve the implementations.",
+                serviceType));
+      }
+
+      if (registration.SingleFactory != null)
+        return InvokeInstanceFactoryWithActivationException (registration.SingleFactory, serviceType);
+
+      return null;
     }
 
-    private object SafeInvokeInstanceFactory (Func<object> factory, Type serviceType)
+    private IEnumerable<object> GetAllInstances (Type serviceType, bool isCompoundResolution)
+    {
+      var registration = GetOrCreateRegistrationWithActivationException (serviceType);
+
+      if (registration.SingleFactory != null)
+      {
+        throw new ActivationException (
+            string.Format (
+                "A single implementation is configured for service type '{0}'. Use GetInstance() to retrieve the implementation.",
+                serviceType));
+      }
+
+      if (!isCompoundResolution && registration.CompoundFactory != null)
+      {
+        throw new ActivationException (
+            string.Format (
+                "A compound implementation is configured for service type '{0}'. Use GetInstance() to retrieve the implementation.",
+                serviceType));
+      }
+
+      return registration.MultipleFactories.Select (factory => InvokeInstanceFactoryWithActivationException (factory, serviceType));
+    }
+
+    private object InvokeInstanceFactoryWithActivationException (Func<object> factory, Type serviceType)
     {
       object instance;
       try
@@ -340,124 +273,6 @@ namespace Remotion.ServiceLocation
       }
 
       return instance;
-    }
-
-    private IEnumerable<Func<object>> CreateInstanceFactories (Type serviceType)
-    {
-      {
-        //TODO RM-5506: Drop this block after ConcreteImplementationAttribute has been changed to ImpementationForAttribute and been applied to MixinParticipant and DomainObjectParticipant.
-        if (s_typePipeParticipantConfiguration.Value.ContainsKey (serviceType))
-          return CreateInstanceFactories (s_typePipeParticipantConfiguration.Value[serviceType]);
-      }
-
-      var attributes = AttributeUtility.GetCustomAttributes<ConcreteImplementationAttribute> (serviceType, false);
-      ServiceConfigurationEntry entry;
-      try
-      {
-        entry = ServiceConfigurationEntry.CreateFromAttributes (serviceType, attributes);
-      }
-      catch (InvalidOperationException ex)
-      {
-        var message = string.Format ("Invalid ConcreteImplementationAttribute configuration for service type '{0}'. {1}", serviceType, ex.Message);
-        throw new ActivationException (message, ex);
-      }
-      return CreateInstanceFactories (entry);
-    }
-
-    private IEnumerable<Func<object>> CreateInstanceFactories (ServiceConfigurationEntry serviceConfigurationEntry)
-    {
-      return serviceConfigurationEntry.ImplementationInfos.Select (CreateInstanceFactory);
-    }
-
-    private Func<object> CreateInstanceFactory (ServiceImplementationInfo serviceImplementationInfo)
-    {
-      var publicCtors = serviceImplementationInfo.ImplementationType.GetConstructors();
-      if (publicCtors.Length != 1)
-      {
-        throw new ActivationException (
-            string.Format (
-                "Type '{0}' has not exactly one public constructor and cannot be instantiated.", serviceImplementationInfo.ImplementationType.Name));
-      }
-
-      var ctorInfo = publicCtors.Single();
-      Func<object> factory = CreateInstanceFactory (ctorInfo);
-
-      switch (serviceImplementationInfo.Lifetime)
-      {
-        case LifetimeKind.Singleton:
-          var factoryContainer = new DoubleCheckedLockingContainer<object> (factory);
-          return () => factoryContainer.Value;
-        default:
-          return factory;
-      }
-    }
-
-    private Func<object> CreateInstanceFactory (ConstructorInfo ctorInfo)
-    {
-      var serviceLocator = Expression.Constant (this);
-
-      var parameterInfos = ctorInfo.GetParameters();
-      var ctorArgExpressions = parameterInfos.Select (x => GetIndirectResolutionCall (serviceLocator, x));
-
-      var factoryLambda = Expression.Lambda<Func<object>> (Expression.New (ctorInfo, ctorArgExpressions));
-      return factoryLambda.Compile();
-    }
-
-    private Expression GetIndirectResolutionCall (Expression serviceLocator, ParameterInfo parameterInfo)
-    {
-      MethodInfo resolutionMethod;
-      if (parameterInfo.ParameterType.IsGenericType && parameterInfo.ParameterType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
-      {
-        var elementType = parameterInfo.ParameterType.GetGenericArguments().Single();
-        resolutionMethod = s_resolveIndirectCollectionDependencyMethod.MakeGenericMethod (elementType);
-      }
-      else
-        resolutionMethod = s_resolveIndirectDependencyMethod.MakeGenericMethod (parameterInfo.ParameterType);
-
-      var context = string.Format (
-          "constructor parameter '{0}' of type '{1}'",
-          parameterInfo.Name,
-          parameterInfo.Member.DeclaringType);
-      return Expression.Call (serviceLocator, resolutionMethod, Expression.Constant (context));
-    }
-
-    private T ResolveIndirectDependency<T> (string context)
-    {
-      try
-      {
-        return GetInstance<T>();
-      }
-      catch (ActivationException ex)
-      {
-        var message = string.Format ("Error resolving indirect dependendency of {0}: {1}", context, ex.Message);
-        throw new ActivationException (message, ex);
-      }
-    }
-
-    private IEnumerable<T> ResolveIndirectCollectionDependency<T> (string context)
-    {
-      // To keep the lazy sequence semantics of GetAllInstances, and still be able to catch the ActivationException, we need to manually iterate
-      // the input sequence from within a try/catch block and yield return from outside the try/catch block. (Yield return is not allowed to stand
-      // within a try/catch block.)
-      using (var enumerator = GetAllInstances<T>().GetEnumerator())
-      {
-        while (true)
-        {
-          T current;
-          try
-          {
-            if (!enumerator.MoveNext())
-              yield break;
-            current = enumerator.Current;
-          }
-          catch (ActivationException ex)
-          {
-            var message = string.Format ("Error resolving indirect collection dependendency of {0}: {1}", context, ex.Message);
-            throw new ActivationException (message, ex);
-          }
-          yield return current;
-        }
-      }
     }
   }
 }

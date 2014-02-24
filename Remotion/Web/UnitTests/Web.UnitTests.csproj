@@ -171,6 +171,7 @@
     <Compile Include="Core\Compilation\IControlBuilderCodeProcessorTest.cs" />
     <Compile Include="Core\Compilation\DefaultControlBuilderCodeProcessorTest.cs" />
     <Compile Include="Core\Context\HttpContextStorageProviderTest.cs" />
+    <Compile Include="Core\Context\ISafeContextStorageProviderTest.cs" />
     <Compile Include="Core\Context\SafeContextWebIntegrationTest.cs" />
     <Compile Include="Core\ExecutionEngine\WxePageTests\InfrastructureExceptionHandling_WxePageTest.cs" />
     <Compile Include="Core\Infrastructure\IBuildManagerTest.cs" />
@@ -189,7 +190,7 @@
     <Compile Include="Core\Security\Domain\TestHandleAttribute.cs" />
     <Compile Include="Core\Security\ExecutionEngine\IWxeSecurityAdapterTest.cs" />
     <Compile Include="Core\Security\ExecutionEngine\TestFunctionWithHandleParameter.cs" />
-    <Compile Include="Core\Security\UI\IWxeSecurityAdapterTest.cs" />
+    <Compile Include="Core\Security\UI\IWebSecurityAdapterTest.cs" />
     <Compile Include="Core\Services\IconProxyTest.cs" />
     <Compile Include="Core\Services\WebServiceFactoryTests\CreateWebService.cs" />
     <Compile Include="Core\Services\WebServiceFactoryTests\CreateScriptService.cs" />
@@ -224,6 +225,7 @@
     <Compile Include="Core\UI\Controls\CommandInfoTest.cs" />
     <Compile Include="Core\UI\Controls\CommandTests\CommonCommandTest.cs" />
     <Compile Include="Core\UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerButtonRendererTest.cs" />
+    <Compile Include="Core\UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerPageRendererTest.cs" />
     <Compile Include="Core\UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRendererTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\NoneHotkeyFormatterTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\HotkeyFormatterBaseTest.cs" />
@@ -252,6 +254,8 @@
     <Compile Include="Core\UI\HtmlHeadAppenderTest.cs" />
     <Compile Include="Core\UI\SmartPageImplementation\SmartPageAsyncPostBackErrorHandlerTest.cs" />
     <Compile Include="Core\Utilities\ControlHelperTest.cs" />
+    <Compile Include="Core\Utilities\IInternalControlMemberCallerTest.cs" />
+    <Compile Include="Core\Utilities\IScriptUtilityTest.cs" />
     <Compile Include="Core\Utilities\VirtualPathUtilityTests.cs" />
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckJsonService.cs" />
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckScriptService.cs" />

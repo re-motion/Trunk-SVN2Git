@@ -15,9 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
+  [ImplementationFor (typeof (ITestConcreteImplementationAttributeTypeWithInvalidImplementation))]
+  [ImplementationFor (typeof (ITestInstanceConcreteImplementationAttributeType), Lifetime = LifetimeKind.Instance, RegistrationType = RegistrationType.Single)]
+  [ImplementationFor (typeof (ITestSingletonConcreteImplementationAttributeType), Lifetime = LifetimeKind.Singleton)]
   public class TestConcreteImplementationAttributeType
       : ITestInstanceConcreteImplementationAttributeType, ITestSingletonConcreteImplementationAttributeType
   {

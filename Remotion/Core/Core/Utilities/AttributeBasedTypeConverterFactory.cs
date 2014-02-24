@@ -18,12 +18,14 @@
 using System;
 using System.ComponentModel;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Utilities
 {
   /// <summary>
   /// Creates the <see cref="TypeConverter"/> specified by the <see cref="TypeConverterAttribute"/> if the requested type has the attribute applied.
   /// </summary>
+  [ImplementationFor (typeof (ITypeConverterFactory), Lifetime = LifetimeKind.Singleton, Position = 0, RegistrationType = RegistrationType.Multiple)]
   public class AttributeBasedTypeConverterFactory : ITypeConverterFactory
   {
     public AttributeBasedTypeConverterFactory ()

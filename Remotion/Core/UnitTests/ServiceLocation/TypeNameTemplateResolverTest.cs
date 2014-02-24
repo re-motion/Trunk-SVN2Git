@@ -76,9 +76,9 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void ResolveType ()
     {
-      const string typeName = "Remotion.UnitTests.ServiceLocation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version = <version>";
-      var result = TypeNameTemplateResolver.ResolveToType (typeName, typeof (ConcreteImplementationAttributeTest).Assembly);
-      Assert.That (result, Is.SameAs (typeof (ConcreteImplementationAttributeTest)));
+      const string typeName = "Remotion.UnitTests.ServiceLocation.TypeNameTemplateResolverTest, Remotion.UnitTests, Version = <version>";
+      var result = TypeNameTemplateResolver.ResolveToType (typeName, typeof (TypeNameTemplateResolverTest).Assembly);
+      Assert.That (result, Is.SameAs (typeof (TypeNameTemplateResolverTest)));
     }
 
     [Test]
@@ -86,7 +86,7 @@ namespace Remotion.UnitTests.ServiceLocation
        + "Version=.*, Culture=neutral, PublicKeyToken=.*'\\.", MatchType = MessageMatch.Regex)]
     public void ResolveType_WithInvalidTypeName ()
     {
-      TypeNameTemplateResolver.ResolveToType ("Badabing", typeof (ConcreteImplementationAttributeTest).Assembly);
+      TypeNameTemplateResolver.ResolveToType ("Badabing", typeof (TypeNameTemplateResolverTest).Assembly);
     }
 
     private Assembly CreateReferenceAssembly (Version version, byte[] publicKey)

@@ -58,10 +58,10 @@ namespace Remotion.Data.DomainObjects.Web.IntegrationTests.WxeTransactedFunction
       SecurityConfiguration.Current.SecurityProvider = _securityProviderStub;
       SecurityConfiguration.Current.PrincipalProvider = principalProviderStub;
 
-      var serviceLocator = new DefaultServiceLocator();
-      serviceLocator.Register (typeof (IFunctionalSecurityStrategy), () => _functionalSecurityStrategyStub);
-      serviceLocator.Register (typeof (IWebSecurityAdapter));
-      serviceLocator.Register (typeof (IWxeSecurityAdapter), () => new WxeSecurityAdapter());
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle<IFunctionalSecurityStrategy> (() => _functionalSecurityStrategyStub);
+      serviceLocator.RegisterMultiple<IWebSecurityAdapter>();
+      serviceLocator.RegisterMultiple<IWxeSecurityAdapter> (() => new WxeSecurityAdapter());
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
       _testAccessTypeValue = AccessType.Get (TestAccessTypes.Value);

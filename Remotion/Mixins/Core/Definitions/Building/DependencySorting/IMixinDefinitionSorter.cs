@@ -25,8 +25,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
   /// Defines an interface for classes sorting a sequence of <see cref="MixinDefinition"/> objects based on the dependencies between the mixins and 
   /// other ordering-relevant information.
   /// </summary>
-  [ConcreteImplementation (typeof (MixinDefinitionSorter), Lifetime = LifetimeKind.Singleton)]
-  public interface IMixinDefinitionSorter
+ public interface IMixinDefinitionSorter
   {
     /// <summary>
     /// Sorts the given mixins.

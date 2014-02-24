@@ -19,6 +19,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 
@@ -27,6 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Responsible for rendering table cells of <see cref="BocCustomColumnDefinition"/> columns.
   /// </summary>
+  [ImplementationFor (typeof (IBocCustomColumnRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocCustomColumnRenderer : BocColumnRendererBase<BocCustomColumnDefinition>, IBocCustomColumnRenderer
   {
     /// <summary>

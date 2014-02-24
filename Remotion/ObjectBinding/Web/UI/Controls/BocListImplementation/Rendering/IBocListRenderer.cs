@@ -24,8 +24,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="BocList"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (BocListRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocListRenderer
+ public interface IBocListRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, EditableRowControlFactory editableRowControlFactory);
     void Render (BocListRenderingContext renderingContext);

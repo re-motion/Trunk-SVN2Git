@@ -16,6 +16,8 @@
 // 
 
 using System;
+using Remotion.ServiceLocation;
+using Remotion.TypePipe;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.Implementation;
 
@@ -25,6 +27,7 @@ namespace Remotion.Reflection.CodeGeneration.TypePipe
   /// Decorates created <see cref="IModuleBuilderFactory"/> instances with <see cref="RemotionModuleBuilderFactoryDecorator"/>.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (IPipelineFactory), Lifetime = LifetimeKind.Singleton)]
   public class RemotionPipelineFactory : DefaultPipelineFactory
   {
     [CLSCompliant (false)]

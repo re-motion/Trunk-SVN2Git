@@ -64,7 +64,6 @@
     <Compile Include="Implementation\EnumerationGlobalizationServiceTest.cs" />
     <Compile Include="GlobalizationServiceExtensionsTest.cs" />
     <Compile Include="Implementation\GlobalizationServiceTest.cs" />
-    <Compile Include="ICompoundGlobalizationServiceTest.cs" />
     <Compile Include="IEnumerationGlobalizationServiceTest.cs" />
     <Compile Include="IGlobalizationServiceTest.cs" />
     <Compile Include="IMemberInformationGlobalizationServiceTest.cs" />

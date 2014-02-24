@@ -14,20 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
-using Remotion.Globalization.Implementation;
-using Remotion.ServiceLocation;
 
-namespace Remotion.Globalization
+namespace Remotion.ServiceLocation
 {
   /// <summary>
-  /// Temporary interface for dependency resolution.
+  /// Defines wether an implementation is registered as a single value or as a sequence.
+  /// When using the ServiceLocator, "Single" registrations must be resolved via GetInstance() and "Multiple" registrations must be resolved 
+  /// via GetAllInstances(). Otherwise, an ActivationException is thrown.
   /// </summary>
-  /// <threadsafety static="true" instance="true" />
-  //TODO AO: will be merged back into IGlobaliazationService as soon the re-motion service locator is able to resolve compositions
-  [ConcreteImplementation (typeof (CompoundGlobalizationService), Lifetime = LifetimeKind.Singleton)]
-  public interface ICompoundGlobalizationService : IGlobalizationService
+  public enum RegistrationType
   {
+    Single,
+    Multiple,
+    Compound,
+    Decorator
   }
 }

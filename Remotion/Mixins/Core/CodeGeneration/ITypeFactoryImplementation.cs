@@ -20,8 +20,7 @@ using Remotion.TypePipe.Implementation;
 
 namespace Remotion.Mixins.CodeGeneration
 {
-  [ConcreteImplementation (typeof (TypeFactoryImplementation), Lifetime = LifetimeKind.Singleton)]
-  public interface ITypeFactoryImplementation
+ public interface ITypeFactoryImplementation
   {
     Type GetConcreteType (Type targetOrConcreteType);
     void InitializeUnconstructedInstance (object mixinTarget, InitializationSemantics initializationSemantics);

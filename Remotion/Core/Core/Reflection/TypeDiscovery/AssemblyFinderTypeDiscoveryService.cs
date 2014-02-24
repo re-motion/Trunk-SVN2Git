@@ -37,9 +37,23 @@ namespace Remotion.Reflection.TypeDiscovery
   /// </summary>
   public class AssemblyFinderTypeDiscoveryService : ITypeDiscoveryService
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (AssemblyFinderTypeDiscoveryService));
+    // This class holds lazy, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a nested static
+    // class with a static constructor as lazily as possible on first access of the static field.
+    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
+    static class LazyStaticFields
+    {
+      public static readonly ILog s_log = LogManager.GetLogger (typeof (AssemblyFinderTypeDiscoveryService));
+
+      // ReSharper disable EmptyConstructor
+      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
+      static LazyStaticFields ()
+      {
+      }
+      // ReSharper restore EmptyConstructor
+    }
 
     private readonly IAssemblyFinder _assemblyFinder;
+    private readonly Lazy<BaseTypeCache> _baseTypeCache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AssemblyFinderTypeDiscoveryService"/> class with a specific <see cref="AssemblyFinder"/>
@@ -50,6 +64,7 @@ namespace Remotion.Reflection.TypeDiscovery
     {
       ArgumentUtility.CheckNotNull ("assemblyFinder", assemblyFinder);
       _assemblyFinder = assemblyFinder;
+      _baseTypeCache = new Lazy<BaseTypeCache> (() => new BaseTypeCache ().BuildCaches(GetAllTypes()));
     }
 
     /// <summary>
@@ -72,20 +87,25 @@ namespace Remotion.Reflection.TypeDiscovery
     /// </returns>
     public ICollection GetTypes (Type baseType, bool excludeGlobalTypes)
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time needed to discover types: {elapsed}."))
+      using (StopwatchScope.CreateScope (LazyStaticFields.s_log, LogLevel.Debug, "Time needed to discover types: {elapsed}."))
       {
-        var types = new List<Type>();
-        foreach (var assembly in GetAssemblies (excludeGlobalTypes))
-          types.AddRange (GetTypes (assembly, baseType));
+        if (baseType != null && (baseType.IsSealed || baseType.IsValueType))
+          return new[] { baseType };
 
-        return types.LogAndReturn (s_log, LogLevel.Debug, typeList => string.Format ("Discovered {0} types.", typeList.Count));
+        if (baseType == null && excludeGlobalTypes)
+          return _baseTypeCache.Value.GetAllTypesFromCache();
+
+        if (baseType != null && excludeGlobalTypes)
+          return _baseTypeCache.Value.GetFromCache (baseType);
+
+        return GetAssemblies (excludeGlobalTypes).AsParallel().SelectMany (a => GetTypesFromBaseType (a, baseType)).ToArray();
       }
     }
 
-    private IEnumerable<Type> GetTypes (_Assembly assembly, Type baseType)
+    private IEnumerable<Type> GetTypesFromBaseType (_Assembly assembly, Type baseType)
     {
       ReadOnlyCollection<Type> allTypesInAssembly;
-      
+
       try
       {
         allTypesInAssembly = AssemblyTypeCache.GetTypes (assembly);
@@ -102,8 +122,8 @@ namespace Remotion.Reflection.TypeDiscovery
 
       if (baseType == null)
         return allTypesInAssembly;
-      else
-        return GetFilteredTypes (allTypesInAssembly, baseType);
+      
+      return GetFilteredTypes (allTypesInAssembly, baseType);
     }
 
     private IEnumerable<Type> GetFilteredTypes (IEnumerable<Type> types, Type baseType)
@@ -115,6 +135,11 @@ namespace Remotion.Reflection.TypeDiscovery
     {
       var assemblies = _assemblyFinder.FindAssemblies();
       return assemblies.Where (assembly => !excludeGlobalTypes || !assembly.GlobalAssemblyCache);
+    }
+
+    private ParallelQuery<Type> GetAllTypes ()
+    {
+      return GetAssemblies (true).AsParallel().SelectMany (a => GetTypesFromBaseType (a, null));
     }
   }
 }

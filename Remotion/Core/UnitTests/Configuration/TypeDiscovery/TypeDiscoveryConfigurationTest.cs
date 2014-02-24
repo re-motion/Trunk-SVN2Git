@@ -155,7 +155,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOf (typeof (CompositeRootAssemblyFinder)));
 
       var rootAssemblyFinder = (CompositeRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
-      Assert.That (rootAssemblyFinder.InnerFinders.Length, Is.EqualTo (2));
+      Assert.That (rootAssemblyFinder.InnerFinders.Count, Is.EqualTo (2));
       Assert.That (rootAssemblyFinder.InnerFinders[0], Is.InstanceOf (typeof (NamedRootAssemblyFinder)));
 
       var namedFinder = ((NamedRootAssemblyFinder) rootAssemblyFinder.InnerFinders[0]);

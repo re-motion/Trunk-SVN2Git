@@ -25,10 +25,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
   /// Caches <see cref="ExtensibleEnumDefinition{T}"/> instances for non-generic, reflective access.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  // TODO AO: 
-  // Implement TestableExtensibleEnumValueDiscoveryService with public ctor within unittests as netsted type in test fixture
-  // ConcreteImplAtt on IExtensibleEnumValueDiscoveryService.
-  [ConcreteImplementation(typeof(ExtensibleEnumDefinitionCache),Lifetime = LifetimeKind.Singleton)]
+  [ImplementationFor (typeof(ExtensibleEnumDefinitionCache), Lifetime = LifetimeKind.Singleton)]
   public sealed class ExtensibleEnumDefinitionCache
   {
     private readonly LockingCacheDecorator<Type, IExtensibleEnumDefinition> _cache = CacheFactory.CreateWithLocking<Type, IExtensibleEnumDefinition>();

@@ -22,8 +22,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="WebTab"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (WebTabRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IWebTabRenderer
+ public interface IWebTabRenderer
   {
     void Render (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, bool isLast, WebTabStyle style);
   }

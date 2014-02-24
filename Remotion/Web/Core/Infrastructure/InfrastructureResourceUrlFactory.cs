@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Infrastructure
@@ -23,6 +24,7 @@ namespace Remotion.Web.Infrastructure
   /// Responsible for resolving resource urls for the current <see cref="ResourceTheme"/>.
   /// The <see cref="InfrastructureResourceUrlFactory"/> is only intended for use with controls located in <b>Remotion.Web</b> that do not have their own renderers.
   /// </summary>
+  [ImplementationFor (typeof (IInfrastructureResourceUrlFactory), Lifetime = LifetimeKind.Singleton)]
   public class InfrastructureResourceUrlFactory : IInfrastructureResourceUrlFactory
   {
     private readonly IResourceUrlFactory _resourceUrlFactory;

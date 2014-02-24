@@ -17,6 +17,7 @@
 
 using System;
 using System.Text;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Hotkey
@@ -24,6 +25,7 @@ namespace Remotion.Web.UI.Controls.Hotkey
   /// <summary>
   /// Implementation of the <see cref="IHotkeyFormatter"/> interface. Surrounds the hotkey with HTML U-tags.
   /// </summary>
+  [ImplementationFor (typeof (IHotkeyFormatter), Lifetime = LifetimeKind.Singleton)]
   public sealed class UnderscoreHotkeyFormatter : HotkeyFormatterBase
   {
     public UnderscoreHotkeyFormatter ()

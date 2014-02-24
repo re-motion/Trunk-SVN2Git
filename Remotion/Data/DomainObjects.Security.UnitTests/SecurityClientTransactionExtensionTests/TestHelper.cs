@@ -110,10 +110,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
       SecurityConfiguration.Current.PrincipalProvider = _stubPrincipalProvider;
 
-      var serviceLocator = new DefaultServiceLocator();
-      serviceLocator.Register (typeof (IMemberResolver), () => _mockMemberResolver);
-      serviceLocator.Register (typeof (IPermissionProvider), () => _mockPermissionReflector);
-      serviceLocator.Register (typeof (IFunctionalSecurityStrategy), () => _mockFunctionalSecurityStrategy);
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle<IMemberResolver> (() => _mockMemberResolver);
+      serviceLocator.RegisterSingle<IPermissionProvider> (() => _mockPermissionReflector);
+      serviceLocator.RegisterSingle<IFunctionalSecurityStrategy> (() => _mockFunctionalSecurityStrategy);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 

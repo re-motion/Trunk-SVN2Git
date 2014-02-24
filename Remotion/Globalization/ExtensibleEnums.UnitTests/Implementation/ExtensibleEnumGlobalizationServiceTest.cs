@@ -28,12 +28,12 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation
   public class ExtensibleEnumGlobalizationServiceTest
   {
     private ExtensibleEnumGlobalizationService _service;
-    private ICompoundGlobalizationService _globalizationServiceStub;
+    private IGlobalizationService _globalizationServiceStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _globalizationServiceStub = MockRepository.GenerateStub<ICompoundGlobalizationService>();
+      _globalizationServiceStub = MockRepository.GenerateStub<IGlobalizationService>();
       _service = new ExtensibleEnumGlobalizationService (_globalizationServiceStub);
     }
 

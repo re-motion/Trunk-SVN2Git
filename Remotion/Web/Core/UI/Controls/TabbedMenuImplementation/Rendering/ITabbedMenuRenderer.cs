@@ -22,8 +22,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="TabbedMenu"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (TabbedMenuRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface ITabbedMenuRenderer
+ public interface ITabbedMenuRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (TabbedMenuRenderingContext renderingContext);

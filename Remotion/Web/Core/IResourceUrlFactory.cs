@@ -26,8 +26,7 @@ namespace Remotion.Web
   /// </summary>
   /// <seealso cref="ResourceUrlFactory"/>
   /// <seealso cref="T:Remotion.Development.Web.UnitTesting.Resources.FakeResourceUrlFactory"/>
-  [ConcreteImplementation (typeof(ResourceUrlFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IResourceUrlFactory
+ public interface IResourceUrlFactory
   {
     /// <summary>
     /// Creates an <see cref="IResourceUrl"/> object that is independent of the selected <see cref="ResourceTheme"/>.

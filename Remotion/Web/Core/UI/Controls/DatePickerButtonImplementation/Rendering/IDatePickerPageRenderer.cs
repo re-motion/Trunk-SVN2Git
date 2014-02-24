@@ -22,8 +22,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="DatePickerPage"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (DatePickerPageRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IDatePickerPageRenderer
+ public interface IDatePickerPageRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
   }

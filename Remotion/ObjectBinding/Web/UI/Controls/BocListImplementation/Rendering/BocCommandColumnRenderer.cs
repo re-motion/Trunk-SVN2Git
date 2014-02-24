@@ -17,6 +17,7 @@
 using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 
@@ -25,6 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Responsible for rendering cells of <see cref="BocCommandColumnDefinition"/> columns.
   /// </summary>
+  [ImplementationFor (typeof (IBocCommandColumnRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocCommandColumnRenderer : BocCommandEnabledColumnRendererBase<BocCommandColumnDefinition>, IBocCommandColumnRenderer
   {
     /// <summary>

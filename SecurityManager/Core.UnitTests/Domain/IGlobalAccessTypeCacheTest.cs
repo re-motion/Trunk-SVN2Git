@@ -33,7 +33,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     [SetUp]
     public void SetUp ()
     {
-      _serviceLocator = new DefaultServiceLocator();
+      _serviceLocator = DefaultServiceLocator.Create();
     }
 
     [Test]

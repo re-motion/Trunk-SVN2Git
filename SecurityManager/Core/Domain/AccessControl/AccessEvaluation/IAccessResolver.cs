@@ -23,8 +23,7 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
-  [ConcreteImplementation (typeof (AccessResolver), Lifetime = LifetimeKind.Singleton)]
-  public interface IAccessResolver
+ public interface IAccessResolver
   {
     AccessType[] GetAccessTypes (IDomainObjectHandle<AccessControlList> acl, SecurityToken token);
   }

@@ -17,10 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.IO;
 using System.Linq;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
@@ -33,7 +34,7 @@ namespace Remotion.ServiceLocation
   /// <remarks>
   /// <para>
   /// <see cref="DefaultServiceConfigurationDiscoveryService"/> uses the same logic as <see cref="DefaultServiceLocator"/> in order to find the
-  /// default concrete implementation of service types configured via the <see cref="ConcreteImplementationAttribute"/>. See 
+  /// default concrete implementation of service types configured via the <see cref="ImplementationForAttribute"/>. See 
   /// <see cref="DefaultServiceLocator"/> for more information about this.
   /// </para>
   /// <para>
@@ -41,108 +42,132 @@ namespace Remotion.ServiceLocation
   /// methods are not returned by this class.
   /// </para>
   /// </remarks>
-  public static class DefaultServiceConfigurationDiscoveryService
+  public class DefaultServiceConfigurationDiscoveryService : IServiceConfigurationDiscoveryService
   {
+    private readonly ITypeDiscoveryService _typeDiscoveryService;
+    private readonly ICache<Type, IEnumerable<Type>> _implementingTypeCache = CacheFactory.CreateWithLocking<Type, IEnumerable<Type>>();
+
+    public static DefaultServiceConfigurationDiscoveryService Create ()
+    {
+      return new DefaultServiceConfigurationDiscoveryService(ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService());
+    }
+
+    public DefaultServiceConfigurationDiscoveryService (ITypeDiscoveryService typeDiscoveryService)
+    {
+      _typeDiscoveryService = typeDiscoveryService;
+    }
+
     /// <summary>
     /// Gets the default service configuration for the types returned by the given <see cref="ITypeDiscoveryService"/>.
     /// </summary>
-    /// <param name="typeDiscoveryService">The type discovery service.</param>
-    /// <returns>A <see cref="ServiceConfigurationEntry"/> for each type returned by the <paramref name="typeDiscoveryService"/> that has the
-    /// <see cref="ConcreteImplementationAttribute"/> applied. Types without the attribute are ignored.</returns>
-    public static IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (ITypeDiscoveryService typeDiscoveryService)
+    /// <returns>A <see cref="ServiceConfigurationEntry"/> for each serviceType that has implementations with a <see cref="ImplementationForAttribute"/> applied. 
+    /// Types without the attribute are ignored.</returns>
+    public IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration ()
     {
-      ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
-
-      return GetDefaultConfiguration (typeDiscoveryService.GetTypes (null, false).Cast<Type>());
+      return GetDefaultConfiguration (_typeDiscoveryService.GetTypes (null, false).Cast<Type>());
     }
 
     /// <summary>
     /// Gets the default service configuration for the given types.
     /// </summary>
     /// <param name="types">The types to get the default service configuration for.</param>
-    /// <returns>A <see cref="ServiceConfigurationEntry"/> for each type that has the <see cref="ConcreteImplementationAttribute"/> applied. 
+    /// <returns>A <see cref="ServiceConfigurationEntry"/> for each serviceType that has implementations with a <see cref="ImplementationForAttribute"/> applied. 
     /// Types without the attribute are ignored.</returns>
-    public static IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Type> types)
+    public IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Type> types)
     {
       ArgumentUtility.CheckNotNull ("types", types);
 
-      return (from type in types
-        let concreteImplementationAttributes = AttributeUtility.GetCustomAttributes<ConcreteImplementationAttribute> (type, false)
-        where concreteImplementationAttributes.Length != 0
-        select CreateServiceConfigurationEntry (type, concreteImplementationAttributes))
-          .Concat (GetTypePipeConfiguration());
+      return types.Select (GetDefaultConfiguration).Where (configuration => configuration.ImplementationInfos.Any());
     }
 
-    public static IEnumerable<ServiceConfigurationEntry> GetTypePipeConfiguration ()
+    public ServiceConfigurationEntry GetDefaultConfiguration (Type serviceType)
     {
-      //TODO RM-5506: Drop this method after ConcreteImplementationAttribute has been changed to ImpementationForAttribute and been applied to MixinParticipant and DomainObjectParticipant.
-
-      Type partipantInterfaceType;
-      Type pipelineFactoryInterfaceType;
-      Type pipelineRegistryInterfaceType;
       try
       {
-        partipantInterfaceType = TypeNameTemplateResolver.ResolveToType (
-            "Remotion.TypePipe.IParticipant, Remotion.TypePipe, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-            typeof (DefaultServiceConfigurationDiscoveryService).Assembly);
-        pipelineFactoryInterfaceType = TypeNameTemplateResolver.ResolveToType (
-            "Remotion.TypePipe.IPipelineFactory, Remotion.TypePipe, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-            typeof (DefaultServiceConfigurationDiscoveryService).Assembly);
-        pipelineRegistryInterfaceType = TypeNameTemplateResolver.ResolveToType (
-            "Remotion.TypePipe.IPipelineRegistry, Remotion.TypePipe, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-            typeof (DefaultServiceConfigurationDiscoveryService).Assembly);
+        var excludeGlobalTypes = !serviceType.Assembly.GlobalAssemblyCache;
+        var implementingTypes = _implementingTypeCache.GetOrCreateValue (serviceType, type => GetImplementingTypes (type, excludeGlobalTypes));
+
+        var attributes = implementingTypes
+            .SelectMany (
+                type => AttributeUtility.GetCustomAttributes<ImplementationForAttribute> (type, false)
+                    .Where (attribute => attribute.ServiceType == serviceType)
+                    .Select (attribute => Tuple.Create (type, attribute)))
+            .ToLookup (a => a.Item2.RegistrationType);
+
+        if (attributes.Contains (RegistrationType.Compound) && attributes.Contains (RegistrationType.Single))
+          throw new InvalidOperationException ("Registration types 'Compound' and 'Single' cannot be used together.");
+
+        if (attributes.Contains (RegistrationType.Single) && attributes.Contains (RegistrationType.Multiple))
+          throw new InvalidOperationException ("Registration types 'Single' and 'Multiple' cannot be used together.");
+
+        return ServiceConfigurationEntry.CreateFromAttributes (serviceType, FilterAttributes (attributes));
       }
-      catch (FileNotFoundException) // Invalid assembly
+      catch (Exception ex)
       {
-        yield break;
+        var message = string.Format ("Invalid configuration of service type '{0}'. {1}", serviceType, ex.Message);
+        throw new InvalidOperationException (message, ex);
       }
-
-      var mixinAttribute = new ConcreteImplementationAttribute (
-          "Remotion.Mixins.CodeGeneration.TypePipe.MixinParticipant, Remotion.Mixins, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-          ignoreIfNotFound: true) { Position = 1 };
-
-      var domainObjectAttribute = new ConcreteImplementationAttribute (
-          "Remotion.Data.DomainObjects.Infrastructure.TypePipe.DomainObjectParticipant, Remotion.Data.DomainObjects, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-          ignoreIfNotFound: true) { Position = 2 };
-
-      var remotionPipelineFactoryAttribute = new ConcreteImplementationAttribute (
-          "Remotion.Reflection.CodeGeneration.TypePipe.RemotionPipelineFactory, Remotion.Reflection.CodeGeneration.TypePipe, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-          ignoreIfNotFound: true) { Lifetime = LifetimeKind.Singleton };
-
-      var remotionPipelineRegistryAttribute = new ConcreteImplementationAttribute (
-          "Remotion.Reflection.CodeGeneration.TypePipe.RemotionPipelineRegistry, Remotion.Reflection.CodeGeneration.TypePipe, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-          ignoreIfNotFound: true) { Lifetime = LifetimeKind.Singleton };
-
-      yield return ServiceConfigurationEntry.CreateFromAttributes (partipantInterfaceType, new[] { mixinAttribute, domainObjectAttribute });
-
-      yield return ServiceConfigurationEntry.CreateFromAttributes (pipelineFactoryInterfaceType, new[] { remotionPipelineFactoryAttribute });
-
-      yield return ServiceConfigurationEntry.CreateFromAttributes (pipelineRegistryInterfaceType, new[] { remotionPipelineRegistryAttribute });
     }
 
     /// <summary>
     /// Gets the default service configuration for the types in the given assemblies.
     /// </summary>
     /// <param name="assemblies">The assemblies for whose types to get the default service configuration.</param>
-    /// <returns>A <see cref="ServiceConfigurationEntry"/> for each type that has the <see cref="ConcreteImplementationAttribute"/> applied. 
+    /// <returns>A <see cref="ServiceConfigurationEntry"/> for each type that has the <see cref="ImplementationForAttribute"/> applied. 
     /// Types without the attribute are ignored.</returns>
-    public static IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Assembly> assemblies)
+    public IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Assembly> assemblies)
     {
       ArgumentUtility.CheckNotNull ("assemblies", assemblies);
 
       return assemblies.SelectMany (a => GetDefaultConfiguration (AssemblyTypeCache.GetTypes (a)));
     }
 
-    private static ServiceConfigurationEntry CreateServiceConfigurationEntry (Type type, ConcreteImplementationAttribute[] concreteImplementationAttributes)
+    private IEnumerable<Type> GetImplementingTypes (Type serviceType, bool excludeGlobalTypes)
     {
-      try
+      var derivedTypes = _typeDiscoveryService.GetTypes (serviceType, excludeGlobalTypes);
+
+      var implementingTypes = new List<Type>();
+      foreach (Type derivedType in derivedTypes)
       {
-        return ServiceConfigurationEntry.CreateFromAttributes (type, concreteImplementationAttributes);
+        foreach (var attribute in AttributeUtility.GetCustomAttributes<ImplementationForAttribute> (derivedType, false))
+        {
+          if (attribute.ServiceType == serviceType)
+            implementingTypes.Add (derivedType);
+        }
       }
-      catch (InvalidOperationException ex)
+      return implementingTypes.ToArray();
+    }
+    
+    private List<Tuple<Type, ImplementationForAttribute>> FilterAttributes (ILookup<RegistrationType, Tuple<Type, ImplementationForAttribute>> attributes)
+    {
+      var filteredAttributes = new List<Tuple<Type, ImplementationForAttribute>>();
+
+      foreach (var registrationTypeGroup in attributes)
       {
-        var message = string.Format ("Invalid configuration of service type '{0}'. {1}", type, ex.Message);
-        throw new InvalidOperationException (message, ex);
+        EnsureUniqueProperty ("Implementation type", registrationTypeGroup.Select (r => r.Item1));
+        EnsureUniqueProperty (
+            string.Format ("Position for registration type '{0}'", registrationTypeGroup.Key),
+            registrationTypeGroup.Select (r => r.Item2.Position));
+      }
+
+      filteredAttributes.AddRange (attributes[RegistrationType.Single].OrderBy (a => a.Item2.Position).Take (1));
+      filteredAttributes.AddRange (attributes[RegistrationType.Multiple].OrderBy (a => a.Item2.Position));
+      filteredAttributes.AddRange (attributes[RegistrationType.Compound].OrderBy (a => a.Item2.Position).Take (1));
+      filteredAttributes.AddRange (attributes[RegistrationType.Decorator].OrderBy (a => a.Item2.Position));
+      return filteredAttributes;
+    }
+
+    private void EnsureUniqueProperty<T> (string propertyDescription, IEnumerable<T> propertyValues)
+    {
+      var visitedValues = new HashSet<T> ();
+      foreach (var value in propertyValues)
+      {
+        if (visitedValues.Contains (value))
+        {
+          var message = string.Format ("Ambiguous {0}: {1} must be unique.", typeof (ImplementationForAttribute).Name, propertyDescription);
+          throw new InvalidOperationException (message);
+        }
+        visitedValues.Add (value);
       }
     }
   }

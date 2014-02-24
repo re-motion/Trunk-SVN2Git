@@ -25,8 +25,7 @@ namespace Remotion.Web.Compilation
   /// <summary>
   /// Defines an API for extending the <see cref="ControlBuilder"/>'s <see cref="ControlBuilder.ProcessGeneratedCode"/> method.
   /// </summary>
-  [ConcreteImplementation(typeof(DefaultControlBuilderCodeProcessor), Lifetime = LifetimeKind.Instance)]
-  public interface IControlBuilderCodeProcessor
+ public interface IControlBuilderCodeProcessor
   {
     void ProcessGeneratedCode (
         CodeCompileUnit codeCompileUnit,

@@ -43,7 +43,6 @@ namespace Remotion.Utilities
   ///     </item>
   ///   </list>
   /// </remarks>
-  [ConcreteImplementation (typeof (TypeConversionProvider), Lifetime = LifetimeKind.Singleton)]
   public interface ITypeConversionProvider
   {
     /// <summary> 

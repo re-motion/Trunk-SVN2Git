@@ -65,7 +65,10 @@ namespace Remotion.UnitTests.ServiceLocation
 
       Assert.That (_configuration.Registrations, Has.Length.EqualTo (1));
       Assert.That (_configuration.Registrations[0].ServiceType, Is.SameAs (typeof (IService)));
-      Assert.That (_configuration.Registrations[0].ImplementationInfos, Is.EqualTo (new[] { new ServiceImplementationInfo(typeof (Service), LifetimeKind.Instance) }));
+
+      Assert.That (_configuration.Registrations[0].ImplementationInfos.Count, Is.EqualTo (1));
+      Assert.That (_configuration.Registrations[0].ImplementationInfos[0].ImplementationType, Is.EqualTo (typeof (Service)));
+      Assert.That (_configuration.Registrations[0].ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.Instance));
 
       Assert.That (_configuration.BootstrapServiceLocator.GetInstance<IService> (), Is.Not.Null.And.TypeOf<Service> ());
     }
@@ -87,9 +90,17 @@ namespace Remotion.UnitTests.ServiceLocation
     public interface IService { }
     public class Service : IService { }
 
-    [ConcreteImplementation (typeof (ServiceWithAttribute1))]
-    public interface IServiceWithAttribute { }
-    public class ServiceWithAttribute1 : IServiceWithAttribute { }
-    public class ServiceWithAttribute2 : IServiceWithAttribute { }
+    public interface IServiceWithAttribute
+    {
+    }
+
+    [ImplementationFor (typeof (IServiceWithAttribute))]
+    public class ServiceWithAttribute1 : IServiceWithAttribute
+    {
+    }
+
+    public class ServiceWithAttribute2 : IServiceWithAttribute
+    {
+    }
   }
 }

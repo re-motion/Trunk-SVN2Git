@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -33,19 +32,9 @@ namespace Remotion.Development.UnitTesting
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
 
-      var defaultServiceLocator = new DefaultServiceLocator ();
+      var defaultServiceLocator = DefaultServiceLocator.Create();
       foreach (var stubbedRegistration in configuration)
         defaultServiceLocator.Register (stubbedRegistration);
-      return defaultServiceLocator;
-    }
-
-    private static DefaultServiceLocator CreateServiceLocator (Type serviceType, params Func<object>[] creators)
-    {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      ArgumentUtility.CheckNotNullOrEmpty ("creators", creators);
-
-      var defaultServiceLocator = CreateServiceLocator (Enumerable.Empty<ServiceConfigurationEntry> ());
-      defaultServiceLocator.Register (serviceType, creators);
       return defaultServiceLocator;
     }
 
@@ -68,18 +57,6 @@ namespace Remotion.Development.UnitTesting
 
     public ServiceLocatorScope (params ServiceConfigurationEntry[] temporaryConfiguration)
       : this (CreateServiceLocator (temporaryConfiguration))
-    {
-    }
-
-    public ServiceLocatorScope (Type serviceType, Type implementationType, LifetimeKind lifetimeKind = LifetimeKind.Instance)
-        : this (
-            CreateServiceLocator (
-                new[] { new ServiceConfigurationEntry (serviceType, new ServiceImplementationInfo (implementationType, lifetimeKind)) }))
-    {
-    }
-
-    public ServiceLocatorScope (Type serviceType, params Func<object>[] creators)
-        : this (CreateServiceLocator (serviceType, creators))
     {
     }
 

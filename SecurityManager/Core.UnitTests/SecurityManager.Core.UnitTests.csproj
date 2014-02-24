@@ -128,6 +128,11 @@
     <Compile Include="DomainTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\SearchServiceTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\ValidationTest.cs" />
+    <Compile Include="Domain\AccessControl\AccessEvaluation\IAccessControlListFinderTest.cs" />
+    <Compile Include="Domain\AccessControl\AccessEvaluation\IAccessResolverTest.cs" />
+    <Compile Include="Domain\AccessControl\AccessEvaluation\ISecurityContextRepositoryTest.cs" />
+    <Compile Include="Domain\AccessControl\AccessEvaluation\ISecurityPrincipalRepositoryTest.cs" />
+    <Compile Include="Domain\AccessControl\AccessEvaluation\ISecurityTokenBuilderTest.cs" />
     <Compile Include="Domain\AccessControl\PrincipalRoleComparer.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\PrincipalTest.cs" />
     <Compile Include="Domain\AccessControl\AccessEvaluation\SecurityTokenMatcherTests\AceForOwningGroupAndParents.cs" />
@@ -170,8 +175,10 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\UserConditionStateful.cs" />
     <Compile Include="Domain\BindableObjectProviderTestHelper.cs" />
     <Compile Include="Domain\DomainObjectDeleteHandlerTest.cs" />
+    <Compile Include="Domain\IDomainRevisionProviderTest.cs" />
     <Compile Include="Domain\IGlobalAccessTypeCacheTest.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipalFactoryTest.cs" />
+    <Compile Include="Domain\IUserRevisionProviderTest.cs" />
     <Compile Include="Domain\Metadata\AccessTypeDefinitionTest.cs" />
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\Metadata\SecurableClassDefinitionTests\AddAccessType.cs" />

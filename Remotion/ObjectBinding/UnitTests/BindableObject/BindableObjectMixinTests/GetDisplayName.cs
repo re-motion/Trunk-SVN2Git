@@ -43,8 +43,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectMixinTes
       _mockRepository = new MockRepository();
       _mockObjectSecurityAdapter = _mockRepository.StrictMock<IObjectSecurityAdapter>();
 
-      var serviceLocator = new DefaultServiceLocator();
-      serviceLocator.Register (typeof (IObjectSecurityAdapter), () => _mockObjectSecurityAdapter);
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterMultiple<IObjectSecurityAdapter>(() => _mockObjectSecurityAdapter);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 

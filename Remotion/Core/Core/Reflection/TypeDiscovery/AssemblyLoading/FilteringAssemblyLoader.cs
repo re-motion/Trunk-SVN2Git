@@ -35,7 +35,20 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
   /// </remarks>
   public class FilteringAssemblyLoader : IAssemblyLoader
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (FilteringAssemblyLoader));
+    // This class holds lazy, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a nested static
+    // class with a static constructor as lazily as possible on first access of the static field.
+    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
+    static class LazyStaticFields
+    {
+      public static readonly ILog s_log = LogManager.GetLogger (typeof (FilteringAssemblyLoader));
+
+      // ReSharper disable EmptyConstructor
+      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
+      static LazyStaticFields ()
+      {
+      }
+      // ReSharper restore EmptyConstructor
+    }
 
     private readonly IAssemblyLoaderFilter _filter;
 
@@ -54,12 +67,12 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
     {
       ArgumentUtility.CheckNotNull ("filePath", filePath);
 
-      s_log.InfoFormat ("Attempting to get assembly name for path '{0}'.", filePath);
+      LazyStaticFields.s_log.InfoFormat ("Attempting to get assembly name for path '{0}'.", filePath);
       AssemblyName assemblyName = PerformGuardedLoadOperation (filePath, null, () => AssemblyNameCache.GetAssemblyName (filePath));
       if (assemblyName == null)
         return null;
 
-      s_log.InfoFormat ("Assembly name for path '{0}' is '{1}'.", filePath, assemblyName.FullName);
+      LazyStaticFields.s_log.InfoFormat ("Assembly name for path '{0}' is '{1}'.", filePath, assemblyName.FullName);
 
       return TryLoadAssembly(assemblyName, filePath);
     }
@@ -71,9 +84,9 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
 
       if (PerformGuardedLoadOperation (assemblyName.FullName, context, () => _filter.ShouldConsiderAssembly (assemblyName)))
       {
-        s_log.InfoFormat ("Attempting to load assembly with name '{0}' in context '{1}'.", assemblyName, context);
+        LazyStaticFields.s_log.InfoFormat ("Attempting to load assembly with name '{0}' in context '{1}'.", assemblyName, context);
         Assembly loadedAssembly = PerformGuardedLoadOperation (assemblyName.FullName, context, () => Assembly.Load (assemblyName));
-        s_log.InfoFormat ("Success: {0}", loadedAssembly != null);
+        LazyStaticFields.s_log.InfoFormat ("Success: {0}", loadedAssembly != null);
 
         if (loadedAssembly == null)
           return null;
@@ -101,20 +114,20 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
       }
       catch (BadImageFormatException ex)
       {
-        s_log.InfoFormat (
+        LazyStaticFields.s_log.InfoFormat (
             "The file {0} triggered a BadImageFormatException and will be ignored. Possible causes for this are:" + Environment.NewLine 
             + "- The file is not a .NET assembly." + Environment.NewLine 
             + "- The file was built for a newer version of .NET." + Environment.NewLine
             + "- The file was compiled for a different platform (x86, x64, etc.) than the platform this process is running on." + Environment.NewLine
             + "- The file is damaged.", 
             assemblyDescriptionText);
-        s_log.DebugFormat (ex, "The file {0} triggered a BadImageFormatException.", assemblyDescriptionText);
+        LazyStaticFields.s_log.DebugFormat (ex, "The file {0} triggered a BadImageFormatException.", assemblyDescriptionText);
 
         return default (T);
       }
       catch (FileLoadException ex)
       {
-        s_log.WarnFormat (
+        LazyStaticFields.s_log.WarnFormat (
             ex,
             "The assembly {0} triggered a FileLoadException and will be ignored - maybe the assembly is DelaySigned, but signing has not been completed?",
             assemblyDescriptionText);
@@ -130,7 +143,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
         // https://www.re-motion.org/jira/browse/RM-5089
         if (assemblyDescription.Contains ("System.IdentityModel.Selectors"))
         {
-          s_log.WarnFormat (message, ex);
+          LazyStaticFields.s_log.WarnFormat (message, ex);
           return default (T);
         }
 

@@ -481,9 +481,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return ServiceLocator.GetInstance<ResourceTheme>(); }
     }
 
-    protected ICompoundGlobalizationService GlobalizationService
+    protected IGlobalizationService GlobalizationService
     {
-      get { return ServiceLocator.GetInstance<ICompoundGlobalizationService> (); }
+      get { return ServiceLocator.GetInstance<IGlobalizationService> (); }
     }
 
     protected override void LoadControlState (object savedState)

@@ -22,8 +22,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="WebTabStrip"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (WebTabStripRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IWebTabStripRenderer
+ public interface IWebTabStripRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control);
     void Render (WebTabStripRenderingContext renderingContext);

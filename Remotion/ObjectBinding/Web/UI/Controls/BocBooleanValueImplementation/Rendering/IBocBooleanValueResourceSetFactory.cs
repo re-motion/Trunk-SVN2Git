@@ -23,8 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// <summary>
   /// Defines a factory method for creating the <see cref="BocBooleanValue"/> <see cref="BocBooleanValueResourceSet"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(BocBooleanValueResourceSetFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocBooleanValueResourceSetFactory
+ public interface IBocBooleanValueResourceSetFactory
   {
     BocBooleanValueResourceSet CreateResourceSet (IBocBooleanValue control);
   }

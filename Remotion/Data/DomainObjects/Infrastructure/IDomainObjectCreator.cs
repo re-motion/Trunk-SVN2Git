@@ -26,8 +26,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// <summary>
   /// Provides a common interface for classes creating new instances of <see cref="DomainObject"/> types.
   /// </summary>
-  [ConcreteImplementation (typeof (DomainObjectCreator), Lifetime = LifetimeKind.Singleton)]
-  public interface IDomainObjectCreator
+ public interface IDomainObjectCreator
   {
     /// <summary>
     /// Creates a new <see cref="DomainObject"/> instance and initializes it with the given <paramref name="objectInitializationContext"/> and 

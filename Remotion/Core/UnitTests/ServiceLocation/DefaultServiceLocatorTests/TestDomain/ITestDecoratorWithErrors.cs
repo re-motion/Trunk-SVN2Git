@@ -16,40 +16,36 @@
 // 
 
 using System;
-using NUnit.Framework;
-using Remotion.ServiceLocation;
-using Remotion.Web.Security.UI;
-using Remotion.Web.UI;
+using Remotion.UnitTests.ServiceLocation.TestDomain;
 
-namespace Remotion.Web.UnitTests.Core.Security.UI
+namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests.TestDomain
 {
-  [TestFixture]
-  public class IWebSecurityAdapterTest
+  public interface ITestDecoratorWithErrors
   {
-    private DefaultServiceLocator _serviceLocator;
+  }
 
-    [SetUp]
-    public void SetUp ()
+  public class TestDecoratorWithErrorsImplementation : ITestDecoratorWithErrors
+  {
+  }
+
+  public class TestDecoratorWithoutPublicConstructor : ITestDecoratorWithErrors
+  {
+    private TestDecoratorWithoutPublicConstructor ()
     {
-      _serviceLocator = new DefaultServiceLocator();
     }
-
-    [Test]
-    public void GetInstance_Once ()
+  }
+  
+  public class TestDecoratorWithConstructorWithoutArguments : ITestDecoratorWithErrors
+  {
+    private TestDecoratorWithConstructorWithoutArguments ()
     {
-      var factory = _serviceLocator.GetInstance<IWebSecurityAdapter>();
-
-      Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (WebSecurityAdapter)));
     }
+  }
 
-    [Test]
-    public void GetInstance_Twice_ReturnsSameInstance ()
+  public class TestDecoratorWithConstructorWithoutMatchingArgument : ITestDecoratorWithErrors
+  {
+    private TestDecoratorWithConstructorWithoutMatchingArgument (StubService argument)
     {
-      var factory1 = _serviceLocator.GetInstance<IWebSecurityAdapter>();
-      var factory2 = _serviceLocator.GetInstance<IWebSecurityAdapter>();
-
-      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }

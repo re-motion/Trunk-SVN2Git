@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -17,6 +17,7 @@
 
 using System;
 using System.CodeDom;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Compilation
@@ -24,6 +25,7 @@ namespace Remotion.Web.Compilation
   /// <summary>
   /// Default implementation of the <see cref="IControlBuilderCodeProcessor"/> interface.
   /// </summary>
+  [ImplementationFor (typeof (IControlBuilderCodeProcessor), Lifetime = LifetimeKind.Instance)]
   public class DefaultControlBuilderCodeProcessor : IControlBuilderCodeProcessor
   {
     public void ProcessGeneratedCode (

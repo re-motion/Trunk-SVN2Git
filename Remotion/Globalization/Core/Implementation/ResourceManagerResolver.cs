@@ -17,6 +17,7 @@
 
 using System;
 using Remotion.Collections;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
@@ -26,6 +27,7 @@ namespace Remotion.Globalization.Implementation
   /// Resource managers are resolved based on the <see cref="IResourcesAttribute"/> applied to the type.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (IResourceManagerResolver), Lifetime = LifetimeKind.Singleton)]
   public sealed class ResourceManagerResolver : IResourceManagerResolver
   {
     private readonly LockingCacheDecorator<Type, ResolvedResourceManagerResult> _resourceManagerWrappersCache =

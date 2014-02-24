@@ -23,8 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
   /// <summary>
   /// Defines the API for rendering a <see cref="BocDateTimeValue"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (BocDateTimeValueRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocDateTimeValueRenderer
+ public interface IBocDateTimeValueRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (BocDateTimeValueRenderingContext renderingContext);

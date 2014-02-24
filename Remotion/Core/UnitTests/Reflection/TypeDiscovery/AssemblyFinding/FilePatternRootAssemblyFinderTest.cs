@@ -78,7 +78,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       var finder = CreateRootAssemblyFinder (specification1, specification2);
 
-      finder.FindRootAssemblies ();
+      finder.FindRootAssemblies ().ForceEnumeration();
 
       _loaderMock.AssertWasCalled (mock => mock.TryLoadAssembly ("1.dll"));
       _loaderMock.AssertWasNotCalled (mock => mock.TryLoadAssembly ("2.dll"));
@@ -98,7 +98,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       var finder = CreateRootAssemblyFinder (specification1, specification2, specification3);
 
-      finder.FindRootAssemblies ();
+      finder.FindRootAssemblies ().ForceEnumeration();
 
       _loaderMock.AssertWasCalled (mock => mock.TryLoadAssembly ("1.dll"));
       _loaderMock.AssertWasCalled (mock => mock.TryLoadAssembly ("4.dll"));
@@ -119,7 +119,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       var finder = CreateRootAssemblyFinder (specification1, specification2, specification3);
 
-      finder.FindRootAssemblies ();
+      finder.FindRootAssemblies ().ForceEnumeration();
 
       _loaderMock.AssertWasCalled (mock => mock.TryLoadAssembly ("2.dll"));
       _loaderMock.AssertWasCalled (mock => mock.TryLoadAssembly ("3.dll"));

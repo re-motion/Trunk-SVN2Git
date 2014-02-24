@@ -17,10 +17,12 @@
 using System;
 using System.Web;
 using Remotion.Context;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Context
 {
+  [ImplementationFor (typeof (ISafeContextStorageProvider), Position = 0)]
   public class HttpContextStorageProvider : ISafeContextStorageProvider
   {
     private readonly CallContextStorageProvider _fallbackProvider = new CallContextStorageProvider ();

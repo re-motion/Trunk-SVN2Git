@@ -20,6 +20,7 @@ using System.Linq;
 using Remotion.FunctionalProgramming;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using ReflectionUtility = Remotion.Mixins.Utilities.ReflectionUtility;
 
@@ -28,6 +29,7 @@ namespace Remotion.Mixins.Definitions.Building
   /// <summary>
   /// Builds <see cref="TargetClassDefinition"/> objects containing all metadata required for code generation from a <see cref="ClassContext"/>.
   /// </summary>
+  [ImplementationFor (typeof (ITargetClassDefinitionBuilder), Lifetime = LifetimeKind.Singleton)]
   public class TargetClassDefinitionBuilder : ITargetClassDefinitionBuilder
   {
     private readonly IMixinDefinitionSorter _mixinSorter;

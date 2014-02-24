@@ -3107,7 +3107,7 @@ namespace Remotion.Web.UI.Controls
     {
       get
       {
-        return SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>();
+        return SafeServiceLocator.Current.GetInstance<IGlobalizationService>();
       }
     }
 

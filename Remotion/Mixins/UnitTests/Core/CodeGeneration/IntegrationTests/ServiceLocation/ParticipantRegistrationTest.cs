@@ -19,7 +19,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins.CodeGeneration.TypePipe;
-using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 
@@ -31,7 +30,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Service
     [Test]
     public void DefaultServiceLocator_ReturnsMixinParticipant ()
     {
-      var serviceLocator = new DefaultServiceLocator();
+      var serviceLocator = DefaultServiceLocator.Create();
       var participants = serviceLocator.GetAllInstances<IParticipant>().ToArray();
       Assert.That (participants.Select (p => p.GetType()), Is.EqualTo (new[] { typeof (MixinParticipant) }));
     }
@@ -39,8 +38,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Service
     [Test]
     public void DefaultServiceConfigurationDiscoveryService_ReturnsMixinParticpant ()
     {
-      var services = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration(ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService());
-      var participantService = services.SingleOrDefault (s => s.ServiceType == typeof (IParticipant));
+      var discoveryService = DefaultServiceConfigurationDiscoveryService.Create();
+      var participantService = discoveryService.GetDefaultConfiguration(typeof (IParticipant));
 
       Assert.That (participantService, Is.Not.Null);
       Assert.That (participantService.ImplementationInfos.Select (i => i.ImplementationType), Is.EqualTo (new[] { typeof (MixinParticipant) }));

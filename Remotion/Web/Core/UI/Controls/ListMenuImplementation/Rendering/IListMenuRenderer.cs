@@ -22,8 +22,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="ListMenuRenderer"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (ListMenuRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IListMenuRenderer
+ public interface IListMenuRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (ListMenuRenderingContext renderingContext);

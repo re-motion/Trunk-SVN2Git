@@ -25,12 +25,12 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocDateTimeValueImple
 {
   public class TestableBocDateTimeValueRenderer : BocDateTimeValueRenderer
   {
-    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
         : base(resourceUrlFactory, globalizationService)
     {
     }
 
-    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService, TextBox dateTextBox, TextBox timeTextBox)
+    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, TextBox dateTextBox, TextBox timeTextBox)
         : base(resourceUrlFactory, globalizationService, dateTextBox, timeTextBox)
     {
     }

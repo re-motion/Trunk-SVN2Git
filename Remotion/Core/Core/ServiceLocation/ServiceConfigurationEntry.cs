@@ -17,9 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -30,55 +28,30 @@ namespace Remotion.ServiceLocation
   /// Holds the parameters used by <see cref="DefaultServiceLocator"/> for instantiating instances of service types. Use 
   /// <see cref="DefaultServiceConfigurationDiscoveryService"/> to retrieve the <see cref="ServiceConfigurationEntry"/> data for a specific type.
   /// </summary>
-  public class ServiceConfigurationEntry
+  public sealed class ServiceConfigurationEntry
   {
     /// <summary>
-    /// Creates a <see cref="ServiceConfigurationEntry"/> from a <see cref="ConcreteImplementationAttribute"/>.
+    /// Creates a <see cref="ServiceConfigurationEntry"/> from a <see cref="ImplementationForAttribute"/>.
     /// </summary>
     /// <param name="serviceType">The service type.</param>
-    /// <param name="attributes">The attributes holding information about the concrete implementation of the <paramref name="serviceType"/>.</param>
+    /// <param name="attributes">Tuples holding information about the concrete type implementing <paramref name="serviceType"/> as well as the attribute instance.</param>
     /// <returns>A <see cref="ServiceConfigurationEntry"/> containing the data from the <paramref name="attributes"/>.</returns>
-    public static ServiceConfigurationEntry CreateFromAttributes (Type serviceType, IEnumerable<ConcreteImplementationAttribute> attributes)
+    public static ServiceConfigurationEntry CreateFromAttributes (Type serviceType, IEnumerable<Tuple<Type, ImplementationForAttribute>> attributes)
     {
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       ArgumentUtility.CheckNotNull ("attributes", attributes);
 
       var attributesAndResolvedTypes =
           (from attribute in attributes
-           orderby attribute.Position
-           let resolvedType = ResolveType (attribute, serviceType.Assembly)
-           where resolvedType != null
-           select new { Attribute = attribute, ResolvedType = resolvedType }).ConvertToCollection();
-
-      EnsureUniqueProperty ("Implementation type", attributesAndResolvedTypes.Select (tuple => tuple.ResolvedType));
-      EnsureUniqueProperty ("Position", attributesAndResolvedTypes.Select (tuple => tuple.Attribute.Position));
+           orderby attribute.Item2.Position
+           select new { Attribute = attribute.Item2, ResolvedType = attribute.Item1}).ConvertToCollection();
 
       var serviceImplementationInfos =
           attributesAndResolvedTypes
-          .ApplySideEffect (tuple => CheckImplementationType (serviceType, tuple.ResolvedType, s => new InvalidOperationException (s)))
-          .Select (tuple => new ServiceImplementationInfo (tuple.ResolvedType, tuple.Attribute.Lifetime));
-      
-      return new ServiceConfigurationEntry (serviceType, serviceImplementationInfos);
-    }
+              .ApplySideEffect (tuple => CheckImplementationType (serviceType, tuple.ResolvedType, s => new InvalidOperationException (s)))
+              .Select (tuple => new ServiceImplementationInfo (tuple.ResolvedType, tuple.Attribute.Lifetime, tuple.Attribute.RegistrationType));
 
-    private static Type ResolveType (ConcreteImplementationAttribute attribute, Assembly referenceAssembly)
-    {
-      try
-      {
-        return TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate, referenceAssembly);
-      }
-      catch (FileNotFoundException) // Invalid assembly
-      {
-        if (attribute.IgnoreIfNotFound)
-          return null;
-        throw;
-      }
-      catch (TypeLoadException) // Invalid type name
-      {
-        if (attribute.IgnoreIfNotFound)
-          return null;
-        throw;
-      }
+      return new ServiceConfigurationEntry (serviceType, serviceImplementationInfos);
     }
 
     private static void CheckImplementationType (Type serviceType, Type implementationType, Func<string, Exception> exceptionFactory)
@@ -90,20 +63,6 @@ namespace Remotion.ServiceLocation
       }
     }
 
-    private static void EnsureUniqueProperty<T> (string propertyDescription, IEnumerable<T> propertyValues)
-    {
-      var visitedValues = new HashSet<T> ();
-      foreach (var value in propertyValues)
-      {
-        if (visitedValues.Contains (value))
-        {
-          var message = string.Format ("Ambiguous {0}: {1} must be unique.", typeof (ConcreteImplementationAttribute).Name, propertyDescription);
-          throw new InvalidOperationException (message);
-        }
-        visitedValues.Add (value);
-      }
-    }
-
     private readonly Type _serviceType;
     private readonly ReadOnlyCollection<ServiceImplementationInfo> _implementationInfos;
 
@@ -112,8 +71,7 @@ namespace Remotion.ServiceLocation
     /// </summary>
     /// <param name="serviceType">The service type. This is a type for which instances are requested from a service locator.</param>
     /// <param name="implementationInfos">The <see cref="ServiceImplementationInfo"/> for the <paramref name="serviceType" />.</param>
-    public ServiceConfigurationEntry (
-        Type serviceType, params ServiceImplementationInfo[] implementationInfos)
+    public ServiceConfigurationEntry (Type serviceType, params ServiceImplementationInfo[] implementationInfos)
         : this (serviceType, (IEnumerable<ServiceImplementationInfo>) implementationInfos)
     {
     }

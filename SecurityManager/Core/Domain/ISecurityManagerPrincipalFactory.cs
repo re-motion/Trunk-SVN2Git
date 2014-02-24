@@ -27,8 +27,7 @@ namespace Remotion.SecurityManager.Domain
   /// Declares a factory method for creating an instance for the <see cref="ISecurityManagerPrincipal"/> interface.
   /// </summary>
   /// <seealso cref="SecurityManagerPrincipalFactory"/>
-  [ConcreteImplementation (typeof (SecurityManagerPrincipalFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface ISecurityManagerPrincipalFactory
+ public interface ISecurityManagerPrincipalFactory
   {
     /// <summary>
     /// Instantiates a threadsafe implementation of the <see cref="ISecurityManagerPrincipal"/> interface.

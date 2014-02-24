@@ -15,7 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
@@ -23,17 +26,20 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// <summary>
   /// Decorates an <see cref="IAssemblyFinder"/>, caching its results.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public class CachingAssemblyFinderDecorator : IAssemblyFinder
   {
     private readonly IAssemblyFinder _innerFinder;
-    private readonly DoubleCheckedLockingContainer<Assembly[]> _resultCache;
+    private readonly Lazy<IReadOnlyCollection<Assembly>> _resultCache;
 
     public CachingAssemblyFinderDecorator (IAssemblyFinder innerFinder)
     {
       ArgumentUtility.CheckNotNull ("innerFinder", innerFinder);
 
       _innerFinder = innerFinder;
-      _resultCache = new DoubleCheckedLockingContainer<Assembly[]> (innerFinder.FindAssemblies);
+      _resultCache = new Lazy<IReadOnlyCollection<Assembly>> (
+          () => _innerFinder.FindAssemblies().ToList().AsReadOnly(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     public IAssemblyFinder InnerFinder
@@ -41,14 +47,9 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _innerFinder; }
     }
 
-    public Assembly[] FindAssemblies ()
+    public IEnumerable<Assembly> FindAssemblies ()
     {
       return _resultCache.Value;
-    }
-
-    public void ClearCache ()
-    {
-      _resultCache.Value = null;
     }
   }
 }

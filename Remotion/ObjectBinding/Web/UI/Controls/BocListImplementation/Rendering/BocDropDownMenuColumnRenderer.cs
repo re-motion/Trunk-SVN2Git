@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
@@ -25,6 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Responsible for rendering cells of <see cref="BocDropDownMenuColumnDefinition"/> columns.
   /// </summary>
+  [ImplementationFor (typeof (IBocDropDownMenuColumnRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocDropDownMenuColumnRenderer : BocColumnRendererBase<BocDropDownMenuColumnDefinition>, IBocDropDownMenuColumnRenderer
   {
     /// <summary>

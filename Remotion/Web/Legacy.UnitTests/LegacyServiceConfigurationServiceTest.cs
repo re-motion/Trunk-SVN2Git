@@ -53,7 +53,8 @@ namespace Remotion.Web.Legacy.UnitTests
                                   typeof (IWxeSecurityAdapter),
                               };
 
-      var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IResourceUrl).Assembly })
+      var discoverySerivce = DefaultServiceConfigurationDiscoveryService.Create();
+      var allServiceTypes = discoverySerivce.GetDefaultConfiguration (new[] { typeof (IResourceUrl).Assembly })
           .Select (e => e.ServiceType);
       var expectedLegacyServiceTypes = allServiceTypes.Except (nonLegacyServices);
 
@@ -75,7 +76,7 @@ namespace Remotion.Web.Legacy.UnitTests
     {
       var legacyServiceTypes = LegacyServiceConfigurationService.GetConfiguration();
 
-      var locator = new DefaultServiceLocator();
+      var locator = DefaultServiceLocator.Create();
       foreach (var serviceConfigurationEntry in legacyServiceTypes)
         locator.Register (serviceConfigurationEntry);
 

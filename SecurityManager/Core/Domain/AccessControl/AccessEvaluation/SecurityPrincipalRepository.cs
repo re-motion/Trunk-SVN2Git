@@ -19,6 +19,7 @@
 using System;
 using Remotion.Collections;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
@@ -27,6 +28,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
   /// Cache-based implementation of the <see cref="ISecurityPrincipalRepository"/> interface.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (ISecurityPrincipalRepository), Lifetime = LifetimeKind.Singleton)]
   public sealed class SecurityPrincipalRepository : ISecurityPrincipalRepository
   {
     private readonly IUserRevisionProvider _revisionProvider;

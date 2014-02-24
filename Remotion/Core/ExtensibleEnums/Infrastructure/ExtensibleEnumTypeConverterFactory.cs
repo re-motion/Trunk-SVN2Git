@@ -17,6 +17,7 @@
 
 using System;
 using System.ComponentModel;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums.Infrastructure
@@ -24,6 +25,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
   /// <summary>
   /// Creates an <see cref="ExtensibleEnumConverter"/> if the requested type is an extensible enum.
   /// </summary>
+  [ImplementationFor (typeof (ITypeConverterFactory), Lifetime = LifetimeKind.Singleton, Position = 2, RegistrationType = RegistrationType.Multiple)]
   public class ExtensibleEnumTypeConverterFactory : ITypeConverterFactory
   {
     public ExtensibleEnumTypeConverterFactory ()

@@ -21,6 +21,7 @@ using log4net.Config;
 using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Logging
@@ -28,6 +29,7 @@ namespace Remotion.Logging
   /// <summary>
   /// Implementation of <see cref="ILogManager"/> for <b>log4net</b>.
   /// </summary>
+  [ImplementationFor (typeof(ILogManager), Lifetime = LifetimeKind.Singleton)]
   public class Log4NetLogManager : ILogManager
   {
     /// <summary>

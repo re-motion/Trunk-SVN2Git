@@ -26,7 +26,6 @@ namespace Remotion.Reflection
   /// </summary>
   /// <seealso cref="ReflectionBasedMemberInformationNameResolver"/>
   /// <threadsafety static="true" instance="true"/>
-  [ConcreteImplementation (typeof (ReflectionBasedMemberInformationNameResolver), Lifetime = LifetimeKind.Singleton)]
   public interface IMemberInformationNameResolver
   {
     /// <summary>

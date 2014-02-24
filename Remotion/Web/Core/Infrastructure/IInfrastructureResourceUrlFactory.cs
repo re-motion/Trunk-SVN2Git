@@ -25,8 +25,7 @@ namespace Remotion.Web.Infrastructure
   /// Defines a method for resolving resource urls for the current <see cref="ResourceTheme"/>.
   /// The <see cref="IInfrastructureResourceUrlFactory"/> is only intended for use with controls located in <b>Remotion.Web</b> that do not have their own renderers.
   /// </summary>
-  [ConcreteImplementation (typeof (InfrastructureResourceUrlFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IInfrastructureResourceUrlFactory
+ public interface IInfrastructureResourceUrlFactory
   {
     IResourceUrl CreateThemedResourceUrl (ResourceType resourceType, string relativeUrl);
   }

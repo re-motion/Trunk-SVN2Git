@@ -202,11 +202,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Configuration
       ConfigurationWrapper.SetCurrent (ConfigurationWrapper.CreateFromConfigurationObject (configuration));
     }
 
-    [ConcreteImplementation(typeof (CustomStorageObjectFactory))]
     public interface ICustomStorageObjectFactory : IStorageObjectFactory
     {
     }
 
+    [ImplementationFor (typeof (ICustomStorageObjectFactory), RegistrationType = RegistrationType.Multiple)]
     public class CustomStorageObjectFactory : SqlStorageObjectFactory, ICustomStorageObjectFactory
     {
     }

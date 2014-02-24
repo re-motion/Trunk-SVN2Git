@@ -25,8 +25,7 @@ namespace Remotion.Mixins.Definitions.Building
   /// Defines an interface for classes building <see cref="TargetClassDefinition"/> objects containing all metadata required for code generation 
   /// from a <see cref="ClassContext"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (TargetClassDefinitionBuilder), Lifetime = LifetimeKind.Singleton)]
-  public interface ITargetClassDefinitionBuilder
+ public interface ITargetClassDefinitionBuilder
   {
     TargetClassDefinition Build (ClassContext classContext);
   }

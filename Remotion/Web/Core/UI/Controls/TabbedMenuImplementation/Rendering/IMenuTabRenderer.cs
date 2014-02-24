@@ -24,8 +24,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="MenuTab"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (MenuTabRenderer), Lifetime = LifetimeKind.Instance)]
-  public interface IMenuTabRenderer
+ public interface IMenuTabRenderer
   {
     void Render (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, bool isLast, WebTabStyle style);
   }

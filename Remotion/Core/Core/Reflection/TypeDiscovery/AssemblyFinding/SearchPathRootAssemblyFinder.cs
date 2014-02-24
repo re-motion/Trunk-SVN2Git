@@ -102,7 +102,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _assemblyLoader; }
     }
 
-    public RootAssembly[] FindRootAssemblies ()
+    public IEnumerable<RootAssembly> FindRootAssemblies ()
     {
       var combinedFinder = CreateCombinedFinder ();
       return combinedFinder.FindRootAssemblies ();
@@ -122,8 +122,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       {
         var privateBinPaths = _relativeSearchPath.Split (';');
         var rootAssemblyFinders = privateBinPaths
-            .Select (privateBinPath => new FilePatternRootAssemblyFinder (privateBinPath, specifications, fileSearchService, _assemblyLoader))
-            .Cast<IRootAssemblyFinder>();
+            .Select (privateBinPath => new FilePatternRootAssemblyFinder (privateBinPath, specifications, fileSearchService, _assemblyLoader));
         finders.AddRange (rootAssemblyFinders);
       }
 

@@ -32,8 +32,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [TestFixtureSetUp]
     public virtual void TestFixtureSetUp ()
     {
-      var serviceLocator = new DefaultServiceLocator();
-      serviceLocator.Register (typeof (IObjectSecurityAdapter), () => new ObjectSecurityAdapter());
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterMultiple<IObjectSecurityAdapter> (() => new ObjectSecurityAdapter());
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 

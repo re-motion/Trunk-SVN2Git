@@ -27,6 +27,7 @@ using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Mixins;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Configuration
@@ -121,7 +122,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Configuration
     [Test]
     public void Initialize_NameValueCollection_WithServiceLocatorConfiguration ()
     {
-      using (new ServiceLocatorScope (typeof (StorageObjectFactoryFake), typeof (DerivedStorageObjectFactoryFake)))
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.Register (typeof (StorageObjectFactoryFake), typeof (DerivedStorageObjectFactoryFake), LifetimeKind.Singleton, RegistrationType.Multiple);
+      using (new ServiceLocatorScope (serviceLocator))
       {
         var nameValueCollection = new NameValueCollection { { "factoryType", typeof (StorageObjectFactoryFake).AssemblyQualifiedName } };
 
@@ -135,7 +138,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Configuration
     [Test]
     public void Initialize_NameValueCollection_WithServiceLocatorConfiguration_InstantiationError ()
     {
-      using (new ServiceLocatorScope (typeof (StorageObjectFactoryFake), typeof (DerivedStorageObjectFactoryFakeWithUnresolvedCtorParameter)))
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.Register (typeof (StorageObjectFactoryFake), typeof (DerivedStorageObjectFactoryFakeWithUnresolvedCtorParameter), LifetimeKind.Singleton, RegistrationType.Multiple);
+      using (new ServiceLocatorScope (serviceLocator))
       {
         var nameValueCollection = new NameValueCollection { { "factoryType", typeof (StorageObjectFactoryFake).AssemblyQualifiedName } };
 
@@ -145,9 +150,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Configuration
               "The factory type 'Remotion.Data.DomainObjects.UnitTests.Persistence.Configuration.StorageProviderDefinitionTest+StorageObjectFactoryFake' "
               + "specified in the configuration of the 'TestProvider' StorageProvider definition cannot be resolved: Could not resolve type "
               + "'Remotion.Data.DomainObjects.UnitTests.Persistence.Configuration.StorageProviderDefinitionTest+StorageObjectFactoryFake': "
-              + "Error resolving indirect dependendency of constructor parameter 's' of type "
+              + "Error resolving indirect dependency of constructor parameter 's' of type "
               + "'Remotion.Data.DomainObjects.UnitTests.Persistence.Configuration.StorageProviderDefinitionTest+DerivedStorageObjectFactoryFakeWithUnresolvedCtorParameter': "
-              + "Cannot get a concrete implementation of type 'System.String': Expected 'ConcreteImplementationAttribute' could not be found."));
+              + "No implementation is registered for service type 'System.String'."));
       }
     }
 

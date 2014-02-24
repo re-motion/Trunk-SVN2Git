@@ -25,12 +25,12 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
 {
   public class TestableBocReferenceValueRenderer : BocReferenceValueRenderer
   {
-    public TestableBocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+    public TestableBocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
         : base(resourceUrlFactory, globalizationService)
     {
     }
 
-    public TestableBocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService, Func<DropDownList> dropDownListFactoryMethod)
+    public TestableBocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, Func<DropDownList> dropDownListFactoryMethod)
         : base(resourceUrlFactory, globalizationService, dropDownListFactoryMethod)
     {
     }

@@ -26,22 +26,22 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// </summary>
   public class CompositeRootAssemblyFinder : IRootAssemblyFinder
   {
-    private readonly IRootAssemblyFinder[] _innerFinders;
+    private readonly IReadOnlyList<IRootAssemblyFinder> _innerFinders;
 
     public CompositeRootAssemblyFinder (IEnumerable<IRootAssemblyFinder> finders)
     {
       ArgumentUtility.CheckNotNull ("finders", finders);
-      _innerFinders = finders.ToArray();
+      _innerFinders = finders.ToList().AsReadOnly();
     }
 
-    public IRootAssemblyFinder[] InnerFinders
+    public IReadOnlyList<IRootAssemblyFinder> InnerFinders
     {
       get { return _innerFinders; }
     }
 
-    public RootAssembly[] FindRootAssemblies ()
+    public IEnumerable<RootAssembly> FindRootAssemblies ()
     {
-      return _innerFinders.SelectMany (finder => finder.FindRootAssemblies ()).Distinct().ToArray();
+      return _innerFinders.SelectMany (finder => finder.FindRootAssemblies()).Distinct();
     }
   }
 }

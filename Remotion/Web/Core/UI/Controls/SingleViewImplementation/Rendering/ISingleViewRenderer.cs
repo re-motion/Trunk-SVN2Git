@@ -22,8 +22,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="SingleViewRenderer"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (SingleViewRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface ISingleViewRenderer
+ public interface ISingleViewRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control);
     void Render (SingleViewRenderingContext renderingContext);

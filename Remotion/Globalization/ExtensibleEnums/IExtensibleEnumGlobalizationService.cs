@@ -19,7 +19,6 @@ using System;
 using JetBrains.Annotations;
 using Remotion.ExtensibleEnums;
 using Remotion.Globalization.ExtensibleEnums.Implementation;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Globalization.ExtensibleEnums
 {
@@ -28,7 +27,6 @@ namespace Remotion.Globalization.ExtensibleEnums
   /// </summary>
   /// <seealso cref="ExtensibleEnumGlobalizationService"/>
   /// <threadsafety static="true" instance="true" />
-  [ConcreteImplementation (typeof (ExtensibleEnumGlobalizationService), Lifetime = LifetimeKind.Singleton)]
   public interface IExtensibleEnumGlobalizationService
   {
     /// <summary>

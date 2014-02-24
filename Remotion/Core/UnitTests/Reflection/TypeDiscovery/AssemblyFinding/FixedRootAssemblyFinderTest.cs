@@ -17,8 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
-using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 {
@@ -33,8 +31,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
           new RootAssembly(typeof (FixedRootAssemblyFinderTest).Assembly, false) };
       var finder = new FixedRootAssemblyFinder (fixedSet);
 
-      var loaderStub = MockRepository.GenerateStub<IAssemblyLoader> ();
-      Assert.That (finder.FindRootAssemblies (), Is.SameAs (fixedSet));
+      Assert.That (finder.FindRootAssemblies (), Is.EqualTo (fixedSet));
     }
   }
 }

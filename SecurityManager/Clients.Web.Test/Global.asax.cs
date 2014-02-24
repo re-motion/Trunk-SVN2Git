@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test
 
     protected void Application_Start (object sender, EventArgs e)
     {
-      var defaultServiceLocator = new DefaultServiceLocator();
+      var defaultServiceLocator = DefaultServiceLocator.Create();
 
       //defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.IClientTransactionExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
       //defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.Tracing.IPersistenceExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);

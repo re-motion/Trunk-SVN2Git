@@ -316,7 +316,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyBaseTests
       _bindableObjectProvider.AddService (
           typeof (BindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
-              MockRepository.GenerateStub<ICompoundGlobalizationService>(),
+              MockRepository.GenerateStub<IGlobalizationService>(),
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
               MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
               MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>()));
@@ -342,7 +342,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyBaseTests
       _bindableObjectProvider.AddService (
           typeof (BindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
-              MockRepository.GenerateStub<ICompoundGlobalizationService>(),
+              MockRepository.GenerateStub<IGlobalizationService>(),
               mockMemberInformationGlobalizationService,
               MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
               MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>()));

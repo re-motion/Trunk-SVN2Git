@@ -20,8 +20,6 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestDomain.IDoNotExist, Remotion.UnitTests, Version = <version>",
-    ignoreIfNotFound: true)]
   public interface ITestConcreteImplementationAttributeWithUnresolvableImplementationType
   {
   }

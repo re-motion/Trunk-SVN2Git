@@ -22,8 +22,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Interface for classes responsible for rendering a single row of the table in a <see cref="IBocList"/> control.
   /// </summary>
-  [ConcreteImplementation (typeof (BocRowRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocRowRenderer
+ public interface IBocRowRenderer
   {
     /// <summary> Renders the table row containing the column titles and sorting buttons. </summary>
     /// <remarks> Title format: &lt;span&gt;label button &lt;span&gt;sort order&lt;/span&gt;&lt;/span&gt; </remarks>

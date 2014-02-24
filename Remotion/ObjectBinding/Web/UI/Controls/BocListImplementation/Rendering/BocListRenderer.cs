@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -33,6 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// This class should not be instantiated directly. Use a <see cref="BocRowRenderer"/> to obtain an instance.</remarks>
   /// <seealso cref="BocListNavigationBlockRenderer"/>
   /// <seealso cref="BocListMenuBlockRenderer"/>
+  [ImplementationFor (typeof (IBocListRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocListRenderer : BocRendererBase<IBocList>, IBocListRenderer
   {
     private readonly IBocListMenuBlockRenderer _menuBlockRenderer;
@@ -42,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     public BocListRenderer (
         IResourceUrlFactory resourceUrlFactory,
-        ICompoundGlobalizationService globalizationService,
+        IGlobalizationService globalizationService,
         BocListCssClassDefinition cssClasses,
         IBocListTableBlockRenderer tableBlockRenderer,
         IBocListNavigationBlockRenderer navigationBlockRenderer,

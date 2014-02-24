@@ -17,7 +17,6 @@
 
 using System;
 using System.Diagnostics;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Diagnostics
 {
@@ -26,7 +25,6 @@ namespace Remotion.Diagnostics
   /// <see cref="IDebuggerInterface"/> is implemented as an interface and allows alternative implementations for testing, custom debuggers, or other
   /// extensibility.
   /// </summary>
-  [ConcreteImplementation (typeof (DebuggerInterface))]
   public interface IDebuggerInterface
   {
     bool IsAttached { get; }

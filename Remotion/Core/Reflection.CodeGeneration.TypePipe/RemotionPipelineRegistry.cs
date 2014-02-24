@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Reflection.CodeGeneration.TypePipe.Configuration;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Implementation;
 using Remotion.Utilities;
@@ -31,6 +32,7 @@ namespace Remotion.Reflection.CodeGeneration.TypePipe
   /// <see cref="NonApplicationAssemblyAttribute"/> to the in-memory assembly in order to retain original re-mix behavior.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (IPipelineRegistry), Lifetime = LifetimeKind.Singleton)]
   public class RemotionPipelineRegistry : DefaultPipelineRegistry
   {
     private static IPipeline CreateDefaultPipeline (IEnumerable<IParticipant> defaultPipelineParticipants)

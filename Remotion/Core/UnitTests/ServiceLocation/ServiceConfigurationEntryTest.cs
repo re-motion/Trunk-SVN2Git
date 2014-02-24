@@ -80,134 +80,96 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void CreateFromAttributes_Single ()
     {
-      var attribute = new ConcreteImplementationAttribute (typeof (TestConcreteImplementationAttributeType)) { Lifetime = LifetimeKind.Singleton };
+      var attribute = new ImplementationForAttribute (typeof (ITestSingletonConcreteImplementationAttributeType)) { Lifetime = LifetimeKind.Singleton };
 
-      var entry = ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestSingletonConcreteImplementationAttributeType), new[] { attribute });
+      var entry = ServiceConfigurationEntry.CreateFromAttributes (
+          typeof (ITestSingletonConcreteImplementationAttributeType),
+          new[]
+          {
+              Tuple.Create (typeof (TestConcreteImplementationAttributeType), attribute)
+          });
 
       Assert.That (entry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
-      Assert.That (
-          entry.ImplementationInfos, 
-          Is.EqualTo (new[] { new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton) }));
+
+      Assert.That (entry.ImplementationInfos.Count, Is.EqualTo (1));
+      Assert.That (entry.ImplementationInfos[0].ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (entry.ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
 
     [Test]
     public void CreateFromAttributes_Multiple ()
     {
-      var attribute1 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1))
-                       { Lifetime = LifetimeKind.Singleton, Position = 0 };
-      var attribute2 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType2))
-                       { Lifetime = LifetimeKind.Instance, Position = 1 };
+      var attribute1 = Tuple.Create (
+          typeof (TestMultipleConcreteImplementationAttributesType1),
+          new ImplementationForAttribute (typeof (ITestMultipleConcreteImplementationAttributesType))
+          { Lifetime = LifetimeKind.Singleton, Position = 0 });
+
+      var attribute2 = Tuple.Create (
+          typeof (TestMultipleConcreteImplementationAttributesType2),
+          new ImplementationForAttribute (typeof (ITestMultipleConcreteImplementationAttributesType))
+          { Lifetime = LifetimeKind.Instance, Position = 1 });
+
       var attributes = new[] { attribute1, attribute2};
 
       var entry = ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes);
 
       Assert.That (entry.ServiceType, Is.EqualTo (typeof (ITestMultipleConcreteImplementationAttributesType)));
-      Assert.That (
-          entry.ImplementationInfos,
-          Is.EqualTo (
-              new[]
-              {
-                  new ServiceImplementationInfo (typeof (TestMultipleConcreteImplementationAttributesType1), LifetimeKind.Singleton),
-                  new ServiceImplementationInfo (typeof (TestMultipleConcreteImplementationAttributesType2), LifetimeKind.Instance)
-              }));
+
+      Assert.That (entry.ImplementationInfos.Count, Is.EqualTo (2));
+      Assert.That (entry.ImplementationInfos[0].ImplementationType, Is.EqualTo (typeof (TestMultipleConcreteImplementationAttributesType1)));
+      Assert.That (entry.ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.Singleton));
+      Assert.That (entry.ImplementationInfos[1].ImplementationType, Is.EqualTo (typeof (TestMultipleConcreteImplementationAttributesType2)));
+      Assert.That (entry.ImplementationInfos[1].Lifetime, Is.EqualTo (LifetimeKind.Instance));
+    }
+    
+    [Test]
+    public void CreateFromAttributes_EqualPositions_DifferentRegistrationTypes ()
+    {
+      var attribute1 = Tuple.Create (
+          typeof (TestMultipleConcreteImplementationAttributesType1),
+          new ImplementationForAttribute (typeof (ITestMultipleConcreteImplementationAttributesType))
+          { Lifetime = LifetimeKind.Singleton, Position = 1, RegistrationType = RegistrationType.Compound});
+
+      var attribute2 = Tuple.Create (
+          typeof (TestMultipleConcreteImplementationAttributesType2),
+          new ImplementationForAttribute (typeof (ITestMultipleConcreteImplementationAttributesType))
+          { Lifetime = LifetimeKind.Instance, Position = 1, RegistrationType = RegistrationType.Multiple});
+
+      var attributes = new[] { attribute1, attribute2};
+
+      ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes);
     }
 
     [Test]
     public void CreateFromAttributes_Multiple_EntriesAreSortedCorrectly ()
     {
-      var attribute1 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1))
-                       { Lifetime = LifetimeKind.Singleton, Position = 0 };
-      var attribute2 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType2))
-                       { Lifetime = LifetimeKind.Instance, Position = -1 };
+      var attribute1 = Tuple.Create (
+          typeof (TestMultipleConcreteImplementationAttributesType1),
+          new ImplementationForAttribute (typeof (ITestMultipleConcreteImplementationAttributesType))
+          { Lifetime = LifetimeKind.Singleton, Position = 0 });
+
+      var attribute2 = Tuple.Create (
+          typeof (TestMultipleConcreteImplementationAttributesType2),
+          new ImplementationForAttribute (typeof (ITestMultipleConcreteImplementationAttributesType))
+          { Lifetime = LifetimeKind.Instance, Position = -1 });
+
       var attributes = new[] { attribute1, attribute2 };
 
       var entry = ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes);
 
       Assert.That (entry.ServiceType, Is.EqualTo (typeof (ITestMultipleConcreteImplementationAttributesType)));
-      Assert.That (
-          entry.ImplementationInfos,
-          Is.EqualTo (
-              new[]
-              {
-                  new ServiceImplementationInfo (typeof (TestMultipleConcreteImplementationAttributesType2), LifetimeKind.Instance),
-                  new ServiceImplementationInfo (typeof (TestMultipleConcreteImplementationAttributesType1), LifetimeKind.Singleton)
-              }));
-    }
 
-    [Test]
-    public void CreateFromAttributes_Multiple_WithEqualPositions_Throws ()
-    {
-      var attribute1 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1)) { Position = 1 };
-      var attribute2 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType2)) { Position = 1 };
-      var attributes = new[] { attribute1, attribute2 };
-
-      Assert.That (
-          () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes),
-          Throws.InvalidOperationException.With.Message.EqualTo ("Ambiguous ConcreteImplementationAttribute: Position must be unique."));
-    }
-
-    [Test]
-    public void CreateFromAttributes_Multiple_WithEqualTypes_Throws ()
-    {
-      var attribute1 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1)) { Position = 1 };
-      var attribute2 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1)) { Position = 2 };
-      var attributes = new[] { attribute1, attribute2 };
-
-      Assert.That (
-          () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes),
-          Throws.InvalidOperationException.With.Message.EqualTo ("Ambiguous ConcreteImplementationAttribute: Implementation type must be unique."));
-    }
-
-    [Test]
-    public void CreateFromAttributes_Multiple_WithEqualTypesAndPositions_ThrowsForType ()
-    {
-      var attribute1 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1)) { Position = 1 };
-      var attribute2 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1)) { Position = 1 };
-      var attributes = new[] { attribute1, attribute2 };
-
-      Assert.That (
-          () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes),
-          Throws.InvalidOperationException.With.Message.EqualTo ("Ambiguous ConcreteImplementationAttribute: Implementation type must be unique."));
-    }
-
-    [Test]
-    public void CreateFromAttributes_IgnoreIfNotFoundFalse_InvalidAssembly ()
-    {
-      var attribute = new ConcreteImplementationAttribute ("DoesNotMatter, InvalidAssembly", ignoreIfNotFound: false);
-      Assert.That (() => ServiceConfigurationEntry.CreateFromAttributes (typeof (object), new[] { attribute }), Throws.TypeOf<FileNotFoundException>());
-    }
-
-    [Test]
-    public void CreateFromAttributes_IgnoreIfNotFoundTrue_InvalidAssembly ()
-    {
-      var attribute = new ConcreteImplementationAttribute ("DoesNotMatter, InvalidAssembly", ignoreIfNotFound: true);
-
-      var entry = ServiceConfigurationEntry.CreateFromAttributes (typeof (object), new[] { attribute });
-
-      Assert.That (entry.ImplementationInfos, Is.Empty);
-    }
-
-    [Test]
-    public void CreateFromAttributes_IgnoreIfNotFoundFalse_InvalidType ()
-    {
-      var attribute = new ConcreteImplementationAttribute ("IDoNotExist, mscorlib", ignoreIfNotFound: false);
-      Assert.That (() => ServiceConfigurationEntry.CreateFromAttributes (typeof (object), new[] { attribute }), Throws.TypeOf<TypeLoadException> ());
-    }
-
-    [Test]
-    public void CreateFromAttributes_IgnoreIfNotFoundTrue_InvalidType ()
-    {
-      var attribute = new ConcreteImplementationAttribute ("IDoNotExist, mscorlib", ignoreIfNotFound: true);
-
-      var entry = ServiceConfigurationEntry.CreateFromAttributes (typeof (object), new[] { attribute });
-
-      Assert.That (entry.ImplementationInfos, Is.Empty);
+      Assert.That (entry.ImplementationInfos.Count, Is.EqualTo (2));
+      Assert.That (entry.ImplementationInfos[0].ImplementationType, Is.EqualTo (typeof (TestMultipleConcreteImplementationAttributesType2)));
+      Assert.That (entry.ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.Instance));
+      Assert.That (entry.ImplementationInfos[1].ImplementationType, Is.EqualTo (typeof (TestMultipleConcreteImplementationAttributesType1)));
+      Assert.That (entry.ImplementationInfos[1].Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
 
     [Test]
     public void CreateFromAttributes_IncompatibleType ()
     {
-      var attribute = new ConcreteImplementationAttribute (typeof (object));
+      var attribute = Tuple.Create (typeof (object), new ImplementationForAttribute (typeof (ITestSingletonConcreteImplementationAttributeType)));
 
       Assert.That (
           () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestSingletonConcreteImplementationAttributeType), new[] { attribute }),
@@ -227,11 +189,11 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       var entry = new ServiceConfigurationEntry (
           typeof (IComparable),
-          new ServiceImplementationInfo (typeof (int), LifetimeKind.Singleton),
-          new ServiceImplementationInfo (typeof (string), LifetimeKind.Instance));
+          new ServiceImplementationInfo (typeof (int), LifetimeKind.Singleton, RegistrationType.Single),
+          new ServiceImplementationInfo (typeof (string), LifetimeKind.Instance, RegistrationType.Decorator));
 
       Assert.That (entry.ToString (), Is.EqualTo (
-        "System.IComparable implementations: [{System.Int32, Singleton}, {System.String, Instance}]"));
+        "System.IComparable implementations: [{System.Int32, Singleton, Single}, {System.String, Instance, Decorator}]"));
     }
   }
 }

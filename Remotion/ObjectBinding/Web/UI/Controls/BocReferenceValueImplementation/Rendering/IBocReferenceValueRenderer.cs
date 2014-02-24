@@ -23,8 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// <summary>
   /// Defines the API for rendering a <see cref="BocReferenceValue"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (BocReferenceValueRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocReferenceValueRenderer
+ public interface IBocReferenceValueRenderer
   {
     void Render (BocReferenceValueRenderingContext renderingContext);
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);

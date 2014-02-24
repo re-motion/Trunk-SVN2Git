@@ -20,6 +20,7 @@ using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -34,6 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.DropDownList"/>.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
+  [ImplementationFor (typeof (IBocReferenceValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocReferenceValueRenderer : BocReferenceValueRendererBase<IBocReferenceValue>, IBocReferenceValueRenderer
   {
     /// <summary> A list of control specific resources. </summary>
@@ -52,14 +54,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
-    public BocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, ICompoundGlobalizationService globalizationService)
+    public BocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
         : this (resourceUrlFactory, globalizationService, () => new DropDownList())
     {
     }
 
     protected BocReferenceValueRenderer (
         IResourceUrlFactory resourceUrlFactory,
-        ICompoundGlobalizationService globalizationService,
+        IGlobalizationService globalizationService,
         Func<DropDownList> dropDownListFactoryMethod)
         : base (resourceUrlFactory, globalizationService)
     {

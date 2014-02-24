@@ -28,7 +28,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// </summary>
   public class NamedRootAssemblyFinder : IRootAssemblyFinder
   {
-    private readonly AssemblyNameSpecification[] _specifications;
+    private readonly IReadOnlyList<AssemblyNameSpecification> _specifications;
     private readonly IAssemblyLoader _assemblyLoader;
 
     public NamedRootAssemblyFinder (IEnumerable<AssemblyNameSpecification> specifications, IAssemblyLoader assemblyLoader)
@@ -36,13 +36,13 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       ArgumentUtility.CheckNotNull ("specifications", specifications);
       ArgumentUtility.CheckNotNull ("assemblyLoader", assemblyLoader);
 
-      _specifications = specifications.ToArray();
+      _specifications = specifications.ToList().AsReadOnly();
       _assemblyLoader = assemblyLoader;
     }
 
-    public ReadOnlyCollection<AssemblyNameSpecification> Specifications
+    public IReadOnlyList<AssemblyNameSpecification> Specifications
     {
-      get { return Array.AsReadOnly (_specifications); }
+      get { return _specifications; }
     }
 
     public IAssemblyLoader AssemblyLoader
@@ -50,13 +50,13 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _assemblyLoader; }
     }
 
-    public RootAssembly[] FindRootAssemblies ()
+    public IEnumerable<RootAssembly> FindRootAssemblies ()
     {
       var rootAssemblies = from specification in _specifications
                            let assembly = _assemblyLoader.TryLoadAssembly (specification.AssemblyName, specification.ToString())
                            where assembly != null
                            select new RootAssembly(assembly, specification.FollowReferences);
-      return rootAssemblies.Distinct().ToArray ();
+      return rootAssemblies.Distinct();
     }
   }
 }

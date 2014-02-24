@@ -31,7 +31,12 @@ namespace Remotion.ServiceLocation
     private readonly object _lock = new object();
     private readonly List<ServiceConfigurationEntry> _registrations = new List<ServiceConfigurationEntry>();
 
-    private DefaultServiceLocator _bootstrapServiceLocator = new DefaultServiceLocator ();
+    private DefaultServiceLocator _bootstrapServiceLocator = DefaultServiceLocator.Create();
+
+    public BootstrapServiceConfiguration ()
+    {
+      
+    }
 
     public IServiceLocator BootstrapServiceLocator
     {
@@ -73,7 +78,7 @@ namespace Remotion.ServiceLocation
     {
       lock (_lock)
       {
-        _bootstrapServiceLocator = new DefaultServiceLocator ();
+        _bootstrapServiceLocator = DefaultServiceLocator.Create();
         _registrations.Clear ();
       }
     }

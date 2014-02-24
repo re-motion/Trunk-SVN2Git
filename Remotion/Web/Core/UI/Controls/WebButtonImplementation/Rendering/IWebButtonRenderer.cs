@@ -22,8 +22,7 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
   /// <summary>
   /// Defines the API for rendering a <see cref="WebButton"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (WebButtonRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IWebButtonRenderer
+ public interface IWebButtonRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     

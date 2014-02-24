@@ -26,7 +26,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
   [TestFixture]
   public class MemberInformationGlobalizationServiceTest
   {
-    private ICompoundGlobalizationService _globalizationServiceMock;
+    private IGlobalizationService _globalizationServiceMock;
     private MemberInformationGlobalizationService _service;
     private ITypeInformation _typeInformationForResourceResolutionStub;
     private ITypeInformation _typeInformationStub;
@@ -41,7 +41,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     [SetUp]
     public void SetUp ()
     {
-      _globalizationServiceMock = MockRepository.GenerateStub<ICompoundGlobalizationService>();
+      _globalizationServiceMock = MockRepository.GenerateStub<IGlobalizationService>();
       _resourceManagerMock = MockRepository.GenerateStrictMock<IResourceManager>();
       _resourceManagerMock.Stub (stub => stub.IsNull).Return (false);
       _resourceManagerMock.Stub (stub => stub.Name).Return ("RM1");

@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Web.UI;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Utilities
@@ -29,6 +30,7 @@ namespace Remotion.Web.Utilities
   /// <summary>
   /// Default implementation of the <seealso cref="IInternalControlMemberCaller"/> interface.
   /// </summary>
+  [ImplementationFor (typeof (IInternalControlMemberCaller), Lifetime = LifetimeKind.Singleton)]
   public class InternalControlMemberCaller : IInternalControlMemberCaller
   {
     private const BindingFlags c_bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;

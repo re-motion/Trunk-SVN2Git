@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
@@ -22,11 +23,12 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// <summary>
   /// Provides an interface for classes that find assemblies.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public interface IAssemblyFinder
   {
     /// <summary>
     /// Finds assemblies as defined by implementers of this interface.
     /// </summary>
-    Assembly[] FindAssemblies ();
+    IEnumerable<Assembly> FindAssemblies ();
   }
 }

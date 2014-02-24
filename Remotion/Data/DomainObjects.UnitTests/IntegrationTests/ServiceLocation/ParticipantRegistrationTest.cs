@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.ServiceLocation
     [Test]
     public void DefaultServiceLocator_ReturnsDomainObjectParticipant ()
     {
-      var serviceLocator = new DefaultServiceLocator();
+      var serviceLocator = DefaultServiceLocator.Create();
       var participants = serviceLocator.GetAllInstances<IParticipant>().ToArray();
       Assert.That (participants.Select (p => p.GetType()), Has.Member (typeof (DomainObjectParticipant)));
     }
@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.ServiceLocation
     [Test]
     public void DefaultServiceLocator_OrdersDomainObjectParticipantAfterMixinParticipant ()
     {
-      var serviceLocator = new DefaultServiceLocator();
+      var serviceLocator = DefaultServiceLocator.Create();
       var participants = serviceLocator.GetAllInstances<IParticipant>().ToArray();
       Assert.That (participants.Select (p => p.GetType()), Is.EqualTo (new[] { typeof (MixinParticipant), typeof (DomainObjectParticipant) }));
     }
@@ -48,7 +48,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.ServiceLocation
     [Test]
     public void DefaultServiceConfigurationDiscoveryService_ReturnsDomainObjectParticipant ()
     {
-      var services = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService());
+      var discoveryService = DefaultServiceConfigurationDiscoveryService.Create();
+      var services = discoveryService.GetDefaultConfiguration();
       var participantService = services.SingleOrDefault (s => s.ServiceType == typeof (IParticipant));
 
       Assert.That (participantService, Is.Not.Null);
@@ -58,7 +59,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.ServiceLocation
     [Test]
     public void DefaultServiceConfigurationDiscoveryService_ReturnsMixinParticpant ()
     {
-      var services = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService());
+      var discoveryService = DefaultServiceConfigurationDiscoveryService.Create();
+      var services = discoveryService.GetDefaultConfiguration();
       var participantService = services.SingleOrDefault (s => s.ServiceType == typeof (IParticipant));
 
       Assert.That (participantService, Is.Not.Null);

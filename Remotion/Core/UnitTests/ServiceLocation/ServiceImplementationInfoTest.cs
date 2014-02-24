@@ -24,35 +24,57 @@ namespace Remotion.UnitTests.ServiceLocation
   public class ServiceImplementationInfoTest
   {
     [Test]
-    public void ImplementationInfo_Equals ()
+    public void CreateSingle_RetrievesImplementationType ()
     {
-      var implementation0 = new ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
-      var implementation1 = new ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
-      var implementation2 = new ServiceImplementationInfo (typeof (string), LifetimeKind.Instance);
-      var implementation3 = new ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton);
+      Func<ServiceImplementationInfoTest> factory = () => new ServiceImplementationInfoTest();
+      var implementationInfo = ServiceImplementationInfo.CreateSingle (factory);
 
-      Assert.That (implementation0, Is.EqualTo (implementation1));
-      Assert.That (implementation0, Is.Not.EqualTo (implementation2));
-      Assert.That (implementation0, Is.Not.EqualTo (implementation3));
+      Assert.That (implementationInfo.Factory, Is.Not.Null);
+      Assert.That (implementationInfo.ImplementationType, Is.SameAs (typeof (ServiceImplementationInfoTest)));
+      Assert.That (implementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Instance));
     }
 
     [Test]
-    public void ImplementationInfo_GetHashCode ()
+    public void CreateSingle_WithLifetime ()
     {
-      var implementation0 = new ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
-      var implementation1 = new ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
+      Func<ServiceImplementationInfoTest> factory = () => new ServiceImplementationInfoTest();
+      var implementationInfo = ServiceImplementationInfo.CreateSingle (factory, LifetimeKind.Singleton);
 
-      Assert.That (implementation0.GetHashCode (), Is.EqualTo (implementation1.GetHashCode ()));
+      Assert.That (implementationInfo.Factory, Is.Not.Null);
+      Assert.That (implementationInfo.ImplementationType, Is.SameAs (typeof (ServiceImplementationInfoTest)));
+      Assert.That (implementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
+    }
+
+    [Test]
+    public void CreateMultiple_RetrievesImplementationType ()
+    {
+      Func<ServiceImplementationInfoTest> factory = () => new ServiceImplementationInfoTest();
+      var implementationInfo = ServiceImplementationInfo.CreateSingle (factory);
+
+      Assert.That (implementationInfo.Factory, Is.Not.Null);
+      Assert.That (implementationInfo.ImplementationType, Is.SameAs (typeof (ServiceImplementationInfoTest)));
+      Assert.That (implementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Instance));
+    }
+
+    [Test]
+    public void CreateMultiple_WithLifetime ()
+    {
+      Func<ServiceImplementationInfoTest> factory = () => new ServiceImplementationInfoTest();
+      var implementationInfo = ServiceImplementationInfo.CreateSingle (factory, LifetimeKind.Singleton);
+
+      Assert.That (implementationInfo.Factory, Is.Not.Null);
+      Assert.That (implementationInfo.ImplementationType, Is.SameAs (typeof (ServiceImplementationInfoTest)));
+      Assert.That (implementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
 
     [Test]
     public void ToString_DebugInfo ()
     {
-      var implementation0 = new ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton);
-      var implementation1 = new ServiceImplementationInfo (typeof (string), LifetimeKind.Instance);
+      var implementation0 = new ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton, RegistrationType.Compound);
+      var implementation1 = new ServiceImplementationInfo (typeof (string), LifetimeKind.Instance, RegistrationType.Multiple);
 
-      Assert.That (implementation0.ToString (), Is.EqualTo ("{System.Object, Singleton}"));
-      Assert.That (implementation1.ToString (), Is.EqualTo ("{System.String, Instance}"));
+      Assert.That (implementation0.ToString (), Is.EqualTo ("{System.Object, Singleton, Compound}"));
+      Assert.That (implementation1.ToString (), Is.EqualTo ("{System.String, Instance, Multiple}"));
     }
   }
 }

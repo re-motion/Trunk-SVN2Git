@@ -29,7 +29,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
   /// </summary>
   /// <seealso cref="SecurityPrincipalRepository"/>
   /// <threadsafety static="true" instance="true"/>
-  [ConcreteImplementation (typeof (SecurityPrincipalRepository), Lifetime = LifetimeKind.Singleton)]
   public interface ISecurityPrincipalRepository
   {
     [NotNull]

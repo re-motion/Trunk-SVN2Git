@@ -17,7 +17,6 @@
 
 using System;
 using JetBrains.Annotations;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Globalization.Implementation
 {
@@ -25,7 +24,6 @@ namespace Remotion.Globalization.Implementation
   /// Defines the interface to resolve the resource managers for a type.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  [ConcreteImplementation (typeof (ResourceManagerResolver), Lifetime = LifetimeKind.Singleton)]
   public interface IResourceManagerResolver
   {
     /// <summary>

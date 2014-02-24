@@ -100,11 +100,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     public void GetDisplayName_WithGlobalizationSerivce ()
     {
       IBusinessObjectBooleanProperty property = CreateProperty ("Scalar");
-      var mockCompoundGlobalizationService = _mockRepository.StrictMock<ICompoundGlobalizationService>();
+      var mockglobalizationService = _mockRepository.StrictMock<IGlobalizationService>();
       _businessObjectProvider.AddService (
           typeof (BindableObjectGlobalizationService),
           new BindableObjectGlobalizationService (
-              mockCompoundGlobalizationService,
+              mockglobalizationService,
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
               MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
               MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>()));
@@ -113,7 +113,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
 
       var mockResourceManager = _mockRepository.StrictMock<IResourceManager>();
       Expect.Call (
-          mockCompoundGlobalizationService.GetResourceManager (TypeAdapter.Create (resourceIdentifierType)))
+          mockglobalizationService.GetResourceManager (TypeAdapter.Create (resourceIdentifierType)))
           .Return (mockResourceManager);
 
       Expect.Call (

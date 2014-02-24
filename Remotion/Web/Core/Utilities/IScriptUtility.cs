@@ -24,8 +24,7 @@ namespace Remotion.Web.Utilities
   /// <summary>
   /// Defines the API for registering various javascript-controlled features on the page.
   /// </summary>
-  [ConcreteImplementation (typeof(ScriptUtility), Lifetime = LifetimeKind.Singleton)]
-  public interface IScriptUtility
+ public interface IScriptUtility
   {
     /// <summary>
     /// Registers the include files required for the calls to <see cref="RegisterElementForBorderSpans"/>

@@ -41,12 +41,12 @@ namespace Remotion.Web.UnitTests.Core
     {
       XmlNodeExtensions.Helper = new HtmlHelper();
 
-      var serviceLocator = new DefaultServiceLocator();
-      serviceLocator.Register (typeof (IInfrastructureResourceUrlFactory), () => new FakeInfrastructureResourceUrlFactory());
-      serviceLocator.Register (typeof (IScriptUtility), () => new FakeScriptUtility());
-      serviceLocator.Register (typeof (IResourceUrlFactory), () => new FakeResourceUrlFactory());
-      serviceLocator.Register (typeof (IWebSecurityAdapter));
-      serviceLocator.Register (typeof (IWxeSecurityAdapter));
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle<IInfrastructureResourceUrlFactory> (() => new FakeInfrastructureResourceUrlFactory());
+      serviceLocator.RegisterSingle<IScriptUtility> (() => new FakeScriptUtility());
+      serviceLocator.RegisterSingle<IResourceUrlFactory> (() => new FakeResourceUrlFactory());
+      serviceLocator.RegisterMultiple<IWebSecurityAdapter>();
+      serviceLocator.RegisterMultiple<IWxeSecurityAdapter>();
 
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }

@@ -30,7 +30,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [SetUp]
     public void SetUp ()
     {
-      _serviceLocator = new DefaultServiceLocator();
+      _serviceLocator = DefaultServiceLocator.Create();
     }
 
     [Test]

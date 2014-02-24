@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 {
@@ -23,14 +25,14 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// </summary>
   public class FixedRootAssemblyFinder : IRootAssemblyFinder
   {
-    private readonly RootAssembly[] _rootAssemblies;
+    private readonly IReadOnlyCollection<RootAssembly> _rootAssemblies;
 
     public FixedRootAssemblyFinder (params RootAssembly[] rootAssemblies)
     {
-      _rootAssemblies = rootAssemblies;
+      _rootAssemblies = rootAssemblies.ToList().AsReadOnly();
     }
 
-    public RootAssembly[] FindRootAssemblies ()
+    public IEnumerable<RootAssembly> FindRootAssemblies ()
     {
       return _rootAssemblies;
     }

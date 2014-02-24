@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Security.Metadata
@@ -25,6 +26,7 @@ namespace Remotion.Security.Metadata
   /// <summary>
   /// Implements the <see cref="IPermissionProvider"/> for a reflection-based security declaration.
   /// </summary>
+  [ImplementationFor (typeof (IPermissionProvider), Lifetime = LifetimeKind.Singleton)]
   public class PermissionReflector : IPermissionProvider
   {
     private struct CacheKey : IEquatable<CacheKey>

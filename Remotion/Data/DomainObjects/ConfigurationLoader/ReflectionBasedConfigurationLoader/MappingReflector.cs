@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         var classDefinitions = MappingObjectFactory.CreateClassDefinitionCollection (types);
 
         return classDefinitions
-            .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Length));
+            .LogAndReturnValue (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Length));
       }
     }
 
@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       {
         var relationDefinitions = MappingObjectFactory.CreateRelationDefinitionCollection (classDefinitions);
         return relationDefinitions
-            .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Length));
+            .LogAndReturnValue (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Length));
       }
     }
 

@@ -17,6 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.Utilities;
@@ -26,6 +27,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   /// <summary>
   /// Responsible for rendering <see cref="WebTab"/> controls in standard mode.
   /// </summary>
+  [ImplementationFor (typeof (IWebTabRenderer), Lifetime = LifetimeKind.Singleton)]
   public class WebTabRenderer : IWebTabRenderer
   {
     private readonly IHotkeyFormatter _hotkeyFormatter;

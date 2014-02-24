@@ -25,6 +25,7 @@ using Remotion.FunctionalProgramming;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
@@ -33,6 +34,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
   /// The <see cref="SecurityTokenBuilder"/> is responsible for creating a <see cref="SecurityToken"/> from an <see cref="ISecurityContext"/> and an
   /// <see cref="IPrincipal"/>.
   /// </summary>
+  [ImplementationFor (typeof (ISecurityTokenBuilder), Lifetime = LifetimeKind.Singleton)]
   public class SecurityTokenBuilder : ISecurityTokenBuilder
   {
     private readonly ISecurityPrincipalRepository _securityPrincipalRepository;

@@ -16,14 +16,12 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.ServiceLocation;
 
 namespace Remotion.ExtensibleEnums.Infrastructure
 {
   /// <summary>
   /// Provides a common interface for the discovery of extensible enum values. This interface is used by <see cref="ExtensibleEnumDefinition{T}"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (ExtensibleEnumValueDiscoveryService), Lifetime = LifetimeKind.Instance)]
   public interface IExtensibleEnumValueDiscoveryService
   {
     IEnumerable<ExtensibleEnumInfo<T>> GetValueInfos<T> (ExtensibleEnumDefinition<T> definition) 

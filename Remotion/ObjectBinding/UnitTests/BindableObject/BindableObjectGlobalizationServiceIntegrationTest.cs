@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     {
       base.SetUp();
 
-      _defaultServiceLocator = new DefaultServiceLocator();
+      _defaultServiceLocator = DefaultServiceLocator.Create();
       _globalizationService = _defaultServiceLocator.GetInstance<BindableObjectGlobalizationService>();
       var bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithResources));
       _targetType = TypeAdapter.Create (bindableObjectClass.TargetType);

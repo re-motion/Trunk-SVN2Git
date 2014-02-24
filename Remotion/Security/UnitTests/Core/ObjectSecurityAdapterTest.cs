@@ -80,9 +80,9 @@ namespace Remotion.Security.UnitTests.Core
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
       SecurityConfiguration.Current.PrincipalProvider = _mockPrincipalProvider;
 
-      var serviceLocator = new DefaultServiceLocator();
-      serviceLocator.Register (typeof (IPermissionProvider), () =>_mockPermissionProvider);
-      serviceLocator.Register (typeof (IMemberResolver), () =>_mockMemberResolver);
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => _mockPermissionProvider);
+      serviceLocator.RegisterSingle (() => _mockMemberResolver);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
       _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy>();

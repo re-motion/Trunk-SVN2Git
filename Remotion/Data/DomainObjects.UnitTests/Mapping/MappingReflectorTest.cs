@@ -27,6 +27,7 @@ using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Rhino.Mocks;
 
@@ -49,7 +50,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     {
       var registryStub = MockRepository.GenerateStub<IPipelineRegistry> ();
 
-      using (new ServiceLocatorScope (typeof (IPipelineRegistry), () => registryStub))
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle<IPipelineRegistry> (() => registryStub);
+      using (new ServiceLocatorScope (serviceLocator))
       {
         var creator = MappingReflector.CreateDomainObjectCreator();
         Assert.That (creator.PipelineRegistry, Is.SameAs (registryStub));

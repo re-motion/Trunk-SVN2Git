@@ -17,11 +17,13 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 
 namespace Remotion.Web.Security.UI
 {
+  [ImplementationFor (typeof (IWebSecurityAdapter), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
   public class WebSecurityAdapter : IWebSecurityAdapter
   {
     // types

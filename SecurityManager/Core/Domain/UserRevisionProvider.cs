@@ -1,4 +1,4 @@
-﻿// This file is part of re-strict (www.re-motion.org)
+// This file is part of re-strict (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -16,10 +16,12 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain
 {
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (IUserRevisionProvider), Lifetime = LifetimeKind.Singleton)]
   public class UserRevisionProvider : RevisionProviderBase<UserRevisionKey>, IUserRevisionProvider
   {
     public UserRevisionProvider ()

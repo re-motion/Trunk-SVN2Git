@@ -54,7 +54,7 @@ namespace OBWTest.IndividualControlTests
 
     protected IGlobalizationService GlobalizationService
     {
-      get { return SafeServiceLocator.Current.GetInstance<ICompoundGlobalizationService>(); }
+      get { return SafeServiceLocator.Current.GetInstance<IGlobalizationService>(); }
     }
 
     IResourceManager IObjectWithResources.GetResourceManager ()

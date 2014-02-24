@@ -121,58 +121,6 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
     }
 
-    [Test]
-    public void Initialization_AndDispose_ServiceLocator_Types ()
-    {
-      ServiceLocator.SetLocatorProvider (() => _locator1);
-      Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
-
-      using (new ServiceLocatorScope (typeof (object), typeof (DomainType1), LifetimeKind.Singleton))
-      {
-        Assert.That (ServiceLocator.Current, Is.Not.SameAs (_locator1));
-        Assert.That (ServiceLocator.Current, Is.TypeOf<DefaultServiceLocator> ());
-        Assert.That (ServiceLocator.Current.GetInstance (typeof (object)), Is.TypeOf<DomainType1> ());
-        Assert.That (ServiceLocator.Current.GetInstance (typeof (object)), Is.SameAs (ServiceLocator.Current.GetInstance (typeof (object))));
-      }
-
-      Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
-    }
-
-    [Test]
-    public void Initialization_AndDispose_ServiceLocator_TypeAndFunc ()
-    {
-      ServiceLocator.SetLocatorProvider (() => _locator1);
-      Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
-
-      var obj = new object();
-      using (new ServiceLocatorScope (typeof (object), () => obj))
-      {
-        Assert.That (ServiceLocator.Current, Is.Not.SameAs (_locator1));
-        Assert.That (ServiceLocator.Current, Is.TypeOf<DefaultServiceLocator>());
-        Assert.That (ServiceLocator.Current.GetInstance (typeof (object)), Is.SameAs (obj));
-      }
-
-      Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
-    }
-
-    [Test]
-    public void Initialization_AndDispose_ServiceLocator_TypeAndFuncs ()
-    {
-      ServiceLocator.SetLocatorProvider (() => _locator1);
-      Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
-
-      var obj1 = new object();
-      var obj2 = new object();
-      using (new ServiceLocatorScope (typeof (object), () => obj1, () => obj2))
-      {
-        Assert.That (ServiceLocator.Current, Is.Not.SameAs (_locator1));
-        Assert.That (ServiceLocator.Current, Is.TypeOf<DefaultServiceLocator>());
-        Assert.That (ServiceLocator.Current.GetAllInstances (typeof (object)), Is.EqualTo (new[] { obj1, obj2 }));
-      }
-
-      Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
-    }
-
     class DomainType1 { }
     class DomainType2 : IFormattable {
       public string ToString (string format, IFormatProvider formatProvider)

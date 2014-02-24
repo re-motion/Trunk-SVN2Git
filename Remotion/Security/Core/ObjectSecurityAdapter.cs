@@ -16,10 +16,12 @@
 // 
 using System;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Security
 {
+  [ImplementationFor (typeof (IObjectSecurityAdapter), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
   public class ObjectSecurityAdapter : IObjectSecurityAdapter
   {
     // types

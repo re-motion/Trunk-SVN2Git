@@ -41,10 +41,6 @@ namespace Remotion.Mixins.Globalization
   /// </remarks>
   public class MixedMultiLingualResources
   {
-    [ConcreteImplementation (
-        "Remotion.Globalization.Mixins.Obsolete.MixedMultiLingualResourcesImplementation, Remotion.Globalization.Mixins, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-        ignoreIfNotFound: true,
-        Position = 1, Lifetime = LifetimeKind.Singleton)]
     public interface IImplementation
     {
       IResourceManager GetResourceManager (Type objectType, bool includeHierarchy);

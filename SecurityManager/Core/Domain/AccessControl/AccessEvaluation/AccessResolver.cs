@@ -1,4 +1,4 @@
-﻿// This file is part of re-strict (www.re-motion.org)
+// This file is part of re-strict (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -28,10 +28,12 @@ using Remotion.FunctionalProgramming;
 using Remotion.Logging;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
+  [ImplementationFor (typeof (IAccessResolver), Lifetime = LifetimeKind.Singleton)]
   public class AccessResolver : IAccessResolver
   {
     private static readonly ILog s_log = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);

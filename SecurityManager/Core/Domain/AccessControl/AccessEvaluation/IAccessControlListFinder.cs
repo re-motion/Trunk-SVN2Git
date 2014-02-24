@@ -24,8 +24,7 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
 {
-  [ConcreteImplementation (typeof (AccessControlListFinder), Lifetime = LifetimeKind.Singleton)]
-  public interface IAccessControlListFinder
+ public interface IAccessControlListFinder
   {
     [CanBeNull]
     IDomainObjectHandle<AccessControlList> Find (ISecurityContext context);

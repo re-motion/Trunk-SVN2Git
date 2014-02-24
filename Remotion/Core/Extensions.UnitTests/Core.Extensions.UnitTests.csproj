@@ -80,6 +80,7 @@
     <Compile Include="Reflection\ConstructorLookupInfoTest.cs" />
     <Compile Include="Reflection\DelegateFactoryTest.cs" />
     <Compile Include="Reflection\FuncInvokerWrapperTest.cs" />
+    <Compile Include="Reflection\IDelegateFactoryTest.cs" />
     <Compile Include="Reflection\MemberLookupInfoTest.cs" />
     <Compile Include="Reflection\MethodCallerTest.cs" />
     <Compile Include="Reflection\MethodLookupInfoTest.cs" />

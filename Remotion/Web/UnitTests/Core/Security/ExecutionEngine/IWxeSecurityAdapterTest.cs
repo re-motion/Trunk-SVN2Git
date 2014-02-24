@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 using Remotion.Web.ExecutionEngine;
@@ -31,13 +32,13 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     [SetUp]
     public void SetUp ()
     {
-      _serviceLocator = new DefaultServiceLocator();
+      _serviceLocator = DefaultServiceLocator.Create();
     }
 
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IWxeSecurityAdapter>();
+      var factory = _serviceLocator.GetAllInstances<IWxeSecurityAdapter>().SingleOrDefault();
 
       Assert.That (factory, Is.Not.Null);
       Assert.That (factory, Is.TypeOf (typeof (WxeSecurityAdapter)));
@@ -46,8 +47,8 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IWxeSecurityAdapter>();
-      var factory2 = _serviceLocator.GetInstance<IWxeSecurityAdapter>();
+      var factory1 = _serviceLocator.GetAllInstances<IWxeSecurityAdapter>().SingleOrDefault();
+      var factory2 = _serviceLocator.GetAllInstances<IWxeSecurityAdapter>().SingleOrDefault();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

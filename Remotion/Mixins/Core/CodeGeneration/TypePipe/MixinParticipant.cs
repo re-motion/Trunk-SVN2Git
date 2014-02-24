@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using Remotion.Mixins.Context;
 using Remotion.Reflection.CodeGeneration.TypePipe;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Caching;
 using Remotion.TypePipe.TypeAssembly;
@@ -30,6 +31,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// A TypePipe <see cref="IParticipant"/> that specifies the code generation needs necessary for re-mix.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (IParticipant), Position = 1, RegistrationType = RegistrationType.Multiple)]
   public class MixinParticipant : IParticipant
   {
     static MixinParticipant ()

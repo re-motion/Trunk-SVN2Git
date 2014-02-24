@@ -14,43 +14,39 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
-using System.Linq;
 using NUnit.Framework;
-using Remotion.Globalization.Implementation;
+using Remotion.Reflection;
 using Remotion.ServiceLocation;
 
-namespace Remotion.Globalization.UnitTests
+namespace Remotion.UnitTests.Reflection
 {
-  [TestFixture]
-  public class ICompoundGlobalizationServiceTest
+  public class IDelegateFactoryTest
   {
     private DefaultServiceLocator _serviceLocator;
 
     [SetUp]
     public void SetUp ()
     {
-      _serviceLocator = new DefaultServiceLocator ();
+      _serviceLocator = DefaultServiceLocator.Create();
     }
 
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<ICompoundGlobalizationService> ();
+      var factory = _serviceLocator.GetInstance<IDelegateFactory>();
 
-      Assert.That (factory, Is.TypeOf (typeof (CompoundGlobalizationService)));
-      var compoundGlobalizationServices = ((CompoundGlobalizationService) factory).GlobalizationServices.ToArray();
-      Assert.That (compoundGlobalizationServices[0], Is.TypeOf<GlobalizationService>());
+      Assert.That (factory, Is.Not.Null);
+      Assert.That (factory, Is.TypeOf (typeof (DelegateFactory)));
     }
 
     [Test]
-    public void GetInstance_Twice_ReturnsSameInstance ()
+    public void GetInstance_Twice ()
     {
-      var factory1 = _serviceLocator.GetInstance<ICompoundGlobalizationService> ();
-      var factory2 = _serviceLocator.GetInstance<ICompoundGlobalizationService> ();
+      var factory1 = _serviceLocator.GetInstance<IDelegateFactory>();
+      var factory2 = _serviceLocator.GetInstance<IDelegateFactory>();
 
-      Assert.That (factory1, Is.SameAs (factory2));
+      Assert.That (factory1, Is.Not.SameAs (factory2));
     }
   }
 }

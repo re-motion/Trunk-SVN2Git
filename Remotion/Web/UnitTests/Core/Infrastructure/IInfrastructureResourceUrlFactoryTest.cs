@@ -30,7 +30,7 @@ namespace Remotion.Web.UnitTests.Core.Infrastructure
     [SetUp]
     public void SetUp ()
     {
-      _serviceLocator = new DefaultServiceLocator();
+      _serviceLocator = DefaultServiceLocator.Create();
     }
 
     [Test]

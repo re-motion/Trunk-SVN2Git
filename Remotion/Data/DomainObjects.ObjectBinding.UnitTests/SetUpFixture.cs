@@ -57,8 +57,8 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      var serviceLocator = new DefaultServiceLocator();
-      serviceLocator.Register (typeof (IObjectSecurityAdapter));
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterMultiple <IObjectSecurityAdapter>();
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
       try

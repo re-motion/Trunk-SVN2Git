@@ -18,6 +18,7 @@
 using System;
 using Remotion.ExtensibleEnums;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.ExtensibleEnums.Implementation
@@ -26,11 +27,12 @@ namespace Remotion.Globalization.ExtensibleEnums.Implementation
   /// Retrieves the human-readable localized representation of extensible-enumeration objects.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (IExtensibleEnumGlobalizationService), Lifetime = LifetimeKind.Singleton)]
   public sealed class ExtensibleEnumGlobalizationService : IExtensibleEnumGlobalizationService
   {
     private readonly IGlobalizationService _globalizationService;
 
-    public ExtensibleEnumGlobalizationService (ICompoundGlobalizationService globalizationService)
+    public ExtensibleEnumGlobalizationService (IGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
 

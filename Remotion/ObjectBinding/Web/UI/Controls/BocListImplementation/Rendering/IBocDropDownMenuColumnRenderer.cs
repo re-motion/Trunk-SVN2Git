@@ -22,8 +22,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Marker interface for the renderer responsible for rendering a <see cref="BocDropDownMenuColumnDefinition"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (BocDropDownMenuColumnRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocDropDownMenuColumnRenderer : IBocColumnRenderer
+ public interface IBocDropDownMenuColumnRenderer : IBocColumnRenderer
   {
   }
 }

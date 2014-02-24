@@ -18,38 +18,37 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
+using Remotion.Web.Security.UI;
+using Remotion.Web.UI;
 
-namespace Remotion.Globalization.Mixins.UnitTests
+namespace Remotion.Web.UnitTests.Core.Security.UI
 {
   [TestFixture]
-  public class ICompoundGlobalizationServiceTest
+  public class IWebSecurityAdapterTest
   {
     private DefaultServiceLocator _serviceLocator;
 
     [SetUp]
     public void SetUp ()
     {
-      _serviceLocator = new DefaultServiceLocator();
+      _serviceLocator = DefaultServiceLocator.Create();
     }
 
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<ICompoundGlobalizationService>();
+      var factory = _serviceLocator.GetAllInstances<IWebSecurityAdapter>().SingleOrDefault();
 
-      Assert.That (factory, Is.TypeOf (typeof (CompoundGlobalizationService)));
-      var compoundGlobalizationServices = ((CompoundGlobalizationService) factory).GlobalizationServices.ToArray();
-      Assert.That (compoundGlobalizationServices[0], Is.TypeOf<MixinGlobalizationService>());
-      Assert.That (compoundGlobalizationServices[1], Is.TypeOf<GlobalizationService>());
+      Assert.That (factory, Is.Not.Null);
+      Assert.That (factory, Is.TypeOf (typeof (WebSecurityAdapter)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<ICompoundGlobalizationService>();
-      var factory2 = _serviceLocator.GetInstance<ICompoundGlobalizationService>();
+      var factory1 = _serviceLocator.GetAllInstances<IWebSecurityAdapter>().SingleOrDefault();
+      var factory2 = _serviceLocator.GetAllInstances<IWebSecurityAdapter>().SingleOrDefault();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }
