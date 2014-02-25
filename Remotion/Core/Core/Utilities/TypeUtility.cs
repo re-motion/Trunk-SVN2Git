@@ -210,6 +210,9 @@ namespace Remotion.Utilities
 
     private static void BuildAbbreviatedTypeName (StringBuilder sb, Type type, bool includeVersionAndCulture, bool isTypeParameter)
     {
+      if (type.IsNested)
+        throw new NotSupportedException ("Nested types are not supported with abbrivated typename construction.");
+
       string ns = type.Namespace;
       string asm = type.Assembly.GetName().Name;
       bool canAbbreviate = ns.StartsWith (asm);

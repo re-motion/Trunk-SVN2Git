@@ -31,12 +31,24 @@ namespace Remotion.UnitTests.Utilities
   [TestFixture]
   public class TypeUtilityTests
   {
+    private class NestedType
+    {
+    }
+
     [Test]
     public void TestAbbreviatedTypeName()
     {
       AssertTransformation (  
           "Remotion.UnitTests::Utilities.TypeUtilityTests",
           "Remotion.UnitTests.Utilities.TypeUtilityTests, Remotion.UnitTests");
+    }
+
+    [Test]
+    public void TestAbbreviatedTypeName_WithNestedType()
+    {
+      AssertTransformation (  
+          "Remotion.UnitTests::Utilities.TypeUtilityTests+NestedType",
+          "Remotion.UnitTests.Utilities.TypeUtilityTests+NestedType, Remotion.UnitTests");
     }
 
     [Test]
@@ -198,6 +210,13 @@ namespace Remotion.UnitTests.Utilities
     {
       string name = TypeUtility.GetAbbreviatedTypeName (typeof (Hashtable), false);
       Assert.That (name, Is.EqualTo ("System.Collections.Hashtable, mscorlib"));
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithNestedType ()
+    {
+      // https://www.re-motion.org/jira/browse/RM-6063
+      Assert.That (() => TypeUtility.GetAbbreviatedTypeName (typeof (NestedType), true), Throws.Exception.TypeOf<NotSupportedException>());
     }
 
     private void AssertTransformation (string abbreviatedName, string fullName)
