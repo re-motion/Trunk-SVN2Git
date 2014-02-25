@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.MappingExport
       if (propertyType.Assembly == typeof (int).Assembly)
         return propertyType.FullName;
 
-      return TypeUtility.GetAbbreviatedTypeName (propertyType, false);
+      return TypeUtility.GetPartialAssemblyQualifiedName (propertyType);
     }
 
     private Type GetPropertyType (PropertyDefinition propertyDefinition)

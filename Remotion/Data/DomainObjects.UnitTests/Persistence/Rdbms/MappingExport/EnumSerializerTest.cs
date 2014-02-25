@@ -46,11 +46,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.MappingExport
     [Test]
     public void Serialize_AddsTypeAttribute ()
     {
-      _enumSerializer.CollectPropertyType (GetPropertyDefinition((ClassWithAllDataTypes _) => _.EnumProperty));
-      var actual = _enumSerializer.Serialize ().Single();
+      _enumSerializer.CollectPropertyType (GetPropertyDefinition ((ClassWithAllDataTypes _) => _.EnumProperty));
+      var actual = _enumSerializer.Serialize().Single();
 
       Assert.That (actual.Attributes().Select (a => a.Name.LocalName), Contains.Item ("type"));
-      Assert.That (actual.Attribute ("type").Value, Is.EqualTo ("Remotion.Data.DomainObjects.UnitTests::Persistence.Rdbms.SchemaGenerationTestDomain.EnumType"));
+      Assert.That (
+          actual.Attribute ("type").Value,
+          Is.EqualTo (
+              "Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SchemaGenerationTestDomain.ClassWithAllDataTypes+EnumType, Remotion.Data.DomainObjects.UnitTests"));
     }
 
     [Test]

@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.MappingExport
       Assert.That (actual.Attributes().Select (a => a.Name.LocalName), Contains.Item ("type"));
       Assert.That (
           actual.Attribute ("type").Value,
-          Is.EqualTo ("Remotion.Data.DomainObjects.UnitTests::Persistence.Rdbms.SchemaGenerationTestDomain.Color"));
+          Is.EqualTo ("Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SchemaGenerationTestDomain.Color, Remotion.Data.DomainObjects.UnitTests"));
     }
 
     [Test]

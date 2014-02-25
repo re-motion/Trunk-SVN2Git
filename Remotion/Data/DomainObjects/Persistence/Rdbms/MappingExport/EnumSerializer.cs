@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.MappingExport
     {
       return _enumTypes.Select (
           t => new XElement (Constants.Namespace + "enumType",
-              new XAttribute ("type", TypeUtility.GetAbbreviatedTypeName (t, false)),
+              new XAttribute ("type", TypeUtility.GetPartialAssemblyQualifiedName (t)),
               GetValues (t)));
     }
 
