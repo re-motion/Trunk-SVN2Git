@@ -25,6 +25,7 @@ using Remotion.Validation.Mixins.IntegrationTests.TestDomain.ComponentB;
 
 namespace Remotion.Validation.Mixins.IntegrationTests
 {
+  [TestFixture]
   public class ValidationRulesIntegrationTests : IntegrationTestBase
   {
     public override void SetUp ()

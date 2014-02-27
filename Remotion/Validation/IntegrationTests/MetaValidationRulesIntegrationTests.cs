@@ -23,6 +23,7 @@ using Remotion.Validation.MetaValidation;
 
 namespace Remotion.Validation.IntegrationTests
 {
+  [TestFixture]
   public class MetaValidationRulesIntegrationTests : IntegrationTestBase
   {
     public override void SetUp ()

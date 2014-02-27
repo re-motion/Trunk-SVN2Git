@@ -27,6 +27,7 @@ using Remotion.Validation.IntegrationTests.TestHelpers;
 
 namespace Remotion.Validation.IntegrationTests
 {
+  [TestFixture]
   public class FluentValidationGlobalizationIntegrationTests : IntegrationTestBase
   {
     private PropertyRule _propertyRule;

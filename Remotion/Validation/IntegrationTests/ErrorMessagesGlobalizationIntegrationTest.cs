@@ -23,6 +23,7 @@ using Remotion.Validation.IntegrationTests.TestDomain.ComponentB;
 
 namespace Remotion.Validation.IntegrationTests
 {
+  [TestFixture]
   public class ErrorMessagesGlobalizationIntegrationTest : IntegrationTestBase
   {
     [Test]
