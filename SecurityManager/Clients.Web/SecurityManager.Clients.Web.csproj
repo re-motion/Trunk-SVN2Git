@@ -870,7 +870,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>3039</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:61150/SecurityManager.Clients.Web/</IISUrl>
+          <IISUrl>http://localhost:60400/trunk/SecurityManager.Clients.Web/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
