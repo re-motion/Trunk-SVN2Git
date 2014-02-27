@@ -22,6 +22,6 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle ("Remotion Validation Library Integrationtests")]
+[assembly: AssemblyTitle ("Remotion Validation Library Integration Tests")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]

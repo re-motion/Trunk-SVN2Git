@@ -24,6 +24,6 @@ using System.Reflection;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle ("Remotion Extensions Library Unit Tests")]
+[assembly: AssemblyTitle ("Remotion Mixins Library Unit Tests")]
 [assembly: AssemblyCulture ("")]
 [assembly: CLSCompliant (true)]

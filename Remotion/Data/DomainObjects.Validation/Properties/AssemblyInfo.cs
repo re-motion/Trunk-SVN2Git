@@ -25,7 +25,7 @@ using System.Reflection;
 using Remotion.Validation.Mixins;
 
 [assembly: AssemblyTitle ("Remotion DomainObjects Library")]
-[assembly: AssemblyDescription ("Provides validation infrastructure for re-store.")]
+[assembly: AssemblyDescription ("Integration of the validation infrastructure into domain objects.")]
 [assembly: AssemblyCulture ("")]
 [assembly: CLSCompliant (true)]
 [assembly: EnsureValidationSupportForMixins]

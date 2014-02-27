@@ -29,7 +29,7 @@ using System.Web.UI;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("Remotion BusinessObjectControls Validation Library")]
-[assembly: AssemblyDescription("Validation Web controls.")]
+[assembly: AssemblyDescription ("Integration of the validation infrastructure into the business object web controls.")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]
 

@@ -22,8 +22,8 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle ("Remotion Validation Library")]
-[assembly: AssemblyDescription ("Provides validation infrastructure for mixins based on the FluentValidation library.")]
+[assembly: AssemblyTitle ("Remotion Validation for Mixins Library")]
+[assembly: AssemblyDescription ("Integration of mixins into the validation infrastructure.")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]
 

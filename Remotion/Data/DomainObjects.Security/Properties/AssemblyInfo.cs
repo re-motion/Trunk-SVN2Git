@@ -23,7 +23,7 @@ using System.Reflection;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle ("Remotion Security for DomainObjects Library")]
-//[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription ("Integration of the security infrastructure into domain objects.")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]
 
