@@ -105,7 +105,6 @@
       <_tempLicenseFiles Include="$(_tempLicenseFilesDirectory)\**" />
     </ItemGroup>
 
-
     <MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
                                              ZipFileName="$(BinaryZipFile)"
                                              RemoveRoot="$(_tempLicenseFilesDirectory)"
@@ -199,7 +198,7 @@
       <_tempReleaseNoteFiles Remove="@(_futureReleaseNoteFiles)" />
     </ItemGroup>
 
-    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
+	<MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
                                              ZipFileName="$(BinaryZipFile)"
                                              RemoveRoot="$(ReleaseNotesLocalTempDirectoryZipRoot)"
                                              CompressFiles="@(_tempReleaseNoteFiles)"

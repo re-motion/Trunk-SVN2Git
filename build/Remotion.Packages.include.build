@@ -64,7 +64,7 @@
       <ProductName>re-vision (www.re-motion.org)</ProductName>
       <ProductNameShort>re-vision</ProductNameShort>
     </AllPackages>
-    
+
     <AllPackages Include="SecurityManager">
       <PackageDeclaration>Remotion.Packaging.SecurityManager.build</PackageDeclaration>
       <DocumentationDeclaration>Remotion.Documentation.SecurityManager.build</DocumentationDeclaration>

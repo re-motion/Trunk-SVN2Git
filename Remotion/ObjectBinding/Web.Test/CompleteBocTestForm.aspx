@@ -16,20 +16,11 @@
 --%>
 
 
-<%@ Page language="c#" Codebehind="CompleteBocTestForm.aspx.cs" AutoEventWireup="false" Inherits="OBWTest.CompleteBocForm" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
-<html>
-  <head>
-    <title>CompleteBocTest: Form, No UserControl</title>
-<meta content="Microsoft Visual Studio .NET 7.1" name=GENERATOR>
-<meta content=C# name=CODE_LANGUAGE>
-<meta content=JavaScript name=vs_defaultClientScript>
-<meta content=http://schemas.microsoft.com/intellisense/ie5 name=vs_targetSchema><remotion:htmlheadcontents id=HtmlHeadContents runat="server"></remotion:htmlheadcontents>
-  </head>
-<body>
-<form id=Form method=post runat="server">
+<%@ Page language="c#" Codebehind="CompleteBocTestForm.aspx.cs" AutoEventWireup="false" Inherits="OBWTest.CompleteBocForm" MasterPageFile="~/StandardMode.Master" %>
+<asp:Content ContentPlaceHolderID="head" runat="server">
 <h1>CompleteBocTest: Form, No UserControl</h1>
-<p>
+</asp:Content>
+<asp:Content ContentPlaceHolderID="body" runat="server">
 <table id=FormGrid runat="server">
   <tr>
     <td colSpan=2><remotion:boctextvalue id=FirstNameField runat="server" PropertyIdentifier="FirstName" datasourcecontrol="CurrentObject" ReadOnly="True"></remotion:boctextvalue>&nbsp;<remotion:boctextvalue id=LastNameField runat="server" PropertyIdentifier="LastName" datasourcecontrol="CurrentObject" ReadOnly="True"></remotion:boctextvalue></td></tr>
@@ -81,11 +72,8 @@
 <remotion:BocListItemCommand Type="None"></remotion:BocListItemCommand>
 </PersistedCommand>
 </remotion:BocSimpleColumnDefinition>
-</FixedColumns></remotion:boclist></td></tr></table></p>
-<p><remotion:formgridmanager id=FormGridManager runat="server" 
-visible="true"></remotion:formgridmanager><remotion:BindableObjectDataSourceControl 
-id=CurrentObject runat="server" 
-Type="Remotion.ObjectBinding.Sample::Person" /></p>
-<p><asp:button id=SaveButton runat="server" Text="Save" Width="80px"></asp:button><asp:button id=PostBackButton runat="server" Text="Post Back"></asp:button></p></form>
-  </body>
-</html>
+</FixedColumns></remotion:boclist></td></tr></table>
+<p><remotion:formgridmanager id=FormGridManager runat="server" visible="true"></remotion:formgridmanager>
+<remotion:BindableObjectDataSourceControl  id=CurrentObject runat="server" Type="Remotion.ObjectBinding.Sample::Person" /></p>
+<p><asp:button id=SaveButton runat="server" Text="Save" Width="80px"></asp:button><asp:button id=PostBackButton runat="server" Text="Post Back"></asp:button></p>
+</asp:Content>

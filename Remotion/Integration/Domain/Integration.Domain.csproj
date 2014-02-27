@@ -42,9 +42,21 @@
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\DomainObjects.Validation\Data.DomainObjects.Validation.csproj">
+      <Project>{04fa07e3-b868-4846-a5e2-4d375f607c22}</Project>
+      <Name>Data.DomainObjects.Validation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Globalization\Mixins\Globalization.Mixins.csproj">
       <Project>{E2CD7C20-2728-4F72-A6E8-FC4F7AE72EC9}</Project>
       <Name>Globalization.Mixins</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Validation\Globalization\Validation.Globalization.csproj">
+      <Project>{30c3afa1-d7b3-4a2a-b314-19282a2e312d}</Project>
+      <Name>Validation.Globalization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Validation\Mixins\Validation.Mixins.csproj">
+      <Project>{b34d9485-39d7-4f73-805c-39a65059001e}</Project>
+      <Name>Validation.Mixins</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
