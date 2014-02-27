@@ -29,7 +29,6 @@ using LogManager = log4net.LogManager;
 
 namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
 {
-  [TestFixture]
   public abstract class IntegrationTestBase
   {
     protected IValidatorBuilder ValidationBuilder;

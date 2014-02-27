@@ -23,6 +23,7 @@ using Remotion.Validation;
 
 namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
 {
+  [TestFixture]
   public class GlobalizationIntegrationTests : IntegrationTestBase
   {
     public override void SetUp ()

@@ -23,7 +23,7 @@ using Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain;
 namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
 {
   [TestFixture]
-  public class ClientTransactionValidationIntegrationTests
+  public class ClientTransactionValidationIntegrationTests : IntegrationTestBase
   {
     [Test]
     public void RootClientTransaction_ValidDomainObjects_NoValidationExceptionIsThrown ()
@@ -44,9 +44,6 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (ValidationException), ExpectedMessage = "Validation failed: \r\n "
-                                                                        + "-- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n "
-                                                                        + "-- 'UserName' must not be empty.")]
     public void RootClientTransaction_InvalidDomainObjects_ValidationExceptionIsThrown ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
@@ -59,31 +56,36 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
 
         Customer.NewObject();
 
-        ClientTransaction.Current.Commit();
+        Assert.That (
+            () => ClientTransaction.Current.Commit(),
+            Throws.TypeOf<ValidationException>().And.Message.EqualTo (
+                "Validation failed: \r\n "
+                + "-- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n "
+                + "-- 'UserName' must not be empty."));
       }
     }
 
     [Test]
-    [ExpectedException (typeof (ValidationException), ExpectedMessage = "Validation failed: \r\n "
-                                                                        + "-- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n "
-                                                                        + "-- 'UserName' must not be empty.")]
     public void SubClientTransaction_InvalidDomainObjects_ValidationExceptionIsThrown ()
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
         {
           Assert.That (ClientTransaction.Current.ParentTransaction, Is.Not.Null);
 
-          var order = Order.NewObject ();
+          var order = Order.NewObject();
           order.Number = "er";
 
-          Customer.NewObject ();
+          Customer.NewObject();
 
-          ClientTransaction.Current.Commit ();
+          Assert.That (
+              () => ClientTransaction.Current.Commit(),
+              Throws.TypeOf<ValidationException>().And.Message.EqualTo (
+                  "Validation failed: \r\n "
+                  + "-- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n "
+                  + "-- 'UserName' must not be empty."));
         }
-
-        throw new InvalidOperationException ("This exception should never be thrown.");
       }
     }
   }
