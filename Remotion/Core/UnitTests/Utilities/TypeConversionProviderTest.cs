@@ -46,7 +46,7 @@ namespace Remotion.UnitTests.Utilities
     [SetUp]
     public void SetUp ()
     {
-      _provider = new TypeConversionProvider (SafeServiceLocator.Current.GetAllInstances<ITypeConverterFactory>());
+      _provider = new TypeConversionProvider (SafeServiceLocator.Current.GetInstance<ITypeConverterFactory>());
     }
 
     [Test]

@@ -58,15 +58,15 @@ namespace Remotion.Utilities
       throw new NotSupportedException ("Configure the current TypeConversionProvider via the application's IoC container instead.");
     }
 
-    private readonly IEnumerable<ITypeConverterFactory> _typeConverterFactories;
+    private readonly ITypeConverterFactory _typeConverterFactory;
     private readonly Dictionary<Type, TypeConverter> _additionalTypeConverters = new Dictionary<Type, TypeConverter>();
     private readonly BidirectionalStringConverter _stringConverter = new BidirectionalStringConverter();
 
-    public TypeConversionProvider (IEnumerable<ITypeConverterFactory> typeConverterFactories)
+    public TypeConversionProvider (ITypeConverterFactory typeConverterFactory)
     {
-      ArgumentUtility.CheckNotNull ("typeConverterFactories", typeConverterFactories);
+      ArgumentUtility.CheckNotNull ("typeConverterFactory", typeConverterFactory);
 
-      _typeConverterFactories = typeConverterFactories.ToArray();
+      _typeConverterFactory = typeConverterFactory;
     }
 
     public virtual TypeConverterResult GetTypeConverter (Type sourceType, Type destinationType)
@@ -246,7 +246,7 @@ namespace Remotion.Utilities
       TypeConverter converter = GetTypeConverterFromCache (type);
       if (converter == null && !HasTypeInCache (type))
       {
-        converter = _typeConverterFactories.Select (f => f.CreateTypeConverterOrDefault (type)).FirstOrDefault (c => c != null);
+        converter = _typeConverterFactory.CreateTypeConverterOrDefault (type);
         AddTypeConverterToCache (type, converter);
       }
       return converter;

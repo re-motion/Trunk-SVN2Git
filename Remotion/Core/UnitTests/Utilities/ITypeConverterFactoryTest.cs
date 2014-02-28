@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Linq;
 using NUnit.Framework;
@@ -34,23 +35,23 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    public void GetAllInstances_Once ()
+    public void GetInstance_Once ()
     {
-      var instances = _serviceLocator.GetAllInstances<ITypeConverterFactory>();
+      var instance = _serviceLocator.GetInstance<ITypeConverterFactory>();
 
-      Assert.That (instances, Is.Not.Null);
+      Assert.That (instance, Is.TypeOf<CompoundTypeConverterFactory>());
       Assert.That (
-          instances.Select (i => i.GetType()),
+          ((CompoundTypeConverterFactory) instance).TypeConverterFactories.Select (i => i.GetType()),
           Is.EqualTo (new[] { typeof (AttributeBasedTypeConverterFactory), typeof (EnumTypeConverterFactory) }));
     }
 
     [Test]
-    public void GetAllInstances_Twice_ReturnsSameInstances ()
+    public void GetInstances_Twice_ReturnsSameInstances ()
     {
-      var instances1 = _serviceLocator.GetAllInstances<ITypeConverterFactory>();
-      var instances2 = _serviceLocator.GetAllInstances<ITypeConverterFactory>();
+      var instance1 = _serviceLocator.GetInstance<ITypeConverterFactory>();
+      var instance2 = _serviceLocator.GetInstance<ITypeConverterFactory>();
 
-      Assert.That (instances1, Is.EqualTo (instances2));
+      Assert.That (instance1, Is.EqualTo (instance2));
     }
   }
 }

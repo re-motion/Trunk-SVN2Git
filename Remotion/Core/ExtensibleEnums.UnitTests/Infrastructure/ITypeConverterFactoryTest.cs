@@ -36,21 +36,24 @@ namespace Remotion.ExtensibleEnums.UnitTests.Infrastructure
     }
 
     [Test]
-    public void GetAllInstances_Once ()
+    public void GetInstance_Once ()
     {
-      var instances = _serviceLocator.GetAllInstances<ITypeConverterFactory>().ToArray();
+      var instance = _serviceLocator.GetInstance<ITypeConverterFactory>();
 
-      Assert.That (instances.First(), Is.TypeOf<AttributeBasedTypeConverterFactory>());
-      Assert.That (instances.Last(), Is.TypeOf<ExtensibleEnumTypeConverterFactory>());
+      Assert.That (instance, Is.TypeOf<CompoundTypeConverterFactory>());
+      var typeConverterFactories = ((CompoundTypeConverterFactory) instance).TypeConverterFactories;
+
+      Assert.That (typeConverterFactories.First(), Is.TypeOf<AttributeBasedTypeConverterFactory>());
+      Assert.That (typeConverterFactories.Last(), Is.TypeOf<ExtensibleEnumTypeConverterFactory>());
     }
 
     [Test]
-    public void GetAllInstances_Twice_ReturnsSameInstances ()
+    public void GetInstances_Twice_ReturnsSameInstances ()
     {
-      var instances1 = _serviceLocator.GetAllInstances<ITypeConverterFactory>();
-      var instances2 = _serviceLocator.GetAllInstances<ITypeConverterFactory>();
+      var instance1 = _serviceLocator.GetInstance<ITypeConverterFactory>();
+      var instance2 = _serviceLocator.GetInstance<ITypeConverterFactory>();
 
-      Assert.That (instances1, Is.EqualTo (instances2));
+      Assert.That (instance1, Is.EqualTo (instance2));
     }
   }
 }

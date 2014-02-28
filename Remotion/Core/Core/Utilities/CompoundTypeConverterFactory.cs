@@ -16,31 +16,38 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Remotion.ServiceLocation;
-using Remotion.Utilities;
 
-namespace Remotion.ExtensibleEnums.Infrastructure
+namespace Remotion.Utilities
 {
   /// <summary>
-  /// Creates an <see cref="ExtensibleEnumConverter"/> if the requested type is an extensible enum.
+  /// Creates a <see cref="TypeConverter"/> from the list of <see cref="ITypeConverterFactory"/> implementations passed during initialization.
   /// </summary>
-  [ImplementationFor (typeof (ITypeConverterFactory), Position = Position, RegistrationType = RegistrationType.Multiple)]
-  public class ExtensibleEnumTypeConverterFactory : ITypeConverterFactory
+  [ImplementationFor (typeof (ITypeConverterFactory), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
+  public sealed class CompoundTypeConverterFactory : ITypeConverterFactory
   {
-    public const int Position = EnumTypeConverterFactory.Position + 1;
+    private readonly IReadOnlyCollection<ITypeConverterFactory> _typeConverterFactories;
 
-    public ExtensibleEnumTypeConverterFactory ()
+    public CompoundTypeConverterFactory (IEnumerable<ITypeConverterFactory> typeConverterFactories)
     {
+      ArgumentUtility.CheckNotNull ("typeConverterFactories", typeConverterFactories);
+
+      _typeConverterFactories = typeConverterFactories.ToList().AsReadOnly();
+    }
+
+    public IReadOnlyCollection<ITypeConverterFactory> TypeConverterFactories
+    {
+      get { return _typeConverterFactories; }
     }
 
     public TypeConverter CreateTypeConverterOrDefault (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      if (ExtensibleEnumUtility.IsExtensibleEnumType (type))
-        return new ExtensibleEnumConverter (type);
-      return null;
+      return _typeConverterFactories.Select (f => f.CreateTypeConverterOrDefault (type)).FirstOrDefault (c => c != null);
     }
   }
 }

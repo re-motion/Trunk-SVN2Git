@@ -23,9 +23,11 @@ namespace Remotion.Utilities
   /// <summary>
   /// Creates an <see cref="AdvancedEnumConverter"/> if the requested type is an enum.
   /// </summary>
-  [ImplementationFor (typeof (ITypeConverterFactory), Lifetime = LifetimeKind.Singleton, Position = 1, RegistrationType = RegistrationType.Multiple)]
+  [ImplementationFor (typeof (ITypeConverterFactory), Position = Position, RegistrationType = RegistrationType.Multiple)]
   public class EnumTypeConverterFactory : ITypeConverterFactory
   {
+    public const int Position = AttributeBasedTypeConverterFactory.Position + 1;
+
     public EnumTypeConverterFactory ()
     {
     }

@@ -320,6 +320,7 @@
     <Compile Include="Utilities\AssertionException.cs" />
     <Compile Include="Utilities\Assertion.Partial.cs" />
     <Compile Include="Utilities\AttributeBasedTypeConverterFactory.cs" />
+    <Compile Include="Utilities\CompoundTypeConverterFactory.cs" />
     <Compile Include="Utilities\EnumTypeConverterFactory.cs" />
     <Compile Include="Utilities\EqualityUtility.Partial.cs" />
     <Compile Include="Utilities\ExceptionUtility.Partial.cs" />
