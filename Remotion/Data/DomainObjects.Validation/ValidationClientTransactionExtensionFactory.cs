@@ -29,16 +29,18 @@ namespace Remotion.Data.DomainObjects.Validation
   {
     private readonly IValidatorBuilder _validationBuilder;
 
-    public ValidationClientTransactionExtensionFactory ()
+    public ValidationClientTransactionExtensionFactory (IValidatorBuilder validatorBuilder)
     {
-      _validationBuilder = SafeServiceLocator.Current.GetInstance<IValidatorBuilder>();
+      ArgumentUtility.CheckNotNull ("validatorBuilder", validatorBuilder);
+
+      _validationBuilder = validatorBuilder;
     }
 
     public IEnumerable<IClientTransactionExtension> CreateClientTransactionExtensions (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      yield return new ValidationClientTransactionExtension(_validationBuilder);
+      yield return new ValidationClientTransactionExtension (_validationBuilder);
     }
   }
 }

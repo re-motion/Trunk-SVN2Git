@@ -19,13 +19,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using FluentValidation;
 using FluentValidation.Results;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Utilities;
 using Remotion.Validation;
-using Remotion.Validation.Implementation;
 
 namespace Remotion.Data.DomainObjects.Validation
 {

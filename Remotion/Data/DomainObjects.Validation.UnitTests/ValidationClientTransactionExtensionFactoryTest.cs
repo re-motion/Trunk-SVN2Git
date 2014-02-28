@@ -18,6 +18,8 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Validation;
+using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.Validation.UnitTests
 {
@@ -28,12 +30,15 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
     public void CreateClientTransactionExtensions ()
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction();
-      var factory = new ValidationClientTransactionExtensionFactory();
+      var validatorBuilderStub = MockRepository.GenerateStub<IValidatorBuilder>();
+      var factory = new ValidationClientTransactionExtensionFactory (validatorBuilderStub);
 
       var result = factory.CreateClientTransactionExtensions (clientTransaction).ToArray();
 
       Assert.That (result.Count(), Is.EqualTo (1));
-      Assert.That (result.First(), Is.TypeOf (typeof (ValidationClientTransactionExtension)));
+      var clientTransactionExtension = result.First();
+      Assert.That (clientTransactionExtension, Is.TypeOf<ValidationClientTransactionExtension>());
+      Assert.That (((ValidationClientTransactionExtension) clientTransactionExtension).ValidatorBuilder, Is.EqualTo (validatorBuilderStub));
     }
   }
 }
