@@ -72,7 +72,6 @@ namespace Remotion.Data.DomainObjects.Validation
                     new DomainObjectAttributesBasedValidationPropertyRuleReflector (p, p)));
       }
 
-      //TODO AO: This does not work for mixin-properties that use domain object annotations
       if (typeof (IDomainObjectMixin).IsAssignableFrom (annotatedType) && !annotatedType.IsInterface)
       {
         var implementedInterfaces = interfaceTypes.Where (i => i.IsAssignableFrom (annotatedType)).ToList();

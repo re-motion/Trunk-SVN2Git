@@ -116,10 +116,12 @@ namespace Remotion.Validation.Implementation
     {
       foreach (var validationCollectorInfo in allCollectors)
       {
+          //TODO AO: Change IsValid to CheckValid and throw inside method.
         if (!_collectorValidator.IsValid (validationCollectorInfo.Collector))
         {
           throw new NotSupportedException (
               string.Format (
+                  //TODO AO: Comma after "for mixins" -> "for mixins, please"
                   "Validation rules for type '{0}' are not supported. If validation rules should be defined for mixins please ensure to apply the rules to 'ITargetInterface' or 'IIntroducedInterface' instead.",
                   validationCollectorInfo.Collector.ValidatedType.FullName));
         }

@@ -32,22 +32,8 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain
 
   [Extends (typeof (Customer))]
   [MultiLingualResources ("Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain.Resources.CustomerMixin")]
-  public class CustomerMixin : DomainObjectMixin<Customer, CustomerMixin.ICustomerBase>, ICustomerIntroduced
+  public class CustomerMixin : DomainObjectMixin<Customer>, ICustomerIntroduced
   {
-    public interface ICustomerBase : IDomainObjectNextCallRequirements
-    {
-      string PhoneNumber { get; set; }
-    }
-
-    //TODO AO: Override annotion in target?
-    [OverrideTarget]
-    [StorageClassNone]
-    public string PhoneNumber
-    {
-      get { return Next.PhoneNumber; }
-      set { Next.PhoneNumber = value; }
-    }
-
     [Mandatory]
     public virtual Address Address
     {
