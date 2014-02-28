@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
     {
       var serviceLocator = DefaultServiceLocator.Create ();
       serviceLocator.RegisterSingle<IErrorMessageGlobalizationService> (GetValidatorGlobalizationService);
-      serviceLocator.RegisterMultiple<IClientTransactionExtensionFactory> (
+      serviceLocator.RegisterSingle<IClientTransactionExtensionFactory> (
           () => new ValidationClientTransactionExtensionFactory (serviceLocator.GetInstance<IValidatorBuilder>()));
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
