@@ -24,6 +24,7 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -61,10 +62,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       renderingContext.Writer.AddAttribute ("class", CssClasses.CommandText);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      contents = HttpUtility.HtmlEncode (contents);
-      if (string.IsNullOrEmpty (contents))
-        contents = c_whiteSpace;
-      renderingContext.Writer.Write (contents);
+      if (string.IsNullOrWhiteSpace (contents))
+        renderingContext.Writer.Write ("&nbsp;");
+      else
+        renderingContext.Writer.WriteEncodedLines (StringUtility.ParseNewLineSeparatedString (contents));
 
       renderingContext.Writer.RenderEndTag();
     }

@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Column.IsReadOnly = false;
       Column.ColumnTitle = "FirstColumn";
       Column.PropertyPathIdentifier = "DisplayName";
-      Column.FormatString = "{0}";
+      Column.FormatString = "unusedWithReferenceValue";
       Column.OwnerControl = List;
 
       base.SetUp();
@@ -72,6 +72,27 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
       Html.AssertTextNode (textWrapper, "referencedObject1", 0);
+    }
+
+    [Test]
+    public void RenderBasicCell_WithNewLineAndEncoding ()
+    {
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
+
+      var renderArgs = new BocListDataRowRenderEventArgs (0, (IBusinessObject) TypeWithReference.Create ("value\r\nExtraText<html>"), false, true);
+      renderer.RenderDataCell (_renderingContext, 0, false, renderArgs);
+      var document = Html.GetResultDocument();
+
+      var td = Html.GetAssertedChildElement (document, "td", 0);
+      Html.AssertAttribute (td, "class", _bocListCssClassDefinition.DataCell);
+
+      var span = Html.GetAssertedChildElement (td, "span", 0);
+      Html.AssertAttribute (span, "class", _bocListCssClassDefinition.Content);
+
+      var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertTextNode (textWrapper, "value", 0);
+      Html.GetAssertedChildElement (textWrapper, "br", 1);
+      Html.AssertTextNode (textWrapper, "ExtraText<html>", 2); //This is actually encoded inside the asserted XmlDocument
     }
 
     [Test]

@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.UI;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Utilities
@@ -35,6 +37,28 @@ namespace Remotion.Web.Utilities
       ArgumentUtility.CheckNotNull ("lines", lines);
 
       return string.Join ("<br />", lines.Select (HttpUtility.HtmlEncode));
+    }
+
+    /// <summary>
+    /// Write a sequence of strings to the <paramref name="htmlTextWriter"/>, using the HTML line-break tag for concatenation. Each line is individually HTML encoded.
+    /// </summary>
+    public static void WriteEncodedLines (this HtmlTextWriter htmlTextWriter, IEnumerable<string> lines)
+    {
+      ArgumentUtility.CheckNotNull ("lines", lines);
+
+      var enumerator = lines.GetEnumerator();
+      if (!enumerator.MoveNext())
+        return;
+
+      while (true)
+      {
+        htmlTextWriter.WriteEncodedText (enumerator.Current);
+
+        if (enumerator.MoveNext())
+          htmlTextWriter.WriteBreak();
+        else
+          break;
+      }
     }
   }
 }

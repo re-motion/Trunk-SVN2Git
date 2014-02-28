@@ -16,7 +16,9 @@
 // 
 
 using System;
+using System.IO;
 using System.Linq;
+using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Web.Utilities;
 
@@ -63,6 +65,54 @@ namespace Remotion.Web.UnitTests.Core.Utilities
       Assert.That (
           RenderUtility.JoinLinesWithEncoding (new[] { "Fir<html>st", "Second" }),
           Is.EqualTo ("Fir&lt;html&gt;st<br />Second"));
+    }
+
+    [Test]
+    public void WriteEncodedLines_WithEmptySequence_DoesNotAddToRenderingOutput ()
+    {
+      var stringWriter = new StringWriter();
+      var htmlTextWriter = new HtmlTextWriter (stringWriter);
+
+      htmlTextWriter.WriteEncodedLines (Enumerable.Empty<string>());
+
+      var result = stringWriter.ToString();
+      Assert.That (result, Is.EqualTo (""));
+    }
+
+    [Test]
+    public void WriteEncodedLines_WithSingleItem_RendersItem ()
+    {
+      var stringWriter = new StringWriter();
+      var htmlTextWriter = new HtmlTextWriter (stringWriter);
+
+      htmlTextWriter.WriteEncodedLines (new[] { "First" });
+
+      var result = stringWriter.ToString();
+      Assert.That (result, Is.EqualTo ("First"));
+    }
+
+    [Test]
+    public void WriteEncodedLines_WithMultipleItems_RendersConcatenatedString ()
+    {
+      var stringWriter = new StringWriter();
+      var htmlTextWriter = new HtmlTextWriter (stringWriter);
+
+      htmlTextWriter.WriteEncodedLines (new[] { "First", "Second", "Third" });
+
+      var result = stringWriter.ToString();
+      Assert.That (result, Is.EqualTo ("First<br />Second<br />Third"));
+    }
+
+    [Test]
+    public void WriteEncodedLines_WithMultipleItemsAndEncoding_RendersEncodedText ()
+    {
+      var stringWriter = new StringWriter();
+      var htmlTextWriter = new HtmlTextWriter (stringWriter);
+
+      htmlTextWriter.WriteEncodedLines (new[] { "Fir<html>st", "Sec<html>ond", "Thi<html>rd" });
+
+      var result = stringWriter.ToString();
+      Assert.That (result, Is.EqualTo ("Fir&lt;html&gt;st<br />Sec&lt;html&gt;ond<br />Thi&lt;html&gt;rd"));
     }
   }
 }
