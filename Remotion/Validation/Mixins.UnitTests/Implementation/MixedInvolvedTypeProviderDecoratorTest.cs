@@ -33,18 +33,16 @@ namespace Remotion.Validation.Mixins.UnitTests.Implementation
     public void SetUp ()
     {
       var compoundValidationTypeFilter = new CompoundValidationTypeFilter (
-
-          new IValidationTypeFilter[] { new LoadFilteredValidationTypeFilter (), new MixedLoadFilteredValidationTypeFilter () });
-      _mixedInvolvedTypeProvider = new MixedInvolvedTypeProviderDecorator(InvolvedTypeProvider.Create (
-          col => col.OrderBy (t => t.Name),
-          compoundValidationTypeFilter),
+          new IValidationTypeFilter[] { new LoadFilteredValidationTypeFilter(), new MixedLoadFilteredValidationTypeFilter() });
+      _mixedInvolvedTypeProvider = new MixedInvolvedTypeProviderDecorator (
+          new InvolvedTypeProvider (compoundValidationTypeFilter),
           compoundValidationTypeFilter);
     }
 
     [Test]
     public void GetAffectedType_WithMixinHierarchy ()
     {
-      var result = _mixedInvolvedTypeProvider.GetTypes (typeof (DerivedConcreteTypeForMixin)).SelectMany (t => t).ToList ();
+      var result = _mixedInvolvedTypeProvider.GetTypes (typeof (DerivedConcreteTypeForMixin)).SelectMany (t => t).ToList();
 
       Assert.That (result[0], Is.EqualTo (typeof (IBaseConcreteTypeForMixin)));
       Assert.That (result[1], Is.EqualTo (typeof (BaseConcreteTypeForMixin)));
@@ -56,7 +54,7 @@ namespace Remotion.Validation.Mixins.UnitTests.Implementation
       Assert.That (result[7], Is.EqualTo (typeof (IIntroducedFromMixinForBaseType)));
       Assert.That (result[8], Is.EqualTo (typeof (IIntroducedFromMixinForDerivedType1)));
       Assert.That (result[9], Is.EqualTo (typeof (IIntroducedFromMixinForDerivedType2)));
-      Assert.That (result[10].Name, Is.StringStarting  ("DerivedConcreteTypeForMixin_AssembledTypeProxy_"));
+      Assert.That (result[10].Name, Is.StringStarting ("DerivedConcreteTypeForMixin_AssembledTypeProxy_"));
       Assert.That (result[11], Is.EqualTo (typeof (BaseMixinForDerivedType)));
       Assert.That (result[12], Is.EqualTo (typeof (MixinForBaseType)));
       Assert.That (result[13], Is.EqualTo (typeof (MixinForDerivedType1)));

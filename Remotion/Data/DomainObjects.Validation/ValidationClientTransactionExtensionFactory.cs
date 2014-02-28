@@ -40,7 +40,8 @@ namespace Remotion.Data.DomainObjects.Validation
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      yield return new ValidationClientTransactionExtension (_validationBuilder);
+      if (clientTransaction.RootTransaction == clientTransaction)
+        yield return new ValidationClientTransactionExtension (_validationBuilder);
     }
   }
 }

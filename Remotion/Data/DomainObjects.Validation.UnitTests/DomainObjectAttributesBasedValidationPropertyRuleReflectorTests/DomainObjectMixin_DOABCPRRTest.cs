@@ -31,10 +31,11 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
     public class DomainObjectMixin_DomainObjectAttributesBasedValidationPropertyRuleReflectorTest
 // ReSharper enable InconsistentNaming
   {
-    private PropertyInfo _propertyWithoutAttribute;
+    private PropertyInfo _mixinPropertyWithoutAttribute;
     private PropertyInfo _mixinPropertyWithMandatoryAttribute;
     private PropertyInfo _mixinPropertyWithNullableStringPropertyAttribute;
     private PropertyInfo _mixinPropertyWithMandatoryStringPropertyAttribute;
+    private PropertyInfo _interfacePropertyWithoutAttribute;
     private PropertyInfo _interfacePropertyWithMandatoryAttribute;
     private PropertyInfo _interfacePropertyWithNullableStringPropertyAttribute;
     private PropertyInfo _interfacePropertyWithMandatoryStringPropertyAttribute;
@@ -46,8 +47,10 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
     [SetUp]
     public void SetUp ()
     {
-      _propertyWithoutAttribute =
+      _mixinPropertyWithoutAttribute =
           typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithoutAttribute");
+      _interfacePropertyWithoutAttribute =
+          typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithoutAttribute");
 
       _mixinPropertyWithMandatoryAttribute =
           typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithMandatoryAttribute");
@@ -66,8 +69,8 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
               "PropertyWithMandatoryStringPropertyAttribute");
 
       _propertyWithoutAttributeReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
-          _propertyWithoutAttribute,
-          _propertyWithoutAttribute);
+          _interfacePropertyWithoutAttribute,
+          _mixinPropertyWithoutAttribute);
       _propertyWithMandatoryAttributeReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
           _interfacePropertyWithMandatoryAttribute,
           _mixinPropertyWithMandatoryAttribute
@@ -87,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
     [Test]
     public void Initialize ()
     {
-      Assert.That (_propertyWithoutAttributeReflector.PropertyType, Is.EqualTo (_propertyWithoutAttribute.PropertyType));
+      Assert.That (_propertyWithoutAttributeReflector.PropertyType, Is.EqualTo (_interfacePropertyWithoutAttribute.PropertyType));
       Assert.That (_propertyWithMandatoryAttributeReflector.PropertyType, Is.EqualTo (_interfacePropertyWithMandatoryAttribute.PropertyType));
       Assert.That (
           _propertyWithNullableStringPropertyAttributeReflector.PropertyType,
@@ -188,6 +191,18 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
       Assert.That (result.Count(), Is.EqualTo (1));
       Assert.That (result[0], Is.TypeOf (typeof (RemotionMaxLengthMetaValidationRule)));
       Assert.That (((RemotionMaxLengthMetaValidationRule) result[0]).MaxLength, Is.EqualTo (10));
+    }
+
+    [Test]
+    public void Initialize_WithMixinPropertyAsInterfaceProperty_ThrowsArgumentException ()
+    {
+      Assert.That (
+          () => new DomainObjectAttributesBasedValidationPropertyRuleReflector (
+              _mixinPropertyWithMandatoryAttribute,
+              _mixinPropertyWithMandatoryAttribute),
+          Throws.ArgumentException.And.Message.EqualTo (
+              "The property 'PropertyWithMandatoryAttribute' was declared on type 'MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface' "
+              + "but only interface declarations are supported when using mixin properties.\r\nParameter name: interfaceProperty"));
     }
   }
 }

@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
         product.Order = order;
 
         var customer = Customer.NewObject();
-        customer.UserName = "test1";
+        ((ICustomerIntroduced) customer).Address = Address.NewObject();
 
         ClientTransaction.Current.Commit();
       }
@@ -54,19 +54,22 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
         var product = Product.NewObject();
         product.Order = order;
 
-        Customer.NewObject();
+        var customer = Customer.NewObject();
+        ((ICustomerIntroduced) customer).Address = Address.NewObject();
+        ((ICustomerIntroduced) customer).Title = "Chef1";
+
 
         Assert.That (
             () => ClientTransaction.Current.Commit(),
             Throws.TypeOf<ValidationException>().And.Message.EqualTo (
                 "Validation failed: \r\n "
                 + "-- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n "
-                + "-- 'UserName' must not be empty."));
+                + "-- 'LocalizedTitle' should not be equal to 'Chef1'."));
       }
     }
 
     [Test]
-    public void SubClientTransaction_InvalidDomainObjects_ValidationExceptionIsThrown ()
+    public void SubClientTransaction_InvalidDomainObjects_DoesNotValidate ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
@@ -79,12 +82,7 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
 
           Customer.NewObject();
 
-          Assert.That (
-              () => ClientTransaction.Current.Commit(),
-              Throws.TypeOf<ValidationException>().And.Message.EqualTo (
-                  "Validation failed: \r\n "
-                  + "-- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n "
-                  + "-- 'UserName' must not be empty."));
+          Assert.That (() => ClientTransaction.Current.Commit(), Throws.Nothing);
         }
       }
     }

@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.TypePipe.Implementation;
 using Remotion.Validation.Mixins.Implementation;
+using Remotion.Validation.Mixins.UnitTests.Implementation.TestDomain;
 
 namespace Remotion.Validation.Mixins.UnitTests.Implementation
 {
@@ -46,6 +47,8 @@ namespace Remotion.Validation.Mixins.UnitTests.Implementation
     public void IsValid_NoneFilteredType_ReturnTrue ()
     {
       Assert.That (_filter.IsValidatableType (typeof (string)), Is.True);
+      Assert.That (_filter.IsValidatableType (MixinTypeUtility.GetConcreteMixedType (typeof (BaseConcreteTypeForMixin))), Is.True);
+      Assert.That (_filter.IsValidatableType (typeof (BaseConcreteTypeForMixin)), Is.True);
     }
   }
 }

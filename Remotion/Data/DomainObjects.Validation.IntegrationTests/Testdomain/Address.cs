@@ -14,23 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 
 namespace Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain
 {
   [DBTable]
-  public class Customer : DomainObject
+  public class Address : DomainObject
   {
-    public static Customer NewObject ()
+    public static Address NewObject ()
     {
-      return NewObject<Customer>();
+      return NewObject<Address>();
     }
-
-    public virtual string Email { get; set; }
-
-    public virtual string PhoneNumber { get; set; }
-
-    public virtual string CreditcardNumber { get; set; }
   }
 }

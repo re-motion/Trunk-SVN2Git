@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
     }
 
     [Test]
-    public void BuildProductValidator_MandatoryReStoreAttributeIsAppliedOnDomainObject ()
+    public void BuildProductValidator_MandaroyReStoreAttributeIsAppliedOnDomainObject ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
@@ -54,20 +54,20 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
     }
 
     [Test]
-    public void BuildCustomerValidator_MandatoryReStoreAttributeAppliedOnDomainObjectMixin ()
+    public void BuildCustomerValidator_MandaroyReStoreAttributeAppliedOnDomainObjectMixin ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         var customer1 = Customer.NewObject();
         var customer2 = Customer.NewObject ();
-        customer2.UserName = "test";
+        ((ICustomerIntroduced) customer2).Address = Address.NewObject();
 
         var validator = ValidationBuilder.BuildValidator<Customer>();
 
         var result1 = validator.Validate (customer1);
         Assert.That (result1.IsValid, Is.False);
         Assert.That (result1.Errors.Count, Is.EqualTo (1));
-        Assert.That (result1.Errors[0].ErrorMessage, Is.EqualTo ("'UserName' must not be empty."));
+        Assert.That (result1.Errors[0].ErrorMessage, Is.EqualTo ("'Address' must not be empty."));
 
         var result2 = validator.Validate (customer2);
         Assert.That (result2.IsValid, Is.True);

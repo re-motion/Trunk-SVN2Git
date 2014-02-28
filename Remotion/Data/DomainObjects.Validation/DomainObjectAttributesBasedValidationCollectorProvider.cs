@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using FluentValidation.Validators;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -36,11 +37,25 @@ namespace Remotion.Data.DomainObjects.Validation
   [ImplementationFor (typeof (IValidationCollectorProvider), Lifetime = LifetimeKind.Singleton, Position = 0, RegistrationType = RegistrationType.Multiple)]
   public class DomainObjectAttributesBasedValidationCollectorProvider : AttributeBasedValidationCollectorProviderBase
   {
+    private interface IDummyInterface
+    {
+      object DummyProperty { get; }
+    }
+
+    private static readonly PropertyInfo s_dummyProperty = MemberInfoFromExpressionUtility.GetProperty (((IDummyInterface o) => o.DummyProperty));
+
+    public DomainObjectAttributesBasedValidationCollectorProvider ()
+    {
+    }
+
     protected override ILookup<Type, IAttributesBasedValidationPropertyRuleReflector> CreatePropertyRuleReflectors (IEnumerable<Type> types)
     {
       ArgumentUtility.CheckNotNull ("types", types);
 
-      return types.SelectMany (t => CreatePropertyRuleReflectors (t, t.GetInterfaces())).ToLookup (r => r.Item1, r => r.Item2);
+      return types
+          .Where (type => !MixinTypeUtility.IsGeneratedConcreteMixedType (type))
+          .SelectMany (t => CreatePropertyRuleReflectors (t, t.GetInterfaces()))
+          .ToLookup (r => r.Item1, r => r.Item2);
     }
 
     private IEnumerable<Tuple<Type, IAttributesBasedValidationPropertyRuleReflector>> CreatePropertyRuleReflectors (
@@ -57,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Validation
                     new DomainObjectAttributesBasedValidationPropertyRuleReflector (p, p)));
       }
 
-      //TODO AO: This does not work for mixin-properties that are only used to override the target with valdiation annotations
+      //TODO AO: This does not work for mixin-properties that use domain object annotations
       if (typeof (IDomainObjectMixin).IsAssignableFrom (annotatedType) && !annotatedType.IsInterface)
       {
         var implementedInterfaces = interfaceTypes.Where (i => i.IsAssignableFrom (annotatedType)).ToList();
@@ -95,9 +110,8 @@ namespace Remotion.Data.DomainObjects.Validation
 
     private bool HasValidationRulesOnProperty (PropertyInfo property)
     {
-      var dummyInterfaceProperty = property;
       // The interface property does not matter in this particular instance, so any property could be passed into the reflector.
-      var reflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (dummyInterfaceProperty, property);
+      var reflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (s_dummyProperty, property);
 
       return reflector.GetAddingPropertyValidators().Any() 
         || reflector.GetHardConstraintPropertyValidators().Any()

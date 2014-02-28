@@ -26,20 +26,39 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain
   {
     [NotEqual ("Chef1")]
     string Title { get; set; }
+
+    Address Address { get; set; }
   }
 
   [Extends (typeof (Customer))]
   [MultiLingualResources ("Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain.Resources.CustomerMixin")]
-  public class CustomerMixin : Mixin<Customer>, ICustomerIntroduced
+  public class CustomerMixin : DomainObjectMixin<Customer, CustomerMixin.ICustomerBase>, ICustomerIntroduced
   {
-    [OverrideTarget]
-    [Mandatory]
-    public string UserName
+    public interface ICustomerBase : IDomainObjectNextCallRequirements
     {
-      get { return Target.UserName; }
-      set { Target.UserName = value; }
+      string PhoneNumber { get; set; }
     }
 
-    public string Title { get; set; }
+    //TODO AO: Override annotion in target?
+    [OverrideTarget]
+    [StorageClassNone]
+    public string PhoneNumber
+    {
+      get { return Next.PhoneNumber; }
+      set { Next.PhoneNumber = value; }
+    }
+
+    [Mandatory]
+    public virtual Address Address
+    {
+      get { return Properties[typeof (CustomerMixin), "Address"].GetValue<Address>(); }
+      set { Properties[typeof (CustomerMixin), "Address"].SetValue (value); }
+    }
+
+    public virtual string Title
+    {
+      get { return Properties[typeof (CustomerMixin), "Title"].GetValue<string>(); }
+      set { Properties[typeof (CustomerMixin), "Title"].SetValue (value); }
+    }
   }
 }

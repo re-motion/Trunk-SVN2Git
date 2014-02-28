@@ -20,6 +20,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.UnitTests.Implementation.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Validation.UnitTests.Implementation
 {
@@ -31,10 +32,8 @@ namespace Remotion.Validation.UnitTests.Implementation
     [SetUp]
     public void SetUp ()
     {
-      _involvedTypeProvider = InvolvedTypeProvider.Create (
-          col => col.OrderBy (t => t.Name),
-          new CompoundValidationTypeFilter (
-              new IValidationTypeFilter[] { new LoadFilteredValidationTypeFilter() }));
+      _involvedTypeProvider = new InvolvedTypeProvider (
+          new CompoundValidationTypeFilter (new IValidationTypeFilter[] { new LoadFilteredValidationTypeFilter() }));
     }
 
     [Test]
@@ -147,6 +146,19 @@ namespace Remotion.Validation.UnitTests.Implementation
                   typeof (ITypeWithSeveralInterfacesAndBaseTypes2), typeof (ITypeWithSeveralInterfacesAndBaseTypes3),
                   typeof (TypeWithSeveralInterfacesAndBaseTypeReImplementingInterface)
               }));
+    }
+
+    [Test]
+    public void GetAffectedType_WithoutFilter_TerminatesWhenBaseTypeIsNull ()
+    {
+      var validationTypeFilterStub = MockRepository.GenerateStub<IValidationTypeFilter>();
+      validationTypeFilterStub.Stub (stub => stub.IsValidatableType (Arg<Type>.Is.Anything)).Return (true);
+
+      var involvedTypeProvider = new InvolvedTypeProvider (validationTypeFilterStub);
+
+      var result = involvedTypeProvider.GetTypes (typeof (TypeWithOneInterface)).SelectMany (t => t).ToList();
+
+      Assert.That (result, Is.EqualTo (new[] { typeof(object), typeof (ITypeWithOneInterface), typeof (TypeWithOneInterface) }));
     }
   }
 }

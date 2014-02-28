@@ -72,6 +72,7 @@ namespace Remotion.Data.DomainObjects.Validation
           invalidValidationResults.Add(validationResult);
       }
 
+      //TODO AO: Custom error message that includes the domainobject instance IDs
       if (invalidValidationResults.Any())
         throw new ValidationException (invalidValidationResults.SelectMany (vr => vr.Errors));
     }

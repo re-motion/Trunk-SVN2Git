@@ -22,6 +22,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using FluentValidation.Validators;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Mixins;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.MetaValidation;
@@ -42,6 +43,16 @@ namespace Remotion.Data.DomainObjects.Validation
     {
       ArgumentUtility.CheckNotNull ("interfaceProperty", interfaceProperty);
       ArgumentUtility.CheckNotNull ("implementationProperty", implementationProperty);
+      if (Utilities.ReflectionUtility.CanAscribe (implementationProperty.DeclaringType, typeof (Mixin<>))
+          && !interfaceProperty.DeclaringType.IsInterface)
+      {
+        throw new ArgumentException (
+            string.Format (
+                "The property '{0}' was declared on type '{1}' but only interface declarations are supported when using mixin properties.",
+                interfaceProperty.Name,
+                interfaceProperty.DeclaringType.Name),
+            "interfaceProperty");
+      }
 
       _interfaceProperty = interfaceProperty;
       _implementationProperty = implementationProperty;

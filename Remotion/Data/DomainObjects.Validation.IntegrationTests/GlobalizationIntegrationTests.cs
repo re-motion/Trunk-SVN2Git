@@ -39,8 +39,8 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         var customer = Customer.NewObject();
-        customer.UserName = "Test1";
         customer.Email = "InvalidMail";
+        ((ICustomerIntroduced) customer).Address = Address.NewObject();
         ((ICustomerIntroduced) customer).Title = "Chef1";
 
         var validator = ValidationBuilder.BuildValidator<Customer>();

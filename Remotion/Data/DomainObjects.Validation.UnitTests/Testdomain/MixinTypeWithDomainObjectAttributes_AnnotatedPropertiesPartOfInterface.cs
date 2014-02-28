@@ -21,6 +21,8 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
 {
   public interface IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface
   {
+    string PropertyWithoutAttribute { get; set; }
+
     [Mandatory]
     TestDomainObject PropertyWithMandatoryAttribute { get; set; }
 

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using JetBrains.Annotations;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -35,28 +36,13 @@ namespace Remotion.Validation.Implementation
     private readonly Func<IEnumerable<Type>, IEnumerable<Type>> _hierarchyLevelsubSort;
     private readonly IValidationTypeFilter _validationTypeFilter;
 
-    public static IInvolvedTypeProvider Create (Func<IEnumerable<Type>, IEnumerable<Type>> hierarchyLevelsubSort)
-    {
-      ArgumentUtility.CheckNotNull ("hierarchyLevelsubSort", hierarchyLevelsubSort);
-
-      return Create (hierarchyLevelsubSort, new CompoundValidationTypeFilter (Enumerable.Empty<IValidationTypeFilter>()));
-    }
-
-    public static IInvolvedTypeProvider Create (
-        Func<IEnumerable<Type>, IEnumerable<Type>> hierarchyLevelsubSort,
-        IValidationTypeFilter validationTypeFilter)
-    {
-      ArgumentUtility.CheckNotNull ("hierarchyLevelsubSort", hierarchyLevelsubSort);
-      ArgumentUtility.CheckNotNull ("validationTypeFilter", validationTypeFilter);
-
-      return new InvolvedTypeProvider (hierarchyLevelsubSort, validationTypeFilter);
-    }
 
     public InvolvedTypeProvider (IValidationTypeFilter validationTypeFilter)
         : this (c => c.OrderBy (t => t.Name), validationTypeFilter)
     {
     }
 
+    [PublicAPI]
     protected InvolvedTypeProvider (Func<IEnumerable<Type>, IEnumerable<Type>> hierarchyLevelsubSort, IValidationTypeFilter validationTypeFilter)
     {
       ArgumentUtility.CheckNotNull ("hierarchyLevelsubSort", hierarchyLevelsubSort);
@@ -87,10 +73,11 @@ namespace Remotion.Validation.Implementation
 
     private IEnumerable<IEnumerable<Type>> GetInterfaces (Type type)
     {
-      Debug.Assert (type.BaseType != null);
-      // ReSharper disable PossibleNullReferenceException
-      var interfaces = type.GetInterfaces().Except (type.BaseType.GetInterfaces()).Where (_validationTypeFilter.IsValidatableType).ToList();
-      // ReSharper restore PossibleNullReferenceException
+      var baseType = type.BaseType;
+      if (baseType == null)
+        return Enumerable.Empty<IEnumerable<Type>>();
+
+      var interfaces = type.GetInterfaces().Except (baseType.GetInterfaces()).Where (_validationTypeFilter.IsValidatableType).ToList();
       if (!interfaces.Any())
         return Enumerable.Empty<IEnumerable<Type>>();
 

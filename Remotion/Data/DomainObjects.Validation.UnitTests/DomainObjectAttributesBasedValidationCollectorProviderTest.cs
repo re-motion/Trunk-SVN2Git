@@ -17,8 +17,14 @@
 
 using System;
 using System.Linq;
+using FluentValidation;
+using FluentValidation.Internal;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain;
+using Remotion.Development.UnitTesting.Enumerables;
+using Remotion.Mixins;
+using Remotion.Validation.Rules;
+using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.Validation.UnitTests
 {
@@ -66,10 +72,8 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage =
-            "Annotated properties of mixin 'MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesNotPartOfInterface' have to be part of an interface."
-        )]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Annotated properties of mixin 'MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesNotPartOfInterface' have to be part of an interface.")]
     public void CreatePropertyRuleReflectorForDomainObjectMixin_AnnotatedPropertiesNotPartOfAnInterface_ExceptionIsThrown ()
     {
       _provider.GetValidationCollectors (new[] { typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesNotPartOfInterface) });
@@ -86,6 +90,47 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
       Assert.That (result, Is.Not.Null);
       Assert.That (result.Collector.ValidatedType, Is.EqualTo (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)));
       Assert.That (result.Collector.AddedPropertyRules.Count, Is.EqualTo (6));
+
+      // Ensure types are compatible. Type 'AddingComponentPropertyRule' is an implementation detail but the hard cast works for now.
+      var instanceToValidate = MockRepository.GenerateStub<IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface>();
+      foreach (AddingComponentPropertyRule propertyRule in result.Collector.AddedPropertyRules)
+        propertyRule.PropertyFunc (instanceToValidate);
+    }
+
+    [Test]
+    public void CreatePropertyRuleReflectorForMixedDomainObject_AnnotatedPropertiesPartOfAnInterface ()
+    {
+      using (MixinConfiguration
+          .BuildNew()
+          .ForClass<MixinTarget>()
+          .AddMixin<MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface>()
+          .EnterScope())
+      {
+        var result =
+            _provider.GetValidationCollectors (
+                new[]
+                {
+                    MixinTypeUtility.GetConcreteMixedType (typeof (MixinTarget)),
+                    typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)
+                })
+                .SelectMany (c => c)
+                .ToArray();
+
+        var resultForConcreteType = result.SingleOrDefault (r => MixinTypeUtility.IsGeneratedConcreteMixedType (r.Collector.ValidatedType));
+        Assert.That (resultForConcreteType, Is.Null);
+
+        var resultForMixin = result.SingleOrDefault (
+            r => r.Collector.ValidatedType == typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface));
+
+        Assert.That (resultForMixin, Is.Not.Null);
+        Assert.That (resultForMixin.Collector.AddedPropertyRules.Count, Is.EqualTo (6));
+
+        // Ensure types are compatible. Type 'AddingComponentPropertyRule' is an implementation detail but the hard cast works for now.
+        var instanceToValidate = MockRepository.GenerateStub<IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface>();
+        foreach (AddingComponentPropertyRule propertyRule in resultForMixin.Collector.AddedPropertyRules)
+          propertyRule.PropertyFunc (instanceToValidate);
+
+      }
     }
   }
 }
