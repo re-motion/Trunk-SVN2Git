@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
@@ -202,7 +201,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
     {
       SecurityStrategy strategy = new SecurityStrategy (
           new Cache<ISecurityPrincipal, AccessType[]>(),
-          SafeServiceLocator.Current.GetAllInstances<IGlobalAccessTypeCache>().First());
+          SafeServiceLocator.Current.GetInstance<IGlobalAccessTypeCache>());
       AccessType[] accessTypes = new[] { AccessType.Get (GeneralAccessTypes.Find) };
       strategy.LocalCache.GetOrCreateValue (new SecurityPrincipal ("foo", null, null, null), delegate { return accessTypes; });
 

@@ -39,21 +39,19 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     [Test]
     public void GetAllInstances_Once ()
     {
-      var obj = _serviceLocator.GetAllInstances<IGlobalAccessTypeCache>().ToArray();
+      var obj = _serviceLocator.GetInstance<IGlobalAccessTypeCache>();
 
-      Assert.That (obj.Length, Is.EqualTo (2));
-      Assert.That (obj[0], Is.TypeOf (typeof (RevisionBasedGlobalAccessTypeCache)));
-      Assert.That (obj[1], Is.TypeOf (typeof (NullGlobalAccessTypeCache)));
+      Assert.That (obj, Is.TypeOf (typeof (RevisionBasedGlobalAccessTypeCache)));
     }
 
     [Test]
     public void GetAllInstances_Twice_ReturnsSameInstance ()
     {
-      var obj1 = _serviceLocator.GetAllInstances<IGlobalAccessTypeCache>().ToArray();
-      var obj2 = _serviceLocator.GetAllInstances<IGlobalAccessTypeCache>().ToArray();
+      var obj1 = _serviceLocator.GetInstance<IGlobalAccessTypeCache>();
+      var obj2 = _serviceLocator.GetInstance<IGlobalAccessTypeCache>();
 
-      Assert.That (obj1[0], Is.SameAs (obj2[0]));
-      Assert.That (obj1[1], Is.SameAs (obj2[1]));
+      Assert.That (obj1, Is.SameAs (obj2));
+      Assert.That (obj1, Is.SameAs (obj2));
     }
   }
 }
