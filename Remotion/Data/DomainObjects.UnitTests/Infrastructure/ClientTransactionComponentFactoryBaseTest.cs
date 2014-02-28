@@ -223,9 +223,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
       extensionFactoryMock.Replay ();
 
       var serviceLocatorMock = MockRepository.GenerateStrictMock<IServiceLocator> ();
-      serviceLocatorMock
-          .Expect (mock => mock.GetAllInstances<IClientTransactionExtensionFactory> ())
-          .Return (new[] { extensionFactoryMock });
+      serviceLocatorMock.Expect (mock => mock.GetInstance<IClientTransactionExtensionFactory> ()).Return (extensionFactoryMock);
       serviceLocatorMock.Replay ();
 
       IClientTransactionExtension[] extensions;

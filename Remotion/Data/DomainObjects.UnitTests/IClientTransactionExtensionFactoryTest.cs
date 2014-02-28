@@ -16,14 +16,12 @@
 // 
 
 using System;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.ServiceLocation;
 
-namespace Remotion.Data.DomainObjects.Validation.UnitTests
+namespace Remotion.Data.DomainObjects.UnitTests
 {
-  [Ignore ("TODO RM-6055")]
   [TestFixture]
   public class IClientTransactionExtensionFactoryTest
   {
@@ -36,14 +34,20 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
     }
 
     [Test]
-    public void GetInstance ()
+    public void GetInstance_Once ()
     {
       var factory = _serviceLocator.GetInstance<IClientTransactionExtensionFactory>();
 
       Assert.That (factory, Is.TypeOf<CompoundClientTransactionExtensionFactory>());
-      Assert.That (
-          ((CompoundClientTransactionExtensionFactory) factory).ClientTransactionExtensionFactories.Select (f => f.GetType()),
-          Has.Member (typeof (ValidationClientTransactionExtensionFactory)));
+    }
+
+    [Test]
+    public void GetInstance_Twice_ReturnsSameInstance ()
+    {
+      var factory1 = _serviceLocator.GetInstance<IClientTransactionExtensionFactory>();
+      var factory2 = _serviceLocator.GetInstance<IClientTransactionExtensionFactory>();
+
+      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }

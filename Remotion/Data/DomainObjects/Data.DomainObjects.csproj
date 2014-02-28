@@ -162,6 +162,7 @@
     <Compile Include="ClientTransactionExtensions.cs" />
     <Compile Include="ClientTransactionFactory.cs" />
     <Compile Include="DomainObjectHandleConverter.cs" />
+    <Compile Include="Infrastructure\CompoundClientTransactionExtensionFactory.cs" />
     <Compile Include="Infrastructure\DomainObjectHandleAttribute.cs" />
     <Compile Include="Infrastructure\HierarchyManagement\ClientTransactionHierarchy.cs" />
     <Compile Include="Infrastructure\HierarchyManagement\IClientTransactionHierarchy.cs" />

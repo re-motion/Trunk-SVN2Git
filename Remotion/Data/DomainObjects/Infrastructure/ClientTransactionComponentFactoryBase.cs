@@ -164,8 +164,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
 
-      var extensionFactories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionExtensionFactory>();
-      return extensionFactories.SelectMany (f => f.CreateClientTransactionExtensions (constructedTransaction));
+      //TODO: Serialize
+      var extensionFactories = SafeServiceLocator.Current.GetInstance<IClientTransactionExtensionFactory>();
+      return extensionFactories.CreateClientTransactionExtensions (constructedTransaction);
     }
 
     protected virtual IDataContainerEventListener CreateDataContainerEventListener (IClientTransactionEventSink eventSink)

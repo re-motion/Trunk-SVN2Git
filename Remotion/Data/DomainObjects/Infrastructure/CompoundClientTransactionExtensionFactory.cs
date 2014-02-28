@@ -17,31 +17,31 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
-using Remotion.Validation;
 
-namespace Remotion.Data.DomainObjects.Validation
+namespace Remotion.Data.DomainObjects.Infrastructure
 {
-  //TODO RM-6055: enable IoC
-  //[ImplementationFor (typeof(IClientTransactionExtensionFactory), RegistrationType = RegistrationType.Multiple)]
-  public class ValidationClientTransactionExtensionFactory : IClientTransactionExtensionFactory
+  [ImplementationFor (typeof (IClientTransactionExtensionFactory), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
+  public sealed class CompoundClientTransactionExtensionFactory : IClientTransactionExtensionFactory
   {
-    private readonly IValidatorBuilder _validationBuilder;
+    private readonly IReadOnlyCollection<IClientTransactionExtensionFactory> _clientTransactionExtensionFactories;
 
-    public ValidationClientTransactionExtensionFactory (IValidatorBuilder validatorBuilder)
+    public CompoundClientTransactionExtensionFactory (IEnumerable<IClientTransactionExtensionFactory> clientTransactionExtensionFactories)
     {
-      ArgumentUtility.CheckNotNull ("validatorBuilder", validatorBuilder);
+      _clientTransactionExtensionFactories = clientTransactionExtensionFactories.ToList().AsReadOnly();
+    }
 
-      _validationBuilder = validatorBuilder;
+    public IReadOnlyCollection<IClientTransactionExtensionFactory> ClientTransactionExtensionFactories
+    {
+      get { return _clientTransactionExtensionFactories; }
     }
 
     public IEnumerable<IClientTransactionExtension> CreateClientTransactionExtensions (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-
-      if (clientTransaction.RootTransaction == clientTransaction)
-        yield return new ValidationClientTransactionExtension (_validationBuilder);
+      return _clientTransactionExtensionFactories.SelectMany (f => f.CreateClientTransactionExtensions (clientTransaction));
     }
   }
 }
