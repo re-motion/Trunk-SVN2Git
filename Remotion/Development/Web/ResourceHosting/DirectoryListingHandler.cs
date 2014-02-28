@@ -66,8 +66,8 @@ namespace Remotion.Development.Web.ResourceHosting
       responseWriter.WriteEncodedText ("[To Parent Directory]");
       responseWriter.RenderEndTag();
 
-      responseWriter.Write ("<br />");
-      responseWriter.Write ("<br />");
+      responseWriter.WriteBreak();
+      responseWriter.WriteBreak();
 
       var virtualDirectory = HostingEnvironment.VirtualPathProvider.GetDirectory (context.Request.AppRelativeCurrentExecutionFilePath);
 
