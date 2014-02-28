@@ -123,7 +123,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Configuration
     public void Initialize_NameValueCollection_WithServiceLocatorConfiguration ()
     {
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.Register (typeof (StorageObjectFactoryFake), typeof (DerivedStorageObjectFactoryFake), LifetimeKind.Singleton, RegistrationType.Multiple);
+      serviceLocator.Register (typeof (StorageObjectFactoryFake), typeof (DerivedStorageObjectFactoryFake), LifetimeKind.Singleton);
       using (new ServiceLocatorScope (serviceLocator))
       {
         var nameValueCollection = new NameValueCollection { { "factoryType", typeof (StorageObjectFactoryFake).AssemblyQualifiedName } };
@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Configuration
     public void Initialize_NameValueCollection_WithServiceLocatorConfiguration_InstantiationError ()
     {
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.Register (typeof (StorageObjectFactoryFake), typeof (DerivedStorageObjectFactoryFakeWithUnresolvedCtorParameter), LifetimeKind.Singleton, RegistrationType.Multiple);
+      serviceLocator.Register (typeof (StorageObjectFactoryFake), typeof (DerivedStorageObjectFactoryFakeWithUnresolvedCtorParameter), LifetimeKind.Singleton);
       using (new ServiceLocatorScope (serviceLocator))
       {
         var nameValueCollection = new NameValueCollection { { "factoryType", typeof (StorageObjectFactoryFake).AssemblyQualifiedName } };

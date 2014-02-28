@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     {
       try
       {
-        var registeredService = (IStorageObjectFactory) SafeServiceLocator.Current.GetAllInstances (configuredFactoryType).FirstOrDefault ();
+        var registeredService = (IStorageObjectFactory) SafeServiceLocator.Current.GetService (configuredFactoryType);
         if (registeredService != null)
           return registeredService;
       }

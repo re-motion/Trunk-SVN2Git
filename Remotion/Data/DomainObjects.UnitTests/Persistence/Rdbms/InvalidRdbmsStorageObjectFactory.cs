@@ -30,7 +30,7 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
 {
-  [ImplementationFor (typeof(InvalidRdbmsStorageObjectFactory), RegistrationType = RegistrationType.Multiple)]
+  [ImplementationFor (typeof(InvalidRdbmsStorageObjectFactory))]
   internal class InvalidRdbmsStorageObjectFactory : IStorageObjectFactory
   {
     public InvalidRdbmsStorageObjectFactory ()
