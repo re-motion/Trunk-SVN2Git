@@ -23,7 +23,8 @@ using Remotion.Validation;
 
 namespace Remotion.Data.DomainObjects.Validation
 {
-  [ImplementationFor (typeof(IClientTransactionExtensionFactory), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
+  //TODO RM-6055: enable IoC
+  //[ImplementationFor (typeof(IClientTransactionExtensionFactory), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
   public class ValidationClientTransactionExtensionFactory : IClientTransactionExtensionFactory
   {
     private readonly IValidatorBuilder _validationBuilder;

@@ -57,6 +57,7 @@ namespace Remotion.Data.DomainObjects.Validation
                     new DomainObjectAttributesBasedValidationPropertyRuleReflector (p, p)));
       }
 
+      //TODO AO: This still returns properties from the proxy-type for mixin properties instead of the property from the interface
       if (typeof (IDomainObjectMixin).IsAssignableFrom (annotatedType) && !annotatedType.IsInterface)
       {
         var implementedInterfaces = interfaceTypes.Where (i => i.IsAssignableFrom (annotatedType)).ToList();
