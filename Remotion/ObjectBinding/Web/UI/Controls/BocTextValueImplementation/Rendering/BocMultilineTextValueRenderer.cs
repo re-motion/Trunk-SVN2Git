@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -23,6 +24,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
+using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
@@ -63,13 +65,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       label.EnableViewState = false;
 
       string[] lines = renderingContext.Control.Value;
-      string text = null;
-      if (lines != null)
-      {
-        for (int i = 0; i < lines.Length; i++)
-          lines[i] = HttpUtility.HtmlEncode (lines[i]);
-        text = string.Join ("<br />", lines);
-      }
+      string text = RenderUtility.JoinLinesWithEncoding (lines ?? Enumerable.Empty<string>());
+
       if (string.IsNullOrEmpty (text) && renderingContext.Control.IsDesignMode)
       {
         text = c_designModeEmptyLabelContents;

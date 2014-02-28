@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using NUnit.Framework;
@@ -572,6 +573,53 @@ public class StringUtilityTest
     Assert.That (dateTimeNow - dateTimeResult, Is.LessThanOrEqualTo (new TimeSpan(0,0,0,0,50)));
   }
 
+  [Test]
+  public void ParseNewLineSeparatedString_WithCRLF_SplitsAtCRLF ()
+  {
+    Assert.That (StringUtility.ParseNewLineSeparatedString ("First\r\nSecond\r\nThird"), Is.EqualTo (new[] { "First", "Second", "Third" }));
+  }
+
+  [Test]
+  public void ParseNewLineSeparatedString_WithLF_SplitsAtLF ()
+  {
+    Assert.That (StringUtility.ParseNewLineSeparatedString ("First\r\nSecond\nThird"), Is.EqualTo (new[] { "First", "Second", "Third" }));
+  }
+
+  [Test]
+  public void ParseNewLineSeparatedString_WithEmptyItemInSequence_ReturnsEmptyItem ()
+  {
+    Assert.That (StringUtility.ParseNewLineSeparatedString ("First\r\n\r\nThird"), Is.EqualTo (new[] { "First", "", "Third" }));
+  }
+
+  [Test]
+  public void ParseNewLineSeparatedString_WithLeadingCRLF_BeginsWithEmptyItem ()
+  {
+    Assert.That (StringUtility.ParseNewLineSeparatedString ("First\r\nSecond\r\n").ToArray(), Is.EqualTo (new[] { "First", "Second", "" }));
+  }
+
+  [Test]
+  public void ParseNewLineSeparatedString_WithTrailingCRLF_EndsWithEmptyItem ()
+  {
+    Assert.That (StringUtility.ParseNewLineSeparatedString ("\r\nSecond\r\nThird").ToArray(), Is.EqualTo (new[] { "", "Second", "Third" }));
+  }
+
+  [Test]
+  public void ParseNewLineSeparatedString_WithMultipleCRLF_ReturnsMultipleEmptyItems ()
+  {
+    Assert.That (StringUtility.ParseNewLineSeparatedString ("First\r\n\r\n\r\nFourth").ToArray(), Is.EqualTo (new[] { "First", "", "", "Fourth" }));
+  }
+
+  [Test]
+  public void ParseNewLineSeparatedString_WithString_ReturnsOneItem()
+  {
+    Assert.That (StringUtility.ParseNewLineSeparatedString ("First"), Is.EqualTo (new[] { "First" }));
+  }
+
+  [Test]
+  public void ParseNewLineSeparatedString_WithEmptyString_ReturnsOneEmptyItem()
+  {
+    Assert.That (StringUtility.ParseNewLineSeparatedString (""), Is.EqualTo (new[] { "" }));
+  }
 }
 
 [TestFixture]

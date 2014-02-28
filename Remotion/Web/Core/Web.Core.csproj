@@ -721,6 +721,7 @@
     <Compile Include="Utilities\PageUtility.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\RenderUtility.cs" />
     <Compile Include="Utilities\ScriptUtility.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -256,6 +256,7 @@
     <Compile Include="Core\Utilities\ControlHelperTest.cs" />
     <Compile Include="Core\Utilities\IInternalControlMemberCallerTest.cs" />
     <Compile Include="Core\Utilities\IScriptUtilityTest.cs" />
+    <Compile Include="Core\Utilities\RenderUtilityTest.cs" />
     <Compile Include="Core\Utilities\VirtualPathUtilityTests.cs" />
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckJsonService.cs" />
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckScriptService.cs" />

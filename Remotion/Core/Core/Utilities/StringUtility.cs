@@ -18,9 +18,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
+using JetBrains.Annotations;
 using Remotion.Collections;
 
 namespace Remotion.Utilities
@@ -208,6 +210,19 @@ namespace Remotion.Utilities
       if (current.Length > 0)
         items.Add (new ParsedItem (current.ToString(), isQuoted));
       return (ParsedItem[]) items.ToArray();
+    }
+
+    /// <summary>
+    /// Splits the input <paramref name="value"/> at the new-line character (LF).
+    /// Carriage-return is trimmed. Empty lines are returned as empty strings in the result
+    /// </summary>
+    /// <param name="value">The input string. Must not be <see langword="null" />.</param>
+    [NotNull]
+    public static IEnumerable<string> ParseNewLineSeparatedString ([NotNull] string value)
+    {
+      ArgumentUtility.CheckNotNull ("value", value);
+
+      return value.Split (new[] { '\n' }).Select (s=>s.TrimEnd ('\r'));
     }
 
     // static members

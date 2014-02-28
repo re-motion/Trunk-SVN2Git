@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -23,6 +24,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
+using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
@@ -90,17 +92,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
         return new string ((char) 9679, 5);
 
       string text;
-      if (textMode == BocTextBoxMode.MultiLine && !string.IsNullOrEmpty (renderingContext.Control.Text))
+      if (textMode == BocTextBoxMode.MultiLine)
       {
-        //  Allows for an optional \r
-        string temp = renderingContext.Control.Text.Replace ("\r", "");
-        string[] lines = temp.Split ('\n');
-        for (int i = 0; i < lines.Length; i++)
-          lines[i] = HttpUtility.HtmlEncode (lines[i]);
-        text = string.Join ("<br />", lines);
+        var lines = StringUtility.ParseNewLineSeparatedString (renderingContext.Control.Text ?? "");
+        text = RenderUtility.JoinLinesWithEncoding (lines);
       }
       else
+      {
         text = HttpUtility.HtmlEncode (renderingContext.Control.Text);
+      }
 
       if (string.IsNullOrEmpty (text) && renderingContext.Control.IsDesignMode)
       {
