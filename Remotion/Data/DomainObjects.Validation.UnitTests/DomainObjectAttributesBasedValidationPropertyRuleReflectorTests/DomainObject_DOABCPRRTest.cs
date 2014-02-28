@@ -17,25 +17,23 @@
 
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain;
 using Remotion.Validation.MetaValidation.Rules.Custom;
 
-namespace Remotion.Data.DomainObjects.Validation.UnitTests
+namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttributesBasedValidationPropertyRuleReflectorTests
 {
   [TestFixture]
-  public class DomainObjectAttributesBasedValidationPropertyRuleReflector_DomainObjectMixinTest
+// ReSharper disable InconsistentNaming
+    public class DomainObject_DomainObjectAttributesBasedValidationPropertyRuleReflectorTest
+// ReSharper enable InconsistentNaming
   {
     private PropertyInfo _propertyWithoutAttribute;
-    private PropertyInfo _mixinPropertyWithMandatoryAttribute;
-    private PropertyInfo _mixinPropertyWithNullableStringPropertyAttribute;
-    private PropertyInfo _mixinPropertyWithMandatoryStringPropertyAttribute;
-    private PropertyInfo _interfacePropertyWithMandatoryAttribute;
-    private PropertyInfo _interfacePropertyWithNullableStringPropertyAttribute;
-    private PropertyInfo _interfacePropertyWithMandatoryStringPropertyAttribute;
+    private PropertyInfo _propertyWithMandatoryAttribute;
+    private PropertyInfo _propertyWithNullableStringPropertyAttribute;
+    private PropertyInfo _propertyWithMandatoryStringPropertyAttribute;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithoutAttributeReflector;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithNullableStringPropertyAttributeReflector;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithMandatoryStringPropertyAttributeReflector;
@@ -44,67 +42,27 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      _propertyWithoutAttribute =
-          typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithoutAttribute");
-
-      _mixinPropertyWithMandatoryAttribute =
-          typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithMandatoryAttribute");
-      _interfacePropertyWithMandatoryAttribute =
-          typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithMandatoryAttribute");
-
-      _mixinPropertyWithNullableStringPropertyAttribute =
-          typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithNullableStringPropertyAttribute");
-      _interfacePropertyWithNullableStringPropertyAttribute =
-          typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithNullableStringPropertyAttribute");
-
-      _mixinPropertyWithMandatoryStringPropertyAttribute =
-          typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithMandatoryStringPropertyAttribute");
-      _interfacePropertyWithMandatoryStringPropertyAttribute =
-          typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty (
-              "PropertyWithMandatoryStringPropertyAttribute");
+      _propertyWithoutAttribute = typeof (TypeWithDomainObjectAttributes).GetProperty ("PropertyWithoutAttribute");
+      _propertyWithMandatoryAttribute = typeof (TypeWithDomainObjectAttributes).GetProperty ("PropertyWithMandatoryAttribute");
+      _propertyWithNullableStringPropertyAttribute =
+          typeof (TypeWithDomainObjectAttributes).GetProperty ("PropertyWithNullableStringPropertyAttribute");
+      _propertyWithMandatoryStringPropertyAttribute =
+          typeof (TypeWithDomainObjectAttributes).GetProperty ("PropertyWithMandatoryStringPropertyAttribute");
 
       _propertyWithoutAttributeReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
           _propertyWithoutAttribute,
           _propertyWithoutAttribute);
       _propertyWithMandatoryAttributeReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
-          _interfacePropertyWithMandatoryAttribute,
-          _mixinPropertyWithMandatoryAttribute
-          );
+          _propertyWithMandatoryAttribute,
+          _propertyWithMandatoryAttribute);
       _propertyWithNullableStringPropertyAttributeReflector =
           new DomainObjectAttributesBasedValidationPropertyRuleReflector (
-              _interfacePropertyWithNullableStringPropertyAttribute,
-              _mixinPropertyWithNullableStringPropertyAttribute
-              );
+              _propertyWithNullableStringPropertyAttribute,
+              _propertyWithNullableStringPropertyAttribute);
       _propertyWithMandatoryStringPropertyAttributeReflector =
           new DomainObjectAttributesBasedValidationPropertyRuleReflector (
-              _interfacePropertyWithMandatoryStringPropertyAttribute,
-              _mixinPropertyWithMandatoryStringPropertyAttribute
-              );
-    }
-
-    [Test]
-    public void Initialize ()
-    {
-      Assert.That (_propertyWithoutAttributeReflector.PropertyType, Is.EqualTo (_propertyWithoutAttribute.PropertyType));
-      Assert.That (_propertyWithMandatoryAttributeReflector.PropertyType, Is.EqualTo (_interfacePropertyWithMandatoryAttribute.PropertyType));
-      Assert.That (
-          _propertyWithNullableStringPropertyAttributeReflector.PropertyType,
-          Is.EqualTo (_interfacePropertyWithNullableStringPropertyAttribute.PropertyType));
-      Assert.That (
-          _propertyWithMandatoryStringPropertyAttributeReflector.PropertyType,
-          Is.EqualTo (_interfacePropertyWithMandatoryStringPropertyAttribute.PropertyType));
-    }
-
-    [Test]
-    public void GetPropertyAccessExpression ()
-    {
-      var result = (LambdaExpression) _propertyWithMandatoryAttributeReflector
-          .GetPropertyAccessExpression<MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface, TestDomainObject>();
-
-      Assert.That (result.Body, Is.InstanceOf (typeof (MemberExpression)));
-      Assert.That (
-          ((MemberExpression) result.Body).Member.DeclaringType,
-          Is.EqualTo (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)));
+              _propertyWithMandatoryStringPropertyAttribute,
+              _propertyWithMandatoryStringPropertyAttribute);
     }
 
     [Test]
