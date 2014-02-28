@@ -242,7 +242,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.EagerFetching
           .Stub (stub => stub.CreatePersistenceExtensions (Arg<Guid>.Is.Anything))
           .Return (new[] { persistenceExtensionMock });
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterMultiple<IPersistenceExtensionFactory> (() => persistenceExtensionFactoryStub);
+      serviceLocator.RegisterSingle<IPersistenceExtensionFactory> (() => persistenceExtensionFactoryStub);
       return new ServiceLocatorScope (serviceLocator);
     }
   }

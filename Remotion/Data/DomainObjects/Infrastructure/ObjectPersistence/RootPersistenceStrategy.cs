@@ -203,8 +203,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
     private IPersistenceExtension CreatePersistenceExtension ()
     {
-      var listenerFactories = SafeServiceLocator.Current.GetAllInstances<IPersistenceExtensionFactory>();
-      return new CompoundPersistenceExtension (listenerFactories.SelectMany (f => f.CreatePersistenceExtensions (_transactionID)));
+      var listenerFactory = SafeServiceLocator.Current.GetInstance<IPersistenceExtensionFactory>();
+      return new CompoundPersistenceExtension (listenerFactory.CreatePersistenceExtensions (_transactionID));
     }
 
     private ILoadedObjectData GetLoadedObjectDataForDataContainer (DataContainer dataContainer, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)

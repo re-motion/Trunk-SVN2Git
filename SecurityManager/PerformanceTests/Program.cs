@@ -32,12 +32,12 @@ namespace Remotion.SecurityManager.PerformanceTests
           typeof (Remotion.Data.DomainObjects.IClientTransactionExtensionFactory),
           typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory),
           LifetimeKind.Singleton,
-          RegistrationType.Multiple);
+          RegistrationType.Single);
       defaultServiceLocator.Register (
           typeof (Remotion.Data.DomainObjects.Tracing.IPersistenceExtensionFactory),
           typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory),
           LifetimeKind.Singleton,
-          RegistrationType.Multiple);
+          RegistrationType.Single);
 
       ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
 
