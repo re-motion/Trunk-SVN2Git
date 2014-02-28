@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -57,7 +58,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectStringProperty) };
 
-    private string _text = string.Empty;
+    private string[] _text = null;
 
     // construction and disposing
 
@@ -192,11 +193,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [DefaultValue ("")]
     public override sealed string Text
     {
-      get { return NormalizeText (_text); }
+      get { return string.Join ("\r\n", _text ?? Enumerable.Empty<string>()); }
       set
       {
         IsDirty = true;
-        _text = value;
+        if (value == null)
+          _text = null;
+        else
+          _text = StringUtility.ParseNewLineSeparatedString (value).ToArray();
       }
     }
         
@@ -206,18 +210,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <remarks>Override this member to modify the storage of the value. </remarks>
     protected virtual string[] GetValue ()
     {
-      string text = _text;
-      if (text != null)
-        text = text.Trim();
-      
-      if (string.IsNullOrEmpty (text))
+      if (_text == null)
         return null;
-      else
-      {
-        //  Allows for an optional \r
-        string temp = text.Replace ("\r", "");
-        return temp.Split ('\n');
-      }
+
+      var temp = new List<string>(_text.SkipWhile (string.IsNullOrWhiteSpace));
+
+      if (temp.Count > 0)
+        temp[0] = temp[0].TrimStart();
+
+      while (temp.Count > 0 && string.IsNullOrWhiteSpace (temp[temp.Count - 1]))
+        temp.RemoveAt (temp.Count - 1);
+
+      if (temp.Count > 0)
+        temp[temp.Count - 1] = temp[temp.Count - 1].TrimEnd();
+
+      if (temp.Count > 0)
+        return temp.ToArray();
+
+      return null;
     }
 
     /// <summary>
@@ -229,17 +239,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     protected virtual void SetValue (string[] value)
     {
-      if (value == null)
-        _text = null;
-      else
-        _text = string.Join ("\r\n", value);
-    }
-
-    protected override sealed string NormalizeText (string text)
-    {
-      string temp = text ?? string.Empty;
-      temp = temp.Replace ("\r", "");
-      return string.Join ("\r\n", temp.Split ('\n'));
+      _text = value;
     }
 
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
@@ -250,10 +250,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { Value = ArgumentUtility.CheckType<string[]> ("value", value); }
     }
 
-    /// <summary>Gets a flag indicating whether the <see cref="BocTextValue"/> contains a value. </summary>
+    /// <summary>Gets a flag indicating whether the <see cref="BocMultilineTextValue"/> contains a value. </summary>
     public override bool HasValue
     {
-      get { return _text != null && _text.Trim ().Length > 0; }
+      get { return _text != null && _text.Any (s => !string.IsNullOrWhiteSpace (s)); }
     }
 
     /// <summary>
@@ -265,7 +265,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       object[] values = (object[]) savedState;
 
       base.LoadControlState (values[0]);
-      _text = (string) values[1];
+      _text = (string[]) values[1];
     }
 
     /// <summary>

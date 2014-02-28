@@ -20,6 +20,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using JetBrains.Annotations;
 using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.UI;
@@ -64,8 +65,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     /// </summary>
     /// <value>An array of types, containing interfaces derived from <see cref="IBusinessObjectProperty"/>.</value>
     protected abstract override Type[] SupportedPropertyInterfaces { get; }
-
-    protected abstract string NormalizeText (string text);
 
     /// <summary>
     ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
@@ -219,13 +218,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
       string newValue = PageUtility.GetPostBackCollectionItem (Page, GetValueName());
-      bool isDataChanged = newValue != null && Text != NormalizeText (newValue);
+      if (newValue == null)
+        return false;
+
+      var normalizeText = NormalizeText (newValue);
+      bool isDataChanged = normalizeText != NormalizeText (Text ?? string.Empty);
       if (isDataChanged)
       {
-        Text = newValue;
+        Text = normalizeText;
         IsDirty = true;
       }
       return isDataChanged;
+    }
+
+    private string NormalizeText ([NotNull]string text)
+    {
+      return string.Join ("\r\n", StringUtility.ParseNewLineSeparatedString (text));
     }
 
     /// <summary> Called when the state of the control has changed between postbacks. </summary>

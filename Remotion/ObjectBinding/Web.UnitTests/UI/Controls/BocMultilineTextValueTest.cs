@@ -150,6 +150,12 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       Assert.That (_bocMultilineTextValue.HasValue, Is.False);
     }
 
+    [Test]
+    public void Value_TrimsWhitespaceAndNewLines ()
+    {
+      _bocMultilineTextValue.Text = " \r\n \r\n a\r\n b \r\n\r\n d \r\n \r\n ";
+      Assert.That (_bocMultilineTextValue.Value, Is.EqualTo (new[] { "a", " b ", "", " d" }));
+    }
 
     [Test]
     public void LoadValueAndInterimTrue ()

@@ -206,7 +206,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [DefaultValue ("")]
     public override sealed string Text
     {
-      get { return NormalizeText (_text); }
+      get { return _text ?? string.Empty; }
       set
       {
         IsDirty = true;
@@ -294,11 +294,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       else
         _text = value.ToString();
     }
-    
-    protected override sealed string NormalizeText (string text)
-    {
-      return text ?? string.Empty;
-    }
 
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
     protected override sealed object ValueImplementation
@@ -310,7 +305,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary>Gets a flag indicating whether the <see cref="BocTextValue"/> contains a value. </summary>
     public override bool HasValue
     {
-      get { return _text != null && _text.Trim().Length > 0; }
+      get { return !string.IsNullOrWhiteSpace (_text); }
     }
 
     /// <summary>
@@ -360,7 +355,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _valueType = value;
           _actualValueType = value;
           if (_valueType != BocTextValueType.Undefined)
-            _text = string.Empty;
+            _text = null;
         }
       }
     }
