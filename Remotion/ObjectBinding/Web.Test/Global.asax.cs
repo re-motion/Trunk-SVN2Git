@@ -105,7 +105,9 @@ namespace OBWTest
           new[]
           {
               new ResourcePathMapping ("Remotion.Web", @"..\..\Web\Core\res"),
-              new ResourcePathMapping ("Remotion.ObjectBinding.Web", @"..\..\ObjectBinding\Web\res")
+              new ResourcePathMapping ("Remotion.ObjectBinding.Web", @"..\..\ObjectBinding\Web\res"),
+              new ResourcePathMapping ("Remotion.Web.Legacy", @"..\..\Web\Legacy\res"),
+              new ResourcePathMapping ("Remotion.ObjectBinding.Web.Legacy", @"..\..\ObjectBinding\Web.Legacy\res")
           },
           FileExtensionHandlerMapping.Default);
       _resourceVirtualPathProvider.Register ();
