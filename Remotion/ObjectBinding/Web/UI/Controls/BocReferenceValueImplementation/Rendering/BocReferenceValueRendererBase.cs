@@ -293,17 +293,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private void RenderReadOnlyValue (BocRenderingContext<TControl> renderingContext, string postBackEvent, string onClick, string objectID)
     {
       Label label = GetLabel (renderingContext);
-
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
-
-      var isCommandEnabled = IsCommandEnabled (renderingContext);
-      var command = GetCommand (renderingContext, isCommandEnabled);
-      command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
-
       IconInfo icon = null;
       var isIconEnabled = renderingContext.Control.IsIconEnabled();
       if (isIconEnabled)
         icon = GetIcon (renderingContext);
+
+      var anchorClass = CssClassCommand;
+      if (icon != null)
+        anchorClass += " " + CssClassHasIcon;
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, anchorClass);
+
+      var isCommandEnabled = IsCommandEnabled (renderingContext);
+      var command = GetCommand (renderingContext, isCommandEnabled);
+      command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
 
       if (icon != null)
         icon.Render (renderingContext.Writer, renderingContext.Control);
