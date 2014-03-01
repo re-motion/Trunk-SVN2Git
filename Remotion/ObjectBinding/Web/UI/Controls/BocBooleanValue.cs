@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // constants
 
     private const string c_nullString = "null";
-    private const string c_keyValueName = "_KeyValue";
+    private const string c_valueName = "_Value";
     private const string c_textValueName = "_TextValue";
 
     // types
@@ -159,21 +159,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { GetKeyValueName () };
+      return IsReadOnly ? new string[0] : new[] { GetValueName () };
     }
 
-    string IBocBooleanValue.GetKeyValueName ()
+    string IBocBooleanValue.GetValueName ()
     {
-      return GetKeyValueName();
+      return GetValueName();
     }
 
     /// <summary>
     /// Gets a name (ID) to use for the hidden field needed to store the value of the control client-side.
     /// </summary>
     /// <returns>The control's <see cref="Control.ClientID"/> postfixed with a constant id for the hidden field.</returns>
-    protected string GetKeyValueName ()
+    protected string GetValueName ()
     {
-      return ClientID + c_keyValueName;
+      return ClientID + c_valueName;
     }
 
     string IBocBooleanValue.GetTextValueName ()
@@ -316,7 +316,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='..\..\doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadPostData/*' />
     protected override bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      string newValueAsString = PageUtility.GetPostBackCollectionItem (Page, GetKeyValueName());
+      string newValueAsString = PageUtility.GetPostBackCollectionItem (Page, GetValueName());
       bool? newValue = null;
       bool isDataChanged = false;
       if (newValueAsString != null)

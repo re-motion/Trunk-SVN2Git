@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
     private string _keyDownScript;
     private const string _dummyScript = "return false;";
     private const string c_clientID = "MyBooleanValue";
-    private const string c_keyValueName = "MyBooleanValue_KeyValue";
+    private const string c_keyValueName = "MyBooleanValue_Value";
     private const string c_textValueName = "MyBooleanValue_TextValue";
     private IBocBooleanValue _booleanValue;
     private BocBooleanValueQuirksModeRenderer _renderer;
@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
 
       _booleanValue.Stub (mock => mock.ClientID).Return (c_clientID);
-      _booleanValue.Stub (mock => mock.GetKeyValueName ()).Return (c_keyValueName);
+      _booleanValue.Stub (mock => mock.GetValueName ()).Return (c_keyValueName);
       _booleanValue.Stub (mock => mock.GetTextValueName()).Return (c_textValueName);
       
       string startupScriptKey = typeof (BocBooleanValueQuirksModeRenderer).FullName + "_Startup_" + _resourceSet.ResourceKey;

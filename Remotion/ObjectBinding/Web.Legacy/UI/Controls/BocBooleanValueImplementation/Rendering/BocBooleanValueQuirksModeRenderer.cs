@@ -83,7 +83,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
 
       Label labelControl = new Label { ID = renderingContext.Control.ClientID + "_LabelValue" };
       Image imageControl = new Image { ID = renderingContext.Control.ClientID + "_Image" };
-      HiddenField hiddenFieldControl = new HiddenField { ID = renderingContext.Control.GetKeyValueName () };
+      HiddenField hiddenFieldControl = new HiddenField { ID = renderingContext.Control.GetValueName () };
       HyperLink linkControl = new HyperLink { ID = renderingContext.Control.GetTextValueName () };
 
       bool isClientScriptEnabled = DetermineClientScriptLevel (renderingContext);
