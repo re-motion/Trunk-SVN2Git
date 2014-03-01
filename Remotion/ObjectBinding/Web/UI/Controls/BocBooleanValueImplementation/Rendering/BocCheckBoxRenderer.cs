@@ -66,24 +66,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       AddAttributesToRender (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Label labelControl = new Label();
-      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetValueName(), ClientIDMode = ClientIDMode.Static };
-      Image imageControl = new Image();
+      var checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetValueName(), ClientIDMode = ClientIDMode.Static };
+      var labelControl = new Label();
 
       string description = GetDescription (renderingContext);
 
       if (renderingContext.Control.IsReadOnly)
       {
+        var imageControl = new Image();
         PrepareImage (renderingContext, imageControl, description);
-        PrepareLabel (renderingContext, description, labelControl);
 
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.GetValueName());
         if (renderingContext.Control.Value.HasValue)
           renderingContext.Writer.AddAttribute ("data-value", renderingContext.Control.Value.Value.ToString ());
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
         imageControl.RenderControl (renderingContext.Writer);
-        labelControl.RenderControl (renderingContext.Writer);
         renderingContext.Writer.RenderEndTag ();
+
+        PrepareLabel (renderingContext, description, labelControl);
+        labelControl.RenderControl (renderingContext.Writer);
       }
       else
       {
@@ -96,9 +97,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
         checkBoxControl.Checked = renderingContext.Control.Value.Value;
         checkBoxControl.Disabled = !renderingContext.Control.Enabled;
 
-        PrepareLabel (renderingContext, description, labelControl);
-
         checkBoxControl.RenderControl (renderingContext.Writer);
+
+        PrepareLabel (renderingContext, description, labelControl);
         labelControl.RenderControl (renderingContext.Writer);
       }
 

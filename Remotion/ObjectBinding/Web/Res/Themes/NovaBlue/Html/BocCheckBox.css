@@ -21,10 +21,10 @@
   margin-left: 4px;
   margin-right: 3px;
   padding: 0px;
-  vertical-align: middle;
+  vertical-align: -0.1em;
 }
 
-.bocCheckBox span
+.bocCheckBox span + span
 {
   vertical-align: middle;
 }
@@ -40,4 +40,9 @@
 body.msie7 .bocCheckBox img
 {
   margin-left: 4px;
+}
+
+body.msie7 .bocCheckBox input + span
+{
+  vertical-align: 0.1em;
 }

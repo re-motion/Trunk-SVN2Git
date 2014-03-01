@@ -237,10 +237,10 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
 
       if (_checkbox.IsReadOnly)
       {
-        outerSpan = outerSpan.GetAssertedChildElement ("span", 0);
-        outerSpan.AssertAttributeValueContains ("id", c_valueName);
-        outerSpan.AssertAttributeValueContains ("data-value", value.ToString());
-        CheckImage (value, outerSpan, spanText);
+        var valueSpan = outerSpan.GetAssertedChildElement ("span", 0);
+        valueSpan.AssertAttributeValueContains ("id", c_valueName);
+        valueSpan.AssertAttributeValueContains ("data-value", value.ToString());
+        CheckImage (value, valueSpan, spanText);
       }
       else
       {
