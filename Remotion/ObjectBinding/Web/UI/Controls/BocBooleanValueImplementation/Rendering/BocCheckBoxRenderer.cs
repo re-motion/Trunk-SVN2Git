@@ -67,7 +67,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       Label labelControl = new Label { ID = GetLabelName (renderingContext), ClientIDMode = ClientIDMode.Static};
-      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetKeyValueName(), ClientIDMode = ClientIDMode.Static };
+      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetValueName(), ClientIDMode = ClientIDMode.Static };
       Image imageControl = new Image();
 
       string description = GetDescription (renderingContext);
@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
         PrepareImage (renderingContext, imageControl, description);
         PrepareLabel (renderingContext, description, labelControl);
 
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.GetKeyValueName());
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.GetValueName());
         if (renderingContext.Control.Value.HasValue)
           renderingContext.Writer.AddAttribute ("data-value", renderingContext.Control.Value.Value.ToString ());
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -135,7 +135,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
     private string GetScriptParameters (BocCheckBoxRenderingContext renderingContext)
     {
       string label = renderingContext.Control.IsDescriptionEnabled ? "document.getElementById ('" + GetLabelName (renderingContext) + "')" : "null";
-      string checkBox = "document.getElementById ('" + renderingContext.Control.GetKeyValueName() + "')";
+      string checkBox = "document.getElementById ('" + renderingContext.Control.GetValueName() + "')";
       string script = " ("
                       + checkBox + ", "
                       + label + ", "

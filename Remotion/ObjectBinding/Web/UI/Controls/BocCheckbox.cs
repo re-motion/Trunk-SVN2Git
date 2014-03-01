@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public class BocCheckBox : BocBooleanValueBase, IBocCheckBox
   {
     // constants
-    private const string c_keyValueName = "_KeyValue";
+    private const string c_valueName = "_Value";
 
     // types
 
@@ -122,7 +122,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! _isActive)
         return false;
 
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetKeyValueName());
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetValueName());
       bool newBooleanValue = ! string.IsNullOrEmpty (newValue);
       bool isDataChanged = _value != newBooleanValue;
       if (isDataChanged)
@@ -229,7 +229,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { GetKeyValueName() };
+      return IsReadOnly ? new string[0] : new[] { GetValueName() };
     }
 
     /// <summary>
@@ -260,7 +260,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public override string FocusID
     {
-      get { return IsReadOnly ? null : GetKeyValueName(); }
+      get { return IsReadOnly ? null : GetValueName(); }
     }
 
     /// <summary> Gets the string representation of this control's <see cref="BocBooleanValueBase.Value"/>. </summary>
@@ -399,14 +399,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return !WcagHelper.Instance.IsWaiConformanceLevelARequired() && _showDescription == true; }
     }
 
-    string IBocCheckBox.GetKeyValueName ()
+    string IBocCheckBox.GetValueName ()
     {
-      return GetKeyValueName();
+      return GetValueName();
     }
 
-    protected string GetKeyValueName ()
+    protected string GetValueName ()
     {
-      return ClientID + c_keyValueName;
+      return ClientID + c_valueName;
     }
 
     bool IBocCheckBox.IsDescriptionEnabled

@@ -24,6 +24,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
     bool IsDescriptionEnabled { get; }
     string DefaultTrueDescription { get; }
     string DefaultFalseDescription { get; }
-    string GetKeyValueName ();
+    string GetValueName ();
   }
 }
