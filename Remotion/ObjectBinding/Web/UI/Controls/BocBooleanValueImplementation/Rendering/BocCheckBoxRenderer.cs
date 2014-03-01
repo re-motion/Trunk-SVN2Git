@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       AddAttributesToRender (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Label labelControl = new Label { ID = GetLabelName (renderingContext), ClientIDMode = ClientIDMode.Static};
+      Label labelControl = new Label();
       HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetValueName(), ClientIDMode = ClientIDMode.Static };
       Image imageControl = new Image();
 
@@ -134,8 +134,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
 
     private string GetScriptParameters (BocCheckBoxRenderingContext renderingContext)
     {
-      string label = renderingContext.Control.IsDescriptionEnabled ? "document.getElementById ('" + GetLabelName (renderingContext) + "')" : "null";
-      string checkBox = "document.getElementById ('" + renderingContext.Control.GetValueName() + "')";
+      string label = renderingContext.Control.IsDescriptionEnabled ? "$(this).parent().children('span').first()[0]" : "null";
+      string checkBox = "$(this).parent().children('input').first()[0]";
       string script = " ("
                       + checkBox + ", "
                       + label + ", "
@@ -195,11 +195,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
         falseDescription = (string.IsNullOrEmpty (renderingContext.Control.FalseDescription) ? defaultFalseDescription : renderingContext.Control.FalseDescription);
       }
       return renderingContext.Control.Value.Value ? trueDescription : falseDescription;
-    }
-
-    private string GetLabelName (BocCheckBoxRenderingContext renderingContext)
-    {
-      return renderingContext.Control.ClientID + "_TextValue";
     }
 
     public override string GetCssClassBase(IBocCheckBox control)

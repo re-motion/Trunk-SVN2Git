@@ -40,7 +40,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
     private const string c_cssClass = "someCssClass";
     private const string c_clientID = "MyCheckBox";
     private const string c_valueName = "MyCheckBox_Value";
-    private const string c_textValueName = "MyCheckBox_TextValue";
     private readonly string _startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
 
     private IBocCheckBox _checkbox;
@@ -249,7 +248,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
       }
 
       var label = Html.GetAssertedChildElement (outerSpan, "span", 1);
-      Html.AssertAttribute (label, "id", c_textValueName);
 
       Html.AssertTextNode (label, spanText, 0);
     }
