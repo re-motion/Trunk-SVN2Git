@@ -38,7 +38,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     // constants
     private const string c_keyValueName = "_KeyValue";
-    private const string c_textValueName = "_TextValue";
 
     // types
 
@@ -408,16 +407,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected string GetKeyValueName ()
     {
       return ClientID + c_keyValueName;
-    }
-    
-    string IBocCheckBox.GetTextValueName ()
-    {
-      return GetTextValueName();
-    }
-
-    protected string GetTextValueName ()
-    {
-      return ClientID + c_textValueName;
     }
 
     bool IBocCheckBox.IsDescriptionEnabled

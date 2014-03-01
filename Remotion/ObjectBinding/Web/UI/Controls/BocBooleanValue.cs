@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private const string c_nullString = "null";
     private const string c_keyValueName = "_KeyValue";
-    private const string c_textValueName = "_TextValue";
+    private const string c_textValueName = "_DisplayValue";
 
     // types
 

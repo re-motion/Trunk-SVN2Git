@@ -25,6 +25,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
     string DefaultTrueDescription { get; }
     string DefaultFalseDescription { get; }
     string GetKeyValueName ();
-    string GetTextValueName ();
   }
 }

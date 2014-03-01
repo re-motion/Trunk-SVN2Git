@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
     private const string c_falseDescription = "Falsch";
     private const string c_defaultControlWidth = "100pt";
     private const string c_cssClass = "someCssClass";
-    private const string c_clientID = "MyCheckbox";
+    private const string c_clientID = "MyCheckBox";
     private const string c_keyValueName = "MyCheckBox_KeyValue";
     private const string c_textValueName = "MyCheckBox_TextValue";
     private readonly string _startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
@@ -58,7 +58,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
 
       _checkbox.Stub (mock => mock.ClientID).Return (c_clientID);
       _checkbox.Stub (mock => mock.GetKeyValueName()).Return (c_keyValueName);
-      _checkbox.Stub (mock => mock.GetTextValueName()).Return (c_textValueName);
       
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
       _startupScript = string.Format (
@@ -290,7 +289,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _renderer.CssClassBase;
 
-      Html.AssertAttribute (outerSpan, "id", "MyCheckbox");
+      Html.AssertAttribute (outerSpan, "id", "MyCheckBox");
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
       if (_checkbox.IsReadOnly)
         Html.AssertAttribute (outerSpan, "class", _renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
