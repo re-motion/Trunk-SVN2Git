@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private const string c_nullString = "null";
     private const string c_valueName = "_Value";
-    private const string c_textValueName = "_TextValue";
+    private const string c_displayValueName = "_DisplayValue";
 
     // types
 
@@ -176,18 +176,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return ClientID + c_valueName;
     }
 
-    string IBocBooleanValue.GetTextValueName ()
+    string IBocBooleanValue.GetDisplayValueName ()
     {
-      return GetTextValueName();
+      return GetDisplayValueName();
     }
 
     /// <summary>
     /// Gets a name (ID) to use for the hyperlink used to change the value of the control client-side.
     /// </summary>
     /// <returns>The control's <see cref="Control.ClientID"/> postfixed with a constant id for the hyperlink.</returns>
-    protected string GetTextValueName ()
+    protected string GetDisplayValueName ()
     {
-      return ClientID + c_textValueName;
+      return ClientID + c_displayValueName;
     }
 
     protected override bool? GetValue ()
@@ -257,7 +257,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public override string FocusID
     {
-      get { return IsReadOnly ? null : GetTextValueName (); }
+      get { return IsReadOnly ? null : GetDisplayValueName (); }
     }
 
     /// <summary> Gets the string representation of this control's <see cref="BocBooleanValueBase.Value"/>. </summary>

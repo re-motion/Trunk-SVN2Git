@@ -23,7 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
   {
     bool ShowDescription { get; }
     string GetValueName ();
-    string GetTextValueName ();
+    string GetDisplayValueName ();
     BocBooleanValueResourceSet CreateResourceSet ();
     IResourceManager GetResourceManager ();
   }

@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
     private const string _dummyScript = "return false;";
     private const string c_clientID = "MyBooleanValue";
     private const string c_keyValueName = "MyBooleanValue_Value";
-    private const string c_textValueName = "MyBooleanValue_TextValue";
+    private const string c_textValueName = "MyBooleanValue_DisplayValue";
     private IBocBooleanValue _booleanValue;
     private BocBooleanValueRenderer _renderer;
     private BocBooleanValueResourceSet _resourceSet;
@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
 
       _booleanValue.Stub (mock => mock.ClientID).Return (c_clientID);
       _booleanValue.Stub (mock => mock.GetValueName ()).Return (c_keyValueName);
-      _booleanValue.Stub (mock => mock.GetTextValueName()).Return (c_textValueName);
+      _booleanValue.Stub (mock => mock.GetDisplayValueName()).Return (c_textValueName);
       
       string startupScriptKey = typeof (BocBooleanValueRenderer).FullName + "_Startup_" + _resourceSet.ResourceKey;
       _startupScript = string.Format (

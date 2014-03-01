@@ -496,7 +496,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
     [Test]
     public void GetTextValueName ()
     {
-      Assert.That (((IBocBooleanValue)_bocBooleanValue).GetTextValueName (), Is.EqualTo ("NamingContainer_BocBooleanValue_TextValue"));
+      Assert.That (((IBocBooleanValue)_bocBooleanValue).GetDisplayValueName (), Is.EqualTo ("NamingContainer_BocBooleanValue_DisplayValue"));
     }
   }
 }
