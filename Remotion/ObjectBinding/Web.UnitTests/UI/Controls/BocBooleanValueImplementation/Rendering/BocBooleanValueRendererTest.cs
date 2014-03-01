@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
     private const string _dummyScript = "return false;";
     private const string c_clientID = "MyBooleanValue";
     private const string c_keyValueName = "MyBooleanValue_Value";
-    private const string c_textValueName = "MyBooleanValue_DisplayValue";
+    private const string c_displayValueName = "MyBooleanValue_DisplayValue";
     private IBocBooleanValue _booleanValue;
     private BocBooleanValueRenderer _renderer;
     private BocBooleanValueResourceSet _resourceSet;
@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
 
       _booleanValue.Stub (mock => mock.ClientID).Return (c_clientID);
       _booleanValue.Stub (mock => mock.GetValueName ()).Return (c_keyValueName);
-      _booleanValue.Stub (mock => mock.GetDisplayValueName()).Return (c_textValueName);
+      _booleanValue.Stub (mock => mock.GetDisplayValueName()).Return (c_displayValueName);
       
       string startupScriptKey = typeof (BocBooleanValueRenderer).FullName + "_Startup_" + _resourceSet.ResourceKey;
       _startupScript = string.Format (
@@ -91,14 +91,10 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
       clientScriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
       clientScriptManagerMock.Stub (mock => mock.GetPostBackEventReference (_booleanValue, string.Empty)).Return (c_postbackEventReference);
 
-      _clickScript = string.Format (
-          "BocBooleanValue_SelectNextCheckboxValue ('{0}', document.getElementById ('{1}'), " +
-          "document.getElementById ('{2}'), document.getElementById ('{3}'), false, " +
-          "'" + c_trueDescription + "', '" + c_falseDescription + "', '" + c_nullDescription + "');return false;",
-          "ResourceKey",
-          c_clientID + "_Image",
-          c_clientID + "_LabelValue",
-          c_keyValueName);
+      _clickScript =
+          "BocBooleanValue_SelectNextCheckboxValue ('ResourceKey', $(this).parent().children('a').children('img').first()[0], " +
+          "$(this).parent().children('span').first()[0], $(this).parent().children('input').first()[0], false, " +
+          "'" + c_trueDescription + "', '" + c_falseDescription + "', '" + c_nullDescription + "');return false;";
 
       _keyDownScript = "BocBooleanValue_OnKeyDown (this);";
 
@@ -277,7 +273,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
       Html.AssertChildElementCount (outerSpan, 3);
 
       var link = Html.GetAssertedChildElement (outerSpan, "a", 1);
-      Html.AssertAttribute (link, "id", c_textValueName);
+      Html.AssertAttribute (link, "id", c_displayValueName);
       if (!_booleanValue.IsReadOnly)
         CheckLinkAttributes (link);
 
@@ -285,7 +281,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
       checkImageAttributes (image, iconUrl, description);
 
       var label = Html.GetAssertedChildElement (outerSpan, "span", 2);
-      Html.AssertAttribute (label, "id", "MyBooleanValue_LabelValue");
       Html.AssertChildElementCount (label, 0);
       Html.AssertTextNode (label, description, 0);
 
@@ -317,7 +312,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
 
     private void checkImageAttributes (XmlNode image, string iconUrl, string description)
     {
-      Html.AssertAttribute (image, "id", "MyBooleanValue_Image");
       Html.AssertAttribute (image, "src", iconUrl);
       Html.AssertAttribute (image, "alt", description);
     }

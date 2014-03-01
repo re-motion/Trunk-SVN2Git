@@ -78,8 +78,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       AddAttributesToRender (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      var labelControl = new Label { ID = GetLabelName (renderingContext), ClientIDMode = ClientIDMode.Static };
-      var imageControl = new Image { ID = GetImageName (renderingContext), ClientIDMode = ClientIDMode.Static };
+      var labelControl = new Label();
+      var imageControl = new Image();
       var hiddenFieldControl = new HiddenField { ID = renderingContext.Control.GetValueName(), ClientIDMode = ClientIDMode.Static };
       var dataValueReadOnlyControl = new Label { ID = renderingContext.Control.GetValueName(), ClientIDMode = ClientIDMode.Static };
       var linkControl = new HyperLink { ID = renderingContext.Control.GetDisplayValueName(), ClientIDMode = ClientIDMode.Static };
@@ -93,9 +93,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
         var script = GetClickScript (
             renderingContext,
             resourceSet,
-            imageControl,
-            labelControl,
-            renderingContext.Control.IsReadOnly ? (Control) dataValueReadOnlyControl : hiddenFieldControl,
             renderingContext.Control.Enabled);
         labelControl.Attributes.Add ("onclick", script);
         linkControl.Attributes.Add ("onclick", script);
@@ -170,9 +167,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
     private string GetClickScript (
         BocBooleanValueRenderingContext renderingContext,
         BocBooleanValueResourceSet resourceSet,
-        Image imageControl,
-        Label labelControl,
-        Control dataValueControl,
         bool isEnabled)
     {
       string script = "return false;";
@@ -185,14 +179,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       scriptBuilder.Append ("BocBooleanValue_SelectNextCheckboxValue (");
       scriptBuilder.Append ("'").Append (resourceSet.ResourceKey).Append ("'");
       scriptBuilder.Append (", ");
-      scriptBuilder.Append ("document.getElementById ('").Append (imageControl.ClientID).Append ("')");
+      scriptBuilder.Append ("$(this).parent().children('a').children('img').first()[0]");
       scriptBuilder.Append (", ");
       if (renderingContext.Control.ShowDescription)
-        scriptBuilder.Append ("document.getElementById ('").Append (labelControl.ClientID).Append ("')");
+        scriptBuilder.Append ("$(this).parent().children('span').first()[0]");
       else
         scriptBuilder.Append ("null");
       scriptBuilder.Append (", ");
-      scriptBuilder.Append ("document.getElementById ('").Append (dataValueControl.ClientID).Append ("')");
+      scriptBuilder.Append ("$(this).parent().children('input').first()[0]");
       scriptBuilder.Append (", ");
       scriptBuilder.Append (requiredFlag);
       scriptBuilder.Append (", ");
@@ -203,12 +197,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       AppendStringValueOrNullToScript (scriptBuilder, renderingContext.Control.NullDescription);
       scriptBuilder.Append (");");
 
-      script = scriptBuilder.ToString();
-
       if (renderingContext.Control.IsAutoPostBackEnabled)
-        script += renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, "") + ";";
-      script += "return false;";
-      return script;
+        scriptBuilder.Append (renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, "")).Append (";");
+      scriptBuilder.Append ("return false;");
+      return scriptBuilder.ToString();
     }
 
     private void PrepareVisibleControls (
