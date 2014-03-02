@@ -236,6 +236,7 @@
             }
         }).bind ('keyup paste', function(event) { // re-motion
             var handleInput = function() {
+                informationPopUp.hide();
                 var currentValue = $input.val();
                 var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
 
@@ -526,7 +527,7 @@
                 var successHandler = function (q, data) {
                     stopLoading();
                     receiveData (q, data);
-                    if (dropDownTriggered && !select.visible() && options.noDataFoundMessage) {
+                    if (!select.visible() && options.noDataFoundMessage) {
                         informationPopUp.show (options.noDataFoundMessage);
                     }
                     else if (dropDownTriggered && select.visible()) {
