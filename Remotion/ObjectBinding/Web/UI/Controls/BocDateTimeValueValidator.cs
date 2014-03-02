@@ -33,15 +33,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected enum ValidationError
     {
       None,
-      Required,
-      Incomplete,
+      MissingDateOrTime,
+      MissingDateAndTime,
+      MissingDate,
+      MissingTime,
       InvalidDateAndTime,
       InvalidDate,
       InvalidTime
     }
 
-    private string _requiredErrorMessage;
-    private string _incompleteErrorMessage;
+    private string _missingDateOrTimeErrorMessage;
+    private string _missingDateAndTimeErrorMessage;
+    private string _missingDateErrorMessage;
+    private string _missingTimeErrorMessage;
     private string _invalidDateAndTimeErrorMessage;
     private string _invalidDateErrorMessage;
     private string _invalidTimeErrorMessage;
@@ -59,15 +63,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (dateTimeValueControl == null)
         throw new InvalidOperationException ("BocDateTimeValueValidator may only be applied to controls of type BocDateTimeValue");
 
-      if (! EvaluateIsRequiredValid (dateTimeValueControl))
+      var validationErrorForRequired = EvaluateIsRequiredValid (dateTimeValueControl);
+      if (validationErrorForRequired != ValidationError.None)
       {
-        Error = ValidationError.Required;
+        Error = validationErrorForRequired;
         return false;
       }
 
-      if (! EvaluateIsCompleteValid (dateTimeValueControl))
+      var validationErrorForComplete = EvaluateIsCompleteValid (dateTimeValueControl);
+      if (validationErrorForComplete != ValidationError.None)
       {
-        Error = ValidationError.Incomplete;
+        Error = validationErrorForComplete;
         return false;
       }
 
@@ -84,50 +90,54 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return isValidDate && isValidTime;
     }
 
-    /// <summary> Checks the input fields for contents if the control requires input. </summary>
-    /// <param name="control"> The <see cref="BocDateTimeValue"/> control to validate. </param>
-    /// <returns> <see langword="true"/> if all required fields are filled out. </returns>
-    private bool EvaluateIsRequiredValid (BocDateTimeValue control)
+    private ValidationError EvaluateIsRequiredValid (BocDateTimeValue control)
     {
       if (! control.IsRequired)
-        return true;
+        return ValidationError.None;
 
       bool isDateOrTimeRequired = control.ActualValueType == BocDateTimeValueType.Undefined;
+
       bool isDateRequired = control.ActualValueType == BocDateTimeValueType.DateTime
                             || control.ActualValueType == BocDateTimeValueType.Date;
+
       bool isTimeRequired = control.ActualValueType == BocDateTimeValueType.DateTime;
 
-      //  Neither field required because the value of the control of an unknown/undefined type
-      if (! isDateOrTimeRequired && ! isDateRequired && ! isTimeRequired)
-        return true;
+      bool hasDate = !string.IsNullOrWhiteSpace (control.DateString);
+      bool hasTime = !string.IsNullOrWhiteSpace (control.TimeString);
 
-      bool hasDate = !IsNullOrEmptyOrWhiteSpace (control.DateString);
-      bool hasTime = !IsNullOrEmptyOrWhiteSpace (control.TimeString);
+      var isDateMissing = isDateRequired && ! hasDate;
+      var isTimeMissing = isTimeRequired && ! hasTime;
 
-      bool isDateAndTimeMissing = isDateOrTimeRequired && ! (hasDate || hasTime);
-      bool isDateMissing = isDateRequired && ! hasDate;
-      bool isTimeMissing = isTimeRequired && ! hasTime;
+      if (isDateOrTimeRequired && ! (hasDate || hasTime))
+        return ValidationError.MissingDateOrTime;
 
-      return ! (isDateAndTimeMissing || isDateMissing || isTimeMissing);
+      if (isDateMissing && isTimeMissing)
+        return ValidationError.MissingDateAndTime;
+
+      if (isDateMissing)
+        return ValidationError.MissingDate;
+
+      if (isTimeMissing)
+        return ValidationError.MissingTime;
+
+      return ValidationError.None;
     }
 
-    /// <summary> Checks that the input fields are completed. </summary>
-    /// <param name="control"> The <see cref="BocDateTimeValue"/> control to validate. </param>
-    /// <returns> <see langword="true"/> if sufficient input is provided. </returns>
-    private bool EvaluateIsCompleteValid (BocDateTimeValue control)
+    private ValidationError EvaluateIsCompleteValid (BocDateTimeValue control)
     {
       bool isDateRequired = control.ActualValueType == BocDateTimeValueType.DateTime
                             || control.ActualValueType == BocDateTimeValueType.Date;
 
       if (! isDateRequired)
-        return true;
+        return ValidationError.None;
 
-      bool hasDate = !IsNullOrEmptyOrWhiteSpace (control.DateString);
-      bool hasTime = !IsNullOrEmptyOrWhiteSpace (control.TimeString);
+      bool hasDate = !string.IsNullOrWhiteSpace (control.DateString);
+      bool hasTime = !string.IsNullOrWhiteSpace (control.TimeString);
 
-      bool isDateMissing = isDateRequired && ! hasDate;
+      if (hasTime && !hasDate)
+        return ValidationError.MissingDate;
 
-      return ! (isDateMissing && hasTime);
+      return ValidationError.None;
     }
 
     /// <summary>
@@ -149,7 +159,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       string dateValue = control.DateString;
 
-      if (IsNullOrEmptyOrWhiteSpace (dateValue))
+      if (string.IsNullOrWhiteSpace (dateValue))
         return true;
 
       try
@@ -215,7 +225,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       string timeValue = control.TimeString;
 
-      if (IsNullOrEmptyOrWhiteSpace(timeValue))
+      if (string.IsNullOrWhiteSpace (timeValue))
         return true;
 
       try
@@ -266,16 +276,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       switch (_error)
       {
-        case ValidationError.Required:
+        case ValidationError.MissingDateAndTime:
         {
-          if (! string.IsNullOrEmpty (RequiredErrorMessage))
-            base.ErrorMessage = RequiredErrorMessage;
+          if (! string.IsNullOrEmpty (MissingDateAndTimeErrorMessage))
+            base.ErrorMessage = MissingDateAndTimeErrorMessage;
           break;
         }
-        case ValidationError.Incomplete:
+        case ValidationError.MissingDateOrTime:
         {
-          if (! string.IsNullOrEmpty (IncompleteErrorMessage))
-            base.ErrorMessage = IncompleteErrorMessage;
+          if (! string.IsNullOrEmpty (MissingDateOrTimeErrorMessage))
+            base.ErrorMessage = MissingDateOrTimeErrorMessage;
+          break;
+        }
+        case ValidationError.MissingDate:
+        {
+          if (! string.IsNullOrEmpty (MissingDateErrorMessage))
+            base.ErrorMessage = MissingDateErrorMessage;
+          break;
+        }
+        case ValidationError.MissingTime:
+        {
+          if (! string.IsNullOrEmpty (MissingTimeErrorMessage))
+            base.ErrorMessage = MissingTimeErrorMessage;
           break;
         }
         case ValidationError.InvalidDateAndTime:
@@ -325,34 +347,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Message returned by <see cref="ErrorMessage"/> if the control is not filled out.
-    /// </summary>
-    public string RequiredErrorMessage
-    {
-      get { return _requiredErrorMessage; }
-      set
-      {
-        _requiredErrorMessage = value;
-        if (_error == ValidationError.Required)
-          base.ErrorMessage = value;
-      }
-    }
-
-    /// <summary>
-    ///   Message returned by <see cref="ErrorMessage"/> if the control's contents is incomplete.
-    /// </summary>
-    public string IncompleteErrorMessage
-    {
-      get { return _incompleteErrorMessage; }
-      set
-      {
-        _incompleteErrorMessage = value;
-        if (_error == ValidationError.Incomplete)
-          base.ErrorMessage = value;
-      }
-    }
-
-    /// <summary>
     ///   Message returned by <see cref="ErrorMessage"/> if the date value is invalid.
     /// </summary>
     public string InvalidDateErrorMessage
@@ -393,6 +387,62 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           base.ErrorMessage = value;
       }
     }
+    
+    /// <summary>
+    ///   Message returned by <see cref="ErrorMessage"/> if the date value is Missing.
+    /// </summary>
+    public string MissingDateErrorMessage
+    {
+      get { return _missingDateErrorMessage; }
+      set
+      {
+        _missingDateErrorMessage = value;
+        if (_error == ValidationError.MissingDate)
+          base.ErrorMessage = value;
+      }
+    }
+
+    /// <summary>
+    ///   Message returned by <see cref="ErrorMessage"/> if the time value is Missing.
+    /// </summary>
+    public string MissingTimeErrorMessage
+    {
+      get { return _missingTimeErrorMessage; }
+      set
+      {
+        _missingTimeErrorMessage = value;
+        if (_error == ValidationError.MissingTime)
+          base.ErrorMessage = value;
+      }
+    }
+
+    /// <summary>
+    ///   Message returned by <see cref="ErrorMessage"/> if the date and time values are Missing.
+    /// </summary>
+    public string MissingDateAndTimeErrorMessage
+    {
+      get { return _missingDateAndTimeErrorMessage; }
+      set
+      {
+        _missingDateAndTimeErrorMessage = value;
+        if (_error == ValidationError.MissingDateAndTime)
+          base.ErrorMessage = value;
+      }
+    }
+
+    /// <summary>
+    ///   Message returned by <see cref="ErrorMessage"/> if the date or time values are Missing.
+    /// </summary>
+    public string MissingDateOrTimeErrorMessage
+    {
+      get { return _missingDateOrTimeErrorMessage; }
+      set
+      {
+        _missingDateOrTimeErrorMessage = value;
+        if (_error == ValidationError.MissingDateOrTime)
+          base.ErrorMessage = value;
+      }
+    }
 
     protected ValidationError Error
     {
@@ -402,11 +452,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         _error = value;
         RefreshBaseErrorMessage();
       }
-    }
-
-    private bool IsNullOrEmptyOrWhiteSpace (string value)
-    {
-      return value == null || value.Trim().Length == 0;
     }
   }
 

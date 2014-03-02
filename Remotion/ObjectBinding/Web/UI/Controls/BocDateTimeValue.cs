@@ -51,10 +51,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocDateTimeValue")]
     protected internal enum ResourceIdentifier
     {
-      /// <summary> The validation error message displayed when no input is provided. </summary>
-      RequiredErrorMessage,
-      /// <summary> The validation error message displayed when the input is incomplete. </summary>
-      IncompleteErrorMessage,
+      /// <summary> The validation error message displayed when both the date and the time component missing. </summary>
+      MissingDateAndTimeErrorMessage,
+      /// <summary> The validation error message displayed when the date or the time component missing. </summary>
+      MissingDateOrTimeErrorMessage,
+      /// <summary> The validation error message displayed when the date component is missing. </summary>
+      MissingDateErrorMessage,
+      /// <summary> The validation error message displayed when the time component is missing. </summary>
+      MissingTimeErrorMessage,
       /// <summary> The validation error message displayed when both the date and the time component invalid. </summary>
       InvalidDateAndTimeErrorMessage,
       /// <summary> The validation error message displayed when the date component is invalid. </summary>
@@ -395,16 +399,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (string.IsNullOrEmpty (_errorMessage))
       {
         IResourceManager resourceManager = GetResourceManager();
-        dateTimeValueValidator.RequiredErrorMessage =
-            resourceManager.GetString (ResourceIdentifier.RequiredErrorMessage);
-        dateTimeValueValidator.IncompleteErrorMessage =
-            resourceManager.GetString (ResourceIdentifier.IncompleteErrorMessage);
-        dateTimeValueValidator.InvalidDateAndTimeErrorMessage =
-            resourceManager.GetString (ResourceIdentifier.InvalidDateAndTimeErrorMessage);
-        dateTimeValueValidator.InvalidDateErrorMessage =
-            resourceManager.GetString (ResourceIdentifier.InvalidDateErrorMessage);
-        dateTimeValueValidator.InvalidTimeErrorMessage =
-            resourceManager.GetString (ResourceIdentifier.InvalidTimeErrorMessage);
+        dateTimeValueValidator.MissingDateAndTimeErrorMessage = resourceManager.GetString (ResourceIdentifier.MissingDateAndTimeErrorMessage);
+        dateTimeValueValidator.MissingDateOrTimeErrorMessage = resourceManager.GetString (ResourceIdentifier.MissingDateOrTimeErrorMessage);
+        dateTimeValueValidator.MissingDateErrorMessage = resourceManager.GetString (ResourceIdentifier.MissingDateErrorMessage);
+        dateTimeValueValidator.MissingTimeErrorMessage = resourceManager.GetString (ResourceIdentifier.MissingTimeErrorMessage);
+        dateTimeValueValidator.InvalidDateAndTimeErrorMessage = resourceManager.GetString (ResourceIdentifier.InvalidDateAndTimeErrorMessage);
+        dateTimeValueValidator.InvalidDateErrorMessage = resourceManager.GetString (ResourceIdentifier.InvalidDateErrorMessage);
+        dateTimeValueValidator.InvalidTimeErrorMessage = resourceManager.GetString (ResourceIdentifier.InvalidTimeErrorMessage);
       }
       else
         dateTimeValueValidator.ErrorMessage = _errorMessage;
