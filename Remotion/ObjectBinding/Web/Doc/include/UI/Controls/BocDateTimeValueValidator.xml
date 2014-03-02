@@ -29,7 +29,7 @@
             <para>
               Date-Field: mandatory
             </para><para>
-              Time-Field: optional
+              Time-Field: mandatory
             </para>
           </description>
         </item>
