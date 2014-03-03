@@ -72,23 +72,7 @@ namespace Remotion.Data.DomainObjects.Validation
       }
 
       if (invalidValidationResults.Any())
-      {
-        //TODO AO: feature request: string overload, serializable
         throw new DomainObjectFluentValidationException (invalidValidationResults.SelectMany (vr => vr.Errors));
-      }
-
-
-      /*
-       One or more DomainObjects contain inconsistent data:
-       
-       Object <ObjectID>:
-       - error 1
-       - error 2
-        
-       Object <ObjectID>:
-       - error 1
-       - error 2
-       */
     }
   }
 }
