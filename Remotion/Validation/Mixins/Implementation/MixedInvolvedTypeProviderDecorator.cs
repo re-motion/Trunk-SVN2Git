@@ -25,7 +25,6 @@ using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Mixins.Implementation
 {
-  //TODO AO: change to composite
   /// <summary>
   /// Implements the <see cref="IInvolvedTypeProvider"/> interface for mixins.
   /// </summary>
@@ -53,7 +52,9 @@ namespace Remotion.Validation.Mixins.Implementation
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      var concreteOrMixedType = MixinTypeUtility.GetConcreteMixedType (type);
+      //Note: if the type is a mixin type then the concrete type is passed to the InvolvedTypeProvider. 
+      //That is the reason why no compound implementation is possible!
+      var concreteOrMixedType = MixinTypeUtility.GetConcreteMixedType (type); 
 
       var involvedTypes = _involvedTypeProvider.GetTypes (concreteOrMixedType);
       var involvedMixins = GetMixins (type);
