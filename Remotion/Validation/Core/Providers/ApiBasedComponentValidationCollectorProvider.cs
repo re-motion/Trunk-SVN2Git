@@ -45,7 +45,6 @@ namespace Remotion.Validation.Providers
     }
 
     public IEnumerable<IEnumerable<ValidationCollectorInfo>> GetValidationCollectors (IEnumerable<Type> types)
-        //TODO AO: should be decorated by AN to return collector-groups sorted by component! -> integration test!
     {
       ArgumentUtility.CheckNotNull ("types", types);
 

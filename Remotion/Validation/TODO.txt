@@ -27,7 +27,8 @@
 		-> bekommt den cache als ICache (dekorierrt) per ctor für jeden cache-type (type based, special data based)
         	-> interface in RM rein
                 -> implementierung in AN und AppTools (evtl. voneinander ableiten)	
-        -> Sortierung nach Komponente -> ApiCollectorProviderDecorator -> HandlerTypeSource
+        -> Sortierung nach Komponente -> ApiBasedComponentValidationCollectorProvider -> HandlerTypeSource
+              -> should be decorated by AN to return collector-groups sorted by component!
 	-> Validatorklassen für Fachdaten (vorerst nur für mandatory und maxlength) -> kein cache benötigt!
            -> in AN!
         -> Adapter für IValidatorFormatter
