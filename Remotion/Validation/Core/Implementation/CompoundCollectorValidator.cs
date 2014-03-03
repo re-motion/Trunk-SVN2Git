@@ -24,7 +24,7 @@ using Remotion.Utilities;
 namespace Remotion.Validation.Implementation
 {
   /// <summary>
-  /// Combines one or more <see cref="ICollectorValidator"/>-instances. When calling <see cref="IsValid"/>, all combined 
+  /// Combines one or more <see cref="ICollectorValidator"/>-instances. When calling <see cref="CheckValid"/>, all combined 
   /// <see cref="ICollectorValidator"/> instances must confirm that an <see cref="IComponentValidationCollector"/> instance
   /// is valid.
   /// </summary>
@@ -46,11 +46,12 @@ namespace Remotion.Validation.Implementation
       get { return _collectorValidators; }
     }
 
-    public bool IsValid (IComponentValidationCollector collector)
+    public void CheckValid (IComponentValidationCollector collector)
     {
       ArgumentUtility.CheckNotNull ("collector", collector);
 
-      return _collectorValidators.All (v => v.IsValid (collector));
-    }
+      foreach (var collectorValidator in _collectorValidators)
+        collectorValidator.CheckValid (collector);
+     }
   }
 }

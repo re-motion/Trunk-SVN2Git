@@ -25,53 +25,33 @@ namespace Remotion.Validation.UnitTests.Implementation
   [TestFixture]
   public class CompoundCollectorValidatorTest
   {
-    private ICollectorValidator _collectorValidator1;
-    private ICollectorValidator _collectorValidator2;
+    private ICollectorValidator _collectorValidatorMock1;
+    private ICollectorValidator _collectorValidatorMock2;
     private CompoundCollectorValidator _compoundCollectorValidator;
     private IComponentValidationCollector _collector;
 
     [SetUp]
     public void SetUp ()
     {
-      _collectorValidator1 = MockRepository.GenerateStub<ICollectorValidator>();
-      _collectorValidator2 = MockRepository.GenerateStub<ICollectorValidator>();
+      _collectorValidatorMock1 = MockRepository.GenerateStrictMock<ICollectorValidator>();
+      _collectorValidatorMock2 = MockRepository.GenerateStrictMock<ICollectorValidator> ();
 
       _collector = MockRepository.GenerateStub<IComponentValidationCollector>();
 
-      _compoundCollectorValidator = new CompoundCollectorValidator (new[] { _collectorValidator1, _collectorValidator2 });
+      _compoundCollectorValidator = new CompoundCollectorValidator (new[] { _collectorValidatorMock1, _collectorValidatorMock2 });
     }
 
     [Test]
-    public void IsValid_AllValid_ReturnsTrue ()
+    public void CheckValid ()
     {
-      _collectorValidator1.Stub (stub => stub.IsValid (_collector)).Return (true);
-      _collectorValidator2.Stub (stub => stub.IsValid (_collector)).Return (true);
+      _collectorValidatorMock1.Expect (stub => stub.CheckValid (_collector));
+      _collectorValidatorMock2.Expect (stub => stub.CheckValid (_collector));
 
-      var result = _compoundCollectorValidator.IsValid (_collector);
+      _compoundCollectorValidator.CheckValid (_collector);
 
-      Assert.That (result, Is.True);
+      _collectorValidatorMock1.VerifyAllExpectations();
+      _collectorValidatorMock2.VerifyAllExpectations();
     }
-
-    [Test]
-    public void IsValid_NoneValid_ReturnsFalse ()
-    {
-      _collectorValidator1.Stub (stub => stub.IsValid (_collector)).Return (false);
-      _collectorValidator2.Stub (stub => stub.IsValid (_collector)).Return (false);
-
-      var result = _compoundCollectorValidator.IsValid (_collector);
-
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
-    public void IsValid_OneValid_ReturnsTrue ()
-    {
-      _collectorValidator1.Stub (stub => stub.IsValid (_collector)).Return (false);
-      _collectorValidator2.Stub (stub => stub.IsValid (_collector)).Return (true);
-
-      var result = _compoundCollectorValidator.IsValid (_collector);
-
-      Assert.That (result, Is.False);
-    }
+    
   }
 }

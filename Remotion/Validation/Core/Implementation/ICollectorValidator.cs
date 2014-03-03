@@ -28,6 +28,6 @@ namespace Remotion.Validation.Implementation
     /// <summary>
     /// Confirms that <paramref name="collector"/> is valid.
     /// </summary>
-    bool IsValid (IComponentValidationCollector collector);
+    void CheckValid (IComponentValidationCollector collector);
   }
 }

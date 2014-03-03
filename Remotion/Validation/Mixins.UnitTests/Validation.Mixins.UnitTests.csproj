@@ -64,7 +64,6 @@
     <Compile Include="Attributes\ApplyWithMixinAttributeTest.cs" />
     <Compile Include="Implementation\CheckNoMixinCollectorValidatorTest.cs" />
     <Compile Include="Implementation\DiscoveryServiceBasedValidationCollectorReflectorTest.cs" />
-    <Compile Include="Implementation\FluentValidationBuilderTest.cs" />
     <Compile Include="Implementation\ICollectorValidatorTest.cs" />
     <Compile Include="Implementation\IValidatedTypeResolverTest.cs" />
     <Compile Include="Implementation\IValidationTypeFilterTest.cs" />

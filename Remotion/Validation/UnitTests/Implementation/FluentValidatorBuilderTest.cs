@@ -133,9 +133,9 @@ namespace Remotion.Validation.UnitTests.Implementation
     {
       ExpectMocks();
 
-      _collectorValidatorMock.Expect (mock => mock.IsValid (_componenValidationCollectorStub1)).Return (true).Repeat.Once ();
-      _collectorValidatorMock.Expect (mock => mock.IsValid (_componenValidationCollectorStub2)).Return (true).Repeat.Once ();
-      _collectorValidatorMock.Expect (mock => mock.IsValid (_componenValidationCollectorStub3)).Return (true).Repeat.Once ();
+      _collectorValidatorMock.Expect (mock => mock.CheckValid (_componenValidationCollectorStub1)).Repeat.Once ();
+      _collectorValidatorMock.Expect (mock => mock.CheckValid (_componenValidationCollectorStub2)).Repeat.Once ();
+      _collectorValidatorMock.Expect (mock => mock.CheckValid (_componenValidationCollectorStub3)).Repeat.Once ();
 
       _metaRuleValidatorMock
           .Expect (mock => mock.Validate (Arg<IValidationRule[]>.List.Equal (_fakeValidationRuleResult)))
@@ -176,9 +176,9 @@ namespace Remotion.Validation.UnitTests.Implementation
     {
       ExpectMocks();
 
-      _collectorValidatorMock.Expect (mock => mock.IsValid (_componenValidationCollectorStub1)).Return (true).Repeat.Once ();
-      _collectorValidatorMock.Expect (mock => mock.IsValid (_componenValidationCollectorStub2)).Return (true).Repeat.Once ();
-      _collectorValidatorMock.Expect (mock => mock.IsValid (_componenValidationCollectorStub3)).Return (true).Repeat.Once ();
+      _collectorValidatorMock.Expect (mock => mock.CheckValid (_componenValidationCollectorStub1)).Repeat.Once ();
+      _collectorValidatorMock.Expect (mock => mock.CheckValid (_componenValidationCollectorStub2)).Repeat.Once ();
+      _collectorValidatorMock.Expect (mock => mock.CheckValid (_componenValidationCollectorStub3)).Repeat.Once ();
 
       _metaRuleValidatorMock
           .Expect (mock => mock.Validate (Arg<IValidationRule[]>.List.Equal (_fakeValidationRuleResult)))
@@ -208,7 +208,6 @@ namespace Remotion.Validation.UnitTests.Implementation
       _memberInformationNameResolverMock.VerifyAllExpectations();
       _validationRuleGlobalizationServiceMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (TypedValidatorDecorator<SpecialCustomer1>)));
-      var validator = (TypedValidatorDecorator<SpecialCustomer1>) result;
       Assert.That (_validationRuleStub3.PropertyName, Is.EqualTo ("FakeTechnicalPropertyName1"));
       Assert.That (_validationRuleStub4.PropertyName, Is.EqualTo ("FakeTechnicalPropertyName2"));
     }
@@ -218,9 +217,9 @@ namespace Remotion.Validation.UnitTests.Implementation
     {
       ExpectMocks();
 
-      _collectorValidatorMock.Expect (mock => mock.IsValid (_componenValidationCollectorStub1)).Return (true).Repeat.Once ();
-      _collectorValidatorMock.Expect (mock => mock.IsValid (_componenValidationCollectorStub2)).Return (true).Repeat.Once ();
-      _collectorValidatorMock.Expect (mock => mock.IsValid (_componenValidationCollectorStub3)).Return (true).Repeat.Once ();
+      _collectorValidatorMock.Expect (mock => mock.CheckValid (_componenValidationCollectorStub1)).Repeat.Once ();
+      _collectorValidatorMock.Expect (mock => mock.CheckValid (_componenValidationCollectorStub2)).Repeat.Once ();
+      _collectorValidatorMock.Expect (mock => mock.CheckValid (_componenValidationCollectorStub3)).Repeat.Once ();
 
       _metaRuleValidatorMock
           .Expect (mock => mock.Validate (_fakeValidationRuleResult))

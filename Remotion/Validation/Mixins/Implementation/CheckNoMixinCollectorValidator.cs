@@ -35,11 +35,18 @@ namespace Remotion.Validation.Mixins.Implementation
     {
     }
 
-    public bool IsValid (IComponentValidationCollector collector)
+    public void CheckValid (IComponentValidationCollector collector)
     {
       ArgumentUtility.CheckNotNull ("collector", collector);
 
-      return !ReflectionUtility.CanAscribe (collector.ValidatedType, typeof (Mixin<>));
+      if (ReflectionUtility.CanAscribe (collector.ValidatedType, typeof (Mixin<>)))
+      {
+        throw new NotSupportedException (
+              string.Format (
+                  "Validation rules for type '{0}' are not supported. If validation rules should be defined for mixins, "
+                  +"please ensure to apply the rules to 'ITargetInterface' or 'IIntroducedInterface' instead.",
+                  collector.ValidatedType.FullName));
+      }
     }
   }
 }
