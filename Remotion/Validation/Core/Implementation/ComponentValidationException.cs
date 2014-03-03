@@ -23,7 +23,7 @@ namespace Remotion.Validation.Implementation
   /// <summary>
   /// Thrown when inconsistencies are found within an application's validation specification.
   /// </summary>
-  [Serializable]
+  [Serializable] //TODO AO: replace with MetaValidationException
   public class ComponentValidationException : Exception
   {
     public ComponentValidationException (string message)

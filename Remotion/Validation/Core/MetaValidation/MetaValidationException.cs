@@ -21,6 +21,7 @@ namespace Remotion.Validation.MetaValidation
   /// <summary>
   /// This exception represents an inconsistent validation rule configuration.
   /// </summary>
+  //TODO AO: make serializable
   public class MetaValidationException : Exception
   {
     public MetaValidationException (string message)

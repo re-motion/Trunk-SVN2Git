@@ -72,9 +72,22 @@ namespace Remotion.Data.DomainObjects.Validation
           invalidValidationResults.Add(validationResult);
       }
 
+      //TODO AO: add DomainObjectFluentValidationException (derived from Deomain...)
       //TODO AO: Custom error message that includes the domainobject instance IDs
       if (invalidValidationResults.Any())
-        throw new ValidationException (invalidValidationResults.SelectMany (vr => vr.Errors));
+        throw new ValidationException (invalidValidationResults.SelectMany (vr => vr.Errors)); //TODO AO:feature request: string overload, serializable
+
+      /*
+       One or more DomainObjects contain inconsistent data:
+       
+       Object <ObjectID>:
+       - error 1
+       - error 2
+        
+       Object <ObjectID>:
+       - error 1
+       - error 2
+       */
     }
   }
 }

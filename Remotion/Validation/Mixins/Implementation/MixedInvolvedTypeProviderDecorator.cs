@@ -25,7 +25,7 @@ using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Mixins.Implementation
 {
-  //TODO AO: change to composite -> check with MK: GetConcreteMixedType requied => decorator ok??
+  //TODO AO: change to composite
   /// <summary>
   /// Implements the <see cref="IInvolvedTypeProvider"/> interface for mixins.
   /// </summary>
