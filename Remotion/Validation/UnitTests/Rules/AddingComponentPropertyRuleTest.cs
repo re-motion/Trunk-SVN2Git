@@ -25,6 +25,7 @@ using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Merging;
+using Remotion.Validation.MetaValidation;
 using Remotion.Validation.Rules;
 using Remotion.Validation.UnitTests.TestDomain;
 using Remotion.Validation.UnitTests.TestDomain.Collectors;
@@ -164,7 +165,7 @@ namespace Remotion.Validation.UnitTests.Rules
 
       Assert.That (
           () => _addingComponentPropertyRule.ApplyRemoveValidatorRegistrations (_propertyValidatorExtractorMock),
-          Throws.TypeOf<ComponentValidationException>().And.Message.EqualTo (
+          Throws.TypeOf<MetaValidationException>().And.Message.EqualTo (
               "Hard constraint validator(s) 'StubPropertyValidator, NotEqualValidator' on property "
               + "'Remotion.Validation.UnitTests.TestDomain.Customer.UserName' cannot be removed."));
     }

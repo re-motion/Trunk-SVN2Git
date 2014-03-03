@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.IntegrationTests.TestDomain.ComponentA;
 using Remotion.Validation.IntegrationTests.TestDomain.ComponentB;
+using Remotion.Validation.MetaValidation;
 
 namespace Remotion.Validation.IntegrationTests
 {
@@ -37,7 +38,7 @@ namespace Remotion.Validation.IntegrationTests
     public void BuildSpecialCustomer_RemoveLastNameHardConstraint_ThrowsException ()
     {
       Assert.That (() => ValidationBuilder.BuildValidator<SpecialCustomer2> (), 
-        Throws.TypeOf<ComponentValidationException> ().And.Message.EqualTo (
+        Throws.TypeOf<MetaValidationException> ().And.Message.EqualTo (
         "Hard constraint validator(s) 'LengthValidator' on property "
         + "'Remotion.Validation.IntegrationTests.TestDomain.ComponentA.Person.LastName' cannot be removed."));
     }

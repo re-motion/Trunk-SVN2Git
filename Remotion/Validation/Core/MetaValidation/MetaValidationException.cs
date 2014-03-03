@@ -15,13 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Runtime.Serialization;
 
 namespace Remotion.Validation.MetaValidation
 {
   /// <summary>
   /// This exception represents an inconsistent validation rule configuration.
   /// </summary>
-  //TODO AO: make serializable
+  [Serializable]
   public class MetaValidationException : Exception
   {
     public MetaValidationException (string message)
@@ -31,6 +32,11 @@ namespace Remotion.Validation.MetaValidation
 
     public MetaValidationException (string message, Exception inner)
         : base (message, inner)
+    {
+    }
+
+    protected MetaValidationException (SerializationInfo info, StreamingContext context)
+        : base (info, context)
     {
     }
   }

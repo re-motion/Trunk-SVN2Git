@@ -93,7 +93,6 @@
     <Compile Include="Providers\ValidationAttributesBasedCollectorProvider.cs" />
     <Compile Include="Rules\AddingComponentPropertyMetaValidationRule.cs" />
     <Compile Include="Rules\IAddingComponentPropertyMetaValidationRule.cs" />
-    <Compile Include="Implementation\ComponentValidationException.cs" />
     <Compile Include="Implementation\CompoundValidator.cs" />
     <Compile Include="IComponentValidationCollector.cs" />
     <Compile Include="MetaValidation\DelegateMetaValidationRule.cs" />
