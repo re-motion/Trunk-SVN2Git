@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using FluentValidation;
 using FluentValidation.Results;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Utilities;
@@ -68,14 +67,16 @@ namespace Remotion.Data.DomainObjects.Validation
 
         var validator = _validatorBuilder.BuildValidator (item.DomainObject.GetPublicDomainObjectType());
         var validationResult = validator.Validate (item.DomainObject);
-        if(!validationResult.IsValid)
-          invalidValidationResults.Add(validationResult);
+        if (!validationResult.IsValid)
+          invalidValidationResults.Add (validationResult);
       }
 
-      //TODO AO: add DomainObjectFluentValidationException (derived from Deomain...)
-      //TODO AO: Custom error message that includes the domainobject instance IDs
       if (invalidValidationResults.Any())
-        throw new ValidationException (invalidValidationResults.SelectMany (vr => vr.Errors)); //TODO AO:feature request: string overload, serializable
+      {
+        //TODO AO: feature request: string overload, serializable
+        throw new DomainObjectFluentValidationException (invalidValidationResults.SelectMany (vr => vr.Errors));
+      }
+
 
       /*
        One or more DomainObjects contain inconsistent data:

@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain;
 using Remotion.Validation;
 using Remotion.Validation.Implementation;
+using Remotion.Validation.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.Validation.UnitTests
@@ -108,7 +109,12 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (ValidationException), ExpectedMessage = "Validation failed: \r\n -- Error1\r\n -- Error2\r\n -- Error3")]
+    [ExpectedException (typeof (DomainObjectFluentValidationException), ExpectedMessage = 
+      "One or more DomainObjects contain inconsistent data:\r\n\r\n"
+      + "Object '.*':\r\n"
+      +" -- Error1\r\n -- Error2\r\n\r\n"
+      + "Object '.*':\r\n"
+      +" -- Error3", MatchType = MessageMatch.Regex)]
     public void CommitValidate_WithValidationFailures ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
@@ -141,8 +147,11 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
             .Return (_validatorMock2);
 
         var validationFailure1 = new ValidationFailure ("Test1", "Error1");
+        validationFailure1.SetValidatedInstance (domainObject1);
         var validationFailure2 = new ValidationFailure ("Test2", "Error2");
+        validationFailure2.SetValidatedInstance (domainObject1);
         var validationFailure3 = new ValidationFailure ("Test3", "Error3");
+        validationFailure3.SetValidatedInstance (domainObject3);
 
         _validatorMock1.Expect (mock => mock.Validate (domainObject1)).Return (new ValidationResult (new [] { validationFailure1 }));
         _validatorMock2.Expect (mock => mock.Validate (domainObject2)).Return (new ValidationResult (new [] { validationFailure2, validationFailure3 }));

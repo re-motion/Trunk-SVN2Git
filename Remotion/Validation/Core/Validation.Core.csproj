@@ -144,6 +144,7 @@
     <Compile Include="Providers\ApiBasedComponentValidationCollectorProvider.cs" />
     <Compile Include="Implementation\InvolvedTypeProvider.cs" />
     <Compile Include="Implementation\Validator.cs" />
+    <Compile Include="Utilities\ValidationFailureExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\remotion.snk">

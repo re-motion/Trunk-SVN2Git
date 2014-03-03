@@ -23,6 +23,7 @@ using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
 using Remotion.Utilities;
+using Remotion.Validation.Utilities;
 
 namespace Remotion.Validation.Implementation
 {
@@ -66,11 +67,8 @@ namespace Remotion.Validation.Implementation
 
       var failures = _validationRules.SelectMany (r => r.Validate (context)).ToList();
       foreach (var failure in failures)
-      {
-        //TODO AO
-        //failure.SetValidatedInstance (context.InstanceToValidate); // Extension method, uses CustomState
-        //failaure.GetValidatedInstance (), extension method. Can return null if key not found
-      }
+        failure.SetValidatedInstance (context.InstanceToValidate);
+
       return new ValidationResult (failures);
     }
 

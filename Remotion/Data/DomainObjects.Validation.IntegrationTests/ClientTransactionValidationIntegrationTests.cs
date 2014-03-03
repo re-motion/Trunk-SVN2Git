@@ -58,13 +58,14 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
         ((ICustomerIntroduced) customer).Address = Address.NewObject();
         ((ICustomerIntroduced) customer).Title = "Chef1";
 
-
         Assert.That (
             () => ClientTransaction.Current.Commit(),
-            Throws.TypeOf<ValidationException>().And.Message.EqualTo (
-                "Validation failed: \r\n "
-                + "-- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n "
-                + "-- 'LocalizedTitle' should not be equal to 'Chef1'."));
+            Throws.TypeOf<DomainObjectFluentValidationException> ().And.Message.Matches (
+                "One or more DomainObjects contain inconsistent data:\r\n\r\n"
+                + "Object '.*':\r\n"
+                + " -- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n\r\n"
+                + "Object '.*':\r\n"
+                + " -- 'LocalizedTitle' should not be equal to 'Chef1'."));
       }
     }
 
