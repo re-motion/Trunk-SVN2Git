@@ -48,11 +48,11 @@ namespace Remotion.Validation.Implementation
     {
       ArgumentUtility.CheckNotNull ("collectorType", collectorType);
 
-      var atrtribute = AttributeUtility.GetCustomAttribute<ApplyWithClassAttribute> (collectorType, false);
-      if (atrtribute == null)
+      var attribute = AttributeUtility.GetCustomAttribute<ApplyWithClassAttribute> (collectorType, false);
+      if (attribute == null)
         return _resolver.GetValidatedType (collectorType);
 
-      var validatedType = atrtribute.ClassType;
+      var validatedType = attribute.ClassType;
       var validatedTypefromGeneric = _genericResolver.GetValidatedType (collectorType);
       if (validatedTypefromGeneric != null)
         CheckValidatedTypeAssignableFromDefinedType (collectorType, validatedTypefromGeneric, validatedType);

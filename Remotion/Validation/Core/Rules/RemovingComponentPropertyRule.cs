@@ -44,7 +44,7 @@ namespace Remotion.Validation.Rules
       return new RemovingComponentPropertyRule (member, collectorType);
     }
 
-    private RemovingComponentPropertyRule (PropertyInfo member, Type collectorType)
+    public RemovingComponentPropertyRule (PropertyInfo member, Type collectorType)
     {
       ArgumentUtility.CheckNotNull ("member", member);
       ArgumentUtility.CheckNotNull ("collectorType", collectorType);

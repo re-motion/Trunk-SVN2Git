@@ -44,7 +44,7 @@ namespace Remotion.Validation.Rules
       return new AddingComponentPropertyMetaValidationRule (member, collectorType);
     }
 
-    private AddingComponentPropertyMetaValidationRule (PropertyInfo member, Type collectorType)
+    public AddingComponentPropertyMetaValidationRule (PropertyInfo member, Type collectorType)
     {
       ArgumentUtility.CheckNotNull ("member", member);
       ArgumentUtility.CheckNotNull ("collectorType", collectorType);

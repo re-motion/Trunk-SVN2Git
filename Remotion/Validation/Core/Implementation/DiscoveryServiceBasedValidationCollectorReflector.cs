@@ -78,7 +78,6 @@ namespace Remotion.Validation.Implementation
 
     private ILookup<Type, Type> GetValidationCollectors ()
     {
-      //TOOD AO: add integration test for IComponentValidationCollector
       return _typeDiscoveryService.GetTypes (typeof (IComponentValidationCollector), true).Cast<Type>()
           .Where (IsRelevant)
           .ToLookup (GetValidatedType, collectorType => collectorType);

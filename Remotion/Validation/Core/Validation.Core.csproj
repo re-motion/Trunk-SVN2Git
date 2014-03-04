@@ -59,6 +59,7 @@
     <Compile Include="Attributes\Validation\NotNullAttribute.cs" />
     <Compile Include="Attributes\Validation\RemoveValidatorAttribute.cs" />
     <Compile Include="Attributes\Validation\AddingValidationAttributeBase.cs" />
+    <Compile Include="Implementation\AttributeBasedComponentValidationCollector.cs" />
     <Compile Include="Implementation\CompoundValidationRuleMetadataService.cs" />
     <Compile Include="Implementation\IValidationRuleMetadataService.cs" />
     <Compile Include="IComponentValidationCollector1.cs" />

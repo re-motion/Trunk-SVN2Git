@@ -102,17 +102,15 @@ namespace Remotion.Validation.UnitTests.Providers
       _validationPropertyRuleReflectorMock1.VerifyAllExpectations ();
       _validationPropertyRuleReflectorMock2.VerifyAllExpectations ();
       Assert.That (result.Count(), Is.EqualTo (2));
-      Assert.That (result[0].Collector.GetType ().Name, Is.EqualTo ("AttributeValidationCollector`1"));
+      Assert.That (result[0].Collector.GetType ().Name, Is.EqualTo ("AttributeBasedComponentValidationCollector"));
       Assert.That (result[0].ProviderType, Is.EqualTo (typeof (TestableAttributeBasedValidationCollectorProviderBase)));
 
-      Assert.That (result[0].Collector.AddedPropertyRules.Count(), Is.EqualTo (3));
       var addingPropertyRuleValidators = result[0].Collector.AddedPropertyRules.ToArray().SelectMany (pr => pr.Validators);
       Assert.That (
           addingPropertyRuleValidators,
           Is.EquivalentTo (new[] { _propertyValidatorStub1, _propertyValidatorStub2, _propertyValidatorStub3 }));
       Assert.That (result[0].Collector.AddedPropertyMetaValidationRules.ToArray().SelectMany (pr => pr.MetaValidationRules).Any(), Is.False);
 
-      Assert.That (result[0].Collector.RemovedPropertyRules.Count(), Is.EqualTo (1));
       var removedPropertyRuleRegistrations =
           result[0].Collector.RemovedPropertyRules.ToArray().SelectMany (pr => pr.Validators.Select (v => v.ValidatorType));
       Assert.That (
@@ -121,7 +119,7 @@ namespace Remotion.Validation.UnitTests.Providers
 
       Assert.That (
           result[1].Collector.GetType().Name,
-          Is.EqualTo ("AttributeValidationCollector`1"));
+          Is.EqualTo ("AttributeBasedComponentValidationCollector"));
       Assert.That (result[1].ProviderType, Is.EqualTo (typeof (TestableAttributeBasedValidationCollectorProviderBase)));
 
       Assert.That (result[1].Collector.AddedPropertyRules.Count(), Is.EqualTo (4));
@@ -135,7 +133,6 @@ namespace Remotion.Validation.UnitTests.Providers
           addingPropertyRuleMetaValidationRules,
           Is.EquivalentTo (new IMetaValidationRule[] { _metaValidationRule1, _metaValidationRule3, _metaValidationRule2 }));
 
-      Assert.That (result[1].Collector.RemovedPropertyRules.Count(), Is.EqualTo (1));
       removedPropertyRuleRegistrations =
           result[1].Collector.RemovedPropertyRules.ToArray().SelectMany (pr => pr.Validators.Select (v => v.ValidatorType));
       Assert.That (

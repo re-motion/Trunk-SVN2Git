@@ -25,7 +25,6 @@ using FluentValidation.Internal;
 using FluentValidation.Validators;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.Validation.Implementation;
 using Remotion.Validation.Merging;
 using Remotion.Validation.MetaValidation;
 
@@ -43,10 +42,15 @@ namespace Remotion.Validation.Rules
     private readonly PropertyInfoAdapter _property;
     private bool _isHardConstraint;
 
-    //TODO AO
-    //public static AddingComponentPropertyRule Create (PropertyInfo propertyInfo, Type collectorType, Func<object,object> propertyFunc)
-    //{
-    //}
+    public AddingComponentPropertyRule (
+        PropertyInfo propertyInfo,
+        Type collectorType,
+        Func<object, object> propertyFunc,
+        Type validatedType,
+        LambdaExpression expression)
+        : this (collectorType, propertyInfo, propertyFunc, expression, () => ValidatorOptions.CascadeMode, propertyInfo.PropertyType, validatedType)
+    {
+    }
 
     public static AddingComponentPropertyRule Create<TValidatedType, TProperty> (
         Expression<Func<TValidatedType, TProperty>> expression,
