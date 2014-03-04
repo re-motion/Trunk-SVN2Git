@@ -43,6 +43,11 @@ namespace Remotion.Validation.Rules
     private readonly PropertyInfoAdapter _property;
     private bool _isHardConstraint;
 
+    //TODO AO
+    //public static AddingComponentPropertyRule Create (PropertyInfo propertyInfo, Type collectorType, Func<object,object> propertyFunc)
+    //{
+    //}
+
     public static AddingComponentPropertyRule Create<TValidatedType, TProperty> (
         Expression<Func<TValidatedType, TProperty>> expression,
         Type collectorType)

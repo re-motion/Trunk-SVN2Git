@@ -84,6 +84,7 @@ namespace Remotion.Data.DomainObjects.Validation
       var nullableAttribute = AttributeUtility.GetCustomAttribute<INullablePropertyAttribute> (_implementationProperty, false);
       if (nullableAttribute != null && !nullableAttribute.IsNullable)
         yield return new NotNullValidator();
+      //TODO AO: return NotEmtpyValidator for IENumarabel properties (no Hard Constraint!! except propertytype RefUtil.IsAscribe (ObjectList<>)
     }
 
     public IEnumerable<ValidatorRegistration> GetRemovingPropertyRegistrations ()
