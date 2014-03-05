@@ -42,16 +42,6 @@ namespace Remotion.Validation.Rules
     private readonly PropertyInfoAdapter _property;
     private bool _isHardConstraint;
 
-    public AddingComponentPropertyRule (
-        PropertyInfo propertyInfo,
-        Type collectorType,
-        Func<object, object> propertyFunc,
-        Type validatedType,
-        LambdaExpression expression)
-        : this (collectorType, propertyInfo, propertyFunc, expression, () => ValidatorOptions.CascadeMode, propertyInfo.PropertyType, validatedType)
-    {
-    }
-
     public static AddingComponentPropertyRule Create<TValidatedType, TProperty> (
         Expression<Func<TValidatedType, TProperty>> expression,
         Type collectorType)
@@ -75,15 +65,20 @@ namespace Remotion.Validation.Rules
           typeof (TValidatedType));
     }
 
+    public AddingComponentPropertyRule (Type validatedType, PropertyInfo propertyInfo, Func<object, object> propertyFunc, Type collectorType)
+        : this (collectorType, propertyInfo, propertyFunc, null, () => ValidatorOptions.CascadeMode, propertyInfo.PropertyType, validatedType)
+    {
+    }
+
     private AddingComponentPropertyRule (
         Type collectorType,
         PropertyInfo member,
         Func<object, object> propertyFunc,
         LambdaExpression expression,
         Func<CascadeMode> cascadeModeThunk,
-        Type typeToValidate,
-        Type containerType)
-        : base (member, propertyFunc, expression, cascadeModeThunk, typeToValidate, containerType)
+        Type propertyType,
+        Type validatedType)
+        : base (member, propertyFunc, expression, cascadeModeThunk, propertyType, validatedType)
     {
       ArgumentUtility.CheckNotNull ("collectorType", collectorType);
       ArgumentUtility.CheckNotNull ("member", member);

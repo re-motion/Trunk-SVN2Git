@@ -32,6 +32,8 @@ namespace Remotion.Validation.Providers
   [ImplementationFor (typeof (IValidationCollectorProvider), Lifetime = LifetimeKind.Singleton, Position = 1, RegistrationType = RegistrationType.Multiple)]
   public class ValidationAttributesBasedCollectorProvider : AttributeBasedValidationCollectorProviderBase
   {
+    private const BindingFlags PropertyBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
     protected override ILookup<Type, IAttributesBasedValidationPropertyRuleReflector> CreatePropertyRuleReflectors (IEnumerable<Type> types)
     {
       ArgumentUtility.CheckNotNull ("types", types);

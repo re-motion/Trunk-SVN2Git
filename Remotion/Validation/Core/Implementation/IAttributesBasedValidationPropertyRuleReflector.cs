@@ -32,7 +32,7 @@ namespace Remotion.Validation.Implementation
   public interface IAttributesBasedValidationPropertyRuleReflector
   {
     Type PropertyType { get; }
-    Expression<Func<TValidatedType, TProperty>> GetPropertyAccessExpression<TValidatedType, TProperty> ();
+    Expression<Func<object, object>> GetPropertyAccessExpression (Type validatedType);
     IEnumerable<IPropertyValidator> GetAddingPropertyValidators ();
     IEnumerable<IPropertyValidator> GetHardConstraintPropertyValidators ();
     IEnumerable<ValidatorRegistration> GetRemovingPropertyRegistrations ();

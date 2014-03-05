@@ -48,12 +48,20 @@ namespace Remotion.Validation.Implementation
       get { return _property.PropertyType; }
     }
 
-    public Expression<Func<TValidatedType, TProperty>> GetPropertyAccessExpression<TValidatedType, TProperty> ()
+    public Expression<Func<object, object>> GetPropertyAccessExpression (Type validatedType)
     {
-      var parameterExpression = Expression.Parameter (typeof (TValidatedType), "t");
-      var propertyExpression = Expression.Property (parameterExpression, _property);
-      return (Expression<Func<TValidatedType, TProperty>>)
-          Expression.Lambda (typeof (Func<TValidatedType, TProperty>), propertyExpression, parameterExpression);
+      ArgumentUtility.CheckNotNull ("validatedType", validatedType);
+
+      var parameterExpression = Expression.Parameter (typeof (object), "t");
+
+      // object o => (object) (TheType o).TheProperty
+      return Expression.Lambda<Func<object, object>> (
+          Expression.Convert (
+              Expression.Property (
+                  Expression.Convert (parameterExpression, validatedType),
+                  _property),
+              typeof (object)),
+          parameterExpression);
     }
 
     public IEnumerable<IPropertyValidator> GetAddingPropertyValidators ()

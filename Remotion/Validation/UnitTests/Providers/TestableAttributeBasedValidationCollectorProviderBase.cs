@@ -83,13 +83,15 @@ namespace Remotion.Validation.UnitTests.Providers
       var involvedTypes = types.ToArray();
       foreach (var type in involvedTypes)
       {
-        foreach (var property in type.GetProperties (PropertyBindingFlags | BindingFlags.DeclaredOnly))
+        foreach (var property in type.GetProperties (BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
         {
           _validationPropertyRuleReflectorMocks[type].Stub (stub => stub.PropertyType).Return (property.PropertyType);
 
           if (property.Name == "Position")
           {
-            _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetPropertyAccessExpression<Employee, string> ()).Return (e => e.Position);
+            _validationPropertyRuleReflectorMocks[type]
+                .Expect (mock => mock.GetPropertyAccessExpression (typeof (Employee)))
+                .Return (e => ((Employee) e).Position);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetAddingPropertyValidators ()).Return (new[] { _propertyValidatorStub1 });
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetHardConstraintPropertyValidators ())
                 .Return (new[] { _propertyValidatorStub2 });
@@ -98,7 +100,9 @@ namespace Remotion.Validation.UnitTests.Providers
           }
           else if (property.Name == "Notes")
           {
-            _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetPropertyAccessExpression<Employee, string> ()).Return (e => e.Notes);
+            _validationPropertyRuleReflectorMocks[type]
+                .Expect (mock => mock.GetPropertyAccessExpression (typeof (Employee)))
+                .Return (e => ((Employee) e).Notes);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetAddingPropertyValidators ()).Return (new[] { _propertyValidatorStub3 });
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetHardConstraintPropertyValidators ()).Return (new IPropertyValidator[0]);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetRemovingPropertyRegistrations ())
@@ -107,7 +111,8 @@ namespace Remotion.Validation.UnitTests.Providers
           }
           else if (property.Name == "LastName")
           {
-            _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetPropertyAccessExpression<SpecialCustomer1, string> ()).Return (c => c.LastName);
+            _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetPropertyAccessExpression(typeof(SpecialCustomer1))).Return (c =>
+                ((SpecialCustomer1) c).LastName);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetAddingPropertyValidators ())
                 .Return (new[] { _propertyValidatorStub4, _propertyValidatorStub5 });
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetHardConstraintPropertyValidators ()).Return (new IPropertyValidator[0]);
@@ -117,7 +122,8 @@ namespace Remotion.Validation.UnitTests.Providers
           }
           else if (property.Name == "UserName")
           {
-            _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetPropertyAccessExpression<SpecialCustomer1, string> ()).Return (c => c.UserName);
+            _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetPropertyAccessExpression (typeof(SpecialCustomer1))).Return (c =>
+                ((SpecialCustomer1) c).UserName);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetAddingPropertyValidators ()).Return (new[] { _propertyValidatorStub6 });
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetHardConstraintPropertyValidators ()).Return (new IPropertyValidator[0]);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetRemovingPropertyRegistrations ())
@@ -133,7 +139,7 @@ namespace Remotion.Validation.UnitTests.Providers
       }
 
       return
-        involvedTypes.SelectMany (t => t.GetProperties (PropertyBindingFlags | BindingFlags.DeclaredOnly))
+        involvedTypes.SelectMany (t => t.GetProperties (BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
             .Select (p => new { Type = p.DeclaringType, Property = p })
             .Select (t => new Tuple<Type, IAttributesBasedValidationPropertyRuleReflector> (t.Type, _validationPropertyRuleReflectorMocks[t.Type]))
             .ToLookup (c => c.Item1, c => c.Item2);

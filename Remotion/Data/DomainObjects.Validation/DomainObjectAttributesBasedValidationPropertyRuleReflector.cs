@@ -63,13 +63,25 @@ namespace Remotion.Data.DomainObjects.Validation
       get { return _interfaceProperty.PropertyType; }
     }
 
-    public Expression<Func<TValidatedType, TProperty>> GetPropertyAccessExpression<TValidatedType, TProperty> ()
+    public Expression<Func<object, object>> GetPropertyAccessExpression (Type validatedType)
     {
-      var parameterExpression = Expression.Parameter (typeof(TValidatedType), "t");
-      var propertyExpression = Expression.Property (parameterExpression, _interfaceProperty);
-      return
-          (Expression<Func<TValidatedType, TProperty>>)
-              Expression.Lambda (typeof (Func<TValidatedType, TProperty>), propertyExpression, parameterExpression);
+      ArgumentUtility.CheckNotNull ("validatedType", validatedType);
+      
+      //var parameterExpression = Expression.Parameter (validatedType, "t");
+      //var propertyExpression = Expression.Property (parameterExpression, _interfaceProperty);
+      //var funcType = typeof(Func<,>).MakeGenericType (validatedType, _interfaceProperty.PropertyType);
+      //return Expression.Lambda (funcType, propertyExpression, parameterExpression);
+
+      var parameterExpression = Expression.Parameter (typeof (object), "t");
+
+      // object o => (object) (TheType o).TheProperty
+      return Expression.Lambda<Func<object, object>> (
+          Expression.Convert (
+              Expression.Property (
+                  Expression.Convert (parameterExpression, validatedType),
+                  _interfaceProperty),
+              typeof (object)),
+          parameterExpression);
     }
 
     public IEnumerable<IPropertyValidator> GetAddingPropertyValidators ()

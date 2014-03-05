@@ -42,6 +42,8 @@ namespace Remotion.Data.DomainObjects.Validation
       object DummyProperty { get; }
     }
 
+    private const BindingFlags PropertyBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
     private static readonly PropertyInfo s_dummyProperty = MemberInfoFromExpressionUtility.GetProperty (((IDummyInterface o) => o.DummyProperty));
 
     public DomainObjectAttributesBasedValidationCollectorProvider ()

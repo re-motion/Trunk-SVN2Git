@@ -104,11 +104,12 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
     public void GetPropertyAccessExpression ()
     {
       var result = (LambdaExpression) _propertyWithMandatoryAttributeReflector
-          .GetPropertyAccessExpression<MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface, TestDomainObject>();
+          .GetPropertyAccessExpression (typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface));
 
-      Assert.That (result.Body, Is.InstanceOf (typeof (MemberExpression)));
+      Assert.That (result.Body, Is.InstanceOf (typeof (UnaryExpression)));
+      Assert.That (((UnaryExpression) result.Body).Operand, Is.InstanceOf (typeof (MemberExpression)));
       Assert.That (
-          ((MemberExpression) result.Body).Member.DeclaringType,
+          ((MemberExpression) ((UnaryExpression) result.Body).Operand).Member.DeclaringType,
           Is.EqualTo (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)));
     }
 

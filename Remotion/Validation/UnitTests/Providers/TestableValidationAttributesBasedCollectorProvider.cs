@@ -29,10 +29,14 @@ namespace Remotion.Validation.UnitTests.Providers
     public new ILookup<Type, IAttributesBasedValidationPropertyRuleReflector> CreatePropertyRuleReflectors (IEnumerable<Type> types)
     {
       return
-          types.SelectMany (t => t.GetProperties (PropertyBindingFlags | BindingFlags.DeclaredOnly))
+          types.SelectMany (t => t.GetProperties (BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
               .Select (p => new { Type = p.DeclaringType, Property = p })
-              .Select (t => new Tuple<Type, IAttributesBasedValidationPropertyRuleReflector>(t.Type,  new ValidationAttributesBasedPropertyRuleReflector (t.Property)))
-              .ToLookup (c => c.Item1, c=>c.Item2);
+              .Select (
+                  t =>
+                      new Tuple<Type, IAttributesBasedValidationPropertyRuleReflector> (
+                          t.Type,
+                          new ValidationAttributesBasedPropertyRuleReflector (t.Property)))
+              .ToLookup (c => c.Item1, c => c.Item2);
     }
   }
 }
