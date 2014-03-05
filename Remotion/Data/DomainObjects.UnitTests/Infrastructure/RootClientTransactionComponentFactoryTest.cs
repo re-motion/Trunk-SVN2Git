@@ -135,13 +135,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
       serviceLocatorMock.VerifyAllExpectations ();
       extensionFactoryMock.VerifyAllExpectations ();
 
-      Assert.That (extensions.Length, Is.EqualTo (2));
-      Assert.That (extensions[0], Is.TypeOf<CommitValidationClientTransactionExtension> ());
-      Assert.That (extensions[1], Is.SameAs (extensionStub));
-      
-      var validationExtension = (CommitValidationClientTransactionExtension) extensions[0];
-      var validator = validationExtension.ValidatorFactory (_fakeConstructedTransaction);
-      Assert.That (validator, Is.TypeOf<MandatoryRelationValidator>());
+      Assert.That (extensions, Is.EqualTo (new[] { extensionStub }));
     }
 
     [Test]

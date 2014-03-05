@@ -323,6 +323,7 @@
     <Compile Include="Queries\LinqProviderComponentFactory.cs" />
     <Compile Include="Queries\QueryExtensions.cs" />
     <Compile Include="Tracing\CompoundPersistenceExtensionFactory.cs" />
+    <Compile Include="Validation\CommitValidationClientTransactionExtensionFactory.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />
     <Compile Include="IClientTransactionExtensionFactory.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\PersistableData.cs" />

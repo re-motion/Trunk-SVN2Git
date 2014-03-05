@@ -83,14 +83,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ObjectFactory.Create<RootPersistenceStrategy> (true, ParamList.Create (constructedTransaction.ID));
     }
 
-    public override IEnumerable<IClientTransactionExtension> CreateExtensions (ClientTransaction constructedTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-
-      return new IClientTransactionExtension[] { new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator()) }
-          .Concat (base.CreateExtensions (constructedTransaction));
-    }
-
     protected override IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);

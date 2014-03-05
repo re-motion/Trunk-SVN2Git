@@ -311,6 +311,8 @@
     <Compile Include="IntegrationTests\RegisterForCommitTest.cs" />
     <Compile Include="Tracing\CompoundPersistenceExtensionFactoryTest.cs" />
     <Compile Include="Tracing\IPersistenceExtensionFactoryTest.cs" />
+    <Compile Include="Validation\CommitValidationClientTransactionExtensionFactoryTest.cs" />
+    <Compile Include="Validation\IClientTransactionExtensionFactoryTest.cs" />
     <Compile Include="VariableTypeInferrer.cs" />
     <Compile Include="Queries\QueryObjectMother.cs" />
     <Compile Include="Queries\QueryResultObjectMother.cs" />

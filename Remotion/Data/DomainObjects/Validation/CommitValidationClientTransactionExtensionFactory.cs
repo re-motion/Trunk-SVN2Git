@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,28 +14,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 using System.Collections.Generic;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
-using Remotion.Validation;
 
 namespace Remotion.Data.DomainObjects.Validation
 {
-  //TODO RM-6055: enable IoC
-  //[ImplementationFor (typeof(IClientTransactionExtensionFactory), Position = Position, Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
-  public class ValidationClientTransactionExtensionFactory : IClientTransactionExtensionFactory
+  /// <summary>
+  /// Implementation of the <see cref="IClientTransactionExtensionFactory"/> interface. 
+  /// Registers the <see cref="CommitValidationClientTransactionExtension"/> for root <see cref="ClientTransaction"/>s.
+  /// </summary>
+  [ImplementationFor (typeof(IClientTransactionExtensionFactory), Position = Position, Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
+  public class CommitValidationClientTransactionExtensionFactory : IClientTransactionExtensionFactory
   {
-    public const int Position = CommitValidationClientTransactionExtensionFactory.Position - 113;
+    public const int Position = 0;
 
-    private readonly IValidatorBuilder _validationBuilder;
-
-    public ValidationClientTransactionExtensionFactory (IValidatorBuilder validatorBuilder)
+    public CommitValidationClientTransactionExtensionFactory ()
     {
-      ArgumentUtility.CheckNotNull ("validatorBuilder", validatorBuilder);
-
-      _validationBuilder = validatorBuilder;
     }
 
     public IEnumerable<IClientTransactionExtension> CreateClientTransactionExtensions (ClientTransaction clientTransaction)
@@ -43,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Validation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       if (clientTransaction.RootTransaction == clientTransaction)
-        yield return new ValidationClientTransactionExtension (_validationBuilder);
+        yield return new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator());
     }
   }
 }
