@@ -58,30 +58,43 @@ namespace Remotion.Data.DomainObjects.Validation
       _implementationProperty = implementationProperty;
     }
 
-    public Type PropertyType
+    public PropertyInfo ValidatedProperty
     {
-      get { return _interfaceProperty.PropertyType; }
+      get { return _interfaceProperty; }
     }
 
     public Expression<Func<object, object>> GetPropertyAccessExpression (Type validatedType)
     {
       ArgumentUtility.CheckNotNull ("validatedType", validatedType);
-      
-      //var parameterExpression = Expression.Parameter (validatedType, "t");
-      //var propertyExpression = Expression.Property (parameterExpression, _interfaceProperty);
-      //var funcType = typeof(Func<,>).MakeGenericType (validatedType, _interfaceProperty.PropertyType);
-      //return Expression.Lambda (funcType, propertyExpression, parameterExpression);
 
       var parameterExpression = Expression.Parameter (typeof (object), "t");
 
+      // object o => UsePersistentProperty ((DomainObject)o, _interfaceProperty) ? (object) (TheType o).TheProperty : nonEmptyObject;
+
+      var usePersistentPropertyMethod = MemberInfoFromExpressionUtility.GetMethod (() => UsePersistentProperty (null, null));
+      var conditionExpression = Expression.Call (
+          usePersistentPropertyMethod,
+          Expression.Convert (parameterExpression, typeof (DomainObject)),
+          Expression.Constant (_implementationProperty, typeof (PropertyInfo)));
+
       // object o => (object) (TheType o).TheProperty
+      var domainObjectPropertyAccessExpression = Expression.Convert (
+          Expression.Property (
+              Expression.Convert (parameterExpression, validatedType),
+              _interfaceProperty),
+          typeof (object));
+
+      var nonEmptyDummyValue = new object();
+      var nonEmptyDummyValueExpression = Expression.Constant (nonEmptyDummyValue, typeof (object));
+
       return Expression.Lambda<Func<object, object>> (
-          Expression.Convert (
-              Expression.Property (
-                  Expression.Convert (parameterExpression, validatedType),
-                  _interfaceProperty),
-              typeof (object)),
+          Expression.Condition (conditionExpression, domainObjectPropertyAccessExpression, nonEmptyDummyValueExpression),
           parameterExpression);
+    }
+
+    private static bool UsePersistentProperty (DomainObject domainObject, PropertyInfo property)
+    {
+      return true;
     }
 
     public IEnumerable<IPropertyValidator> GetAddingPropertyValidators ()
@@ -97,6 +110,7 @@ namespace Remotion.Data.DomainObjects.Validation
       if (nullableAttribute != null && !nullableAttribute.IsNullable)
         yield return new NotNullValidator();
       //TODO AO: return NotEmtpyValidator for IENumarabel properties (no Hard Constraint!! except propertytype RefUtil.IsAscribe (ObjectList<>)
+      //Tests for: //byte[], string, relation
     }
 
     public IEnumerable<ValidatorRegistration> GetRemovingPropertyRegistrations ()

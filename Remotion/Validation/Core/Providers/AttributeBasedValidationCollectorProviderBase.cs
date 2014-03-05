@@ -18,9 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using FluentValidation.Internal;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
@@ -66,7 +64,7 @@ namespace Remotion.Validation.Providers
         IAttributesBasedValidationPropertyRuleReflector propertyRuleReflector, Type validatedType)
     {
       var propertyAccessExpression = propertyRuleReflector.GetPropertyAccessExpression (validatedType);
-      var propertyInfo = propertyAccessExpression.GetMember() as PropertyInfo;
+      var propertyInfo = propertyRuleReflector.ValidatedProperty;
       var propertyFunc = propertyAccessExpression.Compile();
       var collectorType = typeof (AttributeBasedComponentValidationCollector);
 

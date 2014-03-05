@@ -66,25 +66,32 @@ namespace Remotion.Validation.Rules
     }
 
     public AddingComponentPropertyRule (Type validatedType, PropertyInfo propertyInfo, Func<object, object> propertyFunc, Type collectorType)
-        : this (collectorType, propertyInfo, propertyFunc, null, () => ValidatorOptions.CascadeMode, propertyInfo.PropertyType, validatedType)
+        : this (
+            collectorType,
+            propertyInfo,
+            propertyFunc,
+            null,
+            () => ValidatorOptions.CascadeMode,
+            ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo).PropertyType,
+            validatedType)
     {
     }
 
     private AddingComponentPropertyRule (
         Type collectorType,
-        PropertyInfo member,
+        PropertyInfo propertyInfo,
         Func<object, object> propertyFunc,
         LambdaExpression expression,
         Func<CascadeMode> cascadeModeThunk,
         Type propertyType,
         Type validatedType)
-        : base (member, propertyFunc, expression, cascadeModeThunk, propertyType, validatedType)
+        : base (propertyInfo, propertyFunc, expression, cascadeModeThunk, propertyType, validatedType)
     {
       ArgumentUtility.CheckNotNull ("collectorType", collectorType);
-      ArgumentUtility.CheckNotNull ("member", member);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       _collectorType = collectorType;
-      _property = PropertyInfoAdapter.Create (member);
+      _property = PropertyInfoAdapter.Create (propertyInfo);
       _isHardConstraint = false;
     }
 

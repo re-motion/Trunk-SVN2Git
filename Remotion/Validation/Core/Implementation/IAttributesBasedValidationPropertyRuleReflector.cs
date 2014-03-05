@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using FluentValidation.Validators;
 using Remotion.Validation.MetaValidation;
 using Remotion.Validation.Rules;
@@ -31,7 +32,7 @@ namespace Remotion.Validation.Implementation
   /// <seealso cref="T:Remotion.Data.DomainObjects.Validation.DomainObjectAttributesBasedValidationPropertyRuleReflector"/>
   public interface IAttributesBasedValidationPropertyRuleReflector
   {
-    Type PropertyType { get; }
+    PropertyInfo ValidatedProperty { get; }
     Expression<Func<object, object>> GetPropertyAccessExpression (Type validatedType);
     IEnumerable<IPropertyValidator> GetAddingPropertyValidators ();
     IEnumerable<IPropertyValidator> GetHardConstraintPropertyValidators ();

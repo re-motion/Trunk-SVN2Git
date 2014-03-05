@@ -15,17 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
+using Remotion.Mixins;
+
 namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
 {
   [DBTable]
-  public class TestDomainObject : DomainObject
+  [Uses (typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesNotPartOfInterface))]
+  public class MixinTarget_AnnotatedPropertiesNotPartOfInterface : DomainObject
   {
-    public static TestDomainObject NewObject ()
+    public static MixinTarget_AnnotatedPropertiesNotPartOfInterface NewObject ()
     {
-      return NewObject<TestDomainObject> ();
+      return NewObject<MixinTarget_AnnotatedPropertiesNotPartOfInterface> ();
     }
-
-    [DBBidirectionalRelation ("BidirectionalPropertyWithMandatoryAttribute")]
-    public virtual MixinTarget_AnnotatedPropertiesPartOfInterface OppositeRequiredObject { get; set; }
   }
 }

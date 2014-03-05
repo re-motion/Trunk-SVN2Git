@@ -43,9 +43,9 @@ namespace Remotion.Validation.Implementation
       _property = property;
     }
 
-    public Type PropertyType
+    public PropertyInfo ValidatedProperty
     {
-      get { return _property.PropertyType; }
+      get { return _property; }
     }
 
     public Expression<Func<object, object>> GetPropertyAccessExpression (Type validatedType)

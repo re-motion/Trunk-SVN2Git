@@ -17,14 +17,9 @@
 
 using System;
 using System.Linq;
-using FluentValidation;
-using FluentValidation.Internal;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain;
-using Remotion.Development.UnitTesting.Enumerables;
 using Remotion.Mixins;
-using Remotion.Validation.Rules;
-using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.Validation.UnitTests
 {
@@ -89,20 +84,15 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.Collector.ValidatedType, Is.EqualTo (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)));
-      Assert.That (result.Collector.AddedPropertyRules.Count, Is.EqualTo (6));
-
-      // Ensure types are compatible. Type 'AddingComponentPropertyRule' is an implementation detail but the hard cast works for now.
-      var instanceToValidate = MockRepository.GenerateStub<IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface>();
-      foreach (AddingComponentPropertyRule propertyRule in result.Collector.AddedPropertyRules)
-        propertyRule.PropertyFunc (instanceToValidate);
+      Assert.That (result.Collector.AddedPropertyRules.Count, Is.EqualTo (8));
     }
 
     [Test]
-    public void CreatePropertyRuleReflectorForMixedDomainObject_AnnotatedPropertiesPartOfAnInterface ()
+    public void CreatePropertyRuleReflectorForConcreteTypeBasedOnDomainObjectAndMixin_AnnotatedPropertiesPartOfAnInterface_DoesNotIncludePropertiesCopeisToConcreteType ()
     {
       using (MixinConfiguration
           .BuildNew()
-          .ForClass<MixinTarget>()
+          .ForClass<MixinTarget_AnnotatedPropertiesPartOfInterface>()
           .AddMixin<MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface>()
           .EnterScope())
       {
@@ -110,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
             _provider.GetValidationCollectors (
                 new[]
                 {
-                    MixinTypeUtility.GetConcreteMixedType (typeof (MixinTarget)),
+                    MixinTypeUtility.GetConcreteMixedType (typeof (MixinTarget_AnnotatedPropertiesPartOfInterface)),
                     typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)
                 })
                 .SelectMany (c => c)
@@ -123,13 +113,7 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
             r => r.Collector.ValidatedType == typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface));
 
         Assert.That (resultForMixin, Is.Not.Null);
-        Assert.That (resultForMixin.Collector.AddedPropertyRules.Count, Is.EqualTo (6));
-
-        // Ensure types are compatible. Type 'AddingComponentPropertyRule' is an implementation detail but the hard cast works for now.
-        var instanceToValidate = MockRepository.GenerateStub<IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface>();
-        foreach (AddingComponentPropertyRule propertyRule in resultForMixin.Collector.AddedPropertyRules)
-          propertyRule.PropertyFunc (instanceToValidate);
-
+        Assert.That (resultForMixin.Collector.AddedPropertyRules.Count, Is.EqualTo (8));
       }
     }
   }

@@ -23,27 +23,61 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
   {
     string PropertyWithoutAttribute { get; set; }
 
-    [Mandatory]
     TestDomainObject PropertyWithMandatoryAttribute { get; set; }
 
-    [StringProperty (IsNullable = true, MaximumLength = 10)]
+    TestDomainObject BidirectionalPropertyWithMandatoryAttribute { get; set; }
+
     string PropertyWithNullableStringPropertyAttribute { get; set; }
 
-    [StringProperty (IsNullable = false, MaximumLength = 20)]
     string PropertyWithMandatoryStringPropertyAttribute { get; set; }
+
+    int IntProperty { get; set; }
   }
 
-  public class MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface : DomainObjectMixin<MixinTarget>, IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface
+  public class MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface
+      : DomainObjectMixin<MixinTarget_AnnotatedPropertiesPartOfInterface>, IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface
   {
-    public string PropertyWithoutAttribute { get; set; }
+    private static readonly Type s_type = typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface);
+
+    public string PropertyWithoutAttribute
+    {
+      get { return Properties[s_type, "PropertyWithoutAttribute"].GetValue<string>(); }
+      set { Properties[s_type, "PropertyWithoutAttribute"].SetValue (value); }
+    }
 
     [Mandatory]
-    public TestDomainObject PropertyWithMandatoryAttribute { get; set; }
+    public TestDomainObject PropertyWithMandatoryAttribute
+    {
+      get { return Properties[s_type, "PropertyWithMandatoryAttribute"].GetValue<TestDomainObject>(); }
+      set { Properties[s_type, "PropertyWithMandatoryAttribute"].SetValue (value); }
+    }
+
+    [DBBidirectionalRelation ("OppositeRequiredObject", ContainsForeignKey = true)]
+    [Mandatory]
+    public TestDomainObject BidirectionalPropertyWithMandatoryAttribute
+    {
+      get { return Properties[s_type, "BidirectionalPropertyWithMandatoryAttribute"].GetValue<TestDomainObject> (); }
+      set { Properties[s_type, "BidirectionalPropertyWithMandatoryAttribute"].SetValue (value); }
+    }
 
     [StringProperty (IsNullable = true, MaximumLength = 10)]
-    public string PropertyWithNullableStringPropertyAttribute { get; set; }
+    public string PropertyWithNullableStringPropertyAttribute
+    {
+      get { return Properties[s_type, "PropertyWithNullableStringPropertyAttribute"].GetValue<string>(); }
+      set { Properties[s_type, "PropertyWithNullableStringPropertyAttribute"].SetValue (value); }
+    }
 
     [StringProperty (IsNullable = false, MaximumLength = 20)]
-    public string PropertyWithMandatoryStringPropertyAttribute { get; set; }
+    public string PropertyWithMandatoryStringPropertyAttribute
+    {
+      get { return Properties[s_type, "PropertyWithMandatoryStringPropertyAttribute"].GetValue<string>(); }
+      set { Properties[s_type, "PropertyWithMandatoryStringPropertyAttribute"].SetValue (value); }
+    }
+
+    public int IntProperty
+    {
+      get { return Properties[s_type, "IntProperty"].GetValue<int> (); }
+      set { Properties[s_type, "IntProperty"].SetValue (value); }
+    }
   }
 }

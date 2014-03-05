@@ -85,7 +85,7 @@ namespace Remotion.Validation.UnitTests.Providers
       {
         foreach (var property in type.GetProperties (BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
         {
-          _validationPropertyRuleReflectorMocks[type].Stub (stub => stub.PropertyType).Return (property.PropertyType);
+          _validationPropertyRuleReflectorMocks[type].Stub (stub => stub.ValidatedProperty).Return (property);
 
           if (property.Name == "Position")
           {
@@ -139,7 +139,7 @@ namespace Remotion.Validation.UnitTests.Providers
       }
 
       return
-        involvedTypes.SelectMany (t => t.GetProperties (BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+        involvedTypes.SelectMany (t => t.GetProperties (BindingFlags.Public | BindingFlags.Instance  | BindingFlags.DeclaredOnly))
             .Select (p => new { Type = p.DeclaringType, Property = p })
             .Select (t => new Tuple<Type, IAttributesBasedValidationPropertyRuleReflector> (t.Type, _validationPropertyRuleReflectorMocks[t.Type]))
             .ToLookup (c => c.Item1, c => c.Item2);

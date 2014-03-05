@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using FluentValidation.Validators;
 using NUnit.Framework;
@@ -39,11 +38,17 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
     private PropertyInfo _interfacePropertyWithMandatoryAttribute;
     private PropertyInfo _interfacePropertyWithNullableStringPropertyAttribute;
     private PropertyInfo _interfacePropertyWithMandatoryStringPropertyAttribute;
+    private PropertyInfo _mixinIntProperty;
+    private PropertyInfo _interfaceIntProperty;
+    private PropertyInfo _mixinBidirectionalRelationProperty;
+    private PropertyInfo _interfaceBidirectionalRelationProperty;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithoutAttributeReflector;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithNullableStringPropertyAttributeReflector;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithMandatoryStringPropertyAttributeReflector;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithMandatoryAttributeReflector;
-
+    private DomainObjectAttributesBasedValidationPropertyRuleReflector _intPropertyReflector;
+    private DomainObjectAttributesBasedValidationPropertyRuleReflector _bidirectionalRelationReflector;
+    
     [SetUp]
     public void SetUp ()
     {
@@ -57,6 +62,11 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
       _interfacePropertyWithMandatoryAttribute =
           typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithMandatoryAttribute");
 
+      _mixinBidirectionalRelationProperty =
+          typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("BidirectionalPropertyWithMandatoryAttribute");
+      _interfaceBidirectionalRelationProperty =
+          typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("BidirectionalPropertyWithMandatoryAttribute");
+
       _mixinPropertyWithNullableStringPropertyAttribute =
           typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithNullableStringPropertyAttribute");
       _interfacePropertyWithNullableStringPropertyAttribute =
@@ -67,6 +77,11 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
       _interfacePropertyWithMandatoryStringPropertyAttribute =
           typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty (
               "PropertyWithMandatoryStringPropertyAttribute");
+
+      _mixinIntProperty =
+          typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("IntProperty");
+      _interfaceIntProperty =
+          typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("IntProperty");
 
       _propertyWithoutAttributeReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
           _interfacePropertyWithoutAttribute,
@@ -85,33 +100,92 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
               _interfacePropertyWithMandatoryStringPropertyAttribute,
               _mixinPropertyWithMandatoryStringPropertyAttribute
               );
+
+      _intPropertyReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (_interfaceIntProperty, _mixinIntProperty);
+
+      _bidirectionalRelationReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
+          _interfaceBidirectionalRelationProperty,
+          _mixinBidirectionalRelationProperty);
     }
 
     [Test]
     public void Initialize ()
     {
-      Assert.That (_propertyWithoutAttributeReflector.PropertyType, Is.EqualTo (_interfacePropertyWithoutAttribute.PropertyType));
-      Assert.That (_propertyWithMandatoryAttributeReflector.PropertyType, Is.EqualTo (_interfacePropertyWithMandatoryAttribute.PropertyType));
+      Assert.That (_propertyWithoutAttributeReflector.ValidatedProperty, Is.EqualTo (_interfacePropertyWithoutAttribute));
+      Assert.That (_propertyWithMandatoryAttributeReflector.ValidatedProperty, Is.EqualTo (_interfacePropertyWithMandatoryAttribute));
       Assert.That (
-          _propertyWithNullableStringPropertyAttributeReflector.PropertyType,
-          Is.EqualTo (_interfacePropertyWithNullableStringPropertyAttribute.PropertyType));
+          _propertyWithNullableStringPropertyAttributeReflector.ValidatedProperty,
+          Is.EqualTo (_interfacePropertyWithNullableStringPropertyAttribute));
       Assert.That (
-          _propertyWithMandatoryStringPropertyAttributeReflector.PropertyType,
-          Is.EqualTo (_interfacePropertyWithMandatoryStringPropertyAttribute.PropertyType));
+          _propertyWithMandatoryStringPropertyAttributeReflector.ValidatedProperty,
+          Is.EqualTo (_interfacePropertyWithMandatoryStringPropertyAttribute));
     }
 
     [Test]
-    public void GetPropertyAccessExpression ()
+    public void GetPropertyAccessExpression_NonRelationStringProperty ()
     {
-      var result = (LambdaExpression) _propertyWithMandatoryAttributeReflector
-          .GetPropertyAccessExpression (typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface));
+      var propertyAccessor = _propertyWithMandatoryStringPropertyAttributeReflector
+          .GetPropertyAccessExpression (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)).Compile ();
 
-      Assert.That (result.Body, Is.InstanceOf (typeof (UnaryExpression)));
-      Assert.That (((UnaryExpression) result.Body).Operand, Is.InstanceOf (typeof (MemberExpression)));
-      Assert.That (
-          ((MemberExpression) ((UnaryExpression) result.Body).Operand).Member.DeclaringType,
-          Is.EqualTo (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)));
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var obj = MixinTarget_AnnotatedPropertiesPartOfInterface.NewObject ();
+        var propertyValue = "test";
+        ((IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface) obj).PropertyWithMandatoryStringPropertyAttribute = propertyValue;
+        var result = propertyAccessor (obj);
+        Assert.That (result, Is.SameAs (propertyValue));
+      }
     }
+
+    [Test]
+    public void GetPropertyAccessExpression_NonRelationIntProperty ()
+    {
+      var propertyAccessor = _intPropertyReflector
+          .GetPropertyAccessExpression (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)).Compile ();
+
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var obj = MixinTarget_AnnotatedPropertiesPartOfInterface.NewObject ();
+        var propertyValue = 10;
+        ((IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface) obj).IntProperty = propertyValue;
+        var result = propertyAccessor (obj);
+        Assert.That (result, Is.EqualTo (propertyValue));
+      }
+    }
+
+    [Test]
+    public void GetPropertyAccessExpression_UnidirectionalRelation ()
+    {
+      var propertyAccessor = _propertyWithMandatoryAttributeReflector
+          .GetPropertyAccessExpression (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)).Compile ();
+
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        var obj = MixinTarget_AnnotatedPropertiesPartOfInterface.NewObject();
+        var propertyValue = TestDomainObject.NewObject();
+        ((IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface) obj).PropertyWithMandatoryAttribute = propertyValue;
+        var result = propertyAccessor (obj);
+        Assert.That (result, Is.SameAs (propertyValue));
+      }
+    }
+
+    [Test]
+    public void GetPropertyAccessExpression_BidirectionalRelation ()
+    {
+      var propertyAccessor = _bidirectionalRelationReflector
+          .GetPropertyAccessExpression (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)).Compile ();
+
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var obj = MixinTarget_AnnotatedPropertiesPartOfInterface.NewObject ();
+        var propertyValue = TestDomainObject.NewObject ();
+        ((IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface) obj).BidirectionalPropertyWithMandatoryAttribute = propertyValue;
+        var result = propertyAccessor (obj);
+        Assert.That (result, Is.SameAs (propertyValue));
+      }
+    }
+
+    //TODO AO: add not loaded and 1:n tests
 
     [Test]
     public void NoAttributes ()
