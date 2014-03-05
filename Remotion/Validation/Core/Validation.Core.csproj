@@ -114,7 +114,7 @@
     <Compile Include="MetaValidation\Rules\System\LengthSystemMetaValidationRule.cs" />
     <Compile Include="MetaValidation\MetaRulesValidator.cs" />
     <Compile Include="MetaValidation\MetaRulesValidatorFactory.cs" />
-    <Compile Include="MetaValidation\MetaValidationException.cs" />
+    <Compile Include="Implementation\ValidationConfigurationException.cs" />
     <Compile Include="MetaValidation\MetaValidationRuleBase.cs" />
     <Compile Include="MetaValidation\MetaValidationRuleValidationResult.cs" />
     <Compile Include="MetaValidation\DefaultSystemMetaValidationRulesProvider.cs" />

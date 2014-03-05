@@ -38,7 +38,7 @@ namespace Remotion.Validation.IntegrationTests
     public void BuildSpecialCustomer_RemoveLastNameHardConstraint_ThrowsException ()
     {
       Assert.That (() => ValidationBuilder.BuildValidator<SpecialCustomer2> (), 
-        Throws.TypeOf<MetaValidationException> ().And.Message.EqualTo (
+        Throws.TypeOf<ValidationConfigurationException> ().And.Message.EqualTo (
         "Hard constraint validator(s) 'LengthValidator' on property "
         + "'Remotion.Validation.IntegrationTests.TestDomain.ComponentA.Person.LastName' cannot be removed."));
     }

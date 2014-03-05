@@ -227,7 +227,7 @@ namespace Remotion.Validation.UnitTests.Implementation
 
       Assert.That (
           () => _fluentValidationBuilder.BuildValidator<SpecialCustomer1>(),
-          Throws.TypeOf<MetaValidationException>().And.Message.EqualTo ("Error1\r\n----------\r\nError2"));
+          Throws.TypeOf<ValidationConfigurationException>().And.Message.EqualTo ("Error1\r\n----------\r\nError2"));
     }
 
     private void ExpectMocks ()

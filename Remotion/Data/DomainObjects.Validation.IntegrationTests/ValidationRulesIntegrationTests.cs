@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain;
 using Remotion.Validation;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.MetaValidation;
 
 namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
@@ -79,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
     {
       Assert.That (
           () => ValidationBuilder.BuildValidator<InvalidOrder> (),
-          Throws.TypeOf<MetaValidationException> ().And.Message.EqualTo (
+          Throws.TypeOf<ValidationConfigurationException> ().And.Message.EqualTo (
               "'RemotionMaxLengthMetaValidationRule' failed for property 'Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain.InvalidOrder.Number': "
               + "Max-length validation rule value '15' exceeds meta validation rule max-length value of '10'."));
     }

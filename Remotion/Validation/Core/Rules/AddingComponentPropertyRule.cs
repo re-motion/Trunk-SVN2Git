@@ -25,6 +25,7 @@ using FluentValidation.Internal;
 using FluentValidation.Validators;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.Merging;
 using Remotion.Validation.MetaValidation;
 
@@ -136,7 +137,7 @@ namespace Remotion.Validation.Rules
     {
       if (_isHardConstraint && validatorsToRemove.Any())
       {
-        throw new MetaValidationException (
+        throw new ValidationConfigurationException (
             string.Format (
                 "Hard constraint validator(s) '{0}' on property '{1}.{2}' cannot be removed.",
                 string.Join (", ", validatorsToRemove.Select (v => v.GetType().Name).ToArray()),

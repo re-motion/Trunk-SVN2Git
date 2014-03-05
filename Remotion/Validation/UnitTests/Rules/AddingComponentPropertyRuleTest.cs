@@ -165,7 +165,7 @@ namespace Remotion.Validation.UnitTests.Rules
 
       Assert.That (
           () => _addingComponentPropertyRule.ApplyRemoveValidatorRegistrations (_propertyValidatorExtractorMock),
-          Throws.TypeOf<MetaValidationException>().And.Message.EqualTo (
+          Throws.TypeOf<ValidationConfigurationException>().And.Message.EqualTo (
               "Hard constraint validator(s) 'StubPropertyValidator, NotEqualValidator' on property "
               + "'Remotion.Validation.UnitTests.TestDomain.Customer.UserName' cannot be removed."));
     }

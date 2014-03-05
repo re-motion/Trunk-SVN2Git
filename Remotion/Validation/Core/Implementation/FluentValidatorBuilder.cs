@@ -141,7 +141,7 @@ namespace Remotion.Validation.Implementation
         _validationRuleGlobalizationService.ApplyMetadata (validationRule, validatedType);
     }
 
-    private MetaValidationException CreateMetaValidationException (IEnumerable<MetaValidationRuleValidationResult> metaValidationResults)
+    private ValidationConfigurationException CreateMetaValidationException (IEnumerable<MetaValidationRuleValidationResult> metaValidationResults)
     {
       var messages = new StringBuilder();
       foreach (var validationResult in metaValidationResults)
@@ -151,7 +151,7 @@ namespace Remotion.Validation.Implementation
         messages.AppendLine (validationResult.Message);
       }
 
-      return new MetaValidationException (messages.ToString().Trim());
+      return new ValidationConfigurationException (messages.ToString().Trim());
     }
   }
 }

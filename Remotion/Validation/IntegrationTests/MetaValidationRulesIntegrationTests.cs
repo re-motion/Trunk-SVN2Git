@@ -38,7 +38,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       Assert.That (
           () => ValidationBuilder.BuildValidator<MetaValidationTestClass1>(),
-          Throws.TypeOf<MetaValidationException>()
+          Throws.TypeOf<ValidationConfigurationException>()
                 .And.Message.EqualTo ("MaxLength-Constraints greater 50 not allowed for validator 'LengthValidator'!"));
     }
 
@@ -47,7 +47,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       Assert.That (
           () => ValidationBuilder.BuildValidator<MetaValidationTestClass2>(),
-          Throws.TypeOf<MetaValidationException>().And.Message.EqualTo ("More than three validators per property are not allowed!"));
+          Throws.TypeOf<ValidationConfigurationException>().And.Message.EqualTo ("More than three validators per property are not allowed!"));
     }
 
     [Test]
@@ -59,7 +59,7 @@ namespace Remotion.Validation.IntegrationTests
     [Test]
     public void BuildValidator_FuncMetaValidationRule ()
     {
-      Assert.That(() => ValidationBuilder.BuildValidator<MetaValidationTestClass4>(), Throws.TypeOf<MetaValidationException>().And.Message.EqualTo(
+      Assert.That(() => ValidationBuilder.BuildValidator<MetaValidationTestClass4>(), Throws.TypeOf<ValidationConfigurationException>().And.Message.EqualTo(
         "'LengthSystemMetaValidationRule' failed for member 'Remotion.Validation.IntegrationTests.TestDomain.MetaValidation.MetaValidationTestClass4.Property1'.\r\n"
         + "----------\r\n"
         + "Invalid length validator count!"
@@ -69,7 +69,7 @@ namespace Remotion.Validation.IntegrationTests
     [Test]
     public void BuildValidator_ExpressionMetaValidationRule ()
     {
-      Assert.That(() => ValidationBuilder.BuildValidator<MetaValidationTestClass5>(), Throws.TypeOf<MetaValidationException>().And.Message.EqualTo(
+      Assert.That(() => ValidationBuilder.BuildValidator<MetaValidationTestClass5>(), Throws.TypeOf<ValidationConfigurationException>().And.Message.EqualTo(
         "'LengthSystemMetaValidationRule' failed for member 'Remotion.Validation.IntegrationTests.TestDomain.MetaValidation.MetaValidationTestClass5.Property1'.\r\n"
         + "----------\r\n"
         + "Meta validation rule 'lengthRules => (lengthRules.Count() <= 2)' failed for validator 'FluentValidation.Validators.LengthValidator' "
@@ -82,7 +82,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       Assert.That (
           () => ValidationBuilder.BuildValidator<BaseMetaValidationTestClass1>(),
-          Throws.TypeOf<MetaValidationException>().And.Message.EqualTo (
+          Throws.TypeOf<ValidationConfigurationException>().And.Message.EqualTo (
               "Meta validation rule 'rules => rules.Any()' failed for validator 'FluentValidation.Validators.IPropertyValidator' on property 'Remotion.Validation.IntegrationTests.TestDomain.MetaValidation.BaseMetaValidationTestClass1.Property3'.\r\n"
               + "----------\r\n"
               + "Meta validation rule 'rules => rules.Any()' failed for validator 'FluentValidation.Validators.IPropertyValidator' on property 'Remotion.Validation.IntegrationTests.TestDomain.MetaValidation.BaseMetaValidationTestClass1.Property4'."));
@@ -93,7 +93,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       Assert.That (
           () => ValidationBuilder.BuildValidator<DerivedMetaValidationTestClass1>(),
-          Throws.TypeOf<MetaValidationException>().And.Message.EqualTo (
+          Throws.TypeOf<ValidationConfigurationException>().And.Message.EqualTo (
               "'LengthSystemMetaValidationRule' failed for member 'Remotion.Validation.IntegrationTests.TestDomain.MetaValidation.BaseMetaValidationTestClass1.Property1'.\r\n"
               + "----------\r\n"
               + "Meta validation rule 'rules => rules.Any()' failed for validator 'FluentValidation.Validators.IPropertyValidator' on property 'Remotion.Validation.IntegrationTests.TestDomain.MetaValidation.BaseMetaValidationTestClass1.Property4'.\r\n"
@@ -106,7 +106,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       Assert.That (
           () => ValidationBuilder.BuildValidator<DerivedMetaValidationTestClass2>(),
-          Throws.TypeOf<MetaValidationException>().And.Message.EqualTo (
+          Throws.TypeOf<ValidationConfigurationException>().And.Message.EqualTo (
               "Meta validation rule 'rules => rules.Any()' failed for validator 'FluentValidation.Validators.IPropertyValidator' on property 'Remotion.Validation.IntegrationTests.TestDomain.MetaValidation.BaseMetaValidationTestClass1.Property3'.\r\n"
               + "----------\r\n"
               + "Meta validation rule 'rules => rules.Any()' failed for validator 'FluentValidation.Validators.IPropertyValidator' on property 'Remotion.Validation.IntegrationTests.TestDomain.MetaValidation.BaseMetaValidationTestClass1.Property4'."));
