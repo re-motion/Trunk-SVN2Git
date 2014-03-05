@@ -61,6 +61,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="DataContainerObjectMother.cs" />
     <Compile Include="DomainObjectAttributesBasedValidationPropertyRuleReflectorTests\DomainObjectMixin_DOABCPRRTest.cs" />
     <Compile Include="DomainObjectAttributesBasedValidationCollectorProviderTest.cs" />
     <Compile Include="DomainObjectAttributesBasedValidationPropertyRuleReflectorTests\DomainObject_DOABCPRRTest.cs" />
