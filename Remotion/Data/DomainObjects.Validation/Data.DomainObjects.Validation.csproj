@@ -51,7 +51,6 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="DataContainerObjectMother.cs" />
     <Compile Include="DomainObjectFluentValidationException.cs" />
     <Compile Include="EnsureValidationSupportForDomainObjectsAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
