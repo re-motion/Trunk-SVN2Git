@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using FluentValidation.Results;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
@@ -55,26 +56,27 @@ namespace Remotion.Data.DomainObjects.Validation
 
     public override void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)
     {
-      //TODO AO: open Culturescope with invariant culture
-
-      var invalidValidationResults = new List<ValidationResult> ();
-      foreach (var item in committedData)
+      using (new CultureScope (CultureInfo.InvariantCulture, CultureInfo.InvariantCulture))
       {
-        if (item.DomainObjectState == StateType.Deleted)
-          continue;
+        var invalidValidationResults = new List<ValidationResult>();
+        foreach (var item in committedData)
+        {
+          if (item.DomainObjectState == StateType.Deleted)
+            continue;
 
-        Assertion.IsTrue (
-            item.DomainObjectState != StateType.NotLoadedYet && item.DomainObjectState != StateType.Invalid,
-            "No unloaded or invalid objects get this far.");
+          Assertion.IsTrue (
+              item.DomainObjectState != StateType.NotLoadedYet && item.DomainObjectState != StateType.Invalid,
+              "No unloaded or invalid objects get this far.");
 
-        var validator = _validatorBuilder.BuildValidator (item.DomainObject.GetPublicDomainObjectType());
-        var validationResult = validator.Validate (item.DomainObject);
-        if (!validationResult.IsValid)
-          invalidValidationResults.Add (validationResult); //TODO AO: If DO is missing, set from committtedData
+          var validator = _validatorBuilder.BuildValidator (item.DomainObject.GetPublicDomainObjectType());
+          var validationResult = validator.Validate (item.DomainObject);
+          if (!validationResult.IsValid)
+            invalidValidationResults.Add (validationResult); //TODO AO: If DO is missing, set from committtedData
+        }
+
+        if (invalidValidationResults.Any())
+          throw new DomainObjectFluentValidationException (invalidValidationResults.SelectMany (vr => vr.Errors));
       }
-
-      if (invalidValidationResults.Any())
-        throw new DomainObjectFluentValidationException (invalidValidationResults.SelectMany (vr => vr.Errors));
     }
   }
 }
