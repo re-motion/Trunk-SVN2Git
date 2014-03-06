@@ -1,7 +1,6 @@
   
 -> NotSupportedExceptions checken!
 
--> Build testen
 
 -> Implementation Namespace -> grouping
 
@@ -13,7 +12,6 @@
 
 -> Re-motion Integration
    -> TODO MK: TypeElement.CreateInstance über IoC machen (custom service locators wieder rausnehmen)	=> JIRA-Task!  
-   -> TODO: IoC für Validation
    
 -> ActaNova-Integration
         -> neuer provider für dynamic types
@@ -57,6 +55,14 @@
 
 **********************************************************************************************************************
 
+
+ON_HOLD
+   -> alle HardConstraints durch meta validation rules ersetzen (Hinweis: meta validation rules müssten für beliebige validation rules generiert werden können)
+   -> bei diagnostic output decorator statt template method eien strategy für formatierungen verwenden
+
+
+**********************************************************************************************************************
+
 DONE:
 
 
@@ -96,11 +102,5 @@ DONE:
 	> Eigene Error-Message Lokalisierung durch eigene IValidatorGlobalizationService-Implementierung möglich 
 -> Setzen des technischen Property-Namens über RM-IMemberInfoNameResolver
 -> Check RM-Globalization: long names for mixins -> über Interface-Property Fullname!
-
-
-**********************************************************************************************************************
-
-
-ON_HOLD
-   -> alle HardConstraints durch meta validation rules ersetzen (Hinweis: meta validation rules müssten für beliebige validation rules generiert werden können)
-   -> bei diagnostic output decorator statt template method eien strategy für formatierungen verwenden
+-> TODO: IoC für Validation
+-> Build testen
