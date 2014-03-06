@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using FluentValidation.Validators;
@@ -213,10 +214,44 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
       }
     }
 
-    //TODO AO: add test withzout mandatory attribute
+    [Test]
+    public void GetPropertyAccessExpression_BidirectionalRelation_NotLoaded ()
+    {
+      var propertyAccessor = _bidirectionalRelationReflector
+         .GetPropertyAccessExpression (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)).Compile ();
 
-    //TODO AO: add not loaded tests
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var obj = (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface) MixinTarget_AnnotatedPropertiesPartOfInterface.NewObject ();
+        using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+        {
+          var result = propertyAccessor (obj);
 
+          Assert.That (result, Is.Not.Null);
+          Assert.That (result.GetType ().Name, Is.EqualTo ("FakeDomainObject"));
+        }
+      }
+    }
+
+    [Test]
+    public void GetPropertyAccessExpression_BidirectionalMultipleRelation_NotLoaded ()
+    {
+      var propertyAccessor = _bidirectionalMultipleRelationReflector
+         .GetPropertyAccessExpression (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)).Compile ();
+
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var obj = (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface) MixinTarget_AnnotatedPropertiesPartOfInterface.NewObject ();
+        using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+        {
+          var result = propertyAccessor (obj) as IEnumerable<object>;
+
+          Assert.That (result, Is.Not.Null);
+          Assert.That (result.First ().GetType ().Name, Is.EqualTo ("FakeDomainObject"));
+        }
+      }
+    }
+    
     [Test]
     public void NoAttributes ()
     {

@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
       return NewObject<TestDomainObject>();
     }
 
-    [DBBidirectionalRelation ("BidirectionalPropertyWithMandatoryAttribute")]
+    [DBBidirectionalRelation ("BidirectionalPropertyWithMandatoryAttribute", ContainsForeignKey = true)]
     public virtual MixinTarget_AnnotatedPropertiesPartOfInterface OppositeRequiredObject { get; set; }
 
     [DBBidirectionalRelation ("BidirectionalMultiplePropertyWithMandatoryAttribute")]

@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
       set { Properties[s_type, "PropertyWithMandatoryAttribute"].SetValue (value); }
     }
 
-    [DBBidirectionalRelation ("OppositeRequiredObject", ContainsForeignKey = true)]
+    [DBBidirectionalRelation ("OppositeRequiredObject")]
     [Mandatory]
     public TestDomainObject BidirectionalPropertyWithMandatoryAttribute
     {

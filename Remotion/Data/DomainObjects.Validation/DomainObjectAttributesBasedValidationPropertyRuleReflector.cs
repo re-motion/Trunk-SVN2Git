@@ -16,12 +16,17 @@
 // 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using FluentValidation.Internal;
 using FluentValidation.Validators;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.FunctionalProgramming;
 using Remotion.Mixins;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
@@ -36,6 +41,12 @@ namespace Remotion.Data.DomainObjects.Validation
   /// </summary>
   public class DomainObjectAttributesBasedValidationPropertyRuleReflector : IAttributesBasedValidationPropertyRuleReflector
   {
+    private class FakeDomainObject
+    {
+      public static readonly FakeDomainObject SingleValue = new FakeDomainObject();
+      public static readonly IEnumerable<FakeDomainObject> CollectionValue = new List<FakeDomainObject> { SingleValue }.AsReadOnly();
+    }
+
     private readonly PropertyInfo _interfaceProperty;
     private readonly PropertyInfo _implementationProperty;
 
@@ -84,7 +95,8 @@ namespace Remotion.Data.DomainObjects.Validation
               _interfaceProperty),
           typeof (object));
 
-      var nonEmptyDummyValue = new object();
+
+      var nonEmptyDummyValue = (typeof(IEnumerable).IsAssignableFrom(_implementationProperty.PropertyType) ? FakeDomainObject.CollectionValue : (object) FakeDomainObject.SingleValue); 
       var nonEmptyDummyValueExpression = Expression.Constant (nonEmptyDummyValue, typeof (object));
 
       return Expression.Lambda<Func<object, object>> (
@@ -94,7 +106,16 @@ namespace Remotion.Data.DomainObjects.Validation
 
     private static bool UsePersistentProperty (DomainObject domainObject, PropertyInfo property)
     {
-      return true;
+      if (!ReflectionUtility.IsRelationType (property.PropertyType))
+        return true;
+
+      var dataManager = DataManagementService.GetDataManager (domainObject.DefaultTransactionContext.ClientTransaction);
+      var endPointID = RelationEndPointID.Create (
+          domainObject.ID,
+          property.DeclaringType,
+          property.Name);
+      var endPoint = dataManager.GetRelationEndPointWithLazyLoad (endPointID);
+      return endPoint.IsDataComplete;
     }
 
     public IEnumerable<IPropertyValidator> GetAddingPropertyValidators ()
