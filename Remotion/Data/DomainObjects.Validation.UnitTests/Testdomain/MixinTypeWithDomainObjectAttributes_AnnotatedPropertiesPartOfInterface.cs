@@ -27,6 +27,8 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
 
     TestDomainObject BidirectionalPropertyWithMandatoryAttribute { get; set; }
 
+    ObjectList<TestDomainObject> BidirectionalMultiplePropertyWithMandatoryAttribute { get; set; }
+
     string PropertyWithNullableStringPropertyAttribute { get; set; }
 
     string PropertyWithMandatoryStringPropertyAttribute { get; set; }
@@ -58,6 +60,14 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
     {
       get { return Properties[s_type, "BidirectionalPropertyWithMandatoryAttribute"].GetValue<TestDomainObject> (); }
       set { Properties[s_type, "BidirectionalPropertyWithMandatoryAttribute"].SetValue (value); }
+    }
+
+    [Mandatory]
+    [DBBidirectionalRelation ("OppositeSampleObjects")]
+    public virtual ObjectList<TestDomainObject> BidirectionalMultiplePropertyWithMandatoryAttribute
+    {
+      get { return Properties[s_type, "BidirectionalMultiplePropertyWithMandatoryAttribute"].GetValue<ObjectList<TestDomainObject>> (); }
+      set { Properties[s_type, "BidirectionalMultiplePropertyWithMandatoryAttribute"].SetValue (value); }
     }
 
     [StringProperty (IsNullable = true, MaximumLength = 10)]

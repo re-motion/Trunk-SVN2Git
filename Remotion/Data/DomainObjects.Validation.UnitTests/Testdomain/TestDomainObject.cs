@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
+
 namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
 {
   [DBTable]
@@ -22,10 +24,13 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
   {
     public static TestDomainObject NewObject ()
     {
-      return NewObject<TestDomainObject> ();
+      return NewObject<TestDomainObject>();
     }
 
     [DBBidirectionalRelation ("BidirectionalPropertyWithMandatoryAttribute")]
     public virtual MixinTarget_AnnotatedPropertiesPartOfInterface OppositeRequiredObject { get; set; }
+
+    [DBBidirectionalRelation ("BidirectionalMultiplePropertyWithMandatoryAttribute")]
+    public virtual MixinTarget_AnnotatedPropertiesPartOfInterface OppositeSampleObjects { get; set; }
   }
 }

@@ -48,7 +48,10 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithMandatoryAttributeReflector;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _intPropertyReflector;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _bidirectionalRelationReflector;
-    
+    private PropertyInfo _mixinBidirectionalMultipleRelationProperty;
+    private PropertyInfo _interfaceBidirectionalMultipleRelationProperty;
+    private DomainObjectAttributesBasedValidationPropertyRuleReflector _bidirectionalMultipleRelationReflector;
+
     [SetUp]
     public void SetUp ()
     {
@@ -66,6 +69,11 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
           typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("BidirectionalPropertyWithMandatoryAttribute");
       _interfaceBidirectionalRelationProperty =
           typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("BidirectionalPropertyWithMandatoryAttribute");
+
+      _mixinBidirectionalMultipleRelationProperty =
+          typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("BidirectionalMultiplePropertyWithMandatoryAttribute");
+      _interfaceBidirectionalMultipleRelationProperty =
+          typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("BidirectionalMultiplePropertyWithMandatoryAttribute");
 
       _mixinPropertyWithNullableStringPropertyAttribute =
           typeof (MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface).GetProperty ("PropertyWithNullableStringPropertyAttribute");
@@ -106,6 +114,10 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
       _bidirectionalRelationReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
           _interfaceBidirectionalRelationProperty,
           _mixinBidirectionalRelationProperty);
+
+      _bidirectionalMultipleRelationReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
+          _interfaceBidirectionalMultipleRelationProperty,
+          _mixinBidirectionalMultipleRelationProperty);
     }
 
     [Test]
@@ -185,7 +197,25 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
       }
     }
 
-    //TODO AO: add not loaded and 1:n tests
+    [Test]
+    public void GetPropertyAccessExpression_BidirectionalMultipleRelation ()
+    {
+      var propertyAccessor = _bidirectionalMultipleRelationReflector
+          .GetPropertyAccessExpression (typeof (IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface)).Compile ();
+
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var obj = MixinTarget_AnnotatedPropertiesPartOfInterface.NewObject ();
+        var propertyValue = TestDomainObject.NewObject ();
+        ((IMixinTypeWithDomainObjectAttributes_AnnotatedPropertiesPartOfInterface) obj).BidirectionalMultiplePropertyWithMandatoryAttribute.Add(propertyValue);
+        var result = propertyAccessor (obj);
+        Assert.That (result, Is.EqualTo (new[] { propertyValue }));
+      }
+    }
+
+    //TODO AO: add test withzout mandatory attribute
+
+    //TODO AO: add not loaded tests
 
     [Test]
     public void NoAttributes ()
