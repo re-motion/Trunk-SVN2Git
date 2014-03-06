@@ -21,12 +21,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using FluentValidation.Internal;
 using FluentValidation.Validators;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.FunctionalProgramming;
 using Remotion.Mixins;
 using Remotion.Utilities;
 using Remotion.Utilities.ReSharperAnnotations;
@@ -99,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Validation
 
       var nonEmptyDummyValue = ReflectionUtility.IsObjectList (_implementationProperty.PropertyType)
           ? FakeDomainObject.CollectionValue
-          : (object) FakeDomainObject.SingleValue; 
+          : (object) FakeDomainObject.SingleValue;
       var nonEmptyDummyValueExpression = Expression.Constant (nonEmptyDummyValue, typeof (object));
 
       return Expression.Lambda<Func<object, object>> (
@@ -112,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Validation
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("property", property);
-      
+
       if (!ReflectionUtility.IsRelationType (property.PropertyType))
         return true;
 
@@ -125,17 +123,29 @@ namespace Remotion.Data.DomainObjects.Validation
     public IEnumerable<IPropertyValidator> GetAddingPropertyValidators ()
     {
       var lengthConstraintAttribute = AttributeUtility.GetCustomAttribute<ILengthConstrainedPropertyAttribute> (_implementationProperty, false);
-      if (lengthConstraintAttribute != null && lengthConstraintAttribute.MaximumLength.HasValue)
-        yield return new LengthValidator (0, lengthConstraintAttribute.MaximumLength.Value);
+      if (lengthConstraintAttribute != null)
+      {
+        if (lengthConstraintAttribute.MaximumLength.HasValue)
+          yield return new LengthValidator (0, lengthConstraintAttribute.MaximumLength.Value);
+      }
+
+      var nullableAttribute = AttributeUtility.GetCustomAttribute<INullablePropertyAttribute> (_implementationProperty, false);
+      if (nullableAttribute != null && !nullableAttribute.IsNullable && typeof (IEnumerable).IsAssignableFrom (_implementationProperty.PropertyType)
+          && !ReflectionUtility.IsObjectList (_implementationProperty.PropertyType))
+      {
+        yield return new NotEmptyValidator (GetDefaultValue (_implementationProperty.PropertyType));
+      }
     }
 
     public IEnumerable<IPropertyValidator> GetHardConstraintPropertyValidators ()
     {
       var nullableAttribute = AttributeUtility.GetCustomAttribute<INullablePropertyAttribute> (_implementationProperty, false);
       if (nullableAttribute != null && !nullableAttribute.IsNullable)
+      {
         yield return new NotNullValidator();
-      //TODO AO: return NotEmtpyValidator for IENumarabel properties (no Hard Constraint!! except propertytype RefUtil.IsAscribe (ObjectList<>)
-      //Tests for: //byte[], string, relation
+        if(ReflectionUtility.IsObjectList (_implementationProperty.PropertyType))
+          yield return new NotEmptyValidator (GetDefaultValue (_implementationProperty.PropertyType));
+      }
     }
 
     public IEnumerable<ValidatorRegistration> GetRemovingPropertyRegistrations ()
@@ -148,6 +158,18 @@ namespace Remotion.Data.DomainObjects.Validation
       var lengthConstraintAttribute = AttributeUtility.GetCustomAttribute<ILengthConstrainedPropertyAttribute> (_implementationProperty, false);
       if (lengthConstraintAttribute != null && lengthConstraintAttribute.MaximumLength.HasValue)
         yield return new RemotionMaxLengthMetaValidationRule (_implementationProperty, lengthConstraintAttribute.MaximumLength.Value);
+    }
+
+    private object GetDefaultValue (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      object output = null;
+
+      if (type.IsValueType)
+        output = Activator.CreateInstance (type);
+
+      return output;
     }
   }
 }

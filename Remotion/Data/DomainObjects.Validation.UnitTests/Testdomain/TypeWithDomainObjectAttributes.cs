@@ -33,5 +33,11 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
     [StringProperty (IsNullable = false, MaximumLength = 20)]
     public string PropertyWithMandatoryStringPropertyAttribute { get; set; }
 
+    [BinaryProperty (IsNullable = false)]
+    public byte[] BinaryProperty { get; set; }
+
+    [StorageClassNone]
+    [Mandatory]
+    public ObjectList<TestDomainObject> CollectionProperty { get; set; }
   }
 }

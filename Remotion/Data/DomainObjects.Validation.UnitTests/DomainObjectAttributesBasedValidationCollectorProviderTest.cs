@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
       
       Assert.That (result, Is.Not.Null);
       Assert.That (result.Collector.ValidatedType, Is.EqualTo (typeof (TypeWithDomainObjectAttributes)));
-      Assert.That (result.Collector.AddedPropertyRules.Count, Is.EqualTo (6));
+      Assert.That (result.Collector.AddedPropertyRules.Count, Is.EqualTo (10));
     }
 
     [Test]

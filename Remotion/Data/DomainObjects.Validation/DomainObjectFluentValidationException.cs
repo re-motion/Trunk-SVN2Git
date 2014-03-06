@@ -16,57 +16,26 @@
 // 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using FluentValidation.Results;
-using Remotion.Validation.Utilities;
 
 namespace Remotion.Data.DomainObjects.Validation
 {
   [Serializable]
   public class DomainObjectFluentValidationException : DomainObjectException
   {
-    public DomainObjectFluentValidationException (IEnumerable<ValidationFailure> failures)
-        : this (failures, null)
+    public DomainObjectFluentValidationException (string errorMessage)
+        : this (errorMessage, null)
     {
     }
 
-    public DomainObjectFluentValidationException (IEnumerable<ValidationFailure> failures, Exception inner)
-        : base (BuildErrorMesage (failures), inner)
+    public DomainObjectFluentValidationException (string errorMessage, Exception inner)
+        : base (errorMessage, inner)
     {
     }
 
     protected DomainObjectFluentValidationException (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
-    }
-
-    private static string BuildErrorMesage (IEnumerable<ValidationFailure> errors)
-    {
-      var errorsByValidatedObjects = errors.ToLookup (e => e.GetValidatedInstance());
-
-      var errorMessage = new StringBuilder ("One or more DomainObject contain inconsistent data:\r\n\r\n");
-      //TODO AO: move error message from exception to extension.
-      foreach (var errorByValidatedObject in errorsByValidatedObjects)
-      {
-        errorMessage.AppendLine (GetKeyText (errorByValidatedObject.Key));
-        errorMessage.AppendLine (
-            string.Join (
-                "\r\n",
-                errorByValidatedObject.Select (t => " -- " + t.ErrorMessage)));
-        errorMessage.AppendLine();
-      }
-      return errorMessage.ToString();
-    }
-
-    private static string GetKeyText (object validatedInstance)
-    {
-      var domainObject = validatedInstance as DomainObject;
-      if (domainObject != null)
-        return string.Format ("Object '{0}' with ID '{1}':", domainObject.ID.ClassID, domainObject.ID.Value);
-      return string.Format ("Validation error on object of Type '{0}':", validatedInstance.GetType().FullName);
     }
   }
 }

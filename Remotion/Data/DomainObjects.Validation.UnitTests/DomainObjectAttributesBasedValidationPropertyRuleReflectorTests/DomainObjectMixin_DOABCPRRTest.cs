@@ -285,9 +285,10 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
     {
       var result = _propertyWithMandatoryStringPropertyAttributeReflector.GetAddingPropertyValidators().ToArray();
 
-      Assert.That (result.Count(), Is.EqualTo (1));
+      Assert.That (result.Count(), Is.EqualTo (2));
       Assert.That (result[0], Is.TypeOf (typeof (LengthValidator)));
       Assert.That (((LengthValidator) result[0]).Max, Is.EqualTo (20));
+      Assert.That (result[1], Is.TypeOf (typeof (NotEmptyValidator)));
     }
 
     [Test]

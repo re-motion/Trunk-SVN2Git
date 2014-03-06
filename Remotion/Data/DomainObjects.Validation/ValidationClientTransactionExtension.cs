@@ -20,10 +20,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using FluentValidation.Results;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Utilities;
 using Remotion.Validation;
+using Remotion.Validation.Utilities;
 
 namespace Remotion.Data.DomainObjects.Validation
 {
@@ -75,8 +77,33 @@ namespace Remotion.Data.DomainObjects.Validation
         }
 
         if (invalidValidationResults.Any())
-          throw new DomainObjectFluentValidationException (invalidValidationResults.SelectMany (vr => vr.Errors));
+          throw new DomainObjectFluentValidationException (BuildErrorMesage (invalidValidationResults.SelectMany (vr => vr.Errors)));
       }
+    }
+
+    private static string BuildErrorMesage (IEnumerable<ValidationFailure> errors)
+    {
+      var errorsByValidatedObjects = errors.ToLookup (e => e.GetValidatedInstance ());
+
+      var errorMessage = new StringBuilder ("One or more DomainObject contain inconsistent data:\r\n\r\n");
+      foreach (var errorByValidatedObject in errorsByValidatedObjects)
+      {
+        errorMessage.AppendLine (GetKeyText (errorByValidatedObject.Key));
+        errorMessage.AppendLine (
+            string.Join (
+                "\r\n",
+                errorByValidatedObject.Select (t => " -- " + t.ErrorMessage)));
+        errorMessage.AppendLine ();
+      }
+      return errorMessage.ToString ();
+    }
+
+    private static string GetKeyText (object validatedInstance)
+    {
+      var domainObject = validatedInstance as DomainObject;
+      if (domainObject != null)
+        return string.Format ("Object '{0}' with ID '{1}':", domainObject.ID.ClassID, domainObject.ID.Value);
+      return string.Format ("Validation error on object of Type '{0}':", validatedInstance.GetType ().FullName);
     }
   }
 }

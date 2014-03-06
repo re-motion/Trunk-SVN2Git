@@ -34,10 +34,15 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
     private PropertyInfo _propertyWithMandatoryAttribute;
     private PropertyInfo _propertyWithNullableStringPropertyAttribute;
     private PropertyInfo _propertyWithMandatoryStringPropertyAttribute;
+    private PropertyInfo _binaryProperty;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithoutAttributeReflector;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithNullableStringPropertyAttributeReflector;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithMandatoryStringPropertyAttributeReflector;
     private DomainObjectAttributesBasedValidationPropertyRuleReflector _propertyWithMandatoryAttributeReflector;
+    private DomainObjectAttributesBasedValidationPropertyRuleReflector _binaryPropertyReflector;
+    private PropertyInfo _collectionProperty;
+    private DomainObjectAttributesBasedValidationPropertyRuleReflector _collectionPropertyReflector;
+
 
     [SetUp]
     public void SetUp ()
@@ -48,6 +53,8 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
           typeof (TypeWithDomainObjectAttributes).GetProperty ("PropertyWithNullableStringPropertyAttribute");
       _propertyWithMandatoryStringPropertyAttribute =
           typeof (TypeWithDomainObjectAttributes).GetProperty ("PropertyWithMandatoryStringPropertyAttribute");
+      _binaryProperty = typeof (TypeWithDomainObjectAttributes).GetProperty ("BinaryProperty");
+      _collectionProperty = typeof (TypeWithDomainObjectAttributes).GetProperty ("CollectionProperty");
 
       _propertyWithoutAttributeReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
           _propertyWithoutAttribute,
@@ -63,6 +70,12 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
           new DomainObjectAttributesBasedValidationPropertyRuleReflector (
               _propertyWithMandatoryStringPropertyAttribute,
               _propertyWithMandatoryStringPropertyAttribute);
+      _binaryPropertyReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
+          _binaryProperty,
+          _binaryProperty);
+      _collectionPropertyReflector = new DomainObjectAttributesBasedValidationPropertyRuleReflector (
+          _collectionProperty,
+          _collectionProperty); 
     }
 
     [Test]
@@ -98,9 +111,31 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
     {
       var result = _propertyWithMandatoryStringPropertyAttributeReflector.GetAddingPropertyValidators().ToArray();
 
-      Assert.That (result.Count(), Is.EqualTo (1));
+      Assert.That (result.Count(), Is.EqualTo (2));
       Assert.That (result[0], Is.TypeOf (typeof (LengthValidator)));
       Assert.That (((LengthValidator) result[0]).Max, Is.EqualTo (20));
+      Assert.That (result[1], Is.TypeOf (typeof (NotEmptyValidator)));
+    }
+
+    [Test]
+    public void GettAddingPropertyValidators_BinaryProperty ()
+    {
+      var result = _binaryPropertyReflector.GetAddingPropertyValidators ().ToArray ();
+
+      Assert.That (result.Count (), Is.EqualTo (1));
+      Assert.That (result[0], Is.TypeOf (typeof (NotEmptyValidator)));
+    }
+
+    [Test]
+    public void GettAddingPropertyValidators_CollectionProperty ()
+    {
+      var result = _collectionPropertyReflector.GetHardConstraintPropertyValidators ().ToArray ();
+
+      Assert.That (result.Count (), Is.EqualTo (2));
+      Assert.That (result[0], Is.TypeOf (typeof (NotNullValidator)));
+      Assert.That (result[1], Is.TypeOf (typeof (NotEmptyValidator)));
+
+      Assert.That (_collectionPropertyReflector.GetAddingPropertyValidators().ToArray(), Is.Empty);
     }
 
     [Test]
