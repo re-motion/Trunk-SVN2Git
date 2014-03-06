@@ -55,7 +55,9 @@ namespace Remotion.Data.DomainObjects.Validation
 
     public override void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)
     {
-      var invalidValidationResults = new List<ValidationResult>();
+      //TODO AO: open Culturescope with invariant culture
+
+      var invalidValidationResults = new List<ValidationResult> ();
       foreach (var item in committedData)
       {
         if (item.DomainObjectState == StateType.Deleted)
@@ -68,7 +70,7 @@ namespace Remotion.Data.DomainObjects.Validation
         var validator = _validatorBuilder.BuildValidator (item.DomainObject.GetPublicDomainObjectType());
         var validationResult = validator.Validate (item.DomainObject);
         if (!validationResult.IsValid)
-          invalidValidationResults.Add (validationResult);
+          invalidValidationResults.Add (validationResult); //TODO AO: If DO is missing, set from committtedData
       }
 
       if (invalidValidationResults.Any())

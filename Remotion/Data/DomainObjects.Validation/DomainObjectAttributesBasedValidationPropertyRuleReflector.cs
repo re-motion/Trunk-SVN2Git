@@ -29,6 +29,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.FunctionalProgramming;
 using Remotion.Mixins;
 using Remotion.Utilities;
+using Remotion.Utilities.ReSharperAnnotations;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.MetaValidation;
 using Remotion.Validation.MetaValidation.Rules.Custom;
@@ -96,7 +97,9 @@ namespace Remotion.Data.DomainObjects.Validation
           typeof (object));
 
 
-      var nonEmptyDummyValue = (typeof(IEnumerable).IsAssignableFrom(_implementationProperty.PropertyType) ? FakeDomainObject.CollectionValue : (object) FakeDomainObject.SingleValue); 
+      var nonEmptyDummyValue = ReflectionUtility.IsObjectList (_implementationProperty.PropertyType)
+          ? FakeDomainObject.CollectionValue
+          : (object) FakeDomainObject.SingleValue; 
       var nonEmptyDummyValueExpression = Expression.Constant (nonEmptyDummyValue, typeof (object));
 
       return Expression.Lambda<Func<object, object>> (
@@ -104,16 +107,17 @@ namespace Remotion.Data.DomainObjects.Validation
           parameterExpression);
     }
 
+    [ReflectionAPI]
     private static bool UsePersistentProperty (DomainObject domainObject, PropertyInfo property)
     {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("property", property);
+      
       if (!ReflectionUtility.IsRelationType (property.PropertyType))
         return true;
 
       var dataManager = DataManagementService.GetDataManager (domainObject.DefaultTransactionContext.ClientTransaction);
-      var endPointID = RelationEndPointID.Create (
-          domainObject.ID,
-          property.DeclaringType,
-          property.Name);
+      var endPointID = RelationEndPointID.Create (domainObject.ID, property.DeclaringType, property.Name);
       var endPoint = dataManager.GetRelationEndPointWithLazyLoad (endPointID);
       return endPoint.IsDataComplete;
     }

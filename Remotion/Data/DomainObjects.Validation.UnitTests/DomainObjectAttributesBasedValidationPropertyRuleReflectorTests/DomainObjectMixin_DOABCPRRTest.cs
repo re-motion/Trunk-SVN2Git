@@ -247,7 +247,7 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.DomainObjectAttribute
           var result = propertyAccessor (obj) as IEnumerable<object>;
 
           Assert.That (result, Is.Not.Null);
-          Assert.That (result.First ().GetType ().Name, Is.EqualTo ("FakeDomainObject"));
+          Assert.That (result.Select (r => r.GetType().Name), Is.EqualTo (new[] { "FakeDomainObject" }));
         }
       }
     }

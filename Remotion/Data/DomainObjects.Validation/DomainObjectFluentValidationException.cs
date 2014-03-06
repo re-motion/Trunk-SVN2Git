@@ -47,7 +47,8 @@ namespace Remotion.Data.DomainObjects.Validation
     {
       var errorsByValidatedObjects = errors.ToLookup (e => e.GetValidatedInstance());
 
-      var errorMessage = new StringBuilder ("One or more DomainObjects contain inconsistent data:\r\n\r\n");
+      var errorMessage = new StringBuilder ("One or more DomainObject contain inconsistent data:\r\n\r\n");
+      //TODO AO: move error message from exception to extension.
       foreach (var errorByValidatedObject in errorsByValidatedObjects)
       {
         errorMessage.AppendLine (GetKeyText (errorByValidatedObject.Key));
@@ -64,8 +65,8 @@ namespace Remotion.Data.DomainObjects.Validation
     {
       var domainObject = validatedInstance as DomainObject;
       if (domainObject != null)
-        return "Object '" + domainObject.ID.Value + "':";
-      return "Other Objects:";
+        return "Object '" + domainObject.ID.Value + "':"; //TODO AO: change to .ID "{do.ID.ClassID} with ID '{do.ID.Value}':
+      return "Other Objects:"; // if instance not null -> Validation error on object of Type '{obj.GetType().FullName}':
     }
   }
 }

@@ -1,17 +1,14 @@
   
 -> NotSupportedExceptions checken!
 
--> Filter mixin proxy type in MixedLoadFilteredValidationTypeFilter?? 
-
 -> Build testen
 
 -> Implementation Namespace -> grouping
 
--> IFLuentValidationBuilder in ValidatingClientTransactionExtension injecten!
-
--> attribute reflector: wieso für hard conatraint und normale property eigene add-methoden
-
--> TODO MK: re-store Integration: Check for skipping some validations in sub transactions
+-> Integration Test: Culture Wechsel nach Validator create. Errormessage und property sollten in neuer Culture sein.
+-> Integration Test: Culture Wechsel nach Validation. Sprache von Errormessage und property muss gleich sein. 
+    ob alt oder neu ist nur du dokumentieren.	
+    Nice to have: ErrorMessage und Proprty wird On-The-Fly evaluiert und kann sich damit nach der Validierung noch ändern.
 
 
 -> Re-motion Integration

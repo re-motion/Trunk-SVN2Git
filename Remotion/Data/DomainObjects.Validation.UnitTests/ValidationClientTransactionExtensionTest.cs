@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests
 
     [Test]
     [ExpectedException (typeof (DomainObjectFluentValidationException), ExpectedMessage = 
-      "One or more DomainObjects contain inconsistent data:\r\n\r\n"
+      "One or more DomainObject contain inconsistent data:\r\n\r\n"
       + "Object '.*':\r\n"
       +" -- Error1\r\n -- Error2\r\n\r\n"
       + "Object '.*':\r\n"

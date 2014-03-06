@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
         Assert.That (
             () => ClientTransaction.Current.Commit(),
             Throws.TypeOf<DomainObjectFluentValidationException> ().And.Message.Matches (
-                "One or more DomainObjects contain inconsistent data:\r\n\r\n"
+                "One or more DomainObject contain inconsistent data:\r\n\r\n"
                 + "Object '.*':\r\n"
                 + " -- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n\r\n"
                 + "Object '.*':\r\n"
