@@ -65,8 +65,8 @@ namespace Remotion.Data.DomainObjects.Validation
     {
       var domainObject = validatedInstance as DomainObject;
       if (domainObject != null)
-        return "Object '" + domainObject.ID.Value + "':"; //TODO AO: change to .ID "{do.ID.ClassID} with ID '{do.ID.Value}':
-      return "Other Objects:"; // if instance not null -> Validation error on object of Type '{obj.GetType().FullName}':
+        return string.Format ("Object '{0}' with ID '{1}':", domainObject.ID.ClassID, domainObject.ID.Value);
+      return string.Format ("Validation error on object of Type '{0}':", validatedInstance.GetType().FullName);
     }
   }
 }
