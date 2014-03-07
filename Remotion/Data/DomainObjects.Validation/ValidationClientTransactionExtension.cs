@@ -72,8 +72,12 @@ namespace Remotion.Data.DomainObjects.Validation
 
           var validator = _validatorBuilder.BuildValidator (item.DomainObject.GetPublicDomainObjectType());
           var validationResult = validator.Validate (item.DomainObject);
+
+          foreach (var validationFailure in validationResult.Errors.Where (vr => vr.GetValidatedInstance () == null))
+            validationFailure.SetValidatedInstance (item.DomainObject);
+
           if (!validationResult.IsValid)
-            invalidValidationResults.Add (validationResult); //TODO AO: If DO is missing, set from committtedData
+            invalidValidationResults.Add (validationResult);
         }
 
         if (invalidValidationResults.Any())
