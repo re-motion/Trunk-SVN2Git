@@ -58,6 +58,7 @@ namespace Remotion.Data.DomainObjects.Validation
 
     public override void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)
     {
+      //TODO AO: add culture unit test
       using (new CultureScope (CultureInfo.InvariantCulture, CultureInfo.InvariantCulture))
       {
         var invalidValidationResults = new List<ValidationResult>();

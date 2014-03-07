@@ -18,6 +18,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Utilities;
 using Remotion.Validation.IntegrationTests.TestDomain.ComponentA;
 using Remotion.Validation.IntegrationTests.TestDomain.ComponentB;
 
@@ -29,18 +30,86 @@ namespace Remotion.Validation.IntegrationTests
     [Test]
     public void CustomValidatorErrorMessages ()
     {
-      var person = new SpecialCustomer1 ();
+      var person = new SpecialCustomer1();
+      person.FirstName = null;
       person.LastName = "Test";
 
-      var validator = ValidationBuilder.BuildValidator<Person> ();
+      var validator = ValidationBuilder.BuildValidator<Person>();
 
       var result = validator.Validate (person);
 
       Assert.That (result.IsValid, Is.False);
-      Assert.That (result.Errors.Count (), Is.EqualTo (2));
+      Assert.That (result.Errors.Count(), Is.EqualTo (2));
       Assert.That (
           result.Errors.Select (e => e.ErrorMessage),
           Is.EquivalentTo (new[] { "'LocalizedFirstName' must not be empty.", "'LastName' should not be equal to 'Test'." }));
+    }
+
+    [Test]
+    public void CultureIsSetBeforeValidatorIsCreated_UsesNewCultureForLocalization ()
+    {
+      var person = new SpecialCustomer1();
+      person.FirstName = null;
+      person.LastName = "value";
+
+      using (new CultureScope ("de-AT"))
+      {
+        var validator = ValidationBuilder.BuildValidator<Person>();
+
+        var result = validator.Validate (person);
+
+        Assert.That (result.IsValid, Is.False);
+        Assert.That (
+            result.Errors.Select (e => e.ErrorMessage),
+            Is.EquivalentTo (new[] { "'Lokalisierter Vorname' darf keinen Null-Wert aufweisen." }));
+      }
+    }
+
+    [Test]
+    [Ignore ("TODO RM-5906: Localization of validation messages")]
+    public void CultureIsSetAfterValidatorIsCreated_UsesNewCultureForLocalization ()
+    {
+      var person = new SpecialCustomer1();
+      person.FirstName = null;
+      person.LastName = "value";
+
+      var validator = ValidationBuilder.BuildValidator<Person>();
+
+      using (new CultureScope ("de-AT"))
+      {
+        var result = validator.Validate (person);
+
+        Assert.That (result.IsValid, Is.False);
+        Assert.That (
+            result.Errors.Select (e => e.ErrorMessage),
+            Is.EquivalentTo (new[] { "'Lokalisierter Vorname' darf keinen Null-Wert aufweisen." }));
+      }
+    }
+
+    [Test]
+    [Ignore ("TODO RM-5906: Localization of validation messages")]
+    public void CultureIsSetAfterValidationResultIsCreated_UsesPreviousCultureForLocalization ()
+    {
+      var person = new SpecialCustomer1();
+      person.FirstName = null;
+      person.LastName = "value";
+
+      var validator = ValidationBuilder.BuildValidator<Person>();
+      
+      using (new CultureScope ("de-AT"))
+      {
+        var result = validator.Validate (person);
+
+        // ValidationError is immutable.
+
+        using (new CultureScope (""))
+        {
+          Assert.That (result.IsValid, Is.False);
+          Assert.That (
+              result.Errors.Select (e => e.ErrorMessage),
+              Is.EquivalentTo (new[] { "'Lokalisierter Vorname' darf keinen Null-Wert aufweisen." }));
+        }
+      }
     }
   }
 }

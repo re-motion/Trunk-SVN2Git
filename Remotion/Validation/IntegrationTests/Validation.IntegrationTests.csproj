@@ -100,16 +100,6 @@
     <Compile Include="TestDomain\MetaValidation\MetaValidationTestClassCollector5.cs" />
     <Compile Include="TestDomain\MetaValidation\Rules\MaxLengthMetaValidationRule.cs" />
     <Compile Include="TestDomain\MetaValidation\Rules\MaxValidatorCountRule.cs" />
-    <Compile Include="TestDomain\Resources\Person.Designer.cs">
-      <DependentUpon>Person.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="TestDomain\Resources\SpecialCustomer.Designer.cs">
-      <DependentUpon>SpecialCustomer.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="TestHelpers\ExpressionHelper.cs" />
     <Compile Include="ValidatorGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="ValidationRulesIntegrationTests.cs" />
@@ -137,14 +127,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="TestDomain\Resources\Person.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Person.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TestDomain\Resources\SpecialCustomer.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SpecialCustomer.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Include="TestDomain\Resources\Person.de.resx" />
+    <EmbeddedResource Include="TestDomain\Resources\Person.resx" />
+    <EmbeddedResource Include="TestDomain\Resources\SpecialCustomer.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\remotion.snk">
