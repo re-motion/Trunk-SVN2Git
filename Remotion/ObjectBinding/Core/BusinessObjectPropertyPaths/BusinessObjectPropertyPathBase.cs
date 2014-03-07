@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
       if (unreachableValueBehavior == BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue)
         throw new InvalidOperationException (
             string.Format (
-                "Accass was denied to property #{0} of property path '{1}'. Cannot evaluate rest of path.", propertyIndex, Identifier));
+                "Access was denied to property #{0} of property path '{1}'. Cannot evaluate rest of path.", propertyIndex, Identifier));
     }
 
     private void HandlePropertyValueNull (BusinessObjectPropertyPath.UnreachableValueBehavior unreachableValueBehavior, int propertyIndex)

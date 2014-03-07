@@ -132,7 +132,7 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.BusinessO
               BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
               BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry),
           Throws.InvalidOperationException.With.Message
-                .EqualTo ("Accass was denied to property #0 of property path 'Identifier'. Cannot evaluate rest of path."));
+                .EqualTo ("Access was denied to property #0 of property path 'Identifier'. Cannot evaluate rest of path."));
     }
 
     [Test]
@@ -171,7 +171,7 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.BusinessO
               BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
               BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry),
           Throws.InvalidOperationException.With.Message
-                .EqualTo ("Accass was denied to property #0 of property path 'Identifier'. Cannot evaluate rest of path."));
+                .EqualTo ("Access was denied to property #0 of property path 'Identifier'. Cannot evaluate rest of path."));
     }
 
     [Test]
