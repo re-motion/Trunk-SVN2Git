@@ -34,6 +34,9 @@ var _dropDownMenu_currentItemIndex = -1;
 var _dropDownMenu_itemClickHandler = null;
 var _dropDownMenu_itemClicked = false;
 
+var _dropDownMenu_repositionInterval = 200;
+var _dropDownMenu_repositionTimer = null;
+
 function DropDownMenu_MenuInfo(id, itemInfos)
 {
   this.ID = id;
@@ -129,50 +132,75 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt)
   }
 
   var titleDiv = $(context).children().eq(0);
-  var space_top = Math.round(titleDiv.offset().top - $(document).scrollTop());
-  var space_bottom = Math.round($(window).height() - titleDiv.offset().top - titleDiv.height() + $(document).scrollTop());
-  var space_left = titleDiv.offset().left;
-  var space_right = $(window).width() - titleDiv.offset().left - titleDiv.width();
+  DropDownMenu_ApplyPosition ($(div), evt, titleDiv);
+  $(div).iFrameShim({ top: '0px', left: '0px', width: '100%', height: '100%' });
+
+  if (_dropDownMenu_repositionTimer) 
+    clearTimeout(_dropDownMenu_repositionTimer);
+  var repositionHandler = function ()
+  {
+    if (_dropDownMenu_repositionTimer)
+      clearTimeout (_dropDownMenu_repositionTimer);
+
+    if (_dropDownMenu_currentPopup && _dropDownMenu_currentPopup == div && $(div).is (':visible'))
+    {
+      DropDownMenu_ApplyPosition ($(div), null, titleDiv);
+      _dropDownMenu_repositionTimer = setTimeout (repositionHandler, _dropDownMenu_repositionInterval);
+    }
+  };
+
+  // Only reposition if opened via titleDiv
+  if (evt == null)
+    _dropDownMenu_repositionTimer = setTimeout(repositionHandler, _dropDownMenu_repositionInterval);
+}
+
+function DropDownMenu_ApplyPosition (popUpDiv, clickEvent, referenceElement)
+{
+  var space_top = Math.round(referenceElement.offset().top - $(document).scrollTop());
+  var space_bottom = Math.round($(window).height() - referenceElement.offset().top - referenceElement.height() + $(document).scrollTop());
+  var space_left = referenceElement.offset().left;
+  var space_right = $(window).width() - referenceElement.offset().left - referenceElement.width();
 
   // position drop-down list
-  var top = evt ? evt.clientY : titleDiv.offset().top + titleDiv.outerHeight();
-  var left = evt ? evt.clientX : 'auto';
-  var right = evt ? 'auto' : $(window).width() - titleDiv.offset().left - titleDiv.outerWidth();
-  $(div).css('top', top);
-  $(div).css('bottom', 'auto');
-  $(div).css('right', right);
-  $(div).css('left', left);
+  var top = clickEvent ? clickEvent.clientY : Math.max(0, referenceElement.offset().top + referenceElement.outerHeight());
+  var left = clickEvent ? clickEvent.clientX : 'auto';
+  var right = clickEvent ? 'auto' : Math.max(0, $(window).width() - referenceElement.offset().left - referenceElement.outerWidth());
+
+  popUpDiv.css('top', top);
+  popUpDiv.css('bottom', 'auto');
+  popUpDiv.css('right', right);
+  popUpDiv.css('left', left);
 
   // move dropdown if there is not enough space to fit it on the page
-  if (($(div).width() > space_left) && (space_left < space_right))
+  if ((popUpDiv.width() > space_left) && (space_left < space_right))
   {
-    if ($(div).offset().left < 0)
+    if (popUpDiv.offset().left < 0)
     {
-      $(div).css('left', titleDiv.offset().left);
-      $(div).css('right', 'auto');
+      left = Math.max(0, referenceElement.offset().left);
+      popUpDiv.css('left', left);
+      popUpDiv.css('right', 'auto');
     }
   }
-  if ($(div).height() > space_bottom)
+  if (popUpDiv.height() > space_bottom)
   {
-    if ($(div).height() > $(window).height())
+    if (popUpDiv.height() > $(window).height())
     {
-      $(div).css('top', 0);
+      popUpDiv.css('top', 0);
     }
-    else if (space_top > $(div).height())
+    else if (space_top > popUpDiv.height())
     {
-      $(div).css('top', 'auto');
-      $(div).css('bottom', $(window).height() - titleDiv.offset().top - (titleDiv.outerHeight() - titleDiv.height()));
+      var bottom = Math.max(0, $(window).height() - referenceElement.offset().top - (referenceElement.outerHeight() - referenceElement.height()));
+
+      popUpDiv.css('top', 'auto');
+      popUpDiv.css('bottom', bottom);
     }
     else
     {
-      $(div).css('top', 'auto');
-      $(div).css('bottom', 0);
+      popUpDiv.css('top', 'auto');
+      popUpDiv.css('bottom', 0);
     }
   }
-
-  $(div).iFrameShim({ top: '0px', left: '0px', width: '100%', height: '100%' });
 }
-
 
 function DropDownMenu_ClosePopUp()
 {
