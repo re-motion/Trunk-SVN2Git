@@ -17,7 +17,7 @@
 
 using System;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Domain
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.Domain
 {
   [BindableObject]
   public class TypeWithEnum

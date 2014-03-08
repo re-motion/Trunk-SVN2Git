@@ -21,7 +21,7 @@ using Remotion.Globalization;
 using Remotion.Globalization.Implementation;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls
 {
   public class RendererTestBase
   {

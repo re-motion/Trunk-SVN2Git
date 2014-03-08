@@ -20,14 +20,12 @@ using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocListImplementation.Rendering
 {
   [TestFixture]
   [SetUICulture ("en-US")]

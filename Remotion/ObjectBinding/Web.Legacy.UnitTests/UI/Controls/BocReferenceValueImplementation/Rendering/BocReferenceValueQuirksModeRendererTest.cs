@@ -25,11 +25,8 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
-using Remotion.ObjectBinding.UnitTests.Web.Domain;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.Legacy.UnitTests.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
@@ -39,7 +36,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   [TestFixture]
   public class BocReferenceValueQuirksModeRendererTest : RendererTestBase

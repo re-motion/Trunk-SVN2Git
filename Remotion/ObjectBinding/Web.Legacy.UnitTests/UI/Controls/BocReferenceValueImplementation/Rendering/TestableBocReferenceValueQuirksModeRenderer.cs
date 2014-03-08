@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.Web;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   public class TestableBocReferenceValueQuirksModeRenderer : BocReferenceValueQuirksModeRenderer
   {

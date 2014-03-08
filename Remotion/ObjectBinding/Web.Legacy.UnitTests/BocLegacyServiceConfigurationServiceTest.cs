@@ -19,7 +19,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.FunctionalProgramming;
-using Remotion.ObjectBinding.Web.Legacy;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
@@ -27,7 +26,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests
 {
   [TestFixture]
   public class BocLegacyServiceConfigurationServiceTest

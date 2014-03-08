@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls
 {
   public class ReflectionBusinessObjectWebUIService : IBusinessObjectWebUIService
   {

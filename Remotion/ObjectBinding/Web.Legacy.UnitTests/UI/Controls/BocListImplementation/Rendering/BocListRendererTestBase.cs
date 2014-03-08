@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.UnitTests.Web.Domain;
-using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.Legacy.UnitTests.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
@@ -29,7 +29,7 @@ using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocListImplementation.Rendering
 {
   public abstract class BocListRendererTestBase : RendererTestBase
   {

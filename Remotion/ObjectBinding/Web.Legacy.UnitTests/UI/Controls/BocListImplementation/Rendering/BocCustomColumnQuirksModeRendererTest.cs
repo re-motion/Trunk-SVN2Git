@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,15 +23,14 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
-using Remotion.ObjectBinding.UnitTests.Web.Domain;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.Legacy.UnitTests.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocListImplementation.Rendering
 {
   [TestFixture]
   public class BocCustomColumnQuirksModeRendererTest : ColumnRendererTestBase<BocCustomColumnDefinition>

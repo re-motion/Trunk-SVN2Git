@@ -14,17 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocTextValueImplementation.Rendering
 {
   public class BocTextValueQuirksModeRendererTestBase<T> : RendererTestBase
       where T: class, IBocTextValueBase

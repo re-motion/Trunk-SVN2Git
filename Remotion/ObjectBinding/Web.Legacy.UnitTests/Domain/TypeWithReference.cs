@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Mixins;
 using Remotion.TypePipe;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Domain
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.Domain
 {
   [BindableObjectWithIdentity]
   public class TypeWithReference

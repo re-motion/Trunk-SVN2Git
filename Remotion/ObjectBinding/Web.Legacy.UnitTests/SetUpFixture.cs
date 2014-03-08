@@ -22,13 +22,13 @@ using Remotion.Development.Web.UnitTesting.Infrastructure;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Development.Web.UnitTesting.Utilities;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls;
 using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests
 {
   [SetUpFixture]
   public class SetUpFixture

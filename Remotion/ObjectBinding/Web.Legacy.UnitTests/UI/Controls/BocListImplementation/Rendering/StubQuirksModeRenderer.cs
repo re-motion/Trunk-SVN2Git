@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocListImplementation.Rendering
 {
   public class StubQuirksModeRenderer : IBocListTableBlockRenderer, IBocListMenuBlockRenderer, IBocListNavigationBlockRenderer
   {
