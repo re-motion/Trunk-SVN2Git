@@ -246,3 +246,29 @@ span.contentMenuItemDisabled a
   color: gray;
 	cursor: default;
 }
+
+span.bocListEditableCell
+{
+  display: inline-block;
+  width: 100%
+}
+
+span.bocListEditableCell .validationErrorMarker
+{
+  vertical-align: middle;
+  float: left;
+  margin-left: -9px;
+  position: absolute;
+}
+
+span.bocListEditableCell .control
+{
+  width: 100%; 
+  display: block;
+}
+
+span.bocListEditableCell .control > *
+{
+  width: 100%;
+  vertical-align: middle;
+}

@@ -15,11 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Globalization;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
@@ -28,6 +30,16 @@ namespace OBWTest.IndividualControlTests
 
 public class BocListAsGridUserControl : BaseUserControl
 {
+  private class AllRequiredEditableRowControlFactory : EditableRowControlFactory
+  {
+    public override IBusinessObjectBoundEditableWebControl Create (BocSimpleColumnDefinition column, int columnIndex)
+    {
+      var control =(BusinessObjectBoundEditableWebControl) base.Create (column, columnIndex);
+      control.Required = true;
+      return control;
+    }
+  }
+
   protected HtmlTable Table3;
   protected BocTextValue FirstNameField;
   protected BocTextValue LastNameField;
@@ -72,6 +84,9 @@ public class BocListAsGridUserControl : BaseUserControl
     ChildrenList.EditableRowChangesCanceled += new BocListItemEventHandler (ChildrenList_EditableRowChangesCanceled);
     ChildrenList.EditableRowChangesSaving += new BocListEditableRowChangesEventHandler (ChildrenList_EditableRowChangesSaving);
     ChildrenList.EditableRowChangesSaved += new BocListItemEventHandler (ChildrenList_EditableRowChangesSaved);
+
+    ChildrenList.EditModeControlFactory = new AllRequiredEditableRowControlFactory();
+    ChildrenList.DisableEditModeValidationMessages = true;
   }
 
   public override IBusinessObjectDataSourceControl DataSource
@@ -131,7 +146,7 @@ public class BocListAsGridUserControl : BaseUserControl
     BocSimpleColumnDefinition dayofDeathColumnDefinition = new BocSimpleColumnDefinition();
     dayofDeathColumnDefinition.ColumnTitle = "Day of Death";
     dayofDeathColumnDefinition.SetPropertyPath (BusinessObjectPropertyPath.CreateStatic (new [] { dateOfDeath }));
-    dayofDeathColumnDefinition.Width = Unit.Parse ("8em");
+    dayofDeathColumnDefinition.Width = Unit.Parse ("9.1em", CultureInfo.InvariantCulture);
     dayofDeathColumnDefinition.EnforceWidth = true;
 
     BocSimpleColumnDefinition heightColumnDefinition = new BocSimpleColumnDefinition();

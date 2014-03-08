@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -402,44 +403,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       ControlCollection validators = GetValidators (columnIndex);
 
       IBusinessObjectBoundEditableWebControl editModeControl = _rowEditModeControls[columnIndex];
-      CssStyleCollection editModeControlStyle = null;
-      bool isEditModeControlWidthEmpty = true;
-      if (editModeControl is WebControl)
-      {
-        editModeControlStyle = ((WebControl) editModeControl).Style;
-        isEditModeControlWidthEmpty = ((WebControl) editModeControl).Width.IsEmpty;
-      }
-// ReSharper disable SuspiciousTypeConversion.Global
-      else if (editModeControl is System.Web.UI.HtmlControls.HtmlControl)
-      {
-        editModeControlStyle = ((System.Web.UI.HtmlControls.HtmlControl) editModeControl).Style;
-      }
-// ReSharper restore SuspiciousTypeConversion.Global
-
-      if (editModeControlStyle != null)
-      {
-        if (string.IsNullOrEmpty (editModeControlStyle["width"]) && isEditModeControlWidthEmpty)
-          editModeControlStyle["width"] = "100%";
-        if (string.IsNullOrEmpty (editModeControlStyle["vertical-align"]))
-          editModeControlStyle["vertical-align"] = "middle";
-      }        
 
       bool enforceWidth = column.EnforceWidth 
                           && ! column.Width.IsEmpty
                           && column.Width.Type != UnitType.Percentage;
-    
+
       if (enforceWidth)
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, column.Width.ToString());
-      else
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      writer.AddStyleAttribute ("display", "inline-block");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, column.Width.ToString (CultureInfo.InvariantCulture));
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocListEditableCell");
       writer.RenderBeginTag (HtmlTextWriterTag.Span); // Span Container
 
       if (_editModeHost.ShowEditModeValidationMarkers)
       {
         bool isCellValid = true;
         Image validationErrorMarker = _editModeHost.GetValidationErrorMarker();
-      
+        validationErrorMarker.CssClass = "validationErrorMarker";
+
         for (int i = 0; i < validators.Count; i++)
         {
           BaseValidator validator = (BaseValidator) validators[i];
@@ -458,16 +438,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
           }
         }
         if (! isCellValid)
-        {
-          validationErrorMarker.Style["float"] = "left";
           validationErrorMarker.RenderControl (writer);
-
-          writer.AddStyleAttribute ("margin-left", "20px");
-        }
       }
 
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      writer.AddStyleAttribute ("display", "block");
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, "control");
       writer.RenderBeginTag (HtmlTextWriterTag.Span); // Span Control
 
       editModeControl.RenderControl (writer);
