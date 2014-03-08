@@ -253,7 +253,7 @@ tr.bocListDataRow.odd td.bocListDataCell
 
 tr.bocListDataRow.even td.bocListDataCell
 {
-  background-color: #f4f4f4;
+  background-color: #e1ecfc;
 }
 
 /*  Style applied to the cells in the BocList's selected odd and even data rows. */
