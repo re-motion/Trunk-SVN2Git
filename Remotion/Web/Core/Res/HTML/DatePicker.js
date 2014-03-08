@@ -16,6 +16,8 @@
 // 
 
 var _datePicker_current = null;
+var _datePicker_repositionInterval = 200;
+var _datePicker_repositionTimer = null;
 
 function DatePicker_ShowDatePicker (button, container, target, src, width, height)
 {
@@ -107,9 +109,6 @@ function DatePicker_UpdateValue(value)
 
 function DatePicker_Create(datePickerID, button, target, src, width, height)
 {
-  var left = $(button).offset().left;
-  var top = $(button).offset().top;
-
   var datePicker = $('<div/>');
   datePicker.attr('id', datePickerID);
   datePicker.addClass ('DatePicker');
@@ -127,36 +126,61 @@ function DatePicker_Create(datePickerID, button, target, src, width, height)
   frame.marginWidth = 0;
   frame.marginHeight = 0;
 
+  var body = $('body');
+  body.append(datePicker);
+
+  if (_datePicker_repositionTimer) 
+    clearTimeout(_datePicker_repositionTimer);
+  var repositionHandler = function ()
+  {
+    if (_datePicker_repositionTimer)
+      clearTimeout (_datePicker_repositionTimer);
+
+    if (_datePicker_current && _datePicker_current.DatePicker == datePicker && datePicker.is (':visible'))
+    {
+      DatePicker_ApplyPosition (datePicker, $(button));
+      _datePicker_repositionTimer = setTimeout (repositionHandler, _datePicker_repositionInterval);
+    }
+  };
+
+  DatePicker_ApplyPosition (datePicker, $(button));
+  _datePicker_repositionTimer = setTimeout(repositionHandler, _datePicker_repositionInterval);
+
+  return datePicker;
+}
+
+function DatePicker_ApplyPosition (datePicker, button)
+{
   var datePickerLeft;
   var datePickerTop;
   var datePickerWidth;
   var datePickerHeight;
-  var body = $('body');
-  body.append(datePicker);
+
+  var body = $ ('body');
+  var left = $(button).offset().left;
+  var top = $(button).offset().top;
 
   //  Adjust position so the date picker is shown below 
   //  and aligned with the right border of the button.
-  datePicker.css('left', left - $(frame).width() + $(button).width());
-  datePicker.css('top', top + $(button).height());
+  datePicker.css('left', Math.max (0, left - datePicker.width() + $(button).width()));
+  datePicker.css('top', Math.max (0, top + $(button).height()));
   datePickerLeft = datePicker.offset().left;
   datePickerTop = datePicker.offset().top;
   datePickerWidth = datePicker.width();
   datePickerHeight = datePicker.height();
 
   //  Re-adjust the button, in case available screen space is insufficient
-  var totalBodyHeight = body.height();
   var visibleBodyTop = body.scrollTop();
   var visibleBodyHeight = $(window).height();
 
   var datePickerTopAdjusted = datePickerTop;
   if (visibleBodyTop + visibleBodyHeight < datePickerTop + datePickerHeight)
   {
-    var newTop = $(button).offset().top - datePickerHeight;
+    var newTop = Math.max (0, $(button).offset().top - datePickerHeight);
     if (newTop >= 0)
       datePickerTopAdjusted = newTop;
   }
 
-  var totalBodyWidth = body.width();
   var visibleBodyLeft = body.scrollLeft();
   var visibleBodyWidth = $(window).width();
 
@@ -166,14 +190,6 @@ function DatePicker_Create(datePickerID, button, target, src, width, height)
 
   datePicker.css('left', datePickerLeftAdjusted);
   datePicker.css('top', datePickerTopAdjusted);
-
-  if (visibleBodyTop > 0
-      && datePickerTopAdjusted < visibleBodyTop)
-  {
-    body.scrollTop(datePickerTopAdjusted);
-  }
-
-  return datePicker;
 }
 
 function DatePickerFrame_Calendar_SelectionChanged(value)
