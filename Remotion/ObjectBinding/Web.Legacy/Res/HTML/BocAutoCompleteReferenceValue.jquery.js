@@ -1226,7 +1226,7 @@
                     if (repositionTimer) {
                         clearTimeout(repositionTimer);
                     }
-                    if (element.is(':visible')) {
+                    if (element && element.is(':visible')) {
                         applyPositionToDropDown();
                         repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
                     }

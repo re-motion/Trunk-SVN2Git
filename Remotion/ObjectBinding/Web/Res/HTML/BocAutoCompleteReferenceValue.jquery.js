@@ -1170,7 +1170,7 @@
                     if (repositionTimer) {
                         clearTimeout(repositionTimer);
                     }
-                    if (element.is(':visible')) {
+                    if (element && element.is(':visible')) {
                         applyPositionToDropDown();
                         repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
                     }
@@ -1268,7 +1268,7 @@
                 if (repositionTimer) {
                     clearTimeout(repositionTimer);
                 }
-                if (element.is(':visible')) {
+                if (element && element.is(':visible')) {
                     applyPositionToPopUp();
                     repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
                 }
