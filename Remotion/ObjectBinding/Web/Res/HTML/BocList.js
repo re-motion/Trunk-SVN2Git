@@ -351,7 +351,8 @@ function BocList_HasDimensions(bocList)
 
   var referenceHeight = 0;
   var referenceWidth = 0;
-  if ($('body').is('.msie7'))
+  var ieVersion = BrowserUtility.GetIEVersion();
+  if (ieVersion == 7)
   {
     // height reserved for scroll bar
     referenceHeight = 25;
@@ -411,7 +412,7 @@ function BocList_FixUpScrolling(bocList)
 
     if (hasHorizontalScrollUpdated)
     {
-      // Contious refresh.
+      // Continuous refresh.
       BocList_FixHeaderPosition(tableContainer, scrollableContainer);
 
       // Final update after scrolling has finished to ensure propper layout.
@@ -421,14 +422,13 @@ function BocList_FixUpScrolling(bocList)
     }
   });
 
-
-  //Recalculate FakeTableHeader on window resize
-  var resizeTimer = null;
-  $(window).bind('resize', function ()
+  var resizeInterval = 200;
+  var resizeHandler = function ()
   {
-    if (resizeTimer) clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 50);
-  });
+    BocList_FixHeaderSize(scrollableContainer);
+    setTimeout (resizeHandler, resizeInterval);
+  };
+  setTimeout(resizeHandler, resizeInterval);
 
   BocList_CreateFakeTableHead(tableContainer, scrollableContainer);
 }
@@ -483,6 +483,12 @@ function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
 function BocList_FixHeaderSize(scrollableContainer)
 {
   var realTable = scrollableContainer.children('table').first();
+  var realTableWidth = realTable.width();
+  var previousRealTableWidth = realTable.data("bocListPreviousRealTableWidth");
+  if (previousRealTableWidth == realTableWidth)
+    return;
+  realTable.data("bocListPreviousRealTableWidth", realTableWidth);
+
   var realTableHead = realTable.eq(0).find('thead');
   var realTableHeadRow = realTableHead.children().eq(0);
   var realTableHeadRowChildren = realTableHeadRow.children();
@@ -500,16 +506,16 @@ function BocList_FixHeaderSize(scrollableContainer)
   });
 
   // apply widths to fake header
-  var isIE7 = $('body').is('.msie7');
+  var ieVersion = BrowserUtility.GetIEVersion();
   fakeTableHeadRowChildren.width(function (index, itemWidth)
   {
     width = realTableHeadCellWidths[index];
-    if (isIE7)
+    if (ieVersion == 7)
       width = width - 1;
     return width;
   });
 
-  fakeTableHeadContainer.width(realTable.width());
+  fakeTableHeadContainer.width(realTableWidth);
   fakeTableHeadContainerHeight = fakeTableHeadContainer.height();
   scrollableContainer.css({ top: fakeTableHeadContainerHeight});
   realTable.css({ 'margin-top': fakeTableHeadContainerHeight * -1 });
