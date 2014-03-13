@@ -422,15 +422,20 @@ function BocList_FixUpScrolling(bocList)
     }
   });
 
-  var resizeInterval = 200;
+  BocList_CreateFakeTableHead(tableContainer, scrollableContainer);
+
+  var resizeInterval = 50;
+  var ieVersion = BrowserUtility.GetIEVersion();
+  if (ieVersion < 9)
+    resizeInterval = 200;
+
   var resizeHandler = function ()
   {
     BocList_FixHeaderSize(scrollableContainer);
-    setTimeout (resizeHandler, resizeInterval);
+    BocList_FixHeaderPosition(tableContainer, scrollableContainer);
+    setTimeout(resizeHandler, resizeInterval);
   };
   setTimeout(resizeHandler, resizeInterval);
-
-  BocList_CreateFakeTableHead(tableContainer, scrollableContainer);
 }
 
 function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
@@ -509,14 +514,14 @@ function BocList_FixHeaderSize(scrollableContainer)
   var ieVersion = BrowserUtility.GetIEVersion();
   fakeTableHeadRowChildren.width(function (index, itemWidth)
   {
-    width = realTableHeadCellWidths[index];
+    var width = realTableHeadCellWidths[index];
     if (ieVersion == 7)
       width = width - 1;
     return width;
   });
 
   fakeTableHeadContainer.width(realTableWidth);
-  fakeTableHeadContainerHeight = fakeTableHeadContainer.height();
+  var fakeTableHeadContainerHeight = fakeTableHeadContainer.height();
   scrollableContainer.css({ top: fakeTableHeadContainerHeight});
   realTable.css({ 'margin-top': fakeTableHeadContainerHeight * -1 });
 
@@ -528,6 +533,12 @@ function BocList_FixHeaderPosition(tableContainer, scrollableContainer)
   var fakeTableHeadContainer = tableContainer.children('div.bocListFakeTableHead').first();
   var scrollTop = 0;
   var scrollLeft = scrollableContainer.scrollLeft();
+
+  var previousScrollLeft = scrollableContainer.data("bocListPreviousScrollLeft");
+  if (previousScrollLeft == scrollLeft)
+    return;
+  scrollableContainer.data("bocListPreviousScrollLeft", scrollLeft);
+
   fakeTableHeadContainer.css({ 'top': scrollTop, 'left': scrollLeft * -1 });
 }
 
