@@ -139,14 +139,18 @@ table.accessControlEntriesTable
   width: 100%;
 }
 
+/* body.mozilla is needed for IE11 native mode, but does not hurt in Mozilla Firefox */
 body.msie7 table.accessControlEntriesTable,
 body.msie8 table.accessControlEntriesTable,
-body.msie table.accessControlEntriesTable
+body.msie table.accessControlEntriesTable,
+body.mozilla table.accessControlEntriesTable
 {
   width: auto;
 }
 
-body.msie table.accessControlEntriesTable
+/* body.mozilla is needed for IE11 native mode, but does not hurt in Mozilla Firefox */
+body.msie table.accessControlEntriesTable,
+body.mozilla table.accessControlEntriesTable
 {
   margin-right: 0.66em;
 }
