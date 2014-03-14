@@ -60,11 +60,6 @@ span.DropDownMenuSelect a.DropDownMenuLabel
   height: 1.2em !important;
 }
 
-body.msie7 span.DropDownMenuSelect a.DropDownMenuLabel
-{
-  top: 0.12em;
-}
-
 span.DropDownMenuContainer span.disabled a.DropDownMenuLabel
 {
   color: Gray;
