@@ -30,6 +30,8 @@ StyleUtility.AddBrowserSwitch = function ()
     var majorVersion = BrowserUtility.GetIEVersion();
     if (majorVersion < 9)
       browser = 'msie' + majorVersion;
+    else if (majorVersion < 11)
+      browser = 'msie msie' + majorVersion;
     else
       browser = 'msie';
   }

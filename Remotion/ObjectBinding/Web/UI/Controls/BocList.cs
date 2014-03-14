@@ -1239,7 +1239,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       requiredIcon.AlternateText = resourceManager.GetString (ResourceIdentifier.RequiredFieldAlternateText);
       requiredIcon.ToolTip = resourceManager.GetString (ResourceIdentifier.RequiredFieldTitle);
 
-      requiredIcon.Style["vertical-align"] = "middle";
+      requiredIcon.CssClass = "validationRequiredMarker";
       return requiredIcon;
     }
 
@@ -1253,7 +1253,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       IResourceManager resourceManager = GetResourceManager();
       validationErrorIcon.AlternateText = resourceManager.GetString (ResourceIdentifier.ValidationErrorInfoAlternateText);
 
-      validationErrorIcon.Style["vertical-align"] = "middle";
+      validationErrorIcon.CssClass = "validationErrorMarker";
       return validationErrorIcon;
     }
 

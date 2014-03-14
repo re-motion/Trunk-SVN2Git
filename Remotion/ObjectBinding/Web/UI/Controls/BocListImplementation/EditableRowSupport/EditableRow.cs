@@ -418,7 +418,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       {
         bool isCellValid = true;
         Image validationErrorMarker = _editModeHost.GetValidationErrorMarker();
-        validationErrorMarker.CssClass = "validationErrorMarker";
 
         for (int i = 0; i < validators.Count; i++)
         {

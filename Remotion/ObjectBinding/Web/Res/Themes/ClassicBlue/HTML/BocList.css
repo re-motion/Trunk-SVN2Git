@@ -384,6 +384,16 @@ span.bocListAvailableViewsListLabel
 {
 }
 
+.bocList .validationRequiredMarker
+{
+  vertical-align: -0.3em;
+}
+
+.bocList .validationErrorMarker
+{
+  padding-top: 0.1em;
+}
+
 /*  Style applied to the validation messages, applied if the EditDetailsValidator has no style it self.  */
 div.bocListEditModeValidationMessage
 {
@@ -398,7 +408,6 @@ span.bocListEditableCell
 
 span.bocListEditableCell .validationErrorMarker
 {
-  vertical-align: middle;
   float: left;
 }
 

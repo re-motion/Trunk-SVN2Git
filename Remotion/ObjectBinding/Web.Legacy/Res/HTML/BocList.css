@@ -247,6 +247,12 @@ span.contentMenuItemDisabled a
 	cursor: default;
 }
 
+.bocList .validationRequiredMarker,
+.bocList .validationErrorMarker
+{
+  vertical-align: middle;
+}
+
 span.bocListEditableCell
 {
   display: inline-block;
