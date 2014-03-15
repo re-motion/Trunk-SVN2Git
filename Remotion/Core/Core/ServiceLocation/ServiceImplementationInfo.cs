@@ -29,12 +29,12 @@ namespace Remotion.ServiceLocation
     /// with <see cref="RegistrationType"/> set to <see cref="ServiceLocation.RegistrationType.Single"/>.
     /// </summary>
     /// <param name="factory">The factory delegate that creates an instance of the service implementation.</param>
-    /// <param name="lifetime">The lifetime of the instances created by the <paramref name="factory"/>.</param>
+    /// <param name="lifetime">The <see cref="LifetimeKind"/> of the instances created by the <paramref name="factory"/>. Defaults to <see cref="LifetimeKind.Instance"/>.</param>
     public static ServiceImplementationInfo CreateSingle<T> (Func<T> factory, LifetimeKind lifetime = LifetimeKind.Instance)
         where T : class
     {
       ArgumentUtility.CheckNotNull ("factory", factory);
-      return new ServiceImplementationInfo (typeof (T), factory, lifetime, RegistrationType.Single);
+      return new ServiceImplementationInfo (typeof (T), lifetime, RegistrationType.Single, factory);
     }
 
     /// <summary>
@@ -42,12 +42,12 @@ namespace Remotion.ServiceLocation
     /// with <see cref="RegistrationType"/> set to <see cref="ServiceLocation.RegistrationType.Multiple"/>.
     /// </summary>
     /// <param name="factory">The factory delegate that creates an instance of the service implementation.</param>
-    /// <param name="lifetime">The lifetime of the instances created by the <paramref name="factory"/>.</param>
+    /// <param name="lifetime">The <see cref="LifetimeKind"/> of the instances created by the <paramref name="factory"/>. Defaults to <see cref="LifetimeKind.Instance"/>.</param>
     public static ServiceImplementationInfo CreateMultiple<T> (Func<T> factory, LifetimeKind lifetime = LifetimeKind.Instance)
         where T : class
     {
       ArgumentUtility.CheckNotNull ("factory", factory);
-      return new ServiceImplementationInfo (typeof(T), factory, lifetime, RegistrationType.Multiple);
+      return new ServiceImplementationInfo (typeof(T), lifetime, RegistrationType.Multiple, factory);
     }
 
     private readonly Func<object> _factory;
@@ -59,23 +59,22 @@ namespace Remotion.ServiceLocation
     /// Initializes a new instance of the <see cref="ServiceImplementationInfo"/> class.
     /// </summary>
     /// <param name="implementationType">The concrete implementation of the service type.</param>
-    /// <param name="lifetime">The lifetime of the instances of <paramref name="implementationType"/>.</param>
-    /// <param name="registrationType"></param>
+    /// <param name="lifetime">The <see cref="LifetimeKind"/> of the instances of <paramref name="implementationType"/>. Defaults to <see cref="LifetimeKind.Instance"/>.</param>
+    /// <param name="registrationType">The <see cref="RegistrationType"/> of the <paramref name="implementationType"/>. Defaults to <see cref="T:RegistrationType.Single"/>.</param>
     public ServiceImplementationInfo (Type implementationType, LifetimeKind lifetime, RegistrationType registrationType = RegistrationType.Single)
+        : this (ArgumentUtility.CheckNotNull ("implementationType", implementationType), lifetime, registrationType, null)
     {
-      ArgumentUtility.CheckNotNull ("implementationType", implementationType);
-      _implementationType = implementationType;
-      _lifetime = lifetime;
-      _registrationType = registrationType;
-      _factory = null;
     }
 
-    private ServiceImplementationInfo (Type implementationType, Func<object> factory, LifetimeKind lifetime, RegistrationType registrationType)
+    private ServiceImplementationInfo (Type implementationType, LifetimeKind lifetime, RegistrationType registrationType, Func<object> factory)
     {
-      _factory = factory;
-      _lifetime = lifetime;
+      if (registrationType == RegistrationType.Decorator && lifetime != LifetimeKind.Instance)
+        throw new ArgumentException ("For implementations of type 'Decorator', the lifetime can only be specified as 'Instance'.", "lifetime");
+
       _implementationType = implementationType;
+      _lifetime = lifetime;
       _registrationType = registrationType;
+      _factory = factory;
     }
 
     /// <summary>

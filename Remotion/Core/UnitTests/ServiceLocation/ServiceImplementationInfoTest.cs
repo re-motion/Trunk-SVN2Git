@@ -68,6 +68,15 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
+    public void InitializeDecorator_WithLifetimeSingleton_ThrowsArgumentException ()
+    {
+      Assert.That (
+          () => new ServiceImplementationInfo (typeof (ServiceImplementationInfoTest), LifetimeKind.Singleton, RegistrationType.Decorator),
+          Throws.ArgumentException.And.Message.EqualTo (
+              "For implementations of type 'Decorator', the lifetime can only be specified as 'Instance'.\r\nParameter name: lifetime"));
+    }
+
+    [Test]
     public void ToString_DebugInfo ()
     {
       var implementation0 = new ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton, RegistrationType.Compound);
