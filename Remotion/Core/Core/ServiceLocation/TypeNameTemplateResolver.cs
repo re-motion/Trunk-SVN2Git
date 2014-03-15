@@ -26,6 +26,7 @@ namespace Remotion.ServiceLocation
   /// the version and public key token of a given reference <see cref="Assembly"/>, then <see cref="ContextAwareTypeDiscoveryUtility"/> is
   /// used to resolve the type.
   /// </summary>
+  [Obsolete ("Resolving the type via the assembly qualified typename is no longer required. (Version 1.15.10")]
   public static class TypeNameTemplateResolver
   {
     public static Type ResolveToType (string typeNameTemplate, Assembly referenceAssembly)

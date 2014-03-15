@@ -45,9 +45,11 @@ namespace Remotion.ExtensibleEnums
 
     private static TryGetDisplayName GetLocalizedNameFunc ()
     {
+#pragma warning disable 618
       var serviceType = TypeNameTemplateResolver.ResolveToType (
           "Remotion.Globalization.ExtensibleEnums.IExtensibleEnumGlobalizationService, Remotion.Globalization.ExtensibleEnums, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
           typeof (ExtensibleEnumExtensions).Assembly);
+#pragma warning restore 618
       var method = serviceType.GetMethod ("TryGetExtensibleEnumValueDisplayName");
       Assertion.IsNotNull (method, "IExtensibleEnumGlobalizationService does not contain method 'GetExtensibleEnumValueDisplayName'.");
 

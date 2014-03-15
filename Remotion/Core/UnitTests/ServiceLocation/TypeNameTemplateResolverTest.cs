@@ -23,6 +23,7 @@ using Remotion.ServiceLocation;
 namespace Remotion.UnitTests.ServiceLocation
 {
   [TestFixture]
+  [Obsolete]
   public class TypeNameTemplateResolverTest
   {
     private static readonly byte[] s_referencePublicKey =
