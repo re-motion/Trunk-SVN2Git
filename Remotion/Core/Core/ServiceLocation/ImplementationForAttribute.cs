@@ -20,9 +20,10 @@ using Remotion.Utilities;
 namespace Remotion.ServiceLocation
 {
   /// <summary>
-  /// Defines the concrete implementation for a service type (usually an interface or abstract class) as well as its <see cref="LifetimeKind"/>.
-  /// This attribute is used by the DefaultServiceProvider to determine how to instantiate a service type. Mutiple 
-  /// <see cref="ImplementationForAttribute"/> instances can be applied to a single service type. They are not inherited.
+  /// Associated an (implementation) type with the service type (usually an interface or abstract class) 
+  /// as well as its <see cref="LifetimeKind"/> and <see cref="RegistrationType"/>.
+  /// This attribute is used by the DefaultServiceProvider to determine how to instantiate a service type. 
+  /// Mutiple <see cref="ImplementationForAttribute"/> instances can be applied to a single implementation type. They are not inherited.
   /// </summary>
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
   public class ImplementationForAttribute : Attribute
@@ -61,14 +62,14 @@ namespace Remotion.ServiceLocation
     /// <summary>
     /// Gets the position of the concrete implementation in the list of all concrete implementations for the respective service type. The position
     /// does not denote the exact index; instead, it only influences the relative ordering of this implementation with respect to the other
-    /// implementations.
+    /// implementations. The lowest position indicates the first implementation. In case of a decorator, it's the decorator closest to the implementation.
     /// </summary>
     /// <value>The position of the concrete implementation in the list of all concrete implementations.</value>
     public int Position  { get; set; }
 
     /// <summary>
-    /// Defines wether an implementation is registered as a single value or as a sequence.
-    /// When using the ServiceLocator, "Single" registrations must be resolved via GetInstance() and "Multiple" registrations must be resolved 
+    /// Defines wether an implementation is registered as a single value or as a sequence, a compound type or a decorator.
+    /// When using the ServiceLocator, "Single" and "Compound" registrations must be resolved via GetInstance() and "Multiple" registrations must be resolved 
     /// via GetAllInstances(). Otherwise, an ActivationException is thrown.
     /// </summary>
     public RegistrationType RegistrationType
