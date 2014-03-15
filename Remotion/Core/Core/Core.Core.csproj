@@ -282,6 +282,7 @@
     <Compile Include="Reflection\TypeDiscovery\BaseTypeCache.cs" />
     <Compile Include="Design\IDesignModeHelper.cs" />
     <Compile Include="ServiceLocation\BootstrapServiceConfiguration.cs" />
+    <Compile Include="ServiceLocation\ConcreteImplementationAttribute.obsolete.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocator.Registration.cs" />
     <Compile Include="ServiceLocation\ServiceConfigurationRegistryExtensions.cs" />
     <Compile Include="ServiceLocation\ImplementationForAttribute.cs" />
