@@ -27,17 +27,17 @@ namespace Remotion.Validation.Globalization
   public class ValidationRuleGlobalizationService : IValidationRuleMetadataService
   {
     private readonly IDefaultMessageEvaluator _defaultMessageEvaluator;
-    private readonly IErrorMessageGlobalizationService _validatorGlobalizationService;
+    private readonly IErrorMessageGlobalizationService _errorMessageGlobalizationService;
     
     public ValidationRuleGlobalizationService (
         IDefaultMessageEvaluator defaultMessageEvaluator,
-        IErrorMessageGlobalizationService validatorGlobalizationService)
+        IErrorMessageGlobalizationService errorMessageGlobalizationService)
     {
       ArgumentUtility.CheckNotNull ("defaultMessageEvaluator", defaultMessageEvaluator);
-      ArgumentUtility.CheckNotNull ("validatorGlobalizationService", validatorGlobalizationService);
+      ArgumentUtility.CheckNotNull ("errorMessageGlobalizationService", errorMessageGlobalizationService);
 
       _defaultMessageEvaluator = defaultMessageEvaluator;
-      _validatorGlobalizationService = validatorGlobalizationService;
+      _errorMessageGlobalizationService = errorMessageGlobalizationService;
     }
 
     public void ApplyMetadata (IValidationRule validationRule, Type typeToValidate)
@@ -48,7 +48,7 @@ namespace Remotion.Validation.Globalization
       foreach (var validator in validationRule.Validators)
       {
         if (_defaultMessageEvaluator.HasDefaultMessageAssigned (validator))
-          validator.ErrorMessageSource = new ErrorMessageStringSource (validator, _validatorGlobalizationService);
+          validator.ErrorMessageSource = new ErrorMessageStringSource (validator, _errorMessageGlobalizationService);
       }
     }
   }
