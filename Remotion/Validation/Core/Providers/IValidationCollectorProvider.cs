@@ -21,7 +21,7 @@ using Remotion.Validation.Implementation;
 namespace Remotion.Validation.Providers
 {
   /// <summary>
-  /// TODO MK
+  /// TODO RM-5906: doc
   /// </summary>
   public interface IValidationCollectorProvider
   {

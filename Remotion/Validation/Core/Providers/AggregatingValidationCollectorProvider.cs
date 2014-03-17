@@ -55,7 +55,7 @@ namespace Remotion.Validation.Providers
       get { return _validationCollectorProviders; }
     }
 
-    //TODO MK: check!
+    //TODO RM-5906: check!
     //public ILookup<Type, ValidationCollectorInfo> GetValidationCollectors (IEnumerable<IEnumerable<Type>> typeGroups)
     //{
     //  foreach (var typesInGroup in typeGroups)

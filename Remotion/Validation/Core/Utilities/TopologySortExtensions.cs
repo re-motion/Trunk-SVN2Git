@@ -29,7 +29,7 @@ namespace Remotion.Validation.Utilities
   /// Topology sorting can be used to sort assemblies according to their references, 
   /// or types according to their inheritance structure.
   /// </remarks>
-  //TODO MK: Review
+  //TODO RM-5906: Review
   public static class TopologySortExtensions
   {
     private class Node<T>

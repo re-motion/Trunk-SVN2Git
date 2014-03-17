@@ -20,7 +20,7 @@ using FluentValidation;
 
 namespace Remotion.Validation.Implementation
 {
-  //TODO MK: doc
+  //TODO RM-5906: doc
   public interface IValidationRuleMetadataService
   {
     void ApplyMetadata (IValidationRule validationRule, Type typeToValidate);

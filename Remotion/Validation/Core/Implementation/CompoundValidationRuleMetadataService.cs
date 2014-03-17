@@ -24,7 +24,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Validation.Implementation
 {
-  //TODO MK: doc
+  //TODO RM-5906: doc
   [ImplementationFor (typeof (IValidationRuleMetadataService), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
   public class CompoundValidationRuleMetadataService : IValidationRuleMetadataService
   {

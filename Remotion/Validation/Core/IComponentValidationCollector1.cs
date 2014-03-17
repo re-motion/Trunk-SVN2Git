@@ -31,7 +31,7 @@ namespace Remotion.Validation
     /// <typeparam name="TProperty">The <see cref="Type"/> of the validated property (used only for syntactical sugar).</typeparam>
     /// <param name="propertySelector">Specifies the property for which the validation rule is added.</param>
     /// <returns>A builder object used for specifying the validation rules of the property.</returns>
-    /// <remarks>TODO MK: usage sample</remarks>
+    /// <remarks>TODO RM-5906: usage sample</remarks>
     IAddingComponentRuleBuilderOptions<TValidatedType, TProperty> AddRule<TProperty> (Expression<Func<TValidatedType, TProperty>> propertySelector);
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace Remotion.Validation
     /// <typeparam name="TProperty">The <see cref="Type"/> of the validated property (used only for syntactical sugar).</typeparam>
     /// <param name="propertySelector">Specifies the property for which a specific validation rule should be removed.</param>
     /// <returns>A builder object used for specifying the validation rules to be removed from the property.</returns>
-    /// <remarks>TODO MK: usage sample</remarks>
+    /// <remarks>TODO RM-5906: usage sample</remarks>
     IRemovingComponentRuleBuilderOptions<TValidatedType, TProperty> RemoveRule<TProperty> (
         Expression<Func<TValidatedType, TProperty>> propertySelector);
 
@@ -52,7 +52,7 @@ namespace Remotion.Validation
     /// </summary>
     /// <param name="predicate">The condition applied to each added validation rule.</param>
     /// <param name="action">Place calls to <see cref="AddRule{TValidatedType}"/> within this delegate.</param>
-    /// <remarks>TODO MK: usage sample</remarks>
+    /// <remarks>TODO RM-5906: usage sample</remarks>
     void When (Func<TValidatedType, bool> predicate, Action action);
 
     /// <summary>
@@ -62,7 +62,7 @@ namespace Remotion.Validation
     /// </summary>
     /// <param name="predicate">The condition applied to each added validation rule.</param>
     /// <param name="action">Place calls to <see cref="AddRule{TValidatedType}"/> within this delegate.</param>
-    /// <remarks>TODO MK: usage sample</remarks>
+    /// <remarks>TODO RM-5906: usage sample</remarks>
     void Unless (Func<TValidatedType, bool> predicate, Action action);
   }
 }

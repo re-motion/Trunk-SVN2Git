@@ -29,7 +29,7 @@ namespace Remotion.Validation
   /// <summary>
   /// Provides a base class for declaring the validation rules within a component.
   /// </summary>
-  /// <remarks>TODO MK: sample</remarks>
+  /// <remarks>TODO RM-5906: sample</remarks>
   /// <threadsafety static="true" instance="false" />
   public abstract class ComponentValidationCollector<TValidatedType> : IComponentValidationCollector<TValidatedType>
   {

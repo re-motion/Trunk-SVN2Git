@@ -25,7 +25,7 @@ namespace Remotion.Validation.Attributes
   /// This can be used if the <see cref="IComponentValidationCollector.ValidatedType"/> is an interface 
   /// but the collector should only applied with one or more specific types within the inheritance hierarchy.
   /// </summary>
-  /// //TODO MK: sample for derived type inhieriting interface
+  /// //TODO RM-5906: sample for derived type inhieriting interface
   [AttributeUsage (AttributeTargets.Class)]
   public class ApplyWithClassAttribute : Attribute
   {

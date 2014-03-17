@@ -56,7 +56,7 @@ namespace Remotion.Validation.Merging
       }
     }
 
-    //TODO AO: add integration test for redefined (new) property in derived class for that a validator should be removed
+    //TODO RM-5906: add integration test for redefined (new) property in derived class for that a validator should be removed
     private IEnumerable<ValidatorRegistrationWithContext> GetRemovingPropertyRegistrations (
         IPropertyValidator validator, IAddingComponentPropertyRule addingComponentPropertyRule)
     {
