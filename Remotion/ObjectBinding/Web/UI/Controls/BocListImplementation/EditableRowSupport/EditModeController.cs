@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
@@ -245,13 +246,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
       if (! _editModeHost.IsReadOnly)
       {
-        IBusinessObject[] values =
-            (IBusinessObject[]) ArrayUtility.Convert (_editModeHost.Value, typeof (IBusinessObject));
+        Assertion.IsNotNull (_editModeHost.Value, "BocList does not have a value.");
+
+        var editedRows = _editedRowIDs.Select (
+            (editedRowID, index) =>
+                Maybe.ForValue (_editModeHost.RowIDProvider.GetRowFromItemRowID (_editModeHost.Value, editedRowID))
+                    .Select (row => Tuple.Create (row.Index, row.BusinessObject))
+                    .ValueOrDefault (Tuple.Create (-1, _rows[index].GetDataSource().BusinessObject))).ToArray();
 
         if (saveChanges)
         {
           for (int i = 0; i < _rows.Count; i++)
-            OnEditableRowChangesSaving (i, values[i], _rows[i].GetDataSource(), _rows[i].GetEditControlsAsArray());
+            OnEditableRowChangesSaving (editedRows[i].Item1, editedRows[i].Item2, _rows[i].GetDataSource(), _rows[i].GetEditControlsAsArray());
+
+          if (editedRows.Any (row => row.Item1 == -1))
+            return;
 
           bool isValid = Validate();
           if (! isValid)
@@ -263,12 +272,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
             _rows[i].GetDataSource().SaveValues (false);
 
           for (int i = 0; i < _rows.Count; i++)
-            OnEditableRowChangesSaved (i, values[i]);
+            OnEditableRowChangesSaved (editedRows[i].Item1, editedRows[i].Item2);
         }
         else
         {
           for (int i = 0; i < _rows.Count; i++)
-            OnEditableRowChangesCanceling (i, values[i], _rows[i].GetDataSource(), _rows[i].GetEditControlsAsArray());
+            OnEditableRowChangesCanceling (editedRows[i].Item1, editedRows[i].Item2, _rows[i].GetDataSource(), _rows[i].GetEditControlsAsArray());
 
           //if (_isEditNewRow)
           //{
@@ -279,7 +288,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
           //else
           //{
           for (int i = 0; i < _rows.Count; i++)
-            OnEditableRowChangesCanceled (i, values[i]);
+            OnEditableRowChangesCanceled (editedRows[i].Item1, editedRows[i].Item2);
           //}
         }
 
@@ -363,6 +372,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     private void LoadValues (bool interim)
     {
+      Assertion.IsNotNull (_editModeHost.Value, "BocList does not have a value.");
+      if (IsListEditModeActive)
+        Assertion.IsTrue (_editModeHost.Value.Count == _rows.Count, "Number of rows in BocList differs from rows in ListEditMode.");
+
       var newRows = _newRows.ToDictionary (r => r.BusinessObject);
       foreach (var dataSource in _rows.Select (r => r.GetDataSource()))
         dataSource.LoadValues (interim && !newRows.ContainsKey (dataSource.BusinessObject));
