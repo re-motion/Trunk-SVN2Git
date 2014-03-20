@@ -259,9 +259,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
           for (int i = 0; i < _rows.Count; i++)
             OnEditableRowChangesSaving (editedRows[i].Item1, editedRows[i].Item2, _rows[i].GetDataSource(), _rows[i].GetEditControlsAsArray());
 
-          if (editedRows.Any (row => row.Item1 == -1))
-            return;
-
           bool isValid = Validate();
           if (! isValid)
             return;
