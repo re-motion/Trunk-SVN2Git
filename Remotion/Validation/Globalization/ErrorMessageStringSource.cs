@@ -25,30 +25,32 @@ namespace Remotion.Validation.Globalization
   public class ErrorMessageStringSource : IStringSource
   {
     private readonly IPropertyValidator _propertyValidator;
-    private readonly IErrorMessageGlobalizationService _validatorGlobalizationService;
+    private readonly IErrorMessageGlobalizationService _errorMessageGlobalizationService;
     private readonly string _resourceName;
     private readonly Type _resourceType;
-    private readonly string _defaultErrorMessage;
 
-    public ErrorMessageStringSource (IPropertyValidator propertyValidator, IErrorMessageGlobalizationService validatorGlobalizationService)
+    public ErrorMessageStringSource (IPropertyValidator propertyValidator, IErrorMessageGlobalizationService errorMessageGlobalizationService)
     {
       ArgumentUtility.CheckNotNull ("propertyValidator", propertyValidator);
-      ArgumentUtility.CheckNotNull ("validatorGlobalizationService", validatorGlobalizationService);
+      ArgumentUtility.CheckNotNull ("errorMessageGlobalizationService", errorMessageGlobalizationService);
 
       _propertyValidator = propertyValidator;
-      _validatorGlobalizationService = validatorGlobalizationService;
+      _errorMessageGlobalizationService = errorMessageGlobalizationService;
 
-      _defaultErrorMessage = propertyValidator.ErrorMessageSource.GetString();
       _resourceName = propertyValidator.GetType().FullName;
-      _resourceType = validatorGlobalizationService.GetType();
+      _resourceType = errorMessageGlobalizationService.GetType();
     }
 
     public string GetString ()
     {
-      var validatorErrorMessage = _propertyValidator.ErrorMessageSource;
-      var errorMessage = _validatorGlobalizationService.GetErrorMessage (_propertyValidator) ?? _defaultErrorMessage;
-      Assertion.IsTrue (ReferenceEquals (_propertyValidator.ErrorMessageSource, validatorErrorMessage));
-      return errorMessage;
+      var validatorErrorMessageSource = _propertyValidator.ErrorMessageSource;
+      var globalizedErrorMessage = _errorMessageGlobalizationService.GetErrorMessage (_propertyValidator);
+      Assertion.IsTrue (
+          ReferenceEquals (_propertyValidator.ErrorMessageSource, validatorErrorMessageSource),
+          "ErrorMessageSource of PropertyValidator has been changed by invocation of '{0}'.GetErrorMessage (...).",
+          _errorMessageGlobalizationService.GetType().FullName);
+
+      return globalizedErrorMessage ?? _propertyValidator.ErrorMessageSource.GetString();
     }
 
     public string ResourceName

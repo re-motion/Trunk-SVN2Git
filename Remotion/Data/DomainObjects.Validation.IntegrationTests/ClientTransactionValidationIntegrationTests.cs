@@ -19,6 +19,7 @@ using System;
 using FluentValidation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
 {
@@ -44,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
     }
 
     [Test]
-    public void RootClientTransaction_InvalidDomainObjects_ValidationExceptionIsThrown ()
+    public void RootClientTransaction_InvalidDomainObjects_ValidationExceptionIsThrown_AndMessageIsUsingInvariantCulture ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
@@ -58,14 +59,17 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
         ((ICustomerIntroduced) customer).Address = Address.NewObject();
         ((ICustomerIntroduced) customer).Title = "Chef1";
 
-        Assert.That (
-            () => ClientTransaction.Current.Commit(),
-            Throws.TypeOf<DomainObjectFluentValidationException> ().And.Message.Matches (
-                "One or more DomainObject contain inconsistent data:\r\n\r\n"
-                + "Object '.*':\r\n"
-                + " -- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n\r\n"
-                + "Object '.*':\r\n"
-                + " -- 'LocalizedTitle' should not be equal to 'Chef1'."));
+        using (new CultureScope ("de-AT"))
+        {
+          Assert.That (
+              () => ClientTransaction.Current.Commit(),
+              Throws.TypeOf<DomainObjectFluentValidationException>().And.Message.Matches (
+                  "One or more DomainObject contain inconsistent data:\r\n\r\n"
+                  + "Object '.*':\r\n"
+                  + " -- 'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters.\r\n\r\n"
+                  + "Object '.*':\r\n"
+                  + " -- 'LocalizedTitle' should not be equal to 'Chef1'."));
+        }
       }
     }
 

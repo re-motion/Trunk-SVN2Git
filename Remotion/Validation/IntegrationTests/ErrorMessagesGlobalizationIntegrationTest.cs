@@ -16,7 +16,11 @@
 // 
 
 using System;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
+using FluentValidation.Resources;
+using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Utilities;
 using Remotion.Validation.IntegrationTests.TestDomain.ComponentA;
@@ -66,12 +70,13 @@ namespace Remotion.Validation.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO RM-5906: Localization of validation messages")]
     public void CultureIsSetAfterValidatorIsCreated_UsesNewCultureForLocalization ()
     {
       var person = new SpecialCustomer1();
       person.FirstName = null;
       person.LastName = "value";
+
+      Assert.That (Thread.CurrentThread.CurrentCulture, Is.EqualTo (CultureInfo.InvariantCulture));
 
       var validator = ValidationBuilder.BuildValidator<Person>();
 
@@ -87,7 +92,6 @@ namespace Remotion.Validation.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO RM-5906: Localization of validation messages")]
     public void CultureIsSetAfterValidationResultIsCreated_UsesPreviousCultureForLocalization ()
     {
       var person = new SpecialCustomer1();

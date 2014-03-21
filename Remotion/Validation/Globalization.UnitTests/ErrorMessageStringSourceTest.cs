@@ -19,6 +19,7 @@ using System;
 using FluentValidation.Resources;
 using FluentValidation.Validators;
 using NUnit.Framework;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Validation.Globalization.UnitTests
@@ -47,7 +48,7 @@ namespace Remotion.Validation.Globalization.UnitTests
     }
 
     [Test]
-    public void GetString_ErrorMessageServiceReturnsNotNull ()
+    public void GetString_ErrorMessageServiceReturnsNotNull_ReturnsErrorMessageFromService ()
     {
       _validatorGlobalizationServiceMock.Expect (mock => mock.GetErrorMessage (_propertyValidator)).Return ("FakeMessage");
 
@@ -58,7 +59,7 @@ namespace Remotion.Validation.Globalization.UnitTests
     }
 
     [Test]
-    public void GetString_ErrorMessageServiceReturnsNull ()
+    public void GetString_ErrorMessageServiceReturnsNull_ReturnsOriginalErrorMessage ()
     {
       _validatorGlobalizationServiceMock.Expect (mock => mock.GetErrorMessage (_propertyValidator)).Return (null);
 
@@ -66,6 +67,38 @@ namespace Remotion.Validation.Globalization.UnitTests
 
       _validatorGlobalizationServiceMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo (Messages.notnull_error));
+    }
+
+    [Test]
+    public void GetString_DoesNotCacheOriginalErrorMessage ()
+    {
+      _validatorGlobalizationServiceMock.Stub (mock => mock.GetErrorMessage (_propertyValidator)).Return (null);
+
+      using (CultureScope.CreateInvariantCultureScope())
+      {
+        var resultInvariant = _stringSource.GetString();
+        Assert.That (resultInvariant, Is.EqualTo (Messages.notnull_error));
+        using (new CultureScope ("de-At"))
+        {
+          var resultDE = _stringSource.GetString();
+          Assert.That (resultDE, Is.EqualTo (Messages.notnull_error));
+          Assert.That (resultDE, Is.Not.EqualTo (resultInvariant), "DE resources appear to be missing");
+        }
+      }
+    }
+
+    [Test]
+    public void GetString_ErrorMessageServiceChangesErrorMessageSource_ThrowsInvalidOperationException()
+    {
+      _validatorGlobalizationServiceMock.Expect (mock => mock.GetErrorMessage (_propertyValidator))
+          .WhenCalled (mi => ((IPropertyValidator) mi.Arguments[0]).ErrorMessageSource = new StaticStringSource ("Wrong Message"))
+          .Return (null);
+
+      Assert.That (
+          () => _stringSource.GetString(),
+          Throws.InvalidOperationException.And.Message.EqualTo (
+              string.Format ("ErrorMessageSource of PropertyValidator has been changed by invocation of '{0}'.GetErrorMessage (...).",
+              _validatorGlobalizationServiceMock.GetType().FullName)));
     }
   }
 }
