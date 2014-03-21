@@ -86,7 +86,7 @@ function BocList_InitializeList(bocList, selectRowSelectorControlName, selectAll
   if (BocList_HasDimensions (bocList))
   {
     $(bocList).addClass('hasDimensions');
-    BocList_FixUpScrolling(bocList);
+    BocList_FixUpScrolling($(bocList));
   }
 
   var selectedRows = new BocList_SelectedRows (selection);
@@ -397,13 +397,20 @@ function BocList_HasDimensions(bocList)
 
 function BocList_FixUpScrolling(bocList)
 {
-  var tableBlock = $(bocList).children('div.bocListTableBlock').first();
+  var tableBlock = bocList.children('div.bocListTableBlock').first();
 
   var scrollTimer = null;
   var tableContainer = tableBlock.children('div.bocListTableContainer').first();
   var scrollableContainer = tableContainer.children('div.bocListTableScrollContainer').first();
   var horizontalScroll = 0;
- 
+
+  if ($ (document.body).hasClass ('webkit'))
+  {
+    //Workaround for webkit rendering but where scrollcontainer overflows the width of the parent element when the parent is also scrollable
+    bocList.hide();
+    setTimeout (function () { bocList.show(); }, 0);
+  }
+
   scrollableContainer.bind('scroll', function (event)
   {
     var newHorizontalScroll = scrollableContainer.scrollLeft();
