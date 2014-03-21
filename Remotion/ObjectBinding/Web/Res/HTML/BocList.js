@@ -418,7 +418,7 @@ function BocList_FixUpScrolling(bocList)
       // Final update after scrolling has finished to ensure propper layout.
       if (scrollTimer)
         clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(function () { BocList_FixHeaderPosition(tableContainer, scrollableContainer) }, 50);
+      scrollTimer = setTimeout(function () { BocList_FixHeaderPosition (tableContainer, scrollableContainer); }, 50);
     }
   });
 
@@ -435,7 +435,7 @@ function BocList_FixUpScrolling(bocList)
     BocList_FixHeaderPosition(tableContainer, scrollableContainer);
     setTimeout(resizeHandler, resizeInterval);
   };
-  setTimeout(resizeHandler, resizeInterval);
+  setTimeout(resizeHandler, resizeInterval); // Doubles for calling BocList_FixHeaderSize() after creating the header.
 }
 
 function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
@@ -470,19 +470,13 @@ function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
   });
 
   var ieVersion = BrowserUtility.GetIEVersion();
-  if (isNaN (ieVersion))
-  {
-    setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 50);
-  }
-  else if (ieVersion > 8)
-  {
-    $(document).ready(function () { BocList_FixHeaderSize(scrollableContainer); });
-  }
-  else
+  if (ieVersion < 9)
   {
     BocList_FixHeaderSize(scrollableContainer);
     setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 0);
   }
+
+  // BocList_FixHeaderSize() with timeout needs to be called after setup. This is already taken care of at the call-site.
 }
 
 function BocList_FixHeaderSize(scrollableContainer)
