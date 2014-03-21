@@ -16,7 +16,6 @@
 // 
 
 using System;
-using FluentValidation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain;
 using Remotion.Utilities;

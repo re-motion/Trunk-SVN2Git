@@ -23,6 +23,7 @@ using Remotion.Validation.Implementation;
 
 namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
 {
+  [TestFixture]
   public class ValidationRulesIntegrationTests : IntegrationTestBase
   {
     public override void SetUp ()
