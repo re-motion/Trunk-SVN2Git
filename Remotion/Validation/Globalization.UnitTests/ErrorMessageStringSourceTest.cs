@@ -30,14 +30,16 @@ namespace Remotion.Validation.Globalization.UnitTests
     private IErrorMessageGlobalizationService _validatorGlobalizationServiceMock;
     private ErrorMessageStringSource _stringSource;
     private NotNullValidator _propertyValidator;
+    private IStringSource _orginalStringSourceMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _validatorGlobalizationServiceMock = MockRepository.GenerateStrictMock<IErrorMessageGlobalizationService>();
       _propertyValidator = new NotNullValidator();
+      _validatorGlobalizationServiceMock = MockRepository.GenerateStrictMock<IErrorMessageGlobalizationService>();
+      _orginalStringSourceMock = MockRepository.GenerateStrictMock<IStringSource> ();
 
-      _stringSource = new ErrorMessageStringSource (_propertyValidator, _validatorGlobalizationServiceMock);
+      _stringSource = new ErrorMessageStringSource (_propertyValidator, _validatorGlobalizationServiceMock, _orginalStringSourceMock);
     }
 
     [Test]
@@ -62,29 +64,28 @@ namespace Remotion.Validation.Globalization.UnitTests
     public void GetString_ErrorMessageServiceReturnsNull_ReturnsOriginalErrorMessage ()
     {
       _validatorGlobalizationServiceMock.Expect (mock => mock.GetErrorMessage (_propertyValidator)).Return (null);
+      _orginalStringSourceMock.Expect (mock => mock.GetString ()).Return ("Original Message");
 
       var result = _stringSource.GetString();
 
       _validatorGlobalizationServiceMock.VerifyAllExpectations();
-      Assert.That (result, Is.EqualTo (Messages.notnull_error));
+      _orginalStringSourceMock.VerifyAllExpectations();
+      Assert.That (result, Is.EqualTo ("Original Message"));
     }
 
     [Test]
     public void GetString_DoesNotCacheOriginalErrorMessage ()
     {
       _validatorGlobalizationServiceMock.Stub (mock => mock.GetErrorMessage (_propertyValidator)).Return (null);
+      _orginalStringSourceMock.Expect (mock => mock.GetString()).Return ("Original Message 1").Repeat.Once();
+      _orginalStringSourceMock.Expect (mock => mock.GetString()).Return ("Original Message 2").Repeat.Once();
 
-      using (CultureScope.CreateInvariantCultureScope())
-      {
-        var resultInvariant = _stringSource.GetString();
-        Assert.That (resultInvariant, Is.EqualTo (Messages.notnull_error));
-        using (new CultureScope ("de-At"))
-        {
-          var resultDE = _stringSource.GetString();
-          Assert.That (resultDE, Is.EqualTo (Messages.notnull_error));
-          Assert.That (resultDE, Is.Not.EqualTo (resultInvariant), "DE resources appear to be missing");
-        }
-      }
+      var result1 = _stringSource.GetString();
+      var result2 = _stringSource.GetString();
+
+      _orginalStringSourceMock.VerifyAllExpectations();
+      Assert.That (result1, Is.EqualTo ("Original Message 1"));
+      Assert.That (result2, Is.EqualTo ("Original Message 2"));
     }
 
     [Test]

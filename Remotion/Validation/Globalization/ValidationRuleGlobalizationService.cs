@@ -48,7 +48,7 @@ namespace Remotion.Validation.Globalization
       foreach (var validator in validationRule.Validators)
       {
         if (_defaultMessageEvaluator.HasDefaultMessageAssigned (validator))
-          validator.ErrorMessageSource = new ErrorMessageStringSource (validator, _errorMessageGlobalizationService);
+          validator.ErrorMessageSource = new ErrorMessageStringSource (validator, _errorMessageGlobalizationService, validator.ErrorMessageSource);
       }
     }
   }

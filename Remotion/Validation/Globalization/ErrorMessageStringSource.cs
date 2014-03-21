@@ -26,16 +26,23 @@ namespace Remotion.Validation.Globalization
   {
     private readonly IPropertyValidator _propertyValidator;
     private readonly IErrorMessageGlobalizationService _errorMessageGlobalizationService;
+    private readonly IStringSource _fallbackErrorMessageSource;
     private readonly string _resourceName;
     private readonly Type _resourceType;
 
-    public ErrorMessageStringSource (IPropertyValidator propertyValidator, IErrorMessageGlobalizationService errorMessageGlobalizationService)
+    public ErrorMessageStringSource (
+        IPropertyValidator propertyValidator,
+        IErrorMessageGlobalizationService errorMessageGlobalizationService,
+        IStringSource fallbackErrorMessageSource)
     {
       ArgumentUtility.CheckNotNull ("propertyValidator", propertyValidator);
       ArgumentUtility.CheckNotNull ("errorMessageGlobalizationService", errorMessageGlobalizationService);
+      ArgumentUtility.CheckNotNull ("fallbackErrorMessageSource", fallbackErrorMessageSource);
+
 
       _propertyValidator = propertyValidator;
       _errorMessageGlobalizationService = errorMessageGlobalizationService;
+      _fallbackErrorMessageSource = fallbackErrorMessageSource;
 
       _resourceName = propertyValidator.GetType().FullName;
       _resourceType = errorMessageGlobalizationService.GetType();
@@ -50,7 +57,7 @@ namespace Remotion.Validation.Globalization
           "ErrorMessageSource of PropertyValidator has been changed by invocation of '{0}'.GetErrorMessage (...).",
           _errorMessageGlobalizationService.GetType().FullName);
 
-      return globalizedErrorMessage ?? _propertyValidator.ErrorMessageSource.GetString();
+      return globalizedErrorMessage ?? _fallbackErrorMessageSource.GetString();
     }
 
     public string ResourceName
