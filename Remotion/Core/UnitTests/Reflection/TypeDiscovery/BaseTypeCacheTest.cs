@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using NUnit.Framework;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.UnitTests.Reflection.TypeDiscovery.BaseTypeCacheTestDomain;
@@ -9,7 +8,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
   [TestFixture]
   public class BaseTypeCacheTest
   {
-    private Type[] _testDomain = new[]
+    private readonly Type[] _testDomain = new[]
                                  {
                                      typeof (Cat), typeof (Pet), typeof (Dog), typeof (MaineCoon), typeof (Ragdoll), typeof (Siberian),
                                      typeof (ILongHairedBreed), typeof (IHamster)
@@ -18,7 +17,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     [Test]
     public void GetAllTypesFromCache ()
     {
-      var baseTypeCache = new BaseTypeCache().BuildCaches (_testDomain);
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
 
       Assert.That (baseTypeCache.GetAllTypesFromCache(), Is.EquivalentTo (_testDomain));
     }
@@ -26,7 +25,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     [Test]
     public void GetAllTypesFromCache_ContainsIntefaceWithoutImplementations ()
     {
-      var baseTypeCache = new BaseTypeCache().BuildCaches (_testDomain);
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
 
       Assert.That (baseTypeCache.GetAllTypesFromCache(), Contains.Item (typeof (IHamster)));
     }
@@ -34,7 +33,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     [Test]
     public void GetFromCache_object_ReturnsAll ()
     {
-      var baseTypeCache = new BaseTypeCache().BuildCaches (_testDomain);
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
 
       Assert.That (
           baseTypeCache.GetFromCache (typeof (object)),
@@ -44,7 +43,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     [Test]
     public void GetFromCache_SubHierarchy ()
     {
-      var baseTypeCache = new BaseTypeCache().BuildCaches (_testDomain);
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
 
       Assert.That (
           baseTypeCache.GetFromCache (typeof (Cat)),
@@ -54,7 +53,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     [Test]
     public void GetFromCache_WholeHierarchy ()
     {
-      var baseTypeCache = new BaseTypeCache().BuildCaches (_testDomain);
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
       
       Assert.That (
           baseTypeCache.GetFromCache (typeof (Pet)),
@@ -64,7 +63,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     [Test]
     public void GetFromCache_NoDescendingTypes ()
     {
-      var baseTypeCache = new BaseTypeCache().BuildCaches (_testDomain);
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
 
       Assert.That (baseTypeCache.GetFromCache (typeof (MaineCoon)), Is.EqualTo (new[] { typeof (MaineCoon) }));
     }
@@ -72,7 +71,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     [Test]
     public void GetFromCache_Interface ()
     {
-      var baseTypeCache = new BaseTypeCache().BuildCaches (_testDomain);
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
 
       Assert.That (baseTypeCache.GetFromCache (typeof (ILongHairedBreed)), Is.EquivalentTo (new[] { typeof (MaineCoon), typeof (Siberian) }));
     }

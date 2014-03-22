@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,7 +24,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Remotion.Configuration.TypeDiscovery;
-using Remotion.FunctionalProgramming;
 using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Utilities;
@@ -36,12 +36,12 @@ namespace Remotion.Reflection.TypeDiscovery
   /// is therefore the default <see cref="ITypeDiscoveryService"/> provided by <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/>
   /// in the standard context.
   /// </summary>
-  public class AssemblyFinderTypeDiscoveryService : ITypeDiscoveryService
+  public sealed class AssemblyFinderTypeDiscoveryService : ITypeDiscoveryService
   {
     // This class holds lazy, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a nested static
     // class with a static constructor as lazily as possible on first access of the static field.
     // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
-    static class LazyStaticFields
+    private static class LazyStaticFields
     {
       public static readonly ILog s_log = LogManager.GetLogger (typeof (AssemblyFinderTypeDiscoveryService));
 
@@ -50,6 +50,7 @@ namespace Remotion.Reflection.TypeDiscovery
       static LazyStaticFields ()
       {
       }
+
       // ReSharper restore EmptyConstructor
     }
 
@@ -65,7 +66,7 @@ namespace Remotion.Reflection.TypeDiscovery
     {
       ArgumentUtility.CheckNotNull ("assemblyFinder", assemblyFinder);
       _assemblyFinder = assemblyFinder;
-      _baseTypeCache = new Lazy<BaseTypeCache> (() => new BaseTypeCache ().BuildCaches(GetAllTypes()));
+      _baseTypeCache = new Lazy<BaseTypeCache> (() => BaseTypeCache.Create (GetTypesFromAllAssemblies (null, true)));
     }
 
     /// <summary>
@@ -97,13 +98,21 @@ namespace Remotion.Reflection.TypeDiscovery
           return new[] { baseType };
 
         if (!excludeGlobalTypes)
-          return GetAssemblies (false).AsParallel().SelectMany (a => GetTypesFromBaseType (a, baseType)).ToArray();
+          return GetTypesFromAllAssemblies (baseType, false).ToArray();
 
-        if (baseType == null || baseType == typeof (object))
-          return _baseTypeCache.Value.GetAllTypesFromCache();
-
-        return _baseTypeCache.Value.GetFromCache (baseType);
+        return _baseTypeCache.Value.GetFromCache (baseType ?? typeof (object));
       }
+    }
+
+    private IEnumerable<Type> GetTypesFromAllAssemblies (Type baseType, bool excludeGlobalTypes)
+    {
+      return GetAssemblies (excludeGlobalTypes).AsParallel().SelectMany (a => GetTypesFromBaseType (a, baseType));
+    }
+
+    private IEnumerable<Assembly> GetAssemblies (bool excludeGlobalTypes)
+    {
+      var assemblies = _assemblyFinder.FindAssemblies();
+      return assemblies.Where (assembly => !excludeGlobalTypes || !assembly.GlobalAssemblyCache);
     }
 
     private IEnumerable<Type> GetTypesFromBaseType (_Assembly assembly, Type baseType)
@@ -126,24 +135,13 @@ namespace Remotion.Reflection.TypeDiscovery
 
       if (baseType == null)
         return allTypesInAssembly;
-      
+
       return GetFilteredTypes (allTypesInAssembly, baseType);
     }
 
     private IEnumerable<Type> GetFilteredTypes (IEnumerable<Type> types, Type baseType)
     {
       return types.Where (baseType.IsAssignableFrom);
-    }
-
-    private IEnumerable<Assembly> GetAssemblies (bool excludeGlobalTypes)
-    {
-      var assemblies = _assemblyFinder.FindAssemblies();
-      return assemblies.Where (assembly => !excludeGlobalTypes || !assembly.GlobalAssemblyCache);
-    }
-
-    private ParallelQuery<Type> GetAllTypes ()
-    {
-      return GetAssemblies (true).AsParallel().SelectMany (a => GetTypesFromBaseType (a, null));
     }
   }
 }
