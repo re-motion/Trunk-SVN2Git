@@ -108,7 +108,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 
       using (StopwatchScope.CreateScope (
           s_log.Value,
-          LogLevel.Info,
+          LogLevel.Debug,
           "Loaded root assemblies based on specifications. Time taken: {elapsed}."))
       {
         var rootAssemblies =
@@ -126,7 +126,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 
       using (StopwatchScope.CreateScope (
           s_log.Value,
-          LogLevel.Info,
+          LogLevel.Debug,
           "Selected files based on root assembly specifications. Time taken: {elapsed}."))
       {
         foreach (var specification in _specifications)
