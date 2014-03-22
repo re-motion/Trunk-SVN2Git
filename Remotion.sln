@@ -342,6 +342,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validation.Globalization.Un
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Validation", "Remotion\ObjectBinding\Web.Validation\ObjectBinding.Web.Validation.csproj", "{1ABECBFF-E3BC-4D02-AF23-52094CEE41DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.ServiceLocation.PerformanceTestConsole", "Remotion\Core\ServiceLocation.PerformanceTestConsole\Core.ServiceLocation.PerformanceTestConsole.csproj", "{349318F9-9F6B-4FCA-BCE7-56F525007417}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1260,6 +1262,14 @@ Global
 		{1ABECBFF-E3BC-4D02-AF23-52094CEE41DE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1ABECBFF-E3BC-4D02-AF23-52094CEE41DE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{1ABECBFF-E3BC-4D02-AF23-52094CEE41DE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{349318F9-9F6B-4FCA-BCE7-56F525007417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{349318F9-9F6B-4FCA-BCE7-56F525007417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{349318F9-9F6B-4FCA-BCE7-56F525007417}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{349318F9-9F6B-4FCA-BCE7-56F525007417}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{349318F9-9F6B-4FCA-BCE7-56F525007417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{349318F9-9F6B-4FCA-BCE7-56F525007417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{349318F9-9F6B-4FCA-BCE7-56F525007417}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{349318F9-9F6B-4FCA-BCE7-56F525007417}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1278,6 +1288,7 @@ Global
 		{66633A01-B399-4AA5-A3B5-8237FF85F8B6} = {5B3CB3F6-DE69-41D6-8BBC-EFF4932F0F7E}
 		{18269689-DC0F-4975-879B-A6ACBA0FA596} = {5B3CB3F6-DE69-41D6-8BBC-EFF4932F0F7E}
 		{F3DE9C3D-D9B2-46A7-B2D6-11C69168241A} = {5B3CB3F6-DE69-41D6-8BBC-EFF4932F0F7E}
+		{349318F9-9F6B-4FCA-BCE7-56F525007417} = {5B3CB3F6-DE69-41D6-8BBC-EFF4932F0F7E}
 		{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A} = {040CC4EF-ACE9-4832-AC0C-56640F2AB337}
 		{717B711E-97AB-4751-97C5-C0491D1919FA} = {040CC4EF-ACE9-4832-AC0C-56640F2AB337}
 		{A6505EE0-0F6B-4CB6-ACC7-1C05C0E236BC} = {040CC4EF-ACE9-4832-AC0C-56640F2AB337}
