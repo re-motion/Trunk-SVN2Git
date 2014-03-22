@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Remotion.Logging;
@@ -94,37 +96,42 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       }
     }
 
-    private IEnumerable<Assembly> FindReferencedAssemblies (IEnumerable<RootAssembly> rootAssemblies)
+    private IEnumerable<Assembly> FindReferencedAssemblies (ICollection<RootAssembly> rootAssemblies)
     {
       s_log.Value.Debug ("Finding referenced assemblies...");
       using (StopwatchScope.CreateScope (s_log.Value, LogLevel.Debug, "Time spent for finding and loading referenced assemblies: {elapsed}."))
       {
-        var processedAssemblyNames = new HashSet<string>(); // used to avoid loading assemblies twice
-        var referenceRoots = new HashSet<RootAssembly> (rootAssemblies); // referenced assemblies added later in order to get their references as well
+        // referenced assemblies added later in order to get their references as well
+        var referenceRoots = new ConcurrentDictionary<Assembly, object> (
+            rootAssemblies.Where (r => r.FollowReferences).Distinct().Select (r => new KeyValuePair<Assembly, object> (r.Assembly, null)));
+
+         // used to avoid loading assemblies twice
+        var processedAssemblyNames = new ConcurrentDictionary<string, object> (
+            referenceRoots.Keys.Select (a => new KeyValuePair<string, object> (a.FullName, null)));
+
+        var referencedOnlyAssemblies = new ConcurrentBag<Assembly>();
 
         while (referenceRoots.Count > 0)
         {
-          var currentRoot = referenceRoots.First(); // take any reference
-          referenceRoots.Remove (currentRoot); // don't handle again
+          var currentRoot = referenceRoots.Keys.First(); // take any reference
+          object value;
+          referenceRoots.TryRemove (currentRoot, out value); // don't handle again
 
-          if (currentRoot.FollowReferences)
+          foreach (var referencedAssemblyName in currentRoot.GetReferencedAssemblies().AsParallel())
           {
-            foreach (var referencedAssemblyName in currentRoot.Assembly.GetReferencedAssemblies())
+            if (processedAssemblyNames.TryAdd (referencedAssemblyName.FullName, null)) // don't process an assembly name twice
             {
-              if (!processedAssemblyNames.Contains (referencedAssemblyName.FullName)) // don't process an assembly name twice
+              var referencedAssembly = _assemblyLoader.TryLoadAssembly (referencedAssemblyName, currentRoot.FullName);
+              if (referencedAssembly != null) // might return null if filtered by the loader
               {
-                processedAssemblyNames.Add (referencedAssemblyName.FullName);
-
-                var referencedAssembly = _assemblyLoader.TryLoadAssembly (referencedAssemblyName, currentRoot.Assembly.FullName);
-                if (referencedAssembly != null) // might return null if filtered by the loader
-                {
-                  referenceRoots.Add (new RootAssembly (referencedAssembly, true)); // store as a root in order to process references transitively
-                  yield return referencedAssembly;
-                }
+                if (referenceRoots.TryAdd (referencedAssembly, null)) // store as a root in order to process references transitively
+                  referencedOnlyAssemblies.Add (referencedAssembly);
               }
             }
           }
         }
+
+        return referencedOnlyAssemblies;
       }
     }
   }

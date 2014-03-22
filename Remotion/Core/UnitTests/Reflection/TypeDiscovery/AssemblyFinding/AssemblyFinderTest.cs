@@ -180,11 +180,12 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void FindAssemblies_NoDuplicates ()
     {
-      var loaderMock = MockRepository.GenerateMock<IAssemblyLoader> ();
+      var assembly4 = typeof (TestFixtureAttribute).Assembly;
+      var loaderMock = MockRepository.GenerateMock<IAssemblyLoader>();
       loaderMock
-          .Expect (mock => mock.TryLoadAssembly (ArgReferenceMatchesDefinition (_assembly2), Arg.Is (_assembly3.FullName)))
-          .Return (_assembly2);
-      loaderMock.Replay ();
+          .Expect (mock => mock.TryLoadAssembly (ArgReferenceMatchesDefinition (assembly4), Arg.Is (_assembly3.FullName)))
+          .Return (assembly4);
+      loaderMock.Replay();
 
       var rootAssemblyFinderStub = MockRepository.GenerateMock<IRootAssemblyFinder> ();
       rootAssemblyFinderStub
@@ -195,9 +196,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var finder = new AssemblyFinder (rootAssemblyFinderStub, loaderMock);
       var result = finder.FindAssemblies ().ToArray();
 
-      loaderMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EquivalentTo (new[] { _assembly2, _assembly3 }));
-      Assert.That (result.Length, Is.EqualTo (2));
+      loaderMock.VerifyAllExpectations();
+      Assert.That (result, Is.EquivalentTo (new[] { _assembly2, _assembly3, assembly4 }));
+      Assert.That (result.Length, Is.EqualTo (3));
     }
 
     private static AssemblyName ArgReferenceMatchesDefinition (Assembly referencedAssembly)

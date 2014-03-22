@@ -151,7 +151,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     }
 
     [Test]
-    public void FindAssemblies_DuplicatesRemoved ()
+    public void FindAssemblies_DuplicatesAreNotRemoved ()
     {
       var specification1 = new FilePatternSpecification ("*.dll", FilePatternSpecificationKind.IncludeFollowReferences);
       var specification2 = new FilePatternSpecification ("*.exe", FilePatternSpecificationKind.IncludeFollowReferences);
@@ -170,8 +170,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var rootAssemblies = finder.FindRootAssemblies ().Select (ra => ra.Assembly).ToArray ();
 
       _loaderMock.VerifyAllExpectations ();
-      Assert.That (rootAssemblies.Length, Is.EqualTo (2));
-      Assert.That (rootAssemblies, Is.EquivalentTo (new[] { _assembly1, _assembly2 }));
+      Assert.That (rootAssemblies.Length, Is.EqualTo (4));
+      Assert.That (rootAssemblies.Distinct(), Is.EquivalentTo (new[] { _assembly1, _assembly2 }));
     }
 
     [Test]

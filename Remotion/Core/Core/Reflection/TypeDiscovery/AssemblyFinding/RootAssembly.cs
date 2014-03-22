@@ -48,5 +48,10 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     {
       return Assembly.GetHashCode ();
     }
+
+    public override string ToString ()
+    {
+      return Assembly.FullName + (FollowReferences ? ", including references" : "");
+    }
   }
 }

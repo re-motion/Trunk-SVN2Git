@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -52,7 +53,7 @@ namespace Remotion.ServiceLocation
         MemberInfoFromExpressionUtility.GetMethod ((DefaultServiceLocator sl) => sl.ResolveIndirectCollectionDependency<object> (null, false))
         .GetGenericMethodDefinition();
 
-    private readonly IDataStore<Type, Registration> _dataStore = DataStoreFactory.CreateWithLocking<Type, Registration>();
+    private readonly ConcurrentDictionary<Type, Registration> _dataStore = new ConcurrentDictionary<Type, Registration>();
 
     /// <inheritdoc/>
     public void Register (ServiceConfigurationEntry serviceConfigurationEntry)
@@ -60,8 +61,7 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceConfigurationEntry", serviceConfigurationEntry);
 
       var registration = CreateRegistration (serviceConfigurationEntry);
-      var registeredValue = _dataStore.GetOrCreateValue (serviceConfigurationEntry.ServiceType, key => registration);
-      if (!ReferenceEquals (registration, registeredValue))
+      if (!_dataStore.TryAdd (serviceConfigurationEntry.ServiceType, registration))
       {
         var message = string.Format (
             "Register cannot be called twice or after GetInstance for service type: '{0}'.",
@@ -74,7 +74,7 @@ namespace Remotion.ServiceLocation
     {
       try
       {
-        return _dataStore.GetOrCreateValue (
+        return _dataStore.GetOrAdd (
             serviceType,
             t =>
             {

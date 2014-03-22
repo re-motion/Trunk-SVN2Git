@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Rhino.Mocks;
@@ -68,15 +69,16 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     }
 
     [Test]
-    public void FindRootAssemblies_RemovesDuplicates ()
+    public void FindRootAssemblies_RemovesAreNotDuplicates ()
     {
       IRootAssemblyFinder innerFinderStub1 = CreateInnerFinderStub (_root1, _root2, _root2);
       IRootAssemblyFinder innerFinderStub2 = CreateInnerFinderStub (_root3, _root2, _root1);
 
       var finder = new CompositeRootAssemblyFinder (new[] { innerFinderStub1, innerFinderStub2 });
 
-      var rootAssemblies = finder.FindRootAssemblies ();
-      Assert.That (rootAssemblies, Is.EquivalentTo (new[] { _root1, _root2, _root3 }));
+      var rootAssemblies = finder.FindRootAssemblies ().ToArray();
+      Assert.That (rootAssemblies.Length, Is.EqualTo (6)); 
+      Assert.That (rootAssemblies.Distinct(), Is.EquivalentTo (new[] { _root1, _root2, _root3 }));
     }
 
     private IRootAssemblyFinder CreateInnerFinderStub (params RootAssembly[] assemblies)

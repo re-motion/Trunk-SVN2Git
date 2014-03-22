@@ -49,5 +49,21 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       Assert.That (rootAsm1.GetHashCode (), Is.EqualTo (rootAsm2.GetHashCode ()));
     }
+
+    [Test]
+    public void ToString_WithFollowReferencesSetToTrue ()
+    {
+      var rootAsm = new RootAssembly (typeof (object).Assembly, true);
+
+      Assert.That (rootAsm.ToString(), Is.EqualTo (typeof(object).Assembly.FullName + ", including references"));
+    }
+
+    [Test]
+    public void ToString_WithFollowReferencesSetToFalse ()
+    {
+      var rootAsm = new RootAssembly (typeof (object).Assembly, false);
+
+      Assert.That (rootAsm.ToString(), Is.EqualTo (typeof(object).Assembly.FullName));
+    }
   }
 }
