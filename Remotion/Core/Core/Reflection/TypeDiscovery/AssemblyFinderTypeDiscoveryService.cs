@@ -66,7 +66,7 @@ namespace Remotion.Reflection.TypeDiscovery
     {
       ArgumentUtility.CheckNotNull ("assemblyFinder", assemblyFinder);
       _assemblyFinder = assemblyFinder;
-      _baseTypeCache = new Lazy<BaseTypeCache> (() => BaseTypeCache.Create (GetTypesFromAllAssemblies (null, true)));
+      _baseTypeCache = new Lazy<BaseTypeCache> (CreateBaseTypeCache);
     }
 
     /// <summary>
@@ -89,18 +89,42 @@ namespace Remotion.Reflection.TypeDiscovery
     /// </returns>
     public ICollection GetTypes (Type baseType, bool excludeGlobalTypes)
     {
+      if (baseType != null && (baseType.IsSealed || baseType.IsValueType))
+        return new[] { baseType };
+
+      if (!excludeGlobalTypes)
+      {
+        LazyStaticFields.s_log.DebugFormat ("Discovering types derived from '{0}', including GAC...", baseType ?? typeof (object));
+        using (StopwatchScope.CreateScope (
+            LazyStaticFields.s_log,
+            LogLevel.Info,
+            string.Format ("Discovered types derived from '{0}', including GAC. Time taken: {{elapsed}}.", baseType ?? typeof (object))))
+        {
+          return GetTypesFromAllAssemblies (baseType, false).ToArray();
+        }
+      }
+
+      var baseTypeCache = _baseTypeCache.Value;
+      Assertion.IsTrue (_baseTypeCache.IsValueCreated);
+
       using (StopwatchScope.CreateScope (
           LazyStaticFields.s_log,
           LogLevel.Debug,
-          string.Format ("Total time needed to discover types derived from '{0}': {{elapsed}}.", baseType ?? typeof (object))))
+          string.Format ("Performed cache look-up of types derived from '{0}'. Time taken: {{elapsed}}.", baseType ?? typeof (object))))
       {
-        if (baseType != null && (baseType.IsSealed || baseType.IsValueType))
-          return new[] { baseType };
+        return baseTypeCache.GetFromCache (baseType ?? typeof (object));
+      }
+    }
 
-        if (!excludeGlobalTypes)
-          return GetTypesFromAllAssemblies (baseType, false).ToArray();
-
-        return _baseTypeCache.Value.GetFromCache (baseType ?? typeof (object));
+    private BaseTypeCache CreateBaseTypeCache ()
+    {
+      LazyStaticFields.s_log.DebugFormat ("Creating cache for all types in application directory...");
+      using (StopwatchScope.CreateScope (
+          LazyStaticFields.s_log,
+          LogLevel.Info,
+          string.Format ("Created cache for all types in application directory. Time taken: {{elapsed}}.")))
+      {
+        return BaseTypeCache.Create (GetTypesFromAllAssemblies (null, true));
       }
     }
 
