@@ -23,6 +23,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Remotion.Configuration.TypeDiscovery;
+using Remotion.FunctionalProgramming;
 using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Utilities;
@@ -87,18 +88,21 @@ namespace Remotion.Reflection.TypeDiscovery
     /// </returns>
     public ICollection GetTypes (Type baseType, bool excludeGlobalTypes)
     {
-      using (StopwatchScope.CreateScope (LazyStaticFields.s_log, LogLevel.Debug, "Time needed to discover types: {elapsed}."))
+      using (StopwatchScope.CreateScope (
+          LazyStaticFields.s_log,
+          LogLevel.Debug,
+          string.Format ("Total time needed to discover types derived from '{0}': {{elapsed}}.", baseType ?? typeof (object))))
       {
         if (baseType != null && (baseType.IsSealed || baseType.IsValueType))
           return new[] { baseType };
 
-        if (baseType == null && excludeGlobalTypes)
+        if (!excludeGlobalTypes)
+          return GetAssemblies (false).AsParallel().SelectMany (a => GetTypesFromBaseType (a, baseType)).ToArray();
+
+        if (baseType == null || baseType == typeof (object))
           return _baseTypeCache.Value.GetAllTypesFromCache();
 
-        if (baseType != null && excludeGlobalTypes)
-          return _baseTypeCache.Value.GetFromCache (baseType);
-
-        return GetAssemblies (excludeGlobalTypes).AsParallel().SelectMany (a => GetTypesFromBaseType (a, baseType)).ToArray();
+        return _baseTypeCache.Value.GetFromCache (baseType);
       }
     }
 
