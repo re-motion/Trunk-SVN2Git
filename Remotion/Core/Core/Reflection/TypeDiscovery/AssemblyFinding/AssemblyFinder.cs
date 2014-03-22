@@ -84,7 +84,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       LazyStaticFields.s_log.Debug ("Finding assemblies...");
       using (StopwatchScope.CreateScope (LazyStaticFields.s_log, LogLevel.Info, "Time spent for finding and loading assemblies: {elapsed}."))
       {
-        var rootAssemblies = FindRootAssemblies().ToList();
+        var rootAssemblies = FindRootAssemblies();
         var resultSet = new HashSet<Assembly> (rootAssemblies.Select (root => root.Assembly));
 
         resultSet.UnionWith (FindReferencedAssemblies (rootAssemblies));
@@ -96,13 +96,14 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       }
     }
 
-    private IEnumerable<RootAssembly> FindRootAssemblies ()
+    private ICollection<RootAssembly> FindRootAssemblies ()
     {
       LazyStaticFields.s_log.Debug ("Finding root assemblies...");
       using (StopwatchScope.CreateScope (LazyStaticFields.s_log, LogLevel.Debug, "Time spent for finding and loading root assemblies: {elapsed}."))
       {
-        return _rootAssemblyFinder.FindRootAssemblies ()
-            .LogAndReturnItems (LazyStaticFields.s_log, LogLevel.Debug, count => string.Format ("Found {0} root assemblies.", count));
+        return _rootAssemblyFinder.FindRootAssemblies()
+            .LogAndReturnItems (LazyStaticFields.s_log, LogLevel.Debug, count => string.Format ("Found {0} root assemblies.", count))
+            .ToList();
       }
     }
 
