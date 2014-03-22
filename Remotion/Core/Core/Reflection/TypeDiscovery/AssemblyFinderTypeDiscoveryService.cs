@@ -98,7 +98,7 @@ namespace Remotion.Reflection.TypeDiscovery
           LogLevel.Debug,
           string.Format ("Performed cache look-up of types derived from '{0}'. Time taken: {{elapsed}}", baseType ?? typeof (object))))
       {
-        return baseTypeCache.GetFromCache (baseType ?? typeof (object));
+        return baseTypeCache.GetTypes (baseType ?? typeof (object));
       }
     }
 

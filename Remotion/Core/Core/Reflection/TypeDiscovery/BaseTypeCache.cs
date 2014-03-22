@@ -58,32 +58,21 @@ namespace Remotion.Reflection.TypeDiscovery
       return new BaseTypeCache (classCache, interfaceCache);
     }
 
-    private readonly Dictionary<Type, List<Type>> _classCache = new Dictionary<Type, List<Type>> (MemberInfoEqualityComparer<Type>.Instance);
+    private readonly IDictionary<Type, List<Type>> _classCache;
+    private readonly IDictionary<Type, List<Type>> _interfaceCache;
 
-    private readonly Dictionary<Type, List<Type>> _interfaceCache = new Dictionary<Type, List<Type>> (MemberInfoEqualityComparer<Type>.Instance);
-
-    private BaseTypeCache (Dictionary<Type, List<Type>> classCache, Dictionary<Type, List<Type>> interfaceCache)
+    private BaseTypeCache (IDictionary<Type, List<Type>> classCache, IDictionary<Type, List<Type>> interfaceCache)
     {
       _classCache = classCache;
       _interfaceCache = interfaceCache;
     }
 
-    public bool IsCachePopulated ()
-    {
-      return _classCache.Any() || _interfaceCache.Any();
-    }
-
-    public ICollection GetAllTypesFromCache ()
-    {
-      return _classCache.Keys.Concat (_interfaceCache.Keys).ToArray();
-    }
-
-    public ICollection GetFromCache (Type baseType)
+    public ICollection GetTypes (Type baseType)
     {
       ArgumentUtility.CheckNotNull ("baseType", baseType);
 
       if (baseType == typeof (object))
-        return GetAllTypesFromCache();
+        return _classCache.Keys.Concat (_interfaceCache.Keys).ToArray();
 
       var cache = baseType.IsInterface ? _interfaceCache : _classCache;
 
