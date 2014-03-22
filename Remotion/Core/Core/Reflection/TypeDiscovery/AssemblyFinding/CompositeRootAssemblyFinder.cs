@@ -41,7 +41,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 
     public IEnumerable<RootAssembly> FindRootAssemblies ()
     {
-      return _innerFinders.SelectMany (finder => finder.FindRootAssemblies()).Distinct();
+      return _innerFinders.AsParallel().SelectMany (finder => finder.FindRootAssemblies());
     }
   }
 }

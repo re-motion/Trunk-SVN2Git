@@ -32,20 +32,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// <threadsafety static="true" instance="true" />
   public class AssemblyFinder : IAssemblyFinder
   {
-    // This class holds lazy, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a nested static
-    // class with a static constructor as lazily as possible on first access of the static field.
-    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
-    static class LazyStaticFields
-    {
-      public readonly static ILog s_log = LogManager.GetLogger (typeof (AssemblyFinder));
-
-      // ReSharper disable EmptyConstructor
-      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
-      static LazyStaticFields ()
-      {
-      }
-      // ReSharper restore EmptyConstructor
-    }
+    private static readonly Lazy<ILog> s_log = new Lazy<ILog> (() => LogManager.GetLogger (typeof (AssemblyFinder)));
 
     private readonly IRootAssemblyFinder _rootAssemblyFinder;
     private readonly IAssemblyLoader _assemblyLoader;
@@ -81,8 +68,8 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     /// <returns>The root assemblies and their referenced assemblies.</returns>
     public virtual IEnumerable<Assembly> FindAssemblies ()
     {
-      LazyStaticFields.s_log.Debug ("Finding assemblies...");
-      using (StopwatchScope.CreateScope (LazyStaticFields.s_log, LogLevel.Info, "Time spent for finding and loading assemblies: {elapsed}."))
+      s_log.Value.Debug ("Finding assemblies...");
+      using (StopwatchScope.CreateScope (s_log.Value, LogLevel.Info, "Time spent for finding and loading assemblies: {elapsed}."))
       {
         var rootAssemblies = FindRootAssemblies();
         var resultSet = new HashSet<Assembly> (rootAssemblies.Select (root => root.Assembly));
@@ -91,26 +78,26 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 
         // Forcing the enumeration at this point does not have a measurable impact on performance.
         // Instead, decoupling the assembly loading from the rest of the system is actually helpful for concurrency.
-        return resultSet.LogAndReturnItems (LazyStaticFields.s_log, LogLevel.Info, count => string.Format ("Found {0} assemblies.", count))
+        return resultSet.LogAndReturnItems (s_log.Value, LogLevel.Info, count => string.Format ("Found {0} assemblies.", count))
             .ToList();
       }
     }
 
     private ICollection<RootAssembly> FindRootAssemblies ()
     {
-      LazyStaticFields.s_log.Debug ("Finding root assemblies...");
-      using (StopwatchScope.CreateScope (LazyStaticFields.s_log, LogLevel.Debug, "Time spent for finding and loading root assemblies: {elapsed}."))
+      s_log.Value.Debug ("Finding root assemblies...");
+      using (StopwatchScope.CreateScope (s_log.Value, LogLevel.Debug, "Time spent for finding and loading root assemblies: {elapsed}."))
       {
         return _rootAssemblyFinder.FindRootAssemblies()
-            .LogAndReturnItems (LazyStaticFields.s_log, LogLevel.Debug, count => string.Format ("Found {0} root assemblies.", count))
+            .LogAndReturnItems (s_log.Value, LogLevel.Debug, count => string.Format ("Found {0} root assemblies.", count))
             .ToList();
       }
     }
 
     private IEnumerable<Assembly> FindReferencedAssemblies (IEnumerable<RootAssembly> rootAssemblies)
     {
-      LazyStaticFields.s_log.Debug ("Finding referenced assemblies...");
-      using (StopwatchScope.CreateScope (LazyStaticFields.s_log, LogLevel.Debug, "Time spent for finding and loading referenced assemblies: {elapsed}."))
+      s_log.Value.Debug ("Finding referenced assemblies...");
+      using (StopwatchScope.CreateScope (s_log.Value, LogLevel.Debug, "Time spent for finding and loading referenced assemblies: {elapsed}."))
       {
         var processedAssemblyNames = new HashSet<string>(); // used to avoid loading assemblies twice
         var referenceRoots = new HashSet<RootAssembly> (rootAssemblies); // referenced assemblies added later in order to get their references as well

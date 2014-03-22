@@ -116,7 +116,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
             let assembly = _assemblyLoader.TryLoadAssembly (fileDescription.FilePath)
             where assembly != null
             select new RootAssembly (assembly, fileDescription.FollowReferences);
-        return rootAssemblies.Distinct();
+        return rootAssemblies.ToList();
       }
     }
 
