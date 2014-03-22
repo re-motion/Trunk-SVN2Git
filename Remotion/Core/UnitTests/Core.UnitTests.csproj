@@ -309,10 +309,12 @@
     <Compile Include="Reflection\TypeDiscovery\BaseTypeCacheTestDomain\Dog.cs" />
     <Compile Include="Reflection\TypeDiscovery\BaseTypeCacheTestDomain\IHamster.cs" />
     <Compile Include="Reflection\TypeDiscovery\BaseTypeCacheTestDomain\ILongHairedBreed.cs" />
+    <Compile Include="Reflection\TypeDiscovery\BaseTypeCacheTestDomain\IInterfaceForValueType.cs" />
     <Compile Include="Reflection\TypeDiscovery\BaseTypeCacheTestDomain\MaineCoon.cs" />
     <Compile Include="Reflection\TypeDiscovery\BaseTypeCacheTestDomain\Pet.cs" />
     <Compile Include="Reflection\TypeDiscovery\BaseTypeCacheTestDomain\Ragdoll.cs" />
     <Compile Include="Reflection\TypeDiscovery\BaseTypeCacheTestDomain\Siberian.cs" />
+    <Compile Include="Reflection\TypeDiscovery\BaseTypeCacheTestDomain\ValueTypeWithInterface.cs" />
     <Compile Include="ServiceLocation\BootstrapServiceConfigurationTest.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocatorProviderTest.cs" />
     <Compile Include="ServiceLocation\ServiceConfigurationRegistryExtensionsTest.cs" />

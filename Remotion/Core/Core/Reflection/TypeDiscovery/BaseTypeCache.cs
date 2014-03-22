@@ -1,67 +1,76 @@
-﻿using System;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.FunctionalProgramming;
+using Remotion.Logging;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection.TypeDiscovery
 {
+  /// <summary>
+  /// Holds a cache of type hierachies for types not part of the GAC.
+  /// </summary>
   public sealed class BaseTypeCache
   {
+    private static readonly Lazy<ILog> s_log = new Lazy<ILog> (() => LogManager.GetLogger (typeof (BaseTypeCache)));
+
     public static BaseTypeCache Create (IEnumerable<Type> types)
     {
       ArgumentUtility.CheckNotNull ("types", types);
 
-      var classCache = new Dictionary<Type, List<Type>> (MemberInfoEqualityComparer<Type>.Instance);
-      var interfaceCache = new Dictionary<Type, List<Type>> (MemberInfoEqualityComparer<Type>.Instance);
-
-      foreach (var type in types)
+      s_log.Value.DebugFormat ("Beginning to build BaseTypeCache...");
+      using (StopwatchScope.CreateScope (s_log.Value, LogLevel.Debug, string.Format ("Built BaseTypeCache. Time taken: {{elapsed}}")))
       {
-        if (type.IsInterface)
-        {
-          if (!interfaceCache.ContainsKey (type))
-            interfaceCache.Add (type, new List<Type>());
-        }
-        else
-        {
-          foreach (var baseType in type.CreateSequence (t => t.BaseType))
-          {
-            if (AssemblyTypeCache.IsGacAssembly (baseType.Assembly))
-              break;
+        // Note: there is no meassurable impact when switching this code to parallel execution.
+        var classes = new List<KeyValuePair<Type, Type>>();
+        var interfaces = new List<KeyValuePair<Type, Type>>();
 
-            List<Type> derivedTypes;
-            if (!classCache.TryGetValue (baseType, out derivedTypes))
-            {
-              derivedTypes = new List<Type>();
-              classCache.Add (baseType, derivedTypes);
-            }
-            derivedTypes.Add (type);
-          }
-        }
-
-        foreach (var interfaceType in type.GetInterfaces())
+        foreach (var type in types)
         {
-          if (AssemblyTypeCache.IsGacAssembly (interfaceType.Assembly))
-            break;
+          classes.AddRange (
+              type.CreateSequence (t => t.BaseType)
+                  .Where (t => !t.IsInterface)
+                  .TakeWhile (t => !AssemblyTypeCache.IsGacAssembly (t.Assembly))
+                  .Select (baseType => new KeyValuePair<Type, Type> (baseType, type)));
 
-          List<Type> interfaceImplementations;
-          if (!interfaceCache.TryGetValue (interfaceType, out interfaceImplementations))
-          {
-            interfaceImplementations = new List<Type>();
-            interfaceCache.Add (interfaceType, interfaceImplementations);
-          }
-          interfaceImplementations.Add (type);
+          interfaces.AddRange (
+              type.GetInterfaces()
+                  .Where (t => !AssemblyTypeCache.IsGacAssembly (t.Assembly))
+                  .Select (interfaceType => new KeyValuePair<Type, Type> (interfaceType, type)));
+
+          if (type.IsInterface)
+            interfaces.Add (new KeyValuePair<Type, Type> (type, type));
         }
+
+        var classCache = classes.ToLookup (kvp => kvp.Key, kvp => kvp.Value, MemberInfoEqualityComparer<Type>.Instance);
+        var interfaceCache = interfaces.ToLookup (kvp => kvp.Key, kvp => kvp.Value, MemberInfoEqualityComparer<Type>.Instance);
+
+        return new BaseTypeCache (classCache, interfaceCache);
       }
-
-      return new BaseTypeCache (classCache, interfaceCache);
     }
 
-    private readonly IDictionary<Type, List<Type>> _classCache;
-    private readonly IDictionary<Type, List<Type>> _interfaceCache;
+    private readonly ILookup<Type, Type> _classCache;
+    private readonly ILookup<Type, Type> _interfaceCache;
 
-    private BaseTypeCache (IDictionary<Type, List<Type>> classCache, IDictionary<Type, List<Type>> interfaceCache)
+    private BaseTypeCache (ILookup<Type, Type> classCache, ILookup<Type, Type> interfaceCache)
     {
       _classCache = classCache;
       _interfaceCache = interfaceCache;
@@ -72,15 +81,11 @@ namespace Remotion.Reflection.TypeDiscovery
       ArgumentUtility.CheckNotNull ("baseType", baseType);
 
       if (baseType == typeof (object))
-        return _classCache.Keys.Concat (_interfaceCache.Keys).ToArray();
+        return _classCache.Concat (_interfaceCache).Select (g => g.Key).ToArray();
 
       var cache = baseType.IsInterface ? _interfaceCache : _classCache;
 
-      List<Type> types;
-      if (cache.TryGetValue (baseType, out types))
-        return types;
-
-      return new Type[0];
+      return cache[baseType].ToList();
     }
   }
 }

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Reflection.TypeDiscovery;
@@ -27,7 +28,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     private readonly Type[] _testDomain =
     {
         typeof (Cat), typeof (Pet), typeof (Dog), typeof (MaineCoon), typeof (Ragdoll), typeof (Siberian),
-        typeof (ILongHairedBreed), typeof (IHamster)
+        typeof (ILongHairedBreed), typeof (IHamster),
+        typeof (ValueTypeWithInterface), typeof (IInterfaceForValueType)
     };
 
     [Test]
@@ -75,11 +77,64 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     }
 
     [Test]
-    public void GetTypes_Interface ()
+    public void GetTypes_ForInterface_ReturnsInterfaceAndImplementations ()
     {
       var baseTypeCache = BaseTypeCache.Create (_testDomain);
 
-      Assert.That (baseTypeCache.GetTypes (typeof (ILongHairedBreed)), Is.EquivalentTo (new[] { typeof (MaineCoon), typeof (Siberian) }));
+      Assert.That (
+          baseTypeCache.GetTypes (typeof (ILongHairedBreed)),
+          Is.EquivalentTo (new[] { typeof (ILongHairedBreed), typeof (MaineCoon), typeof (Siberian) }));
+    }
+
+    [Test]
+    public void GetTypes_ForInterfaceWithoutImplementations_ReturnsInterface ()
+    {
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
+
+      Assert.That (baseTypeCache.GetTypes (typeof (IHamster)), Is.EqualTo (new[] { typeof (IHamster) }));
+    }
+
+    [Test]
+    public void GetTypes_ForInterfaceNotPartOfTestDomain_ReturnsEmptyList ()
+    {
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
+      Assert.That (typeof (Siberian), Is.AssignableTo<ICloneable>());
+
+      Assert.That (baseTypeCache.GetTypes (typeof (ICloneable)), Is.Empty);
+    }
+
+    [Test]
+    public void GetTypes_ForTypeNotPartOfTestDomain_ReturnsEmptyList ()
+    {
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
+
+      Assert.That (baseTypeCache.GetTypes (typeof (BaseTypeCacheTest)), Is.Empty);
+    }
+
+    [Test]
+    public void GetTypes_ForInterfaceOnValueType_ReturnsInterfaceAndImplementations ()
+    {
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
+
+      Assert.That (
+          baseTypeCache.GetTypes (typeof (IInterfaceForValueType)),
+          Is.EquivalentTo (new[] { typeof (IInterfaceForValueType), typeof (ValueTypeWithInterface) }));
+    }
+
+    [Test]
+    public void GetTypes_ForValueType_ReturnsType ()
+    {
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
+
+      Assert.That (baseTypeCache.GetTypes (typeof (ValueTypeWithInterface)), Is.EquivalentTo (new[] { typeof (ValueTypeWithInterface) }));
+    }
+
+    [Test]
+    public void GetTypes_ForValueTypeFromGac_ReturnsEmptyList ()
+    {
+      var baseTypeCache = BaseTypeCache.Create (_testDomain);
+
+      Assert.That (baseTypeCache.GetTypes (typeof (Decimal)), Is.Empty);
     }
   }
 }
