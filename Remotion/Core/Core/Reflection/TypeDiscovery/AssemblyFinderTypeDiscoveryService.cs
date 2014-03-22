@@ -84,7 +84,7 @@ namespace Remotion.Reflection.TypeDiscovery
         using (StopwatchScope.CreateScope (
             s_log.Value,
             LogLevel.Info,
-            string.Format ("Discovered types derived from '{0}', including GAC. Time taken: {{elapsed}}.", baseType ?? typeof (object))))
+            string.Format ("Discovered types derived from '{0}', including GAC. Time taken: {{elapsed}}", baseType ?? typeof (object))))
         {
           return GetTypesFromAllAssemblies (baseType, false).ToArray();
         }
@@ -96,7 +96,7 @@ namespace Remotion.Reflection.TypeDiscovery
       using (StopwatchScope.CreateScope (
           s_log.Value,
           LogLevel.Debug,
-          string.Format ("Performed cache look-up of types derived from '{0}'. Time taken: {{elapsed}}.", baseType ?? typeof (object))))
+          string.Format ("Performed cache look-up of types derived from '{0}'. Time taken: {{elapsed}}", baseType ?? typeof (object))))
       {
         return baseTypeCache.GetFromCache (baseType ?? typeof (object));
       }
@@ -108,7 +108,7 @@ namespace Remotion.Reflection.TypeDiscovery
       using (StopwatchScope.CreateScope (
           s_log.Value,
           LogLevel.Info,
-          "Created cache for all types in application directory. Time taken: {elapsed}."))
+          "Created cache for all types in application directory. Time taken: {elapsed}"))
       {
         return BaseTypeCache.Create (GetTypesFromAllAssemblies (null, true));
       }

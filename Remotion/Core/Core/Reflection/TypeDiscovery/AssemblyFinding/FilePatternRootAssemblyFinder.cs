@@ -109,7 +109,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       using (StopwatchScope.CreateScope (
           s_log.Value,
           LogLevel.Debug,
-          "Loaded root assemblies based on specifications. Time taken: {elapsed}."))
+          "Loaded root assemblies based on specifications. Time taken: {elapsed}"))
       {
         var rootAssemblies =
             from fileDescription in fileDescriptions.AsParallel()
@@ -127,7 +127,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       using (StopwatchScope.CreateScope (
           s_log.Value,
           LogLevel.Debug,
-          "Selected files based on root assembly specifications. Time taken: {elapsed}."))
+          "Selected files based on root assembly specifications. Time taken: {elapsed}"))
       {
         foreach (var specification in _specifications)
         {
@@ -135,7 +135,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
               s_log.Value,
               LogLevel.Debug,
               string.Format (
-                  "Applied '{0}' specification with file pattern '{1}'. Time taken: {{elapsed}}.",
+                  "Applied '{0}' specification with file pattern '{1}'. Time taken: {{elapsed}}",
                   specification.Kind,
                   specification.FilePattern)))
           {
