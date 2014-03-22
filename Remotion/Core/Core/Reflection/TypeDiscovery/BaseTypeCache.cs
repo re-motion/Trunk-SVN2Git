@@ -26,7 +26,7 @@ using Remotion.Utilities;
 namespace Remotion.Reflection.TypeDiscovery
 {
   /// <summary>
-  /// Holds a cache of type hierachies for types not part of the GAC.
+  /// Holds a cache of type hierachies.
   /// </summary>
   public sealed class BaseTypeCache
   {
@@ -48,12 +48,10 @@ namespace Remotion.Reflection.TypeDiscovery
           classes.AddRange (
               type.CreateSequence (t => t.BaseType)
                   .Where (t => !t.IsInterface)
-                  .TakeWhile (t => !AssemblyTypeCache.IsGacAssembly (t.Assembly))
                   .Select (baseType => new KeyValuePair<Type, Type> (baseType, type)));
 
           interfaces.AddRange (
               type.GetInterfaces()
-                  .Where (t => !AssemblyTypeCache.IsGacAssembly (t.Assembly))
                   .Select (interfaceType => new KeyValuePair<Type, Type> (interfaceType, type)));
 
           if (type.IsInterface)

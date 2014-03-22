@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.UnitTests.Reflection.TypeDiscovery.BaseTypeCacheTestDomain;
@@ -37,7 +38,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     {
       var baseTypeCache = BaseTypeCache.Create (_testDomain);
 
-      Assert.That (baseTypeCache.GetTypes (typeof (object)), Is.EquivalentTo (_testDomain));
+      Assert.That (baseTypeCache.GetTypes (typeof (object)), Is.EquivalentTo (_testDomain.Concat (new[] { typeof (object),  typeof (ValueType), typeof (ICloneable) })));
     }
 
     [Test]
@@ -91,16 +92,15 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     {
       var baseTypeCache = BaseTypeCache.Create (_testDomain);
 
-      Assert.That (baseTypeCache.GetTypes (typeof (IHamster)), Is.EqualTo (new[] { typeof (IHamster) }));
+      Assert.That (baseTypeCache.GetTypes (typeof (IHamster)), Is.EquivalentTo (new[] { typeof (IHamster) }));
     }
 
     [Test]
-    public void GetTypes_ForInterfaceNotPartOfTestDomain_ReturnsEmptyList ()
+    public void GetTypes_ForInterfaceWithImplementationButNotPartOfTestDomain_ReturnsImplementations ()
     {
       var baseTypeCache = BaseTypeCache.Create (_testDomain);
-      Assert.That (typeof (Siberian), Is.AssignableTo<ICloneable>());
 
-      Assert.That (baseTypeCache.GetTypes (typeof (ICloneable)), Is.Empty);
+      Assert.That (baseTypeCache.GetTypes (typeof (ICloneable)), Is.EquivalentTo (new[] { typeof (Siberian) }));
     }
 
     [Test]
