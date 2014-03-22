@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
@@ -56,6 +56,8 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
         return FilePath.GetHashCode ();
       }
     }
+
+    private static readonly Lazy<ILog> s_log = new Lazy<ILog> (() => LogManager.GetLogger (typeof (FilePatternRootAssemblyFinder)));
 
     private readonly string _searchPath;
     private readonly IReadOnlyList<FilePatternSpecification> _specifications;
@@ -101,39 +103,62 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 
     public IEnumerable<RootAssembly> FindRootAssemblies ()
     {
-      var fileDescriptions = ConsolidateSpecifications ();
+      s_log.Value.DebugFormat ("Finding root assemblies based on specifications...");
+      var fileDescriptions = ConsolidateSpecifications();
 
-      var rootAssemblies = from fileDescription in fileDescriptions
-                           let assembly = _assemblyLoader.TryLoadAssembly (fileDescription.FilePath)
-                           where assembly != null
-                           select new RootAssembly (assembly, fileDescription.FollowReferences);
-      return rootAssemblies.Distinct ();
+      using (StopwatchScope.CreateScope (
+          s_log.Value,
+          LogLevel.Info,
+          "Loaded root assemblies based on specifications. Time taken: {elapsed}."))
+      {
+        var rootAssemblies =
+            from fileDescription in fileDescriptions.AsParallel()
+            let assembly = _assemblyLoader.TryLoadAssembly (fileDescription.FilePath)
+            where assembly != null
+            select new RootAssembly (assembly, fileDescription.FollowReferences);
+        return rootAssemblies.Distinct();
+      }
     }
 
-    private IEnumerable<FileDescription> ConsolidateSpecifications ()
+    private ICollection<FileDescription> ConsolidateSpecifications ()
     {
-      var fileDescriptions = new HashSet<FileDescription> ();
+      var fileDescriptions = new HashSet<FileDescription>();
 
-      foreach (var specification in _specifications)
+      using (StopwatchScope.CreateScope (
+          s_log.Value,
+          LogLevel.Info,
+          "Selected files based on root assembly specifications. Time taken: {elapsed}."))
       {
-        switch (specification.Kind)
+        foreach (var specification in _specifications)
         {
-          case FilePatternSpecificationKind.IncludeNoFollow:
-            var filesNotToFollow = _fileSearchService.GetFiles (_searchPath, specification.FilePattern, SearchOption.TopDirectoryOnly);
-            fileDescriptions.UnionWith (filesNotToFollow.Select (f => new FileDescription (f, false)));
-            break;
-          case FilePatternSpecificationKind.IncludeFollowReferences:
-            var filesToFollow = _fileSearchService.GetFiles (_searchPath, specification.FilePattern, SearchOption.TopDirectoryOnly);
-            fileDescriptions.UnionWith (filesToFollow.Select (f => new FileDescription (f, true)));
-            break;
-          default:
-            var filesToExclude = _fileSearchService.GetFiles (_searchPath, specification.FilePattern, SearchOption.TopDirectoryOnly);
-            fileDescriptions.ExceptWith (filesToExclude.Select (f => new FileDescription (f, true))); // the "true" flag is ignored on comparisons
-            break;
+          using (StopwatchScope.CreateScope (
+              s_log.Value,
+              LogLevel.Debug,
+              string.Format (
+                  "Applied '{0}' specification with file pattern '{1}'. Time taken: {{elapsed}}.",
+                  specification.Kind,
+                  specification.FilePattern)))
+          {
+            switch (specification.Kind)
+            {
+              case FilePatternSpecificationKind.IncludeNoFollow:
+                var filesNotToFollow = _fileSearchService.GetFiles (_searchPath, specification.FilePattern, SearchOption.TopDirectoryOnly);
+                fileDescriptions.UnionWith (filesNotToFollow.Select (f => new FileDescription (f, false)));
+                break;
+              case FilePatternSpecificationKind.IncludeFollowReferences:
+                var filesToFollow = _fileSearchService.GetFiles (_searchPath, specification.FilePattern, SearchOption.TopDirectoryOnly);
+                fileDescriptions.UnionWith (filesToFollow.Select (f => new FileDescription (f, true)));
+                break;
+              default:
+                var filesToExclude = _fileSearchService.GetFiles (_searchPath, specification.FilePattern, SearchOption.TopDirectoryOnly);
+                fileDescriptions.ExceptWith (filesToExclude.Select (f => new FileDescription (f, true))); // the "true" flag is ignored on comparisons
+                break;
+            }
+          }
         }
-      }
 
-      return fileDescriptions;
+        return fileDescriptions;
+      }
     }
   }
 }

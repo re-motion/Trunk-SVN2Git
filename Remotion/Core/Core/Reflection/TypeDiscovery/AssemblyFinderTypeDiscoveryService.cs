@@ -38,21 +38,7 @@ namespace Remotion.Reflection.TypeDiscovery
   /// </summary>
   public sealed class AssemblyFinderTypeDiscoveryService : ITypeDiscoveryService
   {
-    // This class holds lazy, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a nested static
-    // class with a static constructor as lazily as possible on first access of the static field.
-    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
-    private static class LazyStaticFields
-    {
-      public static readonly ILog s_log = LogManager.GetLogger (typeof (AssemblyFinderTypeDiscoveryService));
-
-      // ReSharper disable EmptyConstructor
-      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
-      static LazyStaticFields ()
-      {
-      }
-
-      // ReSharper restore EmptyConstructor
-    }
+    private static readonly Lazy<ILog> s_log = new Lazy<ILog> (() => LogManager.GetLogger (typeof (AssemblyFinderTypeDiscoveryService)));
 
     private readonly IAssemblyFinder _assemblyFinder;
     private readonly Lazy<BaseTypeCache> _baseTypeCache;
@@ -94,9 +80,9 @@ namespace Remotion.Reflection.TypeDiscovery
 
       if (!excludeGlobalTypes)
       {
-        LazyStaticFields.s_log.DebugFormat ("Discovering types derived from '{0}', including GAC...", baseType ?? typeof (object));
+        s_log.Value.DebugFormat ("Discovering types derived from '{0}', including GAC...", baseType ?? typeof (object));
         using (StopwatchScope.CreateScope (
-            LazyStaticFields.s_log,
+            s_log.Value,
             LogLevel.Info,
             string.Format ("Discovered types derived from '{0}', including GAC. Time taken: {{elapsed}}.", baseType ?? typeof (object))))
         {
@@ -108,7 +94,7 @@ namespace Remotion.Reflection.TypeDiscovery
       Assertion.IsTrue (_baseTypeCache.IsValueCreated);
 
       using (StopwatchScope.CreateScope (
-          LazyStaticFields.s_log,
+          s_log.Value,
           LogLevel.Debug,
           string.Format ("Performed cache look-up of types derived from '{0}'. Time taken: {{elapsed}}.", baseType ?? typeof (object))))
       {
@@ -118,11 +104,11 @@ namespace Remotion.Reflection.TypeDiscovery
 
     private BaseTypeCache CreateBaseTypeCache ()
     {
-      LazyStaticFields.s_log.DebugFormat ("Creating cache for all types in application directory...");
+      s_log.Value.DebugFormat ("Creating cache for all types in application directory...");
       using (StopwatchScope.CreateScope (
-          LazyStaticFields.s_log,
+          s_log.Value,
           LogLevel.Info,
-          string.Format ("Created cache for all types in application directory. Time taken: {{elapsed}}.")))
+          "Created cache for all types in application directory. Time taken: {elapsed}."))
       {
         return BaseTypeCache.Create (GetTypesFromAllAssemblies (null, true));
       }
