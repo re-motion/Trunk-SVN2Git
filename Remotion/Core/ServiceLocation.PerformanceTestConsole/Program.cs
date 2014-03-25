@@ -16,8 +16,11 @@
 // 
 
 using System;
+using System.Linq;
 using log4net.Config;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Core.ServiceLocation.PerformanceTestConsole
 {
@@ -29,8 +32,14 @@ namespace Core.ServiceLocation.PerformanceTestConsole
       XmlConfigurator.Configure();
       var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
       var domainObjectType = Type.GetType ("Remotion.Data.DomainObjects.DomainObject, Remotion.Data.DomainObjects", true, false);
-      typeDiscoveryService.GetTypes (domainObjectType, true);
-      typeDiscoveryService.GetTypes (domainObjectType, true);
+      typeDiscoveryService.GetTypes (domainObjectType, false);
+      typeDiscoveryService.GetTypes (domainObjectType, false);
+
+      using (StopwatchScope.CreateScope (Console.Out, "Reading IoC Configuration: {elapsed}"))
+      {
+        var p = new DefaultServiceConfigurationDiscoveryService(typeDiscoveryService);
+        p.GetDefaultConfiguration().ToList();
+      }
     }
   }
 }

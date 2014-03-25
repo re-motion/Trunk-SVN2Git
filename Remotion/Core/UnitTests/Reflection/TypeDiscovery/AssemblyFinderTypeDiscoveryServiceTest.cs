@@ -17,8 +17,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Rhino.Mocks;
@@ -74,7 +76,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     }
 
     [Test]
-    public void GetTypes_WithGlobalTypes ()
+    public void GetTypes_WithGlobalTypes_BaseTypeIsObject ()
     {
       var service = new AssemblyFinderTypeDiscoveryService (_finderMock);
 
@@ -86,6 +88,24 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
 
       _mockRepository.ReplayAll ();
       ICollection types = service.GetTypes (typeof (object), false);
+      Assert.That (types, Is.EquivalentTo (allTypes));
+      _mockRepository.VerifyAll ();
+    }
+    
+
+    [Test]
+    public void GetTypes_WithGlobalTypes_BaseTypeIsNull ()
+    {
+      var service = new AssemblyFinderTypeDiscoveryService (_finderMock);
+
+      _finderMock.Expect (mock => mock.FindAssemblies ()).Return (new[] { _testAssembly, _mscorlibAssembly });
+
+      var allTypes = new List<Type> ();
+      allTypes.AddRange (_testAssembly.GetTypes ());
+      allTypes.AddRange (_mscorlibAssembly.GetTypes ());
+
+      _mockRepository.ReplayAll ();
+      ICollection types = service.GetTypes (null, false);
       Assert.That (types, Is.EquivalentTo (allTypes));
       _mockRepository.VerifyAll ();
     }
@@ -101,6 +121,26 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
       ICollection types = service.GetTypes (typeof (object), true);
       Assert.That (types, Is.Empty);
       _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void GetTypes_WithGlobalTypesButBaseTypeIsNotFromGac_SkippesGacLookUp ()
+    {
+      var service = new AssemblyFinderTypeDiscoveryService (_finderMock);
+
+      _finderMock.Expect (mock => mock.FindAssemblies()).Return (new[] { _testAssembly, _mscorlibAssembly });
+
+      _mockRepository.ReplayAll();
+      Dev.Null = service.GetTypes (typeof (object), true);
+      _mockRepository.VerifyAll();
+
+      _mockRepository.BackToRecordAll();
+      _finderMock.Expect (mock => mock.FindAssemblies()).Return (new[] { _testAssembly, _mscorlibAssembly }).Repeat.Never();
+      _mockRepository.ReplayAll();
+
+      ICollection types = service.GetTypes (typeof (Base), false);
+      Assert.That (types, Is.EquivalentTo (new []{typeof (Base), typeof (Derived1), typeof (Derived2)}));
+      _mockRepository.VerifyAll();
     }
 
     [Test]
@@ -136,8 +176,36 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
       _mockRepository.VerifyAll ();
     }
 
+    [Test]
+    public void GetTypes_WithSealedType ()
+    {
+      var finderMock = _mockRepository.StrictMock<IAssemblyFinder>();
+      _mockRepository.ReplayAll ();
+
+      var service = new AssemblyFinderTypeDiscoveryService (finderMock);
+
+      ICollection types = service.GetTypes (typeof (Sealed), true);
+      Assert.That (types, Is.EquivalentTo (new[] { typeof (Sealed) }));
+      finderMock.AssertWasNotCalled (mock => mock.FindAssemblies());
+    }
+
+    [Test]
+    public void GetTypes_WithValueType ()
+    {
+      var finderMock = _mockRepository.StrictMock<IAssemblyFinder>();
+      _mockRepository.ReplayAll ();
+
+      var service = new AssemblyFinderTypeDiscoveryService (finderMock);
+
+      ICollection types = service.GetTypes (typeof (ValueType), true);
+      Assert.That (types, Is.EquivalentTo (new[] { typeof (ValueType) }));
+      finderMock.AssertWasNotCalled (mock => mock.FindAssemblies());
+    }
+
     public class Base { }
     public class Derived1 : Base { }
     public class Derived2 : Base { }
+    public sealed class Sealed { }
+    public struct ValueType { }
   }
 }

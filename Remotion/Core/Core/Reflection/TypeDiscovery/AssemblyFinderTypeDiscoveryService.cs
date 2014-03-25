@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Design;
@@ -42,6 +43,8 @@ namespace Remotion.Reflection.TypeDiscovery
 
     private readonly IAssemblyFinder _assemblyFinder;
     private readonly Lazy<BaseTypeCache> _baseTypeCache;
+
+    private readonly ConcurrentDictionary<Type, ICollection> _globalTypesCache = new ConcurrentDictionary<Type, ICollection>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AssemblyFinderTypeDiscoveryService"/> class with a specific <see cref="AssemblyFinder"/>
@@ -75,31 +78,32 @@ namespace Remotion.Reflection.TypeDiscovery
     /// </returns>
     public ICollection GetTypes (Type baseType, bool excludeGlobalTypes)
     {
-      if (baseType != null && (baseType.IsSealed || baseType.IsValueType))
-        return new[] { baseType };
+      var nonNullBaseType = baseType ?? typeof (object);
 
-      if (!excludeGlobalTypes)
+      if (nonNullBaseType.IsSealed) // ValueTypes are also sealed
+        return new[] { nonNullBaseType };
+
+      if (!excludeGlobalTypes && AssemblyTypeCache.IsGacAssembly (nonNullBaseType.Assembly))
       {
-        s_log.Value.DebugFormat ("Discovering types derived from '{0}', including GAC...", baseType ?? typeof (object));
-        using (StopwatchScope.CreateScope (
-            s_log.Value,
-            LogLevel.Info,
-            string.Format ("Discovered types derived from '{0}', including GAC. Time taken: {{elapsed}}", baseType ?? typeof (object))))
-        {
-          return GetTypesFromAllAssemblies (baseType, false).ToArray();
-        }
+        return _globalTypesCache.GetOrAdd (
+            nonNullBaseType,
+            key =>
+            {
+              s_log.Value.DebugFormat ("Discovering types derived from '{0}', including GAC...", key);
+              using (StopwatchScope.CreateScope (
+                  s_log.Value,
+                  LogLevel.Info,
+                  string.Format ("Discovered types derived from '{0}', including GAC. Time taken: {{elapsed}}", key)))
+              {
+                return GetTypesFromAllAssemblies (key, false).ToList().AsReadOnly();
+              }
+            });
       }
 
       var baseTypeCache = _baseTypeCache.Value;
       Assertion.IsTrue (_baseTypeCache.IsValueCreated);
 
-      using (StopwatchScope.CreateScope (
-          s_log.Value,
-          LogLevel.Debug,
-          string.Format ("Performed cache look-up of types derived from '{0}'. Time taken: {{elapsed}}", baseType ?? typeof (object))))
-      {
-        return baseTypeCache.GetTypes (baseType ?? typeof (object));
-      }
+      return baseTypeCache.GetTypes (nonNullBaseType);
     }
 
     private BaseTypeCache CreateBaseTypeCache ()

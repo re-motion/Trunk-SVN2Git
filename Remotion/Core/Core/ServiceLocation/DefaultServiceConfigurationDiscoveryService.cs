@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
@@ -45,7 +46,9 @@ namespace Remotion.ServiceLocation
   public class DefaultServiceConfigurationDiscoveryService : IServiceConfigurationDiscoveryService
   {
     private readonly ITypeDiscoveryService _typeDiscoveryService;
-    private readonly ICache<Type, IEnumerable<Type>> _implementingTypeCache = CacheFactory.CreateWithLocking<Type, IEnumerable<Type>>();
+    private readonly ConcurrentDictionary<Type, IEnumerable<Type>> _implementingTypeCache = new ConcurrentDictionary<Type, IEnumerable<Type>>();
+    private readonly ConcurrentDictionary<Type, bool> _implementationCandidateCache = new ConcurrentDictionary<Type, bool>();
+    private readonly bool _excludeGlobalTypesForDefaultConfiguration = !AssemblyTypeCache.IsGacAssembly (typeof (ImplementationForAttribute).Assembly);
 
     public static DefaultServiceConfigurationDiscoveryService Create ()
     {
@@ -64,28 +67,36 @@ namespace Remotion.ServiceLocation
     /// Types without the attribute are ignored.</returns>
     public IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration ()
     {
-      return GetDefaultConfiguration (_typeDiscoveryService.GetTypes (null, false).Cast<Type>());
+      return GetDefaultConfiguration (_typeDiscoveryService.GetTypes (null, _excludeGlobalTypesForDefaultConfiguration).Cast<Type>());
     }
 
     /// <summary>
     /// Gets the default service configuration for the given types.
     /// </summary>
-    /// <param name="types">The types to get the default service configuration for.</param>
+    /// <param name="serviceTypes">The types to get the default service configuration for.</param>
     /// <returns>A <see cref="ServiceConfigurationEntry"/> for each serviceType that has implementations with a <see cref="ImplementationForAttribute"/> applied. 
     /// Types without the attribute are ignored.</returns>
-    public IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Type> types)
+    public IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Type> serviceTypes)
     {
-      ArgumentUtility.CheckNotNull ("types", types);
+      ArgumentUtility.CheckNotNull ("serviceTypes", serviceTypes);
 
-      return types.Select (GetDefaultConfiguration).Where (configuration => configuration.ImplementationInfos.Any());
+      return serviceTypes.Select (GetDefaultConfiguration).Where (configuration => configuration.ImplementationInfos.Any());
     }
 
+    /// <summary>
+    /// Gets the default service configuration for the given types.
+    /// </summary>
+    /// <param name="serviceType">The type to get the default service configuration for.</param>
+    /// <returns>A <see cref="ServiceConfigurationEntry"/> for each serviceType that has implementations with a <see cref="ImplementationForAttribute"/> applied. 
+    /// Types without the attribute are ignored.</returns>
     public ServiceConfigurationEntry GetDefaultConfiguration (Type serviceType)
     {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+
       try
       {
-        var excludeGlobalTypes = !serviceType.Assembly.GlobalAssemblyCache;
-        var implementingTypes = _implementingTypeCache.GetOrCreateValue (serviceType, type => GetImplementingTypes (type, excludeGlobalTypes));
+        var excludeGlobalTypes = _excludeGlobalTypesForDefaultConfiguration || !AssemblyTypeCache.IsGacAssembly (serviceType.Assembly);
+        var implementingTypes = _implementingTypeCache.GetOrAdd (serviceType, type => GetImplementingTypes (type, excludeGlobalTypes));
 
         var attributes = implementingTypes
             .SelectMany (
@@ -125,19 +136,11 @@ namespace Remotion.ServiceLocation
     private IEnumerable<Type> GetImplementingTypes (Type serviceType, bool excludeGlobalTypes)
     {
       var derivedTypes = _typeDiscoveryService.GetTypes (serviceType, excludeGlobalTypes);
+      Assertion.IsNotNull (derivedTypes, "TypeDiscoveryService evaluated for serviceType '{0}' and returned null.", serviceType);
 
-      var implementingTypes = new List<Type>();
-      foreach (Type derivedType in derivedTypes)
-      {
-        foreach (var attribute in AttributeUtility.GetCustomAttributes<ImplementationForAttribute> (derivedType, false))
-        {
-          if (attribute.ServiceType == serviceType)
-            implementingTypes.Add (derivedType);
-        }
-      }
-      return implementingTypes.ToArray();
+      return derivedTypes.Cast<Type>().Where (type => IsImplementationOfService (serviceType, type)).ToArray();
     }
-    
+
     private List<Tuple<Type, ImplementationForAttribute>> FilterAttributes (ILookup<RegistrationType, Tuple<Type, ImplementationForAttribute>> attributes)
     {
       var filteredAttributes = new List<Tuple<Type, ImplementationForAttribute>>();
@@ -169,6 +172,17 @@ namespace Remotion.ServiceLocation
         }
         visitedValues.Add (value);
       }
+    }
+
+    private bool IsImplementationOfService (Type serviceType, Type implementationCandidateType)
+    {
+      return _implementationCandidateCache.GetOrAdd (
+          implementationCandidateType,
+          key =>
+          {
+            var implementationForAttributes = AttributeUtility.GetCustomAttributes<ImplementationForAttribute> (implementationCandidateType, false);
+            return implementationForAttributes.Any (a => a.ServiceType == serviceType);
+          });
     }
   }
 }
