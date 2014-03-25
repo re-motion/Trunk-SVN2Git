@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
@@ -349,6 +350,15 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (
           () => defaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { GetType().Assembly }).ToArray(), 
             Throws.InvalidOperationException);
+    }
+
+    [Test]
+    public void EnsureAllMembersOfImplementationForAttributeAreCloned ()
+    {
+      Assert.That (
+          typeof (ImplementationForAttribute).GetFields (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic).Length,
+          Is.EqualTo (4),
+          "Additional state has been defined on ImplementationForAttributes. These new members need to be added to DefaultServiceConfigurationDiscoveryService.CloneAttribute(...) method.");
     }
   }
 }

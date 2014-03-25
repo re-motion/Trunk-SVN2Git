@@ -26,7 +26,7 @@ namespace Remotion.ServiceLocation
   /// Mutiple <see cref="ImplementationForAttribute"/> instances can be applied to a single implementation type. They are not inherited.
   /// </summary>
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-  public class ImplementationForAttribute : Attribute
+  public sealed class ImplementationForAttribute : Attribute
   {
     private readonly Type _serviceType;
     private RegistrationType _registrationType;

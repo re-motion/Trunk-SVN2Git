@@ -18,6 +18,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
@@ -46,8 +47,10 @@ namespace Remotion.ServiceLocation
   public class DefaultServiceConfigurationDiscoveryService : IServiceConfigurationDiscoveryService
   {
     private readonly ITypeDiscoveryService _typeDiscoveryService;
-    private readonly ConcurrentDictionary<Type, IEnumerable<Type>> _implementingTypeCache = new ConcurrentDictionary<Type, IEnumerable<Type>>();
-    private readonly ConcurrentDictionary<Type, bool> _implementationCandidateCache = new ConcurrentDictionary<Type, bool>();
+
+    private readonly ConcurrentDictionary<Type, IReadOnlyCollection<ImplementationForAttribute>> _implementationForAttributesCache =
+        new ConcurrentDictionary<Type, IReadOnlyCollection<ImplementationForAttribute>>();
+
     private readonly bool _excludeGlobalTypesForDefaultConfiguration = !AssemblyTypeCache.IsGacAssembly (typeof (ImplementationForAttribute).Assembly);
 
     public static DefaultServiceConfigurationDiscoveryService Create ()
@@ -96,13 +99,14 @@ namespace Remotion.ServiceLocation
       try
       {
         var excludeGlobalTypes = _excludeGlobalTypesForDefaultConfiguration || !AssemblyTypeCache.IsGacAssembly (serviceType.Assembly);
-        var implementingTypes = _implementingTypeCache.GetOrAdd (serviceType, type => GetImplementingTypes (type, excludeGlobalTypes));
+        var implementingTypes = GetImplementingTypes (serviceType, excludeGlobalTypes);
 
         var attributes = implementingTypes
             .SelectMany (
-                type => AttributeUtility.GetCustomAttributes<ImplementationForAttribute> (type, false)
+                implementingType => GetImplementationForAttributesFromCache (implementingType)
                     .Where (attribute => attribute.ServiceType == serviceType)
-                    .Select (attribute => Tuple.Create (type, attribute)))
+                    .Select (CloneAttribute)
+                    .Select (attribute => Tuple.Create (implementingType, attribute)))
             .ToLookup (a => a.Item2.RegistrationType);
 
         if (attributes.Contains (RegistrationType.Compound) && attributes.Contains (RegistrationType.Single))
@@ -138,7 +142,14 @@ namespace Remotion.ServiceLocation
       var derivedTypes = _typeDiscoveryService.GetTypes (serviceType, excludeGlobalTypes);
       Assertion.IsNotNull (derivedTypes, "TypeDiscoveryService evaluated for serviceType '{0}' and returned null.", serviceType);
 
-      return derivedTypes.Cast<Type>().Where (type => IsImplementationOfService (serviceType, type)).ToArray();
+      return derivedTypes.Cast<Type>();
+    }
+
+    private IReadOnlyCollection<ImplementationForAttribute> GetImplementationForAttributesFromCache (Type type)
+    {
+      return _implementationForAttributesCache.GetOrAdd (
+          type,
+          key => AttributeUtility.GetCustomAttributes<ImplementationForAttribute> (key, false).ToArray());
     }
 
     private List<Tuple<Type, ImplementationForAttribute>> FilterAttributes (ILookup<RegistrationType, Tuple<Type, ImplementationForAttribute>> attributes)
@@ -174,11 +185,14 @@ namespace Remotion.ServiceLocation
       }
     }
 
-    private bool IsImplementationOfService (Type serviceType, Type implementationCandidateType)
+    private ImplementationForAttribute CloneAttribute (ImplementationForAttribute attribute)
     {
-      return _implementationCandidateCache.GetOrAdd (
-          implementationCandidateType,
-          key => AttributeUtility.GetCustomAttributes<ImplementationForAttribute> (key, false).Any (a => a.ServiceType == serviceType));
+      return new ImplementationForAttribute (attribute.ServiceType)
+             {
+                 Lifetime = attribute.Lifetime,
+                 RegistrationType = attribute.RegistrationType,
+                 Position = attribute.Position
+             };
     }
   }
 }
