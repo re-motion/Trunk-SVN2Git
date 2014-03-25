@@ -178,11 +178,7 @@ namespace Remotion.ServiceLocation
     {
       return _implementationCandidateCache.GetOrAdd (
           implementationCandidateType,
-          key =>
-          {
-            var implementationForAttributes = AttributeUtility.GetCustomAttributes<ImplementationForAttribute> (implementationCandidateType, false);
-            return implementationForAttributes.Any (a => a.ServiceType == serviceType);
-          });
+          key => AttributeUtility.GetCustomAttributes<ImplementationForAttribute> (key, false).Any (a => a.ServiceType == serviceType));
     }
   }
 }
