@@ -75,7 +75,6 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       {
         var rootAssemblies = FindRootAssemblies();
         var resultSet = new HashSet<Assembly> (rootAssemblies.Select (root => root.Assembly));
-
         resultSet.UnionWith (FindReferencedAssemblies (rootAssemblies));
 
         // Forcing the enumeration at this point does not have a measurable impact on performance.
@@ -96,42 +95,50 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       }
     }
 
-    private IEnumerable<Assembly> FindReferencedAssemblies (ICollection<RootAssembly> rootAssemblies)
+    private ICollection<Assembly> FindReferencedAssemblies (ICollection<RootAssembly> rootAssemblies)
     {
       s_log.Value.Debug ("Finding referenced assemblies...");
       using (StopwatchScope.CreateScope (s_log.Value, LogLevel.Debug, "Time spent for finding and loading referenced assemblies: {elapsed}."))
       {
-        // referenced assemblies added later in order to get their references as well
-        var referenceRoots = new ConcurrentDictionary<Assembly, object> (
-            rootAssemblies.Where (r => r.FollowReferences).Distinct().Select (r => new KeyValuePair<Assembly, object> (r.Assembly, null)));
+        // referenced assemblies are added later in order to get their references as well
+        var referenceRoots = new ConcurrentQueue<Assembly> (rootAssemblies.Where (r => r.FollowReferences).Distinct().Select (r => r.Assembly));
 
-         // used to avoid loading assemblies twice
-        var processedAssemblyNames = new ConcurrentDictionary<string, object> (
-            referenceRoots.Keys.Select (a => new KeyValuePair<string, object> (a.FullName, null)));
+        // used to prevent analyzing an assembly twice 
+        // and to prevent analysis of root-assemblies marked as do-not-follow references
+        var processedAssemblies = new ConcurrentDictionary<Assembly, object> (
+            rootAssemblies.Select (r => new KeyValuePair<Assembly, object> (r.Assembly, null)));
 
-        var referencedOnlyAssemblies = new ConcurrentBag<Assembly>();
+        // used to avoid loading assemblies twice.
+        var processedAssemblyNames = new HashSet<string> (processedAssemblies.Keys.Select (a => a.FullName));
 
-        while (referenceRoots.Count > 0)
+        var result = new ConcurrentBag<Assembly>();
+
+        Assembly currentRoot;
+        while (referenceRoots.TryDequeue(out currentRoot)) // Sequential loop because of 'processedAssemblyNames'-HashSet
         {
-          var currentRoot = referenceRoots.Keys.First(); // take any reference
-          object value;
-          referenceRoots.TryRemove (currentRoot, out value); // don't handle again
+          var nonprocessedAssemblyNames = currentRoot.GetReferencedAssemblies().Where (a => !processedAssemblyNames.Contains (a.FullName)).ToList();
+          processedAssemblyNames.UnionWith (nonprocessedAssemblyNames.Select (a => a.FullName));
 
-          foreach (var referencedAssemblyName in currentRoot.GetReferencedAssemblies().AsParallel())
+          // Parallel starts here
+          foreach (var referencedAssemblyName in nonprocessedAssemblyNames.AsParallel())
           {
-            if (processedAssemblyNames.TryAdd (referencedAssemblyName.FullName, null)) // don't process an assembly name twice
+            var referencedAssembly = _assemblyLoader.TryLoadAssembly (referencedAssemblyName, currentRoot.FullName);
+            if (referencedAssembly != null) // might return null if filtered by the loader
             {
-              var referencedAssembly = _assemblyLoader.TryLoadAssembly (referencedAssemblyName, currentRoot.FullName);
-              if (referencedAssembly != null) // might return null if filtered by the loader
+              if (processedAssemblies.TryAdd (referencedAssembly, null))
               {
-                if (referenceRoots.TryAdd (referencedAssembly, null)) // store as a root in order to process references transitively
-                  referencedOnlyAssemblies.Add (referencedAssembly);
+                // store as a root in order to process references transitively
+                referenceRoots.Enqueue (referencedAssembly);
+                result.Add (referencedAssembly);
               }
             }
           }
+          // Parallel ends here
         }
 
-        return referencedOnlyAssemblies;
+        return result
+            .LogAndReturnItems (s_log.Value, LogLevel.Debug, count => string.Format ("Found {0} referenced assemblies.", count))
+            .ToList();
       }
     }
   }
