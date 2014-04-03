@@ -101,12 +101,13 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       using (StopwatchScope.CreateScope (s_log.Value, LogLevel.Debug, "Time spent for finding and loading referenced assemblies: {elapsed}."))
       {
         // referenced assemblies are added later in order to get their references as well
-        var referenceRoots = new ConcurrentQueue<Assembly> (rootAssemblies.Where (r => r.FollowReferences).Distinct().Select (r => r.Assembly));
+        var referenceRoots = new ConcurrentQueue<Assembly> (
+            rootAssemblies.Where (r => r.FollowReferences).Select (r => r.Assembly).Distinct());
 
         // used to prevent analyzing an assembly twice 
         // and to prevent analysis of root-assemblies marked as do-not-follow references
         var processedAssemblies = new ConcurrentDictionary<Assembly, object> (
-            rootAssemblies.Select (r => new KeyValuePair<Assembly, object> (r.Assembly, null)));
+            rootAssemblies.Select (r=>r.Assembly).Distinct().Select (a => new KeyValuePair<Assembly, object> (a, null)));
 
         // used to avoid loading assemblies twice.
         var processedAssemblyNames = new HashSet<string> (processedAssemblies.Keys.Select (a => a.FullName));
