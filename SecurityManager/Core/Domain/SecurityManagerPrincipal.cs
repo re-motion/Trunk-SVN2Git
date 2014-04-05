@@ -37,13 +37,17 @@ namespace Remotion.SecurityManager.Domain
   /// </summary>
   /// <remarks>
   /// <para>
-  /// The <see cref="Current"/> <see cref="SecurityManagerPrincipal"/> is hosted by the <see cref="SafeContext"/>, ie. it is thread-local in ordinary 
+  /// The <see cref="Current"/> <see cref="SecurityManagerPrincipal"/> is hosted by the <see cref="SafeContext"/>, i.e. it is thread-local in ordinary 
   /// applications and request-local (HttpContext) in applications using Remotion.Web.
   /// </para>
   /// <para>
   /// The domain objects held by a <see cref="SecurityManagerPrincipal"/> instance are stored in a dedicated <see cref="ClientTransaction"/>.
   /// Changes made to those objects are only saved when that transaction is committed, eg. via 
   /// <code>SecurityManagerPrincipal.Current.User.RootTransaction.Commit()</code>.
+  /// </para>
+  /// <para>
+  /// Refreshing the <see cref="SecurityManagerPrincipal"/> via the <see cref="Refresh"/> method must be performed 
+  /// on the same thread where the refreshed data is required. Otherwise the result could be stale due to memory optimizations.
   /// </para>
   /// </remarks>
   /// <threadsafety static="true" instance="true"/>
@@ -88,6 +92,11 @@ namespace Remotion.SecurityManager.Domain
     }
 
     private readonly object _syncRoot;
+    // Potentially moving the read-access to volatile field _cachedData to an earlier point in time within the current thread is not an issue:
+    // If a call to Refresh() on Thread #2 would cause a reload of the data, 
+    // and the read-access of _cachedData on Thread #1 has been optimized to an ealier point in time, 
+    // the result would only be stale during this one request.
+    // ==> Synchronized refresh accross all threads is a non-goal for the SecurityManagerPrincipal.
     private volatile Data _cachedData;
     private readonly IDomainObjectHandle<Tenant> _tenantHandle;
     private readonly IDomainObjectHandle<User> _userHandle;
@@ -105,7 +114,7 @@ namespace Remotion.SecurityManager.Domain
       _userHandle = userHandle;
       _substitutionHandle = substitutionHandle;
 
-      InitializeCache (GetRevision());
+      _cachedData = CreateDataObject (GetRevision());
     }
 
     public TenantProxy Tenant
@@ -130,11 +139,11 @@ namespace Remotion.SecurityManager.Domain
 
     public void Refresh ()
     {
+      var currentRevision = GetRevision();
       lock (_syncRoot)
       {
-        var currentRevision = GetRevision();
         if (!_cachedData.Revision.IsCurrent (currentRevision))
-          InitializeCache (currentRevision);
+          _cachedData = CreateDataObject (currentRevision);
       }
     }
 
@@ -209,7 +218,7 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private void InitializeCache (GuidRevisionValue revision)
+    private Data CreateDataObject (GuidRevisionValue revision)
     {
       var transaction = CreateClientTransaction();
 
@@ -219,7 +228,7 @@ namespace Remotion.SecurityManager.Domain
       var substitutionProxy = substitution != null ? CreateSubstitutionProxy (substitution) : null;
       var securityPrincipal = CreateSecurityPrincipal (transaction);
 
-      _cachedData = new Data (revision, tenantProxy, userProxy, substitutionProxy, securityPrincipal);
+      return new Data (revision, tenantProxy, userProxy, substitutionProxy, securityPrincipal);
     }
 
     private Tenant GetTenant (ClientTransaction transaction)
