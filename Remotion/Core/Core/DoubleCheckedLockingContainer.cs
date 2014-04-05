@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Threading;
 using Remotion.Utilities;
 
 namespace Remotion
@@ -26,7 +27,7 @@ namespace Remotion
   public class DoubleCheckedLockingContainer<T>
       where T : class
   {
-    private volatile T _value = null;
+    private T _value = null;
     private readonly Func<T> _defaultFactory;
     private readonly object _sync = new object();
 
@@ -46,7 +47,10 @@ namespace Remotion
     {
       get
       {
-        return _value != null; // works because _value is volatile
+        lock (_sync)
+        {
+          return _value != null;
+        }
       }
     }
 
@@ -59,7 +63,7 @@ namespace Remotion
     {
       get
       {
-        T localValue = _value;
+        T localValue = Volatile.Read (ref _value);
         if (localValue == null)
         {
           lock (_sync)
