@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Globalization.Implementation;
@@ -40,7 +41,8 @@ namespace Remotion.Globalization.Mixins
   [ImplementationFor (typeof (IGlobalizationService), Position = 1, Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
   public sealed class MixinGlobalizationService : IGlobalizationService
   {
-    private volatile MixinConfiguration _mixinConfiguration;
+    private readonly object _mixinConfigurationLockObject = new object();
+    private MixinConfiguration _mixinConfiguration;
     private readonly IResourceManagerResolver _resourceManagerResolver;
     private readonly ICache<ITypeInformation, IResourceManager> _resourceManagerCache =
         CacheFactory.CreateWithLocking<ITypeInformation, IResourceManager>();
@@ -61,10 +63,17 @@ namespace Remotion.Globalization.Mixins
       if (masterConfiguration != MixinConfiguration.ActiveConfiguration)
         return GetResourceManagerFromType (typeInformation);
 
-      if (masterConfiguration != _mixinConfiguration)
+      Thread.MemoryBarrier();
+      if (masterConfiguration != Volatile.Read (ref _mixinConfiguration))
       {
-        _resourceManagerCache.Clear();
-        _mixinConfiguration = masterConfiguration;
+        lock (_mixinConfigurationLockObject)
+        {
+          if (masterConfiguration != _mixinConfiguration)
+          {
+            _resourceManagerCache.Clear();
+            _mixinConfiguration = masterConfiguration;
+          }
+        }
       }
 
       return _resourceManagerCache.GetOrCreateValue (typeInformation, GetResourceManagerFromType);

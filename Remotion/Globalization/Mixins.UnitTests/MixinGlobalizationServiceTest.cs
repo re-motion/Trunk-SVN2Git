@@ -17,7 +17,10 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using NUnit.Framework;
+using Remotion.Collections;
+using Remotion.Development.UnitTesting;
 using Remotion.Globalization.Implementation;
 using Remotion.Globalization.Mixins.UnitTests.TestDomain;
 using Remotion.Mixins;
@@ -288,6 +291,116 @@ namespace Remotion.Globalization.Mixins.UnitTests
         var result = (ResourceManagerSet) _globalizationService.GetResourceManager (typeInformation);
 
         Assert.That (result.ResourceManagers.First().Name, Is.EqualTo ("MixinOfMixinWithResources"));
+      }
+    }
+
+    
+    [Test]
+    public void GetResourceManager_ChangingTheMasterConfigurationOnADifferentThreadIsRecognizedOnOtherThreads_CacheIsNotResetForCurrentFieldValue()
+    {
+      var backup = MixinConfiguration.GetMasterConfiguration();
+      try
+      {
+        var typeInformation1 = TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes));
+        var typeInformation2 = TypeAdapter.Create (typeof (InheritedClassWithoutMultiLingualResourcesAttributes));
+        var resourceManagerCache =
+            (ICache<ITypeInformation, IResourceManager>) PrivateInvoke.GetNonPublicField (_globalizationService, "_resourceManagerCache");
+        IResourceManager outValue;
+
+        var newMasterConfiguration = MixinConfiguration.BuildNew().BuildConfiguration();
+
+        Dev.Null = _globalizationService.GetResourceManager (typeInformation1);
+
+        Assert.That (resourceManagerCache.TryGetValue (typeInformation1, out outValue), Is.True);
+        Assert.That (outValue, Is.Not.Null);
+        Assert.That (resourceManagerCache.TryGetValue (typeInformation2, out outValue), Is.False);
+        Assert.That (outValue, Is.Null);
+
+        var task = Task.Run (
+            () =>
+            {
+              MixinConfiguration.SetMasterConfiguration (newMasterConfiguration);
+              MixinConfiguration.SetActiveConfiguration (newMasterConfiguration);
+
+              // Populate the cache.
+              Dev.Null = _globalizationService.GetResourceManager (typeInformation1);
+              Dev.Null = _globalizationService.GetResourceManager (typeInformation2);
+
+              Assert.That (resourceManagerCache.TryGetValue (typeInformation1, out outValue), Is.True);
+              Assert.That (outValue, Is.Not.Null);
+              Assert.That (resourceManagerCache.TryGetValue (typeInformation2, out outValue), Is.True);
+              Assert.That (outValue, Is.Not.Null);
+            });
+
+        task.Wait();
+
+        MixinConfiguration.SetActiveConfiguration (newMasterConfiguration);
+
+        // Getting a ResourceManager does not reset the cache because this already happened on other thread.
+        Dev.Null = _globalizationService.GetResourceManager (typeInformation1);
+
+        Assert.That (resourceManagerCache.TryGetValue (typeInformation1, out outValue), Is.True);
+        Assert.That (outValue, Is.Not.Null);
+        Assert.That (resourceManagerCache.TryGetValue (typeInformation2, out outValue), Is.True);
+        Assert.That (outValue, Is.Not.Null);
+      }
+      finally
+      {
+        MixinConfiguration.SetMasterConfiguration (backup);
+        MixinConfiguration.SetActiveConfiguration (backup);
+      }
+    }
+
+    [Test]
+    public void GetResourceManager_ChangingTheMasterConfigurationOnADifferentThreadIsRecognizedOnOtherThreads_CacheIsResetForPossiblyStaleFieldValue()
+    {
+      var backup = MixinConfiguration.GetMasterConfiguration();
+      try
+      {
+        var typeInformation1 = TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes));
+        var typeInformation2 = TypeAdapter.Create (typeof (InheritedClassWithoutMultiLingualResourcesAttributes));
+        var resourceManagerCache =
+            (ICache<ITypeInformation, IResourceManager>) PrivateInvoke.GetNonPublicField (_globalizationService, "_resourceManagerCache");
+        IResourceManager outValue;
+
+        var newMasterConfiguration = MixinConfiguration.BuildNew().BuildConfiguration();
+        MixinConfiguration.SetMasterConfiguration (newMasterConfiguration);
+        MixinConfiguration.SetActiveConfiguration (newMasterConfiguration);
+
+        Dev.Null = _globalizationService.GetResourceManager (typeInformation1);
+
+        Assert.That (resourceManagerCache.TryGetValue (typeInformation1, out outValue), Is.True);
+        Assert.That (resourceManagerCache.TryGetValue (typeInformation2, out outValue), Is.False);
+
+        var task = Task.Run (
+            () =>
+            {
+              var otherMasterConfiguration = MixinConfiguration.BuildNew().BuildConfiguration();
+              MixinConfiguration.SetMasterConfiguration (otherMasterConfiguration);
+              MixinConfiguration.SetActiveConfiguration (otherMasterConfiguration);
+
+              // Populate the cache.
+              Dev.Null = _globalizationService.GetResourceManager (typeInformation1);
+              Dev.Null = _globalizationService.GetResourceManager (typeInformation2);
+
+              Assert.That (resourceManagerCache.TryGetValue (typeInformation1, out outValue), Is.True);
+              Assert.That (resourceManagerCache.TryGetValue (typeInformation2, out outValue), Is.True);
+            });
+        task.Wait();
+
+        MixinConfiguration.SetMasterConfiguration (newMasterConfiguration);
+        MixinConfiguration.SetActiveConfiguration (newMasterConfiguration);
+
+        // Getting a ResourceManager does not reset the cache because this already happened on other thread.
+        Dev.Null = _globalizationService.GetResourceManager (typeInformation1);
+
+        Assert.That (resourceManagerCache.TryGetValue (typeInformation1, out outValue), Is.True);
+        Assert.That (resourceManagerCache.TryGetValue (typeInformation2, out outValue), Is.False);
+      }
+      finally
+      {
+        MixinConfiguration.SetMasterConfiguration (backup);
+        MixinConfiguration.SetActiveConfiguration (backup);
       }
     }
   }
