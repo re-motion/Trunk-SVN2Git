@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
@@ -199,7 +200,7 @@ namespace Remotion.ServiceLocation
       switch (serviceImplementationInfo.Lifetime)
       {
         case LifetimeKind.Singleton:
-          var factoryContainer = new DoubleCheckedLockingContainer<object> (decoratedFactory);
+          var factoryContainer = new Lazy<object> (decoratedFactory, LazyThreadSafetyMode.ExecutionAndPublication);
           return () => factoryContainer.Value;
         default:
           return decoratedFactory;
