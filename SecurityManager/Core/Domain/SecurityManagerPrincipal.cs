@@ -256,7 +256,7 @@ namespace Remotion.SecurityManager.Domain
     }
 
     /// <summary>
-    /// Potentially moving the read-access to volatile field _cachedData to an earlier point in time within the current thread is not an issue:
+    /// Potentially moving the read-access to field _cachedData to an earlier point in time within the current thread is not an issue:
     /// If a call to Refresh() on Thread #2 would cause a reload of the data, 
     /// and the read-access of _cachedData on Thread #1 has been optimized to an ealier point in time, 
     /// the result would only be stale during this one request.
