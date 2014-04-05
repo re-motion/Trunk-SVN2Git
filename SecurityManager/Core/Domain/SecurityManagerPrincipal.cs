@@ -18,6 +18,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using JetBrains.Annotations;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
@@ -92,12 +93,7 @@ namespace Remotion.SecurityManager.Domain
     }
 
     private readonly object _syncRoot;
-    // Potentially moving the read-access to volatile field _cachedData to an earlier point in time within the current thread is not an issue:
-    // If a call to Refresh() on Thread #2 would cause a reload of the data, 
-    // and the read-access of _cachedData on Thread #1 has been optimized to an ealier point in time, 
-    // the result would only be stale during this one request.
-    // ==> Synchronized refresh accross all threads is a non-goal for the SecurityManagerPrincipal.
-    private volatile Data _cachedData;
+    private Data _cachedData;
     private readonly IDomainObjectHandle<Tenant> _tenantHandle;
     private readonly IDomainObjectHandle<User> _userHandle;
     private readonly IDomainObjectHandle<Substitution> _substitutionHandle;
@@ -119,22 +115,22 @@ namespace Remotion.SecurityManager.Domain
 
     public TenantProxy Tenant
     {
-      get { return _cachedData.TenantProxy; }
+      get { return GetCachedDataVolatile().TenantProxy; }
     }
 
     public UserProxy User
     {
-      get { return _cachedData.UserProxy; }
+      get { return GetCachedDataVolatile().UserProxy; }
     }
 
     public SubstitutionProxy Substitution
     {
-      get { return _cachedData.SubstitutionProxy; }
+      get { return GetCachedDataVolatile().SubstitutionProxy; }
     }
 
     public ISecurityPrincipal GetSecurityPrincipal ()
     {
-      return _cachedData.SecurityPrincipal;
+      return GetCachedDataVolatile().SecurityPrincipal;
     }
 
     public void Refresh ()
@@ -257,6 +253,18 @@ namespace Remotion.SecurityManager.Domain
         transaction.Extensions.Add (new SecurityClientTransactionExtension());
 
       return transaction;
+    }
+
+    /// <summary>
+    /// Potentially moving the read-access to volatile field _cachedData to an earlier point in time within the current thread is not an issue:
+    /// If a call to Refresh() on Thread #2 would cause a reload of the data, 
+    /// and the read-access of _cachedData on Thread #1 has been optimized to an ealier point in time, 
+    /// the result would only be stale during this one request.
+    /// ==> Synchronized refresh accross all threads is a non-goal for the SecurityManagerPrincipal.
+    /// </summary>
+    private Data GetCachedDataVolatile ()
+    {
+      return Volatile.Read (ref _cachedData);
     }
 
     private GuidRevisionValue GetRevision ()
