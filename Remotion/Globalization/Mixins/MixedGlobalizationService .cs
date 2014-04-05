@@ -63,7 +63,6 @@ namespace Remotion.Globalization.Mixins
       if (masterConfiguration != MixinConfiguration.ActiveConfiguration)
         return GetResourceManagerFromType (typeInformation);
 
-      Thread.MemoryBarrier();
       if (masterConfiguration != Volatile.Read (ref _mixinConfiguration))
       {
         lock (_mixinConfigurationLockObject)
