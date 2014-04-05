@@ -18,8 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Globalization.Implementation;
@@ -63,15 +61,13 @@ namespace Remotion.Globalization.Mixins
       if (masterConfiguration != MixinConfiguration.ActiveConfiguration)
         return GetResourceManagerFromType (typeInformation);
 
-      if (masterConfiguration != Volatile.Read (ref _mixinConfiguration))
+      // During normal operation, the lock-statement is cheap enough as to not matter when accessing the ResourceManager.
+      lock (_mixinConfigurationLockObject)
       {
-        lock (_mixinConfigurationLockObject)
+        if (_mixinConfiguration != masterConfiguration)
         {
-          if (masterConfiguration != _mixinConfiguration)
-          {
-            _resourceManagerCache.Clear();
-            _mixinConfiguration = masterConfiguration;
-          }
+          _resourceManagerCache.Clear();
+          _mixinConfiguration = masterConfiguration;
         }
       }
 
