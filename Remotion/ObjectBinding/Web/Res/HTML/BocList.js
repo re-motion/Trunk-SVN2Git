@@ -549,7 +549,8 @@ function BocListNavigationBlock_Initialize(pageNumberField, pageIndexField)
   ArgumentUtility.CheckNotNullAndTypeIsObject('pageIndexField', pageIndexField);
 
   pageNumberField.bind('change', function () {
-    var pageNumber = Number.parseInvariant (pageNumberField.val());
+
+    var pageNumber = parseInt(pageNumberField.val(), 10);
     if (isNaN (pageNumber) || !TypeUtility.IsInteger (pageNumber))
     {
       if (pageNumberField.val().length > 0)
