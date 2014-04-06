@@ -105,7 +105,7 @@
                            Copyright=$(Copyright);
                            Tags=$(Tags)"/>
 
-    <Message Text=" Done creating NuGet package for '$(PackageID)'." Importance="High"/>
+    <Message Text="Done creating NuGet package for '$(PackageID)'." Importance="High"/>
   </Target>
 
   <Target Name="UploadNuGetPackage" DependsOnTargets="CreateRequiresUpload;UploadNuGetPackageInternal" />
@@ -115,7 +115,7 @@
     
     <ItemGroup>
         <_packageFile Remove="@(_packageFile)"/>
-        <_packageFile Include="$(NuGetOutputDirectory)*.nupkg"/>
+        <_packageFile Include="$(NuGetOutputDirectory)$(ID)*.nupkg"/>
     </ItemGroup>
 
     <Message Text="Uploading NuGet package for '$(PackageID)' (belongs to: '$(BelongsToPackage)')..." Importance="High"/>
