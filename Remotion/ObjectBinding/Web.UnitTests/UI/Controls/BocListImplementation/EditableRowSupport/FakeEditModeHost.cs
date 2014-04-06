@@ -42,6 +42,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     public Action NotifyEndListEditModeCleanUp { private get; set; }
     public Action NotifyValidateEditableRows { private get; set; }
     public bool AreCustomCellsValid { private get; set; }
+    public IFocusableControl FocusedControl { get; set; }
 
     public IList Value { get; set; }
     public string ID { get; set; }
@@ -55,8 +56,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     public bool ShowEditModeRequiredMarkers { get; set; }
     public bool EnableEditModeValidator { get; set; }
     public IRowIDProvider RowIDProvider { get; set; }
-
-    public IFocusableControl FocusedControl { get; set; }
 
     public BocListRow[] AddRows (IBusinessObject[] businessObjects)
     {
