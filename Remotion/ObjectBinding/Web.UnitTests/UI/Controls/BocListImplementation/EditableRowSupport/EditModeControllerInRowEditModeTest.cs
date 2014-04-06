@@ -60,6 +60,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (row.ID, Is.EqualTo ("Controller_Row_2"));
 
       Assert.That (ActualEvents.Count, Is.EqualTo (0));
+      Assert.That (EditModeHost.FocusedControl, Is.Not.Null);
+      Assert.That (EditModeHost.FocusedControl.FocusID, Is.EqualTo ("NamingContainer_Controller_Row_2_0_Value"));
     }
 
     [Test]
@@ -290,6 +292,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (row.ID, Is.EqualTo ("Controller_Row_5"));
 
       Assert.That (ActualEvents.Count, Is.EqualTo (0));
+      Assert.That (EditModeHost.FocusedControl, Is.Not.Null);
+      Assert.That (EditModeHost.FocusedControl.FocusID, Is.EqualTo ("NamingContainer_Controller_Row_5_0_Value"));
     }
 
     [Test]

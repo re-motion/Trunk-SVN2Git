@@ -127,6 +127,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
           new List<string> { _editModeHost.RowIDProvider.GetItemRowID (new BocListRow (index, (IBusinessObject) _editModeHost.Value[index])) };
       _editMode = EditMode.RowEditMode;
       CreateEditModeControls (columns);
+      SetFocus (_rows.First());
       LoadValues (false);
     }
 
@@ -149,6 +150,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
           _editModeHost.Value.Cast<IBusinessObject>().Select ((o, i) => _editModeHost.RowIDProvider.GetItemRowID (new BocListRow (i, o))).ToList();
       _editMode = EditMode.ListEditMode;
       CreateEditModeControls (columns);
+      if (_rows.Any())
+        SetFocus (_rows.First());
       LoadValues (false);
     }
 
@@ -367,6 +370,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       return row;
     }
 
+    private void SetFocus (EditableRow row)
+    {
+      var firstControl = row.GetEditControlsAsArray().OfType<IFocusableControl>().FirstOrDefault();
+      if (firstControl == null)
+        return;
+
+      _editModeHost.SetFocus (firstControl);
+    }
+
     private void LoadValues (bool interim)
     {
       Assertion.IsNotNull (_editModeHost.Value, "BocList does not have a value.");
@@ -417,12 +429,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
         EnsureEditModeRestored (columns);
         if (IsListEditModeActive)
         {
+          var newRows = new List<EditableRow>();
           foreach (var bocListRow in bocListRows.OrderBy (r=>r.Index))
           {
             var newRow = AddRowToDataStructure (bocListRow, columns);
             _editedRowIDs.Add (_editModeHost.RowIDProvider.GetItemRowID (bocListRow));
             newRow.GetDataSource().LoadValues (false);
+            newRows.Add (newRow);
           }
+          if (newRows.Any())
+            SetFocus (newRows.First());
         }
       }
 

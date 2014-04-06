@@ -22,6 +22,7 @@ using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.EditableRowSupport
 {
@@ -54,6 +55,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     public bool ShowEditModeRequiredMarkers { get; set; }
     public bool EnableEditModeValidator { get; set; }
     public IRowIDProvider RowIDProvider { get; set; }
+
+    public IFocusableControl FocusedControl { get; set; }
 
     public BocListRow[] AddRows (IBusinessObject[] businessObjects)
     {
@@ -136,6 +139,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     public EditModeValidator GetEditModeValidator ()
     {
       throw new System.NotImplementedException();
+    }
+
+    public void SetFocus (IFocusableControl control)
+    {
+      FocusedControl = control;
     }
   }
 }

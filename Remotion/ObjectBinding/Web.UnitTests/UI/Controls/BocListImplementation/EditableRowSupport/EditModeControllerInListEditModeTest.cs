@@ -49,6 +49,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (Controller.Controls[4].ID, Is.EqualTo (string.Format (idFormat, 4)));
 
       Assert.That (ActualEvents.Count, Is.EqualTo (0));
+      Assert.That (EditModeHost.FocusedControl, Is.Not.Null);
+      Assert.That (EditModeHost.FocusedControl.FocusID, Is.EqualTo ("NamingContainer_Controller_Row_0_0_Value"));
     }
 
     [Test]
@@ -62,6 +64,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (Controller.Controls.Count, Is.EqualTo (0));
 
       Assert.That (ActualEvents.Count, Is.EqualTo (0));
+      Assert.That (EditModeHost.FocusedControl, Is.Null);
     }
 
     [Test]
@@ -526,6 +529,9 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (Controller.Controls[5].ID, Is.EqualTo (string.Format (idFormat, 5)));
 
       Assert.That (ActualEvents.Count, Is.EqualTo (0));
+
+      Assert.That (EditModeHost.FocusedControl, Is.Not.Null);
+      Assert.That (EditModeHost.FocusedControl.FocusID, Is.EqualTo ("NamingContainer_Controller_Row_5_0_Value"));
     }
 
     [Test]
@@ -582,6 +588,9 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (Controller.GetEditableRow (4), Is.SameAs (Controller.Controls[4]));
       Assert.That (Controller.GetEditableRow (5), Is.SameAs (Controller.Controls[5]));
       Assert.That (Controller.GetEditableRow (6), Is.SameAs (Controller.Controls[6]));
+
+      Assert.That (EditModeHost.FocusedControl, Is.Not.Null);
+      Assert.That (EditModeHost.FocusedControl.FocusID, Is.EqualTo ("NamingContainer_Controller_Row_5_0_Value"));
     }
 
     [Test]

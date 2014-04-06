@@ -19,6 +19,7 @@ using System.Collections;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -160,6 +161,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       public void OnEditableRowChangesCanceled (int index, IBusinessObject businessObject)
       {
         _bocList.OnEditableRowChangesCanceled (index, businessObject);
+      }
+
+      public void SetFocus (IFocusableControl control)
+      {
+        _bocList.SetFocusImplementation (control);
       }
     }
   }

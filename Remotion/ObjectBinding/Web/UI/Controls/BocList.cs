@@ -2597,6 +2597,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return _validators.OfType<EditModeValidator>().FirstOrDefault();
     }
 
+    private void SetFocusImplementation (IFocusableControl control)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      Page.SetFocus (control.FocusID);
+    }
+
     /// <summary>
     /// Gets the <see cref="BocListRow"/> currently being edited in row-edit-mode.
     /// </summary>
