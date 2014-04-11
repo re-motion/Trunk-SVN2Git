@@ -23,6 +23,7 @@
     </UnitTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\Core\Linq.Core.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\Development\Linq.Development.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\LinqToSqlAdapter\Linq.LinqToSqlAdapter.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\SqlBackend\Linq.SqlBackend.csproj" />
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Relinq\UnitTests\Linq.UnitTests.csproj">
