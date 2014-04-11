@@ -28,7 +28,7 @@ using Remotion.Linq.Parsing.Structure;
 using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Linq.Parsing.Structure.NodeTypeProviders;
 using Remotion.Linq.SqlBackend.SqlPreparation;
-using Remotion.Linq.Utilities;
+using Remotion.Linq.SqlBackend.Utilities;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
