@@ -28,6 +28,9 @@
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Relinq\UnitTests\Linq.UnitTests.csproj">
       <IsDatabaseTest>False</IsDatabaseTest>
     </UnitTestProjectFiles>
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Relinq\LinqToSqlAdapter.UnitTests\Linq.LinqToSqlAdapter.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
     <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj">
       <IsDatabaseTest>False</IsDatabaseTest>
     </IntegrationTestProjectFiles>
