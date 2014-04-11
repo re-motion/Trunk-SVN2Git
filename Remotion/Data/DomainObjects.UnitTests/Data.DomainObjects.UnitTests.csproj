@@ -305,7 +305,6 @@
     <Compile Include="DomainImplementation\ResurrectionServiceTest.cs" />
     <Compile Include="Infrastructure\ClientTransactionListenerObjectMother.cs" />
     <Compile Include="IntegrationTests\GenericHandleTest.cs" />
-    <Compile Include="Infrastructure\TypePipe\ExpressionTreeComparer.cs" />
     <Compile Include="Infrastructure\TypePipe\DomainObjectParticipantTest.cs" />
     <Compile Include="Infrastructure\TypePipe\MutableTypeObjectMother.cs" />
     <Compile Include="IntegrationTests\RegisterForCommitTest.cs" />
