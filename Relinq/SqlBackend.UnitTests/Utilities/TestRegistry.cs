@@ -16,14 +16,30 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using Remotion.Linq.SqlBackend.Utilities;
 
-namespace Remotion.Linq.UnitTests.Utilities
+namespace Remotion.Linq.SqlBackend.UnitTests.Utilities
 {
-  public class TestRegistryImplementation : ITestRegistry
+  public class TestRegistry : RegistryBase<TestRegistry, Type, ITestRegistry>
   {
-    public void Test ()
+    public override ITestRegistry GetItem (Type key)
     {
-      Console.WriteLine ("test");
+      return GetItemExact (key);
+    }
+
+    protected override void RegisterForTypes (IEnumerable<Type> itemTypes)
+    {
+      foreach (var itemType in itemTypes)
+      {
+        var handler = (ITestRegistry) Activator.CreateInstance (itemType);
+        Register (itemType, handler);
+      }
+    }
+
+    public new ITestRegistry GetItemExact (Type key)
+    {
+      return base.GetItemExact (key);
     }
   }
 }

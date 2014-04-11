@@ -17,9 +17,8 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Linq.UnitTests.Parsing.ExpressionTreeVisitorTests;
 
-namespace Remotion.Linq.UnitTests.Utilities
+namespace Remotion.Linq.SqlBackend.UnitTests.Utilities
 {
   [TestFixture]
   public class RegistryBaseTest
