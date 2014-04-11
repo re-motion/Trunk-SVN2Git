@@ -24,16 +24,16 @@ using Remotion.Utilities;
 namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
 {
   /// <summary>
-  /// The <see cref="ExpressionTreeComparer"/> compares two expressions for as to wether they result in the same SQL statement and parameters.
+  /// The <see cref="QueryableComparer"/> compares two <see cref="IQueryable"/> for as to wether they result in the same SQL statement and parameters.
   /// Use this comparer to unit test Linq expressions and manually build <see cref="Expression"/> trees.
   /// </summary>
-  public class ExpressionTreeComparer
+  public class QueryableComparer
   {
     public delegate void AssertThatActualIsEqualToExpected (object actual, object expected);
 
     private readonly AssertThatActualIsEqualToExpected _assertThatActualIsEqualToExpected;
 
-    public ExpressionTreeComparer (AssertThatActualIsEqualToExpected thatActualIsEqualToExpected)
+    public QueryableComparer (AssertThatActualIsEqualToExpected thatActualIsEqualToExpected)
     {
       ArgumentUtility.CheckNotNull ("thatActualIsEqualToExpected", thatActualIsEqualToExpected);
 

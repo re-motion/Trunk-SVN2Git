@@ -27,8 +27,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
   [TestFixture]
   public class FindMetadataObjectQueryBuilderTest : DomainTest
   {
-    private readonly ExpressionTreeComparer _expressionTreeComparer 
-        = new ExpressionTreeComparer ((actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)));
+    private readonly QueryableComparer _queryableComparer 
+        = new QueryableComparer ((actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)));
 
     private FindMetadataObjectQueryBuilder _queryBuilder;
 
@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       var actual = _queryBuilder.CreateQuery (metadataObjectID);
 
-      _expressionTreeComparer.Compare (expected, actual);
+      _queryableComparer.Compare (expected, actual);
     }
 
     [Test]
@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       var actual = _queryBuilder.CreateQuery (metadataObjectID);
 
-      _expressionTreeComparer.Compare (expected, actual.Cast<StateDefinition>());
+      _queryableComparer.Compare (expected, actual.Cast<StateDefinition>());
     }
 
     [Test]

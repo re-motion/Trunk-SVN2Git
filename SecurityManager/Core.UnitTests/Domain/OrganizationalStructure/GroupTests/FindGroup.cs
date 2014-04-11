@@ -28,8 +28,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
   [TestFixture]
   public class FindGroup : GroupTestBase
   {
-    private readonly ExpressionTreeComparer _expressionTreeComparer 
-        = new ExpressionTreeComparer ((actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)));
+    private readonly QueryableComparer _queryableComparer 
+        = new QueryableComparer ((actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)));
 
     private DatabaseFixtures _dbFixtures;
     private IDomainObjectHandle<Tenant> _expectedTenantHandle;
@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       var actual = Group.FindByTenant (_expectedTenantHandle);
 
-      _expressionTreeComparer.Compare (expected, actual);
+      _queryableComparer.Compare (expected, actual);
 
       Assert.That (actual.Count(), Is.EqualTo (9));
     }

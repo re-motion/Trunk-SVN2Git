@@ -78,7 +78,7 @@
     <Compile Include="UnitTesting\DomainObjects\ClientTransactionTestHelper.cs" />
     <Compile Include="UnitTesting\DomainObjects\DomainObjectHandleComparer.cs" />
     <Compile Include="UnitTesting\DomainObjects\Linq\ApplyQueryGeneratorMixinAttribute.cs" />
-    <Compile Include="UnitTesting\DomainObjects\Linq\ExpressionTreeComparer.cs" />
+    <Compile Include="UnitTesting\DomainObjects\Linq\QueryableComparer.cs" />
     <Compile Include="UnitTesting\DomainObjects\Linq\QueryGeneratorMixin.cs" />
     <Compile Include="UnitTesting\DomainObjects\TransactionHierarchyManagerTestHelper.cs" />
   </ItemGroup>
