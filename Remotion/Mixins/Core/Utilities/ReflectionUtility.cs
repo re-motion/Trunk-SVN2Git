@@ -25,7 +25,14 @@ namespace Remotion.Mixins.Utilities
 {
   public static class ReflectionUtility
   {
-    private static LockingCacheDecorator<Assembly, bool> s_isAssemblySignedCache = CacheFactory.CreateWithLocking<Assembly, bool>();
+    private static readonly LockingCacheDecorator<Assembly, bool> s_isAssemblySignedCache = CacheFactory.CreateWithLocking<Assembly, bool>();
+
+    public static bool IsMixinType (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      
+      return Remotion.Utilities.ReflectionUtility.CanAscribe (type, typeof (Mixin<>));
+    }
 
     public static bool IsEqualOrInstantiationOf (Type typeToCheck, Type expectedType)
     {

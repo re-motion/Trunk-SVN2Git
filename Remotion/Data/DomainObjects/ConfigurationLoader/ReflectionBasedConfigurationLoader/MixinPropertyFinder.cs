@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
     }
 
-    private bool IsMixinBaseClass (Type type)
+    private static bool IsMixinBaseClass (Type type)
     {
       if (!type.IsGenericType)
         return false;

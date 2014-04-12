@@ -53,8 +53,7 @@ namespace Remotion.Data.DomainObjects.Validation
     {
       ArgumentUtility.CheckNotNull ("interfaceProperty", interfaceProperty);
       ArgumentUtility.CheckNotNull ("implementationProperty", implementationProperty);
-      if (Utilities.ReflectionUtility.CanAscribe (implementationProperty.DeclaringType, typeof (Mixin<>))
-          && !interfaceProperty.DeclaringType.IsInterface)
+      if (Mixins.Utilities.ReflectionUtility.IsMixinType (implementationProperty.DeclaringType) && !interfaceProperty.DeclaringType.IsInterface)
       {
         throw new ArgumentException (
             string.Format (

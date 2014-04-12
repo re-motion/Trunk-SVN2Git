@@ -54,6 +54,17 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
       public event Func<int> BazE;
     }
 
+    private class Mixin1 : Mixin<Derived>
+    {
+    }
+
+    private class Mixin2 : Mixin<Derived, Mixin2.IDerived>
+    {
+      public interface IDerived
+      {
+      }
+    }
+
     [Test]
     public void IsNewSlotMember()
     {
@@ -235,6 +246,20 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
     public void IsRangeReachableFromSignedAssembly_False ()
     {
       Assert.That (ReflectionUtility.IsRangeReachableFromSignedAssembly (new[] { typeof (object), typeof (EquatableMixin<NullMixin>) }), Is.False);
+    }
+
+    [Test]
+    public void IsMixinType ()
+    {
+      Assert.That (ReflectionUtility.IsMixinType (typeof (Mixin<>)), Is.True);
+      Assert.That (ReflectionUtility.IsMixinType (typeof (Mixin<,>)), Is.True);
+      Assert.That (ReflectionUtility.IsMixinType (typeof (Mixin<Derived>)), Is.True);
+      Assert.That (ReflectionUtility.IsMixinType (typeof (Mixin<Derived,Mixin2.IDerived>)), Is.True);
+      Assert.That (ReflectionUtility.IsMixinType (typeof (Mixin1)), Is.True);
+      Assert.That (ReflectionUtility.IsMixinType (typeof (Mixin2)), Is.True);
+      Assert.That (ReflectionUtility.IsMixinType (typeof (IInitializableMixin)), Is.False);
+      Assert.That (ReflectionUtility.IsMixinType (typeof (Object)), Is.False);
+      Assert.That (ReflectionUtility.IsMixinType (typeof (Derived)), Is.False);
     }
   }
 }
