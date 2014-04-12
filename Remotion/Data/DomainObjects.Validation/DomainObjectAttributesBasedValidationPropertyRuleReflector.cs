@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Validation
 
       // object o => (object) (TheType o).TheProperty
       var domainObjectPropertyAccessExpression = Expression.Convert (
-          Expression.Property (
+          Expression.MakeMemberAccess (
               Expression.Convert (parameterExpression, validatedType),
               _interfaceProperty),
           typeof (object));

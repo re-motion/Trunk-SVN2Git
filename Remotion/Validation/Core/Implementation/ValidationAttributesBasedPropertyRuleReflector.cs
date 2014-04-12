@@ -57,7 +57,7 @@ namespace Remotion.Validation.Implementation
       // object o => (object) (TheType o).TheProperty
       return Expression.Lambda<Func<object, object>> (
           Expression.Convert (
-              Expression.Property (
+              Expression.MakeMemberAccess (
                   Expression.Convert (parameterExpression, validatedType),
                   _property),
               typeof (object)),
