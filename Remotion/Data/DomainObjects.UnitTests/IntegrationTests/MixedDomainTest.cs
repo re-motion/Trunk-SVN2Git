@@ -168,18 +168,5 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests
       Assert.That (loadedMixin1.Computer.ID, Is.EqualTo (mixin1.Computer.ID));
       Assert.That (loadedMixin2.Computer.ID, Is.EqualTo (mixin2.Computer.ID));
     }
-
-    [Test]
-    [Ignore ("TODO: RM-5678 - EagerFetch with SortExpression involving mixin properties")]
-    public void EagerFetchRelationWithSortExpressionUsingPropertyFromMixin ()
-    {
-      var result = QueryFactory.CreateLinqQuery<RelationTargetForPersistentMixin>()
-                               .Where (o => o.ID == DomainObjectIDs.RelationTargetForPersistentMixin4)
-                               .Select (o => o)
-                               .FetchMany (o => o.RelationProperty4)
-                               .ToArray();
-
-      Assert.That (result.Length, Is.EqualTo (1));
-    }
   }
 }

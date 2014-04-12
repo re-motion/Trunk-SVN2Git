@@ -202,14 +202,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "There was an error preparing or resolving query "
-        + "'from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber == 1) select [o] => Fetch (Order.OrderItems) => Take(1)' for "
-        + "SQL generation. The fetch query operator methods must be the last query operators in a LINQ query. All calls to Where, Select, Take, etc. "
-        + "must go before the fetch operators.\r\n\r\n"
-        + "E.g., instead of 'QueryFactory.CreateLinqQuery<Order>().FetchMany (o => o.OrderItems).Where (o => o.OrderNumber > 1)', "
-        + "write 'QueryFactory.CreateLinqQuery<Order>().Where (o => o.OrderNumber > 1).FetchMany (o => o.OrderItems)'.")]
-    public void EagerFetching_WithResultOperator_AfterFetch ()
+    public void EagerFetching_WithResultOperator_AfterFetch_ThrowsNotSupportedException ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
                    where o.OrderNumber == 1
@@ -217,23 +210,33 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
                    .FetchMany (o => o.OrderItems)
                    .Take (1);
 
-      query.ToArray ();
+      Assert.That (
+          () => query.ToArray(),
+          Throws.TypeOf<NotSupportedException>().And.Message.EqualTo (
+              "There was an error preparing or resolving query "
+              + "'from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber == 1) select [o] => Fetch (Order.OrderItems) => Take(1)' for "
+              + "SQL generation. The fetch query operator methods must be the last query operators in a LINQ query. All calls to Where, Select, Take, etc. "
+              + "must go before the fetch operators.\r\n\r\n"
+              + "E.g., instead of 'QueryFactory.CreateLinqQuery<Order>().FetchMany (o => o.OrderItems).Where (o => o.OrderNumber > 1)', "
+              + "write 'QueryFactory.CreateLinqQuery<Order>().Where (o => o.OrderNumber > 1).FetchMany (o => o.OrderItems)'."));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "There was an error preparing or resolving query "
-        + "'from Order o in {DomainObjectQueryable<Order> => Fetch (Order.OrderItems)} where ([o].OrderNumber == 1) select [o]' for SQL generation. "
-        + "The fetch query operator methods must be the last query operators in a LINQ query. All calls to Where, Select, Take, etc. must go before "
-        + "the fetch operators.\r\n\r\n"
-        + "E.g., instead of 'QueryFactory.CreateLinqQuery<Order>().FetchMany (o => o.OrderItems).Where (o => o.OrderNumber > 1)', "
-        + "write 'QueryFactory.CreateLinqQuery<Order>().Where (o => o.OrderNumber > 1).FetchMany (o => o.OrderItems)'.")]
-    public void EagerFetching_WithFetch_InASubQuery ()
+    public void EagerFetching_WithFetch_InASubQuery_ThrowsNotSupportedException ()
     {
       var query = QueryFactory.CreateLinqQuery<Order>()
                    .FetchMany (o => o.OrderItems)
                    .Where (o => o.OrderNumber == 1);
-      query.ToArray ();
+
+      Assert.That (
+          () => query.ToArray(),
+          Throws.TypeOf<NotSupportedException>().And.Message.EqualTo (
+              "There was an error preparing or resolving query "
+              + "'from Order o in {DomainObjectQueryable<Order> => Fetch (Order.OrderItems)} where ([o].OrderNumber == 1) select [o]' for SQL generation. "
+              + "The fetch query operator methods must be the last query operators in a LINQ query. All calls to Where, Select, Take, etc. must go before "
+              + "the fetch operators.\r\n\r\n"
+              + "E.g., instead of 'QueryFactory.CreateLinqQuery<Order>().FetchMany (o => o.OrderItems).Where (o => o.OrderNumber > 1)', "
+              + "write 'QueryFactory.CreateLinqQuery<Order>().Where (o => o.OrderNumber > 1).FetchMany (o => o.OrderItems)'."));
     }
 
     [Test]
@@ -302,14 +305,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Only queries returning DomainObjects can perform eager fetching.")]
-    public void EagerFetching_WithCustomQuery ()
+    public void EagerFetching_WithCustomProjectionQuery_ThrowsNotSupportedException ()
     {
-      QueryFactory
-          .CreateLinqQuery<Customer>()
-          .Select (c => new { c.Name })
-          .FetchOne (x => x.Name)
-          .ToArray();
+      var query = QueryFactory.CreateLinqQuery<Customer>()
+                  .Select (c => new { c.Name })
+                  .FetchOne (x => x.Name);
+
+      Assert.That (
+          () => query.ToArray(),
+          Throws.TypeOf<NotSupportedException>().And.Message.EqualTo ("Only queries returning DomainObjects can perform eager fetching."));
     }
 
     [Test]
@@ -375,6 +379,22 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
       CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins2);
 
       CheckFetchedCollectionProperty1SideForTargetClass2 ();
+    }
+
+    [Test]
+    [Ignore ("TODO: RM-5678 - EagerFetch with SortExpression involving mixin properties")]
+    public void EagerFetching_RelationSortExpressionUsesMixedProperty ()
+    {
+      var query = QueryFactory.CreateLinqQuery<RelationTargetForPersistentMixin>()
+          .Where (o => o.ID == DomainObjectIDs.RelationTargetForPersistentMixin4)
+          .Select (o => o)
+          .FetchMany (o => o.RelationProperty4)
+          .ToArray();
+
+      CheckQueryResult (query, DomainObjectIDs.RelationTargetForPersistentMixin4);
+
+      //CheckDataContainersRegistered (DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      //CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
 
     private void CheckFetchedCollectionProperty1SideForTargetClass2 ()
