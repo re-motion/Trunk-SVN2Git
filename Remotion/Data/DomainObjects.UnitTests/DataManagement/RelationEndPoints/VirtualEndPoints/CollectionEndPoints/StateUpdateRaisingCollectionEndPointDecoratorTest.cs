@@ -237,6 +237,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints
     }
 
     [Test]
+    public void TestToString ()
+    {
+      Assert.That (_decorator.ToString(), Is.EqualTo ("StateUpdateRaisingCollectionEndPointDecorator { " + _innerEndPointMock + " }"));
+    }
+
+    [Test]
     public void Serialization ()
     {
       var innerEndPoint = new SerializableCollectionEndPointFake ();

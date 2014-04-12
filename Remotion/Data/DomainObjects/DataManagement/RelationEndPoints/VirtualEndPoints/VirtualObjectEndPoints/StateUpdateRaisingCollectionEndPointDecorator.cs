@@ -526,6 +526,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       }
     }
 
+    public override string ToString ()
+    {
+ #if DEBUG
+      using (new ConstantChangeStateAsserter (_innerEndPoint))
+#endif
+      {
+        return string.Format ("{0} {{ {1} }}", GetType().Name, _innerEndPoint.ToString());
+      }
+    }
+
     #endregion
 
     private void RaiseStateUpdatedIfNecessary (bool? hasChangedBefore)
