@@ -253,6 +253,13 @@
     <Compile Include="Linq\IntegrationTests\UpcastIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Linq\TestDomain\Success\SortExpressionForPropertyOnDerivedType\DerivedRelationTargetOneSide.cs" />
+    <Compile Include="Linq\TestDomain\Success\SortExpressionForPropertyOnDerivedType\RelationTargetManySide.cs" />
+    <Compile Include="Linq\TestDomain\Success\SortExpressionForPropertyOnDerivedType\RelationTargetOneSide.cs" />
+    <Compile Include="Linq\TestDomain\Error\SortExpressionForPropertyWithoutInterface\INonIntroducedInterface.cs" />
+    <Compile Include="Linq\TestDomain\Error\SortExpressionForPropertyWithoutInterface\MixinTarget.cs" />
+    <Compile Include="Linq\TestDomain\Error\SortExpressionForPropertyWithoutInterface\RelationMixin.cs" />
+    <Compile Include="Linq\TestDomain\Error\SortExpressionForPropertyWithoutInterface\RelationTarget.cs" />
     <Compile Include="Mapping\MappingReflectionIntegrationTests\IgnoredTypes\OnlyBaseClassNotInMapping\BaseClassOfExcludedClass.cs" />
     <Compile Include="Mapping\MappingReflectionIntegrationTests\IgnoredTypes\OnlyBaseClassNotInMapping\ClassExcludedFromMapping.cs" />
     <Compile Include="Mapping\MappingReflectionIntegrationTests\IgnoredTypes\OnlyBaseClassNotInMapping\ClassDerivedFromExcludedClass.cs" />

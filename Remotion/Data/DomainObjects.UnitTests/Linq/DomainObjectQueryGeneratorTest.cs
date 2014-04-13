@@ -25,6 +25,8 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
+using Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Error.SortExpressionForPropertyWithoutInterface;
+using Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Success.SortExpressionForPropertyOnDerivedType;
 using Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting.Reflection;
@@ -41,6 +43,7 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Linq
 {
+  [TestFixture]
   public class DomainObjectQueryGeneratorTest : StandardMappingTest
   {
     private ISqlQueryGenerator _sqlQueryGeneratorMock;
@@ -200,7 +203,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     public void CreateSequenceQuery_EntityQuery_WithMixinFetchRequest ()
     {
       var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (TargetClassForPersistentMixin));
-      _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
+      var targetTypeQueryModel = QueryModelObjectMother.Create (Expression.Constant (null, typeof (TargetClassForPersistentMixin)));
+      _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (targetTypeQueryModel)).Return (fakeSqlQuery);
 
       var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((IMixinAddingPersistentProperties o) => o.RelationProperty);
       var fakeFetchSqlQueryResult = CreateSqlQueryGeneratorResult ("FETCH");
@@ -215,7 +219,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
             CheckActualFetchQueryModel (actualQueryModel, fetchQueryModel);
           });
 
-      var result = _generator.CreateSequenceQuery<int> ("id", TestDomainStorageProviderDefinition, _customerQueryModel, new[] { fetchQueryModelBuilder });
+      var result = _generator.CreateSequenceQuery<int> ("id", TestDomainStorageProviderDefinition, targetTypeQueryModel, new[] { fetchQueryModelBuilder });
 
       _sqlQueryGeneratorMock.VerifyAllExpectations ();
       var expectedEndPointDefinition = GetEndPointDefinition (
@@ -253,6 +257,114 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
           });
 
       _generator.CreateSequenceQuery<int> ("id", TestDomainStorageProviderDefinition, _customerQueryModel, new[] { fetchQueryModelBuilder });
+
+      _sqlQueryGeneratorMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void CreateSequenceQuery_EntityQuery_WithFetchRequestWithSortExpressionBasedOnMixinProperty ()
+    {
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (RelationTargetForPersistentMixin));
+      var targetTypeQueryModel = QueryModelObjectMother.Create (Expression.Constant (null, typeof (RelationTargetForPersistentMixin)));
+      _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (targetTypeQueryModel)).Return (fakeSqlQuery);
+
+      var fetchQueryModelBuilder = CreateFetchManyQueryModelBuilder ((RelationTargetForPersistentMixin o) => o.RelationProperty4, targetTypeQueryModel);
+      var fakeFetchSqlQueryResult = CreateSqlQueryGeneratorResult ("FETCH");
+
+      _sqlQueryGeneratorMock
+          .Expect (mock => mock.CreateSqlQuery (Arg<QueryModel>.Is.Anything))
+          .Return (fakeFetchSqlQueryResult)
+          .WhenCalled (mi =>
+          {
+            var actualQueryModel = (QueryModel) mi.Arguments[0];
+            var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel ();
+
+            Assert.That (actualQueryModel.MainFromClause.FromExpression, Is.TypeOf<SubQueryExpression> ());
+            CheckActualFetchQueryModel (((SubQueryExpression) actualQueryModel.MainFromClause.FromExpression).QueryModel, fetchQueryModel);
+
+            Assert.That (actualQueryModel.BodyClauses, Has.Some.TypeOf<OrderByClause> ());
+            var orderByClause = (OrderByClause) actualQueryModel.BodyClauses.Single ();
+            var endPointDefinition = ((VirtualRelationEndPointDefinition) GetEndPointDefinition (typeof (RelationTargetForPersistentMixin), "RelationProperty4"));
+            Assert.That (endPointDefinition.SortExpressionText, 
+                Is.EqualTo ("Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain.MixinAddingPersistentProperties.PersistentProperty ASC"));
+            var sortedByMember = NormalizingMemberInfoFromExpressionUtility.GetProperty ((IMixinAddingPersistentProperties o) => o.PersistentProperty);
+            Assert.That (((MemberExpression) orderByClause.Orderings[0].Expression).Member, Is.SameAs (sortedByMember));
+            Assert.That (orderByClause.Orderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
+          });
+      _generator.CreateSequenceQuery<int> ("id", TestDomainStorageProviderDefinition, targetTypeQueryModel, new[] { fetchQueryModelBuilder });
+
+      _sqlQueryGeneratorMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void CreateSequenceQuery_EntityQuery_WithFetchRequestWithSortExpressionBasedOnMixinPropertyNotPartOfInterface_ThrowsNotSupportedException ()
+    {
+      var fakeSqlQuery =
+          CreateSqlQueryGeneratorResult (
+              selectedEntityType: typeof (RelationTarget));
+      var targetTypeQueryModel =
+          QueryModelObjectMother.Create (
+              Expression.Constant (null, typeof (RelationTarget)));
+      _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (targetTypeQueryModel)).Return (fakeSqlQuery);
+
+      var fetchQueryModelBuilder =
+          CreateFetchManyQueryModelBuilder (
+              (RelationTarget o) => o.CollectionProperty,
+              targetTypeQueryModel);
+      var fakeFetchSqlQueryResult = CreateSqlQueryGeneratorResult ("FETCH");
+
+      _sqlQueryGeneratorMock
+          .Stub (mock => mock.CreateSqlQuery (Arg<QueryModel>.Is.Anything))
+          .Return (fakeFetchSqlQueryResult);
+
+      Assert.That (
+          () => _generator.CreateSequenceQuery<int> ("id", TestDomainStorageProviderDefinition, targetTypeQueryModel, new[] { fetchQueryModelBuilder }),
+          Throws.TypeOf<NotSupportedException>().And.Message.EqualTo (
+              "The member 'Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Error.SortExpressionForPropertyWithoutInterface.RelationMixin.SortProperty' "
+              + "is not part of any interface introduced onto the target class "
+              + "'Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Error.SortExpressionForPropertyWithoutInterface.MixinTarget'. "
+              + "Only mixed properties that are part of an introduced interface can be used within the sort-expression of a collection property."));
+    }
+
+    [Test]
+    public void CreateSequenceQuery_EntityQuery_WithFetchRequestWithSortExpressionBasedOnPropertyDeclaredOnDerivedType ()
+    {
+      var fakeSqlQuery =
+          CreateSqlQueryGeneratorResult (
+              selectedEntityType: typeof (RelationTargetManySide));
+      var targetTypeQueryModel =
+          QueryModelObjectMother.Create (
+              Expression.Constant (null, typeof (RelationTargetManySide)));
+      _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (targetTypeQueryModel)).Return (fakeSqlQuery);
+
+      var fetchQueryModelBuilder =
+          CreateFetchManyQueryModelBuilder (
+              (RelationTargetManySide o) => o.CollectionProperty,
+              targetTypeQueryModel);
+      var fakeFetchSqlQueryResult = CreateSqlQueryGeneratorResult ("FETCH");
+
+      _sqlQueryGeneratorMock
+          .Expect (mock => mock.CreateSqlQuery (Arg<QueryModel>.Is.Anything))
+          .Return (fakeFetchSqlQueryResult)
+          .WhenCalled (mi =>
+          {
+            var actualQueryModel = (QueryModel) mi.Arguments[0];
+            var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel ();
+
+            Assert.That (actualQueryModel.MainFromClause.FromExpression, Is.TypeOf<SubQueryExpression> ());
+            CheckActualFetchQueryModel (((SubQueryExpression) actualQueryModel.MainFromClause.FromExpression).QueryModel, fetchQueryModel);
+
+            Assert.That (actualQueryModel.BodyClauses, Has.Some.TypeOf<OrderByClause> ());
+            var orderByClause = (OrderByClause) actualQueryModel.BodyClauses.Single ();
+            var endPointDefinition = ((VirtualRelationEndPointDefinition) GetEndPointDefinition (typeof (RelationTargetManySide), "CollectionProperty"));
+            Assert.That (endPointDefinition.SortExpressionText, 
+                Is.EqualTo ("Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Success.SortExpressionForPropertyOnDerivedType.DerivedRelationTargetOneSide.SortProperty ASC"));
+            var sortedByMember = NormalizingMemberInfoFromExpressionUtility.GetProperty ((DerivedRelationTargetOneSide o) => o.SortProperty);
+            Assert.That (((MemberExpression) orderByClause.Orderings[0].Expression).Member, Is.SameAs (sortedByMember));
+            Assert.That (orderByClause.Orderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
+          });
+
+      _generator.CreateSequenceQuery<int> ("id", TestDomainStorageProviderDefinition, targetTypeQueryModel, new[] { fetchQueryModelBuilder });
 
       _sqlQueryGeneratorMock.VerifyAllExpectations ();
     }
@@ -410,10 +522,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       Assert.That (actualQueryModel.SelectClause.ToString (), Is.EqualTo (fetchQueryModel.SelectClause.ToString ()));
     }
 
-    private FetchQueryModelBuilder CreateFetchOneQueryModelBuilder<TSource, TDest> (Expression<Func<TSource, TDest>> memberExpression)
+    private FetchQueryModelBuilder CreateFetchOneQueryModelBuilder<TSource, TDest> (Expression<Func<TSource, TDest>> memberExpression, QueryModel queryModel = null)
     {
       var fetchRequest = CreateFetchOneRequest(memberExpression);
-      return new FetchQueryModelBuilder (fetchRequest, _customerQueryModel, 0);
+      return new FetchQueryModelBuilder (fetchRequest, queryModel ?? _customerQueryModel, 0);
     }
 
     private FetchOneRequest CreateFetchOneRequest<TSource, TDest> (Expression<Func<TSource, TDest>> memberExpression)
@@ -422,10 +534,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       return new FetchOneRequest (relationMember);
     }
 
-    private FetchQueryModelBuilder CreateFetchManyQueryModelBuilder<TSource, TDest> (Expression<Func<TSource, TDest>> memberExpression)
+    private FetchQueryModelBuilder CreateFetchManyQueryModelBuilder<TSource, TDest> (Expression<Func<TSource, TDest>> memberExpression, QueryModel queryModel = null)
     {
       var fetchRequest = CreateFetchManyRequest (memberExpression);
-      return new FetchQueryModelBuilder (fetchRequest, _customerQueryModel, 0);
+      return new FetchQueryModelBuilder (fetchRequest, queryModel ?? _customerQueryModel, 0);
     }
 
     private FetchManyRequest CreateFetchManyRequest<TSource, TDest> (Expression<Func<TSource, TDest>> memberExpression)

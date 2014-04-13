@@ -26,11 +26,13 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.FunctionalProgramming;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.EagerFetching;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -234,14 +236,60 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private Ordering GetOrdering (QueryModel queryModel, SortedPropertySpecification sortedPropertySpecification)
     {
-      var propertyInfo = (PropertyInfo) _typeConversionProvider.Convert (
-          sortedPropertySpecification.PropertyDefinition.PropertyInfo.GetType(),
-          typeof (PropertyInfo),
-          sortedPropertySpecification.PropertyDefinition.PropertyInfo);
+      var instanceExpression = queryModel.SelectClause.Selector;
 
-      var memberExpression = Expression.MakeMemberAccess (queryModel.SelectClause.Selector, propertyInfo);
+      var normalizedProperty = GetNormalizedProperty (
+          sortedPropertySpecification.PropertyDefinition.PropertyInfo,
+          TypeAdapter.Create (instanceExpression.Type));
+
+      var memberExpression = Expression.MakeMemberAccess (
+            Expression.Convert (instanceExpression, normalizedProperty.DeclaringType.ConvertToRuntimeType()),
+            normalizedProperty.ConvertToRuntimePropertyInfo());
+
       var orderingDirection = sortedPropertySpecification.Order == SortOrder.Ascending ? OrderingDirection.Asc : OrderingDirection.Desc;
       return new Ordering (memberExpression, orderingDirection);
+    }
+
+    private IPropertyInformation GetNormalizedProperty (IPropertyInformation propertyInformation, ITypeInformation instanceTypeInformation)
+    {
+      var originalDeclaringType = propertyInformation.GetOriginalDeclaringType();
+      // Support for properties declared on instance type and base types
+      if (originalDeclaringType.IsAssignableFrom (instanceTypeInformation))
+        return propertyInformation;
+
+      // Support for properties declared on derived types
+      if (instanceTypeInformation.IsAssignableFrom (originalDeclaringType))
+        return propertyInformation;
+
+      // Support for properties declared on mixin
+      if (Mixins.Utilities.ReflectionUtility.IsMixinType (originalDeclaringType.ConvertToRuntimeType()))
+      {
+        var instanceRuntimeType = instanceTypeInformation.ConvertToRuntimeType();
+        var interfacePropertyInformation = propertyInformation.FindInterfaceDeclarations()
+            .Where (p => MixinTypeUtility.IsAssignableFrom (p.GetOriginalDeclaringType().ConvertToRuntimeType(), instanceRuntimeType))
+            .First (
+                () =>
+                    new NotSupportedException (
+                        string.Format (
+                            "The member '{0}.{1}' is not part of any interface introduced onto the target class '{2}'. "
+                            + "Only mixed properties that are part of an introduced interface can be used within the sort-expression of a collection property.",
+                            propertyInformation.DeclaringType.FullName,
+                            propertyInformation.Name,
+                            instanceTypeInformation.FullName
+                            )));
+
+        return interfacePropertyInformation;
+      }
+
+      // Unreachable due to mapping validation
+      throw new NotSupportedException (
+          string.Format (
+              "The member '{0}.{1}' is not part of inheritance hierarchy of class '{2}'. "
+              + "Only properties that are part of the inheritance hierarhcy can be used within the sort-expression of a collection property.",
+              propertyInformation.DeclaringType.FullName,
+              propertyInformation.Name,
+              instanceTypeInformation.FullName
+              ));
     }
   }
 }

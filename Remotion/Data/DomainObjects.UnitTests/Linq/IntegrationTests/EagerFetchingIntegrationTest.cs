@@ -382,7 +382,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO: RM-5678 - EagerFetch with SortExpression involving mixin properties")]
     public void EagerFetching_RelationSortExpressionUsesMixedProperty ()
     {
       var query = QueryFactory.CreateLinqQuery<RelationTargetForPersistentMixin>()
@@ -393,8 +392,19 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.RelationTargetForPersistentMixin4);
 
-      //CheckDataContainersRegistered (DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
-      //CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckDataContainersRegistered (DomainObjectIDs.RelationTargetForPersistentMixin4);
+      CheckCollectionRelationRegistered (
+          DomainObjectIDs.RelationTargetForPersistentMixin4,
+          typeof (RelationTargetForPersistentMixin),
+          "RelationProperty4",
+          false,
+          DomainObjectIDs.TargetClassForPersistentMixins2);
+    }
+
+    [Test]
+    [Ignore ("RM-6131: Add integration test for sort property from derived type")]
+    public void EagerFetching_RelationSortExpressionUsesPropertyFromDerivedType ()
+    {
     }
 
     private void CheckFetchedCollectionProperty1SideForTargetClass2 ()
