@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public object GetReferencedInstance (object handleInstance)
     {
-      var typedHandleInstance = ArgumentUtility.CheckNotNullAndType < IDomainObjectHandle<DomainObject>> ("handleInstance", handleInstance);
+      var typedHandleInstance = ArgumentUtility.CheckNotNullAndType<IDomainObjectHandle<DomainObject>> ("handleInstance", handleInstance);
 
       return LifetimeService.GetObject (ClientTransactionScope.CurrentTransaction, typedHandleInstance.ObjectID, true);
     }
