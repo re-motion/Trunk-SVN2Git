@@ -79,6 +79,11 @@
         <DataSource>localhost\MSSQL2012</DataSource>
         <DatabaseDirectory>C:\Databases\MsSql2012</DatabaseDirectory>
       </AllDatabaseSystems>
+
+      <AllDatabaseSystems Include="SqlServer2014" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2014'">
+        <DataSource>localhost\MSSQL2014</DataSource>
+        <DatabaseDirectory>C:\Databases\MsSql2014</DatabaseDirectory>
+      </AllDatabaseSystems>
     </ItemGroup>
   
   </Target>
