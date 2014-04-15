@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -23,7 +24,7 @@ public interface IFocusableControl
 {
   /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
   /// <value> The ID of a focusable HTML element. </value>
-  string FocusID { get; }
+  [CanBeNull]string FocusID { get; }
 }
 
 }

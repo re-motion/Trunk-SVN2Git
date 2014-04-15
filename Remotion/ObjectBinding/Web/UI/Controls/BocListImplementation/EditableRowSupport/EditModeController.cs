@@ -372,7 +372,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     private void SetFocus (EditableRow row)
     {
-      var firstControl = row.GetEditControlsAsArray().OfType<IFocusableControl>().FirstOrDefault();
+      var firstControl = row.GetEditControlsAsArray().OfType<IFocusableControl>().FirstOrDefault (c => !string.IsNullOrEmpty (c.FocusID));
       if (firstControl == null)
         return;
 

@@ -557,7 +557,7 @@ namespace Remotion.Web.UI.SmartPageImplementation
     /// <summary>
     ///   Sets the focus ID.
     /// </summary>
-    public void SetFocus (string id)
+    public void SetFocus ([NotNull] string id)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       _smartFocusID = id;

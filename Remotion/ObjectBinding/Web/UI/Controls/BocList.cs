@@ -2601,7 +2601,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("control", control);
 
-      Page.SetFocus (control.FocusID);
+      var focusID = control.FocusID;
+      if (string.IsNullOrEmpty (focusID))
+        return;
+
+      Page.SetFocus (focusID);
     }
 
     /// <summary>

@@ -22,6 +22,7 @@ using System.Web.Caching;
 using System.Web.UI;
 using System.Web.UI.Adapters;
 using System.Web.UI.HtmlControls;
+using JetBrains.Annotations;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 
@@ -579,7 +580,7 @@ namespace Remotion.Web.UI
     ///     <para>- or -</para>
     /// <see cref="M:System.Web.UI.Page.SetFocus(System.String)"/> is called after the <see cref="E:System.Web.UI.Control.PreRender"/> event.
     /// </exception>
-    void SetFocus (string clientID);
+    void SetFocus ([NotNull] string clientID);
 
     /// <summary>
     /// Registers a control as one whose control state must be persisted.
