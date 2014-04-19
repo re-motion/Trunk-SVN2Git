@@ -27,6 +27,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       where TRevisionKey : IRevisionKey
       where TRevisionValue : IRevisionValue
   {
+    // analyze if .NET 4.0 MemCache etc would be useful when refactoring the infrastructure into caching library
+
     public abstract class RevisionBasedData
     {
       private readonly TRevisionValue _revision;
