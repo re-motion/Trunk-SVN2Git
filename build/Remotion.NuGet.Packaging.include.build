@@ -43,15 +43,18 @@
   <!-- Main Targets -->
   <Target Name="CreateNuGetProperties" DependsOnTargets="CreateNuGetPackageProperties">
     <Error Text="The property 'PackageID' is not set." Condition="'$(PackageID)' == ''" />
-      
+    <Error Text="The property 'BelongsToPackage' is not set." Condition="'$(BelongsToPackage)' == ''" />
+    <Error Text="The property 'NuGetLibFolder' is not set." Condition="'$(NuGetLibFolder)' == ''" />
+
     <PropertyGroup>
       <NuGetToolPath>$(SolutionDirectory)prereq\Tools\NuGet\</NuGetToolPath>
 
       <NuGetTempDirectory>$(TempDirectory)$([System.Guid]::NewGuid())\NuGet\package\</NuGetTempDirectory>
-      <NuGetTempLibDirectory>$(NuGetTempDirectory)lib\net45\</NuGetTempLibDirectory>
+      <!-- http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package -->
+      <NuGetTempLibDirectory>$(NuGetTempDirectory)lib\$(NuGetLibFolder)\</NuGetTempLibDirectory>
       <NuGetTempSrcDirectory>$(NuGetTempDirectory)src\</NuGetTempSrcDirectory>
       <NuGetOutputDirectory>$(OutputDirectory)NuGet\</NuGetOutputDirectory>
-      
+
       <NuSpecTemplateFile>$(SolutionDirectory)build\NuGet.ConfigurationTemplate.nuspec</NuSpecTemplateFile>
       <NuSpecFileName>NuGet.nuspec</NuSpecFileName>
       <NuSpecFile>$(NuGetTempDirectory)$(NuSpecFileName)</NuSpecFile>
@@ -75,6 +78,9 @@
   </Target>
   
   <Target Name="CreateNuGetStructure" DependsOnTargets="CreateNuGetProperties;CreateNuGetStructureProperties">
+    <Error Text="The property 'NuGetLibFiles' is not set." Condition="'@(NuGetLibFiles)' == ''" />
+    <Error Text="The property 'NuGetSrcFiles' is not set." Condition="'@(NuGetSrcFiles)' == ''" />
+
     <MakeDir Directories="$(NuGetTempDirectory)"/>
     <Copy SourceFiles="$(NuSpecTemplateFile)" DestinationFiles="$(NuSpecFile)"/>
 

@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
                    select t).ToArray();
 
       var testFixtureResults = SandboxTestRunner.RunTestFixturesInSandbox (types, permissions, null); 
-      var testResults = testFixtureResults.SelectMany (r => r.TestResults);
+      var testResults = testFixtureResults.SelectMany (r => r.TestResults).ToArray();
 
       foreach (var testResult in testResults)
         testResult.EnsureNotFailed ();

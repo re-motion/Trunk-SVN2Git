@@ -30,7 +30,7 @@ namespace Remotion.Utilities
   ///   </para><para>
   ///   Note that assertion expressions passed to these methods are not evaluated (read: executed) if the respective symbol are not defined during
   ///   compilation, nor are the methods called. This increases performance for production builds, but make sure that your assertion expressions do
-  ///   not cause any side effects! See <see cref="ConditionalAttribute"/> or <see cref="Debug"/> and <see cref="Trace"/> the for more information 
+  ///   not cause any side effects! See <see cref="ConditionalAttribute"/> or <see cref="Debug"/> and <see cref="T:System.Diagnostics.Trace"/> the for more information 
   ///   about conditional compilation.
   ///   </para><para>
   ///   Assertions are no replacement for checking input parameters of public methods (see <see cref="ArgumentUtility"/>).  

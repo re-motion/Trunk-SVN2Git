@@ -23,6 +23,7 @@
     <PropertyGroup>
       <PackageID>TypePipe</PackageID>
       <BelongsToPackage>TypePipe</BelongsToPackage>
+      <NuGetLibFolder>net45</NuGetLibFolder>
     </PropertyGroup>
   </Target>
 

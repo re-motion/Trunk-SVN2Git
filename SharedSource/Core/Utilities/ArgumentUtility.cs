@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Reflection;
 using JetBrains.Annotations;
 
 // ReSharper disable once CheckNamespace
@@ -170,14 +171,17 @@ namespace Remotion.Utilities
 
     public static object CheckNotNullAndType (
         [InvokerParameterName] string argumentName,
-        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] object actualValue, 
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] object actualValue,
         Type expectedType)
     {
       if (actualValue == null)
         throw new ArgumentNullException (argumentName);
 
-      if (!expectedType.IsInstanceOfType (actualValue))
+      // ReSharper disable UseMethodIsInstanceOfType
+      if (!expectedType.GetTypeInfo().IsAssignableFrom (actualValue.GetType().GetTypeInfo()))
         throw CreateArgumentTypeException (argumentName, actualValue.GetType(), expectedType);
+      // ReSharper restore UseMethodIsInstanceOfType
+
       return actualValue;
     }
 
@@ -221,8 +225,11 @@ namespace Remotion.Utilities
           throw CreateArgumentTypeException (argumentName, null, expectedType);
       }
 
-      if (!expectedType.IsInstanceOfType (actualValue))
+      // ReSharper disable UseMethodIsInstanceOfType
+      if (!expectedType.GetTypeInfo().IsAssignableFrom (actualValue.GetType().GetTypeInfo()))
         throw CreateArgumentTypeException (argumentName, actualValue.GetType(), expectedType);
+      // ReSharper restore UseMethodIsInstanceOfType
+
       return actualValue;
     }
 
@@ -281,7 +288,7 @@ namespace Remotion.Utilities
       CheckNotNull ("expectedType", expectedType);
       if (actualType != null)
       {
-        if (!expectedType.IsAssignableFrom (actualType))
+        if (!expectedType.GetTypeInfo().IsAssignableFrom (actualType.GetTypeInfo()))
         {
           string message = string.Format (
               "Parameter '{0}' is a '{2}', which cannot be assigned to type '{1}'.",
@@ -307,8 +314,11 @@ namespace Remotion.Utilities
         int index = 0;
         foreach (object item in collection)
         {
-          if (item != null && !itemType.IsInstanceOfType (item))
+          // ReSharper disable UseMethodIsInstanceOfType
+          if (item != null && !itemType.GetTypeInfo().IsAssignableFrom (item.GetType().GetTypeInfo()))
             throw CreateArgumentItemTypeException (argumentName, index, itemType, item.GetType());
+          // ReSharper restore UseMethodIsInstanceOfType
+
           ++index;
         }
       }
@@ -331,8 +341,11 @@ namespace Remotion.Utilities
         {
           if (item == null)
             throw CreateArgumentItemNullException (argumentName, index);
-          if (!itemType.IsInstanceOfType (item))
+          // ReSharper disable UseMethodIsInstanceOfType
+          if (!itemType.GetTypeInfo().IsAssignableFrom (item.GetType().GetTypeInfo()))
             throw CreateArgumentItemTypeException (argumentName, index, itemType, item.GetType());
+          // ReSharper restore UseMethodIsInstanceOfType
+
           ++index;
         }
       }
