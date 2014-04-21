@@ -34,8 +34,10 @@
   
   
   <!-- Targets -->
-  <Target Name="CreateDependDBPackages" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBPackagesInternal" />
-  <Target Name="UploadToDependDB" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;UploadToDependDBInternal" />
+  <!--<Target Name="CreateDependDBPackages" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBPackagesInternal" />
+  <Target Name="UploadToDependDB" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;UploadToDependDBInternal" />-->
+  <Target Name="CreateDependDBPackages" />
+  <Target Name="UploadToDependDB" />
   
   
   <!-- Abstract internal targets -->
