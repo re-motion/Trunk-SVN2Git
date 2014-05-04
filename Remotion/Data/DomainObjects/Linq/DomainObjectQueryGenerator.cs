@@ -220,7 +220,12 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new NotSupportedException (message);
       }
 
-      var endPoint = classDefinition.ResolveRelationEndPoint (PropertyInfoAdapter.Create (propertyInfo));
+      var propertyInfoAdapter = PropertyInfoAdapter.Create (propertyInfo);
+      var endPoint = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter);
+      // TODO: RM-5924 - Eager Fetching down casts
+      //var endPoint = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter)
+      //               ?? classDefinition.GetAllDerivedClasses().Select(cd => cd.ResolveRelationEndPoint (propertyInfoAdapter)).FirstOrDefault();
+
       if (endPoint == null)
       {
         Assertion.IsNotNull (propertyInfo.DeclaringType);

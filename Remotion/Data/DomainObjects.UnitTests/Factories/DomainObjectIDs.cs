@@ -767,6 +767,60 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 
     #endregion
 
+    #region EagerFetching
+
+    public ObjectID EagerFetching_BaseClass
+    {
+      get { return CreateObjectID ("EagerFetching_BaseClass", new Guid ("{DA3B6AA5-9DEF-4048-9479-6ADB940EB88C}")); }
+    }
+
+    public ObjectID EagerFetching_DerivedClass1_WithCollectionVirtualEndPoint
+    {
+      get { return CreateObjectID ("EagerFetching_DerivedClass1", new Guid ("{BD4403A5-E96D-426E-A7B0-4A5DB2363D3A}")); }
+    }
+
+    public ObjectID EagerFetching_DerivedClass1_WithScalarVirtualEndPoint
+    {
+      get { return CreateObjectID ("EagerFetching_DerivedClass1", new Guid ("{80B729A2-1FC6-46D0-A69B-39B881346588}")); }
+    }
+
+    public ObjectID EagerFetching_DerivedClass2_WithScalarRealEndPoint
+    {
+      get { return CreateObjectID ("EagerFetching_DerivedClass2", new Guid ("{10742FC3-AB58-49BC-AF04-CBDE1B160CBF}")); }
+    }
+
+    public ObjectID EagerFetching_DerivedClass2_WithUnidirectionalEndPoint
+    {
+      get { return CreateObjectID ("EagerFetching_DerivedClass2", new Guid ("{F6090162-7B12-4689-951B-B52EFD72C34F}")); }
+    }
+    
+    public ObjectID EagerFetching_RelationTarget_WithCollectionRealEndPoint1
+    {
+      get { return CreateObjectID ("EagerFetching_RelationTarget", new Guid ("{3DD744D2-91C7-463B-A5AF-01AD064B3821}")); }
+    }
+    
+    public ObjectID EagerFetching_RelationTarget_WithCollectionRealEndPoint2
+    {
+      get { return CreateObjectID ("EagerFetching_RelationTarget", new Guid ("{FF5709EB-2523-44B6-B0EA-92423AE705F5}")); }
+    }
+    
+    public ObjectID EagerFetching_RelationTarget_WithScalarRealEndPoint
+    {
+      get { return CreateObjectID ("EagerFetching_RelationTarget", new Guid ("{36381FD9-D454-4FCD-B860-3E30166BE092}")); }
+    }
+    
+    public ObjectID EagerFetching_RelationTarget_WithScalarVirtualEndPoint
+    {
+      get { return CreateObjectID ("EagerFetching_RelationTarget", new Guid ("{5DD64E95-5449-4345-8DE8-1D766BB23B17}")); }
+    }
+    
+    public ObjectID EagerFetching_RelationTarget_WithAnonymousEndPoint
+    {
+      get { return CreateObjectID ("EagerFetching_RelationTarget", new Guid ("{03CDC3BF-DA09-442D-A2C0-96567B48BC5D}")); }
+    }
+    
+    #endregion
+
     private ObjectID CreateObjectID (string classID, object value)
     {
       return new ObjectID(_mappingConfiguration.GetClassDefinition (classID), value);

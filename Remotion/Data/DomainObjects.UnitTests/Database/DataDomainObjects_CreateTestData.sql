@@ -7,8 +7,12 @@ delete from [MixedDomains_TargetWithUnidirectionalMixin2]
 -- update required to avoid foreign key violations
 update [MixedDomains_Target] set [UnidirectionalRelationPropertyID]=NULL,[RelationPropertyID]=NULL,[PrivateBaseRelationPropertyID]=NULL,[CollectionPropertyNSideID]=NULL
 update [MixedDomains_RelationTarget] set [RelationProperty2ID]=NULL,[RelationProperty2IDClassID]=NULL,[RelationProperty3ID]=NULL,[RelationProperty3IDClassID]=NULL
+update [EagerFetching_BaseClass] set [ScalarProperty2RealSideID]=NULL, [ScalarProperty2RealSideIDClassID]=NULL, [UnidirectionalPropertyID]=NULL, [UnidirectionalPropertyIDClassID]=NULL
+update [EagerFetching_RelationTarget] set [CollectionPropertyOneSideID]=NULL, [CollectionPropertyOneSideIDClassID]=NULL,[ScalarProperty1RealSideID]=NULL, [ScalarProperty1RealSideIDClassID]=NULL
 delete from [MixedDomains_Target]
 delete from [MixedDomains_RelationTarget]
+delete from [EagerFetching_BaseClass]
+delete from [EagerFetching_RelationTarget]
 
 delete from [FileSystemItem]
 delete from [Location]
@@ -549,3 +553,32 @@ update [MixedDomains_RelationTarget]
         [RelationProperty3IDClassID] = NULL 
     where [ID] = 'C007F590-7953-4429-A34E-778309F2FC1D'
 
+insert into [EagerFetching_BaseClass] ([ID], [ClassID]) 
+    values ('{DA3B6AA5-9DEF-4048-9479-6ADB940EB88C}', 'EagerFetching_BaseClass')
+
+insert into [EagerFetching_BaseClass] ([ID], [ClassID]) 
+    values ('{BD4403A5-E96D-426E-A7B0-4A5DB2363D3A}', 'EagerFetching_DerivedClass1')
+
+insert into [EagerFetching_BaseClass] ([ID], [ClassID]) 
+    values ('{80B729A2-1FC6-46D0-A69B-39B881346588}', 'EagerFetching_DerivedClass1')
+
+insert into [EagerFetching_BaseClass] ([ID], [ClassID], [ScalarProperty2RealSideID], [ScalarProperty2RealSideIDClassID], [UnidirectionalPropertyID], [UnidirectionalPropertyIDClassID]) 
+    values ('{10742FC3-AB58-49BC-AF04-CBDE1B160CBF}', 'EagerFetching_DerivedClass2', '{5DD64E95-5449-4345-8DE8-1D766BB23B17}', 'EagerFetching_RelationTarget', NULL, NULL)
+
+insert into [EagerFetching_BaseClass] ([ID], [ClassID], [ScalarProperty2RealSideID], [ScalarProperty2RealSideIDClassID], [UnidirectionalPropertyID], [UnidirectionalPropertyIDClassID]) 
+    values ('{F6090162-7B12-4689-951B-B52EFD72C34F}', 'EagerFetching_DerivedClass2', NULL, NULL, '{03CDC3BF-DA09-442D-A2C0-96567B48BC5D}', 'EagerFetching_RelationTarget')
+
+insert into [EagerFetching_RelationTarget] ([ID], [ClassID], [CollectionPropertyOneSideID], [CollectionPropertyOneSideIDClassID], [ScalarProperty1RealSideID], [ScalarProperty1RealSideIDClassID]) 
+    values ('{3DD744D2-91C7-463B-A5AF-01AD064B3821}', 'EagerFetching_RelationTarget', '{BD4403A5-E96D-426E-A7B0-4A5DB2363D3A}', 'EagerFetching_DerivedClass1', NULL, NULL)
+
+insert into [EagerFetching_RelationTarget] ([ID], [ClassID], [CollectionPropertyOneSideID], [CollectionPropertyOneSideIDClassID], [ScalarProperty1RealSideID], [ScalarProperty1RealSideIDClassID]) 
+    values ('{FF5709EB-2523-44B6-B0EA-92423AE705F5}', 'EagerFetching_RelationTarget', '{BD4403A5-E96D-426E-A7B0-4A5DB2363D3A}', 'EagerFetching_DerivedClass1', NULL, NULL)
+
+insert into [EagerFetching_RelationTarget] ([ID], [ClassID], [CollectionPropertyOneSideID], [CollectionPropertyOneSideIDClassID], [ScalarProperty1RealSideID], [ScalarProperty1RealSideIDClassID]) 
+    values ('{36381FD9-D454-4FCD-B860-3E30166BE092}', 'EagerFetching_RelationTarget', NULL, NULL, '{80B729A2-1FC6-46D0-A69B-39B881346588}', 'EagerFetching_DerivedClass1')
+
+insert into [EagerFetching_RelationTarget] ([ID], [ClassID], [CollectionPropertyOneSideID], [CollectionPropertyOneSideIDClassID], [ScalarProperty1RealSideID], [ScalarProperty1RealSideIDClassID]) 
+    values ('{5DD64E95-5449-4345-8DE8-1D766BB23B17}', 'EagerFetching_RelationTarget', NULL, NULL, NULL, NULL)
+
+insert into [EagerFetching_RelationTarget] ([ID], [ClassID], [CollectionPropertyOneSideID], [CollectionPropertyOneSideIDClassID], [ScalarProperty1RealSideID], [ScalarProperty1RealSideIDClassID]) 
+    values ('{03CDC3BF-DA09-442D-A2C0-96567B48BC5D}', 'EagerFetching_RelationTarget', NULL, NULL, NULL, NULL)

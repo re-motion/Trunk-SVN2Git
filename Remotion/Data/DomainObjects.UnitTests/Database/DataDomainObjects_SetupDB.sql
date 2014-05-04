@@ -173,6 +173,22 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ConcreteIn
   DROP VIEW [dbo].[ConcreteInheritanceObjectWithRelationsView]
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'EagerFetching_BaseClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[EagerFetching_BaseClassView]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'EagerFetching_DerivedClass1View' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[EagerFetching_DerivedClass1View]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'EagerFetching_DerivedClass2View' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[EagerFetching_DerivedClass2View]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'EagerFetching_RelationTargetView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[EagerFetching_RelationTargetView]
+GO
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixedDomains_Target')
 BEGIN
   ALTER TABLE [MixedDomains_Target] DROP CONSTRAINT [FK_MixedDomains_Target_RelationProperty]
@@ -391,6 +407,14 @@ GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'ConcreteInheritanceObjectWithRelations') 
   DROP TABLE [ConcreteInheritanceObjectWithRelations]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'EagerFetching_BaseClass')
+  DROP TABLE [dbo].[EagerFetching_BaseClass]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'EagerFetching_RelationTarget')
+  DROP TABLE [dbo].[EagerFetching_RelationTarget]
 GO
 
 IF OBJECT_ID ('rpf_testSPQuery', 'P') IS NOT NULL 
@@ -1191,6 +1215,36 @@ CREATE TABLE [dbo].[ConcreteInheritanceObjectWithRelations]
 )
 GO
 
+CREATE TABLE [EagerFetching_BaseClass] (
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+  
+  [ScalarProperty2RealSideID] uniqueidentifier NULL,
+  [ScalarProperty2RealSideIDClassID] varchar (100) NULL,
+  
+  [UnidirectionalPropertyID] uniqueidentifier NULL,
+  [UnidirectionalPropertyIDClassID] varchar (100) NULL,
+ 
+  CONSTRAINT [PK_EagerFetching_BaseClass] PRIMARY KEY CLUSTERED ([ID])
+) 
+GO
+
+CREATE TABLE [EagerFetching_RelationTarget] (
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+  
+  [CollectionPropertyOneSideID] uniqueidentifier NULL,
+  [CollectionPropertyOneSideIDClassID] varchar (100) NULL,
+  
+  [ScalarProperty1RealSideID] uniqueidentifier NULL,
+  [ScalarProperty1RealSideIDClassID] varchar (100) NULL,
+ 
+  CONSTRAINT [PK_EagerFetching_RelationTarget] PRIMARY KEY CLUSTERED ([ID])
+) 
+GO
+
 CREATE PROCEDURE rpf_testSPQuery
 AS
   SELECT * FROM [Order] WHERE [OrderNo] = 1 OR [OrderNo] = 3 ORDER BY [OrderNo] ASC
@@ -1643,6 +1697,38 @@ CREATE VIEW [dbo].[ConcreteInheritanceObjectWithRelationsView] ([ID], [ClassID],
   SELECT [ID], [ClassID], [Timestamp], [ScalarPropertyID], [ScalarPropertyIDClassID]
     FROM [dbo].[ConcreteInheritanceObjectWithRelations]
     WHERE [ClassID] IN ('ConcreteInheritanceObjectWithRelations')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[EagerFetching_BaseClassView] ([ID], [ClassID], [Timestamp], [ScalarProperty2RealSideID], [ScalarProperty2RealSideIDClassID], [UnidirectionalPropertyID], [UnidirectionalPropertyIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [ScalarProperty2RealSideID], [ScalarProperty2RealSideIDClassID], [UnidirectionalPropertyID], [UnidirectionalPropertyIDClassID]
+    FROM [dbo].[EagerFetching_BaseClass]
+    WHERE [ClassID] IN ('EagerFetching_BaseClass', 'EagerFetching_DerivedClass1', 'EagerFetching_DerivedClass2')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[EagerFetching_DerivedClass1View] ([ID], [ClassID], [Timestamp])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp]
+    FROM [dbo].[EagerFetching_BaseClass]
+    WHERE [ClassID] IN ('EagerFetching_DerivedClass1')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[EagerFetching_DerivedClass2View] ([ID], [ClassID], [Timestamp], [ScalarProperty2RealSideID], [ScalarProperty2RealSideIDClassID], [UnidirectionalPropertyID], [UnidirectionalPropertyIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [ScalarProperty2RealSideID], [ScalarProperty2RealSideIDClassID], [UnidirectionalPropertyID], [UnidirectionalPropertyIDClassID]
+    FROM [dbo].[EagerFetching_BaseClass]
+    WHERE [ClassID] IN ('EagerFetching_DerivedClass2')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[EagerFetching_RelationTargetView] ([ID], [ClassID], [Timestamp], [CollectionPropertyOneSideID], [CollectionPropertyOneSideIDClassID], [ScalarProperty1RealSideID], [ScalarProperty1RealSideIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [CollectionPropertyOneSideID], [CollectionPropertyOneSideIDClassID], [ScalarProperty1RealSideID], [ScalarProperty1RealSideIDClassID]
+    FROM [dbo].[EagerFetching_RelationTarget]
+    WHERE [ClassID] IN ('EagerFetching_RelationTarget')
   WITH CHECK OPTION
 GO
 

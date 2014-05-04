@@ -19,8 +19,13 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Success.EagerFetching;
 using Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
+using EagerFetching_BaseClass = Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Success.EagerFetching.BaseClass;
+using EagerFetching_DerivedClass1 = Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Success.EagerFetching.DerivedClass1;
+using EagerFetching_DerivedClass2 = Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Success.EagerFetching.DerivedClass2;
+using EagerFetching_RelationTarget = Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Success.EagerFetching.RelationTarget;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
 {
@@ -327,6 +332,66 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
 
       CheckDataContainersRegistered (DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
       CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    [Ignore ("RM-5924")]
+    public void EagerFetching_CollectionPropertyVirtualSide_ViaDownCastInSelect ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<EagerFetching_BaseClass>()
+                   where o.ID == DomainObjectIDs.EagerFetching_DerivedClass1_WithCollectionVirtualEndPoint 
+                         || o.ID == DomainObjectIDs.EagerFetching_BaseClass
+                   select o)
+                   .FetchMany (o => ((EagerFetching_DerivedClass1) o).CollectionPropertyManySide);
+
+      CheckQueryResult (query, DomainObjectIDs.EagerFetching_BaseClass, DomainObjectIDs.EagerFetching_DerivedClass1_WithCollectionVirtualEndPoint);
+      CheckDataContainersRegistered (DomainObjectIDs.EagerFetching_RelationTarget_WithCollectionRealEndPoint1, DomainObjectIDs.EagerFetching_RelationTarget_WithCollectionRealEndPoint2);
+      CheckCollectionRelationRegistered (DomainObjectIDs.EagerFetching_DerivedClass1_WithCollectionVirtualEndPoint, "CollectionPropertyManySide", false, DomainObjectIDs.EagerFetching_RelationTarget_WithCollectionRealEndPoint1, DomainObjectIDs.EagerFetching_RelationTarget_WithCollectionRealEndPoint2);
+    }
+
+    [Test]
+    [Ignore ("RM-5924")]
+    public void EagerFetching_ScalarPropertyVirtualSide_ViaDownCastInSelect ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<EagerFetching_BaseClass>()
+                   where o.ID == DomainObjectIDs.EagerFetching_DerivedClass1_WithScalarVirtualEndPoint 
+                         || o.ID == DomainObjectIDs.EagerFetching_BaseClass
+                   select o)
+                   .FetchOne (o => ((EagerFetching_DerivedClass1) o).ScalarProperty1VirtualSide);
+
+      CheckQueryResult (query, DomainObjectIDs.EagerFetching_BaseClass, DomainObjectIDs.EagerFetching_DerivedClass1_WithScalarVirtualEndPoint);
+      CheckDataContainersRegistered (DomainObjectIDs.EagerFetching_RelationTarget_WithScalarRealEndPoint);
+      CheckObjectRelationRegistered (DomainObjectIDs.EagerFetching_DerivedClass1_WithScalarVirtualEndPoint, "ScalarProperty1VirtualSide", DomainObjectIDs.EagerFetching_RelationTarget_WithScalarRealEndPoint);
+    }
+
+    [Test]
+    [Ignore ("RM-5924")]
+    public void EagerFetching_ScalarPropertyRealSide_ViaDownCastInSelect ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<EagerFetching_BaseClass>()
+                   where o.ID == DomainObjectIDs.EagerFetching_DerivedClass2_WithScalarRealEndPoint 
+                         || o.ID == DomainObjectIDs.EagerFetching_BaseClass
+                   select o)
+                   .FetchOne (o => ((EagerFetching_DerivedClass2) o).ScalarProperty2RealSide);
+
+      CheckQueryResult (query, DomainObjectIDs.EagerFetching_BaseClass, DomainObjectIDs.EagerFetching_DerivedClass2_WithScalarRealEndPoint);
+      CheckDataContainersRegistered (DomainObjectIDs.EagerFetching_RelationTarget_WithScalarVirtualEndPoint);
+      CheckObjectRelationRegistered (DomainObjectIDs.EagerFetching_RelationTarget_WithScalarVirtualEndPoint, "ScalarProperty2VirtualSide", DomainObjectIDs.EagerFetching_DerivedClass2_WithScalarRealEndPoint);
+    }
+
+    [Test]
+    [Ignore ("RM-5924")]
+    public void EagerFetching_UnidirectionalProperty_ViaDownCastInSelect ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<EagerFetching_BaseClass>()
+                   where o.ID == DomainObjectIDs.EagerFetching_DerivedClass2_WithUnidirectionalEndPoint 
+                         || o.ID == DomainObjectIDs.EagerFetching_BaseClass
+                   select o)
+                   .FetchOne (o => ((EagerFetching_DerivedClass2) o).UnidirectionalProperty);
+
+      CheckQueryResult (query, DomainObjectIDs.EagerFetching_BaseClass, DomainObjectIDs.EagerFetching_DerivedClass2_WithUnidirectionalEndPoint);
+      //CheckDataContainersRegistered (DomainObjectIDs.TargetClassReceivingReferenceToDerivedClass2, DomainObjectIDs.DerivedClassWithBaseReferenceViaMixin1);
+      //CheckObjectRelationRegistered (DomainObjectIDs.DerivedClassWithBaseReferenceViaMixin1, "MyBase", DomainObjectIDs.TargetClassReceivingReferenceToDerivedClass2);
     }
 
     [Test]
