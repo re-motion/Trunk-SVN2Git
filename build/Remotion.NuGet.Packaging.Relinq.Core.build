@@ -23,7 +23,7 @@
     <PropertyGroup>
       <PackageID>Relinq.Core</PackageID>
       <BelongsToPackage>Relinq</BelongsToPackage>
-      <NuGetLibFolder>portable-net45+wp80+win</NuGetLibFolder>
+      <NuGetLibFolder>portable-net45+wp80+wpa81+win</NuGetLibFolder>
     </PropertyGroup>
   </Target>
 
