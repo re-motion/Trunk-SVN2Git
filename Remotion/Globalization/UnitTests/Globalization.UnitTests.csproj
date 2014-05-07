@@ -58,6 +58,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Implementation\CompoundGlobalizationServiceTest.cs" />
+    <Compile Include="MultiLingualNameAttributeTest.cs" />
     <Compile Include="Obsolete\EnumDescriptionTest.cs" />
     <Compile Include="EnumerationGlobalizationServiceExtensionsTest.cs" />
     <Compile Include="IntegrationTests\EnumerationGlobalizationServiceIntegrationTest.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="TestDomain\EnumWithResources.cs" />
     <Compile Include="TestDomain\InheritedClassWithMultiLingualResourcesAttributes.cs" />
     <Compile Include="TestDomain\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
+    <Compile Include="TestDomain\MultiLingualNameBased\ClassWithMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\Resources\ClassWithResources.Designer.cs">
       <DependentUpon>ClassWithResources.resx</DependentUpon>
     </Compile>
