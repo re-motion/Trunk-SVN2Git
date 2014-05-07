@@ -58,6 +58,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Implementation\CompoundGlobalizationServiceTest.cs" />
+    <Compile Include="Implementation\MissingLocalizationExceptionTest.cs" />
     <Compile Include="MultiLingualNameAttributeTest.cs" />
     <Compile Include="Obsolete\EnumDescriptionTest.cs" />
     <Compile Include="EnumerationGlobalizationServiceExtensionsTest.cs" />
