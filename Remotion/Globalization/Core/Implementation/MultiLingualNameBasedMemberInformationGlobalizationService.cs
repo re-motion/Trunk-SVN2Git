@@ -15,7 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
+using System.Linq;
 using Remotion.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
 {
@@ -32,12 +35,31 @@ namespace Remotion.Globalization.Implementation
 
     public bool TryGetTypeDisplayName (ITypeInformation typeInformation, ITypeInformation typeInformationForResourceResolution, out string result)
     {
-      throw new System.NotImplementedException();
+      ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
+      ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
+
+      var attributes = typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false);
+
+      var multLingualAttribute = attributes.SingleOrDefault();
+
+      if (multLingualAttribute == null)
+      {
+        result = null;
+        return false;
+      }
+      else
+      {
+        result = multLingualAttribute.LocalizedName;
+        return true;
+      }
     }
 
-    public bool TryGetPropertyDisplayName (IPropertyInformation propertyInformation, ITypeInformation typeInformationForResourceResolution, out string result)
+    public bool TryGetPropertyDisplayName (
+        IPropertyInformation propertyInformation,
+        ITypeInformation typeInformationForResourceResolution,
+        out string result)
     {
-      throw new System.NotImplementedException();
+      throw new NotImplementedException();
     }
   }
 }
