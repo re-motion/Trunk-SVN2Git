@@ -200,6 +200,33 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     }
 
     [Test]
+    public void CreateSequenceQuery_EntityQuery_WithDownCast ()
+    {
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Company));
+      var targetTypeQueryModel = QueryModelObjectMother.Create (Expression.Constant (null, typeof (Company)));
+      _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (targetTypeQueryModel)).Return (fakeSqlQuery);
+
+      var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((Partner o) => o.ContactPerson, targetTypeQueryModel);
+      var fakeFetchSqlQueryResult = CreateSqlQueryGeneratorResult ("FETCH");
+
+      _sqlQueryGeneratorMock
+          .Expect (mock => mock.CreateSqlQuery (Arg<QueryModel>.Is.Anything))
+          .Return (fakeFetchSqlQueryResult)
+          .WhenCalled (mi =>
+          {
+            var actualQueryModel = (QueryModel) mi.Arguments[0];
+            var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel ();
+            CheckActualFetchQueryModel (actualQueryModel, fetchQueryModel);
+          });
+
+      var result = _generator.CreateSequenceQuery<int> ("id", TestDomainStorageProviderDefinition, targetTypeQueryModel, new[] { fetchQueryModelBuilder });
+
+      _sqlQueryGeneratorMock.VerifyAllExpectations ();
+      var expectedEndPointDefinition = GetEndPointDefinition (typeof (Partner), typeof (Partner), "ContactPerson");
+      CheckSingleFetchRequest (result.EagerFetchQueries, expectedEndPointDefinition, "FETCH");
+    }
+
+    [Test]
     public void CreateSequenceQuery_EntityQuery_WithMixinFetchRequest ()
     {
       var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (TargetClassForPersistentMixin));

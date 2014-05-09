@@ -335,7 +335,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("RM-5924")]
     public void EagerFetching_CollectionPropertyVirtualSide_ViaDownCastInSelect ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<EagerFetching_BaseClass>()
@@ -350,7 +349,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("RM-5924")]
     public void EagerFetching_ScalarPropertyVirtualSide_ViaDownCastInSelect ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<EagerFetching_BaseClass>()
@@ -365,7 +363,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("RM-5924")]
     public void EagerFetching_ScalarPropertyRealSide_ViaDownCastInSelect ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<EagerFetching_BaseClass>()
@@ -380,7 +377,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("RM-5924")]
     public void EagerFetching_UnidirectionalProperty_ViaDownCastInSelect ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<EagerFetching_BaseClass>()

@@ -221,10 +221,10 @@ namespace Remotion.Data.DomainObjects.Linq
       }
 
       var propertyInfoAdapter = PropertyInfoAdapter.Create (propertyInfo);
-      var endPoint = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter);
-      // TODO: RM-5924 - Eager Fetching down casts
-      //var endPoint = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter)
-      //               ?? classDefinition.GetAllDerivedClasses().Select(cd => cd.ResolveRelationEndPoint (propertyInfoAdapter)).FirstOrDefault();
+      var endPoint = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter)
+                     ?? classDefinition.GetAllDerivedClasses()
+                         .Select (cd => cd.ResolveRelationEndPoint (propertyInfoAdapter))
+                         .FirstOrDefault (ep => ep != null);
 
       if (endPoint == null)
       {
