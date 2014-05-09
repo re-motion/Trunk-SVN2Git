@@ -63,18 +63,21 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObject", originatingObject);
 
-      if (!relationEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (originatingObject.ObjectID.ClassDefinition))
-      {
-        var message = string.Format (
-            "Cannot register relation end-point '{0}' for domain object '{1}'. The end-point belongs to an object of "
-            + "class '{2}' but the domain object has class '{3}'.",
-            relationEndPointDefinition.PropertyName,
-            originatingObject.ObjectID,
-            relationEndPointDefinition.ClassDefinition.ID,
-            originatingObject.ObjectID.ClassDefinition.ID);
+      var relationEndPointDefinitionInheritanceRoot = relationEndPointDefinition.ClassDefinition.GetInheritanceRootClass();
+      var originatingObjectInheritanceRoot = originatingObject.ObjectID.ClassDefinition.GetInheritanceRootClass();
 
-        throw new InvalidOperationException (message);
-      }
+      if (ReferenceEquals (relationEndPointDefinitionInheritanceRoot, originatingObjectInheritanceRoot))
+        return;
+
+      var message = string.Format (
+          "Cannot register relation end-point '{0}' for domain object '{1}'. The end-point belongs to an object of "
+          + "class '{2}' but the domain object has class '{3}'.",
+          relationEndPointDefinition.PropertyName,
+          originatingObject.ObjectID,
+          relationEndPointDefinition.ClassDefinition.ID,
+          originatingObject.ObjectID.ClassDefinition.ID);
+
+      throw new InvalidOperationException (message);
     }
 
     private void CheckClassDefinitionOfRelatedObject (

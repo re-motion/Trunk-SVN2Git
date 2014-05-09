@@ -64,15 +64,10 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
             "relationEndPointDefinition");
       }
 
-      // TODO: RM-5924 - Eager Fetching down casts
-      CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
-
       var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
       var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition);
 
-      //CheckOriginatingObjects (
-      //    relationEndPointDefinition,
-      //    originatingObjects.Where (o => !o.IsNull && groupedRelatedObjects.ContainsKey (o.ObjectID)));
+      CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
 
       RegisterEndPointData (relationEndPointDefinition, originatingObjects, groupedRelatedObjects);
     }
@@ -109,12 +104,12 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
        IDictionary<ObjectID, ILoadedObjectData> groupedRelatedObjects)
     {
       var relatedObjectsByOriginalObject = groupedRelatedObjects;
-      foreach (var originalObject in originatingObjects)
+      foreach (var originatingObject in originatingObjects)
       {
-        if (!originalObject.IsNull)
+        if (!originatingObject.IsNull && originatingObject.ObjectID.ClassDefinition.IsRelationEndPoint (relationEndPointDefinition))
         {
-          var relationEndPointID = RelationEndPointID.Create (originalObject.ObjectID, relationEndPointDefinition);
-          var relatedObjectData = relatedObjectsByOriginalObject.GetValueOrDefault (originalObject.ObjectID) ?? new NullLoadedObjectData();
+          var relationEndPointID = RelationEndPointID.Create (originatingObject.ObjectID, relationEndPointDefinition);
+          var relatedObjectData = relatedObjectsByOriginalObject.GetValueOrDefault (originatingObject.ObjectID) ?? new NullLoadedObjectData();
           var relatedObject = relatedObjectData.GetDomainObjectReference();
           if (relationEndPointDefinition.IsMandatory && relatedObject == null)
           {

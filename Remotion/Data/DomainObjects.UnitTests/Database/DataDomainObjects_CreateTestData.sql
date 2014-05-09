@@ -102,30 +102,30 @@ insert into [Computer] (ID, ClassID, [SerialNumber], [EmployeeID])
 
 
 -- Person
-insert into [Person] (ID, ClassID, [Name]) 
-    values ('{2001BF42-2AA4-4c81-AD8E-73E9145411E9}', 'Person', 'Franz Huber')
+insert into [Person] (ID, ClassID, [Name], [AssociatedCustomerCompanyID], [AssociatedCustomerCompanyIDClassID]) 
+    values ('{2001BF42-2AA4-4c81-AD8E-73E9145411E9}', 'Person', 'Franz Huber', null, null)
 
-insert into [Person] (ID, ClassID, [Name]) 
-    values ('{DC50A962-EC95-4cf6-A4E7-A6608EAA23C8}', 'Person', 'Gisela Maier')
+insert into [Person] (ID, ClassID, [Name], [AssociatedCustomerCompanyID], [AssociatedCustomerCompanyIDClassID]) 
+    values ('{DC50A962-EC95-4cf6-A4E7-A6608EAA23C8}', 'Person', 'Gisela Maier', null, null)
 
-insert into [Person] (ID, ClassID, [Name]) 
-    values ('{10F36130-E97B-4078-A535-B79E07F16AB2}', 'Person', 'Margarethe Gans')
+insert into [Person] (ID, ClassID, [Name], [AssociatedCustomerCompanyID], [AssociatedCustomerCompanyIDClassID]) 
+    values ('{10F36130-E97B-4078-A535-B79E07F16AB2}', 'Person', 'Margarethe Gans', null, null)
 
-insert into [Person] (ID, ClassID, [Name]) 
-    values ('{45C6730A-DE0B-40d2-9D35-C1E56B8A89D6}', 'Person', 'Meister Eder')
+insert into [Person] (ID, ClassID, [Name], [AssociatedCustomerCompanyID], [AssociatedCustomerCompanyIDClassID]) 
+    values ('{45C6730A-DE0B-40d2-9D35-C1E56B8A89D6}', 'Person', 'Meister Eder', null, null)
 
-insert into [Person] (ID, ClassID, [Name]) 
-    values ('{70C91528-4DB4-4e6a-B3F8-70C53A728DCC}', 'Person', 'Ulrike Giftzahn')
+insert into [Person] (ID, ClassID, [Name], [AssociatedCustomerCompanyID], [AssociatedCustomerCompanyIDClassID]) 
+    values ('{70C91528-4DB4-4e6a-B3F8-70C53A728DCC}', 'Person', 'Ulrike Giftzahn', null, null)
 
-insert into [Person] (ID, ClassID, [Name]) 
-    values ('{19C04A28-094F-4d1f-9705-E2FC7107A68F}', 'Person', 'Pippi Langstrumpf')
+insert into [Person] (ID, ClassID, [Name], [AssociatedCustomerCompanyID], [AssociatedCustomerCompanyIDClassID]) 
+    values ('{19C04A28-094F-4d1f-9705-E2FC7107A68F}', 'Person', 'Pippi Langstrumpf', null, null)
 
-insert into [Person] (ID, ClassID, [Name]) 
-    values ('{E4F6F59F-80F7-4e41-A004-1A5BA0F68F78}', 'Person', 'Hans Dampf')
+insert into [Person] (ID, ClassID, [Name], [AssociatedCustomerCompanyID], [AssociatedCustomerCompanyIDClassID]) 
+    values ('{E4F6F59F-80F7-4e41-A004-1A5BA0F68F78}', 'Person', 'Hans Dampf', null, null)
 
 -- Note: This does not conform to mapping, because it is a contact person in two organizations.
-insert into [Person] (ID, ClassID, [Name]) 
-    values ('{911957D1-483C-4a8b-AA53-FF07464C58F9}', 'Person', 'Contact person in two organizations')
+insert into [Person] (ID, ClassID, [Name], [AssociatedCustomerCompanyID], [AssociatedCustomerCompanyIDClassID]) 
+    values ('{911957D1-483C-4a8b-AA53-FF07464C58F9}', 'Person', 'Contact person in two organizations', null, null)
 
 
 -- IndustrialSector

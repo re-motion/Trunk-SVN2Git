@@ -457,6 +457,8 @@ CREATE TABLE [Person] (
   [Timestamp] rowversion NOT NULL,
   
   [Name] varchar (100) NOT NULL,
+  [AssociatedCustomerCompanyID] uniqueidentifier NULL,
+  [AssociatedCustomerCompanyIDClassID] varchar (100) NULL,
   
   CONSTRAINT [PK_Person] PRIMARY KEY CLUSTERED ([ID])
 ) 
@@ -1553,9 +1555,9 @@ CREATE VIEW [dbo].[OrderTicketView] ([ID], [ClassID], [Timestamp], [FileName], [
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[PersonView] ([ID], [ClassID], [Timestamp], [Name])
+CREATE VIEW [dbo].[PersonView] ([ID], [ClassID], [Timestamp], [Name], [AssociatedCustomerCompanyID], [AssociatedCustomerCompanyIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Name]
+  SELECT [ID], [ClassID], [Timestamp], [Name], [AssociatedCustomerCompanyID], [AssociatedCustomerCompanyIDClassID]
     FROM [dbo].[Person]
     WHERE [ClassID] IN ('Person')
   WITH CHECK OPTION

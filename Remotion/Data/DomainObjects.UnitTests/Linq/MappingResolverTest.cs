@@ -458,12 +458,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     {
       var sqlEntityExpression = (SqlEntityExpression) CreateFakeEntityExpression (typeof (Company));
 
-      var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Customer));
+      var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Distributor));
 
       var idExpression = Expression.MakeMemberAccess (sqlEntityExpression, typeof (DomainObject).GetProperty ("ID"));
       var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty ("ClassID"));
       var expectedExpression = new SqlInExpression (
-          classIDExpression, new SqlCollectionExpression (typeof (string[]), new Expression[] { new SqlLiteralExpression ("Customer") }));
+          classIDExpression, new SqlCollectionExpression (typeof (string[]), new Expression[] { new SqlLiteralExpression ("Distributor") }));
       
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }

@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Inte
     {
       _testHelper.ExpectExecuteReader (
           CommandBehavior.SingleResult,
-          "SELECT [ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [CustomerSince], [CustomerType], [ContactPersonID], [NumberOfShops], [SupplierQuality] "
+          "SELECT [ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [ContactPersonID], [NumberOfShops], [SupplierQuality], [CustomerSince], [CustomerType] "
           + "FROM [Company] WHERE [IndustrialSectorID] = @IndustrialSectorID;",
           Tuple.Create ("@IndustrialSectorID", DbType.Guid, DomainObjectIDs.IndustrialSector1.Value));
       _testHelper.Replay();
@@ -130,7 +130,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Inte
     {
       _testHelper.ExpectExecuteReader (
           CommandBehavior.SingleResult,
-          "SELECT [ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [CustomerSince], [CustomerType], [ContactPersonID], [NumberOfShops], [SupplierQuality] "
+          "SELECT [ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [ContactPersonID], [NumberOfShops], [SupplierQuality], [CustomerSince], [CustomerType] "
           + "FROM [Company] WHERE [IndustrialSectorID] = @IndustrialSectorID ORDER BY [CustomerSince] DESC, [Name] ASC;",
           Tuple.Create ("@IndustrialSectorID", DbType.Guid, DomainObjectIDs.IndustrialSector1.Value));
       _testHelper.Replay();

@@ -58,15 +58,10 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       if (relationEndPointDefinition.Cardinality != CardinalityType.Many || relationEndPointDefinition.IsAnonymous)
         throw new ArgumentException ("Only collection-valued relations can be handled by this registration agent.", "relationEndPointDefinition");
 
-      // TODO: RM-5924 - Eager Fetching down casts
-      CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
-
       var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
       var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition);
 
-      //CheckOriginatingObjects (
-      //    relationEndPointDefinition,
-      //    originatingObjects.Where (o => !o.IsNull && groupedRelatedObjects.Contains (o.ObjectID)));
+      CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
 
       RegisterEndPointData (relationEndPointDefinition, originatingObjects, groupedRelatedObjects);
     }
@@ -87,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       var relatedObjectsByOriginalObject = groupedRelatedObjects;
       foreach (var originatingObject in originatingObjects)
       {
-        if (!originatingObject.IsNull)
+        if (!originatingObject.IsNull && originatingObject.ObjectID.ClassDefinition.IsRelationEndPoint (relationEndPointDefinition))
         {
           var relationEndPointID = RelationEndPointID.Create (originatingObject.ObjectID, relationEndPointDefinition);
           var relatedObjectData = relatedObjectsByOriginalObject[originatingObject.ObjectID];

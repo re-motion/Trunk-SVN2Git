@@ -37,9 +37,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
     private LoadedObjectDataWithDataSourceData _fetchedOrderData2;
     private LoadedObjectDataWithDataSourceData _fetchedOrderData3;
 
-
-    private IRelationEndPointDefinition _endPointDefinition;
-
     public override void SetUp ()
     {
       base.SetUp ();
@@ -60,14 +57,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
       _fetchedOrderData2 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedOrder2);
       _fetchedOrderData3 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedOrder3);
 
-      _endPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
     }
 
     [Test]
     public void GroupAndRegisterRelatedObjects ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
+
       _agent.GroupAndRegisterRelatedObjects(
-          _endPointDefinition,
+          endPointDefinition,
           new[] { _originatingOrderTicketData1, _originatingOrderTicketData2 },
           new[] { _fetchedOrderData1, _fetchedOrderData2, _fetchedOrderData3 });
     }
@@ -75,16 +73,64 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithNullOriginalObject ()
     {
-      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { new NullLoadedObjectData() }, new LoadedObjectDataWithDataSourceData[0]);
+      var endPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
+
+      _agent.GroupAndRegisterRelatedObjects (endPointDefinition, new[] { new NullLoadedObjectData() }, new LoadedObjectDataWithDataSourceData[0]);
     }
 
     [Test]
     public void GroupAndRegisterRelatedObjects_WithNullRelatedObject ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
+
       _agent.GroupAndRegisterRelatedObjects (
-          _endPointDefinition, 
+          endPointDefinition, 
           new[] { _originatingOrderTicketData1 }, 
           new[] { LoadedObjectDataObjectMother.CreateNullLoadedObjectDataWithDataSourceData() });
+    }
+
+    [Test]
+    public void GroupAndRegisterRelatedObjects_PropertyOnBaseType ()
+    {
+      var endPointDefinition = GetEndPointDefinition (typeof (FileSystemItem), "ParentFolder");
+
+      var originatingFile = DomainObjectMother.CreateFakeObject<File>();
+      var originatingFileData = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingFile);
+
+      var fetchedParentFolder = DomainObjectMother.CreateFakeObject<Folder>();
+      var fetchedParentFolderData = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedParentFolder);
+
+      originatingFile.InternalDataContainer.SetValue (GetPropertyDefinition (typeof (FileSystemItem), "ParentFolder"), fetchedParentFolder.ID);
+
+      _agent.GroupAndRegisterRelatedObjects (
+          endPointDefinition,
+          new[] { originatingFileData },
+          new[] { fetchedParentFolderData });
+    }
+
+    [Test]
+    public void GroupAndRegisterRelatedObjects_PropertyOnDerivedType ()
+    {
+      var endPointDefinition = GetEndPointDefinition (typeof (Partner), "ContactPerson");
+
+      var originatingCompany = DomainObjectMother.CreateFakeObject<Company>();
+      var originatingCompanyData = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingCompany);
+
+      var originatingPartner = DomainObjectMother.CreateFakeObject<Partner>();
+      var originatingPartnerData = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingPartner);
+      
+      var originatingCustomer = DomainObjectMother.CreateFakeObject<Customer>();
+      var originatingCustomerData = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingCustomer);
+
+      var fetchedPerson = DomainObjectMother.CreateFakeObject<Person>();
+      var fetchedPersonData = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedPerson);
+
+      originatingPartner.InternalDataContainer.SetValue (GetPropertyDefinition (typeof (Partner), "ContactPerson"), fetchedPerson.ID);
+
+      _agent.GroupAndRegisterRelatedObjects (
+          endPointDefinition,
+          new[] { originatingCompanyData, originatingPartnerData, originatingCustomerData },
+          new[] { fetchedPersonData });
     }
 
     [Test]
@@ -94,8 +140,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
         + "has class 'Order'.")]
     public void GroupAndRegisterRelatedObjects_InvalidOriginalObject ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
+
       _agent.GroupAndRegisterRelatedObjects (
-          _endPointDefinition,
+          endPointDefinition,
           new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (DomainObjectIDs.Order1) },
           new LoadedObjectDataWithDataSourceData[0]);
     }
@@ -107,8 +155,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
         + "'Remotion.Data.DomainObjects.UnitTests.TestDomain.Order' was expected.")]
     public void GroupAndRegisterRelatedObjects_InvalidRelatedObject ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
+
       _agent.GroupAndRegisterRelatedObjects (
-          _endPointDefinition,
+          endPointDefinition,
           new[] { _originatingOrderTicketData1 }, 
           new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (DomainObjectIDs.OrderTicket2) });
     }

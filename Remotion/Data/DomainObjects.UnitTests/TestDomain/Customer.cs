@@ -54,6 +54,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.TestDomain
     [DBBidirectionalRelation ("Customer", SortExpression = "OrderNumber asc")]
     public abstract OrderCollection Orders { get; set;  }
 
+    [DBBidirectionalRelation ("AssociatedCustomerCompany", ContainsForeignKey = false)]
+    public abstract Person ContactPerson { get; set; }
+
     public void OnDeserialization (object sender)
     {
       OnDeserializationCalled = true;

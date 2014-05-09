@@ -52,8 +52,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
     private LoadedObjectDataWithDataSourceData _fetchedComputerData2;
     private LoadedObjectDataWithDataSourceData _fetchedComputerData3;
 
-    private IRelationEndPointDefinition _endPointDefinition;
-
     public override void SetUp ()
     {
       base.SetUp ();
@@ -76,23 +74,23 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
       _fetchedComputerData1 = CreateFetchedComputerData (_fetchedComputer1, _originatingEmployee1.ID);
       _fetchedComputerData2 = CreateFetchedComputerData (_fetchedComputer2, _originatingEmployee2.ID);
       _fetchedComputerData3 = CreateFetchedComputerData (_fetchedComputer3, DomainObjectIDs.Employee3);
-
-      _endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
     }
 
     [Test]
     public void GroupAndRegisterRelatedObjects ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
+
       _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer1.ID)).Return (_fetchedComputerData1.DataSourceData);
       _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer2.ID)).Return (_fetchedComputerData2.DataSourceData);
       _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer3.ID)).Return (_fetchedComputerData3.DataSourceData);
 
       var endPointMock1 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingEmployee1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock1, false);
+      ExpectGetEndPoint(_originatingEmployee1.ID, endPointDefinition, _virtualEndPointProviderMock, endPointMock1, false);
       endPointMock1.Expect (mock => mock.MarkDataComplete (_fetchedComputer1));
 
       var endPointMock2 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint (_originatingEmployee2.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock2, false);
+      ExpectGetEndPoint (_originatingEmployee2.ID, endPointDefinition, _virtualEndPointProviderMock, endPointMock2, false);
       endPointMock2.Expect (mock => mock.MarkDataComplete (_fetchedComputer2));
 
       _virtualEndPointProviderMock.Replay ();
@@ -100,7 +98,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
       endPointMock2.Replay ();
 
       _agent.GroupAndRegisterRelatedObjects(
-          _endPointDefinition,
+          endPointDefinition,
           new[] { _originatingEmployeeData1, _originatingEmployeeData2 },
           new[] { _fetchedComputerData1, _fetchedComputerData2, _fetchedComputerData3 });
 
@@ -112,14 +110,16 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithOriginatingWithoutRelated ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
+
       var endPointMock1 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint (_originatingEmployee1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock1, false);
+      ExpectGetEndPoint (_originatingEmployee1.ID, endPointDefinition, _virtualEndPointProviderMock, endPointMock1, false);
       endPointMock1.Expect (mock => mock.MarkDataComplete (null));
 
       _virtualEndPointProviderMock.Replay ();
       endPointMock1.Replay ();
 
-      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _originatingEmployeeData1 }, new LoadedObjectDataWithDataSourceData[0]);
+      _agent.GroupAndRegisterRelatedObjects (endPointDefinition, new[] { _originatingEmployeeData1 }, new LoadedObjectDataWithDataSourceData[0]);
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
       endPointMock1.VerifyAllExpectations ();
@@ -128,10 +128,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithNullOriginalObject ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
+
       _virtualEndPointProviderMock.Replay ();
 
       _agent.GroupAndRegisterRelatedObjects (
-          _endPointDefinition,
+          endPointDefinition,
           new[] { new NullLoadedObjectData() },
           new LoadedObjectDataWithDataSourceData[0]);
 
@@ -141,22 +143,90 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithNullRelatedObject_AndNonMandatoryRelation ()
     {
-      Assert.That (_endPointDefinition.IsMandatory, Is.False);
+      var endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
+
+      Assert.That (endPointDefinition.IsMandatory, Is.False);
 
       var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingEmployee1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock, false);
+      ExpectGetEndPoint(_originatingEmployee1.ID, endPointDefinition, _virtualEndPointProviderMock, endPointMock, false);
       endPointMock.Expect (mock => mock.MarkDataComplete (null));
 
       _virtualEndPointProviderMock.Replay ();
       endPointMock.Replay();
 
       _agent.GroupAndRegisterRelatedObjects (
-          _endPointDefinition, 
+          endPointDefinition, 
           new[] { _originatingEmployeeData1 }, 
           new[] { LoadedObjectDataObjectMother.CreateNullLoadedObjectDataWithDataSourceData() });
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
       endPointMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void GroupAndRegisterRelatedObjects_PropertyOnBaseType ()
+    {
+      var endPointDefinition = GetEndPointDefinition (typeof (Company), "Ceo");
+
+      var originatingSupplier = DomainObjectMother.CreateFakeObject<Supplier>();
+      var originatingSupplierData = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingSupplier);
+
+      var fetchedCeo = DomainObjectMother.CreateFakeObject<Ceo>();
+      var fetchedCeoData = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedCeo);
+      fetchedCeoData.DataSourceData.SetValue (GetPropertyDefinition (typeof (Ceo), "Company"), originatingSupplier.ID);
+
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (fetchedCeo.ID)).Return (fetchedCeoData.DataSourceData);
+
+      var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
+      ExpectGetEndPoint(originatingSupplier.ID, endPointDefinition, _virtualEndPointProviderMock, endPointMock, false);
+      endPointMock.Expect (mock => mock.MarkDataComplete (fetchedCeo));
+
+      _virtualEndPointProviderMock.Replay ();
+      endPointMock.Replay ();
+
+      _agent.GroupAndRegisterRelatedObjects(
+          endPointDefinition,
+          new[] { originatingSupplierData },
+          new[] { fetchedCeoData });
+
+      _virtualEndPointProviderMock.VerifyAllExpectations ();
+      endPointMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void GroupAndRegisterRelatedObjects_PropertyOnDerivedType ()
+    {
+      var endPointDefinition = GetEndPointDefinition (typeof (Customer), "ContactPerson");
+
+      var originatingCustomer = DomainObjectMother.CreateFakeObject<Customer>();
+      var originatingCustomerData = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingCustomer);
+
+      var originatingCompany = DomainObjectMother.CreateFakeObject<Company>();
+      var originatingCompanyData = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingCompany);
+      
+      var originatingSupplier = DomainObjectMother.CreateFakeObject<Supplier>();
+      var originatingSupplierData = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingSupplier);
+
+      var fetchedPerson = DomainObjectMother.CreateFakeObject<Person>();
+      var fetchedPersonData = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedPerson);
+      fetchedPersonData.DataSourceData.SetValue (GetPropertyDefinition (typeof (Person), "AssociatedCustomerCompany"), originatingCustomer.ID);
+
+      _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (fetchedPerson.ID)).Return (fetchedPersonData.DataSourceData);
+
+      var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
+      ExpectGetEndPoint(originatingCustomer.ID, endPointDefinition, _virtualEndPointProviderMock, endPointMock, false);
+      endPointMock.Expect (mock => mock.MarkDataComplete (fetchedPerson));
+
+      _virtualEndPointProviderMock.Replay ();
+      endPointMock.Replay ();
+
+      _agent.GroupAndRegisterRelatedObjects(
+          endPointDefinition,
+          new[] { originatingCustomerData, originatingCompanyData, originatingSupplierData },
+          new[] { fetchedPersonData });
+
+      _virtualEndPointProviderMock.VerifyAllExpectations ();
+      endPointMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -178,17 +248,19 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithRelatedObjectPointingToNull ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
+
       var fetchedComputerDataPointingToNull = CreateFetchedComputerData (_fetchedComputer1, null);
       _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (fetchedComputerDataPointingToNull.LoadedObjectData.ObjectID)).Return (fetchedComputerDataPointingToNull.DataSourceData);
 
       var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingEmployee1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock, false);
+      ExpectGetEndPoint(_originatingEmployee1.ID, endPointDefinition, _virtualEndPointProviderMock, endPointMock, false);
       endPointMock.Expect (mock => mock.MarkDataComplete (null));
 
       _virtualEndPointProviderMock.Replay ();
       endPointMock.Replay();
 
-      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _originatingEmployeeData1 }, new[] { fetchedComputerDataPointingToNull });
+      _agent.GroupAndRegisterRelatedObjects (endPointDefinition, new[] { _originatingEmployeeData1 }, new[] { fetchedComputerDataPointingToNull });
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
       endPointMock.VerifyAllExpectations();
@@ -197,15 +269,17 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithEndPointAlreadyComplete ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
+
       _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer1.ID)).Return (_fetchedComputerData1.DataSourceData);
       _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer2.ID)).Return (_fetchedComputerData2.DataSourceData);
       _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer3.ID)).Return (_fetchedComputerData3.DataSourceData);
 
       var endPointMock1 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingEmployee1.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock1, true);
+      ExpectGetEndPoint(_originatingEmployee1.ID, endPointDefinition, _virtualEndPointProviderMock, endPointMock1, true);
 
       var endPointMock2 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint (_originatingEmployee2.ID, _endPointDefinition, _virtualEndPointProviderMock, endPointMock2, false);
+      ExpectGetEndPoint (_originatingEmployee2.ID, endPointDefinition, _virtualEndPointProviderMock, endPointMock2, false);
       endPointMock2.Expect (mock => mock.MarkDataComplete (_fetchedComputer2));
 
       _virtualEndPointProviderMock.Replay ();
@@ -213,7 +287,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
       endPointMock2.Replay ();
 
       _agent.GroupAndRegisterRelatedObjects (
-          _endPointDefinition,
+          endPointDefinition,
           new[] { _originatingEmployeeData1, _originatingEmployeeData2 },
           new[] { _fetchedComputerData1, _fetchedComputerData2 });
 
@@ -225,6 +299,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithInvalidDuplicateForeignKey ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
+
       var fetchedComputerWithDuplicateKey = CreateFetchedComputerData (_fetchedComputer2, _originatingEmployee1.ID);
       _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedComputer1.ID)).Return (_fetchedComputerData1.DataSourceData);
       _loadedDataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (fetchedComputerWithDuplicateKey.LoadedObjectData.ObjectID)).Return (fetchedComputerWithDuplicateKey.DataSourceData);
@@ -233,7 +309,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
 
       Assert.That (
           () => _agent.GroupAndRegisterRelatedObjects (
-              _endPointDefinition,
+              endPointDefinition,
               new[] { _originatingEmployeeData1 },
               new[] { _fetchedComputerData1, fetchedComputerWithDuplicateKey }),
           Throws.InvalidOperationException.With.Message.EqualTo (
@@ -251,12 +327,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
         + "'Remotion.Data.DomainObjects.UnitTests.TestDomain.Employee.Computer' for domain object "
         + "'Computer|c7c26bf5-871d-48c7-822a-e9b05aac4e5a|System.Guid'. The end-point belongs to an object of class 'Employee' but the domain object "
         + "has class 'Computer'.")]
-    public void GroupAndRegisterRelatedObjects_InvalidOriginalObject ()
+    public void GroupAndRegisterRelatedObjects_OriginatingObjectOfInvalidType ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
+
       _virtualEndPointProviderMock.Replay();
 
       _agent.GroupAndRegisterRelatedObjects (
-          _endPointDefinition, 
+          endPointDefinition, 
           new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (DomainObjectIDs.Computer1) }, 
           new LoadedObjectDataWithDataSourceData[0]);
     }
@@ -268,10 +346,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries.EagerFetching
         + "'Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer' was expected.")]
     public void GroupAndRegisterRelatedObjects_InvalidRelatedObject ()
     {
+      var endPointDefinition = GetEndPointDefinition (typeof (Employee), "Computer");
+
       _virtualEndPointProviderMock.Replay();
 
       _agent.GroupAndRegisterRelatedObjects (
-          _endPointDefinition, 
+          endPointDefinition, 
           new[] { _originatingEmployeeData1 },  
           new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (DomainObjectIDs.Employee2) });
     }

@@ -50,12 +50,10 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
             "relationEndPointDefinition");
       }
 
-      // TODO: RM-5924 - Eager Fetching down casts
-      CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
-      //var originatingObjectsWhereRelationIsNotPartOfSubClassHierharchy =
-      //    originatingObjects.Where (o => o.IsNull || !o.ObjectID.ClassDefinition.IsSameOrBaseClassOf (relationEndPointDefinition.ClassDefinition));
+      // Real end-point data is automatically registered when the DataContainer is registered, so we don't have anything to do here, apart from
+      // checking that the objects fit the end-point definition.
 
-      //CheckOriginatingObjects (relationEndPointDefinition, originatingObjectsWhereRelationIsNotPartOfSubClassHierharchy);
+      CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
       CheckRelatedObjects (relationEndPointDefinition, relatedObjects);
     }
   }

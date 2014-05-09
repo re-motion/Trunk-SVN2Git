@@ -19,27 +19,8 @@ using System;
 namespace Remotion.Data.DomainObjects.UnitTests.TestDomain
 {
   [Serializable]
-  [DBTable]
-  [TestDomain]
   [Instantiable]
-  public abstract class Person : TestDomainBase
+  public abstract class SpecialCustomer : Customer
   {
-    public static Person NewObject ()
-    {
-      return NewObject<Person>();
-    }
-
-    protected Person()
-    {
-    }
-
-    [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public abstract string Name { get; set; }
-
-    [DBBidirectionalRelation ("ContactPerson", ContainsForeignKey = false)]
-    public abstract Partner AssociatedPartnerCompany { get; set; }
-
-    [DBBidirectionalRelation ("ContactPerson", ContainsForeignKey = true)]
-    public abstract Customer AssociatedCustomerCompany { get; set; }
   }
 }
