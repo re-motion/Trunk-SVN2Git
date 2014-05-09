@@ -57,11 +57,17 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
       if (relationEndPointDefinition.Cardinality != CardinalityType.Many || relationEndPointDefinition.IsAnonymous)
         throw new ArgumentException ("Only collection-valued relations can be handled by this registration agent.", "relationEndPointDefinition");
-      
+
+      // TODO: RM-5924 - Eager Fetching down casts
       CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
 
       var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
       var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition);
+
+      //CheckOriginatingObjects (
+      //    relationEndPointDefinition,
+      //    originatingObjects.Where (o => !o.IsNull && groupedRelatedObjects.Contains (o.ObjectID)));
+
       RegisterEndPointData (relationEndPointDefinition, originatingObjects, groupedRelatedObjects);
     }
 
@@ -79,12 +85,12 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
        ILookup<ObjectID, ILoadedObjectData> groupedRelatedObjects)
     {
       var relatedObjectsByOriginalObject = groupedRelatedObjects;
-      foreach (var originalObject in originatingObjects)
+      foreach (var originatingObject in originatingObjects)
       {
-        if (!originalObject.IsNull)
+        if (!originatingObject.IsNull)
         {
-          var relationEndPointID = RelationEndPointID.Create (originalObject.ObjectID, relationEndPointDefinition);
-          var relatedObjectData = relatedObjectsByOriginalObject[originalObject.ObjectID];
+          var relationEndPointID = RelationEndPointID.Create (originatingObject.ObjectID, relationEndPointDefinition);
+          var relatedObjectData = relatedObjectsByOriginalObject[originatingObject.ObjectID];
           var relatedObjects = relatedObjectData.Select (data => data.GetDomainObjectReference()).ToArray();
 
           if (relationEndPointDefinition.IsMandatory && relatedObjects.Length == 0)

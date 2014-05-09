@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
@@ -29,6 +30,10 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   [Serializable]
   public class FetchedRealObjectRelationDataRegistrationAgent : FetchedRelationDataRegistrationAgentBase
   {
+    public FetchedRealObjectRelationDataRegistrationAgent ()
+    {
+    }
+
     public override void GroupAndRegisterRelatedObjects (
         IRelationEndPointDefinition relationEndPointDefinition, 
         ICollection<ILoadedObjectData> originatingObjects, 
@@ -45,10 +50,12 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
             "relationEndPointDefinition");
       }
 
-      // Real end-point data is automatically registered when the DataContainer is registered, so we don't have anything to do here, apart from
-      // checking that the objects fit the end-point definition.
-
+      // TODO: RM-5924 - Eager Fetching down casts
       CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
+      //var originatingObjectsWhereRelationIsNotPartOfSubClassHierharchy =
+      //    originatingObjects.Where (o => o.IsNull || !o.ObjectID.ClassDefinition.IsSameOrBaseClassOf (relationEndPointDefinition.ClassDefinition));
+
+      //CheckOriginatingObjects (relationEndPointDefinition, originatingObjectsWhereRelationIsNotPartOfSubClassHierharchy);
       CheckRelatedObjects (relationEndPointDefinition, relatedObjects);
     }
   }

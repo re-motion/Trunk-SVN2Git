@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       }
     }
 
-    protected void CheckClassDefinitionOfOriginatingObject (IRelationEndPointDefinition relationEndPointDefinition, ILoadedObjectData originatingObject)
+    private void CheckClassDefinitionOfOriginatingObject (IRelationEndPointDefinition relationEndPointDefinition, ILoadedObjectData originatingObject)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObject", originatingObject);
@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       }
     }
 
-    protected void CheckClassDefinitionOfRelatedObject (
+    private void CheckClassDefinitionOfRelatedObject (
         IRelationEndPointDefinition relationEndPointDefinition,
         IRelationEndPointDefinition oppositeEndPointDefinition, 
         ObjectID relatedObjectID)

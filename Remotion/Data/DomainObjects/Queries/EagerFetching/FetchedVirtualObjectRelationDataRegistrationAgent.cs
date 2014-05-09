@@ -64,10 +64,16 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
             "relationEndPointDefinition");
       }
 
+      // TODO: RM-5924 - Eager Fetching down casts
       CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
 
       var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
       var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition);
+
+      //CheckOriginatingObjects (
+      //    relationEndPointDefinition,
+      //    originatingObjects.Where (o => !o.IsNull && groupedRelatedObjects.ContainsKey (o.ObjectID)));
+
       RegisterEndPointData (relationEndPointDefinition, originatingObjects, groupedRelatedObjects);
     }
 
