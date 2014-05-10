@@ -19,7 +19,6 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Success.EagerFetching;
 using Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using EagerFetching_BaseClass = Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Success.EagerFetching.BaseClass;
