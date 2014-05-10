@@ -254,6 +254,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Linq\TestDomain\Success\EagerFetching\BaseClass.cs" />
+    <Compile Include="Linq\TestDomain\Success\EagerFetching\DerivedClass1.cs" />
+    <Compile Include="Linq\TestDomain\Success\EagerFetching\DerivedClass2.cs" />
+    <Compile Include="Linq\TestDomain\Success\EagerFetching\RelationTarget.cs" />
     <Compile Include="Linq\TestDomain\Success\SortExpressionForPropertyOnDerivedType\DerivedRelationTargetOneSide.cs" />
     <Compile Include="Linq\TestDomain\Success\SortExpressionForPropertyOnDerivedType\RelationTargetManySide.cs" />
     <Compile Include="Linq\TestDomain\Success\SortExpressionForPropertyOnDerivedType\RelationTargetOneSide.cs" />

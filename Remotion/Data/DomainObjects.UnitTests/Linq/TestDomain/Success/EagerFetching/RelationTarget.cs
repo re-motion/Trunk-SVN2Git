@@ -14,14 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Linq.TestDomain.Success.EagerFetching
 {
-  [DBTable ("EagerFetching_BaseClass")]
-  [ClassID ("EagerFetching_BaseClass")]
-  public class BaseClass : DomainObject
+  [DBTable ("EagerFetching_RelationTarget")]
+  [ClassID ("EagerFetching_RelationTarget")]
+  public class RelationTarget : DomainObject
   {
+    [DBBidirectionalRelation ("CollectionPropertyManySide")]
+    public virtual DerivedClass1 CollectionPropertyOneSide { get; set; }
+
+    [DBBidirectionalRelation ("ScalarProperty1VirtualSide", ContainsForeignKey = true)]
+    public virtual DerivedClass1 ScalarProperty1RealSide { get; set; }
+
+    [DBBidirectionalRelation ("ScalarProperty2RealSide")]
+    public virtual DerivedClass2 ScalarProperty2VirtualSide { get; set; }
   }
 }
