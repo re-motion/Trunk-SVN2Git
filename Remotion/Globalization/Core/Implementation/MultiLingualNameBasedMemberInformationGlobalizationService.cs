@@ -16,7 +16,7 @@
 // 
 
 using System;
-using System.Linq;
+using System.Globalization;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -38,9 +38,7 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      var attributes = typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false);
-
-      var multLingualAttribute = attributes.SingleOrDefault();
+      var multLingualAttribute = GetMultiLingualNameAttributeForCurrentUiCulture (typeInformation);
 
       if (multLingualAttribute == null)
       {
@@ -52,6 +50,24 @@ namespace Remotion.Globalization.Implementation
         result = multLingualAttribute.LocalizedName;
         return true;
       }
+    }
+
+    private MultiLingualNameAttribute GetMultiLingualNameAttributeForCurrentUiCulture (ITypeInformation typeInformation)
+    {
+      var attributes = typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false);
+
+      foreach (var multiLingualNameAttribute in attributes)
+      {
+        if (CultureInfo.CurrentUICulture.Equals (multiLingualNameAttribute.Culture))
+          return multiLingualNameAttribute;
+      }
+
+      foreach (var multiLingualNameAttribute in attributes)
+      {
+        if (CultureInfo.InvariantCulture.Equals (multiLingualNameAttribute.Culture))
+          return multiLingualNameAttribute;
+      }
+      return null;
     }
 
     public bool TryGetPropertyDisplayName (

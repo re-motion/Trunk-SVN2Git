@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Globalization.UnitTests.Implementation
@@ -48,6 +49,35 @@ namespace Remotion.Globalization.UnitTests.Implementation
 
       Assert.That (result, Is.True);
       Assert.That (multiLingualName, Is.EqualTo ("The Name"));
+    }
+
+    [Test]
+    public void TryGetTypeDisplayName_WithMultilingualNameAttribute1_ReturnsTheName ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name fr-FR", "fr-FR"),
+                  new MultiLingualNameAttribute ("The Name en-US", "en-US")
+              });
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("it-IT", "en-US"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
+      }
     }
 
     [Test]
