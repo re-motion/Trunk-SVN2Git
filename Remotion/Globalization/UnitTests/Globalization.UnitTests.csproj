@@ -57,6 +57,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="CultureInfoExtensionsTest.cs" />
     <Compile Include="Implementation\CompoundGlobalizationServiceTest.cs" />
     <Compile Include="Implementation\MissingLocalizationExceptionTest.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTest.cs" />
