@@ -17,6 +17,8 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
+using JetBrains.Annotations;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -38,7 +40,7 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      var multLingualAttribute = GetMultiLingualNameAttributeForCurrentUiCulture (typeInformation);
+      var multLingualAttribute = GetLocalizedNameForCurrentUICulture (typeInformation);
 
       if (multLingualAttribute == null)
       {
@@ -47,27 +49,9 @@ namespace Remotion.Globalization.Implementation
       }
       else
       {
-        result = multLingualAttribute.LocalizedName;
+        result = multLingualAttribute;
         return true;
       }
-    }
-
-    private MultiLingualNameAttribute GetMultiLingualNameAttributeForCurrentUiCulture (ITypeInformation typeInformation)
-    {
-      var attributes = typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false);
-
-      foreach (var multiLingualNameAttribute in attributes)
-      {
-        if (CultureInfo.CurrentUICulture.Equals (multiLingualNameAttribute.Culture))
-          return multiLingualNameAttribute;
-      }
-
-      foreach (var multiLingualNameAttribute in attributes)
-      {
-        if (CultureInfo.InvariantCulture.Equals (multiLingualNameAttribute.Culture))
-          return multiLingualNameAttribute;
-      }
-      return null;
     }
 
     public bool TryGetPropertyDisplayName (
@@ -76,6 +60,20 @@ namespace Remotion.Globalization.Implementation
         out string result)
     {
       throw new NotImplementedException();
+    }
+
+    [CanBeNull]
+    private string GetLocalizedNameForCurrentUICulture (ITypeInformation typeInformation)
+    {
+      var attributes = typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false).ToDictionary (a => a.Culture, a => a.LocalizedName);
+
+      foreach (var cultureInfo in CultureInfo.CurrentUICulture.GetCultureHierarchy())
+      {
+        string localizedName;
+        if (attributes.TryGetValue (cultureInfo, out localizedName))
+          return localizedName;
+      }
+      return null;
     }
   }
 }

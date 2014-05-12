@@ -52,7 +52,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultilingualNameAttribute1_ReturnsTheName ()
+    public void TryGetTypeDisplayName_WithMultilingualNameAttributesForDifferentCulturesAndCurrentUICultureMatchesSpecificCulture_ReturnsForTheSpecificCulture ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -63,6 +63,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
               new[]
               {
                   new MultiLingualNameAttribute ("The Name fr-FR", "fr-FR"),
+                  new MultiLingualNameAttribute ("The Name en", "en"),
                   new MultiLingualNameAttribute ("The Name en-US", "en-US")
               });
 
@@ -77,6 +78,36 @@ namespace Remotion.Globalization.UnitTests.Implementation
 
         Assert.That (result, Is.True);
         Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
+      }
+    }
+
+    [Test]
+    public void TryGetTypeDisplayName_WithMultilingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesNeutralCulture_ReturnsForTheNeutralCulture ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name fr-FR", "fr-FR"),
+                  new MultiLingualNameAttribute ("The Name en", "en"),
+                  new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
+              });
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("it-IT", "en-US"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
       }
     }
 
