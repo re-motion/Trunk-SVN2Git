@@ -3219,6 +3219,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (value == null || value.Value < 0)
           _pageSize = null;
+        else if (value == 0)
+          _pageSize = 0;
         else if (_editModeController.IsListEditModeActive)
           throw new InvalidOperationException ("Paging cannot be enabled (i.e. the PageSize cannot be set) when ListEditMode is active.");
         else
