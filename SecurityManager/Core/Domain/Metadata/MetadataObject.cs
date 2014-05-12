@@ -15,11 +15,12 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Remotion.Data.DomainObjects;
+using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.Utilities;
 
@@ -37,7 +38,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNullOrEmpty ("metadataID", metadataID);
 
-      FindMetadataObjectQueryBuilder queryBuilder = new FindMetadataObjectQueryBuilder ();
+      FindMetadataObjectQueryBuilder queryBuilder = new FindMetadataObjectQueryBuilder();
 
       var result = queryBuilder.CreateQuery (metadataID);
 
@@ -70,7 +71,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       get
       {
-        foreach (CultureInfo cultureInfo in GetCultureHierachy (CultureInfo.CurrentUICulture))
+        foreach (CultureInfo cultureInfo in CultureInfo.CurrentUICulture.GetCultureHierarchy())
         {
           LocalizedName localizedName = GetLocalizedName (cultureInfo.Name);
           if (localizedName != null)
@@ -115,20 +116,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       //TODO: Rewrite with test
       _deleteHandler.Delete();
-    }
-
-    private List<CultureInfo> GetCultureHierachy (CultureInfo cultureInfo)
-    {
-      List<CultureInfo> cultureHierarchy = new List<CultureInfo> ();
-
-      cultureHierarchy.Add (cultureInfo);
-      while (cultureInfo != cultureInfo.Parent) // Invariant culture is its own parent
-      {
-        cultureInfo = cultureInfo.Parent;
-        cultureHierarchy.Add (cultureInfo);
-      }
-
-      return cultureHierarchy;
     }
   }
 }
