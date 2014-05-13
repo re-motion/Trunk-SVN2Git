@@ -280,5 +280,48 @@ namespace Remotion.Globalization.UnitTests.Implementation
       Assert.That (multiLingualName, Is.EqualTo ("The Name"));
       typeInformationStub.AssertWasNotCalled (_ => _.BaseType);
     }
+
+    [Test]
+    public void TryGetTypeDisplayName_WithMultipleCalls_UsesCacheToRetrieveTheLocalizedName ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      bool wasCalled = false;
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name", ""),
+                  new MultiLingualNameAttribute ("The Name en-US", "en-US")
+              })
+          .WhenCalled (
+              mi =>
+              {
+                Assert.That (wasCalled, Is.False);
+                wasCalled = true;
+              });
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+      using (new CultureScope ("", "en-US"))
+      {
+        string multiLingualName;
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
+      }
+
+      using (new CultureScope ("", "fr-FR"))
+      {
+        string multiLingualName;
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name"));
+      }
+    }
   }
 }

@@ -16,9 +16,11 @@
 // 
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using JetBrains.Annotations;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -32,6 +34,9 @@ namespace Remotion.Globalization.Implementation
   /// <threadsafety static="true" instance="true"/>
   public class MultiLingualNameBasedMemberInformationGlobalizationService : IMemberInformationGlobalizationService
   {
+    private readonly ConcurrentDictionary<ITypeInformation, Lazy<Dictionary<CultureInfo, string>>> _localizedTypeNamesForTypeInformation =
+        new ConcurrentDictionary<ITypeInformation, Lazy<Dictionary<CultureInfo, string>>>(); 
+
     public MultiLingualNameBasedMemberInformationGlobalizationService ()
     {
     }
@@ -66,21 +71,7 @@ namespace Remotion.Globalization.Implementation
     [CanBeNull]
     private string GetLocalizedNameForCurrentUICulture (ITypeInformation typeInformation)
     {
-      var attributes = new Dictionary<CultureInfo, string>();
-      foreach (var attribute in typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false))
-      {
-        if (attributes.ContainsKey (attribute.Culture))
-        {
-          throw new InvalidOperationException (
-              string.Format (
-                  "The type '{0}' has more than one MultiLingualNameAttribute for the culture '{1}' applied. "
-                  + "The used cultures must be unique within the set of MultiLingualNameAttributes for a type.",
-                  typeInformation.FullName,
-                  attribute.Culture));
-        }
-        attributes.Add (attribute.Culture, attribute.LocalizedName);
-      }
-
+      var attributes = GetMultiLingualNameAttributesFromCache (typeInformation);
       if (!attributes.Any())
         return null;
 
@@ -99,6 +90,36 @@ namespace Remotion.Globalization.Implementation
               + "(i.e. there is no localization defined for the invariant culture).",
               typeInformation.FullName,
               currentUICulture));
+    }
+
+    private Dictionary<CultureInfo, string> GetMultiLingualNameAttributesFromCache (ITypeInformation typeInformation)
+    {
+      var lazyAttributes = _localizedTypeNamesForTypeInformation.GetOrAdd (
+          typeInformation,
+          new Lazy<Dictionary<CultureInfo, string>> (
+              () => GetMultiLingualNameAttributes (typeInformation),
+              LazyThreadSafetyMode.ExecutionAndPublication));
+
+      return lazyAttributes.Value;
+    }
+
+    private Dictionary<CultureInfo, string> GetMultiLingualNameAttributes (ITypeInformation typeInformation)
+    {
+      var attributes = new Dictionary<CultureInfo, string>();
+      foreach (var attribute in typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false))
+      {
+        if (attributes.ContainsKey (attribute.Culture))
+        {
+          throw new InvalidOperationException (
+              string.Format (
+                  "The type '{0}' has more than one MultiLingualNameAttribute for the culture '{1}' applied. "
+                  + "The used cultures must be unique within the set of MultiLingualNameAttributes for a type.",
+                  typeInformation.FullName,
+                  attribute.Culture));
+        }
+        attributes.Add (attribute.Culture, attribute.LocalizedName);
+      }
+      return attributes;
     }
   }
 }
