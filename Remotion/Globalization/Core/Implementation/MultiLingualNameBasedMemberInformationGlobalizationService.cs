@@ -41,18 +41,18 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      var localizedName = GetLocalizedNameForCurrentUICulture (typeInformation);
+      for (var currentTypeInformation = typeInformation; currentTypeInformation != null; currentTypeInformation = currentTypeInformation.BaseType)
+      {
+        var localizedName = GetLocalizedNameForCurrentUICulture (currentTypeInformation);
+        if (localizedName != null)
+        {
+          result = localizedName;
+          return true;
+        }
+      }
 
-      if (localizedName == null)
-      {
-        result = null;
-        return false;
-      }
-      else
-      {
-        result = localizedName;
-        return true;
-      }
+      result = null;
+      return false;
     }
 
     public bool TryGetPropertyDisplayName (
@@ -81,6 +81,9 @@ namespace Remotion.Globalization.Implementation
         attributes.Add (attribute.Culture, attribute.LocalizedName);
       }
 
+      if (!attributes.Any())
+        return null;
+
       var currentUICulture = CultureInfo.CurrentUICulture;
       foreach (var cultureInfo in currentUICulture.GetCultureHierarchy())
       {
@@ -89,17 +92,13 @@ namespace Remotion.Globalization.Implementation
           return localizedName;
       }
 
-      if (attributes.Any())
-      {
-        throw new MissingLocalizationException (
-            string.Format (
-                "The type '{0}' has one or more MultiLingualNameAttributes applied "
-                + "but does not define a localization for the current UI culture '{1}' or a valid fallback culture "
-                + "(i.e. there is no localization defined for the invariant culture).",
-                typeInformation.FullName,
-                currentUICulture));
-      }
-      return null;
+      throw new MissingLocalizationException (
+          string.Format (
+              "The type '{0}' has one or more MultiLingualNameAttributes applied "
+              + "but does not define a localization for the current UI culture '{1}' or a valid fallback culture "
+              + "(i.e. there is no localization defined for the invariant culture).",
+              typeInformation.FullName,
+              currentUICulture));
     }
   }
 }

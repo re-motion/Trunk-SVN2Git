@@ -223,5 +223,38 @@ namespace Remotion.Globalization.UnitTests.Implementation
       Assert.That (result, Is.False);
       Assert.That (multiLingualName, Is.Null);
     }
+
+    [Test]
+    public void TryGetTypeDisplayName_WithMultiLingualNameAttributeOnlyOnBaseClass_ReturnsTheNameForTheBaseClass ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+      Assert.That(typeof(object).BaseType, Is.Null);
+
+      var typeInformationForBaseClassStub = MockRepository.GenerateStub<ITypeInformation>();
+        typeInformationForBaseClassStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name", "")
+              });
+      
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();      
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (new MultiLingualNameAttribute[0]);
+      typeInformationStub.Stub (_ => _.BaseType).Return(typeInformationForBaseClassStub);
+      
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+      string multiLingualName;
+
+      var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+      Assert.That (result, Is.True);
+      Assert.That (multiLingualName, Is.EqualTo ("The Name"));
+    }
+
+
   }
 }
