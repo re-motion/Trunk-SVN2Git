@@ -28,7 +28,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
   public class MultiLingualNameBasedMemberInformationGlobalizationServiceTest
   {
     [Test]
-    public void TryGetTypeDisplayName_WithMultilingualNameAttribute_ReturnsTheName ()
+    public void TryGetTypeDisplayName_WithMultiLingualNameAttribute_ReturnsTheName ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -52,7 +52,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultilingualNameAttributesForDifferentCulturesAndCurrentUICultureMatchesSpecificCulture_ReturnsForTheSpecificCulture ()
+    public void TryGetTypeDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureMatchesSpecificCulture_ReturnsForTheSpecificCulture ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -83,7 +83,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
 
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultilingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesNeutralCulture_ReturnsForTheNeutralCulture ()
+    public void TryGetTypeDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesNeutralCulture_ReturnsForTheNeutralCulture ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -113,7 +113,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultilingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesInvariantCulture_ReturnsForTheInvariantCulture ()
+    public void TryGetTypeDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesInvariantCulture_ReturnsForTheInvariantCulture ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -143,7 +143,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultilingualNameAttributesForDifferentCulturesAndCurrentUICultureDoesNotMatchAnyCulture_ThrowsMissingLocalizationException ()
+    public void TryGetTypeDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureDoesNotMatchAnyCulture_ThrowsMissingLocalizationException ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -172,9 +172,40 @@ namespace Remotion.Globalization.UnitTests.Implementation
                 + "(i.e. there is no localization defined for the invariant culture)."));
       }
     }
+    
+    [Test]
+    public void TryGetTypeDisplayName_WithMultipleMultiLingualNameAttributesForSameCulture_ThrowsInvalidOperationException ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name fr-FR", "fr-FR"),
+                  new MultiLingualNameAttribute ("The Name fr-FR", "fr-FR"),
+                  new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
+              });
+      typeInformationStub.Stub(_ =>_.FullName).Return("The.Full.Type.Name");
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+      using (new CultureScope ("it-IT", "en-US"))
+      {
+        string multiLingualName;
+        
+        Assert.That (
+            () => service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName),
+            Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo (
+                "The type 'The.Full.Type.Name' has more than one MultiLingualNameAttribute for the culture 'fr-FR' applied. "
+                + "The used cultures must be unique within the set of MultiLingualNameAttributes for a type."));
+      }
+    }
 
     [Test]
-    public void TryGetTypeDisplayName_WithoutMultilingualNameAttribute_ReturnsNull ()
+    public void TryGetTypeDisplayName_WithoutMultiLingualNameAttribute_ReturnsNull ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 

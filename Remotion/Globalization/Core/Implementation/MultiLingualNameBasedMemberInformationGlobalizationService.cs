@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using JetBrains.Annotations;
@@ -65,9 +66,22 @@ namespace Remotion.Globalization.Implementation
     [CanBeNull]
     private string GetLocalizedNameForCurrentUICulture (ITypeInformation typeInformation)
     {
-      var attributes = typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false).ToDictionary (a => a.Culture, a => a.LocalizedName);
+      var attributes = new Dictionary<CultureInfo, string>();
+      foreach (var attribute in typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false))
+      {
+        if (attributes.ContainsKey (attribute.Culture))
+        {
+          throw new InvalidOperationException (
+              string.Format (
+                  "The type '{0}' has more than one MultiLingualNameAttribute for the culture '{1}' applied. "
+                  + "The used cultures must be unique within the set of MultiLingualNameAttributes for a type.",
+                  typeInformation.FullName,
+                  attribute.Culture));
+        }
+        attributes.Add (attribute.Culture, attribute.LocalizedName);
+      }
 
-      CultureInfo currentUICulture = CultureInfo.CurrentUICulture;
+      var currentUICulture = CultureInfo.CurrentUICulture;
       foreach (var cultureInfo in currentUICulture.GetCultureHierarchy())
       {
         string localizedName;
