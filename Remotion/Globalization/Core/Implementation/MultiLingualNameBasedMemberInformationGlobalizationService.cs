@@ -40,16 +40,16 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      var multLingualAttribute = GetLocalizedNameForCurrentUICulture (typeInformation);
+      var localizedName = GetLocalizedNameForCurrentUICulture (typeInformation);
 
-      if (multLingualAttribute == null)
+      if (localizedName == null)
       {
         result = null;
         return false;
       }
       else
       {
-        result = multLingualAttribute;
+        result = localizedName;
         return true;
       }
     }
@@ -67,11 +67,23 @@ namespace Remotion.Globalization.Implementation
     {
       var attributes = typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false).ToDictionary (a => a.Culture, a => a.LocalizedName);
 
-      foreach (var cultureInfo in CultureInfo.CurrentUICulture.GetCultureHierarchy())
+      CultureInfo currentUICulture = CultureInfo.CurrentUICulture;
+      foreach (var cultureInfo in currentUICulture.GetCultureHierarchy())
       {
         string localizedName;
         if (attributes.TryGetValue (cultureInfo, out localizedName))
           return localizedName;
+      }
+
+      if (attributes.Any())
+      {
+        throw new MissingLocalizationException (
+            string.Format (
+                "The type '{0}' has one or more MultiLingualNameAttributes applied "
+                + "but does not define a localization for the current UI culture '{1}' or a valid fallback culture "
+                + "(i.e. there is no localization defined for the invariant culture).",
+                typeInformation.FullName,
+                currentUICulture));
       }
       return null;
     }
