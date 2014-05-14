@@ -25,15 +25,15 @@ using Rhino.Mocks;
 namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedMemberInformationGlobalizationServiceTests
 {
   [TestFixture]
-  public class TryGetTypeDisplayName_MultiLingualNameBasedMemberInformationGlobalizationServiceTest
+  public class TryGetPropertyDisplayName_MultiLingualNameBasedMemberInformationGlobalizationServiceTest
   {
     [Test]
     public void Test_WithMultiLingualNameAttribute_ReturnsTheName ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub
           .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
           .Return (
               new[]
@@ -45,7 +45,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
 
       string multiLingualName;
 
-      var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+      var result = service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
 
       Assert.That (result, Is.True);
       Assert.That (multiLingualName, Is.EqualTo ("The Name"));
@@ -56,8 +56,8 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub
           .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
           .Return (
               new[]
@@ -74,7 +74,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
       {
         string multiLingualName;
 
-        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+        var result = service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
 
         Assert.That (result, Is.True);
         Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
@@ -86,8 +86,8 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub
           .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
           .Return (
               new[]
@@ -104,7 +104,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
       {
         string multiLingualName;
 
-        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+        var result = service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
 
         Assert.That (result, Is.True);
         Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
@@ -116,8 +116,8 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub
           .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
           .Return (
               new[]
@@ -134,7 +134,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
       {
         string multiLingualName;
 
-        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+        var result = service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
 
         Assert.That (result, Is.True);
         Assert.That (multiLingualName, Is.EqualTo ("The Name invariant"));
@@ -146,8 +146,8 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub
           .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
           .Return (
               new[]
@@ -155,7 +155,12 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name fr-FR", "fr-FR"),
                   new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
               });
-      typeInformationStub.Stub(_ =>_.FullName).Return("The.Full.Type.Name");
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub.Stub (_ => _.FullName).Return ("The.Full.Type.Name");
+
+      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.Name).Return ("TheProperty");
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -164,21 +169,21 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
         string multiLingualName;
 
         Assert.That (
-            () => service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName),
+            () => service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName),
             Throws.TypeOf<MissingLocalizationException>().With.Message.EqualTo (
-                "The type 'The.Full.Type.Name' has one or more MultiLingualNameAttributes applied "
+                "The property 'TheProperty' declared on type 'The.Full.Type.Name' has one or more MultiLingualNameAttributes applied "
                 + "but does not define a localization for the current UI culture 'en-US' or a valid fallback culture "
                 + "(i.e. there is no localization defined for the invariant culture)."));
       }
     }
-    
+
     [Test]
     public void Test_WithMultipleMultiLingualNameAttributesForSameCulture_ThrowsInvalidOperationException ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub
           .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
           .Return (
               new[]
@@ -187,18 +192,23 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name fr-FR", "fr-FR"),
                   new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
               });
-      typeInformationStub.Stub(_ =>_.FullName).Return("The.Full.Type.Name");
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub.Stub (_ => _.FullName).Return ("The.Full.Type.Name");
+
+      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.Name).Return ("TheProperty");
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
       using (new CultureScope ("it-IT", "en-US"))
       {
         string multiLingualName;
-        
+
         Assert.That (
-            () => service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName),
+            () => service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName),
             Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo (
-                "The type 'The.Full.Type.Name' has more than one MultiLingualNameAttribute for the culture 'fr-FR' applied. "
+                "The property 'TheProperty' declared on type 'The.Full.Type.Name' has more than one MultiLingualNameAttribute for the culture 'fr-FR' applied. "
                 + "The used cultures must be unique within the set of MultiLingualNameAttributes for a type."));
       }
     }
@@ -208,76 +218,20 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub
           .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
           .Return (new MultiLingualNameAttribute[0]);
-      typeInformationStub.Stub (_ => _.BaseType).Return (null);
       Assert.That (typeof (object).BaseType, Is.Null, "Defined behavior for BaseType of Object is to return null");
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
       string multiLingualName;
 
-      var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+      var result = service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
 
       Assert.That (result, Is.False);
       Assert.That (multiLingualName, Is.Null);
-    }
-
-    [Test]
-    public void Test_WithMultiLingualNameAttributeOnlyOnBaseClass_ReturnsTheNameForTheBaseClass ()
-    {
-      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
-
-      var typeInformationForBaseClassStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationForBaseClassStub
-          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
-          .Return (
-              new[]
-              {
-                  new MultiLingualNameAttribute ("The Name", "")
-              });
-
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
-          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
-          .Return (new MultiLingualNameAttribute[0]);
-      typeInformationStub.Stub (_ => _.BaseType).Return (typeInformationForBaseClassStub);
-
-      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
-
-      string multiLingualName;
-
-      var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
-
-      Assert.That (result, Is.True);
-      Assert.That (multiLingualName, Is.EqualTo ("The Name"));
-    }
-
-    [Test]
-    public void Test_WithMultiLingualNameAttributesOnCurrentClass_DoesNotCheckBaseClass ()
-    {
-      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
-
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
-          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
-          .Return (
-              new[]
-              {
-                  new MultiLingualNameAttribute ("The Name", "")
-              });
-
-      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
-
-      string multiLingualName;
-
-      var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
-
-      Assert.That (result, Is.True);
-      Assert.That (multiLingualName, Is.EqualTo ("The Name"));
-      typeInformationStub.AssertWasNotCalled (_ => _.BaseType);
     }
 
     [Test]
@@ -286,8 +240,8 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
       bool wasCalled = false;
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub
           .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
           .Return (
               new[]
@@ -307,7 +261,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
       using (new CultureScope ("", "en-US"))
       {
         string multiLingualName;
-        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+        var result = service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
 
         Assert.That (result, Is.True);
         Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
@@ -316,7 +270,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
       using (new CultureScope ("", "fr-FR"))
       {
         string multiLingualName;
-        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+        var result = service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
 
         Assert.That (result, Is.True);
         Assert.That (multiLingualName, Is.EqualTo ("The Name"));

@@ -45,7 +45,29 @@ namespace Remotion.Globalization.Implementation
       }
     }
 
-    private readonly LocalizedNameForTypeInformationProvider _localizedNameForTypeInformationProvider = new LocalizedNameForTypeInformationProvider();
+    private class LocalizedNameForPropertyInformationProvider : LocalizedNameProviderBase<IPropertyInformation>
+    {
+      protected override MultiLingualNameAttribute[] GetCustomAttributes (IPropertyInformation reflectionObject)
+      {
+        ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
+
+        return reflectionObject.GetCustomAttributes<MultiLingualNameAttribute> (false);
+      }
+
+      protected override string GetContextForExceptionMessage (IPropertyInformation reflectionObject)
+      {
+        ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
+
+        return string.Format ("The property '{0}' declared on type '{1}'", reflectionObject.Name, reflectionObject.DeclaringType.FullName);
+      }
+    }
+
+
+    private readonly LocalizedNameForTypeInformationProvider _localizedNameForTypeInformationProvider
+        = new LocalizedNameForTypeInformationProvider();
+
+    private readonly LocalizedNameForPropertyInformationProvider _localizedNameForPropertyInformationProvider =
+        new LocalizedNameForPropertyInformationProvider();
 
     public MultiLingualNameBasedMemberInformationGlobalizationService ()
     {
@@ -75,7 +97,18 @@ namespace Remotion.Globalization.Implementation
         ITypeInformation typeInformationForResourceResolution,
         out string result)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
+
+      var localizedName = _localizedNameForPropertyInformationProvider.GetLocalizedNameForCurrentUICulture (propertyInformation);
+      if (localizedName != null)
+      {
+        result = localizedName;
+        return true;
+      }
+
+      result = null;
+      return false;
     }
   }
 }
