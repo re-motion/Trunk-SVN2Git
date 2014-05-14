@@ -20,12 +20,19 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using JetBrains.Annotations;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
 {
+  /// <summary>
+  /// Implementation infrastructure for resolving the localized name of the <typeparamref name="TReflectionObject"/> 
+  /// based on the applied <see cref="MultiLingualNameAttribute"/>s.
+  /// </summary>
+  /// <typeparam name="TReflectionObject">An <see cref="IMemberInformation"/> or <see cref="MemberInfo"/> to retrieve the localized name for.</typeparam>
   public abstract class LocalizedNameProviderBase<TReflectionObject>
       where TReflectionObject : class
   {
