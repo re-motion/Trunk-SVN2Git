@@ -22,13 +22,13 @@ using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Globalization.UnitTests.Implementation
+namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedMemberInformationGlobalizationServiceTests
 {
   [TestFixture]
-  public class MultiLingualNameBasedMemberInformationGlobalizationServiceTest
+  public class TryGetTypeDisplayName_MultiLingualNameBasedMemberInformationGlobalizationServiceTest
   {
     [Test]
-    public void TryGetTypeDisplayName_WithMultiLingualNameAttribute_ReturnsTheName ()
+    public void Test_WithMultiLingualNameAttribute_ReturnsTheName ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -52,7 +52,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureMatchesSpecificCulture_ReturnsForTheSpecificCulture ()
+    public void Test_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureMatchesSpecificCulture_ReturnsForTheSpecificCulture ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -83,7 +83,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
 
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesNeutralCulture_ReturnsForTheNeutralCulture ()
+    public void Test_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesNeutralCulture_ReturnsForTheNeutralCulture ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -113,7 +113,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesInvariantCulture_ReturnsForTheInvariantCulture ()
+    public void Test_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesInvariantCulture_ReturnsForTheInvariantCulture ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -143,7 +143,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureDoesNotMatchAnyCulture_ThrowsMissingLocalizationException ()
+    public void Test_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureDoesNotMatchAnyCulture_ThrowsMissingLocalizationException ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -174,7 +174,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
     
     [Test]
-    public void TryGetTypeDisplayName_WithMultipleMultiLingualNameAttributesForSameCulture_ThrowsInvalidOperationException ()
+    public void Test_WithMultipleMultiLingualNameAttributesForSameCulture_ThrowsInvalidOperationException ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -205,7 +205,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithoutMultiLingualNameAttribute_ReturnsNull ()
+    public void Test_WithoutMultiLingualNameAttribute_ReturnsNull ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -227,7 +227,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultiLingualNameAttributeOnlyOnBaseClass_ReturnsTheNameForTheBaseClass ()
+    public void Test_WithMultiLingualNameAttributeOnlyOnBaseClass_ReturnsTheNameForTheBaseClass ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -257,7 +257,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultiLingualNameAttributesOnCurrentClass_DoesNotCheckBaseClass ()
+    public void Test_WithMultiLingualNameAttributesOnCurrentClass_DoesNotCheckBaseClass ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -282,7 +282,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetTypeDisplayName_WithMultipleCalls_UsesCacheToRetrieveTheLocalizedName ()
+    public void Test_WithMultipleCalls_UsesCacheToRetrieveTheLocalizedName ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
