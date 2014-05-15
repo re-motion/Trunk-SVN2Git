@@ -30,6 +30,7 @@ namespace Remotion.Validation.Implementation
   /// </summary>
   /// <seealso cref="ValidationAttributesBasedPropertyRuleReflector"/>
   /// <seealso cref="T:Remotion.Data.DomainObjects.Validation.DomainObjectAttributesBasedValidationPropertyRuleReflector"/>
+  /// <threadsafety static="true" instance="false" />
   public interface IAttributesBasedValidationPropertyRuleReflector
   {
     PropertyInfo ValidatedProperty { get; }

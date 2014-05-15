@@ -24,6 +24,10 @@ using Remotion.Validation.Rules;
 
 namespace Remotion.Validation.Implementation
 {
+  /// <summary>
+  /// TODO RM-5906: doc
+  /// </summary>
+  /// <threadsafety static="true" instance="true" />
   [ApplyProgrammatically]
   public class AttributeBasedComponentValidationCollector : IComponentValidationCollector
   {

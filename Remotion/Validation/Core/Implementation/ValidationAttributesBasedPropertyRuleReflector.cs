@@ -32,6 +32,7 @@ namespace Remotion.Validation.Implementation
   /// <summary>
   /// Creates <see cref="IPropertyValidator"/>s based on attributes derived from <see cref="AddingValidationAttributeBase"/>.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public class ValidationAttributesBasedPropertyRuleReflector : IAttributesBasedValidationPropertyRuleReflector
   {
     private readonly PropertyInfo _property;

@@ -35,9 +35,11 @@ using Remotion.Validation.Rules;
 
 namespace Remotion.Data.DomainObjects.Validation
 {
+  // TODO RM-5906: Refactor to ask the mapping directly: ClassDefintion.ResolveProperty() ?? ClassDefintion.ResolveRelationEndPoint()
   /// <summary>
   /// Create <see cref="IPropertyValidator"/>s based on the <see cref="ILengthConstrainedPropertyAttribute"/> and the <see cref="INullablePropertyAttribute"/>.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public class DomainObjectAttributesBasedValidationPropertyRuleReflector : IAttributesBasedValidationPropertyRuleReflector
   {
     private class FakeDomainObject
