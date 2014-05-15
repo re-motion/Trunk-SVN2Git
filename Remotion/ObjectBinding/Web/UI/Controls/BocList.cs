@@ -156,6 +156,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       Cancel
     }
 
+    private enum ValueMode
+    {
+      Interim,
+      Complete
+    }
+
     // static members
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectReferenceProperty) };
 
@@ -1409,11 +1415,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (interim)
       {
-        _value = value;
+        SetValue (value, ValueMode.Interim);
       }
       else
       {
-        SetValue (value);
+        SetValue (value, ValueMode.Complete);
         IsDirty = false;
         InitializeRowIDProvider();
       }
@@ -2030,7 +2036,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return GetValue(); }
       set
       {
-        SetValue (value);
+        SetValue (value, ValueMode.Complete);
         IsDirty = true;
         InitializeRowIDProvider();
       }
@@ -2050,12 +2056,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <remarks>
     /// <para>Setting the value via this method does not affect the control's dirty state.</para>
     /// </remarks>
-    private void SetValue (IList value)
+    private void SetValue (IList value, ValueMode mode)
     {
       _value = value;
-      _currentPageIndex = 0;
       OnSortedRowsChanged();
-      OnDisplayedRowsChanged();
+
+      if (mode == ValueMode.Complete)
+      {
+        _currentPageIndex = 0;
+        OnDisplayedRowsChanged();
+      }
     }
 
     /// <summary> Gets or sets the current value when <see cref="Value"/> through polymorphism. </summary>
@@ -2435,7 +2445,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
       else
       {
-        SetValue (newValue);
+        SetValue (newValue, ValueMode.Complete);
         IsDirty = true;
 
         var rows = ListUtility.IndicesOf (newValue, businessObjects).ToArray();
@@ -2463,7 +2473,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
       else
       {
-        SetValue (newValue);
+        SetValue (newValue, ValueMode.Complete);
         IsDirty = true;
 
         foreach (var row in rows.OrderByDescending (r => r.Index))
