@@ -44,7 +44,7 @@ namespace Remotion.Globalization.Implementation
     }
 
     [NotNull]
-    protected abstract MultiLingualNameAttribute[] GetCustomAttributes ([NotNull] TReflectionObject reflectionObject);
+    protected abstract IEnumerable<MultiLingualNameAttribute> GetCustomAttributes ([NotNull] TReflectionObject reflectionObject);
 
     [NotNull]
     protected abstract string GetContextForExceptionMessage ([NotNull] TReflectionObject reflectionObject);

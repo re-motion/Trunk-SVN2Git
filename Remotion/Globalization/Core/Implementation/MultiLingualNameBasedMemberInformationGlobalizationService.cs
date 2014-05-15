@@ -16,6 +16,8 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -30,11 +32,17 @@ namespace Remotion.Globalization.Implementation
   {
     private class LocalizedNameForTypeInformationProvider : LocalizedNameProviderBase<ITypeInformation>
     {
-      protected override MultiLingualNameAttribute[] GetCustomAttributes (ITypeInformation reflectionObject)
+      protected override IEnumerable<MultiLingualNameAttribute> GetCustomAttributes (ITypeInformation reflectionObject)
       {
         ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
 
-        return reflectionObject.GetCustomAttributes<MultiLingualNameAttribute> (false);
+        for (var currentTypeInformation = reflectionObject; currentTypeInformation != null; currentTypeInformation = currentTypeInformation.BaseType)
+        {
+          MultiLingualNameAttribute[] attributes = currentTypeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false);
+          if (attributes.Any())
+            return attributes;
+        }
+        return Enumerable.Empty<MultiLingualNameAttribute>();
       }
 
       protected override string GetContextForExceptionMessage (ITypeInformation reflectionObject)
@@ -47,7 +55,7 @@ namespace Remotion.Globalization.Implementation
 
     private class LocalizedNameForPropertyInformationProvider : LocalizedNameProviderBase<IPropertyInformation>
     {
-      protected override MultiLingualNameAttribute[] GetCustomAttributes (IPropertyInformation reflectionObject)
+      protected override IEnumerable<MultiLingualNameAttribute> GetCustomAttributes (IPropertyInformation reflectionObject)
       {
         ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
 
@@ -78,14 +86,11 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      for (var currentTypeInformation = typeInformation; currentTypeInformation != null; currentTypeInformation = currentTypeInformation.BaseType)
+      var localizedName = _localizedNameForTypeInformationProvider.GetLocalizedNameForCurrentUICulture (typeInformation);
+      if (localizedName != null)
       {
-        var localizedName = _localizedNameForTypeInformationProvider.GetLocalizedNameForCurrentUICulture (currentTypeInformation);
-        if (localizedName != null)
-        {
-          result = localizedName;
-          return true;
-        }
+        result = localizedName;
+        return true;
       }
 
       result = null;
