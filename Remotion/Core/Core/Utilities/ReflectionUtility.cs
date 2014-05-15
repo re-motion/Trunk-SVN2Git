@@ -163,6 +163,46 @@ namespace Remotion.Utilities
     }
 
     /// <summary>
+    /// <see cref="PropertyInfo"/> object for the property on the direct or indirect base class in which the property represented by this instance was first declared.
+    /// </summary>
+    /// <returns>A <see cref="PropertyInfo"/> object for the first implementation of this method.</returns>
+    public static PropertyInfo GetBaseDefinition (PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      MethodInfo[] accessors = propertyInfo.GetAccessors (true);
+      if (accessors.Length == 0)
+      {
+        throw new ArgumentException (
+            String.Format ("The property does not define any accessors.\r\n  Type: {0}, property: {1}", propertyInfo.DeclaringType, propertyInfo.Name),
+            "propertyInfo");
+      }
+
+      var originalDeclaringType = GetOriginalDeclaringType (propertyInfo);
+      if (propertyInfo.DeclaringType == originalDeclaringType)
+        return propertyInfo;
+
+      var baseDefinition = originalDeclaringType.GetProperty (
+          propertyInfo.Name,
+          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly,
+          null,
+          propertyInfo.PropertyType,
+          propertyInfo.GetIndexParameters().Select (pi => pi.ParameterType).ToArray(), null);
+
+      if (baseDefinition == null)
+      {
+        throw new MissingMemberException (
+            string.Format (
+                "The property '{0}' declared on derived type '{1}' could not be resolved for base type '{2}'.",
+                propertyInfo.Name,
+                propertyInfo.DeclaringType.FullName,
+                originalDeclaringType.FullName));
+      }
+
+      return baseDefinition;
+    }
+
+    /// <summary>
     /// Returns the <see cref="Type"/> where the property was initially decelared.
     /// </summary>
     /// <param name="propertyInfo">The property whose identifier should be returned. Must not be <see langword="null" />.</param>
@@ -179,15 +219,7 @@ namespace Remotion.Utilities
             "propertyInfo");
       }
 
-      var methodInfo = accessors[0];
-      Type baseDeclaringType = GetOriginalDeclaringType (methodInfo);
-      for (int i = 1; i < accessors.Length; i++)
-      {
-        if (accessors[i].GetBaseDefinition ().DeclaringType.IsSubclassOf (baseDeclaringType))
-          baseDeclaringType = accessors[i].GetBaseDefinition ().DeclaringType;
-      }
-
-      return baseDeclaringType;
+      return GetOriginalDeclaringType (accessors[0]);
     }
 
     /// <summary>
@@ -215,7 +247,7 @@ namespace Remotion.Utilities
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       Type originalDeclaringType = GetOriginalDeclaringType (propertyInfo);
-      return originalDeclaringType == propertyInfo.DeclaringType;
+      return propertyInfo.DeclaringType == originalDeclaringType;
     }
 
 

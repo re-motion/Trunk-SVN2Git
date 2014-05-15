@@ -16,25 +16,29 @@
 // 
 
 using System;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain
 {
-  public abstract class ClassWithDifferentProperties
+  public abstract class DerivedOfDerivedClassWithDifferentProperties : DerivedClassWithDifferentProperties
   {
-    public static int StaticInt32 { get; set; }
-    private static int PrivateStaticInt32 { get; set; }
+    public new static int StaticInt32 { get; set; }
 
-    public abstract int Int32 { get; set; }
-    protected abstract int ProtectedInt32 { get; set; }
-
-    public abstract int this [int p] { get; set; }
-    public abstract int this [string p] { get; set; }
-
-    public virtual string String
+    public override int Int32
     {
-      get { return ""; }
-      set { Dev.Null = value; }
+      get { return 0; }
+      set { }
+    }
+
+    protected override int ProtectedInt32
+    {
+      get { return 0; }
+      set { }
+    }
+
+    public override int this [int p]
+    {
+      get { return 0; }
+      set { }
     }
   }
 }

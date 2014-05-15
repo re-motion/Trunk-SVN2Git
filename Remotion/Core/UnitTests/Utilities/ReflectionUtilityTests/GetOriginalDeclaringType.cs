@@ -65,9 +65,72 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       Assert.That (ReflectionUtility.GetOriginalDeclaringType (propertyInfo), Is.SameAs (typeof (ClassWithDifferentProperties)));
     }
 
+    [Test]
+    public void GetOriginalDeclaringType_ForOverriddenPropertyOnDerivedOfDerivedClass ()
+    {
+      PropertyInfo propertyInfo = GetPropertyInfo<DerivedOfDerivedClassWithDifferentProperties> ("Int32");
+
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (propertyInfo), Is.SameAs (typeof (ClassWithDifferentProperties)));
+    }
+
+
+    [Test]
+    public void GetOriginalDeclaringType_ForMethodOnBaseClass ()
+    {
+      MethodInfo MethodInfo = GetMethodInfo<ClassWithDifferentProperties> ("get_String");
+
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (MethodInfo), Is.SameAs (typeof (ClassWithDifferentProperties)));
+    }
+
+    [Test]
+    public void GetOriginalDeclaringType_ForMethodOnDerivedClass ()
+    {
+      MethodInfo MethodInfo = GetMethodInfo<DerivedClassWithDifferentProperties> ("get_OtherString");
+
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (MethodInfo), Is.SameAs (typeof (DerivedClassWithDifferentProperties)));
+    }
+
+    [Test]
+    public void GetOriginalDeclaringType_ForNewMethodOnDerivedClass ()
+    {
+      MethodInfo MethodInfo = GetMethodInfo<DerivedClassWithDifferentProperties> ("get_String");
+
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (MethodInfo), Is.SameAs (typeof (DerivedClassWithDifferentProperties)));
+    }
+
+    [Test]
+    public void GetOriginalDeclaringType_ForOverriddenMethodOnBaseClass ()
+    {
+      MethodInfo MethodInfo = GetMethodInfo<ClassWithDifferentProperties> ("get_Int32");
+
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (MethodInfo), Is.SameAs (typeof (ClassWithDifferentProperties)));
+    }
+
+    [Test]
+    public void GetOriginalDeclaringType_ForOverriddenMethodOnDerivedClass ()
+    {
+      MethodInfo MethodInfo = GetMethodInfo<DerivedClassWithDifferentProperties> ("get_Int32");
+
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (MethodInfo), Is.SameAs (typeof (ClassWithDifferentProperties)));
+    }
+
+    [Test]
+    public void GetOriginalDeclaringType_ForOverriddenMethodOnDerivedOfDerivedClass ()
+    {
+      MethodInfo MethodInfo = GetMethodInfo<DerivedOfDerivedClassWithDifferentProperties> ("get_Int32");
+
+      Assert.That (ReflectionUtility.GetOriginalDeclaringType (MethodInfo), Is.SameAs (typeof (ClassWithDifferentProperties)));
+    }
+
+
     protected PropertyInfo GetPropertyInfo<T> (string property)
     {
       return typeof (T).GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+    }
+
+    protected MethodInfo GetMethodInfo<T> (string method)
+    {
+      return typeof (T).GetMethod (method, BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
     }
   }
 }

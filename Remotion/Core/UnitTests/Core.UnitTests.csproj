@@ -576,9 +576,11 @@
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericInterface.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericClass.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericInterface.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\GetBaseDefinition.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\IsOriginalDeclaration.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\ClassWithDifferentProperties.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedClosedGenericClassWithDifferentProperties.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedOfDerivedClassWithDifferentProperties.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\GenericClassWithDifferentProperties.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedOpenGenericClassWithDifferentProperties.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedClassWithDifferentProperties.cs" />
