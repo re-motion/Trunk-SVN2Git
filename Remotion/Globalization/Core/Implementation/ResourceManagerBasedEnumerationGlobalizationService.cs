@@ -28,9 +28,12 @@ namespace Remotion.Globalization.Implementation
   /// Retrieves the human-readable localized representation of enumeration objects.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
-  [ImplementationFor (typeof (IEnumerationGlobalizationService), Lifetime = LifetimeKind.Singleton)]
+  [ImplementationFor (typeof (IEnumerationGlobalizationService), Lifetime = LifetimeKind.Singleton, 
+      Position = Position, RegistrationType = RegistrationType.Multiple)]
   public sealed class ResourceManagerBasedEnumerationGlobalizationService : IEnumerationGlobalizationService
   {
+    public const int Position = MultiLingualNameBasedEnumerationGlobalizationService.Position - 1;
+
     private readonly ICache<Enum, string> _staticEnumValues = CacheFactory.CreateWithLocking<Enum, string>();
     private readonly IGlobalizationService _globalizationService;
     private readonly IMemberInformationNameResolver _memberInformationNameResolver;

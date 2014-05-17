@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -33,17 +32,17 @@ namespace Remotion.Globalization.Implementation
   [ImplementationFor (typeof (IGlobalizationService), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
   public sealed class CompoundGlobalizationService : IGlobalizationService
   {
-    private readonly ReadOnlyCollectionDecorator<IGlobalizationService> _globalizationServices;
+    private readonly IReadOnlyCollection<IGlobalizationService> _globalizationServices;
 
     /// <summary>
-    ///   Combines several <see cref="IGlobalizationService"/>-instances to a single CompoundGlobalizationService.
+    ///   Combines several <see cref="IGlobalizationService"/>-instances to a single <see cref="CompoundGlobalizationService"/>.
     /// </summary>
-    /// <param name="globalizationServices"> The <see cref="IGlobalizationService"/>'s, starting with the least specific.</param>
+    /// <param name="globalizationServices"> The <see cref="IGlobalizationService"/>s, starting with the least specific.</param>
     public CompoundGlobalizationService (IEnumerable<IGlobalizationService> globalizationServices)
     {
       ArgumentUtility.CheckNotNull ("globalizationServices", globalizationServices);
 
-      _globalizationServices = globalizationServices.Reverse().ToArray().AsReadOnly();
+      _globalizationServices = globalizationServices.Reverse().ToArray();
     }
 
     public IEnumerable<IGlobalizationService> GlobalizationServices
