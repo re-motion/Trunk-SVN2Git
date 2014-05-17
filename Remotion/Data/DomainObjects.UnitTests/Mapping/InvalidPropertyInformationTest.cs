@@ -32,6 +32,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     }
 
     [Test]
+    public void GetOriginalDeclaration ()
+    {
+      Assert.That (_propertyInformation.GetOriginalDeclaration (), Is.SameAs (_propertyInformation));
+    }
+
+    [Test]
     public void GetCustomAttribute ()
     {
       Assert.That (_propertyInformation.GetCustomAttribute<ThreadStaticAttribute> (false), Is.Null);

@@ -68,6 +68,15 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     }
 
     [Test]
+    public void GetOriginalDeclaration ()
+    {
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();
+      _implementationPropertyInformationStub.Stub (stub => stub.GetOriginalDeclaration()).Return (propertyInformationStub);
+
+      Assert.That (_interfaceImplementationPropertyInformation.GetOriginalDeclaration(), Is.SameAs (propertyInformationStub));
+    }
+
+    [Test]
     public void GetCustomAttribute ()
     {
       _implementationPropertyInformationStub.Stub (stub => stub.GetCustomAttribute<string> (false)).Return ("Test");

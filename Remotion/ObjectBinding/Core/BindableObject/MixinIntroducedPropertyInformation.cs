@@ -60,6 +60,11 @@ namespace Remotion.ObjectBinding.BindableObject
       return _mixinPropertyInfo.GetOriginalDeclaringType();
     }
 
+    public IPropertyInformation GetOriginalDeclaration ()
+    {
+      return _mixinPropertyInfo.GetOriginalDeclaration();
+    }
+
     public T GetCustomAttribute<T> (bool inherited) where T: class
     {
       return _mixinPropertyInfo.GetCustomAttribute<T>(inherited);

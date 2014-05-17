@@ -57,6 +57,11 @@ namespace Remotion.ObjectBinding.BindableObject
       return _implementationPropertyInfo.GetOriginalDeclaringType();
     }
 
+    public IPropertyInformation GetOriginalDeclaration ()
+    {
+      return _implementationPropertyInfo.GetOriginalDeclaration();
+    }
+
     public T GetCustomAttribute<T> (bool inherited) where T: class
     {
       return _implementationPropertyInfo.GetCustomAttribute<T> (inherited);

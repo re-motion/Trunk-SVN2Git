@@ -80,7 +80,7 @@ namespace Remotion.Reflection
     void SetValue (object instance, object value, object[] indexParameters);
 
     /// <summary>
-    /// Get the <see cref="IMethodInformation"/> of the get method for the current <see cref="PropertyInfo"/>.
+    /// Gets the <see cref="IMethodInformation"/> of the get method for the current <see cref="PropertyInfo"/>.
     /// </summary>
     /// <param name="nonPublic">Indicates whether a non-public accessor method may also be returned.</param>
     /// <returns>
@@ -89,7 +89,7 @@ namespace Remotion.Reflection
     IMethodInformation GetGetMethod (bool nonPublic);
 
     /// <summary>
-    /// Get the <see cref="IMethodInformation"/> of the set method for the current <see cref="PropertyInfo"/>.
+    /// Gets the <see cref="IMethodInformation"/> of the set method for the current <see cref="PropertyInfo"/>.
     /// </summary>
     /// <param name="nonPublic">Indicates whether a non-public accessor method may also be returned.</param>
     /// <returns>
@@ -122,5 +122,12 @@ namespace Remotion.Reflection
     ParameterInfo[] GetIndexParameters ();
 
     IMethodInformation[] GetAccessors (bool nonPublic);
+
+    /// <summary>
+    /// Gets the <see cref="IPropertyInformation"/> corresponding property information from the type returned via
+    /// <see cref="IMemberInformation.GetOriginalDeclaringType()"/>.
+    /// </summary>
+    /// <returns>An instance of <see cref="IPropertyInformation"/>.</returns>
+    IPropertyInformation GetOriginalDeclaration ();
   }
 }

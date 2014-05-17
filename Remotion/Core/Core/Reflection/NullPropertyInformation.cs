@@ -104,6 +104,11 @@ namespace Remotion.Reflection
       return new IMethodInformation[0];
     }
 
+    public IPropertyInformation GetOriginalDeclaration ()
+    {
+      return this;
+    }
+
     public override bool Equals (object obj)
     {
       if (obj == null)

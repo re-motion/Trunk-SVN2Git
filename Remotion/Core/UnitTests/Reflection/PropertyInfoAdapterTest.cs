@@ -388,6 +388,36 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.TypeOf<TypeAdapter>().And.Property ("Type").SameAs (typeof (ClassWithBaseMember)));
     }
 
+
+    [Test]
+    public void GetOriginalDeclaration_WithPropertyIsOriginalDeclaration ()
+    {
+      var propertyInfo = typeof (ClassWithReferenceType<object>).GetProperty ("PropertyWithPrivateSetter");
+      var adapter = PropertyInfoAdapter.Create (propertyInfo);
+
+      var result = adapter.GetOriginalDeclaration();
+
+      Assert.That (result, Is.Not.Null);
+
+      var expectedPropertyInfo = propertyInfo;
+      CheckPropertyInfo (expectedPropertyInfo, (PropertyInfoAdapter) result);
+    }
+
+    [Test]
+    public void GetOriginalDeclaration_WithPropertyIsOverriddenDeclaration ()
+    {
+      var propertyInfo = typeof (DerivedClassWithReferenceType<object>).GetProperty ("PropertyWithPrivateSetter");
+      var adapter = PropertyInfoAdapter.Create (propertyInfo);
+
+      var result = adapter.GetOriginalDeclaration();
+
+      Assert.That (result, Is.Not.Null);
+
+      var expectedPropertyInfo = typeof (ClassWithReferenceType<object>).GetProperty ("PropertyWithPrivateSetter");
+
+      CheckPropertyInfo (expectedPropertyInfo, (PropertyInfoAdapter) result);
+    }
+
     [Test]
     public void GetGetMethod_PublicProperty ()
     {

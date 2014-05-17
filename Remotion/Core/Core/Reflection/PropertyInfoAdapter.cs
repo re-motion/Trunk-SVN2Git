@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -43,13 +44,20 @@ namespace Remotion.Reflection
     }
 
     private readonly PropertyInfo _propertyInfo;
-    private readonly DoubleCheckedLockingContainer<ITypeInformation> _cachedOriginalDeclaringType;
+    private readonly Lazy<ITypeInformation> _cachedOriginalDeclaringType;
+    private readonly Lazy<IPropertyInformation> _cachedOriginalDeclaration;
 
     private PropertyInfoAdapter (PropertyInfo propertyInfo)
     {
       _propertyInfo = propertyInfo;
-      _cachedOriginalDeclaringType = 
-          new DoubleCheckedLockingContainer<ITypeInformation> (() => TypeAdapter.Create (ReflectionUtility.GetOriginalDeclaringType (_propertyInfo)));
+
+      _cachedOriginalDeclaringType = new Lazy<ITypeInformation> (
+          () => TypeAdapter.Create (ReflectionUtility.GetOriginalDeclaringType (_propertyInfo)),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _cachedOriginalDeclaration = new Lazy<IPropertyInformation> (
+          () => PropertyInfoAdapter.Create (ReflectionUtility.GetBaseDefinition (_propertyInfo)),
+          LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     public PropertyInfo PropertyInfo
@@ -75,6 +83,11 @@ namespace Remotion.Reflection
     public ITypeInformation GetOriginalDeclaringType ()
     {
       return _cachedOriginalDeclaringType.Value;
+    }
+
+    public IPropertyInformation GetOriginalDeclaration ()
+    {
+      return _cachedOriginalDeclaration.Value;
     }
 
     public bool CanBeSetFromOutside

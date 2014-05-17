@@ -47,6 +47,13 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void GetOriginalDeclaration ()
+    {
+      Assert.That (_nullPropertyInformation.GetOriginalDeclaration(), Is.SameAs (_nullPropertyInformation));
+    }
+
+
+    [Test]
     public void GetCustomAttribute ()
     {
       Assert.That (_nullPropertyInformation.GetCustomAttribute<ThreadStaticAttribute> (false), Is.Null);
@@ -115,7 +122,6 @@ namespace Remotion.UnitTests.Reflection
     {
       Assert.That (_nullPropertyInformation.FindInterfaceDeclarations (), Is.Null);
     }
-
     [Test]
     public void TestEquals ()
     {

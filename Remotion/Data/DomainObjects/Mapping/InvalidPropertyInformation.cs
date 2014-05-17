@@ -40,6 +40,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       return _declaringType;
     }
 
+    public IPropertyInformation GetOriginalDeclaration ()
+    {
+      return this;
+    }
+
     public T GetCustomAttribute<T> (bool inherited) where T : class
     {
       return null;
