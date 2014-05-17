@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -32,11 +33,11 @@ namespace Remotion.Globalization.Implementation
   {
     private class LocalizedNameForTypeInformationProvider : LocalizedNameProviderBase<ITypeInformation>
     {
-      protected override IEnumerable<MultiLingualNameAttribute> GetCustomAttributes (ITypeInformation reflectionObject)
+      protected override IEnumerable<MultiLingualNameAttribute> GetCustomAttributes (ITypeInformation typeInformation)
       {
-        ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
+        ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
 
-        for (var currentTypeInformation = reflectionObject; currentTypeInformation != null; currentTypeInformation = currentTypeInformation.BaseType)
+        for (var currentTypeInformation = typeInformation; currentTypeInformation != null; currentTypeInformation = currentTypeInformation.BaseType)
         {
           MultiLingualNameAttribute[] attributes = currentTypeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false);
           if (attributes.Any())
@@ -45,28 +46,46 @@ namespace Remotion.Globalization.Implementation
         return Enumerable.Empty<MultiLingualNameAttribute>();
       }
 
-      protected override string GetContextForExceptionMessage (ITypeInformation reflectionObject)
+      protected override string GetContextForExceptionMessage (ITypeInformation typeInformation)
       {
-        ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
+        ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
 
-        return string.Format ("The type '{0}'", reflectionObject.FullName);
+        return string.Format ("The type '{0}'", typeInformation.FullName);
       }
     }
 
     private class LocalizedNameForPropertyInformationProvider : LocalizedNameProviderBase<IPropertyInformation>
     {
-      protected override IEnumerable<MultiLingualNameAttribute> GetCustomAttributes (IPropertyInformation reflectionObject)
+      protected override IEnumerable<MultiLingualNameAttribute> GetCustomAttributes (IPropertyInformation propertyInformation)
       {
-        ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
+        ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-        return reflectionObject.GetCustomAttributes<MultiLingualNameAttribute> (false);
+        var originalDeclaration = propertyInformation.GetOriginalDeclaration();
+        var isOriginalDeclaration = propertyInformation.Equals (originalDeclaration);
+
+        var originallyDeclaredAttributes = originalDeclaration.GetCustomAttributes<MultiLingualNameAttribute> (false);
+
+        if (!isOriginalDeclaration
+            && propertyInformation.GetCustomAttributes<MultiLingualNameAttribute> (true).Length != originallyDeclaredAttributes.Length)
+        {
+          throw new InvalidOperationException (
+              string.Format (
+                  "The property '{0}' overridden on type '{1}' has one or more MultiLingualNameAttributes applied via an property override. "
+                  + "The MultiLingualNameAttributes maybe only be applied to the original declaration of a property.",
+                  propertyInformation.Name,
+                  Maybe.ForValue (propertyInformation.DeclaringType).Select (t => t.FullName).ValueOrDefault ("<undefined>")));
+        }
+        return originallyDeclaredAttributes;
       }
 
-      protected override string GetContextForExceptionMessage (IPropertyInformation reflectionObject)
+      protected override string GetContextForExceptionMessage (IPropertyInformation propertyInformation)
       {
-        ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
+        ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-        return string.Format ("The property '{0}' declared on type '{1}'", reflectionObject.Name, reflectionObject.DeclaringType.FullName);
+        return string.Format (
+            "The property '{0}' declared on type '{1}'",
+            propertyInformation.Name,
+            Maybe.ForValue (propertyInformation.DeclaringType).Select (t => t.FullName).ValueOrDefault ("<undefined>"));
       }
     }
 
