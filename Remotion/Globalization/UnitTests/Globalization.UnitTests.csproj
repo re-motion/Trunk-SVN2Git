@@ -59,6 +59,7 @@
     </Compile>
     <Compile Include="CultureInfoExtensionsTest.cs" />
     <Compile Include="Implementation\CompoundGlobalizationServiceTest.cs" />
+    <Compile Include="Implementation\CompoundMemberInformationGlobalizationServiceTest.cs" />
     <Compile Include="Implementation\MissingLocalizationExceptionTest.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTests\TryGetPropertyDisplayName_MLNBMIGST.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTests\TryGetTypeDisplayName_MLNBMIGST.cs" />
