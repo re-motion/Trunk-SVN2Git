@@ -95,8 +95,8 @@ namespace Remotion.Globalization.Implementation
     }
 
 
-    private readonly LocalizedNameForTypeInformationProvider _localizedNameForTypeInformationProvider
-        = new LocalizedNameForTypeInformationProvider();
+    private readonly LocalizedNameForTypeInformationProvider _localizedNameForTypeInformationProvider =
+        new LocalizedNameForTypeInformationProvider();
 
     private readonly LocalizedNameForPropertyInformationProvider _localizedNameForPropertyInformationProvider =
         new LocalizedNameForPropertyInformationProvider();
@@ -110,15 +110,7 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      var localizedName = _localizedNameForTypeInformationProvider.GetLocalizedNameForCurrentUICulture (typeInformation);
-      if (localizedName != null)
-      {
-        result = localizedName;
-        return true;
-      }
-
-      result = null;
-      return false;
+      return _localizedNameForTypeInformationProvider.TryGetLocalizedNameForCurrentUICulture (typeInformation, out result);
     }
 
     public bool TryGetPropertyDisplayName (
@@ -129,15 +121,7 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      var localizedName = _localizedNameForPropertyInformationProvider.GetLocalizedNameForCurrentUICulture (propertyInformation);
-      if (localizedName != null)
-      {
-        result = localizedName;
-        return true;
-      }
-
-      result = null;
-      return false;
+      return _localizedNameForPropertyInformationProvider.TryGetLocalizedNameForCurrentUICulture (propertyInformation, out result);
     }
   }
 }

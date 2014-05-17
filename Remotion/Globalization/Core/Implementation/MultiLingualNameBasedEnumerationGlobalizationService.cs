@@ -64,15 +64,7 @@ namespace Remotion.Globalization.Implementation
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
-      var localizedName = _localizedNameForEnumerationProvider.GetLocalizedNameForCurrentUICulture (value);
-      if (localizedName != null)
-      {
-        result = localizedName;
-        return true;
-      }
-
-      result = null;
-      return false;
+      return _localizedNameForEnumerationProvider.TryGetLocalizedNameForCurrentUICulture (value, out result);
     }
   }
 }

@@ -50,20 +50,22 @@ namespace Remotion.Globalization.Implementation
     protected abstract string GetContextForExceptionMessage ([NotNull] TReflectionObject reflectionObject);
 
     [CanBeNull]
-    public string GetLocalizedNameForCurrentUICulture ([NotNull] TReflectionObject reflectionObject)
+    public bool TryGetLocalizedNameForCurrentUICulture ([NotNull] TReflectionObject reflectionObject, out string result)
     {
       ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
 
       var attributes = GetMultiLingualNameAttributesFromCache (reflectionObject);
       if (!attributes.Any())
-        return null;
+      {
+        result = null;
+        return false;
+      }
 
       var currentUICulture = CultureInfo.CurrentUICulture;
       foreach (var cultureInfo in currentUICulture.GetCultureHierarchy())
       {
-        string localizedName;
-        if (attributes.TryGetValue (cultureInfo, out localizedName))
-          return localizedName;
+        if (attributes.TryGetValue (cultureInfo, out result))
+          return true;
       }
 
       throw new MissingLocalizationException (
