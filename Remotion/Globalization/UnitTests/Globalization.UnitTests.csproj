@@ -66,6 +66,7 @@
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTests\TryGetPropertyDisplayName_MLNBMIGST.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTests\TryGetTypeDisplayName_MLNBMIGST.cs" />
     <Compile Include="IntegrationTests\CompoundMemberInformationGlobalizationServiceIntegrationTest.cs" />
+    <Compile Include="IntegrationTests\MultiLingualNameBasedEnumerationGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="IntegrationTests\MultiLingualNameBasedMemberInformationGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="MultiLingualNameAttributeTest.cs" />
     <Compile Include="Obsolete\EnumDescriptionTest.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="TestDomain\ClassWithResources.cs" />
     <Compile Include="TestDomain\ClassWithShortResourceIdentifier.cs" />
     <Compile Include="TestDomain\EnumWithDescription.cs" />
+    <Compile Include="TestDomain\EnumWithMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\EnumWithResources.cs" />
     <Compile Include="TestDomain\DerivedClassWithMultiLingualResourcesAttributes.cs" />
     <Compile Include="TestDomain\DerivedClassWithoutMultiLingualResourcesAttributes.cs" />
