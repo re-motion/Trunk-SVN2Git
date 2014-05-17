@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
@@ -29,7 +30,7 @@ namespace Remotion.Globalization.Implementation
   /// delegates to them to retrieve localized name for a specified member.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  //[ImplementationFor (typeof (IGlobalizationService), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
+  [ImplementationFor (typeof (IMemberInformationGlobalizationService), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
   public sealed class CompoundMemberInformationGlobalizationService : IMemberInformationGlobalizationService
   {
     private readonly ReadOnlyCollectionDecorator<IMemberInformationGlobalizationService> _memberInformationGlobalizationServices;

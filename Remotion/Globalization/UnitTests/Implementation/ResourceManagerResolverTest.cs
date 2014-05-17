@@ -72,7 +72,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     [Test]
     public void Resolve_WithTypeDefiningAndInheritingMultipleResources_ReturnsResourceManagersInOrderOfDefinition ()
     {
-      var result = _resolver.Resolve (typeof (InheritedClassWithMultiLingualResourcesAttributes));
+      var result = _resolver.Resolve (typeof (DerivedClassWithMultiLingualResourcesAttributes));
 
       Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
@@ -92,7 +92,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     [Test]
     public void Resolve_WithTypeOnlyInheritingMultipleResources_ReturnsNullResourceManagerForDefinedResourceManager ()
     {
-      var result = _resolver.Resolve (typeof (InheritedClassWithoutMultiLingualResourcesAttributes));
+      var result = _resolver.Resolve (typeof (DerivedClassWithoutMultiLingualResourcesAttributes));
 
       Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;

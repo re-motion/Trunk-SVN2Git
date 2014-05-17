@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
@@ -36,19 +37,27 @@ namespace Remotion.Globalization.UnitTests
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IMemberInformationGlobalizationService> ();
+      var service = _serviceLocator.GetInstance<IMemberInformationGlobalizationService>();
 
-      Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (MemberInformationGlobalizationService)));
+      Assert.That (service, Is.Not.Null);
+      Assert.That (service, Is.TypeOf (typeof (CompoundMemberInformationGlobalizationService)));
+      Assert.That (
+          ((CompoundMemberInformationGlobalizationService) service).MemberInformationGlobalizationServices.Select (s => s.GetType()),
+          Is.EqualTo (
+              new[]
+              {
+                  typeof (MemberInformationGlobalizationService),
+                  typeof (MultiLingualNameBasedMemberInformationGlobalizationService)
+              }));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IMemberInformationGlobalizationService> ();
-      var factory2 = _serviceLocator.GetInstance<IMemberInformationGlobalizationService> ();
+      var service1 = _serviceLocator.GetInstance<IMemberInformationGlobalizationService> ();
+      var service2 = _serviceLocator.GetInstance<IMemberInformationGlobalizationService> ();
 
-      Assert.That (factory1, Is.SameAs (factory2));
+      Assert.That (service1, Is.SameAs (service2));
     }
   }
 }

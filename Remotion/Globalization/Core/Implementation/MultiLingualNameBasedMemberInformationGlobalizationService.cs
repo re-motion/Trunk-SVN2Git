@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
@@ -29,8 +30,12 @@ namespace Remotion.Globalization.Implementation
   /// applied to the respective reflection object.
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
+  [ImplementationFor (typeof (IMemberInformationGlobalizationService), Lifetime = LifetimeKind.Singleton, 
+      Position = Position, RegistrationType = RegistrationType.Multiple)]
   public sealed class MultiLingualNameBasedMemberInformationGlobalizationService : IMemberInformationGlobalizationService
   {
+    public const int Position = 0;
+
     private class LocalizedNameForTypeInformationProvider : LocalizedNameProviderBase<ITypeInformation>
     {
       protected override IEnumerable<MultiLingualNameAttribute> GetCustomAttributes (ITypeInformation typeInformation)

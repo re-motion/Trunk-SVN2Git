@@ -14,19 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 
-namespace Remotion.Globalization.UnitTests.TestDomain.MultiLingualNameBased
+namespace Remotion.Globalization.UnitTests.TestDomain
 {
-  [MultiLingualName ("Invariant Type Name", "")]
-  [MultiLingualName ("de-AT Type Name", "de-AT")]
-  [MultiLingualName ("de Type Name", "de")]
-  public class ClassWithMultiLingualNameAttribute
+  [MultiLingualName ("Invariant Derived Type Name", "")]
+  [MultiLingualName ("de-AT Derived Type Name", "de-AT")]
+  [MultiLingualName ("de Derived Type Name", "de")]
+  public class DerivedClassWithMultiLingualNameAttribute : ClassWithMultiLingualNameAttribute
   {
-    [MultiLingualName ("Invariant Property Name", "")]
-    [MultiLingualName ("de-AT Property Name", "de-AT")]
-    [MultiLingualName ("de Property Name", "de")]
-    public virtual int PropertyWithMultiLingualNameAttribute { get; set; }
+    public override int PropertyWithMultiLingualNameAttribute
+    {
+      get { return base.PropertyWithMultiLingualNameAttribute; }
+      set { base.PropertyWithMultiLingualNameAttribute = value; }
+    }
   }
 }

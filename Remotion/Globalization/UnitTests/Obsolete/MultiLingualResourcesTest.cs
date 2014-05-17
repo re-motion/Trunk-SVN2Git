@@ -50,7 +50,7 @@ namespace Remotion.Globalization.UnitTests.Obsolete
     [Test]
     public void GetResourceManager_WithTypeDefiningAndInheritingMultipleResources_ReturnsResourceManagersInOrderOfDefinition ()
     {
-      var resourceManager = MultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true);
+      var resourceManager = MultiLingualResources.GetResourceManager (typeof (DerivedClassWithMultiLingualResourcesAttributes), true);
 
       Assert.That (resourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) resourceManager;
@@ -62,7 +62,7 @@ namespace Remotion.Globalization.UnitTests.Obsolete
     [Test]
     public void GetResourceManagerWithoutInheritance_WithTypeDefiningAndInheritingMultipleResources_ReturnsResourceManagersInOrderOfDefinition ()
     {
-      var resourceManager = MultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes));
+      var resourceManager = MultiLingualResources.GetResourceManager (typeof (DerivedClassWithMultiLingualResourcesAttributes));
 
       Assert.That (resourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) resourceManager;
@@ -72,7 +72,7 @@ namespace Remotion.Globalization.UnitTests.Obsolete
     [Test]
     public void GetResourceManager_WithTypeDefiningAndInheritingMultipleResources_AndDoNotGetInheritedResources_ReturnsResourceManagersInOrderOfDefinition ()
     {
-      var resourceManager = MultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
+      var resourceManager = MultiLingualResources.GetResourceManager (typeof (DerivedClassWithMultiLingualResourcesAttributes), false);
 
       Assert.That (resourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) resourceManager;
@@ -82,7 +82,7 @@ namespace Remotion.Globalization.UnitTests.Obsolete
     [Test]
     public void GetResourceManager_TypeWithOnlyInheritedResources_AndDoNotGetInheritedResources_DoesNotThrowResourceExceptionBecauseOfBug ()
     {
-      var resourceManager = MultiLingualResources.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false);
+      var resourceManager = MultiLingualResources.GetResourceManager (typeof (DerivedClassWithoutMultiLingualResourcesAttributes), false);
 
       Assert.That (resourceManager.IsNull, Is.False);
       Assert.That (resourceManager, Is.InstanceOf<ResourceManagerSet>());

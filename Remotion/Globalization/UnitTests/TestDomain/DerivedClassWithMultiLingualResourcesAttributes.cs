@@ -21,7 +21,7 @@ namespace Remotion.Globalization.UnitTests.TestDomain
 {
   [MultiLingualResources ("Four")]
   [MultiLingualResources ("Five")]
-  public class InheritedClassWithMultiLingualResourcesAttributes : ClassWithMultiLingualResourcesAttributes
+  public class DerivedClassWithMultiLingualResourcesAttributes : ClassWithMultiLingualResourcesAttributes
   {
   }
 }

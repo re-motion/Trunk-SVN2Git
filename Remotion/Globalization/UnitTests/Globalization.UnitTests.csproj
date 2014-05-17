@@ -92,11 +92,11 @@
     <Compile Include="TestDomain\ClassWithShortResourceIdentifier.cs" />
     <Compile Include="TestDomain\EnumWithDescription.cs" />
     <Compile Include="TestDomain\EnumWithResources.cs" />
-    <Compile Include="TestDomain\InheritedClassWithMultiLingualResourcesAttributes.cs" />
-    <Compile Include="TestDomain\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
-    <Compile Include="TestDomain\MultiLingualNameBased\ClassWithMultiLingualNameAttribute.cs" />
-    <Compile Include="TestDomain\MultiLingualNameBased\ClassWithoutMultiLingualNameAttribute.cs" />
-    <Compile Include="TestDomain\MultiLingualNameBased\DerivedClassWithMultiLingualNameAttribute.cs" />
+    <Compile Include="TestDomain\DerivedClassWithMultiLingualResourcesAttributes.cs" />
+    <Compile Include="TestDomain\DerivedClassWithoutMultiLingualResourcesAttributes.cs" />
+    <Compile Include="TestDomain\ClassWithMultiLingualNameAttribute.cs" />
+    <Compile Include="TestDomain\ClassWithoutMultiLingualNameAttribute.cs" />
+    <Compile Include="TestDomain\DerivedClassWithMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\Resources\ClassWithResources.Designer.cs">
       <DependentUpon>ClassWithResources.resx</DependentUpon>
     </Compile>
