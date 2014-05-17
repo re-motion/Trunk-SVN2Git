@@ -46,7 +46,7 @@ namespace Remotion.Globalization.UnitTests
           Is.EqualTo (
               new[]
               {
-                  typeof (MemberInformationGlobalizationService),
+                  typeof (ResourceManagerBasedMemberInformationGlobalizationService),
                   typeof (MultiLingualNameBasedMemberInformationGlobalizationService)
               }));
     }

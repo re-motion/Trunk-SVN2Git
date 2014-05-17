@@ -25,7 +25,7 @@ namespace Remotion.Globalization
   /// <summary>
   /// Defines an interface for retrieving the human-readable localized representation of the reflection object.
   /// </summary>
-  /// <seealso cref="MemberInformationGlobalizationService"/>
+  /// <seealso cref="ResourceManagerBasedMemberInformationGlobalizationService"/>
   /// <threadsafety static="true" instance="true" />
   public interface IMemberInformationGlobalizationService
   {

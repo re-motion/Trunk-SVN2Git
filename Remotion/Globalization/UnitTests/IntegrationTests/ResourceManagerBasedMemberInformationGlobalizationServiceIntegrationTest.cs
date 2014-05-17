@@ -24,7 +24,7 @@ using Remotion.ServiceLocation;
 namespace Remotion.Globalization.UnitTests.IntegrationTests
 {
   [TestFixture]
-  public class MemberInformationGlobalizationServiceIntegrationTest
+  public class ResourceManagerBasedMemberInformationGlobalizationServiceIntegrationTest
   {
     [Test]
     public void TryGetTypeDisplayName ()

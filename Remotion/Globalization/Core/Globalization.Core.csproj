@@ -72,7 +72,7 @@
     <Compile Include="EnumerationGlobalizationServiceExtensions.cs" />
     <Compile Include="Implementation\GlobalizationService.cs" />
     <Compile Include="Implementation\IResourceManagerResolver.cs" />
-    <Compile Include="Implementation\MemberInformationGlobalizationService.cs" />
+    <Compile Include="Implementation\ResourceManagerBasedMemberInformationGlobalizationService.cs" />
     <Compile Include="MemberInformationGlobalizationServiceExtensions.cs" />
     <Compile Include="Implementation\ResolvedResourceManagerResult.cs" />
     <Compile Include="Implementation\ResourceManagerFactory.cs" />

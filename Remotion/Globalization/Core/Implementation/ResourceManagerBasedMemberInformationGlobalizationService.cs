@@ -35,14 +35,14 @@ namespace Remotion.Globalization.Implementation
   /// <threadsafety static="true" instance="true"/>
   [ImplementationFor (typeof (IMemberInformationGlobalizationService), Lifetime = LifetimeKind.Singleton,
       Position = Position, RegistrationType = RegistrationType.Multiple)]
-  public sealed class MemberInformationGlobalizationService : IMemberInformationGlobalizationService
+  public sealed class ResourceManagerBasedMemberInformationGlobalizationService : IMemberInformationGlobalizationService
   {
     public const int Position = MultiLingualNameBasedMemberInformationGlobalizationService.Position - 1;
 
     private readonly IGlobalizationService _globalizationService;
     private readonly IMemberInformationNameResolver _memberInformationNameResolver;
 
-    public MemberInformationGlobalizationService (
+    public ResourceManagerBasedMemberInformationGlobalizationService (
         IGlobalizationService globalizationService,
         IMemberInformationNameResolver memberInformationNameResolver)
     {

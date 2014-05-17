@@ -24,10 +24,10 @@ using Rhino.Mocks;
 namespace Remotion.Globalization.UnitTests.Implementation
 {
   [TestFixture]
-  public class MemberInformationGlobalizationServiceTest
+  public class ResourceManagerBasedMemberInformationGlobalizationServiceTest
   {
     private IGlobalizationService _globalizationServiceMock;
-    private MemberInformationGlobalizationService _service;
+    private ResourceManagerBasedMemberInformationGlobalizationService _service;
     private ITypeInformation _typeInformationForResourceResolutionStub;
     private ITypeInformation _typeInformationStub;
     private IPropertyInformation _propertyInformationStub;
@@ -64,7 +64,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
       _shortTypeResourceID = "type:TypeName";
       _longTypeResourceID = "type:FakeTypeFullName";
 
-      _service = new MemberInformationGlobalizationService (_globalizationServiceMock, _memberInformationNameResolverStub);
+      _service = new ResourceManagerBasedMemberInformationGlobalizationService (_globalizationServiceMock, _memberInformationNameResolverStub);
     }
 
     [Test]

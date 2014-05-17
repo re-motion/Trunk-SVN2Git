@@ -76,8 +76,8 @@
     <Compile Include="IMemberInformationGlobalizationServiceTest.cs" />
     <Compile Include="Implementation\IResourceManagerResolverTest.cs" />
     <Compile Include="MemberInformationGlobalizationServiceExtensionsTest.cs" />
-    <Compile Include="IntegrationTests\MemberInformationGlobalizationServiceIntegrationTest.cs" />
-    <Compile Include="Implementation\MemberInformationGlobalizationServiceTest.cs" />
+    <Compile Include="IntegrationTests\ResourceManagerBasedMemberInformationGlobalizationServiceIntegrationTest.cs" />
+    <Compile Include="Implementation\ResourceManagerBasedMemberInformationGlobalizationServiceTest.cs" />
     <Compile Include="Obsolete\MultiLingualResourcesTest.cs" />
     <Compile Include="Implementation\ResolvedResourceManagerResultTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
