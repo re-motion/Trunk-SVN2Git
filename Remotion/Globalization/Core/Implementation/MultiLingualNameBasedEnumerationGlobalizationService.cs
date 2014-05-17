@@ -15,7 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.Globalization.Implementation
 {
@@ -30,8 +34,43 @@ namespace Remotion.Globalization.Implementation
   {
     public const int Position = 0;
 
+    private class LocalizedNameForEnumerationProvider : LocalizedNameProviderBase<Enum>
+    {
+      protected override IEnumerable<MultiLingualNameAttribute> GetCustomAttributes (Enum value)
+      {
+        ArgumentUtility.CheckNotNull ("value", value);
+
+        var field = value.GetType().GetField (value.ToString(), BindingFlags.Static | BindingFlags.Public);
+        if (field == null)
+          return Enumerable.Empty<MultiLingualNameAttribute>();
+        return AttributeUtility.GetCustomAttributes<MultiLingualNameAttribute> (field, false);
+      }
+
+      protected override string GetContextForExceptionMessage (Enum value)
+      {
+        ArgumentUtility.CheckNotNull ("value", value);
+
+        return string.Format ("The enum value '{0}' declared on type '{1}'", value, value.GetType());
+      }
+    }
+
+    private readonly LocalizedNameForEnumerationProvider _localizedNameForEnumerationProvider = new LocalizedNameForEnumerationProvider();
+
+    public MultiLingualNameBasedEnumerationGlobalizationService ()
+    {
+    }
+
     public bool TryGetEnumerationValueDisplayName (Enum value, out string result)
     {
+      ArgumentUtility.CheckNotNull ("value", value);
+
+      var localizedName = _localizedNameForEnumerationProvider.GetLocalizedNameForCurrentUICulture (value);
+      if (localizedName != null)
+      {
+        result = localizedName;
+        return true;
+      }
+
       result = null;
       return false;
     }

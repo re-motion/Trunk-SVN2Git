@@ -62,6 +62,7 @@
     <Compile Include="Implementation\CompoundEnumerationGlobalizationServiceTest.cs" />
     <Compile Include="Implementation\CompoundMemberInformationGlobalizationServiceTest.cs" />
     <Compile Include="Implementation\MissingLocalizationExceptionTest.cs" />
+    <Compile Include="Implementation\MultiLingualNameBasedEnumerationGlobalizationServiceTest.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTests\TryGetPropertyDisplayName_MLNBMIGST.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTests\TryGetTypeDisplayName_MLNBMIGST.cs" />
     <Compile Include="IntegrationTests\CompoundMemberInformationGlobalizationServiceIntegrationTest.cs" />
