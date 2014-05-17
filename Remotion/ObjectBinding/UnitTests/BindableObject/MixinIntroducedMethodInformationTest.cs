@@ -167,12 +167,12 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     }
 
     [Test]
-    public void GetBaseDefinition ()
+    public void GetOriginalDeclaration ()
     {
       var objToReturn = MethodInfoAdapter.Create(typeof (string).GetMethod ("get_Length"));
-      _implementationMethodInformationStub.Stub (stub => stub.GetBaseDefinition ()).Return (objToReturn);
+      _implementationMethodInformationStub.Stub (stub => stub.GetOriginalDeclaration ()).Return (objToReturn);
 
-      Assert.That (_mixinIntroducedMethodInformation.GetBaseDefinition (), Is.SameAs (objToReturn));
+      Assert.That (_mixinIntroducedMethodInformation.GetOriginalDeclaration (), Is.SameAs (objToReturn));
     }
 
     [Test]

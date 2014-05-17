@@ -100,9 +100,9 @@ namespace Remotion.ObjectBinding.BindableObject
       return _implementationMethodInfo.GetParameters();
     }
 
-    public IMethodInformation GetBaseDefinition ()
+    public IMethodInformation GetOriginalDeclaration ()
     {
-      return _implementationMethodInfo.GetBaseDefinition();
+      return _implementationMethodInfo.GetOriginalDeclaration();
     }
 
     public IPropertyInformation FindDeclaringProperty ()

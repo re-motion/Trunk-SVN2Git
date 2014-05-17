@@ -487,24 +487,24 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void GetBaseDefinition_NoBaseDefinition ()
+    public void GetOriginalDeclaration_NoBaseDefinition ()
     {
       var method = typeof (object).GetMethod ("GetType");
       var adapter = MethodInfoAdapter.Create(method);
 
-      var result = adapter.GetBaseDefinition();
+      var result = adapter.GetOriginalDeclaration();
 
       Assert.That (result, Is.TypeOf (typeof (MethodInfoAdapter)));
       CheckMethodInfo (method, (MethodInfoAdapter) result);
     }
 
     [Test]
-    public void GetBaseDefinition_WithBaseDefinition ()
+    public void GetOriginalDeclaration_WithBaseDefinition ()
     {
       var method = typeof (DerivedClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_ImplicitInterfaceScalar");
       var adapter = MethodInfoAdapter.Create(method);
 
-      var result = adapter.GetBaseDefinition();
+      var result = adapter.GetOriginalDeclaration();
 
       Assert.That (result, Is.TypeOf (typeof (MethodInfoAdapter)));
 

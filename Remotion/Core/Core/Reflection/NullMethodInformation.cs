@@ -108,7 +108,7 @@ namespace Remotion.Reflection
       return new ParameterInfo[0];
     }
 
-    public IMethodInformation GetBaseDefinition ()
+    public IMethodInformation GetOriginalDeclaration ()
     {
       return this;
     }

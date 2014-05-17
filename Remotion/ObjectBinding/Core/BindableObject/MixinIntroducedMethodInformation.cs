@@ -107,9 +107,9 @@ namespace Remotion.ObjectBinding.BindableObject
       return _mixinMethodInfo.GetParameters();
     }
 
-    public IMethodInformation GetBaseDefinition ()
+    public IMethodInformation GetOriginalDeclaration ()
     {
-      return _mixinMethodInfo.GetBaseDefinition();
+      return _mixinMethodInfo.GetOriginalDeclaration();
     }
 
     public IPropertyInformation FindDeclaringProperty ()

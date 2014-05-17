@@ -95,6 +95,6 @@ namespace Remotion.Reflection
     /// Gets the <see cref="IMethodInformation"/> corresponding to the method declared by type returned via <see cref="IMemberInformation.GetOriginalDeclaringType()"/>.
     /// </summary>
     /// <returns>An instance of <see cref="IMethodInformation"/>.</returns>
-    [NotNull]IMethodInformation GetBaseDefinition ();
+    [NotNull]IMethodInformation GetOriginalDeclaration ();
   }
 }

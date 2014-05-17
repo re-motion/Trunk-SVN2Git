@@ -123,9 +123,9 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void GetBaseDefinition ()
+    public void GetOriginalDeclaration ()
     {
-      Assert.That (_nullMethodInformation.GetBaseDefinition (), Is.SameAs(_nullMethodInformation));
+      Assert.That (_nullMethodInformation.GetOriginalDeclaration (), Is.SameAs(_nullMethodInformation));
     }
 
     [Test]

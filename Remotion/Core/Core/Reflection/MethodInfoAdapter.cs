@@ -160,7 +160,7 @@ namespace Remotion.Reflection
       return _methodInfo.GetParameters();
     }
 
-    public IMethodInformation GetBaseDefinition ()
+    public IMethodInformation GetOriginalDeclaration ()
     {
       return Create (_methodInfo.GetBaseDefinition());
     }
