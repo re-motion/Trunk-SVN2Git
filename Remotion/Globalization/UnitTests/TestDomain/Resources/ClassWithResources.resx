@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="property:PropertyWithMultiLingualNameAttribute" xml:space="preserve">
+    <value>Resource-based Property ID</value>
+  </data>
   <data name="property:PropertyWithShortIdentifier" xml:space="preserve">
     <value>Short Property ID</value>
   </data>
@@ -125,6 +128,9 @@
   </data>
   <data name="property:Value1" xml:space="preserve">
     <value>Value 1</value>
+  </data>
+  <data name="type:ClassWithMultiLingualNameAttribute" xml:space="preserve">
+    <value>Resource-based Type ID</value>
   </data>
   <data name="type:ClassWithShortResourceIdentifier" xml:space="preserve">
     <value>Short Type ID</value>
