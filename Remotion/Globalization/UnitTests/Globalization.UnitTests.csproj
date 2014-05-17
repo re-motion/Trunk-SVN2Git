@@ -62,6 +62,7 @@
     <Compile Include="Implementation\MissingLocalizationExceptionTest.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTests\TryGetPropertyDisplayName_MLNBMIGST.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTests\TryGetTypeDisplayName_MLNBMIGST.cs" />
+    <Compile Include="IntegrationTests\MultiLingualNameBasedMemberInformationGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="MultiLingualNameAttributeTest.cs" />
     <Compile Include="Obsolete\EnumDescriptionTest.cs" />
     <Compile Include="EnumerationGlobalizationServiceExtensionsTest.cs" />
@@ -93,6 +94,8 @@
     <Compile Include="TestDomain\InheritedClassWithMultiLingualResourcesAttributes.cs" />
     <Compile Include="TestDomain\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
     <Compile Include="TestDomain\MultiLingualNameBased\ClassWithMultiLingualNameAttribute.cs" />
+    <Compile Include="TestDomain\MultiLingualNameBased\ClassWithoutMultiLingualNameAttribute.cs" />
+    <Compile Include="TestDomain\MultiLingualNameBased\DerivedClassWithMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\Resources\ClassWithResources.Designer.cs">
       <DependentUpon>ClassWithResources.resx</DependentUpon>
     </Compile>

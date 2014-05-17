@@ -26,6 +26,7 @@ namespace Remotion.Globalization
   /// The <see cref="MultiLingualNameAttribute"/> can be applied to types, properties, and enum values to specify 
   /// the <see cref="LocalizedName"/> for a specific <see cref="Culture"/>.
   /// </summary>
+  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = true)]
   public class MultiLingualNameAttribute : Attribute
   {
     private readonly string _localizedName;
