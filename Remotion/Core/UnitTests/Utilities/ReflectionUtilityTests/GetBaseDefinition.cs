@@ -30,7 +30,23 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<ClassWithDifferentProperties> ("String");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs ( GetPropertyInfo<ClassWithDifferentProperties> ("String")));
+      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (propertyInfo));
+    }
+
+    [Test]
+    public void GetBaseDefinition_ForPropertyOnOpenGenericBaseClass ()
+    {
+      PropertyInfo propertyInfo = GetPropertyInfo (typeof (GenericClassWithDifferentProperties<>), "AbstractT");
+
+      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (propertyInfo));
+    }
+
+    [Test]
+    public void GetBaseDefinition_ForPropertyOnClosedGenericBaseClass ()
+    {
+      PropertyInfo propertyInfo = GetPropertyInfo<GenericClassWithDifferentProperties<int>> ("AbstractT");
+
+      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (propertyInfo));
     }
 
     [Test]
@@ -63,6 +79,32 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedClassWithDifferentProperties> ("Int32");
 
       Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("Int32")));
+    }
+
+    [Test]
+    public void GetBaseDefinition_ForOverriddenPropertyOnOpenGenericDerivedClass ()
+    {
+      PropertyInfo propertyInfo = GetPropertyInfo (typeof (DerivedOpenGenericClassWithDifferentProperties<>), "AbstractT");
+
+      var baseDefinition = ReflectionUtility.GetBaseDefinition (propertyInfo);
+      Assert.That (baseDefinition.DeclaringType.Name, Is.EqualTo (typeof (GenericClassWithDifferentProperties<>).Name));
+      Assert.That (baseDefinition.Name, Is.EqualTo (propertyInfo.Name));
+    }
+
+    [Test]
+    public void GetBaseDefinition_ForOverriddenPropertyOnClosedGenericDerivedClass ()
+    {
+      PropertyInfo propertyInfo = GetPropertyInfo<DerivedOpenGenericClassWithDifferentProperties<int>> ("AbstractT");
+
+      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo (typeof (GenericClassWithDifferentProperties<int>), "AbstractT")));
+    }
+
+    [Test]
+    public void GetBaseDefinition_ForOverriddenPropertyOnDerivedClassWithClosedGenericBaseClass ()
+    {
+      PropertyInfo propertyInfo = GetPropertyInfo<DerivedClosedGenericClassWithDifferentProperties> ("AbstractT");
+
+      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo (typeof (GenericClassWithDifferentProperties<int>), "AbstractT")));
     }
 
     [Test]
@@ -107,9 +149,16 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
           Is.SameAs (typeof (ClassWithDifferentProperties).GetProperty ("Item", new[] { typeof (int) })));
     }
 
-    protected PropertyInfo GetPropertyInfo<T> (string property)
+    private PropertyInfo GetPropertyInfo<T> (string property)
     {
-      return typeof (T).GetProperty (property, BindingFlags.Instance |  BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+      return GetPropertyInfo (typeof (T), property);
+    }
+
+    private PropertyInfo GetPropertyInfo (Type type, string property)
+    {
+      return type.GetProperty (
+          property,
+          BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
     }
   }
 }

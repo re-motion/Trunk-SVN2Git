@@ -19,6 +19,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Utilities
 {
@@ -170,24 +171,40 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
+      var declaringType = propertyInfo.DeclaringType;
+      if (declaringType == null)
+        return propertyInfo;
+
       MethodInfo[] accessors = propertyInfo.GetAccessors (true);
       if (accessors.Length == 0)
       {
         throw new ArgumentException (
-            String.Format ("The property does not define any accessors.\r\n  Type: {0}, property: {1}", propertyInfo.DeclaringType, propertyInfo.Name),
+            String.Format ("The property does not define any accessors.\r\n  Type: {0}, property: {1}", declaringType, propertyInfo.Name),
             "propertyInfo");
       }
 
       var originalDeclaringType = GetOriginalDeclaringType (propertyInfo);
-      if (propertyInfo.DeclaringType == originalDeclaringType)
+
+      if (originalDeclaringType == null)
         return propertyInfo;
 
-      var baseDefinition = originalDeclaringType.GetProperty (
-          propertyInfo.Name,
-          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly,
-          null,
-          propertyInfo.PropertyType,
-          propertyInfo.GetIndexParameters().Select (pi => pi.ParameterType).ToArray(), null);
+      if (declaringType == originalDeclaringType)
+        return propertyInfo;
+
+      var accessorBaseDefinitions = accessors.Select (a => a.GetBaseDefinition()).ToArray();
+
+      var baseDefinition = originalDeclaringType
+          .GetProperties (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+          .Where (p => p.Name == propertyInfo.Name)
+          .Where (p => p.GetIndexParameters().Length == propertyInfo.GetIndexParameters().Length)
+          .Where (p => p.GetAccessors (true).All (a => accessorBaseDefinitions.Contains (a, MemberInfoEqualityComparer<MethodInfo>.Instance)))
+          .SingleOrDefault (
+              () => new AmbiguousMatchException (
+                  string.Format (
+                      "The property '{0}' declared on derived type '{1}' resolves to more than one possible base definition on type '{2}'.",
+                      propertyInfo.Name,
+                      declaringType,
+                      originalDeclaringType)));
 
       if (baseDefinition == null)
       {
@@ -195,8 +212,8 @@ namespace Remotion.Utilities
             string.Format (
                 "The property '{0}' declared on derived type '{1}' could not be resolved for base type '{2}'.",
                 propertyInfo.Name,
-                propertyInfo.DeclaringType.FullName,
-                originalDeclaringType.FullName));
+                declaringType,
+                originalDeclaringType));
       }
 
       return baseDefinition;
