@@ -131,9 +131,12 @@ namespace Remotion.Reflection
     [NotNull]IMethodInformation[] GetAccessors (bool nonPublic);
 
     /// <summary>
-    /// Gets the <see cref="IPropertyInformation"/> corresponding to the property from the type returned via <see cref="IMemberInformation.GetOriginalDeclaringType()"/>.
+    /// Gets the <see cref="IPropertyInformation"/> corresponding to the property declared by the type returned via <see cref="IMemberInformation.GetOriginalDeclaringType()"/>.
     /// </summary>
     /// <returns>An instance of <see cref="IPropertyInformation"/>.</returns>
+    /// <exception cref="MissingMethodException">
+    /// This <see cref="IPropertyInformation"/> does not represent the original declaration but the original declaration could not be discovered.
+    /// </exception>
     [NotNull]IPropertyInformation GetOriginalDeclaration ();
   }
 }
