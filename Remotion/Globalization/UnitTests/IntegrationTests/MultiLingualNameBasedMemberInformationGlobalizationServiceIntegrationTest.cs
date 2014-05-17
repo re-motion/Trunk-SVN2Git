@@ -14,14 +14,280 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
+using Remotion.Globalization.UnitTests.TestDomain;
+using Remotion.Reflection;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.Globalization.UnitTests.IntegrationTests
 {
   [TestFixture]
   public class MultiLingualNameBasedMemberInformationGlobalizationServiceIntegrationTest
   {
-     
+    [Test]
+    public void TryGetTypeDisplayName ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();
+
+      using (new CultureScope ("it", "de-AT"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("de-AT Type Name"));
+      }
+
+      using (new CultureScope ("it", "de"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("de Type Name"));
+      }
+
+      using (new CultureScope ("it", "de-DE"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("de Type Name"));
+      }
+
+      using (new CultureScope ("it", "en"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("en Type Name"));
+      }
+
+      using (new CultureScope ("it", "it"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("Invariant Type Name"));
+      }
+
+      using (new CultureScope ("it", "de-AT"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (DerivedClassWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("de-AT Derived Type Name"));
+      }
+
+      using (new CultureScope ("it", "en"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (DerivedClassWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("Invariant Derived Type Name"));
+      }
+
+      using (new CultureScope ("it", "en"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithoutMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes)),
+                out resourceValue),
+            Is.False);
+        Assert.That (resourceValue, Is.Null);
+      }
+    }
+
+    [Test]
+    public void GetTypeDisplayName ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();
+
+      using (new CultureScope ("it", "de-AT"))
+      {
+        Assert.That (
+            service.GetTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithResources))),
+            Is.EqualTo ("de-AT Type Name"));
+      }
+
+      using (new CultureScope ("it", "en"))
+      {
+        Assert.That (
+            service.GetTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithoutMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes))),
+            Is.EqualTo ("ClassWithoutMultiLingualNameAttribute"));
+      }
+    }
+
+    [Test]
+    public void ContainsTypeDisplayName ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();
+
+      using (new CultureScope ("it", "de-AT"))
+      {
+        Assert.That (
+            service.ContainsTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithResources))),
+            Is.True);
+      }
+      using (new CultureScope ("it", "de-AT"))
+      {
+        Assert.That (
+            service.ContainsTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithoutMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes))),
+            Is.False);
+      }
+    }
+
+    [Test]
+    public void TryGetPropertyDisplayName ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();
+
+      using (new CultureScope ("it", "de-AT"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (
+                PropertyInfoAdapter.Create (typeof (ClassWithMultiLingualNameAttribute).GetProperty ("PropertyWithMultiLingualNameAttribute")),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("de-AT Property Name"));
+      }
+
+      using (new CultureScope ("it", "de"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (
+                PropertyInfoAdapter.Create (typeof (ClassWithMultiLingualNameAttribute).GetProperty ("PropertyWithMultiLingualNameAttribute")),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("de Property Name"));
+      }
+
+      using (new CultureScope ("it", "it"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (
+                PropertyInfoAdapter.Create (typeof (ClassWithMultiLingualNameAttribute).GetProperty ("PropertyWithMultiLingualNameAttribute")),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("Invariant Property Name"));
+      }
+
+      using (new CultureScope ("it", "de-AT"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (
+                PropertyInfoAdapter.Create (typeof (DerivedClassWithMultiLingualNameAttribute).GetProperty ("PropertyWithMultiLingualNameAttribute")),
+                TypeAdapter.Create (typeof (ClassWithResources)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("de-AT Property Name"));
+      }
+
+      using (new CultureScope ("it", "it"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (
+                PropertyInfoAdapter.Create (typeof (ClassWithoutMultiLingualNameAttribute).GetProperty ("PropertyWithoutMultiLingualNameAttribute")),
+                TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes)),
+                out resourceValue),
+            Is.False);
+        Assert.That (resourceValue, Is.Null);
+      }
+    }
+
+    [Test]
+    public void GetPropertyDisplayName ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();
+
+      using (new CultureScope ("it", "de-AT"))
+      {
+        Assert.That (
+            service.GetPropertyDisplayName (
+                PropertyInfoAdapter.Create (typeof (ClassWithMultiLingualNameAttribute).GetProperty ("PropertyWithMultiLingualNameAttribute")),
+                TypeAdapter.Create (typeof (ClassWithResources))),
+            Is.EqualTo ("de-AT Property Name"));
+      }
+
+      using (new CultureScope ("it", "en"))
+      {
+        Assert.That (
+            service.GetPropertyDisplayName (
+                PropertyInfoAdapter.Create (typeof (ClassWithoutMultiLingualNameAttribute).GetProperty ("PropertyWithoutMultiLingualNameAttribute")),
+                TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes))),
+            Is.EqualTo ("PropertyWithoutMultiLingualNameAttribute"));
+      }
+    }
+
+    [Test]
+    public void ContainsPropertyDisplayName ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();
+
+      using (new CultureScope ("it", "de-AT"))
+      {
+        Assert.That (
+            service.ContainsPropertyDisplayName (
+                PropertyInfoAdapter.Create (typeof (ClassWithMultiLingualNameAttribute).GetProperty ("PropertyWithMultiLingualNameAttribute")),
+                TypeAdapter.Create (typeof (ClassWithResources))),
+            Is.True);
+      }
+
+      using (new CultureScope ("it", "de-AT"))
+      {
+        Assert.That (
+            service.ContainsPropertyDisplayName (
+                PropertyInfoAdapter.Create (typeof (ClassWithoutMultiLingualNameAttribute).GetProperty ("PropertyWithoutMultiLingualNameAttribute")),
+                TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes))),
+            Is.False);
+      }
+    }
   }
 }
