@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Remotion.Reflection
 {
@@ -29,7 +30,7 @@ namespace Remotion.Reflection
     /// Gets the type of the property, i.e. the type of values the property can store.
     /// </summary>
     /// <value>The type of the property.</value>
-    Type PropertyType { get; }
+    [NotNull]Type PropertyType { get; }
     
     /// <summary>
     /// Determines whether the property can be set from the outside.
@@ -41,7 +42,10 @@ namespace Remotion.Reflection
     /// Gets the value of the property for the given instance.
     /// </summary>
     /// <param name="instance">The instance to retrieve the value for, or <see langword="null"/> for a static property.</param>
-    /// <param name="indexParameters">The index parameters to be used for property value retrieval.</param>
+    /// <param name="indexParameters">
+    /// The index parameters to be used for property value retrieval. 
+    /// For non-indexed properties, this should be <see langword="null" />.
+    /// </param>
     /// <returns>The property's value for the given instance.</returns>
     /// <exception cref="ArgumentException">
     /// <para>The type of the elements of the <paramref name="indexParameters"/> array does not match the index argument types expected by the
@@ -56,14 +60,17 @@ namespace Remotion.Reflection
     /// <exception cref="TargetInvocationException">The property's get method throw an exception, see the <see cref="Exception.InnerException"/>
     /// property.</exception>
     /// <exception cref="MethodAccessException">The accessor was private or protected and could not be executed.</exception>
-    object GetValue (object instance, object[] indexParameters);
+    object GetValue ([CanBeNull]object instance, [CanBeNull]object[] indexParameters);
 
     /// <summary>
     /// Sets the value of the property for the given instance.
     /// </summary>
     /// <param name="instance">The instance to set the value for, or <see langword="null"/> for a static property.</param>
     /// <param name="value">The property's value for the given instance.</param>
-    /// <param name="indexParameters">The index parameters to be used for setting the property value.</param>
+    /// <param name="indexParameters">
+    /// The index parameters to be used for setting the property value.
+    /// For non-indexed properties, this should be <see langword="null" />.
+    /// </param>
     /// <exception cref="ArgumentException">
     /// <para>The type of the elements of the <paramref name="indexParameters"/> array does not match the index argument types expected by the
     /// property.</para>
@@ -77,7 +84,7 @@ namespace Remotion.Reflection
     /// <exception cref="TargetInvocationException">The property's get method throw an exception, see the <see cref="Exception.InnerException"/>
     /// property.</exception>
     /// <exception cref="MethodAccessException">The accessor was private or protected and could not be executed.</exception>
-    void SetValue (object instance, object value, object[] indexParameters);
+    void SetValue ([CanBeNull]object instance, [CanBeNull]object value, [CanBeNull]object[] indexParameters);
 
     /// <summary>
     /// Gets the <see cref="IMethodInformation"/> of the get method for the current <see cref="PropertyInfo"/>.
@@ -86,7 +93,7 @@ namespace Remotion.Reflection
     /// <returns>
     /// An instance of <see cref="IMethodInformation"/> for the get method.
     /// </returns>
-    IMethodInformation GetGetMethod (bool nonPublic);
+    [CanBeNull]IMethodInformation GetGetMethod (bool nonPublic);
 
     /// <summary>
     /// Gets the <see cref="IMethodInformation"/> of the set method for the current <see cref="PropertyInfo"/>.
@@ -95,7 +102,7 @@ namespace Remotion.Reflection
     /// <returns>
     /// An instance of <see cref="IMethodInformation"/> for the set method.
     /// </returns>
-    IMethodInformation GetSetMethod (bool nonPublic);
+    [CanBeNull]IMethodInformation GetSetMethod (bool nonPublic);
 
     /// <summary>
     /// Finds the implementation <see cref="IPropertyInformation"/> corresponding to this <see cref="IPropertyInformation"/> on the given 
@@ -107,7 +114,7 @@ namespace Remotion.Reflection
     /// <paramref name="implementationType"/> does not implement the interface.</returns>
     /// <exception cref="ArgumentException"><paramref name="implementationType"/> is itself an interface.</exception>
     /// <exception cref="InvalidOperationException">This <see cref="IPropertyInformation"/> does not describe an interface property.</exception>
-    IPropertyInformation FindInterfaceImplementation (Type implementationType);
+    [CanBeNull]IPropertyInformation FindInterfaceImplementation ([NotNull]Type implementationType);
 
     /// <summary>
     /// Finds the interface declaration for this <see cref="IPropertyInformation"/>, returning <see langword="null" /> if this 
@@ -117,17 +124,16 @@ namespace Remotion.Reflection
     /// <see langword="null" /> if this <see cref="IPropertyInformation"/> is not an implementation of an interface member.</returns>
     /// <exception cref="InvalidOperationException">This <see cref="IPropertyInformation"/> is itself an interface member, so it cannot have an 
     /// interface declaration.</exception>
-    IEnumerable<IPropertyInformation> FindInterfaceDeclarations ();
+    [NotNull]IEnumerable<IPropertyInformation> FindInterfaceDeclarations ();
 
-    ParameterInfo[] GetIndexParameters ();
+    [NotNull]ParameterInfo[] GetIndexParameters ();
 
-    IMethodInformation[] GetAccessors (bool nonPublic);
+    [NotNull]IMethodInformation[] GetAccessors (bool nonPublic);
 
     /// <summary>
-    /// Gets the <see cref="IPropertyInformation"/> corresponding property information from the type returned via
-    /// <see cref="IMemberInformation.GetOriginalDeclaringType()"/>.
+    /// Gets the <see cref="IPropertyInformation"/> corresponding to the property from the type returned via <see cref="IMemberInformation.GetOriginalDeclaringType()"/>.
     /// </summary>
     /// <returns>An instance of <see cref="IPropertyInformation"/>.</returns>
-    IPropertyInformation GetOriginalDeclaration ();
+    [NotNull]IPropertyInformation GetOriginalDeclaration ();
   }
 }

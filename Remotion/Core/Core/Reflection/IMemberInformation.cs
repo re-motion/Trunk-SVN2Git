@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Remotion.Reflection
 {
@@ -30,20 +31,20 @@ namespace Remotion.Reflection
     /// Gets the simple name of the member identifying it within its declaring type.
     /// </summary>
     /// <value>The simple property name.</value>
-    string Name { get; }
+    [NotNull]string Name { get; }
 
     /// <summary>
     /// Gets the type declaring the member.
     /// </summary>
     /// <value>The declaring type of the member.</value>
-    ITypeInformation DeclaringType { get; }
+    [CanBeNull]ITypeInformation DeclaringType { get; }
 
     /// <summary>
     /// Gets the type the member was originally declared on.
     /// </summary>
     /// <returns>The type the member was originally declared on.</returns>
     /// <remarks>If the member represented by this instance overrides a member from a base type, this method will return the base type.</remarks>
-    ITypeInformation GetOriginalDeclaringType ();
+    [CanBeNull]ITypeInformation GetOriginalDeclaringType ();
 
     /// <summary>
     /// Gets the one custom attribute of type <typeparamref name="T"/> declared on this member, or null if no such attribute exists.
@@ -54,7 +55,7 @@ namespace Remotion.Reflection
     /// <exception cref="AmbiguousMatchException">More than one instance of the given attribute type <typeparamref name="T"/> is declared on this
     /// member.</exception>
     /// <returns>An instance of type <typeparamref name="T"/>, or <see langword="null"/> if no attribute of that type is declared on this member.</returns>
-    T GetCustomAttribute<T> (bool inherited) where T : class;
+    [CanBeNull]T GetCustomAttribute<T> (bool inherited) where T : class;
 
     /// <summary>
     /// Gets the custom attributes of type <typeparamref name="T"/> declared on this member, or null if no such attribute exists.
@@ -64,7 +65,7 @@ namespace Remotion.Reflection
     /// is checked.</param>
     /// <returns>An array of the attributes of type <typeparamref name="T"/> declared on this member, or an empty array if no attribute of
     /// that type is declared on this member.</returns>
-    T[] GetCustomAttributes<T> (bool inherited) where T : class;
+    [NotNull]T[] GetCustomAttributes<T> (bool inherited) where T : class;
 
     /// <summary>
     /// Determines whether a custom attribute of the specified type <typeparamref name="T"/> is defined on the member.

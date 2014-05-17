@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Remotion.Reflection
 {
@@ -29,15 +30,15 @@ namespace Remotion.Reflection
     /// Gets the return type of the method.
     /// </summary>
     /// <value>The return type of the method.</value>
-    Type ReturnType { get; }
+    [NotNull]Type ReturnType { get; }
 
     /// <summary>
     /// Invokes the method on the given instance using the given parameters.
     /// </summary>
     /// <param name="instance">The instance on which to invoke the method. If the method is static this argument is ignored.</param>
-    /// <param name="parameters">An argument list for the invoked method.</param>
+    /// <param name="parameters">An argument list for the invoked method. If there are no parameters, this should be <see langword="null" />.</param>
     /// <returns>An object containing the return value of the invoked method.</returns>
-    object Invoke (object instance, object[] parameters);
+    [CanBeNull]object Invoke ([CanBeNull]object instance, [CanBeNull]object[] parameters);
 
     /// <summary>
     /// Finds the implementation <see cref="IMethodInformation"/> corresponding to this <see cref="IMethodInformation"/> on the given 
@@ -49,14 +50,14 @@ namespace Remotion.Reflection
     /// <paramref name="implementationType"/> does not implement the interface.</returns>
     /// <exception cref="ArgumentException">The <paramref name="implementationType"/> is itself an interface.</exception>
     /// <exception cref="InvalidOperationException">This <see cref="IMethodInformation"/> does not describe an interface method.</exception>
-    IMethodInformation FindInterfaceImplementation (Type implementationType);
+    [CanBeNull]IMethodInformation FindInterfaceImplementation (Type implementationType);
 
     /// <summary>
     /// Finds the property declaration corresponding to this <see cref="IMethodInformation"/> on the given <see cref="Type"/> and it's base types.
     /// </summary>
     /// <returns>Returns the <see cref="IPropertyInformation"/> of the declared property, or <see langword="null" /> if no corresponding property was 
     /// found.</returns>
-    IPropertyInformation FindDeclaringProperty ();
+    [CanBeNull]IPropertyInformation FindDeclaringProperty ();
 
     /// <summary>
     /// Finds the interface declaration for this <see cref="IMethodInformation"/>, returning <see langword="null" /> if this 
@@ -66,7 +67,7 @@ namespace Remotion.Reflection
     /// <see langword="null" /> if this <see cref="IMethodInformation"/> is not an implementation of an interface member.</returns>
     /// <exception cref="InvalidOperationException">This <see cref="IMethodInformation"/> is itself an interface member, so it cannot have an 
     /// interface declaration.</exception>
-    IEnumerable<IMethodInformation> FindInterfaceDeclarations ();
+    [NotNull]IEnumerable<IMethodInformation> FindInterfaceDeclarations ();
 
     /// <summary>
     /// Returns a delegate invoking the method described by this <see cref="IMethodInformation"/>.
@@ -76,7 +77,7 @@ namespace Remotion.Reflection
     /// types need not match exactly; the values will be converted at run-time. 
     /// </typeparam>
     /// <returns>A delegate of type <typeparamref name="T"/> invoking the method described by this <see cref="IMethodInformation"/>.</returns>
-    T GetFastInvoker<T> () where T: class;
+    [NotNull]T GetFastInvoker<T> () where T: class;
 
     /// <summary>
     /// Returns a delegate invoking the method described by this <see cref="IMethodInformation"/>.
@@ -86,10 +87,10 @@ namespace Remotion.Reflection
     /// types need not match exactly; the values will be converted at run-time. 
     /// </param>
     /// <returns>A delegate of type <paremref name="delegateType"/> invoking the method described by this <see cref="IMethodInformation"/>.</returns>
-    Delegate GetFastInvoker (Type delegateType);
+    [NotNull]Delegate GetFastInvoker ([NotNull]Type delegateType);
 
-    ParameterInfo[] GetParameters ();
+    [NotNull]ParameterInfo[] GetParameters ();
 
-    IMethodInformation GetBaseDefinition ();
+    [NotNull]IMethodInformation GetBaseDefinition ();
   }
 }

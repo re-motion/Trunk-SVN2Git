@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Remotion.Reflection
 {
@@ -16,7 +17,7 @@ namespace Remotion.Reflection
     /// or <see langword="null"/> if the current instance represents a generic type parameter, an array type, pointer type, 
     /// or byref type based on a type parameter, or a generic type that is not a generic type definition but contains unresolved type parameters.
     /// </returns>
-    string FullName { get; }
+    [CanBeNull]string FullName { get; }
 
     /// <summary>
     /// Gets the namespace of the type.
@@ -24,7 +25,7 @@ namespace Remotion.Reflection
     /// <returns>
     /// The namespace of the type, or <see langword="null"/> if the current instance represents a generic parameter.
     /// </returns>
-    string Namespace { get; }
+    [CanBeNull]string Namespace { get; }
 
     /// <summary>
     /// Gets the assembly-qualified name of the type, which includes the name of the assembly from which the type was loaded.
@@ -32,7 +33,7 @@ namespace Remotion.Reflection
     /// <returns>
     /// The assembly-qualified name of the type, which includes the name of the assembly from which the type was loaded, or <see langword="null"/> if the current instance represents a generic type parameter.
     /// </returns>
-    string AssemblyQualifiedName { get; }
+    [CanBeNull]string AssemblyQualifiedName { get; }
 
     /// <summary>
     /// Gets the <see cref="System.Reflection.Assembly"/> in which the type is declared. For generic types, gets the <see cref="System.Reflection.Assembly"/> in which the generic type is defined.
@@ -40,7 +41,7 @@ namespace Remotion.Reflection
     /// <returns>
     /// An <see cref="System.Reflection.Assembly"/> instance that describes the assembly containing the current type. For generic types, the instance describes the assembly that contains the generic type definition, not the assembly that creates and uses a particular constructed type.
     /// </returns>
-    Assembly Assembly { get; }
+    [CanBeNull]Assembly Assembly { get; }
 
         /// <summary>
     /// Gets the type that declares the current nested type or generic type parameter.
@@ -50,7 +51,7 @@ namespace Remotion.Reflection
     /// if the current type is a type parameter of a generic type; or the type that declares the generic method, 
     /// if the current type is a type parameter of a generic method; otherwise, <see langword="null"/>.
     /// </returns>
-    new ITypeInformation DeclaringType { get; }
+    [CanBeNull]new ITypeInformation DeclaringType { get; }
 
     /// <summary>
     /// Gets a value indicating whether the type is a class; that is, not a value type or interface.
@@ -103,7 +104,7 @@ namespace Remotion.Reflection
     /// <param name="rank">The number of dimensions for the array.</param>
     /// <exception cref="IndexOutOfRangeException"><paramref name="rank"/> is invalid. For example, 0 or negative.</exception>
     /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
-    ITypeInformation MakeArrayType (int rank);
+    [NotNull]ITypeInformation MakeArrayType (int rank);
 
     /// <summary>
     /// Returns a type object representing a one-dimensional array of the current type, with a lower bound of zero.
@@ -111,7 +112,7 @@ namespace Remotion.Reflection
     /// <returns>
     /// A <see cref="ITypeInformation"/> object representing a one-dimensional array of the current type, with a lower bound of zero.
     /// </returns>
-    ITypeInformation MakeArrayType ();
+    [NotNull]ITypeInformation MakeArrayType ();
 
     /// <summary>
     /// Gets a value indicating whether the current type represents an enumeration.
@@ -128,7 +129,7 @@ namespace Remotion.Reflection
     /// A <see cref="ITypeInformation"/> object representing the underlying type for the enumeration.
     /// </returns>
     /// <exception cref="InvalidOperationException">The current type is not an enumeration. That is, <see cref="IsEnum"/> returns <see langword="false"/>.</exception>
-    ITypeInformation GetUnderlyingTypeOfEnum ();
+    [NotNull]ITypeInformation GetUnderlyingTypeOfEnum ();
 
     /// <summary>
     /// Gets a value indicating whether the current type represents a nullable value type.
@@ -147,7 +148,7 @@ namespace Remotion.Reflection
     /// A <see cref="ITypeInformation"/> object representing the underlying type argument for the <see cref="Nullable{T}"/>.
     /// </returns>
     /// <exception cref="InvalidOperationException">The current type is not an instantiation of <see cref="Nullable{T}"/>. That is, <see cref="IsNullableValueType"/> returns <see langword="false"/>.</exception>
-    ITypeInformation GetUnderlyingTypeOfNullableValueType ();
+    [NotNull]ITypeInformation GetUnderlyingTypeOfNullableValueType ();
 
     /// <summary>
     /// Gets a value indicating whether the type is a pointer.
@@ -164,7 +165,7 @@ namespace Remotion.Reflection
     /// A <see cref="ITypeInformation"/> object that represents a pointer to the current type.
     /// </returns>
     /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
-    ITypeInformation MakePointerType ();
+    [NotNull]ITypeInformation MakePointerType ();
 
     /// <summary>
     /// Gets a value indicating whether the type is passed by reference.
@@ -181,7 +182,7 @@ namespace Remotion.Reflection
     /// A <see cref="ITypeInformation"/> object that represents the current type when passed as a ref parameter.
     /// </returns>
     /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
-    ITypeInformation MakeByRefType ();
+    [NotNull]ITypeInformation MakeByRefType ();
 
     /// <summary>
     /// Gets a value indicating whether the type is declared sealed.
@@ -232,7 +233,7 @@ namespace Remotion.Reflection
     /// or <see langword="null"/> if the current type is not an array or a pointer, or is not passed by reference, 
     /// or represents a generic type or a type parameter in the definition of a generic type or generic method.
     /// </returns>
-    ITypeInformation GetElementType ();
+    [CanBeNull]ITypeInformation GetElementType ();
 
     /// <summary>
     /// Gets a value indicating whether the current type is a generic type.
@@ -258,7 +259,7 @@ namespace Remotion.Reflection
     /// </returns>
     /// <exception cref="InvalidOperationException">The current type is not a generic type. That is, <see cref="IsGenericType"/> returns <see langword="false"/>.</exception>
     /// <exception cref="NotSupportedException">The invoked method is not supported in the base class. Derived classes must provide an implementation.</exception>
-    ITypeInformation GetGenericTypeDefinition ();
+    [NotNull]ITypeInformation GetGenericTypeDefinition ();
 
     /// <summary>
     /// Gets a value indicating whether the current type object has type parameters that have not been replaced by specific types.
@@ -274,7 +275,7 @@ namespace Remotion.Reflection
     /// <returns>
     /// An array of <see cref="ITypeInformation"/> objects that represent the type arguments of a generic type. Returns an empty array if the current type is not a generic type.
     /// </returns>
-    ITypeInformation[] GetGenericArguments ();
+    [NotNull]ITypeInformation[] GetGenericArguments ();
 
     /// <summary>
     /// Gets a value indicating whether the current type represents a type parameter in the definition of a generic type or method.
@@ -301,7 +302,7 @@ namespace Remotion.Reflection
     /// An array of <see cref="ITypeInformation"/> objects that represent the constraints on the current generic type parameter.
     /// </returns>
     /// <exception cref="InvalidOperationException">The current type object is not a generic type parameter. That is, the <see cref="IsGenericParameter"/> property returns <see langword="false"/>.</exception>
-    ITypeInformation[] GetGenericParameterConstraints ();
+    [NotNull]ITypeInformation[] GetGenericParameterConstraints ();
 
     /// <summary>
     /// Gets a combination of <see cref="GenericParameterAttributes"/> flags that describe the covariance and special constraints of the current generic type parameter. 
@@ -318,9 +319,9 @@ namespace Remotion.Reflection
     /// </summary>
     /// <returns>
     /// The <see cref="ITypeInformation"/> from which the current type directly inherits, 
-    /// or null if the current Type represents the <see cref="Object"/> class or an interface.
+    /// or <see langword="null" /> if the current Type represents the <see cref="Object"/> class or an interface.
     /// </returns>
-    ITypeInformation BaseType { get; }
+    [CanBeNull]ITypeInformation BaseType { get; }
 
     /// <summary>
     /// Determines whether the specified object <paramref name="o"/> is an instance of the current type.
@@ -332,7 +333,7 @@ namespace Remotion.Reflection
     /// (that is, <see cref="ContainsGenericParameters"/> returns <see langword="true"/>).
     /// </returns>
     /// <param name="o">The object to compare with the current <see cref="ITypeInformation"/>. </param>
-    bool IsInstanceOfType (object o);
+    bool IsInstanceOfType ([CanBeNull]object o);
 
     /// <summary>
     /// Determines whether the class represented by the current type derives from the class represented by <paramref name="c"/>.
@@ -346,7 +347,7 @@ namespace Remotion.Reflection
     /// </returns>
     /// <param name="c">The <see cref="ITypeInformation"/> to compare with the current <see cref="ITypeInformation"/>. </param>
     /// <exception cref="ArgumentNullException">The <paramref name="c"/> parameter is <see langword="null"/>. </exception>
-    bool IsSubclassOf (ITypeInformation c);
+    bool IsSubclassOf ([NotNull]ITypeInformation c);
 
     /// <summary>
     /// Determines whether an instance of the current type can be assigned from an instance of the type represented by <paramref name="c"/>.
@@ -360,7 +361,7 @@ namespace Remotion.Reflection
     /// or the implementation of <paramref name="c"/> does not match the implementation of this <see cref="ITypeInformation"/>.
     /// </returns>
     /// <param name="c">The <see cref="ITypeInformation"/> to compare with the current <see cref="ITypeInformation"/>. </param>
-    bool IsAssignableFrom (ITypeInformation c);
+    bool IsAssignableFrom ([NotNull]ITypeInformation c);
 
     /// <summary>
     /// Determines whether the instance of the current type can be ascribed to the instance of the type represented by <paramref name="c"/>.
@@ -374,7 +375,7 @@ namespace Remotion.Reflection
     /// </returns>
     /// <param name="c">The <see cref="ITypeInformation"/> to compare with the current <see cref="ITypeInformation"/>. </param>
     /// <exception cref="ArgumentNullException">The <paramref name="c"/> parameter is <see langword="null"/>. </exception>
-    bool CanAscribeTo (ITypeInformation c);
+    bool CanAscribeTo ([NotNull]ITypeInformation c);
 
     /// <summary>
     /// Returns the ascribed type arguments for the type represented by <paramref name="c"/> as inherited or implemented by the current type.
@@ -392,6 +393,6 @@ namespace Remotion.Reflection
     /// Thrown if the current type is an interface and implements the interface represented by <paramref name="c"/> or its instantiations
     /// more than once.
     /// </exception>
-    ITypeInformation[] GetAscribedGenericArgumentsFor (ITypeInformation c);
+    [NotNull]ITypeInformation[] GetAscribedGenericArgumentsFor ([NotNull]ITypeInformation c);
   }
 }
