@@ -68,8 +68,8 @@
     <Compile Include="MultiLingualNameAttributeTest.cs" />
     <Compile Include="Obsolete\EnumDescriptionTest.cs" />
     <Compile Include="EnumerationGlobalizationServiceExtensionsTest.cs" />
-    <Compile Include="IntegrationTests\EnumerationGlobalizationServiceIntegrationTest.cs" />
-    <Compile Include="Implementation\EnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="IntegrationTests\ResourceManagerBasedEnumerationGlobalizationServiceIntegrationTest.cs" />
+    <Compile Include="Implementation\ResourceManagerBasedEnumerationGlobalizationServiceTest.cs" />
     <Compile Include="GlobalizationServiceExtensionsTest.cs" />
     <Compile Include="Implementation\GlobalizationServiceTest.cs" />
     <Compile Include="IEnumerationGlobalizationServiceTest.cs" />

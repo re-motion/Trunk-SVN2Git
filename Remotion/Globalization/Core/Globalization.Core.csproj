@@ -68,7 +68,7 @@
     <Compile Include="IGlobalizationService.cs" />
     <Compile Include="IMemberInformationGlobalizationService.cs" />
     <Compile Include="Implementation\CompoundGlobalizationService.cs" />
-    <Compile Include="Implementation\EnumerationGlobalizationService.cs" />
+    <Compile Include="Implementation\ResourceManagerBasedEnumerationGlobalizationService.cs" />
     <Compile Include="EnumerationGlobalizationServiceExtensions.cs" />
     <Compile Include="Implementation\GlobalizationService.cs" />
     <Compile Include="Implementation\IResourceManagerResolver.cs" />

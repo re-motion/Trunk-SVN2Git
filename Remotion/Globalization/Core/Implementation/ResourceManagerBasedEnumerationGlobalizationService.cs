@@ -29,13 +29,13 @@ namespace Remotion.Globalization.Implementation
   /// </summary>
   /// <threadsafety static="true" instance="true"/>
   [ImplementationFor (typeof (IEnumerationGlobalizationService), Lifetime = LifetimeKind.Singleton)]
-  public sealed class EnumerationGlobalizationService : IEnumerationGlobalizationService
+  public sealed class ResourceManagerBasedEnumerationGlobalizationService : IEnumerationGlobalizationService
   {
     private readonly ICache<Enum, string> _staticEnumValues = CacheFactory.CreateWithLocking<Enum, string>();
     private readonly IGlobalizationService _globalizationService;
     private readonly IMemberInformationNameResolver _memberInformationNameResolver;
 
-    public EnumerationGlobalizationService (
+    public ResourceManagerBasedEnumerationGlobalizationService (
         IGlobalizationService globalizationService,
         IMemberInformationNameResolver memberInformationNameResolver)
     {

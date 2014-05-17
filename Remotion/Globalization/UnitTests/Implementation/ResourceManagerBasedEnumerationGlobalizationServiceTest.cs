@@ -25,9 +25,9 @@ using Rhino.Mocks;
 namespace Remotion.Globalization.UnitTests.Implementation
 {
   [TestFixture]
-  public class EnumerationGlobalizationServiceTest
+  public class ResourceManagerBasedEnumerationGlobalizationServiceTest
   {
-    private EnumerationGlobalizationService _service;
+    private ResourceManagerBasedEnumerationGlobalizationService _service;
     private IGlobalizationService _globalizationServiceStub;
     private IMemberInformationNameResolver _memberInformationNameResolverStub;
 
@@ -36,7 +36,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     {
       _globalizationServiceStub = MockRepository.GenerateStub<IGlobalizationService>();
       _memberInformationNameResolverStub = MockRepository.GenerateStub<IMemberInformationNameResolver>();
-      _service = new EnumerationGlobalizationService (_globalizationServiceStub, _memberInformationNameResolverStub);
+      _service = new ResourceManagerBasedEnumerationGlobalizationService (_globalizationServiceStub, _memberInformationNameResolverStub);
     }
 
     [Test]

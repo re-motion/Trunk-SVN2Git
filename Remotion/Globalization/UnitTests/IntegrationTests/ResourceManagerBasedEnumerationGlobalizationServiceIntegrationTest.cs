@@ -25,7 +25,7 @@ using Remotion.Utilities;
 namespace Remotion.Globalization.UnitTests.IntegrationTests
 {
   [TestFixture]
-  public class EnumerationGlobalizationServiceIntegrationTest
+  public class ResourceManagerBasedEnumerationGlobalizationServiceIntegrationTest
   {
     [Test]
     public void TryGetEnumerationValueDisplayName_IntegrationTest ()

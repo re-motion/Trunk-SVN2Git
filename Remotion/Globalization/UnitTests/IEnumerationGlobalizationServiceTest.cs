@@ -39,7 +39,7 @@ namespace Remotion.Globalization.UnitTests
       var factory = _serviceLocator.GetInstance<IEnumerationGlobalizationService> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (EnumerationGlobalizationService)));
+      Assert.That (factory, Is.TypeOf (typeof (ResourceManagerBasedEnumerationGlobalizationService)));
     }
 
     [Test]
