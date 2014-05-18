@@ -24,7 +24,7 @@ namespace Remotion.Globalization.Implementation
 {
   /// <summary>
   /// Combines one or more <see cref="IEnumerationGlobalizationService"/>-instances and 
-  /// delegates to them to retrieve localized name for a specified member.
+  /// delegates to them to retrieve localized name for a specified <see cref="Enum"/> value.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
   [ImplementationFor (typeof (IEnumerationGlobalizationService), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]

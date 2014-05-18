@@ -62,7 +62,7 @@
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationService.cs" />
     <Compile Include="MultiLingualNameAttribute.cs" />
     <Compile Include="Obsolete\EnumDescription.cs" />
-    <Compile Include="EnumDescriptionAttribute.cs" />
+    <Compile Include="Obsolete\EnumDescriptionAttribute.cs" />
     <Compile Include="Obsolete\EnumDescriptionResourceAttribute.cs" />
     <Compile Include="Obsolete\EnumValue.cs" />
     <Compile Include="GlobalizationServiceExtensions.cs" />
