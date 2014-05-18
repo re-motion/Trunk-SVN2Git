@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Globalization.ExtensibleEnums.Implementation;
 using Remotion.ServiceLocation;
@@ -36,19 +37,27 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IExtensibleEnumGlobalizationService> ();
+      var service = _serviceLocator.GetInstance<IExtensibleEnumGlobalizationService> ();
 
-      Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (ExtensibleEnumGlobalizationService)));
+      Assert.That (service, Is.Not.Null);
+      Assert.That (service, Is.TypeOf (typeof (CompoundExtensibleEnumGlobalizationService)));
+      Assert.That (
+          ((CompoundExtensibleEnumGlobalizationService) service).ExtensibleEnumGlobalizationServices.Select (s => s.GetType()),
+          Is.EqualTo (
+              new[]
+              {
+                  typeof (ResourceManagerBasedExtensibleEnumGlobalizationService),
+                  typeof (MultiLingualNameBasedExtensibleEnumGlobalizationService)
+              }));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IExtensibleEnumGlobalizationService> ();
-      var factory2 = _serviceLocator.GetInstance<IExtensibleEnumGlobalizationService> ();
+      var service1 = _serviceLocator.GetInstance<IExtensibleEnumGlobalizationService> ();
+      var service2 = _serviceLocator.GetInstance<IExtensibleEnumGlobalizationService> ();
 
-      Assert.That (factory1, Is.SameAs (factory2));
+      Assert.That (service1, Is.SameAs (service2));
     }
   }
 }

@@ -25,16 +25,16 @@ using Rhino.Mocks;
 namespace Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation
 {
   [TestFixture]
-  public class ExtensibleEnumGlobalizationServiceTest
+  public class ResourceManagerBasedExtensibleEnumGlobalizationServiceTest
   {
-    private ExtensibleEnumGlobalizationService _service;
+    private ResourceManagerBasedExtensibleEnumGlobalizationService _service;
     private IGlobalizationService _globalizationServiceStub;
 
     [SetUp]
     public void SetUp ()
     {
       _globalizationServiceStub = MockRepository.GenerateStub<IGlobalizationService>();
-      _service = new ExtensibleEnumGlobalizationService (_globalizationServiceStub);
+      _service = new ResourceManagerBasedExtensibleEnumGlobalizationService (_globalizationServiceStub);
     }
 
     [Test]

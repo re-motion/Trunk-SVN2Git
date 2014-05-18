@@ -20,10 +20,10 @@ using NUnit.Framework;
 using Remotion.Globalization.ExtensibleEnums.UnitTests.TestDomain;
 using Remotion.ServiceLocation;
 
-namespace Remotion.Globalization.ExtensibleEnums.UnitTests
+namespace Remotion.Globalization.ExtensibleEnums.UnitTests.IntegrationTests
 {
   [TestFixture]
-  public class ExtensibleEnumGlobalizationServiceIntegrationTest
+  public class ResourceManagerBasedExtensibleEnumGlobalizationServiceIntegrationTest
   {
     [Test]
     public void TryGetExtensibleEnumValueDisplayName_IntegrationTest ()
