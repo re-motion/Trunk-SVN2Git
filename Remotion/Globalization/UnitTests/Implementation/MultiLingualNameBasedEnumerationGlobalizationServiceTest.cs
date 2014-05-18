@@ -145,18 +145,6 @@ namespace Remotion.Globalization.UnitTests.Implementation
     {
       var service = new MultiLingualNameBasedEnumerationGlobalizationService();
 
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
-          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
-          .Return (
-              new[]
-              {
-                  new MultiLingualNameAttribute ("The Name fr-FR", "fr-FR"),
-                  new MultiLingualNameAttribute ("The Name fr-FR", "fr-FR"),
-                  new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
-              });
-      typeInformationStub.Stub(_ =>_.FullName).Return("The.Full.Type.Name");
-
       using (new CultureScope ("it-IT", "en-US"))
       {
         string multiLingualName;
@@ -175,12 +163,6 @@ namespace Remotion.Globalization.UnitTests.Implementation
     public void TryGetEnumerationValueDisplayName_WithoutMultiLingualNameAttribute_ReturnsNull ()
     {
       var service = new MultiLingualNameBasedEnumerationGlobalizationService();
-
-      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationStub
-          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
-          .Return (new MultiLingualNameAttribute[0]);
-      typeInformationStub.Stub (_ => _.BaseType).Return (null);
 
       string multiLingualName;
 
