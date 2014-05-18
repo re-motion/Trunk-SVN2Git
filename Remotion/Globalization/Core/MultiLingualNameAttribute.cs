@@ -18,14 +18,25 @@
 using System;
 using System.Globalization;
 using JetBrains.Annotations;
+using Remotion.Globalization.Implementation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization
 {
   /// <summary>
-  /// The <see cref="MultiLingualNameAttribute"/> can be applied to types, properties, and enum values to specify 
-  /// the <see cref="LocalizedName"/> for a specific <see cref="Culture"/>.
+  /// The <see cref="MultiLingualNameAttribute"/> can be applied to types, properties, enum values, and methods (e.g. for extensible enum values) 
+  /// to specify the <see cref="LocalizedName"/> for a specific <see cref="Culture"/>.
   /// </summary>
+  /// <remarks>
+  /// <list type="bullet">
+  /// <item>For <see cref="MultiLingualNameAttribute"/> must be applied to the original declaration of a member. </item>
+  /// <item>For types, the derived type does not inherit the base type's localization.</item>
+  /// <item>
+  ///   One of the attributes should always specifiy the localization for the invariant culture. Otherwise, a <see cref="MissingLocalizationException"/> 
+  ///   is thrown if a localziation look-up is performed for a UI-culture not part of the defined cultures for this reflection object.
+  /// </item>
+  /// </list>
+  /// </remarks>
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Method, AllowMultiple = true)]
   public class MultiLingualNameAttribute : Attribute
   {
