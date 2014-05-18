@@ -19,12 +19,16 @@ using System;
 
 namespace Remotion.Globalization.UnitTests.TestDomain
 {
+#pragma warning disable 618
   public enum EnumWithDescription
   {
     [EnumDescription ("Value I")]
     Value1 = 1,
-     [EnumDescription ("Value II")]
+
+    [EnumDescription ("Value II")]
     Value2 = 2,
+
     ValueWithoutDescription = 3
- }
+  }
+#pragma warning restore 618
 }

@@ -22,10 +22,11 @@ namespace Remotion.ObjectBinding.UnitTests.TestDomain
 {
   public enum EnumWithDescription
   {
-    [EnumDescription ("Value I")]
+    [MultiLingualName ("Value I", "")]
     Value1 = 1,
-     [EnumDescription ("Value II")]
+
+    [MultiLingualName ("Value II", "")]
     Value2 = 2,
     ValueWithoutDescription = 3
- }
+  }
 }

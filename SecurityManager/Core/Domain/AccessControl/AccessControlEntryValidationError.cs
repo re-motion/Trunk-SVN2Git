@@ -25,34 +25,34 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// </summary>
   public enum AccessControlEntryValidationError
   {
-    [EnumDescription ("The TenantCondition property is set to SpecificTenant, but no SpecificTenant is assigned.")]
+    [MultiLingualName ("The TenantCondition property is set to SpecificTenant, but no SpecificTenant is assigned.", "")]
     IsSpecificTenantMissing,
 
-    [EnumDescription ("The GroupCondition property is set to SpecificGroup, but no SpecificGroup is assigned.")]
+    [MultiLingualName ("The GroupCondition property is set to SpecificGroup, but no SpecificGroup is assigned.", "")]
     IsSpecificGroupMissing,
     
-    [EnumDescription ("The GroupCondition property is set to BranchOfOwningGroup or AnyGroupWithSpecificGroupType, but no SpecificGroupType is assigned.")]
+    [MultiLingualName ("The GroupCondition property is set to BranchOfOwningGroup or AnyGroupWithSpecificGroupType, but no SpecificGroupType is assigned.", "")]
     IsSpecificGroupTypeMissing,
     
-    [EnumDescription ("The UserCondition property is set to SpecificUser, but no SpecificUser is assigned.")]
+    [MultiLingualName ("The UserCondition property is set to SpecificUser, but no SpecificUser is assigned.", "")]
     IsSpecificUserMissing,
 
-    [EnumDescription ("The UserCondition property is set to SpecificPosition, but no SpecificPosition is assigned.")]
+    [MultiLingualName ("The UserCondition property is set to SpecificPosition, but no SpecificPosition is assigned.", "")]
     IsSpecificPositionMissing,
     
-    [EnumDescription ("The TenantCondition property is set to SpecificTenant or OwningTenant, but the TenantHierarchyCondition is not set.")]
+    [MultiLingualName ("The TenantCondition property is set to SpecificTenant or OwningTenant, but the TenantHierarchyCondition is not set.", "")]
     IsTenantHierarchyConditionMissing,
 
-    [EnumDescription ("The TenantCondition property is set to SpecificTenant or OwningTenant, but the TenantHierarchyCondition is set to 'Parent', which is not supported.")]
+    [MultiLingualName ("The TenantCondition property is set to SpecificTenant or OwningTenant, but the TenantHierarchyCondition is set to 'Parent', which is not supported.", "")]
     IsTenantHierarchyConditionOnlyParent,
 
-    [EnumDescription ("The GroupCondition property is set to SpecificGroup or OwningGroup, but the GroupHierarchyCondition is not set.")]
+    [MultiLingualName ("The GroupCondition property is set to SpecificGroup or OwningGroup, but the GroupHierarchyCondition is not set.", "")]
     IsGroupHierarchyConditionMissing,
     
-    [EnumDescription ("The GroupCondition property is set to SpecificGroup or OwningGroup, but the GroupHierarchyCondition is set to 'Parent', which is not supported.")]
+    [MultiLingualName ("The GroupCondition property is set to SpecificGroup or OwningGroup, but the GroupHierarchyCondition is set to 'Parent', which is not supported.", "")]
     IsGroupHierarchyConditionOnlyParent,
 
-    [EnumDescription ("The GroupCondition property is set to SpecificGroup or OwningGroup, but the GroupHierarchyCondition is set to 'Children', which is not supported.")]
+    [MultiLingualName ("The GroupCondition property is set to SpecificGroup or OwningGroup, but the GroupHierarchyCondition is set to 'Children', which is not supported.", "")]
     IsGroupHierarchyConditionOnlyChildren,
   }
 }

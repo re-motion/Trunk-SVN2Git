@@ -22,6 +22,7 @@ namespace Remotion.Globalization
   /// <summary>
   /// Use this attribute to specify a non-globalized text representation of a certain enumeration value.
   /// </summary>
+  [Obsolete ("Apply [MultiLingualNameAttribute (\"The Description\", \"\")] instead. (Version: 1.15.17.0)")]
   [AttributeUsage (AttributeTargets.Field, AllowMultiple = false)]
   public class EnumDescriptionAttribute : MultiLingualNameAttribute
   {

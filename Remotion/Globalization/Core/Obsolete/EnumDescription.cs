@@ -29,8 +29,7 @@ namespace Remotion.Globalization
   /// Use this class to get the clear text representations of enumeration values.
   /// </summary>
   /// <remarks>
-  /// Use the <see cref="MultiLingualResourcesAttribute"/> to provide globalization support for the enum type
-  /// or the <see cref="EnumDescriptionAttribute"/> to only provide friendly names for the individual enum values.
+  /// Use the <see cref="MultiLingualResourcesAttribute"/> or the <see cref="MultiLingualNameAttribute"/> to provide globalization support for the enum type.
   /// </remarks>
   public static class EnumDescription
   {
