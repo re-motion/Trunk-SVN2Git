@@ -60,6 +60,8 @@
     <Compile Include="ExtensibleEnumGlobalizationServiceExtensionsTest.cs" />
     <Compile Include="Implementation\CompoundEnumerationGlobalizationServiceTest.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedEnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="IntegrationTests\CompoundExtensibleEnumGlobalizationServiceIntegrationTest.cs" />
+    <Compile Include="IntegrationTests\LocalizedNameBasedExtensibleEnumGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="IntegrationTests\ResourceManagerBasedExtensibleEnumGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="Implementation\ResourceManagerBasedExtensibleEnumGlobalizationServiceTest.cs" />
     <Compile Include="Obsolete\ExtensibleEnumExtensionsIntegrationTest.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="TestDomain\LightColorExtensions.cs" />
     <Compile Include="TestDomain\MetallicColor.cs" />
     <Compile Include="TestDomain\MetallicColorExtensions.cs" />
+    <Compile Include="TestDomain\MixedColorExtensions.cs" />
     <Compile Include="TestDomain\Resources\ColorExtensions.Designer.cs">
       <DependentUpon>ColorExtensions.resx</DependentUpon>
     </Compile>
@@ -88,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TestDomain\Resources\ColorExtensions.resx" />
+    <EmbeddedResource Include="TestDomain\Resources\MixedColorExtensions.resx" />
     <EmbeddedResource Include="TestDomain\Resources\LightColorExtensions.resx" />
   </ItemGroup>
   <ItemGroup>
