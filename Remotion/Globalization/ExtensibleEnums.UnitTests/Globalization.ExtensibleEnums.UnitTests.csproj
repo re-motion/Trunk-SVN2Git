@@ -59,6 +59,7 @@
     </Compile>
     <Compile Include="ExtensibleEnumGlobalizationServiceExtensionsTest.cs" />
     <Compile Include="Implementation\CompoundEnumerationGlobalizationServiceTest.cs" />
+    <Compile Include="Implementation\MultiLingualNameBasedEnumerationGlobalizationServiceTest.cs" />
     <Compile Include="IntegrationTests\ResourceManagerBasedExtensibleEnumGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="Implementation\ResourceManagerBasedExtensibleEnumGlobalizationServiceTest.cs" />
     <Compile Include="Obsolete\ExtensibleEnumExtensionsIntegrationTest.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestDomain\Color.cs" />
     <Compile Include="TestDomain\ColorExtensions.cs" />
+    <Compile Include="TestDomain\DarkColorExtensions.cs" />
     <Compile Include="TestDomain\LightColorExtensions.cs" />
     <Compile Include="TestDomain\MetallicColor.cs" />
     <Compile Include="TestDomain\MetallicColorExtensions.cs" />

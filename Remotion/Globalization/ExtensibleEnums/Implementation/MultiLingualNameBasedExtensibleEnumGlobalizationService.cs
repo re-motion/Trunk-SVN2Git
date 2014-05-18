@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Remotion.ExtensibleEnums;
 using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
@@ -35,20 +36,20 @@ namespace Remotion.Globalization.ExtensibleEnums.Implementation
   {
     public const int Position = 0;
 
-    private class LocalizedNameForEnumerationProvider : LocalizedNameProviderBase<IExtensibleEnum>
+    private class LocalizedNameForEnumerationProvider : LocalizedNameProviderBase<MethodInfo>
     {
-      protected override IEnumerable<MultiLingualNameAttribute> GetCustomAttributes (IExtensibleEnum value)
+      protected override IEnumerable<MultiLingualNameAttribute> GetCustomAttributes (MethodInfo definingMethod)
       {
-        ArgumentUtility.CheckNotNull ("value", value);
+        ArgumentUtility.CheckNotNull ("definingMethod", definingMethod);
 
-        return Enumerable.Empty<MultiLingualNameAttribute>();
+        return definingMethod.GetCustomAttributes<MultiLingualNameAttribute>(false);
       }
 
-      protected override string GetContextForExceptionMessage (IExtensibleEnum value)
+      protected override string GetContextForExceptionMessage (MethodInfo definingMethod)
       {
-        ArgumentUtility.CheckNotNull ("value", value);
+        ArgumentUtility.CheckNotNull ("definingMethod", definingMethod);
 
-        return string.Format ("The enum value '{0}' declared on type '{1}'", value, value.GetType());
+        return string.Format ("The extensible enum value '{0}' declared on type '{1}'", definingMethod.Name, definingMethod.DeclaringType);
       }
     }
 
@@ -62,9 +63,13 @@ namespace Remotion.Globalization.ExtensibleEnums.Implementation
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
-      result = null;
-      return false;
-      //return _localizedNameForEnumerationProvider.TryGetLocalizedNameForCurrentUICulture (value, out result);
+      var extensibleEnumInfo = value.GetValueInfo();
+      Assertion.IsNotNull (extensibleEnumInfo, "No value info found for extensible enum '{0}'.", value.ID);
+
+      var definingMethod = extensibleEnumInfo.DefiningMethod;
+      Assertion.IsNotNull (definingMethod, "No defining method found for extensible enum '{0}'.", value.ID);
+
+      return _localizedNameForEnumerationProvider.TryGetLocalizedNameForCurrentUICulture (definingMethod, out result);
     }
   }
 }
