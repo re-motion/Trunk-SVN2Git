@@ -58,6 +58,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="ExtensibleEnumGlobalizationServiceExtensionsTest.cs" />
+    <Compile Include="Implementation\CompoundEnumerationGlobalizationServiceTest.cs" />
     <Compile Include="IntegrationTests\ResourceManagerBasedExtensibleEnumGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="Implementation\ResourceManagerBasedExtensibleEnumGlobalizationServiceTest.cs" />
     <Compile Include="Obsolete\ExtensibleEnumExtensionsIntegrationTest.cs" />
