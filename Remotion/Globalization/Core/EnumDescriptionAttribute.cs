@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Remotion.Utilities;
 
 namespace Remotion.Globalization
 {
@@ -24,20 +23,16 @@ namespace Remotion.Globalization
   /// Use this attribute to specify a non-globalized text representation of a certain enumeration value.
   /// </summary>
   [AttributeUsage (AttributeTargets.Field, AllowMultiple = false)]
-  public class EnumDescriptionAttribute: Attribute
+  public class EnumDescriptionAttribute : MultiLingualNameAttribute
   {
-    private readonly string _description;
-
     public EnumDescriptionAttribute (string description)
+        : base (description, "")
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("description", description);
-      
-      _description = description;
     }
 
     public string Description
     {
-      get { return _description; }
+      get { return base.LocalizedName; }
     }
   }
 }

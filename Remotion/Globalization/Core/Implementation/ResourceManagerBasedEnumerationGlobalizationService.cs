@@ -34,7 +34,6 @@ namespace Remotion.Globalization.Implementation
   {
     public const int Position = MultiLingualNameBasedEnumerationGlobalizationService.Position - 1;
 
-    private readonly ICache<Enum, string> _staticEnumValues = CacheFactory.CreateWithLocking<Enum, string>();
     private readonly IGlobalizationService _globalizationService;
     private readonly IMemberInformationNameResolver _memberInformationNameResolver;
 
@@ -54,28 +53,7 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("value", value);
 
       var resourceManager = _globalizationService.GetResourceManager (value.GetType());
-      if (!resourceManager.IsNull)
-        return resourceManager.TryGetString (_memberInformationNameResolver.GetEnumName (value), out result);
-
-      result = _staticEnumValues.GetOrCreateValue (value, GetStaticEnumValues);
-      return result != null;
-    }
-
-    private string GetStaticEnumValues (Enum value)
-    {
-      var field = GetField (value);
-      if (field != null)
-      {
-        var descriptionAttribute = AttributeUtility.GetCustomAttribute<EnumDescriptionAttribute> (field, false);
-        if (descriptionAttribute != null)
-          return descriptionAttribute.Description;
-      }
-      return null;
-    }
-
-    private FieldInfo GetField (Enum value)
-    {
-      return value.GetType().GetField (value.ToString(), BindingFlags.Static | BindingFlags.Public);
+      return resourceManager.TryGetString (_memberInformationNameResolver.GetEnumName (value), out result);
     }
   }
 }

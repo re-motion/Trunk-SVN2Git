@@ -70,18 +70,12 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetEnumerationValueDisplayName_WithoutResourceManager_UsesEnumDescriptions ()
+    public void TryGetEnumerationValueDisplayName_WithoutResourceManager_ReturnsNull ()
     {
-      _globalizationServiceStub.Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (EnumWithDescription)))).Return (NullResourceManager.Instance);
+      _globalizationServiceStub.Stub (_ => _.GetResourceManager (TypeAdapter.Create (typeof (EnumWithResources)))).Return (NullResourceManager.Instance);
 
       string resourceValue;
-      Assert.That (_service.TryGetEnumerationValueDisplayName (EnumWithDescription.Value1, out resourceValue), Is.True);
-      Assert.That (resourceValue, Is.EqualTo ("Value I"));
-
-      Assert.That (_service.TryGetEnumerationValueDisplayName (EnumWithDescription.Value2, out resourceValue), Is.True);
-      Assert.That (resourceValue, Is.EqualTo ("Value II"));
-
-      Assert.That (_service.TryGetEnumerationValueDisplayName (EnumWithDescription.ValueWithoutDescription, out resourceValue), Is.False);
+      Assert.That (_service.TryGetEnumerationValueDisplayName (EnumWithResources.Value1, out resourceValue), Is.False);
       Assert.That (resourceValue, Is.Null);
     }
   }
