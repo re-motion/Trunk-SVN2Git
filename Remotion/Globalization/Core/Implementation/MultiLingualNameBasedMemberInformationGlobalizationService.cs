@@ -42,13 +42,7 @@ namespace Remotion.Globalization.Implementation
       {
         ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
 
-        for (var currentTypeInformation = typeInformation; currentTypeInformation != null; currentTypeInformation = currentTypeInformation.BaseType)
-        {
-          MultiLingualNameAttribute[] attributes = currentTypeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false);
-          if (attributes.Any())
-            return attributes;
-        }
-        return Enumerable.Empty<MultiLingualNameAttribute>();
+        return typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false);
       }
 
       protected override string GetContextForExceptionMessage (ITypeInformation typeInformation)

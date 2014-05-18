@@ -226,24 +226,14 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
     }
 
     [Test]
-    public void Test_WithMultiLingualNameAttributeOnlyOnBaseClass_ReturnsTheNameForTheBaseClass ()
+    public void Test_WithMultiLingualNameAttributeOnlyOnBaseClass_DoesNotCheckBaseClass ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
-
-      var typeInformationForBaseClassStub = MockRepository.GenerateStub<ITypeInformation>();
-      typeInformationForBaseClassStub
-          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
-          .Return (
-              new[]
-              {
-                  new MultiLingualNameAttribute ("The Name", "")
-              });
 
       var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
       typeInformationStub
           .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
           .Return (new MultiLingualNameAttribute[0]);
-      typeInformationStub.Stub (_ => _.BaseType).Return (typeInformationForBaseClassStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -251,8 +241,9 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
 
       var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
 
-      Assert.That (result, Is.True);
-      Assert.That (multiLingualName, Is.EqualTo ("The Name"));
+      Assert.That (result, Is.False);
+      Assert.That (multiLingualName, Is.Null);
+      typeInformationStub.AssertWasNotCalled (_ => _.BaseType);
     }
 
     [Test]

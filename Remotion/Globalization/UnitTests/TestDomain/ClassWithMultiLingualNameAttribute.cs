@@ -29,5 +29,8 @@ namespace Remotion.Globalization.UnitTests.TestDomain
     [MultiLingualName ("de-AT Property Name", "de-AT")]
     [MultiLingualName ("de Property Name", "de")]
     public virtual int PropertyWithMultiLingualNameAttribute { get; set; }
+
+    [MultiLingualName ("Invariant Property Name", "")]
+    public virtual int PropertyWithMultiLingualNameAttributeOnOverride { get; set; }
   }
 }

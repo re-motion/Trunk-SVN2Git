@@ -243,6 +243,23 @@ namespace Remotion.Globalization.UnitTests.IntegrationTests
     }
 
     [Test]
+    public void TryGetPropertyDisplayName_WithMultiLingualNameAttributeAppliedToOverride_ThrowsInvalidOperationException ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();
+
+      string resourceValue;
+      Assert.That (
+          () =>
+              service.TryGetPropertyDisplayName (
+                  PropertyInfoAdapter.Create (
+                      typeof (DerivedClassWithMultiLingualNameAttribute)
+                          .GetProperty ("PropertyWithMultiLingualNameAttributeOnOverride")),
+                  TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes)),
+                  out resourceValue),
+          Throws.InvalidOperationException);
+    }
+
+    [Test]
     public void GetPropertyDisplayName ()
     {
       var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();

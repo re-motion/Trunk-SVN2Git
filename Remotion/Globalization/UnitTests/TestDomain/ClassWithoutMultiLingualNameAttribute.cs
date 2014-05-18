@@ -18,7 +18,7 @@ using System;
 
 namespace Remotion.Globalization.UnitTests.TestDomain
 {
-  public class ClassWithoutMultiLingualNameAttribute
+  public class ClassWithoutMultiLingualNameAttribute : ClassWithMultiLingualNameAttribute
   {
     public virtual int PropertyWithoutMultiLingualNameAttribute { get; set; }
   }
