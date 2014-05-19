@@ -163,7 +163,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      Type originalDeclaringType = Utilities.ReflectionUtility.GetOriginalDeclaringType (propertyInfo);
+      Type originalDeclaringType = PropertyInfoExtensions.GetOriginalDeclaringType (propertyInfo);
       if (originalDeclaringType.IsGenericType)
         return GetPropertyName (originalDeclaringType.GetGenericTypeDefinition(), propertyInfo.Name);
       else

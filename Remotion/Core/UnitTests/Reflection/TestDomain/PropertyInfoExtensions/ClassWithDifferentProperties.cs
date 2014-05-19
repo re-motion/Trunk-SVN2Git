@@ -18,7 +18,7 @@
 using System;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain
+namespace Remotion.UnitTests.Reflection.TestDomain.PropertyInfoExtensions
 {
   public abstract class ClassWithDifferentProperties
   {

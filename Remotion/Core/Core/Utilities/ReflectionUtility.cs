@@ -164,82 +164,6 @@ namespace Remotion.Utilities
     }
 
     /// <summary>
-    /// <see cref="PropertyInfo"/> object for the property on the direct or indirect base class in which the property represented by this instance was first declared.
-    /// </summary>
-    /// <returns>A <see cref="PropertyInfo"/> object for the first implementation of this method.</returns>
-    public static PropertyInfo GetBaseDefinition (PropertyInfo propertyInfo)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      var declaringType = propertyInfo.DeclaringType;
-      if (declaringType == null)
-        return propertyInfo;
-
-      MethodInfo[] accessors = propertyInfo.GetAccessors (true);
-      if (accessors.Length == 0)
-      {
-        throw new ArgumentException (
-            String.Format ("The property does not define any accessors.\r\n  Type: {0}, property: {1}", declaringType, propertyInfo.Name),
-            "propertyInfo");
-      }
-
-      var originalDeclaringType = GetOriginalDeclaringType (propertyInfo);
-
-      if (originalDeclaringType == null)
-        return propertyInfo;
-
-      if (declaringType == originalDeclaringType)
-        return propertyInfo;
-
-      var accessorBaseDefinitions = accessors.Select (a => a.GetBaseDefinition()).ToArray();
-
-      var baseDefinition = originalDeclaringType
-          .GetProperties (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-          .Where (p => p.Name == propertyInfo.Name)
-          .Where (p => p.GetIndexParameters().Length == propertyInfo.GetIndexParameters().Length)
-          .Where (p => p.GetAccessors (true).All (a => accessorBaseDefinitions.Contains (a, MemberInfoEqualityComparer<MethodInfo>.Instance)))
-          .SingleOrDefault (
-              () => new AmbiguousMatchException (
-                  string.Format (
-                      "The property '{0}' declared on derived type '{1}' resolves to more than one possible base definition on type '{2}'.",
-                      propertyInfo.Name,
-                      declaringType,
-                      originalDeclaringType)));
-
-      if (baseDefinition == null)
-      {
-        throw new MissingMemberException (
-            string.Format (
-                "The property '{0}' declared on derived type '{1}' could not be resolved for base type '{2}'.",
-                propertyInfo.Name,
-                declaringType,
-                originalDeclaringType));
-      }
-
-      return baseDefinition;
-    }
-
-    /// <summary>
-    /// Returns the <see cref="Type"/> where the property was initially decelared.
-    /// </summary>
-    /// <param name="propertyInfo">The property whose identifier should be returned. Must not be <see langword="null" />.</param>
-    /// <returns>The <see cref="Type"/> where the property was declared for the first time.</returns>
-    public static Type GetOriginalDeclaringType (PropertyInfo propertyInfo)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      MethodInfo[] accessors = propertyInfo.GetAccessors (true);
-      if (accessors.Length == 0)
-      {
-        throw new ArgumentException (
-            String.Format ("The property does not define any accessors.\r\n  Type: {0}, property: {1}", propertyInfo.DeclaringType, propertyInfo.Name),
-            "propertyInfo");
-      }
-
-      return GetOriginalDeclaringType (accessors[0]);
-    }
-
-    /// <summary>
     /// Returns the <see cref="Type"/> where the method was initially declared.
     /// </summary>
     /// <param name="methodInfo">The method whose type should be returned. Must not be <see langword="null" />.</param>
@@ -249,39 +173,6 @@ namespace Remotion.Utilities
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       return methodInfo.GetBaseDefinition ().DeclaringType;
     }
-
-    
-    /// <summary>
-    /// Determines whether the given <see cref="PropertyInfo"/> is the original base declaration.
-    /// </summary>
-    /// <param name="propertyInfo">The property info to check.</param>
-    /// <returns>
-    /// 	<see langword="true"/> if the <paramref name="propertyInfo"/> is the first declaration of the property; <see langword="false"/> if it is an 
-    /// 	overrride.
-    /// </returns>
-    public static bool IsOriginalDeclaration (PropertyInfo propertyInfo)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      Type originalDeclaringType = GetOriginalDeclaringType (propertyInfo);
-      return propertyInfo.DeclaringType == originalDeclaringType;
-    }
-
-
-    /// <summary>
-    /// Guesses whether the given property is an explicit interface implementation by checking whether it has got private virtual final accessors.
-    /// This can be used as a heuristic to find explicit interface properties without having to check InterfaceMaps for every interface on
-    /// info.DeclaringType. With C# and VB.NET, the heuristic should always be right.
-    /// </summary>
-    /// <param name="info">The property to check.</param>
-    /// <returns>True, if the property is very likely an explicit interface implementation (at least in C# and VB.NET code); otherwise, false.</returns>
-    public static bool GuessIsExplicitInterfaceProperty (PropertyInfo info)
-    {
-      ArgumentUtility.CheckNotNull ("info", info);
-
-      return info.GetAccessors (true).Any (accessor => accessor.IsPrivate && accessor.IsVirtual && accessor.IsFinal);
-    }
-
 
     /// <summary>
     /// Evaluates whether the <paramref name="type"/> can be ascribed to the <paramref name="ascribeeType"/>.

@@ -52,11 +52,11 @@ namespace Remotion.Reflection
       _propertyInfo = propertyInfo;
 
       _cachedOriginalDeclaringType = new Lazy<ITypeInformation> (
-          () => TypeAdapter.Create (ReflectionUtility.GetOriginalDeclaringType (_propertyInfo)),
+          () => TypeAdapter.Create (PropertyInfoExtensions.GetOriginalDeclaringType (_propertyInfo)),
           LazyThreadSafetyMode.ExecutionAndPublication);
 
       _cachedOriginalDeclaration = new Lazy<IPropertyInformation> (
-          () => PropertyInfoAdapter.Create (ReflectionUtility.GetBaseDefinition (_propertyInfo)),
+          () => PropertyInfoAdapter.Create (PropertyInfoExtensions.GetBaseDefinition (_propertyInfo)),
           LazyThreadSafetyMode.ExecutionAndPublication);
     }
 

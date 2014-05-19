@@ -274,6 +274,7 @@
     <Compile Include="Obsolete\Globalization\ResourceManagerWrapper.cs" />
     <Compile Include="Reflection\IMemberInformationNameResolver.cs" />
     <Compile Include="Obsolete\Reflection\ParamList.cs" />
+    <Compile Include="Reflection\PropertyInfoExtensions.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInformationNameResolver.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyNameCache.cs">
       <SubType>Code</SubType>

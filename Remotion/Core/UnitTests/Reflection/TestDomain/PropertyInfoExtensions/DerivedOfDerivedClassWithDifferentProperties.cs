@@ -14,13 +14,31 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 
-namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain
+namespace Remotion.UnitTests.Reflection.TestDomain.PropertyInfoExtensions
 {
-  public abstract class GenericClassWithDifferentProperties<T>
+  public abstract class DerivedOfDerivedClassWithDifferentProperties : DerivedClassWithDifferentProperties
   {
-    public abstract T AbstractT { get; set; }
-    public virtual T VirtualT { get; set; }
+    public new static int StaticInt32 { get; set; }
+
+    public override int Int32
+    {
+      get { return 0; }
+      set { }
+    }
+
+    protected override int ProtectedInt32
+    {
+      get { return 0; }
+      set { }
+    }
+
+    public override int this [int p]
+    {
+      get { return 0; }
+      set { }
+    }
   }
 }

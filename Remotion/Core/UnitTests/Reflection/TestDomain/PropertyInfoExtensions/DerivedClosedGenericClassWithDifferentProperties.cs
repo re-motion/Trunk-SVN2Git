@@ -17,28 +17,17 @@
 
 using System;
 
-namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain
+namespace Remotion.UnitTests.Reflection.TestDomain.PropertyInfoExtensions
 {
-  public abstract class DerivedOfDerivedClassWithDifferentProperties : DerivedClassWithDifferentProperties
+  public abstract class DerivedClosedGenericClassWithDifferentProperties : GenericClassWithDifferentProperties<int>
   {
-    public new static int StaticInt32 { get; set; }
-
-    public override int Int32
+    public override int AbstractT
     {
-      get { return 0; }
+      get { return default (int); }
       set { }
     }
 
-    protected override int ProtectedInt32
-    {
-      get { return 0; }
-      set { }
-    }
-
-    public override int this [int p]
-    {
-      get { return 0; }
-      set { }
-    }
+    public abstract int OtherVirtualT { get; set; }
+    public new abstract int VirtualT { get; set; }
   }
 }

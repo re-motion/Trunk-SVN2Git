@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain;
-using Remotion.Utilities;
+using Remotion.Reflection;
+using Remotion.UnitTests.Reflection.TestDomain.PropertyInfoExtensions;
 
-namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
+namespace Remotion.UnitTests.Reflection.PropertyInfoExtensionsTests
 {
   [TestFixture]
   public class GetBaseDefinition
@@ -30,7 +31,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<ClassWithDifferentProperties> ("String");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (propertyInfo));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (propertyInfo));
     }
 
     [Test]
@@ -38,7 +39,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo (typeof (GenericClassWithDifferentProperties<>), "AbstractT");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (propertyInfo));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (propertyInfo));
     }
 
     [Test]
@@ -46,7 +47,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<GenericClassWithDifferentProperties<int>> ("AbstractT");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (propertyInfo));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (propertyInfo));
     }
 
     [Test]
@@ -54,7 +55,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedClassWithDifferentProperties> ("OtherString");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo<DerivedClassWithDifferentProperties> ("OtherString")));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (GetPropertyInfo<DerivedClassWithDifferentProperties> ("OtherString")));
     }
 
     [Test]
@@ -62,7 +63,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedClassWithDifferentProperties> ("String");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo<DerivedClassWithDifferentProperties> ("String")));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (GetPropertyInfo<DerivedClassWithDifferentProperties> ("String")));
     }
 
     [Test]
@@ -70,7 +71,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<ClassWithDifferentProperties> ("Int32");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("Int32")));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("Int32")));
     }
 
     [Test]
@@ -78,7 +79,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedClassWithDifferentProperties> ("Int32");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("Int32")));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("Int32")));
     }
 
     [Test]
@@ -86,7 +87,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo (typeof (DerivedOpenGenericClassWithDifferentProperties<>), "AbstractT");
 
-      var baseDefinition = ReflectionUtility.GetBaseDefinition (propertyInfo);
+      var baseDefinition = propertyInfo.GetBaseDefinition();
       Assert.That (baseDefinition.DeclaringType.Name, Is.EqualTo (typeof (GenericClassWithDifferentProperties<>).Name));
       Assert.That (baseDefinition.Name, Is.EqualTo (propertyInfo.Name));
     }
@@ -96,7 +97,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedOpenGenericClassWithDifferentProperties<int>> ("AbstractT");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo (typeof (GenericClassWithDifferentProperties<int>), "AbstractT")));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (GetPropertyInfo (typeof (GenericClassWithDifferentProperties<int>), "AbstractT")));
     }
 
     [Test]
@@ -104,7 +105,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedClosedGenericClassWithDifferentProperties> ("AbstractT");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo (typeof (GenericClassWithDifferentProperties<int>), "AbstractT")));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (GetPropertyInfo (typeof (GenericClassWithDifferentProperties<int>), "AbstractT")));
     }
 
     [Test]
@@ -112,7 +113,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedOfDerivedClassWithDifferentProperties> ("Int32");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("Int32")));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("Int32")));
     }
 
     [Test]
@@ -120,7 +121,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedOfDerivedClassWithDifferentProperties> ("ProtectedInt32");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("ProtectedInt32")));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("ProtectedInt32")));
     }
 
     [Test]
@@ -128,7 +129,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<DerivedOfDerivedClassWithDifferentProperties> ("StaticInt32");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo<DerivedOfDerivedClassWithDifferentProperties> ("StaticInt32")));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (GetPropertyInfo<DerivedOfDerivedClassWithDifferentProperties> ("StaticInt32")));
     }
 
     [Test]
@@ -136,7 +137,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = GetPropertyInfo<ClassWithDifferentProperties> ("PrivateStaticInt32");
 
-      Assert.That (ReflectionUtility.GetBaseDefinition (propertyInfo), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("PrivateStaticInt32")));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (GetPropertyInfo<ClassWithDifferentProperties> ("PrivateStaticInt32")));
     }
 
     [Test]
@@ -144,9 +145,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     {
       PropertyInfo propertyInfo = typeof (DerivedOfDerivedClassWithDifferentProperties).GetProperty ("Item", new[] { typeof (int) });
 
-      Assert.That (
-          ReflectionUtility.GetBaseDefinition (propertyInfo),
-          Is.SameAs (typeof (ClassWithDifferentProperties).GetProperty ("Item", new[] { typeof (int) })));
+      Assert.That (propertyInfo.GetBaseDefinition(), Is.SameAs (typeof (ClassWithDifferentProperties).GetProperty ("Item", new[] { typeof (int) })));
     }
 
     private PropertyInfo GetPropertyInfo<T> (string property)
