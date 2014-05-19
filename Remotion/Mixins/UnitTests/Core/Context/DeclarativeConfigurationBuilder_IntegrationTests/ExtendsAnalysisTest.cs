@@ -175,7 +175,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (GenericMixinWithSpecialization<,>)).BuildConfiguration ();
       MixinContext mixinContext = new List<MixinContext> (configuration.GetContext (typeof (ExtendsTargetBase)).Mixins)[0];
-      Assert.That (ReflectionUtility.CanAscribe (mixinContext.MixinType, typeof (GenericMixinWithSpecialization<,>)), Is.True);
+      Assert.That (Reflection.TypeExtensions.CanAscribeTo (mixinContext.MixinType, typeof (GenericMixinWithSpecialization<,>)), Is.True);
       Assert.That (mixinContext.MixinType.IsGenericTypeDefinition, Is.False);
       Assert.That (mixinContext.MixinType.ContainsGenericParameters, Is.False);
       Assert.That (mixinContext.MixinType.GetGenericArguments(), Is.EqualTo (new[] {typeof (List<int>), typeof (IList<int>)}));

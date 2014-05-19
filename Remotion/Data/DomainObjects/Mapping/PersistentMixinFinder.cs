@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Mixins.Context;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -37,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
 
-      return Utilities.ReflectionUtility.CanAscribe (mixinType, typeof (DomainObjectMixin<,>));
+      return TypeExtensions.CanAscribeTo (mixinType, typeof (DomainObjectMixin<,>));
     }
 
     private static ClassContext CreateEmptyClassContext (Type type)

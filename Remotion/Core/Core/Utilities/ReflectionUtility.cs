@@ -14,42 +14,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Collections;
-using Remotion.FunctionalProgramming;
+using Remotion.Reflection;
 
 namespace Remotion.Utilities
 {
+  [Obsolete ("Use TypeExtensions, PropertyInfoExtensions, and MethodInfoExtensions instead. (Version 1.15.17.0)")]
   public static class ReflectionUtility
   {
-    private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeCache = CacheFactory.CreateWithLocking<Tuple<Type, Type>, bool>();
-    private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeInternalCache =
-        CacheFactory.CreateWithLocking<Tuple<Type, Type>, bool>();
-    private static readonly LockingCacheDecorator<Tuple<Type, Type>, Type[]> s_ascribedGenericArgumentsCache =
-        CacheFactory.CreateWithLocking<Tuple<Type, Type>, Type[]>();
-    private static readonly LockingCacheDecorator<Tuple<Type, Type, Type>, bool> s_canDirectlyAscribeToGenericTypeInternalCache =
-        CacheFactory.CreateWithLocking<Tuple<Type, Type, Type>, bool>();
-
-    [Obsolete ("Replace with AttributeUtilities.GetCustomAttriubte")]
+    [Obsolete ("This method has been replaced by AttributeUtilities.GetCustomAttriubte. (Version 1.9.2)", true)]
     public static object GetSingleAttribute (MemberInfo member, Type attributeType, bool inherit, bool throwExceptionIfNotPresent)
     {
-      object[] attributes = member.GetCustomAttributes (attributeType, inherit);
-      if (attributes.Length > 1)
-        throw new InvalidOperationException (String.Format ("More that one attribute of type {0} found for {1} {2}. Only single attributes are supported by this method.", attributeType.FullName, member.MemberType, member));
-      if (attributes.Length == 0)
-      {
-        if (throwExceptionIfNotPresent)
-          throw new ApplicationException (String.Format ("{0} {1} does not have attribute {2}.", member.MemberType, member, attributeType.FullName));
-        else
-          return null;
-      }
-      return attributes[0];
+      throw new NotImplementedException ("Obsolete. Use AttributeUtilities.GetCustomAttriubte instead.");
     }
 
-    [Obsolete ("This method has been replaced by MemberInfoFromExpressionUtility.GetMember. (1.13.148)", true)]
+    [Obsolete ("This method has been replaced by MemberInfoFromExpressionUtility.GetMember. (Version 1.13.148)", true)]
     public static MemberInfo GetMemberFromExpression<TSourceObject, TResult> (Expression<Func<TSourceObject, TResult>> memberAccessExpression)
     {
       throw new NotImplementedException ("Obsolete. Use MemberInfoFromExpressionUtility.GetMember instead.");
@@ -64,25 +46,13 @@ namespace Remotion.Utilities
     /// <see langword="true"/> if the <paramref name="type"/> is the <paramref name="ascribeeType"/> or its instantiation, 
     /// its subclass or the implementation of an interface in case the <paramref name="ascribeeType"/> is an interface.
     /// </returns>
+    [Obsolete ("Use Remotion.Reflection.TypeExtensions.CanAscribeTo (type, ascribeeType) instead. (Version 1.15.17.0)")]
     public static bool CanAscribe (Type type, Type ascribeeType)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("ascribeeType", ascribeeType);
 
-      return s_canAscribeCache.GetOrCreateValue (
-          Tuple.Create (type, ascribeeType),
-          key =>
-          {
-            if (key.Item2.IsInterface)
-            {
-              if (key.Item1.IsInterface && CanAscribeInternalFromCache (key.Item1, key.Item2))
-                return true;
-
-              return Array.Exists (key.Item1.GetInterfaces(), current => CanAscribeInternalFromCache (current, key.Item2));
-            }
-            else
-              return CanAscribeInternalFromCache(type, ascribeeType);
-          });
+      return type.CanAscribeTo (ascribeeType);
     }
 
     /// <summary>
@@ -100,123 +70,13 @@ namespace Remotion.Utilities
     /// Thrown if the <paramref name="type"/> is an interface and implements the interface <paramref name="ascribeeType"/> or its instantiations
     /// more than once.
     /// </exception>
+    [Obsolete ("Use Remotion.Reflection.TypeExtensions.GetAscribedGenericArguments (type, ascribeeType) instead. (Version 1.15.17.0)")]
     public static Type[] GetAscribedGenericArguments (Type type, Type ascribeeType)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("ascribeeType", ascribeeType);
 
-      return s_ascribedGenericArgumentsCache.GetOrCreateValue (
-          Tuple.Create (type, ascribeeType), key => GetAscribedGenericArgumentsWithoutCache (key.Item1, key.Item2));
-    }
-
-    private static bool CanAscribeInternalFromCache (Type type, Type ascribeeType)
-    {
-      return s_canAscribeInternalCache.GetOrCreateValue (Tuple.Create (type, ascribeeType), key => CanAscribeInternal (key.Item1, key.Item2));
-    }
-
-    private static bool CanAscribeInternal (Type type, Type ascribeeType)
-    {
-      if (!ascribeeType.IsGenericType)
-        return ascribeeType.IsAssignableFrom (type);
-
-      Type ascribeeGenericTypeDefinition = ascribeeType.GetGenericTypeDefinition();
-      for (Type currentType = type; currentType != null; currentType = currentType.BaseType)
-      {
-        if (CanDirectlyAscribeToGenericTypeInternalFromCache (currentType, ascribeeType, ascribeeGenericTypeDefinition))
-          return true;
-      }
-      return false;
-    }
-
-    private static Type[] GetAscribedGenericArgumentsWithoutCache (Type type, Type ascribeeType)
-    {
-      if (!ascribeeType.IsGenericType)
-      {
-        if (ascribeeType.IsAssignableFrom (type))
-          return Type.EmptyTypes;
-        else
-          throw ArgumentUtility.CreateArgumentTypeException ("type", type, ascribeeType);
-      }
-      else if (ascribeeType.IsInterface)
-        return GetAscribedGenericInterfaceArgumentsInternal (type, ascribeeType);
-      else
-        return GetAscribedGenericClassArgumentsInternal (type, ascribeeType);
-    }
-
-    private static Type[] GetAscribedGenericInterfaceArgumentsInternal (Type type, Type ascribeeType)
-    {
-      Assertion.IsTrue (ascribeeType.IsGenericType);
-      Assertion.IsTrue (ascribeeType.IsInterface);
-
-      Type ascribeeGenericTypeDefinition = ascribeeType.GetGenericTypeDefinition ();
-
-      Type conreteSpecialization; // concrete specialization of ascribeeType implemented by type
-      // is type itself a specialization of ascribeeType?
-      if (type.IsInterface && CanDirectlyAscribeToGenericTypeInternalFromCache (type, ascribeeType, ascribeeGenericTypeDefinition))
-        conreteSpecialization = type;
-      else
-      {
-        // Type.GetInterfaces will return all interfaces inherited by type. We will filter it to those that are directly ascribable
-        // to ascribeeType. Since interfaces have no base types, these can only be closed or constructed specializations of ascribeeType.
-        Type[] ascribableInterfaceTypes = Array.FindAll (
-            type.GetInterfaces (),
-            current => CanDirectlyAscribeToGenericTypeInternalFromCache (current, ascribeeType, ascribeeGenericTypeDefinition));
-
-        if (ascribableInterfaceTypes.Length == 0)
-          conreteSpecialization = null;
-        else if (ascribableInterfaceTypes.Length == 1)
-          conreteSpecialization = ascribableInterfaceTypes[0];
-        else
-        {
-          string message = 
-              String.Format ("The type {0} implements the given interface type {1} more than once.", type.FullName, ascribeeType.FullName);
-          throw new AmbiguousMatchException (message);
-        }
-      }
-
-      if (conreteSpecialization == null)
-        throw ArgumentUtility.CreateArgumentTypeException ("type", type, ascribeeType);
-
-      Assertion.IsTrue (conreteSpecialization.GetGenericTypeDefinition () == ascribeeType.GetGenericTypeDefinition ());
-      return conreteSpecialization.GetGenericArguments ();
-    }
-
-    private static Type[] GetAscribedGenericClassArgumentsInternal (Type type, Type ascribeeType)
-    {
-      Assertion.IsTrue (ascribeeType.IsGenericType);
-      Assertion.IsTrue (!ascribeeType.IsInterface);
-
-      Type ascribeeGenericTypeDefinition = ascribeeType.GetGenericTypeDefinition ();
-
-      // Search via base type until we find a type that is directly ascribable to the base type. That's the type whose generic arguments we want
-      Type currentType = type;
-      while (currentType != null && !CanDirectlyAscribeToGenericTypeInternalFromCache (currentType, ascribeeType, ascribeeGenericTypeDefinition))
-        currentType = currentType.BaseType;
-
-      if (currentType != null)
-        return currentType.GetGenericArguments ();
-      else
-        throw ArgumentUtility.CreateArgumentTypeException ("type", type, ascribeeType);
-    }
-
-    private static bool CanDirectlyAscribeToGenericTypeInternalFromCache (Type type, Type ascribeeType, Type ascribeeGenericTypeDefinition)
-    {
-      return s_canDirectlyAscribeToGenericTypeInternalCache.GetOrCreateValue (
-        Tuple.Create (type, ascribeeType, ascribeeGenericTypeDefinition),
-        key => CanDirectlyAscribeToGenericTypeInternal (key.Item1, key.Item2, key.Item3));
-    }
-
-    private static bool CanDirectlyAscribeToGenericTypeInternal (Type type, Type ascribeeType, Type ascribeeGenericTypeDefinition)
-    {
-      Assertion.IsNotNull (ascribeeType);
-
-      if (!type.IsGenericType || type.GetGenericTypeDefinition () != ascribeeGenericTypeDefinition)
-        return false;
-
-      if (ascribeeType != ascribeeGenericTypeDefinition)
-        return ascribeeType.IsAssignableFrom (type);
-      else
-        return ascribeeType.IsAssignableFrom (type.GetGenericTypeDefinition ());
+      return type.GetAscribedGenericArguments (ascribeeType);
     }
   }
 }

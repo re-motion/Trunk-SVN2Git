@@ -575,10 +575,10 @@
     </Compile>
     <Compile Include="Utilities\NullComparerTest.cs" />
     <Compile Include="Utilities\NullValueConverterTest.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericClass.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericInterface.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericClass.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericInterface.cs" />
+    <Compile Include="Reflection\TypeExtensionsTests\CanAscribe_WithGenericClass.cs" />
+    <Compile Include="Reflection\TypeExtensionsTests\CanAscribe_WithGenericInterface.cs" />
+    <Compile Include="Reflection\TypeExtensionsTests\CanAscribe_WithNonGenericClass.cs" />
+    <Compile Include="Reflection\TypeExtensionsTests\CanAscribe_WithNonGenericInterface.cs" />
     <Compile Include="Reflection\PropertyInfoExtensionsTests\GetBaseDefinition.cs" />
     <Compile Include="Reflection\PropertyInfoExtensionsTests\IsOriginalDeclaration.cs" />
     <Compile Include="Reflection\MethodInfoExtensionsTests\GetOriginalDeclaringType.cs" />
@@ -588,13 +588,13 @@
     <Compile Include="Reflection\TestDomain\PropertyInfoExtensions\GenericClassWithDifferentProperties.cs" />
     <Compile Include="Reflection\TestDomain\PropertyInfoExtensions\DerivedOpenGenericClassWithDifferentProperties.cs" />
     <Compile Include="Reflection\TestDomain\PropertyInfoExtensions\DerivedClassWithDifferentProperties.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithGenericClass.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithGenericInterface.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithNonGenericClass.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithNonGenericInterface.cs" />
+    <Compile Include="Reflection\TypeExtensionsTests\GetAscribedGenericArguments_WithGenericClass.cs" />
+    <Compile Include="Reflection\TypeExtensionsTests\GetAscribedGenericArguments_WithGenericInterface.cs" />
+    <Compile Include="Reflection\TypeExtensionsTests\GetAscribedGenericArguments_WithNonGenericClass.cs" />
+    <Compile Include="Reflection\TypeExtensionsTests\GetAscribedGenericArguments_WithNonGenericInterface.cs" />
     <Compile Include="Reflection\PropertyInfoExtensionsTests\GetOriginalDeclaringType.cs" />
     <Compile Include="Reflection\PropertyInfoExtensionsTests\GuessIsExplicitInterfaceProperty.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\SampleTypes.cs" />
+    <Compile Include="Reflection\TypeExtensionsTests\SampleTypes.cs" />
     <Compile Include="Utilities\StopwatchScopeTest.cs" />
     <Compile Include="Utilities\StubStringUtility.cs">
       <SubType>Code</SubType>

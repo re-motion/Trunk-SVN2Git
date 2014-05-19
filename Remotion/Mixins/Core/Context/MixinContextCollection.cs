@@ -34,7 +34,7 @@ namespace Remotion.Mixins.Context
 
       foreach (MixinContext mixin in mixinContexts)
       {
-        if (ReflectionUtility.CanAscribe (mixin.MixinType, typeToSearchFor))
+        if (Reflection.TypeExtensions.CanAscribeTo (mixin.MixinType, typeToSearchFor))
           return mixin;
       }
       return null;

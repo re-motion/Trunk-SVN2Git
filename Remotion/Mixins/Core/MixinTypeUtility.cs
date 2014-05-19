@@ -24,7 +24,6 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Utilities;
 using Remotion.TypePipe;
 using Remotion.Utilities;
-using ReflectionUtility = Remotion.Utilities.ReflectionUtility;
 
 namespace Remotion.Mixins
 {
@@ -188,7 +187,7 @@ namespace Remotion.Mixins
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
 
       return GetMixinTypes (targetOrConcreteType)
-          .FirstOrDefault (configuredMixinType => ReflectionUtility.CanAscribe (configuredMixinType, mixinType));
+          .FirstOrDefault (configuredMixinType => Reflection.TypeExtensions.CanAscribeTo (configuredMixinType, mixinType));
     }
 
     /// <summary>

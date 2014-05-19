@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
@@ -133,8 +134,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     private Type GetRequiredItemType (Type collectionType)
     {
-      if (Utilities.ReflectionUtility.CanAscribe (collectionType, typeof (IEnumerable<>)))
-        return Utilities.ReflectionUtility.GetAscribedGenericArguments (collectionType, typeof (IEnumerable<>))[0];
+      if (TypeExtensions.CanAscribeTo (collectionType, typeof (IEnumerable<>)))
+        return TypeExtensions.GetAscribedGenericArguments (collectionType, typeof (IEnumerable<>))[0];
       else
         return null;
     }

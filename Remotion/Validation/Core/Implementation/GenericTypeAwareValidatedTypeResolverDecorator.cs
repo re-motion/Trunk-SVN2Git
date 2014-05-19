@@ -17,6 +17,7 @@
 
 using System;
 using System.Linq;
+using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -46,8 +47,8 @@ namespace Remotion.Validation.Implementation
     {
       ArgumentUtility.CheckNotNull ("collectorType", collectorType);
 
-      if (ReflectionUtility.CanAscribe (collectorType, typeof(IComponentValidationCollector<>)))
-        return ReflectionUtility.GetAscribedGenericArguments (collectorType, typeof(IComponentValidationCollector<>)).Single();
+      if (TypeExtensions.CanAscribeTo (collectorType, typeof(IComponentValidationCollector<>)))
+        return TypeExtensions.GetAscribedGenericArguments (collectorType, typeof(IComponentValidationCollector<>)).Single();
       return _validatedTypeResolver.GetValidatedType (collectorType);
     }
   }

@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
-using Remotion.Utilities;
+using Remotion.Reflection;
 
-namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
+namespace Remotion.UnitTests.Reflection.TypeExtensionsTests
 {
   [TestFixture]
   public class GetAscribedGenericArguments_WithNonGenericClass
@@ -26,23 +27,23 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     [Test]
     public void DerivedType ()
     {
-      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedType), typeof (DerivedType)), Is.EqualTo (new Type[0]));
+      Assert.That (TypeExtensions.GetAscribedGenericArguments (typeof (DerivedType), typeof (DerivedType)), Is.EqualTo (new Type[0]));
     }
 
     [Test]
     public void DerivedTypeFromBaseType ()
     {
-      Assert.That (ReflectionUtility.GetAscribedGenericArguments (typeof (DerivedType), typeof (BaseType)), Is.EqualTo (new Type[0]));
+      Assert.That (TypeExtensions.GetAscribedGenericArguments (typeof (DerivedType), typeof (BaseType)), Is.EqualTo (new Type[0]));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'type' has type 'Remotion.UnitTests.Utilities.ReflectionUtilityTests.BaseType' "
-        + "when type 'Remotion.UnitTests.Utilities.ReflectionUtilityTests.DerivedType' was expected.\r\n"
+        "Parameter 'type' has type 'Remotion.UnitTests.Reflection.TypeExtensionsTests.BaseType' "
+        + "when type 'Remotion.UnitTests.Reflection.TypeExtensionsTests.DerivedType' was expected.\r\n"
         + "Parameter name: type")]
     public void BaseType ()
     {
-      ReflectionUtility.GetAscribedGenericArguments (typeof (BaseType), typeof (DerivedType));
+      TypeExtensions.GetAscribedGenericArguments (typeof (BaseType), typeof (DerivedType));
     }
   }
 }

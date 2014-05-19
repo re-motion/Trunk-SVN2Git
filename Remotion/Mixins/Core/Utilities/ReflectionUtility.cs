@@ -31,7 +31,7 @@ namespace Remotion.Mixins.Utilities
     {
       ArgumentUtility.CheckNotNull ("type", type);
       
-      return Remotion.Utilities.ReflectionUtility.CanAscribe (type, typeof (Mixin<>));
+      return Reflection.TypeExtensions.CanAscribeTo (type, typeof (Mixin<>));
     }
 
     public static bool IsEqualOrInstantiationOf (Type typeToCheck, Type expectedType)

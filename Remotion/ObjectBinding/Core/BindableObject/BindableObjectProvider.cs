@@ -19,6 +19,7 @@ using System.Collections;
 using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.Utilities;
+using TypeExtensions = Remotion.Reflection.TypeExtensions;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -105,7 +106,7 @@ namespace Remotion.ObjectBinding.BindableObject
         throw new ArgumentException (message, "type");
       }
 
-      if (!ReflectionUtility.CanAscribe (attribute.BusinessObjectProviderType, typeof (BindableObjectProvider)))
+      if (!TypeExtensions.CanAscribeTo (attribute.BusinessObjectProviderType, typeof (BindableObjectProvider)))
       {
         var message = string.Format (
             "The business object provider associated with the type '{0}' is not of type '{1}'.",

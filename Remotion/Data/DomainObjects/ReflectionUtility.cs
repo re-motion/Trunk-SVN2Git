@@ -189,7 +189,7 @@ namespace Remotion.Data.DomainObjects
     /// </returns>
     public static bool IsObjectList (Type type)
     {
-      return Utilities.ReflectionUtility.CanAscribe (type, typeof (ObjectList<>));
+      return TypeExtensions.CanAscribeTo (type, typeof (ObjectList<>));
     }
 
     /// <summary>
@@ -264,7 +264,7 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     public static Type GetObjectListTypeParameter (Type type)
     {
-      Type[] typeParameters = Utilities.ReflectionUtility.GetAscribedGenericArguments (type, typeof (ObjectList<>));
+      Type[] typeParameters = TypeExtensions.GetAscribedGenericArguments (type, typeof (ObjectList<>));
       if (typeParameters == null)
         return null;
       return typeParameters[0];

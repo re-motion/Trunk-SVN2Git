@@ -295,14 +295,14 @@ namespace Remotion.Reflection
       if (otherTypeAsTypeAdapter == null)
         return false;
 
-      return ReflectionUtility.CanAscribe (_type, otherTypeAsTypeAdapter.Type);
+      return TypeExtensions.CanAscribeTo (_type, otherTypeAsTypeAdapter.Type);
     }
 
     public ITypeInformation[] GetAscribedGenericArgumentsFor (ITypeInformation c)
     {
       var otherTypeAsTypeAdapter = ArgumentUtility.CheckNotNullAndType<TypeAdapter> ("c", c);
 
-      return ConvertToTypeAdapters (ReflectionUtility.GetAscribedGenericArguments (_type, otherTypeAsTypeAdapter.Type));
+      return ConvertToTypeAdapters (TypeExtensions.GetAscribedGenericArguments (_type, otherTypeAsTypeAdapter.Type));
     }
 
     public override bool Equals (object obj)

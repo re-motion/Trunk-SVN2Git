@@ -40,7 +40,7 @@ namespace Remotion.Mixins.Context.Suppression
 
       foreach (var configuredMixinType in configuredMixinTypes.Keys.ToList()) // need to clone collection, otherwise we can't remove
       {
-        if (ReflectionUtility.CanAscribe (configuredMixinType, MixinBaseTypeToSuppress))
+        if (Reflection.TypeExtensions.CanAscribeTo (configuredMixinType, MixinBaseTypeToSuppress))
           configuredMixinTypes.Remove (configuredMixinType);
       }
     }

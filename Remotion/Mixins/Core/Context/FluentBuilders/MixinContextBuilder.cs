@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Remotion.Mixins.Context.Suppression;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.FluentBuilders
@@ -205,7 +206,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="Reflection.TypeExtensions.CanAscribeTo"/>), should be
     /// replaced by this mixin type.
     /// </summary>
     /// <param name="replacedMixinType">The mixin type, base type, or generic type definition denoting mixin types to be replaced.</param>
@@ -226,7 +227,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="Reflection.TypeExtensions.CanAscribeTo"/>), should be
     /// replaced by this mixin type.
     /// </summary>
     /// <typeparam name="TReplacedMixinType">The mixin type, base type, or generic type definition denoting mixin types to be replaced.</typeparam>
@@ -237,7 +238,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Denotes that specific mixin types, and all mixin types that can be ascribed to them (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// Denotes that specific mixin types, and all mixin types that can be ascribed to them (see <see cref="Reflection.TypeExtensions.CanAscribeTo"/>), should be
     /// replaced by this mixin type.
     /// </summary>
     /// <param name="replacedMixinTypes">The mixin types, base types, or generic type definitions denoting mixin types to be replaced.</param>
@@ -253,7 +254,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Denotes that specific mixin types, and all mixin types that can be ascribed to them (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// Denotes that specific mixin types, and all mixin types that can be ascribed to them (see <see cref="Reflection.TypeExtensions.CanAscribeTo"/>), should be
     /// replaced by this mixin type.
     /// </summary>
     /// <typeparam name="TReplacedMixinType1">The first mixin type, base type, or generic type definition denoting mixin types to be replaced.</typeparam>
@@ -265,7 +266,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Denotes that specific mixin types, and all mixin types that can be ascribed to them (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// Denotes that specific mixin types, and all mixin types that can be ascribed to them (see <see cref="Reflection.TypeExtensions.CanAscribeTo"/>), should be
     /// replaced by this mixin type.
     /// </summary>
     /// <typeparam name="TReplacedMixinType1">The first mixin type, base type, or generic type definition denoting mixin types to be replaced.</typeparam>
@@ -722,7 +723,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="Reflection.TypeExtensions.CanAscribeTo"/>), should be
     /// ignored in the context of this object's <see cref="ClassContextBuilder"/>. Suppression is helpful when a target class should take over most 
     /// of its mixins from the parent context or inherit mixins from another type, but a specific mixin should be ignored in that 
     /// process.
@@ -735,7 +736,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="Reflection.TypeExtensions.CanAscribeTo"/>), should be
     /// ignored in the context of this object's <see cref="ClassContextBuilder"/>. Suppression is helpful when a target class should take over most of its mixins from the
     /// parent context or inherit mixins from another type, but a specific mixin should be ignored in that process.
     /// </summary>
@@ -747,7 +748,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Denotes that a number of mixin types, and all mixin types that can be ascribed to it (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// Denotes that a number of mixin types, and all mixin types that can be ascribed to it (see <see cref="Reflection.TypeExtensions.CanAscribeTo"/>), should be
     /// ignored in the context of this object's <see cref="ClassContextBuilder"/>. Suppression is helpful when a target class should take over most of its mixins from the
     /// parent context or inherit mixins from another type, but a specific mixin should be ignored in that process.
     /// </summary>
@@ -759,7 +760,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Denotes that a number of mixin types, and all mixin types that can be ascribed to it (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// Denotes that a number of mixin types, and all mixin types that can be ascribed to it (see <see cref="Reflection.TypeExtensions.CanAscribeTo"/>), should be
     /// ignored in the context of this object's <see cref="ClassContextBuilder"/>. Suppression is helpful when a target class should take over most of its mixins from the
     /// parent context or inherit mixins from another type, but a specific mixin should be ignored in that process.
     /// </summary>
@@ -772,7 +773,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
-    /// Denotes that a number of mixin types, and all mixin types that can be ascribed to it (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// Denotes that a number of mixin types, and all mixin types that can be ascribed to it (see <see cref="Reflection.TypeExtensions.CanAscribeTo"/>), should be
     /// ignored in the context of this object's <see cref="ClassContextBuilder"/>. Suppression is helpful when a target class should take over most of its mixins from the
     /// parent context or inherit mixins from another type, but a specific mixin should be ignored in that process.
     /// </summary>

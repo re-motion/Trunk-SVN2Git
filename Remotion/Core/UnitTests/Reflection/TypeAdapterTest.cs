@@ -732,7 +732,7 @@ namespace Remotion.UnitTests.Reflection
       var currentType = typeof (SystemException);
       Assert.That (
           TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (currentType)),
-          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, currentType)).And.True);
+          Is.EqualTo (TypeExtensions.CanAscribeTo (currentType, currentType)).And.True);
     }
 
     [Test]
@@ -742,7 +742,7 @@ namespace Remotion.UnitTests.Reflection
       var otherType = typeof (Exception);
       Assert.That (
           TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (otherType)),
-          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, otherType)).And.True);
+          Is.EqualTo (TypeExtensions.CanAscribeTo (currentType, otherType)).And.True);
     }
 
     [Test]
@@ -752,7 +752,7 @@ namespace Remotion.UnitTests.Reflection
       var otherType = typeof (SystemException);
       Assert.That (
           TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (otherType)),
-          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, otherType)).And.False);
+          Is.EqualTo (TypeExtensions.CanAscribeTo (currentType, otherType)).And.False);
     }
 
     [Test]
@@ -762,7 +762,7 @@ namespace Remotion.UnitTests.Reflection
       var otherType = typeof (List<>);
       Assert.That (
           TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (otherType)),
-          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, otherType)).And.True);
+          Is.EqualTo (TypeExtensions.CanAscribeTo (currentType, otherType)).And.True);
     }
 
     [Test]
@@ -772,7 +772,7 @@ namespace Remotion.UnitTests.Reflection
       var otherType = typeof (IList);
       Assert.That (
           TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (otherType)),
-          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, otherType)).And.True);
+          Is.EqualTo (TypeExtensions.CanAscribeTo (currentType, otherType)).And.True);
     }
 
     [Test]
@@ -782,7 +782,7 @@ namespace Remotion.UnitTests.Reflection
       var otherType = typeof (IList<>);
       Assert.That (
           TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (otherType)),
-          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, otherType)).And.True);
+          Is.EqualTo (TypeExtensions.CanAscribeTo (currentType, otherType)).And.True);
     }
 
     [Test]

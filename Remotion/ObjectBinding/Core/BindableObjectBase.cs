@@ -18,6 +18,7 @@ using System;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
+using TypeExtensions = Remotion.Reflection.TypeExtensions;
 
 namespace Remotion.ObjectBinding
 {
@@ -37,7 +38,7 @@ namespace Remotion.ObjectBinding
 
     protected BindableObjectBase()
     {
-      Assertion.DebugAssert (!ReflectionUtility.CanAscribe (typeof (BindableObjectMixin), typeof (Mixin<,>)), 
+      Assertion.DebugAssert (!TypeExtensions.CanAscribeTo (typeof (BindableObjectMixin), typeof (Mixin<,>)), 
                              "we assume the mixin does not have a base object");
       _implementation = BindableObjectBaseImplementation.Create (this);
     }

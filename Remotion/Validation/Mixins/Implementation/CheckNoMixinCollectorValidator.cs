@@ -20,6 +20,7 @@ using Remotion.Mixins;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
+using TypeExtensions = Remotion.Reflection.TypeExtensions;
 
 namespace Remotion.Validation.Mixins.Implementation
 {
@@ -39,7 +40,7 @@ namespace Remotion.Validation.Mixins.Implementation
     {
       ArgumentUtility.CheckNotNull ("collector", collector);
 
-      if (ReflectionUtility.CanAscribe (collector.ValidatedType, typeof (Mixin<>)))
+      if (TypeExtensions.CanAscribeTo (collector.ValidatedType, typeof (Mixin<>)))
       {
         throw new NotSupportedException (
               string.Format (

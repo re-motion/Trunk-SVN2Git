@@ -19,6 +19,7 @@ using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.TypePipe;
 using Remotion.Utilities;
+using TypeExtensions = Remotion.Reflection.TypeExtensions;
 
 namespace Remotion.ObjectBinding
 {
@@ -74,7 +75,7 @@ namespace Remotion.ObjectBinding
       if (provider != null)
       {
         BusinessObjectProviderAttribute attribute = CreateBusinessObjectProviderAttribute (businessObjectProviderAttributeType);
-        if (!ReflectionUtility.CanAscribe (provider.GetType(), attribute.BusinessObjectProviderType))
+        if (!TypeExtensions.CanAscribeTo (provider.GetType(), attribute.BusinessObjectProviderType))
         {
           throw new ArgumentException (
               "The provider is not compatible with the provider-type required by the businessObjectProviderAttributeType's instantiation.", "provider");

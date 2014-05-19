@@ -27,6 +27,7 @@ using Remotion.Security;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.Utilities;
+using TypeExtensions = Remotion.Reflection.TypeExtensions;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -130,8 +131,8 @@ namespace Remotion.ObjectBinding.BindableObject
       if (_propertyInfo.PropertyType.IsArray)
         return _propertyInfo.PropertyType.GetElementType();
 
-      if (ReflectionUtility.CanAscribe (_propertyInfo.PropertyType, typeof (IList<>)))
-        return ReflectionUtility.GetAscribedGenericArguments (_propertyInfo.PropertyType, typeof (IList<>))[0];
+      if (TypeExtensions.CanAscribeTo (_propertyInfo.PropertyType, typeof (IList<>)))
+        return TypeExtensions.GetAscribedGenericArguments (_propertyInfo.PropertyType, typeof (IList<>))[0];
 
       if (typeof (IList).IsAssignableFrom (_propertyInfo.PropertyType))
         return GetItemTypeFromAttribute();
@@ -162,7 +163,7 @@ namespace Remotion.ObjectBinding.BindableObject
       if (attribute != null && attribute.ReadOnly)
         return true;
 
-      if (ReflectionUtility.CanAscribe (_propertyInfo.PropertyType, typeof (ReadOnlyCollection<>)))
+      if (TypeExtensions.CanAscribeTo (_propertyInfo.PropertyType, typeof (ReadOnlyCollection<>)))
         return true;
 
       if (_propertyInfo.CanBeSetFromOutside)

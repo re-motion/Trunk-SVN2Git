@@ -277,6 +277,7 @@
     <Compile Include="Reflection\MethodInfoExtensions.cs" />
     <Compile Include="Reflection\PropertyInfoExtensions.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInformationNameResolver.cs" />
+    <Compile Include="Reflection\TypeExtensions.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyNameCache.cs">
       <SubType>Code</SubType>
     </Compile>

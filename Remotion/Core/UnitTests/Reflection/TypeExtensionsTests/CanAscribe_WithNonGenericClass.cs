@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
-using Remotion.Utilities;
+using Remotion.Reflection;
 
-namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
+namespace Remotion.UnitTests.Reflection.TypeExtensionsTests
 {
   [TestFixture]
   public class CanAscribe_WithNonGenericClass
@@ -26,13 +27,13 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     [Test]
     public void DerivedType ()
     {
-      Assert.That (ReflectionUtility.CanAscribe (typeof (DerivedType), typeof (DerivedType)), Is.True);
+      Assert.That (TypeExtensions.CanAscribeTo (typeof (DerivedType), typeof (DerivedType)), Is.True);
     }
 
     [Test]
     public void BaseType ()
     {
-      Assert.That (ReflectionUtility.CanAscribe (typeof (BaseType), typeof (DerivedType)), Is.False);
+      Assert.That (TypeExtensions.CanAscribeTo (typeof (BaseType), typeof (DerivedType)), Is.False);
     }
   }
 }

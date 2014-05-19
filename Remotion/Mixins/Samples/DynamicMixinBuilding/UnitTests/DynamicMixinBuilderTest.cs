@@ -134,7 +134,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
     public void BuildMixinType_CreatesTypeDerivedFromMixin ()
     {
       Type t = new DynamicMixinBuilder (typeof (object)).BuildMixinType (_invocationHandler);
-      Assert.That (ReflectionUtility.CanAscribe (t, typeof (Mixin<,>)), Is.True);
+      Assert.That (Reflection.TypeExtensions.CanAscribeTo (t, typeof (Mixin<,>)), Is.True);
     }
 
     [Test]
