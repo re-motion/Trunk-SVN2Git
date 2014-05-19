@@ -64,7 +64,7 @@ namespace Remotion.Tools.Console.CommandLine
       {
         CommandLineArgument argument = (CommandLineArgument) entry.Key;
         MemberInfo fieldOrProperty = (MemberInfo) entry.Value;
-        Type memberType = ReflectionUtility.GetFieldOrPropertyType (fieldOrProperty);
+        Type memberType = CommandLineReflectionUtility.GetFieldOrPropertyType (fieldOrProperty);
         object value = argument.ValueObject;
         if (argument is ICommandLinePartArgument)
           value = ((ICommandLinePartArgument)argument).Group.ValueObject;
@@ -81,7 +81,7 @@ namespace Remotion.Tools.Console.CommandLine
         {
           try
           {
-            ReflectionUtility.SetFieldOrPropertyValue (obj, fieldOrProperty, value);
+            CommandLineReflectionUtility.SetFieldOrPropertyValue (obj, fieldOrProperty, value);
           }
           catch (Exception e)
           {

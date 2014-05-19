@@ -203,7 +203,7 @@ namespace Remotion.Tools.Console.CommandLine
 
     public override void SetMember (MemberInfo fieldOrProperty)
     {
-      Type enumType = ReflectionUtility.GetFieldOrPropertyType (fieldOrProperty);
+      Type enumType = CommandLineReflectionUtility.GetFieldOrPropertyType (fieldOrProperty);
       if (! enumType.IsEnum)
       {
         throw new ApplicationException (
@@ -231,7 +231,7 @@ namespace Remotion.Tools.Console.CommandLine
 
     public override void SetMember (MemberInfo fieldOrProperty)
     {
-      _enumType = ReflectionUtility.GetFieldOrPropertyType (fieldOrProperty);
+      _enumType = CommandLineReflectionUtility.GetFieldOrPropertyType (fieldOrProperty);
       if (! _enumType.IsEnum)
       {
         throw new ApplicationException (

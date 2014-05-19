@@ -59,6 +59,7 @@
     <Compile Include="Console\CommandLine\CommandLineFlagArgument.cs" />
     <Compile Include="Console\CommandLine\CommandLineModeArgument.cs" />
     <Compile Include="Console\CommandLine\CommandLineParser.cs" />
+    <Compile Include="Console\CommandLine\CommandLineReflectionUtility.cs" />
     <Compile Include="Console\CommandLine\CommandLineValueArgument.cs" />
     <Compile Include="Console\CommandLine\Exceptions.cs" />
     <Compile Include="Console\ConsoleApplication\ConsoleApplication.cs" />

@@ -125,6 +125,7 @@
     <Compile Include="Utilities\FrameworkVersionDetector.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Utilities\PostActionDisposableDecorator.cs" />
+    <Compile Include="Utilities\MemberAccessUtility.cs" />
     <Compile Include="Utilities\WorkContext.cs" />
   </ItemGroup>
   <ItemGroup>
