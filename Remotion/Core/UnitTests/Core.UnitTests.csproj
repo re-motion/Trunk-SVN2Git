@@ -300,10 +300,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Reflection\IMemberInfoNameResolverTest.cs" />
+    <Compile Include="Reflection\MethodInfoExtensionsTests\FindDeclaringProperty.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInfoNameResolverTest.cs" />
-    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\ClassWithDifferentProperties.cs" />
-    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\DerivedClassWithDifferentProperties.cs" />
-    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\DerivedOfDerivedClassWithDifferentProperties.cs" />
+    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\ClassWithDifferentMethods.cs" />
+    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\ClassWithReferenceType.cs" />
+    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\DerivedClassWithDifferentMethods.cs" />
+    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\DerivedClassWithReferenceType.cs" />
+    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\DerivedOfDerivedClassWithDifferentMethods.cs" />
+    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\IInterfaceWithReferenceType.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\AssemblyFinding\TestAssemblies\AssemblyFinderTest\RemotionCoreReferencingAssembly\AssemblyInfo.cs" />
     <Compile Include="Context\SafeContextSingletonTest.cs" />

@@ -324,7 +324,7 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void FindDeclaringProperty_PublicPropertyAccesor_Get ()
+    public void FindDeclaringProperty_PropertyFound ()
     {
       var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar");
       var adapter = MethodInfoAdapter.Create(methodInfo);
@@ -332,77 +332,6 @@ namespace Remotion.UnitTests.Reflection
       var result = adapter.FindDeclaringProperty();
 
       CheckProperty (TypeAdapter.Create (typeof (ClassWithReferenceType<object>)), "ImplicitInterfaceScalar", result);
-    }
-
-    [Test]
-    public void FindDeclaringProperty_PublicPropertyAccesor_Set ()
-    {
-      var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("set_ImplicitInterfaceScalar");
-      var adapter = MethodInfoAdapter.Create(methodInfo);
-
-      var result = adapter.FindDeclaringProperty();
-
-      CheckProperty (TypeAdapter.Create (typeof (ClassWithReferenceType<object>)), "ImplicitInterfaceScalar", result);
-    }
-
-    [Test]
-    public void FindDeclaringProperty_PrivatePropertyAccesor_Get ()
-    {
-      var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("get_PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic);
-      var adapter = MethodInfoAdapter.Create(methodInfo);
-
-      var result = adapter.FindDeclaringProperty();
-
-      CheckProperty (TypeAdapter.Create (typeof (ClassWithReferenceType<object>)), "PrivateProperty", result);
-    }
-
-    [Test]
-    public void FindDeclaringProperty_PrivatePropertyAccesor_Set ()
-    {
-      var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("set_PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic);
-      var adapter = MethodInfoAdapter.Create(methodInfo);
-
-      var result = adapter.FindDeclaringProperty();
-
-      CheckProperty (TypeAdapter.Create (typeof (ClassWithReferenceType<object>)), "PrivateProperty", result);
-    }
-
-    [Test]
-    public void FindDeclaringProperty_PrivatePropertyAccesorOfPublicProperty ()
-    {
-      var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod (
-          "set_ReadOnlyNonPublicSetterScalar", BindingFlags.Instance | BindingFlags.NonPublic);
-      var adapter = MethodInfoAdapter.Create(methodInfo);
-
-      var result = adapter.FindDeclaringProperty();
-
-      CheckProperty (TypeAdapter.Create (typeof (ClassWithReferenceType<object>)), "ReadOnlyNonPublicSetterScalar", result);
-    }
-
-    [Test]
-    public void FindDeclaringProperty_ExplicitlyImplementedInterfacePropertyAccessorInBaseType ()
-    {
-      var methodInfo =
-          typeof (DerivedClassWithReferenceType<object>)
-              .GetInterfaceMap (typeof (IInterfaceWithReferenceType<object>)).TargetMethods
-              .Where (
-                  m =>
-                  m.Name == "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.get_ExplicitInterfaceScalar")
-              .Single();
-      var adapter = MethodInfoAdapter.Create(methodInfo);
-
-      // We have a private property whose declaring type is different from the reflected type. It is not possible to get such a method via ordinary 
-      // Reflection; only via GetInterfaceMap.
-      Assert.That (methodInfo.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<object>)));
-      Assert.That (methodInfo.ReflectedType, Is.SameAs (typeof (DerivedClassWithReferenceType<object>)));
-      Assert.That (methodInfo.IsPrivate, Is.True);
-
-      var result = adapter.FindDeclaringProperty();
-
-      CheckProperty (
-          TypeAdapter.Create (typeof (ClassWithReferenceType<object>)),
-          "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
-          result);
     }
 
     [Test]

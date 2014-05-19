@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -34,6 +36,28 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       return methodInfo.GetBaseDefinition ().DeclaringType;
+    }
+
+    /// <summary>
+    /// Finds the property declaration corresponding to this <see cref="MethodInfo"/> on the given <see cref="Type"/> and it's base types.
+    /// </summary>
+    /// <returns>
+    /// Returns the <see cref="PropertyInfo"/> of the declared property, or <see langword="null" /> if no corresponding property was found.
+    /// </returns>
+    public static PropertyInfo FindDeclaringProperty (this MethodInfo methodInfo)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+
+      // Note: We scan the hierarchy ourselves because private (eg., explicit) property implementations in base types are ignored by GetProperties
+      // We use AreEqualMethodsWithoutReflectedType because our algorithm manually iterates over the base type hierarchy, so the accesor's
+      // ReflectedType will be the declaring type, whereas _methodInfo might have a different ReflectedType.
+      // AreEqualMethodsWithoutReflectedType can't deal with closed generic methods, but property accessors aren't generic anyway.
+
+      return (from t in methodInfo.DeclaringType.CreateSequence (t => t.BaseType)
+        from pi in t.GetProperties (BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
+        from accessor in pi.GetAccessors (true)
+        where MemberInfoEqualityComparer<MethodInfo>.Instance.Equals (methodInfo, accessor)
+        select pi).FirstOrDefault();
     }
   }
 }

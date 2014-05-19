@@ -141,18 +141,8 @@ namespace Remotion.Reflection
 
     public IPropertyInformation FindDeclaringProperty ()
     {
-      // Note: We scan the hierarchy ourselves because private (eg., explicit) property implementations in base types are ignored by GetProperties
-      // We use AreEqualMethodsWithoutReflectedType because our algorithm manually iterates over the base type hierarchy, so the accesor's
-      // ReflectedType will be the declaring type, whereas _methodInfo might have a different ReflectedType.
-      // AreEqualMethodsWithoutReflectedType can't deal with closed generic methods, but property accessors aren't generic anyway.
-
-      var propertyInfo =
-          (from t in _methodInfo.DeclaringType.CreateSequence (t => t.BaseType)
-           from pi in t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
-           from accessor in new[] { pi.GetGetMethod (true), pi.GetSetMethod (true) }
-           where accessor != null && MemberInfoEqualityComparer<MethodInfo>.Instance.Equals (_methodInfo, accessor)
-           select pi).FirstOrDefault();
-      return propertyInfo != null ? PropertyInfoAdapter.Create(propertyInfo) : null;
+      var propertyInfo = _methodInfo.FindDeclaringProperty();
+      return propertyInfo != null ? PropertyInfoAdapter.Create (propertyInfo) : null;
     }
 
     public ParameterInfo[] GetParameters ()
