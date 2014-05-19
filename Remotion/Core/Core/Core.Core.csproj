@@ -458,7 +458,7 @@
     <Compile Include="Utilities\NameValueCollectionUtility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\ReflectionUtility.cs">
+    <Compile Include="Obsolete\Utilities\ReflectionUtility.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\StringUtility.cs">

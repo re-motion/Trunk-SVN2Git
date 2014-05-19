@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Reflection;
 
+// ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
   [Obsolete ("Use TypeExtensions, PropertyInfoExtensions, and MethodInfoExtensions instead. (Version 1.15.17.0)")]
