@@ -100,7 +100,7 @@ namespace Remotion.Reflection
             "propertyInfo");
       }
 
-      return ReflectionUtility.GetOriginalDeclaringType (accessors[0]);
+      return accessors[0].GetOriginalDeclaringType();
     }
 
     /// <summary>

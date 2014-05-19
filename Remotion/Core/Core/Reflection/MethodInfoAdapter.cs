@@ -49,7 +49,7 @@ namespace Remotion.Reflection
     {
       _methodInfo = methodInfo;
       _cachedOriginalDeclaringType =
-          new DoubleCheckedLockingContainer<ITypeInformation> (() => TypeAdapter.Create (ReflectionUtility.GetOriginalDeclaringType (_methodInfo)));
+          new DoubleCheckedLockingContainer<ITypeInformation> (() => TypeAdapter.Create (_methodInfo.GetOriginalDeclaringType()));
     }
 
     public MethodInfo MethodInfo

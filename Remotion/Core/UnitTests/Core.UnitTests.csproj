@@ -301,6 +301,9 @@
     </Compile>
     <Compile Include="Reflection\IMemberInfoNameResolverTest.cs" />
     <Compile Include="Reflection\ReflectionBasedMemberInfoNameResolverTest.cs" />
+    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\ClassWithDifferentProperties.cs" />
+    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\DerivedClassWithDifferentProperties.cs" />
+    <Compile Include="Reflection\TestDomain\MethodInfoExtensions\DerivedOfDerivedClassWithDifferentProperties.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\AssemblyFinding\TestAssemblies\AssemblyFinderTest\RemotionCoreReferencingAssembly\AssemblyInfo.cs" />
     <Compile Include="Context\SafeContextSingletonTest.cs" />
@@ -578,7 +581,7 @@
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericInterface.cs" />
     <Compile Include="Reflection\PropertyInfoExtensionsTests\GetBaseDefinition.cs" />
     <Compile Include="Reflection\PropertyInfoExtensionsTests\IsOriginalDeclaration.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\GetOriginalDeclaringType.cs" />
+    <Compile Include="Reflection\MethodInfoExtensionsTests\GetOriginalDeclaringType.cs" />
     <Compile Include="Reflection\TestDomain\PropertyInfoExtensions\ClassWithDifferentProperties.cs" />
     <Compile Include="Reflection\TestDomain\PropertyInfoExtensions\DerivedClosedGenericClassWithDifferentProperties.cs" />
     <Compile Include="Reflection\TestDomain\PropertyInfoExtensions\DerivedOfDerivedClassWithDifferentProperties.cs" />

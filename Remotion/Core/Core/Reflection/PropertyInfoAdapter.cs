@@ -52,11 +52,11 @@ namespace Remotion.Reflection
       _propertyInfo = propertyInfo;
 
       _cachedOriginalDeclaringType = new Lazy<ITypeInformation> (
-          () => TypeAdapter.Create (PropertyInfoExtensions.GetOriginalDeclaringType (_propertyInfo)),
+          () => TypeAdapter.Create (_propertyInfo.GetOriginalDeclaringType()),
           LazyThreadSafetyMode.ExecutionAndPublication);
 
       _cachedOriginalDeclaration = new Lazy<IPropertyInformation> (
-          () => PropertyInfoAdapter.Create (PropertyInfoExtensions.GetBaseDefinition (_propertyInfo)),
+          () => PropertyInfoAdapter.Create (_propertyInfo.GetBaseDefinition()),
           LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
@@ -131,7 +131,7 @@ namespace Remotion.Reflection
 
     public IMethodInformation GetSetMethod (bool nonPublic)
     {
-      return Maybe.ForValue (_propertyInfo.GetSetMethod (nonPublic)).Select (mi => MethodInfoAdapter.Create(mi)).ValueOrDefault ();
+      return Maybe.ForValue (_propertyInfo.GetSetMethod (nonPublic)).Select (MethodInfoAdapter.Create).ValueOrDefault ();
     }
 
     public ParameterInfo[] GetIndexParameters ()

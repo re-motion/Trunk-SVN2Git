@@ -164,17 +164,6 @@ namespace Remotion.Utilities
     }
 
     /// <summary>
-    /// Returns the <see cref="Type"/> where the method was initially declared.
-    /// </summary>
-    /// <param name="methodInfo">The method whose type should be returned. Must not be <see langword="null" />.</param>
-    /// <returns>The <see cref="Type"/> where the method was declared for the first time.</returns>
-    public static Type GetOriginalDeclaringType (MethodInfo methodInfo)
-    {
-      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-      return methodInfo.GetBaseDefinition ().DeclaringType;
-    }
-
-    /// <summary>
     /// Evaluates whether the <paramref name="type"/> can be ascribed to the <paramref name="ascribeeType"/>.
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to check. Must not be <see langword="null" />.</param>
