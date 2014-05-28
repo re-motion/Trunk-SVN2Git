@@ -233,10 +233,6 @@
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Mixins\Core\Mixins.Core.csproj">
-      <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
-      <Name>Mixins.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UnitTests.TestDomain\Security.UnitTests.TestDomain.csproj">
       <Project>{AC34B1D8-A295-44A4-AE9D-8167B3C3ED44}</Project>
       <Name>Security.UnitTests.TestDomain</Name>
