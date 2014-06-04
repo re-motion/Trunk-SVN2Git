@@ -43,7 +43,25 @@ namespace Remotion.Extensions.UnitTests.Utilities
       Assert.That (FrameworkVersionDetector.IsVersionSupported (FrameworkVersion.Net_4_5_1), Is.EqualTo (IsNet_4_5_1_Installed()));
     }
 
+    [Test]
+    public void IsMinimumVersion_Net_4_5_2 ()
+    {
+      Assert.That (FrameworkVersionDetector.IsVersionSupported (FrameworkVersion.Net_4_5_2), Is.EqualTo (IsNet_4_5_2_Installed()));
+    }
+
     private bool IsNet_4_5_1_Installed ()
+    {
+      var net_4_5_1_ReleaseVersion = 378675;
+      return IsNet_4_x_x_Installed (net_4_5_1_ReleaseVersion);
+    }
+
+    private bool IsNet_4_5_2_Installed ()
+    {
+      var net_4_5_2_ReleaseVersion = 379893;
+      return IsNet_4_x_x_Installed (net_4_5_2_ReleaseVersion);
+    }
+
+    private static bool IsNet_4_x_x_Installed (int expectedReleaseVersion)
     {
       // http://msdn.microsoft.com/en-us/library/hh925568.aspx
       // http://blogs.msdn.com/b/astebner/archive/2013/11/11/10466402.aspx
@@ -55,8 +73,7 @@ namespace Remotion.Extensions.UnitTests.Utilities
         var release = (int?) key.GetValue ("Release");
         Assertion.IsNotNull (release, "Registry value 'Release' not found.");
 
-        var net_4_5_1_ReleaseVersion = 378675;
-        return release >= net_4_5_1_ReleaseVersion;
+        return release >= expectedReleaseVersion;
       }
     }
   }

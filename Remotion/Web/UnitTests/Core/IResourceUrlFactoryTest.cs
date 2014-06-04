@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Web;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 using Remotion.Web.Resources;
@@ -30,6 +31,8 @@ namespace Remotion.Web.UnitTests.Core
     [SetUp]
     public void SetUp ()
     {
+            Console.WriteLine (typeof (HttpContext).AssemblyQualifiedName);
+
       _serviceLocator = DefaultServiceLocator.Create();
     }
 
