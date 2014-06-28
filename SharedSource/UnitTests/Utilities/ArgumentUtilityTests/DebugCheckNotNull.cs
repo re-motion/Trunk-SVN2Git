@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Diagnostics;
 using NUnit.Framework;
 using Remotion.Utilities;
 
@@ -24,10 +23,12 @@ using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
+#if !DEBUG
+   [Ignore("Skipped unless DEBUG build")]
+#endif
   [TestFixture]
   public class DebugCheckNotNull
   {
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void Nullable_Fail ()
@@ -35,21 +36,18 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNull ("arg", (int?) null);
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Nullable_Succeed ()
     {
       ArgumentUtility.DebugCheckNotNull ("arg", (int?) 1);
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Value_Succeed ()
     {
       ArgumentUtility.DebugCheckNotNull ("arg", (int) 1);
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void Reference_Fail ()

@@ -17,17 +17,18 @@
 
 using System;
 using System.Collections;
-using System.Diagnostics;
 using NUnit.Framework;
 using Remotion.Utilities;
 
 // ReSharper disable once CheckNamespace
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
+#if !DEBUG
+   [Ignore("Skipped unless DEBUG build")]
+#endif
   [TestFixture]
   public class DebugCheckNotNullOrEmpty
   {
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_NullString ()
@@ -36,7 +37,6 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", value);
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyString ()
@@ -44,7 +44,6 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", "");
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyArray ()
@@ -52,7 +51,6 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", new string[0]);
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyCollection ()
@@ -60,7 +58,6 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", new ArrayList());
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyIEnumerable ()
@@ -68,7 +65,6 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", GetEmptyEnumerable());
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_NonDisposableEnumerable ()
@@ -77,14 +73,12 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", enumerable);
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed_String ()
     {
       ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", "Test");
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed_Array ()
     {

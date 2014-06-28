@@ -16,26 +16,26 @@
 // 
 
 using System;
-using System.Diagnostics;
 using NUnit.Framework;
 using Remotion.Utilities;
 
 // ReSharper disable once CheckNamespace
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
+#if !DEBUG
+   [Ignore("Skipped unless DEBUG build")]
+#endif
   [TestFixture]
   public class DebugCheckNotNullAndType
   {
     // test names have the format {Succeed|Fail}_ExpectedType[_ActualTypeOrNull]
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed_Int ()
     {
       ArgumentUtility.DebugCheckNotNullAndType ("arg", 1, typeof (int));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_Int_Null ()
@@ -43,21 +43,18 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (int));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed_Int_NullableInt ()
     {
       ArgumentUtility.DebugCheckNotNullAndType ("arg", (int?) 1, typeof (int));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed_NullableInt ()
     {
       ArgumentUtility.DebugCheckNotNullAndType ("arg", (int?) 1, typeof (int?));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_NullableInt_Null ()
@@ -65,21 +62,18 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (int?));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed_NullableInt_Int ()
     {
       ArgumentUtility.DebugCheckNotNullAndType ("arg", 1, typeof (int?));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed_String ()
     {
       ArgumentUtility.DebugCheckNotNullAndType ("arg", "test", typeof (string));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_StringNull ()
@@ -92,14 +86,12 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       TestValue
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed_Enum ()
     {
       ArgumentUtility.DebugCheckNotNullAndType ("arg", TestEnum.TestValue, typeof (TestEnum));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_Enum_Null ()
@@ -107,14 +99,12 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (TestEnum));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed_Object_String ()
     {
       ArgumentUtility.DebugCheckNotNullAndType ("arg", "test", typeof (object));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Parameter 'arg' has type 'System.Int32' when type 'System.String' was expected.\r\nParameter name: arg")]
@@ -123,7 +113,6 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullAndType ("arg", 1, typeof (string));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Parameter 'arg' has type 'System.Int32' when type 'System.Int64' was expected.\r\nParameter name: arg")]
@@ -132,7 +121,6 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckNotNullAndType ("arg", 1, typeof (long));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Parameter 'arg' has type 'System.String' when type 'System.Int32' was expected.\r\nParameter name: arg")]

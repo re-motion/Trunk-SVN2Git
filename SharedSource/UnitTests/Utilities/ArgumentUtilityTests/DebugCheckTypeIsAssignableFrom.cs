@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Diagnostics;
 using NUnit.Framework;
 using Remotion.Utilities;
 
@@ -24,10 +23,12 @@ using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
+#if !DEBUG
+   [Ignore("Skipped unless DEBUG build")]
+#endif
   [TestFixture]
   public class DebugCheckTypeIsAssignableFrom
   {
-    [Conditional ("DEBUG")]
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Parameter 'arg' is a 'System.Object', which cannot be assigned to type 'System.String'.\r\nParameter name: arg")]
@@ -36,14 +37,12 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       ArgumentUtility.DebugCheckTypeIsAssignableFrom ("arg", typeof (object), typeof (string));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed_Null ()
     {
       ArgumentUtility.DebugCheckTypeIsAssignableFrom ("arg", null, typeof (object));
     }
 
-    [Conditional ("DEBUG")]
     [Test]
     public void Succeed ()
     {
