@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Reflection;
 using JetBrains.Annotations;
 
@@ -52,7 +53,6 @@ namespace Remotion.Utilities
   /// </remarks>
   static partial class ArgumentUtility
   {
-    // Duplicated in Remotion.Linq.Utilities.ArgumentUtility
     [AssertionMethod]
     public static T CheckNotNull<T> (
         [InvokerParameterName] string argumentName,
@@ -66,7 +66,15 @@ namespace Remotion.Utilities
       return actualValue;
     }
 
-    // Duplicated in Remotion.Linq.Utilities.ArgumentUtility
+    [Conditional ("DEBUG")]
+    [AssertionMethod]
+    public static void DebugCheckNotNull<T> (
+        [InvokerParameterName] string argumentName,
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] T actualValue)
+    {
+      CheckNotNull (argumentName, actualValue);
+    }
+
     [AssertionMethod]
     public static string CheckNotNullOrEmpty (
         [InvokerParameterName] string argumentName,
@@ -79,6 +87,15 @@ namespace Remotion.Utilities
       return actualValue;
     }
 
+    [Conditional ("DEBUG")]
+    [AssertionMethod]
+    public static void DebugCheckNotNullOrEmpty (
+        [InvokerParameterName] string argumentName,
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] string actualValue)
+    {
+      CheckNotNullOrEmpty (argumentName, actualValue);
+    }
+
     [AssertionMethod]
     public static T CheckNotNullOrEmpty<T> (
         [InvokerParameterName] string argumentName, 
@@ -89,6 +106,16 @@ namespace Remotion.Utilities
       CheckNotEmpty (argumentName, enumerable);
 
       return enumerable;
+    }
+
+    [Conditional ("DEBUG")]
+    [AssertionMethod]
+    public static void DebugCheckNotNullOrEmpty<T> (
+        [InvokerParameterName] string argumentName, 
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
+        where T: IEnumerable
+    {
+      CheckNotNullOrEmpty (argumentName, enumerable);
     }
 
     [AssertionMethod]
@@ -201,7 +228,6 @@ namespace Remotion.Utilities
     /// <typeparam name="TExpected"> The type that <paramref name="actualValue"/> must have. </typeparam>
     /// <exception cref="ArgumentNullException">The <paramref name="actualValue"/> is a <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The <paramref name="actualValue"/> is an instance of another type.</exception>
-    // Duplicated in Remotion.Linq.Utilities.ArgumentUtility
     public static TExpected CheckNotNullAndType<TExpected> (
         [InvokerParameterName] string argumentName,
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] object actualValue)
@@ -213,6 +239,19 @@ namespace Remotion.Utilities
       if (! (actualValue is TExpected))
         throw CreateArgumentTypeException (argumentName, actualValue.GetType(), typeof (TExpected));
       return (TExpected) actualValue;
+    }
+
+    /// <summary>Checks of the <paramref name="actualValue"/> is of the <paramref name="expectedType"/>.</summary>
+    /// <exception cref="ArgumentNullException">The <paramref name="actualValue"/> is a <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">The <paramref name="actualValue"/> is an instance of another type.</exception>
+    [Conditional ("DEBUG")]
+    [AssertionMethod]
+    public static void DebugCheckNotNullAndType (
+        [InvokerParameterName] string argumentName,
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] object actualValue,
+        Type expectedType)
+    {
+      CheckNotNullAndType (argumentName, actualValue, expectedType);
     }
 
     public static object CheckType ([InvokerParameterName] string argumentName, [NoEnumeration] object actualValue, Type expectedType)
@@ -279,7 +318,6 @@ namespace Remotion.Utilities
 
     /// <summary>Checks whether <paramref name="actualType"/> can be assigned to <paramref name="expectedType"/>.</summary>
     /// <exception cref="ArgumentException">The <paramref name="actualType"/> cannot be assigned to <paramref name="expectedType"/>.</exception>
-    // Duplicated in Remotion.Linq.Utilities.ArgumentUtility
     public static Type CheckTypeIsAssignableFrom (
         [InvokerParameterName] string argumentName, 
         Type actualType, 
@@ -300,6 +338,18 @@ namespace Remotion.Utilities
       }
 
       return actualType;
+    }
+
+    /// <summary>Checks whether <paramref name="actualType"/> can be assigned to <paramref name="expectedType"/>.</summary>
+    /// <exception cref="ArgumentException">The <paramref name="actualType"/> cannot be assigned to <paramref name="expectedType"/>.</exception>
+    [Conditional ("DEBUG")]
+    [AssertionMethod]
+    public static void DebugCheckTypeIsAssignableFrom (
+        [InvokerParameterName] string argumentName, 
+        Type actualType, 
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] Type expectedType)
+    {
+      CheckTypeIsAssignableFrom (argumentName, actualType, expectedType);
     }
 
     /// <summary>Checks whether all items in <paramref name="collection"/> are of type <paramref name="itemType"/> or a null reference.</summary>

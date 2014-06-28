@@ -63,6 +63,10 @@
     <Compile Include="FunctionalProgramming\TestDomain\RecursiveItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ArgumentUtilityTests\CheckNotEmpty.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\DebugCheckTypeIsAssignableFrom.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\DebugCheckNotNullAndType.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\DebugCheckNotNullOrEmpty.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\DebugCheckNotNull.cs" />
     <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNull.cs" />
     <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullAndType.cs" />
     <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullAndTypeIsAssignableFrom.cs" />
