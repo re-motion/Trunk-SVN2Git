@@ -36,8 +36,8 @@ namespace Remotion.Security.Metadata
 
       public CacheKey (Type type, IMethodInformation methodInformation)
       {
-        Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
-        Assertion.DebugAssert (methodInformation != null, "Parameter 'methodInformation' is null.");
+        ArgumentUtility.DebugCheckNotNull ("type", type);
+        ArgumentUtility.DebugCheckNotNull ("methodInformation", methodInformation);
 
         Type = type;
         MethodInformation = methodInformation;

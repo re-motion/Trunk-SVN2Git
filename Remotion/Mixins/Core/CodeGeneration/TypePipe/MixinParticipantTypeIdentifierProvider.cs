@@ -33,8 +33,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
 
     public object GetID (Type requestedType)
     {
-      // Using Assertion.DebugAssert because it will be compiled away.
-      Assertion.DebugAssert (requestedType != null);
+      ArgumentUtility.DebugCheckNotNull ("requestedType", requestedType);
 
       return MixinConfiguration.ActiveConfiguration.GetContext (requestedType);
     }

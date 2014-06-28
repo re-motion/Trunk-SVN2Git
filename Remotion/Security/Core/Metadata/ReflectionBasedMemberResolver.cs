@@ -35,8 +35,8 @@ namespace Remotion.Security.Metadata
 
       public CacheKey (Type type, string methodName, BindingFlags bindingFlags)
       {
-        Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
-        Assertion.DebugAssert (!string.IsNullOrEmpty (methodName), "Parameter 'methodName' is null or empty.");
+        ArgumentUtility.DebugCheckNotNull ("type", type);
+        ArgumentUtility.DebugCheckNotNullOrEmpty ("methodName", methodName);
 
         _type = type;
         _methodName = methodName;
