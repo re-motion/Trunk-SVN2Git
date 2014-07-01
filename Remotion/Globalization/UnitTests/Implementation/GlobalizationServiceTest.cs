@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Globalization.Implementation;
+using Remotion.Globalization.UnitTests.TestDomain;
 using Remotion.Reflection;
 using Rhino.Mocks;
 
@@ -43,6 +44,22 @@ namespace Remotion.Globalization.UnitTests.Implementation
 
       _resolverStub = MockRepository.GenerateStub<IResourceManagerResolver>();
       _globalizationService = new GlobalizationService (_resolverStub);
+    }
+
+    [Test]
+    public void GetResourceManager_WithTypeWithoutResources()
+    {
+      var type = typeof (ResourceTarget);
+      var typeInformation = TypeAdapter.Create (type);
+
+      _resourceManagerStub.Stub (stub=>stub.IsNull).Return (true);
+      _resolverStub.Stub (stub => stub.Resolve (type)).Return (_resolvedResourceManagerResult);
+
+      var resourceManager = _globalizationService.GetResourceManager (typeInformation);
+
+      string value;
+      Assert.That (resourceManager.TryGetString ("property:Value1", out value), Is.False);
+      Assert.That (value, Is.Null);
     }
 
     [Test]
