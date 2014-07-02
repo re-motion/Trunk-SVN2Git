@@ -239,6 +239,20 @@ function PageUtility()
     }
     _resizeHandlers = existingResizeHandlers;
   };
+
+  this.IsInDom = function (element)
+  {
+    ArgumentUtility.CheckNotNull('element', element);
+
+    var html = window.document.body.parentNode;
+    while (element)
+    {
+      if (element === html)
+          return true;
+      element = element.parentNode;
+    }
+    return false;
+  }
 }
 
 function PageUtility_ResizeHandlerItem(selector, handler)

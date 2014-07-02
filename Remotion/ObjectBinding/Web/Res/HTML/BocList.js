@@ -438,6 +438,9 @@ function BocList_FixUpScrolling(bocList)
 
   var resizeHandler = function ()
   {
+    if (!PageUtility.Instance.IsInDom (scrollableContainer[0]))
+      return;
+
     BocList_FixHeaderSize(scrollableContainer);
     BocList_FixHeaderPosition(tableContainer, scrollableContainer);
     setTimeout(resizeHandler, resizeInterval);
@@ -489,7 +492,7 @@ function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
 function BocList_FixHeaderSize(scrollableContainer)
 {
   var realTable = scrollableContainer.children('table').first();
-  var realTableWidth = realTable.offsetWidth;
+  var realTableWidth = realTable[0].offsetWidth;
   var previousRealTableWidth = realTable.data("bocListPreviousRealTableWidth");
   if (previousRealTableWidth == realTableWidth)
     return;
