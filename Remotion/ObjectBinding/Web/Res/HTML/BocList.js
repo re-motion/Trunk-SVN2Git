@@ -489,7 +489,7 @@ function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
 function BocList_FixHeaderSize(scrollableContainer)
 {
   var realTable = scrollableContainer.children('table').first();
-  var realTableWidth = realTable.width();
+  var realTableWidth = realTable.offsetWidth;
   var previousRealTableWidth = realTable.data("bocListPreviousRealTableWidth");
   if (previousRealTableWidth == realTableWidth)
     return;
