@@ -17,13 +17,14 @@
 using System;
 using System.Runtime.Serialization;
 
+// ReSharper disable once CheckNamespace
 namespace Remotion.Globalization
 {
 
 /// <summary>
 ///   Represents errors that occur during resource handling.
 /// </summary>
-[Obsolete()]
+[Obsolete("This Exception is no longer in use outside of the MultiLingualResources and MixedMultiLingualResources types.")]
 [Serializable]
 public class ResourceException: Exception
 {
