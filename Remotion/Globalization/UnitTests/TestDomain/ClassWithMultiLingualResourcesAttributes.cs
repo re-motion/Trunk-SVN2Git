@@ -19,9 +19,9 @@ using System;
 
 namespace Remotion.Globalization.UnitTests.TestDomain
 {
-  [MultiLingualResources ("One")]
-  [MultiLingualResources ("Two")]
-  [MultiLingualResources ("Three")]
+  [MultiLingualResources (NamedResources.One)]
+  [MultiLingualResources (NamedResources.Two)]
+  [MultiLingualResources (NamedResources.Three)]
   public class ClassWithMultiLingualResourcesAttributes
   {
     

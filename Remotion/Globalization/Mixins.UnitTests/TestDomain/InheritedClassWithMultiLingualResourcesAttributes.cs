@@ -19,7 +19,7 @@ using System;
 
 namespace Remotion.Globalization.Mixins.UnitTests.TestDomain
 {
-  [MultiLingualResources("OnInherited")]
+  [MultiLingualResources(NamedResources.OnInherited)]
   public class InheritedClassWithMultiLingualResourcesAttributes : ClassWithMultiLingualResourcesAttributes
   {
     

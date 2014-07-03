@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Resources;
 using NUnit.Framework;
 using Remotion.Globalization.UnitTests.TestDomain;
 using Remotion.Reflection;
@@ -55,6 +56,16 @@ namespace Remotion.Globalization.UnitTests.IntegrationTests
               out resourceValue),
           Is.False);
       Assert.That (resourceValue, Is.Null);
+
+      Assert.That (
+          () => service.TryGetTypeDisplayName (
+              TypeAdapter.Create (typeof (ClassWithLongResourceIdentifier)),
+              TypeAdapter.Create (typeof (ClassWithMissingResources)),
+              out resourceValue),
+          Throws.TypeOf<MissingManifestResourceException>()
+              .With.Message.EqualTo (
+                  "Could not find any resources appropriate for the neutral culture. "
+                  + "Make sure 'MissingResources.resources' was correctly embedded into assembly 'Remotion.Globalization.UnitTests' at compile time."));
     }
 
     [Test]
@@ -79,6 +90,12 @@ namespace Remotion.Globalization.UnitTests.IntegrationTests
               TypeAdapter.Create (typeof (ClassWithLongResourceIdentifier)),
               TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes))),
           Is.EqualTo ("ClassWithLongResourceIdentifier"));
+
+      Assert.That (
+          () => service.GetTypeDisplayName (
+              TypeAdapter.Create (typeof (ClassWithLongResourceIdentifier)),
+              TypeAdapter.Create (typeof (ClassWithMissingResources))),
+          Throws.TypeOf<MissingManifestResourceException>());
     }
 
     [Test]
@@ -103,6 +120,12 @@ namespace Remotion.Globalization.UnitTests.IntegrationTests
               TypeAdapter.Create (typeof (ClassWithLongResourceIdentifier)),
               TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes))),
           Is.False);
+
+      Assert.That (
+          () => service.ContainsTypeDisplayName (
+              TypeAdapter.Create (typeof (ClassWithLongResourceIdentifier)),
+              TypeAdapter.Create (typeof (ClassWithMissingResources))),
+          Throws.TypeOf<MissingManifestResourceException>());
     }
 
     [Test]
@@ -142,6 +165,16 @@ namespace Remotion.Globalization.UnitTests.IntegrationTests
               out resourceValue),
           Is.False);
       Assert.That (resourceValue, Is.Null);
+
+      Assert.That (
+          () => service.TryGetPropertyDisplayName (
+              PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithLongIdentifier")),
+              TypeAdapter.Create (typeof (ClassWithMissingResources)),
+              out resourceValue),
+          Throws.TypeOf<MissingManifestResourceException>()
+              .With.Message.EqualTo (
+                  "Could not find any resources appropriate for the neutral culture. "
+                  + "Make sure 'MissingResources.resources' was correctly embedded into assembly 'Remotion.Globalization.UnitTests' at compile time."));
     }
 
     [Test]
@@ -172,6 +205,12 @@ namespace Remotion.Globalization.UnitTests.IntegrationTests
               PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithLongIdentifier")),
               TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes))),
           Is.EqualTo ("PropertyWithLongIdentifier"));
+
+      Assert.That (
+          () => service.GetPropertyDisplayName (
+              PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithLongIdentifier")),
+              TypeAdapter.Create (typeof (ClassWithMissingResources))),
+          Throws.TypeOf<MissingManifestResourceException>());
     }
 
     [Test]
@@ -202,6 +241,12 @@ namespace Remotion.Globalization.UnitTests.IntegrationTests
               PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithLongIdentifier")),
               TypeAdapter.Create (typeof (ClassWithoutMultiLingualResourcesAttributes))),
           Is.False);
+
+      Assert.That (
+          () => service.ContainsPropertyDisplayName (
+              PropertyInfoAdapter.Create (typeof (ClassWithProperties).GetProperty ("PropertyWithLongIdentifier")),
+              TypeAdapter.Create (typeof (ClassWithMissingResources))),
+          Throws.TypeOf<MissingManifestResourceException>());
     }
   }
 }

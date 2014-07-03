@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
-using System;
-
-namespace Remotion.Globalization.Mixins.UnitTests.TestDomain
+namespace Remotion.Globalization.UnitTests.TestDomain
 {
-  [MultiLingualResources(NamedResources.OnMixin1)]
-  public class MixinAddingMultiLingualResourcesAttributes1
+  public static class NamedResources
   {
-    
+    public const string One = "Remotion.Globalization.UnitTests.TestDomain.Resources.One";
+    public const string Two = "Remotion.Globalization.UnitTests.TestDomain.Resources.Two";
+    public const string Three = "Remotion.Globalization.UnitTests.TestDomain.Resources.Three";
+    public const string Four = "Remotion.Globalization.UnitTests.TestDomain.Resources.Four";
+    public const string Five = "Remotion.Globalization.UnitTests.TestDomain.Resources.Five";
   }
 }

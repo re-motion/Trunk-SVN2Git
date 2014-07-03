@@ -19,7 +19,7 @@ using System;
 
 namespace Remotion.Globalization.Mixins.UnitTests.TestDomain
 {
-  [MultiLingualResources ("MixinOfMixinWithResources")]
+  [MultiLingualResources (NamedResources.MixinOfMixinWithResources)]
   public class MixinOfMixinWithResources
   {
      

@@ -58,7 +58,9 @@ namespace Remotion.Globalization.UnitTests.Implementation
 
       var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
 
-      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.One, NamedResources.Two, NamedResources.Three }));
     }
 
     [Test]
@@ -76,17 +78,27 @@ namespace Remotion.Globalization.UnitTests.Implementation
 
       Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
-      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five", "One", "Two", "Three" }));
-      Assert.That (resourceManagerSet.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
-      Assert.That (resourceManagerSet.ResourceManagers.Skip (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five, NamedResources.One, NamedResources.Two, NamedResources.Three }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Take (2).Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Skip (2).Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.One, NamedResources.Two, NamedResources.Three }));
 
       Assert.That (result.DefinedResourceManager, Is.InstanceOf<ResourceManagerSet>());
       var definedResourceManagerSet = (ResourceManagerSet) result.DefinedResourceManager;
-      Assert.That (definedResourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
+      Assert.That (
+          definedResourceManagerSet.ResourceManagers.Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five }));
 
       Assert.That (result.InheritedResourceManager, Is.InstanceOf<ResourceManagerSet>());
       var inheritedResourceManagerSet = (ResourceManagerSet) result.InheritedResourceManager;
-      Assert.That (inheritedResourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (
+          inheritedResourceManagerSet.ResourceManagers.Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.One, NamedResources.Two, NamedResources.Three }));
     }
 
     [Test]
@@ -96,9 +108,15 @@ namespace Remotion.Globalization.UnitTests.Implementation
 
       Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
-      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five", "One", "Two", "Three" }));
-      Assert.That (resourceManagerSet.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
-      Assert.That (resourceManagerSet.ResourceManagers.Skip (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five, NamedResources.One, NamedResources.Two, NamedResources.Three }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Take (2).Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Skip (2).Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.One, NamedResources.Two, NamedResources.Three }));
 
       Assert.That (result.DefinedResourceManager.IsNull, Is.True);
 

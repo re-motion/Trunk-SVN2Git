@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
@@ -53,7 +54,22 @@ namespace Remotion.Globalization.Implementation
     {
       return _resourceManagersCache.GetOrCreateValue (
           Tuple.Create (resourcesAttribute.ResourceAssembly ?? assembly, resourcesAttribute.BaseName),
-          key => new ResourceManager (key.Item2, key.Item1));
+          GetResourceManager);
+    }
+
+    private ResourceManager GetResourceManager (Tuple<Assembly, string> key)
+    {
+      var resourceManager = new ResourceManager (key.Item2, key.Item1);
+      var neutralSet = resourceManager.GetResourceSet (CultureInfo.InvariantCulture, true, false);
+      if (neutralSet == null)
+      {
+        throw new MissingManifestResourceException (
+            string.Format (
+                "Could not find any resources appropriate for the neutral culture. Make sure '{1}.resources' was correctly embedded into assembly '{0}' at compile time.",
+                key.Item1.GetName().Name,
+                key.Item2));
+      }
+      return resourceManager;
     }
   }
 }

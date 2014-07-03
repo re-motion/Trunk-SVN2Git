@@ -36,7 +36,9 @@ namespace Remotion.Globalization.UnitTests.Obsolete
 
       var resourceManagerSet = (ResourceManagerSet) resourceManager;
 
-      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.One, NamedResources.Two, NamedResources.Three }));
     }
 
     [Test]
@@ -54,9 +56,15 @@ namespace Remotion.Globalization.UnitTests.Obsolete
 
       Assert.That (resourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) resourceManager;
-      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five", "One", "Two", "Three" }));
-      Assert.That (resourceManagerSet.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
-      Assert.That (resourceManagerSet.ResourceManagers.Skip (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "One", "Two", "Three" }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five, NamedResources.One, NamedResources.Two, NamedResources.Three }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Take (2).Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Skip (2).Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.One, NamedResources.Two, NamedResources.Three }));
     }
 
     [Test]
@@ -66,7 +74,9 @@ namespace Remotion.Globalization.UnitTests.Obsolete
 
       Assert.That (resourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) resourceManager;
-      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five }));
     }
 
     [Test]
@@ -76,7 +86,9 @@ namespace Remotion.Globalization.UnitTests.Obsolete
 
       Assert.That (resourceManager, Is.InstanceOf<ResourceManagerSet>());
       var resourceManagerSet = (ResourceManagerSet) resourceManager;
-      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five }));
     }
 
     [Test]
@@ -89,7 +101,9 @@ namespace Remotion.Globalization.UnitTests.Obsolete
 
       var resourceManagerSet = (ResourceManagerSet) resourceManager;
 
-      Assert.That (resourceManagerSet.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "Four", "Five" }));
+      Assert.That (
+          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
+          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five }));
     }
   }
 }

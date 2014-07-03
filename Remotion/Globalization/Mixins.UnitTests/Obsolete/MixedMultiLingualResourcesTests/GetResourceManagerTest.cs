@@ -52,7 +52,7 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
       ResourceManagerSet resourceManager =
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithMultiLingualResourcesAttributes), false);
 
-      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { "OnTarget" }));
+      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { NamedResources.OnTarget }));
     }
 
     [Test]
@@ -61,7 +61,7 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
       ResourceManagerSet resourceManager =
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), true);
 
-      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { "OnInherited", "OnTarget" }));
+      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { NamedResources.OnInherited, NamedResources.OnTarget }));
     }
 
     [Test]
@@ -70,7 +70,7 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
       ResourceManagerSet resourceManager =
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false);
 
-      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { "OnInherited" }));
+      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { NamedResources.OnInherited }));
     }
 
     [Test]
@@ -79,7 +79,7 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
       ResourceManagerSet resourceManager =
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes));
 
-      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { "OnInherited" }));
+      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { NamedResources.OnInherited }));
     }
 
     [Test]
@@ -88,7 +88,7 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
       ResourceManagerSet resourceManager =
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
 
-      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { "OnInherited" }));
+      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { NamedResources.OnInherited }));
     }
 
     [Test]
@@ -97,7 +97,7 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
       ResourceManagerSet resourceManager =
           (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true);
 
-      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { "OnInherited", "OnTarget" }));
+      Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { NamedResources.OnInherited, NamedResources.OnTarget }));
     }
 
     [Test]
@@ -111,7 +111,7 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), false);
 
-        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { "OnMixin1" }));
+        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { NamedResources.OnMixin1 }));
       }
     }
 
@@ -126,7 +126,7 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), true);
 
-        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { "OnMixin1" }));
+        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EqualTo (new[] { NamedResources.OnMixin1 }));
       }
     }
 
@@ -142,9 +142,9 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), false);
 
-        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin1", "OnMixin2a", "OnMixin2b" }));
-        Assert.That (resourceManager.ResourceManagers.Take (1).Select (rm => rm.Name), Is.EqualTo (new[] { "OnMixin1" }));
-        Assert.That (resourceManager.ResourceManagers.Skip (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin2a", "OnMixin2b" }));
+        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin1, NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
+        Assert.That (resourceManager.ResourceManagers.Take (1).Select (rm => rm.Name), Is.EqualTo (new[] { NamedResources.OnMixin1 }));
+        Assert.That (resourceManager.ResourceManagers.Skip (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
       }
     }
 
@@ -165,9 +165,9 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
         //Note: MixinOfMixin was previously sorted after the introducing mixin, but there is no know client code that actually used MixinOfMixin with resources.
         Assert.That (
             resourceManager.ResourceManagers.Select (rm => rm.Name),
-            Is.EquivalentTo (new[] { "MixinOfMixinWithResources", "OnMixin1", "OnMixin2a", "OnMixin2b" }));
-        Assert.That (resourceManager.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EqualTo (new[] { "MixinOfMixinWithResources", "OnMixin1" }));
-        Assert.That (resourceManager.ResourceManagers.Skip (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin2a", "OnMixin2b" }));
+            Is.EquivalentTo (new[] { NamedResources.MixinOfMixinWithResources, NamedResources.OnMixin1, NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
+        Assert.That (resourceManager.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EqualTo (new[] { NamedResources.MixinOfMixinWithResources, NamedResources.OnMixin1 }));
+        Assert.That (resourceManager.ResourceManagers.Skip (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
       }
     }
 
@@ -184,9 +184,9 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
 
-        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnInherited", "OnMixin2a", "OnMixin2b" }));
-        Assert.That (resourceManager.ResourceManagers.Take (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnInherited" }));
-        Assert.That (resourceManager.ResourceManagers.Skip (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin2a", "OnMixin2b" }));
+        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnInherited, NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
+        Assert.That (resourceManager.ResourceManagers.Take (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnInherited }));
+        Assert.That (resourceManager.ResourceManagers.Skip (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
       }
     }
 
@@ -204,10 +204,10 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
 
         Assert.That (
             resourceManager.ResourceManagers.Select (rm => rm.Name),
-            Is.EquivalentTo (new[] { "OnInherited", "OnMixin1", "OnMixin2a", "OnMixin2b", "OnTarget" }));
-        Assert.That (resourceManager.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnInherited", "OnMixin1" }));
-        Assert.That (resourceManager.ResourceManagers.Skip (2).Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin2a", "OnMixin2b" }));
-        Assert.That (resourceManager.ResourceManagers.Skip (4).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnTarget" }));
+            Is.EquivalentTo (new[] { NamedResources.OnInherited, NamedResources.OnMixin1, NamedResources.OnMixin2a, NamedResources.OnMixin2b, NamedResources.OnTarget }));
+        Assert.That (resourceManager.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnInherited, NamedResources.OnMixin1 }));
+        Assert.That (resourceManager.ResourceManagers.Skip (2).Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
+        Assert.That (resourceManager.ResourceManagers.Skip (4).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnTarget }));
       }
     }
 
@@ -224,9 +224,9 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false);
 
-        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin1", "OnMixin2a", "OnMixin2b" }));
-        Assert.That (resourceManager.ResourceManagers.Take (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin1" }));
-        Assert.That (resourceManager.ResourceManagers.Skip (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin2a", "OnMixin2b" }));
+        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin1, NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
+        Assert.That (resourceManager.ResourceManagers.Take (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin1 }));
+        Assert.That (resourceManager.ResourceManagers.Skip (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
       }
     }
 
@@ -243,9 +243,9 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false);
 
-        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin1", "OnMixin2a", "OnMixin2b" }));
-        Assert.That (resourceManager.ResourceManagers.Take (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin1" }));
-        Assert.That (resourceManager.ResourceManagers.Skip (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin2a", "OnMixin2b" }));
+        Assert.That (resourceManager.ResourceManagers.Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin1, NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
+        Assert.That (resourceManager.ResourceManagers.Take (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin1 }));
+        Assert.That (resourceManager.ResourceManagers.Skip (1).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
       }
     }
 
@@ -264,10 +264,10 @@ namespace Remotion.Globalization.Mixins.UnitTests.Obsolete.MixedMultiLingualReso
 
         Assert.That (
             resourceManager.ResourceManagers.Select (rm => rm.Name),
-            Is.EquivalentTo (new[] { "OnInherited", "OnMixin1", "OnMixin2a", "OnMixin2b", "OnTarget" }));
-        Assert.That (resourceManager.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnInherited", "OnMixin1" }));
-        Assert.That (resourceManager.ResourceManagers.Skip (2).Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnMixin2a", "OnMixin2b" }));
-        Assert.That (resourceManager.ResourceManagers.Skip (4).Select (rm => rm.Name), Is.EquivalentTo (new[] { "OnTarget" }));
+            Is.EquivalentTo (new[] { NamedResources.OnInherited, NamedResources.OnMixin1, NamedResources.OnMixin2a, NamedResources.OnMixin2b, NamedResources.OnTarget }));
+        Assert.That (resourceManager.ResourceManagers.Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnInherited, NamedResources.OnMixin1 }));
+        Assert.That (resourceManager.ResourceManagers.Skip (2).Take (2).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnMixin2a, NamedResources.OnMixin2b }));
+        Assert.That (resourceManager.ResourceManagers.Skip (4).Select (rm => rm.Name), Is.EquivalentTo (new[] { NamedResources.OnTarget }));
       }
     }
   }

@@ -90,7 +90,7 @@ namespace Remotion.Globalization.Mixins.UnitTests
 
         var innerResourceManager = result.ResourceManagers.Single();
         Assert.That (innerResourceManager, Is.InstanceOf<ResourceManagerWrapper>());
-        Assert.That (innerResourceManager.Name, Is.EqualTo ("OnMixin1"));
+        Assert.That (innerResourceManager.Name, Is.EqualTo (NamedResources.OnMixin1));
       }
     }
 
@@ -108,7 +108,7 @@ namespace Remotion.Globalization.Mixins.UnitTests
 
         var innerResourceManager = result.ResourceManagers.Single();
         Assert.That (innerResourceManager, Is.InstanceOf<ResourceManagerWrapper>());
-        Assert.That (innerResourceManager.Name, Is.EqualTo ("OnMixin1"));
+        Assert.That (innerResourceManager.Name, Is.EqualTo (NamedResources.OnMixin1));
       }
     }
 
@@ -236,7 +236,7 @@ namespace Remotion.Globalization.Mixins.UnitTests
 
         var innerResourceManager = result.ResourceManagers.Single();
         Assert.That (innerResourceManager, Is.InstanceOf<ResourceManagerWrapper>());
-        Assert.That (innerResourceManager.Name, Is.EqualTo ("MixinOfMixinWithResources"));
+        Assert.That (innerResourceManager.Name, Is.EqualTo (NamedResources.MixinOfMixinWithResources));
       }
     }
 
@@ -290,7 +290,7 @@ namespace Remotion.Globalization.Mixins.UnitTests
 
         var result = (ResourceManagerSet) _globalizationService.GetResourceManager (typeInformation);
 
-        Assert.That (result.ResourceManagers.First().Name, Is.EqualTo ("MixinOfMixinWithResources"));
+        Assert.That (result.ResourceManagers.First().Name, Is.EqualTo (NamedResources.MixinOfMixinWithResources));
       }
     }
 
