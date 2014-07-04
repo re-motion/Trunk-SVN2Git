@@ -42,6 +42,16 @@ namespace Remotion.ObjectBinding.BindableObject
       _declarationPropertyInfo = declarationPropertyInfo;
     }
 
+    public IPropertyInformation ImplementationPropertyInfo
+    {
+      get { return _implementationPropertyInfo; }
+    }
+
+    public IPropertyInformation DeclarationPropertyInfo
+    {
+      get { return _declarationPropertyInfo; }
+    }
+
     public string Name
     {
       get { return _implementationPropertyInfo.Name; }

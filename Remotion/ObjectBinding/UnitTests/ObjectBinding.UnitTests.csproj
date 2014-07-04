@@ -64,6 +64,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\NUnit-2.6\net-2.0\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Globalization, Version=1.15.19.10000, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Data\DomainObjects.Web.Test\Bin\Remotion.Globalization.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks, Version=3.0.1.526, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks-3.6\net-3.5\Rhino.Mocks.dll</HintPath>
@@ -81,27 +85,37 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="BindableObject\BindableObjectGlobalizationServiceTest.cs" />
-    <Compile Include="BindableObject\IntergrationTests\Globalization\GlobalizationIntegrationTests.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\AttributesBasedGlobalizationIntegrationTest.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\ResourcesBasedGlobalizationIntegrationTest.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\Resources\MixinOfMixinAddingResources.Designer.cs">
       <DependentUpon>MixinOfMixinAddingResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="BindableObject\IntergrationTests\Globalization\Resources\DerivedTargetClassForGlobalization.Designer.cs">
-      <DependentUpon>DerivedTargetClassForGlobalization.resx</DependentUpon>
+    <Compile Include="BindableObject\IntergrationTests\Globalization\Resources\DerivedTargetClassForGlobalizationViaResources.Designer.cs">
+      <DependentUpon>DerivedTargetClassForGlobalizationViaResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\ClassWithMixedPropertyAndResources.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\ClassWithResources.cs" />
-    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\DerivedTargetClassForGlobalization.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\DerivedMixinForGlobalizationViaAttributes.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\DerivedTargetClassForGlobalizationViaAttributes.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\DerivedTargetClassForGlobalizationViaAttributesAndOverrideMixin.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\DerivedTargetClassForGlobalizationViaResources.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\IDerivedMixinAddingResources.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\IDerivedMixinForGlobalizationViaAttributes.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\IMixinAddingResources.cs" />
-    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\ITargetClassForGlobalization.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\IMixinForGlobalizationViaAttributes.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\ITargetClassForGlobalizationViaAttributes.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\ITargetClassForGlobalizationViaResources.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\MixinAddingResources.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\MixinForGlobalizationViaAttributes.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\DerivedMixinAddingResources.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\MixinOfMixinAddingResources.cs" />
-    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\TargetClassForGlobalization.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\TargetClassForGlobalizationViaAttributes.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\TargetClassForGlobalizationViaAttributesAndOverrideMixin.cs" />
+    <Compile Include="BindableObject\IntergrationTests\Globalization\TestDomain\TargetClassForGlobalizationViaResources.cs" />
     <Compile Include="BindableObject\IntergrationTests\InterfaceProperties\InterfacePropertiesTest.cs" />
     <Compile Include="BindableObject\IntergrationTests\InterfaceProperties\TestDomain\IMixinInterface.cs" />
     <Compile Include="BindableObject\IntergrationTests\InterfaceProperties\TestDomain\ClassWithInterface.cs" />
@@ -133,8 +147,8 @@
     <Compile Include="BusinessObjectPropertyPaths\TestDomain\TypeThree.cs" />
     <Compile Include="BusinessObjectPropertyPaths\TestDomain\TypeTwo.cs" />
     <Compile Include="BusinessObjectPropertyPathTest.cs" />
-    <Compile Include="BindableObject\IntergrationTests\Globalization\Resources\TargetClassForGlobalization.Designer.cs">
-      <DependentUpon>TargetClassForGlobalization.resx</DependentUpon>
+    <Compile Include="BindableObject\IntergrationTests\Globalization\Resources\TargetClassForGlobalizationViaResources.Designer.cs">
+      <DependentUpon>TargetClassForGlobalizationViaResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -441,9 +455,9 @@
       <LastGenOutput>MixinOfMixinAddingResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="BindableObject\IntergrationTests\Globalization\Resources\DerivedTargetClassForGlobalization.resx">
+    <EmbeddedResource Include="BindableObject\IntergrationTests\Globalization\Resources\DerivedTargetClassForGlobalizationViaResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DerivedTargetClassForGlobalization.Designer.cs</LastGenOutput>
+      <LastGenOutput>DerivedTargetClassForGlobalizationViaResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\ClassWithResources.resx">
       <SubType>Designer</SubType>
@@ -455,9 +469,9 @@
       <LastGenOutput>ClassWithMixedPropertyAndResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="BindableObject\IntergrationTests\Globalization\Resources\TargetClassForGlobalization.resx">
+    <EmbeddedResource Include="BindableObject\IntergrationTests\Globalization\Resources\TargetClassForGlobalizationViaResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TargetClassForGlobalization.Designer.cs</LastGenOutput>
+      <LastGenOutput>TargetClassForGlobalizationViaResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\ExtensibleEnumWithResources.resx">

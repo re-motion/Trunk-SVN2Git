@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.BindableObject
         {
           if (!propertyNames.Contains (propertyInfo.Name))
           {
-            yield return GetPropertyInformation(currentType, propertyInfo);
+            yield return GetPropertyInformation(propertyInfo);
             propertyNames.Add (propertyInfo.Name);
           }
         }
@@ -82,7 +82,7 @@ namespace Remotion.ObjectBinding.BindableObject
     // Note: The re-bind-specific IPropertyInformation implementations should no longer be necessary after re-bind is changed to explicitly support 
     //       interfaces. (Because re-bind will no longer represent explicit interface properties within the BusinessObjectClass for the class -
     //       the BusinessObjectClass for the interface must be used instead.)
-    private IPropertyInformation GetPropertyInformation (Type currentType, PropertyInfo propertyInfo)
+    private IPropertyInformation GetPropertyInformation (PropertyInfo propertyInfo)
     {
       var introducedMemberAttributes = propertyInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), true);
       if (introducedMemberAttributes.Length > 0)
@@ -92,7 +92,7 @@ namespace Remotion.ObjectBinding.BindableObject
         var mixinProperty = interfaceProperty.FindInterfaceImplementation (introducedMemberAttribute.Mixin);
         var interfaceImplementation = new InterfaceImplementationPropertyInformation (mixinProperty, interfaceProperty);
 
-        return new BindableObjectMixinIntroducedPropertyInformation (interfaceImplementation, currentType, propertyInfo);
+        return new MixinIntroducedPropertyInformation (interfaceImplementation);
       }
       else
       {

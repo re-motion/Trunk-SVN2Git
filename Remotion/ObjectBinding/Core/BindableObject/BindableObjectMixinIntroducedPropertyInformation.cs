@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using Remotion.Reflection;
-using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -27,29 +25,21 @@ namespace Remotion.ObjectBinding.BindableObject
   /// Note that this class is only temporay, used as long as BindableObjectGlobalizationService requires the concrete type and property in order to 
   /// work correctly.
   /// </summary>
-  public class BindableObjectMixinIntroducedPropertyInformation : MixinIntroducedPropertyInformation
+  [Obsolete ("This type was only intended for resource look-ups. Use BindableObjectGlobalizationService instead for resolving localized property and type names. (Version 1.15.20.0)", true)]
+  public class BindableObjectMixinIntroducedPropertyInformation
   {
-    private readonly ITypeInformation _concreteType;
-    private readonly IPropertyInformation _concreteProperty;
-
-    public BindableObjectMixinIntroducedPropertyInformation (InterfaceImplementationPropertyInformation mixinPropertyInfo, Type concreteType, PropertyInfo propertyInfo)
-        :  base (mixinPropertyInfo)
+    private BindableObjectMixinIntroducedPropertyInformation ()
     {
-      ArgumentUtility.CheckNotNull ("concreteType", concreteType);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      _concreteType = TypeAdapter.Create (concreteType);
-      _concreteProperty = PropertyInfoAdapter.Create (propertyInfo);
     }
 
     public ITypeInformation ConcreteType
     {
-      get { return _concreteType; }
+      get { throw new NotImplementedException(); }
     }
 
     public IPropertyInformation ConcreteProperty
     {
-      get { return _concreteProperty; }
+      get { throw new NotImplementedException(); }
     }
   }
 }

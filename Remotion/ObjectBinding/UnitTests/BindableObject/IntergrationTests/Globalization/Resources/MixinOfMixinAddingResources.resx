@@ -112,15 +112,15 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="property:Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain.IMixinAddingResources.MixedProperty2" xml:space="preserve">
     <value>MixedProperty2 display name from MixinOfMixinAddingResources</value>
   </data>
-  <data name="property:Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain.TargetClassForGlobalization.Property1" xml:space="preserve">
+  <data name="property:Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain.TargetClassForGlobalizationViaResources.Property1" xml:space="preserve">
     <value>Property1 display name from MixinOfMixinAddingResources</value>
   </data>
 </root>

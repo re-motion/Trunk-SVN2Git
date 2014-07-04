@@ -222,7 +222,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
               MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
               typeof (IMixinAddingProperty),
               "MixedProperty");
-      Assertion.IsTrue (propertyInfo is BindableObjectMixinIntroducedPropertyInformation);
+      Assertion.IsTrue (propertyInfo is MixinIntroducedPropertyInformation);
 
       PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
@@ -246,7 +246,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
           MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
           typeof (IMixinAddingProperty),
           "MixedReadOnlyProperty");
-      Assertion.IsTrue (propertyInfo is BindableObjectMixinIntroducedPropertyInformation);
+      Assertion.IsTrue (propertyInfo is MixinIntroducedPropertyInformation);
 
       PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
@@ -270,7 +270,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
           MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
           typeof (IMixinAddingProperty),
           "MixedReadOnlyPropertyHavingSetterOnMixin");
-      Assertion.IsTrue (propertyInfo is BindableObjectMixinIntroducedPropertyInformation);
+      Assertion.IsTrue (propertyInfo is MixinIntroducedPropertyInformation);
 
       PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 

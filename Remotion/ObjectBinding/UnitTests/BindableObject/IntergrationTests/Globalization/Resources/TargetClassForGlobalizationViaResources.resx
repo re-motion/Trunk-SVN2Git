@@ -112,30 +112,30 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="property:Property1" xml:space="preserve">
-    <value>Property1 display name from TargetClassForGlobalization</value>
+    <value>Property1 display name from TargetClassForGlobalizationViaResources</value>
   </data>
   <data name="property:Property2" xml:space="preserve">
-    <value>Property2 display name from TargetClassForGlobalization</value>
+    <value>Property2 display name from TargetClassForGlobalizationViaResources</value>
   </data>
   <data name="property:PropertyForMixinOverrideTest" xml:space="preserve">
     <value>default value</value>
   </data>
   <data name="property:Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain.IMixinAddingResources.MixedExplicitProperty" xml:space="preserve">
-    <value>MixedExplicitProperty display name from TargetClassForGlobalization</value>
+    <value>MixedExplicitProperty display name from TargetClassForGlobalizationViaResources</value>
   </data>
   <data name="property:Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain.IMixinAddingResources.MixedProperty1" xml:space="preserve">
-    <value>MixedProperty1 display name from TargetClassForGlobalization</value>
+    <value>MixedProperty1 display name from TargetClassForGlobalizationViaResources</value>
   </data>
-  <data name="property:Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain.ITargetClassForGlobalization.ExplicitImplementedProperty" xml:space="preserve">
-    <value>ExplicitImplementedProperty display name from TargetClassForGlobalization</value>
+  <data name="property:Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain.ITargetClassForGlobalizationViaResources.ExplicitImplementedProperty" xml:space="preserve">
+    <value>ExplicitImplementedProperty display name from TargetClassForGlobalizationViaResources</value>
   </data>
-  <data name="property:Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain.TargetClassForGlobalization.ImplicitImplementedProperty" xml:space="preserve">
-    <value>ImplicitImplementedProperty display name from TargetClassForGlobalization</value>
+  <data name="property:Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain.TargetClassForGlobalizationViaResources.ImplicitImplementedProperty" xml:space="preserve">
+    <value>ImplicitImplementedProperty display name from TargetClassForGlobalizationViaResources</value>
   </data>
 </root>

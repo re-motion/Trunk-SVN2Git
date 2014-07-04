@@ -34,8 +34,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// using the <see cref="BusinessObjectProvider.AddService"/> method or indirectly by providing a custom implementation of the 
   /// <see cref="IBusinessObjectServiceFactory"/>.
   /// </remarks>
-
-  [ImplementationFor(typeof(BindableObjectGlobalizationService), Lifetime = LifetimeKind.Singleton)]
+  [ImplementationFor (typeof (BindableObjectGlobalizationService), Lifetime = LifetimeKind.Singleton)]
   public sealed class BindableObjectGlobalizationService : IBusinessObjectService
   {
     [ResourceIdentifiers]
@@ -61,7 +60,7 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("memberInformationGlobalizationService", memberInformationGlobalizationService);
       ArgumentUtility.CheckNotNull ("enumerationGlobalizationService", enumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("extensibleEnumGlobalizationService", extensibleEnumGlobalizationService);
-      
+
       _resourceManager =
           new DoubleCheckedLockingContainer<IResourceManager> (() => globalizationServices.GetResourceManager (typeof (ResourceIdentifier)));
       _memberInformationGlobalizationService = memberInformationGlobalizationService;
@@ -126,22 +125,36 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       ArgumentUtility.CheckNotNull ("typeInformationForResourceResolution", typeInformationForResourceResolution);
 
-      // Note: Currently, MixedMultilingualResources requires the concrete mixed type and the concrete implemented property for globalization 
-      // attribute analysis. We need to extract that information from BindableObjectMixinIntroducedPropertyInformation. The goal is to redesign mixin-
-      // based globalization some time, so that we can work with ordinary IPropertyInformation objects
+      var mixinIntroducedPropertyInformation = propertyInformation as MixinIntroducedPropertyInformation;
+      if (mixinIntroducedPropertyInformation != null)
+      {
+        // Note: this is only needed until there is support for interfaces in object binding, 
+        // or at least, until PropertyInfoAdapter can perform the FindIntefaceDeclaration lookup fast.
+        // Then, the MultiLingualResourcesBasedMemberInformationGlobalizationService will be able to implement the look of the localization 
+        // from the class-qualified name, then the interfaces-qualified names, and finally, the unqualified name.
+        var interfaceImplementationPropertyInfo = mixinIntroducedPropertyInformation.InterfaceImplementationPropertyInfo;
+        string displayNameFromInterface;
+        if (_memberInformationGlobalizationService.TryGetPropertyDisplayName (
+            interfaceImplementationPropertyInfo.DeclarationPropertyInfo,
+            typeInformationForResourceResolution,
+            out displayNameFromInterface))
+        {
+          return displayNameFromInterface;
+        }
 
-      var mixinIntroducedPropertyInformation = propertyInformation as BindableObjectMixinIntroducedPropertyInformation;
-      var property = mixinIntroducedPropertyInformation == null
-          ? propertyInformation
-          : mixinIntroducedPropertyInformation.FindInterfaceDeclarations()  //Is already evaluated within implementation -> not performance relevant
-              .Single (
-                  () =>
-                      new InvalidOperationException (
-                          string.Format (
-                              "BindableObjectGlobalizationService only supports unique interface declarations but proerty '{0}' is declared on multiply interfaces",
-                              propertyInformation.Name)));
+        string displayNameFromImplementation;
+        if (_memberInformationGlobalizationService.TryGetPropertyDisplayName (
+            interfaceImplementationPropertyInfo.ImplementationPropertyInfo,
+            typeInformationForResourceResolution,
+            out displayNameFromImplementation))
+        {
+          return displayNameFromImplementation;
+        }
+      }
 
-      return _memberInformationGlobalizationService.GetPropertyDisplayName(property, typeInformationForResourceResolution);
+      return _memberInformationGlobalizationService.GetPropertyDisplayName (
+          propertyInformation.GetOriginalDeclaration(),
+          typeInformationForResourceResolution);
     }
   }
 }

@@ -16,17 +16,21 @@
 // 
 
 using System;
-using Remotion.Globalization;
-using Remotion.Mixins;
-using Remotion.ObjectBinding.UnitTests.TestDomain;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain
 {
-  [BindableObject]
-  [MultiLingualResources ("Remotion.ObjectBinding.UnitTests.Globalization.ClassWithMixedPropertyAndResources")]
-  [Uses (typeof (MixinAddingProperty))]
-  public class ClassWithMixedPropertyAndResources
+  public interface ITargetClassForGlobalizationViaAttributes
   {
-    public string Value1 { get; set; }
+    // Localization of interface properties is currently not supported
+    //[MultiLingualName ("ImplicitImplementedProperty display name from interface ITargetClassForGlobalizationViaAttributes", "")]
+    string ImplicitImplementedProperty { get; set; }
+
+    // Localization of interface properties is currently not supported
+    //[MultiLingualName ("ExplicitImplementedProperty display name from interface ITargetClassForGlobalizationViaAttributes", "")]
+    string ExplicitImplementedProperty { get; set; }
+
+    // Localization of interface properties is currently not supported
+    //[MultiLingualName ("ImplicitImplementedPropertyForOverrideTarget display name from interface ITargetClassForGlobalizationViaAttributes", "")]
+    string ImplicitImplementedPropertyForOverrideTarget { get; set; }
   }
 }

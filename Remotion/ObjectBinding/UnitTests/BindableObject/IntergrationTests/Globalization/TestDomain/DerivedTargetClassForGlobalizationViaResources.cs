@@ -22,25 +22,15 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Glob
 {
   [BindableObject]
   [Serializable]
-  [MultiLingualResources ("Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.Resources.TargetClassForGlobalization")]
-  public class TargetClassForGlobalization : ITargetClassForGlobalization
+  [MultiLingualResources ("Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.Resources.DerivedTargetClassForGlobalizationViaResources")]
+  public class DerivedTargetClassForGlobalizationViaResources : TargetClassForGlobalizationViaResources
   {
-    public TargetClassForGlobalization ()
+    public DerivedTargetClassForGlobalizationViaResources ()
     {
     }
 
-    public string Property1 { get; set; }
-   
-    public string Property2 { get; set; }
-    
-    public string PropertyForMixinOverrideTest
-    {
-      get { return Property1; }
-      set { Property1 = value; }
-    }
+    public string Property3 { get; set; }
 
-    public string ImplicitImplementedProperty { get; set; }
-
-    string ITargetClassForGlobalization.ExplicitImplementedProperty { get; set; }
+    public string Property4 { get; set; }
   }
 }

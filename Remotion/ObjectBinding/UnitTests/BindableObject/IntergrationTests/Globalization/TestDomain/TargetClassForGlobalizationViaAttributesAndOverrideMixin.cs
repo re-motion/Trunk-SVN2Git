@@ -14,19 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
-using Remotion.Globalization;
 using Remotion.Mixins;
-using Remotion.ObjectBinding.UnitTests.TestDomain;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain
 {
   [BindableObject]
-  [MultiLingualResources ("Remotion.ObjectBinding.UnitTests.Globalization.ClassWithMixedPropertyAndResources")]
-  [Uses (typeof (MixinAddingProperty))]
-  public class ClassWithMixedPropertyAndResources
+  [Serializable]
+  public class TargetClassWithOverrideMixinForGlobalizationViaAttributes : TargetClassForGlobalizationViaAttributes
   {
-    public string Value1 { get; set; }
+    public TargetClassWithOverrideMixinForGlobalizationViaAttributes ()
+    {
+    }
+
+    [OverrideMixin]
+    protected string PropertyForOverrideMixin { get; set; }
   }
 }

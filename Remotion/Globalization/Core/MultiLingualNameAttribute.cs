@@ -37,7 +37,9 @@ namespace Remotion.Globalization
   /// </item>
   /// </list>
   /// </remarks>
-  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Method, AllowMultiple = true)]
+  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Method,
+      AllowMultiple = true,
+      Inherited = true)]
   public class MultiLingualNameAttribute : Attribute
   {
     private readonly string _localizedName;

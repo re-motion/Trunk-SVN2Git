@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 using Remotion.Globalization;
 
@@ -22,16 +21,16 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Glob
 {
   [BindableObject]
   [Serializable]
-  [MultiLingualResources ("Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.Resources.DerivedTargetClassForGlobalization")]
-  public class DerivedTargetClassForGlobalization : TargetClassForGlobalization
+  public class DerivedTargetClassForGlobalizationViaAttributes : TargetClassForGlobalizationViaAttributes
   {
-    public DerivedTargetClassForGlobalization ()
+    public DerivedTargetClassForGlobalizationViaAttributes ()
     {
     }
 
+    [MultiLingualName ("Property3 display name from DerivedTargetClassForGlobalizationViaAttributes", "")]
     public string Property3 { get; set; }
-   
+
+    [MultiLingualName ("Property4 display name from DerivedTargetClassForGlobalizationViaAttributes", "")]
     public string Property4 { get; set; }
- 
   }
 }

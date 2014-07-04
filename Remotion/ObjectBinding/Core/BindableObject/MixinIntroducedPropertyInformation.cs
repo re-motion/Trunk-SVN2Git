@@ -33,78 +33,82 @@ namespace Remotion.ObjectBinding.BindableObject
   /// getter and setter can be used to get and set the value both via the mixin instance and via an instance of the target class. 
   /// <see cref="GetValue"/> and <see cref="SetValue"/> also work this way.
   /// </remarks>
-  /// <seealso cref="MixinIntroducedMethodInformation"/>
-  public class MixinIntroducedPropertyInformation : IPropertyInformation
+  public sealed class MixinIntroducedPropertyInformation : IPropertyInformation
   {
-    private readonly InterfaceImplementationPropertyInformation _mixinPropertyInfo;
+    private readonly InterfaceImplementationPropertyInformation _interfaceImplementationPropertyInfo;
 
-    public MixinIntroducedPropertyInformation (InterfaceImplementationPropertyInformation mixinPropertyInfo)
+    public MixinIntroducedPropertyInformation (InterfaceImplementationPropertyInformation interfaceImplementationPropertyInfo)
     {
-      ArgumentUtility.CheckNotNull ("mixinPropertyInfo", mixinPropertyInfo);
+      ArgumentUtility.CheckNotNull ("interfaceImplementationPropertyInfo", interfaceImplementationPropertyInfo);
 
-      _mixinPropertyInfo = mixinPropertyInfo;
+      _interfaceImplementationPropertyInfo = interfaceImplementationPropertyInfo;
+    }
+
+    public InterfaceImplementationPropertyInformation InterfaceImplementationPropertyInfo
+    {
+      get { return _interfaceImplementationPropertyInfo; }
     }
 
     public string Name
     {
-      get { return _mixinPropertyInfo.Name;  }
+      get { return _interfaceImplementationPropertyInfo.Name;  }
     }
 
     public ITypeInformation DeclaringType
     {
-      get { return _mixinPropertyInfo.DeclaringType; }
+      get { return _interfaceImplementationPropertyInfo.DeclaringType; }
     }
 
     public ITypeInformation GetOriginalDeclaringType ()
     {
-      return _mixinPropertyInfo.GetOriginalDeclaringType();
+      return _interfaceImplementationPropertyInfo.GetOriginalDeclaringType();
     }
 
     public IPropertyInformation GetOriginalDeclaration ()
     {
-      return _mixinPropertyInfo.GetOriginalDeclaration();
+      return _interfaceImplementationPropertyInfo.GetOriginalDeclaration();
     }
 
     public T GetCustomAttribute<T> (bool inherited) where T: class
     {
-      return _mixinPropertyInfo.GetCustomAttribute<T>(inherited);
+      return _interfaceImplementationPropertyInfo.GetCustomAttribute<T>(inherited);
     }
 
     public T[] GetCustomAttributes<T> (bool inherited) where T: class
     {
-      return _mixinPropertyInfo.GetCustomAttributes<T> (inherited);
+      return _interfaceImplementationPropertyInfo.GetCustomAttributes<T> (inherited);
     }
 
     public bool IsDefined<T> (bool inherited) where T: class
     {
-      return _mixinPropertyInfo.IsDefined<T> (inherited);
+      return _interfaceImplementationPropertyInfo.IsDefined<T> (inherited);
     }
 
     public IPropertyInformation FindInterfaceImplementation (Type implementationType)
     {
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);
 
-      return _mixinPropertyInfo.FindInterfaceImplementation (implementationType);
+      return _interfaceImplementationPropertyInfo.FindInterfaceImplementation (implementationType);
     }
 
     public IEnumerable<IPropertyInformation> FindInterfaceDeclarations ()
     {
-      return _mixinPropertyInfo.FindInterfaceDeclarations();
+      return _interfaceImplementationPropertyInfo.FindInterfaceDeclarations();
     }
 
     public ParameterInfo[] GetIndexParameters ()
     {
-      return _mixinPropertyInfo.GetIndexParameters();
+      return _interfaceImplementationPropertyInfo.GetIndexParameters();
     }
 
     public IMethodInformation[] GetAccessors (bool nonPublic)
     {
-      return _mixinPropertyInfo.GetAccessors(nonPublic);
+      return _interfaceImplementationPropertyInfo.GetAccessors(nonPublic);
     }
 
     public Type PropertyType
     {
-      get { return _mixinPropertyInfo.PropertyType; }
+      get { return _interfaceImplementationPropertyInfo.PropertyType; }
     }
 
     public bool CanBeSetFromOutside
@@ -116,20 +120,20 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
-      return _mixinPropertyInfo.GetValue (instance, indexParameters);
+      return _interfaceImplementationPropertyInfo.GetValue (instance, indexParameters);
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
-      _mixinPropertyInfo.SetValue (instance, value, indexParameters);
+      _interfaceImplementationPropertyInfo.SetValue (instance, value, indexParameters);
     }
 
     public IMethodInformation GetGetMethod (bool nonPublic)
     {
       return Maybe
-          .ForValue (_mixinPropertyInfo.GetGetMethod (nonPublic))
+          .ForValue (_interfaceImplementationPropertyInfo.GetGetMethod (nonPublic))
           .Select (mi => mi as InterfaceImplementationMethodInformation)
           .Select (mi => new MixinIntroducedMethodInformation (mi))
           .ValueOrDefault ();
@@ -138,7 +142,7 @@ namespace Remotion.ObjectBinding.BindableObject
     public IMethodInformation GetSetMethod (bool nonPublic)
     {
       return Maybe
-          .ForValue (_mixinPropertyInfo.GetSetMethod (nonPublic))
+          .ForValue (_interfaceImplementationPropertyInfo.GetSetMethod (nonPublic))
           .Select (mi => mi as InterfaceImplementationMethodInformation)
           .Select (mi => new MixinIntroducedMethodInformation (mi))
           .ValueOrDefault ();
@@ -152,17 +156,17 @@ namespace Remotion.ObjectBinding.BindableObject
         return false;
       var other = (MixinIntroducedPropertyInformation) obj;
 
-      return _mixinPropertyInfo.Equals (other._mixinPropertyInfo);
+      return _interfaceImplementationPropertyInfo.Equals (other._interfaceImplementationPropertyInfo);
     }
 
     public override int GetHashCode ()
     {
-      return _mixinPropertyInfo.GetHashCode();
+      return _interfaceImplementationPropertyInfo.GetHashCode();
     }
 
     public override string ToString ()
     {
-      return _mixinPropertyInfo + " (Mixin)";
+      return _interfaceImplementationPropertyInfo + " (Mixin)";
     }
   }
 }

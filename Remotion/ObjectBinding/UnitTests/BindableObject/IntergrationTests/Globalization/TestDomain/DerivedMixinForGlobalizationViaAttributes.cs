@@ -17,16 +17,15 @@
 
 using System;
 using Remotion.Globalization;
-using Remotion.Mixins;
-using Remotion.ObjectBinding.UnitTests.TestDomain;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Globalization.TestDomain
 {
-  [BindableObject]
-  [MultiLingualResources ("Remotion.ObjectBinding.UnitTests.Globalization.ClassWithMixedPropertyAndResources")]
-  [Uses (typeof (MixinAddingProperty))]
-  public class ClassWithMixedPropertyAndResources
+  public class DerivedMixinForGlobalizationViaAttributes : MixinForGlobalizationViaAttributes, IDerivedMixinForGlobalizationViaAttributes
   {
-    public string Value1 { get; set; }
+    [MultiLingualName ("MixedProperty3 display name from DerivedMixinForGlobalizationViaAttributes", "")]
+    public string MixedProperty3 { get; set; }
+
+    [MultiLingualName ("MixedProperty4 display name from DerivedMixinForGlobalizationViaAttributes", "")]
+    public string MixedProperty4 { get; set; }
   }
 }
