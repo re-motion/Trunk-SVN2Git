@@ -16,9 +16,12 @@
 // 
 
 //
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
@@ -36,9 +39,26 @@ namespace Remotion.Collections
     /// <returns>
     /// A <see cref="Cache{TKey,TValue}"/> instance for storing keys and values.
     /// </returns>
-    public static Cache<TKey, TValue> Create<TKey, TValue> ()
+    public static ICache<TKey, TValue> Create<TKey, TValue> ()
     {
       return new Cache<TKey, TValue>();
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Cache{TKey,TValue}"/> instance that is not thread-safe and uses the <see cref="EqualityComparer{T}.Default"/> 
+    /// <see cref="IEqualityComparer{T}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the keys.</typeparam>
+    /// <typeparam name="TValue">The type of the values.</typeparam>
+    /// <param name="cacheInvalidationToken">The <see cref="CacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <returns>
+    /// A <see cref="Cache{TKey,TValue}"/> instance for storing keys and values.
+    /// </returns>
+    public static ICache<TKey, TValue> Create<TKey, TValue> ([NotNull] CacheInvalidationToken cacheInvalidationToken)
+    {
+      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+
+      return new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue>(), cacheInvalidationToken);
     }
 
     /// <summary>
@@ -51,9 +71,29 @@ namespace Remotion.Collections
     /// <returns>
     /// A <see cref="Cache{TKey,TValue}"/> instances for storing keys and values.
     /// </returns>
-    public static Cache<TKey, TValue> Create<TKey, TValue> (IEqualityComparer<TKey> comparer)
+    public static ICache<TKey, TValue> Create<TKey, TValue> (IEqualityComparer<TKey> comparer)
     {
       return new Cache<TKey, TValue> (comparer);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Cache{TKey,TValue}"/> instance that is not thread-safe and uses the specified
+    /// <see cref="IEqualityComparer{T}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the keys.</typeparam>
+    /// <typeparam name="TValue">The type of the values.</typeparam>
+    /// <param name="cacheInvalidationToken">The <see cref="CacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <param name="comparer">The comparer to use for comparing keys. Can be <see langword="null" />.</param>
+    /// <returns>
+    /// A <see cref="Cache{TKey,TValue}"/> instances for storing keys and values.
+    /// </returns>
+    public static ICache<TKey, TValue> Create<TKey, TValue> (
+        [NotNull] CacheInvalidationToken cacheInvalidationToken,
+        [CanBeNull] IEqualityComparer<TKey> comparer)
+    {
+      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+
+      return new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue> (comparer), cacheInvalidationToken);
     }
 
     /// <summary>
@@ -77,6 +117,31 @@ namespace Remotion.Collections
     }
 
     /// <summary>
+    /// Creates a <see cref="LockingCacheDecorator{TKey,TValue}"/> instance that is thread-safe and uses the <see cref="EqualityComparer{T}.Default"/> 
+    /// <see cref="IEqualityComparer{T}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the keys.</typeparam>
+    /// <typeparam name="TValue">The type of the values.</typeparam>
+    /// <param name="cacheInvalidationToken">The <see cref="CacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <returns>
+    /// A <see cref="LockingCacheDecorator{TKey,TValue}"/> instances for storing keys and values in a thread-safe way.
+    /// </returns>
+    /// <remarks>
+    /// The created instance uses a single lock (see <see cref="Monitor"/>) to guard the data store against multi-threaded access. It is well-suited
+    /// for caches in which the factory delegates passed to <see cref="ICache{TKey,TValue}.GetOrCreateValue"/> only take a short time to 
+    /// complete. When the factory delegates take a long time to execute, consider using <see cref="CreateWithLazyLocking{TKey,TValue}()"/> instead 
+    /// to reduce contention.
+    /// </remarks>
+    public static ICache<TKey, TValue> CreateWithLocking<TKey, TValue> (
+        [NotNull] CacheInvalidationToken cacheInvalidationToken)
+    {
+      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+
+      return new LockingCacheDecorator<TKey, TValue> (
+          new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue>(), cacheInvalidationToken));
+    }
+
+    /// <summary>
     /// Creates a <see cref="LockingCacheDecorator{TKey,TValue}"/> instance that is thread-safe and uses the specified
     /// <see cref="IEqualityComparer{T}"/>.
     /// </summary>
@@ -89,12 +154,39 @@ namespace Remotion.Collections
     /// <remarks>
     /// The created instance uses a single lock (see <see cref="Monitor"/>) to guard the data store against multi-threaded access. It is well-suited
     /// for caches in which the factory delegates passed to <see cref="ICache{TKey,TValue}.GetOrCreateValue"/> only take a short time to 
-    /// complete. When the factory delegates take a long time to execute, consider using <see cref="CreateWithLazyLocking{TKey,TValue}(System.Collections.Generic.IEqualityComparer{TKey})"/> instead 
-    /// to reduce contention.
+    /// complete. When the factory delegates take a long time to execute, consider using 
+    /// <see cref="CreateWithLazyLocking{TKey,TValue}(System.Collections.Generic.IEqualityComparer{TKey})"/> instead to reduce contention.
     /// </remarks>
-    public static LockingCacheDecorator<TKey, TValue> CreateWithLocking<TKey, TValue> (IEqualityComparer<TKey> comparer)
+    public static ICache<TKey, TValue> CreateWithLocking<TKey, TValue> ([CanBeNull] IEqualityComparer<TKey> comparer)
     {
       return new LockingCacheDecorator<TKey, TValue> (new Cache<TKey, TValue> (comparer));
+    }
+
+    /// <summary>
+    /// Creates a <see cref="LockingCacheDecorator{TKey,TValue}"/> instance that is thread-safe and uses the specified
+    /// <see cref="IEqualityComparer{T}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the keys.</typeparam>
+    /// <typeparam name="TValue">The type of the values.</typeparam>
+    /// <param name="cacheInvalidationToken">The <see cref="CacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <param name="comparer">The comparer to use for comparing keys.</param>
+    /// <returns>
+    /// A <see cref="LockingCacheDecorator{TKey,TValue}"/> instances for storing keys and values in a thread-safe way.
+    /// </returns>
+    /// <remarks>
+    /// The created instance uses a single lock (see <see cref="Monitor"/>) to guard the data store against multi-threaded access. It is well-suited
+    /// for caches in which the factory delegates passed to <see cref="ICache{TKey,TValue}.GetOrCreateValue"/> only take a short time to 
+    /// complete. When the factory delegates take a long time to execute, consider using 
+    /// <see cref="CreateWithLazyLocking{TKey,TValue}(System.Collections.Generic.IEqualityComparer{TKey})"/> instead to reduce contention.
+    /// </remarks>
+    public static ICache<TKey, TValue> CreateWithLocking<TKey, TValue> (
+        [NotNull] CacheInvalidationToken cacheInvalidationToken,
+        [CanBeNull] IEqualityComparer<TKey> comparer)
+    {
+      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+
+      return new LockingCacheDecorator<TKey, TValue> (
+          new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue> (comparer), cacheInvalidationToken));
     }
 
     /// <summary>
@@ -112,10 +204,38 @@ namespace Remotion.Collections
     /// in which the factory delegates passed to <see cref="ICache{TKey,TValue}.GetOrCreateValue"/> take a long time to execute. When the factory
     /// delegates do not take a long time, consider using <see cref="CreateWithLocking{TKey,TValue}()"/> instead to reduce the number of locks used.
     /// </remarks>
-    public static LazyLockingCachingAdapter<TKey, TValue> CreateWithLazyLocking<TKey, TValue> () where TValue : class 
+    public static ICache<TKey, TValue> CreateWithLazyLocking<TKey, TValue> () where TValue : class
     {
       return new LazyLockingCachingAdapter<TKey, TValue> (
-          new Cache<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>> ());
+          new Cache<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>>());
+    }
+
+    /// <summary>
+    /// Creates a <see cref="LazyLockingCachingAdapter{TKey,TValue}"/> instance that is thread-safe and uses the <see cref="EqualityComparer{T}.Default"/> 
+    /// <see cref="IEqualityComparer{T}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the keys.</typeparam>
+    /// <typeparam name="TValue">The type of the values.</typeparam>
+    /// <param name="cacheInvalidationToken">The <see cref="CacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <returns>
+    /// A <see cref="LazyLockingCachingAdapter{TKey,TValue}"/> instances for storing keys and values in a thread-safe way.
+    /// </returns>
+    /// <remarks>
+    /// The created instance uses a single lock (see <see cref="Monitor"/>) to guard the data store against multi-threaded access and additional, 
+    /// double-checked locks (see <see cref="DoubleCheckedLockingContainer{T}"/>) to protect each single value. It is well-suited for caches
+    /// in which the factory delegates passed to <see cref="ICache{TKey,TValue}.GetOrCreateValue"/> take a long time to execute. When the factory
+    /// delegates do not take a long time, consider using <see cref="CreateWithLocking{TKey,TValue}()"/> instead to reduce the number of locks used.
+    /// </remarks>
+    public static ICache<TKey, TValue> CreateWithLazyLocking<TKey, TValue> (
+        [NotNull] CacheInvalidationToken cacheInvalidationToken)
+        where TValue : class
+    {
+      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+
+      return new LazyLockingCachingAdapter<TKey, TValue> (
+          new InvalidationTokenBasedCacheDecorator<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>> (
+              new Cache<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>>(),
+              cacheInvalidationToken));
     }
 
     /// <summary>
@@ -132,12 +252,45 @@ namespace Remotion.Collections
     /// The created instance uses a single lock (see <see cref="Monitor"/>) to guard the data store against multi-threaded access and additional,
     /// double-checked locks (see <see cref="DoubleCheckedLockingContainer{T}"/>) to protect each single value. It is well-suited for caches
     /// in which the factory delegates passed to <see cref="ICache{TKey,TValue}.GetOrCreateValue"/> take a long time to execute. When the factory
-    /// delegates do not take a long time, consider using <see cref="CreateWithLocking{TKey,TValue}(System.Collections.Generic.IEqualityComparer{TKey})"/> instead to reduce the number of locks used.
+    /// delegates do not take a long time, consider using 
+    /// <see cref="CreateWithLocking{TKey,TValue}(System.Collections.Generic.IEqualityComparer{TKey})"/> instead to reduce the number of locks used.
     /// </remarks>
-    public static LazyLockingCachingAdapter<TKey, TValue> CreateWithLazyLocking<TKey, TValue> (IEqualityComparer<TKey> comparer) where TValue : class
+    public static ICache<TKey, TValue> CreateWithLazyLocking<TKey, TValue> ([CanBeNull] IEqualityComparer<TKey> comparer)
+        where TValue : class
     {
       return new LazyLockingCachingAdapter<TKey, TValue> (
           new Cache<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>> (comparer));
+    }
+
+    /// <summary>
+    /// Creates a <see cref="LazyLockingCachingAdapter{TKey,TValue}"/> instance that is thread-safe and uses the specified
+    /// <see cref="IEqualityComparer{T}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the keys.</typeparam>
+    /// <typeparam name="TValue">The type of the values.</typeparam>
+    /// <param name="cacheInvalidationToken">The <see cref="CacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <param name="comparer">The comparer to use for comparing keys.</param>
+    /// <returns>
+    /// A <see cref="LazyLockingCachingAdapter{TKey,TValue}"/> instances for storing keys and values in a thread-safe way.
+    /// </returns>
+    /// <remarks>
+    /// The created instance uses a single lock (see <see cref="Monitor"/>) to guard the data store against multi-threaded access and additional,
+    /// double-checked locks (see <see cref="DoubleCheckedLockingContainer{T}"/>) to protect each single value. It is well-suited for caches
+    /// in which the factory delegates passed to <see cref="ICache{TKey,TValue}.GetOrCreateValue"/> take a long time to execute. When the factory
+    /// delegates do not take a long time, consider using 
+    /// <see cref="CreateWithLocking{TKey,TValue}(System.Collections.Generic.IEqualityComparer{TKey})"/> instead to reduce the number of locks used.
+    /// </remarks>
+    public static ICache<TKey, TValue> CreateWithLazyLocking<TKey, TValue> (
+        [NotNull] CacheInvalidationToken cacheInvalidationToken,
+        [CanBeNull] IEqualityComparer<TKey> comparer)
+        where TValue : class
+    {
+      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+
+      return new LazyLockingCachingAdapter<TKey, TValue> (
+          new InvalidationTokenBasedCacheDecorator<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>> (
+              new Cache<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>> (comparer),
+              cacheInvalidationToken));
     }
   }
 }

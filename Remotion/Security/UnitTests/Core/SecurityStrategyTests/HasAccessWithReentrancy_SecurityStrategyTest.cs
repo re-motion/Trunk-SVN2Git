@@ -32,7 +32,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
   {
     private class GlobalAccessTypeCache : IGlobalAccessTypeCache
     {
-      private readonly LazyLockingCachingAdapter<GlobalAccessTypeCacheKey, AccessType[]> _innerCache;
+      private readonly ICache<GlobalAccessTypeCacheKey, AccessType[]> _innerCache;
 
       public GlobalAccessTypeCache ()
       {

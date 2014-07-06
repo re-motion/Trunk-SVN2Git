@@ -257,6 +257,7 @@
     </Compile>
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Collections\CacheFactoryTest.cs" />
+    <Compile Include="Collections\CacheInvalidationTokenTest.cs" />
     <Compile Include="Collections\CollectionExtensionsTest.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparerTest.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
@@ -264,6 +265,7 @@
     <Compile Include="Collections\DictionaryExtensionsTest.cs" />
     <Compile Include="Collections\ExpiringDataStoreFactoryTest.cs" />
     <Compile Include="Collections\ExpiringDataStoreTest.cs" />
+    <Compile Include="Collections\InvalidationTokenBasedCacheDecoratorTest.cs" />
     <Compile Include="Collections\LazyLockingCachingAdapterTest.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapterTest.cs" />
     <Compile Include="Collections\ListAdapterTest.cs" />
