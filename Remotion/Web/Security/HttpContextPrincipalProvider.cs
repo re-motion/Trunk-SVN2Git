@@ -29,6 +29,8 @@ namespace Remotion.Web.Security
   {
     public const int Position = ThreadPrincipalProvider.Position - 1;
 
+    private static readonly NullSecurityPrincipal s_nullSecurityPrincipal = new NullSecurityPrincipal();
+
     private readonly IHttpContextProvider _httpContextProvider;
 
     public HttpContextPrincipalProvider (IHttpContextProvider httpContextProvider)
@@ -45,7 +47,7 @@ namespace Remotion.Web.Security
 
       var identity = httpContext.User.Identity;
       if (!identity.IsAuthenticated)
-        return new NullSecurityPrincipal();
+        return s_nullSecurityPrincipal;
 
       return new SecurityPrincipal (identity.Name, null, null, null);
     }

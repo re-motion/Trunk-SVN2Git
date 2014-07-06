@@ -55,6 +55,7 @@ namespace Remotion.Security.Metadata
       }
     }
 
+    private static readonly Enum[] s_emptyPermissions = new Enum[0];
     private readonly ICache<CacheKey, Enum[]> _cache = CacheFactory.CreateWithLocking<CacheKey, Enum[]>();
     private readonly Func<CacheKey, Enum[]> _cacheValueFactory;
 
@@ -67,16 +68,21 @@ namespace Remotion.Security.Metadata
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
-      
+
+      if (methodInformation.IsNull)
+        return s_emptyPermissions;
+
       return GetPermissionsFromCache (type, methodInformation);
     }
 
     public Enum[] GetPermissions (IMethodInformation methodInformation)
     {
+      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
+
       var permissionAttribute = methodInformation.GetCustomAttribute<DemandPermissionAttribute>(true);
 
       if (permissionAttribute == null)
-        return new Enum[0];
+        return s_emptyPermissions;
 
       var permissions = new List<Enum> ();
       foreach (Enum accessTypeEnum in permissionAttribute.GetAccessTypes ())

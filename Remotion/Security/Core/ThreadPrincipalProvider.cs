@@ -26,6 +26,7 @@ namespace Remotion.Security
   public sealed class ThreadPrincipalProvider : IPrincipalProvider
   {
     public const int Position = Int32.MaxValue;
+    private static readonly NullSecurityPrincipal s_nullSecurityPrincipal = new NullSecurityPrincipal();
 
     public ThreadPrincipalProvider ()
     {
@@ -35,7 +36,7 @@ namespace Remotion.Security
     {
       IIdentity identity = Thread.CurrentPrincipal.Identity;
       if (!identity.IsAuthenticated)
-        return new NullSecurityPrincipal();
+        return s_nullSecurityPrincipal;
 
       return new SecurityPrincipal (identity.Name, null, null, null);
     }

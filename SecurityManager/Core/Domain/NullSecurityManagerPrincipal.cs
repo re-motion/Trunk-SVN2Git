@@ -30,8 +30,12 @@ namespace Remotion.SecurityManager.Domain
   [Serializable]
   public sealed class NullSecurityManagerPrincipal:ISecurityManagerPrincipal, IObjectReference
   {
+    private static readonly TenantProxy[] s_emptyTenantProxies = new TenantProxy[0];
+    private static readonly SubstitutionProxy[] s_emptySubstitutionProxies = new SubstitutionProxy[0];
+    private static readonly NullSecurityPrincipal s_nullSecurityPrincipal = new NullSecurityPrincipal();
+
     internal NullSecurityManagerPrincipal ()
-    {       
+    {
     }
 
     public TenantProxy Tenant
@@ -55,17 +59,17 @@ namespace Remotion.SecurityManager.Domain
 
     public TenantProxy[] GetTenants (bool includeAbstractTenants)
     {
-      return new TenantProxy[0];
+      return s_emptyTenantProxies;
     }
 
     public SubstitutionProxy[] GetActiveSubstitutions ()
     {
-      return new SubstitutionProxy[0];
+      return s_emptySubstitutionProxies;
     }
 
     public ISecurityPrincipal GetSecurityPrincipal ()
     {
-      return new NullSecurityPrincipal();
+      return s_nullSecurityPrincipal;
     }
 
     bool INullObject.IsNull

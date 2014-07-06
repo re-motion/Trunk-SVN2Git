@@ -24,19 +24,11 @@ namespace Remotion.Security
   [ImplementationFor (typeof (IObjectSecurityAdapter), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
   public class ObjectSecurityAdapter : IObjectSecurityAdapter
   {
-    // types
-
-    // static members
-
-    // member fields
-
-    // construction and disposing
+    private static readonly NullMethodInformation s_nullMethodInformation = new NullMethodInformation();
 
     public ObjectSecurityAdapter ()
     {
     }
-
-    // methods and properties
 
     public bool HasAccessOnGetAccessor (ISecurableObject securableObject, IPropertyInformation propertyInformation)
     {
@@ -46,7 +38,7 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod (true) ?? new NullMethodInformation());
+      return securityClient.HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod (true) ?? s_nullMethodInformation);
     }
 
     public bool HasAccessOnSetAccessor (ISecurableObject securableObject, IPropertyInformation propertyInformation)
@@ -57,7 +49,7 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod (true) ?? new NullMethodInformation ());
+      return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod (true) ?? s_nullMethodInformation);
     }
   }
 }

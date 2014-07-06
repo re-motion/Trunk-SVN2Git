@@ -41,6 +41,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var gcCounter = new GCCounter();
       gcCounter.BeginCount();
       var stopwatch = new Stopwatch();
+
       stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
         value ^= property.IsAccessible (obj.BusinessObjectClass, obj);

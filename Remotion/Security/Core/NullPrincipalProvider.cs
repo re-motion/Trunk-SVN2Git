@@ -25,7 +25,7 @@ namespace Remotion.Security
   /// <threadsafety static="true" instance="true" />
   public sealed class NullPrincipalProvider : IPrincipalProvider
   {
-    private readonly NullSecurityPrincipal _securityPrincipal = new NullSecurityPrincipal();
+    private static readonly NullSecurityPrincipal s_securityPrincipal = new NullSecurityPrincipal();
 
     public NullPrincipalProvider ()
     {
@@ -33,7 +33,7 @@ namespace Remotion.Security
 
     public ISecurityPrincipal GetPrincipal ()
     {
-      return _securityPrincipal;
+      return s_securityPrincipal;
     }
 
     bool INullObject.IsNull

@@ -102,11 +102,16 @@ namespace Remotion.Security
     private AccessType[] GetAccessTypesFromCache (ISecurityProvider securityProvider, ISecurityPrincipal principal)
     {
       AccessType[] value;
+      if (_cache.TryGetValue (principal, out value))
+        return value;
 
-      if (!_cache.TryGetValue (principal, out value))
-        value = _cache.GetOrCreateValue (principal, delegate { return GetAccessTypes (securityProvider, principal); });
+      // Split to prevent closure being created during the TryGetValue-operation
+      return GetOrCreateAccessTypesFromCache (securityProvider, principal);
+    }
 
-      return value;
+    private AccessType[] GetOrCreateAccessTypesFromCache (ISecurityProvider securityProvider, ISecurityPrincipal principal)
+    {
+      return _cache.GetOrCreateValue (principal, key => GetAccessTypes (securityProvider, key));
     }
 
     private AccessType[] GetAccessTypes (ISecurityProvider securityProvider, ISecurityPrincipal principal)
