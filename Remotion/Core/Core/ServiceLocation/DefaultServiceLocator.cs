@@ -74,6 +74,8 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceConfigurationDiscoveryService", serviceConfigurationDiscoveryService);
 
       _serviceConfigurationDiscoveryService = serviceConfigurationDiscoveryService;
+      _createRegistrationFromTypeFunc = CreateRegistrationFromType;
+
       Register (new ServiceConfigurationEntry (typeof (ILogManager), new ServiceImplementationInfo (typeof (Log4NetLogManager), LifetimeKind.Singleton)));
     }
 

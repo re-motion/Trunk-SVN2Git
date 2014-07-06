@@ -22,7 +22,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
@@ -55,6 +54,7 @@ namespace Remotion.ServiceLocation
         .GetGenericMethodDefinition();
 
     private readonly ConcurrentDictionary<Type, Registration> _dataStore = new ConcurrentDictionary<Type, Registration>();
+    private readonly Func<Type, Registration> _createRegistrationFromTypeFunc;
 
     /// <inheritdoc/>
     public void Register (ServiceConfigurationEntry serviceConfigurationEntry)
@@ -75,19 +75,19 @@ namespace Remotion.ServiceLocation
     {
       try
       {
-        return _dataStore.GetOrAdd (
-            serviceType,
-            t =>
-            {
-              var serviceConfigurationEntry = _serviceConfigurationDiscoveryService.GetDefaultConfiguration (t);
-              return CreateRegistration (serviceConfigurationEntry);
-            });
+        return _dataStore.GetOrAdd (serviceType, _createRegistrationFromTypeFunc);
       }
       catch (Exception ex)
       {
         var message = string.Format ("Error resolving service Type '{0}': {1}", serviceType, ex.Message);
         throw new ActivationException (message, ex);
       }
+    }
+
+    private Registration CreateRegistrationFromType (Type serviceType)
+    {
+      var serviceConfigurationEntry = _serviceConfigurationDiscoveryService.GetDefaultConfiguration (serviceType);
+      return CreateRegistration (serviceConfigurationEntry);
     }
 
     private Registration CreateRegistration (ServiceConfigurationEntry serviceConfigurationEntry)
