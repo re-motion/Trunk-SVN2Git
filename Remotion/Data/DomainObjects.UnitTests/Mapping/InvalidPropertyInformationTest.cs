@@ -128,5 +128,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
       Assert.That (_propertyInformation.ToString (), Is.EqualTo ("PropertyName (invalid property)"));
     }
 
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (((IPropertyInformation) _propertyInformation).IsNull, Is.False);
+    }
   }
 }

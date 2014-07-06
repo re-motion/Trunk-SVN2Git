@@ -470,6 +470,12 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void IsNull ()
+    {
+      Assert.That (((IMethodInformation) _adapter).IsNull, Is.False);
+    }
+
+    [Test]
     public void IsSupportedByTypeConversionProvider ()
     {
       var typeConversionProvider = SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();

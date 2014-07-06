@@ -319,7 +319,11 @@ namespace Remotion.Reflection
     {
       return _type.ToString ();
     }
-    
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
 
     private ITypeInformation[] ConvertToTypeAdapters (Type[] types)
     {

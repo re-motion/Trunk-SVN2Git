@@ -212,5 +212,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
 
       Assert.That (_mixinIntroducedMethodInformation.ToString(), Is.EqualTo ("Test (impl of 'Boolean') (Mixin)"));
     }
+
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (((IMethodInformation) _mixinIntroducedMethodInformation).IsNull, Is.False);
+    }
   }
 }

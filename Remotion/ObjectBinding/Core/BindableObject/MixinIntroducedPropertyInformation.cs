@@ -168,5 +168,10 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       return _interfaceImplementationPropertyInfo + " (Mixin)";
     }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
 }

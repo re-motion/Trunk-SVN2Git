@@ -123,5 +123,10 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       return string.Format ("{0} (invalid property)", _name);
     }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
 }

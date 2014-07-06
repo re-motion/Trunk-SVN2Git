@@ -37,19 +37,35 @@ namespace Remotion.Reflection
         new LockingDataStoreDecorator<PropertyInfo, PropertyInfoAdapter> (
             new SimpleDataStore<PropertyInfo, PropertyInfoAdapter> (MemberInfoEqualityComparer<PropertyInfo>.Instance));
 
+    private static readonly Func<PropertyInfo, PropertyInfoAdapter> s_ctorFunc = pi => new PropertyInfoAdapter (pi); 
+
     public static PropertyInfoAdapter Create (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-      return s_dataStore.GetOrCreateValue (propertyInfo, pi => new PropertyInfoAdapter (pi));
+      return s_dataStore.GetOrCreateValue (propertyInfo, s_ctorFunc);
     }
 
     private readonly PropertyInfo _propertyInfo;
+    private readonly Lazy<IMethodInformation> _publicGetMethod;
+    private readonly Lazy<IMethodInformation> _publicOrNonPublicGetMethod;
+    private readonly Lazy<IMethodInformation> _publicSetMethod;
+    private readonly Lazy<IMethodInformation> _publicOrNonPublicSetMethod;
+
     private readonly Lazy<ITypeInformation> _cachedOriginalDeclaringType;
     private readonly Lazy<IPropertyInformation> _cachedOriginalDeclaration;
 
     private PropertyInfoAdapter (PropertyInfo propertyInfo)
     {
       _propertyInfo = propertyInfo;
+
+      _publicGetMethod =
+          new Lazy<IMethodInformation> (() => Maybe.ForValue (_propertyInfo.GetGetMethod (false)).Select (MethodInfoAdapter.Create).ValueOrDefault());
+      _publicOrNonPublicGetMethod =
+          new Lazy<IMethodInformation> (() => Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Select (MethodInfoAdapter.Create).ValueOrDefault());
+      _publicSetMethod =
+          new Lazy<IMethodInformation> (() => Maybe.ForValue (_propertyInfo.GetSetMethod (false)).Select (MethodInfoAdapter.Create).ValueOrDefault());
+      _publicOrNonPublicSetMethod =
+          new Lazy<IMethodInformation> (() => Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (MethodInfoAdapter.Create).ValueOrDefault());
 
       _cachedOriginalDeclaringType = new Lazy<ITypeInformation> (
           () => TypeAdapter.Create (_propertyInfo.GetOriginalDeclaringType()),
@@ -126,12 +142,18 @@ namespace Remotion.Reflection
 
     public IMethodInformation GetGetMethod (bool nonPublic)
     {
-      return Maybe.ForValue (_propertyInfo.GetGetMethod (nonPublic)).Select (MethodInfoAdapter.Create).ValueOrDefault();
+      if (nonPublic)
+        return _publicOrNonPublicGetMethod.Value;
+      else
+        return _publicGetMethod.Value;
     }
 
     public IMethodInformation GetSetMethod (bool nonPublic)
     {
-      return Maybe.ForValue (_propertyInfo.GetSetMethod (nonPublic)).Select (MethodInfoAdapter.Create).ValueOrDefault ();
+      if (nonPublic)
+        return _publicOrNonPublicSetMethod.Value;
+      else
+        return _publicSetMethod.Value;
     }
 
     public ParameterInfo[] GetIndexParameters ()
@@ -189,6 +211,10 @@ namespace Remotion.Reflection
     {
       return _propertyInfo.ToString ();
     }
- 
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
 }

@@ -149,5 +149,10 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_nullMethodInformation.ToString(), Is.EqualTo ("NullMethodInformation"));
     }
 
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (_nullMethodInformation.IsNull, Is.True);
+    }
   }
 }

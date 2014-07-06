@@ -815,6 +815,12 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void IsNull ()
+    {
+      Assert.That (((IPropertyInformation) _adapter).IsNull, Is.False);
+    }
+
+    [Test]
     public void GetHashCode_UsesPropertyInfo ()
     {
       Assert.That (

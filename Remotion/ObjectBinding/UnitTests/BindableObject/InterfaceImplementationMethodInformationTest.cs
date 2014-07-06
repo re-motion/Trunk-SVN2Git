@@ -209,5 +209,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
 
       Assert.That (_interfaceImplementationMethodInformation.ToString(), Is.EqualTo ("Test (impl of 'Boolean')"));
     }
+
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (((IMethodInformation) _interfaceImplementationMethodInformation).IsNull, Is.False);
+    }
   }
 }

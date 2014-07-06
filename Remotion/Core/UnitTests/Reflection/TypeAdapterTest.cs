@@ -892,6 +892,12 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void IsNull ()
+    {
+      Assert.That (((ITypeInformation) TypeAdapter.Create (typeof (ArrayList))).IsNull, Is.False);
+    }
+
+    [Test]
     public void IsSupportedByTypeConversionProvider ()
     {
       var typeConversionProvider = SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();

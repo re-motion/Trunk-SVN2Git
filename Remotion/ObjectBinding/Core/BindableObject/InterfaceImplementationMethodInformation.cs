@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// Represents a method that implements a method declared by an interface. <see cref="Invoke"/> and <see cref="GetFastInvoker"/> call the method
   /// via the interface.
   /// </summary>
-  public class InterfaceImplementationMethodInformation : IMethodInformation
+  public sealed class InterfaceImplementationMethodInformation : IMethodInformation
   {
     private readonly IMethodInformation _implementationMethodInfo;
     private readonly IMethodInformation _declarationMethodInfo;
@@ -141,6 +141,11 @@ namespace Remotion.ObjectBinding.BindableObject
     public override string ToString ()
     {
       return string.Format ("{0} (impl of '{1}')", _implementationMethodInfo.Name, _declarationMethodInfo.DeclaringType.Name);
+    }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
     }
   }
 }

@@ -23,7 +23,7 @@ namespace Remotion.Reflection
   /// <summary>
   /// Null-object implementation of <see cref="IMethodInformation"/>.
   /// </summary>
-  public class NullPropertyInformation : IPropertyInformation
+  public sealed class NullPropertyInformation : IPropertyInformation
   {
     public string Name
     {
@@ -124,6 +124,11 @@ namespace Remotion.Reflection
     public override string ToString ()
     {
       return "NullPropertyInformation";
+    }
+
+    public bool IsNull
+    {
+      get { return true; }
     }
   }
 }

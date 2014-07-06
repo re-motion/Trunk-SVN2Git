@@ -25,7 +25,7 @@ namespace Remotion.Reflection
   /// <seealso cref="IPropertyInformation"/>
   /// <seealso cref="IMethodInformation"/>
   /// </summary>
-  public interface IMemberInformation
+  public interface IMemberInformation : INullObject
   {
     /// <summary>
     /// Gets the simple name of the member identifying it within its declaring type.

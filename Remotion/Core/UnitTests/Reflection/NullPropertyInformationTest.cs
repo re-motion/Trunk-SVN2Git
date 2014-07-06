@@ -143,5 +143,10 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_nullPropertyInformation.ToString(), Is.EqualTo("NullPropertyInformation"));
     }
 
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (_nullPropertyInformation.IsNull, Is.True);
+    }
   }
 }

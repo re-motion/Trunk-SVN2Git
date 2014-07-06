@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// target class.
   /// </remarks>
   /// <seealso cref="MixinIntroducedPropertyInformation"/>
-  public class MixinIntroducedMethodInformation : IMethodInformation
+  public sealed class MixinIntroducedMethodInformation : IMethodInformation
   {
     private readonly InterfaceImplementationMethodInformation _mixinMethodInfo;
     private readonly DoubleCheckedLockingContainer<ICollection<IMethodInformation>> _methodInterfaceDeclarationCache;
@@ -147,6 +147,11 @@ namespace Remotion.ObjectBinding.BindableObject
     public override string ToString ()
     {
       return _mixinMethodInfo + " (Mixin)";
+    }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
     }
   }
 }

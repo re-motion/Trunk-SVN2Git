@@ -278,5 +278,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       _declarationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeInformationStub);
       Assert.That (_mixinIntroducedPropertyInformation.ToString(), Is.EqualTo ("Test (impl of 'Boolean') (Mixin)"));
     }
+
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (((IPropertyInformation) _mixinIntroducedPropertyInformation).IsNull, Is.False);
+    }
   }
 }

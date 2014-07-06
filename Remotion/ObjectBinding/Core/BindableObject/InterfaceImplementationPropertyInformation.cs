@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// <see cref="GetSetMethod(bool)"/> will usually be instances <see cref="InterfaceImplementationMethodInformation"/>, but since a property can
   /// add accessors not declared by the interface property, they don't have to be.
   /// </summary>
-  public class InterfaceImplementationPropertyInformation : IPropertyInformation
+  public sealed class InterfaceImplementationPropertyInformation : IPropertyInformation
   {
     private readonly IPropertyInformation _implementationPropertyInfo;
     private readonly IPropertyInformation _declarationPropertyInfo;
@@ -209,6 +209,11 @@ namespace Remotion.ObjectBinding.BindableObject
     public override string ToString ()
     {
       return string.Format ("{0} (impl of '{1}')", _implementationPropertyInfo.Name, _declarationPropertyInfo.DeclaringType.Name);
+    }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
     }
   }
 }

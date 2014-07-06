@@ -36,10 +36,12 @@ namespace Remotion.Reflection
         new LockingDataStoreDecorator<MethodInfo, MethodInfoAdapter> (
             new SimpleDataStore<MethodInfo, MethodInfoAdapter> (MemberInfoEqualityComparer<MethodInfo>.Instance));
 
+    private static readonly Func<MethodInfo, MethodInfoAdapter> s_ctorFunc = mi => new MethodInfoAdapter (mi); 
+
     public static MethodInfoAdapter Create (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-      return s_dataStore.GetOrCreateValue (methodInfo, mi=> new MethodInfoAdapter (mi));
+      return s_dataStore.GetOrCreateValue (methodInfo, s_ctorFunc);
     }
 
     private readonly MethodInfo _methodInfo;
@@ -174,6 +176,10 @@ namespace Remotion.Reflection
     {
       return _methodInfo.ToString ();
     }
-    
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
 }
