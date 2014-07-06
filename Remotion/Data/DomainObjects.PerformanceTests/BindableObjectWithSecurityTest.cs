@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
@@ -29,19 +28,15 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
   {
     private ServiceLocatorScope _serviceLocatorScope;
 
-    [TestFixtureSetUp]
-    public virtual void TestFixtureSetUp ()
-    {
-      var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterMultiple<IObjectSecurityAdapter> (() => new ObjectSecurityAdapter());
-      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
-    }
-
     [SetUp]
     public void SetUp ()
     {
-      SecurityConfiguration.Current.SecurityProvider = new StubSecurityProvider();
-      SecurityConfiguration.Current.PrincipalProvider = new ThreadPrincipalProvider();
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle<ISecurityProvider> (() => new StubSecurityProvider());
+      serviceLocator.RegisterSingle<IPrincipalProvider> (() => new ThreadPrincipalProvider());
+      serviceLocator.RegisterMultiple<IObjectSecurityAdapter> (() => new ObjectSecurityAdapter());
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
+
       var clientTransaction = new SecurityClientTransactionFactory().CreateRootTransaction();
       clientTransaction.To<ClientTransaction>().EnterDiscardingScope();
     }
@@ -49,14 +44,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [TearDown]
     public void TearDown ()
     {
-      SecurityConfiguration.Current.SecurityProvider = null;
-      SecurityConfiguration.Current.PrincipalProvider = null;
       ClientTransactionScope.ResetActiveScope();
-    }
-
-    [TestFixtureTearDown]
-    public virtual void TestFixtureTearDown ()
-    {
       _serviceLocatorScope.Dispose();
     }
 

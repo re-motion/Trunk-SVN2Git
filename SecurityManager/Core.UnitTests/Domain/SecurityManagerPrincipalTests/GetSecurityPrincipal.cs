@@ -21,9 +21,9 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
@@ -40,12 +40,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       base.SetUp();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-      SecurityConfiguration.Current.SecurityProvider = null;
       ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
 
       _user = User.FindByUserName ("substituting.user");
       _tenant = _user.Tenant;
-      _substitution = _user.GetActiveSubstitutions().Where (s => s.SubstitutedRole != null).First();
+      _substitution = _user.GetActiveSubstitutions().First (s => s.SubstitutedRole != null);
 
       _principal = CreateSecurityManagerPrincipal (_tenant, _user, _substitution);
     }
@@ -54,7 +53,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       base.TearDown();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-      SecurityConfiguration.Current.SecurityProvider = null;
     }
 
     [Test]
@@ -107,9 +105,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
-      IncrementRevision();
-      _principal.Refresh();
+
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => securityProviderStub);
+      using (new ServiceLocatorScope (serviceLocator))
+      {
+        IncrementRevision();
+        _principal.Refresh();
+      }
 
       ISecurityPrincipal securityPrincipal = _principal.GetSecurityPrincipal();
       Assert.That (securityPrincipal.IsNull, Is.False);

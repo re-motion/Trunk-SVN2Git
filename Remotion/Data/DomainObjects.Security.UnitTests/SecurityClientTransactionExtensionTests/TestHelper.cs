@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.Security.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -104,22 +103,19 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       return _mocks.StrictMock<IObjectSecurityStrategy> ();
     }
 
-    public void SetupSecurityConfiguration ()
+    public void SetupSecurityIoCConfiguration ()
     {
-      PrivateInvoke.InvokeNonPublicStaticMethod (typeof (SecurityConfiguration), "SetCurrent", new SecurityConfiguration ());
-      SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
-      SecurityConfiguration.Current.PrincipalProvider = _stubPrincipalProvider;
-
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterSingle<IMemberResolver> (() => _mockMemberResolver);
-      serviceLocator.RegisterSingle<IPermissionProvider> (() => _mockPermissionReflector);
-      serviceLocator.RegisterSingle<IFunctionalSecurityStrategy> (() => _mockFunctionalSecurityStrategy);
+      serviceLocator.RegisterSingle (() => _mockSecurityProvider);
+      serviceLocator.RegisterSingle (() => _stubPrincipalProvider);
+      serviceLocator.RegisterSingle (() => _mockMemberResolver);
+      serviceLocator.RegisterSingle (() => _mockPermissionReflector);
+      serviceLocator.RegisterSingle (() => _mockFunctionalSecurityStrategy);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 
-    public void TearDownSecurityConfiguration ()
+    public void TearDownSecurityIoCConfiguration ()
     {
-      PrivateInvoke.InvokeNonPublicStaticMethod (typeof (SecurityConfiguration), "SetCurrent", new SecurityConfiguration ());
       _serviceLocatorScope.Dispose();
     }
 

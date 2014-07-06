@@ -26,6 +26,7 @@ using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Test.Domain;
 using Remotion.SecurityManager.Domain;
+using Remotion.ServiceLocation;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
 namespace Remotion.SecurityManager.Clients.Web.Test
@@ -72,7 +73,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test
 
     protected void EvaluateSecurity_Click (object sender, EventArgs e)
     {
-      ISecurityProvider provider = SecurityConfiguration.Current.SecurityProvider;
+      ISecurityProvider provider = SafeServiceLocator.Current.GetInstance<ISecurityProvider>();
       SecurityContext context =
           SecurityContext.Create (
               typeof (File),

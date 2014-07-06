@@ -24,6 +24,9 @@ namespace Remotion.Collections
   /// <remarks>
   /// Use <see cref="GetCurrent"/> to get the current revision and provide it to <see cref="IsCurrent"/> when checking whether the revision is still current.
   /// Invoke <see cref="Invalidate"/> to signal a cache invalidation.
+  /// <note type="caution">
+  /// If the <see cref="CacheInvalidationToken.Revision"/> is part of a serialized instance, the associated <see cref="CacheInvalidationToken"/> must also be serialized.
+  /// </note>
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
   [Serializable]

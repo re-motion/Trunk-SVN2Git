@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Collections;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
@@ -33,79 +32,78 @@ namespace Remotion.Security
             new NullSecurityProvider(),
             new PermissionReflector(),
             new NullPrincipalProvider(),
-            FunctionalSecurityStrategy.CreateWithCustomSecurityStrategy (
-                new SecurityStrategy (new NullCache<ISecurityPrincipal, AccessType[]>(), new NullGlobalAccessTypeCache())),
+            new NullFunctionalSecurityStrategy(),
             new NullMemberResolver())
     {
     }
 
-    public override bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal user, params AccessType[] requiredAccessTypes)
+    public override bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
-      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("user", user);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
+      ArgumentUtility.DebugCheckNotNull ("securableObject", securableObject);
+      ArgumentUtility.DebugCheckNotNull ("principal", principal);
+      ArgumentUtility.DebugCheckNotNullOrEmpty ("requiredAccessTypes", requiredAccessTypes);
 
       return true;
     }
 
     public override bool HasStatelessAccess (Type securableClass, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
-      ArgumentUtility.CheckNotNull ("securableClass", securableClass);
-      ArgumentUtility.CheckNotNull ("user", principal);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
+      ArgumentUtility.DebugCheckNotNull ("securableClass", securableClass);
+      ArgumentUtility.DebugCheckNotNull ("principal", principal);
+      ArgumentUtility.DebugCheckNotNullOrEmpty ("requiredAccessTypes", requiredAccessTypes);
 
       return true;
     }
 
     public override bool HasMethodAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
-      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
-      ArgumentUtility.CheckNotNull ("principal", principal);
+      ArgumentUtility.DebugCheckNotNull ("securableObject", securableObject);
+      ArgumentUtility.DebugCheckNotNull ("methodInformation", methodInformation);
+      ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
       return true;
     }
 
     public override bool HasPropertyReadAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
-      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
-      ArgumentUtility.CheckNotNull ("principal", principal);
+      ArgumentUtility.DebugCheckNotNull ("securableObject", securableObject);
+      ArgumentUtility.DebugCheckNotNull ("methodInformation", methodInformation);
+      ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
       return true;
     }
 
     public override bool HasPropertyWriteAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
-      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
-      ArgumentUtility.CheckNotNull ("principal", principal);
+      ArgumentUtility.DebugCheckNotNull ("securableObject", securableObject);
+      ArgumentUtility.DebugCheckNotNull ("methodInformation", methodInformation);
+      ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
       return true;
     }
 
     public override bool HasConstructorAccess (Type securableClass, ISecurityPrincipal principal)
     {
-      ArgumentUtility.CheckNotNull ("securableClass", securableClass);
-      ArgumentUtility.CheckNotNull ("principal", principal);
+      ArgumentUtility.DebugCheckNotNull ("securableClass", securableClass);
+      ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
       return true;
     }
 
     public override bool HasStaticMethodAccess (Type securableClass, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
-      ArgumentUtility.CheckNotNull ("securableClass", securableClass);
-      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
-      ArgumentUtility.CheckNotNull ("principal", principal);
+      ArgumentUtility.DebugCheckNotNull ("securableClass", securableClass);
+      ArgumentUtility.DebugCheckNotNull ("methodInformation", methodInformation);
+      ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
       return true;
     }
 
     public override bool HasStatelessMethodAccess (Type securableClass, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
-      ArgumentUtility.CheckNotNull ("securableClass", securableClass);
-      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
-      ArgumentUtility.CheckNotNull ("principal", principal);
+      ArgumentUtility.DebugCheckNotNull ("securableClass", securableClass);
+      ArgumentUtility.DebugCheckNotNull ("methodInformation", methodInformation);
+      ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
       return true;
     }

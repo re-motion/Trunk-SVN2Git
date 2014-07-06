@@ -41,19 +41,16 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
     {
       ITransactionFactory factory = new SecurityClientTransactionFactory();
 
-      _testHelper.SetupSecurityConfiguration();
-      SecurityConfiguration.Current.SecurityProvider.BackToRecord();
-      SecurityConfiguration.Current.SecurityProvider.Stub (stub => stub.IsNull).Return (false).Repeat.Any();
-      SecurityConfiguration.Current.SecurityProvider.Replay();
+      _testHelper.SetupSecurityIoCConfiguration();
       ITransaction transaction;
       try
       {
-        Assert.That (SecurityConfiguration.Current.SecurityProvider.IsNull, Is.False);
+        Assert.That (SecurityConfiguration.Current.DisableAccessChecks, Is.False);
         transaction = factory.CreateRootTransaction ();
       }
       finally
       {
-        _testHelper.TearDownSecurityConfiguration();
+        _testHelper.TearDownSecurityIoCConfiguration();
       }
 
       var clientTransaction = transaction.To<ClientTransaction>();
@@ -68,15 +65,24 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
     [Test]
     public void CreateRootTransaction_WithDisabledSecurity ()
     {
-      ITransactionFactory factory = new SecurityClientTransactionFactory ();
+      ITransactionFactory factory = new SecurityClientTransactionFactory();
 
-      Assert.That (SecurityConfiguration.Current.SecurityProvider.IsNull, Is.True);
-      ITransaction transaction = factory.CreateRootTransaction ();
+      var backupValue = SecurityConfiguration.Current.DisableAccessChecks;
+      try
+      {
+        SecurityConfiguration.Current.DisableAccessChecks = true;
 
-      var clientTransaction = transaction.To<ClientTransaction> ();
-      var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (clientTransaction);
-      Assert.That (persistenceStrategy, Is.InstanceOf (typeof (RootPersistenceStrategy)));
-      Assert.That (clientTransaction.Extensions, Has.No.InstanceOf<SecurityClientTransactionExtension> ());
+        ITransaction transaction = factory.CreateRootTransaction();
+
+        var clientTransaction = transaction.To<ClientTransaction>();
+        var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (clientTransaction);
+        Assert.That (persistenceStrategy, Is.InstanceOf (typeof (RootPersistenceStrategy)));
+        Assert.That (clientTransaction.Extensions, Has.No.InstanceOf<SecurityClientTransactionExtension>());
+      }
+      finally
+      {
+        SecurityConfiguration.Current.DisableAccessChecks = backupValue;
+      }
     }
   }
 }

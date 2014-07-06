@@ -20,7 +20,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -33,7 +32,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       base.SetUp();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-      SecurityConfiguration.Current.SecurityProvider = null;
       ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
     }
 
@@ -41,7 +39,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       base.TearDown();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-      SecurityConfiguration.Current.SecurityProvider = null;
     }
 
     [Test]

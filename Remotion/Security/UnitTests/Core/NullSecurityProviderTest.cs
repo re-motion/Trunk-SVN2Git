@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Collections.Specialized;
 using NUnit.Framework;
-using Remotion.Configuration;
 
 namespace Remotion.Security.UnitTests.Core
 {
@@ -30,18 +29,6 @@ namespace Remotion.Security.UnitTests.Core
     public void SetUp ()
     {
       _securityProvider = new NullSecurityProvider();
-    }
-
-    [Test]
-    public void Initialize ()
-    {
-      NameValueCollection config = new NameValueCollection ();
-      config.Add ("description", "The Description");
-
-      ExtendedProviderBase provider = new NullSecurityProvider ("Provider", config);
-
-      Assert.That (provider.Name, Is.EqualTo ("Provider"));
-      Assert.That (provider.Description, Is.EqualTo ("The Description"));
     }
 
     [Test]
@@ -67,7 +54,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void Equals_DifferentInstancesAreEqual ()
     {
-      Assert.That (new NullSecurityPrincipal().Equals(new NullSecurityPrincipal()), Is.True);
+      Assert.That (new NullSecurityPrincipal().Equals (new NullSecurityPrincipal()), Is.True);
     }
   }
 }

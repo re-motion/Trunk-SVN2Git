@@ -121,7 +121,6 @@
     <Compile Include="AclTools\Expansion\TextWriterFactory\StreamWriterFactoryTest.cs" />
     <Compile Include="AclTools\Expansion\UserRoleAclAceCombinationsTest.cs" />
     <Compile Include="AclTools\SetUpFixture.cs" />
-    <Compile Include="Configuration\SecurityConfigurationMock.cs" />
     <Compile Include="Configuration\SecurityManagerConfigurationTest.cs" />
     <Compile Include="Configuration\TestOrganizationalStructureFactory.cs" />
     <Compile Include="Configuration\TestSecurityManagerConfiguration.cs" />
@@ -176,7 +175,7 @@
     <Compile Include="Domain\BindableObjectProviderTestHelper.cs" />
     <Compile Include="Domain\DomainObjectDeleteHandlerTest.cs" />
     <Compile Include="Domain\IDomainRevisionProviderTest.cs" />
-    <Compile Include="Domain\IGlobalAccessTypeCacheTest.cs" />
+    <Compile Include="Domain\IPrincipalProviderTest.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipalFactoryTest.cs" />
     <Compile Include="Domain\IUserRevisionProviderTest.cs" />
     <Compile Include="Domain\Metadata\AccessTypeDefinitionTest.cs" />
@@ -200,6 +199,7 @@
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchServiceTests\SearchPosition.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\RolePropertiesSearchServiceTests\SearchOtherPropertyType.cs" />
+    <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\RolePropertiesSearchServiceTests\SearchPositionWithSecurityChecks.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\RolePropertiesSearchServiceTests\SearchPosition.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchOtherPropertyType.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\TenantPropertyTypeSearchServiceTests\SearchTenant.cs" />
@@ -286,11 +286,12 @@
     <Compile Include="Domain\SecurityManagerPrincipalProviderTest.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalTests\Common.cs" />
     <Compile Include="Domain\SerializationTest.cs" />
+    <Compile Include="SecurityProvider\ISecurityProviderTest.cs" />
     <Compile Include="Persistence\RevisionStorageProviderExtensionTest.cs" />
     <Compile Include="Persistence\SecurityManagerSqlStorageObjectFactoryTest.cs" />
     <Compile Include="Persistence\SecurityManagerRdbmsProviderTestMixin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SecurityServiceTest.cs" />
+    <Compile Include="SecurityProvider\SecurityServiceTest.cs" />
     <Compile Include="SetUpFixture.cs" />
     <Compile Include="TestDomain\AbstractRoles.cs" />
     <Compile Include="TestDomain\Customer.cs" />

@@ -17,10 +17,10 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Security.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
@@ -58,11 +58,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       _clientTransaction = ClientTransaction.CreateRootTransaction();
       _clientTransaction.Extensions.Add (new SecurityClientTransactionExtension());
 
-      SecurityConfiguration.Current.SecurityProvider = _securityProviderStub;
-      SecurityConfiguration.Current.PrincipalProvider = _principalProviderStub;
-
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterSingle<IFunctionalSecurityStrategy> (() => _functionalSecurityStrategyStub);
+      serviceLocator.RegisterSingle (() => _securityProviderStub);
+      serviceLocator.RegisterSingle (() => _principalProviderStub);
+      serviceLocator.RegisterSingle (() => _functionalSecurityStrategyStub);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
       _clientTransaction.EnterNonDiscardingScope();
@@ -72,8 +71,6 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
     public void TearDown ()
     {
       ClientTransactionScope.ResetActiveScope();
-      SecurityConfiguration.Current.SecurityProvider = null;
-      SecurityConfiguration.Current.PrincipalProvider = null;
 
       _serviceLocatorScope.Dispose();
     }
@@ -88,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       SecurableObject securableObject;
       using (new SecurityFreeSection())
       {
-        securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (_securityContextFactoryStub));
+        securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
 
       Dev.Null = securableObject.PropertyWithDefaultPermission;
@@ -104,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       SecurableObject securableObject;
       using (new SecurityFreeSection())
       {
-        securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (_securityContextFactoryStub));
+        securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
 
       Dev.Null = securableObject.PropertyWithCustomPermission;
@@ -115,10 +112,12 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
         "Access to method 'get_PropertyWithDefaultPermission' on type 'Remotion.Data.DomainObjects.Security.UnitTests.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_PropertyWithDefaultPermission ()
     {
+      _securityProviderStub.Stub (mock => mock.GetAccess (_securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
+
       SecurableObject securableObject;
       using (new SecurityFreeSection())
       {
-        securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (_securityContextFactoryStub));
+        securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
 
       Dev.Null = securableObject.PropertyWithDefaultPermission;
@@ -129,10 +128,12 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
         "Access to method 'get_PropertyWithCustomPermission' on type 'Remotion.Data.DomainObjects.Security.UnitTests.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_PropertyWithCustomPermission ()
     {
+      _securityProviderStub.Stub (mock => mock.GetAccess (_securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
+
       SecurableObject securableObject;
       using (new SecurityFreeSection())
       {
-        securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (_securityContextFactoryStub));
+        securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
 
       Dev.Null = securableObject.PropertyWithCustomPermission;
@@ -148,7 +149,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       SecurableObject securableObject;
       using (new SecurityFreeSection())
       {
-        securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (_securityContextFactoryStub));
+        securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
 
       Dev.Null = ((ISecurableObjectMixin) securableObject).MixedPropertyWithDefaultPermission;
@@ -164,7 +165,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       SecurableObject securableObject;
       using (new SecurityFreeSection())
       {
-        securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (_securityContextFactoryStub));
+        securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
 
       Dev.Null = ((ISecurableObjectMixin) securableObject).MixedPropertyWithCustomPermission;
@@ -175,10 +176,12 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
         "Access to method 'get_MixedPropertyWithDefaultPermission' on type 'Remotion.Data.DomainObjects.Security.UnitTests.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_MixedPropertyWithDefaultPermission ()
     {
+      _securityProviderStub.Stub (mock => mock.GetAccess (_securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
+
       SecurableObject securableObject;
       using (new SecurityFreeSection())
       {
-        securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (_securityContextFactoryStub));
+        securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
 
       Dev.Null = ((ISecurableObjectMixin) securableObject).MixedPropertyWithDefaultPermission;
@@ -189,10 +192,12 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
         "Access to method 'get_MixedPropertyWithCustomPermission' on type 'Remotion.Data.DomainObjects.Security.UnitTests.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_MixedPropertyWithCustomPermission ()
     {
+      _securityProviderStub.Stub (mock => mock.GetAccess (_securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
+
       SecurableObject securableObject;
       using (new SecurityFreeSection())
       {
-        securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (_securityContextFactoryStub));
+        securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
 
       Dev.Null = ((ISecurableObjectMixin) securableObject).MixedPropertyWithCustomPermission;
@@ -203,6 +208,8 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
         "Access to method 'get_PropertyWithDefaultPermission' on type 'Remotion.Data.DomainObjects.Security.UnitTests.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_SubTransaction ()
     {
+      _securityProviderStub.Stub (mock => mock.GetAccess (_securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
+
       Assert.That (_clientTransaction.Extensions[SecurityClientTransactionExtension.DefaultKey], Is.Not.Null);
 
       var subTransaction = _clientTransaction.CreateSubTransaction();
@@ -213,7 +220,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
         SecurableObject securableObject;
         using (new SecurityFreeSection())
         {
-          securableObject = SecurableObject.NewObject (subTransaction, new ObjectSecurityStrategy (_securityContextFactoryStub));
+          securableObject = CreateSecurableObject (_securityContextFactoryStub, clientTransaction: subTransaction);
         }
 
         Dev.Null = securableObject.PropertyWithDefaultPermission;
@@ -223,6 +230,8 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
     [Test]
     public void AutomaticCleanup_WhenDomainObjectCtorThrows_DoesNotRequireDeletePermissions ()
     {
+      _securityProviderStub.Stub (mock => mock.GetAccess (_securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
+
       _functionalSecurityStrategyStub
           .Stub (
               mock => mock.HasAccess (
@@ -236,14 +245,24 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       SecurableObject throwingObject = null;
 
       Assert.That (
-          () => SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (_securityContextFactoryStub), obj =>
-          {
-            throwingObject = obj;
-            throw exception;
-          }), 
+          () => CreateSecurableObject (
+              _securityContextFactoryStub,
+              action: obj =>
+              {
+                throwingObject = obj;
+                throw exception;
+              }),
           Throws.Exception.SameAs (exception));
 
       Assert.That (_clientTransaction.IsEnlisted (throwingObject), Is.False);
+    }
+
+    private SecurableObject CreateSecurableObject (ISecurityContextFactory securityContextFactory, ClientTransaction clientTransaction = null, Action<SecurableObject> action = null)
+    {
+      return SecurableObject.NewObject (
+          clientTransaction ?? _clientTransaction,
+          new ObjectSecurityStrategy (securityContextFactory, NullAccessTypeFilter.Instance, new CacheInvalidationToken()),
+          action);
     }
   }
 }

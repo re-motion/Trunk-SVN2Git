@@ -48,30 +48,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       Search
     }
 
-    // TODO: Rewrite with test
-    protected class GroupSecurityStrategy : ObjectSecurityStrategy
-    {
-      private Group _group;
-
-      public GroupSecurityStrategy (Group group)
-          : base (group)
-      {
-        ArgumentUtility.CheckNotNull ("group", group);
-
-        _group = group;
-      }
-
-      public override bool HasAccess (ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
-      {
-        //TODO: if (!_group.IsInvalid && _group.State == StateType.New)
-        // Move ObjectSecurityAdapter into RPA and add IsInvalid check.
-        if (_group.IsInvalid || _group.State == StateType.New)
-          return true;
-
-        return base.HasAccess (securityProvider, principal, requiredAccessTypes);
-      }
-    }
-
     // static members and constants
 
     internal static Group NewObject ()

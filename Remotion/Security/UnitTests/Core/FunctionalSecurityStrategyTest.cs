@@ -14,99 +14,121 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Security.Configuration;
-using Remotion.Security.UnitTests.Core.Configuration;
-using Remotion.Security.UnitTests.Core.MockConstraints;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;
-using Mocks_Is = Rhino.Mocks.Constraints.Is;
-using Mocks_List = Rhino.Mocks.Constraints.List;
-using Mocks_Property = Rhino.Mocks.Constraints.Property;
 
 namespace Remotion.Security.UnitTests.Core
 {
   [TestFixture]
   public class FunctionalSecurityStrategyTest
   {
-    private MockRepository _mocks;
-    private ISecurityStrategy _mockSecurityStrategy;
-    private ISecurityProvider _stubSecurityProvider;
-    private ISecurityPrincipal _stubUser;
-    private AccessType[] _accessTypeResult;
-    private FunctionalSecurityStrategy _strategy;
+    private ISecurityProvider _securityProviderMock;
+    private ISecurityPrincipal _principalStub;
+    private IFunctionalSecurityStrategy _strategy;
+    private Type _securableType;
 
     [SetUp]
     public void SetUp ()
     {
-      _mocks = new MockRepository ();
-      _mockSecurityStrategy = _mocks.StrictMock<ISecurityStrategy> ();
-      _stubSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
+      _securityProviderMock = MockRepository.GenerateStrictMock<ISecurityProvider>();
 
-      _stubUser = _mocks.Stub<ISecurityPrincipal> ();
-      SetupResult.For (_stubUser.User).Return ("user");
-      _accessTypeResult = new[] { AccessType.Get (GeneralAccessTypes.Read), AccessType.Get (GeneralAccessTypes.Edit) };
+      _principalStub = MockRepository.GenerateStub<ISecurityPrincipal>();
+      _principalStub.Stub (_ => _.User).Return ("user");
 
-      _strategy = FunctionalSecurityStrategy.CreateWithCustomSecurityStrategy (_mockSecurityStrategy);
+      _securableType = typeof (SecurableObject);
 
-      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
+      _strategy = new FunctionalSecurityStrategy();
     }
 
     [Test]
-    public void Initialize ()
+    public void HasAccess_WithRequiredAccessTypesMatchingAllowedAccessTypes_ReturnsTrue ()
     {
-      Assert.That (_strategy.SecurityStrategy, Is.SameAs (_mockSecurityStrategy));
-    }
+      _securityProviderMock
+          .Expect (_ => _.GetAccess (SecurityContext.CreateStateless (_securableType), _principalStub))
+          .Return (
+              new[]
+              {
+                  AccessType.Get (GeneralAccessTypes.Create),
+                  AccessType.Get (GeneralAccessTypes.Delete),
+                  AccessType.Get (GeneralAccessTypes.Read)
+              });
 
-    [Test]
-    [Ignore ("TODO RM-5521: test GlobalAccessTypeCache")]
-    public void Initialize_WithDefaults ()
-    {
-      FunctionalSecurityStrategy strategy = new FunctionalSecurityStrategy ();
+      bool hasAccess = _strategy.HasAccess (
+          _securableType,
+          _securityProviderMock,
+          _principalStub,
+          AccessType.Get (GeneralAccessTypes.Delete),
+          AccessType.Get (GeneralAccessTypes.Create));
 
-      Assert.IsInstanceOf (typeof (SecurityStrategy), strategy.SecurityStrategy);
-      Assert.IsInstanceOf (typeof (NullCache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
-      //Assert.That (((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider, Is.SameAs (stubGlobalCacheProvider));
-    }
-
-    [Test]
-    public void HasAccess_WithAccessGranted ()
-    {
-      Expect.Call (_mockSecurityStrategy.HasAccess (null, null, null, null)).Return (true).Constraints (
-          new FunctionalSecurityContextFactoryConstraint ("Remotion.Security.UnitTests.Core.SampleDomain.SecurableObject, Remotion.Security.UnitTests"),
-          Mocks_Is.Same (_stubSecurityProvider),
-          Mocks_Is.Same (_stubUser),
-          Mocks_List.Equal (_accessTypeResult));
-      _mocks.ReplayAll();
-
-      bool hasAccess = _strategy.HasAccess (typeof (SecurableObject), _stubSecurityProvider, _stubUser, _accessTypeResult);
-
-      _mocks.VerifyAll ();
       Assert.That (hasAccess, Is.EqualTo (true));
+      _securityProviderMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void HasAccess_WithAccessDenied ()
+    public void HasAccess_WithoutRequiredAccessTypesMatchingAllowedAccessTypes_ReturnsFalse ()
     {
-      Expect.Call (_mockSecurityStrategy.HasAccess (null, null, null, null)).Return (false).Constraints (
-          new FunctionalSecurityContextFactoryConstraint ("Remotion.Security.UnitTests.Core.SampleDomain.SecurableObject, Remotion.Security.UnitTests"),
-          Mocks_Is.Same (_stubSecurityProvider),
-          Mocks_Is.Same (_stubUser),
-          Mocks_List.Equal (_accessTypeResult));
-      _mocks.ReplayAll ();
+      _securityProviderMock
+          .Expect (_ => _.GetAccess (SecurityContext.CreateStateless (_securableType), _principalStub))
+          .Return (
+              new[]
+              {
+                  AccessType.Get (GeneralAccessTypes.Delete),
+                  AccessType.Get (GeneralAccessTypes.Read)
+              });
 
-      bool hasAccess = _strategy.HasAccess (typeof (SecurableObject), _stubSecurityProvider, _stubUser, _accessTypeResult);
+      bool hasAccess = _strategy.HasAccess (
+          _securableType,
+          _securityProviderMock,
+          _principalStub,
+          AccessType.Get (GeneralAccessTypes.Create),
+          AccessType.Get (GeneralAccessTypes.Delete),
+          AccessType.Get (GeneralAccessTypes.Read));
 
-      _mocks.VerifyAll ();
       Assert.That (hasAccess, Is.EqualTo (false));
+      _securityProviderMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void HasAccess_WithAllowedAccessTypesAreNull_ThrowsInvalidOperationException ()
+    {
+      _securityProviderMock
+          .Expect (_ => _.GetAccess (SecurityContext.CreateStateless (_securableType), _principalStub))
+          .Return (null);
+
+      Assert.That (
+          () => _strategy.HasAccess (
+              _securableType,
+              _securityProviderMock,
+              _principalStub,
+              AccessType.Get (GeneralAccessTypes.Find)),
+          Throws.InvalidOperationException.With.Message.EqualTo ("GetAccess evaluated and returned null."));
+
+      _securityProviderMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void HasAccess_WithRequiredAccessTypesEmpty_ThrowsArgumentException ()
+    {
+      _securityProviderMock
+          .Expect (_ => _.GetAccess (SecurityContext.CreateStateless (_securableType), _principalStub))
+          .Return (
+              new[]
+              {
+                  AccessType.Get (GeneralAccessTypes.Read)
+              });
+
+      Assert.That (
+          () => _strategy.HasAccess (_securableType, _securityProviderMock, _principalStub, new AccessType[0]),
+          Throws.ArgumentException.With.Message.EqualTo ("Parameter 'requiredAccessTypes' cannot be empty.\r\nParameter name: requiredAccessTypes"));
+    }
+
+    [Test]
+    public void IsNull_ReturnsFalse ()
+    {
+      Assert.That (_strategy.IsNull, Is.False);
     }
   }
 }

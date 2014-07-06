@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
@@ -28,7 +29,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
   public abstract class ObjectWithSecurity : DomainObject, ISecurableObject, IDomainObjectSecurityContextFactory
   {
     private SecurityContext _securityContext;
-    private DomainObjectSecurityStrategy _domainObjectSecurityStrategy;
+    private IObjectSecurityStrategy _domainObjectSecurityStrategy;
 
     public static ObjectWithSecurity NewObject ()
     {
@@ -145,7 +146,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
     IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
     {
       if (_domainObjectSecurityStrategy == null)
-        _domainObjectSecurityStrategy = new DomainObjectSecurityStrategy (RequiredSecurityForStates.NewAndDeleted, this);
+      {
+        _domainObjectSecurityStrategy = new DomainObjectSecurityStrategyDecorator (
+            new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, new CacheInvalidationToken()),
+            this,
+            RequiredSecurityForStates.NewAndDeleted);
+      }
       return _domainObjectSecurityStrategy;
     }
 

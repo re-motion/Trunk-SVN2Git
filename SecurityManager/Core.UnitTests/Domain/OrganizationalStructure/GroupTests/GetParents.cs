@@ -19,9 +19,11 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.GroupTests
@@ -29,20 +31,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
   [TestFixture]
   public class GetParents : GroupTestBase
   {
-    public override void SetUp ()
-    {
-      base.SetUp();
-
-      SecurityConfiguration.Current.SecurityProvider = null;
-    }
-
-    public override void TearDown ()
-    {
-      base.TearDown();
-
-      SecurityConfiguration.Current.SecurityProvider = null;
-    }
-
     [Test]
     public void Test_NoParents ()
     {
@@ -150,23 +138,28 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", parent, tenant);
 
       ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
       var grandParent1SecurityContext = ((ISecurityContextFactory) grandParent1).CreateSecurityContext();
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg<ISecurityContext>.Is.NotEqual (grandParent1SecurityContext),
-                      Arg<ISecurityPrincipal>.Is.Anything)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+              Arg<ISecurityContext>.Is.NotEqual (grandParent1SecurityContext),
+              Arg<ISecurityPrincipal>.Is.Anything)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg.Is (grandParent1SecurityContext),
-                      Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
+              Arg.Is (grandParent1SecurityContext),
+              Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => securityProviderStub);
+      serviceLocator.RegisterSingle<IPrincipalProvider> (() => new NullPrincipalProvider());
+      using (new ServiceLocatorScope (serviceLocator))
       {
-        var groups = root.GetParents().ToArray();
+        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+        {
+          var groups = root.GetParents().ToArray();
 
-        Assert.That (groups, Is.EquivalentTo (new[] { parent }));
+          Assert.That (groups, Is.EquivalentTo (new[] { parent }));
+        }
       }
     }
 
@@ -177,14 +170,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
 
       ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
-
       securityProviderStub.Stub (
           stub => stub.GetAccess (Arg<SecurityContext>.Is.Anything, Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => securityProviderStub);
+      serviceLocator.RegisterSingle<IPrincipalProvider> (() => new NullPrincipalProvider());
+      using (new ServiceLocatorScope (serviceLocator))
       {
-        Assert.That (root.GetParents(), Is.Empty);
+        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+        {
+          Assert.That (root.GetParents(), Is.Empty);
+        }
       }
     }
   }

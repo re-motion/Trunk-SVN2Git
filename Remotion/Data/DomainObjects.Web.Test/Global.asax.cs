@@ -18,8 +18,11 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Development.Web.ResourceHosting;
+using Remotion.Security;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Data.DomainObjects.Web.Test
 {
@@ -55,6 +58,10 @@ namespace Remotion.Data.DomainObjects.Web.Test
           },
           FileExtensionHandlerMapping.Default);
       _resourceVirtualPathProvider.Register();
+
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle<ISecurityProvider> (() => new StubSecurityProvider());
+      ServiceLocator.SetLocatorProvider (()=> serviceLocator);
     }
 
     protected void Session_Start (Object sender, EventArgs e)

@@ -18,9 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
-using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
-using Remotion.Security.UnitTests.Core.Configuration;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
@@ -46,7 +44,6 @@ namespace Remotion.Security.UnitTests.Core
     private IPermissionProvider _mockPermissionProvider;
     private IMemberResolver _mockMemberResolver;
     private IPropertyInformation _mockPropertyInformation;
-    private IMethodInformation _mockMethodInformation;
     private ServiceLocatorScope _serviceLocatorScope;
 
     // construction and disposing
@@ -70,17 +67,14 @@ namespace Remotion.Security.UnitTests.Core
       _mockPermissionProvider = _mocks.StrictMock<IPermissionProvider>();
       _mockMemberResolver = _mocks.StrictMock<IMemberResolver>();
       _mockPropertyInformation = _mocks.StrictMock<IPropertyInformation>();
-      _mockMethodInformation = _mocks.StrictMock<IMethodInformation>();
 
       _userStub = _mocks.Stub<ISecurityPrincipal>();
       SetupResult.For (_userStub.User).Return ("user");
       SetupResult.For (_mockPrincipalProvider.GetPrincipal()).Return (_userStub);
 
-      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
-      SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
-      SecurityConfiguration.Current.PrincipalProvider = _mockPrincipalProvider;
-
       var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => _mockSecurityProvider);
+      serviceLocator.RegisterSingle (() => _mockPrincipalProvider);
       serviceLocator.RegisterSingle (() => _mockPermissionProvider);
       serviceLocator.RegisterSingle (() => _mockMemberResolver);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
@@ -92,7 +86,6 @@ namespace Remotion.Security.UnitTests.Core
     [TearDown]
     public void TearDown ()
     {
-      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
       _serviceLocatorScope.Dispose();
     }
 
@@ -217,7 +210,7 @@ namespace Remotion.Security.UnitTests.Core
 
     private void ExpectExpectObjectSecurityStrategyHasAccess (bool accessAllowed)
     {
-      AccessType[] accessTypes = new[] { AccessType.Get (TestAccessTypes.First) };
+      AccessType[] accessTypes = { AccessType.Get (TestAccessTypes.First) };
       Expect.Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _userStub, accessTypes)).Return (accessAllowed);
     }
 

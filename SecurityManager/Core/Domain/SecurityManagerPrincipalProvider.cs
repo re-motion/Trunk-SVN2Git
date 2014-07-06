@@ -15,22 +15,20 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
-using System.Collections.Specialized;
-using Remotion.Configuration;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain
 {
-  public class SecurityManagerPrincipalProvider : ExtendedProviderBase, IPrincipalProvider
+  [ImplementationFor (typeof (IPrincipalProvider),
+      Lifetime = LifetimeKind.Singleton, Position = Position, RegistrationType = RegistrationType.Single)]
+  public sealed class SecurityManagerPrincipalProvider : IPrincipalProvider
   {
-    public SecurityManagerPrincipalProvider ()
-        : this ("SecurityManager", new NameValueCollection())
-    {
-    }
+    public const int Position = ThreadPrincipalProvider.Position - 113;
 
-    public SecurityManagerPrincipalProvider (string name, NameValueCollection config)
-        : base (name, config)
+    public SecurityManagerPrincipalProvider ()
     {
     }
 

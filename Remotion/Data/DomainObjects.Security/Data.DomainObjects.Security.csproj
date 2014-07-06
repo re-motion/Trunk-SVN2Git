@@ -10,12 +10,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.Data.DomainObjects.Security</RootNamespace>
     <AssemblyName>Remotion.Data.DomainObjects.Security</AssemblyName>
-    <FileUpgradeFlags></FileUpgradeFlags>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UpgradeBackupLocation></UpgradeBackupLocation>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -42,7 +44,8 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Remotion.Data.DomainObjects.Security.XML</DocumentationFile>
     <NoWarn>1591;0419</NoWarn>
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
@@ -68,9 +71,11 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="DomainObjectSecurityStrategy.cs" />
+    <Compile Include="DomainObjectSecurityStrategy.obsolete.cs" />
+    <Compile Include="DomainObjectSecurityStrategyDecorator.cs" />
     <Compile Include="IDomainObjectSecurityContextFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequiredSecurityForStates.cs" />
     <Compile Include="SecurityClientTransactionExtension.cs" />
     <Compile Include="SecurityClientTransactionFactory.cs" />
   </ItemGroup>

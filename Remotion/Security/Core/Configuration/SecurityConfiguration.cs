@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Configuration.Provider;
 using Remotion.Configuration;
 
 namespace Remotion.Security.Configuration
@@ -26,16 +25,46 @@ namespace Remotion.Security.Configuration
   /// <threadsafety static="true" instance="true" />
   public class SecurityConfiguration : ExtendedConfigurationSection
   {
-    // types
+    #region Obsolete
 
-    // static members
-
-    private static readonly DoubleCheckedLockingContainer<SecurityConfiguration> s_current;
-
-    static SecurityConfiguration()
+    [Obsolete ("Use the application's IoC container to retrieve the configured ISecurityProvier implementation. (Version 1.15.20.0)", true)]
+    public ISecurityProvider SecurityProvider
     {
-      s_current = new DoubleCheckedLockingContainer<SecurityConfiguration> (
-          delegate { return (SecurityConfiguration) ConfigurationManager.GetSection ("remotion.security") ?? new SecurityConfiguration(); });
+      get
+      {
+        throw new NotImplementedException (
+            "Use the application's IoC container to retrieve the configured ISecurityProvier implementation. (Version 1.15.20.0)");
+      }
+      set
+      {
+        throw new NotImplementedException (
+            "Use the application's IoC container to configure the ISecurityProvier implementation. (Version 1.15.20.0)");
+      }
+    }
+
+    [Obsolete ("Use the application's IoC container to retrieve the configured IPrincipalProvider implementation. (Version 1.15.20.0)", true)]
+    public IPrincipalProvider PrincipalProvider
+    {
+      get
+      {
+        throw new NotImplementedException (
+            "Use the application's IoC container to retrieve the configured IPrincipalProvider implementation. (Version 1.15.20.0)");
+      }
+      set
+      {
+        throw new NotImplementedException (
+            "Use the application's IoC container to configure the IPrincipalProvider implementation. (Version 1.15.20.0)");
+      }
+    }
+
+    #endregion
+
+    private static readonly Lazy<SecurityConfiguration> s_current;
+
+    static SecurityConfiguration ()
+    {
+      s_current = new Lazy<SecurityConfiguration> (
+        () => (SecurityConfiguration) ConfigurationManager.GetSection ("remotion.security") ?? new SecurityConfiguration());
     }
 
     public static SecurityConfiguration Current
@@ -43,44 +72,16 @@ namespace Remotion.Security.Configuration
       get { return s_current.Value; }
     }
 
-    protected static void SetCurrent (SecurityConfiguration configuration)
+    private readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();
+    private readonly ConfigurationProperty _disableAccessChecksProperty;
+
+    public SecurityConfiguration ()
     {
-      s_current.Value = configuration;
-    }
+      _disableAccessChecksProperty = new ConfigurationProperty ("disableAccessChecks", typeof (bool), false, ConfigurationPropertyOptions.None);
 
-    // member fields
+      _properties.Add (_disableAccessChecksProperty);
 
-    private readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection ();
-    private readonly ConfigurationProperty _xmlnsProperty;
-
-
-    private readonly SecurityProviderHelper _securityProviderHelper;
-    private readonly PrincipalProviderHelper _principalProviderHelper;
-    private readonly List<ProviderHelperBase> _providerHelpers = new List<ProviderHelperBase>();
-
-    // construction and disposing
-
-    public SecurityConfiguration()
-    {
-      _securityProviderHelper = new SecurityProviderHelper (this);
-      _providerHelpers.Add (_securityProviderHelper);
-      
-      _principalProviderHelper = new PrincipalProviderHelper (this);
-      _providerHelpers.Add (_principalProviderHelper);
-
-      _xmlnsProperty = new ConfigurationProperty ("xmlns", typeof (string), null, ConfigurationPropertyOptions.None);
-      
-      _properties.Add (_xmlnsProperty);
-      _providerHelpers.ForEach (current => current.InitializeProperties (_properties));
-    }
-
-    // methods and properties
-
-    protected override void PostDeserialize()
-    {
-      base.PostDeserialize();
-
-      _providerHelpers.ForEach (current => current.PostDeserialze());
+      _properties.Add (new ConfigurationProperty ("xmlns", typeof (string), null, ConfigurationPropertyOptions.None));
     }
 
     protected override ConfigurationPropertyCollection Properties
@@ -88,26 +89,14 @@ namespace Remotion.Security.Configuration
       get { return _properties; }
     }
 
-    public ISecurityProvider SecurityProvider
+    /// <summary>
+    /// Gets or sets a flag that controls if <see cref="SecurityClient"/>.<see cref="SecurityClient.CreateSecurityClientFromConfiguration"/>()
+    /// creates a working <see cref="SecurityClient"/> or a null-implementation.
+    /// </summary>
+    public bool DisableAccessChecks
     {
-      get { return _securityProviderHelper.Provider; }
-      set { _securityProviderHelper.Provider = value; }
-    }
-
-    public ProviderCollection SecurityProviders
-    {
-      get { return _securityProviderHelper.Providers; }
-    }
-
-    public IPrincipalProvider PrincipalProvider
-    {
-      get { return _principalProviderHelper.Provider; }
-      set { _principalProviderHelper.Provider = value; }
-    }
-
-    public ProviderCollection PrincipalProviders
-    {
-      get { return _principalProviderHelper.Providers; }
+      get { return (bool) this[_disableAccessChecksProperty]; }
+      set { this[_disableAccessChecksProperty] = value; }
     }
   }
 }

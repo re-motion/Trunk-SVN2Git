@@ -20,9 +20,10 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.TenantTests
@@ -30,20 +31,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
   [TestFixture]
   public class GetHierachy : TenantTestBase
   {
-    public override void SetUp ()
-    {
-      base.SetUp();
-
-      SecurityConfiguration.Current.SecurityProvider = null;
-    }
-
-    public override void TearDown ()
-    {
-      base.TearDown();
-
-      SecurityConfiguration.Current.SecurityProvider = null;
-    }
-
     [Test]
     public void Test_NoChildren ()
     {
@@ -113,7 +100,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       child2_1.Parent = child2;
 
       ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
       var childOfChild2SecurityContext = ((ISecurityContextFactory) child2_1).CreateSecurityContext ();
       securityProviderStub.Stub (
@@ -125,11 +111,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
                       Arg.Is (childOfChild2SecurityContext),
                       Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => securityProviderStub);
+      serviceLocator.RegisterSingle<IPrincipalProvider> (() => new NullPrincipalProvider());
+      using (new ServiceLocatorScope (serviceLocator))
       {
-        ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension ());
+        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+        {
+          ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
 
-        Assert.That (root.GetHierachy(), Is.EquivalentTo (new[] { root, child1, child2, child1_1 }));
+          Assert.That (root.GetHierachy(), Is.EquivalentTo (new[] { root, child1, child2, child1_1 }));
+        }
       }
     }
 
@@ -139,16 +131,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       Tenant root = TestHelper.CreateTenant ("Root", "UID: Root");
 
       ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
       securityProviderStub.Stub (
           stub => stub.GetAccess (Arg<SecurityContext>.Is.Anything, Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => securityProviderStub);
+      serviceLocator.RegisterSingle<IPrincipalProvider> (() => new NullPrincipalProvider());
+      using (new ServiceLocatorScope (serviceLocator))
       {
-        ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
+        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+        {
+          ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
 
-        Assert.That (root.GetHierachy(), Is.Empty);
+          Assert.That (root.GetHierachy(), Is.Empty);
+        }
       }
     }
   }

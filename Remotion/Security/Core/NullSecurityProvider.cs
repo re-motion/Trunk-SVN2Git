@@ -15,26 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Specialized;
-using System.Configuration.Provider;
-using Remotion.Configuration;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Security
 {
   /// <summary>
-  /// Provides an implementation of a nullable object according to the "Null Object Pattern", 
-  /// extending <see cref="ProviderBase"/> and implementing <see cref="ISecurityProvider"/>.
+  /// Represents a nullable <see cref="ISecurityProvider"/> according to the "Null Object Pattern".
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  public class NullSecurityProvider : ExtendedProviderBase, ISecurityProvider
+  [ImplementationFor (typeof (ISecurityProvider), Lifetime = LifetimeKind.Singleton, Position = Position, RegistrationType = RegistrationType.Single)]
+  public class NullSecurityProvider : ISecurityProvider
   {
-    public NullSecurityProvider ()
-        : this ("Null", new NameValueCollection())
-    {
-    }
+    public const int Position = Int32.MaxValue;
 
-    public NullSecurityProvider (string name, NameValueCollection config)
-        : base (name, config)
+    public NullSecurityProvider ()
     {
     }
 

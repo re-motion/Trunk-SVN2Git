@@ -249,7 +249,7 @@ namespace Remotion.SecurityManager.Domain
     {
       var transaction = ClientTransaction.CreateRootTransaction();
 
-      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
+      if (!SecurityConfiguration.Current.DisableAccessChecks)
         transaction.Extensions.Add (new SecurityClientTransactionExtension());
 
       return transaction;

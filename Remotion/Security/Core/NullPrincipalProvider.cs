@@ -14,9 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Collections.Specialized;
-using Remotion.Configuration;
 
 namespace Remotion.Security
 {
@@ -24,17 +23,11 @@ namespace Remotion.Security
   /// Represents a nullable <see cref="IPrincipalProvider"/> according to the "Null Object Pattern".
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  public class NullPrincipalProvider : ExtendedProviderBase, IPrincipalProvider
+  public sealed class NullPrincipalProvider : IPrincipalProvider
   {
     private readonly NullSecurityPrincipal _securityPrincipal = new NullSecurityPrincipal();
 
     public NullPrincipalProvider ()
-        : this ("Null", new NameValueCollection())
-    {
-    }
-
-    public NullPrincipalProvider (string name, NameValueCollection config)
-        : base (name, config)
     {
     }
 

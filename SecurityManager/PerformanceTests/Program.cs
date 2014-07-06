@@ -43,7 +43,10 @@ namespace Remotion.SecurityManager.PerformanceTests
 
       LogManager.Initialize();
 
-      SecurityService provider = new SecurityService ("SecurityManager", new NameValueCollection());
+      var provider = new SecurityService (
+          SafeServiceLocator.Current.GetInstance<IAccessControlListFinder>(),
+          SafeServiceLocator.Current.GetInstance<ISecurityTokenBuilder>(),
+          SafeServiceLocator.Current.GetInstance<IAccessResolver>());
       var context =
           new SimpleSecurityContext (
               "ActaNova.Federal.Domain.File, ActaNova.Federal.Domain",

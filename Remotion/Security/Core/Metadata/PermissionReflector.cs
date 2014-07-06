@@ -55,7 +55,7 @@ namespace Remotion.Security.Metadata
       }
     }
 
-    private static readonly ICache<CacheKey, Enum[]> s_cache = CacheFactory.CreateWithLocking<CacheKey, Enum[]>();
+    private readonly ICache<CacheKey, Enum[]> _cache = CacheFactory.CreateWithLocking<CacheKey, Enum[]>();
     private readonly Func<CacheKey, Enum[]> _cacheValueFactory;
 
     public PermissionReflector ()
@@ -91,7 +91,7 @@ namespace Remotion.Security.Metadata
     private Enum[] GetPermissionsFromCache (Type type, IMethodInformation methodInformation)
     {
       var cacheKey = new CacheKey (type, methodInformation);
-      return s_cache.GetOrCreateValue (cacheKey, _cacheValueFactory);
+      return _cache.GetOrCreateValue (cacheKey, _cacheValueFactory);
     }
   }
 }

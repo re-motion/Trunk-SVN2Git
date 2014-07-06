@@ -20,10 +20,11 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
@@ -41,7 +42,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       base.SetUp();
 
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-      SecurityConfiguration.Current.SecurityProvider = null;
       ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
 
       User user = User.FindByUserName ("substituting.user");
@@ -55,7 +55,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       base.TearDown();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-      SecurityConfiguration.Current.SecurityProvider = null;
     }
 
     [Test]
@@ -90,13 +89,33 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     [Test]
     public void UsesSecurityFreeSectionToAccessTenantOfUser ()
     {
+      ISecurityContext userSecurityContext;
+      ISecurityContext tenantSecurityContext;
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        var user = _userHandle.GetObject();
+        userSecurityContext = ((ISecurityContextFactory) user).CreateSecurityContext();
+        tenantSecurityContext = ((ISecurityContextFactory) user.Tenant).CreateSecurityContext();
+      }
+
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+      securityProviderStub
+          .Stub (_ => _.GetAccess (Arg.Is (userSecurityContext), Arg<ISecurityPrincipal>.Is.Anything))
+          .Throw (new AssertionException ("GetAccess should not have been called."));
+      securityProviderStub
+          .Stub (_ => _.GetAccess (Arg.Is (tenantSecurityContext), Arg<ISecurityPrincipal>.Is.Anything))
+          .Return (new AccessType[0]);
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userHandle, null);
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => securityProviderStub);
+      serviceLocator.RegisterSingle<IPrincipalProvider> (() => new NullPrincipalProvider());
+      using (new ServiceLocatorScope (serviceLocator))
+      {
+        SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantHandle, _userHandle, null);
 
-      Assert.That (principal.GetTenants (true), Is.Empty);
+        Assert.That (principal.GetTenants (true), Is.Empty);
+      }
     }
   }
 }

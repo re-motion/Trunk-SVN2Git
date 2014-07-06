@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 
 namespace Remotion.Security
 {
@@ -25,7 +26,8 @@ namespace Remotion.Security
     /// <summary>Determines permission for a user.</summary>
     /// <param name="context">The <see cref="ISecurityContext"/> gouping all object-specific security information of the current permission check.</param>
     /// <param name="principal">The <see cref="ISecurityPrincipal"/> on whose behalf the permissions are evaluated.</param>
-    /// <returns></returns>
+    /// <returns>An array of <see cref="AccessType"/>s.</returns>
+    [NotNull]
     AccessType[] GetAccess (ISecurityContext context, ISecurityPrincipal principal);
   }
 }

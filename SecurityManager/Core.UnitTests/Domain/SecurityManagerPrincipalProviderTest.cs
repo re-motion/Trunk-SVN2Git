@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Specialized;
 using NUnit.Framework;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
@@ -37,18 +36,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       base.TearDown();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-    }
-
-    [Test]
-    public void Initialize ()
-    {
-      NameValueCollection config = new NameValueCollection();
-      config.Add ("description", "The Description");
-
-      SecurityManagerPrincipalProvider provider = new SecurityManagerPrincipalProvider ("Provider", config);
-
-      Assert.That (provider.Name, Is.EqualTo ("Provider"));
-      Assert.That ( provider.Description, Is.EqualTo("The Description"));
     }
 
     [Test]

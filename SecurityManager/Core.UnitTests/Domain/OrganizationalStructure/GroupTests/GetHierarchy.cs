@@ -19,9 +19,11 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.GroupTests
@@ -29,20 +31,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
   [TestFixture]
   public class GetHierarchy : GroupTestBase
   {
-    public override void SetUp ()
-    {
-      base.SetUp();
-
-      SecurityConfiguration.Current.SecurityProvider = null;
-    }
-
-    public override void TearDown ()
-    {
-      base.TearDown();
-
-      SecurityConfiguration.Current.SecurityProvider = null;
-    }
-
     [Test]
     public void Test_NoChildren ()
     {
@@ -120,24 +108,29 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group child1_1 = TestHelper.CreateGroup ("GrandChild1.1", "UID: GrandChild1.1", child1, tenant);
       Group child2_1 = TestHelper.CreateGroup ("GrandChild2.1", "UID: GrandChild2.1", child2, tenant);
 
-      ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+      ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
 
-      var childOfChild2SecurityContext = ((ISecurityContextFactory) child2_1).CreateSecurityContext ();
+      var childOfChild2SecurityContext = ((ISecurityContextFactory) child2_1).CreateSecurityContext();
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg<ISecurityContext>.Is.NotEqual (childOfChild2SecurityContext),
-                      Arg<ISecurityPrincipal>.Is.Anything)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+              Arg<ISecurityContext>.Is.NotEqual (childOfChild2SecurityContext),
+              Arg<ISecurityPrincipal>.Is.Anything)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg.Is (childOfChild2SecurityContext),
-                      Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
+              Arg.Is (childOfChild2SecurityContext),
+              Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => securityProviderStub);
+      serviceLocator.RegisterSingle<IPrincipalProvider> (() => new NullPrincipalProvider());
+      using (new ServiceLocatorScope (serviceLocator))
       {
-        var groups = root.GetHierachy ().ToArray ();
+        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+        {
+          var groups = root.GetHierachy().ToArray();
 
-        Assert.That (groups, Is.EquivalentTo (new[] { root, child1, child2, child1_1 }));
+          Assert.That (groups, Is.EquivalentTo (new[] { root, child1, child2, child1_1 }));
+        }
       }
     }
 
@@ -148,14 +141,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
 
       ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
-
       securityProviderStub.Stub (
           stub => stub.GetAccess (Arg<SecurityContext>.Is.Anything, Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => securityProviderStub);
+      serviceLocator.RegisterSingle<IPrincipalProvider> (() => new NullPrincipalProvider());
+      using (new ServiceLocatorScope (serviceLocator))
       {
-        Assert.That (root.GetHierachy(), Is.Empty);
+        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+        {
+          Assert.That (root.GetHierachy(), Is.Empty);
+        }
       }
     }
   }

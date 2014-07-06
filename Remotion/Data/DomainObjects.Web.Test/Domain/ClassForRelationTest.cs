@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Globalization;
@@ -85,7 +86,10 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
 
     IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
     {
-      return new DomainObjectSecurityStrategy (RequiredSecurityForStates.NewAndDeleted, this);
+      return new DomainObjectSecurityStrategyDecorator (
+          new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, new CacheInvalidationToken()),
+          this,
+          RequiredSecurityForStates.NewAndDeleted);
     }
 
     Type ISecurableObject.GetSecurableType ()

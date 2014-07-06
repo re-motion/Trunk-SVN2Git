@@ -55,11 +55,10 @@ namespace Remotion.Data.DomainObjects.Web.IntegrationTests.WxeTransactedFunction
       _functionalSecurityStrategyStub = MockRepository.GenerateStub<IFunctionalSecurityStrategy> ();
       _objectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy> ();
 
-      SecurityConfiguration.Current.SecurityProvider = _securityProviderStub;
-      SecurityConfiguration.Current.PrincipalProvider = principalProviderStub;
-
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterSingle<IFunctionalSecurityStrategy> (() => _functionalSecurityStrategyStub);
+      serviceLocator.RegisterSingle (() => _securityProviderStub);
+      serviceLocator.RegisterSingle (() => principalProviderStub);
+      serviceLocator.RegisterSingle (() => _functionalSecurityStrategyStub);
       serviceLocator.RegisterMultiple<IWebSecurityAdapter>();
       serviceLocator.RegisterMultiple<IWxeSecurityAdapter> (() => new WxeSecurityAdapter());
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
@@ -69,9 +68,6 @@ namespace Remotion.Data.DomainObjects.Web.IntegrationTests.WxeTransactedFunction
 
     public override void TearDown ()
     {
-      SecurityConfiguration.Current.SecurityProvider = null;
-      SecurityConfiguration.Current.PrincipalProvider = null;
-
       _serviceLocatorScope.Dispose();
 
       base.TearDown ();

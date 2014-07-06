@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -34,7 +35,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test.Domain
     public IObjectSecurityStrategy GetSecurityStrategy ()
     {
       if (_objectSecurityStrategy == null)
-        _objectSecurityStrategy = new ObjectSecurityStrategy (this);
+        _objectSecurityStrategy = new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, new CacheInvalidationToken());
 
       return _objectSecurityStrategy;
     }

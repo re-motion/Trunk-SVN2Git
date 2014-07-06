@@ -18,11 +18,9 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.ServiceLocation;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Security.ExecutionEngine;
-using Remotion.Web.UnitTests.Core.Security.Configuration;
 using Remotion.Web.UnitTests.Core.Security.Domain;
 using Rhino.Mocks;
 
@@ -41,7 +39,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     private MockRepository _mocks;
     private IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
     private ISecurityProvider _mockSecurityProvider;
-    private IPrincipalProvider _principalProvider;
+    private IPrincipalProvider _mockPrincipalProvider;
     private ISecurityPrincipal _stubUser;
     private ServiceLocatorScope _serviceLocatorScope;
 
@@ -64,16 +62,14 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
       _stubUser = _mocks.Stub<ISecurityPrincipal> ();
       SetupResult.For (_stubUser.User).Return ("user");
-      _principalProvider = _mocks.StrictMock<IPrincipalProvider> ();
-      SetupResult.For (_principalProvider.GetPrincipal()).Return (_stubUser);
+      _mockPrincipalProvider = _mocks.StrictMock<IPrincipalProvider> ();
+      SetupResult.For (_mockPrincipalProvider.GetPrincipal()).Return (_stubUser);
 
       _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy>();
 
-      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
-      SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
-      SecurityConfiguration.Current.PrincipalProvider = _principalProvider;
-
       var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => _mockSecurityProvider);
+      serviceLocator.RegisterSingle (() => _mockPrincipalProvider);
       serviceLocator.RegisterSingle (() => _mockFunctionalSecurityStrategy);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
@@ -81,7 +77,6 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     [TearDown]
     public void TearDown ()
     {
-      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
       _serviceLocatorScope.Dispose();
     }
 

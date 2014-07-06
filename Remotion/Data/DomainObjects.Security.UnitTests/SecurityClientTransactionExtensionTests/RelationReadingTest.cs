@@ -43,13 +43,13 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       _propertyInfo = typeof (SecurableObject).GetProperty ("Parent");
       _getMethodInformation = MethodInfoAdapter.Create(_propertyInfo.GetGetMethod());
       
-      _testHelper.SetupSecurityConfiguration ();
+      _testHelper.SetupSecurityIoCConfiguration ();
     }
 
     [TearDown]
     public void TearDown ()
     {
-      _testHelper.TearDownSecurityConfiguration ();
+      _testHelper.TearDownSecurityIoCConfiguration ();
     }
 
     [Test]

@@ -24,6 +24,7 @@ using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
@@ -35,7 +36,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       base.SetUp();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-      SecurityConfiguration.Current.SecurityProvider = null;
       ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
     }
 
@@ -43,7 +43,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       base.TearDown();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-      SecurityConfiguration.Current.SecurityProvider = null;
     }
 
     [Test]
@@ -150,20 +149,26 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
 
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+      securityProviderStub
+          .Stub (_ => _.GetAccess (Arg<ISecurityContext>.Is.Anything, Arg<ISecurityPrincipal>.Is.Anything))
+          .Return (new AccessType[0]);
 
-      var principal = CreateSecurityManagerPrincipal (tenant, user, substitution);
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => securityProviderStub);
+      serviceLocator.RegisterSingle<IPrincipalProvider> (() => new NullPrincipalProvider());
+      using (new ServiceLocatorScope (serviceLocator))
+      {
+        var principal = CreateSecurityManagerPrincipal (tenant, user, substitution);
 
-      //Must test for observable effect
-      Assert.That (principal.GetActiveSubstitutions(), Is.Empty);
+        //Must test for observable effect
+        Assert.That (principal.GetActiveSubstitutions(), Is.Empty);
+      }
     }
 
     [Test]
     public void NullSecurityProviderDoesNotAddSecurityClientTransactionExtension ()
     {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
-      securityProviderStub.Stub (stub => stub.IsNull).Return (true);
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+      Assert.That (SafeServiceLocator.Current.GetInstance<ISecurityProvider>().IsNull, Is.True);
 
       User user = User.FindByUserName ("substituting.user");
       Tenant tenant = user.Tenant;

@@ -16,46 +16,20 @@
 // 
 
 using System;
-using JetBrains.Annotations;
-using Remotion.Collections;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Security
 {
+  /// <summary>
+  /// Default implementation of the <see cref="IFunctionalSecurityStrategy"/> interface.
+  /// </summary>
+  /// <threadsafety static="true" instance="true" />
   [ImplementationFor (typeof (IFunctionalSecurityStrategy), Lifetime = LifetimeKind.Singleton)]
-  public class FunctionalSecurityStrategy : IFunctionalSecurityStrategy
+  public sealed class FunctionalSecurityStrategy : IFunctionalSecurityStrategy
   {
-    private static IGlobalAccessTypeCache GetGlobalAccessTypeCache ()
-    {
-      return SafeServiceLocator.Current.GetInstance<IGlobalAccessTypeCache>();
-    }
-
-    public static FunctionalSecurityStrategy CreateWithCustomSecurityStrategy (ISecurityStrategy securityStrategy)
-    {
-      ArgumentUtility.CheckNotNull ("securityStrategy", securityStrategy);
-      
-      return new FunctionalSecurityStrategy (securityStrategy);
-    }
-
-    private readonly ISecurityStrategy _securityStrategy;
-
-    [PublicAPI]
-    protected FunctionalSecurityStrategy (ISecurityStrategy securityStrategy)
-    {
-      ArgumentUtility.CheckNotNull ("securityStrategy", securityStrategy);
-
-      _securityStrategy = securityStrategy;
-    }
-
     public FunctionalSecurityStrategy ()
-        : this (new SecurityStrategy (new NullCache<ISecurityPrincipal, AccessType[]>(), GetGlobalAccessTypeCache()))
     {
-    }
-
-    public ISecurityStrategy SecurityStrategy
-    {
-      get { return _securityStrategy; }
     }
 
     public bool HasAccess (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
@@ -63,9 +37,22 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (ISecurableObject));
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
       ArgumentUtility.CheckNotNull ("principal", principal);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
+      ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
+      // Performance critical argument check. Can be refactored to ArgumentUtility.CheckNotNullOrEmpty once typed collection checks are supported.
+      if (requiredAccessTypes.Length == 0)
+        throw ArgumentUtility.CreateArgumentEmptyException ("requiredAccessTypes");
 
-      return _securityStrategy.HasAccess (new FunctionalSecurityContextFactory (type), securityProvider, principal, requiredAccessTypes);
+      var context = SecurityContext.CreateStateless (type);
+
+      var allowedAccessTypes = securityProvider.GetAccess (context, principal);
+      Assertion.IsNotNull (allowedAccessTypes, "GetAccess evaluated and returned null.");
+
+      return requiredAccessTypes.IsSubsetOf (allowedAccessTypes);
+    }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
     }
   }
 }

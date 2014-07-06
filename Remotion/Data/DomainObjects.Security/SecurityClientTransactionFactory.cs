@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Security
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
+      if (!SecurityConfiguration.Current.DisableAccessChecks)
         transaction.Extensions.Add (new SecurityClientTransactionExtension ());
     }
   }

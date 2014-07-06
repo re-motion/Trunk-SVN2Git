@@ -19,8 +19,11 @@
 using System;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Development.Web.ResourceHosting;
+using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Domain;
 using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Clients.Web.Test
 {
@@ -37,6 +40,10 @@ namespace Remotion.SecurityManager.Clients.Web.Test
       //defaultServiceLocator.Register (typeof (IOrganizationalStructureEditControlFormGridRowProvider<EditUserControl>), typeof (EditUserControlFormGridRowProvider), LifetimeKind.Singleton);
 
       ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
+
+      Assertion.IsTrue (
+          defaultServiceLocator.GetInstance<IPrincipalProvider>() is SecurityManagerPrincipalProvider,
+          "Wrong IPrincipalProvider is configured");
 
       _resourceVirtualPathProvider = new ResourceVirtualPathProvider (
           new[]

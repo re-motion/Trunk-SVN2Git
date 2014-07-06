@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;
@@ -35,32 +37,35 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void SetUp ()
     {
       _securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
-      _securityPrincipalStub = MockRepository.GenerateStub<ISecurityPrincipal> ();
-      _functionalSecurityStrategyStub = MockRepository.GenerateStub<IFunctionalSecurityStrategy> ();
-      _principalProviderStub = MockRepository.GenerateStub<IPrincipalProvider> ();
-      
-      _principalProviderStub.Stub (stub => stub.GetPrincipal()).Return (_securityPrincipalStub); 
+      _securityPrincipalStub = MockRepository.GenerateStub<ISecurityPrincipal>();
+      _functionalSecurityStrategyStub = MockRepository.GenerateStub<IFunctionalSecurityStrategy>();
+      _principalProviderStub = MockRepository.GenerateStub<IPrincipalProvider>();
+
+      _principalProviderStub.Stub (stub => stub.GetPrincipal()).Return (_securityPrincipalStub);
 
       _securityClient = new SecurityClient (
-          _securityProviderStub, 
-          new PermissionReflector (), 
-          _principalProviderStub, 
-          _functionalSecurityStrategyStub, 
-          new ReflectionBasedMemberResolver ());
+          _securityProviderStub,
+          new PermissionReflector(),
+          _principalProviderStub,
+          _functionalSecurityStrategyStub,
+          new ReflectionBasedMemberResolver());
     }
 
     [Test]
     public void HasAccess_InstanceMethod ()
     {
-      var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
-      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
+      var securityContextStub = MockRepository.GenerateStub<ISecurityContext>();
+      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory>();
 
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext()).Return (securityContextStub);
-      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Delete) });
+      _securityProviderStub
+          .Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub))
+          .Return (new[] { AccessType.Get (GeneralAccessTypes.Delete) });
 
-      ISecurableObject securableObject = new SecurableObject (new ObjectSecurityStrategy (securityContextFactoryStub));
+      ISecurableObject securableObject = new SecurableObject (
+          new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, new CacheInvalidationToken()));
       var methodInfo = typeof (SecurableObject).GetMethod ("Delete", new Type[0]);
-      
+
       var hasMethodAccess = _securityClient.HasMethodAccess (securableObject, methodInfo);
 
       Assert.That (hasMethodAccess, Is.True);
@@ -69,13 +74,16 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void HasAccess_MethodInDerivedClass ()
     {
-      var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
-      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
+      var securityContextStub = MockRepository.GenerateStub<ISecurityContext>();
+      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory>();
 
-      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
-      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Create) });
+      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext()).Return (securityContextStub);
+      _securityProviderStub
+          .Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub))
+          .Return (new[] { AccessType.Get (GeneralAccessTypes.Create) });
 
-      ISecurableObject securableObject = new DerivedSecurableObject (new ObjectSecurityStrategy (securityContextFactoryStub));
+      ISecurableObject securableObject = new DerivedSecurableObject (
+          new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, new CacheInvalidationToken()));
       var methodInfo = typeof (DerivedSecurableObject).GetMethod ("Make");
 
       var hasMethodAccess = _securityClient.HasMethodAccess (securableObject, methodInfo);
@@ -87,21 +95,23 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void HasAccess_StaticMethod ()
     {
       var securityContext = SecurityContext.CreateStateless (typeof (SecurableObject));
-      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
+      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory>();
 
-      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContext);
-      _securityProviderStub.Stub (mock => mock.GetAccess (securityContext, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
-      
+      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext()).Return (securityContext);
+      _securityProviderStub
+          .Stub (mock => mock.GetAccess (securityContext, _securityPrincipalStub))
+          .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+
       var securityClient = new SecurityClient (
           _securityProviderStub,
-          new PermissionReflector (),
+          new PermissionReflector(),
           _principalProviderStub,
-          new FunctionalSecurityStrategy (),
-          new ReflectionBasedMemberResolver ());
+          new FunctionalSecurityStrategy(),
+          new ReflectionBasedMemberResolver());
 
-      var methodInfo = typeof (SecurableObject).GetMethod ("IsValid", new[]{typeof(SecurableObject)});
+      var methodInfo = typeof (SecurableObject).GetMethod ("IsValid", new[] { typeof (SecurableObject) });
 
-      var hasMethodAccess = securityClient.HasStaticMethodAccess (typeof(SecurableObject), methodInfo);
+      var hasMethodAccess = securityClient.HasStaticMethodAccess (typeof (SecurableObject), methodInfo);
 
       Assert.That (hasMethodAccess, Is.True);
     }
@@ -110,20 +120,22 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void HasAccess_StatelessMethod ()
     {
       var securityContext = SecurityContext.CreateStateless (typeof (SecurableObject));
-      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
+      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory>();
 
-      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContext);
-      _securityProviderStub.Stub (mock => mock.GetAccess (securityContext, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Delete) });
+      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext()).Return (securityContext);
+      _securityProviderStub
+          .Stub (mock => mock.GetAccess (securityContext, _securityPrincipalStub))
+          .Return (new[] { AccessType.Get (GeneralAccessTypes.Delete) });
 
       var securityClient = new SecurityClient (
           _securityProviderStub,
-          new PermissionReflector (),
+          new PermissionReflector(),
           _principalProviderStub,
-          new FunctionalSecurityStrategy (),
-          new ReflectionBasedMemberResolver ());
+          new FunctionalSecurityStrategy(),
+          new ReflectionBasedMemberResolver());
 
       var methodInfo = typeof (SecurableObject).GetMethod ("Delete", new Type[0]);
-     
+
       var hasMethodAccess = securityClient.HasStatelessMethodAccess (typeof (SecurableObject), methodInfo);
 
       Assert.That (hasMethodAccess, Is.True);
@@ -132,14 +144,17 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void HasAccess_Property ()
     {
-      var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
-      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
+      var securityContextStub = MockRepository.GenerateStub<ISecurityContext>();
+      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory>();
 
-      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
-      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext()).Return (securityContextStub);
+      _securityProviderStub
+          .Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub))
+          .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
-      ISecurableObject securableObject = new SecurableObject (new ObjectSecurityStrategy (securityContextFactoryStub));
-      
+      ISecurableObject securableObject = new SecurableObject (
+          new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, new CacheInvalidationToken()));
+
       var hasMethodAccess = _securityClient.HasPropertyReadAccess (securableObject, "IsVisible");
 
       Assert.That (hasMethodAccess, Is.True);

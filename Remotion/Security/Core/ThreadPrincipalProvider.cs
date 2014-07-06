@@ -14,23 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Collections.Specialized;
 using System.Security.Principal;
 using System.Threading;
-using Remotion.Configuration;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Security
 {
-  public class ThreadPrincipalProvider : ExtendedProviderBase, IPrincipalProvider
+  [ImplementationFor (typeof (IPrincipalProvider), Lifetime = LifetimeKind.Singleton, Position = Position, RegistrationType = RegistrationType.Single)]
+  public sealed class ThreadPrincipalProvider : IPrincipalProvider
   {
-    public ThreadPrincipalProvider ()
-        : this ("Thread", new NameValueCollection())
-    {
-    }
+    public const int Position = Int32.MaxValue;
 
-    public ThreadPrincipalProvider (string name, NameValueCollection config)
-        : base (name, config)
+    public ThreadPrincipalProvider ()
     {
     }
 

@@ -35,13 +35,13 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       _testHelper = new TestHelper ();
       _extension = new SecurityClientTransactionExtension ();
 
-      _testHelper.SetupSecurityConfiguration ();
+      _testHelper.SetupSecurityIoCConfiguration ();
     }
 
     [TearDown]
     public void TearDown ()
     {
-      _testHelper.TearDownSecurityConfiguration ();
+      _testHelper.TearDownSecurityIoCConfiguration ();
     }
 
     [Test]

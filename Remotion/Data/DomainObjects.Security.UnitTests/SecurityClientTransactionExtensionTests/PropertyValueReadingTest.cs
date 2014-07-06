@@ -48,13 +48,13 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       _getMethodInformation =  MethodInfoAdapter.Create(_propertyInfo.GetGetMethod());
       _stringPropertyDefinition = PropertyDefinitionObjectMother.CreatePropertyDefinition (_propertyInfo);
 
-      _testHelper.SetupSecurityConfiguration ();
+      _testHelper.SetupSecurityIoCConfiguration ();
     }
 
     [TearDown]
     public void TearDown ()
     {
-      _testHelper.TearDownSecurityConfiguration ();
+      _testHelper.TearDownSecurityIoCConfiguration ();
     }
 
     [Test]

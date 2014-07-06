@@ -27,19 +27,17 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
   public class BindableObjectWithoutSecurityTest : BindableObjectTestBase
   {
     private ServiceLocatorScope _serviceLocatorScope;
-
-    [TestFixtureSetUp]
-    public virtual void TestFixtureSetUp ()
-    {
-      var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterMultiple<IObjectSecurityAdapter>();
-      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
-    }
+    private bool _disableAccessChecksBackup;
 
     [SetUp]
     public void SetUp ()
     {
-      SecurityConfiguration.Current.SecurityProvider = null;
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterMultiple<IObjectSecurityAdapter>();
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
+
+      _disableAccessChecksBackup = SecurityConfiguration.Current.DisableAccessChecks;
+      SecurityConfiguration.Current.DisableAccessChecks = true;
       ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ();
     }
 
@@ -47,11 +45,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public void TearDown ()
     {
       ClientTransactionScope.ResetActiveScope ();
-    }
-
-    [TestFixtureTearDown]
-    public virtual void TestFixtureTearDown ()
-    {
+      SecurityConfiguration.Current.DisableAccessChecks = _disableAccessChecksBackup;
       _serviceLocatorScope.Dispose();
     }
 

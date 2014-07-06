@@ -90,12 +90,11 @@
     <Compile Include="AbstractRoleAttribute.cs" />
     <Compile Include="AccessType.cs" />
     <Compile Include="AccessTypeAttribute.cs" />
+    <Compile Include="AccessTypeExtensions.cs" />
     <Compile Include="DemandPermissionAttribute.cs" />
-    <Compile Include="Configuration\SecurityProviderHelper.cs" />
     <Compile Include="EnumWrapper.cs" />
-    <Compile Include="GlobalAccessTypeCacheKey.cs" />
+    <Compile Include="IAccessTypeFilter.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />
-    <Compile Include="IGlobalAccessTypeCache.cs" />
     <Compile Include="IObjectSecurityAdapter.cs" />
     <Compile Include="IObjectSecurityStrategy.cs" />
     <Compile Include="IPrincipalProvider.cs" />
@@ -110,12 +109,11 @@
     <Compile Include="Metadata\IMemberResolver.cs" />
     <Compile Include="Metadata\NullMemberResolver.cs" />
     <Compile Include="Metadata\ReflectionBasedMemberResolver.cs" />
-    <Compile Include="NullGlobalAccessTypeCache.cs" />
+    <Compile Include="NullAccessTypeFilter.cs" />
+    <Compile Include="NullFunctionalSecurityStrategy.cs" />
     <Compile Include="NullSecurityPrincipal.cs" />
     <Compile Include="NullSecurityClient.cs" />
     <Compile Include="NullSecurityProvider.cs" />
-    <Compile Include="Configuration\PrincipalProviderHelper.cs" />
-    <Compile Include="FunctionalSecurityContextFactory.cs" />
     <Compile Include="GeneralAccessTypes.cs" />
     <Compile Include="DemandMethodPermissionAttribute.cs" />
     <Compile Include="Configuration\SecurityConfiguration.cs" />
@@ -152,6 +150,9 @@
     <Compile Include="Metadata\StatePropertyInfo.cs" />
     <Compile Include="Metadata\StatePropertyReflector.cs" />
     <Compile Include="NullPrincipalProvider.cs" />
+    <Compile Include="InstanceBasedReEntrancyGuaredObjectSecurityDecorator.cs" />
+    <Compile Include="ThreadLocalReEntrancyGuaredObjectSecurityDecorator.cs" />
+    <Compile Include="ObjectSecurityStrategy.cs" />
     <Compile Include="PermissionDeniedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityClient.cs" />
@@ -159,12 +160,10 @@
     <Compile Include="SecurityContext.cs" />
     <Compile Include="SecurityException.cs" />
     <Compile Include="ObjectSecurityAdapter.cs" />
-    <Compile Include="ObjectSecurityStrategy.cs" />
     <Compile Include="SecurityFreeSection.cs" />
     <Compile Include="SecurityPrincipal.cs" />
     <Compile Include="SecurityPrincipalRole.cs" />
     <Compile Include="SecurityStateAttribute.cs" />
-    <Compile Include="SecurityStrategy.cs" />
     <Compile Include="ThreadPrincipalProvider.cs" />
     <EmbeddedResource Include="Configuration\SecurityConfiguration.xsd">
       <SubType>

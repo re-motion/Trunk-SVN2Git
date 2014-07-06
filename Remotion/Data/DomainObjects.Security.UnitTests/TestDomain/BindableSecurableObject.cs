@@ -16,6 +16,7 @@
 // 
 
 using System;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -52,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.TestDomain
     protected override void OnLoaded (LoadMode loadMode)
     {
       base.OnLoaded (loadMode);
-      _securityStrategy = new ObjectSecurityStrategy (this);
+      _securityStrategy = new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, new CacheInvalidationToken());
     }
 
     public IObjectSecurityStrategy GetSecurityStrategy ()

@@ -1,96 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <xs:schema
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:c="http://www.re-motion.org/Security/Configuration/2.0"
-    targetNamespace="http://www.re-motion.org/Security/Configuration/2.0"
+    xmlns:c="http://www.re-motion.org/Security/Configuration/3.0"
+    targetNamespace="http://www.re-motion.org/Security/Configuration/3.0"
     elementFormDefault="qualified"
     attributeFormDefault="unqualified">
 
   <xs:element name="remotion.security">
     <xs:complexType>
-      <xs:all>
-        <xs:element name="securityProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
-        <xs:element name="principalProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
-      </xs:all>
-      <xs:attribute name="defaultSecurityProvider" type="c:SecurityProviderSelection" default="None" />
-      <xs:attribute name="defaultPrincipalProvider" type="c:PrincipalProviderSelection" default="Thread" />
+      <xs:attribute name="disableAccessChecks" type="xs:boolean" default="false" />
     </xs:complexType>
   </xs:element>
-
-  <xs:simpleType name="SecurityProviderSelection">
-    <xs:union>
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="None" />
-          <xs:enumeration value="SecurityManager" />
-        </xs:restriction>
-      </xs:simpleType>
-      <xs:simpleType>
-        <xs:restriction base="c:RequiredStringType" />
-      </xs:simpleType>
-    </xs:union>
-  </xs:simpleType>
-
-  <xs:simpleType name="PrincipalProviderSelection">
-    <xs:union>
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="Thread" />
-          <xs:enumeration value="HttpContext" />
-          <xs:enumeration value="SecurityManager" />
-        </xs:restriction>
-      </xs:simpleType>
-      <xs:simpleType>
-        <xs:restriction base="c:RequiredStringType" />
-      </xs:simpleType>
-    </xs:union>
-  </xs:simpleType>
-
-  <xs:complexType name="ProviderCollection">
-    <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="add">
-        <xs:complexType>
-          <xs:attribute name="name" type="xs:string" use="required" />
-          <xs:attribute name="type" type="c:DotNetType" use="required" />
-          <xs:anyAttribute processContents="skip" />
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="remove">
-        <xs:complexType>
-          <xs:attribute name="name" type="xs:string" use="required" />
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="clear">
-        <xs:complexType>
-          <!--tag is empty-->
-        </xs:complexType>
-      </xs:element>
-    </xs:choice>
-  </xs:complexType>
-
-  <xs:simpleType name="RequiredStringType">
-    <xs:restriction base="xs:string">
-      <xs:minLength value="1" />
-      <xs:whiteSpace value="collapse" />
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="DotNetType">
-    <xs:restriction base="c:RequiredStringType">
-      <!--  Class, Assembly; Namespace.Class, Assembly; Namespace.Namespace.Class, Assembly; 
-            Class+Class, Assembly; Namespace.Class+Class, Assembly; Namespace.Namespace.Class+Class, Assembly
-            Class,Assembly; Namespace.Class,Assembly; Namespace.Namespace.Class,Assembly; 
-            Class+Class,Assembly; Namespace.Class+Class,Assembly; Namespace.Namespace.Class+Class,Assembly -->
-      <xs:pattern value="(\p{L}[\p{L}\d]*\.)*(\p{L}[\p{L}\d]*\+)*(\p{L}[\p{L}\d]*),\s?([\p{L}\d]+\.)*([\p{L}\d]+)" />
-
-      <!--  Class; Namespace.Class; Namespace.Namespace.Class; 
-            Class+Class; Namespace.Class+Class; Namespace.Namespace.Class+Class -->
-      <xs:pattern value="(\p{L}[\p{L}\d]*\.)*(\p{L}[\p{L}\d]*\+)*(\p{L}[\p{L}\d]*)" />
-
-      <!--  Namespace::Class; Namespace.Namespace::Class; 
-            Namespace::Class+Class; Namespace::Namespace.Class+Class -->
-      <xs:pattern value="(\p{L}[\p{L}\d]*\.)*(\p{L}[\p{L}\d]*::)(\p{L}[\p{L}\d]*\.)*(\p{L}[\p{L}\d]*\+)*(\p{L}[\p{L}\d]*)" />
-    </xs:restriction>
-  </xs:simpleType>
 
 </xs:schema>

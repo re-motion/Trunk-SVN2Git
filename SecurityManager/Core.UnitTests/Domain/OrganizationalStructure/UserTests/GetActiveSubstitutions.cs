@@ -19,9 +19,10 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.UserTests
@@ -29,20 +30,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
   [TestFixture]
   public class GetActiveSubstitutions : UserTestBase
   {
-    public override void SetUp ()
-    {
-      base.SetUp ();
-
-      SecurityConfiguration.Current.SecurityProvider = null;
-    }
-
-    public override void TearDown ()
-    {
-      base.TearDown ();
-
-      SecurityConfiguration.Current.SecurityProvider = null;
-    }
-
     [Test]
     public void Test ()
     {
@@ -88,16 +75,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       substitution1.SubstitutedUser = CreateUser();
 
       ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+      securityProviderStub
+          .Stub (stub => stub.GetAccess (Arg<SecurityContext>.Is.Anything, Arg<ISecurityPrincipal>.Is.Anything))
+          .Return (new AccessType[0]);
 
-      securityProviderStub.Stub (
-          stub => stub.GetAccess (Arg<SecurityContext>.Is.Anything, Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
-
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => securityProviderStub);
+      serviceLocator.RegisterSingle<IPrincipalProvider> (() => new NullPrincipalProvider());
+      using (new ServiceLocatorScope (serviceLocator))
       {
-        ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
+        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+        {
+          ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
 
-        Assert.That (substitutingUser.GetActiveSubstitutions(), Is.Empty);
+          Assert.That (substitutingUser.GetActiveSubstitutions(), Is.Empty);
+        }
       }
     }
   }

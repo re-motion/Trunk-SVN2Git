@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
@@ -91,7 +92,10 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     protected virtual IObjectSecurityStrategy CreateSecurityStrategy ()
     {
-      return new DomainObjectSecurityStrategy (RequiredSecurityForStates.None, this);
+      return new DomainObjectSecurityStrategyDecorator (
+          new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, new CacheInvalidationToken()),
+          this,
+          RequiredSecurityForStates.None);
     }
 
     Type ISecurableObject.GetSecurableType ()

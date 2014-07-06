@@ -16,27 +16,32 @@
 // 
 
 using System;
-using Remotion.ServiceLocation;
+using JetBrains.Annotations;
 
 namespace Remotion.Security
 {
   /// <summary>Encapsulates the security checks for static access to the business object.</summary>
   /// <remarks><note type="inotes">Implementations are free to decide whether they provide object-independent caching.</note></remarks>
- public interface IFunctionalSecurityStrategy
+  /// <seealso cref="FunctionalSecurityStrategy"/>
+  /// <seealso cref="NullFunctionalSecurityStrategy"/>
+  public interface IFunctionalSecurityStrategy : INullObject
   {
     /// <summary>Determines whether the requested access is granted.</summary>
-    /// <param name="type">The <see cref="Type"/> of the business object.</param>
-    /// <param name="securityProvider">The <see cref="ISecurityProvider"/> used to determine the permissions.</param>
-    /// <param name="principal">The <see cref="ISecurityPrincipal"/> on whose behalf the permissions are evaluated.</param>
-    /// <param name="requiredAccessTypes">The access rights required for the access to be granted.</param>
+    /// <param name="type">The <see cref="Type"/> of the business object. Must not be <see langword="null" />.</param>
+    /// <param name="securityProvider">The <see cref="ISecurityProvider"/> used to determine the permissions. Must not be <see langword="null" />.</param>
+    /// <param name="principal">The <see cref="ISecurityPrincipal"/> on whose behalf the permissions are evaluated. Must not be <see langword="null" />.</param>
+    /// <param name="requiredAccessTypes">The access rights required for the access to be granted .Must not be <see langword="null" /> or empty. </param>
     /// <returns><see langword="true"/> if the <paramref name="requiredAccessTypes"/> are granted.</returns>
     /// <remarks>
-    /// Typically called via <see cref="Remotion.Security.SecurityClient.HasAccess(ISecurableObject, AccessType[])"/> of 
-    /// <see cref="T:Remotion.Security.SecurityClient"/>.
+    /// Typically called via <see cref="SecurityClient.HasAccess(ISecurableObject, AccessType[])"/> of <see cref="SecurityClient"/>.
     /// The strategy incorporates <see cref="SecurityContext"/> in the permission query.
-    /// The <paramref name="requiredAccessTypes"/> are determined by the <see cref="T:Remotion.Security.SecurityClient"/>, 
-    /// taking the business object instance and the member name (property or method) into account.
+    /// The <paramref name="requiredAccessTypes"/> are determined by the <see cref="SecurityClient"/>, 
+    /// taking the business object type and the member (property or method) into account.
     /// </remarks>
-    bool HasAccess (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes);
+    bool HasAccess (
+        [NotNull] Type type,
+        [NotNull] ISecurityProvider securityProvider,
+        [NotNull] ISecurityPrincipal principal,
+        [NotNull] params AccessType[] requiredAccessTypes);
   }
 }

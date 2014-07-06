@@ -17,12 +17,13 @@
 
 using System;
 using System.Web;
-using Remotion.ServiceLocation;
+using JetBrains.Annotations;
 
 namespace Remotion.Web.Infrastructure
 {
- public interface IHttpContextProvider
+  public interface IHttpContextProvider
   {
+    [NotNull]
     HttpContextBase GetCurrentHttpContext ();
   }
 }
