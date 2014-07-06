@@ -115,6 +115,7 @@
       <RequiredTargetFramework>4.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
@@ -231,6 +232,7 @@
     <Compile Include="Collections\ICache.cs" />
     <Compile Include="Collections\IDataStore.cs" />
     <Compile Include="Collections\IExpirationPolicy.cs" />
+    <Compile Include="Collections\ImmutableSingleton.cs" />
     <Compile Include="Collections\InvalidationTokenBasedCacheDecorator.cs" />
     <Compile Include="Collections\LazyLockingCachingAdapter.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapter.cs" />

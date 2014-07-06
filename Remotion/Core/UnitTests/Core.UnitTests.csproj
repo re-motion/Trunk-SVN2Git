@@ -265,6 +265,7 @@
     <Compile Include="Collections\DictionaryExtensionsTest.cs" />
     <Compile Include="Collections\ExpiringDataStoreFactoryTest.cs" />
     <Compile Include="Collections\ExpiringDataStoreTest.cs" />
+    <Compile Include="Collections\ImmutableSingletonTest.cs" />
     <Compile Include="Collections\InvalidationTokenBasedCacheDecoratorTest.cs" />
     <Compile Include="Collections\LazyLockingCachingAdapterTest.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapterTest.cs" />
