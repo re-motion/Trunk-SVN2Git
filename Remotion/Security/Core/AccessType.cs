@@ -29,33 +29,34 @@ namespace Remotion.Security
   public struct AccessType : IEquatable<AccessType>
   {
     private static readonly ICache<Enum, AccessType> s_accessTypeByEnumCache = CacheFactory.CreateWithLocking<Enum, AccessType>();
+    private static readonly Func<Enum, AccessType> s_getInternalFunc = GetInternal;
+
+    public static AccessType Get (EnumWrapper accessType)
+    {
+      return new AccessType (accessType);
+    }
 
     public static AccessType Get (Enum accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
 
-      return s_accessTypeByEnumCache.GetOrCreateValue (
-          accessType,
-          key =>
-          {
-            Type type = key.GetType();
-            if (!Attribute.IsDefined (type, typeof (AccessTypeAttribute), false))
-            {
-              throw new ArgumentException (
-                  string.Format (
-                      "Enumerated type '{0}' cannot be used as an access type. Valid access types must have the {1} applied.",
-                      type.FullName,
-                      typeof (AccessTypeAttribute).FullName),
-                  "accessType");
-            }
-
-            return Get (EnumWrapper.Get(accessType));
-          });
+      return s_accessTypeByEnumCache.GetOrCreateValue (accessType, s_getInternalFunc);
     }
 
-    public static AccessType Get (EnumWrapper accessType)
+    private static AccessType GetInternal (Enum accessType)
     {
-      return new AccessType (accessType);
+      Type type = accessType.GetType();
+      if (!Attribute.IsDefined (type, typeof (AccessTypeAttribute), false))
+      {
+        throw new ArgumentException (
+            string.Format (
+                "Enumerated type '{0}' cannot be used as an access type. Valid access types must have the {1} applied.",
+                type.FullName,
+                typeof (AccessTypeAttribute).FullName),
+            "accessType");
+      }
+
+      return new AccessType (EnumWrapper.Get (accessType));
     }
 
     private EnumWrapper _value;
