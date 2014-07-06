@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Security.UnitTests.TestDomain;
@@ -235,10 +236,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       _functionalSecurityStrategyStub
           .Stub (
               mock => mock.HasAccess (
-                  typeof (SecurableObject),
-                  _securityProviderStub,
-                  _securityPrincipalStub,
-                  AccessType.Get (GeneralAccessTypes.Create)))
+                  Arg.Is(  typeof (SecurableObject)),
+                  Arg.Is(_securityProviderStub),
+                  Arg.Is(_securityPrincipalStub),
+                  Arg<IReadOnlyList<AccessType>>.List.Equal( new[] { AccessType.Get (GeneralAccessTypes.Create) })))
           .Return (true);
 
       var exception = new Exception ("Test.");

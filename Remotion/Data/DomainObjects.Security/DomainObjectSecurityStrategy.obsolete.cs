@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Security;
 
 namespace Remotion.Data.DomainObjects.Security
@@ -36,7 +37,9 @@ namespace Remotion.Data.DomainObjects.Security
     {
     }
 
-    public abstract bool HasAccess (ISecurityProvider securityService, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes);
+    public abstract bool HasAccess (ISecurityProvider securityService, ISecurityPrincipal principal, AccessType[] requiredAccessTypes);
+
+    public abstract bool HasAccess (ISecurityProvider securityService, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes);
 
     public IDomainObjectSecurityContextFactory SecurityContextFactory
     {

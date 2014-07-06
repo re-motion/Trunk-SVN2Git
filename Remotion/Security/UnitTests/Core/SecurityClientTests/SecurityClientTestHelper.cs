@@ -15,7 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
@@ -84,7 +87,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void ExpectObjectSecurityStrategyHasAccess (Enum[] requiredAccessTypes, bool returnValue)
     {
       Expect
-          .Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _userStub, ConvertAccessTypeEnums (requiredAccessTypes)))
+          .Call (
+              _mockObjectSecurityStrategy.HasAccess (
+                  Arg.Is (_mockSecurityProvider),
+                  Arg.Is (_userStub),
+                  Arg<IReadOnlyList<AccessType>>.List.Equal (ConvertAccessTypeEnums (requiredAccessTypes))))
           .Return (returnValue);
     }
 
@@ -97,8 +104,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     {
       Expect
           .Call (
-          _mockFunctionalSecurityStrategy.HasAccess (
-              typeof (SecurableObject), _mockSecurityProvider, _userStub, ConvertAccessTypeEnums (requiredAccessTypes)))
+              _mockFunctionalSecurityStrategy.HasAccess (
+                  Arg.Is (typeof (SecurableObject)),
+                  Arg.Is (_mockSecurityProvider),
+                  Arg.Is (_userStub),
+                  Arg<IReadOnlyList<AccessType>>.List.Equal (ConvertAccessTypeEnums (requiredAccessTypes))))
           .Return (returnValue);
     }
 
@@ -112,9 +122,9 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _mocks.VerifyAll();
     }
 
-    private AccessType[] ConvertAccessTypeEnums (Enum[] accessTypeEnums)
+    private IReadOnlyList<AccessType> ConvertAccessTypeEnums (Enum[] accessTypeEnums)
     {
-      return Array.ConvertAll (accessTypeEnums, new Converter<Enum, AccessType> (AccessType.Get));
+      return Array.ConvertAll (accessTypeEnums, AccessType.Get);
     }
 
   }

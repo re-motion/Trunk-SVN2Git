@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using Remotion.Security;
 using Remotion.Utilities;
 
@@ -41,7 +42,7 @@ namespace Remotion.Data.DomainObjects.Security
       _requiredSecurityForStates = requiredSecurityForStates;
     }
 
-    public bool HasAccess (ISecurityProvider securityService, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    public bool HasAccess (ISecurityProvider securityService, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
     {
       if (_securityContextFactory.IsInvalid)
         return true;

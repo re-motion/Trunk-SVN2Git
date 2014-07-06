@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
@@ -189,7 +190,12 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     private void ExpectFunctionalSecurityStrategyHasAccessForSecurableObject (Enum accessTypeEnum, bool returnValue)
     {
       Expect
-          .Call (_mockFunctionalSecurityStrategy.HasAccess (typeof (SecurableObject), _mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
+          .Call (
+              _mockFunctionalSecurityStrategy.HasAccess (
+                  Arg.Is (typeof (SecurableObject)),
+                  Arg.Is (_mockSecurityProvider),
+                  Arg.Is (_stubUser),
+                  Arg<IReadOnlyList<AccessType>>.List.Equal (new[] { AccessType.Get (accessTypeEnum) })))
           .Return (returnValue);
     }
   }

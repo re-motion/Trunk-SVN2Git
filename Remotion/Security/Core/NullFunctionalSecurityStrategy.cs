@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Security
@@ -25,12 +26,12 @@ namespace Remotion.Security
   /// <threadsafety static="true" instance="true" />
   public class NullFunctionalSecurityStrategy : IFunctionalSecurityStrategy
   {
-    public bool HasAccess (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    public bool HasAccess (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
-      ArgumentUtility.CheckNotNull ("principal", principal);
-      ArgumentUtility.CheckNotNullOrEmpty ("requiredAccessTypes", requiredAccessTypes);
+      ArgumentUtility.DebugCheckNotNull ("type", type);
+      ArgumentUtility.DebugCheckNotNull ("securityProvider", securityProvider);
+      ArgumentUtility.DebugCheckNotNull ("principal", principal);
+      ArgumentUtility.DebugCheckNotNullOrEmpty ("requiredAccessTypes", requiredAccessTypes);
 
       return true;
     }

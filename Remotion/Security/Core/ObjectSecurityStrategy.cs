@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -54,8 +55,6 @@ namespace Remotion.Security
 
     #endregion
 
-    //TODO RM-6183: Refactor AccessType[] to IReadOnlyList<AccessType> and implement a Singleton-Version to allow for non-allocating checks
-
     private readonly ICache<ISecurityPrincipal, AccessType[]> _cache;
     private readonly ISecurityContextFactory _securityContextFactory;
     private readonly IAccessTypeFilter _accessTypeFilter;
@@ -86,13 +85,13 @@ namespace Remotion.Security
       get { return _cacheInvalidationToken; }
     }
 
-    public bool HasAccess (ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    public bool HasAccess (ISecurityProvider securityProvider, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
     {
       ArgumentUtility.DebugCheckNotNull ("securityProvider", securityProvider);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
       // Performance critical argument check. Can be refactored to ArgumentUtility.CheckNotNullOrEmpty once typed collection checks are supported.
-      if (requiredAccessTypes.Length == 0)
+      if (requiredAccessTypes.Count == 0)
         throw ArgumentUtility.CreateArgumentEmptyException ("requiredAccessTypes");
 
       var actualAccessTypes = GetAccessTypesFromCache (securityProvider, principal);

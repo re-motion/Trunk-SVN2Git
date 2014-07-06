@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
@@ -37,7 +38,7 @@ namespace Remotion.Security
     {
     }
 
-    public override bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    public override bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
     {
       ArgumentUtility.DebugCheckNotNull ("securableObject", securableObject);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
@@ -46,7 +47,7 @@ namespace Remotion.Security
       return true;
     }
 
-    public override bool HasStatelessAccess (Type securableClass, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    public override bool HasStatelessAccess (Type securableClass, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
     {
       ArgumentUtility.DebugCheckNotNull ("securableClass", securableClass);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);

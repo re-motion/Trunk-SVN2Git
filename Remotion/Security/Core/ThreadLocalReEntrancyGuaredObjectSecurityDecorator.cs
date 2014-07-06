@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Security
@@ -45,7 +46,7 @@ namespace Remotion.Security
     public bool HasAccess (
         ISecurityProvider securityProvider,
         ISecurityPrincipal principal,
-        params AccessType[] requiredAccessTypes)
+        IReadOnlyList<AccessType> requiredAccessTypes)
     {
       ArgumentUtility.DebugCheckNotNull ("securityProvider", securityProvider);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);

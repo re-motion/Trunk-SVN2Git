@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
@@ -227,7 +228,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
     [Serializable]
     private class SerializableObjectSecurityStrategy : IObjectSecurityStrategy
     {
-      public bool HasAccess (ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+      public bool HasAccess (ISecurityProvider securityProvider, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
       {
         return true;
       }

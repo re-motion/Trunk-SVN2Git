@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 
@@ -29,19 +31,46 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = new SecurityClientTestHelper ();
-      _securityClient = _testHelper.CreateSecurityClient ();
+      _testHelper = new SecurityClientTestHelper();
+      _securityClient = _testHelper.CreateSecurityClient();
+    }
+
+    [Test]
+    public void Test_WithParamsArray ()
+    {
+      _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, true);
+      _testHelper.ReplayAll();
+
+      bool hasAccess = _securityClient.HasStatelessAccess (typeof (SecurableObject), AccessType.Get (TestAccessTypes.First));
+
+      _testHelper.VerifyAll();
+      Assert.That (hasAccess, Is.EqualTo (true));
+    }
+
+    [Test]
+    public void Test_WithParamsArray_AndSecurityPrincipal ()
+    {
+      _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, true);
+      _testHelper.ReplayAll();
+
+      var securityPrincipal = _securityClient.PrincipalProvider.GetPrincipal();
+      bool hasAccess = _securityClient.HasStatelessAccess (typeof (SecurableObject), securityPrincipal, AccessType.Get (TestAccessTypes.First));
+
+      _testHelper.VerifyAll();
+      Assert.That (hasAccess, Is.EqualTo (true));
     }
 
     [Test]
     public void Test_AccessGranted ()
     {
       _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, true);
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
-      bool hasAccess = _securityClient.HasStatelessAccess (typeof (SecurableObject), AccessType.Get (TestAccessTypes.First));
+      bool hasAccess = _securityClient.HasStatelessAccess (
+          typeof (SecurableObject),
+          (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
       Assert.That (hasAccess, Is.EqualTo (true));
     }
 
@@ -49,26 +78,30 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_AccessDenied ()
     {
       _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, false);
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
-      bool hasAccess = _securityClient.HasStatelessAccess (typeof (SecurableObject), AccessType.Get (TestAccessTypes.First));
+      bool hasAccess = _securityClient.HasStatelessAccess (
+          typeof (SecurableObject),
+          (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
       Assert.That (hasAccess, Is.EqualTo (false));
     }
 
     [Test]
     public void Test_WithinSecurityFreeSection_AccessGranted ()
     {
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
       bool hasAccess;
-      using (new SecurityFreeSection ())
+      using (new SecurityFreeSection())
       {
-        hasAccess = _securityClient.HasStatelessAccess (typeof (SecurableObject), AccessType.Get (TestAccessTypes.First));
+        hasAccess = _securityClient.HasStatelessAccess (
+            typeof (SecurableObject),
+            (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
       }
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
       Assert.That (hasAccess, Is.True);
     }
   }

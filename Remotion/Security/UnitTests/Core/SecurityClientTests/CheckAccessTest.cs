@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 
@@ -29,19 +31,42 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = new SecurityClientTestHelper ();
-      _securityClient = _testHelper.CreateSecurityClient ();
+      _testHelper = new SecurityClientTestHelper();
+      _securityClient = _testHelper.CreateSecurityClient();
+    }
+
+    [Test]
+    public void Test_WithParamsArray ()
+    {
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
+      _testHelper.ReplayAll();
+
+      _securityClient.CheckAccess (_testHelper.SecurableObject, AccessType.Get (TestAccessTypes.First));
+
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithParamsArray_AndSecurityPrincipal ()
+    {
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
+      _testHelper.ReplayAll();
+
+      var securityPrincipal = _securityClient.PrincipalProvider.GetPrincipal();
+      _securityClient.CheckAccess (_testHelper.SecurableObject, securityPrincipal, AccessType.Get (TestAccessTypes.First));
+
+      _testHelper.VerifyAll();
     }
 
     [Test]
     public void Test_AccessGranted ()
     {
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
-      _securityClient.CheckAccess (_testHelper.SecurableObject, AccessType.Get (TestAccessTypes.First));
+      _securityClient.CheckAccess (_testHelper.SecurableObject, (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
     }
 
     [Test]
@@ -49,35 +74,35 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_AccessDenied_ShouldThrowPermissionDeniedException ()
     {
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, false);
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
-      _securityClient.CheckAccess (_testHelper.SecurableObject, AccessType.Get (TestAccessTypes.First));
+      _securityClient.CheckAccess (_testHelper.SecurableObject, (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
     }
 
     [Test]
     public void Test_WithinSecurityFreeSection_AccessGranted ()
     {
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
-      using (new SecurityFreeSection ())
+      using (new SecurityFreeSection())
       {
-        _securityClient.CheckAccess (_testHelper.SecurableObject, AccessType.Get (TestAccessTypes.First));
+        _securityClient.CheckAccess (_testHelper.SecurableObject, (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
       }
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
     public void Test_WithSecurityStrategyIsNull ()
     {
-      _testHelper.ReplayAll ();
+      _testHelper.ReplayAll();
 
-      _securityClient.CheckAccess (new SecurableObject (null), AccessType.Get (TestAccessTypes.First));
+      _securityClient.CheckAccess (new SecurableObject (null), (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
     }
   }
 }

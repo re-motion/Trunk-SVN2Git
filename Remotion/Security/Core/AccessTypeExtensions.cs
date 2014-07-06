@@ -14,30 +14,66 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.Security
 {
+  /// <summary>
+  /// Provides extension methods for the <see cref="AccessType"/> type.
+  /// </summary>
   public static class AccessTypeExtensions
   {
-    //TODO RM-6183: refactor to nested for loops, performance test, compare with using IEnumerable<> vs. IReadOnlyList<>
-    public static bool IsSubsetOf ([NotNull] this AccessType[] referenceSet, [NotNull] AccessType[] otherSet)
+    /// <summary>
+    /// Checks if all items in the <paramref name="subSet"/> are contained within the <paramref name="otherSet"/>
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> if all items from the <paramref name="subSet"/> are found, otherwise <see langword="false" />. 
+    /// An empty <paramref name="subSet"/> always results in <see langword="true" />.
+    /// </returns>
+    public static bool IsSubsetOf ([NotNull] this IReadOnlyList<AccessType> subSet, [NotNull] IReadOnlyList<AccessType> otherSet)
     {
+      ArgumentUtility.CheckNotNull ("subSet", subSet);
       ArgumentUtility.CheckNotNull ("otherSet", otherSet);
-      ArgumentUtility.CheckNotNull ("referenceSet", referenceSet);
 
       // This section is performance critical. No closure should be created, therefor converting this code to Linq is not possible.
-      // requiredAccessTypes.All (requiredAccessType => actualAccessTypes.Contains (requiredAccessType));
+      // return subSet.All (accessType => otherSet.Contains (accessType));
       // ReSharper disable LoopCanBeConvertedToQuery
-      foreach (var requiredAccessType in referenceSet)
+      // ReSharper disable ForCanBeConvertedToForeach
+      for (int i = 0; i < subSet.Count; i++)
       {
-        if (Array.IndexOf (otherSet, requiredAccessType) < 0)
+        if (!otherSet.Contains (subSet[i]))
           return false;
       }
-
       return true;
+      // ReSharper restore ForCanBeConvertedToForeach
+      // ReSharper restore LoopCanBeConvertedToQuery
+    }
+
+    /// <summary>
+    /// Checks if the <paramref name="item"/> is contained within the <paramref name="set"/>
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> if the <paramref name="item"/> was found, otherwise <see langword="false" />. 
+    /// </returns>
+    public static bool Contains (this IReadOnlyList<AccessType> set, AccessType item)
+    {
+      ArgumentUtility.CheckNotNull ("set", set);
+
+      // This section is performance critical. No closure should be created, therefor converting this code to Linq is not possible.
+      // return set.Any (t => accessType.Equals (t));
+      // ReSharper disable LoopCanBeConvertedToQuery
+      // ReSharper disable ForCanBeConvertedToForeach
+      for (int i = 0; i < set.Count; i++)
+      {
+        if (item.Equals (set[i]))
+          return true;
+      }
+      return false;
+      // ReSharper restore ForCanBeConvertedToForeach
       // ReSharper restore LoopCanBeConvertedToQuery
     }
   }

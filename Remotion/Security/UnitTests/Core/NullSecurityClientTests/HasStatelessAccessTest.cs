@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 
@@ -27,14 +29,14 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     private SecurityClient _securityClient;
 
     [SetUp]
-    public void SetUp()
+    public void SetUp ()
     {
       _testHelper = NullSecurityClientTestHelper.CreateForStatelessSecurity();
       _securityClient = _testHelper.CreateSecurityClient();
     }
 
     [Test]
-    public void Test_AccessGranted()
+    public void Test_WithParamsArray ()
     {
       _testHelper.ReplayAll();
 
@@ -45,14 +47,41 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     }
 
     [Test]
-    public void Test_WithinSecurityFreeSection_AccessGranted()
+    public void Test_WithParamsArray_AndSecurityPrincipal ()
+    {
+      _testHelper.ReplayAll();
+
+      var securityPrincipal = _securityClient.PrincipalProvider.GetPrincipal();
+      bool hasAccess = _securityClient.HasStatelessAccess (typeof (SecurableObject), securityPrincipal, AccessType.Get (TestAccessTypes.First));
+
+      _testHelper.VerifyAll();
+      Assert.That (hasAccess, Is.EqualTo (true));
+    }
+
+    [Test]
+    public void Test_AccessGranted ()
+    {
+      _testHelper.ReplayAll();
+
+      bool hasAccess = _securityClient.HasStatelessAccess (
+          typeof (SecurableObject),
+          (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
+
+      _testHelper.VerifyAll();
+      Assert.That (hasAccess, Is.EqualTo (true));
+    }
+
+    [Test]
+    public void Test_WithinSecurityFreeSection_AccessGranted ()
     {
       _testHelper.ReplayAll();
 
       bool hasAccess;
       using (new SecurityFreeSection())
       {
-        hasAccess = _securityClient.HasStatelessAccess (typeof (SecurableObject), AccessType.Get (TestAccessTypes.First));
+        hasAccess = _securityClient.HasStatelessAccess (
+            typeof (SecurableObject),
+            (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
       }
 
       _testHelper.VerifyAll();

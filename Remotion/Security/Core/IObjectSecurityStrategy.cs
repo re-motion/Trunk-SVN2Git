@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace Remotion.Security
@@ -46,6 +47,6 @@ namespace Remotion.Security
     bool HasAccess (
         [NotNull] ISecurityProvider securityProvider,
         [NotNull] ISecurityPrincipal principal,
-        [NotNull] params AccessType[] requiredAccessTypes);
+        [NotNull] IReadOnlyList<AccessType> requiredAccessTypes);
   }
 }

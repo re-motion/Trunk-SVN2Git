@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Reflection;
 using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
@@ -28,9 +30,18 @@ namespace Remotion.Security
   public class SecurityClient : INullObject
   {
     public static readonly SecurityClient Null = new NullSecurityClient();
-    private static readonly AccessType s_createAccessType = AccessType.Get (GeneralAccessTypes.Create);
-    private static readonly AccessType s_readAccessType = AccessType.Get (GeneralAccessTypes.Read);
-    private static readonly AccessType s_editAccessType = AccessType.Get (GeneralAccessTypes.Edit);
+
+    private static readonly Enum s_readAccessTypeAsEnum = GeneralAccessTypes.Read;
+    private static readonly Enum s_editAccessTypeAsEnum = GeneralAccessTypes.Edit;
+    private static readonly Enum[] s_readAccessTypeEnumAsArray = { s_readAccessTypeAsEnum };
+    private static readonly Enum[] s_editAccessTypeEnumAsArray = { s_editAccessTypeAsEnum };
+
+    private static readonly AccessType s_readAccessType = AccessType.Get (s_readAccessTypeAsEnum);
+    private static readonly AccessType s_editAccessType = AccessType.Get (s_editAccessTypeAsEnum);
+    private static readonly IReadOnlyList<AccessType> s_createAccessTypeAsList = ImmutableSingleton.Create(AccessType.Get (GeneralAccessTypes.Create));
+    private static readonly IReadOnlyList<AccessType> s_readAccessTypeAsList = ImmutableSingleton.Create(s_readAccessType);
+    private static readonly IReadOnlyList<AccessType> s_editAccessTypeAsList = ImmutableSingleton.Create(s_editAccessType);
+
     private static readonly Converter<Enum, AccessType> s_enumToAccessTypeConverter = ConvertEnumToAccessType;
 
     public static SecurityClient CreateSecurityClientFromConfiguration ()
@@ -105,10 +116,20 @@ namespace Remotion.Security
 
     public bool HasAccess (ISecurableObject securableObject, params AccessType[] requiredAccessTypes)
     {
+      return HasAccess (securableObject, _principalProvider.GetPrincipal(), (IReadOnlyList<AccessType>) requiredAccessTypes);
+    }
+
+    public bool HasAccess (ISecurableObject securableObject, IReadOnlyList<AccessType> requiredAccessTypes)
+    {
       return HasAccess (securableObject, _principalProvider.GetPrincipal(), requiredAccessTypes);
     }
 
-    public virtual bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    public bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    {
+      return HasAccess (securableObject, principal, (IReadOnlyList<AccessType>) requiredAccessTypes);
+    }
+
+    public virtual bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNull ("principal", principal);
@@ -125,10 +146,20 @@ namespace Remotion.Security
 
     public void CheckAccess (ISecurableObject securableObject, params AccessType[] requiredAccessTypes)
     {
+      CheckAccess (securableObject, _principalProvider.GetPrincipal(), (IReadOnlyList<AccessType>) requiredAccessTypes);
+    }
+
+    public void CheckAccess (ISecurableObject securableObject, IReadOnlyList<AccessType> requiredAccessTypes)
+    {
       CheckAccess (securableObject, _principalProvider.GetPrincipal(), requiredAccessTypes);
     }
 
     public void CheckAccess (ISecurableObject securableObject, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    {
+      CheckAccess (securableObject, principal, (IReadOnlyList<AccessType>) requiredAccessTypes);
+    }
+
+    public void CheckAccess (ISecurableObject securableObject, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
     {
       ArgumentUtility.DebugCheckNotNull ("securableObject", securableObject);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
@@ -141,10 +172,20 @@ namespace Remotion.Security
 
     public bool HasStatelessAccess (Type securableClass, params AccessType[] requiredAccessTypes)
     {
+      return HasStatelessAccess (securableClass, _principalProvider.GetPrincipal(), (IReadOnlyList<AccessType>) requiredAccessTypes);
+    }
+
+    public bool HasStatelessAccess (Type securableClass, IReadOnlyList<AccessType> requiredAccessTypes)
+    {
       return HasStatelessAccess (securableClass, _principalProvider.GetPrincipal(), requiredAccessTypes);
     }
 
-    public virtual bool HasStatelessAccess (Type securableClass, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    public bool HasStatelessAccess (Type securableClass, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    {
+      return HasStatelessAccess (securableClass, principal, (IReadOnlyList<AccessType>) requiredAccessTypes);
+    }
+
+    public virtual bool HasStatelessAccess (Type securableClass, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
       ArgumentUtility.CheckNotNull ("principal", principal);
@@ -158,10 +199,20 @@ namespace Remotion.Security
 
     public void CheckStatelessAccess (Type securableClass, params AccessType[] requiredAccessTypes)
     {
+      CheckStatelessAccess (securableClass, _principalProvider.GetPrincipal(), (IReadOnlyList<AccessType>) requiredAccessTypes);
+    }
+
+    public void CheckStatelessAccess (Type securableClass, IReadOnlyList<AccessType> requiredAccessTypes)
+    {
       CheckStatelessAccess (securableClass, _principalProvider.GetPrincipal(), requiredAccessTypes);
     }
 
     public void CheckStatelessAccess (Type securableClass, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    {
+      CheckStatelessAccess (securableClass, principal, (IReadOnlyList<AccessType>) requiredAccessTypes);
+    }
+
+    public void CheckStatelessAccess (Type securableClass, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
     {
       ArgumentUtility.DebugCheckNotNull ("securableClass", securableClass);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
@@ -329,7 +380,7 @@ namespace Remotion.Security
       Assertion.IsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       if (requiredAccessTypeEnums.Length == 0)
-        requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Read };
+        requiredAccessTypeEnums = s_readAccessTypeEnumAsArray;
 
       return HasAccess (securableObject, methodInformation, requiredAccessTypeEnums, principal);
     }
@@ -449,7 +500,7 @@ namespace Remotion.Security
       Assertion.IsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       if (requiredAccessTypeEnums.Length == 0)
-        requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Edit };
+        requiredAccessTypeEnums = s_editAccessTypeEnumAsArray;
 
       return HasAccess (securableObject, methodInformation, requiredAccessTypeEnums, principal);
     }
@@ -534,7 +585,7 @@ namespace Remotion.Security
       ArgumentUtility.DebugCheckNotNull ("securableClass", securableClass);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
-      return HasStatelessAccess (securableClass, principal, s_createAccessType);
+      return HasStatelessAccess (securableClass, principal, s_createAccessTypeAsList);
     }
 
     public void CheckConstructorAccess (Type securableClass)
@@ -740,19 +791,27 @@ namespace Remotion.Security
       return HasStatelessAccess (securableClass, principal, ConvertRequiredAccessTypeEnums (requiredAccessTypeEnums));
     }
 
-    private AccessType[] ConvertRequiredAccessTypeEnums (Enum[] requiredAccessTypeEnums)
+    private IReadOnlyList<AccessType> ConvertRequiredAccessTypeEnums (Enum[] requiredAccessTypeEnums)
     {
-      return Array.ConvertAll<Enum, AccessType> (requiredAccessTypeEnums, s_enumToAccessTypeConverter);
+      if (requiredAccessTypeEnums.Length == 1)
+      {
+        var requiredAccessTypeEnum = requiredAccessTypeEnums[0];
+        if (s_readAccessTypeAsEnum.Equals (requiredAccessTypeEnum))
+          return s_readAccessTypeAsList;
+        if (s_editAccessTypeAsEnum.Equals (requiredAccessTypeEnum))
+          return s_editAccessTypeAsList;
+        return ImmutableSingleton.Create (AccessType.Get (requiredAccessTypeEnum));
+      }
+      return Array.ConvertAll (requiredAccessTypeEnums, s_enumToAccessTypeConverter);
     }
 
     private static AccessType ConvertEnumToAccessType (Enum accessTypeEnum)
     {
-      if (GeneralAccessTypes.Read.Equals (accessTypeEnum))
+      if (s_readAccessTypeAsEnum.Equals (accessTypeEnum))
         return s_readAccessType;
-      else if (GeneralAccessTypes.Edit.Equals (accessTypeEnum))
+      if (s_editAccessTypeAsEnum.Equals (accessTypeEnum))
         return s_editAccessType;
-      else
-        return AccessType.Get (accessTypeEnum);
+      return AccessType.Get (accessTypeEnum);
     }
 
     private PermissionDeniedException CreatePermissionDeniedException (string message, params object[] args)

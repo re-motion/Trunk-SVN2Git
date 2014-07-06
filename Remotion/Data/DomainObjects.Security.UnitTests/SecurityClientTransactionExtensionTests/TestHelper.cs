@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -31,8 +32,8 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransactionExtensionTests
 {
-  public delegate bool HasAccessDelegate (ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes);
-  public delegate bool HasStatelessAccessDelegate (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes);
+  public delegate bool HasAccessDelegate (ISecurityProvider securityProvider, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes);
+  public delegate bool HasStatelessAccessDelegate (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes);
 
   public class TestHelper
   {
@@ -143,30 +144,51 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
 
     public void ExpectObjectSecurityStrategyHasAccess (SecurableObject securableObject, Enum accessTypeEnum, HasAccessDelegate doDelegate)
     {
-      IObjectSecurityStrategy objectSecurityStrategy = securableObject.GetSecurityStrategy ();
-      Expect.Call (objectSecurityStrategy.HasAccess (_mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
+      IObjectSecurityStrategy objectSecurityStrategy = securableObject.GetSecurityStrategy();
+      Expect.Call (
+          objectSecurityStrategy.HasAccess (
+              Arg.Is (_mockSecurityProvider),
+              Arg.Is (_stubUser),
+              Arg<IReadOnlyList<AccessType>>.List.Equal (new[] { AccessType.Get (accessTypeEnum) })))
           .WhenCalled (mi => CheckTransaction())
           .Do (doDelegate);
     }
 
     public void ExpectObjectSecurityStrategyHasAccess (SecurableObject securableObject, Enum accessTypeEnum, bool returnValue)
     {
-      IObjectSecurityStrategy objectSecurityStrategy = securableObject.GetSecurityStrategy ();
-      Expect.Call (objectSecurityStrategy.HasAccess (_mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
+      IObjectSecurityStrategy objectSecurityStrategy = securableObject.GetSecurityStrategy();
+      Expect.Call (
+          objectSecurityStrategy.HasAccess (
+              Arg.Is (_mockSecurityProvider),
+              Arg.Is (_stubUser),
+              Arg<IReadOnlyList<AccessType>>.List.Equal (new[] { AccessType.Get (accessTypeEnum) })))
+          .WhenCalled (mi => CheckTransaction())
           .WhenCalled (mi => CheckTransaction())
           .Return (returnValue);
     }
 
     public void ExpectFunctionalSecurityStrategyHasAccess (Type securableObjectType, Enum accessTypeEnum, HasStatelessAccessDelegate doDelegate)
     {
-      Expect.Call (_mockFunctionalSecurityStrategy.HasAccess (securableObjectType, _mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
+      Expect.Call (
+          _mockFunctionalSecurityStrategy.HasAccess (
+              Arg.Is (securableObjectType),
+              Arg.Is (_mockSecurityProvider),
+              Arg.Is (_stubUser),
+              Arg<IReadOnlyList<AccessType>>.List.Equal (new[] { AccessType.Get (accessTypeEnum) })))
+          .WhenCalled (mi => CheckTransaction())
           .WhenCalled (mi => CheckTransaction())
           .Do (doDelegate);
     }
 
     public void ExpectFunctionalSecurityStrategyHasAccess (Type securableObjectType, Enum accessTypeEnum, bool returnValue)
     {
-      Expect.Call (_mockFunctionalSecurityStrategy.HasAccess (securableObjectType, _mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
+      Expect.Call (
+          _mockFunctionalSecurityStrategy.HasAccess (
+              Arg.Is (securableObjectType),
+              Arg.Is (_mockSecurityProvider),
+              Arg.Is (_stubUser),
+              Arg<IReadOnlyList<AccessType>>.List.Equal (new[] { AccessType.Get (accessTypeEnum) })))
+          .WhenCalled (mi => CheckTransaction())
           .WhenCalled (mi => CheckTransaction())
           .Return (returnValue);
     }
@@ -198,7 +220,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
 
     public void ExpectFunctionalSecurityStrategyHasAccessWithMatchingScope (ClientTransactionScope expectedScope)
     {
-      Expect.Call (_mockFunctionalSecurityStrategy.HasAccess (null, null, null))
+      Expect.Call (_mockFunctionalSecurityStrategy.HasAccess (null, null, null, null))
           .IgnoreArguments()
           .WhenCalled (mi => CheckScope (expectedScope))
           .Return (true);

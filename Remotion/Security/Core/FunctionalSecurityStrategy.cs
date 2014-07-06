@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -32,14 +33,14 @@ namespace Remotion.Security
     {
     }
 
-    public bool HasAccess (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
+    public bool HasAccess (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (ISecurableObject));
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
       ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
       // Performance critical argument check. Can be refactored to ArgumentUtility.CheckNotNullOrEmpty once typed collection checks are supported.
-      if (requiredAccessTypes.Length == 0)
+      if (requiredAccessTypes.Count == 0)
         throw ArgumentUtility.CreateArgumentEmptyException ("requiredAccessTypes");
 
       var context = SecurityContext.CreateStateless (type);

@@ -23,6 +23,34 @@ namespace Remotion.Security.UnitTests.Core
   public class AccessTypeExtensionsTest
   {
     [Test]
+    public void Contains_MatchingAllowedAccessType_ReturnsTrue ()
+    {
+      bool hasAccess = AccessTypeExtensions.Contains (
+          new[]
+          {
+              AccessType.Get (GeneralAccessTypes.Delete),
+              AccessType.Get (GeneralAccessTypes.Edit)
+          },
+          AccessType.Get (GeneralAccessTypes.Edit));
+
+      Assert.That (hasAccess, Is.EqualTo (true));
+    }
+
+    [Test]
+    public void Contains_NotMatchingAllowedAccessType_ReturnsFalse ()
+    {
+      bool hasAccess = AccessTypeExtensions.Contains (
+          new[]
+          {
+              AccessType.Get (GeneralAccessTypes.Delete),
+              AccessType.Get (GeneralAccessTypes.Edit)
+          },
+          AccessType.Get (GeneralAccessTypes.Create));
+
+      Assert.That (hasAccess, Is.EqualTo (false));
+    }
+
+    [Test]
     public void IsSubsetOf_WithSingleRequiredAccessType_MatchingSingleAllowedAccessType_ReturnsTrue ()
     {
       bool hasAccess = AccessTypeExtensions.IsSubsetOf (

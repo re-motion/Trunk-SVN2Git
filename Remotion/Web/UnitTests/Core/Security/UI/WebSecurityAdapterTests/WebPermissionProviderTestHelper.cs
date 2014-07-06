@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UnitTests.Core.Security.Domain;
@@ -42,17 +43,17 @@ namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
 
     public WebPermissionProviderTestHelper ()
     {
-      _mocks = new MockRepository ();
-      
-      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
-      SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
-      _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy> ();
-      _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
-      _mockWxeSecurityAdapter = _mocks.StrictMock<IWxeSecurityAdapter> ();
+      _mocks = new MockRepository();
 
-      _stubUser = _mocks.Stub<ISecurityPrincipal> ();
+      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider>();
+      SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
+      _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy>();
+      _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy>();
+      _mockWxeSecurityAdapter = _mocks.StrictMock<IWxeSecurityAdapter>();
+
+      _stubUser = _mocks.Stub<ISecurityPrincipal>();
       SetupResult.For (_stubUser.User).Return ("user");
-      _mockPrincipalProvider = _mocks.StrictMock<IPrincipalProvider> ();
+      _mockPrincipalProvider = _mocks.StrictMock<IPrincipalProvider>();
       SetupResult.For (_mockPrincipalProvider.GetPrincipal()).Return (_stubUser);
     }
 
@@ -61,15 +62,25 @@ namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
     public void ExpectHasAccess (Enum[] accessTypeEnums, bool returnValue)
     {
       AccessType[] accessTypes = Array.ConvertAll<Enum, AccessType> (accessTypeEnums, AccessType.Get);
-      Expect.Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _stubUser, accessTypes)).Return (returnValue);
+      Expect.Call (
+          _mockObjectSecurityStrategy.HasAccess (
+              Arg.Is (_mockSecurityProvider),
+              Arg.Is (_stubUser),
+              Arg<IReadOnlyList<AccessType>>.List.Equal (accessTypes)))
+          .Return (returnValue);
     }
 
     public void ExpectHasStatelessAccessForSecurableObject (Enum[] accessTypeEnums, bool returnValue)
     {
-        AccessType[] accessTypes = Array.ConvertAll<Enum, AccessType> (accessTypeEnums, AccessType.Get);
-        Expect
-            .Call (_mockFunctionalSecurityStrategy.HasAccess (typeof (SecurableObject), _mockSecurityProvider, _stubUser, accessTypes))
-            .Return (returnValue);
+      AccessType[] accessTypes = Array.ConvertAll<Enum, AccessType> (accessTypeEnums, AccessType.Get);
+      Expect
+          .Call (
+              _mockFunctionalSecurityStrategy.HasAccess (
+                  Arg.Is (typeof (SecurableObject)),
+                  Arg.Is (_mockSecurityProvider),
+                  Arg.Is (_stubUser),
+                  Arg<IReadOnlyList<AccessType>>.List.Equal (accessTypes)))
+          .Return (returnValue);
     }
 
     public void ExpectHasStatelessAccessForWxeFunction (Type functionType, bool returnValue)

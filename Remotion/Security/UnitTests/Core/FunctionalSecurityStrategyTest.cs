@@ -60,8 +60,11 @@ namespace Remotion.Security.UnitTests.Core
           _securableType,
           _securityProviderMock,
           _principalStub,
-          AccessType.Get (GeneralAccessTypes.Delete),
-          AccessType.Get (GeneralAccessTypes.Create));
+          new[]
+          {
+              AccessType.Get (GeneralAccessTypes.Delete),
+              AccessType.Get (GeneralAccessTypes.Create)
+          });
 
       Assert.That (hasAccess, Is.EqualTo (true));
       _securityProviderMock.VerifyAllExpectations();
@@ -83,9 +86,12 @@ namespace Remotion.Security.UnitTests.Core
           _securableType,
           _securityProviderMock,
           _principalStub,
-          AccessType.Get (GeneralAccessTypes.Create),
-          AccessType.Get (GeneralAccessTypes.Delete),
-          AccessType.Get (GeneralAccessTypes.Read));
+          new[]
+          {
+              AccessType.Get (GeneralAccessTypes.Create),
+              AccessType.Get (GeneralAccessTypes.Delete),
+              AccessType.Get (GeneralAccessTypes.Read)
+          });
 
       Assert.That (hasAccess, Is.EqualTo (false));
       _securityProviderMock.VerifyAllExpectations();
@@ -103,7 +109,7 @@ namespace Remotion.Security.UnitTests.Core
               _securableType,
               _securityProviderMock,
               _principalStub,
-              AccessType.Get (GeneralAccessTypes.Find)),
+              new[] { AccessType.Get (GeneralAccessTypes.Find) }),
           Throws.InvalidOperationException.With.Message.EqualTo ("GetAccess evaluated and returned null."));
 
       _securityProviderMock.VerifyAllExpectations();

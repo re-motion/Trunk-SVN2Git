@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
@@ -211,7 +212,13 @@ namespace Remotion.Security.UnitTests.Core
     private void ExpectExpectObjectSecurityStrategyHasAccess (bool accessAllowed)
     {
       AccessType[] accessTypes = { AccessType.Get (TestAccessTypes.First) };
-      Expect.Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _userStub, accessTypes)).Return (accessAllowed);
+      Expect
+          .Call (
+              _mockObjectSecurityStrategy.HasAccess (
+                  Arg.Is (_mockSecurityProvider),
+                  Arg.Is (_userStub),
+                  Arg<IReadOnlyList<AccessType>>.List.Equal (accessTypes)))
+          .Return (accessAllowed);
     }
 
     private void ExpectGetRequiredMethodPermissions (IMethodInformation methodInformation)
