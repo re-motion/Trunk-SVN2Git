@@ -131,9 +131,14 @@ namespace Remotion.Collections
       if (_innerDataStore.TryGetValue (key, out value))
         wrapper = value.Value;
       else
-        wrapper = _innerDataStore.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (creator (k)))).Value;
+        wrapper = GetOrCreateValueWithClosure (key, creator); // Split to prevent closure being created during the TryGetValue-operation
 
       return wrapper.Value;
+    }
+
+    private Wrapper GetOrCreateValueWithClosure (TKey key, Func<TKey, TValue> creator)
+    {
+      return _innerDataStore.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (creator (k)))).Value;
     }
   }
 }
