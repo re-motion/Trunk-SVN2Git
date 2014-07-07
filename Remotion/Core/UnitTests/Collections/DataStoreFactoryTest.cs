@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Collections
       var result = DataStoreFactory.Create<string, int> (_comparer);
 
       Assert.That (result, Is.TypeOf (typeof (SimpleDataStore<string, int>)));
-      Assert.That (result.Comparer, Is.SameAs (_comparer));
+      Assert.That (((SimpleDataStore<string, int>) result).Comparer, Is.SameAs (_comparer));
     }
 
     [Test]

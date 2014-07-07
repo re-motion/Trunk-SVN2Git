@@ -35,7 +35,7 @@ namespace Remotion.Collections
     /// <returns>
     /// A <see cref="SimpleDataStore{TKey,TValue}"/> instances for storing keys and values.
     /// </returns>
-    public static SimpleDataStore<TKey, TValue> Create<TKey, TValue> ()
+    public static IDataStore<TKey, TValue> Create<TKey, TValue> ()
     {
       return new SimpleDataStore<TKey, TValue>();
     }
@@ -50,7 +50,7 @@ namespace Remotion.Collections
     /// <returns>
     /// A <see cref="SimpleDataStore{TKey,TValue}"/> instances for storing keys and values.
     /// </returns>
-    public static SimpleDataStore<TKey, TValue> Create<TKey, TValue> (IEqualityComparer<TKey> comparer)
+    public static IDataStore<TKey, TValue> Create<TKey, TValue> (IEqualityComparer<TKey> comparer)
     {
       return new SimpleDataStore<TKey, TValue> (comparer);
     }
@@ -70,7 +70,7 @@ namespace Remotion.Collections
     /// complete. When the factory delegates take a long time to execute, consider using <see cref="CreateWithLazyLocking{TKey,TValue}()"/> instead 
     /// to reduce contention.
     /// </remarks>
-    public static LockingDataStoreDecorator<TKey, TValue> CreateWithLocking<TKey, TValue> ()
+    public static IDataStore<TKey, TValue> CreateWithLocking<TKey, TValue> ()
     {
       return new LockingDataStoreDecorator<TKey, TValue> (new SimpleDataStore<TKey, TValue>());
     }
@@ -91,7 +91,7 @@ namespace Remotion.Collections
     /// complete. When the factory delegates take a long time to execute, consider using <see cref="CreateWithLazyLocking{TKey,TValue}(System.Collections.Generic.IEqualityComparer{TKey})"/> instead 
     /// to reduce contention.
     /// </remarks>
-    public static LockingDataStoreDecorator<TKey, TValue> CreateWithLocking<TKey, TValue> (IEqualityComparer<TKey> comparer)
+    public static IDataStore<TKey, TValue> CreateWithLocking<TKey, TValue> (IEqualityComparer<TKey> comparer)
     {
       return new LockingDataStoreDecorator<TKey, TValue> (new SimpleDataStore<TKey, TValue> (comparer));
     }
@@ -111,7 +111,7 @@ namespace Remotion.Collections
     /// in which the factory delegates passed to <see cref="IDataStore{TKey,TValue}.GetOrCreateValue"/> take a long time to execute. When the factory
     /// delegates do not take a long time, consider using <see cref="CreateWithLocking{TKey,TValue}()"/> instead to reduce the number of locks used.
     /// </remarks>
-    public static LazyLockingDataStoreAdapter<TKey, TValue> CreateWithLazyLocking<TKey, TValue> () where TValue: class
+    public static IDataStore<TKey, TValue> CreateWithLazyLocking<TKey, TValue> () where TValue: class
     {
       return new LazyLockingDataStoreAdapter<TKey, TValue> (
           new SimpleDataStore<TKey, DoubleCheckedLockingContainer<LazyLockingDataStoreAdapter<TKey, TValue>.Wrapper>>());
@@ -134,7 +134,7 @@ namespace Remotion.Collections
     /// delegates do not take a long time, consider using <see cref="CreateWithLocking{TKey,TValue}(System.Collections.Generic.IEqualityComparer{TKey})"/>
     /// instead to reduce the number of locks used.
     /// </remarks>
-    public static LazyLockingDataStoreAdapter<TKey, TValue> CreateWithLazyLocking<TKey, TValue> (IEqualityComparer<TKey> comparer) where TValue: class
+    public static IDataStore<TKey, TValue> CreateWithLazyLocking<TKey, TValue> (IEqualityComparer<TKey> comparer) where TValue: class
     {
       return new LazyLockingDataStoreAdapter<TKey, TValue> (
           new SimpleDataStore<TKey, DoubleCheckedLockingContainer<LazyLockingDataStoreAdapter<TKey, TValue>.Wrapper>> (comparer));
