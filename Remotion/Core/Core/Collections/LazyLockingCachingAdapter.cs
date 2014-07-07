@@ -69,7 +69,7 @@ namespace Remotion.Collections
       if (_innerCache.TryGetValue (key, out value))
         wrapper = value.Value;
       else
-        wrapper = GetOrCreateValueWithClosure(key, valueFactory); // Split to prevent closure being created during the TryGetValue-operation
+        wrapper = GetOrCreateValueWithClosure (key, valueFactory); // Split to prevent closure being created during the TryGetValue-operation
 
       return wrapper.Value;
     }
