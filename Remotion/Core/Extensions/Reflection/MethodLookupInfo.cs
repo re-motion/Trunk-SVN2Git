@@ -52,14 +52,15 @@ namespace Remotion.Reflection
             key,
             delegate
             {
-              Type[] parameterTypes = GetSignature (delegateType).Item1;
+              var delegateTypeFromKey = key.Item1;
+              Type[] parameterTypes = GetSignature (delegateTypeFromKey).Item1;
               if (parameterTypes.Length == 0)
                 throw new InvalidOperationException ("Method call delegate must have at least one argument for the current instance ('this' in C# or 'Me' in Visual Basic).");
               Type definingType = parameterTypes[0];
               parameterTypes = ArrayUtility.Skip (parameterTypes, 1);
               MethodInfo method = definingType.GetMethod (MemberName, BindingFlags, Binder, CallingConvention, parameterTypes, ParameterModifiers);
               // TODO: verify return type
-              return Delegate.CreateDelegate (delegateType, method);
+              return Delegate.CreateDelegate (delegateTypeFromKey, method);
             });
       }
       return result;

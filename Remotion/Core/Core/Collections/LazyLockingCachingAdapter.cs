@@ -69,9 +69,14 @@ namespace Remotion.Collections
       if (_innerCache.TryGetValue (key, out value))
         wrapper = value.Value;
       else
-        wrapper = _innerCache.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (valueFactory (k)))).Value;
+        wrapper = GetOrCreateValueWithClosure(key, valueFactory); // Split to prevent closure being created during the TryGetValue-operation
 
       return wrapper.Value;
+    }
+
+    private Wrapper GetOrCreateValueWithClosure (TKey key, Func<TKey, TValue> valueFactory)
+    {
+      return _innerCache.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (valueFactory (k)))).Value;
     }
 
     public bool TryGetValue (TKey key, out TValue value)

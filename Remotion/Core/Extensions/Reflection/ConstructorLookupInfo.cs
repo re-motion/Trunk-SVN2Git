@@ -61,8 +61,16 @@ namespace Remotion.Reflection
       object key = GetCacheKey(delegateType);
       Delegate result;
       if (! s_delegateCache.TryGetValue (key, out result))
-        result = s_delegateCache.GetOrCreateValue (key, arg => CreateDelegate (delegateType));
+      {
+        // Split to prevent closure being created during the TryGetValue-operation
+        result = GetOrCreateValueWithClosure (key, delegateType);
+      }
       return result;
+    }
+
+    private Delegate GetOrCreateValueWithClosure (object key, Type delegateType)
+    {
+      return s_delegateCache.GetOrCreateValue (key, arg => CreateDelegate (delegateType));
     }
 
     public object DynamicInvoke (Type[] parameterTypes, object[] parameterValues)
