@@ -49,7 +49,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="EnsureValidationSupportForDomainObjectsAttribute.cs" />
+    <Compile Include="EnsureSecuritySupportForObjectBindingAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +61,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Mixins\Core\Mixins.Core.csproj">
+      <Project>{d641e4e2-23f3-4454-8074-1327ef07baa1}</Project>
+      <Name>Mixins.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
       <Project>{fbe0cbdd-82ff-4173-8536-47d3b5bc2e98}</Project>
       <Name>Security.Core</Name>
