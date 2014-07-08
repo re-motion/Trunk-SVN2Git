@@ -159,10 +159,14 @@
     </IntegrationTestProjectFiles>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Core\ObjectBinding.Core.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Security\ObjectBinding.Security.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Web\ObjectBinding.Web.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Web.Legacy\ObjectBinding.Web.Legacy.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Web.Preview\ObjectBinding.Web.Preview.csproj" />
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\UnitTests\ObjectBinding.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Security.UnitTests\ObjectBinding.Security.UnitTests.csproj">
       <IsDatabaseTest>False</IsDatabaseTest>
     </UnitTestProjectFiles>
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\ObjectBinding\Web.UnitTests\ObjectBinding.Web.UnitTests.csproj">

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{98969947-CAFA-4DC3-8C9C-C5D8FEA6CE17}</ProjectGuid>
+    <ProjectGuid>{89F98C4B-11E3-43EC-8776-B552574F9A9F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.Integration.Domain</RootNamespace>
-    <AssemblyName>Remotion.Integration.Domain</AssemblyName>
+    <RootNamespace>Remotion.ObjectBinding.Security</RootNamespace>
+    <AssemblyName>Remotion.ObjectBinding.Security</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -22,7 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591;0419</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Debug\Remotion.Integration.Domain.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Remotion.ObjectBinding.Security.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591;0419</NoWarn>
-    <DocumentationFile>bin\Release\Remotion.Integration.Domain.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Remotion.ObjectBinding.Security.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -42,32 +42,14 @@
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Data\DomainObjects.Validation\Data.DomainObjects.Validation.csproj">
-      <Project>{04fa07e3-b868-4846-a5e2-4d375f607c22}</Project>
-      <Name>Data.DomainObjects.Validation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Globalization\Mixins\Globalization.Mixins.csproj">
-      <Project>{E2CD7C20-2728-4F72-A6E8-FC4F7AE72EC9}</Project>
-      <Name>Globalization.Mixins</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ObjectBinding\Security\ObjectBinding.Security.csproj">
-      <Project>{89F98C4B-11E3-43EC-8776-B552574F9A9F}</Project>
-      <Name>ObjectBinding.Security</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Validation\Globalization\Validation.Globalization.csproj">
-      <Project>{30c3afa1-d7b3-4a2a-b314-19282a2e312d}</Project>
-      <Name>Validation.Globalization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Validation\Mixins\Validation.Mixins.csproj">
-      <Project>{b34d9485-39d7-4f73-805c-39a65059001e}</Project>
-      <Name>Validation.Mixins</Name>
-    </ProjectReference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="EnsureDomainIntegrationAttribute.cs" />
+    <Compile Include="EnsureValidationSupportForDomainObjectsAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +61,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
+      <Project>{fbe0cbdd-82ff-4173-8536-47d3b5bc2e98}</Project>
+      <Name>Security.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\ObjectBinding.Core.csproj">
+      <Project>{fdccdb1e-0962-41da-99a1-2db390c48748}</Project>
+      <Name>ObjectBinding.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
