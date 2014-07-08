@@ -62,19 +62,19 @@ namespace Remotion.Collections
 
     public bool ContainsKey (TKey key)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
       return _innerDataStore.ContainsKey (key);
     }
 
     public void Add (TKey key, TValue value)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
       _innerDataStore.Add (key, new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (value)));
     }
 
     public bool Remove (TKey key)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
       return _innerDataStore.Remove (key);
     }
 
@@ -87,19 +87,19 @@ namespace Remotion.Collections
     {
       get
       {
-        ArgumentUtility.CheckNotNull ("key", key);
+        ArgumentUtility.DebugCheckNotNull ("key", key);
         return _innerDataStore[key].Value.Value;
       }
       set
       {
-        ArgumentUtility.CheckNotNull ("key", key);
+        ArgumentUtility.DebugCheckNotNull ("key", key);
         _innerDataStore[key] = new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (value));
       }
     }
 
     public TValue GetValueOrDefault (TKey key)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
 
       var doubleCheckedLockingContainer = _innerDataStore.GetValueOrDefault (key);
       return doubleCheckedLockingContainer != null ? doubleCheckedLockingContainer.Value.Value : null;
@@ -107,7 +107,7 @@ namespace Remotion.Collections
 
     public bool TryGetValue (TKey key, out TValue value)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
       
       DoubleCheckedLockingContainer<Wrapper> result;
 
@@ -121,24 +121,25 @@ namespace Remotion.Collections
       return false;
     }
 
-    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> creator)
+    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("creator", creator);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("valueFactory", valueFactory);
 
       DoubleCheckedLockingContainer<Wrapper> value;
       Wrapper wrapper;
       if (_innerDataStore.TryGetValue (key, out value))
         wrapper = value.Value;
       else
-        wrapper = GetOrCreateValueWithClosure (key, creator); // Split to prevent closure being created during the TryGetValue-operation
+        wrapper = GetOrCreateValueWithClosure (key, valueFactory); // Split to prevent closure being created during the TryGetValue-operation
 
       return wrapper.Value;
     }
 
-    private Wrapper GetOrCreateValueWithClosure (TKey key, Func<TKey, TValue> creator)
+    private Wrapper GetOrCreateValueWithClosure (TKey key, Func<TKey, TValue> valueFactory)
     {
-      return _innerDataStore.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (creator (k)))).Value;
+      ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
+      return _innerDataStore.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (valueFactory (k)))).Value;
     }
   }
 }

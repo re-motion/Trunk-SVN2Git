@@ -61,8 +61,8 @@ namespace Remotion.Collections
 
     public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("valueFactory", valueFactory);
 
       DoubleCheckedLockingContainer<Wrapper> value;
       Wrapper wrapper;
@@ -76,12 +76,13 @@ namespace Remotion.Collections
 
     private Wrapper GetOrCreateValueWithClosure (TKey key, Func<TKey, TValue> valueFactory)
     {
+      ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
       return _innerCache.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (valueFactory (k)))).Value;
     }
 
     public bool TryGetValue (TKey key, out TValue value)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
 
       DoubleCheckedLockingContainer<Wrapper> result;
 

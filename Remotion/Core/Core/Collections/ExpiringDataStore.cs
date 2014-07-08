@@ -128,15 +128,15 @@ namespace Remotion.Collections
       return false;
     }
 
-    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> creator)
+    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
     {
       ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("creator", creator);
+      ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
 
       TValue value;
       if (!TryGetValue (key, out value))
       {
-        value = creator (key);
+        value = valueFactory (key);
         AddWithoutScanning (key, value);
       }
 

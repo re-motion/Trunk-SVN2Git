@@ -42,14 +42,15 @@ namespace Remotion.Collections
 
     public void Add (TKey key, TValue value)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+      // value can be null
 
       _dataStore[key] = value;
     }
 
     public bool TryGetValue (TKey key, out TValue value)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
       
       return _dataStore.TryGetValue (key, out value);
     }
@@ -61,8 +62,8 @@ namespace Remotion.Collections
 
     public TValue GetOrCreateValue (TKey key, Func<TKey,TValue> valueFactory)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("valueFactory", valueFactory);
 
       return _dataStore.GetOrCreateValue (key, valueFactory);
     }

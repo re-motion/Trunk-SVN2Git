@@ -46,8 +46,8 @@ namespace Remotion.Collections
 
     public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("valueFactory", valueFactory);
 
       lock (_lock)
         return _innerCache.GetOrCreateValue (key, valueFactory);
@@ -55,7 +55,7 @@ namespace Remotion.Collections
 
     public bool TryGetValue (TKey key, out TValue value)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
 
       lock (_lock)
         return _innerCache.TryGetValue (key, out value);

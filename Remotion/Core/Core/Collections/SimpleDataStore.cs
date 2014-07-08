@@ -76,6 +76,7 @@ namespace Remotion.Collections
     public void Add (TKey key, TValue value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
+      // value can be null
 
       try
       {
@@ -146,6 +147,8 @@ namespace Remotion.Collections
     /// </returns>
     public TValue GetValueOrDefault (TKey key)
     {
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+
       TValue value;
       TryGetValue (key, out value);
       return value;
@@ -162,7 +165,7 @@ namespace Remotion.Collections
     /// </returns>
     public bool TryGetValue (TKey key, out TValue value)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
 
       return _innerDictionary.TryGetValue (key, out value);
     }
@@ -171,19 +174,21 @@ namespace Remotion.Collections
     /// Gets the value of the element with the specified key, creating a new one if none exists.
     /// </summary>
     /// <param name="key">The key of the element to be retrieved.</param>
-    /// <param name="creator">A delegate used for creating a new element if none exists.</param>
+    /// <param name="valueFactory">A delegate used for creating a new element if none exists.</param>
     /// <returns>
     /// The value of the element that was found or created.
     /// </returns>
-    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> creator)
+    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("creator", creator);
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("valueFactory", valueFactory);
 
       TValue value;
       if (!TryGetValue (key, out value))
       {
-        value = creator (key);
+        ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
+
+        value = valueFactory (key);
         Add (key, value);
       }
       return value;

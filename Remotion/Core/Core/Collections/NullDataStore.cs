@@ -66,7 +66,7 @@ namespace Remotion.Collections
       return false;
     }
 
-    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> creator)
+    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
     {
       throw new NotImplementedException();
     }

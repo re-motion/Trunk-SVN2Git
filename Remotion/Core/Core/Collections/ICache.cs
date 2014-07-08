@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Remotion.Collections
 {
@@ -31,9 +33,26 @@ namespace Remotion.Collections
   /// </remarks>
   public interface ICache<TKey, TValue> : INullObject
   {
-    TValue GetOrCreateValue (TKey key, Func<TKey,TValue> valueFactory);
-    bool TryGetValue (TKey key, out TValue value);
-    void Clear();
+    /// <summary>
+    /// Gets the value of the element with the specified key, creating a new one if none exists.
+    /// </summary>
+    /// <param name="key">The key of the element to be retrieved. Must not be <see langword="null" />.</param>
+    /// <param name="valueFactory">A delegate used for creating a new element if none exists. Must not be <see langword="null" />.</param>
+    /// <returns>The value of the element that was found or created.</returns>
+    TValue GetOrCreateValue ([NotNull] TKey key, [NotNull] Func<TKey, TValue> valueFactory);
+
+    /// <summary>
+    /// Tries to get the value of the element with the specified key.
+    /// </summary>
+    /// <param name="key">The key to look up. Must not be <see langword="null" />.</param>
+    /// <param name="value">
+    /// The value of the element with the specified key, or <typeparamref name="TValue"/>'s default value if no such element exists.</param>
+    /// <returns><see langword="true" /> if an element with the specified key was found; otherwise, <see langword="false" />.</returns>
+    bool TryGetValue ([NotNull] TKey key, [CanBeNull] out TValue value);
+
+    /// <summary>
+    /// Removes all elements from the store.
+    /// </summary>
+    void Clear ();
   }
 }
-

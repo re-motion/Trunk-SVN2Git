@@ -63,6 +63,8 @@ namespace Remotion.Collections
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool ContainsKey (TKey key)
     {
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+
       lock (_lock)
       {
         return _innerStore.ContainsKey (key);
@@ -78,6 +80,9 @@ namespace Remotion.Collections
     /// <exception cref="ArgumentException">An item with an equal key already exists in the store.</exception>
     public void Add (TKey key, TValue value)
     {
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+      // value can be null
+
       lock (_lock)
       {
         _innerStore.Add (key, value);
@@ -94,6 +99,8 @@ namespace Remotion.Collections
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool Remove (TKey key)
     {
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+
       lock (_lock)
       {
         return _innerStore.Remove (key);
@@ -119,6 +126,8 @@ namespace Remotion.Collections
     {
       get
       {
+        ArgumentUtility.DebugCheckNotNull ("key", key);
+
         lock (_lock)
         {
           return _innerStore[key];
@@ -126,6 +135,8 @@ namespace Remotion.Collections
       }
       set
       {
+        ArgumentUtility.DebugCheckNotNull ("key", key);
+
         lock (_lock)
         {
           _innerStore[key] = value;
@@ -142,6 +153,8 @@ namespace Remotion.Collections
     /// </returns>
     public TValue GetValueOrDefault (TKey key)
     {
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+
       lock (_lock)
       {
         return _innerStore.GetValueOrDefault (key);
@@ -159,6 +172,8 @@ namespace Remotion.Collections
     /// </returns>
     public bool TryGetValue (TKey key, out TValue value)
     {
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+
       lock (_lock)
       {
         return _innerStore.TryGetValue (key, out value);
@@ -169,15 +184,18 @@ namespace Remotion.Collections
     /// Gets the value of the element with the specified key, creating a new one if none exists.
     /// </summary>
     /// <param name="key">The key of the element to be retrieved.</param>
-    /// <param name="creator">A delegate used for creating a new element if none exists.</param>
+    /// <param name="valueFactory">A delegate used for creating a new element if none exists.</param>
     /// <returns>
     /// The value of the element that was found or created.
     /// </returns>
-    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> creator)
+    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
     {
+      ArgumentUtility.DebugCheckNotNull ("key", key);
+      ArgumentUtility.DebugCheckNotNull ("valueFactory", valueFactory);
+
       lock (_lock)
       {
-        return _innerStore.GetOrCreateValue (key, creator);
+        return _innerStore.GetOrCreateValue (key, valueFactory);
       }
     }
   }
