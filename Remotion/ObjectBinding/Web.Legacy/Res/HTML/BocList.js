@@ -133,10 +133,13 @@ function BocList_InitializeList(bocList, selectorControlPrefix, selectAllSelecto
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl, onSelectionChangedHandler)
 {
-  $(row).click(function(evt)
+  $(row).click(function (evt)
   {
-    BocList_OnRowClick(bocList, row, selectorControl);
-    onSelectionChangedHandler(bocList, false);
+    var hasSelectionChanged = BocList_OnRowClick (bocList, row, selectorControl);
+    if (hasSelectionChanged)
+    {
+      onSelectionChangedHandler (bocList, false);
+    }
   });
 }
 
@@ -152,13 +155,13 @@ function BocList_OnRowClick(bocList, currentRow, selectorControl)
   if (_bocList_isCommandClick)
   {
     _bocList_isCommandClick = false;
-    return;
+    return false;
   }  
   
   if (_bocList_isSelectorControlLabelClick)
   {
     _bocList_isSelectorControlLabelClick = false;
-    return;
+    return false;
   }  
 
   var currentRowBlock = new BocList_RowBlock (currentRow, selectorControl);
@@ -168,7 +171,7 @@ function BocList_OnRowClick(bocList, currentRow, selectorControl)
   if (   selectedRows.Selection == _bocList_rowSelectionUndefined
       || selectedRows.Selection == _bocList_rowSelectionDisabled)
   {
-    return;
+    return false;
   }
     
   if (isCtrlKeyPress || _bocList_isSelectorControlClick)
@@ -210,6 +213,7 @@ function BocList_OnRowClick(bocList, currentRow, selectorControl)
   {
   }  
   _bocList_isSelectorControlClick = false;
+  return true;
 }
 
 //  Selects a row.
