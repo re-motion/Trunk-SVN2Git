@@ -40,7 +40,7 @@ namespace Remotion.Globalization.UnitTests
       var service = _serviceLocator.GetInstance<IGlobalizationService> ();
 
       Assert.That (service, Is.TypeOf (typeof (CompoundGlobalizationService)));
-      var compoundGlobalizationServices = ((CompoundGlobalizationService) service).GlobalizationServices.ToArray();
+      var compoundGlobalizationServices = ((CompoundGlobalizationService) service).GlobalizationServices;
       Assert.That (compoundGlobalizationServices[0], Is.TypeOf<GlobalizationService>());
     }
 
